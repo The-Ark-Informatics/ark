@@ -81,7 +81,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		super(id, feedBackPanel, arkCrudContainerVO, containerForm);
 		initialiseRemoveButton();
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm() {
 		userNameTxtField = new TextField<String>(Constants.USER_NAME);
@@ -115,7 +115,12 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 				ArkModule arkModule = arkUserRole.getArkModule();
 				// Acts as the data source for ArkRoles
 				ArrayList<ArkRole> arkRoleSourceList = iArkCommonService.getArkRoleLinkedToModule(arkModule);
-
+				if(arkUserRole.getArkUser() == null && arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_STUDY)){
+					//If the ArkUserRole is not assigned and the module is Study then set the default Role 
+					ArkRole arkRole = iArkCommonService.getArkRoleByName(au.org.theark.core.Constants.ARK_STUDY_DEFAULT_ROLE);
+					arkUserRole.setArkRole(arkRole);
+				}
+				
 				PropertyModel arkUserRolePm = new PropertyModel(arkUserRole, "arkRole");
 				ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>(Constants.NAME, "id");
 

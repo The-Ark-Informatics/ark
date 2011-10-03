@@ -27,6 +27,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -128,9 +129,12 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 		containerForm.getModelObject().setMode(Constants.MODE_NEW);
 		prePopulateArkUserRoleList();
 		arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
+		// This should re-render the list again
+		ListView listView = (ListView)arkCrudContainerVO.getWmcForarkUserAccountPanel().get("arkUserRoleList");
+		listView.removeAll();
 		preProcessDetailPanel(target);
 		target.add(arkCrudContainerVO.getEditButtonContainer());
-		target.add(arkCrudContainerVO.getWmcForarkUserAccountPanel());// This should re-render the list again
+		target.add(arkCrudContainerVO.getWmcForarkUserAccountPanel());
 	}
 
 	protected void initialiseSearchForm() {
@@ -144,7 +148,6 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Make the details panel visible, disabling delete button (if found)
-				// AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
 				AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("remove");
 				if (ajaxButton != null) {
 					ajaxButton.setEnabled(false);
