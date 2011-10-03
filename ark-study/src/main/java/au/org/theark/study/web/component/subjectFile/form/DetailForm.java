@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -73,7 +74,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private FileUploadField							fileSubjectFileField;
 	private DropDownChoice<StudyComp>			studyComponentChoice;
 	private TextArea<String>						commentsTxtArea;
-	//private UploadProgressBar 						uploadProgressBar;
+
 	
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,AbstractContainerForm<SubjectVO> containerForm){
 		super(id,feedBackPanel,containerForm,arkCrudContainerVO);
@@ -82,7 +83,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	@SuppressWarnings("unchecked")
 	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
-		List<StudyComp> studyCompList = iArkCommonService.getStudyComponent();
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study studyInContext = iArkCommonService.getStudy(studyId);
+		List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(studyInContext);
 		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
 		studyComponentChoice = new DropDownChoice<StudyComp>(Constants.SUBJECT_FILE_STUDY_COMP, studyCompList, defaultChoiceRenderer);
 	}
@@ -90,10 +93,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	public void initialiseDetailForm() {
 		// Set up field on form here
 		subjectFileIdTxtFld = new TextField<String>(au.org.theark.study.web.Constants.SUBJECT_FILE_ID);
-
-		// progress bar for upload
-		// uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleConsentFileForm);
-
 		// fileSubjectFile for payload (attached to filename key)
 		fileSubjectFileField = new FileUploadField(au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME);
 		fileSubjectFileField.setRequired(true);

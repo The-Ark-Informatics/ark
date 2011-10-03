@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.SubjectFile;
@@ -96,8 +97,10 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 	@SuppressWarnings("unchecked")
 	private void initialiseDropDownChoices() {
-		// Initialise Drop Down Choices
-		List<StudyComp> studyCompList = iArkCommonService.getStudyComponent();
+		
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study studyInContext = iArkCommonService.getStudy(studyId);
+		List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(studyInContext);
 		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
 		studyComponentChoice = new DropDownChoice(Constants.SUBJECT_FILE_STUDY_COMP, studyCompList, defaultChoiceRenderer);
 	}
