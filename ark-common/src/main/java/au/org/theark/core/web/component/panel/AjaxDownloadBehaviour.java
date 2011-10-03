@@ -1,9 +1,8 @@
-package au.org.theark.core.web.component.link;
+package au.org.theark.core.web.component.panel;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AbstractAjaxBehavior;
 
-import au.org.theark.core.web.component.panel.IDownloadRequestHandlerProvider;
 
 /**
  * Based on code by Sven Meier and Ernesto Reinaldo Barreiro (reiern70@gmail.com),
@@ -32,7 +31,7 @@ public class AjaxDownloadBehaviour extends AbstractAjaxBehavior
 	 */
 	public void initiate(AjaxRequestTarget target)
 	{
-		CharSequence url = getCallbackUrl();
+		CharSequence url = super.getCallbackUrl();
 
 		target.appendJavaScript("window.location.href='" + url + "'");
 	}

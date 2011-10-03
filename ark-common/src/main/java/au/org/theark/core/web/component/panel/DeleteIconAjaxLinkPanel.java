@@ -27,7 +27,7 @@ import org.apache.wicket.request.resource.ResourceReference;
 
 import au.org.theark.core.web.component.link.AjaxConfirmLink;
 
-public abstract class DeleteIconAjaxLinkPanel extends IconLabelPanel {
+public abstract class DeleteIconAjaxLinkPanel<T> extends IconLabelPanel<T> {
 
 	/**
 	 * 
@@ -40,8 +40,8 @@ public abstract class DeleteIconAjaxLinkPanel extends IconLabelPanel {
 	 * Constructor that uses no link label (i.e. icon only)
 	 * @param id
 	 */
-	public DeleteIconAjaxLinkPanel(String id) {
-		this(id, new Model<String>(""));
+	public DeleteIconAjaxLinkPanel(String id, IModel<T> innerModel) {
+		this(id, new Model<String>(""), innerModel);
 	}
 
 	/**
@@ -50,21 +50,21 @@ public abstract class DeleteIconAjaxLinkPanel extends IconLabelPanel {
 	 * @param id
 	 * @param linkLabelModel
 	 */
-	public DeleteIconAjaxLinkPanel(String id, IModel<String> linkLabelModel) {
-		super(id, linkLabelModel);	// this will automatically call addComponents(..)
+	public DeleteIconAjaxLinkPanel(String id, IModel<String> linkLabelModel, IModel<T> innerModel) {
+		super(id, linkLabelModel, innerModel);	// this will automatically call addComponents(..)
 		this.setOutputMarkupPlaceholderTag(true);
 	}
 	
 	@Override
 	protected void addComponents(IModel<?> labelModel)
 	{
-		link = buildLink();
+		link = buildLink(innerModel);
 		link.add(newImageComponent("iconImage"));
 		link.add(newLabelComponent("label", labelModel));
     	this.add(link);
 	}
 	
-	protected AjaxLink<String> buildLink()  {
+	protected AjaxLink<String> buildLink(IModel<T> innerModel)  {
 		
 		return new AjaxConfirmLink<String>("arkLink", new StringResourceModel("deleteIconLinkPanel.confirm", this, null), null) {
 			/**

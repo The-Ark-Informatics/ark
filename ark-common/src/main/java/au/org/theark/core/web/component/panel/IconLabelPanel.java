@@ -15,10 +15,11 @@ import org.apache.wicket.request.resource.ResourceReference;
  * 
  * @author elam
  */
-public abstract class IconLabelPanel extends Panel
+public abstract class IconLabelPanel<T> extends Panel
 {
 	private static final long serialVersionUID = 1L;
 
+	protected IModel<T> innerModel;
 	/**
 	 * Constructs the panel.
 	 * 
@@ -27,13 +28,14 @@ public abstract class IconLabelPanel extends Panel
 	 * @param labelModel
 	 *            model that holds the label content
 	 */
-	public IconLabelPanel(String id, IModel<?> labelModel)
+	public IconLabelPanel(String id, IModel<?> labelModel, IModel<T> innerModel)
 	{
-		super(id, labelModel);
+		super(id, innerModel);
+		this.innerModel = innerModel;
 		
 		// Use the default label if null
       if (labelModel == null) {
-      	labelModel = new StringResourceModel("iconLinkPanel.defaultLabel", this, null);
+      	labelModel = new StringResourceModel("defaultLabel", this, null);
       }
 		addComponents(labelModel);
 	}
@@ -94,7 +96,7 @@ public abstract class IconLabelPanel extends Panel
 	public void setTooltip(IModel<?> tooltipModel) {
 		if (tooltipModel != null && tooltipModel.getObject() != null)
 		{
-			add(new AttributeModifier("title", tooltipModel));
+			this.add(new AttributeModifier("title", tooltipModel));
 		}
 	}
 

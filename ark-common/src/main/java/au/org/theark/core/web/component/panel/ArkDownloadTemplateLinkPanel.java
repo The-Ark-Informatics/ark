@@ -33,7 +33,7 @@ import org.apache.wicket.util.io.ByteArrayOutputStream;
 import au.org.theark.core.util.ArkSheetMetaData;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 
-public class ArkDownloadTemplateLinkPanel extends DownloadIconAjaxLinkPanel {
+public class ArkDownloadTemplateLinkPanel extends DownloadIconLinkPanel {
 
 	/**
 	 * 
