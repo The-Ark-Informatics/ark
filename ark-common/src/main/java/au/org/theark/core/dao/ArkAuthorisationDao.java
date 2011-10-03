@@ -135,7 +135,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @param roleName
 	 * @return ArkRole
 	 */
-	protected ArkRole getArkRoleByName(String roleName) {
+	public ArkRole getArkRoleByName(String roleName) {
 		Criteria criteria = getSession().createCriteria(ArkRole.class);
 		criteria.add(Restrictions.eq("name", roleName));
 		ArkRole arkRole = (ArkRole) criteria.uniqueResult();

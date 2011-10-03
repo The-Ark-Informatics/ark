@@ -307,4 +307,7 @@ public class Constants {
 	/* Ark Function Types */
 	public static final String	ARK_FUNCTION_TYPE_REPORT						= "REPORT";
 	public static final String	ARK_FUNCTION_TYPE_NON_REPORT					= "NON-REPORT";
+	
+	/* Default Role for Study Module */
+	public static final String ARK_STUDY_DEFAULT_ROLE							= "Study Read-Only user";
 }
