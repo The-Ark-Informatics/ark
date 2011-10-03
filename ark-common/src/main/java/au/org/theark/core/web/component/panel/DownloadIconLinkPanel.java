@@ -18,31 +18,27 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.panel;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.resource.ResourceReference;
 
-import au.org.theark.core.web.component.link.AjaxDownloadBehaviour;
-
-public abstract class DownloadIconAjaxLinkPanel extends IconLabelPanel implements IDownloadRequestHandlerProvider {
+public abstract class DownloadIconLinkPanel<T> extends IconLabelPanel<T> {
 
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
-	
-	protected AjaxDownloadBehaviour download;
-	protected AjaxLink<String> link;
+
+	protected Link<T> link;
 
 	/**
 	 * Constructor that uses no download link label (i.e. icon only)
 	 * @param id
 	 */
-	public DownloadIconAjaxLinkPanel(String id) {
-		this(id, new Model<String>(""));
+	public DownloadIconLinkPanel(String id, IModel<T> innerModel) {
+		this(id, new Model<String>(""), innerModel);
 	}
 
 	/**
@@ -51,48 +47,70 @@ public abstract class DownloadIconAjaxLinkPanel extends IconLabelPanel implement
 	 * @param id
 	 * @param linkLabelModel
 	 */
-	public DownloadIconAjaxLinkPanel(String id, IModel<String> linkLabelModel) {
-		super(id, linkLabelModel);	// this will automatically call addComponents(..)
+	public DownloadIconLinkPanel(String id, IModel<String> linkLabelModel, IModel<T> innerModel) {
+		super(id, linkLabelModel, innerModel);	// this will automatically call addComponents(..)
 		this.setOutputMarkupPlaceholderTag(true);
 	}
 
 	@Override
 	protected void addComponents(IModel<?> labelModel) {
-		link = buildLink();
+		link = buildLink(innerModel);
+		link.setOutputMarkupPlaceholderTag(true);
 		link.add(newImageComponent("iconImage"));
 		link.add(newLabelComponent("label", labelModel));
     	this.add(link);
 
 		// tack on the AjaxDownloadBehaviour using "this" as the IDownloadRequestHandlerProvider
-		download = new AjaxDownloadBehaviour(this);
-		this.add(download);
+//		download = new AjaxDownloadBehaviour(this);
+//		this.add(download);
 	}
 	
-	/**
-	 * You may override this method to perform additional updates to components when the link is clicked.
-	 * This method is called before the download is triggered.
-	 * 
-	 * @param target
-	 */
-	protected void onLinkClick(AjaxRequestTarget target) {
-	}
+	protected Link<T> buildLink(IModel<T> innerModel) {
+		return new Link<T>("arkLink", innerModel) {
 
-	protected AjaxLink<String> buildLink()  {
-		
-		return new AjaxLink<String>("arkLink") {
-			/**
-			 * 
-			 */
 			private static final long	serialVersionUID	= 1L;
 	
 			@Override
-			public void onClick(AjaxRequestTarget target) {
-				onLinkClick(target);
-				download.initiate(target);
+			public void onClick() {
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(getDownloadRequestHandler());
 			}
-			
 		};
 	}
+
+//	/**
+//	 * You may override this method to perform additional updates to components when the link is clicked.
+//	 * This method is called before the download is triggered.
+//	 * 
+//	 * @param target
+//	 */
+//	protected void onLinkClick(AjaxRequestTarget target) {
+//	}
+
+//	protected AjaxLink<T> buildLink(IModel<T> innerModel)  {
+//		
+//		
+//		return new AjaxLink<T>("arkLink", innerModel) {
+//			/**
+//			 * 
+//			 */
+//			private static final long	serialVersionUID	= 1L;
+//	
+//			AjaxDownloadBehaviour download;
+//			
+//			@Override
+//			protected void onBeforeRender() {
+//				download = new AjaxDownloadBehaviour(DownloadIconLinkPanel.this);
+//				this.add(download);
+//				super.onBeforeRender();
+//			}
+//			
+//			@Override
+//			public void onClick(AjaxRequestTarget target) {
+//				onLinkClick(target);
+//				download.initiate(target);
+//			}
+//		};
+//	}
 
 	@Override
 	protected ResourceReference getImageResourceReference() {
@@ -103,6 +121,6 @@ public abstract class DownloadIconAjaxLinkPanel extends IconLabelPanel implement
 	 * Implement the file download request handler here.
 	 * @return
 	 */
-	public abstract IRequestHandler getDownloadRequestHandler();
+	abstract protected IRequestHandler getDownloadRequestHandler();
 
 }
