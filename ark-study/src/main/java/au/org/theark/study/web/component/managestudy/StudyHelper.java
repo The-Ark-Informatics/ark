@@ -70,7 +70,6 @@ public class StudyHelper implements Serializable {
 		target.add(studyLogoMarkup);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void setStudyLogoImage(Study study, String id, WebMarkupContainer studyLogoImageContainer) {
 		// Set the study logo
 		try {
@@ -83,9 +82,9 @@ public class StudyHelper implements Serializable {
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
 					Streams.copy(in, out);
 					// Get the Study logo Blob as an array of bytes
-					final byte[] data = out.toByteArray(); // studyLogoBlob.getBytes(1, (int) studyLogoBlob.length());
+					final byte[] data = out.toByteArray();
 
-					studyLogoImage = new NonCachingImage(id, new AbstractReadOnlyModel() {
+					studyLogoImage = new NonCachingImage(id, new AbstractReadOnlyModel<Object>() {
 						/**
 						 * 
 						 */
