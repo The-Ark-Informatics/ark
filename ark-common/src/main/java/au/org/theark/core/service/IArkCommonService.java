@@ -490,5 +490,7 @@ public interface IArkCommonService<T> {
 	public CustomField getFieldByNameAndStudyAndFunction(String fieldName, Study study, ArkFunction arkFunction) throws EntityNotFoundException;
 
 	public FieldType getFieldTypeByName(String typeName) throws EntityNotFoundException;
+	
+	public ArkRole getArkRoleByName(String roleName);
 
 }

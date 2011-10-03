@@ -723,5 +723,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public FieldType getFieldTypeByName(String typeName) throws EntityNotFoundException {
 		return customFieldDao.getFieldTypeByName(typeName);
 	}
+	
+	public ArkRole getArkRoleByName(String roleName){
+		
+		return arkAuthorisationDao.getArkRoleByName(roleName);
+	}
 
 }
