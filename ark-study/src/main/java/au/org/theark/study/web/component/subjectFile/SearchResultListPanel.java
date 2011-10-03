@@ -46,7 +46,7 @@ import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.panel.DeleteIconAjaxLinkPanel;
-import au.org.theark.core.web.component.panel.DownloadIconAjaxLinkPanel;
+import au.org.theark.core.web.component.panel.DownloadIconLinkPanel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectFile.form.ContainerForm;
 
@@ -132,11 +132,11 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				// Download file link button
-				Panel downloadLinkPanel = buildDownloadLinkPanel(subjectFile);
+				Panel downloadLinkPanel = buildDownloadLinkPanel(item.getModel());
 				item.add(downloadLinkPanel);
 
 				// Delete the upload file
-				item.add(buildDeleteLinkPanel(subjectFile, downloadLinkPanel));
+				item.add(buildDeleteLinkPanel(item.getModel(), downloadLinkPanel));
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
@@ -156,8 +156,8 @@ public class SearchResultListPanel extends Panel {
 		return sitePageableListView;
 	}
 
-	protected Component buildDeleteLinkPanel(final SubjectFile subjectFile, final Panel downloadLinkPanel) {
-		DeleteIconAjaxLinkPanel deleteLinkPanel = new DeleteIconAjaxLinkPanel(au.org.theark.study.web.Constants.DELETE_FILE) {
+	protected Component buildDeleteLinkPanel(final IModel<SubjectFile> subjectFileModel, final Panel downloadLinkPanel) {
+		DeleteIconAjaxLinkPanel<SubjectFile> deleteLinkPanel = new DeleteIconAjaxLinkPanel<SubjectFile>(au.org.theark.study.web.Constants.DELETE_FILE, subjectFileModel) {
 
 			/**
 			 * 
@@ -166,6 +166,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onLinkClick(AjaxRequestTarget target) {
+				SubjectFile subjectFile = innerModel.getObject();
 				if (subjectFile.getId() != null) {
 					try {
 						// TODO: implement disabling of other buttons on row when buttons clicked once
@@ -204,8 +205,8 @@ public class SearchResultListPanel extends Panel {
 		return deleteLinkPanel;
 	}
 
-	private Panel buildDownloadLinkPanel(final SubjectFile subjectFile) {
-		DownloadIconAjaxLinkPanel downloadLinkPanel = new DownloadIconAjaxLinkPanel(au.org.theark.study.web.Constants.DOWNLOAD_FILE) {
+	private Panel buildDownloadLinkPanel(final IModel<SubjectFile> subjectFileModel) {
+		DownloadIconLinkPanel<SubjectFile> downloadLinkPanel = new DownloadIconLinkPanel<SubjectFile>(au.org.theark.study.web.Constants.DOWNLOAD_FILE, subjectFileModel) {
 
 			/**
 			 * 
@@ -214,6 +215,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			public IRequestHandler getDownloadRequestHandler() {
+				SubjectFile subjectFile = subjectFileModel.getObject();
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
 				try {
