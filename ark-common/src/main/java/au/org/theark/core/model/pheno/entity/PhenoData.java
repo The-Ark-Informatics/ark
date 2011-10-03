@@ -18,6 +18,7 @@ import javax.persistence.TemporalType;
 
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.ICustomFieldData;
 
 /**
  * @author nivedann
@@ -26,7 +27,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
 @Entity
 @Table(name = "PHENO_DATA", schema = Constants.PHENO_TABLE_SCHEMA)
-public class PhenoData implements Serializable{
+public class PhenoData implements Serializable, ICustomFieldData {
 	
 	private Long id;
 	private CustomFieldDisplay customFieldDisplay;
@@ -34,6 +35,7 @@ public class PhenoData implements Serializable{
 	private String textDataValue;
 	private Date dateDataValue;
 	private Double numberDataValue;
+	private String errorDataValue;
 	
 	/**
 	 * Constructor
@@ -107,6 +109,16 @@ public class PhenoData implements Serializable{
 
 	public void setNumberDataValue(Double numberDataValue) {
 		this.numberDataValue = numberDataValue;
+	}
+
+	@Column(name="ERROR_DATA_VALUE")
+	public String getErrorDataValue() {
+		return errorDataValue;
+	}
+
+
+	public void setErrorDataValue(String errorDataValue) {
+		this.errorDataValue = errorDataValue;
 	}
 
 }
