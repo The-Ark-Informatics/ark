@@ -229,13 +229,6 @@ public interface IStudyDao {
 	public List<StudyCompStatus> getStudyComponentStatus();
 
 	/**
-	 * Get the Study components
-	 * 
-	 * @return A List of Study components
-	 */
-	public List<StudyComp> getStudyComponent();
-
-	/**
 	 * Get the Study components for the specified Study
 	 * 
 	 * @return A List of Study components for the specified Study

@@ -419,11 +419,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
-	public List<StudyComp> getStudyComponent() {
-		Criteria criteria = getSession().createCriteria(StudyComp.class);
-		List<StudyComp> studyCompList = criteria.list();
-		return criteria.list();
-	}
 
 	public List<StudyComp> getStudyComponentByStudy(Study study) {
 		Criteria criteria = getSession().createCriteria(StudyComp.class);

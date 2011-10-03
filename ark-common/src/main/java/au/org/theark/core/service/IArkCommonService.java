@@ -142,11 +142,6 @@ public interface IArkCommonService<T> {
 	public List<ConsentStatus> getRecordableConsentStatus();
 
 	/**
-	 * @return a list of Study Components
-	 */
-	public List<StudyComp> getStudyComponent();
-
-	/**
 	 * Get the Study components for the specified Study
 	 * 
 	 * @return A List of Study components for the specified Study
