@@ -56,7 +56,9 @@ public abstract class AjaxConfirmButton extends AjaxButton {
 
 			@Override
 			public CharSequence preDecorateScript(CharSequence script) {
-				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	return true; " + "};" + script;
+				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "};" + script;
+				// should call return if the rest of scripting required for Wicket to callback the onSubmit...
+				// (patched the code to remove the "else" statement because it shouldn't return true)
 			}
 		};
 	}
