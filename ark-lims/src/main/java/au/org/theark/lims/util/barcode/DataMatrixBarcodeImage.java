@@ -30,39 +30,80 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.apache.wicket.markup.html.image.NonCachingImage;
+import org.apache.wicket.markup.html.image.resource.BufferedDynamicImageResource;
+import org.apache.wicket.request.resource.IResource;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.krysalis.barcode4j.impl.datamatrix.DataMatrixBean;
 import org.krysalis.barcode4j.impl.datamatrix.SymbolShapeHint;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.krysalis.barcode4j.output.bitmap.BitmapEncoder;
 import org.krysalis.barcode4j.output.bitmap.BitmapEncoderRegistry;
 import org.krysalis.barcode4j.tools.UnitConv;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class creates a 2D DataMatrix barcode bitmap, enhanced by custom elements.
  * 
  * @author cellis
  */
-public class DataMatrixBarcode {
-	private int			dpi			= 200;
-	private boolean	antiAlias	= true;
-	private int			orientation	= 0;
+public class DataMatrixBarcodeImage extends NonCachingImage {
+	/**
+	 * 
+	 */
+	private static final long		serialVersionUID	= 3235603243807828600L;
+	private static final Logger	log					= LoggerFactory.getLogger(DataMatrixBarcodeImage.class);
+	private static int				dpi					= 200;
+	private boolean					antiAlias			= true;
+	private int							orientation			= 0;
 
 	/**
-	 * Default constructor
+	 * Create a new DataMatrixBarcode of the specified barcodeString
+	 * 
+	 * @param id
+	 * @param barcodeString
 	 */
-	public DataMatrixBarcode() {
+	public DataMatrixBarcodeImage(String id, final String barcodeString) {
+		super(id, getDataMatrixBarcodeImageResource(barcodeString));
+		setOutputMarkupPlaceholderTag(true);
 	}
 
 	/**
-	 * Create a new DataMatrixBarcode with specified parameters
+	 * Create a new DataMatrixBarcode of the specified barcodeString with specified parameters
+	 * 
+	 * @param id
+	 * @param barcodeString
 	 * @param dpi
 	 * @param anitAlias
 	 * @param orientation
 	 */
-	public DataMatrixBarcode(int dpi, boolean anitAlias, int orientation) {
-		this.dpi = dpi;
+	public DataMatrixBarcodeImage(String id, final String barcodeString, int dpi, boolean anitAlias, int orientation) {
+		super(id);
+		setOutputMarkupPlaceholderTag(true);
+		DataMatrixBarcodeImage.dpi = dpi;
 		this.antiAlias = anitAlias;
 		this.orientation = orientation;
+	}
+
+	/**
+	 * @return Gets shared image component
+	 */
+	public static ResourceReference getDataMatrixBarcodeImageResource(final String barcodeString) {
+		return new ResourceReference(DataMatrixBarcodeImage.class, "dataMatrixBarcodeImage") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public IResource getResource() {
+				final BufferedDynamicImageResource resource = new BufferedDynamicImageResource();
+				final BufferedImage image = generateBufferedImage(barcodeString);
+				resource.setImage(image);
+				return resource;
+			}
+		};
 	}
 
 	/**
@@ -72,7 +113,7 @@ public class DataMatrixBarcode {
 	 * @return A Bufferedimage of the 2D DataMatrix barcode
 	 * @throws IOException
 	 */
-	protected BufferedImage generateBufferedImage(String barcodeString) throws IOException {
+	public static BufferedImage generateBufferedImage(String barcodeString) {
 		// Create the barcode bean
 		DataMatrixBean bean = new DataMatrixBean();
 
@@ -90,7 +131,12 @@ public class DataMatrixBarcode {
 		bean.generateBarcode(canvas, barcodeString);
 
 		// Signal end of generation
-		canvas.finish();
+		try {
+			canvas.finish();
+		}
+		catch (IOException e) {
+			log.error(e.getMessage());
+		}
 
 		// Generate the bufferedImage
 		BufferedImage bufferedImage = canvas.getBufferedImage();
@@ -104,7 +150,7 @@ public class DataMatrixBarcode {
 	 * @param outputFile
 	 * @throws IOException
 	 */
-	protected void generateToFile(String barcodeString, File outputFile) throws IOException {
+	public void generateToFile(String barcodeString, File outputFile) {
 		String[] paramArr = new String[] { "Information 1", "Information 2", "Barcode4J is cool!" };
 		// Create the barcode bean
 		DataMatrixBean bean = new DataMatrixBean();
@@ -121,7 +167,12 @@ public class DataMatrixBarcode {
 		bean.generateBarcode(canvas, barcodeString);
 
 		// Signal end of generation
-		canvas.finish();
+		try {
+			canvas.finish();
+		}
+		catch (IOException e) {
+			log.error(e.getMessage());
+		}
 
 		// Get generated bitmap
 		BufferedImage symbol = canvas.getBufferedImage();
@@ -167,13 +218,15 @@ public class DataMatrixBarcode {
 
 		// Encode bitmap as file
 		String mime = "image/png";
-		OutputStream out = new FileOutputStream(outputFile);
+		OutputStream out = null;
 		try {
+			out = new FileOutputStream(outputFile);
 			final BitmapEncoder encoder = BitmapEncoderRegistry.getInstance(mime);
 			encoder.encode(bitmap, out, mime, dpi);
-		}
-		finally {
 			out.close();
+		}
+		catch (IOException e) {
+			log.error(e.getMessage());
 		}
 	}
 }
