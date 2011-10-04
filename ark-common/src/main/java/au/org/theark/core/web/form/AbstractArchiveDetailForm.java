@@ -20,10 +20,6 @@ package au.org.theark.core.web.form;
 
 import java.util.Iterator;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -33,7 +29,7 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.security.PermissionConstants;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
 /**
@@ -66,47 +62,7 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 		super(id);
 		initialiseForm();
 	}
-
-	abstract protected void attachValidators();
-
-	abstract protected void onCancel(AjaxRequestTarget target);
-
-	abstract protected void onSave(Form<T> containerForm, AjaxRequestTarget target);
-
-	abstract protected void processErrors(AjaxRequestTarget target);
-
-	abstract protected boolean isNew();
-
-	protected boolean isActionPermitted(String actionType) {
-
-		boolean flag = false;
-		SecurityManager securityManager = ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-
-		if (actionType.equalsIgnoreCase(Constants.SAVE)) {
-
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) || securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE)) {
-
-				flag = true;
-			}
-			else {
-				flag = false;
-			}
-
-		}
-		else if (actionType.equalsIgnoreCase(Constants.EDIT)) {
-
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)) {
-				flag = true;
-			}
-			else {
-				flag = false;
-			}
-		}
-
-		return flag;
-	}
-
+	
 	protected void onCancelPostProcess(AjaxRequestTarget target) {
 
 		crudVO.getViewButtonContainer().setVisible(true);
@@ -144,10 +100,14 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 		initialiseForm();
 	}
 
-	@SuppressWarnings("serial")
 	protected void initialiseForm() {
 
 		cancelButton = new AjaxButton(Constants.CANCEL) {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -165,16 +125,20 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 
 			@Override
 			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
-				// TODO Auto-generated method stub
 				
 			}
 		};
 
 		saveButton = new AjaxButton(Constants.SAVE) {
 
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			public boolean isVisible() {
-				return isActionPermitted(Constants.SAVE);
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -182,6 +146,7 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 				target.add(crudVO.getDetailPanelContainer());
 			}
 
+			@SuppressWarnings("unchecked")
 			public void onError(AjaxRequestTarget target, Form<?> form) {
 				boolean setFocusError = false;
 				WebMarkupContainer wmc = (WebMarkupContainer) form.get("detailFormContainer");
@@ -206,9 +171,14 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 
 		editButton = new AjaxButton("edit") {
 
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			public boolean isVisible() {
-				return isActionPermitted(Constants.EDIT);
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -227,6 +197,11 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 		};
 
 		editCancelButton = new AjaxButton("editCancel") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				editCancelProcess(target);
 			}
@@ -290,5 +265,15 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 
 		target.add(feedBackPanel);
 	}
+	
+	abstract protected void attachValidators();
+
+	abstract protected void onCancel(AjaxRequestTarget target);
+
+	abstract protected void onSave(Form<T> containerForm, AjaxRequestTarget target);
+
+	abstract protected void processErrors(AjaxRequestTarget target);
+
+	abstract protected boolean isNew();
 
 }
