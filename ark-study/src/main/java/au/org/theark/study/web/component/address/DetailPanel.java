@@ -30,7 +30,10 @@ import au.org.theark.study.web.component.address.form.DetailForm;
  * 
  */
 public class DetailPanel extends Panel {
-
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -6903681043337009908L;
 	private FeedbackPanel		feedBackPanel;
 	private ArkCrudContainerVO arkCrudContainerVO;
 
@@ -45,9 +48,7 @@ public class DetailPanel extends Panel {
 	}
 			
 	public void initialisePanel() {
-
 		detailForm = new DetailForm("detailsForm", feedBackPanel, arkCrudContainerVO, containerForm );
-
 		detailForm.initialiseDetailForm();
 		add(detailForm);
 
@@ -60,5 +61,4 @@ public class DetailPanel extends Panel {
 	public void setDetailForm(DetailForm detailForm) {
 		this.detailForm = detailForm;
 	}
-
 }
