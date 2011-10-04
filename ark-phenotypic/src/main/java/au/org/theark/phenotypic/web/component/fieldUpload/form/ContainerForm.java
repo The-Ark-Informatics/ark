@@ -32,6 +32,7 @@ public class ContainerForm extends AbstractContainerForm<UploadVO> {
 
 	public ContainerForm(String id, CompoundPropertyModel<UploadVO> model) {
 		super(id, model);
+		setMultiPart(true);
 	}
 
 }
