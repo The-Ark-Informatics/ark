@@ -35,20 +35,20 @@ public class DetailPanel extends Panel {
 	 */
 	private static final long	serialVersionUID	= -6903681043337009908L;
 	private FeedbackPanel		feedBackPanel;
-	private ArkCrudContainerVO arkCrudContainerVO;
+	private ArkCrudContainerVO	arkCrudContainerVO;
 
 	private ContainerForm		containerForm;
 	private DetailForm			detailForm;
 
-	public DetailPanel(String id,FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+	public DetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
 		this.feedBackPanel = feedBackPanel;
 	}
-			
+
 	public void initialisePanel() {
-		detailForm = new DetailForm("detailsForm", feedBackPanel, arkCrudContainerVO, containerForm );
+		detailForm = new DetailForm("detailsForm", feedBackPanel, arkCrudContainerVO, containerForm);
 		detailForm.initialiseDetailForm();
 		add(detailForm);
 
