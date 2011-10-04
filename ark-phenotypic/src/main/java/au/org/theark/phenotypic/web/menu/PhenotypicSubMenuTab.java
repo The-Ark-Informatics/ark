@@ -34,10 +34,10 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.phenotypic.web.Constants;
-import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldUpload.FieldUploadContainerPanel;
@@ -88,7 +88,8 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = new SummaryContainerPanel(panelId);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
-			panelToReturn = new FieldContainerPanel(panelId);
+			// attach the fields to this "Data Dictionary" function
+			panelToReturn = new CustomFieldContainerPanel(panelId, false, arkFunction);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD)) {
 			panelToReturn = new FieldUploadContainerPanel(panelId);
@@ -97,6 +98,10 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA)) {
+//			ArkFunction associatedPrimaryFn = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+//			CompoundPropertyModel<PhenoCollectionDataVO> phenoDataCPM = new CompoundPropertyModel<PhenoCollectionDataVO>(new PhenoCollectionDataVO());
+//			phenoDataCPM.getObject().setArkFunction(associatedFn);
+//			panelToReturn = new PhenoDataEntryContainerPanel(panelId, phenoDataCPM);
 			panelToReturn = new FieldDataContainerPanel(panelId);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD)) {
