@@ -48,10 +48,10 @@ import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
 
-@SuppressWarnings("unchecked")
 public class SearchResultListPanel extends Panel {
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService	iArkCommonService;
+	private IArkCommonService		iArkCommonService;
 
 	/**
 	 * 
@@ -81,6 +81,7 @@ public class SearchResultListPanel extends Panel {
 		this.moduleTabbedPanel = moduleTabbedPanel;
 	}
 
+	@SuppressWarnings("unchecked")
 	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
 
 		PageableListView<Study> studyPageableListView = new PageableListView<Study>("studyList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
@@ -137,14 +138,14 @@ public class SearchResultListPanel extends Panel {
 		return studyPageableListView;
 	}
 
-	private AjaxLink buildLink(final Study study, final WebMarkupContainer searchResultsContainer) {
-
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("studyName") {
+	private AjaxLink<Study> buildLink(final Study study, final WebMarkupContainer searchResultsContainer) {
+		ArkBusyAjaxLink<Study> link = new ArkBusyAjaxLink<Study>("studyName") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 
@@ -155,7 +156,8 @@ public class SearchResultListPanel extends Panel {
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, study.getId());
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
-				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.SUBJECTUID);//Clear out any Subject UID placed in session via LIMS
+				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.SUBJECTUID);// Clear out any Subject UID placed in
+																																					// session via LIMS
 				// Force clearing of Cache to re-load roles for the user for the study
 				realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 
@@ -196,14 +198,14 @@ public class SearchResultListPanel extends Panel {
 
 				// Get the Source Modules from database
 				Collection<ArkModule> availableArkModules = iArkCommonService.getEntityList(ArkModule.class);
-				
+
 				// Hide Admin and Reporting modules from "Available" view
 				availableArkModules.remove(iArkCommonService.getArkModuleByName("Admin"));
 				availableArkModules.remove(iArkCommonService.getArkModuleByName("Reporting"));
-				
+
 				// Get the Modules for the Study from database
 				Collection<ArkModule> arkModulesLinkedToStudy = iArkCommonService.getArkModulesLinkedWithStudy(study);
-				
+
 				studyContainerForm.getModelObject().setAvailableArkModules(availableArkModules);
 				studyContainerForm.getModelObject().setSelectedArkModules(arkModulesLinkedToStudy);
 
@@ -224,14 +226,16 @@ public class SearchResultListPanel extends Panel {
 				studyCrudContainerVO.getEditButtonContainer().setVisible(false);
 
 				studyCrudContainerVO.getSummaryContainer().setVisible(true);
+
+				// Set Study Logo
 				studyHelper = new StudyHelper();
 				studyHelper.setStudyLogo(searchStudy, target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
-				studyHelper.setStudyLogoImage(searchStudy, "study.studyLogoImage", studyCrudContainerVO.getStudyLogoImageContainer());
+
+				// Set Context items
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.resetContextLabel(target, studyCrudContainerVO.getArkContextMarkup());
 				contextHelper.setStudyContextLabel(target, searchStudy.getName(), studyCrudContainerVO.getArkContextMarkup());
 
-				target.add(studyCrudContainerVO.getStudyLogoImageContainer());
 				target.add(studyCrudContainerVO.getSearchPanelContainer());
 				target.add(studyCrudContainerVO.getDetailPanelContainer());
 				target.add(studyCrudContainerVO.getSearchResultPanelContainer());
@@ -242,17 +246,14 @@ public class SearchResultListPanel extends Panel {
 
 				// Refresh base container form to remove any feedBack messages
 				target.add(studyContainerForm);
-
 				target.add(moduleTabbedPanel);
 			}
-
 		};
 
 		// Add the label for the link
 		Label studyNameLinkLabel = new Label("studyNameLink", study.getName());
 		link.add(studyNameLinkLabel);
 		return link;
-
 	}
 
 	/**
@@ -269,5 +270,4 @@ public class SearchResultListPanel extends Panel {
 	public NonCachingImage getStudyLogoImage() {
 		return studyLogoImage;
 	}
-
 }

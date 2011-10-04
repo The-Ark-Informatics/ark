@@ -175,16 +175,13 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 
 		// Show upload item for new Study
 		studyCrudContainerVO.getStudyLogoMarkup().setVisible(true);
-		studyCrudContainerVO.getStudyLogoImageContainer().setVisible(true);
 		studyCrudContainerVO.getStudyLogoUploadContainer().setVisible(true);
 
 		StudyHelper studyHelper = new StudyHelper();
 		studyHelper.setStudyLogo(containerForm.getModelObject().getStudy(), target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
-		studyHelper.setStudyLogoImage(containerForm.getModelObject().getStudy(), "study.studyLogoImage", studyCrudContainerVO.getStudyLogoImageContainer());
-
+		
 		target.add(studyCrudContainerVO.getStudyLogoMarkup());
 		target.add(studyCrudContainerVO.getStudyLogoUploadContainer());
-		target.add(studyCrudContainerVO.getStudyLogoImageContainer());
 
 		// Clear context items
 		ContextHelper contextHelper = new ContextHelper();

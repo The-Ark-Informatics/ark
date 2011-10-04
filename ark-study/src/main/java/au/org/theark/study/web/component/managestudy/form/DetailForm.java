@@ -21,7 +21,6 @@ package au.org.theark.study.web.component.managestudy.form;
 import java.io.IOException;
 import java.sql.Blob;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -31,7 +30,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
@@ -43,13 +41,12 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.image.NonCachingImage;
+import org.apache.wicket.markup.html.image.resource.BlobImageResource;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
@@ -62,6 +59,8 @@ import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.CannotRemoveArkModuleException;
@@ -93,6 +92,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	 * 
 	 */
 	private static final long						serialVersionUID		= -9102470673205363789L;
+	private static final Logger					log						= LoggerFactory.getLogger(DetailForm.class);
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService							studyService;
@@ -112,25 +112,21 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private TextField<String>						subjectUidPrefixTxtFld;
 	private TextField<String>						subjectUidTokenTxtFld;
 	private DropDownChoice<SubjectUidToken>	subjectUidTokenDpChoices;
-	// private TextField<String> subjectUidPadCharsTxtFld;
 	private DropDownChoice<SubjectUidPadChar>	subjectUidPadCharsDpChoices;
 	private TextField<Integer>						subjectUidStartTxtFld;
 	private Label										subjectUidExampleLbl;
 	private DateTextField							dateOfApplicationDp;
 	private DropDownChoice<StudyStatus>			studyStatusDpChoices;
-	private RadioChoice<Boolean>					autoGenSubIdRdChoice;
 	private CheckBox									autoGenSubIdChkBox;
 	private CheckBox									autoConsentChkBox;
-	private RadioChoice<Boolean>					autoConsentRdChoice;
 
 	private Palette<ArkModule>						arkModulePalette;
 
 	// Study logo uploader
 	private FileUploadField							fileUploadField;
 
-	// Study Logo image
-	public NonCachingImage							studyLogoImage;
-	private ContextImage								noStudyLogoImage;
+	private NonCachingImage							studyLogoImage;
+
 	private Container									containerForm;
 
 	// Summary Details
@@ -176,6 +172,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	public void setMode(int mode) {
 		this.mode = mode;
 	}
+	
+	@Override
+	public void onBeforeRender() {
+		super.onBeforeRender();
+		initialiseStudyLogo();
+	}
 
 	public void initialiseDetailForm() {
 		studyIdTxtFld = new TextField<String>(Constants.STUDY_ID);
@@ -200,8 +202,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 		// Label showing example auto-generated SubjectUIDs
 		subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
-		if (subjectUidExampleTxt == null || subjectUidExampleTxt.length() == 0)
+		if (subjectUidExampleTxt == null || subjectUidExampleTxt.length() == 0) {
 			subjectUidExampleTxt = Constants.SUBJECTUID_EXAMPLE;
+		}
 
 		subjectUidExampleLbl = new Label("study.subjectUid.example", new PropertyModel<String>(this, "subjectUidExampleTxt"));
 		subjectUidExampleLbl.setOutputMarkupId(true);
@@ -272,17 +275,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		datePicker.bind(dateOfApplicationDp);
 		dateOfApplicationDp.add(datePicker);
 
-		// initPalette();
-
 		initialiseArkModulePalette();
 
 		CompoundPropertyModel<StudyModelVO> studyCmpModel = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel(); // details.getCpm();
 		initStudyStatusDropDown(studyCmpModel);
-
-		// Radio buttons having issue with setting correct model, hiding and using checkBox
-		PropertyModel<Study> pm = new PropertyModel<Study>((CompoundPropertyModel<StudyModelVO>) containerForm.getModel(), "study");
-		autoGenSubIdRdChoice = initRadioButtonChoice(null, Constants.STUDY_AUTO_GENERATE_SUBJECTUID, "autoGenerateSubjectUid");
-		autoGenSubIdRdChoice.setVisible(false);
 
 		autoGenSubIdChkBox = new CheckBox(Constants.STUDY_AUTO_GENERATE_SUBJECTUID);
 		autoGenSubIdChkBox.setVisible(true);
@@ -307,29 +303,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		});
 		autoGenSubIdChkBox.setOutputMarkupId(true);
 
-		autoGenSubIdRdChoice.add(new AjaxFormChoiceComponentUpdatingBehavior() {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				// Check what was selected and then toggle
-				boolean autoGenerateSubjectUId = containerForm.getModelObject().getStudy().getAutoGenerateSubjectUid();
-				subjectUidContainer.setEnabled(false);
-
-				if (autoGenerateSubjectUId) {
-					subjectUidContainer.setEnabled(true);
-				}
-				target.add(subjectUidContainer);
-			}
-		});
-
-		// Radio buttons having issue with setting correct model, hiding and using checkBox
-		autoConsentRdChoice = initRadioButtonChoice(pm, Constants.STUDY_AUTO_CONSENT, "autoConsent");
-		autoConsentRdChoice.setVisible(false);
-
 		autoConsentChkBox = new CheckBox(Constants.STUDY_AUTO_CONSENT);
 		autoConsentChkBox.setVisible(true);
 
@@ -345,14 +318,40 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		// Set maximum logo image size to 100K
 		setMaxSize(Bytes.kilobytes(Constants.STUDY_LOGO_FILESIZE_KB));
 
-		// Add default image regardless
-		noStudyLogoImage = new ContextImage("study.studyLogoImage", new Model<String>("images/no_study_logo.gif"));
-		studyCrudVO.getStudyLogoImageContainer().add(noStudyLogoImage);
-		studyHelper = new StudyHelper();
-		studyHelper.setStudyLogoImage(containerForm.getModelObject().getStudy(), "study.studyLogoImage", studyCrudVO.getStudyLogoImageContainer());
+		initialiseStudyLogo();
 
 		attachValidators();
-		adds();
+		addComponents();
+	}
+
+	private void initialiseStudyLogo() {
+		if (containerForm.getModelObject().getStudy() != null && containerForm.getModelObject().getStudy().getStudyLogoBlob() != null) {
+			final java.sql.Blob studyLogoBlob = containerForm.getModelObject().getStudy().getStudyLogoBlob();
+
+			if (studyLogoBlob != null) {
+				BlobImageResource blobImageResource = new BlobImageResource() {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
+
+					@Override
+					protected Blob getBlob() {
+						return studyLogoBlob;
+					}
+				};
+				
+				studyLogoImage = new NonCachingImage("study.studyLogoImage", blobImageResource);
+			}
+		}
+		else {
+			studyLogoImage = new NonCachingImage("study.studyLogoImage", new Model<String>("images/no_study_logo.gif"));	
+		}
+		
+		// Fix to handle quirk in Wicket 1.5.1 where image is hidden when parent component is not enabled
+		studyLogoImage.setVisible(studyCrudVO.getDetailPanelFormContainer().isEnabled());
+		studyLogoImage.setOutputMarkupPlaceholderTag(true);
+		studyCrudVO.getDetailPanelFormContainer().addOrReplace(studyLogoImage);
 	}
 
 	public String getSubjectUidExample() {
@@ -386,7 +385,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 	@SuppressWarnings("unchecked")
 	private void initialiseArkModulePalette() {
-
 		CompoundPropertyModel<StudyModelVO> sm = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel();
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "name");
 		PropertyModel<Collection<ArkModule>> selectedModPm = new PropertyModel<Collection<ArkModule>>(sm, "selectedArkModules");
@@ -441,7 +439,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		});
 	}
 
-	private void adds() {
+	private void addComponents() {
 		studyCrudVO.getDetailPanelFormContainer().add(studyIdTxtFld);
 		studyCrudVO.getDetailPanelFormContainer().add(studyNameTxtFld);
 		studyCrudVO.getDetailPanelFormContainer().add(studyDescriptionTxtArea);
@@ -457,72 +455,20 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		subjectUidContainer.add(subjectUidPrefixTxtFld);
 		subjectUidContainer.add(subjectUidTokenTxtFld);
 		subjectUidContainer.add(subjectUidTokenDpChoices);
-		// subjectUidContainer.add(subjectUidPadCharsTxtFld);
 		subjectUidContainer.add(subjectUidPadCharsDpChoices);
 		subjectUidContainer.add(subjectUidStartTxtFld);
 		subjectUidContainer.add(subjectUidExampleLbl);
 		studyCrudVO.getDetailPanelFormContainer().add(subjectUidContainer);
-
-		// moved to LIMS Admin module/function
-		// studyCrudVO.getDetailPanelFormContainer().add(bioSpecimenPrefixTxtFld);
-
+		
 		// AutoGenerateSubjectUID needs own container to be disabled on certain criteria
-		autoSubjectUidContainer.add(autoGenSubIdRdChoice);
 		autoSubjectUidContainer.add(autoGenSubIdChkBox);
 		studyCrudVO.getDetailPanelFormContainer().add(autoSubjectUidContainer);
-		studyCrudVO.getDetailPanelFormContainer().add(autoConsentRdChoice);
 		studyCrudVO.getDetailPanelFormContainer().add(autoConsentChkBox);
 		studyCrudVO.getDetailPanelFormContainer().add(arkModulePalette);
 		studyCrudVO.getDetailPanelFormContainer().add(studyCrudVO.getStudyLogoUploadContainer());
 		studyCrudVO.getSummaryContainer().add(studySummaryLabel);
-		studyCrudVO.getDetailPanelFormContainer().add(studyCrudVO.getStudyLogoImageContainer());
 		add(studyCrudVO.getDetailPanelFormContainer());
 		add(studyCrudVO.getSummaryContainer());
-	}
-
-	/**
-	 * A common method that can be used to render Yes/No using RadioChoice controls
-	 * 
-	 * @param study
-	 * @param propertyModelExpr
-	 * @param radioChoiceId
-	 * @return
-	 */
-	private RadioChoice<Boolean> initRadioButtonChoice(PropertyModel<Study> pm, String propertyModelExpr, String radioChoiceId) {
-
-		List<Boolean> list = new ArrayList<Boolean>();
-		list.add(Boolean.TRUE);
-		list.add(Boolean.FALSE);
-		/* Implement the IChoiceRenderer */
-
-		IChoiceRenderer<Boolean> radioChoiceRender = new IChoiceRenderer<Boolean>() {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			public Object getDisplayValue(final Boolean choice) {
-				String displayValue = Constants.NO;
-
-				if (choice != null && choice.booleanValue()) {
-					displayValue = Constants.YES;
-				}
-				return displayValue;
-			}
-
-			public String getIdValue(final Boolean object, final int index) {
-				return object.toString();
-			}
-		};
-
-		RadioChoice<Boolean> radioBtn = null;
-		if (pm == null)
-			radioBtn = new RadioChoice<Boolean>(radioChoiceId);
-		else {
-			PropertyModel<Boolean> propertyModel = new PropertyModel<Boolean>(pm, propertyModelExpr);
-			radioBtn = new RadioChoice<Boolean>(radioChoiceId, propertyModel, list, radioChoiceRender);
-		}
-		return radioBtn;
 	}
 
 	@Override
@@ -582,6 +528,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			studyService.createStudy(studyModel);
 			subjectUidExampleTxt = getSubjectUidExample();
 			target.add(subjectUidExampleLbl);
+			
 			this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
 			onSavePostProcess(target, studyCrudVO);
 			studyCrudVO.getSummaryContainer().setVisible(true);// added as part of refactoring
@@ -589,11 +536,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		else {
 			// Update
 			studyService.updateStudy(studyModel);
-			// studyService.updateStudy(studyModel.getStudy(), studyModel.getLmcSelectedApps());
-			// subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
 			subjectUidExampleTxt = getSubjectUidExample();
 			target.add(subjectUidExampleLbl);
-			// this.info("Update of Study is under work in progress. The modules are maintained in database instead of LDAP.This feature will be in very soon.");
+			
 			this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
 			onSavePostProcess(target, studyCrudVO);
 			studyCrudVO.getSummaryContainer().setVisible(true);
@@ -609,9 +554,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		contextHelper.resetContextLabel(target, studyCrudVO.getArkContextMarkup());
 		contextHelper.setStudyContextLabel(target, studyModel.getStudy().getName(), studyCrudVO.getArkContextMarkup());
 
-		StudyHelper studyHelper = new StudyHelper();
+		// Refresh Study Logo in header
+		studyHelper = new StudyHelper();
 		studyHelper.setStudyLogo(studyModel.getStudy(), target, studyCrudVO.getStudyNameMarkup(), studyCrudVO.getStudyLogoMarkup());
-		studyHelper.setStudyLogoImage(studyModel.getStudy(), "study.studyLogoImage", studyCrudVO.getStudyLogoImageContainer());
+
 		target.add(studyCrudVO.getDetailPanelContainer());
 		target.add(studyCrudVO.getStudyLogoMarkup());
 	}
@@ -648,29 +594,30 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 				processSaveUpdate(containerForm.getModelObject(), target);
 			}
 		}
-		catch (EntityExistsException eee) {
+		catch (EntityExistsException e) {
 			this.error("The specified study already exists in the system.");
+			log.error(e.getMessage());
 		}
-		catch (EntityCannotBeRemoved ecbr) {
-
+		catch (EntityCannotBeRemoved e) {
 			this.error("The Study cannot be removed from the system.There are participants linked to the study");
+			log.error(e.getMessage());
 		}
-		catch (IOException ioe) {
-			// TODO: NN This error is not related to a user. Have to mask this/log it and report it as business exception ie why the file was not
-			// transferred
-			// due to file size etc..or if it was a system exception as a ArkSystemException
+		catch (IOException e) {
 			this.error("There was an error transferring the specified Study logo image.");
+			log.error(e.getMessage());
 		}
-		catch (ArkSystemException arkSystemExeption) {
+		catch (ArkSystemException e) {
 			this.error("A System exception has occurred. Please contact Support");
+			log.error(e.getMessage());
 		}
 		catch (UnAuthorizedOperation e) {
 			this.error("You (logged in user) is unauthorised to create/update or archive this study.");
+			log.error(e.getMessage());
 		}
 		catch (CannotRemoveArkModuleException e) {
 			this.error("You cannot remove the modules as part of the update. There are System Users who are associated with this study and modules.");
+			log.error(e.getMessage());
 		}
-
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
@@ -696,6 +643,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		else {
 			return false;
 		}
-
+	}
+	
+	/**
+	 * @return the studyLogoImage
+	 */
+	public NonCachingImage getStudyLogoImage() {
+		return studyLogoImage;
 	}
 }
