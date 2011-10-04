@@ -487,5 +487,14 @@ public interface IArkCommonService<T> {
 	public FieldType getFieldTypeByName(String typeName) throws EntityNotFoundException;
 	
 	public ArkRole getArkRoleByName(String roleName);
+	
+	/**
+	 * Filters the CustomFields linked to 
+	 * 1. A Study and
+	 * 2. ArkFunction
+	 * The Criteria is specified in the CustomField parameter. The study and ArkFunction must be set in it.
+	 * @return List<CustomField>
+	 */
+	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria);
 
 }

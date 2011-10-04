@@ -1074,4 +1074,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Integer totalCount = (Integer) criteria.uniqueResult();
 		return totalCount;
 	}
+	
+	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria){
+		
+		Criteria criteria = buildGeneralCustomFieldCritera(customFieldCriteria);
+		// Return fields ordered alphabetically
+		criteria.addOrder(Order.asc("name"));
+		List<CustomField> customFieldList = (List<CustomField>) criteria.list();
+		return customFieldList;
+	}
 }

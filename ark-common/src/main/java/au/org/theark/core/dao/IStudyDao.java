@@ -570,4 +570,13 @@ public interface IStudyDao {
 	
 	
 	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup);
+	
+	/**
+	 * Filters the CustomFields linked to 
+	 * 1. A Study and
+	 * 2. ArkFunction
+	 * The Criteria is specified in the CustomField parameter. The study and ArkFunction must be set in it.
+	 * @return List<CustomField>
+	 */
+	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria);
 }
