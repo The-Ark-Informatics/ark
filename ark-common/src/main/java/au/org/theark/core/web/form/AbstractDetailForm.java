@@ -123,7 +123,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			@Override
 			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
-				// TODO Auto-generated method stub
 				
 			}
 		};
@@ -147,7 +146,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> arg1) {
-				// TODO Auto-generated method stub
 				saveOnErrorProcess(target);
 				
 			}
@@ -172,7 +170,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			@Override
 			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
-				// TODO Auto-generated method stub
 				
 			}
 
@@ -222,10 +219,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * @param isArkCrudContainerVoPattern
 	 */
 	protected void addComponentsToForm() {
-		// TODO: Changed from 'add' to 'addOrReplace' for components added to the editButtonContainer and viewButtonContainer
-		// to support instantiating the DetailForm more than once.  Need to fix this when revising the abstraction pattern.
-		// (both are only instantiated once in the top-level container as per original abstraction pattern and thus causes  
-		// issues for further re-instantiations of the DetailPanel/DetailForm).
 		arkCrudContainerVO.getEditButtonContainer().addOrReplace(saveButton);
 		arkCrudContainerVO.getEditButtonContainer().addOrReplace(cancelButton.setDefaultFormProcessing(false));
 		arkCrudContainerVO.getEditButtonContainer().addOrReplace(deleteButton.setDefaultFormProcessing(false));
@@ -238,7 +231,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		add(arkCrudContainerVO.getEditButtonContainer());
 	}
 
-	@SuppressWarnings("unchecked")
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);
