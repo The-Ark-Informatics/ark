@@ -28,8 +28,8 @@ import au.org.theark.core.vo.ArkUserVO;
 
 /**
  * <p>
- * The <code>LoginForm</code> class that extends the {@link org.apache.wicket.markup.html.form.StatelessForm StatelessForm} class. It provides the implementation of the
- * login form of The Ark application.
+ * The <code>LoginForm</code> class that extends the {@link org.apache.wicket.markup.html.form.StatelessForm StatelessForm} class. It provides the
+ * implementation of the login form of The Ark application.
  * </p>
  * 
  * @author nivedann
@@ -39,14 +39,14 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= -7482996457044513022L;
+	private static final long			serialVersionUID	= -7482996457044513022L;
 	private transient static Logger	log					= LoggerFactory.getLogger(LoginForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
-	private FeedbackPanel		feedbackPanel;
-	private TextField<String>	userNameTxtFld		= new TextField<String>("userName");
-	private PasswordTextField	passwordTxtFld		= new PasswordTextField("password");
-	private AjaxButton			submitButton;
+	private FeedbackPanel				feedbackPanel;
+	private TextField<String>			userNameTxtFld		= new TextField<String>("userName");
+	private PasswordTextField			passwordTxtFld		= new PasswordTextField("password");
+	private AjaxButton					submitButton;
 
 	/**
 	 * LoginForm constructor
@@ -58,7 +58,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 		// Pass in the Model to the Form so the IFormSubmitListener can set the Model Object with values that were submitted.
 		super(id, new CompoundPropertyModel<ArkUserVO>(new ArkUserVO()));
 		this.feedbackPanel = feedbackPanel;
-		
+
 		submitButton = new AjaxButton("submitBtn") {
 			/**
 			 * 
@@ -88,28 +88,29 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 			@Override
 			protected IAjaxCallDecorator getAjaxCallDecorator() {
 				return new AjaxPostprocessingCallDecorator(super.getAjaxCallDecorator()) {
-					private static final long	serialVersionUID		= 1L;
+					private static final long	serialVersionUID	= 1L;
 
-					private String					setBusyIndicatorOn	= "document.body.style.cursor = 'wait';";
-					private String					setBusyIndicatorOff	= "document.body.style.cursor = 'auto';";
+					private String					setCursorToWait	= "document.body.style.cursor = 'wait';";
+					private String					setCursorToAuto	= "document.body.style.cursor = 'auto';";
 
 					@Override
-					public CharSequence postDecorateScript(Component component, CharSequence script) {
-						return script + setBusyIndicatorOn;
+					public CharSequence postDecorateOnSuccessScript(Component component, CharSequence script) {
+						return script + setCursorToAuto;
 					}
 
 					@Override
 					public CharSequence postDecorateOnFailureScript(Component component, CharSequence script) {
-						return script + setBusyIndicatorOff;
+						return script + setCursorToAuto;
 					}
 
 					@Override
-					public CharSequence postDecorateOnSuccessScript(Component component, CharSequence script) {
-						return script + setBusyIndicatorOff;
+					public CharSequence postDecorateScript(Component component, CharSequence script) {
+						return script + setCursorToWait;
 					}
 				};
 			}
 		};
+		
 		addComponentsToForm();
 	}
 
@@ -136,6 +137,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 		try {
 			// This will propagate to the Realm
 			subject.login(usernamePasswordToken);
+			log.info(user.getUserName() + " logged in.");
 			return true;
 		}
 		catch (IncorrectCredentialsException e) {
