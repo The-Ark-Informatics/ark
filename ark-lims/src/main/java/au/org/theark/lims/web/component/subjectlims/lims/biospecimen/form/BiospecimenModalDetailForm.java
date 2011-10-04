@@ -33,6 +33,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -64,6 +65,7 @@ import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
+import au.org.theark.lims.util.barcode.DataMatrixBarcodeImage;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biolocation.BioLocationDetailPanel;
 import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataDataViewPanel;
@@ -100,6 +102,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private DropDownChoice<BioCollection>	bioCollectionDdc;
 	private TextField<Double>					quantityTxtFld;
 	private CheckBox								barcodedChkBox;
+	private Image									barcodeImage;
 
 	// Initial BioTransaction details
 	private TextField<Double>					bioTransactionQuantityTxtFld;
@@ -194,21 +197,28 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		return replacePanel;
 	}
 
-	private boolean initialiseBiospecimentLocationPanel() {
-
-		boolean replacePanel = true;
+	private boolean initialiseBiospecimenLocationPanel() {
+		boolean replacePanel = false;
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
-		
-		try {
-			BiospecimenLocationVO biospecimenLocationVo = iInventoryService.locateBiospecimen(biospecimen);
-			cpModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
-			biospecimenLocationPanel = new BioLocationDetailPanel("biospecimenLocationPanel", cpModel);
+		if (biospecimen.getId() == null) {
+			// Handle for new Biospecimen being created
+			biospecimenLocationPanel = new EmptyPanel("biospecimenLocationPanel");
 			replacePanel = true;
 		}
-		catch (ArkSystemException e) {
-			log.error(e.getMessage());
+		else {
+			try {
+				BiospecimenLocationVO biospecimenLocationVo = iInventoryService.locateBiospecimen(biospecimen);
+				cpModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
+				biospecimenLocationPanel = new BioLocationDetailPanel("biospecimenLocationPanel", cpModel);
+				replacePanel = true;
+			}
+			catch (ArkSystemException e) {
+				log.error(e.getMessage());
+				biospecimenLocationPanel = new EmptyPanel("biospecimenLocationPanel");
+				replacePanel = true;
+			}
 		}
-		
+
 		return replacePanel;
 	}
 
@@ -218,8 +228,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		parentUidTxtFld = new TextField<String>("biospecimen.parentUid");
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		
-		
+
 		quantityTxtFld = new TextField<Double>("biospecimen.quantity") {
 			/**
 			 * 
@@ -254,15 +263,21 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		barcodedChkBox = new CheckBox("biospecimen.barcoded");
 		barcodedChkBox.setVisible(true);
 
+		initialiseBarcodeImage();
+		
 		initialiseBiospecimenCFDataEntry();
 		initialiseBioTransactionListPanel();
-		initialiseBiospecimentLocationPanel();
+		initialiseBiospecimenLocationPanel();
 
 		attachValidators();
 		addComponents();
 
 		// Focus on Sample Type
 		sampleTypeDdc.add(new ArkDefaultFormFocusBehavior());
+	}
+
+	private void initialiseBarcodeImage() {
+		barcodeImage = new DataMatrixBarcodeImage("biospecimen.barcodeLabel", getModelObject().getBiospecimen().getBiospecimenUid());
 	}
 
 	/**
@@ -275,17 +290,17 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		else {
 			quantityLbl = new Label("biospecimen.quantity.label", new ResourceModel("biospecimen.quantity"));
 		}
-		
+
 		quantityNoteLbl = new Label("biospecimen.quantity.note", new ResourceModel("biospecimen.quantity.note"));
 		quantityNoteLbl.setVisible(getModelObject().getBiospecimen().getId() != null);
-		
+
 		quantityTxtFld.setVisible(getModelObject().getBiospecimen().getId() != null);
 		bioTransactionQuantityTxtFld.setVisible(getModelObject().getBiospecimen().getId() == null);
-		
+
 		bioTransactionDetailWmc.addOrReplace(quantityNoteLbl);
 		bioTransactionDetailWmc.addOrReplace(quantityLbl);
 	}
-
+	
 	private void initSampleTypeDdc() {
 		List<BioSampletype> sampleTypeList = iLimsService.getBioSampleTypes();
 		ChoiceRenderer<BioSampletype> choiceRenderer = new ChoiceRenderer<BioSampletype>(Constants.NAME, Constants.ID);
@@ -346,6 +361,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(sampleTypeDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioCollectionDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(barcodedChkBox);
+		arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(barcodeImage);
 
 		// Quantity label depends on new/existing Biospecimen
 		bioTransactionDetailWmc.addOrReplace(quantityNoteLbl);
@@ -384,12 +400,19 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			quantityTxtFld.setVisible(true);
 			quantityTxtFld.setModelObject(bioTransactionQuantityTxtFld.getModelObject());
 			target.add(bioTransactionDetailWmc);
+			
+			barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
+			target.add(barcodeImage);
 		}
 		else {
 			// Update
 			iLimsService.updateBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
 			processErrors(target);
+			
+			// Hide/show barcod image
+			barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
+			target.add(barcodeImage);
 		}
 		// Allow the Biospecimen custom data to be saved any time save is performed
 		if (biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel) {
