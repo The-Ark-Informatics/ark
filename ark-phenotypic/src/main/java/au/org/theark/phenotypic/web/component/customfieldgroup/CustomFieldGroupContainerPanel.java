@@ -133,7 +133,7 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
-				target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 			}
 		};
 		searchResultListPanel.add(pageNavigator);
