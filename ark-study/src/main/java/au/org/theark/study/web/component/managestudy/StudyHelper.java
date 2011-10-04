@@ -18,34 +18,26 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.managestudy;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.sql.SQLException;
+import java.sql.Blob;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
-import org.apache.wicket.markup.html.image.NonCachingImage;
-import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.image.resource.BlobImageResource;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.util.io.ByteArrayOutputStream;
-import org.apache.wicket.util.io.Streams;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.util.ImageResource;
 
 public class StudyHelper implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long		serialVersionUID	= 8485137084667518625L;
-	private static final Logger	log					= LoggerFactory.getLogger(StudyHelper.class);
-	private NonCachingImage			studyLogoImage;
+	private Image						studyLogoImage;
 	private ContextImage				noStudyLogoImage;
 	private Label						studyNameLabel		= null;
 	private Label						studyLabel			= null;
@@ -69,46 +61,32 @@ public class StudyHelper implements Serializable {
 		target.add(studyNameMarkup);
 		target.add(studyLogoMarkup);
 	}
-
-	public void setStudyLogoImage(Study study, String id, WebMarkupContainer studyLogoImageContainer) {
+	
+	public void setStudyLogoImage(final Study study, String id, WebMarkupContainer studyLogoImageContainer) {
 		// Set the study logo
-		try {
-			if (study != null && study.getStudyLogoBlob() != null) {
-				// Get the Study logo Blob as an array of bytes
-				java.sql.Blob studyLogoBlob = study.getStudyLogoBlob();
+		if (study != null && study.getStudyLogoBlob() != null) {
+			final java.sql.Blob studyLogoBlob = study.getStudyLogoBlob();
 
-				if (studyLogoBlob != null) {
-					InputStream in = studyLogoBlob.getBinaryStream();
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					Streams.copy(in, out);
-					// Get the Study logo Blob as an array of bytes
-					final byte[] data = out.toByteArray();
+			if (studyLogoBlob != null) {
+				BlobImageResource blobImageResource = new BlobImageResource() {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
 
-					studyLogoImage = new NonCachingImage(id, new AbstractReadOnlyModel<Object>() {
-						/**
-						 * 
-						 */
-						private static final long	serialVersionUID	= 1L;
-
-						@Override
-						public Object getObject() {
-							return new ImageResource(data, "gif");
-						}
-					});
-
-					studyLogoImageContainer.replace(studyLogoImage);
-				}
-			}
-			else {
-				noStudyLogoImage = new ContextImage("study.studyLogoImage", new Model<String>("images/no_study_logo.gif"));
-				studyLogoImageContainer.replace(noStudyLogoImage);
+					@Override
+					protected Blob getBlob() {
+						return studyLogoBlob;
+					}
+				};
+				
+				studyLogoImage = new Image(id, blobImageResource);
+				studyLogoImageContainer.addOrReplace(studyLogoImage);
 			}
 		}
-		catch (SQLException sqle) {
-			log.error(sqle.getMessage());
-		}
-		catch (IOException ioe) {
-			log.error(ioe.getMessage());
+		else {
+			noStudyLogoImage = new ContextImage("study.studyLogoImage", new Model<String>("images/no_study_logo.gif"));
+			studyLogoImageContainer.addOrReplace(noStudyLogoImage);
 		}
 	}
 
