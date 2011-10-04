@@ -65,6 +65,8 @@ public class LimsContainerPanel extends Panel {
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
 
+		containerForm.setMultiPart(true);
+		
 		BioCollectionListPanel biocollectionListPanel = new BioCollectionListPanel("biocollectionListPanel", feedbackPanel, cpModel);
 		collectionListPanel = biocollectionListPanel;
 		containerForm.add(collectionListPanel);
