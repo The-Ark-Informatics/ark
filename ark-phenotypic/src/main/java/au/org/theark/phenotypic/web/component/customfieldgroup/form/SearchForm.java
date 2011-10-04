@@ -49,7 +49,8 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 	 */
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
-		// TODO NN
+		//Show Detail Form with Custom Field Group  Name and Status and a Palette with Custom Fields for the study and function
+		//Save creates Custom Field Group and links the custom Fields to the Custom Field Display.
 		
 	}
 
@@ -58,7 +59,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 	 */
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		final Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		getModelObject().getCustomFieldGroup().setStudy(study);
@@ -67,10 +68,10 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 
 		if (count <= 0) {
 			this.info("No records match the specified criteria.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	}
 	
 	protected void initialiseSearchForm(){
