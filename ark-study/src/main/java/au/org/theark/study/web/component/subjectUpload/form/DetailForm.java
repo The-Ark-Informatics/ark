@@ -105,7 +105,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		initialiseDropDownChoices();
 
 		attachValidators();
-		addComponents();
+		addDetailFormComponents();
 	}
 
 	protected void attachValidators() {
@@ -113,20 +113,6 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		fileFormatDdc.setRequired(true).setLabel(new StringResourceModel("error.fileFormat.required", this, new Model<String>("File Format")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
-	}
-
-	private void addComponents() {
-		// Add components here eg:
-		arkCrudContainerVO.getDetailPanelFormContainer().add(uploadIdTxtFld.setEnabled(false));
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fileFormatDdc);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(delimiterTypeDdc);
-
-		// TODO: AJAXify the form to show progress bar
-		// ajaxSimpleUploadForm.add(new UploadProgressBar("progress", ajaxSimpleUploadForm));
-		// add(ajaxSimpleUploadForm);
-
-		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	private void createDirectoryIfNeeded(String directoryName) {
@@ -265,5 +251,24 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 			return false;
 		}
 
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
+	 */
+	@Override
+	protected void addDetailFormComponents() {
+		// Add components here eg:
+		arkCrudContainerVO.getDetailPanelFormContainer().add(uploadIdTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileFormatDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(delimiterTypeDdc);
+
+		// TODO: AJAXify the form to show progress bar
+		// ajaxSimpleUploadForm.add(new UploadProgressBar("progress", ajaxSimpleUploadForm));
+		// add(ajaxSimpleUploadForm);
+
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
+		
 	}
 }

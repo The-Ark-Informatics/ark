@@ -139,7 +139,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 	}
 
-	private void addDetailFormComponents() {
+	protected void addDetailFormComponents() {
 
 		arkCrudContainerVO.getDetailPanelFormContainer().add(userNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(firstNameTxtField);

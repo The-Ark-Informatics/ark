@@ -104,28 +104,12 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		commentsTxtArea = new TextArea<String>(au.org.theark.study.web.Constants.SUBJECT_FILE_COMMENTS);
 
 		attachValidators();
-		addComponents();
+		addDetailFormComponents();
 	}
 
 	protected void attachValidators() {
 		// Field validation here
 		fileSubjectFileField.setRequired(true).setLabel(new StringResourceModel("subjectFile.filename.required", this, null));
-	}
-
-	private void addComponents() {
-		// Add components
-		subjectFileIdTxtFld.setEnabled(false);
-		subjectFileIdTxtFld.setVisible(true);
-		
-		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectFileIdTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fileSubjectFileField);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(studyComponentChoice);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
-
-		// TODO: AJAXify the form to show progress bar
-		// ajaxSimpleConsentFileForm.add(new UploadProgressBar("progress", ajaxSimpleConsentFileForm));
-		// add(ajaxSimpleConsentFileForm);
-		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	@Override
@@ -255,5 +239,26 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			return false;
 		}
 
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
+	 */
+	@Override
+	protected void addDetailFormComponents() {
+		// Add components
+		subjectFileIdTxtFld.setEnabled(false);
+		subjectFileIdTxtFld.setVisible(true);
+		
+		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectFileIdTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileSubjectFileField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(studyComponentChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
+
+		// TODO: AJAXify the form to show progress bar
+		// ajaxSimpleConsentFileForm.add(new UploadProgressBar("progress", ajaxSimpleConsentFileForm));
+		// add(ajaxSimpleConsentFileForm);
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
+		
 	}
 }
