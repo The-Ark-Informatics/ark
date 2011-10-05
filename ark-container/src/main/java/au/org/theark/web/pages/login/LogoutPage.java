@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.web.pages;
+package au.org.theark.web.pages.login;
 
 import javax.servlet.http.Cookie;
 
@@ -34,7 +34,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  * <p>
- * The <code>LogoutPage</code> class that extends the {@link au.org.theark.web.pages.BasePage BasePage} class. It provides the implementation of the
+ * The <code>LogoutPage</code> class that extends the {@link au.org.theark.web.pages.home.BasePage BasePage} class. It provides the implementation of the
  * logout page of The Ark application.
  * </p>
  * 

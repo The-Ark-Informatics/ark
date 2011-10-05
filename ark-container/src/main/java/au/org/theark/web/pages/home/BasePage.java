@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.web.pages;
+package au.org.theark.web.pages.home;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -31,6 +31,9 @@ import org.apache.wicket.model.Model;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
+import au.org.theark.web.pages.Constants;
+import au.org.theark.web.pages.login.LoginPage;
+import au.org.theark.web.pages.mydetails.MyDetailModalWindow;
 
 /**
  * <p>

@@ -23,7 +23,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.authorization.IUnauthorizedComponentInstantiationListener;
 
-import au.org.theark.web.pages.LoginPage;
+import au.org.theark.web.pages.login.LoginPage;
 
 public class CustomUnauthorizedStrategy implements IUnauthorizedComponentInstantiationListener {
 	
