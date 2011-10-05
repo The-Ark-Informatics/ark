@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.dao.ReCaptchaContextSource;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -496,5 +497,6 @@ public interface IArkCommonService<T> {
 	 * @return List<CustomField>
 	 */
 	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria);
-
+	
+	public ReCaptchaContextSource getRecaptchaContextSource();
 }

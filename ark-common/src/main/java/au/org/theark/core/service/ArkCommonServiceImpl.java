@@ -42,6 +42,7 @@ import au.org.theark.core.dao.ArkLdapContextSource;
 import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.dao.ICustomFieldDao;
 import au.org.theark.core.dao.IStudyDao;
+import au.org.theark.core.dao.ReCaptchaContextSource;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -108,7 +109,16 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private ICustomFieldDao		customFieldDao;
 	private IStudyDao				studyDao;
 	private ArkLdapContextSource		ldapDataContextSource;
+	private ReCaptchaContextSource	reCaptchaContextSource;
 
+	public ReCaptchaContextSource getRecaptchaContextSource() {
+		return reCaptchaContextSource;
+	}
+
+	@Autowired
+	public void setRecaptchaContextSource(ReCaptchaContextSource recaptchaContextSource) {
+		this.reCaptchaContextSource = recaptchaContextSource;
+	}
 
 	public IArkAuthorisation getArkAuthorisationDao() {
 		return arkAuthorisationDao;
