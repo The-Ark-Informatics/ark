@@ -198,5 +198,13 @@ public class UserServiceImpl implements IUserService {
 		arkAuthorisationService.deleteArkUser(arkUserVO);
 
 	}
-
+	
+	/**
+	 * 
+	 * @param arkUserVO
+	 * @throws ArkSystemException
+	 */
+	public ArkUserVO lookupArkUser(String arkLdapUserName) throws ArkSystemException {
+		return iLdapUserDao.lookupArkUser(arkLdapUserName);
+	}
 }

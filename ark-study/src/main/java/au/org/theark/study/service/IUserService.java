@@ -74,7 +74,7 @@ public interface IUserService {
 	public void updateArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException;
 
 	/**
-	 * 
+	 * Lookup a user from the Ark Database system, with a study in cointext
 	 * @param arkLdapUserName
 	 * @param study
 	 * @return
@@ -90,5 +90,13 @@ public interface IUserService {
 	 * @throws EntityNotFoundException
 	 */
 	public void deleteArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException;
+	
+	/**
+	 * Lookup a user from the Ark Database system.
+	 * @param arkLdapUserName
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public ArkUserVO lookupArkUser(String arkLdapUserName) throws ArkSystemException;
 
 }
