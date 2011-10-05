@@ -145,7 +145,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 		initFieldPalette();
 
 		attachValidators();
-		addComponents();
+		addDetailFormComponents();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -173,21 +173,6 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 	protected void attachValidators() {
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.phenoCollection.name.required", this, new Model<String>("Name")));
 		statusDdc.setRequired(true).setLabel(new StringResourceModel("error.phenoCollection.status.required", this, new Model<String>("Status")));
-	}
-
-	private void addComponents() {
-		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld.setEnabled(false));
-		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(descriptionTxtAreaFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(statusDdc);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(startDateTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(endDateTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldsInCollectionPalette);
-
-		// Custom clear collection button
-		arkCrudContainerVO.getEditButtonContainer().add(clearCollectionButton);
-
-		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	@Override
@@ -263,5 +248,25 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 
 	public void setClearCollectionButton(AjaxButton clearCollectionButton) {
 		this.clearCollectionButton = clearCollectionButton;
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
+	 */
+	@Override
+	protected void addDetailFormComponents() {
+		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(descriptionTxtAreaFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(statusDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(startDateTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(endDateTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldsInCollectionPalette);
+
+		// Custom clear collection button
+		arkCrudContainerVO.getEditButtonContainer().add(clearCollectionButton);
+
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
+		
 	}
 }

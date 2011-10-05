@@ -114,7 +114,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		initialiseDropDownChoices();
 
 		attachValidators();
-		addComponents();
+		addDetailFormComponents();
 	}
 
 	protected void attachValidators() {
@@ -124,13 +124,6 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 	}
 
-	private void addComponents() {
-		arkCrudContainerVO.getDetailPanelContainer().add(uploadIdTxtFld.setEnabled(false));
-		arkCrudContainerVO.getDetailPanelContainer().add(fileUploadField);
-		arkCrudContainerVO.getDetailPanelContainer().add(fileFormatDdc);
-		arkCrudContainerVO.getDetailPanelContainer().add(delimiterTypeDdc);
-		add(arkCrudContainerVO.getDetailPanelContainer());
-	}
 
 	@Override
 	protected void onSave(Form<UploadVO> containerForm, AjaxRequestTarget target) {
@@ -268,5 +261,17 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 			return false;
 		}
 
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
+	 */
+	@Override
+	protected void addDetailFormComponents() {
+		arkCrudContainerVO.getDetailPanelContainer().add(uploadIdTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelContainer().add(fileUploadField);
+		arkCrudContainerVO.getDetailPanelContainer().add(fileFormatDdc);
+		arkCrudContainerVO.getDetailPanelContainer().add(delimiterTypeDdc);
+		add(arkCrudContainerVO.getDetailPanelContainer());
 	}
 }
