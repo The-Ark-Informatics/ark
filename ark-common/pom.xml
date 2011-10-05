@@ -30,19 +30,19 @@
 			<artifactId>wicket-core</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-extensions</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-datetime</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-spring</artifactId>
@@ -184,12 +184,10 @@
 			<version>2.6.10</version>
 		</dependency>
 
-		<!--  WiQuery 
-		<dependency>
-			<groupId>org.odlabs.wiquery</groupId>
-			<artifactId>wiquery</artifactId>
-			<version>1.2.3</version>
-		</dependency>
+		<!--
+			WiQuery <dependency> <groupId>org.odlabs.wiquery</groupId>
+			<artifactId>wiquery</artifactId> <version>1.2.3</version>
+			</dependency>
 		-->
 		<!--  Quartz (Job scheduling) -->
 		<dependency>
@@ -197,8 +195,16 @@
 			<artifactId>quartz</artifactId>
 			<version>2.0.2</version>
 		</dependency>
-
-		<!-- wicketstuff-dojo -->
+		<dependency>
+			<groupId>net.tanesha.recaptcha4j</groupId>
+			<artifactId>recaptcha4j</artifactId>
+			<version>0.0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -264,23 +270,16 @@
 		<ark.version>0.1.5-SNAPSHOT</ark.version>
 	</properties>
 	<repositories>
-		<!-- 
-		<repository>
-			<id>wiquery</id>
-			<name>wiquery wicket components</name>
-			<url>http://wiquery.googlecode.com/svn/repo/</url>
-		</repository>
-		 
-		<repository>
-			<id>visural-common</id>
-			<name>visural-common</name>
+		<!--
+			<repository> <id>wiquery</id> <name>wiquery wicket components</name>
+			<url>http://wiquery.googlecode.com/svn/repo/</url> </repository>
+
+			<repository> <id>visural-common</id> <name>visural-common</name>
 			<url>http://visural-common.googlecode.com/svn/trunk/visural-common/maven/</url>
-		</repository>
-		<repository>
-			<id>visural-wicket</id>
+			</repository> <repository> <id>visural-wicket</id>
 			<name>visural-wicket</name>
 			<url>http://visural-wicket.googlecode.com/svn/trunk/visural-wicket/maven/</url>
-		</repository>
+			</repository>
 		-->
 		<repository>
 			<id>wicket-tree</id>
@@ -292,12 +291,11 @@
 			<name>Wicket Stuff Repo</name>
 			<url>http://wicketstuff.org/maven/repository</url>
 		</repository>
-		<!-- 
-		<repository>
-			<id>thirdparty-releases</id>
-			<name>JBoss Thirdparty Releases</name>
+		<!--
+			<repository> <id>thirdparty-releases</id> <name>JBoss Thirdparty
+			Releases</name>
 			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-		</repository>
-		 -->
+			</repository>
+		-->
 	</repositories>
 </project>
