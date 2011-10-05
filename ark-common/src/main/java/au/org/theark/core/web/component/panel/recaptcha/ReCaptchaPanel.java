@@ -12,8 +12,6 @@ import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IArkCommonService;
 
@@ -30,7 +28,6 @@ public class ReCaptchaPanel extends Panel {
 	 * 
 	 */
 	private static final long			serialVersionUID	= -6440830868624897070L;
-	private static final Logger		log					= LoggerFactory.getLogger(ReCaptchaPanel.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 	
@@ -58,21 +55,11 @@ public class ReCaptchaPanel extends Panel {
 				reCaptcha.setPrivateKey(iArkCommonService.getRecaptchaContextSource().getReCaptchaPrivateKey());
 
 				final String challenge = servletReq.getParameterValues("recaptcha_challenge_field")[0];
-				log.info("challenge: " + challenge);
-				
 				final String uresponse = servletReq.getParameterValues("recaptcha_response_field")[0];
-				log.info("uresponse: " + uresponse);
-				
 				final ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr, challenge, uresponse);
-				log.info("reCaptchaResponse: " + reCaptchaResponse.toString());
 
 				if (!reCaptchaResponse.isValid()) {
-					log.error("Wrong reCAPTCHA value");
 					this.error("Invalid reCAPTCHA value, please enter the reCAPTCHA word again!");
-				}
-				else{
-					log.info("reCAPTCHA words ok");
-					this.info("reCAPTCHA words ok");
 				}
 			}
 		};
