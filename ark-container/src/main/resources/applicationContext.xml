@@ -41,8 +41,20 @@
 	<!--
 		Spring AOP auto-proxy creation (required to support Shiro annotations)
 	-->
-	<bean
-		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+	
+	<!--  reCAPTCHA configuration -->
+	<!--
+		NOTE: reCaptcha configurations require a public key and private key
+		These keys are different depending on the domain where your application is deployed 
+		(by default works for any key when using localhost domain).
+		You can generate keys here: https://www.google.com/recaptcha/admin/create
+		THe following keys are for the domain: http://the-ark.org.au
+	-->
+	<bean id="reCaptchaContextSource" class="au.org.theark.core.dao.ReCaptchaContextSource">
+		<property name="reCaptchaPublicKey" value="6Ldby8gSAAAAACXa6t4A613P5P4IoJhYSuuOS7Wu" />
+		<property name="reCaptchaPrivateKey" value="6Ldby8gSAAAAAKsZmf72k5af-WXM8VyFs99hEd1h " />
+	</bean>
 
 	<!--  MySql Data Source -->
 	<!--
@@ -53,7 +65,7 @@
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://ark-database:3306" />
 		<property name="username" value="arkadmin" />
-		<property name="password" value="insert-password" />
+		<property name="password" value="v@Tym4np[]" />
 	</bean>
 
 	<!--  Ark LDAP configuration (includes the LDAP data source) -->
@@ -67,26 +79,9 @@
 		<property name="basePeopleDn" value="ou=arkUsers" />
 		<property name="base" value="dc=the-ark,dc=org,dc=au" />
 		<property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" />
-		<property name="password" value="insert-password" />
+		<property name="password" value="v@Tym4np[]" />
 	</bean>
-
-	<!--
-		Melbourne: MySql Data Source <bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://127.0.0.1:3306"/> <property
-		name="username" value="arkadmin"/> <property name="password"
-		value="insert-real-password"/> </bean>
-	-->
-	<!--
-		Melbourne LDAP data source <bean id="ldapDataContextSource"
-		class="org.springframework.ldap.core.support.LdapContextSource">
-		<property name="url" value="ldap://127.0.0.1:389"/> <property
-		name="base" value="dc=ldaparktest,dc=the-ark,dc=org,dc=au"/> <property
-		name="userDn" value="cn=admin,dc=ldaparktest,dc=the-ark,dc=org,dc=au"
-		/> <property name="password" value="insert-real-password" /> </bean>
-	-->
-
+	
 	<!--  Hibernate Session Factory -->
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
