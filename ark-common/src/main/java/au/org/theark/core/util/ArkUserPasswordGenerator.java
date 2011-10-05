@@ -8,7 +8,7 @@ package au.org.theark.core.util;
 public class ArkUserPasswordGenerator {
 	/**
 	 * Generate a new password consisting of a random 8 characters, and 2 random digits
-	 * @return
+	 * @return A new random password for the ArkUser
 	 */
 	public synchronized static String generateNewPassword() {
 		StringBuffer password = new StringBuffer();
