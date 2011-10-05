@@ -126,14 +126,14 @@
 															</td>
 															<td align="right">
 																<div class="label">
-																	<wicket:message key="email">
+																	<wicket:message key="userName">
 																		Email Address:
 																	</wicket:message>
 																</div>
 															</td>
 															<td align="left">
 																<div class="label">
-																	<input wicket:id="email" type="text" class="text" />
+																	<input wicket:id="userName" type="text" size="30"/>
 																</div>
 															</td>
 															<td align="left">
@@ -175,6 +175,11 @@
 																	</div>
 																</noscript>
 																<input wicket:id="cancelButton" type="submit" wicket:message="value:cancelButton" />
+															</td>
+														</tr>
+														<tr>
+															<td align="center" colspan="4">
+																<input wicket:id="signInButton" type="submit" wicket:message="value:signInButton" />
 															</td>
 														</tr>
 													</table>

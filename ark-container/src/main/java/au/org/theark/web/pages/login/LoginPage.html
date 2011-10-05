@@ -148,15 +148,15 @@
 															<td>
 															</td>
 															<td align="left">
-																<input id="submitButton" wicket:id="submitButton" type="submit" wicket:message="value:page.signIn" disabled="disabled"/>
+																<input id="signInButton" wicket:id="signInButton" type="submit" wicket:message="value:page.signInButton" disabled="disabled"/>
 																<!-- Enable/disable submit button depending if JavaScript enabled -->
 																<script type="text/javascript">
 																	var _onload = window.onload || function()
 																	{
-																		var submitButton = document.getElementsByName('submitButton')[0];
-																		if (submitButton.disabled==true)
+																		var signInButton = document.getElementsByName('signInButton')[0];
+																		if (signInButton.disabled==true)
 																		{
-																			submitButton.disabled=false
+																			signInButton.disabled=false
 																		}
 																	}
 
