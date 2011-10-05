@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of JavaMail API, to allow sending of an email from within the application
+ * Implementation of JavaMail API, to allow sending of an email from within the application (requires smtp setup)
  * 
  * @author cellis
  * 
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("restriction")
 public class MailClient {
 	private transient static Logger	log			= LoggerFactory.getLogger(MailClient.class);
-	//TODO: Specify valid mailServer
+	//TODO: Implement correct smtp mail server
 	private String							mailServer	= "smtp.ivec.org";									// change this to your host
 	private String							from			= "admin@the-ark.org.au";
 	protected String						to				= "someuser@somewhere.com";
@@ -37,6 +37,9 @@ public class MailClient {
 	protected StringBuffer				messageBody	= new StringBuffer("Testing email...");
 	protected String[]					attachments	= new String[0];
 
+	/**
+	 * Send and email from within the application (requires smtp setup)
+	 */
 	public void sendMail() {
 		// Setup mail server
 		Properties props = System.getProperties();
@@ -79,6 +82,13 @@ public class MailClient {
 		}
 	}
 
+	/**
+	 * Add any attachments to the email
+	 * @param attachments
+	 * @param multipart
+	 * @throws MessagingException
+	 * @throws AddressException
+	 */
 	protected void addAtachments(String[] attachments, Multipart multipart) throws MessagingException, AddressException {
 		for (int i = 0; i <= attachments.length - 1; i++) {
 			String filename = attachments[i];
