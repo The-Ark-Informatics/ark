@@ -1,4 +1,4 @@
-package au.org.theark.web.pages.reset2;
+package au.org.theark.web.pages.reset;
 
 import java.io.Serializable;
 
