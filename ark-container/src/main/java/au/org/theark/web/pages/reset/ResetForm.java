@@ -144,18 +144,20 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 			arkuserVo.setPassword(password);
 			setModelObject(arkuserVo);
 			log.info("Got user:" + arkuserVo.getUserName());
+			log.info("New password:" + arkuserVo.getPassword());
 
-			// Update to new password
-			userService.updateArkUser(arkuserVo);
+			//TODO: Update to new password
+			//userService.updateArkUser(arkuserVo);
 
 			this.info(new StringResourceModel("password.updated", this, null).getString());
 		}
 		catch (ArkSystemException e) {
 			this.error(new StringResourceModel("ark.system.error", this, null).getString());
 		}
-		catch (EntityNotFoundException e) {
-			this.error(new StringResourceModel("user.notFound", this, null).getString());
-		}
+		//TODO: Uncomment for use when userService.updateArkUser called
+		//catch (EntityNotFoundException e) {
+		//	this.error(new StringResourceModel("user.notFound", this, null).getString());
+		//}
 
 		sendNotificationEmail();
 
