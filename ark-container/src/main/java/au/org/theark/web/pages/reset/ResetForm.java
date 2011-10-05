@@ -5,7 +5,6 @@ import java.io.Serializable;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -23,14 +22,14 @@ import au.org.theark.web.pages.login.LoginPage;
 
 /**
  * <p>
- * The <code>ResetForm</code> class that extends the {@link org.apache.wicket.markup.html.form.StatelessForm StatelessForm} class. It provides the
+ * The <code>ResetForm</code> class that extends the {@link org.apache.wicket.markup.html.form.Form Form} class. It provides the
  * implementation of the reset password form of The Ark application.
  * </p>
  * 
  * @author nivedann
  * @author cellis
  */
-public class ResetForm extends StatelessForm<ArkUserVO> implements Serializable {
+public class ResetForm extends Form<ArkUserVO> implements Serializable {
 	/**
 	 * 
 	 */
