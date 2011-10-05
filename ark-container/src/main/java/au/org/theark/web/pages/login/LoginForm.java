@@ -47,7 +47,7 @@ public class LoginForm extends Form<ArkUserVO> {
 	private FeedbackPanel				feedbackPanel;
 	private TextField<String>			userNameTxtFld		= new TextField<String>("userName");
 	private PasswordTextField			passwordTxtFld		= new PasswordTextField("password");
-	private AjaxButton					submitButton;
+	private AjaxButton					signInButton;
 	private AjaxButton					forgotPasswordButton;
 
 	/**
@@ -61,7 +61,7 @@ public class LoginForm extends Form<ArkUserVO> {
 		super(id, new CompoundPropertyModel<ArkUserVO>(new ArkUserVO()));
 		this.feedbackPanel = feedbackPanel;
 
-		submitButton = new AjaxButton("submitButton") {
+		signInButton = new AjaxButton("signInButton") {
 			/**
 			 * 
 			 */
@@ -137,7 +137,7 @@ public class LoginForm extends Form<ArkUserVO> {
 	private void addComponentsToForm() {
 		add(userNameTxtFld.setRequired(true));
 		add(passwordTxtFld.setRequired(true));
-		add(submitButton);
+		add(signInButton);
 		add(forgotPasswordButton);
 	}
 
