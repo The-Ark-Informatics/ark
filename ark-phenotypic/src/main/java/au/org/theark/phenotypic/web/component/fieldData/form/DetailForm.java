@@ -99,7 +99,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 		fieldDataDateCollectedDteFld.add(datePicker);
 
 		attachValidators();
-		addComponents();
+		addDetailFormComponents();
 	}
 
 	protected void attachValidators() {
@@ -211,4 +211,20 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 		}
 
 	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
+	 */
+	@Override
+	protected void addDetailFormComponents() {
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDataIdTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDataCollectionTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDataSubjectUidTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDataDateCollectedDteFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDataFieldTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDataValueTxtFld);
+		add(arkCrudContainerVO.getDetailPanelFormContainer());		
+	}
+
+
 }

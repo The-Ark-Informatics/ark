@@ -110,7 +110,7 @@ public class DetailForm extends AbstractDetailForm<FieldVO> {
 		initFieldTypeDdc();
 
 		attachValidators();
-		addComponents();
+		addDetailFormComponents();
 	}
 
 	/**
@@ -156,20 +156,6 @@ public class DetailForm extends AbstractDetailForm<FieldVO> {
 		// StringResourceModel("error.phenotypic.encodedValues.validation", this, new Model<String>("Encoded Value definition")));
 	}
 
-	private void addComponents() {
-		// Disable ID field editing
-		
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldIdTxtFld.setEnabled(false));
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldNameTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDescriptionTxtAreaFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldTypeDdc);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldUnitsTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldMinValueTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldMaxValueTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldEncodedValuesTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldMissingValueTxtFld);
-		add(arkCrudContainerVO.getDetailPanelFormContainer());
-	}
 
 	@Override
 	protected void onSave(Form<FieldVO> containerForm, AjaxRequestTarget target) {
@@ -245,5 +231,23 @@ public class DetailForm extends AbstractDetailForm<FieldVO> {
 			return false;
 		}
 
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
+	 */
+	@Override
+	protected void addDetailFormComponents() {
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldIdTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDescriptionTxtAreaFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldTypeDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldUnitsTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldMinValueTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldMaxValueTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldEncodedValuesTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldMissingValueTxtFld);
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
+		
 	}
 }
