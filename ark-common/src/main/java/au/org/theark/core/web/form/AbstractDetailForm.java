@@ -438,4 +438,9 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * @return
 	 */
 	abstract protected boolean isNew();
+	
+	/**
+	 * Delegates this to the subclass to add the Form components defined in it.This enforces this method across all sub-classes and keeps it consistent.
+	 */
+	abstract protected void addDetailFormComponents();
 }
