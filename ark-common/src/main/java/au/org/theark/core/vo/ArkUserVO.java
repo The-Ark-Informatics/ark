@@ -47,6 +47,7 @@ public class ArkUserVO extends BaseVO {
 	private String					selectedRolesLMC;
 	private StudyVO				studyVO;
 	private List<ArkUserVO>		userList;
+	private String 				captcha;
 
 	/* Database Entity */
 	private ArkUser				arkUserEntity;
@@ -380,4 +381,17 @@ public class ArkUserVO extends BaseVO {
 		this.isArkUserPresentInDatabase = isArkUserPresentInDatabase;
 	}
 
+	/**
+	 * @param captcha the captcha to set
+	 */
+	public void setCaptcha(String captcha) {
+		this.captcha = captcha;
+	}
+
+	/**
+	 * @return the captcha
+	 */
+	public String getCaptcha() {
+		return captcha;
+	}
 }
