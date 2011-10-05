@@ -1,7 +1,9 @@
 span.requiredHint {
 font-size:12pt;
 }
-
+#LoginFeedbackZone {
+width:100%;
+}
 #login,#resetPassword {
 background-color:#EEE;
 position:relative;
