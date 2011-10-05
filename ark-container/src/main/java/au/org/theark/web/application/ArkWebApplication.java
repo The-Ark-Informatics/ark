@@ -23,7 +23,7 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import au.org.theark.web.pages.LoginPage;
+import au.org.theark.web.pages.login.LoginPage;
 
 public class ArkWebApplication extends BaseApplication{
 	

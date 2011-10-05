@@ -148,20 +148,21 @@
 															<td>
 															</td>
 															<td align="left">
-																<input wicket:id="submitBtn" type="submit" wicket:message="value:page.signIn" id="submitBtn" disabled="disabled"/>
+																<input id="submitButton" wicket:id="submitButton" type="submit" wicket:message="value:page.signIn" disabled="disabled"/>
 																<!-- Enable/disable submit button depending if JavaScript enabled -->
 																<script type="text/javascript">
 																	var _onload = window.onload || function()
 																	{
-																		var submitBtn = document.getElementsByName('submitBtn')[0];
-																		if (submitBtn.disabled==true)
+																		var submitButton = document.getElementsByName('submitButton')[0];
+																		if (submitButton.disabled==true)
 																		{
-																			submitBtn.disabled=false
+																			submitButton.disabled=false
 																		}
 																	}
 
 																	_onload();
 																</script>
+																<input id="forgotPasswordButton" wicket:id="forgotPasswordButton" type="submit" wicket:message="value:page.forgotPasswordButton" />
 																<noscript>
 																	<div class="note">
 																		This site will not run properly without JavaScript enabled.
@@ -173,18 +174,6 @@
 												</form>
 											</td>
 											<td width="10%">
-											</td>
-										</tr>
-										<tr>
-											<td width="100%" align="center" colspan="3">
-												<br/>
-												<div id="resetPasswordLink">
-													<a wicket:id="resetPasswordLink" href="#" >
-														<wicket:message key="page.forgotpassword.link">
-															[Password link]
-														</wicket:message>
-													</a>
-												</div>
 											</td>
 										</tr>
 										<tr>

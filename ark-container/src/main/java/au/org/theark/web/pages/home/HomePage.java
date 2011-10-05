@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.web.pages;
+package au.org.theark.web.pages.home;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +42,11 @@ import au.org.theark.lims.web.menu.LimsTabProviderImpl;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
 import au.org.theark.report.web.menu.ReportTabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
+import au.org.theark.web.pages.login.LoginPage;
 
 /**
  * <p>
- * The <code>HomePage</code> class that extends the {@link au.org.theark.web.pages.BasePage BasePage} class. It provides the implementation of the
+ * The <code>HomePage</code> class that extends the {@link au.org.theark.web.pages.home.BasePage BasePage} class. It provides the implementation of the
  * index page of The Ark application.
  * </p>
  * 

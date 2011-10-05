@@ -1,4 +1,4 @@
-package au.org.theark.web.pages;
+package au.org.theark.web.pages.login;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -25,6 +25,8 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.web.pages.home.HomePage;
+import au.org.theark.web.pages.reset.ResetPage;
 
 /**
  * <p>
@@ -47,6 +49,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 	private TextField<String>			userNameTxtFld		= new TextField<String>("userName");
 	private PasswordTextField			passwordTxtFld		= new PasswordTextField("password");
 	private AjaxButton					submitButton;
+	private AjaxButton					forgotPasswordButton;
 
 	/**
 	 * LoginForm constructor
@@ -59,7 +62,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 		super(id, new CompoundPropertyModel<ArkUserVO>(new ArkUserVO()));
 		this.feedbackPanel = feedbackPanel;
 
-		submitButton = new AjaxButton("submitBtn") {
+		submitButton = new AjaxButton("submitButton") {
 			/**
 			 * 
 			 */
@@ -90,8 +93,8 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 				return new AjaxPostprocessingCallDecorator(super.getAjaxCallDecorator()) {
 					private static final long	serialVersionUID	= 1L;
 
-					private String					setCursorToWait	= "document.body.style.cursor = 'wait';";
-					private String					setCursorToAuto	= "document.body.style.cursor = 'auto';";
+					private String	setCursorToWait = "document.body.style.cursor = 'wait';";
+					private String	setCursorToAuto = "document.body.style.cursor = 'auto';";
 
 					@Override
 					public CharSequence postDecorateOnSuccessScript(Component component, CharSequence script) {
@@ -111,6 +114,24 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 			}
 		};
 		
+		forgotPasswordButton = new AjaxButton("forgotPasswordButton") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				setResponsePage(ResetPage.class);
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				log.error("Error on click of forgotPasswordButton");
+			}
+		};
+		forgotPasswordButton.setDefaultFormProcessing(false);
+		
 		addComponentsToForm();
 	}
 
@@ -118,6 +139,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 		add(userNameTxtFld.setRequired(true));
 		add(passwordTxtFld.setRequired(true));
 		add(submitButton);
+		add(forgotPasswordButton);
 	}
 
 	/**

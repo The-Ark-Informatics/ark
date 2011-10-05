@@ -24,7 +24,7 @@ import org.apache.wicket.settings.IApplicationSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.web.pages.LoginPage;
+import au.org.theark.web.pages.login.LoginPage;
 
 public abstract class BaseApplication extends WebApplication {
 	static final Logger	log	= LoggerFactory.getLogger(BaseApplication.class);
