@@ -1,0 +1,5 @@
+#surefire
+#Wed Oct 05 14:47:08 WST 2011
+user.dir=/home/cellis/workspace/recaptcha4j
+localRepository=/home/cellis/.m2/repository
+basedir=/home/cellis/workspace/recaptcha4j
