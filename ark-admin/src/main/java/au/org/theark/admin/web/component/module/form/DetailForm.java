@@ -79,8 +79,12 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		// Set required field here
 		nameTxtFld.setRequired(true);
 	}
-
-	private void addDetailFormComponents() {
+	
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
+	 */
+	@Override
+	protected void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(descriptionTxtAreaFld);
