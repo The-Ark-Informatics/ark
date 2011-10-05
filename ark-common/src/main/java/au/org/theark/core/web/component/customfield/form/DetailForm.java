@@ -293,7 +293,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		deleteButton.setEnabled(false);
 
 		attachValidators();
-		addComponents();
+		addDetailFormComponents();
 	}
 
 
@@ -303,35 +303,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		// TODO: Add correct validator, possibly custom with better validation message
 		fieldEncodedValuesTxtFld.add(new PatternValidator("(\\b[\\w]+=[^;]+;)*")).setLabel(
 				new StringResourceModel("customField.encodedValues.validation", this, new Model<String>("Encoded Value definition")));
-	}
-
-	private void addComponents() {
-		customFieldDetailWMC = new WebMarkupContainer("customFieldDetailWMC");
-		customFieldDetailWMC.setOutputMarkupPlaceholderTag(true);
-		customFieldDetailWMC.add(fieldIdTxtFld.setEnabled(false));	// Disable ID field editing
-		customFieldDetailWMC.add(fieldNameTxtFld);
-		customFieldDetailWMC.add(fieldDescriptionTxtAreaFld);
-		customFieldDetailWMC.add(fieldTypeDdc);
-		customFieldDetailWMC.add(fieldUnitTypeDdc);
-		customFieldDetailWMC.add(minMaxValueEntryWMC);
-		customFieldDetailWMC.add(fieldEncodedValuesTxtFld);
-		customFieldDetailWMC.add(fieldMissingValueTxtFld);
-		customFieldDetailWMC.add(fieldLabelTxtAreaFld);
-		
-		customFieldDisplayDetailWMC = new WebMarkupContainer("customFieldDisplayDetailWMC");
-		customFieldDisplayDetailWMC.add(customFieldDisplayPositionPanel);
-		customFieldDisplayDetailWMC.add(fieldDisplayRequiredChkBox);
-//		customFieldDisplayDetailWMC.add(fieldDisplayRequireMsgTxtAreaFld);
-		// Only show these fields if necessary...
-		if (getModelObject().isUseCustomFieldDisplay() == false) {
-			customFieldDisplayDetailWMC.setVisible(false);
-		}
-		
-		// TODO: This 'addOrReplace' (instead of just 'add') is a temporary workaround due to the 
-		// detailPanelFormContainer being initialised only once at the top-level container panel. 
-		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldDetailWMC);
-		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldDisplayDetailWMC);
-		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	@Override
@@ -447,6 +418,40 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	// Allow the model for the CustomFieldGroups to be assessed (but not allow it be to be set)
 	public IModel<List<CustomFieldGroup>> getCfGroupDdcListModel() {
 		return cfGroupDdcListModel;
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
+	 */
+	@Override
+	protected void addDetailFormComponents() {
+		customFieldDetailWMC = new WebMarkupContainer("customFieldDetailWMC");
+		customFieldDetailWMC.setOutputMarkupPlaceholderTag(true);
+		customFieldDetailWMC.add(fieldIdTxtFld.setEnabled(false));	// Disable ID field editing
+		customFieldDetailWMC.add(fieldNameTxtFld);
+		customFieldDetailWMC.add(fieldDescriptionTxtAreaFld);
+		customFieldDetailWMC.add(fieldTypeDdc);
+		customFieldDetailWMC.add(fieldUnitTypeDdc);
+		customFieldDetailWMC.add(minMaxValueEntryWMC);
+		customFieldDetailWMC.add(fieldEncodedValuesTxtFld);
+		customFieldDetailWMC.add(fieldMissingValueTxtFld);
+		customFieldDetailWMC.add(fieldLabelTxtAreaFld);
+		
+		customFieldDisplayDetailWMC = new WebMarkupContainer("customFieldDisplayDetailWMC");
+		customFieldDisplayDetailWMC.add(customFieldDisplayPositionPanel);
+		customFieldDisplayDetailWMC.add(fieldDisplayRequiredChkBox);
+//		customFieldDisplayDetailWMC.add(fieldDisplayRequireMsgTxtAreaFld);
+		// Only show these fields if necessary...
+		if (getModelObject().isUseCustomFieldDisplay() == false) {
+			customFieldDisplayDetailWMC.setVisible(false);
+		}
+		
+		// TODO: This 'addOrReplace' (instead of just 'add') is a temporary workaround due to the 
+		// detailPanelFormContainer being initialised only once at the top-level container panel. 
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldDetailWMC);
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldDisplayDetailWMC);
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
+		
 	}
 
 }
