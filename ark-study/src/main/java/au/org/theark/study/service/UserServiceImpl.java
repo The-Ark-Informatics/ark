@@ -205,6 +205,17 @@ public class UserServiceImpl implements IUserService {
 	 * @throws ArkSystemException
 	 */
 	public ArkUserVO lookupArkUser(String arkLdapUserName) throws ArkSystemException {
-		return iLdapUserDao.lookupArkUser(arkLdapUserName);
+		// Fetch the Ark User details from LDAP
+		ArkUserVO arkUserVo = iLdapUserDao.lookupArkUser(arkLdapUserName);
+
+		try {
+			ArkUser arkUserEntity = arkAuthorisationService.getArkUser(arkLdapUserName);
+			arkUserVo.setArkUserEntity(arkUserEntity);
+		}
+		catch (EntityNotFoundException e) {
+			log.debug("The specified User is not in the Ark Database");
+		}
+
+		return arkUserVo;
 	}
 }
