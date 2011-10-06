@@ -17,7 +17,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ArkUserPasswordGenerator;
-import au.org.theark.core.util.MailClient;
+import au.org.theark.core.util.mail.JavaxMailClient;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.panel.recaptcha.ReCaptchaPanel;
 import au.org.theark.study.service.IUserService;
@@ -199,7 +199,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 	 * @throws ArkSystemException 
 	 */
 	private void sendNotificationEmail() throws ArkSystemException {
-		MailClient mailClient = new MailClient();
+		JavaxMailClient mailClient = new JavaxMailClient();
 		mailClient.setTo(getModelObject().getEmail());
 		mailClient.setSubject("Message from the-ARK: " + getModelObject().getUserName() + " password reset");
 
