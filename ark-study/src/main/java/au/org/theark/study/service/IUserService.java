@@ -110,8 +110,8 @@ public interface IUserService {
 
 	/**
 	 * 
-	 * @param arkUserVO
+	 * @param arkUserVo
 	 * @throws ArkSystemException
 	 */
-	public void resetArkUserPassword(ArkUserVO arkUserVO) throws ArkSystemException;
+	public void resetArkUserPassword(ArkUserVO arkUserVo) throws ArkSystemException;
 }
