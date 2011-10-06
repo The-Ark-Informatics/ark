@@ -59,7 +59,7 @@ public class ReCaptchaPanel extends Panel {
 				final ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(remoteAddr, challenge, uresponse);
 
 				if (!reCaptchaResponse.isValid()) {
-					this.error("Invalid reCAPTCHA value, please enter the reCAPTCHA word again!");
+					this.error("Invalid reCAPTCHA value, please enter the reCAPTCHA words again!");
 				}
 			}
 		};
