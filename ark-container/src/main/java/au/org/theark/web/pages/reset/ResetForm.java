@@ -157,7 +157,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 				sendNotificationEmail();
 				
 				// Save new password to LDAP
-				//iUserService.resetArkUserPassword(arkUserVo);
+				iUserService.resetArkUserPassword(arkUserVo);
 				this.info(new StringResourceModel("password.updated", this, null).getString());
 				postResetPassword(target);	
 			}
