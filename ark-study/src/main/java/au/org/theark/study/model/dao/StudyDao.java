@@ -1774,39 +1774,27 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public Long isCustomFieldUsed(SubjectCustomFieldData subjectCustomFieldData){
 		Long count = new Long("0");
 		CustomField customField = subjectCustomFieldData.getCustomFieldDisplay().getCustomField();
-		//The Study
 		
-		try {
-			
-			Long id  = subjectCustomFieldData.getLinkSubjectStudy().getId();
-			LinkSubjectStudy linkSubjectStudy = getLinkSubjectStudy(id);
-			Study subjectStudy = linkSubjectStudy.getStudy();
-			ArkFunction arkFunction = customField.getArkFunction();
+		Study study = customField.getStudy();
+		ArkFunction arkFunction = customField.getArkFunction();
 
-			StringBuffer stringBuffer = new StringBuffer();
-			
-			stringBuffer.append(" SELECT COUNT(*) FROM SubjectCustomFieldData AS scfd WHERE EXISTS ");
-			stringBuffer.append(" ( ");               
-			stringBuffer.append(" SELECT cfd.id FROM  CustomFieldDisplay AS cfd  WHERE cfd.customField.study.id = :studyId");
-			stringBuffer.append(" AND cfd.customField.arkFunction.id = :functionId AND scfd.customFieldDisplay.id = :customFieldDisplayId");
-			stringBuffer.append(" )");
-			
-			String theHQLQuery = stringBuffer.toString();
-			
-			Query query = getSession().createQuery(theHQLQuery);
-			query.setParameter("studyId", subjectStudy.getId());
-			query.setParameter("functionId", arkFunction.getId());
-			query.setParameter("customFieldDisplayId", subjectCustomFieldData.getCustomFieldDisplay().getId());
-			count = (Long) query.uniqueResult();
-			
-		} catch (EntityNotFoundException e) {
-			//The given Subject is not available, this should not happen since the person is editing custom fields for the subject
-			e.printStackTrace();
-		}
+		StringBuffer stringBuffer = new StringBuffer();
+		
+		stringBuffer.append(" SELECT COUNT(*) FROM SubjectCustomFieldData AS scfd WHERE EXISTS ");
+		stringBuffer.append(" ( ");               
+		stringBuffer.append(" SELECT cfd.id FROM  CustomFieldDisplay AS cfd  WHERE cfd.customField.study.id = :studyId");
+		stringBuffer.append(" AND cfd.customField.arkFunction.id = :functionId AND scfd.customFieldDisplay.id = :customFieldDisplayId");
+		stringBuffer.append(" )");
+		
+		String theHQLQuery = stringBuffer.toString();
+		
+		Query query = getSession().createQuery(theHQLQuery);
+		query.setParameter("studyId", study.getId());
+		query.setParameter("functionId", arkFunction.getId());
+		query.setParameter("customFieldDisplayId", subjectCustomFieldData.getCustomFieldDisplay().getId());
+		count = (Long) query.uniqueResult();
 			
 		return count;
 	}
 	
-
-		
 }
