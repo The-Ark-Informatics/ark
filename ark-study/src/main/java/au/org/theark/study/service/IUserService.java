@@ -25,6 +25,7 @@ import javax.naming.InvalidNameException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.UserNameExistsException;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.ArkUserVO;
 
@@ -53,9 +54,9 @@ public interface IUserService {
 	 * 
 	 * @param username
 	 * @return
-	 * @throws ArkSystemException
+	 * @throws EntityNotFoundException
 	 */
-	public ArkUserVO getCurrentUser(String username) throws ArkSystemException;
+	public ArkUserVO getCurrentUser(String username) throws EntityNotFoundException;
 
 	/**
 	 * 
@@ -98,5 +99,19 @@ public interface IUserService {
 	 * @throws ArkSystemException
 	 */
 	public ArkUserVO lookupArkUser(String arkLdapUserName) throws ArkSystemException;
+	
+	/**
+	 * Get an ArkUser entiry formthe database
+	 * @param arkLdapUserName
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	public ArkUser getArkUser(String arkLdapUserName) throws EntityNotFoundException;
 
+	/**
+	 * 
+	 * @param arkUserVO
+	 * @throws ArkSystemException
+	 */
+	public void resetArkUserPassword(ArkUserVO arkUserVO) throws ArkSystemException;
 }

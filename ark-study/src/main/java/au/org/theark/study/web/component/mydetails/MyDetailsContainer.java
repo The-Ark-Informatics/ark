@@ -26,7 +26,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -67,8 +67,8 @@ public class MyDetailsContainer extends Panel {
 		try {
 			userVO = userService.getCurrentUser(userVO.getUserName());
 		}
-		catch (ArkSystemException ine) {
-			log.error("Exception occured :" + ine.getMessage());
+		catch (EntityNotFoundException e) {
+			log.error("Exception occured :" + e.getMessage());
 		}
 
 		// Add feedbackpanel
