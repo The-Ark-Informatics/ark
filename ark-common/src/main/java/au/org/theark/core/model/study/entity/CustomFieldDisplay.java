@@ -38,6 +38,7 @@ import javax.persistence.Table;
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.pheno.entity.PhenoData;
 
 /**
  * @author nivedann
@@ -62,7 +63,8 @@ public class CustomFieldDisplay implements Serializable{
 	private Set<SubjectCustomFieldData> subjectCustomFieldData = new HashSet<SubjectCustomFieldData>();
 	private Set<BioCollectionCustomFieldData> bioCollectionCustomFieldData = new HashSet<BioCollectionCustomFieldData>();
 	private Set<BiospecimenCustomFieldData> biospecimenCustomFieldData = new HashSet<BiospecimenCustomFieldData>();
-		
+	private Set<PhenoData> phenoData = new HashSet<PhenoData>();
+
 
 	public CustomFieldDisplay(){
 		
@@ -163,6 +165,16 @@ public class CustomFieldDisplay implements Serializable{
 
 	public void setBiospecimenCustomFieldData(Set<BiospecimenCustomFieldData> biospecimenCustomFieldData) {
 		this.biospecimenCustomFieldData = biospecimenCustomFieldData;
+	}
+
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
+	public Set<PhenoData> getPhenoData() {
+		return phenoData;
+	}
+
+	public void setPhenoData(Set<PhenoData> phenoData) {
+		this.phenoData = phenoData;
 	}
 
 }
