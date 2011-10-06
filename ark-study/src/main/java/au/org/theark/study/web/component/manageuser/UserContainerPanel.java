@@ -30,28 +30,24 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.manageuser.form.ContainerForm;
 
-@SuppressWarnings("serial")
 public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
-
+	/**
+	 * 
+	 */
+	private static final long				serialVersionUID	= 8852394393025448913L;
 	private ContainerForm					containerForm;
 	private DetailPanel						detailsPanel;
 	private SearchPanel						searchPanel;
-	private SearchResultListPanel			searchResultListPanel;
 	private PageableListView<ArkUserVO>	pageableListView;
 
 	/* Spring Beans to Access Service Layer */
-
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService				iArkCommonService;
-
 	@SpringBean(name = "userService")
-	private IUserService						userService;
+	private IUserService						iUserService;
 
 	public UserContainerPanel(String id) {
 
@@ -82,7 +78,7 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 					if (isActionPermitted()) {
 						if (sessionStudyId != null && sessionStudyId > 0) {
 							// Search Users must list all the users from ArkUser Group and will include all users across studies.
-							userResultList = userService.searchUser(containerForm.getModelObject());
+							userResultList = iUserService.searchUser(containerForm.getModelObject());
 							containerForm.getModelObject().setUserList(userResultList);
 						}
 						pageableListView.removeAll();
@@ -121,7 +117,7 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 
 		try {
 			if (sessionStudyId != null && sessionStudyId > 0) {
-				userResultList = userService.searchUser(arkUserVO);
+				userResultList = iUserService.searchUser(arkUserVO);
 			}
 		}
 		catch (ArkSystemException arkException) {
