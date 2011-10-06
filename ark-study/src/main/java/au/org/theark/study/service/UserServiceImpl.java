@@ -47,44 +47,45 @@ import au.org.theark.study.model.dao.IUserDao;
 
 @Transactional
 @Service("userService")
+@SuppressWarnings("unchecked")
 public class UserServiceImpl implements IUserService {
 
 	static final Logger			log	= LoggerFactory.getLogger(UserServiceImpl.class);
 
-	private IArkCommonService	arkCommonService;
-	private IArkAuthorisation	arkAuthorisationService;
+	private IArkCommonService	iArkCommonService;
+	private IArkAuthorisation	iArkAuthorisationService;
 
 	/* DAO to access database */
-	private IUserDao				userDAO;
+	private IUserDao				iUserDao;
 
 	/* A DAO to access the LDAP */
 	private ILdapUserDao			iLdapUserDao;
 
 	public IArkCommonService getArkCommonService() {
-		return arkCommonService;
+		return iArkCommonService;
 	}
 
 	@Autowired
-	public void setArkCommonService(IArkCommonService arkCommonService) {
-		this.arkCommonService = arkCommonService;
+	public void setArkCommonService(IArkCommonService iArkCommonService) {
+		this.iArkCommonService = iArkCommonService;
 	}
 
 	public IArkAuthorisation getArkAuthorisationService() {
-		return arkAuthorisationService;
+		return iArkAuthorisationService;
 	}
 
 	@Autowired
-	public void setArkAuthorisationService(IArkAuthorisation arkAuthorisationService) {
-		this.arkAuthorisationService = arkAuthorisationService;
+	public void setArkAuthorisationService(IArkAuthorisation iArkAuthorisationService) {
+		this.iArkAuthorisationService = iArkAuthorisationService;
 	}
 
 	@Autowired
-	public void setUserDAO(IUserDao userDAO) {
-		this.userDAO = userDAO;
+	public void setUserDAO(IUserDao iUserDao) {
+		this.iUserDao = iUserDao;
 	}
 
 	public IUserDao getUserDAO() {
-		return userDAO;
+		return iUserDao;
 	}
 	
 	public ILdapUserDao getiLdapUserDao() {
@@ -98,7 +99,7 @@ public class UserServiceImpl implements IUserService {
 
 	public Person createPerson(Person personEntity) {
 
-		return userDAO.createPerson(personEntity);
+		return iUserDao.createPerson(personEntity);
 	}
 
 	public List<ArkUserVO> searchUser(ArkUserVO user) throws ArkSystemException {
@@ -112,7 +113,7 @@ public class UserServiceImpl implements IUserService {
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		ah.setComment("Updated User (in LDAP) " + userVO.getUserName());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
-		arkCommonService.createAuditHistory(ah);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public ArkUserVO getCurrentUser(String username) throws EntityNotFoundException {
@@ -120,7 +121,7 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	public boolean isArkUserPresent(String userName) {
-		return userDAO.isArkUserPresent(userName);
+		return iUserDao.isArkUserPresent(userName);
 	}
 
 	/**
@@ -138,16 +139,16 @@ public class UserServiceImpl implements IUserService {
 			// Setting the Username and Study on the ArkUser Hibernate entity from the Value Object that would reflect what it is on LDAP
 
 			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-			arkUserVO.setStudy(arkCommonService.getStudy(sessionStudyId));
+			arkUserVO.setStudy(iArkCommonService.getStudy(sessionStudyId));
 			arkUserVO.getArkUserEntity().setLdapUserName(arkUserVO.getUserName());
 			// Create the user in Ark Database as well and persist and update and roles user was assigned
-			arkAuthorisationService.createArkUser(arkUserVO);
+			iArkAuthorisationService.createArkUser(arkUserVO);
 
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 			ah.setComment("Created User (in LDAP) " + arkUserVO.getUserName());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
-			arkCommonService.createAuditHistory(ah);
+			iArkCommonService.createAuditHistory(ah);
 		}
 		catch (UserNameExistsException personExistsException) {
 			throw personExistsException;
@@ -158,12 +159,12 @@ public class UserServiceImpl implements IUserService {
 	public void updateArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException {
 
 		iLdapUserDao.updateArkUser(arkUserVO);// Update the LDAP entry
-		arkAuthorisationService.updateArkUser(arkUserVO);
+		iArkAuthorisationService.updateArkUser(arkUserVO);
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		ah.setComment("Updated Ark User (in LDAP) " + arkUserVO.getUserName());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
-		arkCommonService.createAuditHistory(ah);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	/**
@@ -180,9 +181,9 @@ public class UserServiceImpl implements IUserService {
 		// Fetch ArkUserRole and ArkUser Details from Backend using the arkLdapUserName
 		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>();
 		try {
-			ArkUser arkUserEntity = arkAuthorisationService.getArkUser(arkLdapUserName);
+			ArkUser arkUserEntity = iArkAuthorisationService.getArkUser(arkLdapUserName);
 			arkUserVO.setArkUserEntity(arkUserEntity);
-			arkUserRoleList = arkAuthorisationService.getArkUserLinkedModuleAndRoles(arkUserVO);
+			arkUserRoleList = iArkAuthorisationService.getArkUserLinkedModuleAndRoles(arkUserVO);
 			arkUserVO.setArkUserPresentInDatabase(true);
 			arkUserVO.setArkUserRoleList(arkUserRoleList);
 		}
@@ -195,7 +196,7 @@ public class UserServiceImpl implements IUserService {
 
 	public void deleteArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException {
 		// Note: Only Remove the Ark User from database not in LDAP
-		arkAuthorisationService.deleteArkUser(arkUserVO);
+		iArkAuthorisationService.deleteArkUser(arkUserVO);
 
 	}
 	
@@ -209,7 +210,7 @@ public class UserServiceImpl implements IUserService {
 		ArkUserVO arkUserVo = iLdapUserDao.lookupArkUser(arkLdapUserName);
 
 		try {
-			ArkUser arkUserEntity = arkAuthorisationService.getArkUser(arkLdapUserName);
+			ArkUser arkUserEntity = iArkAuthorisationService.getArkUser(arkLdapUserName);
 			arkUserVo.setArkUserEntity(arkUserEntity);
 		}
 		catch (EntityNotFoundException e) {
@@ -220,16 +221,24 @@ public class UserServiceImpl implements IUserService {
 	}
 	
 	public ArkUser getArkUser(String arkLdapUserName) throws EntityNotFoundException {
-		ArkUser arkUserEntity = arkAuthorisationService.getArkUser(arkLdapUserName);
+		ArkUser arkUserEntity = iArkAuthorisationService.getArkUser(arkLdapUserName);
 		return arkUserEntity;
 	}
 	
 	public void resetArkUserPassword(ArkUserVO arkUserVO) throws ArkSystemException {
-		iLdapUserDao.updateArkUser(arkUserVO);// Update the LDAP entry
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Ark User (in LDAP) " + arkUserVO.getUserName());
-		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
-		arkCommonService.createAuditHistory(ah);
+		try {
+			// Deny rest of Super administrator password!
+			if(!iArkAuthorisationService.isSuperAdministrator(arkUserVO.getUserName())) {
+				iLdapUserDao.updateArkUser(arkUserVO);// Update the LDAP entry
+				AuditHistory ah = new AuditHistory();
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+				ah.setComment("Reset ArkUser password (in LDAP) " + arkUserVO.getUserName());
+				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
+				iArkCommonService.createAuditHistory(ah);
+			}
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
 	}
 }
