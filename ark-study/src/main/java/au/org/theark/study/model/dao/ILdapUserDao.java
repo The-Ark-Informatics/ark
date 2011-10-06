@@ -23,6 +23,7 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.vo.ArkUserVO;
 
@@ -48,10 +49,10 @@ public interface ILdapUserDao {
 	 * Fetches the current user's details from the LDAP.
 	 * 
 	 * @param username
-	 * @return ETAUserVO
-	 * @throws InvalidNameException
+	 * @throws EntityNotFoundException
+	 * @return
 	 */
-	public ArkUserVO getUser(String username) throws ArkSystemException;
+	public ArkUserVO getUser(String username) throws EntityNotFoundException;
 
 	/**
 	 * Interface to return a zero or more users as a List, that match the search criteria.

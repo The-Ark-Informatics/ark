@@ -186,7 +186,7 @@ public class LdapUserDao implements ILdapUserDao {
 	 * 
 	 * getUserAccountInfo - userdetails, applications and roles linked to the user Returns the person details of the current user.
 	 */
-	public ArkUserVO getUser(String username) throws ArkSystemException {
+	public ArkUserVO getUser(String username) throws EntityNotFoundException {
 
 		ArkUserVO etaUserVO = null;
 		log.debug("\n getUser ");
@@ -200,7 +200,7 @@ public class LdapUserDao implements ILdapUserDao {
 		}
 		catch (InvalidNameException ne) {
 			log.debug("\nGiven username or user does not exist." + username);
-			throw new ArkSystemException("A System error has occured");
+			throw new EntityNotFoundException("Given username or user does not exist");
 
 		}
 		return etaUserVO;

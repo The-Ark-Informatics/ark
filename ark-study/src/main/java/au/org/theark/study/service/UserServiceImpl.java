@@ -115,7 +115,7 @@ public class UserServiceImpl implements IUserService {
 		arkCommonService.createAuditHistory(ah);
 	}
 
-	public ArkUserVO getCurrentUser(String username) throws ArkSystemException {
+	public ArkUserVO getCurrentUser(String username) throws EntityNotFoundException {
 		return iLdapUserDao.getUser(username);
 	}
 
@@ -217,5 +217,19 @@ public class UserServiceImpl implements IUserService {
 		}
 
 		return arkUserVo;
+	}
+	
+	public ArkUser getArkUser(String arkLdapUserName) throws EntityNotFoundException {
+		ArkUser arkUserEntity = arkAuthorisationService.getArkUser(arkLdapUserName);
+		return arkUserEntity;
+	}
+	
+	public void resetArkUserPassword(ArkUserVO arkUserVO) throws ArkSystemException {
+		iLdapUserDao.updateArkUser(arkUserVO);// Update the LDAP entry
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Ark User (in LDAP) " + arkUserVO.getUserName());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
+		arkCommonService.createAuditHistory(ah);
 	}
 }
