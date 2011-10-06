@@ -20,6 +20,8 @@ import javax.mail.internet.MimeMultipart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkSystemException;
+
 /**
  * Implementation of JavaMail API, to allow sending of an email from within the application (requires smtp setup)
  * 
@@ -29,8 +31,8 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("restriction")
 public class MailClient {
 	private transient static Logger	log			= LoggerFactory.getLogger(MailClient.class);
-	//TODO: Implement correct smtp mail server
-	private String							mailServer	= "smtp.ivec.org";									// change this to your host
+	private String							mailServer	= "smtp.ivec.org"; // change this to your host
+	private String							port			= "25";
 	private String							from			= "admin@the-ark.org.au";
 	protected String						to				= "someuser@somewhere.com";
 	protected String						subject		= "Test Subject";
@@ -39,11 +41,13 @@ public class MailClient {
 
 	/**
 	 * Send and email from within the application (requires smtp setup)
+	 * @throws ArkSystemException 
 	 */
-	public void sendMail() {
+	public void sendMail() throws ArkSystemException {
 		// Setup mail server
 		Properties props = System.getProperties();
 		props.put("mail.smtp.host", mailServer);
+		props.put("mail.smtp.port", port);
 
 		// Get a mail session
 		Session session = Session.getDefaultInstance(props, null);
@@ -76,9 +80,11 @@ public class MailClient {
 		}
 		catch (AddressException e) {
 			log.error(e.getMessage());
+			throw new ArkSystemException();
 		}
 		catch (MessagingException e) {
 			log.error(e.getMessage());
+			throw new ArkSystemException();
 		}
 	}
 
