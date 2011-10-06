@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ArkUserPasswordGenerator;
 import au.org.theark.core.util.MailClient;
 import au.org.theark.core.vo.ArkUserVO;
@@ -47,6 +47,10 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 
 	@SpringBean(name = "userService")
 	private IUserService					iUserService;
+	
+	@SuppressWarnings("unchecked")
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService	iArkCommonService;
 
 	/**
 	 * 
@@ -142,26 +146,33 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 
 			// Get the ArkUser from back-end to be sure
 			ArkUserVO arkUserVo = iUserService.getCurrentUser(getModelObject().getUserName());
-			ArkUser arkUserEntity = iUserService.getArkUser(getModelObject().getUserName());
-			arkUserVo.setArkUserEntity(arkUserEntity);
 			
-			// Set new password
-			arkUserVo.setPassword(password);
-			setModelObject(arkUserVo);
-
-			// Save new password to LDAP
-			iUserService.updateArkUser(arkUserVo);
-			this.info(new StringResourceModel("password.updated", this, null).getString());
+			// Deny reset of password on super administrators!
+			if(!iArkCommonService.isSuperAdministrator(arkUserVo.getUserName())){
+				// Set new password
+				arkUserVo.setPassword(password);
+				setModelObject(arkUserVo);
+	
+				// Send an email. If send failed (eg no smtp access, password not reset)
+				sendNotificationEmail();
+				
+				// Save new password to LDAP
+				//iUserService.resetArkUserPassword(arkUserVo);
+				this.info(new StringResourceModel("password.updated", this, null).getString());
+				postResetPassword(target);	
+			}
+			else {
+				this.error(new StringResourceModel("ark.super.user.error", this, null).getString());
+				target.add(feedbackPanel);
+			}
 		}
 		catch (ArkSystemException e) {
 			this.error(new StringResourceModel("ark.system.error", this, null).getString());
+			target.add(feedbackPanel);
 		}
 		catch (EntityNotFoundException e) {
 			this.error(new StringResourceModel("user.notFound", this, null).getString());
-		}
-		finally {
-			sendNotificationEmail();
-			postResetPassword(target);	
+			target.add(feedbackPanel);
 		}
 	};
 
@@ -185,8 +196,9 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 
 	/**
 	 * Email the user with new password
+	 * @throws ArkSystemException 
 	 */
-	private void sendNotificationEmail() {
+	private void sendNotificationEmail() throws ArkSystemException {
 		MailClient mailClient = new MailClient();
 		mailClient.setTo(getModelObject().getEmail());
 		mailClient.setSubject("Message from the-ARK: " + getModelObject().getUserName() + " password reset");
