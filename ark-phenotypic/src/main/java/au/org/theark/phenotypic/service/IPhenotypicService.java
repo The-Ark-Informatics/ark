@@ -33,8 +33,11 @@ import au.org.theark.core.model.pheno.entity.FieldType;
 import au.org.theark.core.model.pheno.entity.FileFormat;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
+import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
+import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.model.pheno.entity.Status;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.BarChartResult;
@@ -200,4 +203,13 @@ public interface IPhenotypicService {
 	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr);
 
 	public FileFormat getFileFormatByName(String name);
+
+	public List<PhenoData> createOrUpdatePhenoData(List<PhenoData> customFieldDataList);
+
+	public int getPhenoDataCount(PhenotypicCollection phenoCollection);
+
+	public List<PhenoData> getPhenoDataList(PhenotypicCollection phenoCollection, int first, int count);
+
+	public PhenotypicCollection getPhenotypicCollection(Long id);
+	
 }

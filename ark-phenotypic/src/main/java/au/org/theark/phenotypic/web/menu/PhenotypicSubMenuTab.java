@@ -26,6 +26,7 @@ import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
@@ -38,11 +39,13 @@ import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.phenotypic.web.Constants;
-import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldUpload.FieldUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
+import au.org.theark.phenotypic.web.component.phenodataentry.PhenoCollectionDataVO;
+import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataEntryContainerPanel;
 import au.org.theark.phenotypic.web.component.summary.SummaryContainerPanel;
+
 
 @SuppressWarnings({ "serial", "unused" })
 public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
@@ -98,11 +101,11 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA)) {
-//			ArkFunction associatedPrimaryFn = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
-//			CompoundPropertyModel<PhenoCollectionDataVO> phenoDataCPM = new CompoundPropertyModel<PhenoCollectionDataVO>(new PhenoCollectionDataVO());
-//			phenoDataCPM.getObject().setArkFunction(associatedFn);
-//			panelToReturn = new PhenoDataEntryContainerPanel(panelId, phenoDataCPM);
-			panelToReturn = new FieldDataContainerPanel(panelId);
+			ArkFunction associatedPrimaryFn = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+			CompoundPropertyModel<PhenoCollectionDataVO> phenoDataCPM = new CompoundPropertyModel<PhenoCollectionDataVO>(new PhenoCollectionDataVO());
+			phenoDataCPM.getObject().setArkFunction(associatedPrimaryFn);
+			panelToReturn = new PhenoDataEntryContainerPanel(panelId, phenoDataCPM).initialisePanel();
+//			panelToReturn = new FieldDataContainerPanel(panelId);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD)) {
 			panelToReturn = new FieldDataUploadContainerPanel(panelId);

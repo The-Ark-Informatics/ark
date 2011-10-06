@@ -21,6 +21,7 @@ package au.org.theark.phenotypic.service;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -46,13 +48,19 @@ import au.org.theark.core.model.pheno.entity.FieldType;
 import au.org.theark.core.model.pheno.entity.FileFormat;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
+import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
+import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.model.pheno.entity.Status;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.BarChartResult;
+import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
@@ -67,6 +75,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 	private IArkCommonService<Void>	iArkCommonService;
 	private IPhenotypicDao				phenotypicDao;
+	private IStudyDao						studyDao;
 	private Long							studyId;
 	private Study							study;
 
@@ -78,6 +87,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	@Autowired
 	public void setPhenotypicDao(IPhenotypicDao phenotypicDao) {
 		this.phenotypicDao = phenotypicDao;
+	}
+	
+	/* To access Hibernate Study Dao */
+	@Autowired
+	public void setStudyDao(IStudyDao studyDao) {
+		this.studyDao = studyDao;
 	}
 
 	/**
@@ -203,7 +218,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	}
 
 	public PhenoCollection getPhenoCollection(Long id) {
-		return phenotypicDao.getPhenotypicCollection(id);
+		return phenotypicDao.getPhenoCollection(id);
 	}
 
 	public PhenoCollectionVO getPhenoCollectionAndFields(Long id) {
@@ -211,7 +226,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	}
 
 	public Collection<PhenoCollection> getPhenoCollectionByStudy(Study study) {
-		return phenotypicDao.getPhenotypicCollectionByStudy(study);
+		return phenotypicDao.getPhenoCollectionByStudy(study);
 	}
 
 	public void createFieldData(FieldData fieldData) {
@@ -443,7 +458,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		study = iArkCommonService.getStudy(studyId);
 
 		Long sessionCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
-		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+		PhenoCollection phenoCollection = phenotypicDao.getPhenoCollection(sessionCollectionId);
 		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService, fileFormat, delimiterChar);
 		;
 
@@ -471,7 +486,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		study = iArkCommonService.getStudy(studyId);
 
 		Long sessionCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
-		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+		PhenoCollection phenoCollection = phenotypicDao.getPhenoCollection(sessionCollectionId);
 		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService, fileFormat, delimiterChar);
 
 		try {
@@ -512,7 +527,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		study = iArkCommonService.getStudy(studyId);
 
 		Long sessionCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
-		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+		PhenoCollection phenoCollection = phenotypicDao.getPhenoCollection(sessionCollectionId);
 		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService, fileFormat, delimiterChar);
 
 		try {
@@ -548,7 +563,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		study = iArkCommonService.getStudy(studyId);
 
 		Long sessionCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
-		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+		PhenoCollection phenoCollection = phenotypicDao.getPhenoCollection(sessionCollectionId);
 		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService, fileFormat, delimiterChar);
 
 		try {
@@ -596,7 +611,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 			phenoCollection = uploadVo.getPhenoCollection();
 		}
 		else {
-			phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+			phenoCollection = phenotypicDao.getPhenoCollection(sessionCollectionId);
 		}
 
 		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService, fileFormat, uploadVo.getUpload().getDelimiterType().getDelimiterCharacter());
@@ -711,4 +726,148 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	public FileFormat getFileFormatByName(String name) {
 		return phenotypicDao.getFileFormatByName(name);
 	}
+
+	public List<PhenoData> createOrUpdatePhenoData(List<PhenoData> phenoDataList) {
+
+		List<PhenoData> listOfExceptions = new ArrayList<PhenoData>();
+		/* Iterate the list and call DAO to persist each Item */
+		for (PhenoData phenoData : phenoDataList) {
+			
+			
+			try{
+			/* Insert the Field if it does not have a  ID and has the required fields */
+				if( canInsert(phenoData)) {
+
+					phenotypicDao.createPhenoData(phenoData);
+					Long id = phenoData.getCustomFieldDisplay().getCustomField().getId();
+					
+					CustomField customField = iArkCommonService.getCustomField(id);
+					customField.setCustomFieldHasData(true);
+					CustomFieldVO customFieldVO = new CustomFieldVO();
+					customFieldVO.setCustomField(customField);
+					
+					iArkCommonService.updateCustomField(customFieldVO);
+
+				}else if(canUpdate(phenoData)){
+					
+					//If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and updated the record.
+					if(phenoData.getErrorDataValue() != null){
+						phenoData.setErrorDataValue(null);
+					} 
+					phenotypicDao.updatePhenoData(phenoData);
+				
+				}else if(canDelete(phenoData)){
+					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
+					Long count  = phenotypicDao.isCustomFieldUsed(phenoData);
+					
+					phenotypicDao.deletePhenoData(phenoData);
+					if(count <= 1){
+						//Then update the CustomField's hasDataFlag to false;
+						Long id = phenoData.getCustomFieldDisplay().getCustomField().getId();//Reload since the session was closed in the front end and the child objects won't be lazy loaded
+						CustomField customField = iArkCommonService.getCustomField(id);
+						customField.setCustomFieldHasData(false);
+						CustomFieldVO customFieldVO = new CustomFieldVO();
+						customFieldVO.setCustomField(customField);
+						iArkCommonService.updateCustomField(customFieldVO); //Update it
+						
+					}
+				}
+			}catch(Exception someException){
+				listOfExceptions.add(phenoData);//Continue with rest of the list
+			}
+		}
+		
+		return listOfExceptions;
+	}
+	
+	/**
+	 * In order to delete it must satisfy the following conditions
+	 * 1. PhenoData must be a persistent entity(with a valid primary key/ID) AND
+	 * 2. PhenoData should have a valid Subject linked to it and must not be null AND
+	 * 3. PhenoData.TextDataValue is NULL OR is EMPTY
+	 * 4. PhenoData.NumberDataValue is NULL
+	 * 5. PhenoData.DatewDataValue is NULL
+	 * When these conditiosn are satisfied this method will return Boolean TRUE
+	 * @param phenoData
+	 * @return
+	 */
+	private Boolean canDelete(PhenoData phenoData){
+		Boolean flag = false;
+		
+		if(phenoData.getId() != null &&  phenoData.getPhenotypicCollection() != null && 
+				( phenoData.getTextDataValue() == null  	||		
+				  phenoData.getTextDataValue().isEmpty()  	|| 
+				  phenoData.getNumberDataValue() == null 	||
+				  phenoData.getDateDataValue() == null ) ){
+			
+			flag=true;
+			
+		}
+		return flag;
+	}
+	
+	/**
+	 * In order to Update a PhenoData instance the following conditions must be met
+	 * 1. PhenoData must be a persistent entity(with a valid primary key/ID) AND
+	 * 2. PhenoData should have a valid Subject linked to it and must not be null AND
+	 * 3. PhenoData.TextDataValue is NOT NULL AND NOT EMPTY OR
+	 * 4. PhenoData.NumberDataValue is NOT NULL
+	 * 5. PhenoData.DateDataValue is NOT NULL	
+	 * When these conditions are satisfied the method will return Boolean TRUE
+	 * @param phenoData
+	 * @return
+	 */
+	private Boolean canUpdate(PhenoData phenoData){
+		Boolean flag = false;
+		
+		if(phenoData.getId() != null && phenoData.getPhenotypicCollection() != null && 
+				(( phenoData.getTextDataValue() != null 	&& 
+				   !phenoData.getTextDataValue().isEmpty()) || 
+				   phenoData.getDateDataValue() != null  	|| 
+				   phenoData.getNumberDataValue() != null) ){
+			
+			flag=true;
+			
+		}
+		return flag;
+	}
+	
+	/**
+	 * In order to Insert a PhenoData instance the following conditions must be met.
+	 * 1. PhenoData must be a transient entity(Not yet associated with an ID/PK) AND
+	 * 2. PhenoData should have a valid Subject linked to it and must not be null AND
+	 * 3. PhenoData.TextDataValue is NOT NULL  OR
+	 * 4. PhenoData.NumberDataValue is NOT NULL OR
+	 * 5. PhenoData.DateDataValue is NOT NULL	
+	 * When these conditions are satisfied the method will return Boolean TRUE
+	 * @param phenoData
+	 * @return
+	 */
+	private Boolean canInsert(PhenoData phenoData){
+		Boolean flag = false;
+		
+		if(phenoData.getId() == null &&  phenoData.getPhenotypicCollection() != null && 
+				(		phenoData.getNumberDataValue() != null || 
+						phenoData.getTextDataValue() != null 	|| 
+						phenoData.getDateDataValue() != null )){
+			
+			flag=true;
+			
+		}
+		return flag;
+	}
+
+	public int getPhenoDataCount(PhenotypicCollection phenoCollection) {
+		return phenotypicDao.getPhenoDataCount(phenoCollection);
+	}
+
+	public List<PhenoData> getPhenoDataList(PhenotypicCollection phenoCollection, int first, int count) {
+		List<PhenoData> resultsList = phenotypicDao.getPhenoDataList(phenoCollection, first, count);
+		return resultsList;
+	}
+
+	public PhenotypicCollection getPhenotypicCollection(Long id) {
+		return phenotypicDao.getPhenotypicCollection(id);
+	}
+
 }

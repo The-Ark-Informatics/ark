@@ -34,12 +34,16 @@ import au.org.theark.core.model.pheno.entity.FieldType;
 import au.org.theark.core.model.pheno.entity.FileFormat;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
+import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.pheno.entity.Status;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.BarChartResult;
+import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
+import au.org.theark.phenotypic.model.vo.PhenoDataCollectionVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 
 /**
@@ -49,11 +53,9 @@ import au.org.theark.phenotypic.model.vo.UploadVO;
 public interface IPhenotypicDao {
 
 	// Collection
-	public PhenoCollection getPhenotypicCollection(Long id);
+	public PhenoCollection getPhenoCollection(Long id);
 
-	public java.util.Collection<PhenoCollection> getPhenotypicCollection();
-
-	public java.util.Collection<PhenoCollection> getPhenotypicCollectionByStudy(Study study);
+	public java.util.Collection<PhenoCollection> getPhenoCollectionByStudy(Study study);
 
 	public PhenoCollectionVO getPhenoCollectionAndFields(Long id);
 
@@ -234,4 +236,20 @@ public interface IPhenotypicDao {
 
 	public FileFormat getFileFormatByName(String name);
 
+	public List<PhenotypicCollection> getPhenoDataCollection(PhenoDataCollectionVO collectionCriteria, int first, int count);
+
+	public Long isCustomFieldUsed(PhenoData phenoData);
+
+	public void createPhenoData(PhenoData phenoData);
+
+	public void updatePhenoData(PhenoData phenoData);
+
+	public void deletePhenoData(PhenoData phenoData);
+
+	public PhenotypicCollection getPhenotypicCollection(Long id);
+
+	public int getPhenoDataCount(PhenotypicCollection phenoCollection);
+
+	public List<PhenoData> getPhenoDataList(PhenotypicCollection phenoCollection, int first, int count);
+	
 }
