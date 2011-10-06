@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.util.ArkUserPasswordGenerator;
 import au.org.theark.core.util.MailClient;
 import au.org.theark.core.vo.ArkUserVO;
@@ -45,7 +46,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 	private AjaxButton					signInButton;
 
 	@SpringBean(name = "userService")
-	private IUserService					userService;
+	private IUserService					iUserService;
 
 	/**
 	 * 
@@ -140,34 +141,37 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 			String password = ArkUserPasswordGenerator.generateNewPassword();
 
 			// Get the ArkUser from back-end to be sure
-			ArkUserVO arkuserVo = userService.getCurrentUser(getModelObject().getUserName());
-			arkuserVo.setPassword(password);
-			setModelObject(arkuserVo);
-			log.info("Got user:" + arkuserVo.getUserName());
-			log.info("New password:" + arkuserVo.getPassword());
+			ArkUserVO arkUserVo = iUserService.getCurrentUser(getModelObject().getUserName());
+			ArkUser arkUserEntity = iUserService.getArkUser(getModelObject().getUserName());
+			arkUserVo.setArkUserEntity(arkUserEntity);
+			
+			// Set new password
+			arkUserVo.setPassword(password);
+			setModelObject(arkUserVo);
 
-			//TODO: Update to new password
-			//userService.updateArkUser(arkuserVo);
-
+			// Save new password to LDAP
+			iUserService.updateArkUser(arkUserVo);
 			this.info(new StringResourceModel("password.updated", this, null).getString());
 		}
 		catch (ArkSystemException e) {
 			this.error(new StringResourceModel("ark.system.error", this, null).getString());
 		}
-		//TODO: Uncomment for use when userService.updateArkUser called
-		//catch (EntityNotFoundException e) {
-		//	this.error(new StringResourceModel("user.notFound", this, null).getString());
-		//}
-
-		sendNotificationEmail();
-
-		postResetPassword(target);
+		catch (EntityNotFoundException e) {
+			this.error(new StringResourceModel("user.notFound", this, null).getString());
+		}
+		finally {
+			sendNotificationEmail();
+			postResetPassword(target);	
+		}
 	};
 
 	private void postResetPassword(AjaxRequestTarget target) {
 		userName.setEnabled(false);
 		target.add(userName);
 		target.appendJavaScript("Recaptcha.reload()");
+		
+		reCaptchaPanel.setEnabled(false);
+		target.add(reCaptchaPanel);
 
 		resetButton.setEnabled(false);
 		cancelButton.setEnabled(false);
@@ -201,10 +205,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 		messageBody.append("The ARK");
 
 		mailClient.setMessageBody(messageBody);
-		log.info(messageBody.toString());
-
-		// TODO: Implement correct smtp mail server
-		// mailClient.sendMail();
+		mailClient.sendMail();
 	}
 
 	/**
