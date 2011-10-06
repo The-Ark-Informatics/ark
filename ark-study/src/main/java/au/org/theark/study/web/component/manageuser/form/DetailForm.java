@@ -58,11 +58,14 @@ import au.org.theark.core.web.form.AbstractUserDetailForm;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 
-@SuppressWarnings("serial")
 public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
+	/**
+	 * 
+	 */
+	private static final long		serialVersionUID			= -2380685360085526939L;
 
 	@SpringBean(name = "userService")
-	private IUserService				userService;
+	private IUserService				iUserService;
 
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -81,7 +84,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		super(id, feedBackPanel, arkCrudContainerVO, containerForm);
 		initialiseRemoveButton();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm() {
 		userNameTxtField = new TextField<String>(Constants.USER_NAME);
@@ -115,12 +118,12 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 				ArkModule arkModule = arkUserRole.getArkModule();
 				// Acts as the data source for ArkRoles
 				ArrayList<ArkRole> arkRoleSourceList = iArkCommonService.getArkRoleLinkedToModule(arkModule);
-				if(arkUserRole.getArkUser() == null && arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_STUDY)){
-					//If the ArkUserRole is not assigned and the module is Study then set the default Role 
+				if (arkUserRole.getArkUser() == null && arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_STUDY)) {
+					// If the ArkUserRole is not assigned and the module is Study then set the default Role
 					ArkRole arkRole = iArkCommonService.getArkRoleByName(au.org.theark.core.Constants.ARK_STUDY_DEFAULT_ROLE);
 					arkUserRole.setArkRole(arkRole);
 				}
-				
+
 				PropertyModel arkUserRolePm = new PropertyModel(arkUserRole, "arkRole");
 				ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>(Constants.NAME, "id");
 
@@ -201,7 +204,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 			try {
 
-				userService.createArkUser(containerForm.getModelObject());
+				iUserService.createArkUser(containerForm.getModelObject());
 				containerForm.getModelObject().setArkUserPresentInDatabase(true);
 				containerForm.getModelObject().setMode(Constants.MODE_EDIT);
 				userNameTxtField.setEnabled(false);
@@ -225,7 +228,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 			try {
 
-				userService.updateArkUser(containerForm.getModelObject());
+				iUserService.updateArkUser(containerForm.getModelObject());
 				containerForm.getModelObject().setArkUserPresentInDatabase(true);
 				this.info(new StringResourceModel("user.updated", this, null).getString());
 				onSavePostProcess(target);
@@ -263,7 +266,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 		// Remove the Ark User from the Ark Database and his roles.
 		try {
-			userService.deleteArkUser(containerForm.getModelObject());
+			iUserService.deleteArkUser(containerForm.getModelObject());
 			this.info(new StringResourceModel("user.removed", this, null).getString());
 			editCancelProcess(target);
 		}
@@ -285,22 +288,23 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	public void onEditButtonClick() {
 		userNameTxtField.setEnabled(false);
 	}
-	
-	public void enableOrDisableRemoveButton(){
+
+	public void enableOrDisableRemoveButton() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		try {
-			ArkUserVO arkUserVO = userService.lookupArkUser(containerForm.getModelObject().getUserName(), study);
+			ArkUserVO arkUserVO = iUserService.lookupArkUser(containerForm.getModelObject().getUserName(), study);
 			if (!arkUserVO.isArkUserPresentInDatabase()) {
 				deleteButton.setEnabled(false);
-			}else{
+			}
+			else {
 				deleteButton.setEnabled(true);
 			}
-			
-		} catch (ArkSystemException e) {
-			
+
+		}
+		catch (ArkSystemException e) {
+
 			e.printStackTrace();
 		}
 	}
-
 }
