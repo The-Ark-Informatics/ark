@@ -18,9 +18,7 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.manageuser;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -52,8 +50,12 @@ import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.manageuser.form.ContainerForm;
 
+@SuppressWarnings("unchecked")
 public class SearchResultListPanel extends Panel {
-
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -8708032624256041305L;
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private ContainerForm		containerForm;
 
@@ -61,7 +63,7 @@ public class SearchResultListPanel extends Panel {
 	private IArkCommonService	iArkCommonService;
 
 	@SpringBean(name = "userService")
-	private IUserService			userService;
+	private IUserService			iUserService;
 	private FeedbackPanel		feedbackPanel;
 
 	/**
@@ -82,6 +84,11 @@ public class SearchResultListPanel extends Panel {
 		// This has to be populated earlier
 
 		PageableListView<ArkUserVO> pageableListView = new PageableListView<ArkUserVO>("userList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void populateItem(final ListItem<ArkUserVO> item) {
 
@@ -111,6 +118,11 @@ public class SearchResultListPanel extends Panel {
 	private AjaxLink buildLink(final ArkUserVO arkUserVo, final WebMarkupContainer searchResultsContainer) {
 
 		AjaxLink link = new AjaxLink("userName") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				try {
@@ -119,7 +131,7 @@ public class SearchResultListPanel extends Panel {
 					Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 					Study study = iArkCommonService.getStudy(sessionStudyId);
 
-					ArkUserVO arkUserVOFromBackend = userService.lookupArkUser(arkUserVo.getUserName(), study);
+					ArkUserVO arkUserVOFromBackend = iUserService.lookupArkUser(arkUserVo.getUserName(), study);
 					if (!arkUserVOFromBackend.isArkUserPresentInDatabase()) {
 
 						containerForm.info(new StringResourceModel("user.not.linked.to.study", this, null).getString());
@@ -210,8 +222,6 @@ public class SearchResultListPanel extends Panel {
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		// Get a List of ArkModules and associated ArkRoles linked to the study
 		Collection<ArkModuleVO> listOfModulesAndRolesForStudy = iArkCommonService.getArkModulesAndRolesLinkedToStudy(study);
-		List<ArkUserRole> arkUserRoleListToAdd = new ArrayList<ArkUserRole>();
-
 		// Note:Ideally using a Hibernate Criteria we should be able to get a List of Modules
 		for (ArkModuleVO arkModuleVO : listOfModulesAndRolesForStudy) {
 
