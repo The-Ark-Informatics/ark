@@ -25,9 +25,10 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authc.credential.Sha256CredentialsMatcher;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
@@ -51,8 +52,8 @@ import au.org.theark.core.vo.ArkUserVO;
 @SuppressWarnings("unchecked")
 @Component
 public class ArkLdapRealm extends AuthorizingRealm {
-
-	static final Logger				log	= LoggerFactory.getLogger(ArkLdapRealm.class);
+	static final Logger				log					= LoggerFactory.getLogger(ArkLdapRealm.class);
+	private static final String	UNKNOWN_ACCOUNT	= "The user is not registered with the Ark Application. Please see your administrator";
 	/* Interface to Core */
 	protected IArkCommonService	iArkCommonService;
 
@@ -63,33 +64,36 @@ public class ArkLdapRealm extends AuthorizingRealm {
 
 	public ArkLdapRealm() {
 		setName("arkLdapRealm"); // This name must match the name in the User class's getPrincipals() method
-		setCredentialsMatcher(new Sha256CredentialsMatcher());
+		HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+		hashedCredentialsMatcher.setHashAlgorithmName(Sha256Hash.ALGORITHM_NAME);
+		setCredentialsMatcher(hashedCredentialsMatcher);
 	}
 
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
-		log.debug(" in  doGetAuthenticationInfo()");
 		SimpleAuthenticationInfo sai = null;
 		ArkUserVO userVO = null;
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
 		try {
 			userVO = iArkCommonService.getUser(token.getUsername().trim());// Example to use core services to get user
 			if (userVO != null) {
-				//Check if the user is in the Ark Database
+				// Check if the user is in the Ark Database
 				ArkUser arkUser = iArkCommonService.getArkUser(token.getUsername().trim());
-				//Also check if the Ark User is linked with any study and has roles if not stop the user from logging in until an administrator has set it up
-				if(!iArkCommonService.isArkUserLinkedToStudies(arkUser)){
-					throw  new UnknownAccountException("The user is not registered/linked with the  Ark Application. Please see your administrator");
+				// Also check if the Ark User is linked with any study and has roles if not stop the user from logging in until an administrator has set
+				// it up
+				if (!iArkCommonService.isArkUserLinkedToStudies(arkUser)) {
+					throw new UnknownAccountException(UNKNOWN_ACCOUNT);
 				}
-				
+
 				sai = new SimpleAuthenticationInfo(userVO.getUserName(), userVO.getPassword(), getName());
 			}
 		}
-		catch (ArkSystemException etaSystem) {
-			log.error("Exception occured while the Realm invoked Ldap Interface to look up person" + etaSystem.getMessage());
-		} catch (EntityNotFoundException e) {
-			throw new UnknownAccountException("The user is not registered with the  Ark Application. Please see your administrator");
+		catch (ArkSystemException e) {
+			log.error(e.getMessage());
 		}
-		
+		catch (EntityNotFoundException e) {
+			throw new UnknownAccountException(UNKNOWN_ACCOUNT);
+		}
+
 		return sai;
 	}
 
@@ -97,8 +101,6 @@ public class ArkLdapRealm extends AuthorizingRealm {
 	 * This method will check for roles.Wicket calls this method.
 	 */
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		log.debug("Inside doGetAuthorizationInfo ");
-
 		SimpleAuthorizationInfo simpleAuthInfo = new SimpleAuthorizationInfo();
 
 		// Get the logged in user name from Shiro Session
@@ -111,7 +113,6 @@ public class ArkLdapRealm extends AuthorizingRealm {
 		try {
 
 			if (sessionModuleId != null && sessionFunctionId != null && sessionStudyId == null) {
-				log.debug("There is no study in context. Now we can look up the subject's roles for the study");
 				// Load the role for the given module and use case
 				ArkFunction arkFunction = iArkCommonService.getArkFunctionById(sessionFunctionId);
 				ArkModule arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
@@ -133,7 +134,6 @@ public class ArkLdapRealm extends AuthorizingRealm {
 				}
 			}
 			else if (sessionModuleId != null && sessionFunctionId != null && sessionStudyId != null) {
-				log.debug("There is a study in context. Now we can look up the subject's roles for the study");
 				// Get the roles for the study in context
 				Study study = iArkCommonService.getStudy(sessionStudyId);
 				ArkFunction arkFunction = iArkCommonService.getArkFunctionById(sessionFunctionId);
@@ -154,11 +154,10 @@ public class ArkLdapRealm extends AuthorizingRealm {
 			}
 
 		}
-		catch (EntityNotFoundException userNotFound) {
-			log.error("The logged in user was not located in the ArkUser Table. The user was not set up correctly.");
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
 		}
 
-		log.debug("\n --- Inside doGetAuthorizationInfo invoked ----");
 		return simpleAuthInfo;
 	}
 
@@ -166,5 +165,4 @@ public class ArkLdapRealm extends AuthorizingRealm {
 	public void clearCachedAuthorizationInfo(PrincipalCollection principals) {
 		super.clearCachedAuthorizationInfo(principals);
 	}
-
 }
