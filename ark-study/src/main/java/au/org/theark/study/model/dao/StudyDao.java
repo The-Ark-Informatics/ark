@@ -1716,12 +1716,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		List<SubjectCustomFieldData> subjectCustomFieldDataList = new ArrayList<SubjectCustomFieldData>();
 	
 		StringBuffer sb = new StringBuffer();
+		sb.append( "SELECT cfd, fieldList");
 		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
 		sb.append("LEFT JOIN cfd.subjectCustomFieldData as fieldList ");
 		sb.append(" with fieldList.linkSubjectStudy.id = :subjectId ");
 		sb.append( "  where cfd.customField.study.id = :studyId" );
 		sb.append(" and cfd.customField.arkFunction.id = :functionId");
 		sb.append(" order by cfd.sequence");
+		
 		
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("subjectId", linkSubjectStudyCriteria.getId());
@@ -1736,13 +1738,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			SubjectCustomFieldData scfd = new SubjectCustomFieldData();
 			if(objects.length > 0 && objects.length >= 1){
 				
-					cfd = (CustomFieldDisplay)objects[0];
-					if(objects[1] != null){
-						scfd = (SubjectCustomFieldData)objects[1];
-					}else{
-						scfd.setCustomFieldDisplay(cfd);
-					}
-					subjectCustomFieldDataList.add(scfd);	
+				cfd = (CustomFieldDisplay)objects[0];	
+				if(objects[1] != null ){
+					scfd = (SubjectCustomFieldData)objects[1];
+				}else{
+					scfd.setCustomFieldDisplay(cfd);
+				}
+				
+				subjectCustomFieldDataList.add(scfd);	
 			}
 		}
 		return subjectCustomFieldDataList;
