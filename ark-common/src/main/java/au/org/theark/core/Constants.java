@@ -309,4 +309,5 @@ public class Constants {
 	
 	/* Default Role for Study Module */
 	public static final String ARK_STUDY_DEFAULT_ROLE							= "Study Read-Only user";
+	public static final int	PALETTE_ROWS										= 5;
 }
