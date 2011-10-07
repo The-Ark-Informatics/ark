@@ -805,6 +805,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				// Add the host name into the footer of the email
 				String host = InetAddress.getLocalHost().getHostName();
 
+				// Message title
+				model.put("title", "Message from The ARK");
 				// Message header
 				model.put("header", "Message from The ARK");
 				// Message subject
