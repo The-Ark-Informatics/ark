@@ -35,6 +35,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -1514,6 +1515,18 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		query.setMaxResults(count);
 		
 		return resultList;
+	}
+	
+	public List<CustomField> getCustomFieldsLinkedToCustomFieldGroup(CustomFieldGroup customFieldCriteria){
+		
+		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
+		criteria.add(Restrictions.eq("customFieldGroup",customFieldCriteria));
+		ProjectionList projection = Projections.projectionList();
+		projection.add(Projections.property("customField"));
+		criteria.setProjection(projection);
+		criteria.setResultTransformer(Transformers.aliasToBean(CustomField.class));
+		List<CustomField> list = criteria.list();
+		return list;
 	}
 	
 }
