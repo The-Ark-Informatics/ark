@@ -2,6 +2,7 @@ package au.org.theark.web.pages.reset;
 
 import java.io.Serializable;
 
+import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -12,12 +13,13 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.MailSendException;
+import org.springframework.mail.SimpleMailMessage;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ArkUserPasswordGenerator;
-import au.org.theark.core.util.mail.JavaxMailClient;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.panel.recaptcha.ReCaptchaPanel;
 import au.org.theark.study.service.IUserService;
@@ -142,7 +144,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 
 	protected void onReset(AjaxRequestTarget target) {
 		try {
-			String password = ArkUserPasswordGenerator.generateNewPassword();
+			String password = ArkUserPasswordGenerator.generate();
 
 			// Get the ArkUser from back-end to be sure
 			ArkUserVO arkUserVo = iUserService.getCurrentUser(getModelObject().getUserName());
@@ -154,7 +156,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 				setModelObject(arkUserVo);
 	
 				// Send an email. If send failed (eg no smtp access, password not reset)
-				sendNotificationEmail();
+				sendNotificationEmail(target);
 				
 				// Save new password to LDAP
 				iUserService.resetArkUserPassword(arkUserVo);
@@ -164,16 +166,25 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 			else {
 				this.error(new StringResourceModel("ark.super.user.error", this, null).getString());
 				target.add(feedbackPanel);
+				log.error(getModelObject().getUserName() + " was attempted to have password reset");
 			}
 		}
 		catch (ArkSystemException e) {
 			this.error(new StringResourceModel("ark.system.error", this, null).getString());
 			target.add(feedbackPanel);
+			log.error(e.getMessage());
 		}
 		catch (EntityNotFoundException e) {
 			this.error(new StringResourceModel("user.notFound", this, null).getString());
 			target.add(feedbackPanel);
+			log.error(e.getMessage());
 		}
+		catch(MailSendException e){
+			this.error(new StringResourceModel("mail.system.error", this, null).getString());
+			target.add(feedbackPanel);
+			log.error(e.getMessage());
+		}
+		target.appendJavaScript("Recaptcha.reload()");
 	};
 
 	private void postResetPassword(AjaxRequestTarget target) {
@@ -195,29 +206,30 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 	}
 
 	/**
-	 * Email the user with new password
-	 * @throws ArkSystemException 
+	 * Email the user with new reset password
+	 * @param target
+	 * @throws MailSendException
 	 */
-	private void sendNotificationEmail() throws ArkSystemException {
-		JavaxMailClient mailClient = new JavaxMailClient();
-		mailClient.setTo(getModelObject().getEmail());
-		mailClient.setSubject("Message from the-ARK: " + getModelObject().getUserName() + " password reset");
-
-		StringBuffer messageBody = new StringBuffer();
-		messageBody.append("Dear ");
-		messageBody.append(getFullUserName());
-		messageBody.append(",\n");
-		messageBody.append("Your password has been reset to: ");
-		messageBody.append(getModelObject().getPassword());
-		messageBody.append("\n");
-		messageBody.append("Please log in and change it as soon as possible.");
-		messageBody.append("\n");
-		messageBody.append("Regards");
-		messageBody.append("\n");
-		messageBody.append("The ARK");
-
-		mailClient.setMessageBody(messageBody);
-		mailClient.sendMail();
+	private void sendNotificationEmail(AjaxRequestTarget target) throws MailSendException {
+		SimpleMailMessage mail = new SimpleMailMessage();
+		mail.setTo(getModelObject().getUserName());
+		mail.setSubject("Your ARK password has been reset");
+		
+		try {
+			String text = iArkCommonService.setResetPasswordMessage(getFullName(), getModelObject().getPassword());
+			mail.setText(text);
+			iArkCommonService.sendEmail(mail);
+		}
+		catch(MailSendException e){
+			this.error(new StringResourceModel("mail.system.error", this, null).getString());
+			target.add(feedbackPanel);
+			log.error(e.getMessage());
+		}
+		catch(VelocityException e){
+			this.error(new StringResourceModel("velocity.system.error", this, null).getString());
+			target.add(feedbackPanel);
+			log.error(e.getMessage());
+		}
 	}
 
 	/**
@@ -225,7 +237,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 	 * 
 	 * @return
 	 */
-	private String getFullUserName() {
+	private String getFullName() {
 		StringBuffer sb = new StringBuffer();
 		String firstName = getModelObject().getFirstName();
 		String lastName = getModelObject().getLastName();
