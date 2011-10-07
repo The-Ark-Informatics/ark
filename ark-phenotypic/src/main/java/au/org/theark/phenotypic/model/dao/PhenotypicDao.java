@@ -66,6 +66,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.util.BarChartResult;
+import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.model.vo.PhenoDataCollectionVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
@@ -1487,6 +1488,28 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			}
 		}
 		return phenoDataList;
+	}
+	
+	/**
+	 * Create  a CustomFieldGroup and then link the selected custom fields into the Group via
+	 * the CustomFieldDisplay. For each Custom Field create a new CustomFieldDisplay
+	 * @param customFieldGroupVO
+	 */
+	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO){
+		
+		CustomFieldGroup customFieldGroup = customFieldGroupVO.getCustomFieldGroup();
+		Session session = getSession();
+		
+		session.save(customFieldGroup);
+		List<CustomField> customFieldList = customFieldGroupVO.getSelectedCustomFields();
+		
+		for (CustomField customField : customFieldList) {
+			CustomFieldDisplay customFieldDisplay = new CustomFieldDisplay();
+			customFieldDisplay.setCustomFieldGroup(customFieldGroup);
+			customFieldDisplay.setCustomField(customField);
+			session.save(customFieldDisplay);
+			log.debug("Saved CustomFieldDisplay for Custom Field Group");
+		}
 	}
 	
 }

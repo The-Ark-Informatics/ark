@@ -41,6 +41,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.BarChartResult;
+import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.model.vo.PhenoDataCollectionVO;
@@ -251,5 +252,7 @@ public interface IPhenotypicDao {
 	public int getPhenoDataCount(PhenotypicCollection phenoCollection);
 
 	public List<PhenoData> getPhenoDataList(PhenotypicCollection phenoCollection, int first, int count);
+	
+	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO);
 	
 }

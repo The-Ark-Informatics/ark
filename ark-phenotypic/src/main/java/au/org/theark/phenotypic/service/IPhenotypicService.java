@@ -41,6 +41,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.BarChartResult;
+import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 
@@ -211,5 +212,11 @@ public interface IPhenotypicService {
 	public List<PhenoData> getPhenoDataList(PhenotypicCollection phenoCollection, int first, int count);
 
 	public PhenotypicCollection getPhenotypicCollection(Long id);
+	
+	/**
+	 * Creates a Custom Field Group and assoicates a list of Custom Fields to it.
+	 * @param customFieldGroupVO
+	 */
+	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO);
 	
 }
