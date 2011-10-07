@@ -173,7 +173,7 @@ public class SubjectUploader {
 				linkSubjectStudy.setStudy(study);
 
 				try {
-					linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID);
+					linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID, study);
 				}
 				catch (EntityNotFoundException enf) {
 					// New subject

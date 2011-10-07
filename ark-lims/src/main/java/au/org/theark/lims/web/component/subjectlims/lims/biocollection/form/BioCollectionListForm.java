@@ -123,7 +123,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 			boolean contextLoaded = false;
 			try {
 				study = iArkCommonService.getStudy(sessionStudyId);
-				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID);
+				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
 				if (study != null && linkSubjectStudy != null) {
 					contextLoaded = true;
 				}

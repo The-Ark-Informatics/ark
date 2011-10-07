@@ -132,7 +132,7 @@ public class SubjectCustomDataContainerPanel extends Panel {
 			try {
 				study = iArkCommonService.getStudy(sessionStudyId);
 				cpModel.getObject().getLinkSubjectStudy().setStudy(study);
-				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID);
+				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
 				cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
 				arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
 //				cpModel.getObject().setArkModule(arkModule);

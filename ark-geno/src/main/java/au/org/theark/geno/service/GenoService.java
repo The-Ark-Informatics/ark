@@ -49,6 +49,7 @@ import au.org.theark.core.model.geno.entity.MetaDataType;
 import au.org.theark.core.model.geno.entity.Status;
 import au.org.theark.core.model.geno.entity.UploadCollection;
 import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.geno.exception.DataAcceptorIOException;
 import au.org.theark.geno.model.dao.ICollectionDao;
@@ -330,7 +331,10 @@ public class GenoService implements IGenoService {
 	public Long newEncodedData(GenoCollection col) {
     	EncodedData ed = new EncodedData();
     	try {
-    		ed.setSubject(arkCommonService.getSubjectByUID(Constants.TEST_SUBJECT_UID));
+   		Subject currentUser = SecurityUtils.getSubject();
+   		Long studyId = (Long) currentUser.getSession().getAttribute("studyId");
+   		Study study = arkCommonService.getStudy(studyId);
+    		ed.setSubject(arkCommonService.getSubjectByUID(Constants.TEST_SUBJECT_UID, study));
     		ed.setCollection(col);
     		String filePath = Constants.TEST_BLOB_INFILE;
     		FileInputStream fis = new FileInputStream(filePath);

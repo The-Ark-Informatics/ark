@@ -48,7 +48,7 @@ public class PhenoDataEntryContainerPanel extends Panel {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			iPhenotypicService;
 	
-	protected CompoundPropertyModel<PhenoCollectionDataVO> cpModel;
+	protected CompoundPropertyModel<PhenotypicCollectionDataVO> cpModel;
 
 	protected FeedbackPanel feedbackPanel;
 	protected WebMarkupContainer customDataEditorWMC;
@@ -58,7 +58,7 @@ public class PhenoDataEntryContainerPanel extends Panel {
 	 * @param id
 	 * @param phenoCollection
 	 */
-	public PhenoDataEntryContainerPanel(String id, CompoundPropertyModel<PhenoCollectionDataVO> phenoCollectionModel) {
+	public PhenoDataEntryContainerPanel(String id, CompoundPropertyModel<PhenotypicCollectionDataVO> phenoCollectionModel) {
 		super(id, phenoCollectionModel);
 		this.cpModel = phenoCollectionModel;
 	}

@@ -25,13 +25,13 @@ import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.web.component.customfield.dataentry.CustomDataVO;
 
-public class PhenoCollectionDataVO extends CustomDataVO<PhenoData> implements Serializable {
+public class PhenotypicCollectionDataVO extends CustomDataVO<PhenoData> implements Serializable {
 
 	private static final long	serialVersionUID	= 1L;
 	
 	protected PhenotypicCollection phenoCollection;
 
-	public PhenoCollectionDataVO() {
+	public PhenotypicCollectionDataVO() {
 		super();
 		phenoCollection = new PhenotypicCollection();
 	}

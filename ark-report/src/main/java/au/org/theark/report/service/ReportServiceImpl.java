@@ -207,7 +207,7 @@ public class ReportServiceImpl implements IReportService {
 
 				ConsentDetailsDataRow cddr = new ConsentDetailsDataRow();
 				if (consentResult == null) {
-					populateConsentDetailsDataRow(cddr, subject, null);
+					populateConsentDetailsDataRow(cddr, study, subject, null);
 					Long key = null;
 					if (!consentDetailsMap.containsKey(key)) {
 						consentDetailsMap.put(key, new ArrayList<ConsentDetailsDataRow>());
@@ -215,7 +215,7 @@ public class ReportServiceImpl implements IReportService {
 					consentDetailsMap.get(key).add(cddr);
 				}
 				else {
-					populateConsentDetailsDataRow(cddr, subject, consentResult);
+					populateConsentDetailsDataRow(cddr, study, subject, consentResult);
 					Long key = consentResult.getConsentStatus().getId();
 					if (!consentDetailsMap.containsKey(key)) {
 						consentDetailsMap.put(key, new ArrayList<ConsentDetailsDataRow>());
@@ -235,7 +235,8 @@ public class ReportServiceImpl implements IReportService {
 			List<ConsentDetailsDataRow> consents = reportDao.getStudyCompConsentList(cdrVO);
 			if (consents != null) {
 				for (ConsentDetailsDataRow cddr : consents) {
-					populateConsentDetailsDataRow(cddr, null, null);
+					Study study = cdrVO.getLinkSubjectStudy().getStudy();
+					populateConsentDetailsDataRow(cddr, study, null, null);
 					results.add(cddr);
 				}
 			}
@@ -244,7 +245,7 @@ public class ReportServiceImpl implements IReportService {
 		return results;
 	}
 
-	protected void populateConsentDetailsDataRow(ConsentDetailsDataRow consentRow, LinkSubjectStudy subject, Consent consent) {
+	protected void populateConsentDetailsDataRow(ConsentDetailsDataRow consentRow, Study study, LinkSubjectStudy subject, Consent consent) {
 		String consentStatus = Constants.NOT_CONSENTED;
 		if (consent != null && consent.getConsentStatus() != null) {
 			consentStatus = consent.getConsentStatus().getName();
@@ -267,7 +268,7 @@ public class ReportServiceImpl implements IReportService {
 		try {
 			if (subject == null) {
 				// no subject was passed in, retrieve from DB via subjectUID
-				subject = studyDao.getSubjectByUID(consentRow.getSubjectUID());
+				subject = studyDao.getSubjectByUID(consentRow.getSubjectUID(), consent.getStudy());
 			}
 			else {
 				// set subjectUID if subject passed in
