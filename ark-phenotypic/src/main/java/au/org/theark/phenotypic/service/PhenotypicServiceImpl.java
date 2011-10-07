@@ -60,6 +60,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.BarChartResult;
+import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
@@ -868,6 +869,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 	public PhenotypicCollection getPhenotypicCollection(Long id) {
 		return phenotypicDao.getPhenotypicCollection(id);
+	}
+	
+	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO){
+		phenotypicDao.createCustomFieldGroup(customFieldGroupVO);
 	}
 
 }
