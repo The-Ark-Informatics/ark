@@ -1,5 +1,7 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup;
 
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -10,12 +12,15 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
+import au.org.theark.phenotypic.service.Constants;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 
 /**
  * @author nivedann
@@ -35,6 +40,9 @@ public class SearchResultListPanel extends Panel{
 	 */
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
+	
+	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService	iPhenotypicService;
 	
 	/**
 	 * 
@@ -98,7 +106,8 @@ public class SearchResultListPanel extends Panel{
 				CustomFieldGroup cfg =  (CustomFieldGroup) (getParent().getDefaultModelObject());
 				CompoundPropertyModel<CustomFieldGroup> newModel = new CompoundPropertyModel<CustomFieldGroup>( new CustomFieldGroup());
 				//Get the CustomFieldGroup from backend along with the Custom Fields for the study and arkfunction and then instantiate the details page
-				
+				CustomFieldGroup itemSelected = item.getModelObject();
+				List<CustomField> customFieldsLinkedToForm = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(itemSelected);
 			}
 			
 		};
