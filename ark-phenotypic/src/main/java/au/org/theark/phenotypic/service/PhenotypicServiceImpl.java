@@ -54,6 +54,7 @@ import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.model.pheno.entity.Status;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -880,6 +881,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 	public List<PhenotypicCollection> searchPageablePhenotypicCollections(PhenoDataCollectionVO criteria, int first, int count) {
 		return phenotypicDao.searchPageablePhenotypicCollection(criteria, first, count);
+	}
+	
+	public List<CustomField> getCustomFieldsLinkedToCustomFieldGroup(CustomFieldGroup customFieldCriteria){
+		return phenotypicDao.getCustomFieldsLinkedToCustomFieldGroup(customFieldCriteria);
 	}
 
 }
