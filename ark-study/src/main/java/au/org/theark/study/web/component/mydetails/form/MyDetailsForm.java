@@ -46,6 +46,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -62,6 +64,8 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	 * 
 	 */
 	private static final long			serialVersionUID			= 2381693804874240001L;
+	private transient static Logger	log					= LoggerFactory.getLogger(MyDetailsForm.class);
+	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 	@SpringBean(name = "userService")
@@ -99,8 +103,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 			getModelObject().setArkUserRoleList(arkUserRoleList);
 		}
 		catch (ArkSystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
@@ -202,13 +205,12 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 					}
 				}
 				catch (EntityNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 
 				item.setEnabled(false);
 
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					/**
 					 * 
 					 */
@@ -267,7 +269,6 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		add(pageableListView);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);
