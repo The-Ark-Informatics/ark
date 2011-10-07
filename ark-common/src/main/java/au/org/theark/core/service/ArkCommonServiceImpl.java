@@ -122,7 +122,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private ReCaptchaContextSource	reCaptchaContextSource;
 	private JavaMailSender				javaMailSender;
 	private VelocityEngine				velocityEngine;
-	
+
 	/**
 	 * @return the velocityEngine
 	 */
@@ -131,13 +131,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	/**
-	 * @param velocityEngine the velocityEngine to set
+	 * @param velocityEngine
+	 *           the velocityEngine to set
 	 */
 	@Autowired
 	public void setVelocityEngine(VelocityEngine velocityEngine) {
 		this.velocityEngine = velocityEngine;
 	}
-	
+
 	/**
 	 * @return the javaMailSender
 	 */
@@ -153,8 +154,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void setJavaMailSender(JavaMailSender javaMailSender) {
 		this.javaMailSender = javaMailSender;
 	}
-
-	
 
 	public ReCaptchaContextSource getRecaptchaContextSource() {
 		return reCaptchaContextSource;
@@ -785,47 +784,57 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria) {
 		return studyDao.getCustomFieldList(customFieldCriteria);
 	}
-	
+
 	public void sendEmail(final SimpleMailMessage simpleMailMessage) throws MailSendException, VelocityException {
 		MimeMessagePreparator preparator = new MimeMessagePreparator() {
 			public void prepare(MimeMessage mimeMessage) throws Exception {
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
 				message.setTo(simpleMailMessage.getTo());
-				
+
 				// The "from" field is required
-				if(simpleMailMessage.getFrom() == null) {
+				if (simpleMailMessage.getFrom() == null) {
 					simpleMailMessage.setFrom(Constants.ARK_ADMIN_EMAIL);
 				}
-				
+
 				message.setFrom(simpleMailMessage.getFrom());
 				message.setSubject(simpleMailMessage.getSubject());
 
 				// Map all the fields for the email template
-				Map<String, String> model = new HashMap<String, String>();
-				model.put("header", "Message from The ARK");
-				model.put("subject", simpleMailMessage.getSubject());
-				model.put("text", simpleMailMessage.getText());
+				Map<String, Object> model = new HashMap<String, Object>();
 
 				// Add the host name into the footer of the email
 				String host = InetAddress.getLocalHost().getHostName();
+
+				// Message header
+				model.put("header", "Message from The ARK");
+				// Message subject
+				model.put("subject", simpleMailMessage.getSubject());
+				// Message text
+				model.put("text", simpleMailMessage.getText());
+				// Hostname in message footer
 				model.put("host", host);
 
+				//TODO: Add inline image(s)??
+				// Add inline image header
+				//FileSystemResource res = new FileSystemResource(new File("c:/Sample.jpg"));
+				//message.addInline("bgHeaderImg", res);
+
 				// Set up the email text
-				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordEmail.vm", model);				
+				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordEmail.vm", model);
 				message.setText(text, true);
 			}
 		};
-		
+
 		// send out the email
 		javaMailSender.send(preparator);
 	}
-	
+
 	public String setResetPasswordMessage(final String fullName, final String password) throws VelocityException {
 		// map all the fields for the message template
 		Map<String, String> model = new HashMap<String, String>();
 		model.put("fullName", fullName);
 		model.put("password", password);
-		
+
 		/* get the text and replace all the mapped fields */
 		String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordMessage.vm", model);
 		/* send out the email */
