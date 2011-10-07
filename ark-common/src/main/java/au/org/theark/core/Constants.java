@@ -310,4 +310,7 @@ public class Constants {
 	/* Default Role for Study Module */
 	public static final String ARK_STUDY_DEFAULT_ROLE							= "Study Read-Only user";
 	public static final int	PALETTE_ROWS										= 5;
+	
+	/* Default "from" paramter for emails */
+	public static final String	ARK_ADMIN_EMAIL									= "admin@the-ark.org.au";
 }
