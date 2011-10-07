@@ -28,22 +28,22 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.phenodataentry.PhenotypicCollectionDataVO;
 
 /**
  * @author elam
  * 
  */
 @SuppressWarnings("serial")
-public class CustomDataEditorForm extends AbstractCustomDataEditorForm<PhenotypicCollectionDataVO> {
+public class CustomDataEditorForm extends AbstractCustomDataEditorForm<PhenoDataCollectionVO> {
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			iPhenotypicService;
 	
-	public CustomDataEditorForm(String id, CompoundPropertyModel<PhenotypicCollectionDataVO> cpModel, FeedbackPanel feedbackPanel) {
+	public CustomDataEditorForm(String id, CompoundPropertyModel<PhenoDataCollectionVO> cpModel, FeedbackPanel feedbackPanel) {
 		super(id, cpModel, feedbackPanel);
 	}
 

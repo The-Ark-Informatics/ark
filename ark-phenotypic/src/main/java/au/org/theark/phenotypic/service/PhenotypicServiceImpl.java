@@ -52,16 +52,15 @@ import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.model.pheno.entity.Status;
-import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
@@ -873,6 +872,14 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	
 	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO){
 		phenotypicDao.createCustomFieldGroup(customFieldGroupVO);
+	}
+
+	public int getPhenotypicCollectionCount(PhenoDataCollectionVO criteria) {
+		return phenotypicDao.getPhenotypicCollectionCount(criteria);
+	}
+
+	public List<PhenotypicCollection> searchPageablePhenotypicCollections(PhenoDataCollectionVO criteria, int first, int count) {
+		return phenotypicDao.searchPageablePhenotypicCollection(criteria, first, count);
 	}
 
 }

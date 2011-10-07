@@ -34,9 +34,8 @@ import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
 import au.org.theark.phenotypic.service.Constants;
@@ -52,15 +51,15 @@ public class PhenoDataDataViewPanel extends Panel {
 	private static final long		serialVersionUID	= -1L;
 	private static final Logger	log					= LoggerFactory.getLogger(PhenoDataDataViewPanel.class);
 
-	private CompoundPropertyModel<PhenotypicCollectionDataVO>			cpModel;
+	private CompoundPropertyModel<PhenoDataCollectionVO>			cpModel;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			iPhenotypicService;
 	
-	protected ArkDataProvider2<PhenotypicCollectionDataVO, PhenoData> scdDataProvider;
+	protected ArkDataProvider2<PhenoDataCollectionVO, PhenoData> scdDataProvider;
 	protected DataView<PhenoData> dataView;
 
-	public PhenoDataDataViewPanel(String id, CompoundPropertyModel<PhenotypicCollectionDataVO> cpModel) {
+	public PhenoDataDataViewPanel(String id, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		super(id);
 		this.cpModel = cpModel;
 		
@@ -81,7 +80,7 @@ public class PhenoDataDataViewPanel extends Panel {
 		// TODO fix for READ permission check
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 		// Data provider to get pageable results from backend
-			scdDataProvider = new ArkDataProvider2<PhenotypicCollectionDataVO, PhenoData>() {
+			scdDataProvider = new ArkDataProvider2<PhenoDataCollectionVO, PhenoData>() {
 				
 				public int size() {
 					PhenotypicCollection phenoCollection = criteriaModel.getObject().getPhenotypicCollection();
@@ -104,7 +103,7 @@ public class PhenoDataDataViewPanel extends Panel {
 		}
 		else {
 			// Since module is not accessible, create a dummy dataProvider that returns nothing
-			scdDataProvider = new ArkDataProvider2<PhenotypicCollectionDataVO, PhenoData>() {
+			scdDataProvider = new ArkDataProvider2<PhenoDataCollectionVO, PhenoData>() {
 				
 				public Iterator<? extends PhenoData> iterator(int first, int count) {
 					return null;
@@ -119,7 +118,7 @@ public class PhenoDataDataViewPanel extends Panel {
 		dataView = this.buildDataView(scdDataProvider);
 	}
 	
-	public DataView<PhenoData> buildDataView(ArkDataProvider2<PhenotypicCollectionDataVO, PhenoData> scdDataProvider2) {
+	public DataView<PhenoData> buildDataView(ArkDataProvider2<PhenoDataCollectionVO, PhenoData> scdDataProvider2) {
 
 		DataView<PhenoData> subjectCFDataDataView = new CustomDataEditorDataView<PhenoData>("customDataList", scdDataProvider2) {
 
