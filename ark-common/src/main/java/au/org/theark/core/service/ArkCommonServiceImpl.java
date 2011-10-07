@@ -18,24 +18,36 @@
  ******************************************************************************/
 package au.org.theark.core.service;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.mail.internet.MimeMessage;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.VelocityException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
+import org.springframework.mail.MailSendException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.ArkLdapContextSource;
@@ -98,18 +110,51 @@ import au.org.theark.core.vo.SubjectVO;
  * 
  */
 
-
 @Transactional
 @Service(Constants.ARK_COMMON_SERVICE)
 public class ArkCommonServiceImpl<T> implements IArkCommonService {
+	private static Logger				log	= LoggerFactory.getLogger(ArkCommonServiceImpl.class);
 
-	private static Logger		log	= LoggerFactory.getLogger(ArkCommonServiceImpl.class);
-	
-	private IArkAuthorisation	arkAuthorisationDao;
-	private ICustomFieldDao		customFieldDao;
-	private IStudyDao				studyDao;
+	private IArkAuthorisation			arkAuthorisationDao;
+	private ICustomFieldDao				customFieldDao;
+	private IStudyDao						studyDao;
 	private ArkLdapContextSource		ldapDataContextSource;
 	private ReCaptchaContextSource	reCaptchaContextSource;
+	private JavaMailSender				javaMailSender;
+	private VelocityEngine				velocityEngine;
+	
+	/**
+	 * @return the velocityEngine
+	 */
+	public VelocityEngine getVelocityEngine() {
+		return velocityEngine;
+	}
+
+	/**
+	 * @param velocityEngine the velocityEngine to set
+	 */
+	@Autowired
+	public void setVelocityEngine(VelocityEngine velocityEngine) {
+		this.velocityEngine = velocityEngine;
+	}
+	
+	/**
+	 * @return the javaMailSender
+	 */
+	public JavaMailSender getJavaMailSender() {
+		return javaMailSender;
+	}
+
+	/**
+	 * @param javaMailSender
+	 *           the javaMailSender to set
+	 */
+	@Autowired
+	public void setJavaMailSender(JavaMailSender javaMailSender) {
+		this.javaMailSender = javaMailSender;
+	}
+
+	
 
 	public ReCaptchaContextSource getRecaptchaContextSource() {
 		return reCaptchaContextSource;
@@ -517,8 +562,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public Boolean studyHasSubjects(Study study) {
 		return studyDao.studyHasSubjects(study);
 	}
-	
-	public List<Study> getStudiesForUser(ArkUser arkUser, Study study){
+
+	public List<Study> getStudiesForUser(ArkUser arkUser, Study study) {
 		return studyDao.getStudiesForUser(arkUser, study);
 	}
 
@@ -541,41 +586,41 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria) {
 		return studyDao.getUnitTypes(unitTypeCriteria);
 	}
-	
+
 	public CustomField getCustomField(Long id) {
 		return studyDao.getCustomField(id);
 	}
-	
+
 	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria) {
 		return studyDao.getCustomFieldDisplayByCustomField(cfCriteria);
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException{
-		try{
-			//Create Both CustomField and CustomFieldDisplay
+	public void createCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException {
+		try {
+			// Create Both CustomField and CustomFieldDisplay
 			AuditHistory ah = new AuditHistory();
 			// Field can not have data yet (since it's new)
 			customFieldVO.getCustomField().setCustomFieldHasData(false);
 			studyDao.createCustomField(customFieldVO.getCustomField());
 
-			//Custom Field History
+			// Custom Field History
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 			ah.setComment("Created Custom " + customFieldVO.getCustomField().getName());
 			ah.setEntityId(customFieldVO.getCustomField().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
-			
+
 			createAuditHistory(ah);
-			//Create CustomFieldDisplay only if allowed 
-			if(customFieldVO.isUseCustomFieldDisplay()){
-				//Set the CustomField this CustomFieldDisplay entity is linked to
+			// Create CustomFieldDisplay only if allowed
+			if (customFieldVO.isUseCustomFieldDisplay()) {
+				// Set the CustomField this CustomFieldDisplay entity is linked to
 				customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
 				studyDao.createCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 				// Put in the sequence based on the ID
 				customFieldVO.getCustomFieldDisplay().setSequence(customFieldVO.getCustomFieldDisplay().getId());
 				studyDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 
-				//Custom Field Display History
+				// Custom Field Display History
 				ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 				ah.setComment("Created Custom Field Display" + customFieldVO.getCustomField().getName());
@@ -583,7 +628,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
 				createAuditHistory(ah);
 			}
-		}catch (ConstraintViolationException cvex) {
+		}
+		catch (ConstraintViolationException cvex) {
 			log.error("Custom Field Already Exists.: " + cvex);
 			throw new ArkUniqueException("A Custom Field already exits.");
 		}
@@ -592,23 +638,23 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			throw new ArkSystemException("Problem creating Custom Field: " + ex.getMessage());
 		}
 	}
+
 	/**
-	 * Update  a Custom Field if it is not yet any data and update the Custom Field display
-	 * details.
+	 * Update a Custom Field if it is not yet any data and update the Custom Field display details.
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void updateCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException{
-		
+	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException {
+
 		boolean isUnique = studyDao.isCustomFieldUnqiue(customFieldVO.getCustomField().getName(), customFieldVO.getCustomField().getStudy(), customFieldVO.getCustomField());
-		if(!isUnique){
-			log.error("Custom Field Already Exists.: " );
+		if (!isUnique) {
+			log.error("Custom Field Already Exists.: ");
 			throw new ArkUniqueException("A Custom Field already exits.");
 		}
-		try{
-			
-			if(!customFieldVO.getCustomField().getCustomFieldHasData()){
+		try {
+
+			if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
 				studyDao.updateCustomField(customFieldVO.getCustomField());
-				//Custom Field History
+				// Custom Field History
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 				ah.setComment("Updated Custom Field " + customFieldVO.getCustomField().getName());
@@ -616,20 +662,20 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
 				createAuditHistory(ah);
 			}
-			
-			//Only Update CustomFieldDisplay when it is allowed
-			if(customFieldVO.isUseCustomFieldDisplay()){
+
+			// Only Update CustomFieldDisplay when it is allowed
+			if (customFieldVO.isUseCustomFieldDisplay()) {
 				customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
 				studyDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
-				//Custom Field Display History
+				// Custom Field Display History
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 				ah.setComment("Updated Custom Field Display " + customFieldVO.getCustomField().getName());
 				ah.setEntityId(customFieldVO.getCustomField().getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
 				createAuditHistory(ah);
-			}			
-			
+			}
+
 		}
 		catch (ConstraintViolationException cvex) {
 			log.error("Custom Field Already Exists.: " + cvex);
@@ -640,13 +686,13 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			throw new ArkSystemException("Problem updating Custom Field: " + ex.getMessage());
 		}
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException,EntityCannotBeRemoved{
-		
-		try{		
-			
-			if(!customFieldVO.getCustomField().getCustomFieldHasData()){
+	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, EntityCannotBeRemoved {
+
+		try {
+
+			if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
 				studyDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
 				studyDao.deleteCustomField(customFieldVO.getCustomField());
 				String fieldName = customFieldVO.getCustomField().getName();
@@ -656,24 +702,25 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				ah.setEntityId(customFieldVO.getCustomField().getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
 				createAuditHistory(ah);
-				//History for Custom Display Field Display
+				// History for Custom Display Field Display
 				ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
 				ah.setComment("Deleted Custom Display Field For Custom Field " + fieldName);
 				ah.setEntityId(customFieldVO.getCustomFieldDisplay().getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
 				createAuditHistory(ah);
-			}else{
+			}
+			else {
 				throw new EntityCannotBeRemoved("Custom Field cannot be removed, it is used in the system");
-			}	
+			}
 		}
 		catch (Exception ex) {
 			log.error("Unable to delete CustomField. " + ex);
 			throw new ArkSystemException("Unable to delete Custom Field: " + ex.getMessage());
 		}
-		
+
 	}
-	
+
 	private FieldType getFieldTypeById(Long filedTypeId) {
 		return studyDao.getFieldTypeById(filedTypeId);
 	}
@@ -689,36 +736,36 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study) {
 		return arkAuthorisationDao.getArkRoleListByUserAndStudy(arkUserVo, study);
 	}
-	
-	public List<Study> getStudyListForUser(ArkUserVO arkUserVo){
-		return arkAuthorisationDao.getStudyListForUser(arkUserVo);		
+
+	public List<Study> getStudyListForUser(ArkUserVO arkUserVo) {
+		return arkAuthorisationDao.getStudyListForUser(arkUserVo);
 	}
-	
-	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule){
-		return arkAuthorisationDao.getStudyListForUserAndModule(arkUserVo, arkModule);		
+
+	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule) {
+		return arkAuthorisationDao.getStudyListForUserAndModule(arkUserVo, arkModule);
 	}
 
 	public boolean arkUserHasModuleAccess(ArkUser arkUser, ArkModule arkModule) {
 		return arkAuthorisationDao.arkUserHasModuleAccess(arkUser, arkModule);
 	}
-	
+
 	public List<ArkModule> getArkModuleListByArkUser(ArkUser arkUser) {
-		return arkAuthorisationDao.getArkModuleListByArkUser(arkUser); 
+		return arkAuthorisationDao.getArkModuleListByArkUser(arkUser);
 	}
-	
+
 	public int getCountOfStudies() {
 		return studyDao.getCountOfStudies();
 	}
-	public Boolean isArkUserLinkedToStudies(ArkUser arkUser){
+
+	public Boolean isArkUserLinkedToStudies(ArkUser arkUser) {
 		return arkAuthorisationDao.isArkUserLinkedToStudies(arkUser);
 	}
-	
-	
-	public List<CustomFieldGroup> getCustomFieldGroups(CustomFieldGroup customFieldGroup, int first, int count){
-		return  studyDao.getCustomFieldGroups(customFieldGroup, first, count);
+
+	public List<CustomFieldGroup> getCustomFieldGroups(CustomFieldGroup customFieldGroup, int first, int count) {
+		return studyDao.getCustomFieldGroups(customFieldGroup, first, count);
 	}
-	
-	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup){
+
+	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup) {
 		return studyDao.getCustomFieldGroupCount(customFieldGroup);
 	}
 
@@ -729,21 +776,59 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public FieldType getFieldTypeByName(String typeName) throws EntityNotFoundException {
 		return customFieldDao.getFieldTypeByName(typeName);
 	}
-	
-	public ArkRole getArkRoleByName(String roleName){
-		
+
+	public ArkRole getArkRoleByName(String roleName) {
+
 		return arkAuthorisationDao.getArkRoleByName(roleName);
 	}
-	
-	/**
-	 * Filters the CustomFields linked to 
-	 * 1. A Study and
-	 * 2. ArkFunction
-	 * The Criteria is specified in the CustomField parameter. The study and ArkFunction must be set in it.
-	 * @return List<CustomField>
-	 */
-	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria){
+
+	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria) {
 		return studyDao.getCustomFieldList(customFieldCriteria);
 	}
+	
+	public void sendEmail(final SimpleMailMessage simpleMailMessage) throws MailSendException, VelocityException {
+		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+			public void prepare(MimeMessage mimeMessage) throws Exception {
+				MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
+				message.setTo(simpleMailMessage.getTo());
+				
+				// The "from" field is required
+				if(simpleMailMessage.getFrom() == null) {
+					simpleMailMessage.setFrom(Constants.ARK_ADMIN_EMAIL);
+				}
+				
+				message.setFrom(simpleMailMessage.getFrom());
+				message.setSubject(simpleMailMessage.getSubject());
 
+				// Map all the fields for the email template
+				Map<String, String> model = new HashMap<String, String>();
+				model.put("header", "Message from The ARK");
+				model.put("subject", simpleMailMessage.getSubject());
+				model.put("text", simpleMailMessage.getText());
+
+				// Add the host name into the footer of the email
+				String host = InetAddress.getLocalHost().getHostName();
+				model.put("host", host);
+
+				// Set up the email text
+				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordEmail.vm", model);				
+				message.setText(text, true);
+			}
+		};
+		
+		// send out the email
+		javaMailSender.send(preparator);
+	}
+	
+	public String setResetPasswordMessage(final String fullName, final String password) throws VelocityException {
+		// map all the fields for the message template
+		Map<String, String> model = new HashMap<String, String>();
+		model.put("fullName", fullName);
+		model.put("password", password);
+		
+		/* get the text and replace all the mapped fields */
+		String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordMessage.vm", model);
+		/* send out the email */
+		return text;
+	}
 }

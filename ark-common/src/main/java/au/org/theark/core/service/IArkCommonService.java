@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.velocity.exception.VelocityException;
+import org.springframework.mail.MailSendException;
+import org.springframework.mail.SimpleMailMessage;
+
 import au.org.theark.core.dao.ReCaptchaContextSource;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
@@ -499,4 +503,21 @@ public interface IArkCommonService<T> {
 	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria);
 	
 	public ReCaptchaContextSource getRecaptchaContextSource();
+	
+	/**
+	 * Send an email to the specified address, using the given fields
+	 * @param simpleMailMessage
+	 * @throws MailSendException
+	 * @throws VelocityException
+	 */
+	public void sendEmail(final SimpleMailMessage simpleMailMessage) throws MailSendException, VelocityException;
+	
+	/**
+	 * Sets up the reset password message body using a Velocity template
+	 * @param fullName
+	 * @param password
+	 * @throws VelocityException
+	 * @return the reset password message
+	 */
+	public String setResetPasswordMessage(final String fullName, final String password) throws VelocityException;
 }
