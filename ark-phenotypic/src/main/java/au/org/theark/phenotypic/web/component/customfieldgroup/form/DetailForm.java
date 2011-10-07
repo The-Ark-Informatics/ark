@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
@@ -45,7 +46,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	private TextField<String> customFieldGroupTxtFld;
 	private TextArea<String> description;
 	private Palette<CustomField> customFieldPalette;
-	
+	private CheckBox publishedStatusCb;				
 	
 	/**
 	 * @param id
@@ -60,6 +61,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	public void initialiseDetailForm(){
 		customFieldGroupTxtFld = new TextField<String>("customFieldGroup.name");
 		description = new TextArea<String>("customFieldGroup.description");
+		publishedStatusCb = new CheckBox("customFieldGroup.published");
 		initialiseArkModulePalette();
 		addDetailFormComponents();
 		attachValidators();
@@ -72,7 +74,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		PropertyModel<Collection<CustomField>> availablePm = new PropertyModel<Collection<CustomField>>(cpModel, "availableCustomFields");
 		customFieldPalette = new ArkPalette("selectedCustomFields", selectedPm, availablePm, renderer,au.org.theark.core.Constants.PALETTE_ROWS, false);
 	}
-
+	
 
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#attachValidators()
@@ -129,7 +131,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 			Study study = iArkCommonService.getStudy(studyId);
 			getModelObject().getCustomFieldGroup().setArkFunction(arkFunction);
 			getModelObject().getCustomFieldGroup().setStudy(study);
-			
 			iPhenotypicService.createCustomFieldGroup(getModelObject());
 			this.info("Custom Field Group has been created successfully.");
 			
@@ -156,6 +157,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldGroupTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(description);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldPalette);
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(publishedStatusCb);
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 	
