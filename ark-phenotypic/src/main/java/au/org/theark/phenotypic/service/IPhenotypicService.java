@@ -37,11 +37,11 @@ import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.model.pheno.entity.Status;
-import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.vo.CustomFieldGroupVO;
+import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 
@@ -218,5 +218,10 @@ public interface IPhenotypicService {
 	 * @param customFieldGroupVO
 	 */
 	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO);
+
+	public int getPhenotypicCollectionCount(PhenoDataCollectionVO criteria);
+
+	public List<PhenotypicCollection> searchPageablePhenotypicCollections(PhenoDataCollectionVO criteria, int first, int count);
+
 	
 }

@@ -64,11 +64,10 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.vo.CustomFieldGroupVO;
+import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
-import au.org.theark.phenotypic.model.vo.PhenoDataCollectionVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 
 @SuppressWarnings("unchecked")
@@ -1300,70 +1299,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return fileFormat;
 	}
 
-	public List<PhenotypicCollection> getPhenoDataCollection(PhenoDataCollectionVO collectionCriteria, int first, int count){
-//		List<SubjectCustomFieldData> subjectCustomFieldDataList = new ArrayList<SubjectCustomFieldData>();
-//		
-//		StringBuffer sb = new StringBuffer();
-//		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
-//		sb.append("LEFT JOIN cfd.subjectCustomFieldData as fieldList ");
-//		sb.append(" with fieldList.linkSubjectStudy.id = :subjectId ");
-//		sb.append( "  where cfd.customField.study.id = :studyId" );
-//		sb.append(" and cfd.customField.arkFunction.id = :functionId");
-//		sb.append(" order by cfd.sequence");
-//		
-//		Query query = getSession().createQuery(sb.toString());
-//		query.setParameter("subjectId", linkSubjectStudyCriteria.getId());
-//		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
-//		query.setParameter("functionId", arkFunction.getId());
-//		query.setFirstResult(first);
-//		query.setMaxResults(count);
-//		
-//		List<Object[]> listOfObjects = query.list();
-//		for (Object[] objects : listOfObjects) {
-//			CustomFieldDisplay cfd = new CustomFieldDisplay();
-//			SubjectCustomFieldData scfd = new SubjectCustomFieldData();
-//			if(objects.length > 0 && objects.length >= 1){
-//				
-//					cfd = (CustomFieldDisplay)objects[0];
-//					if(objects[1] != null){
-//						scfd = (SubjectCustomFieldData)objects[1];
-//					}else{
-//						scfd.setCustomFieldDisplay(cfd);
-//					}
-//					subjectCustomFieldDataList.add(scfd);	
-//			}
-//		}
-//		return subjectCustomFieldDataList;
-		
-		// Example SQL query that the latter HQL is supposed to achieve...
-//		SELECT *
-//		  FROM study.custom_field_group AS cfg
-//		  LEFT JOIN pheno.pheno_collection AS pc
-//		    ON cfg.id = pc.custom_field_group_id
-//		   AND pc.link_subject_study_id = 41
-//		 WHERE cfg.study_id = 11
-//		   AND cfg.ark_function_id = 12
-//		   AND cfg.published = true;
-		
-		List<PhenotypicCollection> resultList = new ArrayList<PhenotypicCollection>();
-		StringBuffer sb = new StringBuffer();
-		sb.append("  FROM " + CustomFieldGroup.class.getName() + " AS cfg ");
-		sb.append("  LEFT JOIN cfg.phenotypicCollection as pc ");
-		sb.append("  WITH pc.linkSubjectStudy.id = :subjectId ");
-		sb.append(" WHERE cfg.study.id = :studyId " );
-		sb.append("   AND cfg.arkFunction.id = :functionId ");
-		sb.append("   AND cfg.published = true ");
-		
-		Query query = getSession().createQuery(sb.toString());
-		query.setParameter("subjectId", collectionCriteria.getPhenotypicCollection().getLinkSubjectStudy().getId());
-		query.setParameter("studyId", collectionCriteria.getCustomFieldGroup().getStudy().getId());
-		query.setParameter("functionId", collectionCriteria.getCustomFieldGroup().getArkFunction().getId());
-		query.setFirstResult(first);
-		query.setMaxResults(count);
-		
-		return resultList;
-	}
-
 	public Long isCustomFieldUsed(PhenoData phenoData) {
 		Long count = new Long("0");
 		CustomField customField = phenoData.getCustomFieldDisplay().getCustomField();
@@ -1510,6 +1445,75 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			session.save(customFieldDisplay);
 			log.debug("Saved CustomFieldDisplay for Custom Field Group");
 		}
+	}
+
+	public int getPhenotypicCollectionCount(PhenoDataCollectionVO criteria) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public List<PhenotypicCollection> searchPageablePhenotypicCollection(PhenoDataCollectionVO collectionCriteria, int first, int count) {
+//		List<SubjectCustomFieldData> subjectCustomFieldDataList = new ArrayList<SubjectCustomFieldData>();
+//		
+//		StringBuffer sb = new StringBuffer();
+//		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
+//		sb.append("LEFT JOIN cfd.subjectCustomFieldData as fieldList ");
+//		sb.append(" with fieldList.linkSubjectStudy.id = :subjectId ");
+//		sb.append( "  where cfd.customField.study.id = :studyId" );
+//		sb.append(" and cfd.customField.arkFunction.id = :functionId");
+//		sb.append(" order by cfd.sequence");
+//		
+//		Query query = getSession().createQuery(sb.toString());
+//		query.setParameter("subjectId", linkSubjectStudyCriteria.getId());
+//		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
+//		query.setParameter("functionId", arkFunction.getId());
+//		query.setFirstResult(first);
+//		query.setMaxResults(count);
+//		
+//		List<Object[]> listOfObjects = query.list();
+//		for (Object[] objects : listOfObjects) {
+//			CustomFieldDisplay cfd = new CustomFieldDisplay();
+//			SubjectCustomFieldData scfd = new SubjectCustomFieldData();
+//			if(objects.length > 0 && objects.length >= 1){
+//				
+//					cfd = (CustomFieldDisplay)objects[0];
+//					if(objects[1] != null){
+//						scfd = (SubjectCustomFieldData)objects[1];
+//					}else{
+//						scfd.setCustomFieldDisplay(cfd);
+//					}
+//					subjectCustomFieldDataList.add(scfd);	
+//			}
+//		}
+//		return subjectCustomFieldDataList;
+		
+		// Example SQL query that the latter HQL is supposed to achieve...
+//		SELECT *
+//		  FROM study.custom_field_group AS cfg
+//		  LEFT JOIN pheno.pheno_collection AS pc
+//		    ON cfg.id = pc.custom_field_group_id
+//		   AND pc.link_subject_study_id = 41
+//		 WHERE cfg.study_id = 11
+//		   AND cfg.ark_function_id = 12
+//		   AND cfg.published = true;
+		
+		List<PhenotypicCollection> resultList = new ArrayList<PhenotypicCollection>();
+		StringBuffer sb = new StringBuffer();
+		sb.append("  FROM " + CustomFieldGroup.class.getName() + " AS cfg ");
+		sb.append("  LEFT JOIN cfg.phenotypicCollection as pc ");
+		sb.append("  WITH pc.linkSubjectStudy.id = :subjectId ");
+		sb.append(" WHERE cfg.study.id = :studyId " );
+		sb.append("   AND cfg.arkFunction.id = :functionId ");
+		sb.append("   AND cfg.published = true ");
+		
+		Query query = getSession().createQuery(sb.toString());
+		query.setParameter("subjectId", collectionCriteria.getPhenotypicCollection().getLinkSubjectStudy().getId());
+		query.setParameter("studyId", collectionCriteria.getCustomFieldGroup().getStudy().getId());
+		query.setParameter("functionId", collectionCriteria.getCustomFieldGroup().getArkFunction().getId());
+		query.setFirstResult(first);
+		query.setMaxResults(count);
+		
+		return resultList;
 	}
 	
 }

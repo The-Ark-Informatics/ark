@@ -169,6 +169,9 @@ public class Constants {
 	public static final String		PHENO_COLLECTION_UPLOAD_INSERT_TIME						= "insertTime";
 	public static final String		PHENO_COLLECTION_UPLOAD_UPDATE_USER_ID					= "updateUserId";
 	public static final String		PHENO_COLLECTION_UPLOAD_UPDATE_TIME						= "updateTime";
+	
+	public static final String		PHENOTYPIC_COLLECTION_ID									= "id";
+	public static final String		PHENOTYPIC_COLLECTION_QUESTIONNAIRE_STATUS			= "";
 
 	public static final String		FIELD																= "field";
 	public static final String		FIELD_ID															= "id";

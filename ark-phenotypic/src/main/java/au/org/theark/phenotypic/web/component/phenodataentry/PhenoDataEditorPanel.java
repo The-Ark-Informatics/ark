@@ -28,6 +28,7 @@ import org.apache.wicket.model.ResourceModel;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
 import au.org.theark.phenotypic.web.component.phenodataentry.form.CustomDataEditorForm;
 
@@ -35,14 +36,14 @@ public class PhenoDataEditorPanel extends Panel {
 
 	private static final long		serialVersionUID	= -1L;
 
-	private CompoundPropertyModel<PhenotypicCollectionDataVO>			cpModel;
+	private CompoundPropertyModel<PhenoDataCollectionVO>			cpModel;
 
 	protected FeedbackPanel				feedbackPanel;
-	protected AbstractCustomDataEditorForm<PhenotypicCollectionDataVO>	customDataEditorForm;
+	protected AbstractCustomDataEditorForm<PhenoDataCollectionVO>	customDataEditorForm;
 	protected PhenoDataDataViewPanel dataViewPanel;
 	protected Label warnSaveLabel;
 	
-	public PhenoDataEditorPanel(String id, CompoundPropertyModel<PhenotypicCollectionDataVO> cpModel, FeedbackPanel feedBackPanel) {
+	public PhenoDataEditorPanel(String id, CompoundPropertyModel<PhenoDataCollectionVO> cpModel, FeedbackPanel feedBackPanel) {
 		super(id);
 
 		this.cpModel = cpModel;

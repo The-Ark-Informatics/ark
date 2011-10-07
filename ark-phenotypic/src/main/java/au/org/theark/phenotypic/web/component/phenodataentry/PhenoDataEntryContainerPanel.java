@@ -33,6 +33,7 @@ import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 /**
@@ -48,7 +49,7 @@ public class PhenoDataEntryContainerPanel extends Panel {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			iPhenotypicService;
 	
-	protected CompoundPropertyModel<PhenotypicCollectionDataVO> cpModel;
+	protected CompoundPropertyModel<PhenoDataCollectionVO> cpModel;
 
 	protected FeedbackPanel feedbackPanel;
 	protected WebMarkupContainer customDataEditorWMC;
@@ -58,7 +59,7 @@ public class PhenoDataEntryContainerPanel extends Panel {
 	 * @param id
 	 * @param phenoCollection
 	 */
-	public PhenoDataEntryContainerPanel(String id, CompoundPropertyModel<PhenotypicCollectionDataVO> phenoCollectionModel) {
+	public PhenoDataEntryContainerPanel(String id, CompoundPropertyModel<PhenoDataCollectionVO> phenoCollectionModel) {
 		super(id, phenoCollectionModel);
 		this.cpModel = phenoCollectionModel;
 	}

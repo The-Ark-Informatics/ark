@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
@@ -42,7 +43,6 @@ import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldUpload.FieldUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
-import au.org.theark.phenotypic.web.component.phenodataentry.PhenotypicCollectionDataVO;
 import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataEntryContainerPanel;
 import au.org.theark.phenotypic.web.component.summary.SummaryContainerPanel;
 
@@ -102,7 +102,7 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA)) {
 			ArkFunction associatedPrimaryFn = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
-			CompoundPropertyModel<PhenotypicCollectionDataVO> phenoDataCPM = new CompoundPropertyModel<PhenotypicCollectionDataVO>(new PhenotypicCollectionDataVO());
+			CompoundPropertyModel<PhenoDataCollectionVO> phenoDataCPM = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
 			phenoDataCPM.getObject().setArkFunction(associatedPrimaryFn);
 			panelToReturn = new PhenoDataEntryContainerPanel(panelId, phenoDataCPM).initialisePanel();
 //			panelToReturn = new FieldDataContainerPanel(panelId);
