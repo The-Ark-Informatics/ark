@@ -184,7 +184,7 @@ public class PhenoDataUploader {
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
 				String subjectUid = stringLineArray[0];
-				LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid);
+				LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid, study);
 				Collection<FieldData> fieldDataToUpdate = iPhenoService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 
 				// Loop through columns in current row in file, starting from the 2th position
@@ -351,7 +351,7 @@ public class PhenoDataUploader {
 				stringLineArray = csvReader.getValues();
 
 				String subjectUid = stringLineArray[0];
-				LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid);
+				LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid, study);
 
 				// Second/1th column should be date collected
 				try {

@@ -111,19 +111,19 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 			study = iArkCommonService.getStudy(sessionStudyId);
 			
 			try {
-				subjectFromBackend = iArkCommonService.getSubjectByUID(sessionSubjectUID);
+				subjectFromBackend = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
+
+				// Set SubjectUID into context
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getSubjectUID());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY, subjectFromBackend.getStudy());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, subjectFromBackend.getStudy().getId());
+
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subjectFromBackend.getPerson().getId());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 			}
 			catch (EntityNotFoundException e) {
 				log.error(e.getMessage());
 			}
-
-			// Set SubjectUID into context
-			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getSubjectUID());
-			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY, subjectFromBackend.getStudy());
-			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, subjectFromBackend.getStudy().getId());
-
-			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subjectFromBackend.getPerson().getId());
-			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 
 			// Force clearing of Cache to re-load roles for the user for the study
 			realm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());

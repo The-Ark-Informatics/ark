@@ -153,7 +153,7 @@ public class SearchResultListPanel extends Panel {
 				LinkSubjectStudy subjectFromBackend = new LinkSubjectStudy();
 				try {
 
-					subjectFromBackend = iArkCommonService.getSubjectByUID(subject.getSubjectUID());
+					subjectFromBackend = iArkCommonService.getSubjectByUID(subject.getSubjectUID(), subject.getStudy());
 				}
 				catch (EntityNotFoundException e) {
 					log.error(e.getMessage());

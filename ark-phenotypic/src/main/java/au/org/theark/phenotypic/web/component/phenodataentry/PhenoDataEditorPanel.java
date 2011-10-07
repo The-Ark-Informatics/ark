@@ -35,14 +35,14 @@ public class PhenoDataEditorPanel extends Panel {
 
 	private static final long		serialVersionUID	= -1L;
 
-	private CompoundPropertyModel<PhenoCollectionDataVO>			cpModel;
+	private CompoundPropertyModel<PhenotypicCollectionDataVO>			cpModel;
 
 	protected FeedbackPanel				feedbackPanel;
-	protected AbstractCustomDataEditorForm<PhenoCollectionDataVO>	customDataEditorForm;
+	protected AbstractCustomDataEditorForm<PhenotypicCollectionDataVO>	customDataEditorForm;
 	protected PhenoDataDataViewPanel dataViewPanel;
 	protected Label warnSaveLabel;
 	
-	public PhenoDataEditorPanel(String id, CompoundPropertyModel<PhenoCollectionDataVO> cpModel, FeedbackPanel feedBackPanel) {
+	public PhenoDataEditorPanel(String id, CompoundPropertyModel<PhenotypicCollectionDataVO> cpModel, FeedbackPanel feedBackPanel) {
 		super(id);
 
 		this.cpModel = cpModel;

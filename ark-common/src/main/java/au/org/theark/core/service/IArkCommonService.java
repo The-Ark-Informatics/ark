@@ -105,10 +105,11 @@ public interface IArkCommonService<T> {
 	 * </p>
 	 * 
 	 * @param subjectUID
+	 * @param study
 	 * @return LinkSubjectStudy
 	 * @throws EntityNotFoundException
 	 */
-	public LinkSubjectStudy getSubjectByUID(String subjectUID) throws EntityNotFoundException;
+	public LinkSubjectStudy getSubjectByUID(String subjectUID, Study study) throws EntityNotFoundException;
 
 	public Collection<MaritalStatus> getMaritalStatus();
 

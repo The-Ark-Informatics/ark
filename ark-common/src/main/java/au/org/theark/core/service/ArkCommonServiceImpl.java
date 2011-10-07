@@ -317,9 +317,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getVitalStatus();
 	}
 
-	public LinkSubjectStudy getSubjectByUID(String subjectUID) throws EntityNotFoundException {
+	public LinkSubjectStudy getSubjectByUID(String subjectUID, Study study) throws EntityNotFoundException {
 
-		return studyDao.getSubjectByUID(subjectUID);
+		return studyDao.getSubjectByUID(subjectUID, study);
 	}
 
 	public Collection<MaritalStatus> getMaritalStatus() {

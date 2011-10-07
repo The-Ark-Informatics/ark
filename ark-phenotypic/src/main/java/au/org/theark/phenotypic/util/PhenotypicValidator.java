@@ -626,7 +626,7 @@ public class PhenotypicValidator {
 				// Check subject exists
 				LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 				try {
-					linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid);
+					linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid, study);
 				}
 				catch (au.org.theark.core.exception.EntityNotFoundException enfe) {
 					// Subject not found...error

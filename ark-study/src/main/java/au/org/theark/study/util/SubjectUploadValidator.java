@@ -509,7 +509,7 @@ public class SubjectUploadValidator {
 
 				// If no SubjectUID found, caught by exception catch
 				try {
-					LinkSubjectStudy linksubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID));
+					LinkSubjectStudy linksubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID, study));
 					linksubjectStudy.setStudy(study);
 					updateRows.add(row);
 
