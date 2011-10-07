@@ -53,7 +53,25 @@
 	-->
 	<bean id="reCaptchaContextSource" class="au.org.theark.core.dao.ReCaptchaContextSource">
 		<property name="reCaptchaPublicKey" value="insert-public-key" />
-		<property name="reCaptchaPrivateKey" value="insert-private-key " />
+		<property name="reCaptchaPrivateKey" value="insert-private-key" />
+	</bean>
+	
+	<!-- SMTP Configuration -->
+	<!--
+		NOTE: host will now use "ark-smtp" mapping as defined in the host file.
+	-->
+	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="ark-smtp"  />
+	</bean>
+	
+	<!--   velocity allows us to use a template for the email-->
+	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+		<property name="velocityProperties">
+			<value>
+				resource.loader=class
+				class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+			</value>
+		</property>
 	</bean>
 
 	<!--  MySql Data Source -->
