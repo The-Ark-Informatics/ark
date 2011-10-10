@@ -1,6 +1,7 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup.form;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -68,8 +69,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	}
 	
 	private void initialiseArkModulePalette() {
-		
+
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "name");
+		Collection<CustomField>  list = cpModel.getObject().getSelectedCustomFields();
 		PropertyModel<Collection<CustomField>> selectedPm = new PropertyModel<Collection<CustomField>>(cpModel, "selectedCustomFields");
 		PropertyModel<Collection<CustomField>> availablePm = new PropertyModel<Collection<CustomField>>(cpModel, "availableCustomFields");
 		customFieldPalette = new ArkPalette("selectedCustomFields", selectedPm, availablePm, renderer,au.org.theark.core.Constants.PALETTE_ROWS, false);

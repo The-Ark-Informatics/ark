@@ -1437,7 +1437,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Session session = getSession();
 		
 		session.save(customFieldGroup);
-		List<CustomField> customFieldList = customFieldGroupVO.getSelectedCustomFields();
+		Collection<CustomField> customFieldList = customFieldGroupVO.getSelectedCustomFields();
 		
 		for (CustomField customField : customFieldList) {
 			CustomFieldDisplay customFieldDisplay = new CustomFieldDisplay();
@@ -1521,12 +1521,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.add(Restrictions.eq("customFieldGroup",customFieldCriteria));
-		ProjectionList projection = Projections.projectionList();
-		projection.add(Projections.property("customField"));
-		criteria.setProjection(projection);
-		criteria.setResultTransformer(Transformers.aliasToBean(CustomField.class));
-		List<CustomField> list = criteria.list();
-		return list;
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("customField"));
+		criteria.setProjection(projectionList);
+		return criteria.list();
+		
 	}
 	
 }

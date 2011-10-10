@@ -1,6 +1,6 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -12,6 +12,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.service.IArkCommonService;
@@ -104,10 +105,45 @@ public class SearchResultListPanel extends Panel{
 			public void onClick(AjaxRequestTarget target) {
 				//TODO
 				CustomFieldGroup cfg =  (CustomFieldGroup) (getParent().getDefaultModelObject());
-				CompoundPropertyModel<CustomFieldGroup> newModel = new CompoundPropertyModel<CustomFieldGroup>( new CustomFieldGroup());
-				//Get the CustomFieldGroup from backend along with the Custom Fields for the study and arkfunction and then instantiate the details page
+				
+				
+				CompoundPropertyModel<CustomFieldGroupVO> newModel = new CompoundPropertyModel<CustomFieldGroupVO>( new CustomFieldGroupVO());
+				
+						//details page
 				CustomFieldGroup itemSelected = item.getModelObject();
-				List<CustomField> customFieldsLinkedToForm = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(itemSelected);
+				
+				CustomField customFieldCriteria = new CustomField();
+				ArkFunction arkFunction  =iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+				customFieldCriteria.setStudy(cfg.getStudy());
+				customFieldCriteria.setArkFunction(arkFunction);
+				Collection<CustomField> availableList = iArkCommonService.getCustomFieldList(customFieldCriteria);
+				Collection<CustomField> selectedList  = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(itemSelected);
+				newModel.getObject().setAvailableCustomFields(availableList);
+				newModel.getObject().setSelectedCustomFields(selectedList);
+				newModel.getObject().setCustomFieldGroup(cfg);
+				CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO, newModel);
+				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
+				
+				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
+				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
+				// Button containers
+				// View Field, thus view container visible
+				arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
+				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
+				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
+			
+				
+
+				target.add(arkCrudContainerVO.getSearchPanelContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVO.getViewButtonContainer());
+				target.add(arkCrudContainerVO.getEditButtonContainer());
+				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
+		
 			}
 			
 		};

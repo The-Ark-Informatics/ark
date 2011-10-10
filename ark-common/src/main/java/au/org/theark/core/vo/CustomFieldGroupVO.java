@@ -2,6 +2,7 @@ package au.org.theark.core.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.model.study.entity.CustomField;
@@ -14,8 +15,8 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 public class CustomFieldGroupVO implements Serializable{
 	
 	private CustomFieldGroup customFieldGroup;
-	private List<CustomField> selectedCustomFields;
-	private List<CustomField> availableCustomFields;
+	private Collection<CustomField> selectedCustomFields;
+	private Collection<CustomField> availableCustomFields;
 	
 	/**
 	 * Constructor
@@ -35,20 +36,21 @@ public class CustomFieldGroupVO implements Serializable{
 		this.customFieldGroup = customFieldGroup;
 	}
 
-	public List<CustomField> getSelectedCustomFields() {
+	public Collection<CustomField> getSelectedCustomFields() {
 		return selectedCustomFields;
 	}
 
-	public void setSelectedCustomFields(List<CustomField> selectedCustomFields) {
+	public void setSelectedCustomFields(Collection<CustomField> selectedCustomFields) {
 		this.selectedCustomFields = selectedCustomFields;
 	}
 
-	public List<CustomField> getAvailableCustomFields() {
+	public Collection<CustomField> getAvailableCustomFields() {
 		return availableCustomFields;
 	}
 
-	public void setAvailableCustomFields(List<CustomField> availableCustomFields) {
+	public void setAvailableCustomFields(Collection<CustomField> availableCustomFields) {
 		this.availableCustomFields = availableCustomFields;
 	}
+
 
 }
