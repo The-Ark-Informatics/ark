@@ -47,7 +47,7 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 	 * @param id
 	 * @param useArkCrudContainerVO
 	 */
-	public CustomFieldGroupContainerPanel(String id,boolean useArkCrudContainerVO, ArkFunction associatedPrimaryFn) {
+	public CustomFieldGroupContainerPanel(String id, ArkFunction associatedPrimaryFn) {
 
 		super(id);
 		cpModel = new CompoundPropertyModel<CustomFieldGroupVO>( new CustomFieldGroupVO());
