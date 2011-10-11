@@ -20,6 +20,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.Study;
@@ -85,6 +87,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	protected void attachValidators() {
 		customFieldGroupTxtFld.setRequired(true).setLabel(new StringResourceModel("customFieldGroup.name", this, new Model<String>("Custom Field Group Name")));
 		customFieldGroupTxtFld.add(StringValidator.maximumLength(1000));
+		
 	}
 
 	/* (non-Javadoc)
@@ -133,7 +136,19 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 			Study study = iArkCommonService.getStudy(studyId);
 			getModelObject().getCustomFieldGroup().setArkFunction(arkFunction);
 			getModelObject().getCustomFieldGroup().setStudy(study);
-			iPhenotypicService.createCustomFieldGroup(getModelObject());
+			StringBuffer sb = new StringBuffer();
+			try {
+				iPhenotypicService.createCustomFieldGroup(getModelObject());
+				
+			}
+			catch (EntityExistsException e) {
+				this.error("A Questionnaire with the same name already exisits. Please choose a unique one");
+				e.printStackTrace();
+			}
+			catch (ArkSystemException e) {
+				this.error("A System error occured. Please contact Administrator.");
+				e.printStackTrace();
+			}
 			this.info("Custom Field Group has been created successfully.");
 			
 			
