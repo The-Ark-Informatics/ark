@@ -43,6 +43,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.Field;
@@ -1526,6 +1527,78 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		criteria.setProjection(projectionList);
 		return criteria.list();
 		
+	}
+	
+	private List<CustomFieldDisplay> getCustomFieldDisplayForCustomFieldGroup(CustomFieldGroup customFieldGroup){
+		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
+		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
+		return criteria.list();
+	}
+	
+	/**
+	 * Update CustomFieldGroup and its related CustomFields(Add or remove)
+	 */
+	public void updateCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException,ArkSystemException{
+		
+		CustomFieldGroup customFieldGroup = customFieldGroupVO.getCustomFieldGroup();
+		Session session = getSession();
+		session.update(customFieldGroup);//Update
+		
+		Collection<CustomField> customFieldsToAdd = getCustomFieldsToAdd(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);
+	
+		Collection<CustomFieldDisplay> customFieldDisplayToRemove = getCustomFieldDisplayToRemove(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);
+		
+		for (CustomFieldDisplay customFieldDisplaytoRemove : customFieldDisplayToRemove) {
+			CustomField customFieldToRemove = customFieldDisplaytoRemove.getCustomField();
+			session.delete(customFieldDisplaytoRemove);
+			session.delete(customFieldToRemove);
+		}
+		
+		for (CustomField fieldToAdd : customFieldsToAdd) {
+			CustomFieldDisplay customFieldDisplay = new CustomFieldDisplay();
+			customFieldDisplay.setCustomFieldGroup(customFieldGroup);
+			customFieldDisplay.setCustomField(fieldToAdd);
+			session.save(customFieldDisplay);//Add a new CustomFieldDisplay field that is linked to the CustomField
+		}
+	}
+	
+	/**
+	 * Creates Collection that will contain the list of new CustomFields that must be added/linked to the CustomFieldGroup
+	 * @param selectedCustomFields
+	 * @param customFieldGroup
+	 * @return Collection<CustomField>
+	 */
+	private Collection<CustomField> getCustomFieldsToAdd(Collection<CustomField> selectedCustomFields, CustomFieldGroup customFieldGroup){
+		
+		Collection<CustomField> customFieldsToAdd = new ArrayList<CustomField>();
+		Collection<CustomField> existingCustomFieldList = getCustomFieldsLinkedToCustomFieldGroup(customFieldGroup);// Existing List of CustomFieldsthat were linked to this CustomFieldGroup
+		for (CustomField customField : selectedCustomFields) {
+			if(!existingCustomFieldList.contains(customField)){
+				customFieldsToAdd.add(customField);
+			}
+		}
+		return customFieldsToAdd;
+	}
+	
+	/**
+	 * Determine the list of CustomField that was linked to this CustomFieldGroup and is not used by anyone and then if this is true add it to a list that will be processed later
+	 * for removal.
+	 * @param selectedCustomFields
+	 * @param customFieldGroup
+	 * @return
+	 */
+	private Collection<CustomFieldDisplay> getCustomFieldDisplayToRemove(Collection<CustomField> selectedCustomFields, CustomFieldGroup customFieldGroup){
+		
+		Collection<CustomFieldDisplay> customFieldDisplayToRemove = new ArrayList<CustomFieldDisplay>();
+		Collection<CustomFieldDisplay> customFieldDisplayList = getCustomFieldDisplayForCustomFieldGroup(customFieldGroup);
+		
+		for (CustomFieldDisplay existingCustomFieldDisplay : customFieldDisplayList) {
+			//Only the fields that does not have data or in not in use must be processed
+			if(!existingCustomFieldDisplay.getCustomField().getCustomFieldHasData() && !selectedCustomFields.contains(existingCustomFieldDisplay.getCustomField())){
+				customFieldDisplayToRemove.add(existingCustomFieldDisplay);	
+			}
+		}
+		return customFieldDisplayToRemove;
 	}
 	
 }

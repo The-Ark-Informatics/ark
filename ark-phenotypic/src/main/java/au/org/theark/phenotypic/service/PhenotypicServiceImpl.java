@@ -900,5 +900,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	public List<CustomField> getCustomFieldsLinkedToCustomFieldGroup(CustomFieldGroup customFieldCriteria){
 		return phenotypicDao.getCustomFieldsLinkedToCustomFieldGroup(customFieldCriteria);
 	}
+	
+	public void updateCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException,ArkSystemException{
+		
+	}
 
 }
