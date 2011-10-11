@@ -77,12 +77,15 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		idTxtFld.setEnabled(false);
 
 		nameTxtFld = new TextField<String>("arkFunction.name");
+		nameTxtFld.setEnabled(false);
+		
+		resourceKeyTxtFld = new TextField<String>("arkFunction.resourceKey");
+		resourceKeyTxtFld.setEnabled(false);
+		
 		descriptionTxtAreaFld = new TextArea<String>("arkFunction.description");
 
 		// FunctionType selection
 		initArkFunctionTypeDropDown();
-
-		resourceKeyTxtFld = new TextField<String>("arkFunction.resourceKey");
 
 		attachValidators();
 		addDetailFormComponents();
