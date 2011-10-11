@@ -1,7 +1,6 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup.form;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -127,7 +126,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	 */
 	@Override
 	protected void onSave(Form<CustomFieldGroupVO> containerForm,	AjaxRequestTarget target) {
-		
 		if(getModelObject().getCustomFieldGroup().getId() == null){
 			//Create
 			
@@ -136,26 +134,33 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 			Study study = iArkCommonService.getStudy(studyId);
 			getModelObject().getCustomFieldGroup().setArkFunction(arkFunction);
 			getModelObject().getCustomFieldGroup().setStudy(study);
-			StringBuffer sb = new StringBuffer();
 			try {
 				iPhenotypicService.createCustomFieldGroup(getModelObject());
-				
+				this.info("Custom Field Group has been created successfully.");	
 			}
 			catch (EntityExistsException e) {
-				this.error("A Questionnaire with the same name already exisits. Please choose a unique one");
-				e.printStackTrace();
+				this.error("A Questionnaire with the same name already exisits. Please choose a unique one.");
 			}
 			catch (ArkSystemException e) {
 				this.error("A System error occured. Please contact Administrator.");
+			}
+		}else{
+			
+			try {
+				iPhenotypicService.updateCustomFieldGroup(getModelObject());
+				this.info("Custom Field Group has been updated successfully.");	
+			} catch (EntityExistsException e) {
+				this.error("A Questionnaire with the same name already exisits. Please choose a unique one.");
+				e.printStackTrace();
+			} catch (ArkSystemException e) {
+				this.error("A System error occured. Please contact Administrator.");
 				e.printStackTrace();
 			}
-			this.info("Custom Field Group has been created successfully.");
 			
-			
-		}else{
-			//Update
 		}
-		onSavePostProcess(target);
+		
+		onSavePostProcess(target);//Post process
+		
 	}
 
 	/* (non-Javadoc)
