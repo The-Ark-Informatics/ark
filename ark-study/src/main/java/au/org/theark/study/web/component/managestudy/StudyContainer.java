@@ -144,7 +144,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 					arkUserVo.setStudy(containerForm.getModelObject().getStudy());
 					studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo);
 					if (studyListForUser.size() == 0) {
-						StudyContainer.this.error("You do not have any access permissions to any Study. Please see your Administrator.");
+						StudyContainer.this.error("There are no studies available.");
 					}
 				}
 				catch (EntityNotFoundException e) {
