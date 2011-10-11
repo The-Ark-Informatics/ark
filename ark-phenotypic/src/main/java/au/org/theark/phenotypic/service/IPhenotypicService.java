@@ -24,6 +24,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.Field;
@@ -219,8 +220,8 @@ public interface IPhenotypicService {
 	 * Creates a Custom Field Group and assoicates a list of Custom Fields to it.
 	 * @param customFieldGroupVO
 	 */
-	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO);
-
+	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException, ArkSystemException;
+	
 	public int getPhenotypicCollectionCount(PhenoDataCollectionVO criteria);
 
 	public List<PhenotypicCollection> searchPageablePhenotypicCollections(PhenoDataCollectionVO criteria, int first, int count);
