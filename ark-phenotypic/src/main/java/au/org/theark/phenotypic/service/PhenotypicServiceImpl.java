@@ -902,7 +902,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	}
 	
 	public void updateCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException,ArkSystemException{
-		
+		 phenotypicDao.updateCustomFieldGroup(customFieldGroupVO);
 	}
 
 }
