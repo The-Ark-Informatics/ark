@@ -1431,7 +1431,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	 * the CustomFieldDisplay. For each Custom Field create a new CustomFieldDisplay
 	 * @param customFieldGroupVO
 	 */
-	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO){
+	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws ArkSystemException{
 		
 		CustomFieldGroup customFieldGroup = customFieldGroupVO.getCustomFieldGroup();
 		Session session = getSession();

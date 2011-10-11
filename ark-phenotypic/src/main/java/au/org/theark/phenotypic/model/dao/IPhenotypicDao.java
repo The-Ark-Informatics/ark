@@ -24,6 +24,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.Field;
@@ -252,12 +253,13 @@ public interface IPhenotypicDao {
 
 	public List<PhenoData> getPhenoDataList(PhenotypicCollection phenoCollection, int first, int count);
 	
-	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO);
+	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException, ArkSystemException;
 
 	public int getPhenotypicCollectionCount(PhenoDataCollectionVO criteria);
 	
 	public List<PhenotypicCollection> searchPageablePhenotypicCollection(PhenoDataCollectionVO collectionCriteria, int first, int count);
 	
 	public List<CustomField> getCustomFieldsLinkedToCustomFieldGroup(CustomFieldGroup customFieldCriteria);
+	
 
 }

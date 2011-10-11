@@ -30,15 +30,18 @@ import jxl.read.biff.BiffException;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.Field;
@@ -871,8 +874,19 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getPhenotypicCollection(id);
 	}
 	
-	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO){
-		phenotypicDao.createCustomFieldGroup(customFieldGroupVO);
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException, ArkSystemException{
+		try{
+			phenotypicDao.createCustomFieldGroup(customFieldGroupVO);	
+		}catch (ConstraintViolationException cvex) {
+			log.error("A Questionnaire with this name for the given study  exists.: " + cvex);
+			throw new EntityExistsException("A Study Component already exits.");
+		}
+		catch (Exception ex) {
+			log.error("Problem creating Questionnaire: " + ex);
+			throw new ArkSystemException("Problem creating Questionnaire: " + ex.getMessage());
+		}
+		
 	}
 
 	public int getPhenotypicCollectionCount(PhenoDataCollectionVO criteria) {
