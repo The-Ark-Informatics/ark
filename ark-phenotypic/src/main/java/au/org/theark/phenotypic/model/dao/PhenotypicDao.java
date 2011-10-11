@@ -1545,21 +1545,22 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		session.update(customFieldGroup);//Update
 		
 		Collection<CustomField> customFieldsToAdd = getCustomFieldsToAdd(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);
-	
-		Collection<CustomFieldDisplay> customFieldDisplayToRemove = getCustomFieldDisplayToRemove(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);
-		
-		for (CustomFieldDisplay customFieldDisplaytoRemove : customFieldDisplayToRemove) {
-			CustomField customFieldToRemove = customFieldDisplaytoRemove.getCustomField();
-			session.delete(customFieldDisplaytoRemove);
-			session.delete(customFieldToRemove);
-		}
-		
+
 		for (CustomField fieldToAdd : customFieldsToAdd) {
 			CustomFieldDisplay customFieldDisplay = new CustomFieldDisplay();
 			customFieldDisplay.setCustomFieldGroup(customFieldGroup);
 			customFieldDisplay.setCustomField(fieldToAdd);
 			session.save(customFieldDisplay);//Add a new CustomFieldDisplay field that is linked to the CustomField
 		}
+
+		if(!customFieldGroup.getPublished()){//Allow Removal only if the form is not published
+			Collection<CustomFieldDisplay> customFieldDisplayToRemove = getCustomFieldDisplayToRemove(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);	
+			for (CustomFieldDisplay customFieldDisplaytoRemove : customFieldDisplayToRemove) {
+				CustomField customFieldToRemove = customFieldDisplaytoRemove.getCustomField();
+				session.delete(customFieldDisplaytoRemove);
+			}
+		}
+	
 	}
 	
 	/**
@@ -1594,7 +1595,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		
 		for (CustomFieldDisplay existingCustomFieldDisplay : customFieldDisplayList) {
 			//Only the fields that does not have data or in not in use must be processed
-			if(!existingCustomFieldDisplay.getCustomField().getCustomFieldHasData() && !selectedCustomFields.contains(existingCustomFieldDisplay.getCustomField())){
+			if(!selectedCustomFields.contains(existingCustomFieldDisplay.getCustomField())){
 				customFieldDisplayToRemove.add(existingCustomFieldDisplay);	
 			}
 		}
