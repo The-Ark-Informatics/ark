@@ -762,6 +762,16 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	}
 	
 	/**
+	 * Similar to the method above, this should be called for general queries to return studies because it assumes
+	 * that the query is being requested by a non-Super Administrator
+	 * @param searchStudy
+	 * @param studyCriteria
+	 */
+	private void applyStudySearchCriteria(Study searchStudy, Criteria studyCriteria) {
+		applyStudySearchCriteria(searchStudy, studyCriteria, false);
+	}
+	
+	/**
 	 * A common method that can be used to apply a search filter on Study entity via a Criteria that is passed from the caller.
 	 * The Criteria's entity can be determined by the caller ( i.e can be Study.class or ArkUserRole.class), this is useful
 	 * when the ArkUser is a SuperAdministrator when we want all the studies to be displayed.In such a case the Criteria object
@@ -769,7 +779,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @param searchStudy
 	 * @param studyCriteria
 	 */
-	private void applyStudySearchCriteria(Study searchStudy,Criteria studyCriteria){
+	private void applyStudySearchCriteria(Study searchStudy, Criteria studyCriteria, boolean isSuperUser){
 		
 		if (searchStudy.getId() != null) {
 			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY, searchStudy.getId()));
@@ -796,16 +806,21 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		}
 
 		if (searchStudy.getStudyStatus() != null) {
+			// In future, Super Administrators may be able to search for Archived studies
 			studyCriteria.add(Restrictions.eq("studyStatus", searchStudy.getStudyStatus()));
-			try {
-				StudyStatus status = getStudyStatus("Archive");
-				studyCriteria.add(Restrictions.ne("studyStatus", status));
-			}
-			catch (StatusNotAvailableException notAvailable) {
-				log.error("Cannot look up and filter on archive status. Reference data could be missing");
+			if (!isSuperUser) {
+				// If not a Super Admin always remove Archived studies
+				try {
+					StudyStatus status = getStudyStatus("Archive");
+					studyCriteria.add(Restrictions.ne("studyStatus", status));
+				}
+				catch (StatusNotAvailableException notAvailable) {
+					log.error("Cannot look up and filter on archive status. Reference data could be missing");
+				}	
 			}
 		}
 		else {
+			// If no status is selected, then default to return all except Archived
 			try {
 				StudyStatus status = getStudyStatus("Archive");
 				studyCriteria.add(Restrictions.ne("studyStatus", status));
@@ -821,10 +836,10 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @param searchStudy
 	 * @return List<Study>
 	 */
-	private List<Study> getAllStudies(Study searchStudy){
+	private List<Study> getAllStudiesForSuperAdmin(Study searchStudy){
 		
 		Criteria criteria = getSession().createCriteria(Study.class);
-		applyStudySearchCriteria(searchStudy, criteria);
+		applyStudySearchCriteria(searchStudy, criteria, true);
 		return criteria.list();
 	}
 	
@@ -836,7 +851,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			
 			if( isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
 				
-				studyList = getAllStudies(arkUserVo.getStudy());//Get all Studies
+				studyList = getAllStudiesForSuperAdmin(arkUserVo.getStudy());//Get all Studies
 			}
 			else{
 				/* Get only the studies the ArkUser is linked to via the ArkUserRole */
@@ -866,7 +881,14 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		
 		try {
 			// Restrict by user if NOT Super Administrator
-			if(!isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+			if(isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+				// Fix another bug where the Super Administrator will never be able to INNER JOIN between ArkUserRole and Study on studyId
+				// (since a Super Admin should always have null in the arkUserRole's study column)
+				studyList = getAllStudiesForSuperAdmin(arkUserVo.getStudy());	//Get all Studies
+				return studyList;
+			}
+			else {
+				// Not Super Administrator, so continue with building the query
 				criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
 			}
 		}
