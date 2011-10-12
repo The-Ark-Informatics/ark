@@ -28,13 +28,14 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 @Entity
 @Table(name = "PHENO_COLLECTION", schema = Constants.PHENO_TABLE_SCHEMA)
 public class PhenotypicCollection implements Serializable{
-	
-	
+
+	private static final long	serialVersionUID	= 1L;
+
 	private Long id;
 	private String name;
 	private String description;
 	private LinkSubjectStudy linkSubjectStudy;
-	private Date recordedDate;
+	private Date recordDate;
 	private Date reviewedDate;
 	private ArkUser reviewedBy;
 	private CustomFieldGroup customFieldGroup;
@@ -88,13 +89,13 @@ public class PhenotypicCollection implements Serializable{
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "RECORDED_DATE", nullable = false)
+	@Column(name = "RECORD_DATE", nullable = false)
 	public Date getRecordedDate() {
-		return recordedDate;
+		return recordDate;
 	}
 
-	public void setRecordedDate(Date recordedDate) {
-		this.recordedDate = recordedDate;
+	public void setRecordedDate(Date recordDate) {
+		this.recordDate = recordDate;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

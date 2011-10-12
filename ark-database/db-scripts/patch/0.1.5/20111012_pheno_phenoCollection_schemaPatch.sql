@@ -1,0 +1,4 @@
+USE pheno;
+
+-- Rename column "RECORDED_DATE" to "RECORD_DATE"
+ALTER TABLE `pheno`.`pheno_collection` CHANGE COLUMN `RECORDED_DATE` `RECORD_DATE` DATETIME NOT NULL  ;
