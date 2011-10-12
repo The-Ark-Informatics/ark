@@ -1,0 +1,64 @@
+<wicket:panel>&nbsp;
+	<div id="searchPanelContainer">
+		<form wicket:id="searchForm">
+		
+			<div id="searchPanelContent">
+				
+				<div id="searchPanelBreaker">&nbsp;</div>				
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+		 				<label for="groupName"><wicket:message key="questionnaire.name">Collection/Group Name:</wicket:message></label>
+		 			</div> 
+		 		</div>
+		 		
+				<div id="fldControl">
+					<div class="label"> 
+						<input wicket:id="customFieldGroup.name"  type="text" />
+					</div>
+				</div>
+				
+				<div  id="panelMargin">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+						<label for="fieldName"><wicket:message key="questionnaire.status">Status:</wicket:message></label>
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<input type="checkbox" wicket:id="customFieldGroup.published"/>
+					</div>
+				</div>
+					
+				<div id="searchPanelContentRight">&nbsp;</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+		       	
+		      
+				<!--  Defines the location for buttons -->			
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">&nbsp;</div>
+				
+				<div id="fldControl">&nbsp;</div>
+				
+				<div id="panelMargin">&nbsp;</div>
+				
+				<div id="actionButtons">&nbsp;
+					<div>
+						<input wicket:id="search" type="submit" wicket:message="value:button.search" />&nbsp;
+						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />&nbsp;
+						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
+					</div>
+				</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+			</div>
+		</form>
+	</div>
+</wicket:panel>

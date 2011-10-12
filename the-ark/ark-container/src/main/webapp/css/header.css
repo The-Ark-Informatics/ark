@@ -1,0 +1,49 @@
+#header {
+height:120px;
+overflow:hidden;
+width:100%;
+}
+
+#mainheaderouter {
+min-height:120px;
+margin:auto;
+}
+
+#hostedby {
+float:left;
+height:100px;
+}
+
+#product {
+float:right;
+height:100px;
+}
+
+#studyName {
+font-size:30pt;
+font-weight:700;
+text-align:center;
+height:100px;
+margin-left:auto;
+margin-right:auto;
+padding-top:10px;
+}
+
+#studyLogo {
+height:100px;
+margin-left:auto;
+margin-right:auto;
+padding-top:0;
+}
+
+#banner {
+width:100%;
+height:1px;
+border-top:solid 1px;
+}
+
+img.center {
+display:block;
+margin-left:auto;
+margin-right:auto;
+}
