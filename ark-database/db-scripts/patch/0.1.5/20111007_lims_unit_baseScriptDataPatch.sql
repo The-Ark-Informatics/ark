@@ -1,6 +1,7 @@
 /*
- * Emergency data patch to fix functionality in ark-0.1.5-SNAPSHOT.war
- * (i.e. these data patches do not require any code changes)
+ * Base 0.1.5 script data patch to fix a data reference table missed by that base script!
+ * Only required to be applied if the database was started from the base 0.1.5 scripts.
+ * (NB: do not require any code changes that would affect ark-0.1.5-SNAPSHOT.war)
  */
 
 USE `lims`;
