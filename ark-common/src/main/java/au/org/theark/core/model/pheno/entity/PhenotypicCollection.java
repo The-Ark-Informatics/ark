@@ -90,11 +90,11 @@ public class PhenotypicCollection implements Serializable{
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "RECORD_DATE", nullable = false)
-	public Date getRecordedDate() {
+	public Date getRecordDate() {
 		return recordDate;
 	}
 
-	public void setRecordedDate(Date recordDate) {
+	public void setRecordDate(Date recordDate) {
 		this.recordDate = recordDate;
 	}
 
