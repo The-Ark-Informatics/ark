@@ -880,7 +880,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 			phenotypicDao.createCustomFieldGroup(customFieldGroupVO);	
 		}catch (ConstraintViolationException cvex) {
 			log.error("A Questionnaire with this name for the given study  exists.: " + cvex);
-			throw new EntityExistsException("A Study Component already exits.");
+			throw new EntityExistsException("A Questionnaire with that name already exits.");
 		}
 		catch (Exception ex) {
 			log.error("Problem creating Questionnaire: " + ex);
@@ -901,8 +901,20 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getCustomFieldsLinkedToCustomFieldGroup(customFieldCriteria);
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor={Exception.class,ConstraintViolationException.class})
 	public void updateCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException,ArkSystemException{
-		 phenotypicDao.updateCustomFieldGroup(customFieldGroupVO);
+		try{
+			phenotypicDao.updateCustomFieldGroup(customFieldGroupVO);	
+		}
+		catch (ConstraintViolationException cvex) {
+			log.error("A Questionnaire with this name for the given study  exists.: " + cvex);
+			throw new EntityExistsException("A Questionnaire with that name already exits.");
+		}
+		catch (Exception ex) {
+			log.error("Problem creating Questionnaire: " + ex);
+			throw new ArkSystemException("Problem creating Questionnaire: " + ex.getMessage());
+		}
+		 
 	}
 
 }

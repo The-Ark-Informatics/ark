@@ -95,6 +95,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	@Override
 	protected boolean isNew() {
 		Boolean flag = false;
+		
 		if( getModelObject().getCustomFieldGroup() != null && getModelObject().getCustomFieldGroup().getId() == null){
 			flag= true;
 		}else{
@@ -109,6 +110,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
 		// TODO Auto-generated method stub
+		setModelObject(new CustomFieldGroupVO());
 		
 	}
 
@@ -149,7 +151,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 			try {
 				iPhenotypicService.updateCustomFieldGroup(getModelObject());
 				this.info("Custom Field Group has been updated successfully.");	
-			} catch (EntityExistsException e) {
+			}catch (EntityExistsException e) {
 				this.error("A Questionnaire with the same name already exisits. Please choose a unique one.");
 				e.printStackTrace();
 			} catch (ArkSystemException e) {
