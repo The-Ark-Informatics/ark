@@ -37,6 +37,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.phenotypic.web.Constants;
+import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupContainerPanel;
 import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadContainerPanel;
@@ -97,7 +98,9 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = new FieldUploadContainerPanel(panelId);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION)) {
-			panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup);
+//			panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup);
+			ArkFunction function  =iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+			panelToReturn = new CustomFieldGroupContainerPanel(panelId, function);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA)) {
 //			ArkFunction associatedPrimaryFn = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
