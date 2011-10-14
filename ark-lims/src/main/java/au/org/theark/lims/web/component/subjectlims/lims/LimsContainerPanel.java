@@ -66,8 +66,6 @@ public class LimsContainerPanel extends Panel {
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
 
-		containerForm.setMultiPart(true);
-		
 		// Applet for printing barcodes
 		PrintAppletPanel printAppletPanel = new PrintAppletPanel("printAppletPanel");
 		containerForm.add(printAppletPanel);
