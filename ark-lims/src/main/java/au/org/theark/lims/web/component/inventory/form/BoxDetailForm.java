@@ -143,8 +143,8 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 	protected void attachValidators() {
 		idTxtFld.setRequired(true);
-		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.invBox.name.required", this, new Model<String>("Name")));
-		invTrayDdc.setRequired(true).setLabel(new StringResourceModel("error.invTray.name.required", this, new Model<String>("Name")));
+		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
+		invTrayDdc.setRequired(true).setLabel(new StringResourceModel("error.tray.required", this, new Model<String>("Tray")));
 		colNoTypeDdc.setRequired(true);
 		rowNoTypeDdc.setRequired(true);
 	}
