@@ -1,0 +1,19 @@
+<wicket:panel>
+	<script type="text/javascript">
+		function printTest() {
+			var applet = document.jZebra;
+			if (applet != null) {
+				// Send characters/raw commands to applet using "append"
+				// Hint:	Carriage Return = \r, New Line = \n, Escape Double Quotes= \"
+				// Note:	"Unescape" is optional and is used to fix "%20" type URL encoded fields
+				applet.append(unescape(document.getElementById("barcode").value));
+				applet.print();
+			}
+		}
+	</script>
+	<applet wicket:id="applet" name="jZebra" code="jzebra.PrintApplet.class" archive="./jzebra.jar" width="10" height="10" alt="jZebra Applet">
+		<param name="printer" value="zebra" />
+	</applet>
+	<input id="printBarcodeTest" type="button" value="Print Barcode Test" onclick="printTest();" />
+	<input type="button" onclick="findPrinter()" value="Check for printer" />
+</wicket:panel>
