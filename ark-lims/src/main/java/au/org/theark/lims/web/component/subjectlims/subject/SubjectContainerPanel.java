@@ -78,15 +78,19 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	private ArkLdapRealm											realm;
 
 	/**
+	 * 
 	 * @param id
+	 * @param arkContextMarkup
 	 */
 	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
-
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 		containerForm = new ContainerForm("containerForm", cpModel);
+		
+		// Added to handle for odd bug in Wicket 1.5.1...shouldn't be needed!
+		containerForm.setMultiPart(true);
 
 		// Set study list user should see
 		containerForm.getModelObject().setStudyList(containerForm.getStudyListForUser());
