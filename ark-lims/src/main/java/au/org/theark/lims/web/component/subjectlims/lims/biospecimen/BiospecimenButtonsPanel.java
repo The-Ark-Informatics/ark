@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -37,6 +38,7 @@ import au.org.theark.core.web.component.button.ArkAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.UniqueIdGenerator;
+import au.org.theark.lims.web.component.panel.applet.zebra.biospecimen.PrintBarcodeButton;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form.BiospecimenModalDetailForm;
 
 /**
@@ -178,6 +180,10 @@ public class BiospecimenButtonsPanel extends Panel {
 
 		aliquotButton.setDefaultFormProcessing(false);
 		this.add(aliquotButton);
+		
+		LimsVO limsVo = (LimsVO) biospecimenModalDetailForm.getModelObject();
+		AjaxButton printBarcode = new PrintBarcodeButton("printBarcode", limsVo.getBiospecimen());
+		this.add(printBarcode);
 	}
 
 	/**
