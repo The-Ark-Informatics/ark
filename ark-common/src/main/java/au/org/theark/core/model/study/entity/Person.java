@@ -154,7 +154,7 @@ public class Person implements java.io.Serializable {
 		this.preferredName = preferredName;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "GENDER_TYPE_ID")
 	public GenderType getGenderType() {
 		return this.genderType;
