@@ -16,11 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.BarcodeLabelData;
 import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.lims.model.dao.IBarcodeDao;
 
 /**
@@ -33,10 +36,22 @@ import au.org.theark.lims.model.dao.IBarcodeDao;
 @Service(au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
 public class BarcodeServiceImpl implements IBarcodeService {
 	private static final Logger	log			= LoggerFactory.getLogger(BarcodeServiceImpl.class);
+	@SuppressWarnings("unchecked")
+	private IArkCommonService		iArkCommonService;
 	private IBarcodeDao				iBarcodeDao;
 	private VelocityEngine			velocityEngine;
 	static private final String	REAL_NUMBER	= "^[-+]?\\d+(\\.\\d+)?$";
 	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+	
+	/**
+	 * @param iArkCommonService
+	 *           the iArkCommonService to set
+	 */
+	@SuppressWarnings("unchecked")
+	@Autowired
+	public void setiArkCommonService(IArkCommonService iArkCommonService) {
+		this.iArkCommonService = iArkCommonService;
+	}
 
 	public IBarcodeDao getiBarcodeDao() {
 		return iBarcodeDao;
@@ -192,24 +207,41 @@ public class BarcodeServiceImpl implements IBarcodeService {
 	
 	public VelocityContext getBioCollectionLabelContext(BioCollection bioCollection) {
 		VelocityContext velocityContext = new VelocityContext();
-		String subjectUid = bioCollection.getLinkSubjectStudy().getSubjectUID();
+		LinkSubjectStudy linkSubjectStudy = null;
+		try {
+			linkSubjectStudy = iArkCommonService.getSubjectByUID(bioCollection.getLinkSubjectStudy().getSubjectUID(), bioCollection.getStudy());
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		String subjectUid = linkSubjectStudy.getSubjectUID();
 		//TODO: need to get custom field data
 		String familyId = "FAMILYID";
 		//TODO: need to get custom field data
 		String asrbno = "ASRBNO";
-		String collectionDate = simpleDateFormat.format(bioCollection.getCollectionDate());
-		String refDoctor = bioCollection.getRefDoctor();
-		String dateOfBirth = simpleDateFormat.format(bioCollection.getLinkSubjectStudy().getPerson().getDateOfBirth());
-		String sex = bioCollection.getLinkSubjectStudy().getPerson().getGenderType().getName();
+		String collectionDate = new String();
+		if(bioCollection.getCollectionDate() != null) {
+			collectionDate = simpleDateFormat.format(bioCollection.getCollectionDate());
+		}
+		String refDoctor = new String();
+		if(bioCollection.getRefDoctor() != null) {
+			refDoctor = bioCollection.getRefDoctor();
+		}
+		String dateOfBirth = new String();
+		if(bioCollection.getLinkSubjectStudy().getPerson().getDateOfBirth() != null) {
+			dateOfBirth= simpleDateFormat.format(bioCollection.getLinkSubjectStudy().getPerson().getDateOfBirth());
+		}
+		String sex = new String();
+		if(bioCollection.getLinkSubjectStudy().getPerson().getGenderType() != null) {
+			bioCollection.getLinkSubjectStudy().getPerson().getGenderType().getName();
+		}
 		
 		velocityContext.put("subjectUid", subjectUid);
 		velocityContext.put("familyId", familyId);
 		velocityContext.put("asrbno", asrbno);
 		velocityContext.put("collectionDate", collectionDate);
 		velocityContext.put("refDoctor", refDoctor);
-		if (dateOfBirth != null) {
-			velocityContext.put("dateOfBirth", dateOfBirth);
-		}
+		velocityContext.put("dateOfBirth", dateOfBirth);
 		velocityContext.put("sex", sex);
 		
 		return velocityContext;
