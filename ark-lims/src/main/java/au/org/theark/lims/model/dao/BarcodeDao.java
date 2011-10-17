@@ -131,7 +131,7 @@ public class BarcodeDao extends HibernateSessionDao implements IBarcodeDao {
 			barcodePrinter = list.get(0);
 		}
 		else {
-			log.error("The entity with id" + barcodePrinter.getId().toString() + " cannot be found.");
+			log.error("The barcodePrinter " + barcodePrinter.getName() + " cannot be found.");
 		}
 
 		return barcodePrinter;
