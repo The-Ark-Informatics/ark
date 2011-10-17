@@ -25,14 +25,14 @@
 								</wicket:message>
 							</label>
 						</th>
-						<th width="20%">
+						<th width="15%">
 							<label for="sampleType">
 								<wicket:message	key="biospecimen.sampleType">
 									Sample Type:
 								</wicket:message>
 							</label>
 						</th>
-						<th width="20%">
+						<th width="15%">
 							<label for="collection">
 								<wicket:message	key="biospecimen.bioCollection">
 									Collection:
@@ -46,19 +46,24 @@
 								</wicket:message>
 							</label>
 						</th>
-						<th width="24%">
+						<th width="14%">
 							<label for="comments">
 								<wicket:message	key="biospecimen.comments">
 									Comments:
 								</wicket:message>
 							</label>
 						</th>
-						<th width="10%">
+						<th width="5%">
 							<label for="location">
 								<wicket:message	key="biospecimen.location">
 									Location:
 								</wicket:message>
 							</label>
+						</th>
+						<th width="5%">
+							<wicket:message	key="biospecimen.barcoded">
+								Barcoded:
+							</wicket:message>
 						</th>
 						<th width="2%">
 							&nbsp;
@@ -83,11 +88,11 @@
 									</a>
 								</span>
 							</td>
-							<td width="20%">
+							<td width="15%">
 								<span wicket:id="biospecimen.sampleType.name">
 								</span>
 							</td>
-							<td width="20%">
+							<td width="15%">
 								<span wicket:id="biospecimen.bioCollection.name">
 								</span>
 							</td>
@@ -97,16 +102,19 @@
 								<span wicket:id="biospecimen.unit">
 								</span>
 							</td>
-							<td width="24%">
+							<td width="14%">
 								<span wicket:id="biospecimen.comments" type="text">
 								</span>
 							</td>
-							<td width="10%">
+							<td width="5%" align="center">
 								<a href="#"wicket:id="biospecimen.location.link">
 									<span wicket:id="biospecimen.location" type="text">
 										[view]
 									</span>
 								</a>
+							</td>
+							<td width="5%" align="center">
+								<img wicket:id="biospecimen.barcoded"/>
 							</td>
 							<td width="2%">
 								&nbsp;
@@ -118,7 +126,7 @@
 							<td width="2%">
 								&nbsp;
 							</td>
-							<td width="96%" colspan="7">
+							<td width="96%" colspan="8">
 								<span wicket:id="navigator" class="a">
 								</span>
 							</td>
