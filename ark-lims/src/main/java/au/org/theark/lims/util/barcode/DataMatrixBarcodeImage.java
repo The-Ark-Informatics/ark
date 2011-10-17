@@ -65,8 +65,9 @@ public class DataMatrixBarcodeImage extends NonCachingImage {
 	 * @param barcodeString
 	 */
 	public DataMatrixBarcodeImage(String id, final String barcodeString) {
-		super(id, getDataMatrixBarcodeImageResource(barcodeString));
+		super(id);
 		setOutputMarkupPlaceholderTag(true);
+		setImageResourceReference(getDataMatrixBarcodeImageResource(barcodeString));
 	}
 
 	/**
@@ -107,7 +108,7 @@ public class DataMatrixBarcodeImage extends NonCachingImage {
 	}
 
 	/**
-	 * Creates a Bufferedimage of the specified string as a 2D DataMatrix barcode
+	 * Creates a BufferedImage of the specified string as a 2D DataMatrix barcode
 	 * 
 	 * @param msg
 	 * @return A Bufferedimage of the 2D DataMatrix barcode
