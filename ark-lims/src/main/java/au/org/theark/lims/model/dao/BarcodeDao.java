@@ -69,6 +69,10 @@ public class BarcodeDao extends HibernateSessionDao implements IBarcodeDao {
 			criteria.add(Restrictions.eq("barcodePrinter", barcodeLabel.getBarcodePrinter()));
 		}
 		
+		if (barcodeLabel.getName() != null) {
+			criteria.add(Restrictions.eq("name", barcodeLabel.getName()));
+		}
+		
 		List<BarcodeLabel> list = criteria.list();
 		if (list != null && list.size() > 0) {
 			barcodeLabel = list.get(0);
