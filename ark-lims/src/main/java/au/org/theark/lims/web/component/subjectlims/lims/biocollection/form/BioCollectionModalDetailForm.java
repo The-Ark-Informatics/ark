@@ -19,6 +19,7 @@
 package au.org.theark.lims.web.component.subjectlims.lims.biocollection.form;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.Form;
@@ -45,6 +46,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataDataViewPanel;
+import au.org.theark.lims.web.component.panel.applet.zebra.biocollection.PrintBioCollectionLabelButton;
 
 /**
  * @author cellis
@@ -69,6 +71,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 	private DateTextField				surgeryDateTxtFld;
 	private ModalWindow					modalWindow;
 	private Panel 							bioCollectionCFDataEntryPanel;
+	private AjaxButton					printBioCollectionLabelButton;
 
 	/**
 	 * Constructor
@@ -133,6 +136,19 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		surgeryDateTxtFld.add(endDatePicker);
 
 		initialiseBioCollectionCFDataEntry();
+		
+		BioCollection bioCollection = cpModel.getObject().getBioCollection();
+		printBioCollectionLabelButton = new PrintBioCollectionLabelButton("printBioCollectionLabel", bioCollection) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onPostSubmit(AjaxRequestTarget target, Form<?> form) {
+			}
+		};
+		printBioCollectionLabelButton.setDefaultFormProcessing(false);
 
 		attachValidators();
 		addComponents();
@@ -153,7 +169,9 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		arkCrudContainerVo.getDetailPanelFormContainer().add(collectionDateTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(surgeryDateTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioCollectionCFDataEntryPanel);
-	
+		
+		add(printBioCollectionLabelButton);
+		
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
@@ -227,5 +245,4 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 			return false;
 		}
 	}
-
 }
