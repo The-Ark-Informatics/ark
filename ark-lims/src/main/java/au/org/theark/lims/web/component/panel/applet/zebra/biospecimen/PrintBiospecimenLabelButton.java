@@ -56,6 +56,7 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 	 */
 	public PrintBiospecimenLabelButton(String id, final Biospecimen biospecimen) {
 		super(id);
+		setOutputMarkupPlaceholderTag(true);
 		this.biospecimen = biospecimen;
 		barcodePrinter = new BarcodePrinter();
 		barcodePrinter.setStudy(biospecimen.getStudy());
@@ -68,7 +69,7 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 		boolean barcodePrinterAvailable = true;
 		
 		if(barcodePrinter.getId() == null) {
-			PrintBiospecimenLabelButton.this.error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
+			PrintBiospecimenLabelButton.this.getParent().error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
 			barcodePrinterAvailable = false;
 		}
 		
@@ -85,6 +86,7 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 		BarcodeLabel barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(biospecimen.getStudy());
+		barcodeLabel.setName("zebra biospecimen");
 		barcodeLabel = iBarcodeService.searchBarcodeLabel(barcodeLabel);
 
 		this.zplString = iBarcodeService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);

@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.panel.applet.zebra.biocollection;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -25,27 +26,37 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.lims.service.IBarcodeService;
+import au.org.theark.lims.service.ILimsService;
+import au.org.theark.lims.web.Constants;
 
 /**
- * Class that represents a button to print a barcode label to a Zebra printer (generally the TLP2844 model) 
+ * Class that represents a button to print a barcode label to a Zebra printer (generally the TLP2844 model)
+ * 
  * @author cellis
  */
 public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	/**
 	 * 
 	 */
-	private static final long		serialVersionUID	= 5772993543283783679L;
-	private static final Logger	log					= LoggerFactory.getLogger(PrintBioCollectionLabelButton.class);
-	
+	private static final long			serialVersionUID	= 5772993543283783679L;
+	private static final Logger		log					= LoggerFactory.getLogger(PrintBioCollectionLabelButton.class);
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>	iArkCommonService;
+	@SpringBean(name = Constants.LIMS_SERVICE)
+	private ILimsService					iLimsService;
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private IBarcodeService			iBarcodeService;
-	private final BioCollection	bioCollection;
-	private String						zplString;
-	private BarcodePrinter			barcodePrinter;
+	private IBarcodeService				iBarcodeService;
+	private BioCollection				bioCollection;
+	private String							zplString;
+	private BarcodePrinter				barcodePrinter;
 
 	/**
 	 * Construct an ajax button to send the specified barcodeString to a ZebraTLP2844 printer<br>
@@ -56,22 +67,34 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	 */
 	public PrintBioCollectionLabelButton(String id, final BioCollection bioCollection) {
 		super(id);
+		setOutputMarkupPlaceholderTag(true);
 		this.bioCollection = bioCollection;
+		try {
+			this.bioCollection = iLimsService.getBioCollection(bioCollection.getId());
+			String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+			LinkSubjectStudy linkSubjectStudy = null;
+			Study study = bioCollection.getStudy();
+			linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
+			this.bioCollection.setLinkSubjectStudy(linkSubjectStudy);
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
 		barcodePrinter = new BarcodePrinter();
 		barcodePrinter.setStudy(bioCollection.getStudy());
 		barcodePrinter.setName("zebra");
 		barcodePrinter = iBarcodeService.searchBarcodePrinter(barcodePrinter);
 	}
-	
+
 	@Override
 	public boolean isEnabled() {
 		boolean barcodePrinterAvailable = true;
-		
-		if(barcodePrinter.getId() == null) {
-			PrintBioCollectionLabelButton.this.error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
+
+		if (barcodePrinter.getId() == null) {
+			PrintBioCollectionLabelButton.this.getParent().error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
 			barcodePrinterAvailable = false;
 		}
-		
+
 		return (barcodePrinterAvailable);
 	}
 
@@ -85,6 +108,7 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 		BarcodeLabel barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(bioCollection.getStudy());
+		barcodeLabel.setName("zebra bioCollection");
 		barcodeLabel = iBarcodeService.searchBarcodeLabel(barcodeLabel);
 
 		this.zplString = iBarcodeService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel);
@@ -99,7 +123,7 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 			onPostSubmit(target, form);
 		}
 	}
-	
+
 	/**
 	 * Method used for any post-submit processing by the calling parent object/form
 	 * 
