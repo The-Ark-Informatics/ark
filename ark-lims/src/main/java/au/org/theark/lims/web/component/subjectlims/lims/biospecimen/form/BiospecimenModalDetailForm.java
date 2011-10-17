@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form;
 
+import java.awt.image.BufferedImage;
 import java.text.NumberFormat;
 import java.util.List;
 
@@ -33,7 +34,8 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.image.NonCachingImage;
+import org.apache.wicket.markup.html.image.resource.BufferedDynamicImageResource;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -41,6 +43,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.resource.IResource;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.DoubleConverter;
@@ -102,7 +106,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private DropDownChoice<BioCollection>	bioCollectionDdc;
 	private TextField<Double>					quantityTxtFld;
 	private CheckBox								barcodedChkBox;
-	private Image									barcodeImage;
+	private NonCachingImage						barcodeImage;
 
 	// Initial BioTransaction details
 	private TextField<Double>					bioTransactionQuantityTxtFld;
@@ -142,21 +146,16 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		addOrReplace(buttonsPanel);
 	}
 
-	@Override
-	public void onBeforeRender() {
-		super.onBeforeRender();
-		setQuantityLabel();
-	}
-
 	protected void refreshEntityFromBackend() {
 		// Get the Biospecimen entity fresh from backend
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
 
 		if (biospecimen.getId() != null) {
 			try {
-				biospecimen = iLimsService.getBiospecimen(biospecimen.getId());
-				biospecimen.setQuantity(iLimsService.getQuantityAvailable(biospecimen));
-				cpModel.getObject().setBiospecimen(biospecimen);
+				final Biospecimen biospecimenFromDB = iLimsService.getBiospecimen(biospecimen.getId());
+				biospecimenFromDB.setQuantity(iLimsService.getQuantityAvailable(biospecimenFromDB));
+				cpModel.getObject().setBiospecimen(biospecimenFromDB);
+				// barcodeImage.setImageResourceReference(DataMatrixBarcodeImage.getDataMatrixBarcodeImageResource(biospecimen.getBiospecimenUid()));
 			}
 			catch (EntityNotFoundException e) {
 				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
@@ -262,9 +261,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		barcodedChkBox = new CheckBox("biospecimen.barcoded");
 		barcodedChkBox.setVisible(true);
-
-		initialiseBarcodeImage();
+		barcodedChkBox.setEnabled(false);
 		
+		initialiseBarcodeImage();
+
 		initialiseBiospecimenCFDataEntry();
 		initialiseBioTransactionListPanel();
 		initialiseBiospecimenLocationPanel();
@@ -277,7 +277,23 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	}
 
 	private void initialiseBarcodeImage() {
-		barcodeImage = new DataMatrixBarcodeImage("biospecimen.barcodeLabel", getModelObject().getBiospecimen().getBiospecimenUid());
+		barcodeImage = new NonCachingImage("biospecimen.barcodeImage");
+		barcodeImage.setImageResourceReference(new ResourceReference(BiospecimenModalDetailForm.class, "dataMatrixBarcodeImage") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public IResource getResource() {
+				final BufferedDynamicImageResource resource = new BufferedDynamicImageResource();
+				final String barcodeString = getModelObject().getBiospecimen().getBiospecimenUid();
+				final BufferedImage image = DataMatrixBarcodeImage.generateBufferedImage(barcodeString);
+				resource.setImage(image);
+				return resource;
+			}
+		});
+		barcodeImage.setOutputMarkupPlaceholderTag(true);
 	}
 
 	/**
@@ -300,7 +316,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioTransactionDetailWmc.addOrReplace(quantityNoteLbl);
 		bioTransactionDetailWmc.addOrReplace(quantityLbl);
 	}
-	
+
 	private void initSampleTypeDdc() {
 		List<BioSampletype> sampleTypeList = iLimsService.getBioSampleTypes();
 		ChoiceRenderer<BioSampletype> choiceRenderer = new ChoiceRenderer<BioSampletype>(Constants.NAME, Constants.ID);
@@ -400,7 +416,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			quantityTxtFld.setVisible(true);
 			quantityTxtFld.setModelObject(bioTransactionQuantityTxtFld.getModelObject());
 			target.add(bioTransactionDetailWmc);
-			
+
 			barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
 			target.add(barcodeImage);
 		}
@@ -409,7 +425,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			iLimsService.updateBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
 			processErrors(target);
-			
+
 			// Hide/show barcod image
 			barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
 			target.add(barcodeImage);
@@ -427,6 +443,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
 		}
 
+		setQuantityLabel();
 		onSavePostProcess(target);
 	}
 
@@ -462,5 +479,21 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		else {
 			return false;
 		}
+	}
+	
+	public CheckBox getBarcodedChkBox() {
+		return barcodedChkBox;
+	}
+
+	public void setBarcodedChkBox(CheckBox barcodedChkBox) {
+		this.barcodedChkBox = barcodedChkBox;
+	}
+
+	public NonCachingImage getBarcodeImage() {
+		return barcodeImage;
+	}
+
+	public void setBarcodeImage(NonCachingImage barcodeImage) {
+		this.barcodeImage = barcodeImage;
 	}
 }
