@@ -29,6 +29,7 @@ import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -36,6 +37,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
@@ -258,10 +260,12 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 					@Override
 					public void onClick(AjaxRequestTarget target) {
-						Biospecimen biospecimen = (Biospecimen) (getParent().getDefaultModelObject());
+						//Biospecimen biospecimen = (Biospecimen) (getParent().getDefaultModelObject());
 						CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 						newModel.getObject().getBiospecimen().setId(biospecimen.getId());
+						//cpModel.getObject().setBiospecimen(biospecimen);
 						showModalWindow(target, newModel);
+						//showModalWindow(target,cpModel);
 					}
 				};
 
@@ -300,7 +304,6 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 						@Override
 						public void onClick(AjaxRequestTarget target) {
-							Biospecimen biospecimen = (Biospecimen) (getParent().getDefaultModelObject());
 							CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 							newModel.getObject().getBiospecimen().setId(biospecimen.getId());
 							BiospecimenLocationVO biospecimenLocationVo;
@@ -339,6 +342,13 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				item.add(quantityLblFld);
 				item.add(unitsLblFld);
 				item.add(locationLink);
+				
+				if (biospecimen.getBarcoded()) {
+					item.addOrReplace(new ContextImage("biospecimen.barcoded", new Model<String>("images/icons/tick.png")));
+				}
+				else {
+					item.addOrReplace(new ContextImage("biospecimen.barcoded", new Model<String>("images/icons/cross.png")));
+				}
 
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 
