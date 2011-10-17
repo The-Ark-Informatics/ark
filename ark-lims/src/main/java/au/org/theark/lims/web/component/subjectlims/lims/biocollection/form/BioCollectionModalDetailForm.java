@@ -46,7 +46,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataDataViewPanel;
-import au.org.theark.lims.web.component.panel.applet.zebra.biocollection.PrintBioCollectionLabelButton;
+import au.org.theark.lims.web.component.button.zebra.biocollection.PrintBioCollectionLabelButton;
 
 /**
  * @author cellis
