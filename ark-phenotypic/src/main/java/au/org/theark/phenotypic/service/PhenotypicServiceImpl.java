@@ -57,6 +57,7 @@ import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.model.pheno.entity.Status;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -915,6 +916,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 			throw new ArkSystemException("Problem creating Questionnaire: " + ex.getMessage());
 		}
 		 
+	}
+	
+	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup){
+		return phenotypicDao.getCFDLinkedToQuestionnaire(customFieldGroup);
 	}
 
 }

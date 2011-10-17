@@ -39,6 +39,7 @@ import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.model.pheno.entity.Status;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -229,5 +230,7 @@ public interface IPhenotypicService {
 	public List<CustomField> getCustomFieldsLinkedToCustomFieldGroup(CustomFieldGroup customFieldCriteria);
 	
 	public void updateCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException,ArkSystemException;
+	
+	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup);
 	
 }

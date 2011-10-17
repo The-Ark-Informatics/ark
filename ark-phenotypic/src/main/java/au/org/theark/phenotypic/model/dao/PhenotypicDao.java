@@ -1601,4 +1601,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return customFieldDisplayToRemove;
 	}
 	
+	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup){
+		
+		Collection<CustomFieldDisplay> listOfCFD  = new ArrayList<CustomFieldDisplay>();
+		return listOfCFD;
+	}
+	
 }
