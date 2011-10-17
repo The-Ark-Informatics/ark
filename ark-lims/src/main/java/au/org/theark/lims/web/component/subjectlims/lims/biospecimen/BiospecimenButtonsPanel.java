@@ -37,7 +37,7 @@ import au.org.theark.core.web.component.button.ArkAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.UniqueIdGenerator;
-import au.org.theark.lims.web.component.panel.applet.zebra.biospecimen.PrintBarcodeButton;
+import au.org.theark.lims.web.component.panel.applet.zebra.biospecimen.PrintBiospecimenLabelButton;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form.BiospecimenModalDetailForm;
 
 /**
@@ -181,7 +181,7 @@ public class BiospecimenButtonsPanel extends Panel {
 		aliquotButton.setDefaultFormProcessing(false);
 		this.add(aliquotButton);
 
-		printBarcodeButton = new PrintBarcodeButton("printBarcode", biospecimenModalDetailForm.getModelObject().getBiospecimen()) {
+		printBarcodeButton = new PrintBiospecimenLabelButton("printBarcode", biospecimenModalDetailForm.getModelObject().getBiospecimen()) {
 			/**
 			 * 
 			 */
