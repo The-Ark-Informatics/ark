@@ -18,9 +18,6 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.panel.applet.zebra.biospecimen;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -34,20 +31,20 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.lims.service.IBarcodeService;
 
 /**
+ * Class that repersents ta button to print a barcode label to a Zebra printer (generally the TLP2844 model) 
  * @author cellis
- * 
  */
-public class PrintBarcodeButton extends AjaxButton {
+public abstract class PrintBarcodeButton extends AjaxButton {
 	/**
 	 * 
 	 */
 	private static final long		serialVersionUID	= 5772993543283783679L;
 	private static final Logger	log					= LoggerFactory.getLogger(PrintBarcodeButton.class);
-	private String						zplString;
-	static private final String	REAL_NUMBER			= "^[-+]?\\d+(\\.\\d+)?$";
+
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
 	private IBarcodeService			iBarcodeService;
 	private final Biospecimen		biospecimen;
+	private String						zplString;
 
 	/**
 	 * Construct an ajax button to send the specified barcodeString to a ZebraTLP2844 printer<br>
@@ -68,83 +65,34 @@ public class PrintBarcodeButton extends AjaxButton {
 
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-		log.info("PrintBarcodeToZebraButton.onSubmit");
-		
-		log.info("getting barcode detail");
 		BarcodePrinter barcodePrinter = new BarcodePrinter();
 		barcodePrinter.setStudy(biospecimen.getStudy());
 		barcodePrinter.setName("zebra");
 		barcodePrinter = iBarcodeService.searchBarcodePrinter(barcodePrinter);
-		
+
 		BarcodeLabel barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(biospecimen.getStudy());
 		barcodeLabel = iBarcodeService.searchBarcodeLabel(barcodeLabel);
-		
-		this.zplString = iBarcodeService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
-		
-		if (zplString == null || zplString.isEmpty()) {
-			this.zplString = generateZpl();
-		}
 
-		log.info("Printing zplString:");
-		log.info(zplString);
-		target.appendJavaScript("printZebraBarcode(\"" + zplString + "\");");
+		this.zplString = iBarcodeService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
+
+		if (zplString == null || zplString.isEmpty()) {
+			this.error("There was an error when attempting to print the barcode for: " + biospecimen.getBiospecimenUid());
+			log.error("There was an error when attempting to print the barcode for: " + biospecimen.getBiospecimenUid());
+		}
+		else {
+			log.debug(zplString);
+			target.appendJavaScript("printZebraBarcode(\"" + zplString + "\");");
+			onPostSubmit(target, form);
+		}
 	}
 
 	/**
-	 * Safety method to create barcode if not defined
+	 * Method used for any post-submit processing by the calling parent object/form
 	 * 
-	 * @return
+	 * @param target
+	 * @param form
 	 */
-	private String generateZpl() {
-		// TODO: remove method
-		String biospecimenUid = "00TST12345H";
-		String dateOfBirth = "31/12/0001";
-		String lastLineOfCircle = "";
-		String secondLineOfCircle = "";
-
-		// Ok first check and see if last character is a number.
-		String lastChar = biospecimenUid.substring(biospecimenUid.length() - 1);
-		// Need to find out where the study code ends
-		// Trim off the year component
-		String withoutYear = biospecimenUid.substring(2);
-		Pattern pat = Pattern.compile("\\d");
-		Matcher matcher = pat.matcher(withoutYear);
-		boolean gotMatch = matcher.find();
-		int indexOfnum = -1;
-		if (gotMatch) {
-			indexOfnum = matcher.start() + 2;
-		}
-		if (lastChar.matches(REAL_NUMBER)) {
-			// We have a clone, therefore go one backwards.
-			lastLineOfCircle = biospecimenUid.substring(biospecimenUid.length() - 2);
-			secondLineOfCircle = biospecimenUid.substring(indexOfnum, biospecimenUid.length() - 2);
-		}
-		else {
-			lastLineOfCircle = lastChar;
-			secondLineOfCircle = biospecimenUid.substring(indexOfnum, biospecimenUid.length() - 1);
-		}
-		String secondLine = secondLineOfCircle;
-
-		try {
-			secondLine = new Integer(secondLineOfCircle).toString();
-		}
-		catch (NumberFormatException ne) {
-		}
-
-		StringBuffer sb = new StringBuffer();
-		sb.append("D14\n");
-		sb.append("q457\n");
-		sb.append("N\n");
-		sb.append("b200,15,D,h3,\"" + biospecimenUid + "\"\n");
-		sb.append("A100,20,0,2,1,1,N,\"" + biospecimenUid.substring(0, indexOfnum) + "\"\n");
-		sb.append("A100,40,0,2,1,1,N,\"" + secondLine + "\"\n");
-		sb.append("A115,60,0,2,1,1,N,\"" + lastLineOfCircle + "\"\n");
-		sb.append("A260,15,0,1,1,2,N,\"" + biospecimenUid + "\"\n");
-		if (dateOfBirth != null)
-			sb.append("A260,45,0,1,1,2,N,\"" + dateOfBirth + "\"\n");
-		sb.append("P1\n");
-		return sb.toString();
-	}
+	protected abstract void onPostSubmit(AjaxRequestTarget target, Form<?> form);
 }
