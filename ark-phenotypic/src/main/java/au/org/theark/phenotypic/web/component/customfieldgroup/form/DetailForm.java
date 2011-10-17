@@ -95,11 +95,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	@Override
 	protected boolean isNew() {
 		Boolean flag = false;
-		
+		CustomFieldGroupVO vo  = getModelObject();
 		if( getModelObject().getCustomFieldGroup() != null && getModelObject().getCustomFieldGroup().getId() == null){
 			flag= true;
-		}else{
-			this.error("There was an internal error. Please contact Administrator.");
 		}
 		return flag;
 	}
