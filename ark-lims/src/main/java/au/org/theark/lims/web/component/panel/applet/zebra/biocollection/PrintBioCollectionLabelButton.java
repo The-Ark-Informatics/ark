@@ -33,20 +33,21 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.lims.service.IBarcodeService;
 
 /**
+ * Class that represents a button to print a barcode label to a Zebra printer (generally the TLP2844 model) 
  * @author cellis
- * 
  */
-public class PrintBarcodeButton extends AjaxButton {
+public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	/**
 	 * 
 	 */
 	private static final long		serialVersionUID	= 5772993543283783679L;
-	private static final Logger	log					= LoggerFactory.getLogger(PrintBarcodeButton.class);
+	private static final Logger	log					= LoggerFactory.getLogger(PrintBioCollectionLabelButton.class);
 	private String						zplString;
 	private SimpleDateFormat		simpleDateFormat	= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
 	private IBarcodeService			iBarcodeService;
 	private final BioCollection	bioCollection;
+	private BarcodePrinter			barcodePrinter;
 
 	/**
 	 * Construct an ajax button to send the specified barcodeString to a ZebraTLP2844 printer<br>
@@ -55,9 +56,25 @@ public class PrintBarcodeButton extends AjaxButton {
 	 * @param id
 	 * @param bioCollection
 	 */
-	public PrintBarcodeButton(String id, final BioCollection bioCollection) {
+	public PrintBioCollectionLabelButton(String id, final BioCollection bioCollection) {
 		super(id);
 		this.bioCollection = bioCollection;
+		barcodePrinter = new BarcodePrinter();
+		barcodePrinter.setStudy(bioCollection.getStudy());
+		barcodePrinter.setName("zebra");
+		barcodePrinter = iBarcodeService.searchBarcodePrinter(barcodePrinter);
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		boolean barcodePrinterAvailable = true;
+		
+		if(barcodePrinter.getId() == null) {
+			PrintBioCollectionLabelButton.this.error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
+			barcodePrinterAvailable = false;
+		}
+		
+		return (barcodePrinterAvailable);
 	}
 
 	@Override
@@ -67,57 +84,29 @@ public class PrintBarcodeButton extends AjaxButton {
 
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+		BarcodeLabel barcodeLabel = new BarcodeLabel();
+		barcodeLabel.setBarcodePrinter(barcodePrinter);
+		barcodeLabel.setStudy(bioCollection.getStudy());
+		barcodeLabel = iBarcodeService.searchBarcodeLabel(barcodeLabel);
+
+		this.zplString = iBarcodeService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel);
+
 		if (zplString == null || zplString.isEmpty()) {
-			this.zplString = generateZpl();
+			this.error("There was an error when attempting to print the barcode for: " + bioCollection.getName());
+			log.error("There was an error when attempting to print the barcode for: " + bioCollection.getName());
 		}
 		else {
-			BarcodePrinter barcodePrinter = new BarcodePrinter();
-			barcodePrinter.setStudy(bioCollection.getStudy());
-			barcodePrinter.setName("zebra");
-			barcodePrinter = iBarcodeService.searchBarcodePrinter(barcodePrinter);
-			
-			BarcodeLabel barcodeLabel = new BarcodeLabel();
-			barcodeLabel.setBarcodePrinter(barcodePrinter);
-			barcodeLabel.setStudy(bioCollection.getStudy());
-			barcodeLabel = iBarcodeService.searchBarcodeLabel(barcodeLabel);
-			
-			this.zplString = iBarcodeService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel);
+			log.debug(zplString);
+			target.appendJavaScript("printZebraBarcode(\"" + zplString + "\");");
+			onPostSubmit(target, form);
 		}
-
-		log.info("PrintBarcodeToZebraButton.onSubmit");
-		log.info("Printing zplString:");
-		log.info(zplString);
-		target.appendJavaScript("printZebraBarcode(" + zplString + ");");
 	}
-
+	
 	/**
-	 * Safety method to create barcode if not defined
+	 * Method used for any post-submit processing by the calling parent object/form
 	 * 
-	 * @return
+	 * @param target
+	 * @param form
 	 */
-	private String generateZpl() {
-		// TODO: remove method
-		String subjectUid = bioCollection.getLinkSubjectStudy().getSubjectUID();
-		// TODO: need to get custom field data
-		String familyId = "FAMILYID";
-		// TODO: need to get custom field data
-		String asrbno = "ASRBNO";
-		String collectionDate = simpleDateFormat.format(bioCollection.getCollectionDate());
-		String refDoctor = bioCollection.getRefDoctor();
-		String dateOfBirth = simpleDateFormat.format(bioCollection.getLinkSubjectStudy().getPerson().getDateOfBirth());
-		if(dateOfBirth == null || dateOfBirth.isEmpty()) {
-			dateOfBirth = "31/12/0001";
-		}
-		String sex = bioCollection.getLinkSubjectStudy().getPerson().getGenderType().getName();
-		StringBuffer sb = new StringBuffer();
-		sb.append("D15\n");
-		sb.append("N\n");
-		sb.append("A240,10,1,2,1,1,N,\"ID: " + subjectUid + " Family ID:" + familyId + "\"" + "\n");
-		sb.append("A220,10,1,2,1,1,N,\"ASRB No:" + asrbno + "\"" + "\n");
-		sb.append("A200,10,1,2,1,1,N,\"Collection Date: " + collectionDate + "\"" + "\n");
-		sb.append("A180,10,1,2,1,1,N,\"Researcher: " + refDoctor + "\"" + "\n");
-		sb.append("A160,10,1,2,1,1,N,\"DOB: " + dateOfBirth + " " + "Sex: " + sex + "\"" + "\n");
-		sb.append("P1\n");
-		return sb.toString();
-	}
+	protected abstract void onPostSubmit(AjaxRequestTarget target, Form<?> form);
 }
