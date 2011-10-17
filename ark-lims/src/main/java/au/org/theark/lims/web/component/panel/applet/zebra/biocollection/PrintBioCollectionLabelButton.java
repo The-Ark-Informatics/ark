@@ -18,8 +18,6 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.panel.applet.zebra.biocollection;
 
-import java.text.SimpleDateFormat;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -42,11 +40,11 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	 */
 	private static final long		serialVersionUID	= 5772993543283783679L;
 	private static final Logger	log					= LoggerFactory.getLogger(PrintBioCollectionLabelButton.class);
-	private String						zplString;
-	private SimpleDateFormat		simpleDateFormat	= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+	
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
 	private IBarcodeService			iBarcodeService;
 	private final BioCollection	bioCollection;
+	private String						zplString;
 	private BarcodePrinter			barcodePrinter;
 
 	/**
