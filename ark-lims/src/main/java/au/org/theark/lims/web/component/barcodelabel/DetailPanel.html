@@ -1,0 +1,217 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailsForm">
+		<div id="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+				<!--	Row 1 -->
+				<div id="fldLabel">
+					<wicket:message key="id">
+						ID:
+					</wicket:message>
+				</div>
+				<div id="fldControl">
+					<input wicket:id="id" type="text" />
+				</div>
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<wicket:message key="name">
+						Name:
+					</wicket:message>
+				</div>
+
+				<div id="fldControl">
+					<input wicket:id="name" type="text" />
+				</div>
+
+				<div id="detailPanelContentRight">
+					&nbsp;
+				</div>
+
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+				
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+				
+				<div id="fldLabel">
+					<wicket:message key="study">
+						Study:
+					</wicket:message>
+				</div>
+
+				<div id="fldControl">
+					<select wicket:id="study">
+						<option>
+							Study selection
+						</option>
+					</select>
+				</div>
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				
+				<div id="fldLabel">
+					<wicket:message key="barcodePrinter">
+						Barcode Printer
+					</wicket:message>
+				</div>
+
+				<div id="fldControl">
+					<select wicket:id="barcodePrinter">
+						<option>
+							Barcode Printer
+						</option>
+					</select>
+				</div>
+				
+				<div id="detailPanelContentRight">
+					&nbsp;
+				</div>
+
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<wicket:message key="description">
+						Description:
+					</wicket:message>
+				</div>
+
+				<div id="fldControl">
+					<textarea wicket:id="description" maxlength="255" cols="25">
+					</textarea>
+				</div>
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<!-- Empty -->
+
+				<div id="detailPanelContentRight">
+					&nbsp;
+				</div>
+
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<wicket:message key="labelPrefix">
+						Label Prefix:
+					</wicket:message>
+				</div>
+
+				<div id="fldControl">
+					<input wicket:id="labelPrefix" type="text" />
+				</div>
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<wicket:message key="labelSuffix">
+						Label Suffix:
+					</wicket:message>
+				</div>
+
+				<div id="fldControl">
+					<input wicket:id="labelSuffix" type="text" />
+				</div>
+
+				<div id="detailPanelContentRight">
+					&nbsp;
+				</div>
+
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+			</div>
+			<!-- End detailFormContainer -->
+
+			<!--	Buttons -->
+			<div wicket:id="viewButtonContainer">
+				<div id="fldLabel">
+					&nbsp;
+				</div>
+				<div id="fldControl">
+					&nbsp;
+				</div>
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				<div id="actionButtons">
+					&nbsp;
+					<div class="label">
+						<input wicket:id="edit" type="submit" wicket:message="value:button.edit" />
+						&nbsp;
+						<div id="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="editCancel" type="submit"	wicket:message="value:page.newSearch" />
+					</div>
+				</div>
+			</div>
+
+			<div wicket:id="editButtonContainer">
+				<div id="fldLabel">
+					&nbsp;
+				</div>
+				<div id="fldControl">
+					&nbsp;
+				</div>
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				<div id="actionButtons">
+					&nbsp;
+					<div class="label">
+						<input wicket:id="save" type="submit" wicket:message="value:button.save" />
+						&nbsp;
+						<div id="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
+						<div id="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
+						&nbsp;
+					</div>
+				</div>
+			</div>
+			<div id="detailPanelBreaker">
+				&nbsp;
+			</div>
+		</div>
+		<!-- End detailsPanelBorder -->
+	</form>
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+</wicket:panel>
