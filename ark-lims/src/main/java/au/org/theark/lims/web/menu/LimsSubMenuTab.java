@@ -21,6 +21,10 @@ package au.org.theark.lims.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -68,6 +72,24 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 				@Override
 				public Panel getPanel(String panelId) {
 					return buildPanels(menuArkFunction, panelId);
+				}
+				
+				@Override
+				public boolean isVisible() {
+					boolean flag = true;
+					if(menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.barcodeprinter") || menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.barcodelabel")) {
+						SecurityManager securityManager = ThreadContext.getSecurityManager();
+						Subject currentUser = SecurityUtils.getSubject();
+
+						// Only a Super Administrator can see the barcodeprinter/barcodelabel tabs
+						if (securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
+							flag = currentUser.isAuthenticated();
+						}
+						else {
+							flag = false;
+						}
+					}
+					return super.isVisible() && flag;
 				}
 			});
 		}
