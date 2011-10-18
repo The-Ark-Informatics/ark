@@ -65,7 +65,10 @@ public class CustomFieldGroup implements Serializable{
 	 * 
 	 */
 	public CustomFieldGroup(){
-		
+		id = new Long("0");
+		name="";
+		study = new Study();
+		arkFunction = new ArkFunction();
 	}
 
 	@Id
