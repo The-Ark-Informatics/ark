@@ -1,6 +1,8 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -15,6 +17,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -122,10 +125,18 @@ public class SearchResultListPanel extends Panel{
 				newModel.getObject().setAvailableCustomFields(availableList);
 				newModel.getObject().setSelectedCustomFields(selectedList);
 				newModel.getObject().setCustomFieldGroup(cfg);
-				CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO, newModel);
+				CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO, newModel,true);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
+				
+				Collection list = iPhenotypicService.getCFDLinkedToQuestionnaire(cfg);
+				
 				TextField<String> questionnaireName = (TextField<String>)arkCrudContainerVO.getDetailPanelFormContainer().get("customFieldGroup.name");
 				questionnaireName.setEnabled(false);
+				
+			
+
+				//The list of CFD must be displayed on the Detail form
+				//Create a CFD List Panel here and add it to the detailForm.
 				
 				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
 				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
@@ -137,8 +148,6 @@ public class SearchResultListPanel extends Panel{
 				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
 				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 			
-				
-
 				target.add(arkCrudContainerVO.getSearchPanelContainer());
 				target.add(arkCrudContainerVO.getDetailPanelContainer());
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());

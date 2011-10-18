@@ -18,7 +18,7 @@ public class CustomFieldGroupDetailPanel extends Panel {
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private CompoundPropertyModel<CustomFieldGroupVO> cpmModel;
 	private DetailForm detailForm;
-
+	private Boolean addCustomFieldListPanel;
 	
 	/**
 	 * 
@@ -27,16 +27,17 @@ public class CustomFieldGroupDetailPanel extends Panel {
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public CustomFieldGroupDetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,CompoundPropertyModel<CustomFieldGroupVO> cpmModel){
+	public CustomFieldGroupDetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,CompoundPropertyModel<CustomFieldGroupVO> cpmModel,Boolean addCustomFieldDisplayList){
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedBackPanel = feedBackPanel;
 		this.cpmModel = cpmModel;
+		this.addCustomFieldListPanel = addCustomFieldDisplayList;
 		initialisePanel();
 	}
 	
 	public void initialisePanel() {
-		detailForm = new DetailForm("detailsForm",feedBackPanel,cpmModel,arkCrudContainerVO);
+		detailForm = new DetailForm("detailsForm",feedBackPanel,cpmModel,arkCrudContainerVO,addCustomFieldListPanel);
 		detailForm.initialiseDetailForm();
 		add(detailForm);
 	}
