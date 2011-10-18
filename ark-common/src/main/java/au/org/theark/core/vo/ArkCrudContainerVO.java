@@ -44,6 +44,7 @@ public class ArkCrudContainerVO implements Serializable {
 	protected WebMarkupContainer	wizardPanelContainer;
 	protected WebMarkupContainer	wizardPanelFormContainer;
 	protected WebMarkupContainer	wmcForarkUserAccountPanel;
+	protected WebMarkupContainer  wmcForCustomFieldDisplayListPanel;
 	protected PageableListView<?>	myListView;
 
 	/**
@@ -93,6 +94,10 @@ public class ArkCrudContainerVO implements Serializable {
 		// Will contain User Management related Modules and Roles Panel
 		wmcForarkUserAccountPanel = new WebMarkupContainer("arkUserAccountPanelcontainer");
 		wmcForarkUserAccountPanel.setOutputMarkupPlaceholderTag(true);
+		
+		wmcForCustomFieldDisplayListPanel =  new WebMarkupContainer("cfdListPanelContainer");
+		wmcForarkUserAccountPanel.setOutputMarkupPlaceholderTag(true);
+		
 	}
 
 	/**
@@ -325,5 +330,13 @@ public class ArkCrudContainerVO implements Serializable {
 	 */
 	public void setMyListView(PageableListView<?> pageableListView) {
 		this.myListView = pageableListView;
+	}
+
+	public WebMarkupContainer getWmcForCustomFieldDisplayListPanel() {
+		return wmcForCustomFieldDisplayListPanel;
+	}
+
+	public void setWmcForCustomFieldDisplayListPanel(WebMarkupContainer wmcForCustomFieldDisplayListPanel) {
+		this.wmcForCustomFieldDisplayListPanel = wmcForCustomFieldDisplayListPanel;
 	}
 }
