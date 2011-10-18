@@ -11,6 +11,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
@@ -23,14 +24,17 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldGroupVO;
+import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldDisplayListPanel;
 
 /**
  * @author nivedann
@@ -48,7 +52,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	private TextField<String> customFieldGroupTxtFld;
 	private TextArea<String> description;
 	private Palette<CustomField> customFieldPalette;
-	private CheckBox publishedStatusCb;				
+	private CheckBox publishedStatusCb;		
+	private Boolean addCustomFieldDisplayList;
+	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> arkDataProvider;
 	
 	/**
 	 * @param id
@@ -56,14 +62,43 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	 * @param cpModel
 	 * @param arkCrudContainerVO
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel,CompoundPropertyModel<CustomFieldGroupVO> cpModel,ArkCrudContainerVO arkCrudContainerVO) {
+	public DetailForm(String id, FeedbackPanel feedBackPanel,CompoundPropertyModel<CustomFieldGroupVO> cpModel,ArkCrudContainerVO arkCrudContainerVO, Boolean addCustomFieldDisplayList) {
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
+		this.addCustomFieldDisplayList = addCustomFieldDisplayList;
 	}
 	
 	public void initialiseDetailForm(){
 		customFieldGroupTxtFld = new TextField<String>("customFieldGroup.name");
 		description = new TextArea<String>("customFieldGroup.description");
 		publishedStatusCb = new CheckBox("customFieldGroup.published");
+		if(addCustomFieldDisplayList){
+			
+			// Data providor to paginate resultList
+			/*arkDataProvider = new ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>() {
+
+				public int size() {
+					return iPhenotypicService.getCFDLinkedToQuestionnaire(criteriaModel.getObject());
+				}
+				public Iterator<CustomFieldDisplay> iterator(int first, int count) {
+					List<CustomFieldDisplay> listSubjects = new ArrayList<CustomFieldDisplay>();
+					
+						listSubjects = iArkCommonService.getCustomFieldGroups(criteriaModel.getObject(), first, count);
+					
+					return listSubjects.iterator();
+				}
+			};
+			*/
+			// Set the criteria for the data provider
+			arkDataProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldDisplay"));
+			
+			CustomFieldDisplayListPanel cfdListPanel = new CustomFieldDisplayListPanel("cfdListPanel");
+			//cfdListPanel.buildDataView(provider)
+			arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(cfdListPanel);
+			
+		}else{
+			arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(new EmptyPanel("cfdListPanel"));
+		}
+		
 		initialiseArkModulePalette();
 		addDetailFormComponents();
 		attachValidators();
@@ -180,6 +215,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(description);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(publishedStatusCb);
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
+		
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 	
