@@ -9,3 +9,4 @@ ALTER TABLE `pheno`.`pheno_data`
   REFERENCES `pheno`.`pheno_collection` (`ID` )
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
+  
