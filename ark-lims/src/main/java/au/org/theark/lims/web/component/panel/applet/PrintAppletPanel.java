@@ -35,7 +35,7 @@ public class PrintAppletPanel extends Panel {
 	 */
 	private static final long	serialVersionUID	= 3901317600541352403L;
 
-	public PrintAppletPanel(String id) {
+	public PrintAppletPanel(String id, String printerName) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 
@@ -55,5 +55,10 @@ public class PrintAppletPanel extends Panel {
 		final String codebase = Strings.beforeLastPathComponent(jarResourceUrl, '/') + '/';
 		applet.add(new AttributeModifier("codebase", codebase));
 		add(applet);
+		
+		final AttributeModifier valueParam1 = new AttributeModifier("value", printerName);
+		final WebMarkupContainer appletParam1 = new WebMarkupContainer("appletParam1");
+		appletParam1.add(valueParam1);
+		applet.add(appletParam1);
 	}
 }
