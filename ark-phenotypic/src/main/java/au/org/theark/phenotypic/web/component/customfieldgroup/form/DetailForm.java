@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -13,6 +14,7 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -54,7 +56,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	private Palette<CustomField> customFieldPalette;
 	private CheckBox publishedStatusCb;		
 	private Boolean addCustomFieldDisplayList;
-	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> arkDataProvider;
+	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdProvider;
+	DataView<CustomFieldDisplay> dataView;
 	
 	/**
 	 * @param id
@@ -62,9 +65,10 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	 * @param cpModel
 	 * @param arkCrudContainerVO
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel,CompoundPropertyModel<CustomFieldGroupVO> cpModel,ArkCrudContainerVO arkCrudContainerVO, Boolean addCustomFieldDisplayList) {
+	public DetailForm(String id, FeedbackPanel feedBackPanel,CompoundPropertyModel<CustomFieldGroupVO> cpModel,ArkCrudContainerVO arkCrudContainerVO, ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdProvider, Boolean addCustomFieldDisplayList) {
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
 		this.addCustomFieldDisplayList = addCustomFieldDisplayList;
+		this.cfdProvider = cfdProvider;
 	}
 	
 	public void initialiseDetailForm(){
@@ -72,27 +76,22 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		description = new TextArea<String>("customFieldGroup.description");
 		publishedStatusCb = new CheckBox("customFieldGroup.published");
 		if(addCustomFieldDisplayList){
-			
-			// Data providor to paginate resultList
-			/*arkDataProvider = new ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>() {
-
-				public int size() {
-					return iPhenotypicService.getCFDLinkedToQuestionnaire(criteriaModel.getObject());
-				}
-				public Iterator<CustomFieldDisplay> iterator(int first, int count) {
-					List<CustomFieldDisplay> listSubjects = new ArrayList<CustomFieldDisplay>();
-					
-						listSubjects = iArkCommonService.getCustomFieldGroups(criteriaModel.getObject(), first, count);
-					
-					return listSubjects.iterator();
-				}
-			};
-			*/
 			// Set the criteria for the data provider
-			arkDataProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldDisplay"));
-			
+			cfdProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldDisplay"));
 			CustomFieldDisplayListPanel cfdListPanel = new CustomFieldDisplayListPanel("cfdListPanel");
-			//cfdListPanel.buildDataView(provider)
+			dataView = cfdListPanel.buildDataView(cfdProvider);
+			dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+			
+//			AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
+//				@Override
+//				protected void onAjaxEvent(AjaxRequestTarget target) {
+//					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+//				}
+//			};
+			
+			//TODO add the paginator
+			cfdListPanel.addOrReplace(dataView);
+			
 			arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(cfdListPanel);
 			
 		}else{

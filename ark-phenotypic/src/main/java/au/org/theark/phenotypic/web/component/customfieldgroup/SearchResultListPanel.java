@@ -3,6 +3,7 @@ package au.org.theark.phenotypic.web.component.customfieldgroup;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -37,9 +38,9 @@ public class SearchResultListPanel extends Panel{
 	private CompoundPropertyModel<CustomFieldGroupVO> cpmModel;
 	private FeedbackPanel	feedbackPanel;
 	private ArkCrudContainerVO	arkCrudContainerVO;
-	private DataView<CustomFieldGroup> dataView;
-	private ArkDataProvider2<CustomFieldGroup, CustomFieldGroup> arkDataProvider;
-	
+	private DataView<CustomFieldDisplay> cfdDataView;
+	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdArkDataProvider;
+
 	/**
 	 * Service references
 	 */
@@ -90,10 +91,7 @@ public class SearchResultListPanel extends Panel{
 				}else{
 					item.add( new Label("published", "No"));
 				}
-					
-				
 			}
-			
 		};
 		
 		return dataView;
@@ -107,34 +105,43 @@ public class SearchResultListPanel extends Panel{
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				//TODO
+				
+				final  CustomFieldGroup itemSelected = item.getModelObject();
+				
 				CustomFieldGroup cfg =  (CustomFieldGroup) (getParent().getDefaultModelObject());
-				
-				
 				CompoundPropertyModel<CustomFieldGroupVO> newModel = new CompoundPropertyModel<CustomFieldGroupVO>( new CustomFieldGroupVO());
-				
-						//details page
-				CustomFieldGroup itemSelected = item.getModelObject();
 				
 				CustomField customFieldCriteria = new CustomField();
 				ArkFunction arkFunction  =iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 				customFieldCriteria.setStudy(cfg.getStudy());
 				customFieldCriteria.setArkFunction(arkFunction);
+				
 				Collection<CustomField> availableList = iArkCommonService.getCustomFieldList(customFieldCriteria);
 				Collection<CustomField> selectedList  = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(itemSelected);
 				newModel.getObject().setAvailableCustomFields(availableList);
 				newModel.getObject().setSelectedCustomFields(selectedList);
 				newModel.getObject().setCustomFieldGroup(cfg);
-				CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO, newModel,true);
-				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 				
-				Collection list = iPhenotypicService.getCFDLinkedToQuestionnaire(cfg);
+				// Data providor to paginate a list of CustomFieldDisplays linked to the CustomFieldGroup
+				cfdArkDataProvider = new ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>() {
+
+					public int size() {
+						return iPhenotypicService.getCFDLinkedToQuestionnaireCount(itemSelected);
+					}
+					public Iterator<CustomFieldDisplay> iterator(int first, int count) {
+						
+						Collection<CustomFieldDisplay> customFieldDisplayList = new ArrayList<CustomFieldDisplay>();
+						customFieldDisplayList = iPhenotypicService.getCFDLinkedToQuestionnaire(itemSelected, first, count);
+						return customFieldDisplayList.iterator();
+					}
+				};
+				
+				CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO, newModel,cfdArkDataProvider,true);
+				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 				
 				TextField<String> questionnaireName = (TextField<String>)arkCrudContainerVO.getDetailPanelFormContainer().get("customFieldGroup.name");
 				questionnaireName.setEnabled(false);
 				
-			
-
 				//The list of CFD must be displayed on the Detail form
 				//Create a CFD List Panel here and add it to the detailForm.
 				
@@ -155,7 +162,7 @@ public class SearchResultListPanel extends Panel{
 				target.add(arkCrudContainerVO.getEditButtonContainer());
 				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
 				target.add(arkCrudContainerVO.getDetailPanelContainer());
-		
+				
 			}
 			
 		};
@@ -166,4 +173,5 @@ public class SearchResultListPanel extends Panel{
 		linkWmc.add(link);
 		return linkWmc;
 	}
+	
 }

@@ -35,16 +35,19 @@ public class CustomFieldDisplayListPanel extends Panel {
 					item.add(new Label("sequence",""));
 				}
 				
+				if(cfd.getRequired() != null && cfd.getRequired()){
+					item.add( new Label("required", "Yes"));
+				}else{
+					item.add( new Label("required", "No"));
+				}
+				
+				
 				if(cfd.getRequiredMessage() != null){
 					item.add( new Label("requiredMessage",cfd.getRequiredMessage()));
 				}else{
 					item.add(new Label("requiredMessage",""));
 				}
-				if(cfd.getRequired()){
-					item.add( new Label("required", "Yes"));
-				}else{
-					item.add( new Label("required", "No"));
-				}
+				
 				
 		
 				
