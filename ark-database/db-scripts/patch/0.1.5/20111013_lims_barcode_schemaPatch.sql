@@ -7,7 +7,7 @@ CREATE TABLE `barcode_printer` (
   `DESCRIPTION` text,
   `LOCATION` varchar(100) NOT NULL,
   `HOST` varchar(100) NOT NULL,
-  `PORT` int(11) NOT NULL DEFAULT '9100',
+  `PORT` varchar(4) NOT NULL DEFAULT '9100',
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='NOTE: the name of the printer MUST match the shared name';
 
