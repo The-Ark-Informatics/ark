@@ -1,0 +1,238 @@
+<wicket:panel>
+	&nbsp;
+	<!-- Page Left Zone -->
+	<div id="leftZone">
+		&nbsp;
+	</div>
+	<!-- Page right Zone -->
+	<div id="rightZone">
+		&nbsp;
+	</div>
+	<!-- Content Zone -->
+	<div id="contentZone">
+		<span wicket:id="detailFeedback">
+		</span>
+		<form wicket:id="detailForm">
+			<div id="detailsPanelBorder">
+				<div wicket:id="detailFormContainer">
+					<div id="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<!-- Row 1 ID and Name-->
+
+					<div id="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<div class="label">
+							<wicket:message key="phenotypicCollection.id">
+								[Id]
+							</wicket:message>
+						</div>
+					</div>
+					<div id="fldControl">
+						<div class="label">
+							<input wicket:id="phenotypicCollection.id" type="text" />
+						</div>
+					</div>
+
+					<div id="panelMargin">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<div class="label">
+							<wicket:message key="phenotypicCollection.questionnaire">
+								[Questionnaire]
+							</wicket:message>
+						</div>
+					</div>
+					<div id="fldControl">
+						<div class="label">
+							<select wicket:id="phenotypicCollection.questionnaire">
+								<option>
+									1
+								</option>
+								<option>
+									2
+								</option>
+							</select>
+						</div>
+					</div>
+
+					<div id="detailPanelContentRight">
+						&nbsp;
+					</div>
+
+					<div id="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div id="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<div class="label">
+							<wicket:message key="phenotypicCollection.name">
+								[Name]
+							</wicket:message>
+						</div>
+					</div>
+					<div id="fldControl">
+						<div class="label">
+							<input wicket:id="phenotypicCollection.name" type="text" maxLength="255" />
+						</div>
+					</div>
+
+					<div id="panelMargin">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<div class="label">
+							<wicket:message key="phenotypicCollection.recordDate">
+								[Record date]
+							</wicket:message>
+						</div>
+					</div>
+
+					<div id="fldControl">
+						<div class="label">
+							<input wicket:id="phenotypicCollection.recordDate" type="text" maxLength="10"/>
+						</div>
+					</div>
+
+					<div id="detailPanelContentRight">
+						&nbsp;
+					</div>
+
+					<div id="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div id="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<div class="label">
+							<wicket:message key="phenotypicCollection.description">
+								[Description]
+							</wicket:message>
+						</div>
+					</div>
+					<div id="fldControl">
+						<div class="label">
+							<textarea wicket:id="phenotypicCollection.description" type="text" cols="25">
+							</textarea>
+						</div>
+					</div>
+
+					<div id="panelMargin">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<div class="label">
+							<wicket:message key="phenotypicCollection.status">
+								[Status:]
+							</wicket:message>
+						</div>
+					</div>
+
+					<div id="fldControl">
+						<div class="label">
+							<select wicket:id="phenotypicCollection.status">
+								<option>
+									1
+								</option>
+								<option>
+									2
+								</option>
+							</select>
+						</div>
+					</div>
+
+					<div id="detailPanelContentRight">
+						&nbsp;
+					</div>
+
+					<div id="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div id="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<div class="label">
+							<wicket:message	key="phenotypicCollection.reviewedBy">
+								[Reviewed By]
+							</wicket:message>
+						</div>
+					</div>
+
+					<div id="fldControl">
+						<div class="label">
+							<select wicket:id="phenotypicCollection.reviewedBy">
+								<option>
+									1
+								</option>
+								<option>
+									2
+								</option>
+							</select>
+						</div>
+					</div>
+
+					<div id="panelMargin">
+						&nbsp;
+					</div>
+					
+					<div id="fldLabel">
+						<div class="label">
+							<wicket:message key="phenotypicCollection.reviewedDate">
+								[Reviewed date:]
+							</wicket:message>
+						</div>
+					</div>
+
+					<div id="fldControl">
+						<div class="label">
+							<input wicket:id="phenotypicCollection.reviewedDate" type="text" maxLength="10"/>
+						</div>
+					</div>
+					
+					<div id="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div id="detailSectionBorder">
+						<div id="customFieldDataPanel">
+							<!-- Phenotypic Collection data entry -->
+							<div wicket:id="phenotypicCollectionDataEntryPanel">
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<!-- detailFormContainer end-->
+
+				<!--	Row 2 Action Buttons -->
+				<div id="buttons">
+					<div wicket:id="buttonsPanelWMC">
+						<div wicket:id="buttonsPanel">
+						</div>
+					</div>
+				</div>
+				<!--	End buttons -->
+			</div>
+		</form>
+		<br>
+		&nbsp;
+	</div>
+</wicket:panel>

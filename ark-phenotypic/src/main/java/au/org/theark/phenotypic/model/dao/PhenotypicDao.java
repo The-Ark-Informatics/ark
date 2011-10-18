@@ -58,6 +58,7 @@ import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
+import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.pheno.entity.Status;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -1353,8 +1354,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public int getPhenoDataCount(PhenotypicCollection phenoCollection) {
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.createAlias("customFieldGroup", "cfg");
-		criteria.add(Restrictions.eq("cfg.id", phenoCollection.getCustomFieldGroup().getId()));
+		criteria.createAlias("customFieldGroup", "qnaire");
+		criteria.add(Restrictions.eq("qnaire.id", phenoCollection.getQuestionnaire().getId()));
 		criteria.setProjection(Projections.rowCount());
 		Integer count = (Integer) criteria.uniqueResult();
 		return count.intValue();
@@ -1395,8 +1396,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		StringBuffer sb = new StringBuffer();
 		sb.append("SELECT cfd, pd ");
 		sb.append("  FROM " + CustomFieldDisplay.class.getName() + " AS cfd ");
-		sb.append(" INNER JOIN cfd.customFieldGroup cfg ");
-		sb.append(" INNER JOIN cfg.phenotypicCollection pc ");
+		sb.append(" INNER JOIN cfd.customFieldGroup qnaire ");
+		sb.append(" INNER JOIN qnaire.phenotypicCollection pc ");
 		sb.append("  LEFT JOIN cfd.phenoData AS pd ");
 		sb.append("  WITH pd.phenotypicCollection.id = :pcId ");
 		sb.append(" WHERE pc.id = :pcId ");
@@ -1448,72 +1449,58 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 	}
 
-	public int getPhenotypicCollectionCount(PhenoDataCollectionVO criteria) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getPhenotypicCollectionCount(PhenoDataCollectionVO collectionCriteria) {
+		Criteria criteria = getSession().createCriteria(PhenotypicCollection.class);
+		criteria.createAlias("questionnaire", "qnaire");
+		criteria.add(Restrictions.eq("linkSubjectStudy", collectionCriteria.getPhenotypicCollection().getLinkSubjectStudy()));
+		// Just a precaution (PhenoCollection to should always map to a CustomFieldGroup where the ArkFunction will correspond to Pheno) 
+		criteria.add(Restrictions.eq("qnaire.arkFunction", collectionCriteria.getArkFunction()));	
+		criteria.setProjection(Projections.rowCount());
+		Integer count = (Integer) criteria.uniqueResult();
+		return count;
 	}
 
 	public List<PhenotypicCollection> searchPageablePhenotypicCollection(PhenoDataCollectionVO collectionCriteria, int first, int count) {
-//		List<SubjectCustomFieldData> subjectCustomFieldDataList = new ArrayList<SubjectCustomFieldData>();
-//		
+		
+		List<PhenotypicCollection> resultList = new ArrayList<PhenotypicCollection>();
 //		StringBuffer sb = new StringBuffer();
-//		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
-//		sb.append("LEFT JOIN cfd.subjectCustomFieldData as fieldList ");
-//		sb.append(" with fieldList.linkSubjectStudy.id = :subjectId ");
-//		sb.append( "  where cfd.customField.study.id = :studyId" );
-//		sb.append(" and cfd.customField.arkFunction.id = :functionId");
-//		sb.append(" order by cfd.sequence");
+//		sb.append("SELECT qnaire, pc ");
+//		sb.append("  FROM " + CustomFieldGroup.class.getName() + " AS qnaire ");
+//		sb.append("  LEFT JOIN qnaire.phenotypicCollection as pc ");
+//		sb.append("  WITH pc.linkSubjectStudy.id = :subjectId ");
+//		sb.append(" WHERE qnaire.study.id = :studyId " );
+//		sb.append("   AND qnaire.arkFunction.id = :functionId ");
+//		sb.append("   AND qnaire.published = true ");
 //		
 //		Query query = getSession().createQuery(sb.toString());
-//		query.setParameter("subjectId", linkSubjectStudyCriteria.getId());
-//		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
-//		query.setParameter("functionId", arkFunction.getId());
+//		query.setParameter("subjectId", collectionCriteria.getPhenotypicCollection().getLinkSubjectStudy().getId());
+//		query.setParameter("studyId", collectionCriteria.getCustomFieldGroup().getStudy().getId());
+//		query.setParameter("functionId", collectionCriteria.getCustomFieldGroup().getArkFunction().getId());
 //		query.setFirstResult(first);
 //		query.setMaxResults(count);
 //		
 //		List<Object[]> listOfObjects = query.list();
 //		for (Object[] objects : listOfObjects) {
-//			CustomFieldDisplay cfd = new CustomFieldDisplay();
-//			SubjectCustomFieldData scfd = new SubjectCustomFieldData();
-//			if(objects.length > 0 && objects.length >= 1){
-//				
-//					cfd = (CustomFieldDisplay)objects[0];
-//					if(objects[1] != null){
-//						scfd = (SubjectCustomFieldData)objects[1];
-//					}else{
-//						scfd.setCustomFieldDisplay(cfd);
-//					}
-//					subjectCustomFieldDataList.add(scfd);	
+//			CustomFieldGroup questionnaire = new CustomFieldGroup();
+//			PhenotypicCollection pc = new PhenotypicCollection();
+//			if (objects.length > 0 && objects.length >= 1) {
+//				questionnaire = (CustomFieldGroup)objects[0];
+//				if (objects[1] != null){
+//					pc = (PhenotypicCollection)objects[1];
+//				} else {
+//					pc.setQuestionnaire(questionnaire);
+//				}
+//				resultList.add(pc);	
 //			}
 //		}
-//		return subjectCustomFieldDataList;
-		
-		// Example SQL query that the latter HQL is supposed to achieve...
-//		SELECT *
-//		  FROM study.custom_field_group AS cfg
-//		  LEFT JOIN pheno.pheno_collection AS pc
-//		    ON cfg.id = pc.custom_field_group_id
-//		   AND pc.link_subject_study_id = 41
-//		 WHERE cfg.study_id = 11
-//		   AND cfg.ark_function_id = 12
-//		   AND cfg.published = true;
-		
-		List<PhenotypicCollection> resultList = new ArrayList<PhenotypicCollection>();
-		StringBuffer sb = new StringBuffer();
-		sb.append("  FROM " + CustomFieldGroup.class.getName() + " AS cfg ");
-		sb.append("  LEFT JOIN cfg.phenotypicCollection as pc ");
-		sb.append("  WITH pc.linkSubjectStudy.id = :subjectId ");
-		sb.append(" WHERE cfg.study.id = :studyId " );
-		sb.append("   AND cfg.arkFunction.id = :functionId ");
-		sb.append("   AND cfg.published = true ");
-		
-		Query query = getSession().createQuery(sb.toString());
-		query.setParameter("subjectId", collectionCriteria.getPhenotypicCollection().getLinkSubjectStudy().getId());
-		query.setParameter("studyId", collectionCriteria.getCustomFieldGroup().getStudy().getId());
-		query.setParameter("functionId", collectionCriteria.getCustomFieldGroup().getArkFunction().getId());
-		query.setFirstResult(first);
-		query.setMaxResults(count);
-		
+		Criteria criteria = getSession().createCriteria(PhenotypicCollection.class);
+		criteria.createAlias("questionnaire", "qnaire");
+		criteria.add(Restrictions.eq("linkSubjectStudy", collectionCriteria.getPhenotypicCollection().getLinkSubjectStudy()));
+		// Just a precaution (PhenoCollection to should always map to a CustomFieldGroup where the ArkFunction will correspond to Pheno) 
+		criteria.add(Restrictions.eq("qnaire.arkFunction", collectionCriteria.getArkFunction()));	
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		resultList = criteria.list();
 		return resultList;
 	}
 	
@@ -1526,6 +1513,13 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		criteria.setProjection(projectionList);
 		return criteria.list();
 		
+	}
+
+	public List<QuestionnaireStatus> getPhenotypicCollectionStatusList() {
+		List<QuestionnaireStatus> resultList = new ArrayList<QuestionnaireStatus>(0);
+		Criteria criteria = getSession().createCriteria(QuestionnaireStatus.class);
+		resultList = criteria.list();
+		return resultList;
 	}
 	
 	private List<CustomFieldDisplay> getCustomFieldDisplayForCustomFieldGroup(CustomFieldGroup customFieldGroup){
@@ -1615,5 +1609,18 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Integer count  = (Integer)criteria.uniqueResult();
 		return count.intValue();
 	}
+
+	public void createPhenotypicCollection(PhenotypicCollection phenotypicCollection) {
+		getSession().save(phenotypicCollection);
+	}
+
+	public void updatePhenotypicCollection(PhenotypicCollection phenotypicCollection) {
+		getSession().update(phenotypicCollection);
+	}
 	
+	public void deletePhenotypicCollection(PhenotypicCollection phenotypicCollection) {
+		// This relies on CASCADE ON DELETE on the database [pheno].[pheno_data] table
+		getSession().delete(phenotypicCollection);
+	}
+
 }

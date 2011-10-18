@@ -1,0 +1,127 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="phenotypicCollectionListForm">
+		<div id="listPanelBorder">
+			<div wicket:id="dataViewListWMC">
+				<table width="0%" cellspacing="0">
+				</table>
+				<table width="100%" cellspacing="0" class="dataview" border="0">
+					<!-- Header row -->
+					<thead>
+						<tr>
+							<th width="2%">
+								&nbsp;
+							</th>
+							<th width="10%">
+								<wicket:message	key="phenotypicCollection.id">
+									[ID:]
+								</wicket:message>
+							</th>
+							<th width="15%">
+								<wicket:message	key="phenotypicCollection.questionnaire">
+									[Questionnaire:]
+								</wicket:message>
+							</th>
+							<th width="15%">
+								<wicket:message	key="phenotypicCollection.name">
+									[Collection Name:]
+								</wicket:message>
+							</th>
+							<th width="22%">
+								<wicket:message	key="phenotypicCollection.description">
+									[Description:]
+								</wicket:message>
+							</th>
+							<th width="16%">
+								<wicket:message	key="phenotypicCollection.status">
+									[Status:]
+								</wicket:message>
+							</th>
+							<th width="10%">
+								<wicket:message	key="phenotypicCollection.recordDate">
+									[Record Date:]
+								</wicket:message>
+							</th>
+							<th width="10%">
+								<wicket:message	key="phenotypicCollection.reviewedDate">
+									[Reviewed Date:]
+								</wicket:message>
+							</th>
+							<th width="2%">
+								&nbsp;
+							</th>
+						</tr>
+					</thead>
+					<tfoot>
+						<tr>
+							<td width="2%">
+								&nbsp;
+							</td>
+							<td width="96%" colspan="7">
+								<span wicket:id="navigator" class="a">
+								</span>
+							</td>
+							<td width="2%">
+								&nbsp;
+							</td>
+						</tr>
+					</tfoot>
+					<tbody>
+						<!-- Repeated item row -->
+						<tr wicket:id="phenotypicCollectionList">
+							<td width="2%">
+								&nbsp;
+							</td>
+							<td width="10%">
+								<span wicket:id="rowDetailsWMC">
+									<a href="#"wicket:id="listDetailsLink">
+										<span wicket:id="phenotypicCollection.id">
+										</span>
+									</a>
+								</span>
+							</td>
+							<td width="15%">
+								<span wicket:id="phenotypicCollection.questionnaire">
+								</span>
+							</td>
+							<td width="15%">
+								<span wicket:id="phenotypicCollection.name">
+								</span>
+							</td>
+							<td width="22%">
+								<span wicket:id="phenotypicCollection.description">
+								</span>
+							</td>
+							<td width="14%">
+								<span wicket:id="phenotypicCollection.status">
+								</span>
+							</td>
+							<td width="10%">
+								<span wicket:id="phenotypicCollection.recordDate">
+								</span>
+							</td>
+							<td width="10%">
+								<span wicket:id="phenotypicCollection.reviewedDate">
+								</span>
+							</td>
+							<td width="2%">
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<table width="0%" cellspacing="0">
+				</table>
+			</div>
+			<!-- New button row -->
+			<div id="buttons">
+				<input wicket:id="listNewButton" type="submit" value="New"/>
+			</div>
+			<!--	End listDetailsPanelBorder -->
+
+			<!--	The detailModalWindow for detail edit/add from listPanel -->
+			<div wicket:id="detailModalWindow">
+			</div>
+		</div>
+	</form>
+</wicket:panel>

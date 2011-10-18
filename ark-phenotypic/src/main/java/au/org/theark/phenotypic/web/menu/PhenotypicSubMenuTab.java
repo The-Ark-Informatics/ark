@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.phenotypic.web.Constants;
@@ -43,6 +44,7 @@ import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldUpload.FieldUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
+import au.org.theark.phenotypic.web.component.phenotypiccollection.PhenotypicCollectionContainerPanel;
 import au.org.theark.phenotypic.web.component.summary.SummaryContainerPanel;
 
 
@@ -91,8 +93,8 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
 			// attach the fields to this "Data Dictionary" function
-//			panelToReturn = new CustomFieldContainerPanel(panelId, false, arkFunction);
-			panelToReturn = new FieldContainerPanel(panelId);
+			panelToReturn = new CustomFieldContainerPanel(panelId, false, arkFunction);
+//			panelToReturn = new FieldContainerPanel(panelId);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD)) {
 			panelToReturn = new FieldUploadContainerPanel(panelId);
@@ -103,11 +105,8 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 //			panelToReturn = new CustomFieldGroupContainerPanel(panelId, function);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA)) {
-//			ArkFunction associatedPrimaryFn = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
-//			CompoundPropertyModel<PhenoDataCollectionVO> phenoDataCPM = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
-//			phenoDataCPM.getObject().setArkFunction(associatedPrimaryFn);
-//			panelToReturn = new PhenoDataEntryContainerPanel(panelId, phenoDataCPM).initialisePanel();
-			panelToReturn = new FieldDataContainerPanel(panelId);
+			panelToReturn = new PhenotypicCollectionContainerPanel(panelId).initialisePanel();
+//			panelToReturn = new FieldDataContainerPanel(panelId);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD)) {
 			panelToReturn = new FieldDataUploadContainerPanel(panelId);
