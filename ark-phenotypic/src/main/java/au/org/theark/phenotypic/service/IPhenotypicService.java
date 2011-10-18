@@ -231,7 +231,7 @@ public interface IPhenotypicService {
 	
 	public void updateCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException,ArkSystemException;
 	
-	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup);
+	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup , int first, int count);
 	
 	public int getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup);
 	
