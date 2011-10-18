@@ -1,0 +1,78 @@
+<wicket:panel>
+	<div id="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			<th width="5%">
+				<label for="fieldId">
+					<wicket:message	key="customFieldDisplay.id">Custom Field Display ID:</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="fieldGroupName">
+					<wicket:message	key="customFieldDisplay.sequence">Sequence Order:</wicket:message>
+				</label>
+			</th>
+			<th width="35%">
+				<label for="fieldDescription">
+					<wicket:message	key="customFieldDisplay.required">Required:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="published">
+					<wicket:message	key="customFieldDisplay.required.message">Required Message:</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="fieldMaxValue">
+					&nbsp;
+				</label>
+			</th>
+			<th width="10%">
+				<label for="fieldMinValue">
+					&nbsp;
+				</label>
+			</th>
+			<th width="10%">
+				<label for="fieldMaxValue">
+					&nbsp;
+				</label>
+			</th>
+			<th width="2%">&nbsp;</th>
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="customFieldDisplayList">
+			<td width="2%">&nbsp;</td>
+			<td width="5%">
+			  <div wicket:id="cfdLinkWmc">
+			    <a href="#"wicket:id="idLabel">
+			    	<span wicket:id="id">100</span>
+			    </a>
+			  </div>
+     		</td>
+			<td width="15%">
+				<span wicket:id="sequence">Sequence</span>
+			</td>
+			<td width="35%">
+				<span wicket:id="requiredMessage">Required Message</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="required">Yes</span>
+			</td>
+			<td width="10%">
+				&nbsp;
+			</td>
+			<td width="10%">
+				&nbsp;
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tr>
+			<td width="2%">&nbsp;</td>
+			<td width="60%" colspan="7">&nbsp;</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>
