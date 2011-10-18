@@ -37,6 +37,7 @@ import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
+import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.pheno.entity.Status;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -228,6 +229,14 @@ public interface IPhenotypicService {
 	public List<PhenotypicCollection> searchPageablePhenotypicCollections(PhenoDataCollectionVO criteria, int first, int count);
 
 	public List<CustomField> getCustomFieldsLinkedToCustomFieldGroup(CustomFieldGroup customFieldCriteria);
+
+	public void createPhenotypicCollection(PhenotypicCollection phenotypicCollection);
+
+	public void updatePhenotypicCollection(PhenotypicCollection phenotypicCollection);
+
+	public void deletePhenotypicCollection(PhenotypicCollection phenotypicCollection);
+
+	public List<QuestionnaireStatus> getPhenotypicCollectionStatusList();
 	
 	public void updateCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException,ArkSystemException;
 	

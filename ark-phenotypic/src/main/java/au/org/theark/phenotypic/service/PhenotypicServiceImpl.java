@@ -54,6 +54,7 @@ import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
+import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.pheno.entity.Status;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -739,9 +740,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		for (PhenoData phenoData : phenoDataList) {
 			
 			
-			try{
+			try {
 			/* Insert the Field if it does not have a  ID and has the required fields */
-				if( canInsert(phenoData)) {
+				if (canInsert(phenoData)) {
 
 					phenotypicDao.createPhenoData(phenoData);
 					Long id = phenoData.getCustomFieldDisplay().getCustomField().getId();
@@ -753,7 +754,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 					
 					iArkCommonService.updateCustomField(customFieldVO);
 
-				}else if(canUpdate(phenoData)){
+				} 
+				else if (canUpdate(phenoData)) {
 					
 					//If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and updated the record.
 					if(phenoData.getErrorDataValue() != null){
@@ -761,12 +763,13 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 					} 
 					phenotypicDao.updatePhenoData(phenoData);
 				
-				}else if(canDelete(phenoData)){
+				} 
+				else if (canDelete(phenoData)) {
 					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
 					Long count  = phenotypicDao.isCustomFieldUsed(phenoData);
 					
 					phenotypicDao.deletePhenoData(phenoData);
-					if(count <= 1){
+					if (count <= 1) {
 						//Then update the CustomField's hasDataFlag to false;
 						Long id = phenoData.getCustomFieldDisplay().getCustomField().getId();//Reload since the session was closed in the front end and the child objects won't be lazy loaded
 						CustomField customField = iArkCommonService.getCustomField(id);
@@ -777,7 +780,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 						
 					}
 				}
-			}catch(Exception someException){
+			}
+			catch (Exception someException){
 				listOfExceptions.add(phenoData);//Continue with rest of the list
 			}
 		}
@@ -799,13 +803,13 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	private Boolean canDelete(PhenoData phenoData){
 		Boolean flag = false;
 		
-		if(phenoData.getId() != null &&  phenoData.getPhenotypicCollection() != null && 
+		if (phenoData.getId() != null &&  phenoData.getPhenotypicCollection() != null && 
 				( phenoData.getTextDataValue() == null  	||		
 				  phenoData.getTextDataValue().isEmpty()  	|| 
 				  phenoData.getNumberDataValue() == null 	||
-				  phenoData.getDateDataValue() == null ) ){
+				  phenoData.getDateDataValue() == null ) ) {
 			
-			flag=true;
+			flag = true;
 			
 		}
 		return flag;
@@ -825,13 +829,13 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	private Boolean canUpdate(PhenoData phenoData){
 		Boolean flag = false;
 		
-		if(phenoData.getId() != null && phenoData.getPhenotypicCollection() != null && 
+		if (phenoData.getId() != null && phenoData.getPhenotypicCollection() != null && 
 				(( phenoData.getTextDataValue() != null 	&& 
 				   !phenoData.getTextDataValue().isEmpty()) || 
 				   phenoData.getDateDataValue() != null  	|| 
-				   phenoData.getNumberDataValue() != null) ){
+				   phenoData.getNumberDataValue() != null) ) {
 			
-			flag=true;
+			flag = true;
 			
 		}
 		return flag;
@@ -851,12 +855,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	private Boolean canInsert(PhenoData phenoData){
 		Boolean flag = false;
 		
-		if(phenoData.getId() == null &&  phenoData.getPhenotypicCollection() != null && 
+		if (phenoData.getId() == null &&  phenoData.getPhenotypicCollection() != null && 
 				(		phenoData.getNumberDataValue() != null || 
 						phenoData.getTextDataValue() != null 	|| 
-						phenoData.getDateDataValue() != null )){
+						phenoData.getDateDataValue() != null )) {
 			
-			flag=true;
+			flag = true;
 			
 		}
 		return flag;
@@ -924,6 +928,43 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	
 	public int getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup){
 		return phenotypicDao.getCFDLinkedToQuestionnaireCount(customFieldGroup);
+	}
+
+	public List<QuestionnaireStatus> getPhenotypicCollectionStatusList() {
+		return phenotypicDao.getPhenotypicCollectionStatusList();
+	}
+
+	public void createPhenotypicCollection(PhenotypicCollection phenotypicCollection) {
+		phenotypicDao.createPhenotypicCollection(phenotypicCollection);
+
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created PhenotypicCollection " + phenotypicCollection.getName());
+		ah.setEntityId(phenotypicCollection.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
+		iArkCommonService.createAuditHistory(ah);
+	}
+
+	public void updatePhenotypicCollection(PhenotypicCollection phenotypicCollection) {
+		phenotypicDao.updatePhenotypicCollection(phenotypicCollection);
+
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated PhenotypicCollection " + phenotypicCollection.getName());
+		ah.setEntityId(phenotypicCollection.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
+		iArkCommonService.createAuditHistory(ah);
+	}
+
+	public void deletePhenotypicCollection(PhenotypicCollection phenotypicCollection) {
+		phenotypicDao.deletePhenotypicCollection(phenotypicCollection);
+
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted PhenotypicCollection " + phenotypicCollection.getName());
+		ah.setEntityId(phenotypicCollection.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 }
