@@ -57,6 +57,7 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	private BioCollection				bioCollection;
 	private String							zplString;
 	private BarcodePrinter				barcodePrinter;
+	private BarcodeLabel 				barcodeLabel;
 
 	/**
 	 * Construct an ajax button to send the specified barcodeString to a ZebraTLP2844 printer<br>
@@ -84,6 +85,12 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 		barcodePrinter.setStudy(bioCollection.getStudy());
 		barcodePrinter.setName("zebra");
 		barcodePrinter = iBarcodeService.searchBarcodePrinter(barcodePrinter);
+		
+		barcodeLabel = new BarcodeLabel();
+		barcodeLabel.setBarcodePrinter(barcodePrinter);
+		barcodeLabel.setStudy(bioCollection.getStudy());
+		barcodeLabel.setName("zebra bioCollection");
+		barcodeLabel = iBarcodeService.searchBarcodeLabel(barcodeLabel);
 	}
 
 	@Override
@@ -97,6 +104,11 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 
 		return (barcodePrinterAvailable);
 	}
+	
+	@Override
+	public boolean isVisible() {
+		return (this.barcodeLabel.getId() != null);
+	}
 
 	@Override
 	protected void onError(AjaxRequestTarget target, Form<?> form) {
@@ -105,12 +117,6 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-		BarcodeLabel barcodeLabel = new BarcodeLabel();
-		barcodeLabel.setBarcodePrinter(barcodePrinter);
-		barcodeLabel.setStudy(bioCollection.getStudy());
-		barcodeLabel.setName("zebra bioCollection");
-		barcodeLabel = iBarcodeService.searchBarcodeLabel(barcodeLabel);
-
 		this.zplString = iBarcodeService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel);
 
 		if (zplString == null || zplString.isEmpty()) {
