@@ -47,7 +47,7 @@ public class BarcodePrinter implements java.io.Serializable {
 	private String		description;
 	private String		location;
 	private String		host;
-	private Integer	port;
+	private String		port;
 
 	public BarcodePrinter(){
 	}
@@ -56,7 +56,7 @@ public class BarcodePrinter implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public BarcodePrinter(Long id, Study study, String name, String description, String location, String host, Integer port) {
+	public BarcodePrinter(Long id, Study study, String name, String description, String location, String host, String port) {
 		this.id = id;
 		this.study = study;
 		this.name = name;
@@ -124,12 +124,12 @@ public class BarcodePrinter implements java.io.Serializable {
 		this.host = host;
 	}
 
-	@Column(name = "PORT")
-	public Integer getPort() {
+	@Column(name = "PORT", length = 4)
+	public String getPort() {
 		return port;
 	}
 
-	public void setPort(Integer port) {
+	public void setPort(String port) {
 		this.port = port;
 	}
 }
