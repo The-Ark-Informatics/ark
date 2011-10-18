@@ -73,7 +73,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 		newModel.getObject().getCustomFieldGroup().setName(getModelObject().getCustomFieldGroup().getName());
 		newModel.getObject().getCustomFieldGroup().setDescription(getModelObject().getCustomFieldGroup().getDescription());
 		newModel.getObject().setAvailableCustomFields(availableListOfFields);
-		CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO,newModel,false);
+		CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO,newModel,null,false);
 		arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 		preProcessDetailPanel(target);
 	}
