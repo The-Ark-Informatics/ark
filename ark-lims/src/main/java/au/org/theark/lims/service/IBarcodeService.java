@@ -1,10 +1,13 @@
 package au.org.theark.lims.service;
 
+import java.util.List;
+
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.BarcodeLabelData;
 import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.study.entity.Study;
 
 public interface IBarcodeService {
 	/**
@@ -115,4 +118,43 @@ public interface IBarcodeService {
 	 * @return
 	 */
 	public String createBiospecimenLabelTemplate(Biospecimen biospecimen, BarcodeLabel barcodeLabel);
+
+	/**
+	 * Get the total count of the entities
+	 * @param object
+	 * @return
+	 */
+	public int getBarcodePrinterCount(BarcodePrinter object);
+
+	/**
+	 * Search the entities, restricted by a pageable count
+	 * @param object
+	 * @param first
+	 * @param count
+	 * @return
+	 */
+	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count);
+	
+	/**
+	 * Get the total count of the entities
+	 * @param object
+	 * @return
+	 */
+	public int getBarcodeLabelCount(BarcodeLabel object);
+
+	/**
+	 * Search the entities, restricted by a pageable count
+	 * @param object
+	 * @param first
+	 * @param count
+	 * @return
+	 */
+	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, int first, int count);
+
+	/**
+	 * Gets the list of barcodePrinters for the spcified list of studies
+	 * @param studyListForUser
+	 * @return
+	 */
+	public List<BarcodePrinter> getBarcodePrinters(List<Study> studyListForUser);
 }
