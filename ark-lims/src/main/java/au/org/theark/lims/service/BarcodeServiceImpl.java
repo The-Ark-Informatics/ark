@@ -23,6 +23,7 @@ import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.lims.model.dao.IBarcodeDao;
 
@@ -319,5 +320,25 @@ public class BarcodeServiceImpl implements IBarcodeService {
 		sb.append(barcodeLabel.getLabelSuffix());
 
 		return sb.toString();	
+	}
+
+	public int getBarcodeLabelCount(BarcodeLabel object) {
+		return iBarcodeDao.getBarcodeLabelCount(object);
+	}
+
+	public int getBarcodePrinterCount(BarcodePrinter object) {
+		return iBarcodeDao.getBarcodePrinterCount(object);
+	}
+
+	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, int first, int count) {
+		return iBarcodeDao.searchPageableBarcodeLabels(object, first, count);
+	}
+
+	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count) {
+		return iBarcodeDao.searchPageableBarcodePrinters(object, first, count);
+	}
+
+	public List<BarcodePrinter> getBarcodePrinters(List<Study> studyListForUser) {
+		return iBarcodeDao.getBarcodePrinters(studyListForUser);
 	}
 }
