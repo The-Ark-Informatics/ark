@@ -233,4 +233,6 @@ public interface IPhenotypicService {
 	
 	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup);
 	
+	public int getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup);
+	
 }

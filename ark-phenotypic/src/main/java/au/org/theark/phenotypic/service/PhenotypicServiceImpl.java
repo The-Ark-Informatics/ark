@@ -921,5 +921,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup){
 		return phenotypicDao.getCFDLinkedToQuestionnaire(customFieldGroup);
 	}
+	
+	public int getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup){
+		return phenotypicDao.getCFDLinkedToQuestionnaireCount(customFieldGroup);
+	}
 
 }
