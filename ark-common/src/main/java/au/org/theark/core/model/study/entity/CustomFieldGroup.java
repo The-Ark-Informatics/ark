@@ -65,10 +65,6 @@ public class CustomFieldGroup implements Serializable{
 	 * 
 	 */
 	public CustomFieldGroup(){
-		id = new Long("0");
-		name="";
-		study = new Study();
-		arkFunction = new ArkFunction();
 	}
 
 	@Id
@@ -120,7 +116,7 @@ public class CustomFieldGroup implements Serializable{
 		this.published = published;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldGroup")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "questionnaire")
 	public Set<PhenotypicCollection> getPhenotypicCollection() {
 		return phenotypicCollection;
 	}
