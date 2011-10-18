@@ -6,6 +6,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -18,6 +19,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
+import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldDisplayListPanel;
 import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupDetailPanel;
 
 /**
@@ -71,8 +73,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 		newModel.getObject().getCustomFieldGroup().setName(getModelObject().getCustomFieldGroup().getName());
 		newModel.getObject().getCustomFieldGroup().setDescription(getModelObject().getCustomFieldGroup().getDescription());
 		newModel.getObject().setAvailableCustomFields(availableListOfFields);
-		CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO,newModel);
-		
+		CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO,newModel,false);
 		arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 		preProcessDetailPanel(target);
 	}
