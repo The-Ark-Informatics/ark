@@ -36,6 +36,8 @@ import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.barcodelabel.BarcodeLabelContainerPanel;
+import au.org.theark.lims.web.component.barcodeprinter.BarcodePrinterContainerPanel;
 import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataContainerPanel;
 import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
 import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataContainerPanel;
@@ -105,6 +107,12 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_DATA)) {
 			panelToReturn = new BiospecimenCustomDataContainerPanel(panelId).initialisePanel();
+		}
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BARCODE_PRINTER)) {
+			panelToReturn = new BarcodePrinterContainerPanel(panelId, arkContextMarkup);
+		}
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BARCODE_LABEL)) {
+			panelToReturn = new BarcodeLabelContainerPanel(panelId, arkContextMarkup);
 		}
 		else {
 			//TODO: This shouldn't happen when all functions have been implemented
