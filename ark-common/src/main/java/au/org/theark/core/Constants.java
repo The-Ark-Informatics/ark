@@ -276,6 +276,8 @@ public class Constants {
 	public static final String	FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_DATA	= "LIMS_COLLECTION_CUSTOM_DATA";
 	public static final String	FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD	= "BIOSPECIMEN_CUSTOM_FIELD";
 	public static final String	FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_DATA	= "BIOSPECIMEN_CUSTOM_DATA";
+	public static final String	FUNCTION_KEY_VALUE_BARCODE_PRINTER				= "BARCODE_PRINTER";
+	public static final String	FUNCTION_KEY_VALUE_BARCODE_LABEL					= "BARCODE_LABEL";
 
 	/* Ark Module Keys */
 	public static final String	ARK_MODULE_KEY										= "MODULE_KEY";
@@ -313,4 +315,5 @@ public class Constants {
 	
 	/* Default "from" paramter for emails */
 	public static final String	ARK_ADMIN_EMAIL									= "admin@the-ark.org.au";
+	
 }
