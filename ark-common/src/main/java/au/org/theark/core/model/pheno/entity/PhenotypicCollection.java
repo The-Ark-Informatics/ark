@@ -38,7 +38,7 @@ public class PhenotypicCollection implements Serializable{
 	private Date recordDate;
 	private Date reviewedDate;
 	private ArkUser reviewedBy;
-	private CustomFieldGroup customFieldGroup;
+	private CustomFieldGroup questionnaire;
 	private QuestionnaireStatus status;
 	
 	/**
@@ -99,7 +99,7 @@ public class PhenotypicCollection implements Serializable{
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "REVIEWED_DATE", nullable = false)
+	@Column(name = "REVIEWED_DATE")
 	public Date getReviewedDate() {
 		return reviewedDate;
 	}
@@ -120,12 +120,12 @@ public class PhenotypicCollection implements Serializable{
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CUSTOM_FIELD_GROUP_ID")
-	public CustomFieldGroup getCustomFieldGroup() {
-		return customFieldGroup;
+	public CustomFieldGroup getQuestionnaire() {
+		return questionnaire;
 	}
 
-	public void setCustomFieldGroup(CustomFieldGroup customFieldGroup) {
-		this.customFieldGroup = customFieldGroup;
+	public void setQuestionnaire(CustomFieldGroup questionnaire) {
+		this.questionnaire = questionnaire;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
