@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form;
 
-import java.awt.image.BufferedImage;
 import java.text.NumberFormat;
 import java.util.List;
 
@@ -35,16 +34,14 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.NonCachingImage;
-import org.apache.wicket.markup.html.image.resource.BufferedDynamicImageResource;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.resource.IResource;
-import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.DoubleConverter;
@@ -277,23 +274,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	}
 
 	private void initialiseBarcodeImage() {
-		barcodeImage = new NonCachingImage("biospecimen.barcodeImage");
-		barcodeImage.setImageResourceReference(new ResourceReference(BiospecimenModalDetailForm.class, "dataMatrixBarcodeImage") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			public IResource getResource() {
-				final BufferedDynamicImageResource resource = new BufferedDynamicImageResource();
-				final String barcodeString = getModelObject().getBiospecimen().getBiospecimenUid();
-				final BufferedImage image = DataMatrixBarcodeImage.generateBufferedImage(barcodeString);
-				resource.setImage(image);
-				return resource;
-			}
-		});
-		barcodeImage.setOutputMarkupPlaceholderTag(true);
+		barcodeImage = new DataMatrixBarcodeImage("biospecimen.barcodeImage", new PropertyModel<String>(cpModel, "biospecimen.biospecimenUid"));
 	}
 
 	/**
