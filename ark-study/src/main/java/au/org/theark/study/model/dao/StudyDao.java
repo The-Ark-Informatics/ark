@@ -1454,6 +1454,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		if (searchUpload.getFilename() != null) {
 			criteria.add(Restrictions.ilike(au.org.theark.study.web.Constants.UPLOAD_FILENAME, searchUpload.getFilename()));
 		}
+		
+		criteria.add(Restrictions.eq("arkFunction",searchUpload.getArkFunction()));
 
 		criteria.addOrder(Order.desc(au.org.theark.study.web.Constants.UPLOAD_ID));
 		java.util.Collection<StudyUpload> uploadCollection = criteria.list();
