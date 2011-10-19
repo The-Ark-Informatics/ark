@@ -18,27 +18,19 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims.biospecimen;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.model.IModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.button.ArkAjaxButton;
-import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.util.UniqueIdGenerator;
 import au.org.theark.lims.web.component.button.zebra.biospecimen.PrintBiospecimenLabelButton;
-import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form.BiospecimenModalDetailForm;
 
 /**
  * Panel used for all Biospecimen related workflow (Clone, Process, Aliquot)
@@ -46,37 +38,27 @@ import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form.Biospe
  * @author cellis
  * 
  */
-public class BiospecimenButtonsPanel extends Panel {
+public abstract class BiospecimenButtonsPanel extends Panel {
 
 	/**
 	 * 
 	 */
 	private static final long				serialVersionUID	= 1L;
-
 	private static final Logger			log					= LoggerFactory.getLogger(BiospecimenButtonsPanel.class);
-
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
-	private ILimsService						iLimsService;
-
-	private BiospecimenModalDetailForm	biospecimenModalDetailForm;
-	protected FeedbackPanel					feedbackPanel;
 
 	protected AjaxButton						cloneButton;
 	protected AjaxButton						processButton;
 	protected AjaxButton						aliquotButton;
 	protected AjaxButton						printBarcodeButton;
 
-	public BiospecimenButtonsPanel(String id, BiospecimenModalDetailForm biospecimenModalDetailForm, FeedbackPanel feedbackPanel) {
-		super(id, biospecimenModalDetailForm.getModel());
+	public BiospecimenButtonsPanel(String id, IModel<Biospecimen> model) {
+		super(id, model);
 		setOutputMarkupPlaceholderTag(true);
-		this.biospecimenModalDetailForm = biospecimenModalDetailForm;
-		this.feedbackPanel = feedbackPanel;
 		initialisePanel();
 	}
 
 	protected void initialisePanel() {
 		cloneButton = new ArkAjaxButton("clone") {
-
 			/**
 			 * 
 			 */
@@ -109,7 +91,6 @@ public class BiospecimenButtonsPanel extends Panel {
 		this.add(cloneButton);
 
 		processButton = new ArkAjaxButton("process") {
-
 			/**
 			 * 
 			 */
@@ -118,9 +99,7 @@ public class BiospecimenButtonsPanel extends Panel {
 			@Override
 			public boolean isVisible() {
 				// Ark-Security implemented
-				// return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-				// TODO: Implement process correctly
-				return super.isVisible() && false;
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
 			@Override
@@ -145,7 +124,6 @@ public class BiospecimenButtonsPanel extends Panel {
 		this.add(processButton);
 
 		aliquotButton = new ArkAjaxButton("aliquot") {
-
 			/**
 			 * 
 			 */
@@ -154,15 +132,13 @@ public class BiospecimenButtonsPanel extends Panel {
 			@Override
 			public boolean isVisible() {
 				// Ark-Security implemented
-				// return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-				// TODO: Implement process correctly
-				return super.isVisible() && false;
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Make sure the button is visible and enabled before allowing it to proceed
-				if (processButton.isVisible() && processButton.isEnabled()) {
+				if (aliquotButton.isVisible() && aliquotButton.isEnabled()) {
 					onAliquot(target);
 				}
 				else {
@@ -181,7 +157,7 @@ public class BiospecimenButtonsPanel extends Panel {
 		aliquotButton.setDefaultFormProcessing(false);
 		this.add(aliquotButton);
 
-		printBarcodeButton = new PrintBiospecimenLabelButton("printBarcode", biospecimenModalDetailForm.getModelObject().getBiospecimen()) {
+		printBarcodeButton = new PrintBiospecimenLabelButton("printBarcode", BiospecimenButtonsPanel.this.getDefaultModel()) {
 			/**
 			 * 
 			 */
@@ -189,131 +165,35 @@ public class BiospecimenButtonsPanel extends Panel {
 
 			@Override
 			protected void onPostSubmit(AjaxRequestTarget target, Form<?> form) {
-				// Set barcoded flag to true, as barcode has been printed
-				biospecimenModalDetailForm.getModelObject().getBiospecimen().setBarcoded(true);
-				// Update/refresh
-				iLimsService.updateBiospecimen(biospecimenModalDetailForm.getModelObject());
-				target.add(biospecimenModalDetailForm.getBarcodedChkBox());
-				target.add(biospecimenModalDetailForm.getBarcodeImage());
+				onPrintBarcode(target);
 			}
 		};
 		this.add(printBarcodeButton);
 	}
 
 	/**
-	 * Clone all Biospecimen details to a new Biospecimen
-	 * 
+	 * Calling class to implement clone functionality 
 	 * @param target
 	 */
-	private void onClone(AjaxRequestTarget target) {
-		try {
-			LimsVO oldlimsVo = (LimsVO) biospecimenModalDetailForm.getModelObject();
-			final String biospecimenUid = oldlimsVo.getBiospecimen().getBiospecimenUid();
-			LimsVO limsVo = new LimsVO();
-			PropertyUtils.copyProperties(limsVo, oldlimsVo);
-			limsVo.getBiospecimen().setId(null);
-			limsVo.getBiospecimen().setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
-			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
-			limsVo.getBiospecimen().setComments("Clone of " + biospecimenUid);
-
-			// Inital transaction detail (quantity grabbed from previous biospecimen)
-			limsVo.getBioTransaction().setId(null);
-			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
-			limsVo.getBioTransaction().setQuantity(oldlimsVo.getBiospecimen().getQuantity());
-			limsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
-
-			iLimsService.createBiospecimen(limsVo);
-			biospecimenModalDetailForm.setModelObject(limsVo);
-			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was cloned from " + biospecimenUid + " successfully");
-			target.add(feedbackPanel);
-			target.add(biospecimenModalDetailForm);
-		}
-		catch (IllegalAccessException e) {
-			log.error(e.getMessage());
-		}
-		catch (InvocationTargetException e) {
-			log.error(e.getMessage());
-		}
-		catch (NoSuchMethodException e) {
-			log.error(e.getMessage());
-		}
-	}
+	public abstract void onClone(AjaxRequestTarget target);
 
 	/**
-	 * Process some, or all Biospecimen into a new Biospecimen
-	 * 
+	 * Calling class to implement process functionality 
 	 * @param target
 	 */
-	private void onProcess(AjaxRequestTarget target) {
-		try {
-			LimsVO oldlimsVo = (LimsVO) biospecimenModalDetailForm.getModelObject();
-			final String biospecimenUid = oldlimsVo.getBiospecimen().getBiospecimenUid();
-			LimsVO limsVo = new LimsVO();
-			PropertyUtils.copyProperties(limsVo, oldlimsVo);
-			limsVo.getBiospecimen().setId(null);
-			limsVo.getBiospecimen().setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
-			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
-			limsVo.getBiospecimen().setQuantity(null);
-			limsVo.getBiospecimen().setComments("Processed " + biospecimenUid);
-
-			// Inital transaction detail
-			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
-			limsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
-
-			iLimsService.createBiospecimen(limsVo);
-			biospecimenModalDetailForm.setModelObject(limsVo);
-			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was processed from " + biospecimenUid + " successfully");
-			target.add(feedbackPanel);
-			target.add(biospecimenModalDetailForm);
-		}
-		catch (IllegalAccessException e) {
-			log.error(e.getMessage());
-		}
-		catch (InvocationTargetException e) {
-			log.error(e.getMessage());
-		}
-		catch (NoSuchMethodException e) {
-			log.error(e.getMessage());
-		}
-	}
+	public abstract void onProcess(AjaxRequestTarget target);
 
 	/**
-	 * Aliquote a specified amount from a parent Biospecimen into a new child Biospecimen
-	 * 
+	 * Calling class to implement aliquot functionality 
 	 * @param target
 	 */
-	private void onAliquot(AjaxRequestTarget target) {
-		try {
-			LimsVO oldlimsVo = (LimsVO) biospecimenModalDetailForm.getModelObject();
-			final String biospecimenUid = oldlimsVo.getBiospecimen().getBiospecimenUid();
-			LimsVO limsVo = new LimsVO();
-			PropertyUtils.copyProperties(limsVo, oldlimsVo);
-			limsVo.getBiospecimen().setId(null);
-			limsVo.getBiospecimen().setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
-			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
-			limsVo.getBiospecimen().setQuantity(null);
-			limsVo.getBiospecimen().setComments("Sub-aliquot of " + biospecimenUid);
+	public abstract void onAliquot(AjaxRequestTarget target);
 
-			// Inital transaction detail
-			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
-			limsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
-
-			iLimsService.createBiospecimen(limsVo);
-			biospecimenModalDetailForm.setModelObject(limsVo);
-			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was aliquoted from " + biospecimenUid + " successfully");
-			target.add(feedbackPanel);
-			target.add(biospecimenModalDetailForm);
-		}
-		catch (IllegalAccessException e) {
-			log.error(e.getMessage());
-		}
-		catch (InvocationTargetException e) {
-			log.error(e.getMessage());
-		}
-		catch (NoSuchMethodException e) {
-			log.error(e.getMessage());
-		}
-	}
+	/**
+	 * Calling class to implement print barcode functionality 
+	 * @param target
+	 */
+	public abstract void onPrintBarcode(AjaxRequestTarget target);
 
 	public boolean isCloneButtonVisible() {
 		return cloneButton.isVisible();
