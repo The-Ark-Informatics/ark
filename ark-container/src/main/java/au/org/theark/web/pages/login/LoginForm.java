@@ -111,11 +111,6 @@ public class LoginForm extends Form<ArkUserVO> {
 					}
 				};
 			}
-			
-			@Override
-			protected boolean getStatelessHint() {
-				return false;
-			}
 		};
 		
 		forgotPasswordButton = new AjaxButton("forgotPasswordButton") {
@@ -137,6 +132,11 @@ public class LoginForm extends Form<ArkUserVO> {
 		forgotPasswordButton.setDefaultFormProcessing(false);
 		
 		addComponentsToForm();
+	}
+	
+	@Override
+	protected boolean getStatelessHint() {
+		return false;
 	}
 
 	private void addComponentsToForm() {
