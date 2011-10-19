@@ -141,4 +141,6 @@ public class Constants {
 	
 	public static final String BIOTRANSACTION_STATUS_INITIAL_QTY	= "Initial Qty";
 
+	public static final String	BIOSPECIMEN_PROCESSING_PROCESSING	= "processing";
+	public static final String	BIOSPECIMEN_PROCESSING_ALIQUOTING	= "aliquoting";
 }
