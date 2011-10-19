@@ -1343,7 +1343,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public void create(SubjectFile subjectFile) throws ArkSystemException {
 		Session session = getSession();
-		currentUser = SecurityUtils.getSubject();
+		currentUser = SecurityUtils.getSubject();//TODO Do not depend on Shiro on the DAO
 		subjectFile.setUserId(currentUser.getPrincipal().toString());
 
 		session.save(subjectFile);
@@ -1355,7 +1355,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
 
-		subjectFile.setUserId(currentUser.getPrincipal().toString());
+		subjectFile.setUserId(currentUser.getPrincipal().toString()); // //TODO Do not depend on Shiro on the DAO
 
 		if ((ConsentFile) session.get(ConsentFile.class, subjectFile.getId()) != null) {
 			session.update(subjectFile);
