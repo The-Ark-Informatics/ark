@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -214,8 +213,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(description);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(publishedStatusCb);
-		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
-		
+		addOrReplace(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 	
