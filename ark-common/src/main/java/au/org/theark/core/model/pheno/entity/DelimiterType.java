@@ -20,6 +20,7 @@ package au.org.theark.core.model.pheno.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,7 +35,7 @@ import au.org.theark.core.model.Constants;
  * DelimiterType entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity(name = "au.org.theark.phenotypic.model.entity.DelimiterType")
+@Entity(name = "au.org.theark.core.model.pheno.entity.DelimiterType")
 @Table(name = "DELIMITER_TYPE", schema = Constants.PHENO_TABLE_SCHEMA)
 public class DelimiterType implements java.io.Serializable {
 

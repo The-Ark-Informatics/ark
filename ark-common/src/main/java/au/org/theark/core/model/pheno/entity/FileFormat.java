@@ -34,7 +34,7 @@ import au.org.theark.core.model.Constants;
  * FileFormat entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity(name = "au.org.theark.phenotypic.model.entity.FileFormat")
+@Entity(name = "au.org.theark.core.model.pheno.entity.FileFormat")
 @Table(name = "FILE_FORMAT", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FileFormat implements java.io.Serializable {
 

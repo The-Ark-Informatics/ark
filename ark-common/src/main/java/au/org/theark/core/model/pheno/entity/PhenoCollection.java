@@ -43,7 +43,7 @@ import au.org.theark.core.model.Constants;
  * Collection entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity(name = "au.org.theark.phenotypic.model.entity.Collection")
+@Entity(name = "au.org.theark.core.model.pheno.entity.Collection")
 @Table(name = "COLLECTION", schema = Constants.PHENO_TABLE_SCHEMA)
 public class PhenoCollection implements java.io.Serializable {
 	// Fields
