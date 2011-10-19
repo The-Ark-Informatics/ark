@@ -59,7 +59,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<UploadVO>(new UploadVO());
-
+		this.arkFunction = arkFunction;
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
@@ -93,6 +93,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 				if (isActionPermitted() && sessionStudyId != null) {
 					StudyUpload studyUpload = new StudyUpload();
 					studyUpload.setStudy(iArkCommonService.getStudy(sessionStudyId));
+					studyUpload.setArkFunction(arkFunction);
 					studyUploads = studyService.searchUpload(studyUpload);
 
 				}
