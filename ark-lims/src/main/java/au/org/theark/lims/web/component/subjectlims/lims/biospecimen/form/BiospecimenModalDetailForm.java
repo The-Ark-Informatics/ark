@@ -548,15 +548,15 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 					else {
 						// Process the biospecimen and it's parent
 						iLimsService.createBiospecimen(limsVo);
+						
+						// Add parent transaction
 						LimsVO parentLimsVo = new LimsVO();
 						parentLimsVo.setBiospecimen(parentBiospecimen);
-						parentLimsVo.setBioTransaction(cpModel.getObject().getBioTransaction());
 						parentLimsVo.getBioTransaction().setId(null);
 						parentLimsVo.getBioTransaction().setBiospecimen(parentBiospecimen);
-						parentLimsVo.getBioTransaction().setQuantity(biospecimen.getQuantity());
 						parentLimsVo.getBioTransaction().setTransactionDate(Calendar.getInstance().getTime());
+						parentLimsVo.getBioTransaction().setQuantity(biospecimen.getQuantity());
 						parentLimsVo.getBioTransaction().setReason("Processed for: " + biospecimen.getBiospecimenUid());
-						// Add parent transaction
 						iLimsService.createBioTransaction(parentLimsVo);
 					}
 				}
@@ -579,15 +579,15 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 					else {
 						// Aliquot the biospecimen and it's parent
 						iLimsService.createBiospecimen(limsVo);
+						
+						// Add parent transaction
 						LimsVO parentLimsVo = new LimsVO();
 						parentLimsVo.setBiospecimen(parentBiospecimen);
-						parentLimsVo.setBioTransaction(cpModel.getObject().getBioTransaction());
 						parentLimsVo.getBioTransaction().setId(null);
 						parentLimsVo.getBioTransaction().setBiospecimen(parentBiospecimen);
-						parentLimsVo.getBioTransaction().setQuantity(biospecimen.getQuantity());
 						parentLimsVo.getBioTransaction().setTransactionDate(Calendar.getInstance().getTime());
+						parentLimsVo.getBioTransaction().setQuantity(biospecimen.getQuantity());
 						parentLimsVo.getBioTransaction().setReason("Sub-Aliquot for: " + biospecimen.getBiospecimenUid());
-						// Add parent transaction
 						iLimsService.createBioTransaction(parentLimsVo);
 					}
 				}
