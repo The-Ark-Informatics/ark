@@ -56,6 +56,7 @@ public class StudyUpload implements java.io.Serializable {
 	private Date				finishTime;
 	private Blob				uploadReport;
 	private String				userId;
+	private ArkFunction	arkFunction;
 
 	// Constructors
 	/** default constructor */
@@ -243,5 +244,15 @@ public class StudyUpload implements java.io.Serializable {
 	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ARK_FUNCTION_ID", nullable = false)
+	public ArkFunction getArkFunction() {
+		return arkFunction;
+	}
+
+	public void setArkFunction(ArkFunction arkFunction) {
+		this.arkFunction = arkFunction;
 	}
 }
