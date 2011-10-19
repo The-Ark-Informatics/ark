@@ -38,6 +38,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
 import org.hibernate.Hibernate;
 
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
@@ -72,9 +73,11 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	private FileUploadField						fileUploadField;
 	// private UploadProgressBar uploadProgressBar;
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
+	private ArkFunction arkFunction;
 
-	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, ArkFunction arkFunction) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
+		this.arkFunction = arkFunction;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -165,6 +168,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 			// containerForm.getModelObject().setPhenoCollectionUpload(phenoCollectionUpload);
 
 			// Save
+			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
 			studyService.createUpload(containerForm.getModelObject().getUpload());
 
 			this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was created successfully");
@@ -172,6 +176,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		}
 		else {
 			// Update
+			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
 			studyService.updateUpload(containerForm.getModelObject().getUpload());
 			this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was updated successfully");
 			processErrors(target);

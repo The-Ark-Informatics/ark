@@ -28,6 +28,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
@@ -51,8 +52,9 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 	private WizardPanel							wizardPanel;
 	private PageableListView<StudyUpload>	listView;
 	private ContainerForm						containerForm;
+	private ArkFunction arkFunction;
 
-	public SubjectUploadContainerPanel(String id) {
+	public SubjectUploadContainerPanel(String id, ArkFunction arkFunction) {
 		super(id);
 
 		/* Initialise the CPM */
@@ -111,7 +113,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO);
+		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO,arkFunction);
 		detailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
