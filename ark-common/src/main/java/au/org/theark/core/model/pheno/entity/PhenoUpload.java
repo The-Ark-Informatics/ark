@@ -25,7 +25,6 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -38,14 +37,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.Constants;
+import au.org.theark.core.model.study.entity.Study;
 
 /**
  * Upload entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity(name = "au.org.theark.phenotypic.model.entity.Upload")
 @Table(name = "UPLOAD", schema = Constants.PHENO_TABLE_SCHEMA)
 public class PhenoUpload implements java.io.Serializable {
 
