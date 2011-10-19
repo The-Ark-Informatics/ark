@@ -22,6 +22,7 @@ import java.sql.Blob;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -39,6 +40,7 @@ import au.org.theark.core.Constants;
  * Upload entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
+@Entity(name = "au.org.theark.core.model.study.entity")
 @Table(name = "UPLOAD", schema = Constants.STUDY_SCHEMA)
 public class StudyUpload implements java.io.Serializable {
 
