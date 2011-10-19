@@ -21,6 +21,7 @@ package au.org.theark.lims.web.component.button.zebra.biospecimen;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,12 +53,12 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 	 * <b>NOTE:</b> Assumes there is an applet on the page with the name "jZebra"
 	 * 
 	 * @param id
-	 * @param biospecimen
+	 * @param iModel
 	 */
-	public PrintBiospecimenLabelButton(String id, final Biospecimen biospecimen) {
+	public PrintBiospecimenLabelButton(String id, final IModel<?> iModel) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
-		this.biospecimen = biospecimen;
+		this.biospecimen = (Biospecimen) iModel.getObject();
 		barcodePrinter = new BarcodePrinter();
 		barcodePrinter.setStudy(biospecimen.getStudy());
 		barcodePrinter.setName("zebra");
