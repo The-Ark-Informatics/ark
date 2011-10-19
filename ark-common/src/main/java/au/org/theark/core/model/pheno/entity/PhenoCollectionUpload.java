@@ -39,7 +39,7 @@ import au.org.theark.core.model.Constants;
  * CollectionUpload entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity(name = "au.org.theark.phenotypic.model.entity.PhenoCollectionUpload")
+@Entity(name = "au.org.theark.core.model.pheno.entity.PhenoCollectionUpload")
 @Table(name = "COLLECTION_UPLOAD", schema = Constants.PHENO_TABLE_SCHEMA)
 public class PhenoCollectionUpload implements java.io.Serializable {
 

@@ -35,7 +35,7 @@ import au.org.theark.core.model.Constants;
  * UploadPhenotypicGroup entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity(name = "au.org.theark.phenotypic.model.entity.FieldFieldGroup")
+@Entity(name = "au.org.theark.core.model.pheno.entity.FieldFieldGroup")
 @Table(name = "FIELD_FIELD_GROUP", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FieldFieldGroup implements java.io.Serializable {
 
