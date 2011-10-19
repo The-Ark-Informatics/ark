@@ -63,6 +63,8 @@ public class LimsVO implements Serializable {
 
 	/** A List of Study(s) for the user in context */
 	protected List<Study>			studyList;
+	
+	protected String biospecimenProcessing;
 
 	public LimsVO() {
 		this.study = new Study();
@@ -79,6 +81,7 @@ public class LimsVO implements Serializable {
 		this.bioTransactionList = new ArrayList<BioTransaction>(0);
 		this.invSiteList = new ArrayList<InvSite>(0);
 		this.studyList = new ArrayList<Study>(0);
+		this.biospecimenProcessing = new String();
 	}
 
 	/**
@@ -283,5 +286,13 @@ public class LimsVO implements Serializable {
 
 	public void setBiospecimenLocationVO(BiospecimenLocationVO biospecimenLocationVO) {
 		this.biospecimenLocationVO = biospecimenLocationVO;
+	}
+
+	public String getBiospecimenProcessing() {
+		return biospecimenProcessing;
+	}
+
+	public void setBiospecimenProcessing(String biospecimenProcessing) {
+		this.biospecimenProcessing = biospecimenProcessing;
 	}
 }
