@@ -64,12 +64,13 @@ public class StudyUpload implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public StudyUpload(Long id, FileFormat fileFormat, DelimiterType delimiterType, String filename, Blob uploadReport) {
+	public StudyUpload(Long id, FileFormat fileFormat, DelimiterType delimiterType, String filename, Blob uploadReport, ArkFunction arkFunction) {
 		this.id = id;
 		this.fileFormat = fileFormat;
 		this.delimiterType = delimiterType;
 		this.filename = filename;
 		this.uploadReport = uploadReport;
+		this.arkFunction = arkFunction;
 	}
 
 	// Property accessors
