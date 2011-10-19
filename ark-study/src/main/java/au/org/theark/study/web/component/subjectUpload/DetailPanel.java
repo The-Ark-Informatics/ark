@@ -18,10 +18,10 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subjectUpload;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 import au.org.theark.study.web.component.subjectUpload.form.DetailForm;
@@ -33,8 +33,9 @@ public class DetailPanel extends Panel {
 	private DetailForm			detailForm;
 	private FeedbackPanel		feedBackPanel;
 	private ContainerForm		containerForm;
+	private ArkFunction arkFunction;
 
-	public DetailPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+	public DetailPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO,ArkFunction arkFunction) {
 		super(id);
 		this.feedBackPanel = feedBackPanel;
 		this.containerForm = containerForm;
@@ -42,7 +43,7 @@ public class DetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new DetailForm("detailForm", feedBackPanel, containerForm, arkCrudContainerVO);
+		detailForm = new DetailForm("detailForm", feedBackPanel, containerForm, arkCrudContainerVO,arkFunction);
 
 		detailForm.initialiseDetailForm();
 		add(detailForm);
