@@ -288,16 +288,15 @@ function monitorPrinting() {
  * Example: monitorApplet('isDoneFinding()', 'alert(\\"Success\\")', '');
  */
 function monitorApplet(appletFunction, finishedFunction, description) {
-	var NOT_LOADED = "jZebra hasn't loaded yet.";
-	var INVALID_FUNCTION = 'jZebra does not recognize function: "' + appletFunction;
-	+'"';
-	var INVALID_PRINTER = "jZebra could not find the specified printer";
+	var NOT_LOADED = "Program required for printing hasn't loaded yet.";
+	var INVALID_FUNCTION = 'Invalid function: "' + appletFunction +'"';
+	var INVALID_PRINTER = "Could not find a valid printer";
 	if (document.jZebra != null) {
 		var finished = false;
 		try {
 			finished = eval('document.jZebra.' + appletFunction);
 		} catch (err) {
-			alert('jZebra Exception:  ' + INVALID_FUNCTION);
+			alert('ERROR:  ' + INVALID_FUNCTION);
 			return;
 		}
 		if (!finished) {
@@ -307,21 +306,20 @@ function monitorApplet(appletFunction, finishedFunction, description) {
 		} else {
 			var p = document.jZebra.getPrinterName();
 			if (p == null) {
-				alert("jZebra Exception:  " + INVALID_PRINTER);
+				alert("ERROR:  " + INVALID_PRINTER);
 				return;
 			}
 			var e = document.jZebra.getException();
 			if (e != null) {
 				var desc = description == "" ? "" : " [" + description + "] ";
-				alert("jZebra Exception: " + desc
-						+ document.jZebra.getExceptionMessage());
+				alert("ERROR: " + desc + document.jZebra.getExceptionMessage());
 				document.jZebra.clearException();
 			} else {
 				eval(finishedFunction);
 			}
 		}
 	} else {
-		alert("jZebra Exception:  " + NOT_LOADED);
+		alert("ERROR:  " + NOT_LOADED);
 	}
 }
 
