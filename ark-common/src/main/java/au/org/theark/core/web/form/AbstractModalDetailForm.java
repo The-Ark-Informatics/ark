@@ -214,6 +214,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 			target.add(arkCrudContainerVo.getDetailPanelFormContainer());
 			target.add(buttonsPanelWMC);			
 		}
+		processErrors(target);
 	}
 
 	/*
