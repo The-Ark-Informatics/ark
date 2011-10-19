@@ -111,6 +111,11 @@ public class LoginForm extends Form<ArkUserVO> {
 					}
 				};
 			}
+			
+			@Override
+			protected boolean getStatelessHint() {
+				return false;
+			}
 		};
 		
 		forgotPasswordButton = new AjaxButton("forgotPasswordButton") {
