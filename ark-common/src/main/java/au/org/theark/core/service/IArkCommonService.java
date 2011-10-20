@@ -521,4 +521,16 @@ public interface IArkCommonService<T> {
 	 * @return the reset password message
 	 */
 	public String setResetPasswordMessage(final String fullName, final String password) throws VelocityException;
+	
+	/**
+	 * 
+	 * @param customFieldDisplay
+	 * @throws ArkSystemException
+	 */
+	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
+	
+	
+	public CustomFieldDisplay getCustomFieldDisplay(Long id);
+	
+	
 }
