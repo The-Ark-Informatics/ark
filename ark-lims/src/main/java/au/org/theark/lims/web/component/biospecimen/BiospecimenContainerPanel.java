@@ -32,6 +32,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.biospecimen.form.ContainerForm;
+import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenListPanel;
 
 /**
@@ -68,7 +69,15 @@ public class BiospecimenContainerPanel extends Panel {
 	public void initialisePanel() {
 		containerForm = new ContainerForm("containerForm", cpModel);
 				
+		// Needed to handle for modalWindow
+		containerForm.setMultiPart(true);
+		
 		containerForm.add(initialiseFeedBackPanel());
+		
+		// Applet for printing barcodess
+		PrintAppletPanel printAppletPanel = new PrintAppletPanel("printAppletPanel", "zebra");
+		containerForm.add(printAppletPanel);
+		
 		containerForm.add(initialiseSearchPanel());
 		containerForm.add(initialiseSearchResultPanel());
 		this.add(containerForm);
