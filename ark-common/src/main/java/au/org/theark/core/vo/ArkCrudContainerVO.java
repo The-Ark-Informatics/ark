@@ -96,7 +96,7 @@ public class ArkCrudContainerVO implements Serializable {
 		wmcForarkUserAccountPanel.setOutputMarkupPlaceholderTag(true);
 		
 		wmcForCustomFieldDisplayListPanel =  new WebMarkupContainer("cfdListPanelContainer");
-		wmcForarkUserAccountPanel.setOutputMarkupPlaceholderTag(true);
+		wmcForCustomFieldDisplayListPanel.setOutputMarkupPlaceholderTag(true);
 		
 	}
 
