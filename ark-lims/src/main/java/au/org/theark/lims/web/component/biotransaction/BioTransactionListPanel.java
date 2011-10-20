@@ -29,12 +29,14 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
@@ -69,6 +71,7 @@ public class BioTransactionListPanel extends Panel {
 
 	private Label													idLbl;
 	private Label													transactionDateLbl;
+	private ContextImage											quantityImage;
 	private Label													quantityLbl;
 	private Label													unitsLbl;
 	private Label													recorderLbl;
@@ -241,6 +244,15 @@ public class BioTransactionListPanel extends Panel {
 
 				item.add(idLbl);
 				item.add(transactionDateLbl);
+				
+				if (bioTransaction.getQuantity() > 0) {
+					quantityImage = new ContextImage("bioTransaction.quantityImage", new Model<String>("images/icons/arrow_up.png"));
+				}
+				else {
+					quantityImage = new ContextImage("bioTransaction.quantityImage", new Model<String>("images/icons/arrow_down_red.png"));
+				}
+				
+				item.add(quantityImage);
 				item.add(quantityLbl);
 				item.add(unitsLbl);
 				item.add(reasonLbl);
@@ -250,7 +262,6 @@ public class BioTransactionListPanel extends Panel {
 				item.add(rowDetailsWMC);
 
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel<String>() {
-
 					/**
 					 * 
 					 */
