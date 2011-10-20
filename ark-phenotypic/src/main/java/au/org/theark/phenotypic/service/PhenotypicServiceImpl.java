@@ -883,6 +883,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException, ArkSystemException{
 		try{
 			phenotypicDao.createCustomFieldGroup(customFieldGroupVO);	
+			AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+			ah.setComment("Created Custom Field Group " + customFieldGroupVO.getCustomFieldGroup().getName());
+			ah.setEntityId(customFieldGroupVO.getCustomFieldGroup().getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_GROUP);
+			iArkCommonService.createAuditHistory(ah);
 		}catch (ConstraintViolationException cvex) {
 			log.error("A Questionnaire with this name for the given study  exists.: " + cvex);
 			throw new EntityExistsException("A Questionnaire with that name already exits.");
@@ -910,6 +916,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	public void updateCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException,ArkSystemException{
 		try{
 			phenotypicDao.updateCustomFieldGroup(customFieldGroupVO);	
+			AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+			ah.setComment("Updated Custom Field Group " + customFieldGroupVO.getCustomFieldGroup().getName());
+			ah.setEntityId(customFieldGroupVO.getCustomFieldGroup().getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_GROUP);
+			iArkCommonService.createAuditHistory(ah);
 		}
 		catch (ConstraintViolationException cvex) {
 			log.error("A Questionnaire with this name for the given study  exists.: " + cvex);
