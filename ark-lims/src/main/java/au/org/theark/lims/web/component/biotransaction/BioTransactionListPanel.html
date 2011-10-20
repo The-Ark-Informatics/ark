@@ -31,6 +31,13 @@
 							</wicket:message>
 						</label>
 					</th>
+					<th width="10%">
+						<label for="status">
+							<wicket:message	key="bioTransaction.status">
+								Status:
+							</wicket:message>
+						</label>
+					</th>
 					<th width="20%">
 						<label for="quantity">
 							<wicket:message	key="bioTransaction.reason">
@@ -42,13 +49,6 @@
 						<label for="comments">
 							<wicket:message	key="bioTransaction.recorder">
 								Comments:
-							</wicket:message>
-						</label>
-					</th>
-					<th width="10%">
-						<label for="status">
-							<wicket:message	key="bioTransaction.status">
-								Quantity:
 							</wicket:message>
 						</label>
 					</th>
@@ -102,16 +102,16 @@
 						<span wicket:id="bioTransaction.biospecimen.unit.name">
 						</span>
 					</td>
+					<td width="10%">
+						<span wicket:id="bioTransaction.status.name">
+						</span>
+					</td>
 					<td width="20%">
 						<span wicket:id="bioTransaction.reason">
 						</span>
 					</td>
 					<td width="25%">
 						<span wicket:id="bioTransaction.recorder">
-						</span>
-					</td>
-					<td width="10%">
-						<span wicket:id="bioTransaction.status.name">
 						</span>
 					</td>
 					<td width="10%">
