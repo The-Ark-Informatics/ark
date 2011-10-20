@@ -567,31 +567,31 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	public int getCustomFieldCount(CustomField customFieldCriteria) {
-		return studyDao.getCustomFieldCount(customFieldCriteria);
+		return customFieldDao.getCustomFieldCount(customFieldCriteria);
 	}
 
 	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count) {
-		return studyDao.searchPageableCustomFields(customFieldCriteria, first, count);
+		return customFieldDao.searchPageableCustomFields(customFieldCriteria, first, count);
 	}
 
 	public List<FieldType> getFieldTypes() {
-		return studyDao.getFieldTypes();
+		return customFieldDao.getFieldTypes();
 	}
 
 	public List<String> getUnitTypeNames(UnitType unitTypeCriteria, int maxResults) {
-		return studyDao.getUnitTypeNames(unitTypeCriteria, maxResults);
+		return customFieldDao.getUnitTypeNames(unitTypeCriteria, maxResults);
 	}
 
 	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria) {
-		return studyDao.getUnitTypes(unitTypeCriteria);
+		return customFieldDao.getUnitTypes(unitTypeCriteria);
 	}
 
 	public CustomField getCustomField(Long id) {
-		return studyDao.getCustomField(id);
+		return customFieldDao.getCustomField(id);
 	}
 
 	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria) {
-		return studyDao.getCustomFieldDisplayByCustomField(cfCriteria);
+		return customFieldDao.getCustomFieldDisplayByCustomField(cfCriteria);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -601,7 +601,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			AuditHistory ah = new AuditHistory();
 			// Field can not have data yet (since it's new)
 			customFieldVO.getCustomField().setCustomFieldHasData(false);
-			studyDao.createCustomField(customFieldVO.getCustomField());
+			customFieldDao.createCustomField(customFieldVO.getCustomField());
 
 			// Custom Field History
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
@@ -614,10 +614,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			if (customFieldVO.isUseCustomFieldDisplay()) {
 				// Set the CustomField this CustomFieldDisplay entity is linked to
 				customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
-				studyDao.createCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+				customFieldDao.createCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 				// Put in the sequence based on the ID
 				customFieldVO.getCustomFieldDisplay().setSequence(customFieldVO.getCustomFieldDisplay().getId());
-				studyDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+				customFieldDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 
 				// Custom Field Display History
 				ah = new AuditHistory();
@@ -644,7 +644,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException {
 
-		boolean isUnique = studyDao.isCustomFieldUnqiue(customFieldVO.getCustomField().getName(), customFieldVO.getCustomField().getStudy(), customFieldVO.getCustomField());
+		boolean isUnique = customFieldDao.isCustomFieldUnqiue(customFieldVO.getCustomField().getName(), customFieldVO.getCustomField().getStudy(), customFieldVO.getCustomField());
 		if (!isUnique) {
 			log.error("Custom Field Already Exists.: ");
 			throw new ArkUniqueException("A Custom Field already exits.");
@@ -652,7 +652,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		try {
 
 			if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
-				studyDao.updateCustomField(customFieldVO.getCustomField());
+				customFieldDao.updateCustomField(customFieldVO.getCustomField());
 				// Custom Field History
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
@@ -665,7 +665,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			// Only Update CustomFieldDisplay when it is allowed
 			if (customFieldVO.isUseCustomFieldDisplay()) {
 				customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
-				studyDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+				customFieldDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 				// Custom Field Display History
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
@@ -692,8 +692,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		try {
 
 			if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
-				studyDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
-				studyDao.deleteCustomField(customFieldVO.getCustomField());
+				customFieldDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
+				customFieldDao.deleteCustomField(customFieldVO.getCustomField());
 				String fieldName = customFieldVO.getCustomField().getName();
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
@@ -721,7 +721,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	private FieldType getFieldTypeById(Long filedTypeId) {
-		return studyDao.getFieldTypeById(filedTypeId);
+		return customFieldDao.getFieldTypeById(filedTypeId);
 	}
 
 	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo) {
@@ -761,11 +761,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	public List<CustomFieldGroup> getCustomFieldGroups(CustomFieldGroup customFieldGroup, int first, int count) {
-		return studyDao.getCustomFieldGroups(customFieldGroup, first, count);
+		return customFieldDao.getCustomFieldGroups(customFieldGroup, first, count);
 	}
 
 	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup) {
-		return studyDao.getCustomFieldGroupCount(customFieldGroup);
+		return customFieldDao.getCustomFieldGroupCount(customFieldGroup);
 	}
 
 	public CustomField getFieldByNameAndStudyAndFunction(String fieldName, Study study, ArkFunction arkFunction) throws EntityNotFoundException {
@@ -782,7 +782,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria) {
-		return studyDao.getCustomFieldList(customFieldCriteria);
+		return customFieldDao.getCustomFieldList(customFieldCriteria);
 	}
 
 	public void sendEmail(final SimpleMailMessage simpleMailMessage) throws MailSendException, VelocityException {

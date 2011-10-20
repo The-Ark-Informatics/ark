@@ -35,10 +35,6 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
-import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -55,7 +51,6 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
-import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.SubjectVO;
@@ -440,144 +435,8 @@ public interface IStudyDao {
 	public List<Study> getStudiesForUser(ArkUser arkUser, Study study);
 	
 	/**
-	 * Gets the count of CustomFields based on the criteria
-	 * @param customFieldCriteria
-	 * @return
-	 */
-	public int getCustomFieldCount(CustomField customFieldCriteria);
-
-	/**
-	 * Search a on CustomField based on the criteria provided, limiting to the pageable amounts first and count
-	 * @param customFieldCriteria
-	 * @param first
-	 * @param count
-	 * @return
-	 */
-	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count);
-
-	/**
-	 * Get a List of FieldTypes
-	 * @return
-	 */
-	public List<FieldType> getFieldTypes();
-	
-	/**
-	 * Get a List of UnitType.name(s), limited to the maxResults
-	 * @param unitTypeCriteria
-	 * @param maxResults
-	 * @return
-	 */
-	public List<String> getUnitTypeNames(UnitType unitTypeCriteria, int maxResults);
-	
-	/**
-	 * Get a list of UnitType(s) based on the criteria provided
-	 * @param unitTypeCriteria
-	 * @return
-	 */
-	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria);
-
-	/**
-	 * Create a CustomField
-	 * @param customField
-	 * @throws ArkSystemException
-	 */
-	public void createCustomField(CustomField customField) throws  ArkSystemException;
-	
-	/**
-	 * Create a CustomFieldDisplay
-	 * @param customFieldDisplay
-	 * @throws ArkSystemException
-	 */
-	public void createCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
-	
-	/**
-	 * Get a FieldType based on it's id
-	 * @param fieldTpeId
-	 * @return
-	 */
-	public FieldType getFieldTypeById(Long id);
-	
-	/**
-	 * Get a CustomField based on it's id
-	 * @param id
-	 * @return
-	 */
-	public CustomField getCustomField(Long id );
-	
-	/**
-	 * Get a CustomFieldDisplay based on the criteria provided
-	 * @param cfCriteria
-	 * @return
-	 */
-	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria);
-	
-	/**
-	 * Get a CustomFieldDisplay based on it's id
-	 * @param id
-	 * @return
-	 */
-	public CustomFieldDisplay getCustomFieldDisplay(Long id);
-	
-	/**
-	 * Update a CustomField
-	 * @param customField
-	 * @throws ArkSystemException
-	 */
-	public void updateCustomField(CustomField customField) throws  ArkSystemException;
-	
-	/**
-	 * Update a CustomFieldDisplay
-	 * @param customFieldDisplay
-	 * @throws ArkSystemException
-	 */
-	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
-	
-	/**
-	 * Delete a CustomField
-	 * @param customField
-	 * @throws ArkSystemException
-	 */
-	public void deleteCustomField(CustomField customField) throws ArkSystemException;
-	
-	/**
-	 * Delete a CustomFieldDisplay
-	 * @param customFieldDisplay
-	 * @throws ArkSystemException
-	 */
-	public void deleteCustomDisplayField(CustomFieldDisplay customFieldDisplay) throws ArkSystemException;
-	
-	/**
-	 * Determine if the CustomField is unique, based on the name, study and CustomField to update
-	 * @param customFieldName
-	 * @param study
-	 * @param customFieldToUpdate
-	 * @return true if the CustomField is unique
-	 */
-	public boolean isCustomFieldUnqiue(String customFieldName, Study study, CustomField customFieldToUpdate);
-
-	/**
 	 * Get the total count of Studies 
 	 * @return the total count of Studies 
 	 */
 	public int getCountOfStudies();
-	
-	/**
-	 * Look up and return a list of CustomFieldGroup entities that match the search criteria. The mandatory parameters
-	 * for the search are Study and ArkFunction. This must be set in the CustomFieldGroup instance that is passed to the service.
-	 * @param customFieldGroup
-	 * @return
-	 */
-	public List<CustomFieldGroup> getCustomFieldGroups(CustomFieldGroup customFieldGroup,int first, int count);
-	
-	
-	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup);
-	
-	/**
-	 * Filters the CustomFields linked to 
-	 * 1. A Study and
-	 * 2. ArkFunction
-	 * The Criteria is specified in the CustomField parameter. The study and ArkFunction must be set in it.
-	 * @return List<CustomField>
-	 */
-	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria);
 }
