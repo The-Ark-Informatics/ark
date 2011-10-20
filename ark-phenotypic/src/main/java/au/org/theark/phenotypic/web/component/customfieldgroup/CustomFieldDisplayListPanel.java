@@ -3,19 +3,60 @@ package au.org.theark.phenotypic.web.component.customfieldgroup;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.CustomFieldGroupVO;
+import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 
 public class CustomFieldDisplayListPanel extends Panel {
 
-	public CustomFieldDisplayListPanel(String id) {
+	protected AbstractDetailModalWindow	modalWindow;
+	private Panel modalContentPanel;
+	private FeedbackPanel feedbackPanel;
+	private ArkCrudContainerVO arkCrudContainerVO;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+	
+	
+	/**
+	 * Constructor
+	 * @param id
+	 * @param feedbackPanel
+	 * @param arkCrudContainerVO
+	 */
+	public CustomFieldDisplayListPanel(String id, FeedbackPanel feedbackPanel,ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
-		// TODO Auto-generated constructor stub
+		this.feedbackPanel = feedbackPanel;
+		this.arkCrudContainerVO = arkCrudContainerVO; 
+		setOutputMarkupPlaceholderTag(true);
+	}
+	
+	public void initialisePanel(){
+	
+		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
+
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onCloseModalWindow(AjaxRequestTarget target) {
+				
+				target.add(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
+			}
+
+		};
+		
+		add(modalWindow);
 	}
 	
 	public DataView<CustomFieldDisplay> buildDataView(ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> provider){
@@ -47,10 +88,6 @@ public class CustomFieldDisplayListPanel extends Panel {
 				}else{
 					item.add(new Label("requiredMessage",""));
 				}
-				
-				
-		
-				
 			}
 		};
 		
@@ -65,7 +102,14 @@ public class CustomFieldDisplayListPanel extends Panel {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("id") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				//TODO open a Modal window and allow that modal window to display the selected item and be able to edit and save it as a separate transaction
+				
+				CustomFieldDisplay customFieldDisplayToEdit = iArkCommonService.getCustomFieldDisplay(item.getModelObject().getId());
+				CustomFieldGroupVO cfgVO = new CustomFieldGroupVO();
+				cfgVO.setCustomFieldDisplay(customFieldDisplayToEdit);
+				CompoundPropertyModel<CustomFieldGroupVO> newCpmModel = new CompoundPropertyModel<CustomFieldGroupVO>(cfgVO);
+				showModalWindow(target, newCpmModel);
+				//refresh the list
+				
 			}
 		};
 		
@@ -75,6 +119,18 @@ public class CustomFieldDisplayListPanel extends Panel {
 		link.add(idLink);
 		linkWmc.add(link);
 		return linkWmc;
+	}
+	
+	/**
+	 * 
+	 * @param target
+	 */
+	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<CustomFieldGroupVO> cpmModel){
+		
+		modalContentPanel = new CustomFieldDisplayModalPanel("content",modalWindow,cpmModel,feedbackPanel);
+		modalWindow.setTitle("Custom Field Display Detail");
+		modalWindow.setContent(modalContentPanel);
+		modalWindow.show(target);
 	}
 	
 

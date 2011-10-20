@@ -56,7 +56,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	private CheckBox publishedStatusCb;		
 	private Boolean addCustomFieldDisplayList;
 	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdProvider;
-	DataView<CustomFieldDisplay> dataView;
+	private DataView<CustomFieldDisplay> dataView;
 	
 	/**
 	 * @param id
@@ -77,7 +77,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		if(addCustomFieldDisplayList){
 			// Set the criteria for the data provider
 			cfdProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldDisplay"));
-			CustomFieldDisplayListPanel cfdListPanel = new CustomFieldDisplayListPanel("cfdListPanel");
+			CustomFieldDisplayListPanel cfdListPanel = new CustomFieldDisplayListPanel("cfdListPanel", feedBackPanel,arkCrudContainerVO);
+			cfdListPanel.initialisePanel();
 			dataView = cfdListPanel.buildDataView(cfdProvider);
 			dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 			
