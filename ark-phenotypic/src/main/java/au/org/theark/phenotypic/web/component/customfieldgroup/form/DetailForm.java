@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -82,16 +83,15 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 			dataView = cfdListPanel.buildDataView(cfdProvider);
 			dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 			
-//			AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
-//				@Override
-//				protected void onAjaxEvent(AjaxRequestTarget target) {
-//					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-//				}
-//			};
+			AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
+				@Override
+				protected void onAjaxEvent(AjaxRequestTarget target) {
+					target.add(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
+				}
+			};
 			
-			//TODO add the paginator
+			cfdListPanel.addOrReplace(pageNavigator);
 			cfdListPanel.addOrReplace(dataView);
-			
 			arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(cfdListPanel);
 			
 		}else{
