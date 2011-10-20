@@ -235,7 +235,7 @@ public class Constants {
 	public static final String	ENTITY_TYPE_STUDY_UPLOAD						= "Study Upload";
 	public static final String	ENTITY_TYPE_CUSTOM_FIELD						= "Custom Field";
 	public static final String	ENTITY_TYPE_CUSTOM_FIELD_DISPLAY				= "Custom Field Display";
-
+	public static final String  ENTITY_TYPE_CUSTOM_FIELD_GROUP					= "Custom Field Group";
 	public static final String	ACTION_INSERT										= "Insert";
 	public static final String	ACTION_UPDATE										= "Update";
 	public static final String	PERSON_SURNAME_HISTORY_PERSON					= "person";
