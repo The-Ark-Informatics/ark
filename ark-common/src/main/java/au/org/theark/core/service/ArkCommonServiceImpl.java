@@ -123,6 +123,15 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private JavaMailSender				javaMailSender;
 	private VelocityEngine				velocityEngine;
 
+	public ICustomFieldDao getCustomFieldDao() {
+		return customFieldDao;
+	}
+
+	@Autowired
+	public void setCustomFieldDao(ICustomFieldDao customFieldDao) {
+		this.customFieldDao = customFieldDao;
+	}
+	
 	/**
 	 * @return the velocityEngine
 	 */
@@ -842,4 +851,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		/* send out the email */
 		return text;
 	}
+	
+	
+	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException{
+		customFieldDao.updateCustomFieldDisplay(customFieldDisplay);
+	}
+
+	public CustomFieldDisplay getCustomFieldDisplay(Long id) {
+		return customFieldDao.getCustomFieldDisplay(id);
+	}
+	
 }
