@@ -81,14 +81,53 @@ function printZebraBarcode(barcodeString) {
 
 }
 
+function printStrawBarcode(printerName, barcodeString) {
+	var applet = document.jZebra;
+	var INVALID_PRINTER = "Could not find printer: [" + printerName +"]";
+	
+	if (applet != null) {
+		// Try to find specified printer
+		applet.findPrinter(printerName);
+		while (!applet.isDoneFinding()) {
+			// Wait
+		}
+
+		// No suitable printer found, exit
+		if (applet.getPrinterName() == null) {
+			alert("ERROR: " + INVALID_PRINTER);
+			return;
+		}
+		
+		// Send characters/raw commands to applet using "append"
+		applet.append(unescape(barcodeString));
+		// Send characters/raw commands to printer
+		applet.print();
+	}
+
+	monitorPrinting();
+
+	/**
+	 * PHP PRINTING: // Uses the php `"echo"` function in conjunction with
+	 * jZebra `"append"` function // This assumes you have already assigned a
+	 * value to `"$commands"` with php document.jZebra.append(<?php echo
+	 * $commands; ?>);
+	 */
+
+	/**
+	 * SPECIAL ASCII ENCODING //applet.setEncoding("UTF-8");
+	 * applet.setEncoding("Cp1252"); applet.append("\xDA");
+	 * applet.append(String.fromCharCode(218)); applet.append(chr(218));
+	 */
+
+}
+
 function print64() {
 	var applet = document.jZebra;
 	if (applet != null) {
 		// Use jZebra's `"append64"` function. This will automatically convert
 		// provided
 		// base64 encoded text into ascii/bytes, etc.
-		applet
-				.append64("QTU5MCwxNjAwLDIsMywxLDEsTiwialplYnJhIHNhbXBsZS5odG1sIgpBNTkwLDE1NzAsMiwzLDEsMSxOLCJUZXN0aW5nIHRoZSBwcmludDY0KCkgZnVuY3Rpb24iClAxCg==");
+		applet.append64("QTU5MCwxNjAwLDIsMywxLDEsTiwialplYnJhIHNhbXBsZS5odG1sIgpBNTkwLDE1NzAsMiwzLDEsMSxOLCJUZXN0aW5nIHRoZSBwcmludDY0KCkgZnVuY3Rpb24iClAxCg==");
 
 		// Send characters/raw commands to printer
 		applet.print();
