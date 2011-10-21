@@ -71,7 +71,6 @@ import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -1419,12 +1418,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return list;
 	}
 
-	public Collection<DelimiterType> getDelimiterTypes() {
-		Criteria criteria = getSession().createCriteria(DelimiterType.class);
-		java.util.Collection<DelimiterType> delimiterTypeCollection = criteria.list();
-		return delimiterTypeCollection;
-	}
-
 	public Collection<StudyUpload> searchUpload(StudyUpload searchUpload) {
 		Criteria criteria = getSession().createCriteria(StudyUpload.class);
 
@@ -1599,11 +1592,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setMaxResults(1);
 		return (LinkSubjectStudy) criteria.uniqueResult();
-	}
-
-	public DelimiterType getDelimiterType(Long id) {
-		DelimiterType delimiterType = (DelimiterType) getSession().get(DelimiterType.class, id);
-		return delimiterType;
 	}
 
 	/**

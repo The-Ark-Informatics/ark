@@ -41,7 +41,6 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
-import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
@@ -282,8 +281,6 @@ public interface IStudyDao {
 
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes();
 
-	public Collection<DelimiterType> getDelimiterTypes();
-
 	public Collection<StudyUpload> searchUpload(StudyUpload searchUpload);
 
 	public void createUpload(StudyUpload studyUpload);
@@ -305,8 +302,6 @@ public interface IStudyDao {
 	public Collection<ArkUser> lookupArkUser(Study study);
 
 	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId, Study study) throws EntityNotFoundException, ArkSystemException;
-
-	public DelimiterType getDelimiterType(Long id);
 
 	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction);
 	

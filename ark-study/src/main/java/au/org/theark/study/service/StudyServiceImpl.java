@@ -60,7 +60,6 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -636,10 +635,6 @@ public class StudyServiceImpl implements IStudyService {
 		arkCommonService.createAuditHistory(ah);
 	}
 
-	public Collection<DelimiterType> getDelimiterTypes() {
-		return studyDao.getDelimiterTypes();
-	}
-
 	public Collection<StudyUpload> searchUpload(StudyUpload searchUpload) {
 		return studyDao.searchUpload(searchUpload);
 	}
@@ -828,10 +823,6 @@ public class StudyServiceImpl implements IStudyService {
 
 	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId, Study study) throws EntityNotFoundException, ArkSystemException {
 		return studyDao.getSubjectLinkedToStudy(personId, study);
-	}
-
-	public DelimiterType getDelimiterType(Long id) {
-		return studyDao.getDelimiterType(id);
 	}
 
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count){

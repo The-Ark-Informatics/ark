@@ -44,7 +44,6 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
-import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -230,8 +229,6 @@ public interface IStudyService {
 
 	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved, UnAuthorizedOperation;
 
-	public Collection<DelimiterType> getDelimiterTypes();
-
 	public Collection<StudyUpload> searchUpload(StudyUpload searchUpload);
 
 	public void createUpload(StudyUpload studyUpload);
@@ -269,8 +266,6 @@ public interface IStudyService {
 	public Collection<ArkUser> lookupArkUser(Study study);
 
 	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId, Study study) throws EntityNotFoundException, ArkSystemException;
-
-	public DelimiterType getDelimiterType(Long id);
 
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
 	

@@ -77,6 +77,7 @@ import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -868,6 +869,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public Collection<FileFormat> getFileFormats() {
 		return studyDao.getFileFormats();
+	}
+
+	public DelimiterType getDelimiterType(Long id) {
+		return studyDao.getDelimiterType(id);
+	}
+
+	public Collection<DelimiterType> getDelimiterTypes() {
+		return studyDao.getDelimiterTypes();
 	}
 	
 }

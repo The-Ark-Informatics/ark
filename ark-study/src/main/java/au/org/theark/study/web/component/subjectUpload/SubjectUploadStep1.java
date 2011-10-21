@@ -83,11 +83,11 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	@SuppressWarnings({ "unchecked" })
 	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
-		java.util.Collection<DelimiterType> delimiterTypeCollection = iStudyService.getDelimiterTypes();
+		java.util.Collection<DelimiterType> delimiterTypeCollection = iArkCommonService.getDelimiterTypes();
 		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.study.web.Constants.DELIMITER_TYPE_ID);
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
 		// Set to default delimiterType
-		containerForm.getModelObject().getUpload().setDelimiterType(iStudyService.getDelimiterType(new Long(1)));
+		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
 	}
 
 	public void initialiseDetailForm() {
