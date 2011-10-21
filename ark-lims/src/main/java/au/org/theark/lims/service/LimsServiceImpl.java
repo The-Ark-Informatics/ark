@@ -224,9 +224,9 @@ public class LimsServiceImpl implements ILimsService {
 			bioTransaction.setQuantity(new Double(0));
 		}
 		
-		bioTransaction.setReason(Constants.BIOTRANSACTION_STATUS_INITIAL_QTY);
+		bioTransaction.setReason(Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
 		
-		BioTransactionStatus initialStatus = getBioTransactionStatusByName(Constants.BIOTRANSACTION_STATUS_INITIAL_QTY);
+		BioTransactionStatus initialStatus = getBioTransactionStatusByName(Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
 		bioTransaction.setStatus(initialStatus);	//ensure that the initial transaction can be identified
 		iBioTransactionDao.createBioTransaction(bioTransaction);
 	}
