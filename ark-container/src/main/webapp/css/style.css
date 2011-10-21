@@ -127,6 +127,18 @@ width: 5%;
 #imgCenter {
 clear: both;
 }
+.labelTop {
+align: left;
+float: left;
+margin-bottom: 5px;
+vertical-align: text-top;
+}
+.labelBottom {
+float: left;
+margin: auto;
+vertical-align: text-bottom;
+width: 100%;
+}
 #fldLabel {
 float : left;
 height: 5%;
@@ -136,6 +148,18 @@ width: 17%;
 float: left;
 height: 5%;
 width: 28%;
+}
+.controlTop {
+align: left;
+float: left;
+margin-bottom: 5px;
+vertical-align: text-top;
+}
+.controlBottom {
+float: left;
+margin: auto;
+vertical-align: text-bottom;
+width: 100%;
 }
 #userContainerPanel {
 background-color: #e7e4c1;
