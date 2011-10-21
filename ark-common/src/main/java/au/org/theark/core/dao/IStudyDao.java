@@ -35,6 +35,7 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -441,7 +442,30 @@ public interface IStudyDao {
 	 */
 	public int getCountOfStudies();
 
+	/**
+	 * Get a FileFormat based on the name
+	 * @param fileFormatName
+	 * @return
+	 */
 	public FileFormat getFileFormatByName(String fileFormatName);
 
+	/**
+	 * Get a List of FileFormats
+	 * @return
+	 */
 	public Collection<FileFormat> getFileFormats();
+
+	/**
+	 * Get a DelimiterType based on the id
+	 * @param id
+	 * @return
+	 */
+	public DelimiterType getDelimiterType(Long id);
+
+	/**
+	 * Get a List of DelimiterTypes
+	 * @return
+	 */
+	public Collection<DelimiterType> getDelimiterTypes();
+	
 }

@@ -60,6 +60,7 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -874,4 +875,16 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		java.util.Collection<FileFormat> fileFormatCollection = criteria.list();
 		return fileFormatCollection;
 	}
+
+	public DelimiterType getDelimiterType(Long id) {
+		DelimiterType delimiterType = (DelimiterType) getSession().get(DelimiterType.class, id);
+		return delimiterType;
+	}
+
+	public Collection<DelimiterType> getDelimiterTypes() {
+		Criteria criteria = getSession().createCriteria(DelimiterType.class);
+		java.util.Collection<DelimiterType> delimiterTypeCollection = criteria.list();
+		return delimiterTypeCollection;
+	}
+	
 }
