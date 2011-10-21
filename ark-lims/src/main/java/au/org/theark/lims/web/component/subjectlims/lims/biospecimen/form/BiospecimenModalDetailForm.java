@@ -61,6 +61,11 @@ import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
+import au.org.theark.core.model.lims.entity.BiospecimenGrade;
+import au.org.theark.core.model.lims.entity.BiospecimenQuality;
+import au.org.theark.core.model.lims.entity.BiospecimenStatus;
+import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.service.IArkCommonService;
@@ -91,48 +96,54 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	/**
 	 * 
 	 */
-	private static final long					serialVersionUID	= 2727419197330261916L;
-	private static final Logger				log					= LoggerFactory.getLogger(BiospecimenModalDetailForm.class);
+	private static final long									serialVersionUID	= 2727419197330261916L;
+	private static final Logger								log					= LoggerFactory.getLogger(BiospecimenModalDetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>			iArkCommonService;
+	private IArkCommonService<Void>							iArkCommonService;
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
-	private ILimsService							iLimsService;
+	private ILimsService											iLimsService;
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
-	private IInventoryService					iInventoryService;
+	private IInventoryService									iInventoryService;
 
-	private TextField<String>					idTxtFld;
-	private TextField<String>					biospecimenUidTxtFld;
-	private TextField<String>					parentUidTxtFld;
-	private DropDownChoice<BioSampletype>	sampleTypeDdc;
-	private DropDownChoice<BioCollection>	bioCollectionDdc;
-	
-	private DateTextField						sampleDateTxtFld;
-	private DateTimeField						sampleTimeTxtFld;
-	private DateTextField						processedDateTxtFld;
-	private DateTimeField						processedTimeTxtFld;
-	
-	private TextArea<String>					commentsTxtAreaFld;
-	
-	private CheckBox								barcodedChkBox;
-	private NonCachingImage						barcodeImage;
+	private TextField<String>									idTxtFld;
+	private TextField<String>									biospecimenUidTxtFld;
+	private TextField<String>									parentUidTxtFld;
+	private DropDownChoice<BioSampletype>					sampleTypeDdc;
+	private DropDownChoice<BioCollection>					bioCollectionDdc;
 
-	private Label									quantityLbl;
-	private Label									quantityNoteLbl;
-	private TextField<Double>					quantityTxtFld;
-	private TextField<Double>					bioTransactionQuantityTxtFld;
-	private DropDownChoice<Unit>				unitDdc;
-	private DropDownChoice<TreatmentType>	treatmentTypeDdc;
+	private DateTextField										sampleDateTxtFld;
+	private DateTimeField										sampleTimeTxtFld;
+	private DateTextField										processedDateTxtFld;
+	private DateTimeField										processedTimeTxtFld;
 
-	private Panel									biospecimenLocationPanel;
-	private WebMarkupContainer					bioTransactionDetailWmc;
-	private Panel									bioTransactionListPanel;
-	
-	private Panel									biospecimenCFDataEntryPanel;
+	private TextArea<String>									commentsTxtAreaFld;
 
-	private BiospecimenButtonsPanel 			biospecimenbuttonsPanel;	
-	private ModalWindow							modalWindow;
+	private CheckBox												barcodedChkBox;
+	private NonCachingImage										barcodeImage;
+
+	private DropDownChoice<BiospecimenGrade>				gradeDdc;
+	private DropDownChoice<BiospecimenStorage>			storedInDdc;
+	private DropDownChoice<BiospecimenAnticoagulant>	anticoagDdc;
+	private DropDownChoice<BiospecimenStatus>				statusDdc;
+	private DropDownChoice<BiospecimenQuality>			qualityDdc;
+
+	private Label													quantityLbl;
+	private Label													quantityNoteLbl;
+	private TextField<Double>									quantityTxtFld;
+	private TextField<Double>									bioTransactionQuantityTxtFld;
+	private DropDownChoice<Unit>								unitDdc;
+	private DropDownChoice<TreatmentType>					treatmentTypeDdc;
+
+	private Panel													biospecimenLocationPanel;
+	private WebMarkupContainer									bioTransactionDetailWmc;
+	private Panel													bioTransactionListPanel;
+
+	private Panel													biospecimenCFDataEntryPanel;
+
+	private BiospecimenButtonsPanel							biospecimenbuttonsPanel;
+	private ModalWindow											modalWindow;
 
 	/**
 	 * Constructor
@@ -152,7 +163,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioTransactionDetailWmc.setOutputMarkupPlaceholderTag(true);
 		bioTransactionDetailWmc.setEnabled(cpModel.getObject().getBiospecimen().getId() == null);
 
-		biospecimenbuttonsPanel = new BiospecimenButtonsPanel("biospecimenButtonPanel", new PropertyModel<Biospecimen>(cpModel.getObject(), "biospecimen")){
+		biospecimenbuttonsPanel = new BiospecimenButtonsPanel("biospecimenButtonPanel", new PropertyModel<Biospecimen>(cpModel.getObject(), "biospecimen")) {
 			/**
 			 * 
 			 */
@@ -161,7 +172,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			@Override
 			public void onAliquot(AjaxRequestTarget target) {
 				processOrAliquot(target, au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_ALIQUOTING, "Sub-aliquot of: ");
-				
+
 				// Go straight into edit mode
 				onViewEdit(target, BiospecimenModalDetailForm.this);
 			}
@@ -199,28 +210,28 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			}
 		};
 		biospecimenbuttonsPanel.setVisible(getModelObject().getBiospecimen().getId() != null);
-		
+
 		// Disable Process/Aliquot buttons if new, or quantity available is 0
 		boolean enabled = true;
-		if(cpModel.getObject().getBiospecimen().getId() == null || 
-				(cpModel.getObject().getBiospecimen().getQuantity() != null && cpModel.getObject().getBiospecimen().getQuantity().equals(new Double(0)))) {
+		if (cpModel.getObject().getBiospecimen().getId() == null
+				|| (cpModel.getObject().getBiospecimen().getQuantity() != null && cpModel.getObject().getBiospecimen().getQuantity().equals(new Double(0)))) {
 			enabled = false;
 		}
 		biospecimenbuttonsPanel.setProcessButtonEnabled(enabled);
 		biospecimenbuttonsPanel.setAliquotButtonEnabled(enabled);
-		
+
 		addOrReplace(biospecimenbuttonsPanel);
 	}
-	
+
 	/**
 	 * Enable quantity/treatment
 	 */
 	private void enableQuantityTreatment(AjaxRequestTarget target) {
 		setQuantityLabel();
-		
+
 		treatmentTypeDdc.setEnabled(true);
 		bioTransactionDetailWmc.setEnabled(true);
-		
+
 		target.add(treatmentTypeDdc);
 		target.add(bioTransactionDetailWmc);
 	}
@@ -305,12 +316,12 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		parentUidTxtFld = new TextField<String>("biospecimen.parentUid");
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		sampleTimeTxtFld = new DateTimeField("biospecimen.sampleTime"){
+		sampleTimeTxtFld = new DateTimeField("biospecimen.sampleTime") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
-			
+
 			@Override
 			protected void onBeforeRender() {
 				this.getDateTextField().setVisibilityAllowed(false);
@@ -318,22 +329,21 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			}
 
 			@Override
-			protected void convertInput()
-			{
+			protected void convertInput() {
 				// Slight change to not default to today's date
-				Date modelObject = (Date)getDefaultModelObject();
+				Date modelObject = (Date) getDefaultModelObject();
 				getDateTextField().setConvertedInput(modelObject != null ? modelObject : null);
 				super.convertInput();
 			}
 		};
-		
+
 		processedDateTxtFld = new DateTextField("biospecimen.processedDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		processedTimeTxtFld = new DateTimeField("biospecimen.processedTime"){
+		processedTimeTxtFld = new DateTimeField("biospecimen.processedTime") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
-			
+
 			@Override
 			protected void onBeforeRender() {
 				this.getDateTextField().setVisibilityAllowed(false);
@@ -341,19 +351,18 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			}
 
 			@Override
-			protected void convertInput()
-			{
+			protected void convertInput() {
 				// Slight change to not default to today's date
-				Date modelObject = (Date)getDefaultModelObject();
+				Date modelObject = (Date) getDefaultModelObject();
 				getDateTextField().setConvertedInput(modelObject != null ? modelObject : null);
 				super.convertInput();
 			}
 		};
-		
+
 		ArkDatePicker sampleDatePicker = new ArkDatePicker();
 		sampleDatePicker.bind(sampleDateTxtFld);
 		sampleDateTxtFld.add(sampleDatePicker);
-		
+
 		ArkDatePicker processedDatePicker = new ArkDatePicker();
 		processedDatePicker.bind(processedDateTxtFld);
 		processedDateTxtFld.add(processedDatePicker);
@@ -383,11 +392,16 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		initBioCollectionDdc();
 		initUnitDdc();
 		initTreatmentTypeDdc();
+		initGradeDdc();
+		initStoredInDdc();
+		initAnticoagDdc();
+		initStatusDdc();
+		initQualityDdc();
 
 		barcodedChkBox = new CheckBox("biospecimen.barcoded");
 		barcodedChkBox.setVisible(true);
 		barcodedChkBox.setEnabled(false);
-		
+
 		initialiseBarcodeImage();
 
 		initialiseBiospecimenCFDataEntry();
@@ -462,6 +476,41 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		treatmentTypeDdc = new DropDownChoice<TreatmentType>("biospecimen.treatmentType", (List<TreatmentType>) treatmentTypeList, choiceRenderer);
 		treatmentTypeDdc.setNullValid(false);
 	}
+	
+	private void initGradeDdc() {
+		List<BiospecimenGrade> list = iLimsService.getBiospecimenGradeList();
+		ChoiceRenderer<BiospecimenGrade> choiceRenderer = new ChoiceRenderer<BiospecimenGrade>(Constants.NAME, Constants.ID);
+		gradeDdc = new DropDownChoice<BiospecimenGrade>("biospecimen.grade", list, choiceRenderer);
+		gradeDdc.setNullValid(false);
+	}
+	
+	private void initStoredInDdc() {
+		List<BiospecimenStorage> list = iLimsService.getBiospecimenStorageList();
+		ChoiceRenderer<BiospecimenStorage> choiceRenderer = new ChoiceRenderer<BiospecimenStorage>(Constants.NAME, Constants.ID);
+		storedInDdc = new DropDownChoice<BiospecimenStorage>("biospecimen.storedIn", list, choiceRenderer);
+		storedInDdc.setNullValid(false);
+	}
+	
+	private void initAnticoagDdc() {
+		List<BiospecimenAnticoagulant> list = iLimsService.getBiospecimenAnticoagulantList();
+		ChoiceRenderer<BiospecimenAnticoagulant> choiceRenderer = new ChoiceRenderer<BiospecimenAnticoagulant>(Constants.NAME, Constants.ID);
+		anticoagDdc = new DropDownChoice<BiospecimenAnticoagulant>("biospecimen.anticoag", list, choiceRenderer);
+		anticoagDdc.setNullValid(false);
+	}
+	
+	private void initStatusDdc() {
+		List<BiospecimenStatus> list = iLimsService.getBiospecimenStatusList();
+		ChoiceRenderer<BiospecimenStatus> choiceRenderer = new ChoiceRenderer<BiospecimenStatus>(Constants.NAME, Constants.ID);
+		statusDdc = new DropDownChoice<BiospecimenStatus>("biospecimen.status", list, choiceRenderer);
+		statusDdc.setNullValid(false);
+	}
+	
+	private void initQualityDdc() {
+		List<BiospecimenQuality> list = iLimsService.getBiospecimenQualityList();
+		ChoiceRenderer<BiospecimenQuality> choiceRenderer = new ChoiceRenderer<BiospecimenQuality>(Constants.NAME, Constants.ID);
+		qualityDdc = new DropDownChoice<BiospecimenQuality>("biospecimen.quality", list, choiceRenderer);
+		qualityDdc.setNullValid(false);
+	}
 
 	protected void attachValidators() {
 		idTxtFld.setRequired(true);
@@ -491,6 +540,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioCollectionDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(barcodedChkBox);
 		arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(barcodeImage);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(gradeDdc);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(storedInDdc);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(anticoagDdc);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(statusDdc);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(qualityDdc);
 
 		// Quantity label depends on new/existing Biospecimen
 		bioTransactionDetailWmc.addOrReplace(quantityNoteLbl);
@@ -514,15 +568,15 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	protected void onSave(AjaxRequestTarget target) {
 		boolean saveOk = true;
 		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
-		
+
 		if (cpModel.getObject().getBiospecimen().getId() == null) {
 			// Save/Process/Aliquot
-			if(cpModel.getObject().getBiospecimenProcessing().isEmpty()) {
+			if (cpModel.getObject().getBiospecimenProcessing().isEmpty()) {
 				// Normal Save functionality
 				// Initial transaction detail
 				currentUser = SecurityUtils.getSubject();
 				cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
-	
+
 				iLimsService.createBiospecimen(cpModel.getObject());
 				this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
 				setQuantityLabel();
@@ -534,15 +588,15 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 					Biospecimen biospecimen = limsVo.getBiospecimen();
 					BioTransaction bioTransaction = limsVo.getBioTransaction();
 					Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParentId());
-					 
-					if(bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
+
+					if (bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
 						this.error("Cannot process more than the total amount of the parent biospecimen");
 						saveOk = false;
 					}
 					else {
 						// Process the biospecimen and it's parent
 						iLimsService.createBiospecimen(limsVo);
-						
+
 						// Add parent transaction
 						LimsVO parentLimsVo = new LimsVO();
 						parentLimsVo.setBiospecimen(parentBiospecimen);
@@ -573,15 +627,15 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 					Biospecimen biospecimen = limsVo.getBiospecimen();
 					BioTransaction bioTransaction = limsVo.getBioTransaction();
 					Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParentId());
-					 
-					if(bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
+
+					if (bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
 						this.error("Cannot aliquot more than the total amount of the parent biospecimen");
 						saveOk = false;
 					}
 					else {
 						// Aliquot the biospecimen and it's parent
 						iLimsService.createBiospecimen(limsVo);
-						
+
 						// Add parent transaction
 						LimsVO parentLimsVo = new LimsVO();
 						parentLimsVo.setBiospecimen(parentBiospecimen);
@@ -590,7 +644,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 						parentLimsVo.getBioTransaction().setTransactionDate(Calendar.getInstance().getTime());
 						parentLimsVo.getBioTransaction().setReason("Sub-Aliquot for: " + biospecimen.getBiospecimenUid());
 						parentLimsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
-						
+
 						// NOTE: Removing from parent is negative-value transaction
 						parentLimsVo.getBioTransaction().setQuantity(bioTransaction.getQuantity() * -1);
 						BioTransactionStatus bioTransactionStatus = iLimsService.getBioTransactionStatusByName("Aliquoted");
@@ -609,13 +663,13 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			// Update
 			iLimsService.updateBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
-			
+
 			// Hide/show barcode image
 			barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
 			target.add(barcodeImage);
 			setQuantityLabel();
 		}
-		
+
 		// Allow the Biospecimen custom data to be saved any time save is performed
 		if (biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel) {
 			((BiospecimenCustomDataDataViewPanel) biospecimenCFDataEntryPanel).saveCustomData();
@@ -628,22 +682,22 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		if (initialiseBioTransactionListPanel()) {
 			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
 		}
-		
-		if(saveOk) {
+
+		if (saveOk) {
 			// Disable initial transaction details, and hide inital quantity text box
 			bioTransactionDetailWmc.setEnabled(false);
 			bioTransactionQuantityTxtFld.setVisible(false);
 			quantityTxtFld.setVisible(true);
 			quantityTxtFld.setModelObject(bioTransactionQuantityTxtFld.getModelObject());
 			target.add(bioTransactionDetailWmc);
-	
+
 			barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
 			target.add(barcodeImage);
-			
+
 			// Enable button panel
 			biospecimenbuttonsPanel.setVisible(false);
 			target.add(biospecimenbuttonsPanel);
-			
+
 			onSavePostProcess(target);
 		}
 
@@ -683,14 +737,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			return false;
 		}
 	}
-	
+
 	protected void onCloneBiospecimen(AjaxRequestTarget target) {
 		try {
 			LimsVO oldlimsVo = cpModel.getObject();
 			final String biospecimenUid = oldlimsVo.getBiospecimen().getBiospecimenUid();
 			LimsVO limsVo = new LimsVO();
 			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
-			
+
 			PropertyUtils.copyProperties(limsVo, oldlimsVo);
 			limsVo.getBiospecimen().setId(null);
 			limsVo.getBiospecimen().setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
@@ -707,7 +761,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			cpModel.setObject(limsVo);
 			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was cloned from " + biospecimenUid + " successfully");
 			target.add(feedbackPanel);
-			
+
 			// Go straight into edit mode
 			onViewEdit(target, BiospecimenModalDetailForm.this);
 		}
@@ -720,27 +774,31 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		catch (NoSuchMethodException e) {
 			log.error(e.getMessage());
 		}
-		
+
 		// Disable button panel
 		biospecimenbuttonsPanel.setVisible(false);
 		target.add(biospecimenbuttonsPanel);
 	}
-	
+
 	/**
 	 * Handle processing or aliquoting of a parent biospecimen
-	 * @param target AjxaxRequestTarget
-	 * @param processOrAliquot indication to whether a process or an aliquot
-	 * @param comment comment to add to biospecimen comments
+	 * 
+	 * @param target
+	 *           AjxaxRequestTarget
+	 * @param processOrAliquot
+	 *           indication to whether a process or an aliquot
+	 * @param comment
+	 *           comment to add to biospecimen comments
 	 */
 	protected void processOrAliquot(AjaxRequestTarget target, String processOrAliquot, String comment) {
 		final Biospecimen parentBiospecimen = cpModel.getObject().getBiospecimen();
 		final String parentBiospecimenUid = parentBiospecimen.getBiospecimenUid();
 		final Biospecimen biospecimen = new Biospecimen();
-		
+
 		try {
 			// Copy parent biospecimen details to new biospecimen
 			PropertyUtils.copyProperties(biospecimen, parentBiospecimen);
-			
+
 			// Amend specific fields/detail
 			biospecimen.setId(null);
 			biospecimen.setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
@@ -754,22 +812,22 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			biospecimen.setBarcoded(false);
 			biospecimen.setUnit(parentBiospecimen.getUnit());
 			biospecimen.setTreatmentType(parentBiospecimen.getTreatmentType());
-			
+
 			// Reset the biospecimen detail
 			cpModel.getObject().setBiospecimen(biospecimen);
 			cpModel.getObject().setBiospecimenProcessing(processOrAliquot);
-			
+
 			// Set the bioTransaction detail
 			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
 			cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
 			cpModel.getObject().getBioTransaction().setQuantity(null);
-			
+
 			enableQuantityTreatment(target);
-			
+
 			// refresh the bioTransaction panel
 			initialiseBioTransactionListPanel();
 			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
-			
+
 			// resresh the location panel
 			initialiseBiospecimenLocationPanel();
 			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenLocationPanel);
@@ -783,16 +841,16 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		catch (NoSuchMethodException e) {
 			log.error(e.getMessage());
 		}
-		
+
 		// Notify in progress
 		this.info(processOrAliquot + " biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + ", please save to confirm");
 		target.add(feedbackPanel);
-		
+
 		// hide button panel
 		biospecimenbuttonsPanel.setVisible(false);
 		target.add(biospecimenbuttonsPanel);
 	}
-	
+
 	public CheckBox getBarcodedChkBox() {
 		return barcodedChkBox;
 	}
