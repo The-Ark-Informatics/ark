@@ -78,6 +78,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.FieldType;
+import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -859,6 +860,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public CustomFieldDisplay getCustomFieldDisplay(Long id) {
 		return customFieldDao.getCustomFieldDisplay(id);
+	}
+
+	public FileFormat getFileFormatByName(String fileFormatName) {
+		return studyDao.getFileFormatByName(fileFormatName);
+	}
+
+	public Collection<FileFormat> getFileFormats() {
+		return studyDao.getFileFormats();
 	}
 	
 }

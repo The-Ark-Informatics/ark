@@ -72,7 +72,6 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.DelimiterType;
-import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -1420,12 +1419,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return list;
 	}
 
-	public Collection<FileFormat> getFileFormats() {
-		Criteria criteria = getSession().createCriteria(FileFormat.class);
-		java.util.Collection<FileFormat> fileFormatCollection = criteria.list();
-		return fileFormatCollection;
-	}
-
 	public Collection<DelimiterType> getDelimiterTypes() {
 		Criteria criteria = getSession().createCriteria(DelimiterType.class);
 		java.util.Collection<DelimiterType> delimiterTypeCollection = criteria.list();
@@ -1482,11 +1475,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException {
-		Session session = getSession();
+		StatelessSession session = getStatelessSession();
 		Study study = null;
 		int i = 1;
 
-		session.beginTransaction();
+		Transaction tx = session.beginTransaction();
 		
 		for (Iterator<SubjectVO> iterator = subjectVoCollection.iterator(); iterator.hasNext();) {
 			SubjectVO subjectVo = (SubjectVO) iterator.next();
@@ -1536,10 +1529,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 						autoConsentLinkSubjectStudy(subjectVo.getLinkSubjectStudy());
 
 						Person person = subjectVo.getLinkSubjectStudy().getPerson();
-						session.save(person);
+						session.insert(person);
 
 						LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
-						session.save(linkSubjectStudy);
+						session.insert(linkSubjectStudy);
 					}
 				}
 				else {
@@ -1550,21 +1543,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 				// Disable insertion lock
 				setSubjectUidSequenceLock(study, false);
 			}
-			if ((i++ % 50) == 0) { // 50, same as the JDBC batch size, flush a batch of inserts and release memory:
-				log.info("Hit 50 row batch size, flushing and releasing memory");
-				session.flush();
-				session.clear();
-			}
 		}
-		session.getTransaction().commit();
+		tx.commit();
 		session.close();
 	}
 
 	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) {
-		Session session = getSession();
+		StatelessSession session = getStatelessSession();
 		int i = 1;
 
-		session.beginTransaction();
+		Transaction tx = session.beginTransaction();
 		
 		for (Iterator<SubjectVO> iterator = subjectVoCollection.iterator(); iterator.hasNext();) {
 			SubjectVO subjectVo = (SubjectVO) iterator.next();
@@ -1588,13 +1576,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 			LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
 			session.update(linkSubjectStudy);
-			if (i++ % 50 == 0) { // 50, same as the JDBC batch size, flush a batch of inserts and release memory:
-				log.info("Hit 50 row batch size, flushing and releasing memory");
-				session.flush();
-				session.clear();
-			}
 		}
-		session.getTransaction().commit();
+		tx.commit();
 		session.close();
 	}
 
@@ -1668,17 +1651,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	}
 
-	public FileFormat getFileFormatByName(String name) {
-		FileFormat fileFormat = null;
-		Criteria criteria = getSession().createCriteria(FileFormat.class);
-		criteria.add(Restrictions.eq("name", name));
-
-		if (criteria.list().size() > 0) {
-			fileFormat = (FileFormat) criteria.list().get(0);
-		}
-		return fileFormat;
-	}
-	
 	/**
 	 * The count can be based on CustomFieldDisplay only instead of a left join with it using
 	 * SubjectCustomFieldData

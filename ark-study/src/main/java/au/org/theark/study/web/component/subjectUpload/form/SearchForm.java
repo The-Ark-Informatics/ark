@@ -76,7 +76,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 	@SuppressWarnings("unchecked")
 	private void initDropDownChoice() {
 		// Initialise any drop-downs
-		java.util.Collection<FileFormat> fileFormatCollection = studyService.getFileFormats();
+		java.util.Collection<FileFormat> fileFormatCollection = iArkCommonService.getFileFormats();
 		CompoundPropertyModel<UploadVO> uploadCpm = cpmModel;
 		PropertyModel<StudyUpload> uploadPm = new PropertyModel<StudyUpload>(uploadCpm, au.org.theark.study.web.Constants.UPLOAD);
 		PropertyModel<FileFormat> fileFormatPm = new PropertyModel<FileFormat>(uploadPm, au.org.theark.study.web.Constants.FILE_FORMAT);

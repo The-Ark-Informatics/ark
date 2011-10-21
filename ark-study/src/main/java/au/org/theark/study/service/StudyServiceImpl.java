@@ -61,7 +61,6 @@ import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.DelimiterType;
-import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -637,10 +636,6 @@ public class StudyServiceImpl implements IStudyService {
 		arkCommonService.createAuditHistory(ah);
 	}
 
-	public Collection<FileFormat> getFileFormats() {
-		return studyDao.getFileFormats();
-	}
-
 	public Collection<DelimiterType> getDelimiterTypes() {
 		return studyDao.getDelimiterTypes();
 	}
@@ -839,10 +834,6 @@ public class StudyServiceImpl implements IStudyService {
 		return studyDao.getDelimiterType(id);
 	}
 
-	public FileFormat getFileFormatByName(String fileFormatName) {
-		return studyDao.getFileFormatByName(fileFormatName);
-	}
-	
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count){
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
 		customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, first, count);

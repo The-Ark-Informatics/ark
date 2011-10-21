@@ -83,7 +83,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	@SuppressWarnings("unchecked")
 	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
-		java.util.Collection<FileFormat> fieldFormatCollection = studyService.getFileFormats();
+		java.util.Collection<FileFormat> fieldFormatCollection = iArkCommonService.getFileFormats();
 		ChoiceRenderer fieldFormatRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.FILE_FORMAT_NAME, au.org.theark.study.web.Constants.FILE_FORMAT_ID);
 		fileFormatDdc = new DropDownChoice<FileFormat>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, (List) fieldFormatCollection, fieldFormatRenderer);
 
