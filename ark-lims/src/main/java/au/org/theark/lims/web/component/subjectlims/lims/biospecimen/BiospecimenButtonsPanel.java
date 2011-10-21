@@ -30,6 +30,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.button.ArkAjaxButton;
+import au.org.theark.lims.web.component.button.brady.biospecimen.PrintBiospecimenStrawLabelButton;
 import au.org.theark.lims.web.component.button.zebra.biospecimen.PrintBiospecimenLabelButton;
 
 /**
@@ -50,6 +51,7 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 	protected AjaxButton						processButton;
 	protected AjaxButton						aliquotButton;
 	protected AjaxButton						printBarcodeButton;
+	protected AjaxButton						printStrawBarcodeButton;
 
 	public BiospecimenButtonsPanel(String id, IModel<Biospecimen> model) {
 		super(id, model);
@@ -169,6 +171,19 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 			}
 		};
 		this.add(printBarcodeButton);
+		
+		printStrawBarcodeButton = new PrintBiospecimenStrawLabelButton("printStrawBarcode", BiospecimenButtonsPanel.this.getDefaultModel()) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onPostSubmit(AjaxRequestTarget target, Form<?> form) {
+				onPrintStrawBarcode(target);
+			}
+		};
+		this.add(printStrawBarcodeButton);
 	}
 
 	/**
@@ -194,11 +209,17 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 	 * @param target
 	 */
 	public abstract void onPrintBarcode(AjaxRequestTarget target);
+	
+	/**
+	 * Calling class to implement clone functionality 
+	 * @param target
+	 * @return 
+	 */
+	public abstract void onPrintStrawBarcode(AjaxRequestTarget target);
 
 	public boolean isCloneButtonVisible() {
 		return cloneButton.isVisible();
 	}
-
 	public void setCloneButtonVisible(boolean visible) {
 		cloneButton.setVisible(visible);
 	}
