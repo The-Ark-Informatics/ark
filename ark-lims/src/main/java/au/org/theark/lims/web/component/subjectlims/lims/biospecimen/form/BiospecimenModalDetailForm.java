@@ -200,9 +200,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		};
 		biospecimenbuttonsPanel.setVisible(getModelObject().getBiospecimen().getId() != null);
 		
-		// Enable Process/Aliquot buttons based on quantity available
-		biospecimenbuttonsPanel.setProcessButtonEnabled(cpModel.getObject().getBiospecimen().getQuantity() > 0);
-		biospecimenbuttonsPanel.setAliquotButtonEnabled(cpModel.getObject().getBiospecimen().getQuantity() > 0);
+		// Disable Process/Aliquot buttons if new, or quantity available is 0
+		boolean enabled = true;
+		if(cpModel.getObject().getBiospecimen().getId() == null || 
+				(cpModel.getObject().getBiospecimen().getQuantity() != null && cpModel.getObject().getBiospecimen().getQuantity().equals(new Double(0)))) {
+			enabled = false;
+		}
+		biospecimenbuttonsPanel.setProcessButtonEnabled(enabled);
+		biospecimenbuttonsPanel.setAliquotButtonEnabled(enabled);
 		
 		addOrReplace(biospecimenbuttonsPanel);
 	}
