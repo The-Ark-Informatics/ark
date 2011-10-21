@@ -52,39 +52,40 @@ public class Biospecimen implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long		serialVersionUID	= -6811160809915149538L;
-	private Long						id;
-	private String						biospecimenUid;
-	private Study						study;
-	private Long						substudyId;
-	private LinkSubjectStudy		linkSubjectStudy;
-	private BioCollection			bioCollection;
-	private BioSampletype			sampleType;
-	private Long						parentId;
-	private String						parentUid;
-	private Long						oldId;
-	private Boolean					deleted = false;
-	private String						timestamp;
-	private String						otherid;
-	private BiospecimenStorage		storedIn;
-	private Long						depth;
-	private BiospecimenGrade		grade;
-	private Date						sampleDate;
-	private Date						sampleTime;
-	private Date						processedDate;
-	private Date						processedTime;
-	private BiospecimenSpecies		species;
-	private Double						qtyCollected;
-	private Double						qtyRemoved;
-	private String						comments;
-	private Double						quantity;
-	private Unit						unit;
-	private BiospecimenQuality		quality;
-	private BiospecimenStatus		status;
-	private Boolean					barcoded = false;
-	private TreatmentType			treatmentType;
-	
-	private Set<BioTransaction>	bioTransactions	= new HashSet<BioTransaction>(0);
+	private static final long			serialVersionUID	= -6811160809915149538L;
+	private Long							id;
+	private String							biospecimenUid;
+	private Study							study;
+	private Long							substudyId;
+	private LinkSubjectStudy			linkSubjectStudy;
+	private BioCollection				bioCollection;
+	private BioSampletype				sampleType;
+	private Long							parentId;
+	private String							parentUid;
+	private Long							oldId;
+	private Boolean						deleted				= false;
+	private String							timestamp;
+	private String							otherid;
+	private BiospecimenStorage			storedIn;
+	private Long							depth;
+	private BiospecimenGrade			grade;
+	private Date							sampleDate;
+	private Date							sampleTime;
+	private Date							processedDate;
+	private Date							processedTime;
+	private BiospecimenSpecies			species;
+	private Double							qtyCollected;
+	private Double							qtyRemoved;
+	private String							comments;
+	private Double							quantity;
+	private Unit							unit;
+	private TreatmentType				treatmentType;
+	private Boolean						barcoded				= false;
+	private BiospecimenQuality			quality;
+	private BiospecimenAnticoagulant	anticoag;
+	private BiospecimenStatus			status;
+
+	private Set<BioTransaction>		bioTransactions	= new HashSet<BioTransaction>(0);
 
 	public Biospecimen() {
 	}
@@ -163,7 +164,7 @@ public class Biospecimen implements java.io.Serializable {
 	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
 		this.linkSubjectStudy = linkSubjectStudy;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SAMPLETYPE_ID")
 	public BioSampletype getSampleType() {
@@ -228,7 +229,7 @@ public class Biospecimen implements java.io.Serializable {
 	public void setStoredIn(BiospecimenStorage storedIn) {
 		this.storedIn = storedIn;
 	}
-	
+
 	@Column(name = "DEPTH")
 	public Long getDepth() {
 		return this.depth;
@@ -247,7 +248,7 @@ public class Biospecimen implements java.io.Serializable {
 	public void setGrade(BiospecimenGrade grade) {
 		this.grade = grade;
 	}
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "SAMPLE_DATE", length = 19)
 	public Date getSampleDate() {
@@ -257,7 +258,7 @@ public class Biospecimen implements java.io.Serializable {
 	public void setSampleDate(Date sampleDate) {
 		this.sampleDate = sampleDate;
 	}
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "SAMPLE_TIME", length = 19)
 	public Date getSampleTime() {
@@ -324,7 +325,7 @@ public class Biospecimen implements java.io.Serializable {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-	
+
 	@Column(name = "QUANTITY")
 	public Double getQuantity() {
 		return this.quantity;
@@ -343,7 +344,7 @@ public class Biospecimen implements java.io.Serializable {
 	public void setUnit(Unit unit) {
 		this.unit = unit;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TREATMENT_TYPE_ID")
 	public TreatmentType getTreatmentType() {
@@ -353,7 +354,7 @@ public class Biospecimen implements java.io.Serializable {
 	public void setTreatmentType(TreatmentType treatmentType) {
 		this.treatmentType = treatmentType;
 	}
-	
+
 	@Column(name = "BARCODED", nullable = false)
 	public Boolean getBarcoded() {
 		return barcoded;
@@ -362,7 +363,7 @@ public class Biospecimen implements java.io.Serializable {
 	public void setBarcoded(Boolean barcoded) {
 		this.barcoded = barcoded;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BIOSPECIMEN_QUALITY_ID")
 	public BiospecimenQuality getQuality() {
@@ -381,6 +382,16 @@ public class Biospecimen implements java.io.Serializable {
 
 	public void setStatus(BiospecimenStatus status) {
 		this.status = status;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BIOSPECIMEN_ANTICOAGULANT_ID")
+	public BiospecimenAnticoagulant getAnticoag() {
+		return this.anticoag;
+	}
+
+	public void setAnticoag(BiospecimenAnticoagulant anticoag) {
+		this.anticoag = anticoag;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biospecimen")
