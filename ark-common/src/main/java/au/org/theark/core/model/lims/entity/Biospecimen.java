@@ -54,44 +54,34 @@ public class Biospecimen implements java.io.Serializable {
 	 */
 	private static final long		serialVersionUID	= -6811160809915149538L;
 	private Long						id;
-	private String						timestamp;
-	private BioCollection			bioCollection;
 	private String						biospecimenUid;
 	private Study						study;
 	private Long						substudyId;
 	private LinkSubjectStudy		linkSubjectStudy;
+	private BioCollection			bioCollection;
+	private BioSampletype			sampleType;
 	private Long						parentId;
 	private String						parentUid;
 	private Long						oldId;
-	private Boolean					deleted;
+	private Boolean					deleted = false;
+	private String						timestamp;
 	private String						otherid;
-	private String						storedIn;
-	private Date						sampleTime;
-	private String						grade;
+	private BiospecimenStorage		storedIn;
 	private Long						depth;
+	private BiospecimenGrade		grade;
 	private Date						sampleDate;
-	private Date						extractedTime;
-	private String						location;
-	private BioSampletype			sampleType;
-	private String						species;
+	private Date						sampleTime;
+	private Date						processedDate;
+	private Date						processedTime;
+	private BiospecimenSpecies		species;
 	private Double						qtyCollected;
-	private Date						dateextracted;
 	private Double						qtyRemoved;
-	private Double						gestat;
 	private String						comments;
-	private Date						datedistributed;
-	private String						collaborator;
-	private Double						dnaconc;
-	private Double						purity;
-	private String						anticoag;
-	private String						protocol;
-	private Long						dnaBank;
 	private Double						quantity;
 	private Unit						unit;
-	private String						quality;
-	private Long						withdrawn;
-	private String						status;
-	private Boolean					barcoded;
+	private BiospecimenQuality		quality;
+	private BiospecimenStatus		status;
+	private Boolean					barcoded = false;
 	private TreatmentType			treatmentType;
 	
 	private Set<BioTransaction>	bioTransactions	= new HashSet<BioTransaction>(0);
@@ -103,52 +93,6 @@ public class Biospecimen implements java.io.Serializable {
 		this.id = id;
 		this.biospecimenUid = biospecimenUid;
 		this.sampleType = sampleType;
-		this.treatmentType = treatmentType;
-	}
-
-	public Biospecimen(Long id, BioCollection bioCollection, String biospecimenUid, Study study, Long substudyId, LinkSubjectStudy linkSubjectStudy, Long parentId, String parentUid, Long oldId,
-			Boolean deleted, String otherid, String storedIn, Date sampleTime, String grade, InvCell invCell, Long depth, Date sampleDate, Date extractedTime, String location, Long sampleTypeId,
-			BioSampletype sampleType, String samplesubtype, String subtypedesc, String species, Double qtyCollected, Date dateextracted, Double qtyRemoved, Double gestat, String comments,
-			Date datedistributed, String collaborator, Double dnaconc, Double purity, String anticoag, String protocol, Long dnaBank, Double quantity, Unit unit, String quality, Long withdrawn,
-			String status, Boolean barcoded, TreatmentType treatmentType, Set<BioTransaction> bioTransactions) {
-		this.id = id;
-		this.bioCollection = bioCollection;
-		this.biospecimenUid = biospecimenUid;
-		this.study = study;
-		this.substudyId = substudyId;
-		this.linkSubjectStudy = linkSubjectStudy;
-		this.parentId = parentId;
-		this.parentUid = parentUid;
-		this.oldId = oldId;
-		this.deleted = deleted;
-		this.otherid = otherid;
-		this.storedIn = storedIn;
-		this.sampleTime = sampleTime;
-		this.grade = grade;
-		this.depth = depth;
-		this.sampleDate = sampleDate;
-		this.extractedTime = extractedTime;
-		this.location = location;
-		this.sampleType = sampleType;
-		this.species = species;
-		this.qtyCollected = qtyCollected;
-		this.dateextracted = dateextracted;
-		this.qtyRemoved = qtyRemoved;
-		this.gestat = gestat;
-		this.comments = comments;
-		this.datedistributed = datedistributed;
-		this.collaborator = collaborator;
-		this.dnaconc = dnaconc;
-		this.purity = purity;
-		this.anticoag = anticoag;
-		this.protocol = protocol;
-		this.dnaBank = dnaBank;
-		this.quantity = quantity;
-		this.unit = unit;
-		this.quality = quality;
-		this.withdrawn = withdrawn;
-		this.status = status;
-		this.barcoded = barcoded;
 		this.treatmentType = treatmentType;
 	}
 
@@ -219,6 +163,16 @@ public class Biospecimen implements java.io.Serializable {
 	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
 		this.linkSubjectStudy = linkSubjectStudy;
 	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SAMPLETYPE_ID")
+	public BioSampletype getSampleType() {
+		return this.sampleType;
+	}
+
+	public void setSampleType(BioSampletype sampleType) {
+		this.sampleType = sampleType;
+	}
 
 	@Column(name = "PARENT_ID")
 	public Long getParentId() {
@@ -265,15 +219,45 @@ public class Biospecimen implements java.io.Serializable {
 		this.otherid = otherid;
 	}
 
-	@Column(name = "STORED_IN", length = 50)
-	public String getStoredIn() {
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BIOSPECIMEN_STORAGE_ID")
+	public BiospecimenStorage getStoredIn() {
 		return this.storedIn;
 	}
 
-	public void setStoredIn(String storedIn) {
+	public void setStoredIn(BiospecimenStorage storedIn) {
 		this.storedIn = storedIn;
 	}
+	
+	@Column(name = "DEPTH")
+	public Long getDepth() {
+		return this.depth;
+	}
 
+	public void setDepth(Long depth) {
+		this.depth = depth;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BIOSPECIMEN_GRADE_ID")
+	public BiospecimenGrade getGrade() {
+		return this.grade;
+	}
+
+	public void setGrade(BiospecimenGrade grade) {
+		this.grade = grade;
+	}
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "SAMPLE_DATE", length = 19)
+	public Date getSampleDate() {
+		return this.sampleDate;
+	}
+
+	public void setSampleDate(Date sampleDate) {
+		this.sampleDate = sampleDate;
+	}
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "SAMPLE_TIME", length = 19)
 	public Date getSampleTime() {
@@ -284,69 +268,33 @@ public class Biospecimen implements java.io.Serializable {
 		this.sampleTime = sampleTime;
 	}
 
-	@Column(name = "GRADE")
-	public String getGrade() {
-		return this.grade;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "PROCESSED_DATE", length = 19)
+	public Date getProcessedDate() {
+		return this.processedDate;
 	}
 
-	public void setGrade(String grade) {
-		this.grade = grade;
-	}
-
-	@Column(name = "DEPTH")
-	public Long getDepth() {
-		return this.depth;
-	}
-
-	public void setDepth(Long depth) {
-		this.depth = depth;
+	public void setProcessedDate(Date processedDate) {
+		this.processedDate = processedDate;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "SAMPLEDATE", length = 19)
-	public Date getSampleDate() {
-		return this.sampleDate;
-	}
-
-	public void setSampleDate(Date sampleDate) {
-		this.sampleDate = sampleDate;
-	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "EXTRACTED_TIME", length = 19)
+	@Column(name = "PROCESSED_TIME", length = 19)
 	public Date getExtractedTime() {
-		return this.extractedTime;
+		return this.processedTime;
 	}
 
 	public void setExtractedTime(Date extractedTime) {
-		this.extractedTime = extractedTime;
-	}
-
-	@Column(name = "LOCATION")
-	public String getLocation() {
-		return this.location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
+		this.processedTime = extractedTime;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SAMPLETYPE_ID")
-	public BioSampletype getSampleType() {
-		return this.sampleType;
-	}
-
-	public void setSampleType(BioSampletype sampleType) {
-		this.sampleType = sampleType;
-	}
-
-	@Column(name = "SPECIES")
-	public String getSpecies() {
+	@JoinColumn(name = "BIOSPECIMEN_SPECIES_ID")
+	public BiospecimenSpecies getSpecies() {
 		return this.species;
 	}
 
-	public void setSpecies(String species) {
+	public void setSpecies(BiospecimenSpecies species) {
 		this.species = species;
 	}
 
@@ -359,16 +307,6 @@ public class Biospecimen implements java.io.Serializable {
 		this.qtyCollected = qtyCollected;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "DATEEXTRACTED", length = 19)
-	public Date getDateextracted() {
-		return this.dateextracted;
-	}
-
-	public void setDateextracted(Date dateextracted) {
-		this.dateextracted = dateextracted;
-	}
-
 	@Column(name = "QTY_REMOVED", precision = 22, scale = 0)
 	public Double getQtyRemoved() {
 		return this.qtyRemoved;
@@ -376,15 +314,6 @@ public class Biospecimen implements java.io.Serializable {
 
 	public void setQtyRemoved(Double qtyRemoved) {
 		this.qtyRemoved = qtyRemoved;
-	}
-
-	@Column(name = "GESTAT", precision = 22, scale = 0)
-	public Double getGestat() {
-		return this.gestat;
-	}
-
-	public void setGestat(Double gestat) {
-		this.gestat = gestat;
 	}
 
 	@Column(name = "COMMENTS", length = 65535)
@@ -395,71 +324,7 @@ public class Biospecimen implements java.io.Serializable {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "DATEDISTRIBUTED", length = 19)
-	public Date getDatedistributed() {
-		return this.datedistributed;
-	}
-
-	public void setDatedistributed(Date datedistributed) {
-		this.datedistributed = datedistributed;
-	}
-
-	@Column(name = "COLLABORATOR", length = 100)
-	public String getCollaborator() {
-		return this.collaborator;
-	}
-
-	public void setCollaborator(String collaborator) {
-		this.collaborator = collaborator;
-	}
-
-	@Column(name = "DNACONC", precision = 22, scale = 0)
-	public Double getDnaconc() {
-		return this.dnaconc;
-	}
-
-	public void setDnaconc(Double dnaconc) {
-		this.dnaconc = dnaconc;
-	}
-
-	@Column(name = "PURITY", precision = 22, scale = 0)
-	public Double getPurity() {
-		return this.purity;
-	}
-
-	public void setPurity(Double purity) {
-		this.purity = purity;
-	}
-
-	@Column(name = "ANTICOAG", length = 100)
-	public String getAnticoag() {
-		return this.anticoag;
-	}
-
-	public void setAnticoag(String anticoag) {
-		this.anticoag = anticoag;
-	}
-
-	@Column(name = "PROTOCOL", length = 100)
-	public String getProtocol() {
-		return this.protocol;
-	}
-
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
-	}
-
-	@Column(name = "DNA_BANK")
-	public Long getDnaBank() {
-		return this.dnaBank;
-	}
-
-	public void setDnaBank(Long dnaBank) {
-		this.dnaBank = dnaBank;
-	}
-
+	
 	@Column(name = "QUANTITY")
 	public Double getQuantity() {
 		return this.quantity;
@@ -478,48 +343,6 @@ public class Biospecimen implements java.io.Serializable {
 	public void setUnit(Unit unit) {
 		this.unit = unit;
 	}
-
-	@Column(name = "QUALITY", length = 100)
-	public String getQuality() {
-		return this.quality;
-	}
-
-	public void setQuality(String quality) {
-		this.quality = quality;
-	}
-
-	@Column(name = "WITHDRAWN")
-	public Long getWithdrawn() {
-		return this.withdrawn;
-	}
-
-	public void setWithdrawn(Long withdrawn) {
-		this.withdrawn = withdrawn;
-	}
-
-	@Column(name = "STATUS", length = 20)
-	public String getStatus() {
-		return this.status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	/**
-	 * @return the barcoded
-	 */
-	@Column(name = "BARCODED")
-	public Boolean getBarcoded() {
-		return barcoded;
-	}
-
-	/**
-	 * @param barcoded the barcoded to set
-	 */
-	public void setBarcoded(Boolean barcoded) {
-		this.barcoded = barcoded;
-	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TREATMENT_TYPE_ID")
@@ -529,6 +352,35 @@ public class Biospecimen implements java.io.Serializable {
 
 	public void setTreatmentType(TreatmentType treatmentType) {
 		this.treatmentType = treatmentType;
+	}
+	
+	@Column(name = "BARCODED", nullable = false)
+	public Boolean getBarcoded() {
+		return barcoded;
+	}
+
+	public void setBarcoded(Boolean barcoded) {
+		this.barcoded = barcoded;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BIOSPECIMEN_QUALITY_ID")
+	public BiospecimenQuality getQuality() {
+		return this.quality;
+	}
+
+	public void setQuality(BiospecimenQuality quality) {
+		this.quality = quality;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BIOSPECIMEN_STATUS_ID")
+	public BiospecimenStatus getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(BiospecimenStatus status) {
+		this.status = status;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biospecimen")
