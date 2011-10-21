@@ -139,7 +139,7 @@ public class Constants {
 	public static final String	SUBJECT_AUTO_GENERATED					= "Auto-generated";
 	public static final String	SUBJECTUID_EXAMPLE						= "AAA-000000001";
 	
-	public static final String BIOTRANSACTION_STATUS_INITIAL_QTY	= "Initial Qty";
+	public static final String BIOTRANSACTION_STATUS_INITIAL_QUANTITY	= "Initial Quantity";
 
 	public static final String	BIOSPECIMEN_PROCESSING_PROCESSING	= "Processing";
 	public static final String	BIOSPECIMEN_PROCESSING_ALIQUOTING	= "Aliquoting";
