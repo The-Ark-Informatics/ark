@@ -50,6 +50,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.FieldType;
+import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -531,6 +532,10 @@ public interface IArkCommonService<T> {
 	
 	
 	public CustomFieldDisplay getCustomFieldDisplay(Long id);
+
+	public FileFormat getFileFormatByName(String fileFormatName);
+
+	public Collection<FileFormat> getFileFormats();
 	
 	
 }

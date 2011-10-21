@@ -28,6 +28,8 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.Hibernate;
 
+import au.org.theark.core.Constants;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
@@ -45,6 +47,10 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 	private static final long	serialVersionUID	= 2971945948091031160L;
 	private Form<UploadVO>		containerForm;
 	private WizardForm			wizardForm;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService						iArkCommonService;
+
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService		iStudyService;
 
@@ -115,6 +121,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 
 	private void save() {
 		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
+		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
 		iStudyService.createUpload(containerForm.getModelObject().getUpload());
 	}
 }

@@ -42,7 +42,6 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.DelimiterType;
-import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
@@ -283,8 +282,6 @@ public interface IStudyDao {
 
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes();
 
-	public Collection<FileFormat> getFileFormats();
-
 	public Collection<DelimiterType> getDelimiterTypes();
 
 	public Collection<StudyUpload> searchUpload(StudyUpload searchUpload);
@@ -311,8 +308,6 @@ public interface IStudyDao {
 
 	public DelimiterType getDelimiterType(Long id);
 
-	public FileFormat getFileFormatByName(String fileFormatName);
-	
 	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction);
 	
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);

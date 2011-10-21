@@ -35,6 +35,7 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -439,4 +440,8 @@ public interface IStudyDao {
 	 * @return the total count of Studies 
 	 */
 	public int getCountOfStudies();
+
+	public FileFormat getFileFormatByName(String fileFormatName);
+
+	public Collection<FileFormat> getFileFormats();
 }

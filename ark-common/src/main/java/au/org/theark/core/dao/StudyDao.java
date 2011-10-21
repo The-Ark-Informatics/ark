@@ -60,6 +60,7 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -855,5 +856,22 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Long longTotal = ((Long) getSession().createQuery("select count(*) from Study").iterate().next());
 		total = longTotal.intValue();
 		return total;
+	}
+
+	public FileFormat getFileFormatByName(String name) {
+		FileFormat fileFormat = null;
+		Criteria criteria = getSession().createCriteria(FileFormat.class);
+		criteria.add(Restrictions.eq("name", name));
+	
+		if (criteria.list().size() > 0) {
+			fileFormat = (FileFormat) criteria.list().get(0);
+		}
+		return fileFormat;
+	}
+
+	public Collection<FileFormat> getFileFormats() {
+		Criteria criteria = getSession().createCriteria(FileFormat.class);
+		java.util.Collection<FileFormat> fileFormatCollection = criteria.list();
+		return fileFormatCollection;
 	}
 }
