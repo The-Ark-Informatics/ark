@@ -113,7 +113,7 @@ public class BioTransactionDao extends HibernateSessionDao implements IBioTransa
 		Criteria criteria = getSession().createCriteria(BioTransactionStatus.class);
 		List<BioTransactionStatus> list = criteria.list();
 		// remove Initial status choice because this is reserved
-		criteria.add(Restrictions.ne("name", Constants.BIOTRANSACTION_STATUS_INITIAL_QTY));
+		criteria.add(Restrictions.ne("name", Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY));
 		return list;
 	}
 
