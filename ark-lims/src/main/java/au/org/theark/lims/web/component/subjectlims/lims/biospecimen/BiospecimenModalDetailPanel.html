@@ -26,14 +26,11 @@
 					</div>
 
 					<div id="fldLabel">
-						<div class="label">
-							<label for="id">
-								<wicket:message key="biospecimen.id">
-									Biospecimen ID:
-								</wicket:message>
-							</label>
-						</div>
+						<wicket:message key="biospecimen.id">
+							Biospecimen ID:
+						</wicket:message>
 					</div>
+
 					<div id="fldControl">
 						<div class="label">
 							<input wicket:id="biospecimen.id" type="text" />
@@ -67,10 +64,6 @@
 						<div class="label">
 							<input wicket:id="biospecimen.parentUid" type="text" />
 						</div>
-					</div>
-
-					<div id="detailPanelContentRight">
-						&nbsp;
 					</div>
 
 					<div id="detailPanelBreaker">
@@ -129,8 +122,37 @@
 						</div>
 					</div>
 
-					<div id="detailPanelContentRight">
+					<div id="detailPanelBreaker">
 						&nbsp;
+					</div>
+
+					<div id="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<wicket:message key="biospecimen.sampleDate">
+							Sample Date:
+						</wicket:message>
+					</div>
+
+					<div id="fldControl">
+						<input wicket:id="biospecimen.sampleDate"	type="text" maxLength="10"/>
+					</div>
+
+					<div id="panelMargin">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<wicket:message key="biospecimen.sampleTime">
+							Sample Time:
+						</wicket:message>
+					</div>
+
+					<div id="fldControl">
+						<span wicket:id="biospecimen.sampleTime">
+						</span>
 					</div>
 
 					<div id="detailPanelBreaker">
@@ -142,19 +164,13 @@
 					</div>
 
 					<div id="fldLabel">
-						<div class="label">
-							<label for="biospecimen.sampleDate">
-								<wicket:message key="biospecimen.sampleDate">
-									Sample Date:
-								</wicket:message>
-							</label>
-						</div>
+						<wicket:message key="biospecimen.processedDate">
+							Processed Date:
+						</wicket:message>
 					</div>
 
 					<div id="fldControl">
-						<div class="label">
-							<input wicket:id="biospecimen.sampleDate"	type="text" maxLength="10"/>
-						</div>
+						<input wicket:id="biospecimen.processedDate" type="text" maxLength="10"/>
 					</div>
 
 					<div id="panelMargin">
@@ -162,13 +178,28 @@
 					</div>
 
 					<div id="fldLabel">
-						<div class="label">
-							<label for="biospecimen.comments">
-								<wicket:message key="biospecimen.comments">
-									Comments:
-								</wicket:message>
-							</label>
-						</div>
+						<wicket:message key="biospecimen.processedTime">
+							Processed Time:
+						</wicket:message>
+					</div>
+
+					<div id="fldControl">
+						<span wicket:id="biospecimen.processedTime">
+						</span>
+					</div>
+
+					<div id="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div id="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<wicket:message key="biospecimen.comments">
+							Comments:
+						</wicket:message>
 					</div>
 
 					<div id="fldControl">
@@ -178,20 +209,17 @@
 						</div>
 					</div>
 
-					<div id="detailPanelContentRight">
-						&nbsp;
-					</div>
-
-					<div id="detailPanelBreaker">
-						&nbsp;
-					</div>
-
-					<div id="panelContentLeft">
+					<div id="panelMargin">
 						&nbsp;
 					</div>
 
 					<div id="fldLabel">
-						<div class="label">
+						<div class="labelTop">
+							<wicket:message key="biospecimen.barcodeLabel">
+								Barcode:
+							</wicket:message>
+						</div>
+						<div class="labelBottom">
 							<wicket:message	key="biospecimen.barcoded">
 								Barcoded:
 							</wicket:message>
@@ -199,32 +227,19 @@
 								<wicket:message	key="biospecimen.barcoded.note">
 									[Note replaced from properties]
 								</wicket:message>
-							</div>
+							</div>		
+						</div>
+					</div>
+					
+					<div id="fldControl">
+						<div class="controlTop">
+							<img wicket:id="biospecimen.barcodeImage" width="20px" height="20px"/>
+						</div>
+						<div class="controlBottom">
+							<input type="checkbox" wicket:id="biospecimen.barcoded"/>
 						</div>
 					</div>
 
-					<div id="fldControl">
-						<input type="checkbox" wicket:id="biospecimen.barcoded"/>
-					</div>
-
-					<div id="panelMargin">
-						&nbsp;
-					</div>
-					
-					<div id="fldLabel">
-						<div class="label">
-							<label for="biospecimen.comments">
-								<wicket:message key="biospecimen.barcodeLabel">
-									Barcode:
-								</wicket:message>
-							</label>
-						</div>
-					</div>
-
-					<div id="fldControl">
-						<img wicket:id="biospecimen.barcodeImage" width="20px" height="20px"/>
-					</div>
-					
 					<div id="detailPanelBreaker">
 						&nbsp;
 					</div>
@@ -287,10 +302,6 @@
 										</option>
 									</select>
 								</div>
-							</div>
-
-							<div id="detailPanelContentRight">
-								&nbsp;
 							</div>
 						</div>
 					</div>
