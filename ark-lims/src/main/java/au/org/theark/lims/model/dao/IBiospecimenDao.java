@@ -23,7 +23,12 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.lims.entity.BiospecimenGrade;
+import au.org.theark.core.model.lims.entity.BiospecimenQuality;
+import au.org.theark.core.model.lims.entity.BiospecimenStatus;
+import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -130,4 +135,14 @@ public interface IBiospecimenDao {
 	 * @return
 	 */
 	public Double getQuantityAvailable(Biospecimen biospecimen);
+	
+	public List<BiospecimenGrade> getBiospecimenGradeList();
+
+	public List<BiospecimenStorage> getBiospecimenStorageList();
+
+	public List<BiospecimenAnticoagulant> getBiospecimenAnticoagulantList();
+
+	public List<BiospecimenStatus> getBiospecimenStatusList();
+
+	public List<BiospecimenQuality> getBiospecimenQualityList();
 }

@@ -37,7 +37,12 @@ import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.lims.entity.BiospecimenGrade;
+import au.org.theark.core.model.lims.entity.BiospecimenQuality;
+import au.org.theark.core.model.lims.entity.BiospecimenStatus;
+import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
@@ -702,5 +707,25 @@ public class LimsServiceImpl implements ILimsService {
 
 	public Double getQuantityAvailable(Biospecimen biospecimen){
 		return iBiospecimenDao.getQuantityAvailable(biospecimen);
+	}
+
+	public List<BiospecimenAnticoagulant> getBiospecimenAnticoagulantList() {
+		return iBiospecimenDao.getBiospecimenAnticoagulantList();
+	}
+
+	public List<BiospecimenGrade> getBiospecimenGradeList() {
+		return iBiospecimenDao.getBiospecimenGradeList();
+	}
+
+	public List<BiospecimenQuality> getBiospecimenQualityList() {
+		return iBiospecimenDao.getBiospecimenQualityList();
+	}
+
+	public List<BiospecimenStatus> getBiospecimenStatusList() {
+		return iBiospecimenDao.getBiospecimenStatusList();
+	}
+
+	public List<BiospecimenStorage> getBiospecimenStorageList() {
+		return iBiospecimenDao.getBiospecimenStorageList();
 	}
 }

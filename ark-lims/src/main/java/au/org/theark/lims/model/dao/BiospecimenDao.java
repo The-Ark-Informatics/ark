@@ -32,7 +32,12 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.lims.entity.BiospecimenGrade;
+import au.org.theark.core.model.lims.entity.BiospecimenQuality;
+import au.org.theark.core.model.lims.entity.BiospecimenStatus;
+import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -324,5 +329,35 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		criteria.setProjection(Projections.sum("quantity"));
 		Double sum = (Double) criteria.uniqueResult();
 		return sum;
+	}
+
+	public List<BiospecimenAnticoagulant> getBiospecimenAnticoagulantList() {
+		Criteria criteria = getSession().createCriteria(BiospecimenAnticoagulant.class);
+		List<BiospecimenAnticoagulant> list = criteria.list();
+		return list;
+	}
+
+	public List<BiospecimenGrade> getBiospecimenGradeList() {
+		Criteria criteria = getSession().createCriteria(BiospecimenGrade.class);
+		List<BiospecimenGrade> list = criteria.list();
+		return list;
+	}
+
+	public List<BiospecimenQuality> getBiospecimenQualityList() {
+		Criteria criteria = getSession().createCriteria(BiospecimenQuality.class);
+		List<BiospecimenQuality> list = criteria.list();
+		return list;
+	}
+
+	public List<BiospecimenStatus> getBiospecimenStatusList() {
+		Criteria criteria = getSession().createCriteria(BiospecimenStatus.class);
+		List<BiospecimenStatus> list = criteria.list();
+		return list;
+	}
+
+	public List<BiospecimenStorage> getBiospecimenStorageList() {
+		Criteria criteria = getSession().createCriteria(BiospecimenStorage.class);
+		List<BiospecimenStorage> list = criteria.list();
+		return list;
 	}
 }

@@ -28,7 +28,12 @@ import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.lims.entity.BiospecimenGrade;
+import au.org.theark.core.model.lims.entity.BiospecimenQuality;
+import au.org.theark.core.model.lims.entity.BiospecimenStatus;
+import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -310,4 +315,14 @@ public interface ILimsService {
 	 * @return
 	 */
 	public Double getQuantityAvailable(Biospecimen biospecimen);
+
+	public List<BiospecimenGrade> getBiospecimenGradeList();
+
+	public List<BiospecimenStorage> getBiospecimenStorageList();
+
+	public List<BiospecimenAnticoagulant> getBiospecimenAnticoagulantList();
+
+	public List<BiospecimenStatus> getBiospecimenStatusList();
+
+	public List<BiospecimenQuality> getBiospecimenQualityList();
 }
