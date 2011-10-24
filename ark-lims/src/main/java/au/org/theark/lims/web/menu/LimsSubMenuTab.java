@@ -48,8 +48,17 @@ import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomD
 import au.org.theark.lims.web.component.inventory.panel.InventoryContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.SubjectContainerPanel;
 
-@SuppressWarnings("serial")
+/**
+ * 
+ * @author cellis
+ *
+ */
 public class LimsSubMenuTab extends AbstractArkTabPanel {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -2495883342790152951L;
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
@@ -69,6 +78,11 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 
 		for (final ArkFunction menuArkFunction : arkFunctionList) {
 			moduleSubTabsList.add(new AbstractTab(new StringResourceModel(menuArkFunction.getResourceKey(), this, null)) {
+				/**
+				 * 
+				 */
+				private static final long	serialVersionUID	= 1L;
+
 				@Override
 				public Panel getPanel(String panelId) {
 					return buildPanels(menuArkFunction, panelId);
@@ -77,7 +91,8 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 				@Override
 				public boolean isVisible() {
 					boolean flag = true;
-					if(menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.barcodeprinter") || menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.barcodelabel")) {
+					if(menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.barcodeprinter") || 
+							menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.barcodelabel")) {
 						SecurityManager securityManager = ThreadContext.getSecurityManager();
 						Subject currentUser = SecurityUtils.getSubject();
 
@@ -142,5 +157,4 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		}
 		return panelToReturn;
 	}
-
 }
