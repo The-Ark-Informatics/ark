@@ -45,7 +45,7 @@ import au.org.theark.core.model.study.entity.Study;
  */
 @Entity
 @Table(name = "inv_site", schema = Constants.LIMS_TABLE_SCHEMA)
-public class InvSite implements java.io.Serializable, InvTreeNode<InvTank> {
+public class InvSite implements java.io.Serializable, InvTreeNode<InvFreezer> {
 
 	private Long			id;
 	private String			timestamp;
@@ -56,7 +56,7 @@ public class InvSite implements java.io.Serializable, InvTreeNode<InvTank> {
 	private String			phone;
 	private String			ldapGroup;
 	private Study			study;
-	private List<InvTank>	invTanks	= new ArrayList<InvTank>(0);
+	private List<InvFreezer>	invTanks	= new ArrayList<InvFreezer>(0);
 
 	public InvSite() {
 	}
@@ -66,7 +66,7 @@ public class InvSite implements java.io.Serializable, InvTreeNode<InvTank> {
 		this.name = name;
 	}
 
-	public InvSite(Long id, Integer deleted, String contact, String address, String name, String phone, String ldapGroup, List<InvTank> invTanks) {
+	public InvSite(Long id, Integer deleted, String contact, String address, String name, String phone, String ldapGroup, List<InvFreezer> invTanks) {
 		this.id = id;
 		this.deleted = deleted;
 		this.contact = contact;
@@ -168,16 +168,16 @@ public class InvSite implements java.io.Serializable, InvTreeNode<InvTank> {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "invSite")
-	public List<InvTank> getInvTanks() {
+	public List<InvFreezer> getInvTanks() {
 		return this.invTanks;
 	}
 
-	public void setInvTanks(List<InvTank> invTanks) {
+	public void setInvTanks(List<InvFreezer> invTanks) {
 		this.invTanks = invTanks;
 	}
 
 	@Transient
-	public List<InvTank> getChildren() {
+	public List<InvFreezer> getChildren() {
 		return getInvTanks();
 	}
 
