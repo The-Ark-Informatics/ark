@@ -40,6 +40,7 @@ public class Constants {
 	public static final String	LIMS_SUBJECT_SERVICE						= "limsSubjectService";
 	public static final String	LIMS_INVENTORY_SERVICE					= "limsInventoryService";
 	public static final String	LIMS_BARCODE_SERVICE						= "limsBarcodeService";
+	public static final String	LIMS_ADMIN_SERVICE						= "limsAdminService";
 
 	public static final String	ADMIN_TAB									= "Administration";
 	public static final String	STUDY_TAB									= "Study";
