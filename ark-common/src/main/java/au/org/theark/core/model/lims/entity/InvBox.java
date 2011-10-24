@@ -49,7 +49,7 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 
 	private Long				id;
 	private String				timestamp;
-	private InvTray			invTray;
+	private InvRack			invRack;
 	private Integer			deleted;
 	private int					noofcol;
 	private InvColRowType	colnotype;
@@ -65,9 +65,9 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 	public InvBox() {
 	}
 
-	public InvBox(Long id, InvTray invTray, int noofcol, InvColRowType colnotype, int noofrow, InvColRowType rownotype, int type) {
+	public InvBox(Long id, InvRack invRack, int noofcol, InvColRowType colnotype, int noofrow, InvColRowType rownotype, int type) {
 		this.id = id;
-		this.invTray = invTray;
+		this.invRack = invRack;
 		this.noofcol = noofcol;
 		this.colnotype = colnotype;
 		this.noofrow = noofrow;
@@ -75,10 +75,10 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 		this.type = type;
 	}
 
-	public InvBox(Long id, InvTray invTray, Integer deleted, int noofcol, InvColRowType colnotype, Integer capacity, String name, Integer available, int noofrow, InvColRowType rownotype,
+	public InvBox(Long id, InvRack invRack, Integer deleted, int noofcol, InvColRowType colnotype, Integer capacity, String name, Integer available, int noofrow, InvColRowType rownotype,
 			Integer transferId, int type, List<InvCell> invCells) {
 		this.id = id;
-		this.invTray = invTray;
+		this.invRack = invRack;
 		this.deleted = deleted;
 		this.noofcol = noofcol;
 		this.colnotype = colnotype;
@@ -114,12 +114,12 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TRAY_ID", nullable = false)
-	public InvTray getInvTray() {
-		return this.invTray;
+	public InvRack getInvRack() {
+		return this.invRack;
 	}
 
-	public void setInvTray(InvTray invTray) {
-		this.invTray = invTray;
+	public void setInvRack(InvRack invRack) {
+		this.invRack = invRack;
 	}
 
 	@Column(name = "DELETED")
