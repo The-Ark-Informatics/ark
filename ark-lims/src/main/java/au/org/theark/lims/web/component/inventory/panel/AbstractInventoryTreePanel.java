@@ -39,8 +39,8 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 	private List<InvSite>				invSites				= new ArrayList<InvSite>(0);
 
 	protected ArkBusyAjaxButton		addSite;
-	protected ArkBusyAjaxButton		addTank;
-	protected ArkBusyAjaxButton		addTray;
+	protected ArkBusyAjaxButton		addFreezer;
+	protected ArkBusyAjaxButton		addRack;
 	protected ArkBusyAjaxButton		addBox;
 
 	public AbstractInventoryTreePanel(String id) {
@@ -120,7 +120,7 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 
 		};
 
-		addTank = new ArkBusyAjaxButton("addTank", new StringResourceModel("addTankKey", this, null)) {
+		addFreezer = new ArkBusyAjaxButton("addFreezer", new StringResourceModel("addFreezerKey", this, null)) {
 
 			/**
 			 * 
@@ -134,17 +134,17 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 
 			@Override
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onAddTankSubmit(target);
+				onAddFreezerSubmit(target);
 			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Add Tank button");
+				this.error("Unexpected error: Unable to process Add Freezer button");
 			}
 
 		};
 
-		addTray = new ArkBusyAjaxButton("addTray", new StringResourceModel("addTrayKey", this, null)) {
+		addRack = new ArkBusyAjaxButton("addRack", new StringResourceModel("addRackKey", this, null)) {
 
 			/**
 			 * 
@@ -158,12 +158,12 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 
 			@Override
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onAddTraySubmit(target);
+				onAddRackSubmit(target);
 			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Add Tray button");
+				this.error("Unexpected error: Unable to process Add Rack button");
 			}
 
 		};
@@ -205,14 +205,14 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 	 * 
 	 * @param target
 	 */
-	public abstract void onAddTankSubmit(AjaxRequestTarget target);
+	public abstract void onAddFreezerSubmit(AjaxRequestTarget target);
 
 	/**
 	 * Method implemented by sub-classes to perform acton on button press
 	 * 
 	 * @param target
 	 */
-	public abstract void onAddTraySubmit(AjaxRequestTarget target);
+	public abstract void onAddRackSubmit(AjaxRequestTarget target);
 
 	/**
 	 * Method implemented by sub-classes to perform acton on button press

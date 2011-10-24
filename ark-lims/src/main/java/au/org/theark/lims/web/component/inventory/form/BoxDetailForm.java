@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.InvColRowType;
-import au.org.theark.core.model.lims.entity.InvTray;
+import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -70,7 +70,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private TextField<String>					noOfRowTxtFld;
 	private DropDownChoice<InvColRowType>	colNoTypeDdc;
 	private DropDownChoice<InvColRowType>	rowNoTypeDdc;
-	private DropDownChoice<InvTray>			invTrayDdc;
+	private DropDownChoice<InvRack>			invTrayDdc;
 	
 	/**
 	 * 
@@ -114,17 +114,17 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	}
 	
 	private void initInvTrayDdc() {
-		List<InvTray> invTankList = new ArrayList<InvTray>(0);
-		InvTray invTray = new InvTray();
+		List<InvRack> invTankList = new ArrayList<InvRack>(0);
+		InvRack invTray = new InvRack();
 
 		try {
-			invTankList = iInventoryService.searchInvTray(invTray);
+			invTankList = iInventoryService.searchInvRack(invTray);
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
 		}
-		ChoiceRenderer<InvTray> choiceRenderer = new ChoiceRenderer<InvTray>(Constants.NAME, Constants.ID);
-		invTrayDdc = new DropDownChoice<InvTray>("invBox.invTray", (List<InvTray>) invTankList, choiceRenderer);
+		ChoiceRenderer<InvRack> choiceRenderer = new ChoiceRenderer<InvRack>(Constants.NAME, Constants.ID);
+		invTrayDdc = new DropDownChoice<InvRack>("invBox.invRack", (List<InvRack>) invTankList, choiceRenderer);
 	}
 
 	private void initColNoTypeDdc() {
@@ -144,7 +144,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	protected void attachValidators() {
 		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
-		invTrayDdc.setRequired(true).setLabel(new StringResourceModel("error.tray.required", this, new Model<String>("Tray")));
+		invTrayDdc.setRequired(true).setLabel(new StringResourceModel("error.rack.required", this, new Model<String>("Rack")));
 		colNoTypeDdc.setRequired(true);
 		rowNoTypeDdc.setRequired(true);
 	}

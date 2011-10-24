@@ -36,10 +36,10 @@ public class BioLocationPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		siteNameLbl = new Label("biospecimenLocationVO.siteName", cpModel.getObject().getBiospecimenLocationVO().getSiteName());
-		tankNameLbl = new Label("biospecimenLocationVO.tankName", cpModel.getObject().getBiospecimenLocationVO().getTankName());
-		trayNameLbl = new Label("biospecimenLocationVO.trayName", cpModel.getObject().getBiospecimenLocationVO().getTrayName());
-		boxNameLbl = new Label("biospecimenLocationVO.boxName", cpModel.getObject().getBiospecimenLocationVO().getBoxName());
+		siteNameLbl = new Label("biospecimenLocationVO.site", cpModel.getObject().getBiospecimenLocationVO().getSiteName());
+		tankNameLbl = new Label("biospecimenLocationVO.freezer", cpModel.getObject().getBiospecimenLocationVO().getTankName());
+		trayNameLbl = new Label("biospecimenLocationVO.rack", cpModel.getObject().getBiospecimenLocationVO().getTrayName());
+		boxNameLbl = new Label("biospecimenLocationVO.box", cpModel.getObject().getBiospecimenLocationVO().getBoxName());
 		rowLbl = new Label("biospecimenLocationVO.row", cpModel.getObject().getBiospecimenLocationVO().getRowLabel());
 		cellLbl = new Label("biospecimenLocationVO.column", cpModel.getObject().getBiospecimenLocationVO().getColLabel());
 	}

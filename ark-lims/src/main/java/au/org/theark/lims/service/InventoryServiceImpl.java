@@ -12,9 +12,9 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvColRowType;
+import au.org.theark.core.model.lims.entity.InvFreezer;
+import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
-import au.org.theark.core.model.lims.entity.InvTank;
-import au.org.theark.core.model.lims.entity.InvTray;
 import au.org.theark.lims.model.dao.IInventoryDao;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -48,6 +48,10 @@ public class InventoryServiceImpl implements IInventoryService {
 		iInventoryDao.createInvBox(invBox);
 
 		createCellsForBox(invBox);
+		
+		// update available of parent
+		invBox.getInvRack().setAvailable(invBox.getInvRack().getAvailable() - 1);
+		iInventoryDao.updateInvRack(invBox.getInvRack());
 	}
 
 	/**
@@ -74,12 +78,17 @@ public class InventoryServiceImpl implements IInventoryService {
 		iInventoryDao.createInvSite(modelObject.getInvSite());
 	}
 
-	public void createInvTank(LimsVO modelObject) {
-		iInventoryDao.createInvTank(modelObject.getInvTank());
+	public void createInvFreezer(LimsVO modelObject) {
+		iInventoryDao.createInvFreezer(modelObject.getInvFreezer());
 	}
 
-	public void createInvTray(LimsVO modelObject) {
-		iInventoryDao.createInvTray(modelObject.getInvTray());
+	public void createInvRack(LimsVO modelObject) {
+		InvRack invTray = modelObject.getInvRack();
+		iInventoryDao.createInvRack(invTray);
+		
+		// update available of parent
+		invTray.getInvFreezer().setAvailable(invTray.getInvFreezer().getAvailable() - 1);
+		iInventoryDao.updateInvFreezer(invTray.getInvFreezer());
 	}
 
 	public void createInvCell(InvCell invCell) {
@@ -94,12 +103,12 @@ public class InventoryServiceImpl implements IInventoryService {
 		iInventoryDao.deleteInvSite(modelObject.getInvSite());
 	}
 
-	public void deleteInvTank(LimsVO modelObject) {
-		iInventoryDao.deleteInvTank(modelObject.getInvTank());
+	public void deleteInvFreezer(LimsVO modelObject) {
+		iInventoryDao.deleteInvFreezer(modelObject.getInvFreezer());
 	}
 
-	public void deleteInvTray(LimsVO modelObject) {
-		iInventoryDao.deleteInvTray(modelObject.getInvTray());
+	public void deleteInvRack(LimsVO modelObject) {
+		iInventoryDao.deleteInvRack(modelObject.getInvRack());
 	}
 
 	public void deleteInvCell(InvCell invCell) {
@@ -126,12 +135,12 @@ public class InventoryServiceImpl implements IInventoryService {
 		iInventoryDao.updateInvSite(modelObject.getInvSite());
 	}
 
-	public void updateInvTank(LimsVO modelObject) {
-		iInventoryDao.updateInvTank(modelObject.getInvTank());
+	public void updateInvFreezer(LimsVO modelObject) {
+		iInventoryDao.updateInvFreezer(modelObject.getInvFreezer());
 	}
 
-	public void updateInvTray(LimsVO modelObject) {
-		iInventoryDao.updateInvTray(modelObject.getInvTray());
+	public void updateInvRack(LimsVO modelObject) {
+		iInventoryDao.updateInvRack(modelObject.getInvRack());
 	}
 
 	public InvCell getInvCell(InvBox invBox, int rowno, int colno) {
@@ -154,12 +163,12 @@ public class InventoryServiceImpl implements IInventoryService {
 		return iInventoryDao.getInvColRowTypes();
 	}
 
-	public InvTank getInvTank(Long id) {
-		return iInventoryDao.getInvTank(id);
+	public InvFreezer getInvFreezer(Long id) {
+		return iInventoryDao.getInvFreezer(id);
 	}
 
-	public InvTray getInvTray(Long id) {
-		return iInventoryDao.getInvTray(id);
+	public InvRack getInvRack(Long id) {
+		return iInventoryDao.getInvRack(id);
 	}
 
 	public InvCell getInvCellByBiospecimen(Biospecimen biospecimen) {
@@ -174,12 +183,12 @@ public class InventoryServiceImpl implements IInventoryService {
 		return iInventoryDao.searchInvBox(invBox);
 	}
 
-	public List<InvTank> searchInvTank(InvTank invTank) throws ArkSystemException {
-		return iInventoryDao.searchInvTank(invTank);
+	public List<InvFreezer> searchInvFreezer(InvFreezer invTank) throws ArkSystemException {
+		return iInventoryDao.searchInvFreezer(invTank);
 	}
 
-	public List<InvTray> searchInvTray(InvTray invTray) throws ArkSystemException {
-		return iInventoryDao.searchInvTray(invTray);
+	public List<InvRack> searchInvRack(InvRack invRack) throws ArkSystemException {
+		return iInventoryDao.searchInvRack(invRack);
 	}
 
 	/**
@@ -190,14 +199,14 @@ public class InventoryServiceImpl implements IInventoryService {
 		BiospecimenLocationVO biospecimenLocationVO = new BiospecimenLocationVO();
 		if (cell != null && cell.getId() != null) {
 			InvBox box = cell.getInvBox();
-			InvTray tray = box.getInvTray();
-			InvTank tank = tray.getInvTank();
-			InvSite site = tank.getInvSite();
+			InvRack rack = box.getInvRack();
+			InvFreezer freezer = rack.getInvFreezer();
+			InvSite site = freezer.getInvSite();
 
 			biospecimenLocationVO.setIsAllocated(true);
 			biospecimenLocationVO.setBoxName(box.getName());
-			biospecimenLocationVO.setTrayName(tray.getName());
-			biospecimenLocationVO.setTankName(tank.getName());
+			biospecimenLocationVO.setTrayName(rack.getName());
+			biospecimenLocationVO.setTankName(freezer.getName());
 			biospecimenLocationVO.setSiteName(site.getName());
 			biospecimenLocationVO.setColumn(cell.getColno());
 			biospecimenLocationVO.setRow(cell.getRowno());
@@ -229,7 +238,7 @@ public class InventoryServiceImpl implements IInventoryService {
 	/**
 	 * Returns the current path (ie synced to database) to the node in question (box,tray,tank, or site)
 	 * @param node
-	 * @return List of objects (nodes) in the path order (site : tank : tray : box)
+	 * @return List of objects (nodes) in the path order (site : freezer : rack : box)
 	 */
 	public List<Object> getInventoryPathOfNode(Object node){
 		List<Object> path = new ArrayList<Object>(0);
@@ -238,31 +247,31 @@ public class InventoryServiceImpl implements IInventoryService {
 			invSite = iInventoryDao.getInvSite(invSite.getId());
 			path.add(invSite);
 		}
-		if (node instanceof InvTank) {
-			InvTank invTank = (InvTank) node;
-			invTank = iInventoryDao.getInvTank(invTank.getId());
-			InvSite invSite = invTank.getInvSite();
+		if (node instanceof InvFreezer) {
+			InvFreezer invFreezer = (InvFreezer) node;
+			invFreezer = iInventoryDao.getInvFreezer(invFreezer.getId());
+			InvSite invSite = invFreezer.getInvSite();
 			path.add(invSite);
-			path.add(invTank);
+			path.add(invFreezer);
 		}
-		if (node instanceof InvTray) {
-			InvTray invTray = (InvTray) node;
-			invTray = iInventoryDao.getInvTray(invTray.getId());
-			InvTank invTank = invTray.getInvTank();
+		if (node instanceof InvRack) {
+			InvRack invRack = (InvRack) node;
+			invRack = iInventoryDao.getInvRack(invRack.getId());
+			InvFreezer invTank = invRack.getInvFreezer();
 			InvSite invSite = invTank.getInvSite();
 			path.add(invSite);
 			path.add(invTank);
-			path.add(invTray);
+			path.add(invRack);
 		}
 		if (node instanceof InvBox) {
 			InvBox invBox = (InvBox) node;
 			invBox = iInventoryDao.getInvBox(invBox.getId());
-			InvTray invTray = invBox.getInvTray();
-			InvTank invTank = invTray.getInvTank();
-			InvSite invSite = invTank.getInvSite();
+			InvRack invRack = invBox.getInvRack();
+			InvFreezer invFreezer = invRack.getInvFreezer();
+			InvSite invSite = invFreezer.getInvSite();
 			path.add(invSite);
-			path.add(invTank);
-			path.add(invTray);
+			path.add(invFreezer);
+			path.add(invRack);
 			path.add(invBox);
 		}
 		return path;

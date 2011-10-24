@@ -25,9 +25,9 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvColRowType;
+import au.org.theark.core.model.lims.entity.InvFreezer;
+import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
-import au.org.theark.core.model.lims.entity.InvTank;
-import au.org.theark.core.model.lims.entity.InvTray;
 
 public interface IInventoryDao {
 	/**
@@ -63,52 +63,52 @@ public interface IInventoryDao {
 	public void deleteInvSite(InvSite invSite);
 	
 	/**
-	 * Create a Tank based on the supplied LimsVO
+	 * Create a Freezer based on the supplied LimsVO
 	 * 
-	 * @param invTank
-	 *           the InvTank object
+	 * @param invFreezer
+	 *           the InvFreezer object
 	 */
-	public void createInvTank(InvTank invTank);
+	public void createInvFreezer(InvFreezer invFreezer);
 
 	/**
-	 * Update a Tank based on the supplied LimsVO
+	 * Update a Freezer based on the supplied LimsVO
 	 * 
-	 * @param invTank
-	 *           the InvTank object
+	 * @param invFreezer
+	 *           the InvFreezer object
 	 */
-	public void updateInvTank(InvTank invTank);
+	public void updateInvFreezer(InvFreezer invFreezer);
 
 	/**
-	 * Delete a Tank based on the supplied LimsVO
+	 * Delete a Freezer based on the supplied LimsVO
 	 * 
-	 * @param invTank
-	 *           the InvTank object
+	 * @param invFreezer
+	 *           the InvFreezer object
 	 */
-	public void deleteInvTank(InvTank invTank);
+	public void deleteInvFreezer(InvFreezer invFreezer);
 	
 	/**
-	 * Create a Tray based on the supplied InvTray
+	 * Create a Rack based on the supplied InvRack
 	 * 
-	 * @param invTray
-	 *           the invTray object
+	 * @param invRack
+	 *           the invRack object
 	 */
-	public void createInvTray(InvTray invTray);
+	public void createInvRack(InvRack invRack);
 
 	/**
-	 * Update a Tray based on the supplied InvTray
+	 * Update a Rack based on the supplied InvRack
 	 * 
-	 * @param invTray
-	 *           the invTray object
+	 * @param invRack
+	 *           the invRack object
 	 */
-	public void updateInvTray(InvTray invTray);
+	public void updateInvRack(InvRack invRack);
 
 	/**
-	 * Delete a Tray based on the supplied InvTray
+	 * Delete a Rack based on the supplied InvRack
 	 * 
-	 * @param invTray
-	 *           the invTray object
+	 * @param invRack
+	 *           the invRack object
 	 */
-	public void deleteInvTray(InvTray invTray);
+	public void deleteInvRack(InvRack invRack);
 	
 	/**
 	 * Create a Box based on the supplied InvBox
@@ -196,18 +196,18 @@ public interface IInventoryDao {
 	public void deleteInvCell(InvCell invCell);
 
 	/**
-	 * Get an InvTank based on the specified id
+	 * Get an InvFreezer based on the specified id
 	 * @param id
 	 * @return
 	 */
-	public InvTank getInvTank(Long id);
+	public InvFreezer getInvFreezer(Long id);
 	
 	/**
-	 * Get an InvTray based on the specified id
+	 * Get an InvRack based on the specified id
 	 * @param id
 	 * @return
 	 */
-	public InvTray getInvTray(Long id);
+	public InvRack getInvRack(Long id);
 
 	/**
 	 * Get an InvCell based on an Biospecimen
@@ -224,20 +224,20 @@ public interface IInventoryDao {
 	public InvCell getInvCell(Long id);
 
 	/**
-	 * Search on a particular tank
-	 * @param invTank
-	 * @return a List of InvTank(s)
+	 * Search on a particular freezer
+	 * @param invFreezer
+	 * @return a List of InvFreezer(s)
 	 * @throws ArkSystemException
 	 */
-	public List<InvTank> searchInvTank(InvTank invTank) throws ArkSystemException;
+	public List<InvFreezer> searchInvFreezer(InvFreezer invFreezer) throws ArkSystemException;
 	
 	/**
-	 * Search on a particular tray
-	 * @param invSite
-	 * @return a List of InvSite(s)
+	 * Search on a particular rack
+	 * @param invRack
+	 * @return a List of InvRack(s)
 	 * @throws ArkSystemException
 	 */
-	public List<InvTray> searchInvTray(InvTray invTray) throws ArkSystemException;
+	public List<InvRack> searchInvRack(InvRack invRack) throws ArkSystemException;
 	
 	/**
 	 * Search on a particular box
