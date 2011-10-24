@@ -7,7 +7,9 @@ import au.org.theark.core.model.lims.entity.BarcodeLabelData;
 import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
+import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.study.entity.Study;
 
 public interface ILimsAdminService {
@@ -189,4 +191,14 @@ public interface ILimsAdminService {
 	 *           the BiospecimenUidTemplate object
 	 */
 	public void deleteBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
+
+	public int getBiospecimenUidTemplateCount(BiospecimenUidTemplate modelObject);
+
+	public List<BiospecimenUidToken> getBiospecimenUidTokens();
+
+	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars();
+
+	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, int first, int count);
+
+	public BiospecimenUidTemplate searchBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
 }

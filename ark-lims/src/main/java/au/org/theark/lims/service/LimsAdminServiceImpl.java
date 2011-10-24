@@ -22,7 +22,9 @@ import au.org.theark.core.model.lims.entity.BarcodeLabelData;
 import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
+import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -357,5 +359,30 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 
 	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
 		iLimsAdminDao.updateBiospecimenUidTemplate(biospecimenUidTemplate);
+	}
+
+	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int getBiospecimenUidTemplateCount(BiospecimenUidTemplate modelObject) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public List<BiospecimenUidToken> getBiospecimenUidTokens() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public BiospecimenUidTemplate searchBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, int first, int count) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
