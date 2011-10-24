@@ -1,6 +1,8 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup.form;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -37,6 +39,7 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldDisplayListPanel;
+import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupDetailPanel;
 
 /**
  * @author nivedann
@@ -58,6 +61,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	private Boolean addCustomFieldDisplayList;
 	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdProvider;
 	private DataView<CustomFieldDisplay> dataView;
+
+	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdArkDataProvider;
 	
 	/**
 	 * @param id
@@ -170,6 +175,22 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 			getModelObject().getCustomFieldGroup().setStudy(study);
 			try {
 				iPhenotypicService.createCustomFieldGroup(getModelObject());
+				cfdArkDataProvider = new ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>() {
+
+					public int size() {
+						return iPhenotypicService.getCFDLinkedToQuestionnaireCount(getModelObject().getCustomFieldGroup());
+					}
+					public Iterator<CustomFieldDisplay> iterator(int first, int count) {
+						
+						Collection<CustomFieldDisplay> customFieldDisplayList = new ArrayList<CustomFieldDisplay>();
+						customFieldDisplayList = iPhenotypicService.getCFDLinkedToQuestionnaire(getModelObject().getCustomFieldGroup(), first, count);
+						return customFieldDisplayList.iterator();
+					}
+				};
+				
+				CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedBackPanel, arkCrudContainerVO, (CompoundPropertyModel<CustomFieldGroupVO>)getModel() ,cfdArkDataProvider,true);
+				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
+				target.add(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
 				this.info("Custom Field Group has been created successfully.");	
 			}
 			catch (EntityExistsException e) {
