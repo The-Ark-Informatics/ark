@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.lims.service.IBarcodeService;
+import au.org.theark.lims.service.ILimsAdminService;
 
 /**
  * Class that represents a button to print a barcode label to a Zebra printer (generally the TLP2844 model) 
@@ -43,7 +43,7 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 	private static final Logger	log					= LoggerFactory.getLogger(PrintBiospecimenLabelButton.class);
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private IBarcodeService			iBarcodeService;
+	private ILimsAdminService			iBarcodeService;
 	private final Biospecimen		biospecimen;
 	private String						zplString;
 	private BarcodePrinter			barcodePrinter;

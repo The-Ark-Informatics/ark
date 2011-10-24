@@ -46,7 +46,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
-import au.org.theark.lims.service.IBarcodeService;
+import au.org.theark.lims.service.ILimsAdminService;
 import au.org.theark.lims.web.Constants;
 
 /**
@@ -66,7 +66,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	private IArkCommonService<Void>			iArkCommonService;
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private IBarcodeService						iBarcodeService;
+	private ILimsAdminService						iBarcodeService;
 
 	private TextField<Long>						idTxtFld;
 	private DropDownChoice<Study>				studyDdc;

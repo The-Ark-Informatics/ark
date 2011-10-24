@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.lims.service.IBarcodeService;
+import au.org.theark.lims.service.ILimsAdminService;
 
 /**
  * Class that represents a button to print a straw barcode label to a Brady printer (specifically the BPP 11 model), using TSPL/TSPL2 commands
@@ -44,7 +44,7 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 	private static final Logger	log					= LoggerFactory.getLogger(PrintBiospecimenStrawLabelButton.class);
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private IBarcodeService			iBarcodeService;
+	private ILimsAdminService			iBarcodeService;
 	private final Biospecimen		biospecimen;
 	private String						tsplString;
 	private BarcodePrinter			barcodePrinter;
