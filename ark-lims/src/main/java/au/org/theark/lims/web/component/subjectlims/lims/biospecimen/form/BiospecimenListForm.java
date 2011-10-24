@@ -380,9 +380,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 			newModel.getObject().getBiospecimen().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 			newModel.getObject().getBiospecimen().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
-
-			// Create new BiospecimenUID
-			newModel.getObject().getBiospecimen().setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
+			newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
 
 			showModalWindow(target, newModel); // listDetailsForm);
 		}

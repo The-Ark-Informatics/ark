@@ -50,6 +50,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.lims.model.dao.IBioCollectionDao;
@@ -727,5 +728,9 @@ public class LimsServiceImpl implements ILimsService {
 
 	public List<BiospecimenStorage> getBiospecimenStorageList() {
 		return iBiospecimenDao.getBiospecimenStorageList();
+	}
+	
+	public String getNextGeneratedBiospecimenUID(Study study) {
+		return iBiospecimenDao.getNextGeneratedBiospecimenUID(study);
 	}
 }

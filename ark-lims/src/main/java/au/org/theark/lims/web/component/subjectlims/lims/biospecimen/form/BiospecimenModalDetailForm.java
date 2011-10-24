@@ -78,7 +78,6 @@ import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.util.UniqueIdGenerator;
 import au.org.theark.lims.util.barcode.DataMatrixBarcodeImage;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biolocation.BioLocationDetailPanel;
@@ -741,15 +740,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	protected void onCloneBiospecimen(AjaxRequestTarget target) {
 		try {
 			LimsVO oldlimsVo = cpModel.getObject();
-			final String biospecimenUid = oldlimsVo.getBiospecimen().getBiospecimenUid();
+			final String parentBiospecimenUid = oldlimsVo.getBiospecimen().getBiospecimenUid();
 			LimsVO limsVo = new LimsVO();
 			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
 
 			PropertyUtils.copyProperties(limsVo, oldlimsVo);
 			limsVo.getBiospecimen().setId(null);
-			limsVo.getBiospecimen().setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
 			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
-			limsVo.getBiospecimen().setComments("Clone of " + biospecimenUid);
+			limsVo.getBiospecimen().setComments("Clone of " + parentBiospecimenUid);
 			limsVo.getBiospecimen().setBarcoded(false);
 
 			// Inital transaction detail (quantity grabbed from previous biospecimen)
@@ -759,7 +757,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 			iLimsService.createBiospecimen(limsVo);
 			cpModel.setObject(limsVo);
-			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was cloned from " + biospecimenUid + " successfully");
+			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was cloned from " + parentBiospecimenUid + " successfully");
 			target.add(feedbackPanel);
 
 			// Go straight into edit mode
@@ -801,7 +799,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 			// Amend specific fields/detail
 			biospecimen.setId(null);
-			biospecimen.setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
+			biospecimen.setBiospecimenUid(Constants.AUTO_GENERATED);
+			
 			biospecimen.setParentId(parentBiospecimen.getId());
 			biospecimen.setParentUid(parentBiospecimen.getBiospecimenUid());
 			biospecimen.setSampleType(parentBiospecimen.getSampleType());
