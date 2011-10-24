@@ -28,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
@@ -35,6 +36,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -1566,8 +1568,22 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		
 		Collection<CustomField> customFieldsToAdd = new ArrayList<CustomField>();
 		Collection<CustomField> existingCustomFieldList = getCustomFieldsLinkedToCustomFieldGroup(customFieldGroup);// Existing List of CustomFieldsthat were linked to this CustomFieldGroup
+		Collection<CustomField> nonProxyCustomFieldList = new ArrayList<CustomField>();
+		
+		/**
+		 * Since Hibernate returns proxy objects for LazyInitialisation when the equals() is invoked the class comparison will fail. Therefore we have to get the underlying object to represent the existing list.
+		 */
+		for (Object obj : existingCustomFieldList) {
+			if(obj instanceof HibernateProxy){
+				if(((HibernateProxy)obj).getHibernateLazyInitializer().isUninitialized()){
+					CustomField  cf = (CustomField)((HibernateProxy)obj).getHibernateLazyInitializer().getImplementation();
+					nonProxyCustomFieldList.add(cf);
+				}
+			}
+		}
+		
 		for (CustomField customField : selectedCustomFields) {
-			if(!existingCustomFieldList.contains(customField)){
+			if((!nonProxyCustomFieldList.contains(customField))){
 				customFieldsToAdd.add(customField);
 			}
 		}
@@ -1583,10 +1599,19 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	 */
 	private Collection<CustomFieldDisplay> getCustomFieldDisplayToRemove(Collection<CustomField> selectedCustomFields, CustomFieldGroup customFieldGroup){
 		
-		Collection<CustomFieldDisplay> customFieldDisplayToRemove = new ArrayList<CustomFieldDisplay>();
 		Collection<CustomFieldDisplay> customFieldDisplayList = getCustomFieldDisplayForCustomFieldGroup(customFieldGroup);
+		Collection<CustomFieldDisplay> nonProxyCustomFieldList = new ArrayList<CustomFieldDisplay>();
+		for (Object obj : customFieldDisplayList) {
+			if(obj instanceof HibernateProxy){
+				if(((HibernateProxy)obj).getHibernateLazyInitializer().isUninitialized()){
+					CustomFieldDisplay  cfd = (CustomFieldDisplay)((HibernateProxy)obj).getHibernateLazyInitializer().getImplementation();
+					nonProxyCustomFieldList.add(cfd);
+				}
+			}
+		}
 		
-		for (CustomFieldDisplay existingCustomFieldDisplay : customFieldDisplayList) {
+		Collection<CustomFieldDisplay> customFieldDisplayToRemove = new ArrayList<CustomFieldDisplay>();
+		for (CustomFieldDisplay existingCustomFieldDisplay : nonProxyCustomFieldList) {
 			//Only the fields that does not have data or in not in use must be processed
 			if(!selectedCustomFields.contains(existingCustomFieldDisplay.getCustomField())){
 				customFieldDisplayToRemove.add(existingCustomFieldDisplay);	
