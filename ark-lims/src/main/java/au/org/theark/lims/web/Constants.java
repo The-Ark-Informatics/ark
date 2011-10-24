@@ -143,4 +143,8 @@ public class Constants {
 
 	public static final String	BIOSPECIMEN_PROCESSING_PROCESSING	= "Processing";
 	public static final String	BIOSPECIMEN_PROCESSING_ALIQUOTING	= "Aliquoting";
+
+	public static final String	SUBJECTUIDSEQ_STUDYNAMEID	= "studyNameId";
+
+	public static final String	AUTO_GENERATED	= "Auto-generated";
 }
