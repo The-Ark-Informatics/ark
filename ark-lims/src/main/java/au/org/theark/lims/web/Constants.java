@@ -138,6 +138,8 @@ public class Constants {
 	public static final String	SUBJECT_CONSENT_PASSIVE_DATA_GATHER	= "linkSubjectStudy.consentToPassiveDataGathering";
 	public static final String	SUBJECT_AUTO_GENERATED					= "Auto-generated";
 	public static final String	SUBJECTUID_EXAMPLE						= "AAA-000000001";
+	public static final String	BIOCOLLECTION_NAME_EXAMPLE				= "AAA-000000001";
+	public static final String	BIOSPECIMENUID_EXAMPLE					= "AAA-000000001";
 	
 	public static final String BIOTRANSACTION_STATUS_INITIAL_QUANTITY	= "Initial Quantity";
 
