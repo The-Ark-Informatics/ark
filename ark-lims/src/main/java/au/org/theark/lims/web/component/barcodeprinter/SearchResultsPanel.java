@@ -40,7 +40,7 @@ import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
-import au.org.theark.lims.service.IBarcodeService;
+import au.org.theark.lims.service.ILimsAdminService;
 import au.org.theark.lims.web.component.barcodeprinter.form.ContainerForm;
 import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 
@@ -53,7 +53,7 @@ public class SearchResultsPanel extends Panel {
 	protected transient Logger	log					= LoggerFactory.getLogger(SearchResultsPanel.class);
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private IBarcodeService		iBarcodeService;
+	private ILimsAdminService		iBarcodeService;
 
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVo;
@@ -68,7 +68,7 @@ public class SearchResultsPanel extends Panel {
 		add(printAppletPanel);
 	}
 
-	public DataView<BarcodePrinter> buildDataView(ArkDataProvider<BarcodePrinter, IBarcodeService> dataProvider) {
+	public DataView<BarcodePrinter> buildDataView(ArkDataProvider<BarcodePrinter, ILimsAdminService> dataProvider) {
 		DataView<BarcodePrinter> dataView = new DataView<BarcodePrinter>("resultList", dataProvider) {
 			/**
 			 * 

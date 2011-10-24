@@ -33,7 +33,7 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.lims.service.IBarcodeService;
+import au.org.theark.lims.service.ILimsAdminService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 
@@ -53,7 +53,7 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService					iLimsService;
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private IBarcodeService				iBarcodeService;
+	private ILimsAdminService				iBarcodeService;
 	private BioCollection				bioCollection;
 	private String							zplString;
 	private BarcodePrinter				barcodePrinter;

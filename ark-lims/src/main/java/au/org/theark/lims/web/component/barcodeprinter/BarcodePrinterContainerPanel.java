@@ -40,7 +40,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider;
-import au.org.theark.lims.service.IBarcodeService;
+import au.org.theark.lims.service.ILimsAdminService;
 import au.org.theark.lims.web.component.barcodeprinter.form.ContainerForm;
 
 /**
@@ -62,14 +62,14 @@ public class BarcodePrinterContainerPanel extends AbstractContainerPanel<Barcode
 	protected ContainerForm												containerForm;
 	protected Panel														resultsListPanel;
 
-	private ArkDataProvider<BarcodePrinter, IBarcodeService>	dataProvider;
+	private ArkDataProvider<BarcodePrinter, ILimsAdminService>	dataProvider;
 	private DataView<BarcodePrinter>									dataView;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>									iArkCommonService;
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private IBarcodeService												iBarcodeService;
+	private ILimsAdminService												iBarcodeService;
 
 	public BarcodePrinterContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
@@ -131,7 +131,7 @@ public class BarcodePrinterContainerPanel extends AbstractContainerPanel<Barcode
 
 	private void initialiseDataView() {
 		// Data provider to paginate resultList
-		dataProvider = new ArkDataProvider<BarcodePrinter, IBarcodeService>(iBarcodeService) {
+		dataProvider = new ArkDataProvider<BarcodePrinter, ILimsAdminService>(iBarcodeService) {
 			/**
 			 * 
 			 */
