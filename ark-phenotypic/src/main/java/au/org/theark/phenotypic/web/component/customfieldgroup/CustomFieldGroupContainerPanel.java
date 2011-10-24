@@ -42,6 +42,7 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 	private ArkDataProvider2 arkDataProvider;
 	private DataView<CustomFieldGroup> dataView;
 	
+	
 	/**
 	 * Constructor that uses the ArkCrudContainerVO
 	 * @param id
