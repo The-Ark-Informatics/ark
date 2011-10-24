@@ -40,7 +40,7 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	private static final Logger	log			= LoggerFactory.getLogger(LimsAdminServiceImpl.class);
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
-	private ILimsAdminDao				iBarcodeDao;
+	private ILimsAdminDao			iLimsAdminDao;
 	private VelocityEngine			velocityEngine;
 	static private final String	REAL_NUMBER	= "^[-+]?\\d+(\\.\\d+)?$";
 	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
@@ -56,12 +56,12 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	}
 
 	public ILimsAdminDao getiBarcodeDao() {
-		return iBarcodeDao;
+		return iLimsAdminDao;
 	}
 
 	@Autowired
 	public void setiBarcodeDao(ILimsAdminDao iBarcodeDao) {
-		this.iBarcodeDao = iBarcodeDao;
+		this.iLimsAdminDao = iBarcodeDao;
 	}
 
 	public VelocityEngine getVelocityEngine() {
@@ -74,51 +74,51 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	}
 
 	public void createBarcodePrinter(BarcodePrinter barcodePrinter) {
-		iBarcodeDao.createBarcodePrinter(barcodePrinter);
+		iLimsAdminDao.createBarcodePrinter(barcodePrinter);
 	}
 
 	public void deleteBarcodePrinter(BarcodePrinter barcodePrinter) {
-		iBarcodeDao.createBarcodePrinter(barcodePrinter);
+		iLimsAdminDao.createBarcodePrinter(barcodePrinter);
 	}
 
 	public void updateBarcodePrinter(BarcodePrinter barcodePrinter) {
-		iBarcodeDao.updateBarcodePrinter(barcodePrinter);
+		iLimsAdminDao.updateBarcodePrinter(barcodePrinter);
 	}
 
 	public void createBarcodeLabel(BarcodeLabel barcodeLabel) {
-		iBarcodeDao.createBarcodeLabel(barcodeLabel);
+		iLimsAdminDao.createBarcodeLabel(barcodeLabel);
 	}
 
 	public void createBarcodeLabelData(BarcodeLabelData barcodeLabelData) {
-		iBarcodeDao.createBarcodeLabelData(barcodeLabelData);
+		iLimsAdminDao.createBarcodeLabelData(barcodeLabelData);
 	}
 
 	public void deleteBarcodeLabel(BarcodeLabel barcodeLabel) {
-		iBarcodeDao.deleteBarcodeLabel(barcodeLabel);
+		iLimsAdminDao.deleteBarcodeLabel(barcodeLabel);
 	}
 
 	public void deleteBarcodeLabelData(BarcodeLabelData barcodeLabelData) {
-		iBarcodeDao.deleteBarcodeLabelData(barcodeLabelData);
+		iLimsAdminDao.deleteBarcodeLabelData(barcodeLabelData);
 	}
 
 	public void updateBarcodeLabel(BarcodeLabel BarcodeLabel) {
-		iBarcodeDao.updateBarcodeLabel(BarcodeLabel);
+		iLimsAdminDao.updateBarcodeLabel(BarcodeLabel);
 	}
 
 	public void updateBarcodeLabelData(BarcodeLabelData barcodeLabelData) {
-		iBarcodeDao.updateBarcodeLabelData(barcodeLabelData);
+		iLimsAdminDao.updateBarcodeLabelData(barcodeLabelData);
 	}
 
 	public BarcodeLabel searchBarcodeLabel(BarcodeLabel barcodeLabel) {
-		return iBarcodeDao.searchBarcodeLabel(barcodeLabel);
+		return iLimsAdminDao.searchBarcodeLabel(barcodeLabel);
 	}
 
 	public BarcodeLabelData searchBarcodeLabelData(BarcodeLabelData barcodeLabelData) {
-		return iBarcodeDao.searchBarcodeLabelData(barcodeLabelData);
+		return iLimsAdminDao.searchBarcodeLabelData(barcodeLabelData);
 	}
 
 	public BarcodePrinter searchBarcodePrinter(BarcodePrinter barcodePrinter) {
-		return iBarcodeDao.searchBarcodePrinter(barcodePrinter);
+		return iLimsAdminDao.searchBarcodePrinter(barcodePrinter);
 	}
 
 	public String createBioCollectionLabelTemplate(BioCollection bioCollection, BarcodeLabel barcodeLabel) {
@@ -324,42 +324,38 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	}
 
 	public int getBarcodeLabelCount(BarcodeLabel object) {
-		return iBarcodeDao.getBarcodeLabelCount(object);
+		return iLimsAdminDao.getBarcodeLabelCount(object);
 	}
 
 	public int getBarcodePrinterCount(BarcodePrinter object) {
-		return iBarcodeDao.getBarcodePrinterCount(object);
+		return iLimsAdminDao.getBarcodePrinterCount(object);
 	}
 
 	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, int first, int count) {
-		return iBarcodeDao.searchPageableBarcodeLabels(object, first, count);
+		return iLimsAdminDao.searchPageableBarcodeLabels(object, first, count);
 	}
 
 	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count) {
-		return iBarcodeDao.searchPageableBarcodePrinters(object, first, count);
+		return iLimsAdminDao.searchPageableBarcodePrinters(object, first, count);
 	}
 
 	public List<BarcodePrinter> getBarcodePrinters(List<Study> studyListForUser) {
-		return iBarcodeDao.getBarcodePrinters(studyListForUser);
+		return iLimsAdminDao.getBarcodePrinters(studyListForUser);
 	}
 
 	public void createBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
-		// TODO Auto-generated method stub
-		
+		iLimsAdminDao.createBiospecimenUidTemplate(biospecimenUidTemplate);		
 	}
 
 	public void deleteBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
-		// TODO Auto-generated method stub
-		
+		iLimsAdminDao.deleteBiospecimenUidTemplate(biospecimenUidTemplate);
 	}
 
 	public BiospecimenUidTemplate getBiospecimenUidTemplate(Study study) {
-		// TODO Auto-generated method stub
-		return null;
+		return iLimsAdminDao.getBiospecimenUidTemplate(study);
 	}
 
 	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
-		// TODO Auto-generated method stub
-		
+		iLimsAdminDao.updateBiospecimenUidTemplate(biospecimenUidTemplate);
 	}
 }
