@@ -25,7 +25,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -41,10 +40,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
-import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
@@ -54,14 +52,14 @@ import au.org.theark.lims.web.Constants;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial", "unused" })
-public class TankDetailForm extends AbstractInventoryDetailForm<LimsVO> {
-	private static Logger				log	= LoggerFactory.getLogger(TankDetailForm.class);
+@SuppressWarnings({ "serial", "unused" })
+public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
+	private static Logger		log	= LoggerFactory.getLogger(RackDetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
-	private IInventoryService			iInventoryService;
+	private IInventoryService					iInventoryService;
 
 	private ContainerForm				fieldContainerForm;
 
@@ -71,10 +69,8 @@ public class TankDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private TextField<String>			nameTxtFld;
 	private TextField<String>			capacityTxtFld;
 	private TextField<String>			availableTxtFld;
-	private TextArea<String>			lastservicenoteTxtAreaFld;
-	private DateTextField				decommissiondateDateTxtFld;
 	private TextArea<String>			descriptionTxtAreaFld;
-	private DropDownChoice<InvSite>	invSiteDdc;
+	private DropDownChoice<InvFreezer>	invTankDdc;
 
 	/**
 	 * 
@@ -85,51 +81,44 @@ public class TankDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 * @param tree
 	 * @param node 
 	 */
-	public TankDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree, DefaultMutableTreeNode node) {
-
+	public RackDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
 	}
 
 	public void initialiseDetailForm() {
-		idTxtFld = new TextField<String>("invTank.id");
-		nameTxtFld = new TextField<String>("invTank.name");
-		capacityTxtFld = new TextField<String>("invTank.capacity");
-		availableTxtFld = new TextField<String>("invTank.available");
-		lastservicenoteTxtAreaFld = new TextArea<String>("invTank.lastservicenote");
-		decommissiondateDateTxtFld = new DateTextField("invTank.decommissiondate");
-		descriptionTxtAreaFld = new TextArea<String>("invTank.description");
-
-		ArkDatePicker arkDatePicker = new ArkDatePicker();
-		arkDatePicker.bind(decommissiondateDateTxtFld);
-		decommissiondateDateTxtFld.add(arkDatePicker);
-
-		initSiteDdc();
+		idTxtFld = new TextField<String>("invRack.id");
+		nameTxtFld = new TextField<String>("invRack.name");
+		capacityTxtFld = new TextField<String>("invRack.capacity");
+		availableTxtFld = new TextField<String>("invRack.available");
+		descriptionTxtAreaFld = new TextArea<String>("invRack.description");
+		
+		initInvTankDdc();
 		
 		attachValidators();
 		addComponents();
-
+		
 		// Focus on Name
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
 	}
 	
-	private void initSiteDdc() {
-		List<InvSite> invSiteList = new ArrayList<InvSite>(0);
-		InvSite invSite = new InvSite();
+	private void initInvTankDdc() {
+		List<InvFreezer> invTankList = new ArrayList<InvFreezer>(0);
+		InvFreezer InvTank = new InvFreezer();
 
 		try {
-			invSiteList = iInventoryService.searchInvSite(invSite);
+			invTankList = iInventoryService.searchInvFreezer(InvTank);
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
 		}
-		ChoiceRenderer<InvSite> choiceRenderer = new ChoiceRenderer<InvSite>(Constants.NAME, Constants.ID);
-		invSiteDdc = new DropDownChoice<InvSite>("invTank.invSite", (List<InvSite>) invSiteList, choiceRenderer);
+		ChoiceRenderer<InvFreezer> choiceRenderer = new ChoiceRenderer<InvFreezer>(Constants.NAME, Constants.ID);
+		invTankDdc = new DropDownChoice<InvFreezer>("invRack.invFreezer", (List<InvFreezer>) invTankList, choiceRenderer);
 	}
 
 	protected void attachValidators() {
 		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
-		invSiteDdc.setRequired(true).setLabel(new StringResourceModel("error.site.required", this, new Model<String>("Site")));
+		invTankDdc.setRequired(true).setLabel(new StringResourceModel("error.freezer.required", this, new Model<String>("Freezer")));
 		capacityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.capacity.required", this, new Model<String>("Capacity")));
 		availableTxtFld.setRequired(true).setLabel(new StringResourceModel("error.available.required", this, new Model<String>("Available")));
 	}
@@ -139,25 +128,23 @@ public class TankDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		detailFormContainer.add(nameTxtFld);
 		detailFormContainer.add(capacityTxtFld);
 		detailFormContainer.add(availableTxtFld);
-		detailFormContainer.add(lastservicenoteTxtAreaFld);
-		detailFormContainer.add(decommissiondateDateTxtFld);
 		detailFormContainer.add(descriptionTxtAreaFld);
-		detailFormContainer.add(invSiteDdc);
+		detailFormContainer.add(invTankDdc);
 		add(detailFormContainer);
 	}
 
 	@Override
 	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target) {
-		if (containerForm.getModelObject().getInvTank().getId() == null) {
+		if (containerForm.getModelObject().getInvRack().getId() == null) {
 			// Save
-			iInventoryService.createInvTank(containerForm.getModelObject());
-			this.info("Tank " + containerForm.getModelObject().getInvTank().getName() + " was created successfully");
+			iInventoryService.createInvRack(containerForm.getModelObject());
+			this.info("Rack " + containerForm.getModelObject().getInvRack().getName() + " was created successfully");
 			processErrors(target);
 		}
 		else {
 			// Update
-			iInventoryService.updateInvTank(containerForm.getModelObject());
-			this.info("Tank " + containerForm.getModelObject().getInvTank().getName() + " was updated successfully");
+			iInventoryService.updateInvRack(containerForm.getModelObject());
+			this.info("Rack " + containerForm.getModelObject().getInvRack().getName() + " was updated successfully");
 			processErrors(target);
 		}
 
@@ -183,8 +170,8 @@ public class TankDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	}
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target) {
-		iInventoryService.deleteInvTank(containerForm.getModelObject());
-		this.info("Tank " + containerForm.getModelObject().getInvTank().getName() + " was deleted successfully");
+		iInventoryService.deleteInvRack(containerForm.getModelObject());
+		this.info("Rack " + containerForm.getModelObject().getInvRack().getName() + " was deleted successfully");
 
 		// Display delete confirmation message
 		target.add(feedbackPanel);
@@ -201,7 +188,7 @@ public class TankDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 */
 	@Override
 	protected boolean isNew() {
-		if (containerForm.getModelObject().getInvTank().getId() == null) {
+		if (containerForm.getModelObject().getInvRack().getId() == null) {
 			return true;
 		}
 		else {

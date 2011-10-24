@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.lims.web.component.inventory.panel.tray;
+package au.org.theark.lims.web.component.inventory.panel.freezer;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -26,18 +26,18 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
-import au.org.theark.lims.web.component.inventory.form.TrayDetailForm;
+import au.org.theark.lims.web.component.inventory.form.FreezerDetailForm;
 
 @SuppressWarnings("serial")
-public class TrayDetailPanel extends Panel {
+public class FreezerDetailPanel extends Panel {
 	private FeedbackPanel				feedbackPanel;
 	private WebMarkupContainer			detailContainer;
-	private TrayDetailForm				detailForm;
+	private FreezerDetailForm				detailForm;
 	private ContainerForm				containerForm;
 	private BaseTree						tree;
 	private DefaultMutableTreeNode	node;
 
-	public TrayDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+	public FreezerDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.feedbackPanel = feedbackPanel;
@@ -48,16 +48,16 @@ public class TrayDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new TrayDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
+		detailForm = new FreezerDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
 		detailForm.initialiseDetailForm();
 		add(detailForm);
 	}
 
-	public TrayDetailForm getDetailForm() {
+	public FreezerDetailForm getDetailForm() {
 		return detailForm;
 	}
 
-	public void setDetailForm(TrayDetailForm detailForm) {
+	public void setDetailForm(FreezerDetailForm detailForm) {
 		this.detailForm = detailForm;
 	}
 }

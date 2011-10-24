@@ -35,8 +35,8 @@ import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvSite;
-import au.org.theark.core.model.lims.entity.InvTank;
-import au.org.theark.core.model.lims.entity.InvTray;
+import au.org.theark.core.model.lims.entity.InvFreezer;
+import au.org.theark.core.model.lims.entity.InvRack;
 
 @SuppressWarnings("unchecked")
 @Repository("inventoryDao")
@@ -47,12 +47,12 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		getSession().save(invSite);
 	}
 
-	public void createInvTank(InvTank invTank) {
-		getSession().save(invTank);
+	public void createInvFreezer(InvFreezer invFreezer) {
+		getSession().save(invFreezer);
 	}
 
-	public void createInvTray(InvTray invTray) {
-		getSession().save(invTray);
+	public void createInvRack(InvRack invRack) {
+		getSession().save(invRack);
 	}
 	
 	public void createInvBox(InvBox invBox) {
@@ -67,12 +67,12 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		getSession().delete(invSite);
 	}
 
-	public void deleteInvTank(InvTank invTank) {
-		getSession().delete(invTank);
+	public void deleteInvFreezer(InvFreezer invFreezer) {
+		getSession().delete(invFreezer);
 	}
 
-	public void deleteInvTray(InvTray invTray) {
-		getSession().delete(invTray);
+	public void deleteInvRack(InvRack invRack) {
+		getSession().delete(invRack);
 	}
 
 	public List<InvSite> searchInvSite(InvSite invSite) throws ArkSystemException {
@@ -110,12 +110,12 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		getSession().merge(invSite);
 	}
 
-	public void updateInvTank(InvTank invTank) {
-		getSession().merge(invTank);
+	public void updateInvFreezer(InvFreezer invFreezer) {
+		getSession().merge(invFreezer);
 	}
 
-	public void updateInvTray(InvTray invTray) {
-		getSession().merge(invTray);
+	public void updateInvRack(InvRack invRack) {
+		getSession().merge(invRack);
 	}
 	
 	public void updateInvBox(InvBox invBox) {
@@ -180,7 +180,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 		
 		if(invBox == null) {
-			log.error("InvBox with ID " + id + "is no longer in the database");
+			log.error("InvBox with ID " + id + " is no longer in the database");
 		}
 		return invBox;
 	}
@@ -234,42 +234,42 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		getSession().delete(invCell);
 	}
 
-	public InvTank getInvTank(Long id) {
-		InvTank invTank = new InvTank();
-		Criteria criteria = getSession().createCriteria(InvTank.class);
+	public InvFreezer getInvFreezer(Long id) {
+		InvFreezer invFreezer = new InvFreezer();
+		Criteria criteria = getSession().createCriteria(InvFreezer.class);
 
 		if (id != null) {
 			criteria.add(Restrictions.eq("id", id));
 		}
 
-		List<InvTank> list = criteria.list();
+		List<InvFreezer> list = criteria.list();
 		if(!list.isEmpty()){ 
-			invTank = (InvTank) list.get(0);
+			invFreezer = (InvFreezer) list.get(0);
 		}
 		
-		if(invTank == null) {
-			log.error("InvTank with ID " + id + "is no longer in the database");
+		if(invFreezer == null) {
+			log.error("InvFreezer with ID " + id + " is no longer in the database");
 		}
-		return invTank;
+		return invFreezer;
 	}
 
-	public InvTray getInvTray(Long id) {
-		InvTray invTray = new InvTray();
-		Criteria criteria = getSession().createCriteria(InvTray.class);
+	public InvRack getInvRack(Long id) {
+		InvRack invRack = new InvRack();
+		Criteria criteria = getSession().createCriteria(InvRack.class);
 
 		if (id != null) {
 			criteria.add(Restrictions.eq("id", id));
 		}
 
-		List<InvTray> list = criteria.list();
+		List<InvRack> list = criteria.list();
 		if(!list.isEmpty()){ 
-			invTray = (InvTray) list.get(0);
+			invRack = (InvRack) list.get(0);
 		}
 		
-		if(invTray == null) {
-			log.error("InvTray with ID " + id + "no longer in the database");
+		if(invRack == null) {
+			log.error("InvRack with ID " + id + " is no longer in the database");
 		}
-		return invTray;
+		return invRack;
 	}
 
 	public InvCell getInvCellByBiospecimen(Biospecimen biospecimen) {
@@ -286,7 +286,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 		
 		if(invCell == null) {
-			log.error("InvCell with biospecimen " + biospecimen.getId() + "no longer in the database");
+			log.error("InvCell with biospecimen " + biospecimen.getId() + " is no longer in the database");
 		}
 		return invCell;
 	}
@@ -305,7 +305,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 		
 		if(invCell == null) {
-			log.error("InvTray with ID " + id + "no longer in the database");
+			log.error("InvRack with ID " + id + " is no longer in the database");
 		}
 		return invCell;
 	}
@@ -325,33 +325,33 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		return list;
 	}
 
-	public List<InvTank> searchInvTank(InvTank invTank) throws ArkSystemException {
-		Criteria criteria = getSession().createCriteria(InvTank.class);
+	public List<InvFreezer> searchInvFreezer(InvFreezer invFreezer) throws ArkSystemException {
+		Criteria criteria = getSession().createCriteria(InvFreezer.class);
 
-		if (invTank.getId() != null) {
-			criteria.add(Restrictions.eq("id", invTank.getId()));
+		if (invFreezer.getId() != null) {
+			criteria.add(Restrictions.eq("id", invFreezer.getId()));
 		}
 
-		if (invTank.getName() != null) {
-			criteria.add(Restrictions.eq("name", invTank.getName()));
+		if (invFreezer.getName() != null) {
+			criteria.add(Restrictions.eq("name", invFreezer.getName()));
 		}
 
-		List<InvTank> list = criteria.list();
+		List<InvFreezer> list = criteria.list();
 		return list;
 	}
 
-	public List<InvTray> searchInvTray(InvTray invTray) throws ArkSystemException {
-		Criteria criteria = getSession().createCriteria(InvTray.class);
+	public List<InvRack> searchInvRack(InvRack invRack) throws ArkSystemException {
+		Criteria criteria = getSession().createCriteria(InvRack.class);
 
-		if (invTray.getId() != null) {
-			criteria.add(Restrictions.eq("id", invTray.getId()));
+		if (invRack.getId() != null) {
+			criteria.add(Restrictions.eq("id", invRack.getId()));
 		}
 
-		if (invTray.getName() != null) {
-			criteria.add(Restrictions.eq("name", invTray.getName()));
+		if (invRack.getName() != null) {
+			criteria.add(Restrictions.eq("name", invRack.getName()));
 		}
 
-		List<InvTray> list = criteria.list();
+		List<InvRack> list = criteria.list();
 		return list;
 	}
 }

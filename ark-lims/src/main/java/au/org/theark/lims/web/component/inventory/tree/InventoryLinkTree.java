@@ -40,17 +40,17 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvSite;
-import au.org.theark.core.model.lims.entity.InvTank;
-import au.org.theark.core.model.lims.entity.InvTray;
+import au.org.theark.core.model.lims.entity.InvFreezer;
+import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.InventoryModel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.panel.box.BoxDetailPanel;
+import au.org.theark.lims.web.component.inventory.panel.freezer.FreezerDetailPanel;
+import au.org.theark.lims.web.component.inventory.panel.rack.RackDetailPanel;
 import au.org.theark.lims.web.component.inventory.panel.site.SiteDetailPanel;
-import au.org.theark.lims.web.component.inventory.panel.tank.TankDetailPanel;
-import au.org.theark.lims.web.component.inventory.panel.tray.TrayDetailPanel;
 
 public class InventoryLinkTree extends LinkTree {
 	/**
@@ -60,10 +60,10 @@ public class InventoryLinkTree extends LinkTree {
 
 	private static final PackageResourceReference	STUDY_ICON			= new PackageResourceReference(InventoryLinkTree.class, "study.gif");
 	private static final PackageResourceReference	SITE_ICON			= new PackageResourceReference(InventoryLinkTree.class, "site.gif");
-	private static final PackageResourceReference	EMPTY_TANK_ICON	= new PackageResourceReference(InventoryLinkTree.class, "empty_tank.gif");
-	private static final PackageResourceReference	GREEN_TANK_ICON	= new PackageResourceReference(InventoryLinkTree.class, "green_tank.gif");
-	private static final PackageResourceReference	YELLOW_TANK_ICON	= new PackageResourceReference(InventoryLinkTree.class, "yellow_tank.gif");
-	private static final PackageResourceReference	FULL_TANK_ICON		= new PackageResourceReference(InventoryLinkTree.class, "full_tank.gif");
+	private static final PackageResourceReference	EMPTY_FREEZER_ICON	= new PackageResourceReference(InventoryLinkTree.class, "empty_tank.gif");
+	private static final PackageResourceReference	GREEN_FREEZER_ICON	= new PackageResourceReference(InventoryLinkTree.class, "green_tank.gif");
+	private static final PackageResourceReference	YELLOW_FREEZER_ICON	= new PackageResourceReference(InventoryLinkTree.class, "yellow_tank.gif");
+	private static final PackageResourceReference	FULL_FREEZER_ICON		= new PackageResourceReference(InventoryLinkTree.class, "full_tank.gif");
 
 	private static final PackageResourceReference	EMPTY_BOX_ICON		= new PackageResourceReference(InventoryLinkTree.class, "empty_box.gif");
 	private static final PackageResourceReference	GREEN_BOX_ICON		= new PackageResourceReference(InventoryLinkTree.class, "green_box.gif");
@@ -172,14 +172,14 @@ public class InventoryLinkTree extends LinkTree {
 				stringBuffer.append(nodeObject.getName()); 
 				stringBuffer.append("\t");
 			}
-			if (inventoryModel.getObject() instanceof InvTank) {
-				InvTank nodeObject = (InvTank) inventoryModel.getObject();
+			if (inventoryModel.getObject() instanceof InvFreezer) {
+				InvFreezer nodeObject = (InvFreezer) inventoryModel.getObject();
 				stringBuffer.append(nodeObject.getName());
 				stringBuffer.append("\t");
 				stringBuffer.append(percentUsed(nodeObject.getAvailable(), nodeObject.getCapacity()));
 			}
-			if (inventoryModel.getObject() instanceof InvTray) {
-				InvTray nodeObject = (InvTray) inventoryModel.getObject();
+			if (inventoryModel.getObject() instanceof InvRack) {
+				InvRack nodeObject = (InvRack) inventoryModel.getObject();
 				stringBuffer.append(nodeObject.getName());
 				stringBuffer.append("\t");
 				stringBuffer.append(percentUsed(nodeObject.getAvailable(), nodeObject.getCapacity()));
@@ -247,24 +247,24 @@ public class InventoryLinkTree extends LinkTree {
 				detailContainer.addOrReplace(detailPanel);
 				detailContainer.setVisible(true);
 			}
-			if (inventoryModel.getObject() instanceof InvTank) {
-				InvTank invTank = (InvTank) inventoryModel.getObject();
+			if (inventoryModel.getObject() instanceof InvFreezer) {
+				InvFreezer invTank = (InvFreezer) inventoryModel.getObject();
 				
-				containerForm.getModelObject().setInvTank(invTank);
+				containerForm.getModelObject().setInvFreezer(invTank);
 				
-				TankDetailPanel detailPanel = new TankDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
+				FreezerDetailPanel detailPanel = new FreezerDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
 				detailPanel.initialisePanel();
 				
 				detailContainer.addOrReplace(detailPanel);
 				detailContainer.setVisible(true);
 			}
-			if (inventoryModel.getObject() instanceof InvTray) {
-				InvTray invTray = (InvTray) inventoryModel.getObject();
+			if (inventoryModel.getObject() instanceof InvRack) {
+				InvRack invTray = (InvRack) inventoryModel.getObject();
 				// Get object from database again, to be sure of persistence
-				invTray = iInventoryService.getInvTray(invTray.getId());
-				containerForm.getModelObject().setInvTray(invTray);
+				invTray = iInventoryService.getInvRack(invTray.getId());
+				containerForm.getModelObject().setInvRack(invTray);
 				
-				TrayDetailPanel detailPanel = new TrayDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
+				RackDetailPanel detailPanel = new RackDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
 				detailPanel.initialisePanel();
 				
 				detailContainer.addOrReplace(detailPanel);
@@ -319,12 +319,12 @@ public class InventoryLinkTree extends LinkTree {
 			if (inventoryModel.getObject() instanceof InvSite) {
 				resourceReference = SITE_ICON;
 			}
-			if (inventoryModel.getObject() instanceof InvTank) {
-				InvTank invTank = (InvTank) inventoryModel.getObject();
+			if (inventoryModel.getObject() instanceof InvFreezer) {
+				InvFreezer invTank = (InvFreezer) inventoryModel.getObject();
 				resourceReference = getTankIcon(invTank.getAvailable(), invTank.getCapacity());
 			}
-			if (inventoryModel.getObject() instanceof InvTray) {
-				InvTray invTray = (InvTray) inventoryModel.getObject();
+			if (inventoryModel.getObject() instanceof InvRack) {
+				InvRack invTray = (InvRack) inventoryModel.getObject();
 				resourceReference = getTankIcon(invTray.getAvailable(), invTray.getCapacity());
 			}
 			if (inventoryModel.getObject() instanceof InvBox) {
@@ -345,16 +345,16 @@ public class InventoryLinkTree extends LinkTree {
 		float result = available / capacity;
 		
 		if (result == 0) {
-			return FULL_TANK_ICON;
+			return FULL_FREEZER_ICON;
 		}
 		else if ((result > 0) && (result < 0.5)) {
-			return YELLOW_TANK_ICON;
+			return YELLOW_FREEZER_ICON;
 		}
 		else if ((result >= 0.5) && (result < 1)) {
-			return GREEN_TANK_ICON;
+			return GREEN_FREEZER_ICON;
 		}
 		else {
-			return EMPTY_TANK_ICON;
+			return EMPTY_FREEZER_ICON;
 		}
 	}
 

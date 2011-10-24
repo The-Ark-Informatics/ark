@@ -11,9 +11,9 @@ import org.apache.wicket.markup.html.tree.BaseTree;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.panel.box.BoxDetailPanel;
+import au.org.theark.lims.web.component.inventory.panel.freezer.FreezerDetailPanel;
+import au.org.theark.lims.web.component.inventory.panel.rack.RackDetailPanel;
 import au.org.theark.lims.web.component.inventory.panel.site.SiteDetailPanel;
-import au.org.theark.lims.web.component.inventory.panel.tank.TankDetailPanel;
-import au.org.theark.lims.web.component.inventory.panel.tray.TrayDetailPanel;
 import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
 
 public class InventoryTreePanel extends AbstractInventoryTreePanel {
@@ -48,8 +48,8 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 
 	private void addComponents() {
 		treeForm.addOrReplace(addSite);
-		treeForm.addOrReplace(addTank);
-		treeForm.addOrReplace(addTray);
+		treeForm.addOrReplace(addFreezer);
+		treeForm.addOrReplace(addRack);
 		treeForm.addOrReplace(addBox);
 
 		addOrReplace(treeForm);
@@ -72,20 +72,20 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 	}
 
 	@Override
-	public void onAddTankSubmit(AjaxRequestTarget target) {
+	public void onAddFreezerSubmit(AjaxRequestTarget target) {
 		resetModel();
 		
-		TankDetailPanel detailPanel = new TankDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null);
+		FreezerDetailPanel detailPanel = new FreezerDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null);
 		detailPanel.initialisePanel();
 		
 		refreshDetailPanel(target, detailPanel);
 	}
 
 	@Override
-	public void onAddTraySubmit(AjaxRequestTarget target) {
+	public void onAddRackSubmit(AjaxRequestTarget target) {
 		resetModel();
 		
-		TrayDetailPanel detailPanel = new TrayDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null);
+		RackDetailPanel detailPanel = new RackDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null);
 		detailPanel.initialisePanel();
 		
 		refreshDetailPanel(target, detailPanel);

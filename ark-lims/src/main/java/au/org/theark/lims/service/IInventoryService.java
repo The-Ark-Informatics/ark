@@ -11,8 +11,8 @@ import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvSite;
-import au.org.theark.core.model.lims.entity.InvTank;
-import au.org.theark.core.model.lims.entity.InvTray;
+import au.org.theark.core.model.lims.entity.InvFreezer;
+import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 
@@ -63,52 +63,52 @@ public interface IInventoryService {
 	public void deleteInvSite(LimsVO modelObject);
 	
 	/**
-	 * Create a Tank based on the supplied LimsVO
+	 * Create a Freezer based on the supplied LimsVO
 	 * 
 	 * @param modelObject
 	 *           the LimsVO object
 	 */
-	public void createInvTank(LimsVO modelObject);
+	public void createInvFreezer(LimsVO modelObject);
 
 	/**
-	 * Update a Tank based on the supplied LimsVO
+	 * Update a Freezer based on the supplied LimsVO
 	 * 
 	 * @param modelObject
 	 *           the LimsVO object
 	 */
-	public void updateInvTank(LimsVO modelObject);
+	public void updateInvFreezer(LimsVO modelObject);
 
 	/**
-	 * Delete a Tank based on the supplied LimsVO
+	 * Delete a Freezer based on the supplied LimsVO
 	 * 
 	 * @param modelObject
 	 *           the LimsVO object
 	 */
-	public void deleteInvTank(LimsVO modelObject);
+	public void deleteInvFreezer(LimsVO modelObject);
 	
 	/**
-	 * Create a Tray based on the supplied LimsVO
+	 * Create a Rack based on the supplied LimsVO
 	 * 
 	 * @param modelObject
 	 *           the LimsVO object
 	 */
-	public void createInvTray(LimsVO modelObject);
+	public void createInvRack(LimsVO modelObject);
 
 	/**
-	 * Update a Tray based on the supplied LimsVO
+	 * Update a Rack based on the supplied LimsVO
 	 * 
 	 * @param modelObject
 	 *           the LimsVO object
 	 */
-	public void updateInvTray(LimsVO modelObject);
+	public void updateInvRack(LimsVO modelObject);
 
 	/**
-	 * Delete a Tray based on the supplied LimsVO
+	 * Delete a Rack based on the supplied LimsVO
 	 * 
 	 * @param modelObject
 	 *           the LimsVO object
 	 */
-	public void deleteInvTray(LimsVO modelObject);
+	public void deleteInvRack(LimsVO modelObject);
 	
 	/**
 	 * Create a Box based on the supplied LimsVO
@@ -168,14 +168,14 @@ public interface IInventoryService {
 	 * @param id
 	 * @return
 	 */
-	public InvTank getInvTank(Long id);
+	public InvFreezer getInvFreezer(Long id);
 	
 	/**
-	 * Get invTray by id
+	 * Get invRack by id
 	 * @param id
 	 * @return
 	 */
-	public InvTray getInvTray(Long id);
+	public InvRack getInvRack(Long id);
 	
 	/**
 	 * Get an InvBox based on the id
@@ -205,20 +205,20 @@ public interface IInventoryService {
 	public InvCell getInvCell(Long id);
 
 	/**
-	 * Search on a particular tank
-	 * @param invTank
+	 * Search on a particular freezer
+	 * @param invFreezer
 	 * @return a List of InvTank(s)
 	 * @throws ArkSystemException
 	 */
-	public List<InvTank> searchInvTank(InvTank invTank) throws ArkSystemException;
+	public List<InvFreezer> searchInvFreezer(InvFreezer invFreezer) throws ArkSystemException;
 	
 	/**
-	 * Search on a particular tray
+	 * Search on a particular Rack
 	 * @param invSite
 	 * @return a List of InvSite(s)
 	 * @throws ArkSystemException
 	 */
-	public List<InvTray> searchInvTray(InvTray invTray) throws ArkSystemException;
+	public List<InvRack> searchInvRack(InvRack invRack) throws ArkSystemException;
 	
 	/**
 	 * Search on a particular box
@@ -238,9 +238,9 @@ public interface IInventoryService {
 	public BiospecimenLocationVO locateBiospecimen(Biospecimen biospecimen) throws ArkSystemException;
 	
 	/**
-	 * Returns the current path (ie synced to database) to the node in question (box,tray,tank, or site)
+	 * Returns the current path (ie synced to database) to the node in question (box,Rack,tank, or site)
 	 * @param node
-	 * @return List of objects (nodes) in the path order (site : tank : tray : box)
+	 * @return List of objects (nodes) in the path order (site : freezer : rack : box)
 	 */
 	public List<Object> getInventoryPathOfNode(Object node);
 }

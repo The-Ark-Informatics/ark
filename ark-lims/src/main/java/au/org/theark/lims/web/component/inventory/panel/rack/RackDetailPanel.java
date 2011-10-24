@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.lims.web.component.inventory.panel.tank;
+package au.org.theark.lims.web.component.inventory.panel.rack;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -26,18 +26,18 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
-import au.org.theark.lims.web.component.inventory.form.TankDetailForm;
+import au.org.theark.lims.web.component.inventory.form.RackDetailForm;
 
 @SuppressWarnings("serial")
-public class TankDetailPanel extends Panel {
+public class RackDetailPanel extends Panel {
 	private FeedbackPanel				feedbackPanel;
 	private WebMarkupContainer			detailContainer;
-	private TankDetailForm				detailForm;
+	private RackDetailForm				detailForm;
 	private ContainerForm				containerForm;
 	private BaseTree						tree;
 	private DefaultMutableTreeNode	node;
 
-	public TankDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+	public RackDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.feedbackPanel = feedbackPanel;
@@ -48,16 +48,16 @@ public class TankDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new TankDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
+		detailForm = new RackDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
 		detailForm.initialiseDetailForm();
 		add(detailForm);
 	}
 
-	public TankDetailForm getDetailForm() {
+	public RackDetailForm getDetailForm() {
 		return detailForm;
 	}
 
-	public void setDetailForm(TankDetailForm detailForm) {
+	public void setDetailForm(RackDetailForm detailForm) {
 		this.detailForm = detailForm;
 	}
 }

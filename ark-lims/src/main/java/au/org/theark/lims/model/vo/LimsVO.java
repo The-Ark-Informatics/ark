@@ -26,9 +26,9 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
+import au.org.theark.core.model.lims.entity.InvFreezer;
+import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
-import au.org.theark.core.model.lims.entity.InvTank;
-import au.org.theark.core.model.lims.entity.InvTray;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 
@@ -43,8 +43,8 @@ public class LimsVO implements Serializable {
 	protected Biospecimen							biospecimen;
 	protected BioTransaction						bioTransaction;
 	protected InvSite									invSite;
-	protected InvTank									invTank;
-	protected InvTray									invTray;
+	protected InvFreezer								invFreezer;
+	protected InvRack									invRack;
 	protected InvBox									invBox;
 	/* A light weight VO that will represent a read only view of the location details of a Biospecimen */
 	protected BiospecimenLocationVO				biospecimenLocationVO;
@@ -73,8 +73,8 @@ public class LimsVO implements Serializable {
 		this.biospecimen = new Biospecimen();
 		this.bioTransaction = new BioTransaction();
 		this.invSite = new InvSite();
-		this.invTank = new InvTank();
-		this.invTray = new InvTray();
+		this.invFreezer = new InvFreezer();
+		this.invRack = new InvRack();
 		this.invBox = new InvBox();
 		this.bioCollectionList = new ArrayList<BioCollection>(0);
 		this.biospecimenList = new ArrayList<Biospecimen>(0);
@@ -171,29 +171,29 @@ public class LimsVO implements Serializable {
 	/**
 	 * @return the invTank
 	 */
-	public InvTank getInvTank() {
-		return invTank;
+	public InvFreezer getInvFreezer() {
+		return invFreezer;
 	}
 
 	/**
-	 * @param invTank the invTank to set
+	 * @param invFreezer the invFreezer to set
 	 */
-	public void setInvTank(InvTank invTank) {
-		this.invTank = invTank;
+	public void setInvFreezer(InvFreezer invFreezer) {
+		this.invFreezer = invFreezer;
 	}
 
 	/**
 	 * @return the invTray
 	 */
-	public InvTray getInvTray() {
-		return invTray;
+	public InvRack getInvRack() {
+		return invRack;
 	}
 
 	/**
-	 * @param invTray the invTray to set
+	 * @param invRack the invRack to set
 	 */
-	public void setInvTray(InvTray invTray) {
-		this.invTray = invTray;
+	public void setInvRack(InvRack invRack) {
+		this.invRack = invRack;
 	}
 
 	/**
