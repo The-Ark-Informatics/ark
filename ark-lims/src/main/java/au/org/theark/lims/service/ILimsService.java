@@ -39,6 +39,7 @@ import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.lims.model.vo.LimsVO;
 
 public interface ILimsService {
@@ -325,4 +326,6 @@ public interface ILimsService {
 	public List<BiospecimenStatus> getBiospecimenStatusList();
 
 	public List<BiospecimenQuality> getBiospecimenQualityList();
+	
+	public String getNextGeneratedBiospecimenUID(Study study);
 }

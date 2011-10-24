@@ -21,10 +21,16 @@ package au.org.theark.lims.model.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.StatelessSession;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
@@ -38,16 +44,29 @@ import au.org.theark.core.model.lims.entity.BiospecimenGrade;
 import au.org.theark.core.model.lims.entity.BiospecimenQuality;
 import au.org.theark.core.model.lims.entity.BiospecimenStatus;
 import au.org.theark.core.model.lims.entity.BiospecimenStorage;
+import au.org.theark.core.model.lims.entity.BiospecimenUidSequence;
+import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.lims.util.UniqueIdGenerator;
+import au.org.theark.lims.web.Constants;
 
 @SuppressWarnings("unchecked")
 @Repository("biospecimenDao")
 public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenDao {
+	private static Logger		log	= LoggerFactory.getLogger(BiospecimenDao.class);
+	
+	private BiospecimenUidGenerator		biospecimenUidGenerator;
+
+	@Autowired
+	public void setArkUidGenerator(BiospecimenUidGenerator biospecimenUidGenerator) {
+		this.biospecimenUidGenerator = biospecimenUidGenerator;
+	}
+	
 	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException {
 		Biospecimen biospecimen = null;
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);
@@ -93,6 +112,11 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	}
 
 	public void createBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen) {
+		String biospecimenUid = getNextGeneratedBiospecimenUID(biospecimen.getStudy());
+		if(biospecimenUid.isEmpty()) {
+			biospecimenUid = UniqueIdGenerator.generateUniqueId();
+		}
+		biospecimen.setBiospecimenUid(biospecimenUid);
 		getSession().save(biospecimen);
 	}
 
@@ -359,5 +383,113 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		Criteria criteria = getSession().createCriteria(BiospecimenStorage.class);
 		List<BiospecimenStorage> list = criteria.list();
 		return list;
+	}
+	
+	public BiospecimenUidTemplate getBiospecimenUidTemplate(Study study) {
+		BiospecimenUidTemplate biospecimenUidTemplate = null;
+		Criteria criteria = getSession().createCriteria(BiospecimenUidTemplate.class);
+		criteria.add(Restrictions.eq("study", study));
+		List<BiospecimenUidTemplate> list = criteria.list();
+		if(!list.isEmpty()) {
+			biospecimenUidTemplate = list.get(0);
+		}
+		return biospecimenUidTemplate;
+	}
+	
+	public String getNextGeneratedBiospecimenUID(Study study) {
+		BiospecimenUidTemplate biospecimenUidTemplate = getBiospecimenUidTemplate(study);
+		String biospecimenUidPrefix = new String("");
+		String biospecimenUidToken = new String("");
+		String biospecimenUidPaddedIncrementor = new String("");
+		String biospecimenUidPadChar = new String("0");
+		StringBuilder nextIncrementedBiospecimenUid = new StringBuilder("");
+		StringBuilder biospecimenUid = new StringBuilder("");
+
+		if (biospecimenUidTemplate != null) {
+			if (biospecimenUidTemplate.getBiospecimenUidPrefix() != null)
+				biospecimenUidPrefix = biospecimenUidTemplate.getBiospecimenUidPrefix();
+
+			if (biospecimenUidTemplate.getBiospecimenUidToken() != null && biospecimenUidTemplate.getBiospecimenUidToken().getName() != null) {
+				biospecimenUidToken = biospecimenUidTemplate.getBiospecimenUidToken().getName();
+			}
+
+			if (biospecimenUidTemplate.getBiospecimenUidPadChar() != null && biospecimenUidTemplate.getBiospecimenUidPadChar().getName() != null) {
+				biospecimenUidPadChar = biospecimenUidTemplate.getBiospecimenUidPadChar().getName().trim();
+			}
+
+			int incrementedValue = getNextUidSequence(study).intValue() - 1;
+			nextIncrementedBiospecimenUid = nextIncrementedBiospecimenUid.append(incrementedValue);
+
+			int size = Integer.parseInt(biospecimenUidPadChar);
+			biospecimenUidPaddedIncrementor = StringUtils.leftPad(nextIncrementedBiospecimenUid.toString(), size, "0");
+			biospecimenUid.append(biospecimenUidPrefix);
+			biospecimenUid.append(biospecimenUidToken);
+			biospecimenUid.append(biospecimenUidPaddedIncrementor);
+		}
+		else {
+			biospecimenUid = null;
+		}
+		return biospecimenUid.toString();
+	}
+
+	public Integer getNextUidSequence(Study study) {
+
+		Integer result;
+		if (study == null) {
+			log.error("Error in Biospecimen insertion - Study was null");
+		}
+		if (study.getName() == null) {
+			log.error("Error in Biospecimen insertion - Study name was null");
+		}
+
+		result = (Integer) biospecimenUidGenerator.getId(study.getName());
+		return result;
+	}
+
+	protected boolean getBiospecimenUidSequenceLock(Study study) {
+		boolean lock;
+		BiospecimenUidSequence biospecimenUidSeq = getBiospecimenUidSequence(study);
+		if (biospecimenUidSeq == null) {
+			lock = false; // not locked if record doesn't exist
+		}
+		else {
+			lock = biospecimenUidSeq.getInsertLock();
+		}
+		return lock;
+	}
+
+	protected BiospecimenUidSequence getBiospecimenUidSequence(Study study) {
+		// Stateless sessions should be used to avoid locking the record for future update
+		// by getSession(), which relies on the "open session filter" mechanism
+		StatelessSession session = getStatelessSession();
+		Criteria criteria = session.createCriteria(BiospecimenUidSequence.class);
+		criteria.add(Restrictions.eq(Constants.SUBJECTUIDSEQ_STUDYNAMEID, study.getName()));
+		criteria.setMaxResults(1);
+		BiospecimenUidSequence result = (BiospecimenUidSequence) criteria.uniqueResult();
+		session.close();
+		return result;
+	}
+
+	protected void setSubjectUidSequenceLock(Study study, boolean lock) {
+		// Stateless sessions should be used to avoid locking the record for future update
+		// by getSession(), which relies on the "open session filter" mechanism
+		StatelessSession session = getStatelessSession();
+		Transaction tx = session.getTransaction();
+		tx.begin();
+		BiospecimenUidSequence biospecimenUidSeq = getBiospecimenUidSequence(study);
+		if (biospecimenUidSeq == null) {
+			// create a new record if it doens't exist
+			biospecimenUidSeq = new BiospecimenUidSequence();
+			biospecimenUidSeq.setStudyNameId(study.getName());
+			biospecimenUidSeq.setUidSequence(new Integer(0));
+			biospecimenUidSeq.setInsertLock(lock);
+			session.insert(biospecimenUidSeq);
+		}
+		else {
+			biospecimenUidSeq.setInsertLock(lock);
+			session.update(biospecimenUidSeq);
+		}
+		tx.commit();
+		session.close();
 	}
 }

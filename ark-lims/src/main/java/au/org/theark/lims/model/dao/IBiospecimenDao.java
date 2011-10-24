@@ -31,6 +31,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenStatus;
 import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.lims.model.vo.LimsVO;
 
 public interface IBiospecimenDao {
@@ -145,4 +146,6 @@ public interface IBiospecimenDao {
 	public List<BiospecimenStatus> getBiospecimenStatusList();
 
 	public List<BiospecimenQuality> getBiospecimenQualityList();
+	
+	public String getNextGeneratedBiospecimenUID(Study study);
 }
