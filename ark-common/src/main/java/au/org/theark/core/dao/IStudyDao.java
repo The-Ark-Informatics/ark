@@ -49,6 +49,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
@@ -467,5 +468,24 @@ public interface IStudyDao {
 	 * @return
 	 */
 	public Collection<DelimiterType> getDelimiterTypes();
+
+	/**
+	 * Retrieves a list of StudyUpload for the given criteria
+	 * @param uploadCriteria
+	 * @return
+	 */
+	public List<StudyUpload> searchUploads(StudyUpload uploadCriteria);
+
+	/**
+	 * Create a new StudyUpload 
+	 * @param studyUpload
+	 */
+	public void createUpload(StudyUpload studyUpload);
+
+	/**
+	 * Update a new StudyUpload 
+	 * @param studyUpload
+	 */
+	public void updateUpload(StudyUpload studyUpload);
 	
 }

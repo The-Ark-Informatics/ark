@@ -75,6 +75,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
@@ -885,6 +886,51 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(DelimiterType.class);
 		java.util.Collection<DelimiterType> delimiterTypeCollection = criteria.list();
 		return delimiterTypeCollection;
+	}
+
+	public List<StudyUpload> searchUploads(StudyUpload uploadCriteria) {
+		Criteria criteria = getSession().createCriteria(StudyUpload.class);
+		// Must be constrained on the arkFunction
+		criteria.add(Restrictions.eq("arkFunction", uploadCriteria.getArkFunction()));
+		
+		if (uploadCriteria.getId() != null) {
+			criteria.add(Restrictions.eq("id", uploadCriteria.getId()));
+		}
+
+		if (uploadCriteria.getStudy() != null) {
+			criteria.add(Restrictions.eq("study", uploadCriteria.getStudy()));
+		}
+
+		if (uploadCriteria.getFileFormat() != null) {
+			criteria.add(Restrictions.ilike("fileFormat", uploadCriteria.getFileFormat()));
+		}
+
+		if (uploadCriteria.getDelimiterType() != null) {
+			criteria.add(Restrictions.ilike("delimiterType", uploadCriteria.getDelimiterType()));
+		}
+
+		if (uploadCriteria.getFilename() != null) {
+			criteria.add(Restrictions.ilike("filename", uploadCriteria.getFilename()));
+		}
+
+		criteria.addOrder(Order.desc("id"));
+		List<StudyUpload> resultsList = criteria.list();
+
+		return resultsList;
+	}
+
+	public void createUpload(StudyUpload studyUpload) {
+		Subject currentUser = SecurityUtils.getSubject();
+		String userId = (String) currentUser.getPrincipal();
+		studyUpload.setUserId(userId);
+		getSession().save(studyUpload);
+	}
+
+	public void updateUpload(StudyUpload studyUpload) {
+		Subject currentUser = SecurityUtils.getSubject();
+		String userId = (String) currentUser.getPrincipal();
+		studyUpload.setUserId(userId);
+		getSession().update(studyUpload);
 	}
 	
 }

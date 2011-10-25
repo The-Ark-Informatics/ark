@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.security.PermissionConstants;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
@@ -65,6 +66,9 @@ public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService		studyService;
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService					iArkCommonService;
 
 	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
 
@@ -166,7 +170,7 @@ public class SearchResultListPanel extends Panel {
 				item.add(buildDownloadReportButton(upload));
 
 				// Delete the upload file
-				item.add(buildDeleteButton(upload));
+//				item.add(buildDeleteButton(upload));
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
@@ -307,48 +311,53 @@ public class SearchResultListPanel extends Panel {
 
 		return ajaxButton;
 	}
-
-	private AjaxDeleteButton buildDeleteButton(final StudyUpload upload) {
-		DeleteButton ajaxButton = new DeleteButton(upload, SearchResultListPanel.this) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// Attempt to delete upload
-				if (upload.getId() != null)
-					studyService.deleteUpload(upload);
-
-				containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
-
-				// Update the result panel and contianerForm (for feedBack message)
-				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-				target.add(containerForm);
-			}
-
-			@Override
-			public boolean isVisible() {
-				SecurityManager securityManager = ThreadContext.getSecurityManager();
-				Subject currentUser = SecurityUtils.getSubject();
-				boolean flag = false;
-				if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE)) {
-					return flag = true;
-				}
-
-				return flag;
-			}
-
-			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not process delete request");
-			}
-
-		};
-
-		ajaxButton.setDefaultFormProcessing(false);
-
-		return ajaxButton;
-	}
+	
+/* TODO: DELETE of uploaded file is not supported till we can verify whether all subjects 
+	within the upload have also been deleted. At present, there is no linking table clearly 
+	indicating which subjects came from which upload (i.e. will need to be looked at 1st). 
+*/
+//	private AjaxDeleteButton buildDeleteButton(final StudyUpload upload) {
+//		DeleteButton ajaxButton = new DeleteButton(upload, SearchResultListPanel.this) {
+//			/**
+//			 * 
+//			 */
+//			private static final long	serialVersionUID	= 1L;
+//
+//			@Override
+//			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+//				// Attempt to delete upload
+//				if (upload.getId() != null) {
+//					iArkCommonService.deleteUpload(upload);
+//				}
+//				
+//				containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
+//
+//				// Update the result panel and contianerForm (for feedBack message)
+//				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+//				target.add(containerForm);
+//			}
+//
+//			@Override
+//			public boolean isVisible() {
+//				SecurityManager securityManager = ThreadContext.getSecurityManager();
+//				Subject currentUser = SecurityUtils.getSubject();
+//				boolean flag = false;
+//				if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE)) {
+//					return flag = true;
+//				}
+//
+//				return flag;
+//			}
+//
+//			@Override
+//			protected void onError(AjaxRequestTarget target, Form<?> form) {
+//				this.error("Unexpected Error: Could not process delete request");
+//			}
+//
+//		};
+//
+//		ajaxButton.setDefaultFormProcessing(false);
+//
+//		return ajaxButton;
+//	}
 }

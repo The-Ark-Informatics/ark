@@ -50,7 +50,6 @@ import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
-import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.vo.ConsentVO;
@@ -228,14 +227,6 @@ public interface IStudyService {
 	public List<SubjectFile> searchSubjectFile(SubjectFile subjectFile) throws EntityNotFoundException, ArkSystemException;
 
 	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved, UnAuthorizedOperation;
-
-	public Collection<StudyUpload> searchUpload(StudyUpload searchUpload);
-
-	public void createUpload(StudyUpload studyUpload);
-
-	public void updateUpload(StudyUpload studyUpload);
-
-	public void deleteUpload(StudyUpload studyUpload);
 
 	public SubjectUploadValidator validateSubjectFileFormat(File file, String fileFormat, char delimChar);
 

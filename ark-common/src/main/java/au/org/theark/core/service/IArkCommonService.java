@@ -49,6 +49,7 @@ import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -64,6 +65,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
@@ -541,6 +543,17 @@ public interface IArkCommonService<T> {
 	public DelimiterType getDelimiterType(Long id);
 
 	public Collection<DelimiterType> getDelimiterTypes();
+
+	public List<StudyUpload> searchUploads(StudyUpload uploadCriteria);
+
+	public CustomField getCustomFieldByNameStudyArkFunction(String string, Study study, ArkFunction arkFunction);
+
+	public UnitType getUnitTypeByNameAndArkFunction(String string, ArkFunction arkFunction);
+
+	public void createUpload(StudyUpload studyUpload);
+
+	public void updateUpload(StudyUpload studyUpload);
 	
+//	public void createCustomFieldUpload(CustomFieldUpload customFieldUpload);
 	
 }

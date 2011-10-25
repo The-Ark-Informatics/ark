@@ -93,6 +93,9 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	}
 
 	public void initialiseDetailForm() {
+		// Do not allow delete for upload - see TODO in onDeleteConfirmed(..)
+		deleteButton.setVisible(false);
+		
 		// Set up field on form here
 		uploadIdTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_ID);
 		// uploadFilenameTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILENAME);
@@ -169,7 +172,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 
 			// Save
 			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
-			studyService.createUpload(containerForm.getModelObject().getUpload());
+			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 
 			this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was created successfully");
 			processErrors(target);
@@ -177,7 +180,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		else {
 			// Update
 			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
-			studyService.updateUpload(containerForm.getModelObject().getUpload());
+			iArkCommonService.updateUpload(containerForm.getModelObject().getUpload());
 			this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was updated successfully");
 			processErrors(target);
 		}
@@ -224,22 +227,26 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	 * 
 	 */
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-		setMultiPart(true); // multipart required for file uploads
-
-		// TODO:(CE) To handle Business and System Exceptions here
-		studyService.deleteUpload(containerForm.getModelObject().getUpload());
-		this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was deleted successfully");
-
-		// Display delete confirmation message
-		target.add(feedBackPanel);
-		// TODO Implement Exceptions in PhentoypicService
-		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
-		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
-		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-		// Move focus back to Search form
-		UploadVO uploadVo = new UploadVO();
-		setModelObject(uploadVo);
-		onCancel(target);
+	/* TODO: DELETE of uploaded file is not supported till we can verify whether all subjects 
+		within the upload have also been deleted. At present, there is no linking table clearly 
+		indicating which subjects came from which upload (i.e. will need to be looked at 1st). 
+	*/
+//		setMultiPart(true); // multipart required for file uploads
+//
+//		// TODO:(CE) To handle Business and System Exceptions here
+//		iArkCommonService.deleteUpload(containerForm.getModelObject().getUpload());
+//		this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was deleted successfully");
+//
+//		// Display delete confirmation message
+//		target.add(feedBackPanel);
+//		// TODO Implement Exceptions in PhentoypicService
+//		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
+//		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
+//		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
+//		// Move focus back to Search form
+//		UploadVO uploadVo = new UploadVO();
+//		setModelObject(uploadVo);
+//		onCancel(target);
 	}
 
 	/*
