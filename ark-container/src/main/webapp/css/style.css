@@ -64,6 +64,7 @@ float: left;
 width: 20%;
 }
 #contentZoneCenter {
+margin: auto;
 width: 80%;
 }
 #contentZoneRight {
