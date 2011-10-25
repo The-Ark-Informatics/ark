@@ -61,7 +61,8 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO>{
 				try {
 					
 					onSave(target);		
-					
+					this.info("Successfully updated Custom Field Display Details. ");
+					target.add(feedbackPanel);
 				} catch (ArkSystemException e) {
 					this.error("Could not update Custom Field Display");
 					e.printStackTrace();
