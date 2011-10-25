@@ -277,6 +277,9 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	}
 
 	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException{
+		if(!customFieldDisplay.getRequired()){
+			customFieldDisplay.setRequiredMessage(null);
+		}
 		getSession().update(customFieldDisplay);
 	}
 
