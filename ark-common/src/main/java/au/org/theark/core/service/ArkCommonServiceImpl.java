@@ -33,6 +33,9 @@ import javax.naming.ldap.Rdn;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +62,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -92,6 +96,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
@@ -657,8 +662,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 		boolean isUnique = customFieldDao.isCustomFieldUnqiue(customFieldVO.getCustomField().getName(), customFieldVO.getCustomField().getStudy(), customFieldVO.getCustomField());
 		if (!isUnique) {
-			log.error("Custom Field Already Exists.: ");
-			throw new ArkUniqueException("A Custom Field already exits.");
+			log.error("Custom Field of this name Already Exists.: ");
+			throw new ArkUniqueException("A Custom Field of this name already exists.");
 		}
 		try {
 
@@ -878,5 +883,39 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public Collection<DelimiterType> getDelimiterTypes() {
 		return studyDao.getDelimiterTypes();
 	}
+
+	public CustomField getCustomFieldByNameStudyArkFunction(String customFieldName, Study study, ArkFunction arkFunction) {
+		return customFieldDao.getCustomFieldByNameStudyArkFunction(customFieldName, study, arkFunction);
+	}
+
+	public UnitType getUnitTypeByNameAndArkFunction(String name, ArkFunction arkFunction) {
+		return customFieldDao.getUnitTypeByNameAndArkFunction(name, arkFunction);
+	}
+
+	public List<StudyUpload> searchUploads(StudyUpload uploadCriteria) {
+		return studyDao.searchUploads(uploadCriteria);
+	}
 	
+	public void createUpload(StudyUpload studyUpload) {
+		studyDao.createUpload(studyUpload);
+	
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created studyUpload " + studyUpload.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
+		ah.setEntityId(studyUpload.getId());
+		this.createAuditHistory(ah);
+	}
+
+	public void updateUpload(StudyUpload studyUpload) {
+		studyDao.updateUpload(studyUpload);
+	
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated studyUpload " + studyUpload.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
+		ah.setEntityId(studyUpload.getId());
+		this.createAuditHistory(ah);
+	}
+
 }

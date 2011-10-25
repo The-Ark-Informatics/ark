@@ -50,7 +50,6 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -280,14 +279,6 @@ public interface IStudyDao {
 	public List<CorrespondenceDirectionType> getCorrespondenceDirectionTypes();
 
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes();
-
-	public Collection<StudyUpload> searchUpload(StudyUpload searchUpload);
-
-	public void createUpload(StudyUpload studyUpload);
-
-	public void deleteUpload(StudyUpload studyUpload);
-
-	public void updateUpload(StudyUpload studyUpload);
 
 	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
 

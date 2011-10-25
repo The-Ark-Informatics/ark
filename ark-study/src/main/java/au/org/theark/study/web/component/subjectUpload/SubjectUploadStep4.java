@@ -122,6 +122,6 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 	private void save() {
 		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
 		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
-		iStudyService.createUpload(containerForm.getModelObject().getUpload());
+		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 	}
 }

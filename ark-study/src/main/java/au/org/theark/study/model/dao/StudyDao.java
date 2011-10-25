@@ -81,7 +81,6 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -1416,55 +1415,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		@SuppressWarnings("unchecked")
 		List<SubjectFile> list = criteria.list();
 		return list;
-	}
-
-	public Collection<StudyUpload> searchUpload(StudyUpload searchUpload) {
-		Criteria criteria = getSession().createCriteria(StudyUpload.class);
-
-		if (searchUpload.getId() != null) {
-			criteria.add(Restrictions.eq(au.org.theark.study.web.Constants.UPLOAD_ID, searchUpload.getId()));
-		}
-
-		if (searchUpload.getStudy() != null) {
-			criteria.add(Restrictions.eq(au.org.theark.study.web.Constants.UPLOAD_STUDY, searchUpload.getStudy()));
-		}
-
-		if (searchUpload.getFileFormat() != null) {
-			criteria.add(Restrictions.ilike(au.org.theark.study.web.Constants.UPLOAD_FILE_FORMAT, searchUpload.getFileFormat()));
-		}
-
-		if (searchUpload.getDelimiterType() != null) {
-			criteria.add(Restrictions.ilike(au.org.theark.study.web.Constants.UPLOAD_DELIMITER_TYPE, searchUpload.getDelimiterType()));
-		}
-
-		if (searchUpload.getFilename() != null) {
-			criteria.add(Restrictions.ilike(au.org.theark.study.web.Constants.UPLOAD_FILENAME, searchUpload.getFilename()));
-		}
-		
-		criteria.add(Restrictions.eq("arkFunction",searchUpload.getArkFunction()));
-
-		criteria.addOrder(Order.desc(au.org.theark.study.web.Constants.UPLOAD_ID));
-		java.util.Collection<StudyUpload> uploadCollection = criteria.list();
-
-		return uploadCollection;
-	}
-
-	public void createUpload(StudyUpload studyUpload) {
-		Subject currentUser = SecurityUtils.getSubject();
-		String userId = (String) currentUser.getPrincipal();
-		studyUpload.setUserId(userId);
-		getSession().save(studyUpload);
-	}
-
-	public void deleteUpload(StudyUpload studyUpload) {
-		getSession().delete(studyUpload);
-	}
-
-	public void updateUpload(StudyUpload studyUpload) {
-		Subject currentUser = SecurityUtils.getSubject();
-		String userId = (String) currentUser.getPrincipal();
-		studyUpload.setUserId(userId);
-		getSession().update(studyUpload);
 	}
 
 	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException {

@@ -67,7 +67,6 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.service.IArkCommonService;
@@ -632,43 +631,6 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_COMPONENT);
 		ah.setStudyStatus(studyComp.getStudy().getStudyStatus());
 		ah.setEntityId(studyComp.getId());
-		arkCommonService.createAuditHistory(ah);
-	}
-
-	public Collection<StudyUpload> searchUpload(StudyUpload searchUpload) {
-		return studyDao.searchUpload(searchUpload);
-	}
-
-	public void createUpload(StudyUpload studyUpload) {
-		studyDao.createUpload(studyUpload);
-
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created studyUpload " + studyUpload.getId());
-		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
-		ah.setEntityId(studyUpload.getId());
-		arkCommonService.createAuditHistory(ah);
-	}
-
-	public void deleteUpload(StudyUpload studyUpload) {
-		studyDao.deleteUpload(studyUpload);
-
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted studyUpload " + studyUpload.getId());
-		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
-		ah.setEntityId(studyUpload.getId());
-		arkCommonService.createAuditHistory(ah);
-	}
-
-	public void updateUpload(StudyUpload studyUpload) {
-		studyDao.updateUpload(studyUpload);
-
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated studyUpload " + studyUpload.getId());
-		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
-		ah.setEntityId(studyUpload.getId());
 		arkCommonService.createAuditHistory(ah);
 	}
 

@@ -122,6 +122,14 @@ public interface ICustomFieldDao {
 	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria);
 
 	/**
+	 * Get a UnitType based on name and arkFunction
+	 * @param name
+	 * @param arkFunction
+	 * @return
+	 */
+	public UnitType getUnitTypeByNameAndArkFunction(String name, ArkFunction arkFunction);
+	
+	/**
 	 * Determine if the CustomField is unique, based on the name, study and CustomField to update
 	 * @param customFieldName
 	 * @param study
@@ -131,7 +139,7 @@ public interface ICustomFieldDao {
 	public boolean isCustomFieldUnqiue(String customFieldName, Study study, CustomField customFieldToUpdate);
 
 	/**
-	 * Search a on CustomField based on the criteria provided, limiting to the pageable amounts first and count
+	 * Search for CustomFields based on the criteria provided, limiting to the pageable amounts first and count
 	 * @param customFieldCriteria
 	 * @param first
 	 * @param count
@@ -152,5 +160,14 @@ public interface ICustomFieldDao {
 	 * @throws ArkSystemException
 	 */
 	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
+
+	/**
+	 * Get a CustomField based on name, study and arkFunction
+	 * @param customFieldName
+	 * @param study
+	 * @param arkFunction
+	 * @return
+	 */
+	public CustomField getCustomFieldByNameStudyArkFunction(String customFieldName, Study study, ArkFunction arkFunction);
 
 }

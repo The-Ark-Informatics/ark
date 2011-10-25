@@ -94,7 +94,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 					StudyUpload studyUpload = new StudyUpload();
 					studyUpload.setStudy(iArkCommonService.getStudy(sessionStudyId));
 					studyUpload.setArkFunction(arkFunction);
-					studyUploads = studyService.searchUpload(studyUpload);
+					studyUploads = iArkCommonService.searchUploads(studyUpload);
 
 				}
 				listView.removeAll();

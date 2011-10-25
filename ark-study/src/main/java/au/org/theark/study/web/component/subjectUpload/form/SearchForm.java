@@ -114,7 +114,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		StudyUpload searchUpload = getModelObject().getUpload();
 		searchUpload.setStudy(study);
 
-		java.util.Collection<StudyUpload> uploadCollection = studyService.searchUpload(searchUpload);
+		java.util.Collection<StudyUpload> uploadCollection = iArkCommonService.searchUploads(searchUpload);
 
 		if (uploadCollection != null && uploadCollection.size() == 0) {
 			this.info("Uploads with the specified criteria does not exist in the system.");

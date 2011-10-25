@@ -283,4 +283,22 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		getSession().update(customFieldDisplay);
 	}
 
+	public CustomField getCustomFieldByNameStudyArkFunction(String customFieldName, Study study, ArkFunction arkFunction) {
+		Criteria criteria = getSession().createCriteria(CustomField.class);
+		criteria.add(Restrictions.eq("name", customFieldName));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		CustomField result = (CustomField) criteria.uniqueResult();
+		return result;
+	}
+
+	public UnitType getUnitTypeByNameAndArkFunction(String name, ArkFunction arkFunction) {
+		Criteria criteria = getSession().createCriteria(UnitType.class);
+		// UnitType name should be sufficient to return only 1 row (i.e. uniqueness at the global and arkFunction-specific levels)
+		criteria.add(Restrictions.eq("name", name));
+		criteria.add(Restrictions.or(Restrictions.isNull("arkFunction"), Restrictions.eq("arkFunction", arkFunction)));
+		criteria.uniqueResult();
+		return null;
+	}
+
 }
