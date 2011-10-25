@@ -16,7 +16,7 @@ public class CustomFieldDisplayModalPanel extends Panel{
 
 	private ModalWindow	modalWindow;
 	private CompoundPropertyModel<CustomFieldGroupVO> cpmModel;
-	private FeedbackPanel feedbackPanel;
+	private FeedbackPanel detailFeedbackPanel;;
 	/**
 	 * @param id
 	 */
@@ -24,15 +24,21 @@ public class CustomFieldDisplayModalPanel extends Panel{
 		super(id);
 		this.modalWindow = modalWindow;
 		this.cpmModel = cpmModel;
-		this.feedbackPanel = feedbackPanel;
+		initialiseFeedBackPanel();
 		initialisePanel();
-		
+	}
+	
+	protected void initialiseFeedBackPanel() {
+		/* Feedback Panel */
+		detailFeedbackPanel = new FeedbackPanel("detailFeedback");
+		detailFeedbackPanel.setOutputMarkupId(true);
 	}
 	
 	public void initialisePanel(){
 		
-		CustomFieldDisplayForm cfdForm = new CustomFieldDisplayForm("customFieldDisplayForm",cpmModel,modalWindow,feedbackPanel);
+		CustomFieldDisplayForm cfdForm = new CustomFieldDisplayForm("customFieldDisplayForm",cpmModel,modalWindow,detailFeedbackPanel);
 		add(cfdForm);
+		add(detailFeedbackPanel);
 	}
 
 }
