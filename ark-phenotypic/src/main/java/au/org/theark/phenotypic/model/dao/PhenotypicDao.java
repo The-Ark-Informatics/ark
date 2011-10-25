@@ -1571,7 +1571,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Collection<CustomField> nonProxyCustomFieldList = new ArrayList<CustomField>();
 		
 		/**
-		 * Since Hibernate returns proxy objects for LazyInitialisation when the equals() is invoked the class comparison will fail. Therefore we have to get the underlying object to represent the existing list.
+		 * Note:
+		 * getCustomFieldsLinkedToCustomFieldGroup() returns a projected List representing CustomField from CustomFieldDisplay. Since CustomField was a lazily loaded object, it is represented as a proxy object.
+		 * For us to do a comparison using contains the equals() will fail when the class is compared. To be able to do that we convert to an underlying object before we do the final comparison.
+		 * Since Hibernate returns proxy objects for LazyInitialisation when the equals() is invoked the class comparison will fail. 
 		 */
 		for (Object obj : existingCustomFieldList) {
 			if(obj instanceof HibernateProxy){
@@ -1600,18 +1603,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	private Collection<CustomFieldDisplay> getCustomFieldDisplayToRemove(Collection<CustomField> selectedCustomFields, CustomFieldGroup customFieldGroup){
 		
 		Collection<CustomFieldDisplay> customFieldDisplayList = getCustomFieldDisplayForCustomFieldGroup(customFieldGroup);
-		Collection<CustomFieldDisplay> nonProxyCustomFieldList = new ArrayList<CustomFieldDisplay>();
-		for (Object obj : customFieldDisplayList) {
-			if(obj instanceof HibernateProxy){
-				if(((HibernateProxy)obj).getHibernateLazyInitializer().isUninitialized()){
-					CustomFieldDisplay  cfd = (CustomFieldDisplay)((HibernateProxy)obj).getHibernateLazyInitializer().getImplementation();
-					nonProxyCustomFieldList.add(cfd);
-				}
-			}
-		}
-		
 		Collection<CustomFieldDisplay> customFieldDisplayToRemove = new ArrayList<CustomFieldDisplay>();
-		for (CustomFieldDisplay existingCustomFieldDisplay : nonProxyCustomFieldList) {
+		for (CustomFieldDisplay existingCustomFieldDisplay : customFieldDisplayList) {
 			//Only the fields that does not have data or in not in use must be processed
 			if(!selectedCustomFields.contains(existingCustomFieldDisplay.getCustomField())){
 				customFieldDisplayToRemove.add(existingCustomFieldDisplay);	
