@@ -1,12 +1,14 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup.form;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -14,12 +16,15 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldGroupVO;
+import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldDisplayListPanel;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupDetailPanel;
 
 /**
@@ -30,11 +35,14 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
+
+	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService	iPhenotypicService;
 	
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private TextField<String> groupNameTxtFld;
 	private CheckBox publishedStatusCb;	
-	
+	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdArkDataProvider;
 	
 	/**
 	 * @param id
@@ -73,7 +81,23 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 		newModel.getObject().getCustomFieldGroup().setName(getModelObject().getCustomFieldGroup().getName());
 		newModel.getObject().getCustomFieldGroup().setDescription(getModelObject().getCustomFieldGroup().getDescription());
 		newModel.getObject().setAvailableCustomFields(availableListOfFields);
-		CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO,newModel,null,false);
+		
+		final CustomFieldGroup cfg = newModel.getObject().getCustomFieldGroup();
+		cfdArkDataProvider = new ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>() {
+
+			public int size() {
+				return iPhenotypicService.getCFDLinkedToQuestionnaireCount(cfg);
+			}
+			public Iterator<CustomFieldDisplay> iterator(int first, int count) {
+				
+				Collection<CustomFieldDisplay> customFieldDisplayList = new ArrayList<CustomFieldDisplay>();
+				customFieldDisplayList = iPhenotypicService.getCFDLinkedToQuestionnaire(cfg, first, count);
+				return customFieldDisplayList.iterator();
+			}
+		};
+		
+		
+		CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO,newModel,cfdArkDataProvider,false);
 		arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 		preProcessDetailPanel(target);
 	}
