@@ -70,7 +70,7 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 		boolean barcodePrinterAvailable = true;
 		
 		if(barcodePrinter.getId() == null) {
-			PrintBiospecimenLabelButton.this.getParent().error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
+			log.error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
 			barcodePrinterAvailable = false;
 		}
 		
