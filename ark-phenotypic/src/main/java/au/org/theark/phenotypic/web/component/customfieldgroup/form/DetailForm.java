@@ -6,6 +6,8 @@ import java.util.Iterator;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -57,7 +59,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	private TextField<String> customFieldGroupTxtFld;
 	private TextArea<String> description;
 	private Palette<CustomField> customFieldPalette;
-	private CheckBox publishedStatusCb;		
+	private AjaxCheckBox publishedStatusCb;		
 	private Boolean addCustomFieldDisplayList;
 	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdProvider;
 	private DataView<CustomFieldDisplay> dataView;
@@ -76,29 +78,48 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		this.cfdProvider = cfdProvider;
 	}
 	
+	
+	private void initialiseCFDListPanel(){
+		
+		
+		cfdProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldDisplay"));
+		CustomFieldDisplayListPanel cfdListPanel = new CustomFieldDisplayListPanel("cfdListPanel", feedBackPanel,arkCrudContainerVO);
+		cfdListPanel.initialisePanel();
+		dataView = cfdListPanel.buildDataView(cfdProvider);
+		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		
+		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
+			@Override
+			protected void onAjaxEvent(AjaxRequestTarget target) {
+				target.add(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
+			}
+		};
+		
+		cfdListPanel.addOrReplace(pageNavigator);
+		cfdListPanel.addOrReplace(dataView);
+		arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(cfdListPanel);
+		
+		
+	}
 	public void initialiseDetailForm(){
 		customFieldGroupTxtFld = new TextField<String>("customFieldGroup.name");
 		description = new TextArea<String>("customFieldGroup.description");
-		publishedStatusCb = new CheckBox("customFieldGroup.published");
-		if(addCustomFieldDisplayList){
-			// Set the criteria for the data provider
-			cfdProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldDisplay"));
-			CustomFieldDisplayListPanel cfdListPanel = new CustomFieldDisplayListPanel("cfdListPanel", feedBackPanel,arkCrudContainerVO);
-			cfdListPanel.initialisePanel();
-			dataView = cfdListPanel.buildDataView(cfdProvider);
-			dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
-			
-			AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
-				@Override
-				protected void onAjaxEvent(AjaxRequestTarget target) {
-					target.add(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
+		publishedStatusCb = new AjaxCheckBox("customFieldGroup.published", new PropertyModel<Boolean>(getModelObject(), "customFieldGroup.published")) {
+			@Override
+			protected void onUpdate(AjaxRequestTarget arg0) {
+				//This onUpdate is not being invoked.
+				if(publishedStatusCb.getModelObject().booleanValue()){
+					//TODO
+				}else{
+					//TODO
 				}
-			};
+			}
+		};
+		
+		
 			
-			cfdListPanel.addOrReplace(pageNavigator);
-			cfdListPanel.addOrReplace(dataView);
-			arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(cfdListPanel);
-			
+		if(addCustomFieldDisplayList){
+			initialiseCFDListPanel();
 		}else{
 			arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(new EmptyPanel("cfdListPanel"));
 		}
@@ -174,23 +195,10 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 			getModelObject().getCustomFieldGroup().setArkFunction(arkFunction);
 			getModelObject().getCustomFieldGroup().setStudy(study);
 			try {
-				iPhenotypicService.createCustomFieldGroup(getModelObject());
-				cfdArkDataProvider = new ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>() {
-
-					public int size() {
-						return iPhenotypicService.getCFDLinkedToQuestionnaireCount(getModelObject().getCustomFieldGroup());
-					}
-					public Iterator<CustomFieldDisplay> iterator(int first, int count) {
-						
-						Collection<CustomFieldDisplay> customFieldDisplayList = new ArrayList<CustomFieldDisplay>();
-						customFieldDisplayList = iPhenotypicService.getCFDLinkedToQuestionnaire(getModelObject().getCustomFieldGroup(), first, count);
-						return customFieldDisplayList.iterator();
-					}
-				};
 				
-				CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedBackPanel, arkCrudContainerVO, (CompoundPropertyModel<CustomFieldGroupVO>)getModel() ,cfdArkDataProvider,true);
-				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
-				target.add(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
+				
+				iPhenotypicService.createCustomFieldGroup(getModelObject());
+				initialiseCFDListPanel();
 				this.info("Custom Field Group has been created successfully.");	
 			}
 			catch (EntityExistsException e) {
@@ -203,6 +211,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 			
 			try {
 				iPhenotypicService.updateCustomFieldGroup(getModelObject());
+				initialiseCFDListPanel();
 				this.info("Custom Field Group has been updated successfully.");	
 			}catch (EntityExistsException e) {
 				this.error("A Questionnaire with the same name already exisits. Please choose a unique one.");
