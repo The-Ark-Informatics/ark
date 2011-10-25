@@ -15,9 +15,10 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 public class CustomFieldGroupVO implements Serializable{
 	
 	private CustomFieldGroup customFieldGroup;
-	private Collection<CustomField> selectedCustomFields;
+	private ArrayList<CustomField> selectedCustomFields;
 	private Collection<CustomField> availableCustomFields;
 	private CustomFieldDisplay customFieldDisplay;
+	
 	
 	/**
 	 * Constructor
@@ -37,11 +38,11 @@ public class CustomFieldGroupVO implements Serializable{
 		this.customFieldGroup = customFieldGroup;
 	}
 
-	public Collection<CustomField> getSelectedCustomFields() {
+	public ArrayList<CustomField> getSelectedCustomFields() {
 		return selectedCustomFields;
 	}
 
-	public void setSelectedCustomFields(Collection<CustomField> selectedCustomFields) {
+	public void setSelectedCustomFields(ArrayList<CustomField> selectedCustomFields) {
 		this.selectedCustomFields = selectedCustomFields;
 	}
 
