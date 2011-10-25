@@ -38,6 +38,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.apache.wicket.validation.validator.StringValidator.LengthBetweenValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -229,17 +230,25 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	protected void attachValidators() {
 
 		addressLineOneTxtFld.add(StringValidator.maximumLength(255));
+		
 		sourceTxtFld.add(StringValidator.maximumLength(255));
-		streetAddressTxtFld.setRequired(true).setLabel(new StringResourceModel("street.address", this, new Model<String>("Street Address")));
-		streetAddressTxtFld.add(StringValidator.maximumLength(255));
-		cityTxtFld.setRequired(true).setLabel(new StringResourceModel("city", this, new Model<String>("City")));
-		postCodeTxtFld.setRequired(true).setLabel(new StringResourceModel("postcode", this, new Model<String>("Post Code")));
-		postCodeTxtFld.add(StringValidator.maximumLength(10)).setLabel(new StringResourceModel("postcode", this, new Model<String>("Post Code Max Length")));
-		postCodeTxtFld.add(StringValidator.minimumLength(4));
-		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.study.date.max.range", this, null));
-		addressTypeChoice.setRequired(true).setLabel(new StringResourceModel("addressType", this, new Model<String>("Address Type")));
-		addressStatusChoice.setRequired(true).setLabel(new StringResourceModel("addressStatus", this, new Model<String>("Address Status")));
-		stateChoice.setRequired(true).setLabel(new StringResourceModel("state", this, new Model<String>("State")));
+		
+		streetAddressTxtFld.setRequired(true).setLabel(new StringResourceModel("address.streetAddress.RequiredValidator", this, new Model<String>("Street Address")));
+		
+		streetAddressTxtFld.add(LengthBetweenValidator.maximumLength(255));
+		
+		cityTxtFld.setRequired(true).setLabel(new StringResourceModel("address.city.RequiredValidator", this, new Model<String>("City")));
+		
+		postCodeTxtFld.setRequired(true).setLabel(new StringResourceModel("address.postCode.RequiredValidator", this, new Model<String>("Post Code")));
+		//TODO User Centric ones for Max and Min
+		postCodeTxtFld.add(LengthBetweenValidator.maximumLength(10));
+		postCodeTxtFld.add(LengthBetweenValidator.minimumLength(4));
+		
+		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("address.dateReceived.DateValidator.maximum", this, null));
+		
+		addressTypeChoice.setRequired(true).setLabel(new StringResourceModel("address.addressType.RequiredValidator", this, new Model<String>("Address Type")));
+		addressStatusChoice.setRequired(true).setLabel(new StringResourceModel("address.addressStatus.RequiredValidator", this, new Model<String>("Address Status")));
+		stateChoice.setRequired(true).setLabel(new StringResourceModel("address.state.RequiredValidator", this, new Model<String>("State")));
 	}
 
 	/*
