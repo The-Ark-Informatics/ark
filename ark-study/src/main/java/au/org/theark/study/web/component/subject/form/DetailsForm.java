@@ -372,7 +372,9 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 	protected void attachValidators() {
 		subjectUIDTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.uid.required", this, null));
 		dateOfBirthTxtFld.setLabel(new StringResourceModel("linkSubjectStudy.person.dateOfBirth.DateValidator.maximum", this, null));
-//		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.studyApproachDate.DateValidator.maximum", this, null));
+
+		//studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.studyApproachDate.DateValidator.maximum", this, null));
+
 		subjectStatusDdc.setRequired(true).setLabel(new StringResourceModel("subject.status.required", this, null));
 		consentDateTxtFld.setLabel(new StringResourceModel("consentDate", this, null));
 		consentDateTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.consentDate.DateValidator.maximum", this, null));
