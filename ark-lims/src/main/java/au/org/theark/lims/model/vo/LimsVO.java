@@ -26,6 +26,7 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
+import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
@@ -46,6 +47,8 @@ public class LimsVO implements Serializable {
 	protected InvFreezer								invFreezer;
 	protected InvRack									invRack;
 	protected InvBox									invBox;
+	protected InvCell									invCell;
+	
 	/* A light weight VO that will represent a read only view of the location details of a Biospecimen */
 	protected BiospecimenLocationVO				biospecimenLocationVO;
 
@@ -208,6 +211,20 @@ public class LimsVO implements Serializable {
 	 */
 	public void setInvBox(InvBox invBox) {
 		this.invBox = invBox;
+	}
+	
+	/**
+	 * @return the invCell
+	 */
+	public InvCell getInvCell() {
+		return invCell;
+	}
+
+	/**
+	 * @param invCell the invCell to set
+	 */
+	public void setInvCell(InvCell invCell) {
+		this.invCell = invCell;
 	}
 
 	/**
