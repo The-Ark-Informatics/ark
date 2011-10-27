@@ -50,6 +50,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.exception.PhenotypicSystemException;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.pheno.entity.FieldType;
@@ -89,6 +90,7 @@ public class CustomFieldImportValidator {
 	java.util.Collection<String>		fileValidationMessages	= new ArrayList<String>();
 	java.util.Collection<String>		dataValidationMessages	= new ArrayList<String>();
 	private IArkCommonService<Void>	iArkCommonService			= null;
+	
 	private StringBuffer					uploadReport				= null;
 	private HashSet<Integer>			insertRows					= new HashSet<Integer>();
 	private HashSet<Integer>			updateRows					= new HashSet<Integer>();
@@ -123,8 +125,10 @@ public class CustomFieldImportValidator {
 		this.fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 
 		this.phenotypicDelimChr = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-		if (uploadVo.getUpload().getUploadType() != null)
+		if (uploadVo.getUpload().getUploadType() != null){
 			this.uploadType = uploadVo.getUpload().getUploadType();
+		}
+			
 	}
 
 	public boolean isQualityControl() {
@@ -409,7 +413,7 @@ public class CustomFieldImportValidator {
 				// Uploading a Field (Data Dictionary) file
 
 				Collection<String> dataDictionaryColumns = new ArrayList<String>();
-				String[] dataDictionaryColumnArray = au.org.theark.phenotypic.web.Constants.DATA_DICTIONARY_HEADER;
+				String[] dataDictionaryColumnArray = Constants.DATA_DICTIONARY_HEADER;
 
 				for (int i = 0; i < dataDictionaryColumnArray.length; i++) {
 					dataDictionaryColumns.add(dataDictionaryColumnArray[i]);
@@ -425,7 +429,7 @@ public class CustomFieldImportValidator {
 				if (headerError) {
 					// Invalid file format
 					StringBuffer stringBuffer = new StringBuffer();
-					String delimiterTypeName = iPhenotypicService.getDelimiterTypeByDelimiterChar(phenotypicDelimChr);
+					String delimiterTypeName = iArkCommonService.getDelimiterTypeByDelimiterChar(phenotypicDelimChr);
 
 					stringBuffer.append("The specified file does not appear to conform to the expected data dictionary file format.\n");
 					stringBuffer.append("The specified file format was: " + fileFormat + "\n");
@@ -638,7 +642,7 @@ public class CustomFieldImportValidator {
 					errorCells.add(new ArkGridCell(1, row));
 				}
 
-				Collection<FieldData> fieldDataToUpdate = iPhenotypicService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
+				Collection<FieldData> fieldDataToUpdate = iArkCommonService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 				// Assume inserts
 				insertRows.add(row);
 				int cols = stringLineArray.length;
@@ -658,7 +662,7 @@ public class CustomFieldImportValidator {
 						// Set field
 						field = new Field();
 						fieldName = fieldNameArray[col];
-						field = iPhenotypicService.getFieldByNameAndStudy(fieldName, study);
+						field = iArkCommonService.getFieldByNameAndStudy(fieldName, study);
 						fieldData.setField(field);
 
 						// Other/ith columns should be the field data value
@@ -819,10 +823,17 @@ public class CustomFieldImportValidator {
 					field = new Field();
 					field.setStudy(study);
 					field.setName(fieldName);
+					//NN commented this since Phenotypic old code seemed to be using FieldType in Pheno Schema and to fix the compilation error
+					//for EL's code
+					//FieldType fieldType = new FieldType();
+					au.org.theark.core.model.study.entity.FieldType studyFieldType = new au.org.theark.core.model.study.entity.FieldType();
+					studyFieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
 
-					FieldType fieldType = new FieldType();
-					fieldType = iPhenotypicService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
-					field.setFieldType(fieldType);
+					//TODO Note EL To discuss
+					//EL what are you using Pheno's Field here if getFieldType was implemented to return FieldType from Study?, Field should be substituted for CustomField?
+					
+					//field.setFieldType(studyFieldType);
+					
 					field.setDescription(csvReader.get("DESCRIPTION"));
 					field.setUnits((csvReader.get("UNITS")));
 					field.setEncodedValues(csvReader.get("ENCODED_VALUES"));
@@ -831,7 +842,7 @@ public class CustomFieldImportValidator {
 					field.setMissingValue(csvReader.get("MISSING_VALUE"));
 
 					try {
-						Field oldField = iPhenotypicService.getFieldByNameAndStudy(fieldName, study);
+						Field oldField = iArkCommonService.getFieldByNameAndStudy(fieldName, study);
 						// Determine updates
 						if (oldField.getId() != null) {
 							updateRows.add(row);
