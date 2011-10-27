@@ -31,6 +31,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -555,5 +556,8 @@ public interface IArkCommonService<T> {
 	public void updateUpload(StudyUpload studyUpload);
 	
 //	public void createCustomFieldUpload(CustomFieldUpload customFieldUpload);
+	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr);
+	
+	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected);
 	
 }
