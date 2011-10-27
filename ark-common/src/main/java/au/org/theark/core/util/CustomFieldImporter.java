@@ -88,17 +88,16 @@ public class CustomFieldImporter {
 	private StringBuffer					uploadReport				= null;
 	private List<CustomFieldUpload>	fieldUploadList			= new ArrayList<CustomFieldUpload>();
 	private Long							phenoCollectionId			= null;
+	private ArkFunction 					arkFunction;
 	private Date							completionTime = null;
 
 	/**
 	 * PhenotypicImport constructor
 	 * 
-	 * @param phenotypicDao
-	 *           data access object perform select/insert/updates to the database
 	 * @param studyId
 	 *           study identifier in context
-	 * @param collection
-	 *           phenotypic collection in context
+	 * @param arkFunction
+	 *           the function that this CustomField import should attach to
 	 * @param iArkCommonService
 	 *           the common service for dao
 	 * @param fileFormat
@@ -106,11 +105,13 @@ public class CustomFieldImporter {
 	 * @param delimiterChar
 	 *           delimiter of the file data (comma, tab etc)
 	 */
-	public CustomFieldImporter(Study study, IArkCommonService<Void> iArkCommonService, String fileFormat, char delimiterChar) {
+	public CustomFieldImporter(Study study, ArkFunction arkFunction, IArkCommonService<Void> iArkCommonService, 
+										String fileFormat, char delimiterChar) {
 		this.study = study;
 		this.iArkCommonService = iArkCommonService;
 		this.fileFormat = fileFormat;
 		this.phenotypicDelimChr = delimiterChar;
+		this.arkFunction = arkFunction;
 	}
 
 
@@ -136,7 +137,6 @@ public class CustomFieldImporter {
 		Date dateCollected = new Date();
 		CustomField customField = null;
 
-		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 		completionTime = null;
 		
 		try {

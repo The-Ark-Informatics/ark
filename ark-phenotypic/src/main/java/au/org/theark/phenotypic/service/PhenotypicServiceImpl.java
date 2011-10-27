@@ -979,4 +979,26 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
+	public void createFieldUpload(au.org.theark.core.vo.UploadVO uploadVo) {
+		// TODO: Actually create the upload 
+//		iArkCommonService.createCustomFieldUpload(uploadVo);
+
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created StudyUpload for File " + uploadVo.getUpload().getFilename());
+		ah.setEntityId(uploadVo.getUpload().getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
+		iArkCommonService.createAuditHistory(ah);
+	}
+
+	public void deleteFieldUpload(au.org.theark.core.vo.UploadVO uploadVO) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void updateFieldUpload(au.org.theark.core.vo.UploadVO uploadVO) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
