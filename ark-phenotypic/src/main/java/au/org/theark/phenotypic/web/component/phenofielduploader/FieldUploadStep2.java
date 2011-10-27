@@ -123,7 +123,7 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel {
 			if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
 				throw new FileFormatException();
 			}
-
+			//TODO Discuss this with EL
 			PhenotypicValidator phenotypicValidator = new PhenotypicValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			validationMessages = phenotypicValidator.validateMatrixPhenoFileFormat(inputStream, fileFormat, delimChar);

@@ -172,9 +172,14 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 		InputStream inputStream;
 		try {
 			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
-			CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(arkFunction, iArkCommonService, containerForm.getModelObject());
+			//Commented this line and added a new call to a different constrcutor
+			//TODO Discuss this with EL, it  passes in an ArkFunction and PhenoFieldUploadVO to ark-common?This will need refactoring the VO from Phenotypic to common as well. 
+			//CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(arkFunction, iArkCommonService, containerForm.getModelObject());
+			
+			//CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(arkFunction, iArkCommonService,containerForm.getModelObject());
+			
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			validationMessages = phenotypicValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
+			//validationMessages = phenotypicValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
 
 			HashSet<Integer> insertRows = new HashSet<Integer>();
 			HashSet<Integer> updateRows = new HashSet<Integer>();
@@ -183,12 +188,12 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 			HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
 			HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
 
-			insertRows = phenotypicValidator.getInsertRows();
+			/*insertRows = phenotypicValidator.getInsertRows();
 			updateRows = phenotypicValidator.getUpdateRows();
 			insertCells = phenotypicValidator.getInsertCells();
 			updateCells = phenotypicValidator.getUpdateCells();
 			warningCells = phenotypicValidator.getWarningCells();
-			errorCells = phenotypicValidator.getErrorCells();
+			errorCells = phenotypicValidator.getErrorCells();*/
 			inputStream.reset();
 
 			// Show file data (and key reference)
