@@ -210,8 +210,6 @@ public interface IPhenotypicDao {
 
 	public int getCountOfFieldsWithDataInStudy(Study study);
 
-	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected);
-
 	// Field Upload
 	public Collection<PhenoUpload> searchFieldUpload(PhenoUpload phenoUpload);
 
