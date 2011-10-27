@@ -321,5 +321,8 @@ public class Constants {
 	public static final String		FIELD_DATA_LINK_SUBJECT_STUDY								= "linkSubjectStudy";
 
 	public static final String		FIELD_DATA_DATE_COLLECTED									= "dateCollected";
+	//This was copied  from Phenotypic web constants. 
+	public static final String		FIELD_NAME														= "name";
+	public static final String		FIELD_STUDY														= "study";
 	
 }
