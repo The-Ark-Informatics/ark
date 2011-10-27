@@ -44,6 +44,8 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.exception.PhenotypicSystemException;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.pheno.entity.FieldPhenoCollection;
@@ -55,8 +57,6 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.phenotypic.exception.FileFormatException;
-import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -185,7 +185,7 @@ public class PhenoDataUploader {
 				stringLineArray = csvReader.getValues();
 				String subjectUid = stringLineArray[0];
 				LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid, study);
-				Collection<FieldData> fieldDataToUpdate = iPhenoService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
+				Collection<FieldData> fieldDataToUpdate = iArkCommonService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 
 				// Loop through columns in current row in file, starting from the 2th position
 				for (int i = 0; i < stringLineArray.length; i++) {
@@ -220,7 +220,7 @@ public class PhenoDataUploader {
 
 						// Set field
 						field = new Field();
-						field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
+						field = iArkCommonService.getFieldByNameAndStudy(fieldNameArray[i], study);
 						fieldData.setField(field);
 
 						// Other/ith columns should be the field data value
@@ -370,7 +370,7 @@ public class PhenoDataUploader {
 					log.error("DateCollected not parsed");
 				}
 
-				Collection<FieldData> fieldDataToUpdate = iPhenoService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
+				Collection<FieldData> fieldDataToUpdate = iArkCommonService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 
 				// Loop through columns in current row in file, starting from the 2th position
 				for (int i = 0; i < stringLineArray.length; i++) {
@@ -392,7 +392,7 @@ public class PhenoDataUploader {
 						String fieldName = fieldNameArray[i];
 
 						try {
-							field = iPhenoService.getFieldByNameAndStudy(fieldName, study);
+							field = iArkCommonService.getFieldByNameAndStudy(fieldName, study);
 							fieldData.setField(field);
 						}
 						catch (EntityNotFoundException enf) {
@@ -605,7 +605,7 @@ public class PhenoDataUploader {
 				field.setStudy(study);
 
 				try {
-					Field oldField = iPhenoService.getFieldByNameAndStudy(fieldName, study);
+					Field oldField = iArkCommonService.getFieldByNameAndStudy(fieldName, study);
 
 					uploadReport.append("Updating field for: ");
 					uploadReport.append("\tFIELD: ");
@@ -616,7 +616,8 @@ public class PhenoDataUploader {
 					oldField.setName(fieldName);
 
 					FieldType fieldType = new FieldType();
-					fieldType = iPhenoService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
+					//TODO Discuss this with EL
+					//fieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
 					oldField.setFieldType(fieldType);
 
 					oldField.setDescription(csvReader.get("DESCRIPTION"));
@@ -640,7 +641,8 @@ public class PhenoDataUploader {
 					field.setName(fieldName);
 
 					FieldType fieldType = new FieldType();
-					fieldType = iPhenoService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
+					//TODO Discuss this with EL
+					//fieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
 					field.setFieldType(fieldType);
 					field.setDescription(csvReader.get("DESCRIPTION"));
 					field.setUnits((csvReader.get("UNITS")));
