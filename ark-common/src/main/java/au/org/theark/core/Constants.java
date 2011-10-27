@@ -318,7 +318,8 @@ public class Constants {
 	
 	public static final String[]	DATA_DICTIONARY_HEADER										= { "FIELD_NAME", "FIELD_TYPE", "DESCRIPTION", "UNITS", "ENCODED_VALUES", "MINIMUM_VALUE", "MAXIMUM_VALUE",
 	"MISSING_VALUE"																				};
+	public static final String		FIELD_DATA_LINK_SUBJECT_STUDY								= "linkSubjectStudy";
 
-	
+	public static final String		FIELD_DATA_DATE_COLLECTED									= "dateCollected";
 	
 }
