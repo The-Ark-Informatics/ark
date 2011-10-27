@@ -37,5 +37,6 @@ public class Constants {
 	public static final String		UPLOADVO_UPLOAD_FINISH_TIME								= "upload.finishTime";
 	public static final String		UPLOADVO_UPLOAD_UPLOAD_REPORT								= "upload.uploadReport";
 	public static final String		UPLOADVO_UPLOAD_COLLECTION									= "upload.uploadCollection";
+	public static final String 		RESULT_LIST													= "resultList";
 	
 }
