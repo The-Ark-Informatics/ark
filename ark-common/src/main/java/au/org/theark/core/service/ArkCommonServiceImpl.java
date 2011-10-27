@@ -55,6 +55,7 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.ArkLdapContextSource;
 import au.org.theark.core.dao.IArkAuthorisation;
+import au.org.theark.core.dao.ICSVLoaderDao;
 import au.org.theark.core.dao.ICustomFieldDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.dao.ReCaptchaContextSource;
@@ -62,6 +63,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -124,9 +126,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	private IArkAuthorisation			arkAuthorisationDao;
 	private ICustomFieldDao				customFieldDao;
-	private IStudyDao						studyDao;
+	private IStudyDao					studyDao;
+	private ICSVLoaderDao 				csvLoaderDao;
 	private ArkLdapContextSource		ldapDataContextSource;
-	private ReCaptchaContextSource	reCaptchaContextSource;
+	private ReCaptchaContextSource		reCaptchaContextSource;
 	private JavaMailSender				javaMailSender;
 	private VelocityEngine				velocityEngine;
 
@@ -206,6 +209,16 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void setLdapDataContextSource(ArkLdapContextSource ldapDataContextSource) {
 		this.ldapDataContextSource = ldapDataContextSource;
 	}
+	
+	public ICSVLoaderDao getCsvLoaderDao() {
+		return csvLoaderDao;
+	}
+	
+	@Autowired
+	public void setCsvLoaderDao(ICSVLoaderDao csvLoaderDao) {
+		this.csvLoaderDao = csvLoaderDao;
+	}	
+
 
 	private static class PersonContextMapper implements ContextMapper {
 
@@ -917,5 +930,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		ah.setEntityId(studyUpload.getId());
 		this.createAuditHistory(ah);
 	}
+	
+	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr){
+		return csvLoaderDao.getDelimiterTypeByDelimiterChar(phenotypicDelimChr);
+	}
+	
+	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected){
+		return customFieldDao.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
+	}
+
 
 }
