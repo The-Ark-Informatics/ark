@@ -943,5 +943,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException{
 		return customFieldDao.getFieldByNameAndStudy(fieldName, study);
 	}
+	
+	
+	public void deleteUpload(StudyUpload studyUpload) throws EntityCannotBeRemoved{
+		studyDao.deleteUpload(studyUpload);
+	}
 
 }
