@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -305,12 +306,10 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return null;
 	}
 	
-		
-	
-	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected) {
-		Criteria criteria = getSession().createCriteria(FieldData.class);
-		String dateStr = dateCollected.toString();
 
+	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected) {
+	
+		Criteria criteria = getSession().createCriteria(FieldData.class);
 		if (linkSubjectStudy.getId() != null) {
 			criteria.add(Restrictions.eq(Constants.FIELD_DATA_LINK_SUBJECT_STUDY, linkSubjectStudy));
 		}
@@ -321,6 +320,24 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 
 		java.util.Collection<FieldData> fieldDataCollection = criteria.list();
 		return fieldDataCollection;
+	}
+	
+	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException {
+		Field field = new Field();
+		Criteria criteria = getSession().createCriteria(Field.class);
+		if (fieldName != null && study != null) {
+			criteria.add(Restrictions.eq(Constants.FIELD_NAME, fieldName));
+			criteria.add(Restrictions.eq(Constants.FIELD_STUDY, study));
+		}
+
+		if (criteria.list().size() > 0) {
+			field = (Field) criteria.list().get(0);
+		}
+		else {
+			throw new EntityNotFoundException();
+		}
+
+		return field;
 	}
 
 }
