@@ -51,7 +51,6 @@ import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
-import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -562,5 +561,7 @@ public interface IArkCommonService<T> {
 	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected);
 	
 	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException;
+	
+	
 	
 }
