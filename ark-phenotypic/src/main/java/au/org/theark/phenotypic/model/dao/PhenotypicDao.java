@@ -45,7 +45,6 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
@@ -348,23 +347,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return field;
 	}
 
-	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException {
-		Field field = new Field();
-		Criteria criteria = getSession().createCriteria(Field.class);
-		if (fieldName != null && study != null) {
-			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_NAME, fieldName));
-			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_STUDY, study));
-		}
 
-		if (criteria.list().size() > 0) {
-			field = (Field) criteria.list().get(0);
-		}
-		else {
-			throw new EntityNotFoundException();
-		}
-
-		return field;
-	}
 
 	public void createField(Field field) {
 		currentUser = SecurityUtils.getSubject();

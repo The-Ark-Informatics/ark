@@ -25,7 +25,6 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
@@ -115,8 +114,6 @@ public interface IPhenotypicDao {
 	public Field getField(Long fieldId);
 
 	public java.util.Collection<Field> getField();
-
-	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException;
 
 	public java.util.Collection<Field> searchField(Field field);
 
