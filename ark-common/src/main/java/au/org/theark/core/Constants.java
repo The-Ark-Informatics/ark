@@ -316,4 +316,9 @@ public class Constants {
 	/* Default "from" paramter for emails */
 	public static final String	ARK_ADMIN_EMAIL									= "admin@the-ark.org.au";
 	
+	public static final String[]	DATA_DICTIONARY_HEADER										= { "FIELD_NAME", "FIELD_TYPE", "DESCRIPTION", "UNITS", "ENCODED_VALUES", "MINIMUM_VALUE", "MAXIMUM_VALUE",
+	"MISSING_VALUE"																				};
+
+	
+	
 }
