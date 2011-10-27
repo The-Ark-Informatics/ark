@@ -19,9 +19,12 @@
 package au.org.theark.core.dao;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.study.entity.CsvBlob;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 /**
  * @author cellis
@@ -75,4 +78,12 @@ public interface ICSVLoaderDao {
 	 * @return The id of the newly created entity
 	 */
 	public Long createCsvBlob(CsvBlob csvBlob);
+
+	/**
+	 * Returns a Delimiter Type based on the delimiter character passed in
+	 * @param phenotypicDelimChr
+	 * @return
+	 */
+	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr);
+
 }
