@@ -25,6 +25,7 @@ import org.apache.shiro.SecurityUtils;
 import org.hibernate.Hibernate;
 
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
+import au.org.theark.core.model.study.entity.StudyUpload;
 
 public class PhenoUploadReport {
 	private StringBuffer	report	= new StringBuffer();
@@ -82,6 +83,19 @@ public class PhenoUploadReport {
 		appendAndNewLine(phenoUpload.getDelimiterType().getName());
 	}
 
+	public void appendDetails(StudyUpload upload) {
+		append("Study: ");
+		appendAndNewLine(upload.getStudy().getName());
+		append("UserID: ");
+		appendAndNewLine(SecurityUtils.getSubject().getPrincipal().toString());
+		append("Filename: ");
+		appendAndNewLine(upload.getFilename());
+		append("File Format: ");
+		appendAndNewLine(upload.getFileFormat().getName());
+		append("Delimiter Type: ");
+		appendAndNewLine(upload.getDelimiterType().getName());
+	}
+	
 	public Blob getReportAsBlob() {
 		Blob reportAsBlob = Hibernate.createBlob(this.getInputStream());
 		return reportAsBlob;
