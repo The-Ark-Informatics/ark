@@ -31,6 +31,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -559,5 +560,7 @@ public interface IArkCommonService<T> {
 	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr);
 	
 	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected);
+	
+	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException;
 	
 }
