@@ -488,4 +488,7 @@ public interface IStudyDao {
 	 */
 	public void updateUpload(StudyUpload studyUpload);
 	
+	
+	public void deleteUpload(StudyUpload studyUpload);
+	
 }
