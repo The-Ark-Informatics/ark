@@ -1,5 +1,6 @@
 package au.org.theark.core.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -12,13 +13,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.FieldType;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 
@@ -299,6 +303,24 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		criteria.add(Restrictions.or(Restrictions.isNull("arkFunction"), Restrictions.eq("arkFunction", arkFunction)));
 		criteria.uniqueResult();
 		return null;
+	}
+	
+		
+	
+	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected) {
+		Criteria criteria = getSession().createCriteria(FieldData.class);
+		String dateStr = dateCollected.toString();
+
+		if (linkSubjectStudy.getId() != null) {
+			criteria.add(Restrictions.eq(Constants.FIELD_DATA_LINK_SUBJECT_STUDY, linkSubjectStudy));
+		}
+
+		if (dateCollected != null) {
+			criteria.add(Restrictions.eq(Constants.FIELD_DATA_DATE_COLLECTED, dateCollected));
+		}
+
+		java.util.Collection<FieldData> fieldDataCollection = criteria.list();
+		return fieldDataCollection;
 	}
 
 }
