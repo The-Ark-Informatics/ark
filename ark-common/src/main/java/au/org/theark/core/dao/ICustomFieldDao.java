@@ -5,6 +5,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -175,5 +176,14 @@ public interface ICustomFieldDao {
 	
 	
 	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected);
+	
+	/**
+	 * 
+	 * @param fieldName
+	 * @param study
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException;
 
 }
