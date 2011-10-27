@@ -100,7 +100,6 @@ public interface IPhenotypicService {
 	// FieldType
 	public FieldType getFieldType(Long id);
 
-	public FieldType getFieldTypeByName(String fieldTypeName);
 
 	public java.util.Collection<FieldType> getFieldTypes();
 
