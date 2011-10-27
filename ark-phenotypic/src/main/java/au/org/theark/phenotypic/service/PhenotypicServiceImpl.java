@@ -294,10 +294,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.searchField(field);
 	}
 
-	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException {
-		return phenotypicDao.getFieldByNameAndStudy(fieldName, study);
-	}
-
 	public void updateField(Field field) {
 		phenotypicDao.updateField(field);
 
