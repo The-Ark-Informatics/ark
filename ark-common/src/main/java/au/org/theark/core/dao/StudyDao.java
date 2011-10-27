@@ -933,4 +933,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		getSession().update(studyUpload);
 	}
 	
+	public void deleteUpload(StudyUpload studyUpload){
+		//Not implemented
+	}
+	
 }
