@@ -63,6 +63,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -938,6 +939,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected){
 		return customFieldDao.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 	}
-
+	
+	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException{
+		return customFieldDao.getFieldByNameAndStudy(fieldName, study);
+	}
 
 }
