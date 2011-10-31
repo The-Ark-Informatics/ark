@@ -57,7 +57,6 @@ public class StudyUpload implements java.io.Serializable {
 	private Blob				uploadReport;
 	private String				userId;
 	private ArkFunction	arkFunction;
-	private String uploadType;
 
 	// Constructors
 	/** default constructor */
@@ -257,12 +256,5 @@ public class StudyUpload implements java.io.Serializable {
 	public void setArkFunction(ArkFunction arkFunction) {
 		this.arkFunction = arkFunction;
 	}
-
-	public String getUploadType() {
-		return uploadType;
-	}
-
-	public void setUploadType(String uploadType) {
-		this.uploadType = uploadType;
-	}
+	
 }
