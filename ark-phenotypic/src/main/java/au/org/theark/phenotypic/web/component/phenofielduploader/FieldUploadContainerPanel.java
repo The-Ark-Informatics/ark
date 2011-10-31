@@ -53,11 +53,12 @@ public class FieldUploadContainerPanel extends AbstractContainerPanel<PhenoField
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
 
-	public FieldUploadContainerPanel(String id) {
+	public FieldUploadContainerPanel(String id, ArkFunction arkFunction) {
 		super(id);
 
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<PhenoFieldUploadVO>(new PhenoFieldUploadVO());
+		cpModel.getObject().getUpload().setArkFunction(arkFunction);	//set the relevant arkFunction  
 
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
@@ -92,8 +93,6 @@ public class FieldUploadContainerPanel extends AbstractContainerPanel<PhenoField
 				if (sessionStudyId != null) {
 					StudyUpload searchPhenoUpload = new StudyUpload();
 					Study study = iArkCommonService.getStudy(sessionStudyId);
-					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
-					cpModel.getObject().getUpload().setArkFunction(arkFunction);
 					searchPhenoUpload.setStudy(study);
 
 					java.util.Collection<StudyUpload> phenoUploads = iArkCommonService.searchUploads(searchPhenoUpload);
