@@ -25,6 +25,7 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
@@ -41,6 +42,7 @@ import au.org.theark.core.model.pheno.entity.Status;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.vo.CustomFieldGroupVO;
@@ -82,6 +84,8 @@ public interface IPhenotypicService {
 
 	public java.util.Collection<Field> searchField(Field field);
 
+	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException;
+
 	public boolean fieldHasData(Field field);
 
 	public void createField(Field field);
@@ -100,6 +104,7 @@ public interface IPhenotypicService {
 	// FieldType
 	public FieldType getFieldType(Long id);
 
+	public FieldType getFieldTypeByName(String fieldTypeName);
 
 	public java.util.Collection<FieldType> getFieldTypes();
 
@@ -109,6 +114,8 @@ public interface IPhenotypicService {
 	public Collection<FieldData> searchFieldDataByField(Field field);
 
 	public Collection<FieldData> searchFieldData(FieldData fieldData);
+
+	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected);
 
 	public void createFieldData(FieldData fieldData);
 

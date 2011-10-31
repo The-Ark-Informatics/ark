@@ -30,7 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.CustomFieldImportValidator;
 import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -116,15 +118,13 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel {
 			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 			InputStream inputStream;
 
-			// Uploading Fields of the Data Dictionary
-			containerForm.getModelObject().getUpload().setUploadType("FIELD");
-
 			// Only allow csv, txt or xls
 			if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
 				throw new FileFormatException();
 			}
 			//TODO Discuss this with EL
-			PhenotypicValidator phenotypicValidator = new PhenotypicValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
+			CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
+			
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			validationMessages = phenotypicValidator.validateMatrixPhenoFileFormat(inputStream, fileFormat, delimChar);
 

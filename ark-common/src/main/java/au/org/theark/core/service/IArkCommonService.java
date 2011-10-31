@@ -558,14 +558,4 @@ public interface IArkCommonService<T> {
 //	public void createCustomFieldUpload(CustomFieldUpload customFieldUpload);
 	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr);
 	
-	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected);
-	
-	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException;
-	/**
-	 * TODO Discuss this with EL. This is an empty implementation i was forced to add since the UI is calling it.
-	 * @param studyUpload
-	 * @throws EntityCannotBeRemoved
-	 */
-	public void deleteUpload(StudyUpload studyUpload) throws EntityCannotBeRemoved;
-	
 }

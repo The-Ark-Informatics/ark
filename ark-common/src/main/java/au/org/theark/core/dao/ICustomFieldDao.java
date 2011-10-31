@@ -174,16 +174,4 @@ public interface ICustomFieldDao {
 	 */
 	public CustomField getCustomFieldByNameStudyArkFunction(String customFieldName, Study study, ArkFunction arkFunction);
 	
-	
-	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected);
-	
-	/**
-	 * 
-	 * @param fieldName
-	 * @param study
-	 * @return
-	 * @throws EntityNotFoundException
-	 */
-	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException;
-
 }

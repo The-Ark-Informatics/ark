@@ -315,14 +315,8 @@ public class Constants {
 	
 	/* Default "from" paramter for emails */
 	public static final String	ARK_ADMIN_EMAIL									= "admin@the-ark.org.au";
-	
-	public static final String[]	DATA_DICTIONARY_HEADER										= { "FIELD_NAME", "FIELD_TYPE", "DESCRIPTION", "UNITS", "ENCODED_VALUES", "MINIMUM_VALUE", "MAXIMUM_VALUE",
-	"MISSING_VALUE"																				};
-	public static final String		FIELD_DATA_LINK_SUBJECT_STUDY								= "linkSubjectStudy";
 
-	public static final String		FIELD_DATA_DATE_COLLECTED									= "dateCollected";
-	//This was copied  from Phenotypic web constants. 
-	public static final String		FIELD_NAME														= "name";
-	public static final String		FIELD_STUDY														= "study";
-	
+	public static final String[]	DATA_DICTIONARY_HEADER						= { "FIELD_NAME", "FIELD_TYPE", "DESCRIPTION", "UNITS", "ENCODED_VALUES", "MINIMUM_VALUE", "MAXIMUM_VALUE",
+	"MISSING_VALUE"																				};
+
 }

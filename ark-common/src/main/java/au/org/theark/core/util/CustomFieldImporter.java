@@ -213,14 +213,15 @@ public class CustomFieldImporter {
 					customField.setStudy(study);
 					customField.setName(fieldName);
 
-					FieldType fieldType;
-					fieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
-					customField.setFieldType(fieldType);
-					customField.setDescription(csvReader.get("DESCRIPTION"));
 					UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
 					if (unitType == null) {
 						throw new SystemDataMismatchException("Unit '" + csvReader.get("UNITS") + "' in file do not match known units in internal system table\n");
 					}
+					customField.setUnitType(unitType);
+					
+					FieldType fieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
+					customField.setFieldType(fieldType);
+					customField.setDescription(csvReader.get("DESCRIPTION"));
 					customField.setEncodedValues(csvReader.get("ENCODED_VALUES"));
 					customField.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					customField.setMaxValue(csvReader.get("MAXIMUM_VALUE"));

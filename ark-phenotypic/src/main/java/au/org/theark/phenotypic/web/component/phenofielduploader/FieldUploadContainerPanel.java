@@ -28,7 +28,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.pheno.entity.PhenoUpload;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
@@ -92,7 +92,8 @@ public class FieldUploadContainerPanel extends AbstractContainerPanel<PhenoField
 				if (sessionStudyId != null) {
 					StudyUpload searchPhenoUpload = new StudyUpload();
 					Study study = iArkCommonService.getStudy(sessionStudyId);
-					iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+					cpModel.getObject().getUpload().setArkFunction(arkFunction);
 					searchPhenoUpload.setStudy(study);
 
 					java.util.Collection<StudyUpload> phenoUploads = iArkCommonService.searchUploads(searchPhenoUpload);

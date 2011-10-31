@@ -185,7 +185,7 @@ public class PhenoDataUploader {
 				stringLineArray = csvReader.getValues();
 				String subjectUid = stringLineArray[0];
 				LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid, study);
-				Collection<FieldData> fieldDataToUpdate = iArkCommonService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
+				Collection<FieldData> fieldDataToUpdate = iPhenoService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 
 				// Loop through columns in current row in file, starting from the 2th position
 				for (int i = 0; i < stringLineArray.length; i++) {
@@ -220,7 +220,7 @@ public class PhenoDataUploader {
 
 						// Set field
 						field = new Field();
-						field = iArkCommonService.getFieldByNameAndStudy(fieldNameArray[i], study);
+						field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
 						fieldData.setField(field);
 
 						// Other/ith columns should be the field data value
@@ -370,7 +370,7 @@ public class PhenoDataUploader {
 					log.error("DateCollected not parsed");
 				}
 
-				Collection<FieldData> fieldDataToUpdate = iArkCommonService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
+				Collection<FieldData> fieldDataToUpdate = iPhenoService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 
 				// Loop through columns in current row in file, starting from the 2th position
 				for (int i = 0; i < stringLineArray.length; i++) {
@@ -392,7 +392,7 @@ public class PhenoDataUploader {
 						String fieldName = fieldNameArray[i];
 
 						try {
-							field = iArkCommonService.getFieldByNameAndStudy(fieldName, study);
+							field = iPhenoService.getFieldByNameAndStudy(fieldName, study);
 							fieldData.setField(field);
 						}
 						catch (EntityNotFoundException enf) {
@@ -605,7 +605,7 @@ public class PhenoDataUploader {
 				field.setStudy(study);
 
 				try {
-					Field oldField = iArkCommonService.getFieldByNameAndStudy(fieldName, study);
+					Field oldField = iPhenoService.getFieldByNameAndStudy(fieldName, study);
 
 					uploadReport.append("Updating field for: ");
 					uploadReport.append("\tFIELD: ");
@@ -616,8 +616,7 @@ public class PhenoDataUploader {
 					oldField.setName(fieldName);
 
 					FieldType fieldType = new FieldType();
-					//TODO Discuss this with EL
-					//fieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
+					fieldType = iPhenoService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
 					oldField.setFieldType(fieldType);
 
 					oldField.setDescription(csvReader.get("DESCRIPTION"));
@@ -641,8 +640,7 @@ public class PhenoDataUploader {
 					field.setName(fieldName);
 
 					FieldType fieldType = new FieldType();
-					//TODO Discuss this with EL
-					//fieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
+					fieldType = iPhenoService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
 					field.setFieldType(fieldType);
 					field.setDescription(csvReader.get("DESCRIPTION"));
 					field.setUnits((csvReader.get("UNITS")));
