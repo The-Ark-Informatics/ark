@@ -1,6 +1,7 @@
 package au.org.theark.core.dao;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -306,38 +307,4 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return null;
 	}
 	
-
-	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected) {
-	
-		Criteria criteria = getSession().createCriteria(FieldData.class);
-		if (linkSubjectStudy.getId() != null) {
-			criteria.add(Restrictions.eq(Constants.FIELD_DATA_LINK_SUBJECT_STUDY, linkSubjectStudy));
-		}
-
-		if (dateCollected != null) {
-			criteria.add(Restrictions.eq(Constants.FIELD_DATA_DATE_COLLECTED, dateCollected));
-		}
-
-		java.util.Collection<FieldData> fieldDataCollection = criteria.list();
-		return fieldDataCollection;
-	}
-	
-	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException {
-		Field field = new Field();
-		Criteria criteria = getSession().createCriteria(Field.class);
-		if (fieldName != null && study != null) {
-			criteria.add(Restrictions.eq(Constants.FIELD_NAME, fieldName));
-			criteria.add(Restrictions.eq(Constants.FIELD_STUDY, study));
-		}
-
-		if (criteria.list().size() > 0) {
-			field = (Field) criteria.list().get(0);
-		}
-		else {
-			throw new EntityNotFoundException();
-		}
-
-		return field;
-	}
-
 }

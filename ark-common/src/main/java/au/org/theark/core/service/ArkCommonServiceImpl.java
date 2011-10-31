@@ -935,18 +935,5 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr){
 		return csvLoaderDao.getDelimiterTypeByDelimiterChar(phenotypicDelimChr);
 	}
-	
-	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected){
-		return customFieldDao.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
-	}
-	
-	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException{
-		return customFieldDao.getFieldByNameAndStudy(fieldName, study);
-	}
-	
-	
-	public void deleteUpload(StudyUpload studyUpload) throws EntityCannotBeRemoved{
-		studyDao.deleteUpload(studyUpload);
-	}
 
 }

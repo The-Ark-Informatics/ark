@@ -196,6 +196,8 @@ public class Constants {
 	public static final String		FIELD_DATA														= "fieldData";
 	public static final String		FIELD_DATA_ID													= "id";
 	public static final String		FIELD_DATA_PHENO_COLLECTION								= "collection";
+	public static final String		FIELD_DATA_LINK_SUBJECT_STUDY								= "linkSubjectStudy";
+	public static final String		FIELD_DATA_DATE_COLLECTED									= "dateCollected";
 	public static final String		FIELD_DATA_FIELD												= "field";
 	public static final String		FIELD_DATA_VALUE												= "value";
 	public static final String		FIELD_DATA_USER												= "user";

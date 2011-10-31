@@ -62,6 +62,7 @@ import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.BarChartResult;
@@ -292,6 +293,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 	public java.util.Collection<Field> searchField(Field field) {
 		return phenotypicDao.searchField(field);
+	}
+
+	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException {
+		return phenotypicDao.getFieldByNameAndStudy(fieldName, study);
 	}
 
 	public void updateField(Field field) {
@@ -647,6 +652,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 			log.error(Constants.IO_EXCEPTION + e);
 		}
 		return uploadReport;
+	}
+
+	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected) {
+		return phenotypicDao.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 	}
 
 	public Collection<PhenoUpload> searchFieldUpload(PhenoUpload phenoUpload) {

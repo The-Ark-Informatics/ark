@@ -59,7 +59,6 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
-import au.org.theark.phenotypic.model.vo.PhenoFieldUploadVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
@@ -109,18 +108,6 @@ public class PhenotypicValidator {
 	public PhenotypicValidator() {
 	}
 
-	/**
-	 * Added a new constructo used by PhenoptyicValidator 
-	 * @param iArkCommonService
-	 * @param iPhenotypicService
-	 * @param phenoFieldUploadVO
-	 */
-	public PhenotypicValidator(IArkCommonService<Void> iArkCommonService, IPhenotypicService iPhenotypicService, PhenoFieldUploadVO phenoFieldUploadVO) {
-		this.iArkCommonService = iArkCommonService;
-		this.iPhenotypicService = iPhenotypicService;
-		//TODO Discuss With EL
-	}
-	
 	public PhenotypicValidator(IArkCommonService<Void> iArkCommonService, IPhenotypicService iPhenotypicService, UploadVO uploadVo) {
 		this.iArkCommonService = iArkCommonService;
 		this.iPhenotypicService = iPhenotypicService;
@@ -662,7 +649,7 @@ public class PhenotypicValidator {
 					errorCells.add(new ArkGridCell(1, row));
 				}
 
-				Collection<FieldData> fieldDataToUpdate = iArkCommonService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
+				Collection<FieldData> fieldDataToUpdate = iPhenotypicService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 				// Assume inserts
 				insertRows.add(row);
 				int cols = stringLineArray.length;
@@ -682,7 +669,7 @@ public class PhenotypicValidator {
 						// Set field
 						field = new Field();
 						fieldName = fieldNameArray[col];
-						field = iArkCommonService.getFieldByNameAndStudy(fieldName, study);
+						field = iPhenotypicService.getFieldByNameAndStudy(fieldName, study);
 						fieldData.setField(field);
 
 						// Other/ith columns should be the field data value
@@ -845,8 +832,7 @@ public class PhenotypicValidator {
 					field.setName(fieldName);
 
 					FieldType fieldType = new FieldType();
-					//TODO Discuss this with EL
-					//fieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
+					fieldType = iPhenotypicService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
 					field.setFieldType(fieldType);
 					field.setDescription(csvReader.get("DESCRIPTION"));
 					field.setUnits((csvReader.get("UNITS")));
@@ -856,7 +842,7 @@ public class PhenotypicValidator {
 					field.setMissingValue(csvReader.get("MISSING_VALUE"));
 
 					try {
-						Field oldField = iArkCommonService.getFieldByNameAndStudy(fieldName, study);
+						Field oldField = iPhenotypicService.getFieldByNameAndStudy(fieldName, study);
 						// Determine updates
 						if (oldField.getId() != null) {
 							updateRows.add(row);

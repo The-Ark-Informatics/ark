@@ -162,9 +162,6 @@ public class SearchResultListPanel extends Panel {
 				// Download upload report button
 				item.add(buildDownloadReportButton(upload));
 
-				// Delete the upload file
-				item.add(buildDeleteButton(upload));
-
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					@Override
@@ -284,31 +281,5 @@ public class SearchResultListPanel extends Panel {
 
 		return ajaxButton;
 	}
-
-	private AjaxDeleteButton buildDeleteButton(final StudyUpload upload) {
-		DeleteButton ajaxButton = new DeleteButton(upload, SearchResultListPanel.this) {
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// Attempt to delete upload
-				if (upload.getId() != null) {
-					try {
-						iArkCommonService.deleteUpload(upload);
-						containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
-					}
-					catch (EntityCannotBeRemoved e) {
-						containerForm.error(e.getMessage());
-						log.error(e.getMessage());
-					}
-				}
-
-				// Update the result panel and containerForm (for feedBack message)
-				target.add(arkCrudContainerVO.getSearchPanelContainer());
-				target.add(containerForm);
-			}
-		};
-
-		ajaxButton.setDefaultFormProcessing(false);
-
-		return ajaxButton;
-	}
+	
 }
