@@ -30,6 +30,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
@@ -143,10 +144,10 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 	 */
 	@Override
 	protected void attachValidators() {
-		phoneNumberTxtFld.setRequired(true);
+		phoneNumberTxtFld.setRequired(true).setLabel((new StringResourceModel("phone.phoneNumber.RequiredValidator", this, new Model<String>("Phone Number"))));
 		phoneNumberTxtFld.add(StringValidator.maximumLength(10));
 		areaCodeTxtFld.add(StringValidator.maximumLength(10));
-		phoneTypeChoice.setRequired(true);
+		phoneTypeChoice.setRequired(true).setLabel((new StringResourceModel("phone.phoneType.RequiredValidator", this, new Model<String>("Phone Type"))));
 		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("phone.dateReceived.DateValidator.maximum", this, null));
 	}
 
