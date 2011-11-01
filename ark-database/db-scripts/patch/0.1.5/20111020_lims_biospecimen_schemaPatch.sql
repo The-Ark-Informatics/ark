@@ -76,7 +76,7 @@ ALTER TABLE `lims`.`biospecimen` CHANGE COLUMN `BIOSPECIMEN_SPECIES_ID` `BIOSPEC
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-UPDATE `lims`.`biospecimen` SET biospecimen_species_id=1;
+UPDATE `lims`.`biospecimen` SET biospecimen_species_id=1 WHERE id >0;
 
 ALTER TABLE `lims`.`biospecimen` ADD COLUMN `BIOSPECIMEN_STATUS_ID` INT(11) NULL DEFAULT NULL  AFTER `BIOSPECIMEN_ANTICOAGULANT_ID` , 
   ADD CONSTRAINT `fk_biospecimen_status`
