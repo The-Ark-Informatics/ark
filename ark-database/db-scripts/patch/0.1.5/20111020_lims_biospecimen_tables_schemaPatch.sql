@@ -33,6 +33,18 @@ CREATE  TABLE `lims`.`biospecimen_species` (
   PRIMARY KEY (`ID`) )
 ENGINE = InnoDB;
 
+CREATE  TABLE `lims`.`biospecimen_protocol` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT ,
+  `NAME` VARCHAR(50) NOT NULL ,
+  PRIMARY KEY (`ID`) )
+ENGINE = InnoDB;
+
+CREATE  TABLE `lims`.`biospecimen_anticoagulant` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT ,
+  `NAME` VARCHAR(50) NOT NULL ,
+  PRIMARY KEY (`ID`) )
+ENGINE = InnoDB;
+
 ALTER TABLE `lims`.`biospecimen_storage` DROP FOREIGN KEY `fk_biospecimen_storage_unit` ;
 ALTER TABLE `lims`.`biospecimen_storage` CHANGE COLUMN `UNIT_ID` `UNIT_ID` INT(11) NULL  , 
   ADD CONSTRAINT `fk_biospecimen_storage_unit`

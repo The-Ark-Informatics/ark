@@ -9,6 +9,10 @@ INSERT INTO lims.biospecimen_anticoagulant (name) VALUES ('Sodium Citrate');
 INSERT INTO lims.biospecimen_grade (name) VALUES ('Extracted');
 INSERT INTO lims.biospecimen_grade (name) VALUES ('Precipitated');
 
+-- protocol
+INSERT INTO lims.biospecimen_protocol (name) VALUES ('Extracted');
+INSERT INTO lims.biospecimen_protocol (name) VALUES ('Precipitated');
+
 -- quality
 INSERT INTO lims.biospecimen_quality (name) VALUES ('Fresh');
 INSERT INTO lims.biospecimen_quality (name) VALUES ('Frozen short term (<6mths)');
