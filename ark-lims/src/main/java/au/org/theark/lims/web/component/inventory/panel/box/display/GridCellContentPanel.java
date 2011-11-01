@@ -12,6 +12,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 
@@ -31,20 +32,26 @@ public class GridCellContentPanel extends Panel {
 	private static final PackageResourceReference	SELECTED_USED_CELL_ICON		= new PackageResourceReference(GridCellContentPanel.class, "selectedUsedCell.gif");
 	private static final PackageResourceReference	SELECTED_BARCODE_CELL_ICON	= new PackageResourceReference(GridCellContentPanel.class, "selectedBarcodeCell.gif");
 	private Component gridCellContent = new EmptyPanel("gridCellContent");
+	private LimsVO limsVo;
 	private InvCell invCell;
 	private AbstractDetailModalWindow modalWindow;
+	private Boolean allocating = false;
 	
 	/**
 	 * A representation of a cell contained within in a GridBox
-	 * 
 	 * @param id
+	 * @param limsVo
 	 * @param invCell
+	 * @param modalWindow
+	 * @param allocating
 	 */
-	public GridCellContentPanel(String id, InvCell invCell, AbstractDetailModalWindow modalWindow) {
+	public GridCellContentPanel(String id, LimsVO limsVo, InvCell invCell, AbstractDetailModalWindow modalWindow, Boolean allocating) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
+		this.limsVo = limsVo;
 		this.invCell = invCell;
 		this.modalWindow = modalWindow;
+		this.allocating = allocating;
 	}
 	
 	@Override
@@ -55,10 +62,15 @@ public class GridCellContentPanel extends Panel {
 
 	private void initialiseContentPanel() {
 		if(this.invCell.getBiospecimen() == null) {
-			gridCellContent = new GridCellIcon("gridCellContent", getIconResourceReference(invCell), getIconOverResourceReference(invCell), invCell.getId().toString());
+			if(allocating) {
+				gridCellContent = new GridCellLink("gridCellContent", getIconResourceReference(invCell), getIconOverResourceReference(invCell), limsVo, invCell, modalWindow, allocating);
+			}
+			else {
+				gridCellContent = new GridCellIcon("gridCellContent", getIconResourceReference(invCell), getIconOverResourceReference(invCell), limsVo.getInvCell().getId().toString());
+			}
 		}
 		else {
-			gridCellContent = new GridCellLink("gridCellContent", getIconResourceReference(invCell), getIconOverResourceReference(invCell), invCell, modalWindow);
+			gridCellContent = new GridCellLink("gridCellContent", getIconResourceReference(invCell), getIconOverResourceReference(invCell), limsVo, invCell, modalWindow, allocating);
 		}
 
 		addOrReplace(gridCellContent);

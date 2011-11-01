@@ -26,7 +26,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 
-import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.web.component.inventory.form.BoxDetailForm;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
@@ -72,8 +71,7 @@ public class BoxDetailPanel extends Panel {
 			}
 		};
 		
-		InvBox invBox = containerForm.getModelObject().getInvBox();
-		gridBoxPanel = new GridBoxPanel("gridBoxPanel", invBox, invBox.getName(), modalWindow);
+		gridBoxPanel = new GridBoxPanel("gridBoxPanel", containerForm.getModelObject(), modalWindow, false);
 		
 		add(detailForm);
 		add(gridBoxPanel);

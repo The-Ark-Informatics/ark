@@ -1,10 +1,16 @@
 package au.org.theark.lims.web.component.biolocation;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.lims.service.IInventoryService;
 
 /**
  * Panel displaying the location details for a Biospecimen in context
@@ -13,11 +19,13 @@ import au.org.theark.lims.model.vo.LimsVO;
  * @author cellis
  * 
  */
-public class BioLocationPanel extends Panel {
+public abstract class BioLocationPanel extends Panel {
 	/**
 	 * 
 	 */
 	private static final long						serialVersionUID	= 1L;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
+	private IInventoryService									iInventoryService;
 	protected CompoundPropertyModel<LimsVO>	cpModel;
 	private Label										siteNameLbl;
 	private Label										tankNameLbl;
@@ -25,6 +33,7 @@ public class BioLocationPanel extends Panel {
 	private Label										boxNameLbl;
 	private Label										rowLbl;
 	private Label										cellLbl;
+	private ArkBusyAjaxButton						unallocateButton;
 
 	public BioLocationPanel(String id, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id);
@@ -42,6 +51,22 @@ public class BioLocationPanel extends Panel {
 		boxNameLbl = new Label("biospecimenLocationVO.box", cpModel.getObject().getBiospecimenLocationVO().getBoxName());
 		rowLbl = new Label("biospecimenLocationVO.row", cpModel.getObject().getBiospecimenLocationVO().getRowLabel());
 		cellLbl = new Label("biospecimenLocationVO.column", cpModel.getObject().getBiospecimenLocationVO().getColLabel());
+		unallocateButton = new ArkBusyAjaxButton("unallocate") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				unallocateBiospecimen(target);
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+			}
+		};
+		unallocateButton.setDefaultFormProcessing(false);
 	}
 
 	public void addComponents() {
@@ -51,5 +76,15 @@ public class BioLocationPanel extends Panel {
 		add(boxNameLbl);
 		add(rowLbl);
 		add(cellLbl);
+		add(unallocateButton);
 	}
+	
+	protected void unallocateBiospecimen(AjaxRequestTarget target) {
+		InvCell invCell = iInventoryService.getInvCellByBiospecimen(cpModel.getObject().getBiospecimen());
+		invCell.setBiospecimen(null);
+		iInventoryService.updateInvCell(invCell);
+		refreshParentPanel(target);
+	}
+
+	public abstract void refreshParentPanel(AjaxRequestTarget target);
 }

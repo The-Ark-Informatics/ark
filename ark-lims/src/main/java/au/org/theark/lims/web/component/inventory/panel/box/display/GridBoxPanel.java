@@ -58,6 +58,7 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 
@@ -82,12 +83,31 @@ public class GridBoxPanel extends Panel {
 	private static final PackageResourceReference	BARCODE_CELL_ICON		= new PackageResourceReference(GridBoxPanel.class, "barcodeCell.gif");
 	
 	private AbstractDetailModalWindow		modalWindow;
-	private InvBox	invBox;
+	private LimsVO limsVo;
+	private Boolean allocating = false;
 	
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService					iInventoryService;
 
-	public GridBoxPanel(String id, InvBox invBox, String exportXlsfileName, AbstractDetailModalWindow modalWindow) {
+	public GridBoxPanel(String id, LimsVO limsVo, AbstractDetailModalWindow modalWindow, Boolean allocating) {
+		super(id);
+		setOutputMarkupPlaceholderTag(true);
+		
+		this.exportXlsFileName = "GridBoxData";
+		gridBoxKeyContainer.setVisible(false);
+		
+		this.modalWindow = modalWindow;
+		this.limsVo = limsVo;
+		
+		if(limsVo.getInvBox().getId() != null) {
+			log.info("InvBox ID: " + limsVo.getInvBox().getId());
+		}
+		setVisible(limsVo.getInvBox().getId() != null);
+		this.allocating = allocating;
+		initialiseGrid();
+	}
+	
+	public GridBoxPanel(String id, LimsVO limsVo, String exportXlsfileName, AbstractDetailModalWindow modalWindow) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		
@@ -97,14 +117,9 @@ public class GridBoxPanel extends Panel {
 		}
 		
 		this.modalWindow = modalWindow;
-		this.invBox = invBox;
-		setVisible(invBox.getId() != null);
-	}
-	
-	@Override
-	protected void onBeforeRender() {
+		this.limsVo = limsVo;
+		setVisible(limsVo.getInvBox().getId() != null);
 		initialiseGrid();
-		super.onBeforeRender();
 	}
 
 	/**
@@ -112,22 +127,23 @@ public class GridBoxPanel extends Panel {
 	 * @param invBox
 	 */
 	private void initialiseGrid() {
-		invBox = iInventoryService.getInvBox(this.invBox.getId());
+		limsVo.setInvBox(iInventoryService.getInvBox(limsVo.getInvBox().getId()));
+		
 		List<InvCell> invCellList = new ArrayList<InvCell>(0);
-		invCellList = iInventoryService.getCellAndBiospecimenListByBox(invBox);
+		invCellList = iInventoryService.getCellAndBiospecimenListByBox(limsVo.getInvBox());
 		
 		// Handle for no cells in InvCell table!
-		int cells = invBox.getNoofcol() * invBox.getNoofrow();
+		int cells = limsVo.getInvBox().getNoofcol() * limsVo.getInvBox().getNoofrow();
 		if (invCellList.size() != cells) {
-			log.error("InvCell table is missing data for invBox.id " + invBox.getId());
-			this.error("InvCell table is missing data for invBox.id " + invBox.getId());
+			log.error("InvCell table is missing data for invBox.id " + limsVo.getInvBox().getId());
+			this.error("InvCell table is missing data for invBox.id " + limsVo.getInvBox().getId());
 			this.setVisible(false);
 			addOrReplace(createHeadings(new InvBox()));
 			addOrReplace(createMainGrid(new InvBox(), invCellList));
 		}
 		else {
-			addOrReplace(createHeadings(invBox));
-			addOrReplace(createMainGrid(invBox, invCellList));
+			addOrReplace(createHeadings(limsVo.getInvBox()));
+			addOrReplace(createMainGrid(limsVo.getInvBox(), invCellList));
 			initialiseGridKey(invCellList);
 		}
 	}
@@ -156,6 +172,7 @@ public class GridBoxPanel extends Panel {
 
 			public void populateItem(LoopItem item) {
 				final int col = item.getIndex();
+				
 
 				IModel<String> colModel = new Model() {
 					/**
@@ -190,7 +207,7 @@ public class GridBoxPanel extends Panel {
 	 * @param invCellList
 	 * @return
 	 */
-	@SuppressWarnings( { "serial", "unchecked" })
+	@SuppressWarnings( { "unchecked" })
 	private Loop createMainGrid(final InvBox invBox, final List<InvCell> invCellList) {
 		String colRowNoType = "";
 		
@@ -202,6 +219,11 @@ public class GridBoxPanel extends Panel {
 		
 		// Outer Loop instance, using a PropertyModel to bind the Loop iteration to invBox "noofrow" value
 		Loop loop = new Loop("rows", new PropertyModel(invBox, "noofrow")) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			public void populateItem(LoopItem item) {
 				final int row = item.getIndex();
 				
@@ -218,6 +240,11 @@ public class GridBoxPanel extends Panel {
 
 				Label rowLabel = new Label("rowNo", new Model(label));
 				rowLabel.add(new Behavior() {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
+
 					@Override
 					public void onComponentTag(Component component, ComponentTag tag) {
 						super.onComponentTag(component, tag);
@@ -228,14 +255,24 @@ public class GridBoxPanel extends Panel {
 				
 				// We create an inner Loop instance and uses PropertyModel to bind the Loop iteration to invBox "noofcol" value
 				item.add(new Loop("cols", new PropertyModel(invBox, "noofcol")) {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
+
 					public void populateItem(LoopItem item) {
 						final int col = item.getIndex();
 						final int index = (row * noOfCols) + col;
 						
 						InvCell invCell = invCellList.get(index);
-						
+						GridCellContentPanel gridCellContentPanel;
 						// add the gridCell
-						GridCellContentPanel gridCellContentPanel = new GridCellContentPanel("cell", invCell, modalWindow);
+						if(allocating) {
+							gridCellContentPanel = new GridCellContentPanel("cell", limsVo, invCell, modalWindow, true);
+						}
+						else {
+							gridCellContentPanel = new GridCellContentPanel("cell", limsVo, invCell, modalWindow, false);
+						}
 						item.add(gridCellContentPanel);
 					}					
 				});
@@ -258,6 +295,7 @@ public class GridBoxPanel extends Panel {
 		// Download file link
 		gridBoxKeyContainer.addOrReplace(buildDownloadLink(invCellList));
 		addOrReplace(gridBoxKeyContainer);
+		gridBoxKeyContainer.setVisible(!allocating);
 	}
 	
 	/**
@@ -314,17 +352,14 @@ public class GridBoxPanel extends Panel {
 	 * @return
 	 */
 	protected DownloadLink buildDownloadLink(final List<InvCell> invCellList) {
-		log.info("Downloading grid as XLS");
 		byte[] data = createWorkBookAsByteArray(invCellList);
 		InputStream inputStream = new ByteArrayInputStream(data);
 		OutputStream outputStream;
 		DownloadLink link = null;
 		try {
 			java.io.File file = File.createTempFile("exportXlsFileName", ".xls");
-			log.info("Writing out temp file to: " + file.getCanonicalPath());
 			outputStream = new FileOutputStream(file);
 			IOUtils.copy(inputStream, outputStream);
-			
 			link = new DownloadLink("downloadGridBoxDataLink", file);
 		}
 		catch (FileNotFoundException e) {
