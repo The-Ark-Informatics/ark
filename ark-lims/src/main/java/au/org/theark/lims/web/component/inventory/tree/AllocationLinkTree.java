@@ -25,7 +25,6 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -44,44 +43,43 @@ import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.InventoryModel;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.inventory.form.ContainerForm;
-import au.org.theark.lims.web.component.inventory.panel.box.BoxDetailPanel;
-import au.org.theark.lims.web.component.inventory.panel.freezer.FreezerDetailPanel;
-import au.org.theark.lims.web.component.inventory.panel.rack.RackDetailPanel;
-import au.org.theark.lims.web.component.inventory.panel.site.SiteDetailPanel;
 
-public class InventoryLinkTree extends LinkTree {
+/**
+ * 
+ * @author cellis
+ *
+ */
+public abstract class AllocationLinkTree<T> extends LinkTree {
+
 	/**
 	 * 
 	 */
-	private static final long					serialVersionUID	= -3736908668279170191L;
+	private static final long	serialVersionUID	= -6241958621459969476L;
+	private static final PackageResourceReference	STUDY_ICON			= new PackageResourceReference(AllocationLinkTree.class, "study.gif");
+	private static final PackageResourceReference	SITE_ICON			= new PackageResourceReference(AllocationLinkTree.class, "site.gif");
+	private static final PackageResourceReference	EMPTY_FREEZER_ICON	= new PackageResourceReference(AllocationLinkTree.class, "empty_tank.gif");
+	private static final PackageResourceReference	GREEN_FREEZER_ICON	= new PackageResourceReference(AllocationLinkTree.class, "green_tank.gif");
+	private static final PackageResourceReference	YELLOW_FREEZER_ICON	= new PackageResourceReference(AllocationLinkTree.class, "yellow_tank.gif");
+	private static final PackageResourceReference	FULL_FREEZER_ICON		= new PackageResourceReference(AllocationLinkTree.class, "full_tank.gif");
 
-	private static final PackageResourceReference	STUDY_ICON			= new PackageResourceReference(InventoryLinkTree.class, "study.gif");
-	private static final PackageResourceReference	SITE_ICON			= new PackageResourceReference(InventoryLinkTree.class, "site.gif");
-	private static final PackageResourceReference	EMPTY_FREEZER_ICON	= new PackageResourceReference(InventoryLinkTree.class, "empty_tank.gif");
-	private static final PackageResourceReference	GREEN_FREEZER_ICON	= new PackageResourceReference(InventoryLinkTree.class, "green_tank.gif");
-	private static final PackageResourceReference	YELLOW_FREEZER_ICON	= new PackageResourceReference(InventoryLinkTree.class, "yellow_tank.gif");
-	private static final PackageResourceReference	FULL_FREEZER_ICON		= new PackageResourceReference(InventoryLinkTree.class, "full_tank.gif");
-
-	private static final PackageResourceReference	EMPTY_BOX_ICON		= new PackageResourceReference(InventoryLinkTree.class, "empty_box.gif");
-	private static final PackageResourceReference	GREEN_BOX_ICON		= new PackageResourceReference(InventoryLinkTree.class, "green_box.gif");
-	private static final PackageResourceReference	YELLOW_BOX_ICON	= new PackageResourceReference(InventoryLinkTree.class, "yellow_box.gif");
-	private static final PackageResourceReference	FULL_BOX_ICON		= new PackageResourceReference(InventoryLinkTree.class, "full_box.gif");
+	private static final PackageResourceReference	EMPTY_BOX_ICON		= new PackageResourceReference(AllocationLinkTree.class, "empty_box.gif");
+	private static final PackageResourceReference	GREEN_BOX_ICON		= new PackageResourceReference(AllocationLinkTree.class, "green_box.gif");
+	private static final PackageResourceReference	YELLOW_BOX_ICON	= new PackageResourceReference(AllocationLinkTree.class, "yellow_box.gif");
+	private static final PackageResourceReference	FULL_BOX_ICON		= new PackageResourceReference(AllocationLinkTree.class, "full_box.gif");
 	
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService					iInventoryService;
 	
 	private FeedbackPanel feedbackPanel;
-	private WebMarkupContainer detailContainer;
-	private ContainerForm containerForm;
+	private IModel<T> propertyModel;
 
-	public InventoryLinkTree(String id, TreeModel model, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm) {
+	public AllocationLinkTree(String id, TreeModel model, FeedbackPanel feedbackPanel, IModel<T> propertyModel) {
 		super(id, model);
 		this.feedbackPanel = feedbackPanel;
-		this.detailContainer = detailContainer;
-		this.containerForm = containerForm;
+		this.propertyModel = propertyModel;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -94,7 +92,7 @@ public class InventoryLinkTree extends LinkTree {
 
 			@Override
 			protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
-				InventoryLinkTree.this.onNodeLinkClicked(node, tree, target);
+				AllocationLinkTree.this.onNodeLinkClicked(node, tree, target);
 			}
 
 			@Override
@@ -231,56 +229,18 @@ public class InventoryLinkTree extends LinkTree {
 	@Override
 	protected void onNodeLinkClicked(Object object, BaseTree tree, AjaxRequestTarget target) {
 		final DefaultMutableTreeNode node = (DefaultMutableTreeNode) object;
+		final LimsVO limsVo = (LimsVO) propertyModel.getObject();
 		
 		if (node.getUserObject() instanceof InventoryModel) {
 			final InventoryModel inventoryModel = (InventoryModel) node.getUserObject();
 
-			if (inventoryModel.getObject() instanceof InvSite) {
-				InvSite invSite = (InvSite) inventoryModel.getObject();
-				// Get object from database again, to be sure of persistence
-				invSite = iInventoryService.getInvSite(invSite.getId());
-				containerForm.getModelObject().setInvSite(invSite);
-				
-				SiteDetailPanel detailPanel = new SiteDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
-				detailPanel.initialisePanel();
-				
-				detailContainer.addOrReplace(detailPanel);
-				detailContainer.setVisible(true);
-			}
-			if (inventoryModel.getObject() instanceof InvFreezer) {
-				InvFreezer invFreezer = (InvFreezer) inventoryModel.getObject();
-				
-				containerForm.getModelObject().setInvFreezer(invFreezer);
-				
-				FreezerDetailPanel detailPanel = new FreezerDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
-				detailPanel.initialisePanel();
-				
-				detailContainer.addOrReplace(detailPanel);
-				detailContainer.setVisible(true);
-			}
-			if (inventoryModel.getObject() instanceof InvRack) {
-				InvRack invRack = (InvRack) inventoryModel.getObject();
-				// Get object from database again, to be sure of persistence
-				invRack = iInventoryService.getInvRack(invRack.getId());
-				containerForm.getModelObject().setInvRack(invRack);
-				
-				RackDetailPanel detailPanel = new RackDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
-				detailPanel.initialisePanel();
-				
-				detailContainer.addOrReplace(detailPanel);
-				detailContainer.setVisible(true);
-			}
+			
 			if (inventoryModel.getObject() instanceof InvBox) {
 				InvBox invBox = (InvBox) inventoryModel.getObject();
 				// Get object from database again, to be sure of persistence
 				invBox = iInventoryService.getInvBox(invBox.getId());
-				containerForm.getModelObject().setInvBox(invBox);
-				
-				BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
-				detailPanel.initialisePanel();
-				
-				detailContainer.addOrReplace(detailPanel);
-				detailContainer.setVisible(true);
+				limsVo.setInvBox(invBox);
+				boxNodeClicked(target, invBox);
 			}
 		}
 
@@ -298,9 +258,10 @@ public class InventoryLinkTree extends LinkTree {
 		tree.updateTree(target);
 		
 		target.add(feedbackPanel);
-		target.add(detailContainer);
 	}
 	
+	public abstract void boxNodeClicked(AjaxRequestTarget target, InvBox invBox);
+
 	/**
 	 * Determine what icon to display on the node
 	 * 

@@ -58,7 +58,6 @@ import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.util.UniqueIdGenerator;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biolocation.BioLocationPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
@@ -310,7 +309,16 @@ public class BiospecimenListForm extends Form<LimsVO> {
 							try {
 								biospecimenLocationVo = iInventoryService.locateBiospecimen(biospecimen);
 								newModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
-								modalContentPanel = new BioLocationPanel("content", newModel);
+								modalContentPanel = new BioLocationPanel("content", newModel){
+									/**
+									 * 
+									 */
+									private static final long	serialVersionUID	= 1L;
+
+									@Override
+									public void refreshParentPanel(AjaxRequestTarget target) {
+									}
+								};
 								modalContentPanel.add(new AttributeModifier("class", "detailsPanelBorder"));
 								// Set the modalWindow title and content
 								modalWindow.setTitle("Biospecimen Location Detail");
