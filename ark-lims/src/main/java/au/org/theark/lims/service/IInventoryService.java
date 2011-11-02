@@ -242,4 +242,12 @@ public interface IInventoryService {
 	 * @return List of objects (nodes) in the path order (site : freezer : rack : box)
 	 */
 	public List<Object> getInventoryPathOfNode(Object node);
+	
+	/**
+	 * Returns a light weight VO that represents the location of the given invCell 
+	 * @param invCell
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public BiospecimenLocationVO getInvCellLocation(InvCell invCell) throws ArkSystemException;
 }
