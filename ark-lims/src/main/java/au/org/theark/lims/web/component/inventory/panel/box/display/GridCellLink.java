@@ -88,6 +88,7 @@ public class GridCellLink extends Panel {
 		target.appendJavaScript(alert);
 		
 		//TODO: use CellStatus
+		invCell.setBiospecimen(limsVo.getBiospecimen());
 		invCell.setStatus("Not Empty");
 		iInventoryService.updateInvCell(invCell);
 		
