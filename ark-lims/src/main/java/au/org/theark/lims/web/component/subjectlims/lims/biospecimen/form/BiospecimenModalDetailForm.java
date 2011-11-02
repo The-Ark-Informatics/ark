@@ -294,7 +294,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		}
 		else {
 			try {
-				BiospecimenLocationVO biospecimenLocationVo = iInventoryService.locateBiospecimen(biospecimen);
+				BiospecimenLocationVO biospecimenLocationVo = iInventoryService.getBiospecimenLocation(biospecimen);
 				cpModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
 				biospecimenLocationPanel = new BioLocationDetailPanel("biospecimenLocationPanel", cpModel);
 				replacePanel = true;

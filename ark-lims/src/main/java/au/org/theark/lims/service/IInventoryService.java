@@ -10,9 +10,9 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvColRowType;
-import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
+import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 
@@ -229,13 +229,12 @@ public interface IInventoryService {
 	public List<InvBox> searchInvBox(InvBox invBox) throws ArkSystemException;
 	
 	/**
-	 * Returns a light weight VO that represents the location of the given biospecimen
+	 * Returns a light weight VO that represents the location of the given biospecimen 
 	 * @param biospecimen
 	 * @return
 	 * @throws ArkSystemException
 	 */
-	
-	public BiospecimenLocationVO locateBiospecimen(Biospecimen biospecimen) throws ArkSystemException;
+	public BiospecimenLocationVO getBiospecimenLocation(Biospecimen biospecimen) throws ArkSystemException;
 	
 	/**
 	 * Returns the current path (ie synced to database) to the node in question (box,Rack,tank, or site)

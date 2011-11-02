@@ -4,30 +4,31 @@ import java.io.Serializable;
 
 /**
  * Represents a Biospecimen's complete location details in one VO.
+ * 
  * @author nivedan
  * @author cellis
- *
+ * 
  */
-public class BiospecimenLocationVO implements Serializable{
-		
+public class BiospecimenLocationVO implements Serializable {
+
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
-	protected String siteName;
-	protected Boolean isAllocated;
-	protected String tankName;
-	protected String trayName;
-	protected String boxName;
-	protected Long row;//has rows and e;
-	protected Long column;
-	protected String rowLabel;
-	protected String colLabel;
-	
-	public BiospecimenLocationVO(){
-		isAllocated=false;
+	protected Boolean				isAllocated;
+	protected String				siteName;
+	protected String				freezerName;
+	protected String				rackName;
+	protected String				boxName;
+	protected Long					row;
+	protected Long					column;
+	protected String				rowLabel;
+	protected String				colLabel;
+
+	public BiospecimenLocationVO() {
+		isAllocated = false;
 	}
-	
+
 	public String getSiteName() {
 		return siteName;
 	}
@@ -36,20 +37,20 @@ public class BiospecimenLocationVO implements Serializable{
 		this.siteName = siteName;
 	}
 
-	public String getTankName() {
-		return tankName;
+	public String getFreezerName() {
+		return freezerName;
 	}
 
-	public void setTankName(String tankName) {
-		this.tankName = tankName;
+	public void setFreezerName(String freezerName) {
+		this.freezerName = freezerName;
 	}
 
-	public String getTrayName() {
-		return trayName;
+	public String getRackName() {
+		return rackName;
 	}
 
-	public void setTrayName(String trayName) {
-		this.trayName = trayName;
+	public void setRackName(String rackName) {
+		this.rackName = rackName;
 	}
 
 	public String getBoxName() {
@@ -75,7 +76,7 @@ public class BiospecimenLocationVO implements Serializable{
 	public void setColumn(Long column) {
 		this.column = column;
 	}
-	
+
 	public Boolean getIsAllocated() {
 		return isAllocated;
 	}
@@ -92,7 +93,8 @@ public class BiospecimenLocationVO implements Serializable{
 	}
 
 	/**
-	 * @param rowLabel the rowLabel to set
+	 * @param rowLabel
+	 *           the rowLabel to set
 	 */
 	public void setRowLabel(String rowLabel) {
 		this.rowLabel = rowLabel;
@@ -106,7 +108,8 @@ public class BiospecimenLocationVO implements Serializable{
 	}
 
 	/**
-	 * @param colLabel the colLabel to set
+	 * @param colLabel
+	 *           the colLabel to set
 	 */
 	public void setColLabel(String colLabel) {
 		this.colLabel = colLabel;
