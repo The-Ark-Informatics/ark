@@ -7,6 +7,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -34,6 +35,8 @@ public abstract class BioLocationPanel extends Panel {
 	private Label										rowLbl;
 	private Label										cellLbl;
 	private ArkBusyAjaxButton						unallocateButton;
+
+	
 
 	public BioLocationPanel(String id, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id);
@@ -82,9 +85,26 @@ public abstract class BioLocationPanel extends Panel {
 	protected void unallocateBiospecimen(AjaxRequestTarget target) {
 		InvCell invCell = iInventoryService.getInvCellByBiospecimen(cpModel.getObject().getBiospecimen());
 		invCell.setBiospecimen(null);
+		invCell.setStatus("Empty");
 		iInventoryService.updateInvCell(invCell);
+		
+		try {
+			cpModel.getObject().setBiospecimenLocationVO(iInventoryService.getInvCellLocation(invCell));
+			cpModel.getObject().getBiospecimenLocationVO().setIsAllocated(false);
+			cpModel.getObject().setInvCell(invCell);
+		}
+		catch (ArkSystemException e) {
+		}
 		refreshParentPanel(target);
 	}
 
 	public abstract void refreshParentPanel(AjaxRequestTarget target);
+	
+	public ArkBusyAjaxButton getUnallocateButton() {
+		return unallocateButton;
+	}
+
+	public void setUnallocateButton(ArkBusyAjaxButton unallocateButton) {
+		this.unallocateButton = unallocateButton;
+	}
 }

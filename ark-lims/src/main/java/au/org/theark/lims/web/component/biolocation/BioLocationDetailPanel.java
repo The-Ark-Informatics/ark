@@ -8,9 +8,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
@@ -57,18 +54,6 @@ public class BioLocationDetailPanel extends Panel {
 	
 	@Override
 	protected void onBeforeRender() {
-		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
-		if (biospecimen.getId() != null) {
-			BiospecimenLocationVO biospecimenLocationVo;
-			try {
-				biospecimenLocationVo = iInventoryService.getBiospecimenLocation(biospecimen);
-				cpModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
-			}
-			catch (ArkSystemException e) {
-				log.error(e.getMessage());
-			}
-		}
-		
 		if (cpModel.getObject().getBiospecimenLocationVO().getIsAllocated()) {
 			locationPanel = new BioLocationPanel("locationPanel", cpModel){
 				/**
@@ -91,6 +76,6 @@ public class BioLocationDetailPanel extends Panel {
 	}
 	
 	public void refreshPanel(AjaxRequestTarget target) {
-		target.add(this);
+		target.add(BioLocationDetailPanel.this);
 	}
 }

@@ -259,12 +259,9 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 					@Override
 					public void onClick(AjaxRequestTarget target) {
-						//Biospecimen biospecimen = (Biospecimen) (getParent().getDefaultModelObject());
 						CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 						newModel.getObject().getBiospecimen().setId(biospecimen.getId());
-						//cpModel.getObject().setBiospecimen(biospecimen);
 						showModalWindow(target, newModel);
-						//showModalWindow(target,cpModel);
 					}
 				};
 
@@ -309,7 +306,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 							try {
 								biospecimenLocationVo = iInventoryService.getBiospecimenLocation(biospecimen);
 								newModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
-								modalContentPanel = new BioLocationPanel("content", newModel){
+								BioLocationPanel bioLocationPanel = new BioLocationPanel("content", newModel){
 									/**
 									 * 
 									 */
@@ -319,10 +316,11 @@ public class BiospecimenListForm extends Form<LimsVO> {
 									public void refreshParentPanel(AjaxRequestTarget target) {
 									}
 								};
-								modalContentPanel.add(new AttributeModifier("class", "detailsPanelBorder"));
+								bioLocationPanel.getUnallocateButton().setVisible(false);
+								bioLocationPanel.add(new AttributeModifier("class", "detailsPanelBorder"));
 								// Set the modalWindow title and content
 								modalWindow.setTitle("Biospecimen Location Detail");
-								modalWindow.setContent(modalContentPanel);
+								modalWindow.setContent(bioLocationPanel);
 								modalWindow.show(target);
 							}
 							catch (ArkSystemException e) {
