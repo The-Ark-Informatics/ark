@@ -307,7 +307,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 							newModel.getObject().getBiospecimen().setId(biospecimen.getId());
 							BiospecimenLocationVO biospecimenLocationVo;
 							try {
-								biospecimenLocationVo = iInventoryService.locateBiospecimen(biospecimen);
+								biospecimenLocationVo = iInventoryService.getBiospecimenLocation(biospecimen);
 								newModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
 								modalContentPanel = new BioLocationPanel("content", newModel){
 									/**
@@ -333,7 +333,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					
 					locationLink.add(locationLbl);
 					
-					BiospecimenLocationVO biospecimenLocationVo = iInventoryService.locateBiospecimen(biospecimen);
+					BiospecimenLocationVO biospecimenLocationVo = iInventoryService.getBiospecimenLocation(biospecimen);
 					if(!biospecimenLocationVo.getIsAllocated()) {
 						locationLink.setVisible(false);
 					}

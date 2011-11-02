@@ -190,48 +190,10 @@ public class InventoryServiceImpl implements IInventoryService {
 	public List<InvRack> searchInvRack(InvRack invRack) throws ArkSystemException {
 		return iInventoryDao.searchInvRack(invRack);
 	}
-
-	/**
-	 * A wrapper implementation over getInvCellByBiospecimen(Biospecimen)
-	 */
-	public BiospecimenLocationVO locateBiospecimen(Biospecimen biospecimen) throws ArkSystemException {
-		InvCell cell = iInventoryDao.getInvCellByBiospecimen(biospecimen);
+	
+	public BiospecimenLocationVO getBiospecimenLocation(Biospecimen biospecimen) throws ArkSystemException{
 		BiospecimenLocationVO biospecimenLocationVO = new BiospecimenLocationVO();
-		if (cell != null && cell.getId() != null) {
-			InvBox box = cell.getInvBox();
-			InvRack rack = box.getInvRack();
-			InvFreezer freezer = rack.getInvFreezer();
-			InvSite site = freezer.getInvSite();
-
-			biospecimenLocationVO.setIsAllocated(true);
-			biospecimenLocationVO.setBoxName(box.getName());
-			biospecimenLocationVO.setTrayName(rack.getName());
-			biospecimenLocationVO.setTankName(freezer.getName());
-			biospecimenLocationVO.setSiteName(site.getName());
-			biospecimenLocationVO.setColumn(cell.getColno());
-			biospecimenLocationVO.setRow(cell.getRowno());
-			
-			String rowLabel = new String();
-			if (box.getRownotype().getName().equalsIgnoreCase("ALPHABET")) {
-				char character = (char) (cell.getRowno() + 64);
-				rowLabel = new Character(character).toString();
-			}
-			else {
-				rowLabel = new Integer(cell.getRowno().intValue()).toString();
-			}
-			biospecimenLocationVO.setRowLabel(rowLabel);
-			
-			String colLabel = new String();
-			if (box.getColnotype().getName().equalsIgnoreCase("ALPHABET")) {
-				char character = (char) (cell.getColno() + 64);
-				colLabel = new Character(character).toString();
-			}
-			else {
-				colLabel = new Integer(cell.getColno().intValue()).toString();
-			}
-			biospecimenLocationVO.setColLabel(colLabel);
-		}
-
+		biospecimenLocationVO = iInventoryDao.getBiospecimenLocation(biospecimen);
 		return biospecimenLocationVO;
 	}
 

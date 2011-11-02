@@ -13,6 +13,7 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
+import au.org.theark.lims.service.ILimsService;
 
 /**
  * Panel displaying the location/not allocated details for a Biospecimen in context
@@ -27,6 +28,8 @@ public class BioLocationDetailPanel extends Panel {
 	 */
 	private static final long						serialVersionUID	= 1L;
 	private static final Logger					log					= LoggerFactory.getLogger(BioLocationDetailPanel.class);
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
+	private ILimsService								iLimsService;
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService						iInventoryService;
 	protected CompoundPropertyModel<LimsVO>	cpModel;
@@ -54,16 +57,16 @@ public class BioLocationDetailPanel extends Panel {
 	
 	@Override
 	protected void onBeforeRender() {
-		try {
-			Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
-			if (biospecimen.getId() != null) {
-				log.info("biospecimen: " + biospecimen.getBiospecimenUid());
-				BiospecimenLocationVO biospecimenLocationVo = iInventoryService.locateBiospecimen(biospecimen);
+		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
+		if (biospecimen.getId() != null) {
+			BiospecimenLocationVO biospecimenLocationVo;
+			try {
+				biospecimenLocationVo = iInventoryService.getBiospecimenLocation(biospecimen);
 				cpModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
 			}
-		}
-		catch (ArkSystemException e) {
-			log.error(e.getMessage());
+			catch (ArkSystemException e) {
+				log.error(e.getMessage());
+			}
 		}
 		
 		if (cpModel.getObject().getBiospecimenLocationVO().getIsAllocated()) {

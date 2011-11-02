@@ -34,9 +34,10 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvColRowType;
-import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
+import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 
 @SuppressWarnings("unchecked")
 @Repository("inventoryDao")
@@ -353,5 +354,59 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 
 		List<InvRack> list = criteria.list();
 		return list;
+	}
+	
+	public BiospecimenLocationVO getBiospecimenLocation(Biospecimen biospecimen) {
+		BiospecimenLocationVO biospecimenLocationVo = new BiospecimenLocationVO();
+
+		StringBuilder hqlString = new StringBuilder();
+		hqlString.append("SELECT site.name AS siteName, freezer.name as freezerName, rack.name AS rackName, box.name AS boxName, cell.colno AS column, cell.rowno AS row, box.colnotype.name AS colNoType, box.rownotype.name AS rowNoType \n");
+		hqlString.append("FROM InvCell AS cell \n");
+		hqlString.append("LEFT JOIN cell.invBox AS box \n");
+		hqlString.append("LEFT JOIN box.invRack AS rack \n");
+		hqlString.append("LEFT JOIN rack.invFreezer AS freezer \n");
+		hqlString.append("LEFT JOIN freezer.invSite AS site \n");
+		hqlString.append("WHERE cell.biospecimen = :biospecimen");
+		
+		Query q = getSession().createQuery(hqlString.toString());
+		q.setParameter("biospecimen", biospecimen);
+		Object[] result = (Object[]) q.uniqueResult();
+
+		if(result != null) {
+			biospecimenLocationVo.setIsAllocated(true);
+			biospecimenLocationVo.setSiteName(result[0].toString());
+			biospecimenLocationVo.setFreezerName(result[1].toString());
+			biospecimenLocationVo.setRackName(result[2].toString());
+			biospecimenLocationVo.setBoxName(result[3].toString());
+			
+			Long colno = new Long((Long) result[4]);
+			Long rowno = new Long((Long)result[5]);
+			biospecimenLocationVo.setColumn(colno);
+			biospecimenLocationVo.setRow(rowno);
+			
+			String colNoType = result[6].toString();
+			String rowNoType = result[7].toString();
+			
+			String colLabel = new String();
+			if (colNoType.equalsIgnoreCase("ALPHABET")) {
+				char character = (char) (colno + 64);
+				colLabel = new Character(character).toString();
+			}
+			else {
+				colLabel = new Integer(colno.intValue()).toString();
+			}
+			biospecimenLocationVo.setColLabel(colLabel);
+			
+			String rowLabel = new String();
+			if (rowNoType.equalsIgnoreCase("ALPHABET")) {
+				char character = (char) (rowno + 64);
+				rowLabel = new Character(character).toString();
+			}
+			else {
+				rowLabel = new Integer(rowno.intValue()).toString();
+			}
+			biospecimenLocationVo.setRowLabel(rowLabel);
+		}
+		return biospecimenLocationVo;
 	}
 }
