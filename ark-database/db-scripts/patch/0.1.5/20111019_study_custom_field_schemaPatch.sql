@@ -1,4 +1,6 @@
 use study;
+
+-- NOTE: when applying on ArkTestDB had to DROP INDEX 'FK_CUSTOMFIELD_FIELD_TYPE_ID' beforehand
 ALTER TABLE `study`.`custom_field` 
   ADD CONSTRAINT `FK_CUSTOMFIELD_FIELD_TYPE_ID`
   FOREIGN KEY (`FIELD_TYPE_ID` )
@@ -6,5 +8,4 @@ ALTER TABLE `study`.`custom_field`
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
 , ADD INDEX `FK_CUSTOMFIELD_FIELD_TYPE_ID` (`FIELD_TYPE_ID` ASC) ;
-
 
