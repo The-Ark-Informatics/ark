@@ -45,6 +45,7 @@ ALTER TABLE `lims`.`biospecimen` CHANGE COLUMN `SPECIES` `BIOSPECIMEN_SPECIES_ID
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
+-- Script stoppped here because it is trying to re-add the same column 'BIOSPECIMEN_QUALITY_ID'
 ALTER TABLE `lims`.`biospecimen` ADD COLUMN `BIOSPECIMEN_QUALITY_ID` INT(11) NULL DEFAULT NULL  AFTER `BARCODED`, 
   ADD CONSTRAINT `fk_biospecimen_quality`
   FOREIGN KEY (`BIOSPECIMEN_QUALITY_ID` )
