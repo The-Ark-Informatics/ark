@@ -20,10 +20,10 @@ public class GridCellContentPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long					serialVersionUID				= 435929363844198235L;
-	
+	private static final long								serialVersionUID				= 435929363844198235L;
+
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
-	private IInventoryService					iInventoryService;
+	private IInventoryService								iInventoryService;
 
 	private static final PackageResourceReference	EMPTY_CELL_ICON				= new PackageResourceReference(GridCellContentPanel.class, "emptyCell.gif");
 	private static final PackageResourceReference	USED_CELL_ICON					= new PackageResourceReference(GridCellContentPanel.class, "usedCell.gif");
@@ -31,14 +31,15 @@ public class GridCellContentPanel extends Panel {
 	private static final PackageResourceReference	SELECTED_EMPTY_CELL_ICON	= new PackageResourceReference(GridCellContentPanel.class, "selectedEmptyCell.gif");
 	private static final PackageResourceReference	SELECTED_USED_CELL_ICON		= new PackageResourceReference(GridCellContentPanel.class, "selectedUsedCell.gif");
 	private static final PackageResourceReference	SELECTED_BARCODE_CELL_ICON	= new PackageResourceReference(GridCellContentPanel.class, "selectedBarcodeCell.gif");
-	private Component gridCellContent = new EmptyPanel("gridCellContent");
-	private LimsVO limsVo;
-	private InvCell invCell;
-	private AbstractDetailModalWindow modalWindow;
-	private Boolean allocating = false;
-	
+	private Component											gridCellContent				= new EmptyPanel("gridCellContent");
+	private LimsVO												limsVo;
+	private InvCell											invCell;
+	private AbstractDetailModalWindow					modalWindow;
+	private Boolean											allocating						= false;
+
 	/**
 	 * A representation of a cell contained within in a GridBox
+	 * 
 	 * @param id
 	 * @param limsVo
 	 * @param invCell
@@ -53,26 +54,32 @@ public class GridCellContentPanel extends Panel {
 		this.modalWindow = modalWindow;
 		this.allocating = allocating;
 	}
-	
+
 	@Override
 	protected void onBeforeRender() {
 		super.onBeforeRender();
-		initialiseContentPanel();	
+		initialiseContentPanel();
 	}
 
+
 	private void initialiseContentPanel() {
-		if(this.invCell.getBiospecimen() == null) {
-			if(allocating) {
+		if (allocating) {
+			if (this.invCell.getBiospecimen() == null) {
 				gridCellContent = new GridCellLink("gridCellContent", getIconResourceReference(invCell), getIconOverResourceReference(invCell), limsVo, invCell, modalWindow, allocating);
 			}
 			else {
-				gridCellContent = new GridCellIcon("gridCellContent", getIconResourceReference(invCell), getIconOverResourceReference(invCell), limsVo.getInvCell().getId().toString());
+				gridCellContent = new GridCellIcon("gridCellContent", getIconResourceReference(invCell), getIconOverResourceReference(invCell), invCell.getId().toString());
 			}
 		}
 		else {
-			gridCellContent = new GridCellLink("gridCellContent", getIconResourceReference(invCell), getIconOverResourceReference(invCell), limsVo, invCell, modalWindow, allocating);
+			if (this.invCell.getBiospecimen() == null) {
+				gridCellContent = new GridCellIcon("gridCellContent", getIconResourceReference(invCell), getIconOverResourceReference(invCell), invCell.getId().toString());
+			}
+			else {
+				gridCellContent = new GridCellLink("gridCellContent", getIconResourceReference(invCell), getIconOverResourceReference(invCell), limsVo, invCell, modalWindow, allocating);
+			}
 		}
-
+		
 		addOrReplace(gridCellContent);
 		addToolTip();
 	}
@@ -81,7 +88,7 @@ public class GridCellContentPanel extends Panel {
 	 * Adds a ToolTip, using the invCell details
 	 */
 	private void addToolTip() {
-		invCell = iInventoryService.getInvCell(invCell.getId());
+		//invCell = iInventoryService.getInvCell(invCell.getId());
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Column: ");
 		stringBuffer.append(invCell.getColno());
@@ -115,7 +122,7 @@ public class GridCellContentPanel extends Panel {
 		this.add(new AttributeModifier("showtooltip", new Model<Boolean>(true)));
 		this.add(new AttributeModifier("title", new Model<String>(toolTip)));
 	}
-	
+
 	/**
 	 * Determine what icon to display on the cell
 	 * 
