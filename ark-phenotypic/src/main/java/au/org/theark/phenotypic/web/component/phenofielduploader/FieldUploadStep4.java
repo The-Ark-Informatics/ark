@@ -21,6 +21,7 @@ package au.org.theark.phenotypic.web.component.phenofielduploader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
+import java.util.Collection;
 import java.util.Date;
 
 import jxl.Workbook;
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -168,5 +170,10 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 		containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
 		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+		Collection<CustomFieldUpload> cfUploadLinks = containerForm.getModelObject().getCustomFieldUploadCollection();
+		for (CustomFieldUpload cfUpload : cfUploadLinks) {
+			cfUpload.setStudyUpload(containerForm.getModelObject().getUpload());
+			iArkCommonService.createCustomFieldUpload(cfUpload);
+		}
 	}
 }

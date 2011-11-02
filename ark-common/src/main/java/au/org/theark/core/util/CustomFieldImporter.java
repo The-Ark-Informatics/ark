@@ -171,9 +171,8 @@ public class CustomFieldImporter {
 				customField = new CustomField();
 				customField.setStudy(study);
 
-				try {
-					CustomField oldField = iArkCommonService.getCustomFieldByNameStudyArkFunction(csvReader.get("FIELD_NAME"), study, arkFunction);
-
+				CustomField oldField = iArkCommonService.getCustomFieldByNameStudyArkFunction(csvReader.get("FIELD_NAME"), study, arkFunction);
+				if (oldField != null) {
 					uploadReport.append("Updating field for: ");
 					uploadReport.append("\tFIELD: ");
 					fieldName = csvReader.get("FIELD_NAME");
@@ -187,11 +186,16 @@ public class CustomFieldImporter {
 					oldField.setFieldType(fieldType);
 
 					oldField.setDescription(csvReader.get("DESCRIPTION"));
-					UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
-					if (unitType == null) {
-						throw new SystemDataMismatchException("Unit '" + csvReader.get("UNITS") + "' in file do not match known units in internal system table\n");
+					if (csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
+						UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
+						if (unitType == null) {
+							throw new SystemDataMismatchException("Unit '" + csvReader.get("UNITS") + "' in file do not match known units in internal system table\n");
+						}
+						else  {
+							oldField.setUnitType(unitType);
+						}
 					}
-					oldField.setUnitType(unitType);
+					
 					oldField.setEncodedValues(csvReader.get("ENCODED_VALUES"));
 					oldField.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					oldField.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
@@ -208,16 +212,21 @@ public class CustomFieldImporter {
 					fieldUpload.setCustomField(oldField);
 					fieldUploadList.add(fieldUpload);
 				}
-				catch (EntityNotFoundException enf) {
+				else {
 					customField = new CustomField();
 					customField.setStudy(study);
 					customField.setName(fieldName);
+					customField.setArkFunction(arkFunction);
 
-					UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
-					if (unitType == null) {
-						throw new SystemDataMismatchException("Unit '" + csvReader.get("UNITS") + "' in file do not match known units in internal system table\n");
+					if (csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
+						UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
+						if (unitType == null) {
+							throw new SystemDataMismatchException("Unit '" + csvReader.get("UNITS") + "' in file do not match known units in internal system table\n");
+						}
+						else  {
+							customField.setUnitType(unitType);
+						}
 					}
-					customField.setUnitType(unitType);
 					
 					FieldType fieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
 					customField.setFieldType(fieldType);

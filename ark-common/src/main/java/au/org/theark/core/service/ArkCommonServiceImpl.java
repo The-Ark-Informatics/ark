@@ -84,6 +84,7 @@ import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -932,8 +933,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		this.createAuditHistory(ah);
 	}
 	
-	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr){
-		return csvLoaderDao.getDelimiterTypeByDelimiterChar(phenotypicDelimChr);
+	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter){
+		return studyDao.getDelimiterTypeNameByDelimiterChar(delimiterCharacter);
+	}
+
+	public void createCustomFieldUpload(CustomFieldUpload cfUpload) {
+		studyDao.createCustomFieldUpload(cfUpload);
 	}
 
 }

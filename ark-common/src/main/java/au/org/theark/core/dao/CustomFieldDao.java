@@ -303,8 +303,8 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		// UnitType name should be sufficient to return only 1 row (i.e. uniqueness at the global and arkFunction-specific levels)
 		criteria.add(Restrictions.eq("name", name));
 		criteria.add(Restrictions.or(Restrictions.isNull("arkFunction"), Restrictions.eq("arkFunction", arkFunction)));
-		criteria.uniqueResult();
-		return null;
+		UnitType result = (UnitType) criteria.uniqueResult();
+		return result;
 	}
 	
 }

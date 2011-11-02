@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 
 import jxl.Cell;
 import jxl.Sheet;
@@ -42,6 +43,7 @@ import jxl.read.biff.BiffException;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
+import org.hibernate.hql.ast.ErrorReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +54,7 @@ import au.org.theark.core.exception.PhenotypicSystemException;
 import au.org.theark.core.exception.SystemDataMismatchException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
@@ -169,8 +172,8 @@ public class CustomFieldImportValidator {
 			csvReader.readHeaders();
 
 			// Set field list (note 2th column to Nth column)
-			// SUBJECTID DATE_COLLECTED F1 F2 FN
-			// 0 1 2 3 N
+			// FIELD_NAME FIELD_TYPE DESCRIPTION UNITS ENCODED_VALUES MINIMUM_VALUE MAXIMUM_VALUE MISSING_VALUE
+			// 0 1 2 3 4 5 6 7
 			String[] headerColumnArray = csvReader.getHeaders();
 			boolean headerError = false;
 
@@ -196,7 +199,7 @@ public class CustomFieldImportValidator {
 			if (headerError) {
 				// Invalid file format
 				StringBuffer stringBuffer = new StringBuffer();
-				String delimiterTypeName = iArkCommonService.getDelimiterTypeByDelimiterChar(phenotypicDelimChr);
+				String delimiterTypeName = iArkCommonService.getDelimiterTypeNameByDelimiterChar(phenotypicDelimChr);
 
 				stringBuffer.append("The specified file does not appear to conform to the expected data dictionary file format.\n");
 				stringBuffer.append("The specified file format was: " + fileFormat + "\n");
@@ -300,7 +303,7 @@ public class CustomFieldImportValidator {
 	 */
 	public java.util.Collection<String> validateDataDictionaryFileData(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException {
 		curPos = 0;
-		int row = 1;
+		int rowIdx = 1;
 
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
@@ -350,22 +353,27 @@ public class CustomFieldImportValidator {
 					field.setName(fieldName);
 
 					field.setDescription(csvReader.get("DESCRIPTION"));
-					UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
-					if (unitType == null) {
-						throw new SystemDataMismatchException("Unit '" + csvReader.get("UNITS") + "' in file do not match known units in internal system table\n");
+					if (csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
+						UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
+						if (unitType == null) {
+							gridCell = new ArkGridCell(csvReader.getIndex("UNITS"), rowIdx);
+							StringBuffer stringBuffer = new StringBuffer();
+							stringBuffer.append("Error: ");
+							stringBuffer.append("Unit '");
+							stringBuffer.append(csvReader.get("UNITS"));
+							stringBuffer.append("' in file does not match known units in internal system table");
+							dataValidationMessages.add(stringBuffer.toString());
+							errorCells.add(gridCell);
+						}
+						else  {
+							field.setUnitType(unitType);
+						}
 					}
-					field.setUnitType(unitType);
 					
-					//NN commented this since Phenotypic old code seemed to be using FieldType in Pheno Schema and to fix the compilation error
-					//for EL's code
-					//FieldType fieldType = new FieldType();
-					au.org.theark.core.model.study.entity.FieldType studyFieldType = new au.org.theark.core.model.study.entity.FieldType();
+					FieldType studyFieldType = new FieldType();
 					studyFieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
 
-					//TODO Note EL To discuss
-					//EL what are you using Pheno's Field here if getFieldType was implemented to return FieldType from Study?, Field should be substituted for CustomField?
-					
-					//field.setFieldType(studyFieldType);
+					field.setFieldType(studyFieldType);
 					
 					field.setEncodedValues(csvReader.get("ENCODED_VALUES"));
 					field.setMinValue(csvReader.get("MINIMUM_VALUE"));
@@ -375,31 +383,34 @@ public class CustomFieldImportValidator {
 					CustomField oldField = iArkCommonService.getCustomFieldByNameStudyArkFunction(csvReader.get("FIELD_NAME"), study, arkFunction);
 					if (oldField == null) {
 						// This is a new record - not able to find an existing field by that name
-						insertRows.add(row);							
+						insertRows.add(rowIdx);							
 					}
 					else {
 						// Determine updates
 						if (oldField.getId() != null) {
-							updateRows.add(row);
-							for (int col = 0; col < cols; col++)
-								updateCells.add(new ArkGridCell(col, row));
-
-							// Check field type same as one in database
-							if (!(field.getFieldType().getName().equalsIgnoreCase(oldField.getFieldType().getName()))) {
-								gridCell = new ArkGridCell(csvReader.getIndex("FIELD_TYPE"), row);
+							if (oldField.getCustomFieldHasData()) {
+								// Block updates to field that already have data
+								for (int colIdx = 0; colIdx < cols; colIdx++)
+									errorCells.add(new ArkGridCell(colIdx, rowIdx));
+								
 								StringBuffer stringBuffer = new StringBuffer();
 								stringBuffer.append("Error: ");
 								stringBuffer.append("The existing field ");
 								stringBuffer.append(fieldName);
-								stringBuffer.append(" already has data associated with it, and cannot have it's field type changed");
+								stringBuffer.append(" already has data associated with it and thus no changes can be made to this field.");
 								dataValidationMessages.add(stringBuffer.toString());
 								errorCells.add(gridCell);
+							}
+							else {
+								updateRows.add(rowIdx);
+								for (int colIdx = 0; colIdx < cols; colIdx++)
+									updateCells.add(new ArkGridCell(colIdx, rowIdx));
 							}
 						}
 					}
 
 					if (csvReader.get("FIELD_TYPE") != null) {
-						gridCell = new ArkGridCell(csvReader.getIndex("FIELD_TYPE"), row);
+						gridCell = new ArkGridCell(csvReader.getIndex("FIELD_TYPE"), rowIdx);
 						if (!CustomFieldImportValidator.validateFieldType(this.fieldName, csvReader.get("FIELD_TYPE"), dataValidationMessages)) {
 							errorCells.add(gridCell);
 							field.getFieldType().setName(csvReader.get("FIELD_TYPE"));
@@ -407,7 +418,7 @@ public class CustomFieldImportValidator {
 					}
 
 					if (field.getEncodedValues() != null && !field.getEncodedValues().isEmpty()) {
-						gridCell = new ArkGridCell(csvReader.getIndex("ENCODED_VALUES"), row);
+						gridCell = new ArkGridCell(csvReader.getIndex("ENCODED_VALUES"), rowIdx);
 						// Validate encoded values not a date type
 						if (!CustomFieldImportValidator.validateEncodedValues(field, dataValidationMessages)) {
 							errorCells.add(gridCell);
@@ -415,7 +426,7 @@ public class CustomFieldImportValidator {
 					}
 
 					if (field.getMinValue() != null && !field.getMinValue().isEmpty()) {
-						gridCell = new ArkGridCell(csvReader.getIndex("MINIMUM_VALUE"), row);
+						gridCell = new ArkGridCell(csvReader.getIndex("MINIMUM_VALUE"), rowIdx);
 						// Validate the field definition
 						if (!CustomFieldImportValidator.validateFieldMinDefinition(field, dataValidationMessages)) {
 							errorCells.add(gridCell);
@@ -423,7 +434,7 @@ public class CustomFieldImportValidator {
 					}
 
 					if (field.getMaxValue() != null && !field.getMaxValue().isEmpty()) {
-						gridCell = new ArkGridCell(csvReader.getIndex("MAXIMUM_VALUE"), row);
+						gridCell = new ArkGridCell(csvReader.getIndex("MAXIMUM_VALUE"), rowIdx);
 						// Validate the field definition
 						if (!CustomFieldImportValidator.validateFieldMaxDefinition(field, dataValidationMessages)) {
 							errorCells.add(gridCell);
@@ -431,7 +442,7 @@ public class CustomFieldImportValidator {
 					}
 
 					if (field.getMissingValue() != null && !field.getMissingValue().isEmpty()) {
-						gridCell = new ArkGridCell(csvReader.getIndex("MISSING_VALUE"), row);
+						gridCell = new ArkGridCell(csvReader.getIndex("MISSING_VALUE"), rowIdx);
 						// Validate the field definition
 						if (!CustomFieldImportValidator.validateFieldMissingDefinition(field, dataValidationMessages)) {
 							errorCells.add(gridCell);
@@ -439,7 +450,7 @@ public class CustomFieldImportValidator {
 					}
 
 					fieldCount++;
-					row++;
+					rowIdx++;
 				}
 			}
 
@@ -510,12 +521,17 @@ public class CustomFieldImportValidator {
 	 */
 	private static boolean validateEncodedValues(CustomField field, Collection<String> errorMessages) {
 		boolean isValid = false;
-		if (!field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-			isValid = true;
+		if (!field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+			// At the moment, only allowed to have encodedValues for a field where fieldType == CHARACTER
+			errorMessages.add(CustomFieldValidationMessage.fieldTypeIsNotCharacterWithEncodedValue(field.getName(), field.getFieldType().getName()));
+		}
+		else if (!Pattern.matches("(\\b[\\w]+=[^;]+;)*", field.getEncodedValues())) {
+			errorMessages.add(CustomFieldValidationMessage.nonConformingEncodedValue(field.getName()));
 		}
 		else {
-			errorMessages.add(PhenotypicValidationMessage.fieldTypeIsDateWithEncodedValue(field.getName()));
+			isValid = true;
 		}
+		
 		return isValid;
 	}
 

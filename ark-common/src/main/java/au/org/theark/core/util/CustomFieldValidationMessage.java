@@ -241,13 +241,13 @@ public class CustomFieldValidationMessage {
 		return (stringBuffer.toString());
 	}
 
-	public static String fieldTypeIsDateWithEncodedValue(String fieldName) {
+	public static String fieldTypeIsNotCharacterWithEncodedValue(String fieldName, String fieldType) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(fieldName);
 		stringBuffer.append(" with field type of ");
-		stringBuffer.append(Constants.FIELD_TYPE_DATE);
+		stringBuffer.append(fieldType);
 		stringBuffer.append(" should not have an associate ENCODED_VALUES");
 		return (stringBuffer.toString());
 	}
@@ -258,6 +258,17 @@ public class CustomFieldValidationMessage {
 		stringBuffer.append("The field ");
 		stringBuffer.append(fieldName);
 		stringBuffer.append(" was not found in the database. Please check the name and try again, or add the field to the Data Dictionary.");
+		return (stringBuffer.toString());
+	}
+
+	public static String nonConformingEncodedValue(String fieldName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(fieldName);
+		stringBuffer.append(" does not conform with the required format. ");
+		stringBuffer.append("Example format: internalCode_NoSpaces1=Displayed choice (spaces allowed) 1;internalCode_NoSpaces2=Displayed choice (spaces allowed) 2;\n");
+		stringBuffer.append("*NB: Please remember to end each encoding with ';', i.e. even the last one");
 		return (stringBuffer.toString());
 	}
 

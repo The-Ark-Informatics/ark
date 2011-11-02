@@ -60,6 +60,7 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -932,9 +933,18 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		studyUpload.setUserId(userId);
 		getSession().update(studyUpload);
 	}
+
+	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter) {
+		String delimiterTypeName = null;
+		Criteria criteria = getSession().createCriteria(DelimiterType.class);
+		criteria.add(Restrictions.eq("delimiterCharacter", delimiterCharacter));
+		criteria.setProjection(Projections.property("name"));
+		delimiterTypeName = (String) criteria.uniqueResult();
+		return delimiterTypeName;
+	}
 	
-	public void deleteUpload(StudyUpload studyUpload){
-		//Not implemented
+	public void createCustomFieldUpload(CustomFieldUpload cfUpload) {
+		getSession().save(cfUpload);
 	}
 	
 }
