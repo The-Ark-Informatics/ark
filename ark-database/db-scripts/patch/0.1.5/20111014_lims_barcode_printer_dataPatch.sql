@@ -1,16 +1,16 @@
 USE lims;
 
 -- printers
--- NOTE: ASSUMES STUDY_ID 1 EXISTS!!!
-INSERT INTO `barcode_printer` (`STUDY_ID`,`NAME`,`DESCRIPTION`,`LOCATION`,`HOST`,`PORT`) VALUES (1,'zebra','Zebra TLP 2844','ARK Office','130.95.56.99','9100');
-INSERT INTO `barcode_printer` (`STUDY_ID`,`NAME`,`DESCRIPTION`,`LOCATION`,`HOST`,`PORT`) VALUES (1,'brady_bbp_11','Brady BPP 11 34L','Paul''s Office','130.95.56.43','9100');
+-- NOTE: This is dummy reference data to mimic when a study is setup, hence for now study = NULL
+INSERT INTO `barcode_printer` (`STUDY_ID`,`NAME`,`DESCRIPTION`,`LOCATION`,`HOST`,`PORT`) VALUES (NULL,'zebra','Zebra TLP 2844','ARK Office','130.95.56.99','9100');
+INSERT INTO `barcode_printer` (`STUDY_ID`,`NAME`,`DESCRIPTION`,`LOCATION`,`HOST`,`PORT`) VALUES (NULL,'brady_bbp_11','Brady BPP 11 34L','Paul''s Office','130.95.56.43','9100');
 
 -- labels
--- NOTE: ASSUMES STUDY_ID 1 EXISTS!!!
-INSERT INTO `barcode_label` (`STUDY_ID`,`BARCODE_PRINTER_ID`,`NAME`,`DESCRIPTION`,`LABEL_PREFIX`,`LABEL_SUFFIX`) VALUES (1,1,'zebra biospecimen','General Zebra Biospecimen Label','D14%0Aq457%0AN%0A','P1%0A');
-INSERT INTO `barcode_label` (`STUDY_ID`,`BARCODE_PRINTER_ID`,`NAME`,`DESCRIPTION`,`LABEL_PREFIX`,`LABEL_SUFFIX`) VALUES (1,2,'brady biospecimen','Generic Brady Biospecimen label','J%0A','A%201%0A');
-INSERT INTO `barcode_label` (`STUDY_ID`,`BARCODE_PRINTER_ID`,`NAME`,`DESCRIPTION`,`LABEL_PREFIX`,`LABEL_SUFFIX`) VALUES (1,1,'zebra bioCollection','Generic BioCollection label','D15%0AN%0A','P1%0A');
-INSERT INTO `barcode_label` (`STUDY_ID`,`BARCODE_PRINTER_ID`,`NAME`,`DESCRIPTION`,`LABEL_PREFIX`,`LABEL_SUFFIX`) VALUES (1,2,'brady straw barcode','Generic Brady Straw Biospecimen label','DIRECTION 0%0AREFERENCE 0,0%0ACLS%0A','PRINT 1,1%0A');
+-- NOTE: This is dummy reference data to mimic when a study is setup, hence for now study = NULL
+INSERT INTO `barcode_label` (`STUDY_ID`,`BARCODE_PRINTER_ID`,`NAME`,`DESCRIPTION`,`LABEL_PREFIX`,`LABEL_SUFFIX`) VALUES (NULL,1,'zebra biospecimen','General Zebra Biospecimen Label','D14%0Aq457%0AN%0A','P1%0A');
+INSERT INTO `barcode_label` (`STUDY_ID`,`BARCODE_PRINTER_ID`,`NAME`,`DESCRIPTION`,`LABEL_PREFIX`,`LABEL_SUFFIX`) VALUES (NULL,2,'brady biospecimen','Generic Brady Biospecimen label','J%0A','A%201%0A');
+INSERT INTO `barcode_label` (`STUDY_ID`,`BARCODE_PRINTER_ID`,`NAME`,`DESCRIPTION`,`LABEL_PREFIX`,`LABEL_SUFFIX`) VALUES (NULL,1,'zebra bioCollection','Generic BioCollection label','D15%0AN%0A','P1%0A');
+INSERT INTO `barcode_label` (`STUDY_ID`,`BARCODE_PRINTER_ID`,`NAME`,`DESCRIPTION`,`LABEL_PREFIX`,`LABEL_SUFFIX`) VALUES (NULL,2,'brady straw barcode','Generic Brady Straw Biospecimen label','DIRECTION 0%0AREFERENCE 0,0%0ACLS%0A','PRINT 1,1%0A');
 
 -- label data templates
 INSERT INTO `barcode_label_data` (`BARCODE_LABEL_ID`,`COMMAND`,`X_COORD`,`Y_COORD`,`P1`,`P2`,`P3`,`P4`,`P5`,`P6`,`P7`,`P8`,`QUOTE_LEFT`,`DATA`,`QUOTE_RIGHT`,`LINE_FEED`) VALUES (1,'b',200,15,'D','h3',NULL,NULL,NULL,NULL,NULL,NULL,'%22','${biospecimenUid}','%22','%0A');

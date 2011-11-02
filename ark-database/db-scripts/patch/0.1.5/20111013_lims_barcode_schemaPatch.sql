@@ -2,7 +2,7 @@ USE lims;
 
 CREATE TABLE `barcode_printer` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `STUDY_ID` int(11) NOT NULL,
+  `STUDY_ID` int(11),
   `NAME` varchar(100) NOT NULL,
   `DESCRIPTION` text,
   `LOCATION` varchar(100) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE `barcode_printer` (
 
 CREATE TABLE `barcode_label` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `STUDY_ID` int(11) NOT NULL,
+  `STUDY_ID` int(11),
   `BARCODE_PRINTER_ID` int(11) NOT NULL,
   `NAME` varchar(50) NOT NULL,
   `DESCRIPTION` text,

@@ -79,7 +79,7 @@ public class BarcodePrinter implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_ID", nullable = false)
+	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return this.study;
 	}
@@ -88,7 +88,7 @@ public class BarcodePrinter implements java.io.Serializable {
 		this.study = study;
 	}
 
-	@Column(name = "NAME", length = 50)
+	@Column(name = "NAME", length = 100, nullable = false)
 	public String getName() {
 		return this.name;
 	}
@@ -106,7 +106,7 @@ public class BarcodePrinter implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@Column(name = "LOCATION", length = 50)
+	@Column(name = "LOCATION", length = 100, nullable = false)
 	public String getLocation() {
 		return location;
 	}
@@ -115,7 +115,7 @@ public class BarcodePrinter implements java.io.Serializable {
 		this.location = location;
 	}
 
-	@Column(name = "HOST")
+	@Column(name = "HOST", nullable = false)
 	public String getHost() {
 		return host;
 	}
