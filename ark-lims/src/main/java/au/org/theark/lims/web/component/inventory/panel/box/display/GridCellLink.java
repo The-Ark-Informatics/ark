@@ -8,6 +8,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.image.MouseOverImage;
@@ -78,20 +79,19 @@ public class GridCellLink extends Panel {
 	}
 
 	protected void allocateBiospecimenToCell(AjaxRequestTarget target, InvCell invCell) {
-		// Allocating, so simply put selected cell into context
-		StringBuilder alert = new StringBuilder();
-		alert.append("alert(\"Allocating Biospecimen: ");
-		alert.append(limsVo.getBiospecimen().getBiospecimenUid());
-		alert.append(" to Cell.id: ");
-		alert.append(invCell.getId());
-		alert.append("\");");
-		target.appendJavaScript(alert);
-		
-		//TODO: use CellStatus
 		invCell.setBiospecimen(limsVo.getBiospecimen());
+		//TODO: use Reference CellStatus
 		invCell.setStatus("Not Empty");
-		iInventoryService.updateInvCell(invCell);
-		
+	
+		// Update the model, saved to DB when user clicks 'Save'
+		limsVo.setInvCell(invCell);
+		try {
+			limsVo.setBiospecimenLocationVO(iInventoryService.getInvCellLocation(invCell));
+			limsVo.getBiospecimenLocationVO().setIsAllocated(true);
+		}
+		catch (ArkSystemException e) {
+			log.error(e.getMessage());
+		}
 		modalWindow.close(target);
 	}
 

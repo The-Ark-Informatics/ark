@@ -659,7 +659,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			}
 		}
 		else {
-			// Update
+			// Update location
+			if(cpModel.getObject().getBiospecimenLocationVO().getIsAllocated()) {
+				if(cpModel.getObject().getInvCell() != null && cpModel.getObject().getInvCell().getBiospecimen() != null) {
+					iInventoryService.updateInvCell(cpModel.getObject().getInvCell());
+				}
+			}
+			
+			// Update biospecimen
 			iLimsService.updateBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
 
