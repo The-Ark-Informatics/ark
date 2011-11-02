@@ -51,6 +51,7 @@ import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -555,7 +556,8 @@ public interface IArkCommonService<T> {
 
 	public void updateUpload(StudyUpload studyUpload);
 	
-//	public void createCustomFieldUpload(CustomFieldUpload customFieldUpload);
-	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr);
+	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter);
+
+	public void createCustomFieldUpload(CustomFieldUpload cfUpload);
 	
 }

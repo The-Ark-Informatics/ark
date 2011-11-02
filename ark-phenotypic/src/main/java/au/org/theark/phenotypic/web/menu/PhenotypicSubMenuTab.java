@@ -39,11 +39,8 @@ import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupContainerPanel;
-import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
-import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadContainerPanel;
-import au.org.theark.phenotypic.web.component.fieldUpload.FieldUploadContainerPanel;
-import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
+import au.org.theark.phenotypic.web.component.phenofielduploader.FieldUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.phenotypiccollection.PhenotypicCollectionContainerPanel;
 import au.org.theark.phenotypic.web.component.summary.SummaryContainerPanel;
 
@@ -97,12 +94,14 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 //			panelToReturn = new FieldContainerPanel(panelId);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD)) {
-			panelToReturn = new FieldUploadContainerPanel(panelId);
+//			panelToReturn = new FieldUploadContainerPanel(panelId);
+			ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+			panelToReturn = new FieldUploadContainerPanel(panelId, function);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION)) {
-			panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup);
-//			ArkFunction function  =iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
-//			panelToReturn = new CustomFieldGroupContainerPanel(panelId, function);
+//			panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup);
+			ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+			panelToReturn = new CustomFieldGroupContainerPanel(panelId, function);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA)) {
 			panelToReturn = new PhenotypicCollectionContainerPanel(panelId).initialisePanel();

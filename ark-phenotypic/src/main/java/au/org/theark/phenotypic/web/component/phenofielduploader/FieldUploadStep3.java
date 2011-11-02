@@ -55,16 +55,14 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 	 */
 	private static final long				serialVersionUID		= 5099768179441679542L;
 	static Logger								log						= LoggerFactory.getLogger(FieldUploadStep3.class);
-	private Form<PhenoFieldUploadVO>					containerForm;
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService				iArkCommonService;
+
+	private Form<PhenoFieldUploadVO>		containerForm;
 	private String								validationMessage;
 	public java.util.Collection<String>	validationMessages	= null;
 	private WizardForm						wizardForm;
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService				iArkCommonService;
-	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService				iPhenotypicService;
-	private WebMarkupContainer				overrideDataValidationContainer;
-	private CheckBox							overrideDataValidationChkBox;
 	private WebMarkupContainer				updateExistingDataContainer;
 	private CheckBox							updateChkBox;
 
@@ -119,22 +117,6 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 			}
 		});
 
-		overrideDataValidationChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				if (containerForm.getModelObject().getUpdateChkBox()) {
-					wizardForm.getNextButton().setEnabled(true);
-				}
-				else {
-					wizardForm.getNextButton().setEnabled(false);
-				}
-				target.add(wizardForm.getWizardButtonContainer());
-			}
-		});
-
-		overrideDataValidationContainer.add(overrideDataValidationChkBox);
-		add(overrideDataValidationContainer);
-
 		updateExistingDataContainer.add(updateChkBox);
 		add(updateExistingDataContainer);
 	}
@@ -172,14 +154,11 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 		InputStream inputStream;
 		try {
 			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
-			//Commented this line and added a new call to a different constrcutor
-			//TODO Discuss this with EL, it  passes in an ArkFunction and PhenoFieldUploadVO to ark-common?This will need refactoring the VO from Phenotypic to common as well. 
-			//CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(arkFunction, iArkCommonService, containerForm.getModelObject());
-			
-			//CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(arkFunction, iArkCommonService,containerForm.getModelObject());
-			
+
+			CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
+	
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			//validationMessages = phenotypicValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
+			validationMessages = phenotypicValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
 
 			HashSet<Integer> insertRows = new HashSet<Integer>();
 			HashSet<Integer> updateRows = new HashSet<Integer>();
@@ -188,12 +167,12 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 			HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
 			HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
 
-			/*insertRows = phenotypicValidator.getInsertRows();
+			insertRows = phenotypicValidator.getInsertRows();
 			updateRows = phenotypicValidator.getUpdateRows();
 			insertCells = phenotypicValidator.getInsertCells();
 			updateCells = phenotypicValidator.getUpdateCells();
 			warningCells = phenotypicValidator.getWarningCells();
-			errorCells = phenotypicValidator.getErrorCells();*/
+			errorCells = phenotypicValidator.getErrorCells();
 			inputStream.reset();
 
 			// Show file data (and key reference)
@@ -219,18 +198,12 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 			target.add(updateExistingDataContainer);
 
 			if (!errorCells.isEmpty()) {
-				overrideDataValidationContainer.setVisible(false);
-				target.add(overrideDataValidationContainer);
 				updateExistingDataContainer.setVisible(false);
 				target.add(updateExistingDataContainer);
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
 			}
 
-			if (warningCells.isEmpty()) {
-				overrideDataValidationContainer.setVisible(false);
-				target.add(overrideDataValidationContainer);
-			}
 		}
 		catch (IOException ioe) {
 			validationMessage = "Error attempting to display the file. Please check the file and try again.";
@@ -279,18 +252,4 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 		this.updateExistingDataContainer = updateExistingDataContainer;
 	}
 
-	/**
-	 * @param overrideDataValidationContainer
-	 *           the overrideDataValidationContainer to set
-	 */
-	public void setOverrideDataValidationContainer(WebMarkupContainer overrideDataValidationContainer) {
-		this.overrideDataValidationContainer = overrideDataValidationContainer;
-	}
-
-	/**
-	 * @return the overrideDataValidationContainer
-	 */
-	public WebMarkupContainer getOverrideDataValidationContainer() {
-		return overrideDataValidationContainer;
-	}
 }

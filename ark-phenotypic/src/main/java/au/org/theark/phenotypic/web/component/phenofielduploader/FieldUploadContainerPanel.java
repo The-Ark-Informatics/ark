@@ -94,6 +94,7 @@ public class FieldUploadContainerPanel extends AbstractContainerPanel<PhenoField
 					StudyUpload searchPhenoUpload = new StudyUpload();
 					Study study = iArkCommonService.getStudy(sessionStudyId);
 					searchPhenoUpload.setStudy(study);
+					searchPhenoUpload.setArkFunction(containerForm.getModelObject().getUpload().getArkFunction());
 
 					java.util.Collection<StudyUpload> phenoUploads = iArkCommonService.searchUploads(searchPhenoUpload);
 					return phenoUploads;

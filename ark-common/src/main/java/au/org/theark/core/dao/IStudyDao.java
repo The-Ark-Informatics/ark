@@ -35,6 +35,7 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -488,7 +489,17 @@ public interface IStudyDao {
 	 */
 	public void updateUpload(StudyUpload studyUpload);
 	
-	
-	public void deleteUpload(StudyUpload studyUpload);
+	/**
+	 * Get the delimiter name by the character
+	 * @param delimiterCharacter
+	 * @return delimiter name
+	 */
+	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter);
+
+	/**
+	 * Create a mew CustomFieldUpload
+	 * @param cfUpload
+	 */
+	public void createCustomFieldUpload(CustomFieldUpload cfUpload);
 	
 }

@@ -122,7 +122,6 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel {
 			if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
 				throw new FileFormatException();
 			}
-			//TODO Discuss this with EL
 			CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
 			
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
@@ -158,6 +157,7 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel {
 			target.add(form.getWizardPanelFormContainer());
 
 		}
+		// TODO: Shouldn't catch these NPEs because we should be checking for NULL in the first place
 		catch (NullPointerException npe) {
 			validationMessage = "Error attempting to display the file. Please check the file and try again.";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));

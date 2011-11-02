@@ -88,6 +88,7 @@ public class WizardForm extends AbstractWizardForm<PhenoFieldUploadVO> {
 	protected void onCancel(AjaxRequestTarget target) {
 		// Implement Cancel
 		PhenoFieldUploadVO uploadVO = new PhenoFieldUploadVO();
+		uploadVO.getUpload().setArkFunction(containerForm.getModelObject().getUpload().getArkFunction());
 		containerForm.setModelObject(uploadVO);
 		initialiseSteps();
 		onCancelPostProcess(target);
