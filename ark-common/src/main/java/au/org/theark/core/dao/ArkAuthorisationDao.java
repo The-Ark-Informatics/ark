@@ -692,6 +692,12 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		for (ArkUserRole arkUserRole : arkUserVO.getArkUserRoleList()) {
 			session.delete(arkUserRole);
 		}
+		
+		List<ArkUserRole> listOfRoles  = getArkRoleListByUser(arkUserVO);
+		if(listOfRoles.size() <= 0){
+			//Remove the ArkUser From the database only
+			session.delete(arkUserVO.getArkUserEntity());
+		}
 	}
 
 	
