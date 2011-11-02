@@ -1,16 +1,12 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup.form;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
@@ -41,7 +37,6 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldDisplayListPanel;
-import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupDetailPanel;
 
 /**
  * @author nivedann
@@ -72,7 +67,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	 * @param cpModel
 	 * @param arkCrudContainerVO
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel,CompoundPropertyModel<CustomFieldGroupVO> cpModel,ArkCrudContainerVO arkCrudContainerVO, ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdProvider, Boolean addCustomFieldDisplayList) {
+	public DetailForm(String id, FeedbackPanel feedBackPanel,CompoundPropertyModel<CustomFieldGroupVO> cpModel,ArkCrudContainerVO arkCrudContainerVO, ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdProvider, 
+			Boolean addCustomFieldDisplayList) {
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
 		this.addCustomFieldDisplayList = addCustomFieldDisplayList;
 		this.cfdProvider = cfdProvider;
@@ -210,9 +206,10 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		}else{
 			
 			try {
-				iPhenotypicService.updateCustomFieldGroup(getModelObject());
-				initialiseCFDListPanel();
-				this.info("Custom Field Group has been updated successfully.");	
+					iPhenotypicService.updateCustomFieldGroup(getModelObject());
+					initialiseCFDListPanel();
+					this.info("Custom Field Group has been updated successfully.");	
+				
 			}catch (EntityExistsException e) {
 				this.error("A Questionnaire with the same name already exisits. Please choose a unique one.");
 				e.printStackTrace();

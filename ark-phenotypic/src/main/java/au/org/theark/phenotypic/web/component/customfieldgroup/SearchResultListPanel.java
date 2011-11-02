@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
@@ -141,6 +142,22 @@ public class SearchResultListPanel extends Panel{
 				
 				TextField<String> questionnaireName = (TextField<String>)arkCrudContainerVO.getDetailPanelFormContainer().get("customFieldGroup.name");
 				questionnaireName.setEnabled(false);
+				
+				
+				Boolean proceedToSave = true;
+				if(itemSelected.getPublished()){
+					for (CustomField customField : selectedList) {
+						if(customField.getCustomFieldHasData()){
+							proceedToSave = false;
+							break;
+						}
+					}
+				}
+				
+				if(!proceedToSave){
+					AjaxButton editButtn = (AjaxButton) arkCrudContainerVO.getViewButtonContainer().get("edit");
+					editButtn.setEnabled(false);
+				}
 				
 				//The list of CFD must be displayed on the Detail form
 				//Create a CFD List Panel here and add it to the detailForm.
