@@ -88,7 +88,6 @@ public class GridCellContentPanel extends Panel {
 	 * Adds a ToolTip, using the invCell details
 	 */
 	private void addToolTip() {
-		//invCell = iInventoryService.getInvCell(invCell.getId());
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Column: ");
 		stringBuffer.append(invCell.getColno());
