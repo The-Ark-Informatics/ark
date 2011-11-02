@@ -254,5 +254,13 @@ public interface IInventoryDao {
 	 * @return
 	 * @throws ArkSystemException
 	 */
-	public BiospecimenLocationVO getBiospecimenLocation(Biospecimen biospecimen) throws ArkSystemException;;
+	public BiospecimenLocationVO getBiospecimenLocation(Biospecimen biospecimen) throws ArkSystemException;
+	
+	/**
+	 * Returns a light weight VO that represents the location of the given invCell 
+	 * @param invCell
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public BiospecimenLocationVO getInvCellLocation(InvCell invCell) throws ArkSystemException;
 }

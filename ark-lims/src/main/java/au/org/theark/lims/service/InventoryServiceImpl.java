@@ -238,4 +238,8 @@ public class InventoryServiceImpl implements IInventoryService {
 		}
 		return path;
 	}
+
+	public BiospecimenLocationVO getInvCellLocation(InvCell invCell) throws ArkSystemException {
+		return iInventoryDao.getInvCellLocation(invCell);
+	}
 }
