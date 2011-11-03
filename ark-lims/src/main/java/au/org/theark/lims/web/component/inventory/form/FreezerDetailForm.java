@@ -24,6 +24,7 @@ import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -37,6 +38,9 @@ import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.util.convert.converter.IntegerConverter;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,8 +77,8 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 	private TextField<String>			idTxtFld;
 	private TextField<String>			nameTxtFld;
-	private TextField<String>			capacityTxtFld;
-	private TextField<String>			availableTxtFld;
+	private TextField<Integer>			capacityTxtFld;
+	private TextField<Integer>			availableTxtFld;
 	private TextArea<String>			lastservicenoteTxtAreaFld;
 	private DateTextField				decommissiondateDateTxtFld;
 	private TextArea<String>			descriptionTxtAreaFld;
@@ -97,8 +101,35 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("invFreezer.id");
 		nameTxtFld = new TextField<String>("invFreezer.name");
-		capacityTxtFld = new TextField<String>("invFreezer.capacity");
-		availableTxtFld = new TextField<String>("invFreezer.available");
+		capacityTxtFld = new TextField<Integer>("invFreezer.capacity"){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public <C> IConverter<C> getConverter(Class<C> type) {
+				IntegerConverter integerConverter = new IntegerConverter();
+				return (IConverter<C>) integerConverter;
+			}
+		};
+		capacityTxtFld.setEnabled(isNew());
+		capacityTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				Integer capacity = containerForm.getModelObject().getInvFreezer().getCapacity();
+				containerForm.getModelObject().getInvFreezer().setAvailable(capacity);
+				target.add(availableTxtFld);
+			}
+		});
+		availableTxtFld = new TextField<Integer>("invFreezer.available");
+		availableTxtFld.setEnabled(false);
 		lastservicenoteTxtAreaFld = new TextArea<String>("invFreezer.lastservicenote");
 		decommissiondateDateTxtFld = new DateTextField("invFreezer.decommissiondate");
 		descriptionTxtAreaFld = new TextArea<String>("invFreezer.description");
@@ -135,7 +166,8 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
 		invSiteDdc.setRequired(true).setLabel(new StringResourceModel("error.site.required", this, new Model<String>("Site")));
 		capacityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.capacity.required", this, new Model<String>("Capacity")));
-		availableTxtFld.setRequired(true).setLabel(new StringResourceModel("error.available.required", this, new Model<String>("Available")));
+		MinimumValidator<Integer> minValue = new MinimumValidator<Integer>(new Integer(0));
+		capacityTxtFld.add(minValue);
 	}
 
 	private void addComponents() {
