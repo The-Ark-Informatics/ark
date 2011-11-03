@@ -384,7 +384,22 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		};
 
 		quantityTxtFld.setEnabled(false);
-		bioTransactionQuantityTxtFld = new TextField<Double>("bioTransaction.quantity");
+		bioTransactionQuantityTxtFld = new TextField<Double>("bioTransaction.quantity") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public <C> IConverter<C> getConverter(Class<C> type) {
+				DoubleConverter doubleConverter = new DoubleConverter();
+				NumberFormat numberFormat = NumberFormat.getInstance();
+				numberFormat.setMinimumFractionDigits(1);
+				doubleConverter.setNumberFormat(getLocale(), numberFormat);
+				return (IConverter<C>) doubleConverter;
+			}
+		};
 
 		setQuantityLabel();
 		initSampleTypeDdc();
@@ -423,7 +438,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	 */
 	private void setQuantityLabel() {
 		if (cpModel.getObject().getBiospecimen().getId() == null) {
-			quantityLbl = new Label("biospecimen.quantity.label", new ResourceModel("bioTransaction.initialQuantity"));
+			quantityLbl = new Label("biospecimen.quantity.label", new ResourceModel("bioTransaction.quantity"));
 		}
 		else {
 			quantityLbl = new Label("biospecimen.quantity.label", new ResourceModel("biospecimen.quantity"));
@@ -518,7 +533,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioCollectionDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.bioCollection.required", this, new Model<String>("Name")));
 
 		// Initial BioTransaction detail
-		bioTransactionQuantityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioTransaction.initialQuantity.required", this, new Model<String>("Name")));
+		bioTransactionQuantityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioTransaction.quantity.required", this, new Model<String>("Name")));
 		MinimumValidator<Double> minQuantityValidator = new MinimumValidator<Double>(new Double(0.0));
 		bioTransactionQuantityTxtFld.add(minQuantityValidator);
 		unitDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.unit.required", this, new Model<String>("Name")));
