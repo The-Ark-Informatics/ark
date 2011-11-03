@@ -26,22 +26,28 @@ import au.org.theark.lims.model.TreeNodeModel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 
+/**
+ * Abstract Inventory Panel that all sub-classes extend (contains Add buttons for inventory)
+ * 
+ * @author cellis
+ * 
+ */
 public abstract class AbstractInventoryTreePanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long			serialVersionUID	= -2299283711321904639L;
-	private static final Logger		log					= LoggerFactory.getLogger(AbstractInventoryTreePanel.class);
+	private static final long		serialVersionUID	= -2299283711321904639L;
+	private static final Logger	log					= LoggerFactory.getLogger(AbstractInventoryTreePanel.class);
 
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
-	private IInventoryService			iInventoryService;
+	private IInventoryService		iInventoryService;
 
-	private List<InvSite>				invSites				= new ArrayList<InvSite>(0);
+	private List<InvSite>			invSites				= new ArrayList<InvSite>(0);
 
-	protected ArkBusyAjaxButton		addSite;
-	protected ArkBusyAjaxButton		addFreezer;
-	protected ArkBusyAjaxButton		addRack;
-	protected ArkBusyAjaxButton		addBox;
+	protected ArkBusyAjaxButton	addSite;
+	protected ArkBusyAjaxButton	addFreezer;
+	protected ArkBusyAjaxButton	addRack;
+	protected ArkBusyAjaxButton	addBox;
 
 	public AbstractInventoryTreePanel(String id) {
 		super(id);
@@ -101,7 +107,7 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 			/**
 			 * 
 			 */
-			private static final long	serialVersionUID	= -5810881256056986237L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public boolean isVisible() {
@@ -125,7 +131,7 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 			/**
 			 * 
 			 */
-			private static final long	serialVersionUID	= -7724228745851741839L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public boolean isVisible() {
@@ -149,7 +155,7 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 			/**
 			 * 
 			 */
-			private static final long	serialVersionUID	= 4263304574542528954L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public boolean isVisible() {
@@ -173,7 +179,7 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 			/**
 			 * 
 			 */
-			private static final long	serialVersionUID	= -5402311580929456745L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public boolean isVisible() {
@@ -187,38 +193,38 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to process Add Box button");	
+				this.error("Unexpected error: Unable to process Add Box button");
 			}
 
 		};
 	}
 
 	/**
-	 * Method implemented by sub-classes to perform acton on button press
+	 * Method implemented by sub-classes to perform action on button press
 	 * 
 	 * @param target
 	 */
 	public abstract void onAddSiteSubmit(AjaxRequestTarget target);
 
 	/**
-	 * Method implemented by sub-classes to perform acton on button press
+	 * Method implemented by sub-classes to perform action on button press
 	 * 
 	 * @param target
 	 */
 	public abstract void onAddFreezerSubmit(AjaxRequestTarget target);
 
 	/**
-	 * Method implemented by sub-classes to perform acton on button press
+	 * Method implemented by sub-classes to perform action on button press
 	 * 
 	 * @param target
 	 */
 	public abstract void onAddRackSubmit(AjaxRequestTarget target);
 
 	/**
-	 * Method implemented by sub-classes to perform acton on button press
+	 * Method implemented by sub-classes to perform action on button press
 	 * 
 	 * @param target
 	 */
 	public abstract void onAddBoxSubmit(AjaxRequestTarget target);
-	
+
 }

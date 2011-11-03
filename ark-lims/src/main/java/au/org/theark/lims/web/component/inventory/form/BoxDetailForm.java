@@ -35,6 +35,9 @@ import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.util.convert.converter.IntegerConverter;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,10 +67,10 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 	private TextField<String>					idTxtFld;
 	private TextField<String>					nameTxtFld;
-	private TextField<String>					capacityTxtFld;
-	private TextField<String>					availableTxtFld;
-	private TextField<String>					noOfColTxtFld;
-	private TextField<String>					noOfRowTxtFld;
+	private TextField<Integer>					capacityTxtFld;
+	private TextField<Integer>					availableTxtFld;
+	private TextField<Integer>					noOfColTxtFld;
+	private TextField<Integer>					noOfRowTxtFld;
 	private DropDownChoice<InvColRowType>	colNoTypeDdc;
 	private DropDownChoice<InvColRowType>	rowNoTypeDdc;
 	private DropDownChoice<InvRack>			invTrayDdc;
@@ -84,23 +87,42 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
 	}
-	
-	@Override
-	public void onBeforeRender() {
-		super.onBeforeRender();
-		noOfColTxtFld.setEnabled(containerForm.getModelObject().getInvBox().getId() == null);
-		noOfRowTxtFld.setEnabled(containerForm.getModelObject().getInvBox().getId() == null);
-	}
 
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("invBox.id");
 		nameTxtFld = new TextField<String>("invBox.name");
-		capacityTxtFld = new TextField<String>("invBox.capacity");
+		capacityTxtFld = new TextField<Integer>("invBox.capacity");
 		capacityTxtFld.setEnabled(false);
-		availableTxtFld = new TextField<String>("invBox.available");
+		availableTxtFld = new TextField<Integer>("invBox.available");
 		availableTxtFld.setEnabled(false);
-		noOfColTxtFld = new TextField<String>("invBox.noofcol");
-		noOfRowTxtFld = new TextField<String>("invBox.noofrow");
+		noOfColTxtFld = new TextField<Integer>("invBox.noofcol"){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public <C> IConverter<C> getConverter(Class<C> type) {
+				IntegerConverter integerConverter = new IntegerConverter();
+				return (IConverter<C>) integerConverter;
+			}
+		};
+		noOfRowTxtFld = new TextField<Integer>("invBox.noofrow"){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public <C> IConverter<C> getConverter(Class<C> type) {
+				IntegerConverter integerConverter = new IntegerConverter();
+				return (IConverter<C>) integerConverter;
+			}
+		};
+		noOfColTxtFld.setEnabled(isNew());
+		noOfRowTxtFld.setEnabled(isNew());
 
 		initInvTrayDdc();
 		initColNoTypeDdc();
@@ -145,6 +167,11 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
 		invTrayDdc.setRequired(true).setLabel(new StringResourceModel("error.rack.required", this, new Model<String>("Rack")));
+		noOfColTxtFld.setRequired(true);
+		MinimumValidator<Integer> minValue = new MinimumValidator<Integer>(new Integer(0));
+		noOfColTxtFld.add(minValue);
+		noOfRowTxtFld.setRequired(true);
+		noOfRowTxtFld.add(minValue);
 		colNoTypeDdc.setRequired(true);
 		rowNoTypeDdc.setRequired(true);
 	}

@@ -22,9 +22,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.html.tree.BaseTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.web.component.inventory.form.BoxDetailForm;
@@ -35,14 +38,15 @@ public class BoxDetailPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 7132411215567811297L;
+	private static final long				serialVersionUID	= 7132411215567811297L;
+	private static final Logger			log					= LoggerFactory.getLogger(BoxDetailPanel.class);
 	private FeedbackPanel					feedbackPanel;
 	private WebMarkupContainer				detailContainer;
 	private BoxDetailForm					detailForm;
 	private ContainerForm					containerForm;
 	private BaseTree							tree;
 	private DefaultMutableTreeNode		node;
-	private GridBoxPanel						gridBoxPanel;
+	private Panel								gridBoxPanel;
 	private AbstractDetailModalWindow	modalWindow;
 
 	public BoxDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
@@ -55,7 +59,7 @@ public class BoxDetailPanel extends Panel {
 		this.node = node;
 	}
 
-	public void initialisePanel() {		
+	public void initialisePanel() {
 		detailForm = new BoxDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
 		detailForm.initialiseDetailForm();
 
@@ -70,9 +74,15 @@ public class BoxDetailPanel extends Panel {
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
 			}
 		};
-		
-		gridBoxPanel = new GridBoxPanel("gridBoxPanel", containerForm.getModelObject(), modalWindow, false);
-		
+
+		// no need to show grid on New Box
+		if(containerForm.getModelObject().getInvBox().getId() == null) {
+			gridBoxPanel = new EmptyPanel("gridBoxPanel");
+		}
+		else {
+			gridBoxPanel = new GridBoxPanel("gridBoxPanel", containerForm.getModelObject(), modalWindow, false);
+		}
+
 		add(detailForm);
 		add(gridBoxPanel);
 		add(modalWindow);
@@ -84,5 +94,9 @@ public class BoxDetailPanel extends Panel {
 
 	public void setDetailForm(BoxDetailForm detailForm) {
 		this.detailForm = detailForm;
+	}
+
+	public static Logger getLog() {
+		return log;
 	}
 }
