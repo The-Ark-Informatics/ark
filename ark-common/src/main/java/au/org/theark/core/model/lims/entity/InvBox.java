@@ -39,7 +39,8 @@ import javax.persistence.Transient;
 import au.org.theark.core.model.Constants;
 
 /**
- * Entity that represents a box/plate/tray for biospecimen cells Note the hierarchy: site -< tank -< tray -< box -< cell
+ * Entity that represents a box/plate/tray for biospecimen cells 
+ * Note the hierarchy: site -< freezer -< rack -< box -< cell
  * 
  * @author cellis
  */
@@ -51,21 +52,21 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 	private String				timestamp;
 	private InvRack			invRack;
 	private Integer			deleted;
-	private int					noofcol;
+	private Integer			noofcol;
 	private InvColRowType	colnotype;
 	private Integer			capacity;
 	private String				name;
 	private Integer			available;
-	private int					noofrow;
+	private Integer			noofrow;
 	private InvColRowType	rownotype;
 	private Integer			transferId;
-	private int					type;
+	private Integer			type;
 	private List<InvCell>	invCells	= new ArrayList<InvCell>(0);
 
 	public InvBox() {
 	}
 
-	public InvBox(Long id, InvRack invRack, int noofcol, InvColRowType colnotype, int noofrow, InvColRowType rownotype, int type) {
+	public InvBox(Long id, InvRack invRack, Integer noofcol, InvColRowType colnotype, Integer noofrow, InvColRowType rownotype, Integer type) {
 		this.id = id;
 		this.invRack = invRack;
 		this.noofcol = noofcol;
@@ -75,8 +76,8 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 		this.type = type;
 	}
 
-	public InvBox(Long id, InvRack invRack, Integer deleted, int noofcol, InvColRowType colnotype, Integer capacity, String name, Integer available, int noofrow, InvColRowType rownotype,
-			Integer transferId, int type, List<InvCell> invCells) {
+	public InvBox(Long id, InvRack invRack, Integer deleted, Integer noofcol, InvColRowType colnotype, Integer capacity, String name, Integer available, Integer noofrow, InvColRowType rownotype,
+			Integer transferId, Integer type, List<InvCell> invCells) {
 		this.id = id;
 		this.invRack = invRack;
 		this.deleted = deleted;
@@ -132,11 +133,11 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 	}
 
 	@Column(name = "NOOFCOL", nullable = false)
-	public int getNoofcol() {
+	public Integer getNoofcol() {
 		return this.noofcol;
 	}
 
-	public void setNoofcol(int noofcol) {
+	public void setNoofcol(Integer noofcol) {
 		this.noofcol = noofcol;
 	}
 
@@ -178,11 +179,11 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 	}
 
 	@Column(name = "NOOFROW", nullable = false)
-	public int getNoofrow() {
+	public Integer getNoofrow() {
 		return this.noofrow;
 	}
 
-	public void setNoofrow(int noofrow) {
+	public void setNoofrow(Integer noofrow) {
 		this.noofrow = noofrow;
 	}
 
@@ -206,11 +207,11 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 	}
 
 	@Column(name = "TYPE", nullable = false)
-	public int getType() {
+	public Integer getType() {
 		return this.type;
 	}
 
-	public void setType(int type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 
