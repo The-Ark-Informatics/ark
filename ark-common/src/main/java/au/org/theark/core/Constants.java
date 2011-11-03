@@ -99,16 +99,7 @@ public class Constants {
 	public static final String	TAB_MODULE_LIMS_SUBJECT_DETAIL				= "tab.module.lims.subject.detail";
 
 	/* General date format, as used by ArkDatePicker */
-	public static final String	DD_MM_YYYY											= "dd/MM/yyyy";																																	// cap
-																																																														// M
-																																																														// is
-																																																														// for
-																																																														// month,
-																																																														// low
-																																																														// m
-																																																														// is
-																																																														// for
-																																																														// minute
+	public static final String	DD_MM_YYYY											= "dd/MM/yyyy";
 	public static final String	DD_MM_YYYY_HH_MM_SS								= "dd/MM/yyyy hh:mm:ss";
 
 	/* Phenotypic data file column names */
@@ -235,9 +226,18 @@ public class Constants {
 	public static final String	ENTITY_TYPE_STUDY_UPLOAD						= "Study Upload";
 	public static final String	ENTITY_TYPE_CUSTOM_FIELD						= "Custom Field";
 	public static final String	ENTITY_TYPE_CUSTOM_FIELD_DISPLAY				= "Custom Field Display";
-	public static final String  ENTITY_TYPE_CUSTOM_FIELD_GROUP					= "Custom Field Group";
+	public static final String ENTITY_TYPE_CUSTOM_FIELD_GROUP				= "Custom Field Group";
+	public static final String	ENTITY_TYPE_INV_SITE								= "InvSite";
+	public static final String	ENTITY_TYPE_INV_FREEZER							= "InvFreezer";
+	public static final String	ENTITY_TYPE_INV_RACK								= "InvRack";
+	public static final String	ENTITY_TYPE_INV_BOX								= "InvBox";
+	public static final String	ENTITY_TYPE_INV_CELL								= "InvCell";
+	
+	/* Audit history actions */
 	public static final String	ACTION_INSERT										= "Insert";
 	public static final String	ACTION_UPDATE										= "Update";
+	public static final String	ACTION_DELETE										= "Delete";
+	
 	public static final String	PERSON_SURNAME_HISTORY_PERSON					= "person";
 	public static final String	PERSON_SURNAME_HISTORY_SURNAME				= "surname";
 
@@ -318,5 +318,6 @@ public class Constants {
 
 	public static final String[]	DATA_DICTIONARY_HEADER						= { "FIELD_NAME", "FIELD_TYPE", "DESCRIPTION", "UNITS", "ENCODED_VALUES", "MINIMUM_VALUE", "MAXIMUM_VALUE",
 	"MISSING_VALUE"																				};
+	
 
 }
