@@ -183,6 +183,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	protected void onCancel(AjaxRequestTarget target) {
 		LimsVO limsVo = new LimsVO();
 		containerForm.setModelObject(limsVo);
+		target.add(feedbackPanel);
 	}
 
 	@Override

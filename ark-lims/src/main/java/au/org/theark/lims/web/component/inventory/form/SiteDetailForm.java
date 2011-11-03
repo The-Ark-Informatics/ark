@@ -142,6 +142,7 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			log.error(e.getMessage());
 		}
 		containerForm.getModelObject().setInvSiteList(invSiteList);
+		target.add(feedbackPanel);
 	}
 
 	@Override
