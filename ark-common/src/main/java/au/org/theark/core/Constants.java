@@ -200,6 +200,7 @@ public class Constants {
 	public static final String	ACTION_TYPE_CREATED								= "CREATED";
 	public static final String	ACTION_TYPE_UPDATED								= "UPDATED";
 	public static final String	ACTION_TYPE_DELETED								= "DELETED";
+	public static final String	ACTION_TYPE_ARCHIVED								= "ARCHIVED";
 
 	/* Entity Type */
 	public static final String	ENTITY_TYPE_STUDY									= "Study";
