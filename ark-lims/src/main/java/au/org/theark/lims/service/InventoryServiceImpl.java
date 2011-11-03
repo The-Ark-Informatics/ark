@@ -56,7 +56,6 @@ public class InventoryServiceImpl implements IInventoryService {
 
 	/**
 	 * Create cells for the box in question
-	 * 
 	 * @param invBox
 	 */
 	private void createCellsForBox(InvBox invBox) {
@@ -79,16 +78,22 @@ public class InventoryServiceImpl implements IInventoryService {
 	}
 
 	public void createInvFreezer(LimsVO modelObject) {
+		InvFreezer invFreezer = modelObject.getInvFreezer();
+		int capacity = invFreezer.getCapacity();
+		invFreezer.setAvailable(capacity);
+		
 		iInventoryDao.createInvFreezer(modelObject.getInvFreezer());
 	}
 
 	public void createInvRack(LimsVO modelObject) {
-		InvRack invTray = modelObject.getInvRack();
-		iInventoryDao.createInvRack(invTray);
+		InvRack invRack = modelObject.getInvRack();
+		int capacity = invRack.getCapacity();
+		invRack.setAvailable(capacity);
+		iInventoryDao.createInvRack(invRack);
 		
 		// update available of parent
-		invTray.getInvFreezer().setAvailable(invTray.getInvFreezer().getAvailable() - 1);
-		iInventoryDao.updateInvFreezer(invTray.getInvFreezer());
+		invRack.getInvFreezer().setAvailable(invRack.getInvFreezer().getAvailable() - 1);
+		iInventoryDao.updateInvFreezer(invRack.getInvFreezer());
 	}
 
 	public void createInvCell(InvCell invCell) {
