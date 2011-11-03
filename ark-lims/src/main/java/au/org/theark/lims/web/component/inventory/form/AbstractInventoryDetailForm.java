@@ -116,6 +116,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 				else {
 					onCancelPostProcess(target);
 				}
+				processErrors(target);
 			}
 
 			@Override
