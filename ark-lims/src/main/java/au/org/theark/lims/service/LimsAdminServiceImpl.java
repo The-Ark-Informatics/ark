@@ -37,7 +37,7 @@ import au.org.theark.lims.model.dao.ILimsAdminDao;
  * 
  */
 @Transactional
-@Service(au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
+@Service(au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
 public class LimsAdminServiceImpl implements ILimsAdminService {
 	private static final Logger	log			= LoggerFactory.getLogger(LimsAdminServiceImpl.class);
 	@SuppressWarnings("unchecked")
@@ -56,14 +56,14 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	public void setiArkCommonService(IArkCommonService iArkCommonService) {
 		this.iArkCommonService = iArkCommonService;
 	}
-
-	public ILimsAdminDao getiBarcodeDao() {
+	
+	public ILimsAdminDao getiLimsAdminDao() {
 		return iLimsAdminDao;
 	}
-
+	
 	@Autowired
-	public void setiBarcodeDao(ILimsAdminDao iBarcodeDao) {
-		this.iLimsAdminDao = iBarcodeDao;
+	public void setiLimsAdminDao(ILimsAdminDao iLimsAdminDao) {
+		this.iLimsAdminDao = iLimsAdminDao;
 	}
 
 	public VelocityEngine getVelocityEngine() {
@@ -362,27 +362,22 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	}
 
 	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars() {
-		// TODO Auto-generated method stub
-		return null;
+		return iLimsAdminDao.getBiospecimenUidPadChars();
 	}
 
 	public int getBiospecimenUidTemplateCount(BiospecimenUidTemplate modelObject) {
-		// TODO Auto-generated method stub
-		return 0;
+		return iLimsAdminDao.getBiospecimenUidTemplateCount(modelObject);
 	}
 
 	public List<BiospecimenUidToken> getBiospecimenUidTokens() {
-		// TODO Auto-generated method stub
-		return null;
+		return iLimsAdminDao.getBiospecimenUidTokens();
 	}
 
 	public BiospecimenUidTemplate searchBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
-		// TODO Auto-generated method stub
-		return null;
+		return iLimsAdminDao.searchBiospecimenUidTemplate(biospecimenUidTemplate);
 	}
 
 	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, int first, int count) {
-		// TODO Auto-generated method stub
-		return null;
+		return iLimsAdminDao.searchPageableBiospecimenUidTemplates(object, first, count);
 	}
 }
