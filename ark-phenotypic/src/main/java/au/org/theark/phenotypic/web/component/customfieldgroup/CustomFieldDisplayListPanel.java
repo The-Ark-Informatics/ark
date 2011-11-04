@@ -1,5 +1,7 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup;
 
+import java.util.ArrayList;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -11,6 +13,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.dao.IArkAuthorisation;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -28,6 +31,7 @@ public class CustomFieldDisplayListPanel extends Panel {
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
+	Boolean flag;
 	
 	
 	/**
@@ -40,6 +44,14 @@ public class CustomFieldDisplayListPanel extends Panel {
 		super(id);
 		this.feedbackPanel = feedbackPanel;
 		this.arkCrudContainerVO = arkCrudContainerVO; 
+		setOutputMarkupPlaceholderTag(true);
+	}
+	
+	public CustomFieldDisplayListPanel(String id, FeedbackPanel feedbackPanel,ArkCrudContainerVO arkCrudContainerVO, Boolean flag) {
+		super(id);
+		this.feedbackPanel = feedbackPanel;
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.flag = flag;
 		setOutputMarkupPlaceholderTag(true);
 	}
 	
@@ -127,7 +139,7 @@ public class CustomFieldDisplayListPanel extends Panel {
 	 */
 	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<CustomFieldGroupVO> cpmModel){
 		
-		modalContentPanel = new CustomFieldDisplayModalPanel("content",modalWindow,cpmModel,feedbackPanel);
+		modalContentPanel = new CustomFieldDisplayModalPanel("content",modalWindow,cpmModel,feedbackPanel,flag);
 		modalWindow.setTitle("Custom Field Display Detail");
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);

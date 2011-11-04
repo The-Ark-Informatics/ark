@@ -1,5 +1,6 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup.form;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
@@ -79,7 +80,18 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		
 		
 		cfdProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldDisplay"));
-		CustomFieldDisplayListPanel cfdListPanel = new CustomFieldDisplayListPanel("cfdListPanel", feedBackPanel,arkCrudContainerVO);
+		ArrayList<CustomField> selectedList  = (ArrayList)iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(getModelObject().getCustomFieldGroup());
+		Boolean disableEditButton = false;
+		if(getModelObject().getCustomFieldGroup().getPublished()){
+			for (CustomField customField : selectedList) {
+				if(customField.getCustomFieldHasData()){
+					disableEditButton = true;
+					break;
+				}
+			}
+		}
+		
+		CustomFieldDisplayListPanel cfdListPanel = new CustomFieldDisplayListPanel("cfdListPanel", feedBackPanel,arkCrudContainerVO,disableEditButton);
 		cfdListPanel.initialisePanel();
 		dataView = cfdListPanel.buildDataView(cfdProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
