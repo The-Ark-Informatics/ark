@@ -412,7 +412,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				@SuppressWarnings("unused")
-				String subjectUidToken = containerForm.getModelObject().getStudy().getSubjectUidToken().getName();
+				String subjectUidToken = subjectUidTokenDpChoices.getDefaultModelObjectAsString();
 				subjectUidExampleTxt = getSubjectUidExample();
 				target.add(subjectUidExampleLbl);
 			}
@@ -432,7 +432,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				@SuppressWarnings("unused")
-				String subjectUidPadChar = containerForm.getModelObject().getStudy().getSubjectUidPadChar().getName();
+				String subjectUidPadChar = subjectUidPadCharsDpChoices.getDefaultModelObjectAsString();
 				subjectUidExampleTxt = getSubjectUidExample();
 				target.add(subjectUidExampleLbl);
 			}
