@@ -31,6 +31,7 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO>{
 	protected AjaxButton cancelButton;
 	protected FeedbackPanel	feedbackPanel;
 	protected ModalWindow	modalWindow;
+	private Boolean flag;
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
@@ -38,12 +39,13 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO>{
 	/**
 	 * @param id
 	 */
-	public CustomFieldDisplayForm(String id, CompoundPropertyModel<CustomFieldGroupVO> cpModel, ModalWindow	modalWindow, FeedbackPanel feedbackPanel) {
+	public CustomFieldDisplayForm(String id, CompoundPropertyModel<CustomFieldGroupVO> cpModel, ModalWindow	modalWindow, FeedbackPanel feedbackPanel, Boolean flag) {
 		super(id,cpModel);
 		
 		//this.cpModel = cpModel;
 		this.feedbackPanel = feedbackPanel;
 		this.modalWindow = modalWindow;
+		this.flag = flag;
 		initialiseForm();
 		addSearchComponentsToForm();
 	}
@@ -103,6 +105,13 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO>{
 		iArkCommonService.updateCustomFieldDisplay(getModelObject().getCustomFieldDisplay());
 	}
 	protected void addSearchComponentsToForm() {
+		if(flag){
+			saveButton.setEnabled(false);
+			customFieldDisplayIdTxtFld.setEnabled(false);
+			customFieldNameTxtFld.setEnabled(false);
+			requiredFieldCb.setEnabled(false);
+			requiredMessageTxtFld.setEnabled(false);
+		}
 		add(customFieldDisplayIdTxtFld);
 		add(customFieldNameTxtFld);
 		add(requiredFieldCb);

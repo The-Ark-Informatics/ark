@@ -16,14 +16,16 @@ public class CustomFieldDisplayModalPanel extends Panel{
 
 	private ModalWindow	modalWindow;
 	private CompoundPropertyModel<CustomFieldGroupVO> cpmModel;
-	private FeedbackPanel detailFeedbackPanel;;
+	private FeedbackPanel detailFeedbackPanel;
+	Boolean flag;
 	/**
 	 * @param id
 	 */
-	public CustomFieldDisplayModalPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<CustomFieldGroupVO> cpmModel,FeedbackPanel feedbackPanel) {
+	public CustomFieldDisplayModalPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<CustomFieldGroupVO> cpmModel,FeedbackPanel feedbackPanel, Boolean flag) {
 		super(id);
 		this.modalWindow = modalWindow;
 		this.cpmModel = cpmModel;
+		this.flag = flag;
 		initialiseFeedBackPanel();
 		initialisePanel();
 	}
@@ -36,7 +38,7 @@ public class CustomFieldDisplayModalPanel extends Panel{
 	
 	public void initialisePanel(){
 		
-		CustomFieldDisplayForm cfdForm = new CustomFieldDisplayForm("customFieldDisplayForm",cpmModel,modalWindow,detailFeedbackPanel);
+		CustomFieldDisplayForm cfdForm = new CustomFieldDisplayForm("customFieldDisplayForm",cpmModel,modalWindow,detailFeedbackPanel,flag);
 		add(cfdForm);
 		add(detailFeedbackPanel);
 	}

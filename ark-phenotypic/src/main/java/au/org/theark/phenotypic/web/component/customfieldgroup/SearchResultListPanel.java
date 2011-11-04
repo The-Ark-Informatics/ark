@@ -136,12 +136,12 @@ public class SearchResultListPanel extends Panel{
 					}
 				};
 				
+				
 				CustomFieldGroupDetailPanel detailPanel = new CustomFieldGroupDetailPanel("detailsPanel", feedbackPanel, arkCrudContainerVO, newModel,cfdArkDataProvider,true);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 				
 				TextField<String> questionnaireName = (TextField<String>)arkCrudContainerVO.getDetailPanelFormContainer().get("customFieldGroup.name");
 				questionnaireName.setEnabled(false);
-				
 				
 				Boolean disableEditButton = false;
 				if(itemSelected.getPublished()){
