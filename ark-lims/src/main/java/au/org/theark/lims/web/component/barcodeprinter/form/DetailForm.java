@@ -33,6 +33,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.util.convert.converter.IntegerConverter;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,15 +65,15 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
 
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private ILimsAdminService					iBarcodeService;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
+	private ILimsAdminService					iLimsAdminService;
 
 	private TextField<String>				idTxtFld;
 	private DropDownChoice<Study>			studyDdc;
 	private TextField<String>				nameTxtFld;
 	private TextField<String>				locationTxtFld;
 	private TextField<String>				hostTxtFld;
-	private TextField<String>				portTxtFld;
+	private TextField<Integer>				portTxtFld;
 	private TextArea<String>				descriptionTxtArea;
 
 	/**
@@ -92,7 +94,19 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 		descriptionTxtArea = new TextArea<String>("description");
 		locationTxtFld = new TextField<String>("location");
 		hostTxtFld = new TextField<String>("host");
-		portTxtFld = new TextField<String>("port");
+		portTxtFld = new TextField<Integer>("port"){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public <C> IConverter<C> getConverter(Class<C> type) {
+				IntegerConverter integerConverter = new IntegerConverter();
+				return (IConverter<C>) integerConverter;
+			}
+		};
 		
 		initStudyDdc();
 		
@@ -162,7 +176,7 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		// studyService.delete(containerForm.getModelObject().getPhone());
-		iBarcodeService.deleteBarcodePrinter(containerForm.getModelObject());
+		iLimsAdminService.deleteBarcodePrinter(containerForm.getModelObject());
 		containerForm.info("The Barcode Printer record was deleted successfully.");
 		editCancelProcess(target);
 		onCancel(target);
@@ -181,10 +195,10 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 	@Override
 	protected void onSave(Form<BarcodePrinter> containerForm, AjaxRequestTarget target) {
 		if(containerForm.getModelObject().getId() == null) {
-			iBarcodeService.createBarcodePrinter(containerForm.getModelObject());	
+			iLimsAdminService.createBarcodePrinter(containerForm.getModelObject());	
 		}
 		else {
-			iBarcodeService.updateBarcodePrinter(containerForm.getModelObject());
+			iLimsAdminService.updateBarcodePrinter(containerForm.getModelObject());
 		}
 		this.info("Barcode printer: " + containerForm.getModelObject().getName() + " was created/updated successfully.");
 		target.add(feedBackPanel);

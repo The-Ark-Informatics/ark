@@ -52,8 +52,8 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	private IArkCommonService<Void>	iArkCommonService;
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService					iLimsService;
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private ILimsAdminService				iBarcodeService;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
+	private ILimsAdminService				iLimsAdminService;
 	private BioCollection				bioCollection;
 	private String							zplString;
 	private BarcodePrinter				barcodePrinter;
@@ -84,13 +84,13 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 		barcodePrinter = new BarcodePrinter();
 		barcodePrinter.setStudy(bioCollection.getStudy());
 		barcodePrinter.setName("zebra");
-		barcodePrinter = iBarcodeService.searchBarcodePrinter(barcodePrinter);
+		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
 		
 		barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(bioCollection.getStudy());
 		barcodeLabel.setName("zebra bioCollection");
-		barcodeLabel = iBarcodeService.searchBarcodeLabel(barcodeLabel);
+		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-		this.zplString = iBarcodeService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel);
+		this.zplString = iLimsAdminService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel);
 
 		if (zplString == null || zplString.isEmpty()) {
 			this.error("There was an error when attempting to print the barcode for: " + bioCollection.getName());

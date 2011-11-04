@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biospecimenuidtemplate;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -49,8 +50,8 @@ public class SearchResultsPanel extends Panel {
 
 	protected transient Logger	log					= LoggerFactory.getLogger(SearchResultsPanel.class);
 
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private ILimsAdminService		iBarcodeService;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
+	private ILimsAdminService		iLimsAdminService;
 
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVo;
@@ -73,13 +74,15 @@ public class SearchResultsPanel extends Panel {
 				BiospecimenUidTemplate biospecimenUidTemplate = item.getModelObject();
 
 				item.add(buildLink(biospecimenUidTemplate));
+				
+				item.add(new Label("study", biospecimenUidTemplate.getStudy().getName()));
 
 				if (biospecimenUidTemplate.getBiospecimenUidPrefix() != null) {
 					// the ID here must match the ones in mark-up
-					item.add(new Label("biospecimenUidPrefix", biospecimenUidTemplate.getBiospecimenUidPrefix()));
+					item.add(new Label("biospecimenUid.template", getBiospecimenUidExample(biospecimenUidTemplate)));
 				}
 				else {
-					item.add(new Label("biospecimenUidPrefix", ""));
+					item.add(new Label("biospecimenUid.template", ""));
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
@@ -111,13 +114,15 @@ public class SearchResultsPanel extends Panel {
 				BiospecimenUidTemplate biospecimenUidTemplate = item.getModelObject();
 
 				item.add(buildLink(biospecimenUidTemplate));
+				
+				item.add(new Label("study", biospecimenUidTemplate.getStudy().getName()));
 
 				if (biospecimenUidTemplate.getBiospecimenUidPrefix() != null) {
 					// the ID here must match the ones in mark-up
-					item.add(new Label("biospecimenUidPrefix", biospecimenUidTemplate.getBiospecimenUidPrefix()));
+					item.add(new Label("biospecimenUid.template", getBiospecimenUidExample(biospecimenUidTemplate)));
 				}
 				else {
-					item.add(new Label("biospecimenUidPrefix", ""));
+					item.add(new Label("biospecimenUid.template", ""));
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
@@ -142,7 +147,7 @@ public class SearchResultsPanel extends Panel {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				BiospecimenUidTemplate BiospecimenUidTemplateFromDb = iBarcodeService.searchBiospecimenUidTemplate(BiospecimenUidTemplate);
+				BiospecimenUidTemplate BiospecimenUidTemplateFromDb = iLimsAdminService.searchBiospecimenUidTemplate(BiospecimenUidTemplate);
 				containerForm.setModelObject(BiospecimenUidTemplateFromDb);
 
 				arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
@@ -170,5 +175,33 @@ public class SearchResultsPanel extends Panel {
 		Label linkLabel = new Label("id", BiospecimenUidTemplate.getId().toString());
 		link.add(linkLabel);
 		return link;
+	}
+	
+	public String getBiospecimenUidExample(BiospecimenUidTemplate biospecimenUidTemplate) {
+		String biospecimenUidPrefix = new String("");
+		String biospecimenUidToken = new String("");
+		String biospecimenUidPaddedIncrementor = new String("");
+		String biospecimenUidPadChar = new String("0");
+		String biospecimenUidStart = new String("1");
+		StringBuilder biospecimenUidExample = new StringBuilder();
+
+		if (biospecimenUidTemplate.getBiospecimenUidPrefix() != null)
+			biospecimenUidPrefix = biospecimenUidTemplate.getBiospecimenUidPrefix();
+
+		if (biospecimenUidTemplate.getBiospecimenUidToken() != null)
+			biospecimenUidToken = biospecimenUidTemplate.getBiospecimenUidToken().getName();
+
+		if (biospecimenUidTemplate.getBiospecimenUidPadChar() != null) {
+			biospecimenUidPadChar = biospecimenUidTemplate.getBiospecimenUidPadChar().getName().trim();
+		}
+
+		int size = Integer.parseInt(biospecimenUidPadChar);
+		biospecimenUidPaddedIncrementor = StringUtils.leftPad(biospecimenUidStart, size, "0");
+		
+		biospecimenUidExample.append(biospecimenUidPrefix);
+		biospecimenUidExample.append(biospecimenUidToken);
+		biospecimenUidExample.append(biospecimenUidPaddedIncrementor);
+
+		return biospecimenUidExample.toString();
 	}
 }

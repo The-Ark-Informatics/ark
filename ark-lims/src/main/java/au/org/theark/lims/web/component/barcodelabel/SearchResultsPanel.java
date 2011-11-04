@@ -49,8 +49,8 @@ public class SearchResultsPanel extends Panel {
 
 	protected transient Logger	log					= LoggerFactory.getLogger(SearchResultsPanel.class);
 
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private ILimsAdminService		iBarcodeService;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
+	private ILimsAdminService		iLimsAdminService;
 
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVo;
@@ -158,7 +158,7 @@ public class SearchResultsPanel extends Panel {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				BarcodeLabel barcodeLabelFromDb = iBarcodeService.searchBarcodeLabel(barcodeLabel);
+				BarcodeLabel barcodeLabelFromDb = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 				containerForm.setModelObject(barcodeLabelFromDb);
 
 				arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);

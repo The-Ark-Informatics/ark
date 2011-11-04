@@ -70,8 +70,8 @@ public class BarcodeLabelContainerPanel extends AbstractContainerPanel<BarcodeLa
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>									iArkCommonService;
 
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private ILimsAdminService												iBarcodeService;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
+	private ILimsAdminService												iLimsAdminService;
 
 	public BarcodeLabelContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
@@ -132,7 +132,7 @@ public class BarcodeLabelContainerPanel extends AbstractContainerPanel<BarcodeLa
 
 	private void initialiseDataView() {
 		// Data provider to paginate resultList
-		dataProvider = new ArkDataProvider<BarcodeLabel, ILimsAdminService>(iBarcodeService) {
+		dataProvider = new ArkDataProvider<BarcodeLabel, ILimsAdminService>(iLimsAdminService) {
 			/**
 			 * 
 			 */

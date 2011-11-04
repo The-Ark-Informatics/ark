@@ -60,7 +60,7 @@ public class SearchForm extends AbstractSearchForm<BiospecimenUidTemplate> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
 	private ILimsAdminService						iLimsAdminService;
 
 	private TextField<Long>						idTxtFld;

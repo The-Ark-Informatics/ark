@@ -43,8 +43,8 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 
 	private static final Logger	log					= LoggerFactory.getLogger(PrintBiospecimenStrawLabelButton.class);
 
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private ILimsAdminService			iBarcodeService;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
+	private ILimsAdminService			iLimsAdminService;
 	private final Biospecimen		biospecimen;
 	private String						tsplString;
 	private BarcodePrinter			barcodePrinter;
@@ -63,7 +63,7 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 		barcodePrinter = new BarcodePrinter();
 		barcodePrinter.setStudy(biospecimen.getStudy());
 		barcodePrinter.setName("brady_bbp_11");
-		barcodePrinter = iBarcodeService.searchBarcodePrinter(barcodePrinter);
+		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
 	}
 	
 	@Override
@@ -89,9 +89,9 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(biospecimen.getStudy());
 		barcodeLabel.setName("brady straw barcode");
-		barcodeLabel = iBarcodeService.searchBarcodeLabel(barcodeLabel);
+		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 
-		this.tsplString = iBarcodeService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
+		this.tsplString = iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
 
 		if (tsplString == null || tsplString.isEmpty()) {
 			this.error("There was an error when attempting to print the straw barcode for: " + biospecimen.getBiospecimenUid());

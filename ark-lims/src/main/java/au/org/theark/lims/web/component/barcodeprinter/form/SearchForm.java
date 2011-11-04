@@ -61,15 +61,15 @@ public class SearchForm extends AbstractSearchForm<BarcodePrinter> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private ILimsAdminService				iBarcodeService;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
+	private ILimsAdminService				iLimsAdminService;
 
 	private TextField<Long>				idTxtFld;
 	private DropDownChoice<Study>		studyDdc;
 	private TextField<String>			nameTxtFld;
 	private TextField<String>			locationTxtFld;
 	private TextField<String>			hostTxtFld;
-	private TextField<String>			portTxtFld;
+	private TextField<Integer>			portTxtFld;
 	private TextArea<String>			descriptionTxtArea;
 
 	public SearchForm(String id, CompoundPropertyModel<BarcodePrinter> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
@@ -87,7 +87,7 @@ public class SearchForm extends AbstractSearchForm<BarcodePrinter> {
 		descriptionTxtArea = new TextArea<String>("description");
 		locationTxtFld = new TextField<String>("location");
 		hostTxtFld = new TextField<String>("host");
-		portTxtFld = new TextField<String>("port");
+		portTxtFld = new TextField<Integer>("port");
 
 		addSearchComponentsToForm();
 	}
@@ -152,7 +152,7 @@ public class SearchForm extends AbstractSearchForm<BarcodePrinter> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
-		int count = iBarcodeService.getBarcodePrinterCount(getModelObject());
+		int count = iLimsAdminService.getBarcodePrinterCount(getModelObject());
 		if (count == 0) {
 			this.info("There are no records that matched your query. Please modify your filter");
 			target.add(feedbackPanel);
