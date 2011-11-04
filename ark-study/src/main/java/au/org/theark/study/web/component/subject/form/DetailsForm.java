@@ -418,6 +418,10 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 				onSavePostProcess(target);
 				this.info(sb.toString());
 
+				// Set new Subject into context
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectVO.getLinkSubjectStudy().getSubjectUID());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subjectVO.getLinkSubjectStudy().getPerson().getId());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 			}
 			catch (ArkUniqueException ex) {
 				this.error("Subject UID must be unique.");
