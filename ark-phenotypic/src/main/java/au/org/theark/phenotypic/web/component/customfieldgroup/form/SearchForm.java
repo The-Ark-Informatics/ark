@@ -7,10 +7,15 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
@@ -19,6 +24,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldGroupVO;
@@ -42,8 +48,9 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private TextField<String> groupNameTxtFld;
 	private CheckBox publishedStatusCb;	
+	private DropDownChoice<YesNo> publishedDDC;
 	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdArkDataProvider;
-	
+	private Label generalTextLbl; 
 	/**
 	 * @param id
 	 * @param cpmModel
@@ -52,8 +59,12 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 		super(id, cpmModel,feedBackPanel,arkCrudContainerVO);
 		this.feedbackPanel = feedBackPanel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
-		initialiseSearchForm();
-		addSearchComponentsToForm();
+		resetButton.setVisible(false);
+		searchButton.setVisible(false);
+		generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model() ));
+		add(generalTextLbl);
+		//initialiseSearchForm();
+		//addSearchComponentsToForm();
 	}
 
 	/* (non-Javadoc)
@@ -125,7 +136,6 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 	protected void initialiseSearchForm(){
 		groupNameTxtFld = new TextField<String>("customFieldGroup.name");
 		publishedStatusCb = new CheckBox("customFieldGroup.published");
-		
 	}
 	
 	protected void addSearchComponentsToForm() {
