@@ -121,7 +121,7 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 	public String getBiospecimenUidExample() {
 		BiospecimenUidTemplate biospecimenUidTemplate = new BiospecimenUidTemplate();
 		if(containerForm.getModelObject() != null) {
-			biospecimenUidTemplate = containerForm.getModelObject();
+			biospecimenUidTemplate =containerForm.getModelObject();
 		}
 		String biospecimenUidPrefix = new String("");
 		String biospecimenUidToken = new String("");
