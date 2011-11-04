@@ -3,7 +3,6 @@ package au.org.theark.phenotypic.web.component.customfieldgroup;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -144,17 +143,17 @@ public class SearchResultListPanel extends Panel{
 				questionnaireName.setEnabled(false);
 				
 				
-				Boolean proceedToSave = true;
+				Boolean disableEditButton = false;
 				if(itemSelected.getPublished()){
 					for (CustomField customField : selectedList) {
 						if(customField.getCustomFieldHasData()){
-							proceedToSave = false;
+							disableEditButton = true;
 							break;
 						}
 					}
 				}
 				
-				if(!proceedToSave){
+				if(disableEditButton){
 					AjaxButton editButtn = (AjaxButton) arkCrudContainerVO.getViewButtonContainer().get("edit");
 					editButtn.setEnabled(false);
 				}
