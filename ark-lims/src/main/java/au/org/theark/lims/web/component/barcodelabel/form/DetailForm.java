@@ -65,8 +65,8 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
 
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private ILimsAdminService						iBarcodeService;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
+	private ILimsAdminService						iLimsAdminService;
 
 	private TextField<Long>						idTxtFld;
 	private DropDownChoice<Study>				studyDdc;
@@ -122,7 +122,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	
 	private void initialiseBarcodePrinterDdc() {
 		List<BarcodePrinter> barcodePrinters = new ArrayList<BarcodePrinter>(0);
-		barcodePrinters = iBarcodeService.getBarcodePrinters(getStudyListForUser());
+		barcodePrinters = iLimsAdminService.getBarcodePrinters(getStudyListForUser());
 		ChoiceRenderer<BarcodePrinter> choiceRenderer = new ChoiceRenderer<BarcodePrinter>(Constants.NAME, Constants.ID);
 		barcodePrinterDdc = new DropDownChoice<BarcodePrinter>("barcodePrinter", barcodePrinters, choiceRenderer);
 	}
@@ -170,8 +170,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	 */
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-		// studyService.delete(containerForm.getModelObject().getPhone());
-		iBarcodeService.deleteBarcodeLabel(containerForm.getModelObject());
+		iLimsAdminService.deleteBarcodeLabel(containerForm.getModelObject());
 		containerForm.info("The Barcode label record was deleted successfully.");
 		editCancelProcess(target);
 		onCancel(target);
@@ -189,20 +188,29 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 
 	@Override
 	protected void onSave(Form<BarcodeLabel> containerForm, AjaxRequestTarget target) {
-		if (containerForm.getModelObject().getId() == null) {
-			iBarcodeService.createBarcodeLabel(containerForm.getModelObject());
+		if (isNew()) {
+			iLimsAdminService.createBarcodeLabel(containerForm.getModelObject());
 		}
 		else {
-			iBarcodeService.updateBarcodeLabel(containerForm.getModelObject());
+			iLimsAdminService.updateBarcodeLabel(containerForm.getModelObject());
 		}
 		this.info("Barcode label: " + containerForm.getModelObject().getName() + " was created/updated successfully.");
 		target.add(feedBackPanel);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
+	 */
 	@Override
 	protected boolean isNew() {
-		// TODO Auto-generated method stub
-		return false;
+		if (containerForm.getModelObject().getId() == null) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**

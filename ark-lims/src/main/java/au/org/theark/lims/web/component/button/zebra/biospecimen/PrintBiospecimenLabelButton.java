@@ -42,8 +42,8 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 	private static final long		serialVersionUID	= 5772993543283783679L;
 	private static final Logger	log					= LoggerFactory.getLogger(PrintBiospecimenLabelButton.class);
 
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private ILimsAdminService			iBarcodeService;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
+	private ILimsAdminService			iLimsAdminService;
 	private final Biospecimen		biospecimen;
 	private String						zplString;
 	private BarcodePrinter			barcodePrinter;
@@ -62,7 +62,7 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 		barcodePrinter = new BarcodePrinter();
 		barcodePrinter.setStudy(biospecimen.getStudy());
 		barcodePrinter.setName("zebra");
-		barcodePrinter = iBarcodeService.searchBarcodePrinter(barcodePrinter);
+		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
 	}
 	
 	@Override
@@ -88,9 +88,9 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(biospecimen.getStudy());
 		barcodeLabel.setName("zebra biospecimen");
-		barcodeLabel = iBarcodeService.searchBarcodeLabel(barcodeLabel);
+		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 
-		this.zplString = iBarcodeService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
+		this.zplString = iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
 
 		if (zplString == null || zplString.isEmpty()) {
 			this.error("There was an error when attempting to print the barcode for: " + biospecimen.getBiospecimenUid());

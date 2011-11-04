@@ -70,8 +70,8 @@ public class BiospecimenUidTemplateContainerPanel extends AbstractContainerPanel
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>													iArkCommonService;
 
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_BARCODE_SERVICE)
-	private ILimsAdminService															iBarcodeService;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
+	private ILimsAdminService															iLimsAdminService;
 
 	public BiospecimenUidTemplateContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
@@ -132,7 +132,7 @@ public class BiospecimenUidTemplateContainerPanel extends AbstractContainerPanel
 
 	private void initialiseDataView() {
 		// Data provider to paginate resultList
-		dataProvider = new ArkDataProvider<BiospecimenUidTemplate, ILimsAdminService>(iBarcodeService) {
+		dataProvider = new ArkDataProvider<BiospecimenUidTemplate, ILimsAdminService>(iLimsAdminService) {
 			/**
 			 * 
 			 */

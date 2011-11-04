@@ -22,28 +22,6 @@
 				<div id="panelMargin">
 					&nbsp;
 				</div>
-
-				<div id="fldLabel">
-					<wicket:message key="name">
-						Name:
-					</wicket:message>
-				</div>
-
-				<div id="fldControl">
-					<input wicket:id="name" type="text" />
-				</div>
-
-				<div id="detailPanelContentRight">
-					&nbsp;
-				</div>
-
-				<div id="detailPanelBreaker">
-					&nbsp;
-				</div>
-				
-				<div id="panelContentLeft">
-					&nbsp;
-				</div>
 				
 				<div id="fldLabel">
 					<wicket:message key="study">
@@ -59,97 +37,45 @@
 					</select>
 				</div>
 
-				<div id="panelMargin">
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+				
+				<div id="panelContentLeft">
 					&nbsp;
 				</div>
 				
 				<div id="fldLabel">
-					<wicket:message key="barcodePrinter">
-						Barcode Printer
-					</wicket:message>
-				</div>
-
-				<div id="fldControl">
-					<select wicket:id="barcodePrinter">
-						<option>
-							Barcode Printer
-						</option>
-					</select>
+					<label for="subjectUidPrefix">
+						<wicket:message	key="biospecimenUid.template">BiospecimenUID Template:</wicket:message><br>
+						<div id="note">
+							<wicket:message	key="biospecimenUid.templateNote">[Note replaced from properties]</wicket:message>
+						</div>
+					</label>
 				</div>
 				
-				<div id="detailPanelContentRight">
-					&nbsp;
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="biospecimenUidPrefix" type="text" maxLength="3" size="3"/>
+						<select wicket:id="biospecimenUidToken">
+		       				<option>-</option>
+							<option>@</option>
+							<option>#</option>
+		       			</select>
+						<select wicket:id="biospecimenUidPadChar">
+		       				<option>1</option>
+							<option>2</option>
+							<option>3</option>
+		       			</select>
+					</div>
+					<div class="label">
+						<b><span wicket:id="biospecimenUid.example">ABC-#########</span></b>
+					</div>
 				</div>
 
 				<div id="detailPanelBreaker">
 					&nbsp;
 				</div>
-
-				<div id="panelContentLeft">
-					&nbsp;
-				</div>
-
-				<div id="fldLabel">
-					<wicket:message key="description">
-						Description:
-					</wicket:message>
-				</div>
-
-				<div id="fldControl">
-					<textarea wicket:id="description" maxlength="255" cols="25">
-					</textarea>
-				</div>
-
-				<div id="panelMargin">
-					&nbsp;
-				</div>
-
-				<!-- Empty -->
-
-				<div id="detailPanelContentRight">
-					&nbsp;
-				</div>
-
-				<div id="detailPanelBreaker">
-					&nbsp;
-				</div>
-
-				<div id="panelContentLeft">
-					&nbsp;
-				</div>
-
-				<div id="fldLabel">
-					<wicket:message key="labelPrefix">
-						Label Prefix:
-					</wicket:message>
-				</div>
-
-				<div id="fldControl">
-					<input wicket:id="labelPrefix" type="text" />
-				</div>
-
-				<div id="panelMargin">
-					&nbsp;
-				</div>
-
-				<div id="fldLabel">
-					<wicket:message key="labelSuffix">
-						Label Suffix:
-					</wicket:message>
-				</div>
-
-				<div id="fldControl">
-					<input wicket:id="labelSuffix" type="text" />
-				</div>
-
-				<div id="detailPanelContentRight">
-					&nbsp;
-				</div>
-
-				<div id="detailPanelBreaker">
-					&nbsp;
-				</div>
-
 			</div>
 			<!-- End detailFormContainer -->
 
@@ -168,7 +94,6 @@
 					&nbsp;
 					<div class="label">
 						<input wicket:id="edit" type="submit" wicket:message="value:button.edit" />
-						&nbsp;
 						<div id="panelMargin">
 							&nbsp;
 						</div>
@@ -191,7 +116,6 @@
 					&nbsp;
 					<div class="label">
 						<input wicket:id="save" type="submit" wicket:message="value:button.save" />
-						&nbsp;
 						<div id="panelMargin">
 							&nbsp;
 						</div>
@@ -200,7 +124,6 @@
 							&nbsp;
 						</div>
 						<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
-						&nbsp;
 					</div>
 				</div>
 			</div>
