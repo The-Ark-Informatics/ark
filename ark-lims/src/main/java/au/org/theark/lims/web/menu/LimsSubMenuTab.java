@@ -45,6 +45,7 @@ import au.org.theark.lims.web.component.barcodeprinter.BarcodePrinterContainerPa
 import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataContainerPanel;
 import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
 import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataContainerPanel;
+import au.org.theark.lims.web.component.biospecimenuidtemplate.BiospecimenUidTemplateContainerPanel;
 import au.org.theark.lims.web.component.inventory.panel.InventoryContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.SubjectContainerPanel;
 
@@ -91,12 +92,13 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 				@Override
 				public boolean isVisible() {
 					boolean flag = true;
-					if(menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.barcodeprinter") || 
+					if(menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.biospecimenuidtemplate") || 
+							menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.barcodeprinter") || 
 							menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.barcodelabel")) {
 						SecurityManager securityManager = ThreadContext.getSecurityManager();
 						Subject currentUser = SecurityUtils.getSubject();
 
-						// Only a Super Administrator can see the barcodeprinter/barcodelabel tabs
+						// Only a Super Administrator can see the biospecimenuidtemplate/barcodeprinter/barcodelabel tabs
 						if (securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 							flag = currentUser.isAuthenticated();
 						}
@@ -144,6 +146,9 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_DATA)) {
 			panelToReturn = new BiospecimenCustomDataContainerPanel(panelId).initialisePanel();
+		}
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMENUID_TEMPLATE)) {
+			panelToReturn = new BiospecimenUidTemplateContainerPanel(panelId, arkContextMarkup);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BARCODE_PRINTER)) {
 			panelToReturn = new BarcodePrinterContainerPanel(panelId, arkContextMarkup);
