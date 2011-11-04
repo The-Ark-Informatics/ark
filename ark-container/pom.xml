@@ -219,12 +219,12 @@
 	<properties>
 		<jetty.version>6.1.4</jetty.version>
 		<ark-common.version>0.1.6-SNAPSHOT</ark-common.version>
-		<ark-study.version>0.1.5-SNAPSHOT</ark-study.version>
+		<ark-study.version>0.1.6-SNAPSHOT</ark-study.version>
 		<ark-phenotypic.version>0.1.5-SNAPSHOT</ark-phenotypic.version>
 		<ark-geno.version>0.1.5-SNAPSHOT</ark-geno.version>
-		<ark-registry.version>0.1.5-SNAPSHOT</ark-registry.version>
-		<ark-lims.version>0.1.5-SNAPSHOT</ark-lims.version>
-		<ark-report.version>0.1.5-SNAPSHOT</ark-report.version>
-		<ark-admin.version>0.1.5-SNAPSHOT</ark-admin.version>
+		<ark-registry.version>0.1.6-SNAPSHOT</ark-registry.version>
+		<ark-lims.version>0.1.6-SNAPSHOT</ark-lims.version>
+		<ark-report.version>0.1.6-SNAPSHOT</ark-report.version>
+		<ark-admin.version>0.1.6-SNAPSHOT</ark-admin.version>
 	</properties>
 </project>
