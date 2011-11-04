@@ -12,10 +12,12 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.BarcodeLabelData;
 import au.org.theark.core.model.lims.entity.BarcodePrinter;
+import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
+import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.study.entity.Study;
 
-@Repository("barcodeDao")
+@Repository("limsAdminDao")
 public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 	//private static final Logger	log	= LoggerFactory.getLogger(BarcodeDao.class);
 
@@ -252,5 +254,86 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 
 	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
 		getSession().update(biospecimenUidTemplate);
+	}
+
+	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars() {
+		Criteria criteria = getSession().createCriteria(BiospecimenUidPadChar.class);
+		return criteria.list();
+	}
+
+	public int getBiospecimenUidTemplateCount(BiospecimenUidTemplate modelObject) {
+		Criteria criteria = buildBiospecimenUidTemplateCriteria(modelObject);
+		criteria.setProjection(Projections.rowCount());
+		Integer totalCount = (Integer) criteria.uniqueResult();
+		return totalCount;
+	}
+
+	public List<BiospecimenUidToken> getBiospecimenUidTokens() {
+		Criteria criteria = getSession().createCriteria(BiospecimenUidToken.class);
+		return criteria.list();
+	}
+
+	public BiospecimenUidTemplate searchBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
+		Criteria criteria = getSession().createCriteria(BiospecimenUidTemplate.class);
+		
+		if (biospecimenUidTemplate.getId() != null) {
+			criteria.add(Restrictions.eq("id", biospecimenUidTemplate.getId()));
+		}
+		
+		if(biospecimenUidTemplate.getStudy() != null) {
+			criteria.add(Restrictions.eq("study", biospecimenUidTemplate.getStudy()));
+		}
+		
+		if(biospecimenUidTemplate.getBiospecimenUidPrefix() != null) {
+			criteria.add(Restrictions.eq("biospecimenUidPrefix", biospecimenUidTemplate.getBiospecimenUidPrefix()));
+		}
+
+		if(biospecimenUidTemplate.getBiospecimenUidToken() != null) {
+			criteria.add(Restrictions.eq("biospecimenUidToken", biospecimenUidTemplate.getBiospecimenUidToken()));
+		}
+		
+		if(biospecimenUidTemplate.getBiospecimenUidPadChar() != null) {
+			criteria.add(Restrictions.eq("biospecimenUidPadChar", biospecimenUidTemplate.getBiospecimenUidPadChar()));
+		}
+		
+		BiospecimenUidTemplate biospecimenUidTemplateResult = new BiospecimenUidTemplate();
+		if(!criteria.list().isEmpty()) {
+			biospecimenUidTemplateResult = (BiospecimenUidTemplate) criteria.list().get(0);
+		}
+		return biospecimenUidTemplateResult;
+	}
+
+	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, int first, int count) {
+		Criteria criteria = buildBiospecimenUidTemplateCriteria(object);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<BiospecimenUidTemplate> list = criteria.list();
+		return list;
+	}
+	
+	protected Criteria buildBiospecimenUidTemplateCriteria(BiospecimenUidTemplate object) {
+		Criteria criteria = getSession().createCriteria(BiospecimenUidTemplate.class);
+		
+		if (object.getId() != null) {
+			criteria.add(Restrictions.eq("id", object.getId()));
+		}
+		
+		if(object.getStudy() != null) {
+			criteria.add(Restrictions.eq("study", object.getStudy()));
+		}
+		
+		if(object.getBiospecimenUidPrefix() != null) {
+			criteria.add(Restrictions.eq("biospecimenUidPrefix", object.getBiospecimenUidPrefix()));
+		}
+
+		if(object.getBiospecimenUidToken() != null) {
+			criteria.add(Restrictions.eq("biospecimenUidToken", object.getBiospecimenUidToken()));
+		}
+		
+		if(object.getBiospecimenUidPadChar() != null) {
+			criteria.add(Restrictions.eq("biospecimenUidPadChar", object.getBiospecimenUidPadChar()));
+		}
+		
+		return criteria;
 	}
 }
