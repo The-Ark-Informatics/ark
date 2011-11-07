@@ -2,6 +2,7 @@ package au.org.theark.phenotypic.web.component.customfieldgroup.form;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -20,6 +21,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 
@@ -106,6 +108,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		cfdListPanel.addOrReplace(pageNavigator);
 		cfdListPanel.addOrReplace(dataView);
 		arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(cfdListPanel);
+	
 		
 		
 	}
@@ -141,9 +144,12 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "name");
 		Collection<CustomField>  list = cpModel.getObject().getSelectedCustomFields();
+		
+		List<CustomField> selectedListCF = cpModel.getObject().getSelectedCustomFields();
+		
 		PropertyModel<Collection<CustomField>> selectedPm = new PropertyModel<Collection<CustomField>>(cpModel, "selectedCustomFields");
 		PropertyModel<Collection<CustomField>> availablePm = new PropertyModel<Collection<CustomField>>(cpModel, "availableCustomFields");
-		customFieldPalette = new ArkPalette("selectedCustomFields", selectedPm, availablePm, renderer,au.org.theark.core.Constants.PALETTE_ROWS, false);
+		customFieldPalette = new ArkPalette("selectedCustomFields", new ListModel(selectedListCF), availablePm, renderer,au.org.theark.core.Constants.PALETTE_ROWS, true );
 	}
 	
 
@@ -231,7 +237,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 			}
 			
 		}
-		
+		target.add(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());//Repaint this List of Custom Field Displays
 		onSavePostProcess(target);//Post process
 		
 	}
