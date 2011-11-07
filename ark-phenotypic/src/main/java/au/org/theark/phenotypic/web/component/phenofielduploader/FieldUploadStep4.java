@@ -18,6 +18,9 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenofielduploader;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
@@ -87,9 +90,16 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
-		initialiseDetailForm();
 		form.getArkExcelWorkSheetAsGrid().setVisible(false);
 		target.add(form.getArkExcelWorkSheetAsGrid());
+		File temp = containerForm.getModelObject().getTempFile();
+		if (temp != null && temp.exists()) {
+		}
+		else {
+			// Stop progress because of missing temp file
+			error("Unexpected error: Can not proceed due to missing temporary file.");
+			form.getNextButton().setEnabled(false);
+		}
 	}
 
 	@Override
@@ -166,14 +176,42 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 	}
 
 	private void save() {
-		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
-		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
-		containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
-		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
-		Collection<CustomFieldUpload> cfUploadLinks = containerForm.getModelObject().getCustomFieldUploadCollection();
-		for (CustomFieldUpload cfUpload : cfUploadLinks) {
-			cfUpload.setStudyUpload(containerForm.getModelObject().getUpload());
-			iArkCommonService.createCustomFieldUpload(cfUpload);
+		File temp = containerForm.getModelObject().getTempFile();
+		InputStream inputStream = null;
+		try {
+			inputStream = new BufferedInputStream(new FileInputStream(temp));
+			// Copy file to BLOB object
+			Blob payload = Hibernate.createBlob(inputStream);
+			containerForm.getModelObject().getUpload().setPayload(payload);
+
+			containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
+			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
+			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+			Collection<CustomFieldUpload> cfUploadLinks = containerForm.getModelObject().getCustomFieldUploadCollection();
+			for (CustomFieldUpload cfUpload : cfUploadLinks) {
+				cfUpload.setStudyUpload(containerForm.getModelObject().getUpload());
+				iArkCommonService.createCustomFieldUpload(cfUpload);
+			}
+		}
+		catch (IOException ioe) {
+			log.error("Failed to save the uploaded file: " + ioe);
+		}
+		finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				}
+				catch (IOException e) {
+					log.error("Unable to close inputStream: " + e.getMessage());
+				}
+			}
+			if (temp != null) {
+				// Attempt manual a delete
+				temp.delete();
+				temp = null;
+				containerForm.getModelObject().setTempFile(temp);
+			}
 		}
 	}
 }

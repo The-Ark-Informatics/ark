@@ -18,6 +18,11 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenofielduploader;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -151,81 +156,105 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 		String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
-		InputStream inputStream;
-		try {
-			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
-
-			CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
+		
+		File temp = containerForm.getModelObject().getTempFile();
+		if (temp != null && temp.exists()) {
+			InputStream inputStream = null;
+			try {
+				ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 	
-			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			validationMessages = phenotypicValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
-
-			HashSet<Integer> insertRows = new HashSet<Integer>();
-			HashSet<Integer> updateRows = new HashSet<Integer>();
-			HashSet<ArkGridCell> insertCells = new HashSet<ArkGridCell>();
-			HashSet<ArkGridCell> updateCells = new HashSet<ArkGridCell>();
-			HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
-			HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
-
-			insertRows = phenotypicValidator.getInsertRows();
-			updateRows = phenotypicValidator.getUpdateRows();
-			insertCells = phenotypicValidator.getInsertCells();
-			updateCells = phenotypicValidator.getUpdateCells();
-			warningCells = phenotypicValidator.getWarningCells();
-			errorCells = phenotypicValidator.getErrorCells();
-			inputStream.reset();
-
-			// Show file data (and key reference)
-			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, containerForm.getModelObject().getFileUpload(), insertRows,
-					updateRows, insertCells, updateCells, warningCells, errorCells);
-			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
-			arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
-			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
-			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
-
-			// Repaint
-			target.add(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
-			target.add(form.getWizardPanelFormContainer());
-
-			if (updateCells.isEmpty()) {
-				containerForm.getModelObject().setUpdateChkBox(true);
-				updateExistingDataContainer.setVisible(false);
-			}
-			else {
-				containerForm.getModelObject().setUpdateChkBox(false);
-				updateExistingDataContainer.setVisible(true);
-			}
-			target.add(updateExistingDataContainer);
-
-			if (!errorCells.isEmpty()) {
-				updateExistingDataContainer.setVisible(false);
+				CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
+				
+				inputStream = new BufferedInputStream(new FileInputStream(temp));
+				validationMessages = phenotypicValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
+				inputStream.close();
+				inputStream = null;
+				
+				HashSet<Integer> insertRows = new HashSet<Integer>();
+				HashSet<Integer> updateRows = new HashSet<Integer>();
+				HashSet<ArkGridCell> insertCells = new HashSet<ArkGridCell>();
+				HashSet<ArkGridCell> updateCells = new HashSet<ArkGridCell>();
+				HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
+				HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
+	
+				insertRows = phenotypicValidator.getInsertRows();
+				updateRows = phenotypicValidator.getUpdateRows();
+				insertCells = phenotypicValidator.getInsertCells();
+				updateCells = phenotypicValidator.getUpdateCells();
+				warningCells = phenotypicValidator.getWarningCells();
+				errorCells = phenotypicValidator.getErrorCells();
+	
+				// Show file data (and key reference)
+				inputStream = new BufferedInputStream(new FileInputStream(temp));
+				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, containerForm.getModelObject().getFileUpload(), insertRows,
+						updateRows, insertCells, updateCells, warningCells, errorCells);
+				inputStream.close();
+				inputStream = null;
+				arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
+				arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
+				form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
+				form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
+	
+				// Repaint
+				target.add(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
+				target.add(form.getWizardPanelFormContainer());
+	
+				if (updateCells.isEmpty()) {
+					containerForm.getModelObject().setUpdateChkBox(true);
+					updateExistingDataContainer.setVisible(false);
+				}
+				else {
+					containerForm.getModelObject().setUpdateChkBox(false);
+					updateExistingDataContainer.setVisible(true);
+				}
 				target.add(updateExistingDataContainer);
+	
+				if (!errorCells.isEmpty()) {
+					updateExistingDataContainer.setVisible(false);
+					target.add(updateExistingDataContainer);
+					form.getNextButton().setEnabled(false);
+					target.add(form.getWizardButtonContainer());
+				}
+	
+			}
+			catch (IOException ioe) {
+				log.error("IOException " + ioe.getMessage());
+				validationMessage = "Error attempting to display the file. Please check the file and try again.";
+			}
+			finally {
+				if (inputStream != null) {
+					try {
+						inputStream.close();
+					}
+					catch (IOException e) {
+						log.error("Unable to close inputStream: " + e.getMessage());
+					}
+				}
+			}
+			
+			containerForm.getModelObject().setValidationMessages(validationMessages);
+			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+	
+			if (validationMessage != null && validationMessage.length() > 0) {
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
+				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
+	
+					@Override
+					protected void onError(AjaxRequestTarget target, Form<?> form) {
+						this.error("Unexpected Error: Download request could not be processed");
+					}
+					
+				};
+				addOrReplace(downloadValMsgButton);
+				target.add(downloadValMsgButton);
 			}
-
 		}
-		catch (IOException ioe) {
-			validationMessage = "Error attempting to display the file. Please check the file and try again.";
-		}
-
-		containerForm.getModelObject().setValidationMessages(validationMessages);
-		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-
-		if (validationMessage != null && validationMessage.length() > 0) {
+		else {
+			// Stop progress because of missing temp file
+			error("Unexpected error: Can not proceed due to missing temporary file.");
 			form.getNextButton().setEnabled(false);
-			target.add(form.getWizardButtonContainer());
-			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
-
-				@Override
-				protected void onError(AjaxRequestTarget target, Form<?> form) {
-					this.error("Unexpected Error: Download request could not be processed");
-				}
-				
-			};
-			addOrReplace(downloadValMsgButton);
-			target.add(downloadValMsgButton);
 		}
 	}
 

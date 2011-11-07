@@ -205,10 +205,20 @@ public class CustomFieldImportValidator {
 				stringBuffer.append("The specified file format was: " + fileFormat + "\n");
 				stringBuffer.append("The specified delimiter was: [" + phenotypicDelimChr + "] (" + delimiterTypeName + ")\n");
 				stringBuffer.append("The default data dictionary format is as follows:\n");
-				stringBuffer.append("FIELD_NAME" + phenotypicDelimChr + "FIELD_TYPE" + phenotypicDelimChr + "DESCRIPTION" + phenotypicDelimChr + "UNITS" + phenotypicDelimChr + "ENCODED_VALUES"
-						+ phenotypicDelimChr + "MINIMUM_VALUE" + phenotypicDelimChr + "MAXIMUM_VALUE" + phenotypicDelimChr + "MISSING_VALUE" + "\n");
-				stringBuffer.append("[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]"
-						+ phenotypicDelimChr + "[...]" + "\n");
+				for (int i = 0; i < dataDictionaryColumnArray.length; i++) {
+					if (i > 0) {
+						stringBuffer.append(phenotypicDelimChr);
+					}
+					stringBuffer.append(dataDictionaryColumnArray[i]);
+				}
+				stringBuffer.append("\n");
+				for (int i = 0; i < dataDictionaryColumnArray.length; i++) {
+					if (i > 0) {
+						stringBuffer.append(phenotypicDelimChr);
+					}
+					stringBuffer.append("[val" + (i + 1) + "]");
+				}
+				stringBuffer.append("\n");
 
 				fileValidationMessages.add(stringBuffer.toString());
 			}

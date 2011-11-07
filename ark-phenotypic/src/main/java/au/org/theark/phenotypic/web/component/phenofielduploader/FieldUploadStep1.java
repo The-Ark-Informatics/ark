@@ -18,12 +18,17 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenofielduploader;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -32,6 +37,7 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IOUtils;
 import org.hibernate.Hibernate;
 
 import au.org.theark.core.model.study.entity.DelimiterType;
@@ -148,14 +154,47 @@ public class FieldUploadStep1 extends AbstractWizardStepPanel {
 		// TODO: AJAX-ified and asynchronous and hit database
 		FileUpload fileUpload = fileUploadField.getFileUpload();
 		containerForm.getModelObject().setFileUpload(fileUpload);
-
+		
+		InputStream inputStream = null;
+		BufferedOutputStream outputStream = null;
+		File temp = null;
 		try {
-			// Copy file to BLOB object
-			Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
-			containerForm.getModelObject().getUpload().setPayload(payload);
+			// Copy all the contents of the file upload to a temp file (to read multiple times)...
+			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			// Create temp file 
+			temp = File.createTempFile("phenoFieldUploadBlob", ".tmp");
+			containerForm.getModelObject().setTempFile(temp);
+			// Delete temp file when program exits (just in case manual delete fails later)
+			temp.deleteOnExit();
+			// Write to temp file
+			outputStream = new BufferedOutputStream(new FileOutputStream(temp));
+			IOUtils.copy(inputStream, outputStream);
 		}
 		catch (IOException ioe) {
-			log.error("Failed to save the uploaded file: " + ioe);
+			log.error("IOException " + ioe.getMessage());
+			// Something failed, so there is temp file is not valid (step 2 should check for null)
+			temp.delete();
+			temp = null;
+			containerForm.getModelObject().setTempFile(temp);
+		}
+		finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				}
+				catch (IOException e) {
+					log.error("Unable to close inputStream: " + e.getMessage());
+				}
+			}
+			if (outputStream != null) {
+				try {
+					outputStream.flush();
+					outputStream.close();
+				}
+				catch (IOException e) {
+					log.error("Unable to close outputStream: " + e.getMessage());
+				}
+			}
 		}
 
 		// Set details of Upload object

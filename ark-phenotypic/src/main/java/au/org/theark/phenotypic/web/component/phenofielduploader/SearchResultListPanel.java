@@ -70,7 +70,7 @@ public class SearchResultListPanel extends Panel {
 		this.containerForm = containerForm;
 		this.listView = listView;
 
-		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "DataDictionaryUpload", Constants.CUSTOMFIELD_UPLOAD_HEADER) {
+		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "DataDictionaryUpload", au.org.theark.core.Constants.DATA_DICTIONARY_HEADER) {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
