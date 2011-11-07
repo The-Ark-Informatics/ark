@@ -89,6 +89,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 	private Label												idLblFld;
 	private Label												nameLblFld;
+	private Label												studyLblFld;
 	private Label												sampleTypeLblFld;
 	private Label												collectionLblFld;
 	private Label												quantityLblFld;
@@ -269,8 +270,9 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 				nameLblFld = new Label("biospecimen.biospecimenUid", biospecimen.getBiospecimenUid());
 				listDetailsLink.add(nameLblFld);
-				rowDetailsWMC.add(listDetailsLink);				
-				
+				rowDetailsWMC.add(listDetailsLink);
+
+				studyLblFld = new Label("biospecimen.study.name", biospecimen.getStudy().getName());
 				sampleTypeLblFld = new Label("biospecimen.sampleType.name", biospecimen.getSampleType().getName());
 				collectionLblFld = new Label("biospecimen.bioCollection.name", biospecimen.getBioCollection().getName());
 				commentsLblFld = new Label("biospecimen.comments", biospecimen.getComments());
@@ -342,6 +344,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 				item.add(idLblFld);
 				item.add(rowDetailsWMC);
+				item.add(studyLblFld);
 				item.add(sampleTypeLblFld);
 				item.add(collectionLblFld);
 				item.add(commentsLblFld);
