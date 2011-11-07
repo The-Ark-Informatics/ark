@@ -117,7 +117,9 @@ public class SearchResultListPanel extends Panel{
 				customFieldCriteria.setArkFunction(arkFunction);
 				
 				Collection<CustomField> availableList = iArkCommonService.getCustomFieldList(customFieldCriteria);
+				
 				ArrayList<CustomField> selectedList  = (ArrayList)iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(itemSelected);
+				
 				newModel.getObject().setAvailableCustomFields(availableList);
 				newModel.getObject().setSelectedCustomFields(selectedList);
 				newModel.getObject().setCustomFieldGroup(cfg);
