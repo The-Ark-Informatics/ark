@@ -28,7 +28,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
@@ -39,6 +38,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
@@ -68,6 +68,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
@@ -81,6 +82,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	private Subject	currentUser;
 	private Date		dateNow;
 
+	private IArkCommonService<Void>	iArkCommonService;
+	@Autowired
+	public void setiArkCommonService(IArkCommonService<Void> iArkCommonService) {
+		this.iArkCommonService = iArkCommonService;
+	}
+	
 	public PhenoCollection getPhenoCollection(Long id) {
 		PhenoCollection collection = (PhenoCollection) getSession().get(PhenoCollection.class, id);
 		return collection;
@@ -1440,12 +1447,15 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Session session = getSession();
 		
 		session.save(customFieldGroup);
-		Collection<CustomField> customFieldList = customFieldGroupVO.getSelectedCustomFields();
+		ArrayList<CustomField> customFieldList = customFieldGroupVO.getSelectedCustomFields();
 		
+		int fieldposition = 0;
 		for (CustomField customField : customFieldList) {
+			++fieldposition;
 			CustomFieldDisplay customFieldDisplay = new CustomFieldDisplay();
 			customFieldDisplay.setCustomFieldGroup(customFieldGroup);
 			customFieldDisplay.setCustomField(customField);
+			customFieldDisplay.setSequence( new Long(fieldposition));
 			session.save(customFieldDisplay);
 			log.debug("Saved CustomFieldDisplay for Custom Field Group");
 		}
@@ -1539,13 +1549,18 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Session session = getSession();
 		session.update(customFieldGroup);//Update
 		
-		Collection<CustomField> customFieldsToAdd = getCustomFieldsToAdd(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);
+		Collection<CustomFieldDisplay> customFieldsToAdd = getCustomFieldsToAdd(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);
 
-		for (CustomField fieldToAdd : customFieldsToAdd) {
-			CustomFieldDisplay customFieldDisplay = new CustomFieldDisplay();
-			customFieldDisplay.setCustomFieldGroup(customFieldGroup);
-			customFieldDisplay.setCustomField(fieldToAdd);
-			session.save(customFieldDisplay);//Add a new CustomFieldDisplay field that is linked to the CustomField
+		for (CustomFieldDisplay fieldToAdd : customFieldsToAdd) {
+			
+			String name = fieldToAdd.getCustomField().getName();
+			Long pos = fieldToAdd.getSequence();
+			
+			if(fieldToAdd.getId() == null){
+				session.save(fieldToAdd);//Add a new CustomFieldDisplay field that is linked to the CustomField	
+			}else{
+				session.update(fieldToAdd);//Update Positions
+			}
 		}
 
 		if(!customFieldGroup.getPublished()){//Allow Removal only if the form is not published
@@ -1564,11 +1579,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	 * @param customFieldGroup
 	 * @return Collection<CustomField>
 	 */
-	private Collection<CustomField> getCustomFieldsToAdd(Collection<CustomField> selectedCustomFields, CustomFieldGroup customFieldGroup){
+	private Collection<CustomFieldDisplay> getCustomFieldsToAdd(Collection<CustomField> selectedCustomFields, CustomFieldGroup customFieldGroup){
 		
-		Collection<CustomField> customFieldsToAdd = new ArrayList<CustomField>();
+		Collection<CustomFieldDisplay> cfdisplayList = new ArrayList<CustomFieldDisplay>();
 		Collection<CustomField> existingCustomFieldList = getCustomFieldsLinkedToCustomFieldGroup(customFieldGroup);// Existing List of CustomFieldsthat were linked to this CustomFieldGroup
-		Collection<CustomField> nonProxyCustomFieldList = new ArrayList<CustomField>();
+		ArrayList<CustomField> nonProxyCustomFieldList = new ArrayList<CustomField>();
 		
 		/**
 		 * Note:
@@ -1576,6 +1591,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		 * For us to do a comparison using contains the equals() will fail when the class is compared. To be able to do that we convert to an underlying object before we do the final comparison.
 		 * Since Hibernate returns proxy objects for LazyInitialisation when the equals() is invoked the class comparison will fail. 
 		 */
+		
 		for (Object obj : existingCustomFieldList) {
 			if(obj instanceof HibernateProxy){
 				if(((HibernateProxy)obj).getHibernateLazyInitializer().isUninitialized()){
@@ -1585,12 +1601,27 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			}
 		}
 		
+		int i = 0;
 		for (CustomField customField : selectedCustomFields) {
+			++i;
 			if((!nonProxyCustomFieldList.contains(customField))){
-				customFieldsToAdd.add(customField);
+				
+				CustomFieldDisplay customFieldDisplay = new CustomFieldDisplay();
+				customFieldDisplay.setCustomFieldGroup(customFieldGroup);
+				customFieldDisplay.setCustomField(customField);
+				customFieldDisplay.setSequence(new Long(i));
+				cfdisplayList.add(customFieldDisplay);
+			}else{
+				//Retrieve the customField for the sequence could have changed
+				String name = customField.getName();
+				CustomFieldDisplay cfd = iArkCommonService.getCustomFieldDisplayByCustomField(customField);
+				Long sq = cfd.getSequence();
+				
+				cfd.setSequence(new Long(i));
+				cfdisplayList.add(cfd);
 			}
 		}
-		return customFieldsToAdd;
+		return cfdisplayList;
 	}
 	
 	/**
