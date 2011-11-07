@@ -67,7 +67,7 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 			criteria.add(Restrictions.eq("study", barcodeLabel.getStudy()));
 		}
 		
-		if (barcodeLabel.getBarcodePrinter() != null) {
+		if (barcodeLabel.getBarcodePrinter() != null && barcodeLabel.getBarcodePrinter().getId() != null) {
 			criteria.add(Restrictions.eq("barcodePrinter", barcodeLabel.getBarcodePrinter()));
 		}
 		
@@ -75,8 +75,7 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 			criteria.add(Restrictions.eq("name", barcodeLabel.getName()));
 		}
 		
-		BarcodeLabel result = new BarcodeLabel();
-		result = (BarcodeLabel) criteria.uniqueResult();
+		BarcodeLabel result = (BarcodeLabel) criteria.uniqueResult();
 		return result;
 	}
 
@@ -86,8 +85,7 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 			criteria.add(Restrictions.eq("id", barcodeLabelData.getId()));
 		}
 		
-		BarcodeLabelData result = new BarcodeLabelData(); 
-		result = (BarcodeLabelData) criteria.uniqueResult();
+		BarcodeLabelData result = (BarcodeLabelData) criteria.uniqueResult();
 		return result;
 	}
 
@@ -118,8 +116,7 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 			criteria.add(Restrictions.eq("host", barcodePrinter.getHost()));
 		}
 
-		BarcodePrinter result = new BarcodePrinter(); 
-		result = (BarcodePrinter) criteria.uniqueResult();
+		BarcodePrinter result = (BarcodePrinter) criteria.uniqueResult();
 		return result;
 	}
 
