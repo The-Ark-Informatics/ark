@@ -18,6 +18,13 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.button;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import jxl.Workbook;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
@@ -27,16 +34,27 @@ import jxl.write.WritableWorkbook;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.request.IRequestCycle;
+import org.apache.wicket.request.UrlEncoder;
+import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
+import org.apache.wicket.request.resource.ContentDisposition;
+import org.apache.wicket.util.file.File;
+import org.apache.wicket.util.file.Files;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
+import org.apache.wicket.util.io.IOUtils;
+import org.apache.wicket.util.resource.FileResourceStream;
+import org.apache.wicket.util.resource.IResourceStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.util.ArkSheetMetaData;
 
 public abstract class ArkDownloadTemplateButton extends AjaxButton {
-
 	/**
 	 * 
 	 */
 	private static final long				serialVersionUID	= -838971531745438763L;
+	private static final Logger			log					= LoggerFactory.getLogger(ArkDownloadTemplateButton.class);
 	private String								templateFilename	= null;
 	private String[]							templateHeader		= null;
 	private String[][]						templateCells		= null;
@@ -119,7 +137,29 @@ public abstract class ArkDownloadTemplateButton extends AjaxButton {
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 		byte[] data = writeOutXlsFileToBytes();
 		if (data != null) {
-			getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("application/vnd.ms-excel", data, templateFilename + ".xls"));
+			InputStream inputStream = new ByteArrayInputStream(data);
+			OutputStream outputStream;
+			try {
+				final java.io.File file = File.createTempFile(templateFilename, ".xls");
+				final String fn = UrlEncoder.QUERY_INSTANCE.encode(file.getName(), getRequest().getCharset());
+				outputStream = new FileOutputStream(file);
+				IOUtils.copy(inputStream, outputStream);
+
+				IResourceStream resourceStream = new FileResourceStream(new org.apache.wicket.util.file.File(file));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ResourceStreamRequestHandler(resourceStream) {
+					@Override
+					public void respond(IRequestCycle requestCycle) {
+						super.respond(requestCycle);
+						Files.remove(file);
+					}
+				}.setFileName(fn).setContentDisposition(ContentDisposition.ATTACHMENT));
+			}
+			catch (FileNotFoundException e) {
+				log.error(e.getMessage());
+			}
+			catch (IOException e) {
+				log.error(e.getMessage());
+			}
 		}
 	}
 
