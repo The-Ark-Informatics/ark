@@ -102,7 +102,7 @@ public class ArkPermissionHelper {
 		if (actionType.equalsIgnoreCase(Constants.SEARCH)) {
 			actionPermitted = hasSearchPermission(securityManager, currentUser);
 		}
-		else if (actionType.equalsIgnoreCase(Constants.SAVE) || actionType.equalsIgnoreCase(Constants.NEW)) {
+		else if (actionType.equalsIgnoreCase(Constants.SAVE)) {
 			actionPermitted = hasSavePermission(securityManager, currentUser);
 		}
 		else if (actionType.equalsIgnoreCase(Constants.EDIT)) {
@@ -110,6 +110,9 @@ public class ArkPermissionHelper {
 		}
 		else if (actionType.equalsIgnoreCase(Constants.DELETE)) {
 			actionPermitted = hasDeletePermission(securityManager, currentUser);
+		}
+		else if (actionType.equalsIgnoreCase(Constants.NEW)) {
+			actionPermitted = hasNewPermission(securityManager, currentUser);
 		}
 
 		return actionPermitted;
@@ -184,6 +187,26 @@ public class ArkPermissionHelper {
 		boolean flag = false;
 
 		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE)) {
+			flag = true;
+		}
+		else {
+			flag = false;
+		}
+
+		return flag;
+	}
+	
+	/**
+	 * Determines if current user has New permissions
+	 * 
+	 * @param securityManager
+	 * @param currentUser
+	 * @return true if CREATE permission allowed
+	 */
+	public static boolean hasNewPermission(SecurityManager securityManager, Subject currentUser) {
+		boolean flag = false;
+
+		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE)) {
 			flag = true;
 		}
 		else {
