@@ -82,6 +82,12 @@ public class CustomFieldDisplayListPanel extends Panel {
 				CustomFieldDisplay cfd  = item.getModelObject();
 				
 				item.add(buildLink(item));
+				if(cfd.getCustomField() != null){
+					item.add( new Label("customField.name", cfd.getCustomField().getName()));
+				}else{
+					item.add( new Label("customField.name",""));
+				}
+				
 				if(cfd.getSequence() != null){
 					item.add( new Label("sequence",cfd.getSequence().toString()));
 				}else{
