@@ -19,7 +19,7 @@ import au.org.theark.core.model.study.entity.Study;
 
 @Repository("limsAdminDao")
 public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
-	//private static final Logger	log	= LoggerFactory.getLogger(BarcodeDao.class);
+	//private static final Logger	log	= LoggerFactory.getLogger(LimsAdminDao.class);
 
 	public void createBarcodeLabel(BarcodeLabel barcodeLabel) {
 		getSession().save(barcodeLabel);
@@ -57,7 +57,6 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		getSession().update(barcodePrinter);
 	}
 
-	@SuppressWarnings("unchecked")
 	public BarcodeLabel searchBarcodeLabel(BarcodeLabel barcodeLabel) {
 		Criteria criteria = getSession().createCriteria(BarcodeLabel.class);
 		if (barcodeLabel.getId() != null) {
@@ -76,30 +75,22 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 			criteria.add(Restrictions.eq("name", barcodeLabel.getName()));
 		}
 		
-		List<BarcodeLabel> list = criteria.list();
-		if (list != null && list.size() > 0) {
-			barcodeLabel = list.get(0);
-		}
-
-		return barcodeLabel;
+		BarcodeLabel result = new BarcodeLabel();
+		result = (BarcodeLabel) criteria.uniqueResult();
+		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public BarcodeLabelData searchBarcodeLabelData(BarcodeLabelData barcodeLabelData) {
 		Criteria criteria = getSession().createCriteria(BarcodeLabelData.class);
 		if (barcodeLabelData.getId() != null) {
 			criteria.add(Restrictions.eq("id", barcodeLabelData.getId()));
 		}
 		
-		List<BarcodeLabelData> list = criteria.list();
-		if (list != null && list.size() > 0) {
-			barcodeLabelData = list.get(0);
-		}
-
-		return barcodeLabelData;
+		BarcodeLabelData result = new BarcodeLabelData(); 
+		result = (BarcodeLabelData) criteria.uniqueResult();
+		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public BarcodePrinter searchBarcodePrinter(BarcodePrinter barcodePrinter) {
 		Criteria criteria = getSession().createCriteria(BarcodePrinter.class);
 		
@@ -127,12 +118,9 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 			criteria.add(Restrictions.eq("host", barcodePrinter.getHost()));
 		}
 
-		List<BarcodePrinter> list = criteria.list();
-		if (list != null && list.size() > 0) {
-			barcodePrinter = list.get(0);
-		}
-
-		return barcodePrinter;
+		BarcodePrinter result = new BarcodePrinter(); 
+		result = (BarcodePrinter) criteria.uniqueResult();
+		return result;
 	}
 
 	public int getBarcodeLabelCount(BarcodeLabel object) {
@@ -237,10 +225,7 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		BiospecimenUidTemplate biospecimenUidTemplate = null;
 		Criteria criteria = getSession().createCriteria(BiospecimenUidTemplate.class);
 		criteria.add(Restrictions.eq("study", study));
-		List<BiospecimenUidTemplate> list = criteria.list();
-		if(!list.isEmpty()) {
-			biospecimenUidTemplate = list.get(0);
-		}
+		biospecimenUidTemplate = (BiospecimenUidTemplate) criteria.uniqueResult();
 		return biospecimenUidTemplate;
 	}
 
@@ -297,9 +282,7 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		}
 		
 		BiospecimenUidTemplate biospecimenUidTemplateResult = new BiospecimenUidTemplate();
-		if(!criteria.list().isEmpty()) {
-			biospecimenUidTemplateResult = (BiospecimenUidTemplate) criteria.list().get(0);
-		}
+		biospecimenUidTemplateResult = (BiospecimenUidTemplate) criteria.uniqueResult();
 		return biospecimenUidTemplateResult;
 	}
 
