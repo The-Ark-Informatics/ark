@@ -70,7 +70,7 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 	public boolean isEnabled() {
 		boolean barcodePrinterAvailable = true;
 		
-		if(barcodePrinter.getId() == null) {
+		if(barcodePrinter == null && barcodePrinter.getId() == null) {
 			log.error("A Brady barcode printer is currently not available. Please add the printer to the client machine and try again");
 			barcodePrinterAvailable = false;
 		}
