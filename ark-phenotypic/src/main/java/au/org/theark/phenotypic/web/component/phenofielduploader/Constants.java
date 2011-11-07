@@ -1,10 +1,9 @@
 package au.org.theark.phenotypic.web.component.phenofielduploader;
 
 public class Constants {
-	public static final String[]	CUSTOMFIELD_UPLOAD_HEADER									= { "FIELD_NAME", "FIELD_TYPE", "DESCRIPTION", 
+	public static final String[]	CUSTOMFIELD_UPLOAD_HEADER									= { "FIELD_NAME", "FIELD_TYPE", "DESCRIPTION", "QUESTION",
 																													"UNITS", "ENCODED_VALUES", "MINIMUM_VALUE", 
 																													"MAXIMUM_VALUE", "MISSING_VALUE" };
-
 	// relevant to components
 	public static final String		DELETE_FILE														= "deleteFile";
 	public static final String		DELETE															= "Delete";
