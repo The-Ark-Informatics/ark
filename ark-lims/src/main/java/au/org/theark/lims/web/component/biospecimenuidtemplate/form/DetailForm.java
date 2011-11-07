@@ -76,7 +76,17 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 	private DropDownChoice<BiospecimenUidToken>		biospecimenUidTokenDdc;
 	private DropDownChoice<BiospecimenUidPadChar>	biospecimenUidPadCharDdc;
 	private Label												biospecimenUidExampleLbl;
-	private String 											biospecimenUidExample;
+	private Model<String> biospecimenUidExampleModel = new Model<String>() {
+
+      /**
+		 * 
+		 */
+		private static final long	serialVersionUID	= 1L;
+
+		public String getObject() {
+          return getBiospecimenUidExample();
+      }
+  };
 
 	/**
 	 * 
@@ -103,15 +113,14 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				biospecimenUidExample = getBiospecimenUidExample();
 				target.add(biospecimenUidExampleLbl);
 			}
 		});
+		
 		initBiospecimenUidTokenDdc();
 		initBiospecimenUidPadCharDdc();
 		
-		biospecimenUidExample = getBiospecimenUidExample();
-		biospecimenUidExampleLbl = new Label("biospecimenUid.example", new Model<String>(biospecimenUidExample));
+		biospecimenUidExampleLbl = new Label("biospecimenUid.example", biospecimenUidExampleModel);
 		biospecimenUidExampleLbl.setOutputMarkupId(true);
 
 		addDetailFormComponents();
@@ -119,10 +128,6 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 	}
 
 	public String getBiospecimenUidExample() {
-		BiospecimenUidTemplate biospecimenUidTemplate = new BiospecimenUidTemplate();
-		if(containerForm.getModelObject() != null) {
-			biospecimenUidTemplate =containerForm.getModelObject();
-		}
 		String biospecimenUidPrefix = new String("");
 		String biospecimenUidToken = new String("");
 		String biospecimenUidPaddedIncrementor = new String("");
@@ -130,16 +135,13 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 		String biospecimenUidStart = new String("1");
 		StringBuilder biospecimenUidExample = new StringBuilder();
 
-		if (biospecimenUidTemplate.getBiospecimenUidPrefix() != null)
-			biospecimenUidPrefix = biospecimenUidTemplate.getBiospecimenUidPrefix();
+		biospecimenUidPrefix = biospecimenUidPrefixTxtFld.getDefaultModelObjectAsString();
+		biospecimenUidToken = ((BiospecimenUidToken) biospecimenUidTokenDdc.getDefaultModelObject()).getName();
+		biospecimenUidPadChar = ((BiospecimenUidPadChar) biospecimenUidPadCharDdc.getDefaultModelObject()).getName();
 
-		if (biospecimenUidTemplate.getBiospecimenUidToken() != null)
-			biospecimenUidToken = biospecimenUidTemplate.getBiospecimenUidToken().getName();
-
-		if (biospecimenUidTemplate.getBiospecimenUidPadChar() != null) {
-			biospecimenUidPadChar = biospecimenUidTemplate.getBiospecimenUidPadChar().getName().trim();
+		if(biospecimenUidPadChar.isEmpty()) {
+			biospecimenUidPadChar = new String("0");
 		}
-
 		int size = Integer.parseInt(biospecimenUidPadChar);
 		biospecimenUidPaddedIncrementor = StringUtils.leftPad(biospecimenUidStart, size, "0");
 		
@@ -181,7 +183,6 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				biospecimenUidExample = getBiospecimenUidExample();
 				target.add(biospecimenUidExampleLbl);
 			}
 		});
@@ -200,7 +201,6 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				biospecimenUidExample = getBiospecimenUidExample();
 				target.add(biospecimenUidExampleLbl);
 			}
 		});
