@@ -107,7 +107,7 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	
 	@Override
 	public boolean isVisible() {
-		return (this.barcodeLabel.getId() != null);
+		return (this.barcodeLabel != null && this.barcodeLabel.getId() != null);
 	}
 
 	@Override
