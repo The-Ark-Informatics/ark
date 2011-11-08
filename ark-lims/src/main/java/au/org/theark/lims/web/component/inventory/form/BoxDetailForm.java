@@ -137,15 +137,13 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	
 	private void initInvTrayDdc() {
 		List<InvRack> invTankList = new ArrayList<InvRack>(0);
-		InvRack invTray = new InvRack();
-
 		try {
-			invTankList = iInventoryService.searchInvRack(invTray);
+			invTankList = iInventoryService.searchInvRack(new InvRack());
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
 		}
-		ChoiceRenderer<InvRack> choiceRenderer = new ChoiceRenderer<InvRack>(Constants.NAME, Constants.ID);
+		ChoiceRenderer<InvRack> choiceRenderer = new ChoiceRenderer<InvRack>("siteFreezerRack", Constants.ID);
 		invTrayDdc = new DropDownChoice<InvRack>("invBox.invRack", (List<InvRack>) invTankList, choiceRenderer);
 	}
 
