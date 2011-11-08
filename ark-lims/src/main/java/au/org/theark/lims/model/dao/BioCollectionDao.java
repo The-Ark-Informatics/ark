@@ -48,19 +48,15 @@ import au.org.theark.core.model.study.entity.Study;
 @Repository("bioCollectionDao")
 public class BioCollectionDao extends HibernateSessionDao implements IBioCollectionDao {
 	public BioCollection getBioCollection(Long id) throws EntityNotFoundException {
-		au.org.theark.core.model.lims.entity.BioCollection limsCollection = null;
 		Criteria criteria = getSession().createCriteria(BioCollection.class);
 		criteria.add(Restrictions.eq("id", id));
 
-		List<BioCollection> list = criteria.list();
-		if (list != null && list.size() > 0) {
-			limsCollection = list.get(0);
-		}
-		else {
+		BioCollection bioCollection = (BioCollection) criteria.uniqueResult();
+		if (bioCollection.getId() == null) {
 			throw new EntityNotFoundException("The entity with id" + id.toString() + " cannot be found.");
 		}
 
-		return limsCollection;
+		return bioCollection;
 	}
 
 	public java.util.List<BioCollection> searchBioCollection(BioCollection bioCollection) throws ArkSystemException {
@@ -194,7 +190,6 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 	}
 	
 	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, int first, int count) {
-		
 		List<BioCollectionCustomFieldData> bioCollectionCustomFieldDataList = new ArrayList<BioCollectionCustomFieldData>();
 	
 		StringBuffer sb = new StringBuffer();
@@ -245,10 +240,9 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 	public Long isCustomFieldUsed(BioCollectionCustomFieldData bioCollectionCFData) {
 		Long count = new Long("0");
 		CustomField customField = bioCollectionCFData.getCustomFieldDisplay().getCustomField();
-		//The Study
-		
+
+		// The Study
 		try {
-			
 			Long id  = bioCollectionCFData.getBioCollection().getId();
 			BioCollection bioCollection = getBioCollection(id);
 			Study subjectStudy = bioCollection.getStudy();
@@ -277,5 +271,4 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 			
 		return count;
 	}
-
 }
