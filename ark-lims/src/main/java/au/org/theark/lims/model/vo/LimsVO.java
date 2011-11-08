@@ -85,6 +85,7 @@ public class LimsVO implements Serializable {
 		this.invSiteList = new ArrayList<InvSite>(0);
 		this.studyList = new ArrayList<Study>(0);
 		this.biospecimenProcessing = new String();
+		this.biospecimenLocationVO = new BiospecimenLocationVO(); 
 	}
 
 	/**
