@@ -206,7 +206,7 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 		this.transferId = transferId;
 	}
 
-	@Column(name = "TYPE", nullable = false)
+	@Column(name = "TYPE")
 	public Integer getType() {
 		return this.type;
 	}
