@@ -151,7 +151,8 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	public Biospecimen getBiospecimenByInvCell(InvCell invCell) {
 		Criteria criteria = getSession().createCriteria(InvCell.class);
 		criteria.add(Restrictions.eq("id", invCell.getId()));
-		Biospecimen biospecimen = (Biospecimen) criteria.uniqueResult();
+		InvCell invCellResult = (InvCell) criteria.uniqueResult();
+		Biospecimen biospecimen = invCellResult.getBiospecimen();
 		return biospecimen;
 	}
 
