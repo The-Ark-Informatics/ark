@@ -1,0 +1,2 @@
+USE lims;
+ALTER TABLE `lims`.`inv_box` CHANGE COLUMN `TYPE` `TYPE` INT(11) NULL DEFAULT NULL  ;
