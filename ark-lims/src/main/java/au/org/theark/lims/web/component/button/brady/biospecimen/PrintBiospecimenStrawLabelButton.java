@@ -48,6 +48,7 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 	private final Biospecimen		biospecimen;
 	private String						tsplString;
 	private BarcodePrinter			barcodePrinter;
+	private BarcodeLabel 			barcodeLabel;
 
 	/**
 	 * Construct an ajax button to send the specified barcodeString to a Brady BPP 11 printer<br>
@@ -60,18 +61,18 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.biospecimen = (Biospecimen) iModel.getObject();
+
+		barcodePrinter = new BarcodePrinter();
+		barcodePrinter.setStudy(biospecimen.getStudy());
+		barcodePrinter.setName("brady_bbp_11");
+		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
 	}
 	
 	@Override
 	public boolean isEnabled() {
 		boolean barcodePrinterAvailable = true;
 
-		barcodePrinter = new BarcodePrinter();
-		barcodePrinter.setStudy(biospecimen.getStudy());
-		barcodePrinter.setName("brady_bbp_11");
-		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
-		
-		if(this.barcodePrinter == null) {
+		if(barcodePrinter == null) {
 			log.error("A Brady barcode printer is currently not available. Please add the printer to the client machine and try again");
 			barcodePrinterAvailable = false;
 		}
@@ -86,7 +87,7 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-		BarcodeLabel barcodeLabel = new BarcodeLabel();
+		barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(biospecimen.getStudy());
 		barcodeLabel.setName("brady straw barcode");

@@ -47,6 +47,7 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 	private final Biospecimen		biospecimen;
 	private String						zplString;
 	private BarcodePrinter			barcodePrinter;
+	private BarcodeLabel 			barcodeLabel;
 
 	/**
 	 * Construct an ajax button to send the specified barcodeString to a ZebraTLP2844 printer<br>
@@ -69,7 +70,7 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 	public boolean isEnabled() {
 		boolean barcodePrinterAvailable = true;
 		
-		if(barcodePrinter.getId() == null) {
+		if(barcodePrinter == null) {
 			log.error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
 			barcodePrinterAvailable = false;
 		}
@@ -84,7 +85,7 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-		BarcodeLabel barcodeLabel = new BarcodeLabel();
+		barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(biospecimen.getStudy());
 		barcodeLabel.setName("zebra biospecimen");
