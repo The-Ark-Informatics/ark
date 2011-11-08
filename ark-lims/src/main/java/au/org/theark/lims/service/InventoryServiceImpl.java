@@ -220,6 +220,11 @@ public class InventoryServiceImpl implements IInventoryService {
 	}
 
 	public void updateInvCell(InvCell invCell) {
+		// Decrement available cells in box
+		if(invCell.getBiospecimen() != null) {
+			invCell.getInvBox().setAvailable(invCell.getInvBox().getAvailable() -1);
+			iInventoryDao.updateInvBox(invCell.getInvBox());
+		}
 		iInventoryDao.updateInvCell(invCell);
 	}
 
