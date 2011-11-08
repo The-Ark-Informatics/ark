@@ -1647,6 +1647,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup, int first, int count){
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
 		return criteria.list();
 		
 	}
