@@ -54,7 +54,7 @@ public class BioLocationDetailPanel extends Panel {
 	
 	@Override
 	protected void onBeforeRender() {
-		if (cpModel.getObject().getBiospecimenLocationVO().getIsAllocated()) {
+		if (cpModel.getObject().getBiospecimenLocationVO() != null && cpModel.getObject().getBiospecimenLocationVO().getIsAllocated()) {
 			locationPanel = new BioLocationPanel("locationPanel", cpModel){
 				/**
 				 * 
@@ -72,7 +72,7 @@ public class BioLocationDetailPanel extends Panel {
 			locationPanel = new BioLocationNotAllocatedPanel("locationPanel", cpModel);
 		}
 		addOrReplace(locationPanel);
-		super.onBeforeRender();
+		super.onBeforeRender(); 
 	}
 	
 	public void refreshPanel(AjaxRequestTarget target) {
