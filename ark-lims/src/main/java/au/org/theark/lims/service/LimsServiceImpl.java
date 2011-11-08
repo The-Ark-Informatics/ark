@@ -158,7 +158,6 @@ public class LimsServiceImpl implements ILimsService {
 	 * @see au.org.theark.lims.service.ILimsService#getBioCollection(au.org.theark.core.model.lims.entity.Collection)
 	 */
 	public BioCollection getBioCollection(Long id) throws EntityNotFoundException {
-		log.debug("Getting bioCollection: " + id.intValue());
 		return iBioCollectionDao.getBioCollection(id);
 	}
 
@@ -168,7 +167,6 @@ public class LimsServiceImpl implements ILimsService {
 	 * @see au.org.theark.lims.service.ILimsService#getPerson(java.lang.Long)
 	 */
 	public Person getPerson(Long id) throws EntityNotFoundException, ArkSystemException {
-		log.debug("Getting Person: " + id.intValue());
 		return iStudyDao.getPerson(id);
 	}
 
