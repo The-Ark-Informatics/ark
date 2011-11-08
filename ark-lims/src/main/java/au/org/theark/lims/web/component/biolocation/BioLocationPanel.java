@@ -88,6 +88,11 @@ public abstract class BioLocationPanel extends Panel {
 		invCell.setStatus("Empty");
 		iInventoryService.updateInvCell(invCell);
 		
+		// Increment available cell of box
+		invCell.getInvBox().setAvailable(invCell.getInvBox().getAvailable() + 1);
+		cpModel.getObject().setInvBox(invCell.getInvBox());
+		iInventoryService.updateInvBox(cpModel.getObject());
+		
 		try {
 			cpModel.getObject().setBiospecimenLocationVO(iInventoryService.getInvCellLocation(invCell));
 			cpModel.getObject().getBiospecimenLocationVO().setIsAllocated(false);
