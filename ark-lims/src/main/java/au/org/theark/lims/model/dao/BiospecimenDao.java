@@ -67,16 +67,12 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		this.biospecimenUidGenerator = biospecimenUidGenerator;
 	}
 	
-	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException {
-		Biospecimen biospecimen = null;
+	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException {	
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);
 		criteria.add(Restrictions.eq("id", id));
 
-		List<Biospecimen> list = criteria.list();
-		if (list != null && list.size() > 0) {
-			biospecimen = list.get(0);
-		}
-		else {
+		Biospecimen biospecimen = (Biospecimen) criteria.list();
+		if (biospecimen.getId() == null) {
 			throw new EntityNotFoundException("The entity with id" + id.toString() + " cannot be found.");
 		}
 
@@ -144,7 +140,6 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
 		List<Biospecimen> list = criteria.list();
-
 		return list;
 	}
 
@@ -173,19 +168,12 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 			criteria.add(Restrictions.eq("qtyCollected", biospecimen.getQtyCollected()));
 
 		return criteria;
-
 	}
 
 	public Biospecimen getBiospecimenByUid(String biospecimenUid) {
-		Biospecimen biospecimen = null;
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);
 		criteria.add(Restrictions.eq("biospecimenUid", biospecimenUid));
-
-		List<Biospecimen> list = criteria.list();
-		if (list != null && list.size() > 0) {
-			biospecimen = list.get(0);
-		}
-
+		Biospecimen biospecimen = (Biospecimen) criteria.uniqueResult();
 		return biospecimen;
 	}
 
@@ -386,13 +374,9 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	}
 	
 	public BiospecimenUidTemplate getBiospecimenUidTemplate(Study study) {
-		BiospecimenUidTemplate biospecimenUidTemplate = null;
 		Criteria criteria = getSession().createCriteria(BiospecimenUidTemplate.class);
 		criteria.add(Restrictions.eq("study", study));
-		List<BiospecimenUidTemplate> list = criteria.list();
-		if(!list.isEmpty()) {
-			biospecimenUidTemplate = list.get(0);
-		}
+		BiospecimenUidTemplate biospecimenUidTemplate = (BiospecimenUidTemplate) criteria.uniqueResult();
 		return biospecimenUidTemplate;
 	}
 	
@@ -441,7 +425,6 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	}
 
 	public Integer getNextUidSequence(Study study) {
-
 		Integer result;
 		if (study == null) {
 			log.error("Error in Biospecimen insertion - Study was null");
