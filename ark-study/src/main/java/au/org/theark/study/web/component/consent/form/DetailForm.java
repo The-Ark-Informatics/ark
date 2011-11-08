@@ -217,7 +217,10 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 					boolean isConsented = iArkCommonService.isSubjectConsentedToComponent(studyComponentChoice.getModelObject(), subject, study);
 					processErrors(target);
 					if (isConsented) {
-						containerForm.info(" Please choose another component. The Subject has already consented to Component : " + studyComponentChoice.getModelObject().getName());
+						StringBuffer sb = new StringBuffer();
+						sb.append("Please choose another component. The Subject has already consented to Component :");
+						sb.append(studyComponentChoice.getModelObject().getName());
+						containerForm.error(sb.toString());
 						processErrors(target);
 					}
 
