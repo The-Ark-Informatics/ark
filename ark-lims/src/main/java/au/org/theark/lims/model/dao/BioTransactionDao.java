@@ -39,22 +39,18 @@ import au.org.theark.lims.web.Constants;
 @Repository("bioTransactionDao")
 public class BioTransactionDao extends HibernateSessionDao implements IBioTransactionDao {
 	public BioTransaction getBioTransaction(Long id) throws EntityNotFoundException, ArkSystemException {
-		BioTransaction bioTransaction = null;
 		Criteria criteria = getSession().createCriteria(BioTransaction.class);
 		criteria.add(Restrictions.eq("id", id));
 
-		List<BioTransaction> list = criteria.list();
-		if (list != null && list.size() > 0) {
-			bioTransaction = list.get(0);
-		}
-		else {
+		BioTransaction bioTransaction = (BioTransaction) criteria.uniqueResult();
+		if (bioTransaction.getId() == null) {
 			throw new EntityNotFoundException("The entity with id" + id.toString() + " cannot be found.");
 		}
 
 		return bioTransaction;
 	}
 	
-	private Criteria buildTransactionCriteria(BioTransaction bioTransaction) {
+	private Criteria buildBioTransactionCriteria(BioTransaction bioTransaction) {
 		Criteria criteria = getSession().createCriteria(BioTransaction.class);
 		// All transactions must operate on a given biospecimen
 		criteria.add(Restrictions.eq("biospecimen", bioTransaction.getBiospecimen()));
@@ -67,7 +63,7 @@ public class BioTransactionDao extends HibernateSessionDao implements IBioTransa
 		if (bioTransaction.getBiospecimen() == null) {
 			return 0;
 		}
-		Criteria criteria = buildTransactionCriteria(bioTransaction);
+		Criteria criteria = buildBioTransactionCriteria(bioTransaction);
 		criteria.setProjection(Projections.rowCount());
 		
 		Integer totalCount = (Integer) criteria.uniqueResult();
@@ -79,7 +75,7 @@ public class BioTransactionDao extends HibernateSessionDao implements IBioTransa
 		if (bioTransaction.getBiospecimen() == null) {
 			return new ArrayList<BioTransaction>(0);
 		}
-		Criteria criteria = buildTransactionCriteria(bioTransaction);
+		Criteria criteria = buildBioTransactionCriteria(bioTransaction);
 		// sort by most recent first
 		criteria.addOrder(Order.desc("transactionDate"));
 		criteria.addOrder(Order.desc("id"));
@@ -123,5 +119,4 @@ public class BioTransactionDao extends HibernateSessionDao implements IBioTransa
 		BioTransactionStatus result = (BioTransactionStatus) criteria.uniqueResult();
 		return result;
 	}
-
 }
