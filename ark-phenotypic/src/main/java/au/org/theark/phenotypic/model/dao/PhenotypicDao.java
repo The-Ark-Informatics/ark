@@ -1552,15 +1552,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Collection<CustomFieldDisplay> customFieldsToAdd = getCustomFieldsToAdd(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);
 
 		for (CustomFieldDisplay fieldToAdd : customFieldsToAdd) {
-			
-			String name = fieldToAdd.getCustomField().getName();
-			Long pos = fieldToAdd.getSequence();
-			
 			if(fieldToAdd.getId() == null){
 				session.save(fieldToAdd);//Add a new CustomFieldDisplay field that is linked to the CustomField	
-			}else{
-				session.update(fieldToAdd);//Update Positions
 			}
+//			else{
+//				session.update(fieldToAdd);//Update sequences
+//			}
 		}
 
 		if(!customFieldGroup.getPublished()){//Allow Removal only if the form is not published
@@ -1609,17 +1606,18 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 				CustomFieldDisplay customFieldDisplay = new CustomFieldDisplay();
 				customFieldDisplay.setCustomFieldGroup(customFieldGroup);
 				customFieldDisplay.setCustomField(customField);
-				customFieldDisplay.setSequence(new Long(i));
+				//customFieldDisplay.setSequence(new Long(i));
 				cfdisplayList.add(customFieldDisplay);
-			}else{
-				//Retrieve the customField for the sequence could have changed
-				String name = customField.getName();
-				CustomFieldDisplay cfd = iArkCommonService.getCustomFieldDisplayByCustomField(customField);
-				Long sq = cfd.getSequence();
-				
-				cfd.setSequence(new Long(i));
-				cfdisplayList.add(cfd);
 			}
+//			else{//TODO NN to sequence fields
+//				//Retrieve the customField for the sequence could have changed
+//				String name = customField.getName();
+//				CustomFieldDisplay cfd = iArkCommonService.getCustomFieldDisplayByCustomField(customField);
+//				Long sq = cfd.getSequence();
+//				
+//				cfd.setSequence(new Long(i));
+//				cfdisplayList.add(cfd);
+//			}
 		}
 		return cfdisplayList;
 	}
