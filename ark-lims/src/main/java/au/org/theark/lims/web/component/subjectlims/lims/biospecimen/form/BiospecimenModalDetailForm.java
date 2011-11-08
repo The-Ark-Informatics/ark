@@ -74,7 +74,6 @@ import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
-import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
@@ -213,7 +212,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		// Disable Process/Aliquot buttons if new, or quantity available is 0
 		boolean enabled = true;
 		if (cpModel.getObject().getBiospecimen().getId() == null
-				|| (cpModel.getObject().getBiospecimen().getQuantity() != null && cpModel.getObject().getBiospecimen().getQuantity().equals(new Double(0)))) {
+				|| (cpModel.getObject().getBiospecimen().getQuantity() != null 
+						&& cpModel.getObject().getBiospecimen().getQuantity().equals(new Double(0)))
+			) {
 			enabled = false;
 		}
 		biospecimenbuttonsPanel.setProcessButtonEnabled(enabled);
@@ -244,9 +245,15 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				final Biospecimen biospecimenFromDB = iLimsService.getBiospecimen(biospecimen.getId());
 				biospecimenFromDB.setQuantity(iLimsService.getQuantityAvailable(biospecimenFromDB));
 				cpModel.getObject().setBiospecimen(biospecimenFromDB);
+				
+				// Get/set location details
+				cpModel.getObject().setBiospecimenLocationVO(iInventoryService.getBiospecimenLocation(biospecimenFromDB));
 			}
 			catch (EntityNotFoundException e) {
 				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
+				log.error(e.getMessage());
+			}
+			catch (ArkSystemException e) {
 				log.error(e.getMessage());
 			}
 		}
@@ -286,26 +293,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 	private boolean initialiseBiospecimenLocationPanel() {
 		boolean replacePanel = false;
-		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
-		if (biospecimen.getId() == null) {
-			// Handle for new Biospecimen being created
-			biospecimenLocationPanel = new EmptyPanel("biospecimenLocationPanel");
-			replacePanel = true;
-		}
-		else {
-			try {
-				BiospecimenLocationVO biospecimenLocationVo = iInventoryService.getBiospecimenLocation(biospecimen);
-				cpModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
-				biospecimenLocationPanel = new BioLocationDetailPanel("biospecimenLocationPanel", cpModel);
-				replacePanel = true;
-			}
-			catch (ArkSystemException e) {
-				log.error(e.getMessage());
-				biospecimenLocationPanel = new EmptyPanel("biospecimenLocationPanel");
-				replacePanel = true;
-			}
-		}
-
+		biospecimenLocationPanel = new BioLocationDetailPanel("biospecimenLocationPanel", cpModel);
+		replacePanel = true;
 		return replacePanel;
 	}
 
@@ -592,6 +581,13 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
 
 				iLimsService.createBiospecimen(cpModel.getObject());
+				
+				// Update location
+				if(cpModel.getObject().getBiospecimenLocationVO().getIsAllocated()) {
+					if(cpModel.getObject().getInvCell() != null && cpModel.getObject().getInvCell().getBiospecimen() != null) {
+						iInventoryService.updateInvCell(cpModel.getObject().getInvCell());
+					}
+				}
 				this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
 				setQuantityLabel();
 			}
@@ -695,13 +691,20 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		if (biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel) {
 			((BiospecimenCustomDataDataViewPanel) biospecimenCFDataEntryPanel).saveCustomData();
 		}
+		
 		// refresh the custom field data entry panel (if necessary)
 		if (initialiseBiospecimenCFDataEntry()) {
 			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
 		}
+		
 		// refresh the bio transactions (if necessary)
 		if (initialiseBioTransactionListPanel()) {
 			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
+		}
+		
+		// refresh the location panel
+		if(initialiseBiospecimenLocationPanel()) {
+			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenLocationPanel);
 		}
 
 		if (saveOk) {
@@ -716,7 +719,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			target.add(barcodeImage);
 
 			// Enable button panel
-			biospecimenbuttonsPanel.setVisible(false);
+			biospecimenbuttonsPanel.setVisible(true);
 			target.add(biospecimenbuttonsPanel);
 
 			onSavePostProcess(target);
