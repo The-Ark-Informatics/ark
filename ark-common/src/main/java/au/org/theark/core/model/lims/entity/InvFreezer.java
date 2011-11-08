@@ -65,6 +65,7 @@ public class InvFreezer implements java.io.Serializable, InvTreeNode<InvRack> {
 	private Date			lastservicedate;
 	private String			description;
 	private List<InvRack>	invTrays	= new ArrayList<InvRack>(0);
+	private String			siteFreezer;
 
 	public InvFreezer() {
 	}
@@ -247,5 +248,18 @@ public class InvFreezer implements java.io.Serializable, InvTreeNode<InvRack> {
 	@Transient
 	public String getNodeType() {
 		return this.getClass().getCanonicalName();
+	}
+
+	@Transient
+	public String getSiteFreezer() {
+		StringBuilder displayExpression = new StringBuilder();
+		displayExpression.append(invSite.getName());
+		displayExpression.append(" > ");
+		displayExpression.append(name);
+		return displayExpression.toString();
+	}
+
+	public void setSiteFreezer(String siteFreezer) {
+		this.siteFreezer = siteFreezer;
 	}
 }

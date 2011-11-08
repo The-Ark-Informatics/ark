@@ -56,6 +56,7 @@ public class InvRack implements java.io.Serializable, InvTreeNode<InvBox> {
 	private String			description;
 	private Integer		capacity;
 	private List<InvBox>	invBoxes	= new ArrayList<InvBox>(0);
+	private String 		siteFreezerRack;
 
 	public InvRack() {
 	}
@@ -174,5 +175,20 @@ public class InvRack implements java.io.Serializable, InvTreeNode<InvBox> {
 	@Transient
 	public String getNodeType() {
 		return this.getClass().getCanonicalName();
+	}
+
+	public void setSiteFreezerRack(String siteFreezerRack) {
+		this.siteFreezerRack = siteFreezerRack;
+	}
+
+	@Transient
+	public String getSiteFreezerRack() {
+		StringBuilder displayExpression = new StringBuilder();
+		displayExpression.append(invFreezer.getInvSite().getName());
+		displayExpression.append(" > ");
+		displayExpression.append(invFreezer.getName());
+		displayExpression.append(" > ");
+		displayExpression.append(name);
+		return displayExpression.toString();
 	}
 }
