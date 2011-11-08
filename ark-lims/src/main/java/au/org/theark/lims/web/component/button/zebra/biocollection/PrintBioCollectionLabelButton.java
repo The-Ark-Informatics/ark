@@ -85,19 +85,13 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 		barcodePrinter.setStudy(bioCollection.getStudy());
 		barcodePrinter.setName("zebra");
 		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
-		
-		barcodeLabel = new BarcodeLabel();
-		barcodeLabel.setBarcodePrinter(barcodePrinter);
-		barcodeLabel.setStudy(bioCollection.getStudy());
-		barcodeLabel.setName("zebra bioCollection");
-		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 	}
 
 	@Override
 	public boolean isEnabled() {
 		boolean barcodePrinterAvailable = true;
 
-		if (barcodePrinter.getId() == null) {
+		if (barcodePrinter == null) {
 			log.error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
 			barcodePrinterAvailable = false;
 		}
@@ -117,6 +111,12 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+		barcodeLabel = new BarcodeLabel();
+		barcodeLabel.setBarcodePrinter(barcodePrinter);
+		barcodeLabel.setStudy(bioCollection.getStudy());
+		barcodeLabel.setName("zebra bioCollection");
+		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
+		
 		this.zplString = iLimsAdminService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel);
 
 		if (zplString == null || zplString.isEmpty()) {
