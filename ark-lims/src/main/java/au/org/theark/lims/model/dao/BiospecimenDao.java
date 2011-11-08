@@ -71,7 +71,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);
 		criteria.add(Restrictions.eq("id", id));
 
-		Biospecimen biospecimen = (Biospecimen) criteria.list();
+		Biospecimen biospecimen = (Biospecimen) criteria.uniqueResult();
 		if (biospecimen.getId() == null) {
 			throw new EntityNotFoundException("The entity with id" + id.toString() + " cannot be found.");
 		}
