@@ -81,7 +81,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	private void initialiseCFDListPanel(){
 		
 		
-		cfdProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldDisplay"));
+		cfdProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldGroup"));
 		ArrayList<CustomField> selectedList  = (ArrayList)iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(getModelObject().getCustomFieldGroup());
 		Boolean disableEditButton = false;
 		if(getModelObject().getCustomFieldGroup().getPublished()){
@@ -94,24 +94,22 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		}
 		
 		CustomFieldDisplayListPanel cfdListPanel = new CustomFieldDisplayListPanel("cfdListPanel", feedBackPanel,arkCrudContainerVO,disableEditButton);
+		cfdListPanel.setOutputMarkupId(true);
 		cfdListPanel.initialisePanel();
 		dataView = cfdListPanel.buildDataView(cfdProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 		
-		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
+		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("cfDisplayNavigator", dataView) {
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
 				target.add(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
 			}
 		};
-		
 		cfdListPanel.addOrReplace(pageNavigator);
 		cfdListPanel.addOrReplace(dataView);
 		arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel().addOrReplace(cfdListPanel);
-	
-		
-		
 	}
+	
 	public void initialiseDetailForm(){
 		customFieldGroupTxtFld = new TextField<String>("customFieldGroup.name");
 		description = new TextArea<String>("customFieldGroup.description");
@@ -126,9 +124,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 				}
 			}
 		};
-		
-		
-			
 		if(addCustomFieldDisplayList){
 			initialiseCFDListPanel();
 		}else{
