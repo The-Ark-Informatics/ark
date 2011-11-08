@@ -34,7 +34,7 @@ import au.org.theark.core.model.Constants;
  *
  */
 @Entity
-@Table(name = "biospecimen_quality", schema = Constants.LIMS_TABLE_SCHEMA)
+@Table(name = "biospecimen_status", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BiospecimenStatus implements java.io.Serializable {
 	/**
 	 * 
