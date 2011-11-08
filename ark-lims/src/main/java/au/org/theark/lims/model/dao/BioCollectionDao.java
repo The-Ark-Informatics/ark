@@ -52,8 +52,8 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		criteria.add(Restrictions.eq("id", id));
 
 		BioCollection bioCollection = (BioCollection) criteria.uniqueResult();
-		if (bioCollection.getId() == null) {
-			throw new EntityNotFoundException("The entity with id" + id.toString() + " cannot be found.");
+		if (bioCollection == null) {
+			throw new EntityNotFoundException("The BioCollection entity cannot be found.");
 		}
 
 		return bioCollection;
