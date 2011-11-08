@@ -387,7 +387,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		String biospecimenUidPaddedIncrementor = new String("");
 		String biospecimenUidPadChar = new String("0");
 		StringBuilder nextIncrementedBiospecimenUid = new StringBuilder("");
-		StringBuilder biospecimenUid = new StringBuilder("");
+		StringBuilder biospecimenUid = new StringBuilder();
 
 		if (biospecimenUidTemplate != null) {
 			if (biospecimenUidTemplate.getBiospecimenUidPrefix() != null)
@@ -417,6 +417,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		// handle for a null BiospecimenUID
 		if(biospecimenUid == null || biospecimenUid.length() == 0){
 			String uid = UniqueIdGenerator.generateUniqueId();
+			biospecimenUid = new StringBuilder();
 			biospecimenUid.append(uid);
 			log.error("Biospecimen Template is not defined for the Study: " + study.getName());
 		}
