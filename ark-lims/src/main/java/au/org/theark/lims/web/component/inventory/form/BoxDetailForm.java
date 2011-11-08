@@ -24,6 +24,7 @@ import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -108,6 +109,19 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 				return (IConverter<C>) integerConverter;
 			}
 		};
+		
+		noOfColTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				updateCapacityAndAvailable(target);
+			}
+		});
+		
 		noOfRowTxtFld = new TextField<Integer>("invBox.noofrow"){
 			/**
 			 * 
@@ -121,6 +135,19 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 				return (IConverter<C>) integerConverter;
 			}
 		};
+		
+		noOfRowTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				updateCapacityAndAvailable(target);
+			}
+		});
+		
 		noOfColTxtFld.setEnabled(isNew());
 		noOfRowTxtFld.setEnabled(isNew());
 
@@ -135,6 +162,20 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
 	}
 	
+	protected void updateCapacityAndAvailable(AjaxRequestTarget target) {
+		if (noOfColTxtFld.getModelObject() != null && noOfRowTxtFld.getModelObject() != null) {
+			Integer capacity = noOfColTxtFld.getModelObject() * noOfRowTxtFld.getModelObject();
+			Integer available = noOfColTxtFld.getModelObject() * noOfRowTxtFld.getModelObject();
+			
+			if(capacity != null && available != null) {
+				containerForm.getModelObject().getInvBox().setCapacity(capacity);
+				containerForm.getModelObject().getInvBox().setAvailable(available);
+				target.add(capacityTxtFld);
+				target.add(availableTxtFld);
+			}
+		}
+	}
+
 	private void initInvTrayDdc() {
 		List<InvRack> invTankList = new ArrayList<InvRack>(0);
 		try {
