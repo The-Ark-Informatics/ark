@@ -137,6 +137,7 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 			}
 		};
+		dataView.add(pageNavigator);
 		searchResultListPanel.add(pageNavigator);
 		searchResultListPanel.add(dataView);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultListPanel);
