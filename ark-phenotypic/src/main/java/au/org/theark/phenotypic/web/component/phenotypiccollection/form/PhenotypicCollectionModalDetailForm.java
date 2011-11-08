@@ -18,45 +18,27 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenotypiccollection.form;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.image.Image;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.util.convert.converter.DoubleConverter;
-import org.apache.wicket.validation.validator.MinimumValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.lims.entity.BioCollection;
-import au.org.theark.core.model.lims.entity.BioSampletype;
-import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.model.lims.entity.TreatmentType;
-import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -100,6 +82,8 @@ public class PhenotypicCollectionModalDetailForm extends AbstractModalDetailForm
 
 	private Panel									phenoCollectionDataEntryPanel;
 	private ModalWindow							modalWindow;
+	private AjaxPagingNavigator				dataEntryNavigator;
+	private WebMarkupContainer					dataEntryWMC;
 
 	/**
 	 * Constructor
@@ -136,12 +120,19 @@ public class PhenotypicCollectionModalDetailForm extends AbstractModalDetailForm
 			CompoundPropertyModel<PhenoDataCollectionVO> phenoDataCpModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
 			phenoDataCpModel.getObject().setPhenotypicCollection(pc);
 			phenoDataCpModel.getObject().setArkFunction(cpModel.getObject().getArkFunction());
-			phenoCollectionDataEntryPanel = new PhenoDataDataViewPanel("phenotypicCollectionDataEntryPanel", phenoDataCpModel).initialisePanel(20);
+			PhenoDataDataViewPanel phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel).initialisePanel(au.org.theark.core.Constants.ROWS_PER_PAGE);
+			dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView()) {
+				@Override
+				protected void onAjaxEvent(AjaxRequestTarget target) {
+					target.add(dataEntryWMC);
+				}
+			};
+			phenoCollectionDataEntryPanel = phenoCFDataEntryPanel;
 			replacePanel = true;
 		}
 		return replacePanel;
 	}
-
+	
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("phenotypicCollection.id");
 		idTxtFld.setEnabled(false);	// automatically generated
@@ -163,6 +154,8 @@ public class PhenotypicCollectionModalDetailForm extends AbstractModalDetailForm
 		initStatusDdc();
 		initReviewedByDdc();
 		
+		dataEntryWMC = new WebMarkupContainer("dataEntryWMC");
+		dataEntryWMC.setOutputMarkupId(true);
 		initialisePhenotypicCollectionDataEntry();
 
 		attachValidators();
@@ -219,7 +212,9 @@ public class PhenotypicCollectionModalDetailForm extends AbstractModalDetailForm
 		arkCrudContainerVo.getDetailPanelFormContainer().add(reviewedByDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(reviewedDateTxtFld);
 
-		arkCrudContainerVo.getDetailPanelFormContainer().add(phenoCollectionDataEntryPanel);
+		dataEntryWMC.add(phenoCollectionDataEntryPanel);
+		dataEntryWMC.add(dataEntryNavigator);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(dataEntryWMC);
 
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
@@ -249,7 +244,8 @@ public class PhenotypicCollectionModalDetailForm extends AbstractModalDetailForm
 		}
 		// refresh the CF data entry panel (if necessary)
 		if (initialisePhenotypicCollectionDataEntry() == true) {
-			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(phenoCollectionDataEntryPanel);
+			dataEntryWMC.addOrReplace(phenoCollectionDataEntryPanel);
+			dataEntryWMC.addOrReplace(dataEntryNavigator);
 		}
 
 		onSavePostProcess(target);

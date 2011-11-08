@@ -52,7 +52,7 @@ public class PhenoDataEditorPanel extends Panel {
 	
 	public PhenoDataEditorPanel initialisePanel() {
 		
-		dataViewPanel = new PhenoDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(10);
+		dataViewPanel = new PhenoDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm();
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
@@ -62,7 +62,6 @@ public class PhenoDataEditorPanel extends Panel {
 				target.add(this);
 			}
 		};
-		pageNavigator.setVisible(false);
 		customDataEditorForm.getDataViewWMC().add(dataViewPanel);
 		
 		warnSaveLabel = new Label("warnSaveLabel", new ResourceModel("warnSaveLabel"));
