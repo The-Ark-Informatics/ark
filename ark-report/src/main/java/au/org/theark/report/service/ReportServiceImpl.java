@@ -138,6 +138,7 @@ public class ReportServiceImpl implements IReportService {
 			String title = p.getTitleType().getName();
 			String firstName = p.getFirstName();
 			String lastName = p.getLastName();
+			// TODO: Fix this so that there are not subsequent queries after getStudyLevelConsentDetailsList(..)
 			Address a = reportDao.getBestAddress(subject);
 			String streetAddress = "-NA-";
 			String suburb = "-NA-";
@@ -158,10 +159,12 @@ public class ReportServiceImpl implements IReportService {
 			}
 			String workPhone = "-NA-";
 			String homePhone = "-NA-";
+			// TODO: Fix this so that there are not subsequent queries after getStudyLevelConsentDetailsList(..)
 			Phone aPhone = reportDao.getWorkPhone(subject);
 			if (aPhone != null) {
 				workPhone = aPhone.getAreaCode() + " " + aPhone.getPhoneNumber();
 			}
+			// TODO: Fix this so that there are not subsequent queries after getStudyLevelConsentDetailsList(..)
 			aPhone = reportDao.getHomePhone(subject);
 			if (aPhone != null) {
 				homePhone = aPhone.getAreaCode() + " " + aPhone.getPhoneNumber();
