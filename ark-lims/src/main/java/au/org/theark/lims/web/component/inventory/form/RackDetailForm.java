@@ -123,7 +123,7 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		availableTxtFld.setEnabled(false);
 		descriptionTxtAreaFld = new TextArea<String>("invRack.description");
 		
-		initInvTankDdc();
+		initInvFreezerDdc();
 		
 		attachValidators();
 		addComponents();
@@ -132,18 +132,16 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
 	}
 	
-	private void initInvTankDdc() {
-		List<InvFreezer> invTankList = new ArrayList<InvFreezer>(0);
-		InvFreezer InvTank = new InvFreezer();
-
+	private void initInvFreezerDdc() {
+		List<InvFreezer> invFreezerList = new ArrayList<InvFreezer>(0);
 		try {
-			invTankList = iInventoryService.searchInvFreezer(InvTank);
+			invFreezerList = iInventoryService.searchInvFreezer(new InvFreezer());
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
 		}
-		ChoiceRenderer<InvFreezer> choiceRenderer = new ChoiceRenderer<InvFreezer>(Constants.NAME, Constants.ID);
-		invTankDdc = new DropDownChoice<InvFreezer>("invRack.invFreezer", (List<InvFreezer>) invTankList, choiceRenderer);
+		ChoiceRenderer<InvFreezer> choiceRenderer = new ChoiceRenderer<InvFreezer>("siteFreezer", Constants.ID);
+		invTankDdc = new DropDownChoice<InvFreezer>("invRack.invFreezer", (List<InvFreezer>) invFreezerList, choiceRenderer);
 	}
 
 	protected void attachValidators() {
