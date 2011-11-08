@@ -124,17 +124,22 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	}
 
 	public InvSite getInvSite(Long id) {
+		InvSite invSite = new InvSite();
 		Criteria criteria = getSession().createCriteria(InvSite.class);
 
 		if (id != null) {
 			criteria.add(Restrictions.eq("id", id));
 		}
 
-		InvSite invSite = (InvSite) criteria.uniqueResult();
+		List<InvSite> list = criteria.list();
+		if(!list.isEmpty()) {
+			invSite = (InvSite) list.get(0);
+		}
 		return invSite;
 	}
 
 	public InvCell getInvCell(InvBox invBox, int rowno, int colno) {
+		InvCell invCell = new InvCell();
 		Criteria criteria = getSession().createCriteria(InvSite.class);
 
 		if (invBox != null) {
@@ -144,31 +149,45 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		criteria.add(Restrictions.eq("rowno", rowno));
 		criteria.add(Restrictions.eq("colno", colno));
 		
-		InvCell invCell = (InvCell) criteria.uniqueResult();
+		List<InvCell> list = criteria.list();
+		if(!list.isEmpty()) {
+			invCell = (InvCell) list.get(0);
+		}
 		return invCell;
 	}
 
 	public Biospecimen getBiospecimenByInvCell(InvCell invCell) {
+		Biospecimen biospecimen = null;
 		Criteria criteria = getSession().createCriteria(InvCell.class);
 		criteria.add(Restrictions.eq("id", invCell.getId()));
-		InvCell invCellResult = (InvCell) criteria.uniqueResult();
-		Biospecimen biospecimen = invCellResult.getBiospecimen();
+		List<InvCell> list = criteria.list();
+		if(!list.isEmpty()){ 
+			biospecimen = (Biospecimen) list.get(0).getBiospecimen();	
+		}
 		return biospecimen;
 	}
 
-	public InvBox getInvBox(Long id) {		
+	public InvBox getInvBox(Long id) {
+		InvBox invBox = new InvBox();
 		Criteria criteria = getSession().createCriteria(InvBox.class);
-		criteria.add(Restrictions.eq("id", id));
 
-		InvBox invBox = (InvBox) criteria.uniqueResult();
+		if (id != null) {
+			criteria.add(Restrictions.eq("id", id));
+		}
+
+		List<InvBox> list = criteria.list();
+		if(!list.isEmpty()){ 
+			invBox = (InvBox) list.get(0);
+		}
 		
-		if(invBox.getId() == null) {
+		if(invBox == null) {
 			log.error("InvBox with ID " + id + " is no longer in the database");
 		}
 		return invBox;
 	}
 	
 	public List<InvCell> getCellAndBiospecimenListByBox(InvBox invBox){
+		
 		List<InvCell> invCellList = new ArrayList<InvCell>();
 	
 		StringBuffer sb = new StringBuffer();
@@ -217,44 +236,76 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	}
 
 	public InvFreezer getInvFreezer(Long id) {
+		InvFreezer invFreezer = new InvFreezer();
 		Criteria criteria = getSession().createCriteria(InvFreezer.class);
-		criteria.add(Restrictions.eq("id", id));
 
-		InvFreezer invFreezer = (InvFreezer) criteria.uniqueResult();
-		if(invFreezer.getId() == null) {
+		if (id != null) {
+			criteria.add(Restrictions.eq("id", id));
+		}
+
+		List<InvFreezer> list = criteria.list();
+		if(!list.isEmpty()){ 
+			invFreezer = (InvFreezer) list.get(0);
+		}
+		
+		if(invFreezer == null) {
 			log.error("InvFreezer with ID " + id + " is no longer in the database");
 		}
 		return invFreezer;
 	}
 
 	public InvRack getInvRack(Long id) {
+		InvRack invRack = new InvRack();
 		Criteria criteria = getSession().createCriteria(InvRack.class);
-		criteria.add(Restrictions.eq("id", id));
-		InvRack invRack = (InvRack) criteria.uniqueResult();
+
+		if (id != null) {
+			criteria.add(Restrictions.eq("id", id));
+		}
+
+		List<InvRack> list = criteria.list();
+		if(!list.isEmpty()){ 
+			invRack = (InvRack) list.get(0);
+		}
 		
-		if(invRack.getId() == null) {
+		if(invRack == null) {
 			log.error("InvRack with ID " + id + " is no longer in the database");
 		}
 		return invRack;
 	}
 
 	public InvCell getInvCellByBiospecimen(Biospecimen biospecimen) {
+		InvCell invCell = new InvCell();
 		Criteria criteria = getSession().createCriteria(InvCell.class);
-		criteria.add(Restrictions.eq("biospecimen", biospecimen));
 
-		InvCell invCell = (InvCell) criteria.uniqueResult();
-		if(invCell.getId() == null) {
+		if (biospecimen != null) {
+			criteria.add(Restrictions.eq("biospecimen", biospecimen));
+		}
+
+		List<InvCell> list = criteria.list();
+		if(!list.isEmpty()){ 
+			invCell = (InvCell) list.get(0);
+		}
+		
+		if(invCell == null) {
 			log.error("InvCell with biospecimen " + biospecimen.getId() + " is no longer in the database");
 		}
 		return invCell;
 	}
 
 	public InvCell getInvCell(Long id) {
+		InvCell invCell = new InvCell();
 		Criteria criteria = getSession().createCriteria(InvCell.class);
-		criteria.add(Restrictions.eq("id", id));
 
-		InvCell invCell = (InvCell) criteria.uniqueResult();
-		if(invCell.getId() == null) {
+		if (id != null) {
+			criteria.add(Restrictions.eq("id", id));
+		}
+
+		List<InvCell> list = criteria.list();
+		if(!list.isEmpty()){ 
+			invCell = (InvCell) list.get(0);
+		}
+		
+		if(invCell == null) {
 			log.error("InvRack with ID " + id + " is no longer in the database");
 		}
 		return invCell;
