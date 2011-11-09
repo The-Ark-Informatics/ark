@@ -66,14 +66,25 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 		barcodePrinter.setStudy(biospecimen.getStudy());
 		barcodePrinter.setName("brady_bbp_11");
 		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
+		
+		barcodeLabel = new BarcodeLabel();
+		barcodeLabel.setBarcodePrinter(barcodePrinter);
+		barcodeLabel.setStudy(biospecimen.getStudy());
+		barcodeLabel.setName("brady straw barcode");
+		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 	}
 	
 	@Override
 	public boolean isEnabled() {
 		boolean barcodePrinterAvailable = true;
 
-		if(barcodePrinter == null) {
+		if (barcodePrinter == null || barcodeLabel == null) {
 			log.error("A Brady barcode printer is currently not available. Please add the printer to the client machine and try again");
+			barcodePrinterAvailable = false;
+		}
+		
+		if(barcodeLabel == null) {
+			log.error("A Brady barcode label is currently not available. Please define the label and try again");
 			barcodePrinterAvailable = false;
 		}
 		
@@ -86,23 +97,19 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 	}
 
 	@Override
-	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-		barcodeLabel = new BarcodeLabel();
-		barcodeLabel.setBarcodePrinter(barcodePrinter);
-		barcodeLabel.setStudy(biospecimen.getStudy());
-		barcodeLabel.setName("brady straw barcode");
-		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
-
-		this.tsplString = iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
-
-		if (tsplString == null || tsplString.isEmpty()) {
-			this.error("There was an error when attempting to print the straw barcode for: " + biospecimen.getBiospecimenUid());
-			log.error("There was an error when attempting to print the straw barcode for: " + biospecimen.getBiospecimenUid());
-		}
-		else {
-			log.debug(tsplString);
-			target.appendJavaScript("printStrawBarcode(\"" + barcodePrinter.getName() + "\",\"" + tsplString + "\");");
-			onPostSubmit(target, form);
+	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {		
+		if(barcodeLabel != null) {
+			this.tsplString = iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
+	
+			if (tsplString == null || tsplString.isEmpty()) {
+				this.error("There was an error when attempting to print the straw barcode for: " + biospecimen.getBiospecimenUid());
+				log.error("There was an error when attempting to print the straw barcode for: " + biospecimen.getBiospecimenUid());
+			}
+			else {
+				log.debug(tsplString);
+				target.appendJavaScript("printStrawBarcode(\"" + barcodePrinter.getName() + "\",\"" + tsplString + "\");");
+				onPostSubmit(target, form);
+			}
 		}
 	}
 

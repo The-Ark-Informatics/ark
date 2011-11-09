@@ -64,14 +64,25 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 		barcodePrinter.setStudy(biospecimen.getStudy());
 		barcodePrinter.setName("zebra");
 		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
+		
+		barcodeLabel = new BarcodeLabel();
+		barcodeLabel.setBarcodePrinter(barcodePrinter);
+		barcodeLabel.setStudy(biospecimen.getStudy());
+		barcodeLabel.setName("zebra biospecimen");
+		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 	}
 	
 	@Override
 	public boolean isEnabled() {
 		boolean barcodePrinterAvailable = true;
 		
-		if(barcodePrinter == null) {
+		if (barcodePrinter == null) {
 			log.error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
+			barcodePrinterAvailable = false;
+		}
+		
+		if(barcodeLabel == null) {
+			log.error("A Zebra barcode label is currently not available. Please define the label and try again");
 			barcodePrinterAvailable = false;
 		}
 		
@@ -85,22 +96,20 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-		barcodeLabel = new BarcodeLabel();
-		barcodeLabel.setBarcodePrinter(barcodePrinter);
-		barcodeLabel.setStudy(biospecimen.getStudy());
-		barcodeLabel.setName("zebra biospecimen");
-		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
+		
 
-		this.zplString = iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
-
-		if (zplString == null || zplString.isEmpty()) {
-			this.error("There was an error when attempting to print the barcode for: " + biospecimen.getBiospecimenUid());
-			log.error("There was an error when attempting to print the barcode for: " + biospecimen.getBiospecimenUid());
-		}
-		else {
-			log.debug(zplString);
-			target.appendJavaScript("printZebraBarcode(\"" + zplString + "\");");
-			onPostSubmit(target, form);
+		if(barcodeLabel != null) {
+			this.zplString = iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
+	
+			if (zplString == null || zplString.isEmpty()) {
+				this.error("There was an error when attempting to print the barcode for: " + biospecimen.getBiospecimenUid());
+				log.error("There was an error when attempting to print the barcode for: " + biospecimen.getBiospecimenUid());
+			}
+			else {
+				log.debug(zplString);
+				target.appendJavaScript("printZebraBarcode(\"" + zplString + "\");");
+				onPostSubmit(target, form);
+			}
 		}
 	}
 
