@@ -201,4 +201,11 @@ public interface ILimsAdminService {
 	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, int first, int count);
 
 	public BiospecimenUidTemplate searchBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
+	
+	/**
+	 * Gets the list of barcodePrinters for the specified study
+	 * @param study
+	 * @return
+	 */
+	public List<BarcodePrinter> getBarcodePrintersByStudy(Study study);
 }
