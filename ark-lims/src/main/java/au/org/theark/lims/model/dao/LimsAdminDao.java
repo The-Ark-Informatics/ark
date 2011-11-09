@@ -328,4 +328,16 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		}
 		return list;
 	}
+
+	public List<Study> getStudyListAssignedToBarcodePrinter() {
+		Criteria criteria = getSession().createCriteria(BarcodePrinter.class);
+		criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("study")));
+		return criteria.list();
+	}
+	
+	public List<Study> getStudyListAssignedToBarcodeLabel() {
+		Criteria criteria = getSession().createCriteria(BarcodeLabel.class);
+		criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("study")));
+		return criteria.list();
+	}
 }
