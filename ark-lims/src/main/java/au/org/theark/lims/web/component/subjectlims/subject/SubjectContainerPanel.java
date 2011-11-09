@@ -152,13 +152,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		if (sessionStudyId != null && sessionStudyId > 0) {
-			containerForm.getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
-		}
-
 		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView, arkCrudContainerVO, containerForm);
-
 		searchPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 		return arkCrudContainerVO.getSearchPanelContainer();
@@ -172,9 +166,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	}
 
 	protected WebMarkupContainer initialiseSearchResults() {
-
 		searchResultListPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO);
-
 		subjectProvider = new ArkDataProvider2<LimsVO, LinkSubjectStudy>() {
 			/**
 			 * 
@@ -213,9 +205,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 					}
 				}
 
-				if (isActionPermitted()) {
-					listSubjects = iLimsSubjectService.searchPageableSubjects(criteriaModel.getObject(), studyList, first, count);
-				}
+				listSubjects = iLimsSubjectService.searchPageableSubjects(criteriaModel.getObject(), studyList, first, count);
 				return listSubjects.iterator();
 			}
 		};
