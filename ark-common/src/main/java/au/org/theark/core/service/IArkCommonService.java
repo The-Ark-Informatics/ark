@@ -454,6 +454,8 @@ public interface IArkCommonService<T> {
 	public CustomField getCustomField(Long id );
 	
 	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria);
+	
+	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria, CustomFieldGroup customFieldGroup);
 
 	/**
 	 * 

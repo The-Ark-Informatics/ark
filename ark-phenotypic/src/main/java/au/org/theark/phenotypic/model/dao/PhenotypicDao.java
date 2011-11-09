@@ -1553,17 +1553,26 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		if(!customFieldGroup.getPublished()){//Allow Removal only if the form is not published
 			Collection<CustomFieldDisplay> customFieldDisplayToRemove = getCustomFieldDisplayToRemove(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);	
 			for (CustomFieldDisplay cfd : customFieldDisplayToRemove) {
-				//CustomField customFieldToRemove = cfd.getCustomField();
 				session.delete(cfd);
 			}
 		}
 	
 		ArrayList<CustomFieldDisplay> customFieldsToAdd = getCustomFieldsToAdd(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);
-		int i =0;
 		for (CustomFieldDisplay fieldToAdd : customFieldsToAdd) {
-			fieldToAdd.setSequence(new Long(++i));
 			session.saveOrUpdate(fieldToAdd);//Add a new CustomFieldDisplay field that is linked to the CustomField	
 		}
+		
+		ArrayList<CustomField> list = customFieldGroupVO.getSelectedCustomFields();
+		int position = 0;
+		
+		for (CustomField customField : list) {
+			++position;
+			CustomFieldDisplay cfd = iArkCommonService.getCustomFieldDisplayByCustomField(customField,customFieldGroupVO.getCustomFieldGroup());
+			cfd.setSequence(new Long(position));
+			session.update(cfd);
+		}
+	
+		
 	}
 	
 	/**
@@ -1575,7 +1584,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	private ArrayList<CustomFieldDisplay> getCustomFieldsToAdd(Collection<CustomField> selectedCustomFields, CustomFieldGroup customFieldGroup){
 		
 		ArrayList<CustomFieldDisplay> cfdisplayList = new ArrayList<CustomFieldDisplay>();
-		Collection<CustomField> existingCustomFieldList = getCustomFieldsLinkedToCustomFieldGroup(customFieldGroup);// Existing List of CustomFieldsthat were linked to this CustomFieldGroup
+		List<CustomField> existingCustomFieldList = getCustomFieldsLinkedToCustomFieldGroup(customFieldGroup);// Existing List of CustomFieldsthat were linked to this CustomFieldGroup
 		ArrayList<CustomField> nonProxyCustomFieldList = new ArrayList<CustomField>();
 		
 		/**
