@@ -1,0 +1,35 @@
+<wicket:panel>
+	&nbsp;
+	<div id="inventoryButtonPanel">
+		<form wicket:id="treeForm">
+			<table border="0" width="100%">
+				<!-- Inventory Buttons -->
+				<tr>
+					<td align="center">
+						<input wicket:id="addSite" type="submit" wicket:message="value:addSite" />
+					</td>
+					<td align="center">
+						<input wicket:id="addFreezer" type="submit" wicket:message="value:addFreezer" />
+					</td>
+				</tr>
+				<tr>
+					<td align="center">
+						<input wicket:id="addRack" type="submit" wicket:message="value:addRack" />
+					</td>
+					<td align="center">
+						<input wicket:id="addBox" type="submit" wicket:message="value:addBox" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	
+	<div id="inventoryPanelBreaker"></div>
+	
+	<div id="inventoryPanelContent">
+		<!-- Inventory Tree -->
+		<div wicket:id="tree">
+			[Tree]
+		</div>
+	</div>
+</wicket:panel>

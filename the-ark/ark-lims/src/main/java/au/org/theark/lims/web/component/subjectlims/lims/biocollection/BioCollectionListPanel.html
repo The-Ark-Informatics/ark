@@ -1,0 +1,117 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="collectionListForm">
+		<div id="listPanelBorder">
+			<div wicket:id="dataViewListWMC">
+				<table width="0%" cellspacing="0">
+				</table>
+				<table width="100%" cellspacing="0" class="dataview" border="0">
+					<!-- Header row -->
+					<tr>
+						<th width="2%">
+							&nbsp;
+						</th>
+						<th width="14%">
+							<label for="id">
+								<wicket:message key="bioCollection.id">
+									Collection ID:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="20%">
+							<label for="name">
+								<wicket:message	key="bioCollection.name">
+									Collection Name:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="20%">
+							<label for="collectionDate">
+								<wicket:message	key="bioCollection.collectionDate">
+									Collection Date:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="20%">
+							<label for="surgeryDate">
+								<wicket:message	key="bioCollection.surgeryDate">
+									Surgery Date:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="40%">
+							<label for="comments">
+								<wicket:message	key="bioCollection.comments">
+									Comments:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="2%">
+							&nbsp;
+						</th>
+					</tr>
+					<tbody>
+						<!-- Repeated item row -->
+						<tr wicket:id="collectionList">
+							<td width="2%">
+								&nbsp;
+							</td>
+							<td width="14%">
+								<span wicket:id="bioCollection.id">
+									ID
+								</span>
+							</td>
+							<td width="20%">
+								<span wicket:id="rowDetailsWMC">
+									<a href="#"wicket:id="listDetailsLink">
+										<span wicket:id="bioCollection.name">
+										</span>
+									</a>
+								</span>
+							</td>
+							<td width="20%">
+								<span wicket:id="bioCollection.collectionDate">
+								</span>
+							</td>
+							<td width="20%">
+								<span wicket:id="bioCollection.surgeryDate">
+								</span>
+							</td>
+							<td width="40%">
+								<span wicket:id="bioCollection.comments">
+								</span>
+							</td>
+							<td width="2%">
+								&nbsp;
+							</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td width="2%">
+								&nbsp;
+							</td>
+							<td width="96%" colspan="5">
+								<span wicket:id="navigator" class="a">
+								</span>
+							</td>
+							<td width="2%">
+								&nbsp;
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+				<table width="0%" cellspacing="0">
+				</table>
+			</div>
+			<!-- New button row -->
+			<div id="buttons">
+				<input wicket:id="listNewButton" type="submit" value="New"/>
+			</div>
+
+			<!--	The detailModalWindow for detail edit/add from listPanel -->
+			<div wicket:id="detailModalWindow">
+			</div>
+		</div>
+	</form>
+</wicket:panel>

@@ -1,0 +1,82 @@
+.overlay-decorator {
+    background: none repeat scroll 0 0 #000000;
+    height: 100%;
+    left: 0;
+    opacity: 0.1;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 2000;
+}
+
+.overlay-wrap {
+	height: 100%;
+	width: 100%;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 2001;
+	overflow: auto; *
+	overflow-x: hidden; *
+	zoom: 1;
+	/* (0.8 * 255).toString(16) = cc */ *
+	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr =
+		#cc002244, endColorstr = #cc002244 ); *
+	background: transparent url(pixel.gif);
+}
+
+.overlay {
+	z-index: 2001;
+	position: relative;
+	margin: 0 auto;
+	display: table;
+	height: 100%;
+	vertical-align: middle;
+	width: 100px;
+	z-index: 9999; *
+	width: 100%; *
+	text-align: center; *
+	position: static; *
+	display: block;
+}
+
+.dialog-wrap {
+	display: table-cell;
+	vertical-align: middle; *
+	width: 300px; *
+	text-align: left; *
+	zoom: 1; *
+	display: inline;
+}
+
+.dialog-decorator {
+	display: none; *
+	vertical-align: middle; *
+	zoom: 1; *
+	display: inline; *
+	height: 100%; *
+	width: 0; *
+	background: red;
+}
+
+#body {
+	overflow: auto;
+	height: 98%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+#doc {
+	margin: 0 0 0 30%;
+	padding: 0;
+}
+
+#busyOverlay {
+	visibility: hidden;
+}
+
+.busyOverlay #busyOverlay {
+	display: block;
+}

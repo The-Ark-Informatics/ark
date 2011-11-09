@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd" xml:lang="en" lang="en">
+	<head>
+		<title>
+			<wicket:message key="page.title">
+				Page Title will be inserted here
+			</wicket:message>
+		</title>
+		<!-- The ARK icon in browser address bar -->
+		<link rel="icon" type="image/ico" href="favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="css/overlay.css"/>
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="css/header.css"/>
+		<link rel="stylesheet" type="text/css" href="css/welcome.css"/>
+		<link rel="stylesheet" type="text/css" href="css/context.css"/>
+		<link rel="stylesheet" type="text/css" href="css/searchForm.css"/>
+		<link rel="stylesheet" type="text/css" href="css/detailForm.css"/>
+		<link rel="stylesheet" type="text/css" href="css/wizardForm.css"/>
+		<link rel="stylesheet" type="text/css" href="css/modalWindow.css"/>
+		<link rel="stylesheet" type="text/css" href="css/context.css"/>
+		<link rel="stylesheet" type="text/css" href="css/panel.css"/>
+		<link rel="stylesheet" type="text/css" href="css/palette.css"/>
+		<link rel="stylesheet" type="text/css" href="css/lims.css"/>
+		<link rel="stylesheet" type="text/css" href="css/table.css" >
+		<link rel="stylesheet" type="text/css" href="css/buttons.css" >
+		<link rel="stylesheet" type="text/css" href="css/customField.css"/>
+		<link rel="stylesheet" type="text/css" href="css/footer.css"/>
+		<link rel="stylesheet" type="text/css" href="css/sweetTitles.css"/>
+		<!-- 
+		<script language="javascript" src="js/addEventJs.js">
+		</script>
+		<script language="javascript" src="js/sweetTitles.js">
+		</script>
+		 -->
+		<script language="javascript" src="js/jquery.js">
+		</script>
+		<script language="javascript" src="js/jzebra.js">
+		</script>
+		<script language="javascript" src="js/zebra.js">
+		</script>
+		<script language="javascript" src="http://java.com/js/deployJava.js">
+		</script>
+	</head>
+	<body>
+		<!-- Overlay that blocks entire screen while waiting for load  -->
+		<div id="busyOverlay">
+			<div class="overlay-decorator">
+			</div>
+
+			<div class="overlay-wrap">
+				<div class="overlay">
+					<div class="dialog-decorator">
+					</div>
+					<div class="dialog-wrap">
+						<div class="dialog" id="dialog">
+							<div class="content">
+								<div id="busyIndicator">
+									<img height="16" width="16" src="images/indicator.gif">
+									Loading...
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Start div wrap -->
+		<div id="wrap">
+			<div id="mainheaderouter">
+				<div class="mainheader">
+					<div class="logo">
+						<!-- Start div header -->
+						<div id="header" class="header">
+							<!--	Header images -->
+							<!--	Hosted by image -->
+							<div id="hostedby">
+								<img wicket:id="hostedByImage"/>
+							</div>
+
+							<!--	Product image -->
+							<div id="product">
+								<img wicket:id="productImage"/>
+							</div>
+
+							<div id="studyLogo">
+								<!--	Study Name panel must be made a re-usable panel-->
+								<div wicket:id="studyNameMarkupContainer">
+									<!--	Study name -->
+									<div id="studyName">
+										<span wicket:id="studyNameLabel" id="studyNameLabel">
+										</span>
+									</div>
+								</div>
+
+								<!--	Study Logo panel must be made a re-usable panel-->
+								<div wicket:id="studyLogoMarkupContainer">
+									<!--	Study Logo image -->
+									<img wicket:id="studyLogoImage" class="center"/>
+								</div>
+							</div>
+							<!--	Login/Logout Welcome panel must be made a re-usable panel-->
+							<div id="welcomePanel">
+								<div id="welcomeMessage">
+									Welcome&nbsp;
+									<a wicket:id="myDetailLink" href="#">
+										<span wicket:id="loggedInUser" id="loggedInUser">
+											[userId]
+										</span>
+									</a>
+									&nbsp;|&nbsp;
+									<a wicket:id="ajaxLogoutLink" href="#">
+										Logout
+									</a>
+								</div>
+								<div wicket:id="modalWindow">
+								</div>
+							</div>
+						</div>
+						<!-- End div header -->
+					</div>
+
+					<!--	Header banner (image accessed in css) -->
+					<div id="banner" />
+
+				</div>
+				<!-- End div mainheader -->
+			</div>
+			<!--	End div mainheaderouter -->
+
+			<!-- Start div main -->
+			<div id="main">
+				<!-- Start of Application -->
+				<div id="application">
+					<wicket:child />
+				</div>
+				<!-- Endof Application -->
+			</div>
+			<!-- End div main -->
+			<div class="push" />
+			<!-- End div wrap -->
+		</div>
+
+		<!-- Start div footer -->
+		<div id="footer" class="footer">
+			<wicket:message key="page.version">
+				[Version]
+			</wicket:message>
+			<wicket:message key="page.copyright">
+				[Copyright]
+			</wicket:message>
+		</div>
+		<!-- End div footer -->
+	</body>
+</html>

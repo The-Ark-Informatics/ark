@@ -1,0 +1,76 @@
+table.palette {
+border:0;
+}
+
+table.palette td.header {
+font-weight:700;
+font-size:12pt;
+background-color:#eef7ff;
+border-top:1px solid #729ac2;
+border-bottom:1px solid #729ac2;
+padding:2px;
+}
+
+table.palette td.pane {
+width:100px;
+text-align:center;
+}
+
+table.palette td.pane select {
+width:200px;
+}
+
+table.palette td.buttons {
+text-align:center;
+padding-left:10px;
+padding-right:10px;
+}
+
+table.palette td.buttons button {
+width:40px;
+height:40px;
+}
+
+div.tabpanel div.tab-row {
+float:left;
+width:100%;
+background:#DAE0D2 url("../images/bg.gif") repeat-x bottom;
+line-height:normal;
+}
+
+div.tabpanel div.tab-row ul {
+list-style:none;
+margin:0;
+padding:10px 10px 0;
+}
+
+div.tabpanel div.tab-row li {
+float:left;
+background:url("../images/left.gif") no-repeat left top;
+margin:0;
+padding:0 0 0 10px;
+}
+
+div.tabpanel div.tab-row a {
+display:block;
+background:url("../images/right.gif") no-repeat right top;
+text-decoration:none;
+font-weight:700;
+color:#6F6F6F;
+white-space:nowrap;
+padding:5px 15px 4px 6px;
+}
+
+div.tabpanel div.tab-row a:hover {
+color:#333;
+}
+
+div.tabpanel div.tab-row li.selected {
+background-image:url("../images/lefton.gif");
+}
+
+div.tabpanel div.tab-row li.selected a {
+background-image:url("../images/righton.gif");
+color:#333;
+padding-bottom:5px;
+}

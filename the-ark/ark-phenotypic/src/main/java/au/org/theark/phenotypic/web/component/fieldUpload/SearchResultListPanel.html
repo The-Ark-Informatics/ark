@@ -1,0 +1,82 @@
+<wicket:panel>
+	<div id="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			<th width="5%">
+				<label for="col1">
+					<wicket:message	key="upload.id">Upload ID</wicket:message>
+				</label>
+			</th>
+			<th width="20%">
+				<label for="col2">
+					<wicket:message	key="upload.filename">Name</wicket:message>
+				</label>
+			</th>
+			<th width="5%">
+				<label for="col3">
+					<wicket:message	key="upload.fileFormat">File Format:</wicket:message>
+				</label>
+			</th>
+			<th width="5%">
+				<label for="col4">
+					<wicket:message	key="upload.userId">UserID:</wicket:message>
+				</label>
+			</th>
+			<th width="5%">
+				<label for="col5">
+					<wicket:message	key="upload.startTime">Start Time</wicket:message>
+				</label>
+			</th>
+			<th width="5%">
+				<label for="col6">
+					<wicket:message	key="upload.finishTime">Finish Time</wicket:message>
+				</label>
+			</th>
+			<th width="20%" colspan="3">
+				<input wicket:id="downloadTemplate" type="button" value="Download Template" />
+			</th>
+			<th width="2%">&nbsp;</th>
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="resultList">
+			<td width="2%">&nbsp;</td>
+			<td width="5%">
+				<span wicket:id="upload.id">ID</span>&nbsp;
+			</td>
+			<td width="15%">
+			  	<span wicket:id="upload.filename">Filename</span>
+			</td>
+			<td width="5%">
+				<span wicket:id="upload.fileFormat">File Format</span>
+			</td>
+			<td width="5%">
+				<span wicket:id="upload.userId">UserID</span>
+			</td>
+			<td width="5%">
+				<span wicket:id="upload.startTime">Start Time</span>
+			</td>
+			<td width="5%">
+				<span wicket:id="upload.finishTime">Finish Time</span>
+			</td>
+			<td width="10%">
+			  	<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />&nbsp;
+			</td>
+			<td width="10%">
+				<input wicket:id="upload.uploadReport" type="submit" wicket:message="value:button.downloadReport" />&nbsp;
+			</td>
+			<td width="10%">
+				<input wicket:id="deleteFile" type="submit" wicket:message="value:button.deleteFile" />&nbsp;
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<!--  The navigation bar -->
+		<tr>
+			<td width="2%">&nbsp;</td>
+			<td width="96%" align="left" colspan="9"><span wicket:id="navigator" class="a"></span></td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>
