@@ -152,12 +152,11 @@ public class SearchResultListPanel extends Panel {
 				Subject currentUser = SecurityUtils.getSubject();
 
 				// Place the selected study in session context for the user
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY, study);
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, study.getId());
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
-				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.SUBJECTUID);// Clear out any Subject UID placed in
-																																					// session via LIMS
+				// Clear out any Subject UID placed in session via LIMS
+				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.SUBJECTUID);
 				// Force clearing of Cache to re-load roles for the user for the study
 				realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 
