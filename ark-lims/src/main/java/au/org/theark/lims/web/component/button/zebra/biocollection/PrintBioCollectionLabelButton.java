@@ -85,6 +85,12 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 		barcodePrinter.setStudy(bioCollection.getStudy());
 		barcodePrinter.setName("zebra");
 		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
+		
+		barcodeLabel = new BarcodeLabel();
+		barcodeLabel.setBarcodePrinter(barcodePrinter);
+		barcodeLabel.setStudy(bioCollection.getStudy());
+		barcodeLabel.setName("zebra bioCollection");
+		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 	}
 
 	@Override
@@ -95,13 +101,13 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 			log.error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
 			barcodePrinterAvailable = false;
 		}
+		
+		if(barcodeLabel == null) {
+			log.error("A Zebra barcode label is currently not available. Please define the label and try again");
+			barcodePrinterAvailable = false;
+		}
 
 		return (barcodePrinterAvailable);
-	}
-	
-	@Override
-	public boolean isVisible() {
-		return (this.barcodeLabel != null && this.barcodeLabel.getId() != null);
 	}
 
 	@Override
@@ -110,23 +116,19 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	}
 
 	@Override
-	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-		barcodeLabel = new BarcodeLabel();
-		barcodeLabel.setBarcodePrinter(barcodePrinter);
-		barcodeLabel.setStudy(bioCollection.getStudy());
-		barcodeLabel.setName("zebra bioCollection");
-		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
-		
-		this.zplString = iLimsAdminService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel);
-
-		if (zplString == null || zplString.isEmpty()) {
-			this.error("There was an error when attempting to print the barcode for: " + bioCollection.getName());
-			log.error("There was an error when attempting to print the barcode for: " + bioCollection.getName());
-		}
-		else {
-			log.debug(zplString);
-			target.appendJavaScript("printZebraBarcode(\"" + zplString + "\");");
-			onPostSubmit(target, form);
+	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {		
+		if(barcodeLabel != null) {
+			this.zplString = iLimsAdminService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel);
+	
+			if (zplString == null || zplString.isEmpty()) {
+				this.error("There was an error when attempting to print the barcode for: " + bioCollection.getName());
+				log.error("There was an error when attempting to print the barcode for: " + bioCollection.getName());
+			}
+			else {
+				log.debug(zplString);
+				target.appendJavaScript("printZebraBarcode(\"" + zplString + "\");");
+				onPostSubmit(target, form);
+			}
 		}
 	}
 
