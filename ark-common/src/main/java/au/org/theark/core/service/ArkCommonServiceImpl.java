@@ -940,5 +940,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void createCustomFieldUpload(CustomFieldUpload cfUpload) {
 		studyDao.createCustomFieldUpload(cfUpload);
 	}
+	
+	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria, CustomFieldGroup customFieldGroup){
+		return customFieldDao.getCustomFieldDisplayByCustomField(cfCriteria, customFieldGroup);
+	}
 
 }

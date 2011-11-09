@@ -307,4 +307,12 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return result;
 	}
 	
+	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria, CustomFieldGroup customFieldGroup){
+		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
+		criteria.add(Restrictions.eq("customField.id", cfCriteria.getId()));
+		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
+		criteria.setMaxResults(1);
+		return (CustomFieldDisplay)criteria.uniqueResult();
+	}
+	
 }
