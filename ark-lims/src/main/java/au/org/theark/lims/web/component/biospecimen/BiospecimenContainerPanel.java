@@ -18,22 +18,18 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biospecimen;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.biospecimen.form.ContainerForm;
 import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
-import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenListPanel;
+import au.org.theark.lims.web.component.biospecimen.BiospecimenListPanel;
 
 /**
  * 
@@ -104,33 +100,6 @@ public class BiospecimenContainerPanel extends Panel {
 		
 		BiospecimenListPanel biospecimenListPanel = new BiospecimenListPanel("biospecimenListPanel", feedbackPanel, cpModel);
 		this.biospecimenListPanel = biospecimenListPanel;
-		
-		// Hide New button in listPanel
-		ArkBusyAjaxButton newButton = new ArkBusyAjaxButton("listNewButton", new StringResourceModel("listNewKey", this, null)) {
-
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {	
-			}
-			
-			@Override
-			public boolean isVisible() {
-				return false;
-			}
-
-			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				// TODO: Fix hardcoded message::
-				log.error("Error occured on the click of the New Biospecimen AjaxButton");
-			}
-			
-		};
-		biospecimenListPanel.getListDetailForm().setNewButton(newButton);
-		biospecimenListPanel.getListDetailForm().addOrReplace(biospecimenListPanel.getListDetailForm().getNewButton());
 		resultListContainer.add(biospecimenListPanel);
 		return resultListContainer;
 	}
