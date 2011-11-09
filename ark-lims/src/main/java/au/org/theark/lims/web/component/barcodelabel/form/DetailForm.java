@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -66,7 +67,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	private IArkCommonService<Void>			iArkCommonService;
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
-	private ILimsAdminService						iLimsAdminService;
+	private ILimsAdminService					iLimsAdminService;
 
 	private TextField<Long>						idTxtFld;
 	private DropDownChoice<Study>				studyDdc;
@@ -95,14 +96,14 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 		labelPrefixTxtFld = new TextField<String>("labelPrefix");
 		labelSuffixTxtFld = new TextField<String>("labelSuffix");
 
-		initialiseStudyDdc();
-		initialiseBarcodePrinterDdc();
+		initStudyDdc();
+		initBarcodePrinterDdc();
 
 		addDetailFormComponents();
 		attachValidators();
 	}
 
-	private void initialiseStudyDdc() {
+	private void initStudyDdc() {
 		List<Study> studyListForUser = new ArrayList<Study>(0);
 		studyListForUser = getStudyListForUser();
 		ChoiceRenderer<Study> choiceRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
@@ -115,16 +116,40 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 			@Override
 			protected void onBeforeRender() {
 				super.onBeforeRender();
-				this.setChoices(getStudyListForUser());
+				studyDdc.setEnabled(isNew());
+				studyDdc.setChoices(getStudyListForUser());
 			}
 		};
+
+		studyDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				target.add(barcodePrinterDdc);
+			}
+		});
 	}
-	
-	private void initialiseBarcodePrinterDdc() {
-		List<BarcodePrinter> barcodePrinters = new ArrayList<BarcodePrinter>(0);
-		barcodePrinters = iLimsAdminService.getBarcodePrinters(getStudyListForUser());
+
+	private void initBarcodePrinterDdc() {
 		ChoiceRenderer<BarcodePrinter> choiceRenderer = new ChoiceRenderer<BarcodePrinter>(Constants.NAME, Constants.ID);
-		barcodePrinterDdc = new DropDownChoice<BarcodePrinter>("barcodePrinter", barcodePrinters, choiceRenderer);
+		barcodePrinterDdc = new DropDownChoice<BarcodePrinter>("barcodePrinter") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onBeforeRender() {
+				super.onBeforeRender();
+				List<BarcodePrinter> barcodePrinters = iLimsAdminService.getBarcodePrintersByStudy(studyDdc.getModelObject());
+				this.setChoices(barcodePrinters);
+			}
+		};
+		barcodePrinterDdc.setChoiceRenderer(choiceRenderer);
 	}
 
 	public void addDetailFormComponents() {
@@ -230,6 +255,11 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 			ArkModule arkModule = null;
 			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
 			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+
+			if (isNew()) {
+				List<Study> studyListAssignedToBarcodeLabel = iLimsAdminService.getStudyListAssignedToBarcodeLabel();
+				studyListForUser.removeAll(studyListAssignedToBarcodeLabel);
+			}
 		}
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());

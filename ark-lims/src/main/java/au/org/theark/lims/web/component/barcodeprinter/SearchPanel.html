@@ -24,28 +24,6 @@
 				</div>
 
 				<div id="fldLabel">
-					<wicket:message key="name">
-						Name:
-					</wicket:message>
-				</div>
-
-				<div id="fldControl">
-					<input wicket:id="name" type="text" />
-				</div>
-
-				<div id="searchPanelContentRight">
-					&nbsp;
-				</div>
-
-				<div id="searchPanelBreaker">
-					&nbsp;
-				</div>
-				
-				<div id="panelContentLeft">
-					&nbsp;
-				</div>
-				
-				<div id="fldLabel">
 					<wicket:message key="study">
 						Study:
 					</wicket:message>
@@ -59,21 +37,25 @@
 					</select>
 				</div>
 
-				<div id="panelMargin">
-					&nbsp;
-				</div>
-
-				<!--  empty -->
-
-				<div id="searchPanelContentRight">
-					&nbsp;
-				</div>
-
 				<div id="searchPanelBreaker">
 					&nbsp;
 				</div>
-
+				
 				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+				
+				<div id="fldLabel">
+					<wicket:message key="name">
+						Name:
+					</wicket:message>
+				</div>
+
+				<div id="fldControl">
+					<input wicket:id="name" type="text" />
+				</div>
+
+				<div id="panelMargin">
 					&nbsp;
 				</div>
 
@@ -88,62 +70,6 @@
 					</textarea>
 				</div>
 
-				<div id="panelMargin">
-					&nbsp;
-				</div>
-
-				<div id="fldLabel">
-					<wicket:message key="location">
-						Location:
-					</wicket:message>
-				</div>
-
-				<div id="fldControl">
-					<input wicket:id="location" type="text" />
-				</div>
-
-				<div id="searchPanelContentRight">
-					&nbsp;
-				</div>
-
-				<div id="searchPanelBreaker">
-					&nbsp;
-				</div>
-
-				<div id="panelContentLeft">
-					&nbsp;
-				</div>
-
-				<div id="fldLabel">
-					<wicket:message key="host">
-						Host:
-					</wicket:message>
-				</div>
-
-				<div id="fldControl">
-					<input wicket:id="host" type="text" />
-				</div>
-
-				<div id="panelMargin">
-					&nbsp;
-				</div>
-
-				<div id="fldLabel">
-					<wicket:message	key="port">
-						Port:
-					</wicket:message>
-				</div>
-
-				<div id="fldControl">
-					<div class="port">
-						<input wicket:id="port" type="text" size="4"/>
-					</div>
-				</div>
-
-				<div id="searchPanelContentRight">
-					&nbsp;
-				</div>
-
 				<div id="searchPanelBreaker">
 					&nbsp;
 				</div>
@@ -153,9 +79,13 @@
 					&nbsp;
 					<div>
 						<input wicket:id="search" type="submit" wicket:message="value:button.search" />
-						&nbsp;
+						<div id="panelMargin">
+							&nbsp;
+						</div>
 						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />
-						&nbsp;
+						<div id="panelMargin">
+							&nbsp;
+						</div>
 						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
 					</div>
 				</div>

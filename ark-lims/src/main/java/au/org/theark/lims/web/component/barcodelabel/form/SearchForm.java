@@ -32,13 +32,11 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
-import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
@@ -67,11 +65,8 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 
 	private TextField<Long>						idTxtFld;
 	private DropDownChoice<Study>				studyDdc;
-	private DropDownChoice<BarcodePrinter>	barcodePrinterDdc;
 	private TextField<String>					nameTxtFld;
 	private TextArea<String>					descriptionTxtArea;
-	private TextField<String>					labelPrefixTxtFld;
-	private TextField<String>					labelSuffixTxtFld;
 
 	public SearchForm(String id, CompoundPropertyModel<BarcodeLabel> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
 		super(id, cpmModel, feedBackPanel, arkCrudContainerVO);
@@ -81,14 +76,9 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 
 	protected void initialiseSearchForm() {
 		idTxtFld = new TextField<Long>("id");
-		nameTxtFld = new TextField<String>("name");
-
 		initialiseStudyDdc();
-		initialiseBarcodePrinterDdc();
-
+		nameTxtFld = new TextField<String>("name");		
 		descriptionTxtArea = new TextArea<String>("description");
-		labelPrefixTxtFld = new TextField<String>("labelPrefix");
-		labelSuffixTxtFld = new TextField<String>("labelSuffix");
 		addSearchComponentsToForm();
 	}
 
@@ -109,14 +99,6 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 				this.setChoices(getStudyListForUser());
 			}
 		};
-	}
-
-	private void initialiseBarcodePrinterDdc() {
-		PropertyModel<BarcodePrinter> BarcodePrinterPm = new PropertyModel<BarcodePrinter>(getModelObject(), "barcodePrinter");
-		List<BarcodePrinter> barcodePrinters = new ArrayList<BarcodePrinter>(0);
-		barcodePrinters = iLimsAdminService.getBarcodePrinters(getStudyListForUser());
-		ChoiceRenderer<BarcodePrinter> barcodePrinterRenderer = new ChoiceRenderer<BarcodePrinter>(Constants.NAME, Constants.ID);
-		barcodePrinterDdc = new DropDownChoice<BarcodePrinter>("barcodePrinter", BarcodePrinterPm, (List<BarcodePrinter>) barcodePrinters, barcodePrinterRenderer);
 	}
 
 	/**
@@ -146,15 +128,8 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 	protected void addSearchComponentsToForm() {
 		add(idTxtFld);
 		add(studyDdc);
-		add(barcodePrinterDdc);
 		add(nameTxtFld);
 		add(descriptionTxtArea);
-		add(labelPrefixTxtFld);
-		add(labelSuffixTxtFld);
-	}
-
-	protected void attachValidators() {
-		labelSuffixTxtFld.add(StringValidator.maximumLength(4));
 	}
 
 	@Override

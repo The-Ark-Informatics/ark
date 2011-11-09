@@ -21,15 +21,11 @@ package au.org.theark.lims.web.component.barcodelabel;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,12 +70,28 @@ public class SearchResultsPanel extends Panel {
 
 				item.add(buildLink(barcodeLabel));
 
+				if (barcodeLabel.getStudy() != null) {
+					// the ID here must match the ones in mark-up
+					item.add(new Label("study", barcodeLabel.getStudy().getName()));
+				}
+				else {
+					item.add(new Label("study", ""));
+				}
+				
 				if (barcodeLabel.getName() != null) {
 					// the ID here must match the ones in mark-up
 					item.add(new Label("name", barcodeLabel.getName()));
 				}
 				else {
 					item.add(new Label("name", ""));
+				}
+				
+				if (barcodeLabel.getBarcodePrinter() != null) {
+					// the ID here must match the ones in mark-up
+					item.add(new Label("barcodePrinter", barcodeLabel.getBarcodePrinter().getName()));
+				}
+				else {
+					item.add(new Label("barcodePrinter", ""));
 				}
 
 				if (barcodeLabel.getDescription() != null) {
@@ -106,56 +118,14 @@ public class SearchResultsPanel extends Panel {
 		return dataView;
 	}
 
-	@SuppressWarnings("unchecked")
-	public PageableListView<BarcodeLabel> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
-		PageableListView<BarcodeLabel> pageableListView = new PageableListView<BarcodeLabel>("resultList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+	@SuppressWarnings( { "unchecked" })
+	private AjaxLink buildLink(final BarcodeLabel barcodeLabel) {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
 
-			@Override
-			protected void populateItem(final ListItem<BarcodeLabel> item) {
-				BarcodeLabel barcodeLabel = item.getModelObject();
-
-				item.add(buildLink(barcodeLabel));
-
-				if (barcodeLabel.getName() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("name", barcodeLabel.getName()));
-				}
-				else {
-					item.add(new Label("name", ""));
-				}
-
-				if (barcodeLabel.getDescription() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("description", barcodeLabel.getDescription()));
-				}
-				else {
-					item.add(new Label("description", ""));
-				}
-
-				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
-					private static final long	serialVersionUID	= 1L;
-
-					@Override
-					public String getObject() {
-						return (item.getIndex() % 2 == 1) ? "even" : "odd";
-					}
-				}));
-
-			}
-		};
-		return pageableListView;
-	}
-
-	@SuppressWarnings( { "unchecked", "serial" })
-	private AjaxLink buildLink(final BarcodeLabel barcodeLabel) {
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				BarcodeLabel barcodeLabelFromDb = iLimsAdminService.searchBarcodeLabel(barcodeLabel);

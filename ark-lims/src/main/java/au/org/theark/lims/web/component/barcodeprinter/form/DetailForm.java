@@ -58,23 +58,23 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 	/**
 	 * 
 	 */
-	private static final long				serialVersionUID	= -9040147188276890390L;
-	protected static final Logger				log					= LoggerFactory.getLogger(DetailForm.class);
-	private static final String IP_V4_DOMAIN_PATTERN = "^(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})$";
+	private static final long			serialVersionUID		= -9040147188276890390L;
+	protected static final Logger		log						= LoggerFactory.getLogger(DetailForm.class);
+	private static final String		IP_V4_DOMAIN_PATTERN	= "^(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})$";
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>			iArkCommonService;
+	private IArkCommonService<Void>	iArkCommonService;
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
-	private ILimsAdminService					iLimsAdminService;
+	private ILimsAdminService			iLimsAdminService;
 
-	private TextField<String>				idTxtFld;
-	private DropDownChoice<Study>			studyDdc;
-	private TextField<String>				nameTxtFld;
-	private TextField<String>				locationTxtFld;
-	private TextField<String>				hostTxtFld;
-	private TextField<String>				portTxtFld;
-	private TextArea<String>				descriptionTxtArea;
+	private TextField<String>			idTxtFld;
+	private DropDownChoice<Study>		studyDdc;
+	private TextField<String>			nameTxtFld;
+	private TextField<String>			locationTxtFld;
+	private TextField<String>			hostTxtFld;
+	private TextField<String>			portTxtFld;
+	private TextArea<String>			descriptionTxtArea;
 
 	/**
 	 * 
@@ -96,11 +96,11 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 		hostTxtFld = new TextField<String>("host");
 		portTxtFld = new TextField<String>("port");
 		initStudyDdc();
-		
+
 		addDetailFormComponents();
 		attachValidators();
 	}
-	
+
 	private void initStudyDdc() {
 		List<Study> studyListForUser = new ArrayList<Study>(0);
 		studyListForUser = getStudyListForUser();
@@ -114,7 +114,8 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 			@Override
 			protected void onBeforeRender() {
 				super.onBeforeRender();
-				this.setChoices(getStudyListForUser());
+				studyDdc.setEnabled(isNew());
+				studyDdc.setChoices(getStudyListForUser());
 			}
 		};
 	}
@@ -141,7 +142,7 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 		studyDdc.setRequired(true).setLabel(new StringResourceModel("error.study.required", this, new Model<String>("Study")));
 		hostTxtFld.setRequired(true).setLabel(new StringResourceModel("error.host.required", this, new Model<String>("Host")));
 		hostTxtFld.add(new PatternValidator(IP_V4_DOMAIN_PATTERN));
-		
+
 		portTxtFld.setRequired(true).setLabel(new StringResourceModel("error.port.required", this, new Model<String>("Port")));
 		portTxtFld.add(StringValidator.minimumLength(4));
 		portTxtFld.add(StringValidator.maximumLength(4));
@@ -184,8 +185,8 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 
 	@Override
 	protected void onSave(Form<BarcodePrinter> containerForm, AjaxRequestTarget target) {
-		if(containerForm.getModelObject().getId() == null) {
-			iLimsAdminService.createBarcodePrinter(containerForm.getModelObject());	
+		if (containerForm.getModelObject().getId() == null) {
+			iLimsAdminService.createBarcodePrinter(containerForm.getModelObject());
 		}
 		else {
 			iLimsAdminService.updateBarcodePrinter(containerForm.getModelObject());
@@ -208,7 +209,7 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Returns a list of Studies the user is permitted to access
 	 * 
@@ -226,6 +227,11 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 			ArkModule arkModule = null;
 			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
 			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+
+			if (isNew()) {
+				List<Study> studyListAssignedToBarcodePrinter = iLimsAdminService.getStudyListAssignedToBarcodePrinter();
+				studyListForUser.removeAll(studyListAssignedToBarcodePrinter);
+			}
 		}
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());

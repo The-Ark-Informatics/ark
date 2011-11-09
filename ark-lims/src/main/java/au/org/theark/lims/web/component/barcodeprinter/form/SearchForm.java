@@ -32,7 +32,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,14 +61,11 @@ public class SearchForm extends AbstractSearchForm<BarcodePrinter> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
-	private ILimsAdminService				iLimsAdminService;
+	private ILimsAdminService			iLimsAdminService;
 
 	private TextField<Long>				idTxtFld;
 	private DropDownChoice<Study>		studyDdc;
 	private TextField<String>			nameTxtFld;
-	private TextField<String>			locationTxtFld;
-	private TextField<String>			hostTxtFld;
-	private TextField<Integer>			portTxtFld;
 	private TextArea<String>			descriptionTxtArea;
 
 	public SearchForm(String id, CompoundPropertyModel<BarcodePrinter> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
@@ -85,9 +81,6 @@ public class SearchForm extends AbstractSearchForm<BarcodePrinter> {
 
 		nameTxtFld = new TextField<String>("name");
 		descriptionTxtArea = new TextArea<String>("description");
-		locationTxtFld = new TextField<String>("location");
-		hostTxtFld = new TextField<String>("host");
-		portTxtFld = new TextField<Integer>("port");
 
 		addSearchComponentsToForm();
 	}
@@ -140,13 +133,6 @@ public class SearchForm extends AbstractSearchForm<BarcodePrinter> {
 		add(studyDdc);
 		add(nameTxtFld);
 		add(descriptionTxtArea);
-		add(locationTxtFld);
-		add(hostTxtFld);
-		add(portTxtFld);
-	}
-
-	protected void attachValidators() {
-		portTxtFld.add(StringValidator.maximumLength(4));
 	}
 
 	@Override
