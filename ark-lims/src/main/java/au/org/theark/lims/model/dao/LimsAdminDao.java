@@ -1,5 +1,6 @@
 package au.org.theark.lims.model.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -315,5 +316,16 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		}
 		
 		return criteria;
+	}
+
+	public List<BarcodePrinter> getBarcodePrintersByStudy(Study study) {
+		List<BarcodePrinter> list = new ArrayList<BarcodePrinter>(0);
+		
+		if(study != null && study.getId() != null) {
+			Criteria criteria = getSession().createCriteria(BarcodePrinter.class);
+			criteria.add(Restrictions.eq("study", study));
+			list = criteria.list();
+		}
+		return list;
 	}
 }

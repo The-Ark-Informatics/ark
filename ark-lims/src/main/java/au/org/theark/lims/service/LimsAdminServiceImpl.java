@@ -382,4 +382,9 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	public List<BiospecimenUidTemplate> searchPageableBiospecimenUidTemplates(BiospecimenUidTemplate object, int first, int count) {
 		return iLimsAdminDao.searchPageableBiospecimenUidTemplates(object, first, count);
 	}
+
+	public List<BarcodePrinter> getBarcodePrintersByStudy(Study study) {
+		// TODO Auto-generated method stub
+		return iLimsAdminDao.getBarcodePrintersByStudy(study);
+	}
 }
