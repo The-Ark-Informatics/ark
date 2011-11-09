@@ -259,68 +259,70 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	public String getBarcodeLabelTemplate(BarcodeLabel barcodeLabel) {
 		StringBuffer sb = new StringBuffer();
 		
-		sb.append(barcodeLabel.getLabelPrefix());
-		
-		List<BarcodeLabelData> data = barcodeLabel.getBarcodeLabelData();
-		for (Iterator<BarcodeLabelData> iterator = data.iterator(); iterator.hasNext();) {
-			BarcodeLabelData barcodeLabelData = (BarcodeLabelData) iterator.next();
+		if(barcodeLabel != null && barcodeLabel.getLabelPrefix() != null) {
+			sb.append(barcodeLabel.getLabelPrefix());
 			
-			sb.append(barcodeLabelData.getCommand());
-			sb.append(barcodeLabelData.getXCoord());
-			sb.append(",");
-			sb.append(barcodeLabelData.getYCoord());
-			sb.append(",");
-			
-			if(barcodeLabelData.getP1() != null) {
-				sb.append(barcodeLabelData.getP1());
+			List<BarcodeLabelData> data = barcodeLabel.getBarcodeLabelData();
+			for (Iterator<BarcodeLabelData> iterator = data.iterator(); iterator.hasNext();) {
+				BarcodeLabelData barcodeLabelData = (BarcodeLabelData) iterator.next();
+				
+				sb.append(barcodeLabelData.getCommand());
+				sb.append(barcodeLabelData.getXCoord());
 				sb.append(",");
+				sb.append(barcodeLabelData.getYCoord());
+				sb.append(",");
+				
+				if(barcodeLabelData.getP1() != null) {
+					sb.append(barcodeLabelData.getP1());
+					sb.append(",");
+				}
+				
+				if(barcodeLabelData.getP2() != null) {
+					sb.append(barcodeLabelData.getP2());
+					sb.append(",");
+				}
+				
+				if(barcodeLabelData.getP3() != null) {
+					sb.append(barcodeLabelData.getP3());
+					sb.append(",");
+				}
+				
+				if(barcodeLabelData.getP4() != null) {
+					sb.append(barcodeLabelData.getP4());
+					sb.append(",");
+				}
+				
+				if(barcodeLabelData.getP5() != null) {
+					sb.append(barcodeLabelData.getP5());
+					sb.append(",");
+				}
+				
+				if(barcodeLabelData.getP6() != null) {
+					sb.append(barcodeLabelData.getP6());
+					sb.append(",");
+				}
+				
+				if(barcodeLabelData.getP7() != null) {
+					sb.append(barcodeLabelData.getP7());
+					sb.append(",");
+				}
+				
+				// Quote the data
+				sb.append(barcodeLabelData.getQuoteLeft());
+				
+				// Add the data/text
+				sb.append(barcodeLabelData.getData());
+				
+				// End quote the data
+				sb.append(barcodeLabelData.getQuoteRight());
+				
+				// Add a line feed
+				sb.append(barcodeLabelData.getLineFeed());
 			}
 			
-			if(barcodeLabelData.getP2() != null) {
-				sb.append(barcodeLabelData.getP2());
-				sb.append(",");
-			}
-			
-			if(barcodeLabelData.getP3() != null) {
-				sb.append(barcodeLabelData.getP3());
-				sb.append(",");
-			}
-			
-			if(barcodeLabelData.getP4() != null) {
-				sb.append(barcodeLabelData.getP4());
-				sb.append(",");
-			}
-			
-			if(barcodeLabelData.getP5() != null) {
-				sb.append(barcodeLabelData.getP5());
-				sb.append(",");
-			}
-			
-			if(barcodeLabelData.getP6() != null) {
-				sb.append(barcodeLabelData.getP6());
-				sb.append(",");
-			}
-			
-			if(barcodeLabelData.getP7() != null) {
-				sb.append(barcodeLabelData.getP7());
-				sb.append(",");
-			}
-			
-			// Quote the data
-			sb.append(barcodeLabelData.getQuoteLeft());
-			
-			// Add the data/text
-			sb.append(barcodeLabelData.getData());
-			
-			// End quote the data
-			sb.append(barcodeLabelData.getQuoteRight());
-			
-			// Add a line feed
-			sb.append(barcodeLabelData.getLineFeed());
+			// add label suffix
+			sb.append(barcodeLabel.getLabelSuffix());
 		}
-		
-		// add label suffix
-		sb.append(barcodeLabel.getLabelSuffix());
 
 		return sb.toString();	
 	}
