@@ -1523,6 +1523,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("customField"));
 		criteria.setProjection(projectionList);
+		criteria.addOrder(Order.asc("sequence"));
 		return criteria.list();
 		
 	}
@@ -1558,17 +1559,18 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 	
 		ArrayList<CustomFieldDisplay> customFieldsToAdd = getCustomFieldsToAdd(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);
-		int i =0;
+		
 		for (CustomFieldDisplay fieldToAdd : customFieldsToAdd) {
-
-			fieldToAdd.setSequence(new Long(++i));
-			
 			if(fieldToAdd.getId() == null){
 				session.save(fieldToAdd);//Add a new CustomFieldDisplay field that is linked to the CustomField	
 			}
-			else{
-				session.update(fieldToAdd);//Update sequences
-			}
+		}
+		
+		//Update Order
+		int i =0;
+		for (CustomFieldDisplay fieldToAdd : customFieldsToAdd) {
+			fieldToAdd.setSequence(new Long(++i));
+			session.update(fieldToAdd);//Update sequences
 		}
 
 	}
