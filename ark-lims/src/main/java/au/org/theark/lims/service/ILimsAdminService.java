@@ -208,4 +208,16 @@ public interface ILimsAdminService {
 	 * @return
 	 */
 	public List<BarcodePrinter> getBarcodePrintersByStudy(Study study);
+
+	/**
+	 * Gets a list of Studys that are already assigned to barcodePrinters
+	 * @return
+	 */
+	public List<Study> getStudyListAssignedToBarcodePrinter();
+
+	/**
+	 * Gets a list of Studys that are already assigned to barcodeLabels
+	 * @return
+	 */
+	public List<Study> getStudyListAssignedToBarcodeLabel();
 }

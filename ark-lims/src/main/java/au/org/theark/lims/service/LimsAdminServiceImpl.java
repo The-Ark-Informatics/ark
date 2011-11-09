@@ -384,7 +384,14 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	}
 
 	public List<BarcodePrinter> getBarcodePrintersByStudy(Study study) {
-		// TODO Auto-generated method stub
 		return iLimsAdminDao.getBarcodePrintersByStudy(study);
+	}
+
+	public List<Study> getStudyListAssignedToBarcodePrinter() {
+		return iLimsAdminDao.getStudyListAssignedToBarcodePrinter();
+	}
+	
+	public List<Study> getStudyListAssignedToBarcodeLabel() {
+		return iLimsAdminDao.getStudyListAssignedToBarcodeLabel();
 	}
 }
