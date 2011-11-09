@@ -33,8 +33,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.util.convert.converter.IntegerConverter;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +60,7 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 	 */
 	private static final long				serialVersionUID	= -9040147188276890390L;
 	protected static final Logger				log					= LoggerFactory.getLogger(DetailForm.class);
+	private static final String IP_V4_DOMAIN_PATTERN = "^(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})$";
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
@@ -73,7 +73,7 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 	private TextField<String>				nameTxtFld;
 	private TextField<String>				locationTxtFld;
 	private TextField<String>				hostTxtFld;
-	private TextField<Integer>				portTxtFld;
+	private TextField<String>				portTxtFld;
 	private TextArea<String>				descriptionTxtArea;
 
 	/**
@@ -94,20 +94,7 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 		descriptionTxtArea = new TextArea<String>("description");
 		locationTxtFld = new TextField<String>("location");
 		hostTxtFld = new TextField<String>("host");
-		portTxtFld = new TextField<Integer>("port"){
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public <C> IConverter<C> getConverter(Class<C> type) {
-				IntegerConverter integerConverter = new IntegerConverter();
-				return (IConverter<C>) integerConverter;
-			}
-		};
-		
+		portTxtFld = new TextField<String>("port");
 		initStudyDdc();
 		
 		addDetailFormComponents();
@@ -153,7 +140,10 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
 		studyDdc.setRequired(true).setLabel(new StringResourceModel("error.study.required", this, new Model<String>("Study")));
 		hostTxtFld.setRequired(true).setLabel(new StringResourceModel("error.host.required", this, new Model<String>("Host")));
+		hostTxtFld.add(new PatternValidator(IP_V4_DOMAIN_PATTERN));
+		
 		portTxtFld.setRequired(true).setLabel(new StringResourceModel("error.port.required", this, new Model<String>("Port")));
+		portTxtFld.add(StringValidator.minimumLength(4));
 		portTxtFld.add(StringValidator.maximumLength(4));
 	}
 
@@ -204,10 +194,19 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 		target.add(feedBackPanel);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
+	 */
 	@Override
 	protected boolean isNew() {
-		// TODO Auto-generated method stub
-		return false;
+		if (containerForm.getModelObject().getId() == null) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	/**
