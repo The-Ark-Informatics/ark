@@ -19,7 +19,6 @@
 package au.org.theark.report.web.component.viewReport.phenoFieldDetails.filterForm;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,52 +34,49 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.wicketstuff.jasperreports.JRConcreteResource;
 import org.wicketstuff.jasperreports.JRResource;
 import org.wicketstuff.jasperreports.handlers.CsvResourceHandler;
 import org.wicketstuff.jasperreports.handlers.PdfResourceHandler;
 
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
-import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyComp;
-import au.org.theark.core.model.study.entity.SubjectStatus;
-import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.report.model.vo.FieldDetailsReportVO;
+import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
 import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterForm;
-import au.org.theark.report.web.component.viewReport.phenoFieldDetails.FieldDetailsReportDataSource;
+import au.org.theark.report.web.component.viewReport.phenoFieldDetails.CustomFieldDetailsReportDataSource;
 
 /**
  * @author elam
  * 
  */
 @SuppressWarnings("serial")
-public class FieldDetailsFilterForm extends AbstractReportFilterForm<FieldDetailsReportVO> {
+public class FieldDetailsFilterForm extends AbstractReportFilterForm<CustomFieldDetailsReportVO> {
 
-	protected DropDownChoice<PhenoCollection>	ddcPhenoCollection;
+	protected DropDownChoice<CustomFieldGroup>	ddcPhenoCollection;
 	protected CheckBox								chkboxFieldDataAvailable;
 
-	public FieldDetailsFilterForm(String id, CompoundPropertyModel<FieldDetailsReportVO> model) {
+	public FieldDetailsFilterForm(String id, CompoundPropertyModel<CustomFieldDetailsReportVO> model) {
 		super(id, model);
 		this.cpModel = model;
 	}
 
 	protected void onGenerateProcess(AjaxRequestTarget target) {
+		CustomFieldDisplay cfd = cpModel.getObject().getCustomFieldDisplay();
 		Study study = cpModel.getObject().getStudy();
 		String reportTitle = study.getName() + " - Phenotypic Field Details Report";
-		if (cpModel.getObject().getPhenoCollection() != null) {
-			String phenoCollection = cpModel.getObject().getPhenoCollection().getName();
-			reportTitle += " - " + phenoCollection;
+		if (cfd.getCustomFieldGroup() != null) {
+			String questionnaire = cfd.getCustomFieldGroup().getName();
+			reportTitle += " - " + questionnaire;
 		}
 
 		ReportTemplate reportTemplate = cpModel.getObject().getSelectedReportTemplate();
@@ -119,7 +115,7 @@ public class FieldDetailsFilterForm extends AbstractReportFilterForm<FieldDetail
 			userName = (String) currentUser.getPrincipal();
 		}
 		parameters.put("UserName", userName);
-		FieldDetailsReportDataSource reportDS = new FieldDetailsReportDataSource(reportService, cpModel.getObject());
+		CustomFieldDetailsReportDataSource reportDS = new CustomFieldDetailsReportDataSource(reportService, cpModel.getObject());
 
 		JRResource reportResource = null;
 		if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.PDF_REPORT_FORMAT)) {
@@ -174,9 +170,11 @@ public class FieldDetailsFilterForm extends AbstractReportFilterForm<FieldDetail
 	}
 
 	protected void initialisePhenoCollectionDropDown() {
-		List<PhenoCollection> collectionList = reportService.getPhenoCollectionList(cpModel.getObject().getStudy());
-		ChoiceRenderer<PhenoCollection> defaultChoiceRenderer = new ChoiceRenderer<PhenoCollection>("name", "id");
-		ddcPhenoCollection = new DropDownChoice<PhenoCollection>(Constants.PHENO_COLLECTION, collectionList, defaultChoiceRenderer);
+		List<CustomFieldGroup> collectionList = reportService.getQuestionnaireList(cpModel.getObject().getStudy());
+		ChoiceRenderer<CustomFieldGroup> defaultChoiceRenderer = new ChoiceRenderer<CustomFieldGroup>("name", "id");
+		ddcPhenoCollection = new DropDownChoice<CustomFieldGroup>("questionnaire", 
+																						new PropertyModel<CustomFieldGroup>(cpModel.getObject(), "customFieldDisplay.customFieldGroup"), 
+																						collectionList, defaultChoiceRenderer);
 		add(ddcPhenoCollection);
 	}
 

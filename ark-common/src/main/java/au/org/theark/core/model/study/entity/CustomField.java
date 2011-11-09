@@ -19,7 +19,10 @@
 package au.org.theark.core.model.study.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,6 +31,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -60,7 +64,8 @@ public class CustomField implements Serializable {
 	private Boolean customFieldHasData;
 	private String fieldLabel;
 
-	
+	private Set<CustomFieldDisplay> customFieldDisplay = new HashSet<CustomFieldDisplay>();
+
 	/**
 	 * Constructor
 	 */
@@ -194,6 +199,17 @@ public class CustomField implements Serializable {
 		this.fieldLabel = fieldLabel;
 	}
 
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customField")
+	public Set<CustomFieldDisplay> getCustomFieldDisplay() {
+		return customFieldDisplay;
+	}
+
+	public void setCustomFieldDisplay(Set<CustomFieldDisplay> customFieldDisplay) {
+		this.customFieldDisplay = customFieldDisplay;
+	}
+
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

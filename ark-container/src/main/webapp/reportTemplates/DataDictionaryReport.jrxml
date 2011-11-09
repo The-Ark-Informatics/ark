@@ -10,7 +10,7 @@
 	<parameter name="ReportTitle" class="java.lang.String"/>
 	<parameter name="BaseDir" class="java.io.File"/>
 	<parameter name="UserName" class="java.lang.String"/>
-	<field name="Collection" class="java.lang.String"/>
+	<field name="Questionnaire" class="java.lang.String"/>
 	<field name="FieldName" class="java.lang.String"/>
 	<field name="Description" class="java.lang.String"/>
 	<field name="MinValue" class="java.lang.String"/>
@@ -23,7 +23,7 @@
 		<initialValueExpression><![CDATA[($V{SectionNumber} != null)?(new Integer($V{SectionNumber}.intValue() + 1)):(new Integer(1))]]></initialValueExpression>
 	</variable>
 	<group name="SectionGroup" minHeightToStartNewPage="60">
-		<groupExpression><![CDATA[$F{Collection}]]></groupExpression>
+		<groupExpression><![CDATA[$F{Questionnaire}]]></groupExpression>
 		<groupHeader>
 			<band height="20">
 				<textField>
@@ -32,7 +32,7 @@
 						<bottomPen lineWidth="1.0"/>
 					</box>
 					<textElement/>
-					<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{SectionNumber}) + ". " + $F{Collection}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{SectionNumber}) + ". " + $F{Questionnaire}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
