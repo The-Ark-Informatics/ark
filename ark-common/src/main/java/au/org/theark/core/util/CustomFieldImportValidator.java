@@ -134,9 +134,8 @@ public class CustomFieldImportValidator {
 	}
 
 	/**
-	 * Validates the phenotypic file in the default "matrix" file format assumed: SUBJECTID,DATE_COLLECTED,FIELD1,FIELD2,FIELDN...
-	 * 
-	 * Where N is any number of columns
+	 * Validates the data dictionary file's general structure/format:
+	 * "FIELD_NAME","FIELD_TYPE","DESCRIPTION", "QUESTION", "UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE"
 	 * 
 	 * @param fileInputStream
 	 *           is the input stream of a file
@@ -151,10 +150,6 @@ public class CustomFieldImportValidator {
 
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
-
-		/*
-		 * FieldData table requires: COLLECTION_ID PERSON_ID DATE_COLLECTED FIELD_ID USER_ID INSERT_TIME
-		 */
 
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
@@ -172,25 +167,28 @@ public class CustomFieldImportValidator {
 			csvReader.readHeaders();
 
 			// Set field list (note 2th column to Nth column)
-			// FIELD_NAME FIELD_TYPE DESCRIPTION UNITS ENCODED_VALUES MINIMUM_VALUE MAXIMUM_VALUE MISSING_VALUE
-			// 0 1 2 3 4 5 6 7
-			String[] headerColumnArray = csvReader.getHeaders();
+			// FIELD_NAME FIELD_TYPE DESCRIPTION QUESTION UNITS ENCODED_VALUES MINIMUM_VALUE MAXIMUM_VALUE MISSING_VALUE
+			// 0 1 2 3 4 5 6 7 8
+			String[] fileHeaderColumnArray = csvReader.getHeaders();
 			boolean headerError = false;
 
-			if (headerColumnArray.length <= 1)
-				headerError = true;
-
 			// Uploading a Field (Data Dictionary) file
+			Collection<String> fileHeaderCollection = new ArrayList<String>();
+			String[] requiredHeaderArray = Constants.DATA_DICTIONARY_HEADER;
 
-			Collection<String> dataDictionaryColumns = new ArrayList<String>();
-			String[] dataDictionaryColumnArray = Constants.DATA_DICTIONARY_HEADER;
-
-			for (int i = 0; i < dataDictionaryColumnArray.length; i++) {
-				dataDictionaryColumns.add(dataDictionaryColumnArray[i]);
+			/*
+			 *  In general, all columns are mandatory
+			 */
+			if (fileHeaderColumnArray.length < requiredHeaderArray.length) {
+				headerError = true;
 			}
-
-			for (int i = 0; i < headerColumnArray.length; i++) {
-				if (!dataDictionaryColumns.contains(headerColumnArray[i])) {
+			// Populate the collection for a search
+			for (int i = 0; i < fileHeaderColumnArray.length; i++) {
+				fileHeaderCollection.add(fileHeaderColumnArray[i]);
+			}
+			// Search the dataDictionaryHeader for missing headers
+			for (int i = 0; i < requiredHeaderArray.length; i++) {
+				if (!fileHeaderCollection.contains(requiredHeaderArray[i])) {
 					headerError = true;
 					break;
 				}
@@ -205,30 +203,33 @@ public class CustomFieldImportValidator {
 				stringBuffer.append("The specified file format was: " + fileFormat + "\n");
 				stringBuffer.append("The specified delimiter was: [" + phenotypicDelimChr + "] (" + delimiterTypeName + ")\n");
 				stringBuffer.append("The default data dictionary format is as follows:\n");
-				for (int i = 0; i < dataDictionaryColumnArray.length; i++) {
+				for (int i = 0; i < requiredHeaderArray.length; i++) {
 					if (i > 0) {
 						stringBuffer.append(phenotypicDelimChr);
 					}
-					stringBuffer.append(dataDictionaryColumnArray[i]);
+					stringBuffer.append(requiredHeaderArray[i]);
 				}
 				stringBuffer.append("\n");
-				for (int i = 0; i < dataDictionaryColumnArray.length; i++) {
+				for (int i = 0; i < requiredHeaderArray.length; i++) {
 					if (i > 0) {
 						stringBuffer.append(phenotypicDelimChr);
 					}
-					stringBuffer.append("[val" + (i + 1) + "]");
+					stringBuffer.append("[...]");
 				}
 				stringBuffer.append("\n");
 
 				fileValidationMessages.add(stringBuffer.toString());
 			}
 
-			for (int i = 0; i < headerColumnArray.length; i++) {
-				if (!dataDictionaryColumns.contains(headerColumnArray[i])) {
-					fileValidationMessages.add("Error: the column name " + headerColumnArray[i] + " is not a valid column name.");
+			Collection<String> requiredHeaders = new ArrayList();
+			for (int i = 0; i < requiredHeaderArray.length; i++) {
+				requiredHeaders.add(requiredHeaderArray[i]);
+			}
+			for (int i = 0; i < fileHeaderColumnArray.length; i++) {
+				if (!requiredHeaders.contains(fileHeaderColumnArray[i])) {
+					fileValidationMessages.add("Error: the column name " + fileHeaderColumnArray[i] + " is not a valid column name.");
 				}
 			}
-
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 			log.debug("Header length: " + csvReader.getHeaders().toString().length());
@@ -301,8 +302,7 @@ public class CustomFieldImportValidator {
 	}
 
 	/**
-	 * Validates the phenotypic data dictionary file in the default "matrix" file format assumed:
-	 * "FIELD_NAME","FIELD_TYPE","DESCRIPTION","UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE"
+	 * Validates the values supplied in the data dictionary file to ensure they meet requirements for import to database
 	 * 
 	 * @param fileInputStream
 	 *           is the input stream of a file
@@ -363,6 +363,8 @@ public class CustomFieldImportValidator {
 					field.setName(fieldName);
 
 					field.setDescription(csvReader.get("DESCRIPTION"));
+					field.setFieldLabel(csvReader.get("QUESTION"));
+
 					if (csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
 						UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
 						if (unitType == null) {
@@ -546,7 +548,7 @@ public class CustomFieldImportValidator {
 	}
 
 	/**
-	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * Validates the general file format confirms to a data dictionary upload
 	 * 
 	 * @param inputStream
 	 *           is the input stream of the file

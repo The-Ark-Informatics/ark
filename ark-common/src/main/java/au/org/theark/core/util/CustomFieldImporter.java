@@ -117,7 +117,7 @@ public class CustomFieldImporter {
 
 	/**
 	 * Imports the data dictionary file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file
-	 * format: "FIELD_NAME","FIELD_TYPE","DESCRIPTION","UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE"
+	 * format: "FIELD_NAME","FIELD_TYPE","DESCRIPTION", "QUESTION", "UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE"
 	 * 
 	 * @param fileInputStream
 	 *           is the input stream of a file
@@ -186,6 +186,7 @@ public class CustomFieldImporter {
 					oldField.setFieldType(fieldType);
 
 					oldField.setDescription(csvReader.get("DESCRIPTION"));
+					oldField.setFieldLabel(csvReader.get("QUESTION"));
 					if (csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
 						UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
 						if (unitType == null) {
@@ -231,6 +232,7 @@ public class CustomFieldImporter {
 					FieldType fieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
 					customField.setFieldType(fieldType);
 					customField.setDescription(csvReader.get("DESCRIPTION"));
+					customField.setFieldLabel(csvReader.get("QUESTION"));
 					customField.setEncodedValues(csvReader.get("ENCODED_VALUES"));
 					customField.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					customField.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
