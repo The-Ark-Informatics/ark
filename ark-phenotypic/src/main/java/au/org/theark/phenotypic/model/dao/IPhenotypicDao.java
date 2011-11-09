@@ -256,6 +256,10 @@ public interface IPhenotypicDao {
 	public List<PhenoData> getPhenoDataList(PhenotypicCollection phenoCollection, int first, int count);
 	
 	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException, ArkSystemException;
+	
+	public void updateCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException,ArkSystemException;
+	
+	public void deleteCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO);
 
 	public int getPhenotypicCollectionCount(PhenoDataCollectionVO criteria);
 	
@@ -265,7 +269,7 @@ public interface IPhenotypicDao {
 
 	public List<QuestionnaireStatus> getPhenotypicCollectionStatusList();
 	
-	public void updateCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException,ArkSystemException;
+	
 	
 	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup, int first, int count);
 	

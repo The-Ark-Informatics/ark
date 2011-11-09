@@ -1000,5 +1000,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void deleteCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO){
+		phenotypicDao.deleteCustomFieldGroup(customFieldGroupVO);
+	}
 
 }

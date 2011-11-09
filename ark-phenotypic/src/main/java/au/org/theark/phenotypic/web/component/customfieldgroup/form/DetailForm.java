@@ -186,7 +186,26 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	 */
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-		// TODO Auto-generated method stub
+
+		//Get a list of CustomFields for the give group
+		ArrayList<CustomField> selectedList  = (ArrayList)iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(getModelObject().getCustomFieldGroup());
+		
+		Boolean allowDelete = true;
+		for (CustomField customField : selectedList) {
+			if(customField.getCustomFieldHasData()){
+				allowDelete = false;
+				break;
+			}
+		}
+		if(allowDelete){
+			iPhenotypicService.deleteCustomFieldGroup(getModelObject());
+			this.info("Custom Field Group has been deleted successfully.");	
+			editCancelProcess(target);
+			
+		}else{
+			this.error("This Questionnaire cannot be deleted.");
+		}
+		
 		
 	}
 

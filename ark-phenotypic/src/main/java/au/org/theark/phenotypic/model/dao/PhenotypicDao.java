@@ -1670,5 +1670,15 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		// This relies on CASCADE ON DELETE on the database [pheno].[pheno_data] table
 		getSession().delete(phenotypicCollection);
 	}
+	
+	public void deleteCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO){
+		//Delete all the CustomFieldDisplay Items linked to the Group
+		Session session = getSession();
+		Collection<CustomFieldDisplay> customFieldDisplayList = getCustomFieldDisplayForCustomFieldGroup(customFieldGroupVO.getCustomFieldGroup());
+		for (CustomFieldDisplay customFieldDisplay : customFieldDisplayList) {
+			session.delete(customFieldDisplay);
+		}
+		session.delete(customFieldGroupVO.getCustomFieldGroup());
+	}
 
 }

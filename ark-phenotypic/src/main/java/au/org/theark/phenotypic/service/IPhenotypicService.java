@@ -223,6 +223,10 @@ public interface IPhenotypicService {
 	 * @param customFieldGroupVO
 	 */
 	public void createCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException, ArkSystemException;
+
+	public void updateCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException,ArkSystemException;
+	
+	public void deleteCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO);
 	
 	public int getPhenotypicCollectionCount(PhenoDataCollectionVO criteria);
 
@@ -237,8 +241,6 @@ public interface IPhenotypicService {
 	public void deletePhenotypicCollection(PhenotypicCollection phenotypicCollection);
 
 	public List<QuestionnaireStatus> getPhenotypicCollectionStatusList();
-	
-	public void updateCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO) throws EntityExistsException,ArkSystemException;
 	
 	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup , int first, int count);
 	
