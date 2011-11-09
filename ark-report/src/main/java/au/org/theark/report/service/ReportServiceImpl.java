@@ -39,6 +39,7 @@ import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
@@ -47,8 +48,10 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.report.model.dao.IReportDao;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
+import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
+import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 
@@ -336,12 +339,20 @@ public class ReportServiceImpl implements IReportService {
 		return reportDao.getPhenoFieldDetailsList(fdrVO);
 	}
 
+	public List<CustomFieldDetailsDataRow> getPhenoCustomFieldDetailsList(CustomFieldDetailsReportVO fdrVO) {
+		return reportDao.getPhenoCustomFieldDetailsList(fdrVO);
+	}
+
 	public List<PhenoCollection> getPhenoCollectionList(Study study) {
 		return reportDao.getPhenoCollectionList(study);
 	}
 
 	public List<StudyUserRolePermissionsDataRow> getStudyUserRolePermissions(Study study) {
-		// TODO Auto-generated method stub
 		return reportDao.getStudyUserRolePermissions(study);
 	}
+
+	public List<CustomFieldGroup> getQuestionnaireList(Study study) {
+		return reportDao.getQuestionnaireList(study);
+	}
+	
 }

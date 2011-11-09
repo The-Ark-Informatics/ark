@@ -38,25 +38,32 @@ import org.hibernate.criterion.Subqueries;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.pheno.entity.FieldPhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
+import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
+import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 import au.org.theark.report.service.Constants;
@@ -74,6 +81,12 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	private Subject			currentUser;
 	private Date				dateNow;
 
+	private IArkCommonService<Void>	iArkCommonService;
+	@Autowired
+	public void setiArkCommonService(IArkCommonService<Void> iArkCommonService) {
+		this.iArkCommonService = iArkCommonService;
+	}
+	
 	public Integer getTotalSubjectCount(Study study) {
 		Integer totalCount = 0;
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
@@ -479,6 +492,53 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 
 		return results;
 	}
+	
+	public List<CustomFieldDetailsDataRow> getPhenoCustomFieldDetailsList(CustomFieldDetailsReportVO fdrVO) {
+		List<CustomFieldDetailsDataRow> results = new ArrayList<CustomFieldDetailsDataRow>();
+		if (fdrVO.getCustomFieldDisplay() != null) {
+			/*
+			 * Following query returns customFields whether or not they are 
+			 * associated with a customFieldGroups (via customFieldDisplay)
+			 */
+			Criteria criteria = getSession().createCriteria(CustomField.class, "cf");
+			criteria.createAlias("customFieldDisplay", "cfd", Criteria.LEFT_JOIN);	// Left join to CustomFieldDisplay
+			criteria.createAlias("cfd.customFieldGroup", "cfg", Criteria.LEFT_JOIN); // Left join to CustomFieldGroup
+			criteria.createAlias("fieldType", "ft", Criteria.LEFT_JOIN); // Left join to FieldType
+			criteria.createAlias("unitType", "ut", Criteria.LEFT_JOIN); // Left join to UnitType
+			criteria.add(Restrictions.eq("cf.study", fdrVO.getStudy()));
+			ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+			criteria.add(Restrictions.eq("cf.arkFunction", function));
+
+			if (fdrVO.getCustomFieldDisplay().getCustomFieldGroup() != null) {
+				criteria.add(Restrictions.eq("cfg.id", fdrVO.getCustomFieldDisplay().getCustomFieldGroup().getId()));
+			}
+			if (fdrVO.getFieldDataAvailable()) {
+				DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(PhenoData.class, "pd");
+				// Join CustomFieldDisplay and PhenoData on ID FK
+				fieldDataCriteria.add(Property.forName("cfd.id").eqProperty("pd." + "customFieldDisplay.id"));
+				criteria.add(Subqueries.exists(fieldDataCriteria.setProjection(Projections.property("pd.customFieldDisplay"))));
+			}
+			
+			ProjectionList projectionList = Projections.projectionList();
+			projectionList.add(Projections.property("cfg.name"), "questionnaire");
+			projectionList.add(Projections.property("cf.name"), "fieldName");
+			projectionList.add(Projections.property("cf.description"), "description");
+			projectionList.add(Projections.property("cf.minValue"), "minValue");
+			projectionList.add(Projections.property("cf.maxValue"), "maxValue");
+			projectionList.add(Projections.property("cf.encodedValues"), "encodedValues");
+			projectionList.add(Projections.property("cf.missingValue"), "missingValue");
+			projectionList.add(Projections.property("ut.name"), "units");
+			projectionList.add(Projections.property("ft.name"), "type");
+
+			criteria.setProjection(projectionList); // only return fields required for report
+			criteria.setResultTransformer(Transformers.aliasToBean(CustomFieldDetailsDataRow.class));
+			criteria.addOrder(Order.asc("cfg.id"));
+			criteria.addOrder(Order.asc("cf.name"));
+			results = criteria.list();
+		}
+
+		return results;
+	}
 
 	protected ArkFunction getArkFunctionByName(String functionName) {
 		Criteria criteria = getSession().createCriteria(ArkFunction.class);
@@ -497,4 +557,14 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return q.list();
 	}
 
+	public List<CustomFieldGroup> getQuestionnaireList(Study study) {
+		List<CustomFieldGroup> results = null;
+		Criteria criteria = getSession().createCriteria(CustomFieldGroup.class);
+		criteria.add(Restrictions.eq("study", study));
+		ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+		criteria.add(Restrictions.eq("arkFunction", function));
+		results = criteria.list();
+		return results;
+	}
+	
 }

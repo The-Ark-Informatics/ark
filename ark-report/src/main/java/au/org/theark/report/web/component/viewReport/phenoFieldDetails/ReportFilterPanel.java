@@ -23,7 +23,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.report.model.vo.FieldDetailsReportVO;
+import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
 import au.org.theark.report.web.component.viewReport.phenoFieldDetails.filterForm.FieldDetailsFilterForm;
 
 public class ReportFilterPanel extends Panel {
@@ -40,7 +40,7 @@ public class ReportFilterPanel extends Panel {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void initialisePanel(CompoundPropertyModel<FieldDetailsReportVO> cpModel, FeedbackPanel feedbackPanel, au.org.theark.report.web.component.viewReport.ReportOutputPanel reportOutputPanel) {
+	public void initialisePanel(CompoundPropertyModel<CustomFieldDetailsReportVO> cpModel, FeedbackPanel feedbackPanel, au.org.theark.report.web.component.viewReport.ReportOutputPanel reportOutputPanel) {
 		FieldDetailsFilterForm fieldDetailsFilterForm = new FieldDetailsFilterForm("filterForm", cpModel);
 		fieldDetailsFilterForm.initialiseFilterForm(feedbackPanel, reportOutputPanel);
 		add(fieldDetailsFilterForm);
