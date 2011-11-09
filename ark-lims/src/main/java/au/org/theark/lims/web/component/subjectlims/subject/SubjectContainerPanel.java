@@ -106,6 +106,9 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	protected void prerenderContextCheck() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+		
+		// Force clearing of Cache to re-load roles for the user for the study
+		realm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
 
 		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
 			LinkSubjectStudy subjectFromBackend = new LinkSubjectStudy();
@@ -119,7 +122,6 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 
 				// Set SubjectUID into context
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getSubjectUID());
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY, subjectFromBackend.getStudy());
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, subjectFromBackend.getStudy().getId());
 
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subjectFromBackend.getPerson().getId());
@@ -128,9 +130,6 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 			catch (EntityNotFoundException e) {
 				log.error(e.getMessage());
 			}
-
-			// Force clearing of Cache to re-load roles for the user for the study
-			realm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
 
 			if (study != null && subjectFromBackend != null) {
 				contextLoaded = true;
