@@ -1559,20 +1559,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 	
 		ArrayList<CustomFieldDisplay> customFieldsToAdd = getCustomFieldsToAdd(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);
-		
-		for (CustomFieldDisplay fieldToAdd : customFieldsToAdd) {
-			if(fieldToAdd.getId() == null){
-				session.save(fieldToAdd);//Add a new CustomFieldDisplay field that is linked to the CustomField	
-			}
-		}
-		
-		//Update Order
 		int i =0;
 		for (CustomFieldDisplay fieldToAdd : customFieldsToAdd) {
 			fieldToAdd.setSequence(new Long(++i));
-			session.update(fieldToAdd);//Update sequences
+			session.saveOrUpdate(fieldToAdd);//Add a new CustomFieldDisplay field that is linked to the CustomField	
 		}
-
 	}
 	
 	/**
@@ -1608,8 +1599,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 				customFieldDisplay.setCustomFieldGroup(customFieldGroup);
 				customFieldDisplay.setCustomField(customField);
 				cfdisplayList.add(customFieldDisplay);
-			}
-			else{//TODO NN to sequence fields
+			}else{
 				//Retrieve the customField for the sequence could have changed
 				String name = customField.getName();
 				CustomFieldDisplay cfd = iArkCommonService.getCustomFieldDisplayByCustomField(customField);
