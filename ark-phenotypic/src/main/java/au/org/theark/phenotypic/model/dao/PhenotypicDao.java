@@ -1559,12 +1559,14 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 //				session.update(fieldToAdd);//Update sequences
 //			}
 		}
+		
+		int size  = customFieldGroupVO.getSelectedCustomFields().size();
 
 		if(!customFieldGroup.getPublished()){//Allow Removal only if the form is not published
 			Collection<CustomFieldDisplay> customFieldDisplayToRemove = getCustomFieldDisplayToRemove(customFieldGroupVO.getSelectedCustomFields(), customFieldGroup);	
-			for (CustomFieldDisplay customFieldDisplaytoRemove : customFieldDisplayToRemove) {
-				CustomField customFieldToRemove = customFieldDisplaytoRemove.getCustomField();
-				session.delete(customFieldDisplaytoRemove);
+			for (CustomFieldDisplay cfd : customFieldDisplayToRemove) {
+				//CustomField customFieldToRemove = cfd.getCustomField();
+				session.delete(cfd);
 			}
 		}
 	
@@ -1591,22 +1593,17 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		
 		for (Object obj : existingCustomFieldList) {
 			if(obj instanceof HibernateProxy){
-				if(((HibernateProxy)obj).getHibernateLazyInitializer().isUninitialized()){
-					CustomField  cf = (CustomField)((HibernateProxy)obj).getHibernateLazyInitializer().getImplementation();
-					nonProxyCustomFieldList.add(cf);
-				}
+				CustomField  cf = (CustomField)((HibernateProxy)obj).getHibernateLazyInitializer().getImplementation();
+				nonProxyCustomFieldList.add(cf);
 			}
 		}
-		
-		int i = 0;
+
 		for (CustomField customField : selectedCustomFields) {
-			++i;
 			if((!nonProxyCustomFieldList.contains(customField))){
 				
 				CustomFieldDisplay customFieldDisplay = new CustomFieldDisplay();
 				customFieldDisplay.setCustomFieldGroup(customFieldGroup);
 				customFieldDisplay.setCustomField(customField);
-				//customFieldDisplay.setSequence(new Long(i));
 				cfdisplayList.add(customFieldDisplay);
 			}
 //			else{//TODO NN to sequence fields
@@ -1634,9 +1631,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Collection<CustomFieldDisplay> customFieldDisplayList = getCustomFieldDisplayForCustomFieldGroup(customFieldGroup);
 		Collection<CustomFieldDisplay> customFieldDisplayToRemove = new ArrayList<CustomFieldDisplay>();
 		for (CustomFieldDisplay existingCustomFieldDisplay : customFieldDisplayList) {
-			//Only the fields that does not have data or in not in use must be processed
-			if(!selectedCustomFields.contains(existingCustomFieldDisplay.getCustomField())){
-				customFieldDisplayToRemove.add(existingCustomFieldDisplay);	
+			
+			if(existingCustomFieldDisplay.getCustomField() instanceof HibernateProxy){
+				CustomField  cf = (CustomField)((HibernateProxy)existingCustomFieldDisplay.getCustomField()).getHibernateLazyInitializer().getImplementation();
+				if(!selectedCustomFields.contains(cf)){
+					customFieldDisplayToRemove.add(existingCustomFieldDisplay);	
+				}
 			}
 		}
 		return customFieldDisplayToRemove;
