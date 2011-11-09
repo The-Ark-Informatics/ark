@@ -22,16 +22,12 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +69,7 @@ public class SearchResultsPanel extends Panel {
 			/**
 			 * 
 			 */
-			private static final long	serialVersionUID	= 2981419595326128410L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void populateItem(final Item<BarcodePrinter> item) {
@@ -81,6 +77,14 @@ public class SearchResultsPanel extends Panel {
 
 				item.add(buildLink(barcodePrinter));
 
+				if (barcodePrinter.getStudy() != null) {
+					// the ID here must match the ones in mark-up
+					item.add(new Label("study", barcodePrinter.getStudy().getName()));
+				}
+				else {
+					item.add(new Label("study", ""));
+				}
+				
 				if (barcodePrinter.getName() != null) {
 					// the ID here must match the ones in mark-up
 					item.add(new Label("name", barcodePrinter.getName()));
@@ -96,8 +100,6 @@ public class SearchResultsPanel extends Panel {
 				else {
 					item.add(new Label("description", ""));
 				}
-				
-				
 				
 				AjaxButton checkPrinter = new AjaxButton("checkPrinter") {
 					/**
@@ -133,56 +135,14 @@ public class SearchResultsPanel extends Panel {
 		return dataView;
 	}
 
-	@SuppressWarnings("unchecked")
-	public PageableListView<BarcodePrinter> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
-		PageableListView<BarcodePrinter> pageableListView = new PageableListView<BarcodePrinter>("resultList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+	@SuppressWarnings( { "unchecked" })
+	private AjaxLink buildLink(final BarcodePrinter barcodePrinter) {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
 
-			@Override
-			protected void populateItem(final ListItem<BarcodePrinter> item) {
-				BarcodePrinter barcodePrinter = item.getModelObject();
-
-				item.add(buildLink(barcodePrinter));
-
-				if (barcodePrinter.getName() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("name", barcodePrinter.getName()));
-				}
-				else {
-					item.add(new Label("name", ""));
-				}
-
-				if (barcodePrinter.getDescription() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("description", barcodePrinter.getDescription()));
-				}
-				else {
-					item.add(new Label("description", ""));
-				}
-
-				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
-					private static final long	serialVersionUID	= 1L;
-
-					@Override
-					public String getObject() {
-						return (item.getIndex() % 2 == 1) ? "even" : "odd";
-					}
-				}));
-
-			}
-		};
-		return pageableListView;
-	}
-
-	@SuppressWarnings( { "unchecked", "serial" })
-	private AjaxLink buildLink(final BarcodePrinter barcodePrinter) {
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				BarcodePrinter barcodePrinterFromDb = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
