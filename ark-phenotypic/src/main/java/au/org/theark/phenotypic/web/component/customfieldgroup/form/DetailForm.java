@@ -62,7 +62,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdProvider;
 	private DataView<CustomFieldDisplay> dataView;
 
-	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdArkDataProvider;
+	
 	
 	/**
 	 * @param id
