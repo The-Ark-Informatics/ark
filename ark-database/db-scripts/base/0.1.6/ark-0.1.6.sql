@@ -2247,10 +2247,88 @@ UNLOCK TABLES;
 --
 -- Current Database: `pheno`
 --
-
+drop database if exists `pheno`;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/ `pheno` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
 USE `pheno`;
+
+
+--
+-- Table structure for table `questionnaire_status`
+--
+
+DROP TABLE IF EXISTS `questionnaire_status`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `questionnaire_status` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(100) default NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `status`
+--
+
+DROP TABLE IF EXISTS `status`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `status` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(50) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+
+--
+-- Table structure for table `file_format`
+--
+
+DROP TABLE IF EXISTS `file_format`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `file_format` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(50) NOT NULL,
+  `DESCRIPTION` text,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `delimiter_type`
+--
+
+DROP TABLE IF EXISTS `delimiter_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `delimiter_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(50) NOT NULL,
+  `DESCRIPTION` text,
+  `DELIMITER_CHARACTER` varchar(1) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+
+--
+-- Table structure for table `field_type`
+--
+
+DROP TABLE IF EXISTS `field_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `field_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(50) NOT NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
 
 --
 -- Table structure for table `collection`
@@ -2279,6 +2357,42 @@ CREATE TABLE `collection` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`STATUS_ID`) REFER `pheno/status`(`ID';
 SET character_set_client = @saved_cs_client;
 
+
+--
+-- Table structure for table `upload`
+--
+
+DROP TABLE IF EXISTS `upload`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `upload` (
+  `ID` int(11) NOT NULL auto_increment,
+  `STUDY_ID` int(11) NOT NULL,
+  `FILE_FORMAT_ID` int(11) NOT NULL,
+  `DELIMITER_TYPE_ID` int(11) NOT NULL,
+  `FILENAME` text NOT NULL,
+  `PAYLOAD` longblob NOT NULL,
+  `CHECKSUM` varchar(50) NOT NULL,
+  `USER_ID` varchar(50) NOT NULL,
+  `INSERT_TIME` datetime NOT NULL,
+  `UPDATE_USER_ID` varchar(50) default NULL,
+  `UPDATE_TIME` datetime default NULL,
+  `START_TIME` datetime NOT NULL,
+  `FINISH_TIME` datetime default NULL,
+  `UPLOAD_REPORT` longblob,
+  `UPLOAD_TYPE` varchar(45) default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `fk_upload_file_format` USING BTREE (`FILE_FORMAT_ID`),
+  KEY `fk_upload_delimiter` USING BTREE (`DELIMITER_TYPE_ID`),
+  KEY `ID` USING BTREE (`ID`),
+  KEY `fk_upload_study` USING BTREE (`STUDY_ID`),
+  CONSTRAINT `fk_upload_delimiter_type` FOREIGN KEY (`DELIMITER_TYPE_ID`) REFERENCES `delimiter_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_upload_file_format` FOREIGN KEY (`FILE_FORMAT_ID`) REFERENCES `file_format` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_upload_study` FOREIGN KEY (`STUDY_ID`) REFERENCES `study`.`study` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`DELIMITER_TYPE_ID`) REFER `pheno/del';
+SET character_set_client = @saved_cs_client;
+
+
 --
 -- Table structure for table `collection_upload`
 --
@@ -2302,21 +2416,7 @@ CREATE TABLE `collection_upload` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`COLLECTION_ID`) REFER `pheno/collect';
 SET character_set_client = @saved_cs_client;
 
---
--- Table structure for table `delimiter_type`
---
 
-DROP TABLE IF EXISTS `delimiter_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `delimiter_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) NOT NULL,
-  `DESCRIPTION` text,
-  `DELIMITER_CHARACTER` varchar(1) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `field`
@@ -2420,6 +2520,28 @@ CREATE TABLE `field_data_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
+
+
+--
+-- Table structure for table `field_group`
+--
+
+DROP TABLE IF EXISTS `field_group`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `field_group` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(100) NOT NULL,
+  `DESCRIPTION` text,
+  `STUDY_ID` int(11) NOT NULL,
+  `USER_ID` varchar(50) NOT NULL,
+  `INSERT_TIME` datetime NOT NULL,
+  `UPDATE_USER_ID` varchar(50) default NULL,
+  `UPDATE_TIME` datetime default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
 --
 -- Table structure for table `field_field_group`
 --
@@ -2443,25 +2565,7 @@ CREATE TABLE `field_field_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`FIELD_ID`) REFER `pheno/field`(`ID`)';
 SET character_set_client = @saved_cs_client;
 
---
--- Table structure for table `field_group`
---
 
-DROP TABLE IF EXISTS `field_group`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `field_group` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(100) NOT NULL,
-  `DESCRIPTION` text,
-  `STUDY_ID` int(11) NOT NULL,
-  `USER_ID` varchar(50) NOT NULL,
-  `INSERT_TIME` datetime NOT NULL,
-  `UPDATE_USER_ID` varchar(50) default NULL,
-  `UPDATE_TIME` datetime default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `field_group_upload`
@@ -2498,19 +2602,7 @@ DROP TABLE IF EXISTS `field_summary`;
   `fields_with_data` bigint(21)
 ) ENGINE=MyISAM */;
 
---
--- Table structure for table `field_type`
---
 
-DROP TABLE IF EXISTS `field_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `field_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) NOT NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `field_upload`
@@ -2558,20 +2650,7 @@ DROP TABLE IF EXISTS `field_upload_v`;
   `UPLOAD_REPORT` longblob
 ) ENGINE=MyISAM */;
 
---
--- Table structure for table `file_format`
---
 
-DROP TABLE IF EXISTS `file_format`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `file_format` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) NOT NULL,
-  `DESCRIPTION` text,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `pheno_collection`
@@ -2625,68 +2704,6 @@ CREATE TABLE `pheno_data` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
---
--- Table structure for table `questionnaire_status`
---
-
-DROP TABLE IF EXISTS `questionnaire_status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `questionnaire_status` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(100) default NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `status`
---
-
-DROP TABLE IF EXISTS `status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `status` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `upload`
---
-
-DROP TABLE IF EXISTS `upload`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `upload` (
-  `ID` int(11) NOT NULL auto_increment,
-  `STUDY_ID` int(11) NOT NULL,
-  `FILE_FORMAT_ID` int(11) NOT NULL,
-  `DELIMITER_TYPE_ID` int(11) NOT NULL,
-  `FILENAME` text NOT NULL,
-  `PAYLOAD` longblob NOT NULL,
-  `CHECKSUM` varchar(50) NOT NULL,
-  `USER_ID` varchar(50) NOT NULL,
-  `INSERT_TIME` datetime NOT NULL,
-  `UPDATE_USER_ID` varchar(50) default NULL,
-  `UPDATE_TIME` datetime default NULL,
-  `START_TIME` datetime NOT NULL,
-  `FINISH_TIME` datetime default NULL,
-  `UPLOAD_REPORT` longblob,
-  `UPLOAD_TYPE` varchar(45) default NULL,
-  PRIMARY KEY  (`ID`),
-  KEY `fk_upload_file_format` USING BTREE (`FILE_FORMAT_ID`),
-  KEY `fk_upload_delimiter` USING BTREE (`DELIMITER_TYPE_ID`),
-  KEY `ID` USING BTREE (`ID`),
-  KEY `fk_upload_study` USING BTREE (`STUDY_ID`),
-  CONSTRAINT `fk_upload_delimiter_type` FOREIGN KEY (`DELIMITER_TYPE_ID`) REFERENCES `delimiter_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_upload_file_format` FOREIGN KEY (`FILE_FORMAT_ID`) REFERENCES `file_format` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_upload_study` FOREIGN KEY (`STUDY_ID`) REFERENCES `study`.`study` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`DELIMITER_TYPE_ID`) REFER `pheno/del';
-SET character_set_client = @saved_cs_client;
 
 --
 -- Final view structure for view `field_summary`
