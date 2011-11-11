@@ -15,10 +15,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Current Database: `study`
---
-
+drop database if exists `study`;
 CREATE DATABASE /*!32312 IF NOT EXISTS*/ `study` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
 USE `study`;
@@ -271,32 +268,6 @@ CREATE TABLE `ark_user` (
 SET character_set_client = @saved_cs_client;
 
 
---
--- Table structure for table `audit_history`
---
-
-DROP TABLE IF EXISTS `audit_history`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `audit_history` (
-  `ID` int(11) NOT NULL auto_increment,
-  `STUDY_STATUS_ID` int(11) default '0',
-  `DATE_TIME` datetime default NULL,
-  `ACTION_TYPE` varchar(50) NOT NULL,
-  `ARK_USER_ID` varchar(255) default NULL,
-  `COMMENT` varchar(255) default NULL,
-  `ENTITY_TYPE` varchar(50) NOT NULL,
-  `ENTITY_ID` int(11) default NULL,
-  PRIMARY KEY  (`ID`),
-  KEY `AUDIT_HISTORY_STUDY_STATUS_FK` USING BTREE (`STUDY_STATUS_ID`),
-  KEY `AUDIT_HISTORY_ENTITY_ID` USING BTREE (`ENTITY_ID`),
-  KEY `AUDIT_HISTORY_ACTION_TYPE` USING BTREE (`ACTION_TYPE`),
-  KEY `AUDIT_HISTORY_ENTITY_TYPE` USING BTREE (`ENTITY_TYPE`),
-  CONSTRAINT `audit_history_ibfk_1` FOREIGN KEY (`STUDY_STATUS_ID`) REFERENCES `study_status` (`ID`),
-  CONSTRAINT `audit_history_ibfk_3` FOREIGN KEY (`STUDY_STATUS_ID`) REFERENCES `study_status` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`ACTION_TYPE_ID`) REFER `study/action';
-SET character_set_client = @saved_cs_client;
-
 
 --
 -- Table structure for table `consent_answer`
@@ -437,44 +408,6 @@ CREATE TABLE `domain_type` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `email_account_type`
---
-
-DROP TABLE IF EXISTS `email_account_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `email_account_type` (
-  `ID` int(11) NOT NULL,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(50) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `email_account`
---
-
-DROP TABLE IF EXISTS `email_account`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `email_account` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(255) NOT NULL,
-  `PRIMARY_ACCOUNT` int(11) default NULL,
-  `PERSON_ID` int(11) NOT NULL,
-  `EMAIL_ACCOUNT_TYPE_ID` int(11) NOT NULL,
-  PRIMARY KEY  (`ID`,`PERSON_ID`,`EMAIL_ACCOUNT_TYPE_ID`),
-  KEY `EMAIL_ACCOUNT_PER_FK1` USING BTREE (`PERSON_ID`),
-  KEY `EMAIL_ACCOUNT_EMA_FK1` USING BTREE (`EMAIL_ACCOUNT_TYPE_ID`),
-  CONSTRAINT `email_account_ibfk_1` FOREIGN KEY (`EMAIL_ACCOUNT_TYPE_ID`) REFERENCES `email_account_type` (`ID`),
-  CONSTRAINT `email_account_ibfk_2` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`EMAIL_ACCOUNT_TYPE_ID`) REFER `study';
-SET character_set_client = @saved_cs_client;
-
 
 
 --
@@ -630,6 +563,7 @@ CREATE TABLE `relationship` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
+DROP TABLE IF EXISTS `role_policy`;
 
 --
 -- Table structure for table `study_comp_status`
@@ -812,6 +746,43 @@ SET character_set_client = @saved_cs_client;
 
 
 --
+-- Table structure for table `email_account_type`
+--
+
+DROP TABLE IF EXISTS `email_account_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `email_account_type` (
+  `ID` int(11) NOT NULL,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(50) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `email_account`
+--
+
+DROP TABLE IF EXISTS `email_account`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `email_account` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(255) NOT NULL,
+  `PRIMARY_ACCOUNT` int(11) default NULL,
+  `PERSON_ID` int(11) NOT NULL,
+  `EMAIL_ACCOUNT_TYPE_ID` int(11) NOT NULL,
+  PRIMARY KEY  (`ID`,`PERSON_ID`,`EMAIL_ACCOUNT_TYPE_ID`),
+  KEY `EMAIL_ACCOUNT_PER_FK1` USING BTREE (`PERSON_ID`),
+  KEY `EMAIL_ACCOUNT_EMA_FK1` USING BTREE (`EMAIL_ACCOUNT_TYPE_ID`),
+  CONSTRAINT `email_account_ibfk_1` FOREIGN KEY (`EMAIL_ACCOUNT_TYPE_ID`) REFERENCES `email_account_type` (`ID`),
+  CONSTRAINT `email_account_ibfk_2` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`EMAIL_ACCOUNT_TYPE_ID`) REFER `study';
+SET character_set_client = @saved_cs_client;
+
+
+--
 -- Table structure for table `address`
 --
 
@@ -851,8 +822,41 @@ SET character_set_client = @saved_cs_client;
 
 
 --
+-- Table structure for table `study_status`
+--
+
+DROP TABLE IF EXISTS `study_status`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `study_status` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(25) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `study`
 --
+
+--
+-- Temporary table structure for view `study_user_role_permission_view`
+--
+
+DROP TABLE IF EXISTS `study_user_role_permission_view`;
+/*!50001 DROP VIEW IF EXISTS `study_user_role_permission_view`*/;
+/*!50001 CREATE TABLE `study_user_role_permission_view` (
+  `studyName` varchar(150),
+  `userName` varchar(500),
+  `roleName` varchar(255),
+  `moduleName` varchar(255),
+  `create` varchar(1),
+  `read` varchar(1),
+  `update` varchar(1),
+  `delete` varchar(1)
+) ENGINE=MyISAM */;
+
 
 DROP TABLE IF EXISTS `study`;
 SET @saved_cs_client     = @@character_set_client;
@@ -1393,6 +1397,9 @@ CREATE TABLE `link_correspondence_audit_person` (
 SET character_set_client = @saved_cs_client;
 
 
+
+
+
 --
 -- Table structure for table `study_site`
 --
@@ -1758,6 +1765,31 @@ CREATE TABLE `subject_study_consent` (
 SET character_set_client = @saved_cs_client;
 
 
+--
+-- Table structure for table `audit_history`
+--
+
+DROP TABLE IF EXISTS `audit_history`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `audit_history` (
+  `ID` int(11) NOT NULL auto_increment,
+  `STUDY_STATUS_ID` int(11) default '0',
+  `DATE_TIME` datetime default NULL,
+  `ACTION_TYPE` varchar(50) NOT NULL,
+  `ARK_USER_ID` varchar(255) default NULL,
+  `COMMENT` varchar(255) default NULL,
+  `ENTITY_TYPE` varchar(50) NOT NULL,
+  `ENTITY_ID` int(11) default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `AUDIT_HISTORY_STUDY_STATUS_FK` USING BTREE (`STUDY_STATUS_ID`),
+  KEY `AUDIT_HISTORY_ENTITY_ID` USING BTREE (`ENTITY_ID`),
+  KEY `AUDIT_HISTORY_ACTION_TYPE` USING BTREE (`ACTION_TYPE`),
+  KEY `AUDIT_HISTORY_ENTITY_TYPE` USING BTREE (`ENTITY_TYPE`),
+  CONSTRAINT `audit_history_ibfk_1` FOREIGN KEY (`STUDY_STATUS_ID`) REFERENCES `study_status` (`ID`),
+  CONSTRAINT `audit_history_ibfk_3` FOREIGN KEY (`STUDY_STATUS_ID`) REFERENCES `study_status` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`ACTION_TYPE_ID`) REFER `study/action';
+SET character_set_client = @saved_cs_client;
 
 
 --
