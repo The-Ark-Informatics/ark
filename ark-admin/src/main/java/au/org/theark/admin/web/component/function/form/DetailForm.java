@@ -77,7 +77,6 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		idTxtFld.setEnabled(false);
 
 		nameTxtFld = new TextField<String>("arkFunction.name");
-		nameTxtFld.setEnabled(false);
 		
 		resourceKeyTxtFld = new TextField<String>("arkFunction.resourceKey");
 		resourceKeyTxtFld.setEnabled(false);
