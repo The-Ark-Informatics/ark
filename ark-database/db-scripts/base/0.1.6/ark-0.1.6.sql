@@ -15,7 +15,10 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-drop database if exists `study`;
+--
+-- Current Database: `study`
+--
+
 CREATE DATABASE /*!32312 IF NOT EXISTS*/ `study` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
 USE `study`;
@@ -35,6 +38,43 @@ CREATE TABLE `action_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `address`
+--
+
+DROP TABLE IF EXISTS `address`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `address` (
+  `ID` int(11) NOT NULL auto_increment,
+  `ADDRESS_LINE_1` varchar(255) default NULL,
+  `STREET_ADDRESS` varchar(255) default NULL,
+  `CITY` varchar(45) default NULL,
+  `COUNTRY_STATE_ID` int(11) default NULL,
+  `POST_CODE` varchar(10) default NULL,
+  `COUNTRY_ID` int(11) default NULL,
+  `ADDRESS_STATUS_ID` int(11) default NULL,
+  `ADDRESS_TYPE_ID` int(11) NOT NULL,
+  `OTHER_STATE` varchar(45) default NULL,
+  `PERSON_ID` int(11) NOT NULL,
+  `DATE_RECEIVED` date default NULL,
+  `COMMENTS` text,
+  `PREFERRED_MAILING_ADDRESS` int(11) NOT NULL,
+  `SOURCE` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`,`ADDRESS_TYPE_ID`,`PERSON_ID`),
+  KEY `fk_address_country` USING BTREE (`COUNTRY_ID`),
+  KEY `fk_address_state` USING BTREE (`COUNTRY_STATE_ID`),
+  KEY `fk_address_person` USING BTREE (`PERSON_ID`),
+  KEY `fk_address_address_type` USING BTREE (`ADDRESS_TYPE_ID`),
+  KEY `fk_address_status` USING BTREE (`ADDRESS_STATUS_ID`),
+  KEY `fk_address_preferred_mailing_address_id` USING BTREE (`PREFERRED_MAILING_ADDRESS`),
+  CONSTRAINT `fk_address_address_type` FOREIGN KEY (`ADDRESS_TYPE_ID`) REFERENCES `address_type` (`ID`),
+  CONSTRAINT `fk_address_country` FOREIGN KEY (`COUNTRY_ID`) REFERENCES `country` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_address_person` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_address_state` FOREIGN KEY (`COUNTRY_STATE_ID`) REFERENCES `country_state` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_address_status` FOREIGN KEY (`ADDRESS_STATUS_ID`) REFERENCES `address_status` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`ADDRESS_TYPE_ID`) REFER `study/addre';
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `address_status`
@@ -67,56 +107,6 @@ CREATE TABLE `address_type` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `country`
---
-
-DROP TABLE IF EXISTS `country`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `country` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(100) NOT NULL,
-  `DESCRIPTION` varchar(250) default NULL,
-  `COUNTRY_CODE` varchar(2) default NULL,
-  PRIMARY KEY  (`ID`),
-  UNIQUE KEY `NAME_UNIQUE` USING BTREE (`NAME`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `country_state`
---
-
-DROP TABLE IF EXISTS `country_state`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `country_state` (
-  `ID` int(11) NOT NULL auto_increment,
-  `COUNTRY_ID` int(11) NOT NULL,
-  `STATE` varchar(100) NOT NULL,
-  PRIMARY KEY  (`ID`),
-  KEY `fk_country_id` USING BTREE (`COUNTRY_ID`),
-  CONSTRAINT `fk_country_id` FOREIGN KEY (`COUNTRY_ID`) REFERENCES `country` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A link table that associates a country and its respective st';
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `ark_function_type`
---
-
-DROP TABLE IF EXISTS `ark_function_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `ark_function_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(255) default NULL,
-  `DESCRIPTION` varchar(1000) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Determines the type of function as a Report or Non-Report fu';
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `ark_function`
 --
 
@@ -135,7 +125,20 @@ CREATE TABLE `ark_function` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `ark_function_type`
+--
 
+DROP TABLE IF EXISTS `ark_function_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `ark_function_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(255) default NULL,
+  `DESCRIPTION` varchar(1000) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Determines the type of function as a Report or Non-Report fu';
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `ark_module`
@@ -174,23 +177,6 @@ CREATE TABLE `ark_module_function` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
-
---
--- Table structure for table `ark_role`
---
-
-DROP TABLE IF EXISTS `ark_role`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `ark_role` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(255) NOT NULL,
-  `DESCRIPTION` varchar(1000) default NULL,
-  PRIMARY KEY  (`ID`),
-  UNIQUE KEY `NAME_UNIQUE` (`NAME`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
 --
 -- Table structure for table `ark_module_role`
 --
@@ -226,7 +212,21 @@ CREATE TABLE `ark_permission` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `ark_role`
+--
 
+DROP TABLE IF EXISTS `ark_role`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `ark_role` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(255) NOT NULL,
+  `DESCRIPTION` varchar(1000) default NULL,
+  PRIMARY KEY  (`ID`),
+  UNIQUE KEY `NAME_UNIQUE` (`NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `ark_role_policy_template`
@@ -267,637 +267,6 @@ CREATE TABLE `ark_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
-
-
---
--- Table structure for table `consent_answer`
---
-
-DROP TABLE IF EXISTS `consent_answer`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `consent_answer` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(45) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `consent_status`
---
-
-DROP TABLE IF EXISTS `consent_status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `consent_status` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(255) NOT NULL,
-  `DESCRIPTION` varchar(1000) default NULL,
-  PRIMARY KEY  (`ID`),
-  UNIQUE KEY `NAME_UNIQUE` USING BTREE (`NAME`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `consent_type`
---
-
-DROP TABLE IF EXISTS `consent_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `consent_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(255) NOT NULL,
-  `DESCRIPTION` varchar(1000) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
-
-
---
--- Table structure for table `correspondence_direction_type`
---
-
-DROP TABLE IF EXISTS `correspondence_direction_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `correspondence_direction_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(255) NOT NULL,
-  `DESCRIPTION` varchar(4096) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `correspondence_mode_type`
---
-
-DROP TABLE IF EXISTS `correspondence_mode_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `correspondence_mode_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(255) NOT NULL,
-  `DESCRIPTION` varchar(4096) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `correspondence_outcome_type`
---
-
-DROP TABLE IF EXISTS `correspondence_outcome_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `correspondence_outcome_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(255) NOT NULL,
-  `DESCRIPTION` varchar(496) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `correspondence_status_type`
---
-
-DROP TABLE IF EXISTS `correspondence_status_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `correspondence_status_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(255) NOT NULL,
-  `DESCRIPTION` varchar(4096) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `delimiter_type`
---
-
-DROP TABLE IF EXISTS `delimiter_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `delimiter_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) NOT NULL,
-  `DESCRIPTION` text,
-  `DELIMITER_CHARACTER` varchar(1) NOT NULL default ',',
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `domain_type`
---
-
-DROP TABLE IF EXISTS `domain_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `domain_type` (
-  `ID` int(11) NOT NULL,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `entity_type`
---
-
-DROP TABLE IF EXISTS `entity_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `entity_type` (
-  `ID` int(11) NOT NULL,
-  `NAME` varchar(50) NOT NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `field_type`
---
-
-DROP TABLE IF EXISTS `field_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `field_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) NOT NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `file_format`
---
-
-DROP TABLE IF EXISTS `file_format`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `file_format` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) NOT NULL,
-  `DESCRIPTION` text,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `gender_type`
---
-
-DROP TABLE IF EXISTS `gender_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `gender_type` (
-  `ID` int(11) NOT NULL,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-	
-
---
--- Table structure for table `marital_status`
---
-
-DROP TABLE IF EXISTS `marital_status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `marital_status` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `person_contact_method`
---
-
-DROP TABLE IF EXISTS `person_contact_method`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `person_contact_method` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(45) NOT NULL,
-  PRIMARY KEY  (`ID`),
-  KEY `NAME` USING BTREE (`NAME`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
-SET character_set_client = @saved_cs_client;
-
-
-
---
--- Table structure for table `phone_status`
---
-
-DROP TABLE IF EXISTS `phone_status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `phone_status` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(255) default NULL,
-  `DESCRIPTION` varchar(500) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `phone_type`
---
-
-DROP TABLE IF EXISTS `phone_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `phone_type` (
-  `ID` int(11) NOT NULL,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
-
-
---
--- Table structure for table `registration_status`
---
-
-DROP TABLE IF EXISTS `registration_status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `registration_status` (
-  `ID` int(11) NOT NULL,
-  `REGISTRATION_STATUS` varchar(50) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `relationship`
---
-
-DROP TABLE IF EXISTS `relationship`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `relationship` (
-  `ID` int(11) NOT NULL,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
-DROP TABLE IF EXISTS `role_policy`;
-
---
--- Table structure for table `study_comp_status`
---
-
-DROP TABLE IF EXISTS `study_comp_status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `study_comp_status` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `subject_status`
---
-
-DROP TABLE IF EXISTS `subject_status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `subject_status` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `subjectuid_padchar`
---
-
-DROP TABLE IF EXISTS `subjectuid_padchar`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `subjectuid_padchar` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(25) NOT NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `subjectuid_sequence`
---
-
-DROP TABLE IF EXISTS `subjectuid_sequence`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `subjectuid_sequence` (
-  `STUDY_NAME_ID` varchar(150) NOT NULL,
-  `UID_SEQUENCE` int(11) NOT NULL default '0',
-  `INSERT_LOCK` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`STUDY_NAME_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `subjectuid_token`
---
-
-DROP TABLE IF EXISTS `subjectuid_token`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `subjectuid_token` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(25) NOT NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `title_type`
---
-
-DROP TABLE IF EXISTS `title_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `title_type` (
-  `ID` int(11) NOT NULL,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `unit_type`
---
-
-DROP TABLE IF EXISTS `unit_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `unit_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `ARK_FUNCTION_ID` int(11) default NULL,
-  `NAME` varchar(45) NOT NULL,
-  `DESCRIPTION` varchar(255) NOT NULL,
-  PRIMARY KEY  (`ID`),
-  UNIQUE KEY `NAME_ARK_FUNCTION_UNIQUE` (`NAME`,`ARK_FUNCTION_ID`),
-  KEY `FK_UNIT_TYPE_ARK_FUNCTION_ID` (`ARK_FUNCTION_ID`),
-  CONSTRAINT `FK_UNIT_TYPE_ARK_FUNCTION_ID` FOREIGN KEY (`ARK_FUNCTION_ID`) REFERENCES `ark_function` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `vital_status`
---
-
-DROP TABLE IF EXISTS `vital_status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `vital_status` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `yes_no`
---
-
-DROP TABLE IF EXISTS `yes_no`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `yes_no` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(3) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `person`
---
-
-DROP TABLE IF EXISTS `person`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `person` (
-  `ID` int(11) NOT NULL auto_increment,
-  `FIRST_NAME` varchar(50) default NULL,
-  `MIDDLE_NAME` varchar(50) default NULL,
-  `LAST_NAME` varchar(50) default NULL,
-  `PREFERRED_NAME` varchar(150) default NULL,
-  `GENDER_TYPE_ID` int(11) NOT NULL default '0',
-  `DATE_OF_BIRTH` date default NULL,
-  `DATE_OF_DEATH` date default NULL,
-  `REGISTRATION_DATE` date default NULL,
-  `CAUSE_OF_DEATH` varchar(255) default NULL,
-  `VITAL_STATUS_ID` int(11) NOT NULL default '0',
-  `TITLE_TYPE_ID` int(11) NOT NULL default '0',
-  `MARITAL_STATUS_ID` int(11) default NULL,
-  `PERSON_CONTACT_METHOD_ID` int(11) default NULL,
-  `PREFERRED_EMAIL` varchar(150) default NULL,
-  `OTHER_EMAIL` varchar(45) default NULL,
-  `DATE_LAST_KNOWN_ALIVE` date default NULL,
-  PRIMARY KEY  (`ID`,`VITAL_STATUS_ID`,`TITLE_TYPE_ID`,`GENDER_TYPE_ID`),
-  KEY `PERSON_GENDER_TYPE_FK` USING BTREE (`GENDER_TYPE_ID`),
-  KEY `PERSON_VITAL_STATUS_FK` USING BTREE (`VITAL_STATUS_ID`),
-  KEY `PERSON_TITLE_TYPE_FK` USING BTREE (`TITLE_TYPE_ID`),
-  KEY `fk_person_person_contact_method` (`PERSON_CONTACT_METHOD_ID`),
-  KEY `fk_person_marital_status` (`MARITAL_STATUS_ID`),
-  CONSTRAINT `fk_person_gender_type` FOREIGN KEY (`GENDER_TYPE_ID`) REFERENCES `gender_type` (`ID`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_person_marital_status` FOREIGN KEY (`MARITAL_STATUS_ID`) REFERENCES `marital_status` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_person_person_contact_method` FOREIGN KEY (`PERSON_CONTACT_METHOD_ID`) REFERENCES `person_contact_method` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_person_title_type` FOREIGN KEY (`TITLE_TYPE_ID`) REFERENCES `title_type` (`ID`),
-  CONSTRAINT `fk_person_vital_status` FOREIGN KEY (`VITAL_STATUS_ID`) REFERENCES `vital_status` (`ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`GENDER_TYPE_ID`) REFER `study/gender';
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `email_account_type`
---
-
-DROP TABLE IF EXISTS `email_account_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `email_account_type` (
-  `ID` int(11) NOT NULL,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(50) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `email_account`
---
-
-DROP TABLE IF EXISTS `email_account`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `email_account` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(255) NOT NULL,
-  `PRIMARY_ACCOUNT` int(11) default NULL,
-  `PERSON_ID` int(11) NOT NULL,
-  `EMAIL_ACCOUNT_TYPE_ID` int(11) NOT NULL,
-  PRIMARY KEY  (`ID`,`PERSON_ID`,`EMAIL_ACCOUNT_TYPE_ID`),
-  KEY `EMAIL_ACCOUNT_PER_FK1` USING BTREE (`PERSON_ID`),
-  KEY `EMAIL_ACCOUNT_EMA_FK1` USING BTREE (`EMAIL_ACCOUNT_TYPE_ID`),
-  CONSTRAINT `email_account_ibfk_1` FOREIGN KEY (`EMAIL_ACCOUNT_TYPE_ID`) REFERENCES `email_account_type` (`ID`),
-  CONSTRAINT `email_account_ibfk_2` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`EMAIL_ACCOUNT_TYPE_ID`) REFER `study';
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `address`
---
-
-DROP TABLE IF EXISTS `address`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `address` (
-  `ID` int(11) NOT NULL auto_increment,
-  `ADDRESS_LINE_1` varchar(255) default NULL,
-  `STREET_ADDRESS` varchar(255) default NULL,
-  `CITY` varchar(45) default NULL,
-  `COUNTRY_STATE_ID` int(11) default NULL,
-  `POST_CODE` varchar(10) default NULL,
-  `COUNTRY_ID` int(11) default NULL,
-  `ADDRESS_STATUS_ID` int(11) default NULL,
-  `ADDRESS_TYPE_ID` int(11) NOT NULL,
-  `OTHER_STATE` varchar(45) default NULL,
-  `PERSON_ID` int(11) NOT NULL,
-  `DATE_RECEIVED` date default NULL,
-  `COMMENTS` text,
-  `PREFERRED_MAILING_ADDRESS` int(11) NOT NULL,
-  `SOURCE` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`,`ADDRESS_TYPE_ID`,`PERSON_ID`),
-  KEY `fk_address_country` USING BTREE (`COUNTRY_ID`),
-  KEY `fk_address_state` USING BTREE (`COUNTRY_STATE_ID`),
-  KEY `fk_address_person` USING BTREE (`PERSON_ID`),
-  KEY `fk_address_address_type` USING BTREE (`ADDRESS_TYPE_ID`),
-  KEY `fk_address_status` USING BTREE (`ADDRESS_STATUS_ID`),
-  KEY `fk_address_preferred_mailing_address_id` USING BTREE (`PREFERRED_MAILING_ADDRESS`),
-  CONSTRAINT `fk_address_address_type` FOREIGN KEY (`ADDRESS_TYPE_ID`) REFERENCES `address_type` (`ID`),
-  CONSTRAINT `fk_address_country` FOREIGN KEY (`COUNTRY_ID`) REFERENCES `country` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_address_person` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_address_state` FOREIGN KEY (`COUNTRY_STATE_ID`) REFERENCES `country_state` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_address_status` FOREIGN KEY (`ADDRESS_STATUS_ID`) REFERENCES `address_status` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`ADDRESS_TYPE_ID`) REFER `study/addre';
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `study_status`
---
-
-DROP TABLE IF EXISTS `study_status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `study_status` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(25) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `study`
---
-
---
--- Temporary table structure for view `study_user_role_permission_view`
---
-
-DROP TABLE IF EXISTS `study_user_role_permission_view`;
-/*!50001 DROP VIEW IF EXISTS `study_user_role_permission_view`*/;
-/*!50001 CREATE TABLE `study_user_role_permission_view` (
-  `studyName` varchar(150),
-  `userName` varchar(500),
-  `roleName` varchar(255),
-  `moduleName` varchar(255),
-  `create` varchar(1),
-  `read` varchar(1),
-  `update` varchar(1),
-  `delete` varchar(1)
-) ENGINE=MyISAM */;
-
-
-DROP TABLE IF EXISTS `study`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `study` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(150) default NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  `DATE_OF_APPLICATION` date default NULL,
-  `ESTIMATED_YEAR_OF_COMPLETION` int(11) default NULL,
-  `CHIEF_INVESTIGATOR` varchar(50) default NULL,
-  `CO_INVESTIGATOR` varchar(50) default NULL,
-  `AUTO_GENERATE_SUBJECTUID` int(11) NOT NULL,
-  `SUBJECTUID_START` int(11) default NULL,
-  `STUDY_STATUS_ID` int(11) NOT NULL,
-  `SUBJECTUID_PREFIX` varchar(20) default NULL,
-  `CONTACT_PERSON` varchar(50) default NULL,
-  `CONTACT_PERSON_PHONE` varchar(20) default NULL,
-  `LDAP_GROUP_NAME` varchar(100) default NULL,
-  `AUTO_CONSENT` int(11) default NULL,
-  `SUB_STUDY_BIOSPECIMEN_PREFIX` varchar(20) default NULL,
-  `STUDY_LOGO` blob,
-  `FILENAME` varchar(255) default NULL,
-  `SUBJECTUID_TOKEN_ID` int(11) default NULL,
-  `SUBJECTUID_PADCHAR_ID` int(11) default NULL,
-  `SUBJECT_KEY_PREFIX` varchar(45) default NULL,
-  `SUBJECT_KEY_START` varchar(45) default NULL,
-  PRIMARY KEY  (`ID`,`STUDY_STATUS_ID`),
-  KEY `STUDY_STUDY_STATUS_FK1` USING BTREE (`STUDY_STATUS_ID`),
-  KEY `ID` USING BTREE (`ID`),
-  KEY `fk_study_subjectuid_padchar` (`SUBJECTUID_PADCHAR_ID`),
-  KEY `fk_study_subjectuid_token` (`SUBJECTUID_TOKEN_ID`),
-  CONSTRAINT `fk_study_study_status` FOREIGN KEY (`STUDY_STATUS_ID`) REFERENCES `study_status` (`ID`),
-  CONSTRAINT `fk_study_subjectuid_padchar` FOREIGN KEY (`SUBJECTUID_PADCHAR_ID`) REFERENCES `subjectuid_padchar` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_study_subjectuid_token` FOREIGN KEY (`SUBJECTUID_TOKEN_ID`) REFERENCES `subjectuid_token` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`STUDY_STATUS_ID`) REFER `study/study';
-
-
-SET character_set_client = @saved_cs_client;
-	
-
 --
 -- Table structure for table `ark_user_role`
 --
@@ -923,90 +292,31 @@ CREATE TABLE `ark_user_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
-
 --
--- Table structure for table `study_comp`
+-- Table structure for table `audit_history`
 --
 
-DROP TABLE IF EXISTS `study_comp`;
+DROP TABLE IF EXISTS `audit_history`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `study_comp` (
+CREATE TABLE `audit_history` (
   `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(100) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  `STUDY_ID` int(11) NOT NULL,
-  `KEYWORD` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`,`STUDY_ID`),
-  UNIQUE KEY `NAME` (`NAME`,`STUDY_ID`),
-  KEY `STUDY_COMP_STUDY_FK` USING BTREE (`STUDY_ID`),
-  CONSTRAINT `study_comp_ibfk_1` FOREIGN KEY (`STUDY_ID`) REFERENCES `study` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`STUDY_ID`) REFER `study/study`(`ID`)';
+  `STUDY_STATUS_ID` int(11) default '0',
+  `DATE_TIME` datetime default NULL,
+  `ACTION_TYPE` varchar(50) NOT NULL,
+  `ARK_USER_ID` varchar(255) default NULL,
+  `COMMENT` varchar(255) default NULL,
+  `ENTITY_TYPE` varchar(50) NOT NULL,
+  `ENTITY_ID` int(11) default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `AUDIT_HISTORY_STUDY_STATUS_FK` USING BTREE (`STUDY_STATUS_ID`),
+  KEY `AUDIT_HISTORY_ENTITY_ID` USING BTREE (`ENTITY_ID`),
+  KEY `AUDIT_HISTORY_ACTION_TYPE` USING BTREE (`ACTION_TYPE`),
+  KEY `AUDIT_HISTORY_ENTITY_TYPE` USING BTREE (`ENTITY_TYPE`),
+  CONSTRAINT `audit_history_ibfk_1` FOREIGN KEY (`STUDY_STATUS_ID`) REFERENCES `study_status` (`ID`),
+  CONSTRAINT `audit_history_ibfk_3` FOREIGN KEY (`STUDY_STATUS_ID`) REFERENCES `study_status` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`ACTION_TYPE_ID`) REFER `study/action';
 SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `link_subject_study`
---
-
-DROP TABLE IF EXISTS `link_subject_study`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `link_subject_study` (
-  `ID` int(11) NOT NULL auto_increment,
-  `PERSON_ID` int(11) NOT NULL,
-  `STUDY_ID` int(11) NOT NULL,
-  `SUBJECT_STATUS_ID` int(11) NOT NULL default '0',
-  `SUBJECT_UID` varchar(50) NOT NULL,
-  `AMDRF_ID` int(11) default NULL,
-  `STUDY_APPROACH_DATE` date default NULL,
-  `SEND_NEWS_LETTER` int(11) default NULL,
-  `YEAR_OF_FIRST_MAMOGRAM` int(11) default NULL,
-  `YEAR_OF_RECENT_MAMOGRAM` int(11) default NULL,
-  `TOTAL_MAMOGRAMS` int(11) default NULL,
-  `SITE_STREET_ADDRESS` varchar(255) default NULL,
-  `SITE_CITY` varchar(255) default NULL,
-  `SITE_POST` varchar(45) default NULL,
-  `COUNTRY_ID` int(11) default NULL,
-  `STATE_ID` int(11) default NULL,
-  `CONSENT_TO_ACTIVE_CONTACT_ID` int(11) default NULL,
-  `CONSENT_TO_PASSIVE_DATA_GATHERING_ID` int(11) default NULL,
-  `CONSENT_TO_USE_DATA_ID` int(11) default NULL,
-  `CONSENT_STATUS_ID` int(11) default NULL,
-  `CONSENT_TYPE_ID` int(11) default NULL,
-  `CONSENT_DATE` date default NULL,
-  `OTHER_STATE` varchar(255) default NULL,
-  `HEARD_ABOUT_STUDY` varchar(500) default NULL,
-  `COMMENTS` varchar(1000) default NULL,
-  `CONSENT_DOWNLOADED` int(11) default NULL,
-  PRIMARY KEY  (`ID`,`STUDY_ID`,`SUBJECT_UID`),
-  UNIQUE KEY `UQ_STUDY_ID_SUBJECT_UID` USING BTREE (`STUDY_ID`,`SUBJECT_UID`),
-  KEY `FK_LINK_SUBJECT_STUDY_PERSON_FK` (`PERSON_ID`),
-  KEY `FK_LINK_SUBJECT_STUDY_SUBJECT_STATUS_FK` (`SUBJECT_STATUS_ID`),
-  KEY `FK_LINK_SUBJECT_STUDY_STATE` (`STATE_ID`),
-  KEY `FK_LINK_SUBJECT_STUDY_COUNTRY` (`COUNTRY_ID`),
-  KEY `FK_LINK_SBJT_STUDY_CNS_ACT_CNCT` (`CONSENT_TO_ACTIVE_CONTACT_ID`),
-  KEY `FK_LINK_SUBJECT_STUDY_CNS_PASS_DATA` (`CONSENT_TO_PASSIVE_DATA_GATHERING_ID`),
-  KEY `FK_LINK_SUBJECT_STUDY_CNS_USE_DATA` (`CONSENT_TO_USE_DATA_ID`),
-  KEY `FK_LINK_SUBJECT_STUDY_SUBJECT_UID` USING BTREE (`SUBJECT_UID`),
-  KEY `FK_LINK_SUBJECT_STUDY_STUDY_FK` USING BTREE (`STUDY_ID`),
-  KEY `FK_LINK_SUBJECT_STUDY_CONSENT_STATUS_ID` USING BTREE (`CONSENT_STATUS_ID`),
-  KEY `FK_LINK_SUBJECT_STUDY_CONSENT_TYPE_ID` USING BTREE (`CONSENT_TYPE_ID`),
-  KEY `fk_link_subject_study_1` (`CONSENT_DOWNLOADED`),
-  CONSTRAINT `FK_LINK_SBJT_STUDY_CNS_ACT_CNCT` FOREIGN KEY (`CONSENT_TO_ACTIVE_CONTACT_ID`) REFERENCES `yes_no` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_link_subject_study_1` FOREIGN KEY (`CONSENT_DOWNLOADED`) REFERENCES `yes_no` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_LINK_SUBJECT_STUDY_CNS_PASS_DATA` FOREIGN KEY (`CONSENT_TO_PASSIVE_DATA_GATHERING_ID`) REFERENCES `yes_no` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_LINK_SUBJECT_STUDY_CNS_USE_DATA` FOREIGN KEY (`CONSENT_TO_USE_DATA_ID`) REFERENCES `yes_no` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_LINK_SUBJECT_STUDY_CONSENT_STATUS_ID` FOREIGN KEY (`CONSENT_STATUS_ID`) REFERENCES `consent_status` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_LINK_SUBJECT_STUDY_CONSENT_TYPE_ID` FOREIGN KEY (`CONSENT_TYPE_ID`) REFERENCES `consent_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_LINK_SUBJECT_STUDY_COUNTRY` FOREIGN KEY (`COUNTRY_ID`) REFERENCES `country` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_LINK_SUBJECT_STUDY_PERSON_FK` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`),
-  CONSTRAINT `FK_LINK_SUBJECT_STUDY_STATE` FOREIGN KEY (`STATE_ID`) REFERENCES `country_state` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_LINK_SUBJECT_STUDY_STUDY_FK` FOREIGN KEY (`STUDY_ID`) REFERENCES `study` (`ID`),
-  CONSTRAINT `FK_LINK_SUBJECT_STUDY_SUBJECT_STATUS_FK` FOREIGN KEY (`SUBJECT_STATUS_ID`) REFERENCES `subject_status` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`PERSON_ID`) REFER `study/person`(`ID';
-SET character_set_client = @saved_cs_client;
-
 
 --
 -- Table structure for table `consent`
@@ -1048,7 +358,19 @@ CREATE TABLE `consent` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `consent_answer`
+--
 
+DROP TABLE IF EXISTS `consent_answer`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `consent_answer` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(45) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `consent_file`
@@ -1095,48 +417,36 @@ CREATE TABLE `consent_section` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 SET character_set_client = @saved_cs_client;
 
-
 --
--- Table structure for table `correspondences`
+-- Table structure for table `consent_status`
 --
 
-DROP TABLE IF EXISTS `correspondences`;
+DROP TABLE IF EXISTS `consent_status`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `correspondences` (
+CREATE TABLE `consent_status` (
   `ID` int(11) NOT NULL auto_increment,
-  `PERSON_ID` int(11) NOT NULL,
-  `STUDY_ID` int(11) NOT NULL,
-  `STATUS_TYPE_ID` int(11) default NULL,
-  `ARK_USER_ID` int(11) default NULL,
-  `DATE` date default NULL,
-  `TIME` varchar(255) default NULL,
-  `REASON` varchar(4096) default NULL,
-  `MODE_TYPE_ID` int(11) default NULL,
-  `DIRECTION_TYPE_ID` int(11) default NULL,
-  `OUTCOME_TYPE_ID` int(11) default NULL,
-  `DETAILS` varchar(4096) default NULL,
-  `COMMENTS` varchar(4096) default NULL,
-  `ATTACHMENT_FILENAME` varchar(255) default NULL,
-  `ATTACHMENT_PAYLOAD` longblob,
+  `NAME` varchar(255) NOT NULL,
+  `DESCRIPTION` varchar(1000) default NULL,
   PRIMARY KEY  (`ID`),
-  KEY `status_type` USING BTREE (`STATUS_TYPE_ID`),
-  KEY `mode_type` USING BTREE (`MODE_TYPE_ID`),
-  KEY `direction_type` USING BTREE (`DIRECTION_TYPE_ID`),
-  KEY `outcome_type` USING BTREE (`OUTCOME_TYPE_ID`),
-  KEY `correspondences_study_id` USING BTREE (`STUDY_ID`),
-  KEY `correspondences_person_id` (`PERSON_ID`),
-  KEY `fk_correspondences_ark_user` (`ARK_USER_ID`),
-  CONSTRAINT `correspondences_direction_type_id` FOREIGN KEY (`DIRECTION_TYPE_ID`) REFERENCES `correspondence_direction_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `correspondences_mode_type_id` FOREIGN KEY (`MODE_TYPE_ID`) REFERENCES `correspondence_mode_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `correspondences_outcome_type_id` FOREIGN KEY (`OUTCOME_TYPE_ID`) REFERENCES `correspondence_outcome_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `correspondences_person_id` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `correspondences_status_type_id` FOREIGN KEY (`STATUS_TYPE_ID`) REFERENCES `correspondence_status_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `correspondences_study_id` FOREIGN KEY (`STUDY_ID`) REFERENCES `study` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_correspondences_ark_user` FOREIGN KEY (`ARK_USER_ID`) REFERENCES `ark_user` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+  UNIQUE KEY `NAME_UNIQUE` USING BTREE (`NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `consent_type`
+--
+
+DROP TABLE IF EXISTS `consent_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `consent_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(255) NOT NULL,
+  `DESCRIPTION` varchar(1000) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `correspondence_attachment`
@@ -1220,14 +530,144 @@ CREATE TABLE `correspondence_audit_attachment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `correspondence_direction_type`
+--
 
+DROP TABLE IF EXISTS `correspondence_direction_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `correspondence_direction_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(255) NOT NULL,
+  `DESCRIPTION` varchar(4096) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `correspondence_mode_type`
+--
 
+DROP TABLE IF EXISTS `correspondence_mode_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `correspondence_mode_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(255) NOT NULL,
+  `DESCRIPTION` varchar(4096) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `correspondence_outcome_type`
+--
+
+DROP TABLE IF EXISTS `correspondence_outcome_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `correspondence_outcome_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(255) NOT NULL,
+  `DESCRIPTION` varchar(496) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `correspondence_status_type`
+--
+
+DROP TABLE IF EXISTS `correspondence_status_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `correspondence_status_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(255) NOT NULL,
+  `DESCRIPTION` varchar(4096) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `correspondences`
+--
+
+DROP TABLE IF EXISTS `correspondences`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `correspondences` (
+  `ID` int(11) NOT NULL auto_increment,
+  `PERSON_ID` int(11) NOT NULL,
+  `STUDY_ID` int(11) NOT NULL,
+  `STATUS_TYPE_ID` int(11) default NULL,
+  `ARK_USER_ID` int(11) default NULL,
+  `DATE` date default NULL,
+  `TIME` varchar(255) default NULL,
+  `REASON` varchar(4096) default NULL,
+  `MODE_TYPE_ID` int(11) default NULL,
+  `DIRECTION_TYPE_ID` int(11) default NULL,
+  `OUTCOME_TYPE_ID` int(11) default NULL,
+  `DETAILS` varchar(4096) default NULL,
+  `COMMENTS` varchar(4096) default NULL,
+  `ATTACHMENT_FILENAME` varchar(255) default NULL,
+  `ATTACHMENT_PAYLOAD` longblob,
+  PRIMARY KEY  (`ID`),
+  KEY `status_type` USING BTREE (`STATUS_TYPE_ID`),
+  KEY `mode_type` USING BTREE (`MODE_TYPE_ID`),
+  KEY `direction_type` USING BTREE (`DIRECTION_TYPE_ID`),
+  KEY `outcome_type` USING BTREE (`OUTCOME_TYPE_ID`),
+  KEY `correspondences_study_id` USING BTREE (`STUDY_ID`),
+  KEY `correspondences_person_id` (`PERSON_ID`),
+  KEY `fk_correspondences_ark_user` (`ARK_USER_ID`),
+  CONSTRAINT `correspondences_direction_type_id` FOREIGN KEY (`DIRECTION_TYPE_ID`) REFERENCES `correspondence_direction_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `correspondences_mode_type_id` FOREIGN KEY (`MODE_TYPE_ID`) REFERENCES `correspondence_mode_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `correspondences_outcome_type_id` FOREIGN KEY (`OUTCOME_TYPE_ID`) REFERENCES `correspondence_outcome_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `correspondences_person_id` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `correspondences_status_type_id` FOREIGN KEY (`STATUS_TYPE_ID`) REFERENCES `correspondence_status_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `correspondences_study_id` FOREIGN KEY (`STUDY_ID`) REFERENCES `study` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_correspondences_ark_user` FOREIGN KEY (`ARK_USER_ID`) REFERENCES `ark_user` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `country`
+--
+
+DROP TABLE IF EXISTS `country`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `country` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(100) NOT NULL,
+  `DESCRIPTION` varchar(250) default NULL,
+  `COUNTRY_CODE` varchar(2) default NULL,
+  PRIMARY KEY  (`ID`),
+  UNIQUE KEY `NAME_UNIQUE` USING BTREE (`NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `country_state`
+--
+
+DROP TABLE IF EXISTS `country_state`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `country_state` (
+  `ID` int(11) NOT NULL auto_increment,
+  `COUNTRY_ID` int(11) NOT NULL,
+  `STATE` varchar(100) NOT NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `fk_country_id` USING BTREE (`COUNTRY_ID`),
+  CONSTRAINT `fk_country_id` FOREIGN KEY (`COUNTRY_ID`) REFERENCES `country` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A link table that associates a country and its respective st';
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `csv_blob`
 --
-
 
 DROP TABLE IF EXISTS `csv_blob`;
 SET @saved_cs_client     = @@character_set_client;
@@ -1273,6 +713,27 @@ CREATE TABLE `custom_field` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `custom_field_display`
+--
+
+DROP TABLE IF EXISTS `custom_field_display`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `custom_field_display` (
+  `ID` int(11) NOT NULL auto_increment,
+  `CUSTOM_FIELD_ID` int(11) NOT NULL,
+  `CUSTOM_FIELD_GROUP_ID` int(11) default NULL,
+  `SEQUENCE` int(11) default NULL,
+  `REQUIRED` int(11) default NULL,
+  `REQUIRED_MESSAGE` varchar(45) default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `FK_CUSTOM_FIELD_GROUP_ID` (`CUSTOM_FIELD_GROUP_ID`),
+  KEY `FK_CUSTOM_FIELD_GROUP_CUSTOM_FIELD_ID` (`CUSTOM_FIELD_ID`),
+  CONSTRAINT `FK_CUSTOM_FIELD_GROUP_CUSTOM_FIELD_ID` FOREIGN KEY (`CUSTOM_FIELD_ID`) REFERENCES `custom_field` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_CUSTOM_FIELD_GROUP_ID` FOREIGN KEY (`CUSTOM_FIELD_GROUP_ID`) REFERENCES `custom_field_group` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `custom_field_group`
@@ -1297,65 +758,6 @@ CREATE TABLE `custom_field_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
-
---
--- Table structure for table `custom_field_display`
---
-
-DROP TABLE IF EXISTS `custom_field_display`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `custom_field_display` (
-  `ID` int(11) NOT NULL auto_increment,
-  `CUSTOM_FIELD_ID` int(11) NOT NULL,
-  `CUSTOM_FIELD_GROUP_ID` int(11) default NULL,
-  `SEQUENCE` int(11) default NULL,
-  `REQUIRED` int(11) default NULL,
-  `REQUIRED_MESSAGE` varchar(45) default NULL,
-  PRIMARY KEY  (`ID`),
-  KEY `FK_CUSTOM_FIELD_GROUP_ID` (`CUSTOM_FIELD_GROUP_ID`),
-  KEY `FK_CUSTOM_FIELD_GROUP_CUSTOM_FIELD_ID` (`CUSTOM_FIELD_ID`),
-  CONSTRAINT `FK_CUSTOM_FIELD_GROUP_CUSTOM_FIELD_ID` FOREIGN KEY (`CUSTOM_FIELD_ID`) REFERENCES `custom_field` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_CUSTOM_FIELD_GROUP_ID` FOREIGN KEY (`CUSTOM_FIELD_GROUP_ID`) REFERENCES `custom_field_group` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
-
-
---
--- Table structure for table `upload`
---
-
-DROP TABLE IF EXISTS `upload`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `upload` (
-  `ID` int(11) NOT NULL auto_increment,
-  `STUDY_ID` int(11) NOT NULL,
-  `FILE_FORMAT_ID` int(11) NOT NULL,
-  `DELIMITER_TYPE_ID` int(11) NOT NULL,
-  `FILENAME` text NOT NULL,
-  `PAYLOAD` longblob NOT NULL,
-  `CHECKSUM` varchar(50) NOT NULL,
-  `USER_ID` varchar(50) NOT NULL,
-  `START_TIME` datetime NOT NULL,
-  `FINISH_TIME` datetime default NULL,
-  `UPLOAD_REPORT` longblob,
-  `ARK_FUNCTION_ID` int(11) NOT NULL,
-  PRIMARY KEY  (`ID`),
-  KEY `fk_upload_file_format` USING BTREE (`FILE_FORMAT_ID`),
-  KEY `fk_upload_delimiter` USING BTREE (`DELIMITER_TYPE_ID`),
-  KEY `ID` (`ID`),
-  KEY `fk_upload_study` (`STUDY_ID`),
-  KEY `fk_upload_ark_function_id` (`ARK_FUNCTION_ID`),
-  CONSTRAINT `fk_upload_ark_function_id` FOREIGN KEY (`ARK_FUNCTION_ID`) REFERENCES `ark_function` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_upload_delimiter_type` FOREIGN KEY (`DELIMITER_TYPE_ID`) REFERENCES `delimiter_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_upload_file_format` FOREIGN KEY (`FILE_FORMAT_ID`) REFERENCES `file_format` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_upload_study` FOREIGN KEY (`STUDY_ID`) REFERENCES `study` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`DELIMITER_TYPE_ID`) REFER `study/del';
-SET character_set_client = @saved_cs_client;
-
-
 --
 -- Table structure for table `custom_field_upload`
 --
@@ -1375,7 +777,130 @@ CREATE TABLE `custom_field_upload` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `delimiter_type`
+--
 
+DROP TABLE IF EXISTS `delimiter_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `delimiter_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(50) NOT NULL,
+  `DESCRIPTION` text,
+  `DELIMITER_CHARACTER` varchar(1) NOT NULL default ',',
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `domain_type`
+--
+
+DROP TABLE IF EXISTS `domain_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `domain_type` (
+  `ID` int(11) NOT NULL,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `email_account`
+--
+
+DROP TABLE IF EXISTS `email_account`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `email_account` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(255) NOT NULL,
+  `PRIMARY_ACCOUNT` int(11) default NULL,
+  `PERSON_ID` int(11) NOT NULL,
+  `EMAIL_ACCOUNT_TYPE_ID` int(11) NOT NULL,
+  PRIMARY KEY  (`ID`,`PERSON_ID`,`EMAIL_ACCOUNT_TYPE_ID`),
+  KEY `EMAIL_ACCOUNT_PER_FK1` USING BTREE (`PERSON_ID`),
+  KEY `EMAIL_ACCOUNT_EMA_FK1` USING BTREE (`EMAIL_ACCOUNT_TYPE_ID`),
+  CONSTRAINT `email_account_ibfk_1` FOREIGN KEY (`EMAIL_ACCOUNT_TYPE_ID`) REFERENCES `email_account_type` (`ID`),
+  CONSTRAINT `email_account_ibfk_2` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`EMAIL_ACCOUNT_TYPE_ID`) REFER `study';
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `email_account_type`
+--
+
+DROP TABLE IF EXISTS `email_account_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `email_account_type` (
+  `ID` int(11) NOT NULL,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(50) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `entity_type`
+--
+
+DROP TABLE IF EXISTS `entity_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `entity_type` (
+  `ID` int(11) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `field_type`
+--
+
+DROP TABLE IF EXISTS `field_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `field_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(50) NOT NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `file_format`
+--
+
+DROP TABLE IF EXISTS `file_format`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `file_format` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(50) NOT NULL,
+  `DESCRIPTION` text,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `gender_type`
+--
+
+DROP TABLE IF EXISTS `gender_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `gender_type` (
+  `ID` int(11) NOT NULL,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `link_correspondence_audit_person`
@@ -1395,32 +920,6 @@ CREATE TABLE `link_correspondence_audit_person` (
   CONSTRAINT `correspondence_audit_people_person_id` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 SET character_set_client = @saved_cs_client;
-
-
-
-
-
---
--- Table structure for table `study_site`
---
-
-DROP TABLE IF EXISTS `study_site`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `study_site` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  `ADDRESS_ID` int(11) NOT NULL,
-  `DOMAIN_TYPE_ID` int(11) NOT NULL,
-  PRIMARY KEY  (`ID`,`ADDRESS_ID`,`DOMAIN_TYPE_ID`),
-  KEY `STUDY_SITE_ADDRES_FK1` USING BTREE (`ADDRESS_ID`),
-  KEY `STUDY_SITE_DOMAIN_TYPE_FK` USING BTREE (`DOMAIN_TYPE_ID`),
-  CONSTRAINT `study_site_ibfk_1` FOREIGN KEY (`ADDRESS_ID`) REFERENCES `address` (`ID`),
-  CONSTRAINT `study_site_ibfk_2` FOREIGN KEY (`DOMAIN_TYPE_ID`) REFERENCES `domain_type` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`ADDRESS_ID`) REFER `study/address`(`';
-SET character_set_client = @saved_cs_client;
-
 
 --
 -- Table structure for table `link_site_contact`
@@ -1546,6 +1045,68 @@ CREATE TABLE `link_subject_contact` (
 SET character_set_client = @saved_cs_client;
 
 --
+-- Table structure for table `link_subject_study`
+--
+
+DROP TABLE IF EXISTS `link_subject_study`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `link_subject_study` (
+  `ID` int(11) NOT NULL auto_increment,
+  `PERSON_ID` int(11) NOT NULL,
+  `STUDY_ID` int(11) NOT NULL,
+  `SUBJECT_STATUS_ID` int(11) NOT NULL default '0',
+  `SUBJECT_UID` varchar(50) NOT NULL,
+  `AMDRF_ID` int(11) default NULL,
+  `STUDY_APPROACH_DATE` date default NULL,
+  `SEND_NEWS_LETTER` int(11) default NULL,
+  `YEAR_OF_FIRST_MAMOGRAM` int(11) default NULL,
+  `YEAR_OF_RECENT_MAMOGRAM` int(11) default NULL,
+  `TOTAL_MAMOGRAMS` int(11) default NULL,
+  `SITE_STREET_ADDRESS` varchar(255) default NULL,
+  `SITE_CITY` varchar(255) default NULL,
+  `SITE_POST` varchar(45) default NULL,
+  `COUNTRY_ID` int(11) default NULL,
+  `STATE_ID` int(11) default NULL,
+  `CONSENT_TO_ACTIVE_CONTACT_ID` int(11) default NULL,
+  `CONSENT_TO_PASSIVE_DATA_GATHERING_ID` int(11) default NULL,
+  `CONSENT_TO_USE_DATA_ID` int(11) default NULL,
+  `CONSENT_STATUS_ID` int(11) default NULL,
+  `CONSENT_TYPE_ID` int(11) default NULL,
+  `CONSENT_DATE` date default NULL,
+  `OTHER_STATE` varchar(255) default NULL,
+  `HEARD_ABOUT_STUDY` varchar(500) default NULL,
+  `COMMENTS` varchar(1000) default NULL,
+  `CONSENT_DOWNLOADED` int(11) default NULL,
+  PRIMARY KEY  (`ID`,`STUDY_ID`,`SUBJECT_UID`),
+  UNIQUE KEY `UQ_STUDY_ID_SUBJECT_UID` USING BTREE (`STUDY_ID`,`SUBJECT_UID`),
+  KEY `FK_LINK_SUBJECT_STUDY_PERSON_FK` (`PERSON_ID`),
+  KEY `FK_LINK_SUBJECT_STUDY_SUBJECT_STATUS_FK` (`SUBJECT_STATUS_ID`),
+  KEY `FK_LINK_SUBJECT_STUDY_STATE` (`STATE_ID`),
+  KEY `FK_LINK_SUBJECT_STUDY_COUNTRY` (`COUNTRY_ID`),
+  KEY `FK_LINK_SBJT_STUDY_CNS_ACT_CNCT` (`CONSENT_TO_ACTIVE_CONTACT_ID`),
+  KEY `FK_LINK_SUBJECT_STUDY_CNS_PASS_DATA` (`CONSENT_TO_PASSIVE_DATA_GATHERING_ID`),
+  KEY `FK_LINK_SUBJECT_STUDY_CNS_USE_DATA` (`CONSENT_TO_USE_DATA_ID`),
+  KEY `FK_LINK_SUBJECT_STUDY_SUBJECT_UID` USING BTREE (`SUBJECT_UID`),
+  KEY `FK_LINK_SUBJECT_STUDY_STUDY_FK` USING BTREE (`STUDY_ID`),
+  KEY `FK_LINK_SUBJECT_STUDY_CONSENT_STATUS_ID` USING BTREE (`CONSENT_STATUS_ID`),
+  KEY `FK_LINK_SUBJECT_STUDY_CONSENT_TYPE_ID` USING BTREE (`CONSENT_TYPE_ID`),
+  KEY `fk_link_subject_study_1` (`CONSENT_DOWNLOADED`),
+  CONSTRAINT `FK_LINK_SBJT_STUDY_CNS_ACT_CNCT` FOREIGN KEY (`CONSENT_TO_ACTIVE_CONTACT_ID`) REFERENCES `yes_no` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_link_subject_study_1` FOREIGN KEY (`CONSENT_DOWNLOADED`) REFERENCES `yes_no` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_LINK_SUBJECT_STUDY_CNS_PASS_DATA` FOREIGN KEY (`CONSENT_TO_PASSIVE_DATA_GATHERING_ID`) REFERENCES `yes_no` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_LINK_SUBJECT_STUDY_CNS_USE_DATA` FOREIGN KEY (`CONSENT_TO_USE_DATA_ID`) REFERENCES `yes_no` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_LINK_SUBJECT_STUDY_CONSENT_STATUS_ID` FOREIGN KEY (`CONSENT_STATUS_ID`) REFERENCES `consent_status` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_LINK_SUBJECT_STUDY_CONSENT_TYPE_ID` FOREIGN KEY (`CONSENT_TYPE_ID`) REFERENCES `consent_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_LINK_SUBJECT_STUDY_COUNTRY` FOREIGN KEY (`COUNTRY_ID`) REFERENCES `country` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_LINK_SUBJECT_STUDY_PERSON_FK` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`),
+  CONSTRAINT `FK_LINK_SUBJECT_STUDY_STATE` FOREIGN KEY (`STATE_ID`) REFERENCES `country_state` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_LINK_SUBJECT_STUDY_STUDY_FK` FOREIGN KEY (`STUDY_ID`) REFERENCES `study` (`ID`),
+  CONSTRAINT `FK_LINK_SUBJECT_STUDY_SUBJECT_STATUS_FK` FOREIGN KEY (`SUBJECT_STATUS_ID`) REFERENCES `subject_status` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`PERSON_ID`) REFER `study/person`(`ID';
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `link_subject_studycomp`
 --
 
@@ -1570,8 +1131,74 @@ CREATE TABLE `link_subject_studycomp` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`PERSON_SUBJECT_ID`) REFER `study/per';
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `marital_status`
+--
 
+DROP TABLE IF EXISTS `marital_status`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `marital_status` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(50) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `person`
+--
+
+DROP TABLE IF EXISTS `person`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `person` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FIRST_NAME` varchar(50) default NULL,
+  `MIDDLE_NAME` varchar(50) default NULL,
+  `LAST_NAME` varchar(50) default NULL,
+  `PREFERRED_NAME` varchar(150) default NULL,
+  `GENDER_TYPE_ID` int(11) NOT NULL default '0',
+  `DATE_OF_BIRTH` date default NULL,
+  `DATE_OF_DEATH` date default NULL,
+  `REGISTRATION_DATE` date default NULL,
+  `CAUSE_OF_DEATH` varchar(255) default NULL,
+  `VITAL_STATUS_ID` int(11) NOT NULL default '0',
+  `TITLE_TYPE_ID` int(11) NOT NULL default '0',
+  `MARITAL_STATUS_ID` int(11) default NULL,
+  `PERSON_CONTACT_METHOD_ID` int(11) default NULL,
+  `PREFERRED_EMAIL` varchar(150) default NULL,
+  `OTHER_EMAIL` varchar(45) default NULL,
+  `DATE_LAST_KNOWN_ALIVE` date default NULL,
+  PRIMARY KEY  (`ID`,`VITAL_STATUS_ID`,`TITLE_TYPE_ID`,`GENDER_TYPE_ID`),
+  KEY `PERSON_GENDER_TYPE_FK` USING BTREE (`GENDER_TYPE_ID`),
+  KEY `PERSON_VITAL_STATUS_FK` USING BTREE (`VITAL_STATUS_ID`),
+  KEY `PERSON_TITLE_TYPE_FK` USING BTREE (`TITLE_TYPE_ID`),
+  KEY `fk_person_person_contact_method` (`PERSON_CONTACT_METHOD_ID`),
+  KEY `fk_person_marital_status` (`MARITAL_STATUS_ID`),
+  CONSTRAINT `fk_person_gender_type` FOREIGN KEY (`GENDER_TYPE_ID`) REFERENCES `gender_type` (`ID`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_person_marital_status` FOREIGN KEY (`MARITAL_STATUS_ID`) REFERENCES `marital_status` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_person_person_contact_method` FOREIGN KEY (`PERSON_CONTACT_METHOD_ID`) REFERENCES `person_contact_method` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_person_title_type` FOREIGN KEY (`TITLE_TYPE_ID`) REFERENCES `title_type` (`ID`),
+  CONSTRAINT `fk_person_vital_status` FOREIGN KEY (`VITAL_STATUS_ID`) REFERENCES `vital_status` (`ID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`GENDER_TYPE_ID`) REFER `study/gender';
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `person_contact_method`
+--
+
+DROP TABLE IF EXISTS `person_contact_method`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `person_contact_method` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(45) NOT NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `NAME` USING BTREE (`NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `person_lastname_history`
@@ -1622,6 +1249,35 @@ CREATE TABLE `phone` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`PERSON_ID`) REFER `study/person`(`ID';
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `phone_status`
+--
+
+DROP TABLE IF EXISTS `phone_status`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `phone_status` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(255) default NULL,
+  `DESCRIPTION` varchar(500) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `phone_type`
+--
+
+DROP TABLE IF EXISTS `phone_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `phone_type` (
+  `ID` int(11) NOT NULL,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `question_answer`
@@ -1637,7 +1293,35 @@ CREATE TABLE `question_answer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `registration_status`
+--
 
+DROP TABLE IF EXISTS `registration_status`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `registration_status` (
+  `ID` int(11) NOT NULL,
+  `REGISTRATION_STATUS` varchar(50) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `relationship`
+--
+
+DROP TABLE IF EXISTS `relationship`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `relationship` (
+  `ID` int(11) NOT NULL,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Temporary table structure for view `role_policy`
@@ -1652,6 +1336,82 @@ DROP TABLE IF EXISTS `role_policy`;
   `Permission` varchar(255),
   `Function` varchar(1000)
 ) ENGINE=MyISAM */;
+
+--
+-- Table structure for table `study`
+--
+
+DROP TABLE IF EXISTS `study`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `study` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(150) default NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  `DATE_OF_APPLICATION` date default NULL,
+  `ESTIMATED_YEAR_OF_COMPLETION` int(11) default NULL,
+  `CHIEF_INVESTIGATOR` varchar(50) default NULL,
+  `CO_INVESTIGATOR` varchar(50) default NULL,
+  `AUTO_GENERATE_SUBJECTUID` int(11) NOT NULL,
+  `SUBJECTUID_START` int(11) default NULL,
+  `STUDY_STATUS_ID` int(11) NOT NULL,
+  `SUBJECTUID_PREFIX` varchar(20) default NULL,
+  `CONTACT_PERSON` varchar(50) default NULL,
+  `CONTACT_PERSON_PHONE` varchar(20) default NULL,
+  `LDAP_GROUP_NAME` varchar(100) default NULL,
+  `AUTO_CONSENT` int(11) default NULL,
+  `SUB_STUDY_BIOSPECIMEN_PREFIX` varchar(20) default NULL,
+  `STUDY_LOGO` blob,
+  `FILENAME` varchar(255) default NULL,
+  `SUBJECTUID_TOKEN_ID` int(11) default NULL,
+  `SUBJECTUID_PADCHAR_ID` int(11) default NULL,
+  `SUBJECT_KEY_PREFIX` varchar(45) default NULL,
+  `SUBJECT_KEY_START` varchar(45) default NULL,
+  PRIMARY KEY  (`ID`,`STUDY_STATUS_ID`),
+  KEY `STUDY_STUDY_STATUS_FK1` USING BTREE (`STUDY_STATUS_ID`),
+  KEY `ID` USING BTREE (`ID`),
+  KEY `fk_study_subjectuid_padchar` (`SUBJECTUID_PADCHAR_ID`),
+  KEY `fk_study_subjectuid_token` (`SUBJECTUID_TOKEN_ID`),
+  CONSTRAINT `fk_study_study_status` FOREIGN KEY (`STUDY_STATUS_ID`) REFERENCES `study_status` (`ID`),
+  CONSTRAINT `fk_study_subjectuid_padchar` FOREIGN KEY (`SUBJECTUID_PADCHAR_ID`) REFERENCES `subjectuid_padchar` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_study_subjectuid_token` FOREIGN KEY (`SUBJECTUID_TOKEN_ID`) REFERENCES `subjectuid_token` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`STUDY_STATUS_ID`) REFER `study/study';
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `study_comp`
+--
+
+DROP TABLE IF EXISTS `study_comp`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `study_comp` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(100) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  `STUDY_ID` int(11) NOT NULL,
+  `KEYWORD` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`,`STUDY_ID`),
+  UNIQUE KEY `NAME` (`NAME`,`STUDY_ID`),
+  KEY `STUDY_COMP_STUDY_FK` USING BTREE (`STUDY_ID`),
+  CONSTRAINT `study_comp_ibfk_1` FOREIGN KEY (`STUDY_ID`) REFERENCES `study` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`STUDY_ID`) REFER `study/study`(`ID`)';
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `study_comp_status`
+--
+
+DROP TABLE IF EXISTS `study_comp_status`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `study_comp_status` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `study_consent_question`
@@ -1673,7 +1433,41 @@ CREATE TABLE `study_consent_question` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `study_site`
+--
 
+DROP TABLE IF EXISTS `study_site`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `study_site` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  `ADDRESS_ID` int(11) NOT NULL,
+  `DOMAIN_TYPE_ID` int(11) NOT NULL,
+  PRIMARY KEY  (`ID`,`ADDRESS_ID`,`DOMAIN_TYPE_ID`),
+  KEY `STUDY_SITE_ADDRES_FK1` USING BTREE (`ADDRESS_ID`),
+  KEY `STUDY_SITE_DOMAIN_TYPE_FK` USING BTREE (`DOMAIN_TYPE_ID`),
+  CONSTRAINT `study_site_ibfk_1` FOREIGN KEY (`ADDRESS_ID`) REFERENCES `address` (`ID`),
+  CONSTRAINT `study_site_ibfk_2` FOREIGN KEY (`DOMAIN_TYPE_ID`) REFERENCES `domain_type` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`ADDRESS_ID`) REFER `study/address`(`';
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `study_status`
+--
+
+DROP TABLE IF EXISTS `study_status`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `study_status` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(25) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Temporary table structure for view `study_user_role_permission_view`
@@ -1739,7 +1533,20 @@ CREATE TABLE `subject_file` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `subject_status`
+--
 
+DROP TABLE IF EXISTS `subject_status`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `subject_status` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `subject_study_consent`
@@ -1764,36 +1571,195 @@ CREATE TABLE `subject_study_consent` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 SET character_set_client = @saved_cs_client;
 
-
 --
--- Table structure for table `audit_history`
+-- Table structure for table `subjectuid_padchar`
 --
 
-DROP TABLE IF EXISTS `audit_history`;
+DROP TABLE IF EXISTS `subjectuid_padchar`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-CREATE TABLE `audit_history` (
+CREATE TABLE `subjectuid_padchar` (
   `ID` int(11) NOT NULL auto_increment,
-  `STUDY_STATUS_ID` int(11) default '0',
-  `DATE_TIME` datetime default NULL,
-  `ACTION_TYPE` varchar(50) NOT NULL,
-  `ARK_USER_ID` varchar(255) default NULL,
-  `COMMENT` varchar(255) default NULL,
-  `ENTITY_TYPE` varchar(50) NOT NULL,
-  `ENTITY_ID` int(11) default NULL,
-  PRIMARY KEY  (`ID`),
-  KEY `AUDIT_HISTORY_STUDY_STATUS_FK` USING BTREE (`STUDY_STATUS_ID`),
-  KEY `AUDIT_HISTORY_ENTITY_ID` USING BTREE (`ENTITY_ID`),
-  KEY `AUDIT_HISTORY_ACTION_TYPE` USING BTREE (`ACTION_TYPE`),
-  KEY `AUDIT_HISTORY_ENTITY_TYPE` USING BTREE (`ENTITY_TYPE`),
-  CONSTRAINT `audit_history_ibfk_1` FOREIGN KEY (`STUDY_STATUS_ID`) REFERENCES `study_status` (`ID`),
-  CONSTRAINT `audit_history_ibfk_3` FOREIGN KEY (`STUDY_STATUS_ID`) REFERENCES `study_status` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`ACTION_TYPE_ID`) REFER `study/action';
+  `NAME` varchar(25) NOT NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `subjectuid_sequence`
+--
+
+DROP TABLE IF EXISTS `subjectuid_sequence`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `subjectuid_sequence` (
+  `STUDY_NAME_ID` varchar(150) NOT NULL,
+  `UID_SEQUENCE` int(11) NOT NULL default '0',
+  `INSERT_LOCK` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`STUDY_NAME_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
--- data 
+-- Table structure for table `subjectuid_token`
+--
+
+DROP TABLE IF EXISTS `subjectuid_token`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `subjectuid_token` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(25) NOT NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `title_type`
+--
+
+DROP TABLE IF EXISTS `title_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `title_type` (
+  `ID` int(11) NOT NULL,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `unit_type`
+--
+
+DROP TABLE IF EXISTS `unit_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `unit_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `ARK_FUNCTION_ID` int(11) default NULL,
+  `NAME` varchar(45) NOT NULL,
+  `DESCRIPTION` varchar(255) NOT NULL,
+  PRIMARY KEY  (`ID`),
+  UNIQUE KEY `NAME_ARK_FUNCTION_UNIQUE` (`NAME`,`ARK_FUNCTION_ID`),
+  KEY `FK_UNIT_TYPE_ARK_FUNCTION_ID` (`ARK_FUNCTION_ID`),
+  CONSTRAINT `FK_UNIT_TYPE_ARK_FUNCTION_ID` FOREIGN KEY (`ARK_FUNCTION_ID`) REFERENCES `ark_function` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `upload`
+--
+
+DROP TABLE IF EXISTS `upload`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `upload` (
+  `ID` int(11) NOT NULL auto_increment,
+  `STUDY_ID` int(11) NOT NULL,
+  `FILE_FORMAT_ID` int(11) NOT NULL,
+  `DELIMITER_TYPE_ID` int(11) NOT NULL,
+  `FILENAME` text NOT NULL,
+  `PAYLOAD` longblob NOT NULL,
+  `CHECKSUM` varchar(50) NOT NULL,
+  `USER_ID` varchar(50) NOT NULL,
+  `START_TIME` datetime NOT NULL,
+  `FINISH_TIME` datetime default NULL,
+  `UPLOAD_REPORT` longblob,
+  `ARK_FUNCTION_ID` int(11) NOT NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `fk_upload_file_format` USING BTREE (`FILE_FORMAT_ID`),
+  KEY `fk_upload_delimiter` USING BTREE (`DELIMITER_TYPE_ID`),
+  KEY `ID` (`ID`),
+  KEY `fk_upload_study` (`STUDY_ID`),
+  KEY `fk_upload_ark_function_id` (`ARK_FUNCTION_ID`),
+  CONSTRAINT `fk_upload_ark_function_id` FOREIGN KEY (`ARK_FUNCTION_ID`) REFERENCES `ark_function` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_upload_delimiter_type` FOREIGN KEY (`DELIMITER_TYPE_ID`) REFERENCES `delimiter_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_upload_file_format` FOREIGN KEY (`FILE_FORMAT_ID`) REFERENCES `file_format` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_upload_study` FOREIGN KEY (`STUDY_ID`) REFERENCES `study` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`DELIMITER_TYPE_ID`) REFER `study/del';
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `vital_status`
+--
+
+DROP TABLE IF EXISTS `vital_status`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `vital_status` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `yes_no`
+--
+
+DROP TABLE IF EXISTS `yes_no`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `yes_no` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(3) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Final view structure for view `role_policy`
+--
+
+/*!50001 DROP TABLE `role_policy`*/;
+/*!50001 DROP VIEW IF EXISTS `role_policy`*/;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`arkadmin`@`172.20.1.%` SQL SECURITY DEFINER */
+/*!50001 VIEW `role_policy` AS select `ar`.`NAME` AS `Role`,`am`.`NAME` AS `Module`,`af`.`NAME` AS `FunctionGroup`,`ap`.`NAME` AS `Permission`,`af`.`DESCRIPTION` AS `Function` from ((((`ark_role_policy_template` `arpt` join `ark_role` `ar` on((`arpt`.`ARK_ROLE_ID` = `ar`.`ID`))) join `ark_permission` `ap` on((`arpt`.`ARK_PERMISSION_ID` = `ap`.`ID`))) left join `ark_module` `am` on((`arpt`.`ARK_MODULE_ID` = `am`.`ID`))) left join `ark_function` `af` on((`arpt`.`ARK_FUNCTION_ID` = `af`.`ID`))) order by `ar`.`ID`,`af`.`ID`,`ap`.`ID` */;
+
+--
+-- Final view structure for view `study_user_role_permission_view`
+--
+
+/*!50001 DROP TABLE `study_user_role_permission_view`*/;
+/*!50001 DROP VIEW IF EXISTS `study_user_role_permission_view`*/;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`arkadmin`@`172.20.1.%` SQL SECURITY DEFINER */
+/*!50001 VIEW `study_user_role_permission_view` AS select distinct `study`.`NAME` AS `studyName`,`ark_user`.`LDAP_USER_NAME` AS `userName`,`ark_role`.`NAME` AS `roleName`,`ark_module`.`NAME` AS `moduleName`,max(if((`arpt`.`ARK_PERMISSION_ID` = 1),_utf8'Y',_utf8'N')) AS `create`,max(if((`arpt`.`ARK_PERMISSION_ID` = 2),_utf8'Y',_utf8'N')) AS `read`,max(if((`arpt`.`ARK_PERMISSION_ID` = 3),_utf8'Y',_utf8'N')) AS `update`,max(if((`arpt`.`ARK_PERMISSION_ID` = 4),_utf8'Y',_utf8'N')) AS `delete` from ((((((`ark_role_policy_template` `arpt` join `ark_role`) join `ark_user_role`) join `ark_user`) join `ark_module`) join `ark_permission` `ap`) join `study`) where ((`arpt`.`ARK_ROLE_ID` = `ark_role`.`ID`) and (`arpt`.`ARK_MODULE_ID` = `ark_module`.`ID`) and (`arpt`.`ARK_PERMISSION_ID` = `ap`.`ID`) and (`arpt`.`ARK_ROLE_ID` = `ark_user_role`.`ARK_ROLE_ID`) and (`arpt`.`ARK_MODULE_ID` = `ark_user_role`.`ARK_MODULE_ID`) and (`ark_user_role`.`ARK_ROLE_ID` = `ark_role`.`ID`) and (`ark_user_role`.`ARK_MODULE_ID` = `ark_module`.`ID`) and (`ark_user_role`.`ARK_USER_ID` = `ark_user`.`ID`) and (`ark_user_role`.`STUDY_ID` = `study`.`ID`)) group by `study`.`NAME`,`ark_user`.`LDAP_USER_NAME`,`ark_role`.`NAME`,`ark_module`.`NAME` order by `ark_user_role`.`STUDY_ID`,`ark_user`.`LDAP_USER_NAME`,`ark_role`.`ID` */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2011-11-09  9:15:49
+
+-- MySQL dump 10.11
+--
+-- Host: localhost    Database: study
+-- ------------------------------------------------------
+-- Server version	5.0.77
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Dumping data for table `action_type`
 --
 
 LOCK TABLES `action_type` WRITE;
@@ -1823,18 +1789,6 @@ INSERT INTO `address_type` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'HOME',NULL),
 UNLOCK TABLES;
 
 --
--- Dumping data for table `ark_function_type`
---
-
-LOCK TABLES `ark_function_type` WRITE;
-/*!40000 ALTER TABLE `ark_function_type` DISABLE KEYS */;
-INSERT INTO `ark_function_type` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'NON-REPORT','A function that is not a report.'),(2,'REPORT',' A function that is a report.');
-/*!40000 ALTER TABLE `ark_function_type` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
-
---
 -- Dumping data for table `ark_function`
 --
 
@@ -1844,6 +1798,15 @@ INSERT INTO `ark_function` (`ID`, `NAME`, `DESCRIPTION`, `ARK_FUNCTION_TYPE_ID`,
 /*!40000 ALTER TABLE `ark_function` ENABLE KEYS */;
 UNLOCK TABLES;
 
+--
+-- Dumping data for table `ark_function_type`
+--
+
+LOCK TABLES `ark_function_type` WRITE;
+/*!40000 ALTER TABLE `ark_function_type` DISABLE KEYS */;
+INSERT INTO `ark_function_type` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'NON-REPORT','A function that is not a report.'),(2,'REPORT',' A function that is a report.');
+/*!40000 ALTER TABLE `ark_function_type` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Dumping data for table `ark_module`
@@ -1865,18 +1828,6 @@ INSERT INTO `ark_module_function` (`ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `FU
 /*!40000 ALTER TABLE `ark_module_function` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
---
--- Dumping data for table `ark_role`
---
-
-LOCK TABLES `ark_role` WRITE;
-/*!40000 ALTER TABLE `ark_role` DISABLE KEYS */;
-INSERT INTO `ark_role` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'Super Administrator',NULL),(2,'Study Administrator',NULL),(3,'Study Read-Only user',NULL),(4,'Subject Administrator',NULL),(5,'Subject Data Manager',NULL),(6,'Subject Read-Only user',NULL),(7,'Pheno Read-Only user',NULL),(8,'Pheno Data Manager',NULL),(9,'LIMS Read-Only user',NULL),(10,'LIMS Data Manager',NULL),(11,'Geno Read-Only User',NULL),(12,'LIMS Administrator',NULL),(13,'Pheno Administrator',NULL);
-/*!40000 ALTER TABLE `ark_role` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
 --
 -- Dumping data for table `ark_module_role`
 --
@@ -1897,7 +1848,15 @@ INSERT INTO `ark_permission` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'CREATE',NU
 /*!40000 ALTER TABLE `ark_permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
+--
+-- Dumping data for table `ark_role`
+--
 
+LOCK TABLES `ark_role` WRITE;
+/*!40000 ALTER TABLE `ark_role` DISABLE KEYS */;
+INSERT INTO `ark_role` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'Super Administrator',NULL),(2,'Study Administrator',NULL),(3,'Study Read-Only user',NULL),(4,'Subject Administrator',NULL),(5,'Subject Data Manager',NULL),(6,'Subject Read-Only user',NULL),(7,'Pheno Read-Only user',NULL),(8,'Pheno Data Manager',NULL),(9,'LIMS Read-Only user',NULL),(10,'LIMS Data Manager',NULL),(11,'Geno Read-Only User',NULL),(12,'LIMS Administrator',NULL),(13,'Pheno Administrator',NULL);
+/*!40000 ALTER TABLE `ark_role` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Dumping data for table `ark_role_policy_template`
@@ -2214,8 +2173,8 @@ LOCK TABLES `yes_no` WRITE;
 INSERT INTO `yes_no` (`ID`, `NAME`) VALUES (1,'Yes'),(2,'No');
 /*!40000 ALTER TABLE `yes_no` ENABLE KEYS */;
 UNLOCK TABLES;
-
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
@@ -2247,88 +2206,10 @@ UNLOCK TABLES;
 --
 -- Current Database: `pheno`
 --
-drop database if exists `pheno`;
+
 CREATE DATABASE /*!32312 IF NOT EXISTS*/ `pheno` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
 USE `pheno`;
-
-
---
--- Table structure for table `questionnaire_status`
---
-
-DROP TABLE IF EXISTS `questionnaire_status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `questionnaire_status` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(100) default NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `status`
---
-
-DROP TABLE IF EXISTS `status`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `status` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `file_format`
---
-
-DROP TABLE IF EXISTS `file_format`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `file_format` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) NOT NULL,
-  `DESCRIPTION` text,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `delimiter_type`
---
-
-DROP TABLE IF EXISTS `delimiter_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `delimiter_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) NOT NULL,
-  `DESCRIPTION` text,
-  `DELIMITER_CHARACTER` varchar(1) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
-
---
--- Table structure for table `field_type`
---
-
-DROP TABLE IF EXISTS `field_type`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `field_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) NOT NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
 
 --
 -- Table structure for table `collection`
@@ -2357,42 +2238,6 @@ CREATE TABLE `collection` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`STATUS_ID`) REFER `pheno/status`(`ID';
 SET character_set_client = @saved_cs_client;
 
-
---
--- Table structure for table `upload`
---
-
-DROP TABLE IF EXISTS `upload`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `upload` (
-  `ID` int(11) NOT NULL auto_increment,
-  `STUDY_ID` int(11) NOT NULL,
-  `FILE_FORMAT_ID` int(11) NOT NULL,
-  `DELIMITER_TYPE_ID` int(11) NOT NULL,
-  `FILENAME` text NOT NULL,
-  `PAYLOAD` longblob NOT NULL,
-  `CHECKSUM` varchar(50) NOT NULL,
-  `USER_ID` varchar(50) NOT NULL,
-  `INSERT_TIME` datetime NOT NULL,
-  `UPDATE_USER_ID` varchar(50) default NULL,
-  `UPDATE_TIME` datetime default NULL,
-  `START_TIME` datetime NOT NULL,
-  `FINISH_TIME` datetime default NULL,
-  `UPLOAD_REPORT` longblob,
-  `UPLOAD_TYPE` varchar(45) default NULL,
-  PRIMARY KEY  (`ID`),
-  KEY `fk_upload_file_format` USING BTREE (`FILE_FORMAT_ID`),
-  KEY `fk_upload_delimiter` USING BTREE (`DELIMITER_TYPE_ID`),
-  KEY `ID` USING BTREE (`ID`),
-  KEY `fk_upload_study` USING BTREE (`STUDY_ID`),
-  CONSTRAINT `fk_upload_delimiter_type` FOREIGN KEY (`DELIMITER_TYPE_ID`) REFERENCES `delimiter_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_upload_file_format` FOREIGN KEY (`FILE_FORMAT_ID`) REFERENCES `file_format` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_upload_study` FOREIGN KEY (`STUDY_ID`) REFERENCES `study`.`study` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`DELIMITER_TYPE_ID`) REFER `pheno/del';
-SET character_set_client = @saved_cs_client;
-
-
 --
 -- Table structure for table `collection_upload`
 --
@@ -2416,7 +2261,21 @@ CREATE TABLE `collection_upload` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`COLLECTION_ID`) REFER `pheno/collect';
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `delimiter_type`
+--
 
+DROP TABLE IF EXISTS `delimiter_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `delimiter_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(50) NOT NULL,
+  `DESCRIPTION` text,
+  `DELIMITER_CHARACTER` varchar(1) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `field`
@@ -2520,28 +2379,6 @@ CREATE TABLE `field_data_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
-
-
---
--- Table structure for table `field_group`
---
-
-DROP TABLE IF EXISTS `field_group`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `field_group` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(100) NOT NULL,
-  `DESCRIPTION` text,
-  `STUDY_ID` int(11) NOT NULL,
-  `USER_ID` varchar(50) NOT NULL,
-  `INSERT_TIME` datetime NOT NULL,
-  `UPDATE_USER_ID` varchar(50) default NULL,
-  `UPDATE_TIME` datetime default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-SET character_set_client = @saved_cs_client;
-
 --
 -- Table structure for table `field_field_group`
 --
@@ -2565,7 +2402,25 @@ CREATE TABLE `field_field_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`FIELD_ID`) REFER `pheno/field`(`ID`)';
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `field_group`
+--
 
+DROP TABLE IF EXISTS `field_group`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `field_group` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(100) NOT NULL,
+  `DESCRIPTION` text,
+  `STUDY_ID` int(11) NOT NULL,
+  `USER_ID` varchar(50) NOT NULL,
+  `INSERT_TIME` datetime NOT NULL,
+  `UPDATE_USER_ID` varchar(50) default NULL,
+  `UPDATE_TIME` datetime default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `field_group_upload`
@@ -2602,7 +2457,19 @@ DROP TABLE IF EXISTS `field_summary`;
   `fields_with_data` bigint(21)
 ) ENGINE=MyISAM */;
 
+--
+-- Table structure for table `field_type`
+--
 
+DROP TABLE IF EXISTS `field_type`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `field_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(50) NOT NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `field_upload`
@@ -2650,7 +2517,20 @@ DROP TABLE IF EXISTS `field_upload_v`;
   `UPLOAD_REPORT` longblob
 ) ENGINE=MyISAM */;
 
+--
+-- Table structure for table `file_format`
+--
 
+DROP TABLE IF EXISTS `file_format`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `file_format` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(50) NOT NULL,
+  `DESCRIPTION` text,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `pheno_collection`
@@ -2704,6 +2584,68 @@ CREATE TABLE `pheno_data` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
+--
+-- Table structure for table `questionnaire_status`
+--
+
+DROP TABLE IF EXISTS `questionnaire_status`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `questionnaire_status` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(100) default NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `status`
+--
+
+DROP TABLE IF EXISTS `status`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `status` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(50) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `upload`
+--
+
+DROP TABLE IF EXISTS `upload`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `upload` (
+  `ID` int(11) NOT NULL auto_increment,
+  `STUDY_ID` int(11) NOT NULL,
+  `FILE_FORMAT_ID` int(11) NOT NULL,
+  `DELIMITER_TYPE_ID` int(11) NOT NULL,
+  `FILENAME` text NOT NULL,
+  `PAYLOAD` longblob NOT NULL,
+  `CHECKSUM` varchar(50) NOT NULL,
+  `USER_ID` varchar(50) NOT NULL,
+  `INSERT_TIME` datetime NOT NULL,
+  `UPDATE_USER_ID` varchar(50) default NULL,
+  `UPDATE_TIME` datetime default NULL,
+  `START_TIME` datetime NOT NULL,
+  `FINISH_TIME` datetime default NULL,
+  `UPLOAD_REPORT` longblob,
+  `UPLOAD_TYPE` varchar(45) default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `fk_upload_file_format` USING BTREE (`FILE_FORMAT_ID`),
+  KEY `fk_upload_delimiter` USING BTREE (`DELIMITER_TYPE_ID`),
+  KEY `ID` USING BTREE (`ID`),
+  KEY `fk_upload_study` USING BTREE (`STUDY_ID`),
+  CONSTRAINT `fk_upload_delimiter_type` FOREIGN KEY (`DELIMITER_TYPE_ID`) REFERENCES `delimiter_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_upload_file_format` FOREIGN KEY (`FILE_FORMAT_ID`) REFERENCES `file_format` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_upload_study` FOREIGN KEY (`STUDY_ID`) REFERENCES `study`.`study` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`DELIMITER_TYPE_ID`) REFER `pheno/del';
+SET character_set_client = @saved_cs_client;
 
 --
 -- Final view structure for view `field_summary`
