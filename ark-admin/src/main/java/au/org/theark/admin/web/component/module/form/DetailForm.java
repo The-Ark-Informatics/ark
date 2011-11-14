@@ -66,10 +66,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("arkModule.id");
 		idTxtFld.setEnabled(false);
-
 		nameTxtFld = new TextField<String>("arkModule.name");
-		nameTxtFld.setEnabled(false);
-		
 		descriptionTxtAreaFld = new TextArea<String>("arkModule.description");
 
 		attachValidators();
