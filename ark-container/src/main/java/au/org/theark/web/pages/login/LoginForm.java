@@ -13,6 +13,7 @@ import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -36,7 +37,7 @@ import au.org.theark.web.pages.reset.ResetPage;
  * @author nivedann
  * @author cellis
  */
-public class LoginForm extends Form<ArkUserVO> {
+public class LoginForm extends StatelessForm<ArkUserVO> {
 	/**
 	 * 
 	 */
@@ -134,10 +135,6 @@ public class LoginForm extends Form<ArkUserVO> {
 		addComponentsToForm();
 	}
 	
-	@Override
-	protected boolean getStatelessHint() {
-		return false;
-	}
 
 	private void addComponentsToForm() {
 		add(userNameTxtFld.setRequired(true));
