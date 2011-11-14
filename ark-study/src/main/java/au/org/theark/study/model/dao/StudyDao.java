@@ -1446,25 +1446,23 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 						setSubjectUidSequenceLock(study, true);
 
 						// Set default foreign key reference
-						if (subjectVo.getLinkSubjectStudy().getSubjectStatus() == null || subjectVo.getLinkSubjectStudy().getSubjectStatus().getName().isEmpty()) {
+						if (subjectVo.getLinkSubjectStudy().getSubjectStatus() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getSubjectStatus().getName())) {
 							SubjectStatus subjectStatus = getSubjectStatusByName("Subject");
 							subjectVo.getLinkSubjectStudy().setSubjectStatus(subjectStatus);
 						}
 
-						// Set default foreign key reference
-						if (subjectVo.getLinkSubjectStudy().getPerson().getTitleType() == null || subjectVo.getLinkSubjectStudy().getPerson().getTitleType().getName().isEmpty()) {
+						if(subjectVo.getLinkSubjectStudy().getPerson().getTitleType() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getTitleType().getName())){
 							TitleType titleType = getTitleType(new Long(0));
 							subjectVo.getLinkSubjectStudy().getPerson().setTitleType(titleType);
 						}
-
 						// Set default foreign key reference
-						if (subjectVo.getLinkSubjectStudy().getPerson().getGenderType() == null || subjectVo.getLinkSubjectStudy().getPerson().getGenderType().getName().isEmpty()) {
+						if (subjectVo.getLinkSubjectStudy().getPerson().getGenderType() == null ||  StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getGenderType().getName())){
 							GenderType genderType = getGenderType(new Long(0));
 							subjectVo.getLinkSubjectStudy().getPerson().setGenderType(genderType);
 						}
 
 						// Set default foreign key reference
-						if (subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus() == null || subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus().getName().isEmpty()) {
+						if (subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus().getName())) {
 							VitalStatus vitalStatus = getVitalStatus(new Long(0));
 							subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
 						}
