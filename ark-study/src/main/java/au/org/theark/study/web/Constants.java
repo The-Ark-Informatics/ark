@@ -346,12 +346,12 @@ public class Constants {
 			{ "FORMAT", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER", "DD/MM/YYYY", "ALPHANUMERIC", "CHARACTER",
 			"CHARACTER", "ALPHANUMERIC" },
 			{ "MANDATORY", "Yes - unless assigned on upload", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No" },
-			{ "VALID VALUES", "", "Unknown, Br, Capt, Col, Cpl, Dean, Dr, Fr, Lac, Major, Miss, Mr, Mrs, Ms., Past, Prof, Pstr, Rev, Sir, Sr", "", "", "", "", "", "Alive, Deceased, Unknown",
+			{ "VALID VALUES", "", "Unknown, Br, Capt, Col, Cpl, Dean, Dr, Fr, Lac, Major, Miss, Mr, Mrs, Ms, Past, Prof, Pstr, Rev, Sir, Sr", "", "", "", "", "", "Alive, Deceased, Unknown",
 			"Male, Female, Unknown", "Subject, Prospect, Withdrawn Subject, Archive", "", "", "Married, Single, Divorced, Unknown", "Email, Home telephone, Mobile telephone, Post", "" },
 			{ "NOTE: Removed this first column, and replace rows 2 to 6", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" } };
 
-	// 1 digit, 1 lower, 1 upper, 1 symbol "@#$%", from 6 to 20
-	public static final String			PASSWORD_PATTERN												= "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
+	// 1 digit, 1 lower, 1 upper, 1 symbol "~!@#$%^&*()_-+={}[]:;\"<>|", from 6 to 20
+	public static final String			PASSWORD_PATTERN												= "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_\\-\\+\\=\\{\\}\\[\\]:;\\\"<>|]).{6,20})";
 	
 
 }
