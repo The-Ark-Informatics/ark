@@ -495,10 +495,11 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	}
 
 	public ArrayList<ArkRole> getArkRoleLinkedToModule(ArkModule arkModule) {
-
 		Collection<ArkModuleRole> arkModuleList = new ArrayList<ArkModuleRole>();
 		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);
 		criteria.add(Restrictions.eq("arkModule", arkModule));
+		criteria.createAlias("arkRole", "role", Criteria.LEFT_JOIN);
+		criteria.addOrder(Order.asc("role.name"));
 		arkModuleList = criteria.list();
 		ArrayList<ArkRole> moduleArkRolesList = new ArrayList<ArkRole>();
 		for (ArkModuleRole arkModuleRole : arkModuleList) {
