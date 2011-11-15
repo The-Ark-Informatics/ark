@@ -264,9 +264,9 @@ public interface IStudyDao {
 
 	public List<Correspondences> getPersonCorrespondenceList(Long id, Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
 
-	public void create(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException;
+	public void create(CorrespondenceAttachment correspondenceAttachment);
 
-	public void update(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException;
+	public void update(CorrespondenceAttachment correspondenceAttachment) throws EntityNotFoundException;
 
 	public void delete(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException;
 

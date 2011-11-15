@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -97,9 +95,7 @@ import au.org.theark.study.service.Constants;
 public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	private IArkCommonService	arkCommonService;
-
 	private static Logger		log	= LoggerFactory.getLogger(StudyDao.class);
-	private Subject				currentUser;
 	private Date					dateNow;
 
 	ArkUidGenerator				arkUidGenerator;
@@ -1031,14 +1027,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return personCorrespondenceList;
 	}
 
-	public void create(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException {
-
-		Session session = getSession();
-		currentUser = SecurityUtils.getSubject();
-		correspondenceAttachment.setUserId(currentUser.getPrincipal().toString());
-
-		session.save(correspondenceAttachment);
-
+	public void create(CorrespondenceAttachment correspondenceAttachment) {
+		getSession().save(correspondenceAttachment);
 	}
 
 	public void delete(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException {
@@ -1086,27 +1076,19 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	}
 
-	public void update(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException {
-
+	public void update(CorrespondenceAttachment correspondenceAttachment) throws EntityNotFoundException {
 		Session session = getSession();
-
-		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
-
-		correspondenceAttachment.setUserId(currentUser.getPrincipal().toString());
 
 		if ((CorrespondenceAttachment) session.get(CorrespondenceAttachment.class, correspondenceAttachment.getId()) != null) {
 			session.update(correspondenceAttachment);
 		}
 		else {
 			throw new EntityNotFoundException("The correspondence attachment file you tried to update does not exist in the Ark system.");
-
 		}
-
 	}
 
 	public List<CorrespondenceDirectionType> getCorrespondenceDirectionTypes() {
-
 		Example directionTypeExample = Example.create(new CorrespondenceDirectionType());
 		Criteria criteria = getSession().createCriteria(CorrespondenceDirectionType.class).add(directionTypeExample);
 		return criteria.list();
@@ -1138,25 +1120,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return consent;
 	}
 
-	public void create(ConsentFile consentFile) throws ArkSystemException {
-		Session session = getSession();
-
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
-
-		consentFile.setInsertTime(dateNow);
-		consentFile.setUserId(currentUser.getPrincipal().toString());
-
-		session.save(consentFile);
+	public void create(ConsentFile consentFile) {
+		getSession().save(consentFile);
 	}
 
 	public void update(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException {
 		Session session = getSession();
 
-		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
-
-		consentFile.setUserId(currentUser.getPrincipal().toString());
 		consentFile.setUpdateTime(dateNow);
 
 		if ((ConsentFile) session.get(ConsentFile.class, consentFile.getId()) != null) {
@@ -1165,7 +1136,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		else {
 			throw new EntityNotFoundException("The Consent file record you tried to update does not exist in the Ark System");
 		}
-
 	}
 
 	/**
@@ -1339,28 +1309,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public void create(SubjectFile subjectFile) throws ArkSystemException {
-		Session session = getSession();
-		currentUser = SecurityUtils.getSubject();//TODO Do not depend on Shiro on the DAO
-		subjectFile.setUserId(currentUser.getPrincipal().toString());
-
-		session.save(subjectFile);
+		getSession().save(subjectFile);
 	}
 
 	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException {
-		Session session = getSession();
-
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
-
-		subjectFile.setUserId(currentUser.getPrincipal().toString()); // //TODO Do not depend on Shiro on the DAO
-
-		if ((ConsentFile) session.get(ConsentFile.class, subjectFile.getId()) != null) {
-			session.update(subjectFile);
-		}
-		else {
-			throw new EntityNotFoundException("The Subject file record you tried to update does not exist in the Ark System");
-		}
-
+		getSession().update(subjectFile);
 	}
 
 	/**

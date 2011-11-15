@@ -459,7 +459,6 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityType("Correspondence Attachment");
 		ah.setEntityId(correspondenceAttachment.getId());
 		arkCommonService.createAuditHistory(ah);
-
 	}
 
 	public void update(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException {
@@ -471,7 +470,6 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityType("Correspondence Attachment");
 		ah.setEntityId(correspondenceAttachment.getId());
 		arkCommonService.createAuditHistory(ah);
-
 	}
 
 	public void delete(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException {
@@ -486,7 +484,6 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public List<CorrespondenceAttachment> searchCorrespondenceAttachment(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException {
-
 		return studyDao.searchCorrespondenceAttachment(correspondenceAttachment);
 	}
 
@@ -930,6 +927,4 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		return flag;
 	}
-
-
 }
