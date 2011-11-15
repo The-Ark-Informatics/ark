@@ -824,11 +824,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public Boolean studyHasSubjects(Study study) {
 		Integer totalCount = null;
 		StatelessSession session = getStatelessSession();
-		Criteria criteria = session.createCriteria(Study.class, "study");
-		DetachedCriteria sizeCriteria = DetachedCriteria.forClass(LinkSubjectStudy.class, "lss");
-		criteria.add(Restrictions.eq("study.id", study.getId()));
-		sizeCriteria.add(Property.forName("study").eqProperty("lss.study"));
-		criteria.add(Subqueries.exists(sizeCriteria.setProjection(Projections.property("lss.id"))));
+		Criteria criteria = session.createCriteria(LinkSubjectStudy.class);
+		criteria.add(Restrictions.eq("study", study));
 		criteria.setProjection(Projections.rowCount());
 		totalCount = (Integer) criteria.uniqueResult();
 		session.close();
