@@ -68,6 +68,7 @@ public class SubjectUploadValidator {
 	 */
 	private static final long		serialVersionUID			= -1933045886948087734L;
 	private static Logger			log							= LoggerFactory.getLogger(SubjectUploadValidator.class);
+	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
 	private Long						studyId;
 	private Study						study;
@@ -77,18 +78,11 @@ public class SubjectUploadValidator {
 	private HashSet<Integer>		updateRows;
 	private HashSet<ArkGridCell>	errorCells;
 	private long						subjectCount;
-	private long						fieldCount;
 	private long						curPos;
-	private long						srcLength					= -1;																				// -1 means nothing being
-																																									// processed
+	private long						srcLength					= -1;
 	private StopWatch					timer							= null;
-	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;		// default
-	// delimiter:
-	// COMMA
-	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;					// default
-	// file
-	// fomat:
-	// CSV
+	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
+	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
 	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	private int							row							= 1;
 
@@ -112,6 +106,7 @@ public class SubjectUploadValidator {
 		simpleDateFormat.setLenient(false);
 	}
 
+	@SuppressWarnings("unchecked")
 	public SubjectUploadValidator(IArkCommonService iArkCommonService) {
 		super();
 		this.iArkCommonService = iArkCommonService;
@@ -323,8 +318,6 @@ public class SubjectUploadValidator {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 
-			String[] stringLineArray;
-
 			srcLength = inLength;
 			if (srcLength <= 0) {
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
@@ -341,9 +334,6 @@ public class SubjectUploadValidator {
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 			log.debug("Header length: " + csvReader.getHeaders().toString().length());
 			String[] headerColumnArray = csvReader.getHeaders();
-
-			// Field count = column count - 1 (SUBJECTUID column not counted)
-			fieldCount = headerColumnArray.length - 1;
 
 			Collection<String> subjectColumns = new ArrayList<String>();
 			String[] subjectHeaderColumnArray = au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_HEADER;
@@ -371,13 +361,68 @@ public class SubjectUploadValidator {
 				stringBuffer.append("The default format should be as follows:\n");
 				// SUBJECTUID TITLE FIRST_NAME MIDDLE_NAME LAST_NAME PREFERRED_NAME DATE_OF_BIRTH VITAL_STATUS GENDER STATUS DATE_OF_DEATH CAUSE_OF_DEATH
 				// MARITAL_STATUS PREFERRED_CONTACT EMAIL
-				stringBuffer.append(Constants.SUBJECTUID + delimiterCharacter + "TITLE" + delimiterCharacter + "FIRST_NAME" + delimiterCharacter + "MIDDLE_NAME" + delimiterCharacter + "LAST_NAME"
-						+ delimiterCharacter + "PREFERRED_NAME" + delimiterCharacter + "DATE_OF_BIRTH" + delimiterCharacter + "VITAL_STATUS" + delimiterCharacter + "GENDER" + delimiterCharacter + "STATUS"
-						+ delimiterCharacter + "DATE_OF_DEATH" + delimiterCharacter + "CAUSE_OF_DEATH" + delimiterCharacter + "MARITAL_STATUS" + delimiterCharacter + "PREFERRED_CONTACT"
-						+ delimiterCharacter + "EMAIL" + delimiterCharacter + "\n");
-				stringBuffer
-						.append("[ABC000001]" + delimiterCharacter + "[MR]" + delimiterCharacter + "[JOSEPH]" + delimiterCharacter + "[]" + delimiterCharacter + "[BLOGGS]" + delimiterCharacter + "[JOEY]"
-								+ delimiterCharacter + "[19/02/1976]" + delimiterCharacter + "[Alive]" + "[Male]" + "[Active]" + "[]" + "[]" + "[Single]" + "[Phone]" + "[joebloggs@somewhere.com]" + "\n");
+				
+				// Column headers
+				stringBuffer.append(Constants.SUBJECTUID); 
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("TITLE");
+				stringBuffer.append(delimiterCharacter); 
+				stringBuffer.append("FIRST_NAME"); 
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("MIDDLE_NAME");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("LAST_NAME");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("PREFERRED_NAME");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("DATE_OF_BIRTH");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("VITAL_STATUS");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("GENDER");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("STATUS");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("DATE_OF_DEATH");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("CAUSE_OF_DEATH");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("MARITAL_STATUS");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("PREFERRED_CONTACT");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("EMAIL\n");
+				
+				// Column values
+				stringBuffer.append("[ABC000001]");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[Mr]");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[JOSEPH]");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[]");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[BLOGGS]");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[JOEY]");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[19/02/1976]");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[Alive]" );
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[Male]");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[Active]" );
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[]");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[]");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[Single]");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[Phone]");
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("[joebloggs@somewhere.com]\n");
 				stringBuffer.append("\n\nNOTE: Enclosing quotes are optional");
 
 				fileValidationMessages.add(stringBuffer.toString());
@@ -494,9 +539,6 @@ public class SubjectUploadValidator {
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 
 			String[] fieldNameArray = csvReader.getHeaders();
-
-			// Field count = column count - 1 (SUBJECTUID column not counted)
-			fieldCount = fieldNameArray.length - 1;
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
