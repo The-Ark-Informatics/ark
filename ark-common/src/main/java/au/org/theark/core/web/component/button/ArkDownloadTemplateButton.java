@@ -35,7 +35,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.request.IRequestCycle;
-import org.apache.wicket.request.UrlEncoder;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.file.File;
@@ -140,8 +139,9 @@ public abstract class ArkDownloadTemplateButton extends AjaxButton {
 			InputStream inputStream = new ByteArrayInputStream(data);
 			OutputStream outputStream;
 			try {
-				final java.io.File file = File.createTempFile(templateFilename, ".xls");
-				final String fn = UrlEncoder.QUERY_INSTANCE.encode(file.getName(), getRequest().getCharset());
+				final String tempDir = System.getProperty("java.io.tmpdir");
+				final java.io.File file = new File(tempDir, templateFilename + ".xls");
+				final String fileName = templateFilename + ".xls";
 				outputStream = new FileOutputStream(file);
 				IOUtils.copy(inputStream, outputStream);
 
@@ -152,7 +152,7 @@ public abstract class ArkDownloadTemplateButton extends AjaxButton {
 						super.respond(requestCycle);
 						Files.remove(file);
 					}
-				}.setFileName(fn).setContentDisposition(ContentDisposition.ATTACHMENT));
+				}.setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT));
 			}
 			catch (FileNotFoundException e) {
 				log.error(e.getMessage());
