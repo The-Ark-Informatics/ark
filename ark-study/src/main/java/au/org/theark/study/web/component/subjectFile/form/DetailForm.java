@@ -116,6 +116,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	protected void onSave(Form<SubjectVO> containerForm, AjaxRequestTarget target) {
 		LinkSubjectStudy linkSubjectStudy = null;
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		String userId = SecurityUtils.getSubject().getPrincipal().toString();
+		
 		try {
 			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
 			containerForm.getModelObject().getSubjectFile().setLinkSubjectStudy(linkSubjectStudy);
@@ -144,13 +146,15 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				// Set details of ConsentFile object
 				containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
 				containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
-
+				containerForm.getModelObject().getSubjectFile().setUserId(userId);
+				
 				// Save
 				studyService.create(containerForm.getModelObject().getSubjectFile());
 				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
 				processErrors(target);
 			}
 			else {
+				containerForm.getModelObject().getSubjectFile().setUserId(userId);
 				// Update
 				studyService.update(containerForm.getModelObject().getSubjectFile());
 				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was updated successfully");
