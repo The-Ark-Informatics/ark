@@ -31,6 +31,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
@@ -56,16 +57,14 @@ public class SubjectCustomDataContainerPanel extends Panel {
 
 	protected FeedbackPanel feedbackPanel;
 	protected WebMarkupContainer customDataEditorWMC;
+	
+	private CustomField customFieldCriteria = new CustomField();
 
 	/**
 	 * @param id
 	 */
 	public SubjectCustomDataContainerPanel(String id) {
 		super(id);
-	/* This doesn't need to be done here assuming that it is already done via SubjectSubMenuTab's processAuthorizationCache(..) */
-//		Subject currentUser = SecurityUtils.getSubject();
-//		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
-		
 		cpModel = new CompoundPropertyModel<SubjectCustomDataVO>(new SubjectCustomDataVO());		
 	}
 	
@@ -83,13 +82,21 @@ public class SubjectCustomDataContainerPanel extends Panel {
 		customDataEditorWMC = new WebMarkupContainer("customDataEditorWMC");
 		Panel dataEditorPanel;
 		boolean contextLoaded = prerenderContextCheck();
+		
 		if (contextLoaded && isActionPermitted()) {
-			dataEditorPanel = new SubjectCustomDataEditorPanel("customDataEditorPanel", cpModel, feedbackPanel).initialisePanel();;
+			int fieldCount = iArkCommonService.getCustomFieldCount(customFieldCriteria);
+			if(fieldCount <= 0) {
+				dataEditorPanel = new EmptyPanel("customDataEditorPanel");
+				this.error("There are currently no custom fields defined.");
+			}
+			else {
+				dataEditorPanel = new SubjectCustomDataEditorPanel("customDataEditorPanel", cpModel, feedbackPanel).initialisePanel();;
+			}
 		}
 		else if (!contextLoaded) {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
 			this.error("A study and subject in context are required to proceed.");
-		}
+		} 
 		else {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
 			this.error("You do not have sufficient permissions to access this function");
@@ -139,6 +146,9 @@ public class SubjectCustomDataContainerPanel extends Panel {
 				if (study != null && linkSubjectStudy != null && arkModule != null) {
 					contextLoaded = true;
 					cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT));
+					
+					customFieldCriteria.setStudy(study);
+					customFieldCriteria.setArkFunction(cpModel.getObject().getArkFunction());
 				}
 			}
 			catch (EntityNotFoundException e) {
