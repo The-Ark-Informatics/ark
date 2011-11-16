@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -36,6 +37,7 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkModuleFunction;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
@@ -80,7 +82,7 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 	public ArkRolePolicyTemplate getArkRolePolicyTemplate(Long id) {
 		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class);
 		criteria.add(Restrictions.eq("id", id));
-		return (ArkRolePolicyTemplate) criteria.list().get(0);
+		return (ArkRolePolicyTemplate)  criteria.uniqueResult();
 	}
 
 	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplateList() {
@@ -113,19 +115,19 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 	public ArkPermission getArkPermissionByName(String name) {
 		Criteria criteria = getSession().createCriteria(ArkPermission.class);
 		criteria.add(Restrictions.eq("name", name));
-		return (ArkPermission) criteria.list().get(0);
+		return (ArkPermission)  criteria.uniqueResult();
 	}
 
 	public ArkFunction getArkFunction(Long id) {
 		Criteria criteria = getSession().createCriteria(ArkFunction.class);
 		criteria.add(Restrictions.eq("id", id));
-		return (ArkFunction) criteria.list().get(0);
+		return (ArkFunction)  criteria.uniqueResult();
 	}
 
 	public ArkModule getArkModule(Long id) {
 		Criteria criteria = getSession().createCriteria(ArkModule.class);
 		criteria.add(Restrictions.eq("id", id));
-		return (ArkModule) criteria.list().get(0);
+		return (ArkModule)  criteria.uniqueResult();
 	}
 
 	public void creatOrUpdateArkFunction(ArkFunction arkFunction) {
@@ -233,7 +235,7 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 	}
 
 	public int getArkRoleModuleFunctionVOCount(ArkRoleModuleFunctionVO arkRoleModuleFunctionVoCriteria) {
-		Criteria criteria = buildarkRoleModuleFunctionVoCriteria(arkRoleModuleFunctionVoCriteria);
+		Criteria criteria = buildArkRoleModuleFunctionVoCriteria(arkRoleModuleFunctionVoCriteria);
 		criteria.setProjection(Projections.rowCount());
 		Integer totalCount = (Integer) criteria.uniqueResult();
 		return totalCount;
@@ -260,7 +262,7 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return criteria;
 	}
 	
-	protected Criteria buildarkRoleModuleFunctionVoCriteria(ArkRoleModuleFunctionVO arkRoleModuleFunctionVoCriteria) {
+	protected Criteria buildArkRoleModuleFunctionVoCriteria(ArkRoleModuleFunctionVO arkRoleModuleFunctionVoCriteria) {
 		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class, "arpt");
 
 		if (arkRoleModuleFunctionVoCriteria.getArkRole() != null) {
@@ -289,7 +291,7 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 	}
 
 	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, int first, int count) {
-		Criteria criteria = buildarkRoleModuleFunctionVoCriteria(arkRoleModuleFunctionVo);
+		Criteria criteria = buildArkRoleModuleFunctionVoCriteria(arkRoleModuleFunctionVo);
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
 		
@@ -356,5 +358,42 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		criteria.setProjection(projectionList);
 		
 		return criteria.list();
+	}
+
+	public int getArkModuleFunctionCount(ArkModuleFunction arkModuleFunctionCriteria) {
+		Criteria criteria = buildArkModuleFunctionCriteria(arkModuleFunctionCriteria);
+		criteria.setProjection(Projections.rowCount());
+		Integer totalCount = (Integer) criteria.uniqueResult();
+		return totalCount;
+	}
+
+	public List<ArkModuleFunction> searchPageableArkModuleFunctions(ArkModuleFunction arkModuleFunctionCriteria, int first, int count) {
+		Criteria criteria = buildArkModuleFunctionCriteria(arkModuleFunctionCriteria);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<ArkModuleFunction> list = criteria.list();
+		return list;
+	}
+
+	private Criteria buildArkModuleFunctionCriteria(ArkModuleFunction arkModuleFunctionCriteria) {
+		Criteria criteria = getSession().createCriteria(ArkModuleFunction.class);
+
+		if (arkModuleFunctionCriteria.getArkModule().getId() != null) {
+			criteria.add(Restrictions.eq("arkModule", arkModuleFunctionCriteria.getArkModule()));
+		}
+		
+		if (arkModuleFunctionCriteria.getArkFunction().getId() != null) {
+			criteria.add(Restrictions.eq("arkFunction", arkModuleFunctionCriteria.getArkFunction()));
+		}
+		
+		criteria.addOrder(Order.asc("functionSequence"));
+
+		return criteria;
+	}
+
+	public ArkModuleFunction getArkModuleFunction(Long id) {
+		Criteria criteria = getSession().createCriteria(ArkModuleFunction.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (ArkModuleFunction) criteria.uniqueResult();
 	}
 }
