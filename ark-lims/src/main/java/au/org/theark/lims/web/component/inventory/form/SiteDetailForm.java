@@ -99,7 +99,6 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	}
 
 	protected void attachValidators() {
-		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.invSite.name.required", this, new Model<String>("Name")));
 	}
 

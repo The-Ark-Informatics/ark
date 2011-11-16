@@ -145,7 +145,6 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	}
 
 	protected void attachValidators() {
-		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
 		invTankDdc.setRequired(true).setLabel(new StringResourceModel("error.freezer.required", this, new Model<String>("Freezer")));
 		capacityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.capacity.required", this, new Model<String>("Capacity")));
