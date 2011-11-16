@@ -1646,6 +1646,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
+		criteria.addOrder(Order.asc("sequence"));
 		return criteria.list();
 		
 	}
