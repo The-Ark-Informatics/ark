@@ -1,7 +1,5 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup;
 
-import java.util.ArrayList;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -12,8 +10,6 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.dao.IArkAuthorisation;
-import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -33,19 +29,6 @@ public class CustomFieldDisplayListPanel extends Panel {
 	private IArkCommonService iArkCommonService;
 	Boolean flag;
 	
-	
-	/**
-	 * Constructor
-	 * @param id
-	 * @param feedbackPanel
-	 * @param arkCrudContainerVO
-	 */
-	public CustomFieldDisplayListPanel(String id, FeedbackPanel feedbackPanel,ArkCrudContainerVO arkCrudContainerVO) {
-		super(id);
-		this.feedbackPanel = feedbackPanel;
-		this.arkCrudContainerVO = arkCrudContainerVO; 
-		setOutputMarkupPlaceholderTag(true);
-	}
 	
 	public CustomFieldDisplayListPanel(String id, FeedbackPanel feedbackPanel,ArkCrudContainerVO arkCrudContainerVO, Boolean flag) {
 		super(id);
