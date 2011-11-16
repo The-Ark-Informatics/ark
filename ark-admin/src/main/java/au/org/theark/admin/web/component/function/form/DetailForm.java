@@ -59,11 +59,10 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 
 	/**
 	 * Constructor
-	 * 
 	 * @param id
-	 * @param crudVO
 	 * @param feedbackPanel
 	 * @param containerForm
+	 * @param arkCrudContainerVo
 	 */
 	public DetailForm(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo) {
 		super(id, feedbackPanel, containerForm, arkCrudContainerVo);
@@ -76,7 +75,18 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		idTxtFld = new TextField<String>("arkFunction.id");
 		idTxtFld.setEnabled(false);
 
-		nameTxtFld = new TextField<String>("arkFunction.name");
+		nameTxtFld = new TextField<String>("arkFunction.name") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onBeforeRender() {
+				super.onBeforeRender();
+				setEnabled(isNew());
+			}
+		};
 		
 		resourceKeyTxtFld = new TextField<String>("arkFunction.resourceKey");
 		resourceKeyTxtFld.setEnabled(false);
