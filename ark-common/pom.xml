@@ -4,7 +4,7 @@
 	<groupId>au.org.theark.core</groupId>
 	<artifactId>ark-common</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.6-SNAPSHOT</version>
+	<version>0.1.7-SNAPSHOT</version>
 	<name>Ark Common</name>
 	<description>The common ARK module/project that holds all core/common classes that other modules/projects may reference, via a Maven dependency</description>
 	<organization>
@@ -281,7 +281,7 @@
 		<wicket.version>1.5.1</wicket.version>
 		<jetty.version>6.1.4</jetty.version>
 		<shiro.version>1.1.0</shiro.version>
-		<ark.version>0.1.6-SNAPSHOT</ark.version>
+		<ark.version>0.1.7-SNAPSHOT</ark.version>
 	</properties>
 	<repositories>
 		<!--
