@@ -50,11 +50,10 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 
 	/**
 	 * Constructor
-	 * 
 	 * @param id
-	 * @param crudVO
 	 * @param feedbackPanel
 	 * @param containerForm
+	 * @param arkCrudContainerVo
 	 */
 	public DetailForm(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo) {
 		super(id, feedbackPanel, containerForm, arkCrudContainerVo);
@@ -66,7 +65,20 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("arkModule.id");
 		idTxtFld.setEnabled(false);
-		nameTxtFld = new TextField<String>("arkModule.name");
+		
+		nameTxtFld = new TextField<String>("arkModule.name") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onBeforeRender() {
+				super.onBeforeRender();
+				setEnabled(isNew());
+			}
+		};
+		
 		descriptionTxtAreaFld = new TextArea<String>("arkModule.description");
 
 		attachValidators();
@@ -116,7 +128,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	}
 
 	protected boolean isNew() {
-		if (containerForm.getModelObject().getArkFunction().getId() == null) {
+		if (containerForm.getModelObject().getArkModule().getId() == null) {
 			return true;
 		}
 		else {
