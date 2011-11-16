@@ -25,6 +25,7 @@ import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkModuleFunction;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
@@ -105,4 +106,10 @@ public interface IAdminService<T> {
 	public List<ArkRoleModuleFunctionVO> getArkRoleModuleFunctionVoList(ArkRole arkRole);
 
 	public List<ArkModule> getArkModuleList(ArkRole arkRole);
+
+	public int getArkModuleFunctionCount(ArkModuleFunction arkModuleFunction);
+	
+	public List<ArkModuleFunction> searchPageableArkModuleFunctions(ArkModuleFunction arkModuleFunctionCriteria, int first, int count);
+
+	public ArkModuleFunction getArkModuleFunction(Long id);
 }

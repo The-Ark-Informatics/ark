@@ -30,6 +30,7 @@ import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkModuleFunction;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
@@ -169,5 +170,17 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 
 	public List<ArkModule> getArkModuleList(ArkRole arkRole) {
 		return adminDao.getArkModuleList(arkRole);
+	}
+
+	public int getArkModuleFunctionCount(ArkModuleFunction arkModuleFunctionCriteria) {
+		return adminDao.getArkModuleFunctionCount(arkModuleFunctionCriteria);
+	}
+
+	public List<ArkModuleFunction> searchPageableArkModuleFunctions(ArkModuleFunction arkModuleFunctionCriteria, int first, int count) {
+		return adminDao.searchPageableArkModuleFunctions(arkModuleFunctionCriteria, first, count);
+	}
+
+	public ArkModuleFunction getArkModuleFunction(Long id) {
+		return adminDao.getArkModuleFunction(id);
 	}
 }
