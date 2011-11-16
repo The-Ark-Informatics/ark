@@ -6,11 +6,9 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
@@ -48,8 +46,9 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 	private FeedbackPanel				feedbackPanel;
 	private TextField<String>			userNameTxtFld		= new TextField<String>("userName");
 	private PasswordTextField			passwordTxtFld		= new PasswordTextField("password");
-	private AjaxButton					signInButton;
-	private AjaxButton					forgotPasswordButton;
+
+	private Button						signInButton;
+	private Button					forgotPasswordButton;
 
 	/**
 	 * LoginForm constructor
@@ -62,16 +61,16 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 		super(id, new CompoundPropertyModel<ArkUserVO>(new ArkUserVO()));
 		this.feedbackPanel = feedbackPanel;
 
-		signInButton = new AjaxButton("signInButton") {
+		signInButton = new Button("signInButton") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+			public void onSubmit() {
 				ArkUserVO user = (ArkUserVO) getForm().getModelObject();
-				if (authenticate(target, user)) {
+				if (authenticate(user)) {
 					// Place a default use case into session
 					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY);
 					// Place a default module into session
@@ -80,53 +79,32 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY, arkFunction.getId());
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY, arkModule.getId());
 					setResponsePage(HomePage.class);
+				}else{
+					setResponsePage(LoginPage.class);
 				}
 			}
 
 			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				target.add(feedbackPanel);
+			public void onError() {
+
 			}
 
-			@Override
-			protected IAjaxCallDecorator getAjaxCallDecorator() {
-				return new AjaxPostprocessingCallDecorator(super.getAjaxCallDecorator()) {
-					private static final long	serialVersionUID	= 1L;
-
-					private String	setCursorToWait = "document.body.style.cursor = 'wait';";
-					private String	setCursorToAuto = "document.body.style.cursor = 'auto';";
-
-					@Override
-					public CharSequence postDecorateOnSuccessScript(Component component, CharSequence script) {
-						return script + setCursorToAuto;
-					}
-
-					@Override
-					public CharSequence postDecorateOnFailureScript(Component component, CharSequence script) {
-						return script + setCursorToAuto;
-					}
-
-					@Override
-					public CharSequence postDecorateScript(Component component, CharSequence script) {
-						return script + setCursorToWait;
-					}
-				};
-			}
+		
 		};
 		
-		forgotPasswordButton = new AjaxButton("forgotPasswordButton") {
+		forgotPasswordButton = new Button("forgotPasswordButton") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+			public void onSubmit() {
 				setResponsePage(ResetPage.class);
 			}
 			
 			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
+			public void onError() {
 				log.error("Error on click of forgotPasswordButton");
 			}
 		};
@@ -152,7 +130,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 	 *           the given user to authenticate
 	 * @return
 	 */
-	public final boolean authenticate(AjaxRequestTarget target, ArkUserVO user) {
+	public final boolean authenticate( ArkUserVO user) {
 		Subject subject = SecurityUtils.getSubject();
 		// Disable Remember me
 		UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword(), false);
@@ -165,26 +143,30 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 		}
 		catch (IncorrectCredentialsException e) {
 			String errMessage = getLocalizer().getString("page.incorrect.password", LoginForm.this, "Password is incorrect");
+			getSession().error(errMessage);
 			error(errMessage);
 			log.error(e.getMessage());
 		}
 		catch (UnknownAccountException e) {
 			String errMessage = getLocalizer().getString("page.account.notfound", LoginForm.this, "User account not found.");
 			error(errMessage);
+			getSession().error(errMessage);
 			log.error(e.getMessage());
 		}
 		catch (AuthenticationException e) {
 			String errMessage = getLocalizer().getString("page.invalid.username.password", LoginForm.this, "Invalid username and/or password.");
 			error(errMessage);
+			getSession().error(errMessage);
 			log.error(e.getMessage());
 		}
 		catch (Exception e) {
 			String errMessage = getLocalizer().getString("page.login.failed", LoginForm.this, "Login Failed.");
 			error(errMessage);
+			getSession().error(errMessage);
 			log.error(e.getMessage());
 		}
-
-		target.add(feedbackPanel);
+		
+		addOrReplace(feedbackPanel);
 		return false;
 	}
 }
