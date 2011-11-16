@@ -33,9 +33,6 @@ import javax.naming.ldap.Rdn;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,9 +60,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.pheno.entity.Field;
-import au.org.theark.core.model.pheno.entity.FieldData;
-import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -719,25 +713,29 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, EntityCannotBeRemoved {
-
 		try {
-
 			if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
-				customFieldDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
-				customFieldDao.deleteCustomField(customFieldVO.getCustomField());
 				String fieldName = customFieldVO.getCustomField().getName();
+				
+				if(customFieldVO.isUseCustomFieldDisplay()) {
+					customFieldDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
+					
+					// History for Custom Field Display
+					AuditHistory ah = new AuditHistory();
+					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+					ah.setComment("Deleted Custom Display Field For Custom Field " + fieldName);
+					ah.setEntityId(customFieldVO.getCustomFieldDisplay().getId());
+					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
+					createAuditHistory(ah);
+				}
+				customFieldDao.deleteCustomField(customFieldVO.getCustomField());
+				
+				// History for Custom Field
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-				ah.setComment("Deleted Custom Field " + customFieldVO.getCustomField().getName());
+				ah.setComment("Deleted Custom Field " + fieldName);
 				ah.setEntityId(customFieldVO.getCustomField().getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
-				createAuditHistory(ah);
-				// History for Custom Display Field Display
-				ah = new AuditHistory();
-				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-				ah.setComment("Deleted Custom Display Field For Custom Field " + fieldName);
-				ah.setEntityId(customFieldVO.getCustomFieldDisplay().getId());
-				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
 				createAuditHistory(ah);
 			}
 			else {
@@ -748,7 +746,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			log.error("Unable to delete CustomField. " + ex);
 			throw new ArkSystemException("Unable to delete Custom Field: " + ex.getMessage());
 		}
-
 	}
 
 	private FieldType getFieldTypeById(Long filedTypeId) {
