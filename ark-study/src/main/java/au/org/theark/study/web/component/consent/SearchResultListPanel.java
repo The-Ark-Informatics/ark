@@ -36,6 +36,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -145,22 +146,8 @@ public class SearchResultListPanel extends Panel {
 
 					new FormHelper().updateStudyCompStatusDates(target, consentFromBackend.getStudyComponentStatus().getName(), wmcPlain, wmcRequested, wmcRecieved, wmcCompleted);
 
-					//TODO: Use arkCrudContainerVO.showDetailPanelInViewMode(target); ????
-					arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-					arkCrudContainerVO.getViewButtonContainer().setVisible(true);
-					arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
-					arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
-					arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
-					arkCrudContainerVO.getEditButtonContainer().setVisible(false);
-
-					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-					target.add(arkCrudContainerVO.getDetailPanelContainer());
-					target.add(arkCrudContainerVO.getDetailPanelFormContainer());
-					target.add(arkCrudContainerVO.getSearchPanelContainer());
-					target.add(arkCrudContainerVO.getViewButtonContainer());
-					target.add(arkCrudContainerVO.getEditButtonContainer());
-
+					ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
+					
 				}
 				catch (ArkSystemException e) {
 					containerForm.error("A System Error has occured please contact Support");
