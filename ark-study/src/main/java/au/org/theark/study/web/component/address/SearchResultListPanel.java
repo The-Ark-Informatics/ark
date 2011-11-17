@@ -34,6 +34,7 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.address.form.ContainerForm;
@@ -143,25 +144,13 @@ public class SearchResultListPanel extends Panel {
 
 				containerForm.getModelObject().setAddress(address);
 
-				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-				arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
-				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
-				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
-				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
-				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
-
 				// Update the state choices based on selected address pre-render...
 				SearchForm searchForm = (SearchForm) ((SearchPanel) arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel")).get("searchForm");
 				searchForm.updateDetailFormPrerender(address);
+				
+				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
+				
 
-				target.add(arkCrudContainerVO.getSearchPanelContainer());
-				target.add(arkCrudContainerVO.getDetailPanelContainer());
-				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-				target.add(arkCrudContainerVO.getViewButtonContainer());
-				target.add(arkCrudContainerVO.getEditButtonContainer());
-				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
-				target.add(arkCrudContainerVO.getDetailPanelContainer());
 			}
 
 		};

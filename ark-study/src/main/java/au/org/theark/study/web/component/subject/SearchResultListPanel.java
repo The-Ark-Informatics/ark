@@ -41,6 +41,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.web.Constants;
@@ -224,26 +225,12 @@ public class SearchResultListPanel extends Panel {
 				contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
 				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
 
-				
-				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-				arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
-				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
-				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
-				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
-				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
-
 				// Always disable subjectUID
 				DetailPanel details = (DetailPanel) arkCrudContainerVO.getDetailPanelContainer().get("detailsPanel");
 				DetailsForm detailsForm = (DetailsForm) details.get("detailsForm");
 				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
-
-				target.add(arkCrudContainerVO.getSearchPanelContainer());
-				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
-				target.add(arkCrudContainerVO.getDetailPanelContainer());
-				target.add(arkCrudContainerVO.getViewButtonContainer());
-				target.add(arkCrudContainerVO.getEditButtonContainer());
+				
+				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
 
 			}
 		};

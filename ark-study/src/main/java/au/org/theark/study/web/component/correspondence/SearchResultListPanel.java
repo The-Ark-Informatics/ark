@@ -36,6 +36,7 @@ import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.web.component.correspondence.form.ContainerForm;
 
@@ -144,21 +145,8 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				containerForm.getModelObject().setCorrespondence(correspondence);
-
-				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-				arkCrudContainerVO.getViewButtonContainer().setVisible(true);
-				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
-				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
-				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
-				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
-
-				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-				target.add(arkCrudContainerVO.getDetailPanelContainer());
-				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
-				target.add(arkCrudContainerVO.getSearchPanelContainer());
-				target.add(arkCrudContainerVO.getViewButtonContainer());
-				target.add(arkCrudContainerVO.getEditButtonContainer());
+				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
+				
 			}
 		};
 

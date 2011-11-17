@@ -162,8 +162,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 
 			onSavePostProcess(target);
-			AjaxButton editButton = (AjaxButton) arkCrudContainerVO.getViewButtonContainer().get("edit");
-			editButton.setEnabled(false);
+			AjaxButton deleteButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
+			deleteButton.setEnabled(false);
 			
 		}
 		catch (EntityNotFoundException e) {

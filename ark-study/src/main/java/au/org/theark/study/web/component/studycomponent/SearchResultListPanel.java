@@ -30,6 +30,7 @@ import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.web.Constants;
@@ -128,24 +129,8 @@ public class SearchResultListPanel extends Panel {
 				StudyCompVo studyCompVo = containerForm.getModelObject();
 				studyCompVo.setMode(Constants.MODE_EDIT);
 				studyCompVo.setStudyComponent(studyComponent);// Sets the selected object into the model
-				
 				// Render the UI
-				
-				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-				arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
-				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
-				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
-				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
-				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
-		
-				target.add(arkCrudContainerVO.getSearchPanelContainer());
-				target.add(arkCrudContainerVO.getDetailPanelContainer());
-				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-				target.add(arkCrudContainerVO.getViewButtonContainer());
-				target.add(arkCrudContainerVO.getEditButtonContainer());
-				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
-				target.add(arkCrudContainerVO.getDetailPanelContainer());
+				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
 				
 			}
 		};
