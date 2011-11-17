@@ -221,6 +221,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 		}
 		this.info("Barcode label: " + containerForm.getModelObject().getName() + " was created/updated successfully.");
 		target.add(feedBackPanel);
+		onSavePostProcess(target);
 	}
 
 	/*

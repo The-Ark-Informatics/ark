@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.service.ILimsAdminService;
@@ -149,23 +150,7 @@ public class SearchResultsPanel extends Panel {
 			public void onClick(AjaxRequestTarget target) {
 				BiospecimenUidTemplate BiospecimenUidTemplateFromDb = iLimsAdminService.searchBiospecimenUidTemplate(BiospecimenUidTemplate);
 				containerForm.setModelObject(BiospecimenUidTemplateFromDb);
-
-				arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
-				arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
-				arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
-				arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(false);
-				arkCrudContainerVo.getViewButtonContainer().setVisible(true);
-				arkCrudContainerVo.getViewButtonContainer().setEnabled(true);
-				arkCrudContainerVo.getEditButtonContainer().setVisible(false);
-
-				// Refresh the markup containers
-				target.add(arkCrudContainerVo.getSearchResultPanelContainer());
-				target.add(arkCrudContainerVo.getDetailPanelContainer());
-				target.add(arkCrudContainerVo.getDetailPanelFormContainer());
-				target.add(arkCrudContainerVo.getSearchPanelContainer());
-				target.add(arkCrudContainerVo.getViewButtonContainer());
-				target.add(arkCrudContainerVo.getEditButtonContainer());
-
+				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVo);
 				// Refresh base container form to remove any feedBack messages
 				target.add(containerForm);
 			}

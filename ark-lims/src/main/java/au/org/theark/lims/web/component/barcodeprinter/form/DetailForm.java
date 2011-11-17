@@ -193,6 +193,8 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 		}
 		this.info("Barcode printer: " + containerForm.getModelObject().getName() + " was created/updated successfully.");
 		target.add(feedBackPanel);
+		
+		onSavePostProcess(target);
 	}
 
 	/*

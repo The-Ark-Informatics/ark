@@ -255,6 +255,7 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		containerForm.info("The Biospecimen template record was deleted successfully.");
+		iLimsAdminService.deleteBiospecimenUidTemplate(containerForm.getModelObject());
 		editCancelProcess(target);
 		onCancel(target);
 	}
@@ -278,6 +279,7 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 			iLimsAdminService.updateBiospecimenUidTemplate(containerForm.getModelObject());
 		}
 		this.info("Biospecimen template was created/updated successfully.");
+		onSavePostProcess(target);
 		target.add(feedBackPanel);
 	}
 
