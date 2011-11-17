@@ -136,9 +136,16 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 		StringBuilder biospecimenUidExample = new StringBuilder();
 
 		biospecimenUidPrefix = biospecimenUidPrefixTxtFld.getDefaultModelObjectAsString();
-		biospecimenUidToken = ((BiospecimenUidToken) biospecimenUidTokenDdc.getDefaultModelObject()).getName();
-		biospecimenUidPadChar = ((BiospecimenUidPadChar) biospecimenUidPadCharDdc.getDefaultModelObject()).getName();
-
+		
+		if(biospecimenUidTokenDdc.getChoices().get(0) != null){
+			biospecimenUidToken  = biospecimenUidTokenDdc.getChoices().get(0).getName();	
+		}
+		
+		if( biospecimenUidPadCharDdc.getChoices().get(0) != null){
+			biospecimenUidPadChar = biospecimenUidPadCharDdc.getChoices().get(0).getName();	
+		}
+		
+		
 		if(biospecimenUidPadChar.isEmpty()) {
 			biospecimenUidPadChar = new String("0");
 		}
