@@ -197,7 +197,7 @@ public class ArkPermissionHelper {
 	}
 	
 	/**
-	 * Determines if current user has New permissions
+	 * Determines if current user has CREATE permissions
 	 * 
 	 * @param securityManager
 	 * @param currentUser
