@@ -80,7 +80,7 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	}
 
 	public void deleteBarcodePrinter(BarcodePrinter barcodePrinter) {
-		iLimsAdminDao.createBarcodePrinter(barcodePrinter);
+		iLimsAdminDao.deleteBarcodePrinter(barcodePrinter);
 	}
 
 	public void updateBarcodePrinter(BarcodePrinter barcodePrinter) {
