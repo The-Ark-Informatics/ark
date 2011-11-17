@@ -18,10 +18,12 @@
  ******************************************************************************/
 package au.org.theark.core.web.component;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
@@ -65,13 +67,35 @@ public class ArkCRUDHelper {
 	 * @param arkCrudContainerVO
 	 */
 	public static void onBeforeRenderWithCRDPermissions(ArkCrudContainerVO arkCrudContainerVO){
-		
 		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
 		arkCrudContainerVO.getEditButtonContainer().setVisible(true);
 		arkCrudContainerVO.getEditButtonContainer().setEnabled(true);
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
+	}
+	
+	/**
+	 * For cases where the Detail Panel must be disabled. E.g Lims Subject
+	 * @param arkCrudContainerVO
+	 * @param arkFunction
+	 */
+	public static void onBeforeRenderWithCRDPermissions(ArkCrudContainerVO arkCrudContainerVO, ArkFunction arkFunction){
+		
+		if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)){
+			
+			AjaxButton deleteButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
+			deleteButton.setVisible(false);
+			
+			AjaxButton saveButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("save");
+			saveButton.setVisible(false);
+			
+			arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
+			arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+			arkCrudContainerVO.getEditButtonContainer().setVisible(true);
+			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+			arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
+		}
 	}
 	
 	/**

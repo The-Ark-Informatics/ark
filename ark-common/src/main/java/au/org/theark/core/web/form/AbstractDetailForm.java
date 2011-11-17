@@ -20,6 +20,10 @@ package au.org.theark.core.web.form;
 
 import java.util.Iterator;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -29,10 +33,14 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 
 /**
@@ -66,6 +74,9 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	// Use this for the model where WebMarkupContainers are set inside this VO
 	protected ArkCrudContainerVO	arkCrudContainerVO;
 	protected CompoundPropertyModel<T> cpModel;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>			iArkCommonService;
 
 	/**
 	 * 
@@ -176,9 +187,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		};
 
 		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
-			/**
-			 * 
-			 */
+			
 			private static final long	serialVersionUID	= -6282464357368710796L;
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -197,9 +206,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		};
 
 		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null)) {
-			/**
-			 * 
-			 */
+			
 			private static final long	serialVersionUID	= 5457464178392550628L;
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -210,6 +217,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 				processErrors(target);
 			}
 		};
+		
 		addComponentsToForm();
 	}
 
@@ -234,6 +242,36 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);
+		Long arkFunctionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
+		ArkFunction arkFunction  = iArkCommonService.getArkFunctionById(arkFunctionId);
+		
+		if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)){
+			
+			ArkCRUDHelper.onBeforeRenderWithCRDPermissions(arkCrudContainerVO,arkFunction);
+			
+		}else{
+			SecurityManager securityManager = ThreadContext.getSecurityManager();
+			Subject currentUser = SecurityUtils.getSubject();
+			if( ArkPermissionHelper.hasEditPermission(securityManager,currentUser) || //User can UPDATE
+				ArkPermissionHelper.hasNewPermission(securityManager, currentUser) || //User can CREATE
+				ArkPermissionHelper.hasDeletePermission(securityManager, currentUser)){ //User can DELETE
+				
+				//If the logged in user has Create,Update Or Delete then by-pass the View/Read Only Screen and show the Edit Screen
+				ArkCRUDHelper.onBeforeRenderWithCRDPermissions(arkCrudContainerVO);
+			
+			}else{
+				
+				ArkCRUDHelper.onBeforeRenderWithReadPermission(arkCrudContainerVO);
+			}
+			
+		}
+		
+		
+	}
+	
+	public void determineViewOrEditMode(){
+		
+		
 	}
 
 	/**
@@ -308,22 +346,27 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * @param isArkCrudContainerVOPattern
 	 */
 	protected void onCancelPostProcess(AjaxRequestTarget target) {
-		arkCrudContainerVO.getViewButtonContainer().setVisible(true);
-		arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
-		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
-		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
-		arkCrudContainerVO.getEditButtonContainer().setVisible(false);
+		//arkCrudContainerVO.getViewButtonContainer().setVisible(true);
+		//arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
+		
+		//arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+		
+		//new pattern
+		arkCrudContainerVO.getDetailPanelContainer().setVisible(false);//Go to search page/results
+		//arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);//Don't need to disable
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+		arkCrudContainerVO.getSearchPanelContainer().setVisible(true);
+		//arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 
 		target.add(feedBackPanel);
 		target.add(arkCrudContainerVO.getSearchPanelContainer());
 		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
 		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
-
-		target.add(arkCrudContainerVO.getViewButtonContainer());
 		target.add(arkCrudContainerVO.getEditButtonContainer());
+		onCancel(target);
+		//target.add(arkCrudContainerVO.getViewButtonContainer());
+		//target.add(arkCrudContainerVO.getEditButtonContainer());
 	}
 
 	/**
@@ -351,22 +394,31 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * @param target
 	 */
 	protected void onSavePostProcess(AjaxRequestTarget target) {
+		
+		if(ArkPermissionHelper.isActionPermitted(Constants.DELETE)){
+			AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
+			if (ajaxButton != null) {
+				ajaxButton.setEnabled(true);
+				target.add(ajaxButton);
+			}
+		}
+		
 		// Visibility
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-		arkCrudContainerVO.getViewButtonContainer().setVisible(true);
+		//arkCrudContainerVO.getViewButtonContainer().setVisible(true); //Commented for new pattern
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 		arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 
 		// Enable
 		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-		arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
+		//arkCrudContainerVO.getViewButtonContainer().setEnabled(true);//Commented for new pattern
 
 		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
 		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
 		target.add(arkCrudContainerVO.getSearchPanelContainer());
-		target.add(arkCrudContainerVO.getViewButtonContainer());
+		//target.add(arkCrudContainerVO.getViewButtonContainer());// For new pattern
 		target.add(arkCrudContainerVO.getEditButtonContainer());
 		target.add(feedBackPanel);
 	}
