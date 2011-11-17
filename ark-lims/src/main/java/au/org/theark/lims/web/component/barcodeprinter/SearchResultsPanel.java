@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.service.ILimsAdminService;
@@ -147,7 +148,7 @@ public class SearchResultsPanel extends Panel {
 			public void onClick(AjaxRequestTarget target) {
 				BarcodePrinter barcodePrinterFromDb = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
 				containerForm.setModelObject(barcodePrinterFromDb);
-
+				/*
 				arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
 				arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
 				arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
@@ -163,7 +164,9 @@ public class SearchResultsPanel extends Panel {
 				target.add(arkCrudContainerVo.getSearchPanelContainer());
 				target.add(arkCrudContainerVo.getViewButtonContainer());
 				target.add(arkCrudContainerVo.getEditButtonContainer());
-
+				
+				*/
+				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVo);
 				// Refresh base container form to remove any feedBack messages
 				target.add(containerForm);
 			}

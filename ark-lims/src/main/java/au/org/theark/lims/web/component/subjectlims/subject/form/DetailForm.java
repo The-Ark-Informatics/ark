@@ -151,7 +151,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 				log.error("Incorrect application workflow - tried to edit Subject Details via LIMS and error occurred");
 			}
 		};
-		arkCrudContainerVO.getViewButtonContainer().addOrReplace(editButton);
+		//arkCrudContainerVO.getViewButtonContainer().addOrReplace(editButton);
 	}
 
 	@SuppressWarnings("unchecked")

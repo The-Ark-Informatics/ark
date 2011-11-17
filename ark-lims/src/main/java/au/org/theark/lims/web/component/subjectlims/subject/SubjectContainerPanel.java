@@ -145,7 +145,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
 				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-				arkCrudContainerVO.getViewButtonContainer().setVisible(true);
+				//arkCrudContainerVO.getViewButtonContainer().setVisible(true);
 				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 			}
 		}
