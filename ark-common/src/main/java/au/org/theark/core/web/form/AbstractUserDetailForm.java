@@ -19,7 +19,6 @@
 package au.org.theark.core.web.form;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
@@ -79,48 +78,26 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 				
 			}
 		};
-		
-		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -6282464357368710796L;
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				editButtonProcess(target);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				processErrors(target);
-			}
-
-			@Override
-			public boolean isVisible() {
-				// calling super.isVisible() will allow an external setVisible() to override visibility
-				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.EDIT);
-			}
-		};
-
-		arkCrudContainerVO.getViewButtonContainer().remove("edit");
 		arkCrudContainerVO.getEditButtonContainer().remove(Constants.DELETE);
 		arkCrudContainerVO.getEditButtonContainer().addOrReplace(deleteButton.setDefaultFormProcessing(false));
-		arkCrudContainerVO.getViewButtonContainer().addOrReplace(editButton);
+		
+	}
+	@Override
+	public void onBeforeRender() {
+		super.onBeforeRender();
 		
 	}
 	
 	protected void editButtonProcess(AjaxRequestTarget target) {
 		//Set the deleteButton to enabled true only if the user is attached to the study.
-		//deleteButton.setEnabled(true);
 		enableOrDisableRemoveButton();
 		// The visibility of the delete button should not be changed from
 		// any of the abstract classes. This allows the implementation
 		// to control the visibility of the delete button.
 		// NB: SearchForm onNew has the Delete button's setEnabled(false)
-		// deleteButton.setVisible(true);
-		arkCrudContainerVO.getViewButtonContainer().setVisible(false);
 		arkCrudContainerVO.getEditButtonContainer().setVisible(true);
 		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
-		target.add(arkCrudContainerVO.getViewButtonContainer());
+	
 		target.add(arkCrudContainerVO.getEditButtonContainer());
 		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
@@ -130,5 +107,5 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 	/**
 	 * Abstract method that allows sub-classes to implement specific functionality for onEditButtonClick event.
 	 */
-	public abstract void onEditButtonClick();
+	//public abstract void onEditButtonClick();
 }
