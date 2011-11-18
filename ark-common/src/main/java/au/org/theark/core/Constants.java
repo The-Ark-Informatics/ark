@@ -270,10 +270,11 @@ public class Constants {
 	public static final String		FUNCTION_KEY_VALUE_INVENTORY							= "INVENTORY";
 	public static final String		FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD			= "SUBJECT_CUSTOM_FIELD";
 	public static final String		FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_DATA				= "SUBJECT_CUSTOM_DATA";
-	public static final String		FUNCTION_KEY_VALUE_ROLE_POLICY_TEMPLATE			= "ROLE_POLICY_TEMPLATE";
 	public static final String		FUNCTION_KEY_VALUE_MODULE								= "MODULE";
 	public static final String		FUNCTION_KEY_VALUE_FUNCTION							= "FUNCTION";
 	public static final String		FUNCTION_KEY_VALUE_MODULE_FUNCTION					= "MODULE_FUNCTION";
+	public static final String		FUNCTION_KEY_VALUE_ROLE									= "ROLE";
+	public static final String		FUNCTION_KEY_VALUE_ROLE_POLICY_TEMPLATE			= "ROLE_POLICY_TEMPLATE";
 	public static final String		FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_FIELD	= "LIMS_COLLECTION_CUSTOM_FIELD";
 	public static final String		FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_DATA	= "LIMS_COLLECTION_CUSTOM_DATA";
 	public static final String		FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD		= "BIOSPECIMEN_CUSTOM_FIELD";
@@ -325,4 +326,5 @@ public class Constants {
 	
 	public static final String 		NAME													= "name";
 	public static final String		ID														= "id";
+	
 }
