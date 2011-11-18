@@ -36,6 +36,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 
@@ -153,30 +154,13 @@ public class SearchResultListPanel extends Panel {
 			public void onClick(AjaxRequestTarget target) {
 				// Sets the selected object into the model
 				CustomField cf = (CustomField) (getParent().getDefaultModelObject());
-//				cpModel.getObject().setCustomField(cf);
 				CompoundPropertyModel<CustomFieldVO> newModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
 				newModel.getObject().setCustomField(cf);
 				newModel.getObject().setUseCustomFieldDisplay(cpModel.getObject().isUseCustomFieldDisplay());
 
-				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
-				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
-
-				// Button containers
-				// View Field, thus view container visible
-				arkCrudContainerVO.getViewButtonContainer().setVisible(true);
-				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
-				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
-
 				DetailPanel detailsPanel = new DetailPanel("detailsPanel", feedbackPanel, newModel, arkCrudContainerVO);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailsPanel);
-				target.add(arkCrudContainerVO.getSearchPanelContainer());
-				target.add(arkCrudContainerVO.getDetailPanelContainer());
-				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-				target.add(arkCrudContainerVO.getViewButtonContainer());
-				target.add(arkCrudContainerVO.getEditButtonContainer());
-				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
 				
 			}
 		};
