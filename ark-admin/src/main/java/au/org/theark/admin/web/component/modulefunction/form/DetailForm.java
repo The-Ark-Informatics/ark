@@ -92,7 +92,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 			}
 		};
 		deleteButton.setEnabled(false);
-		addOrReplace(deleteButton);
+		arkCrudContainerVO.getEditButtonContainer().addOrReplace(deleteButton);
 	}
 
 	public void initialiseDetailForm() {
