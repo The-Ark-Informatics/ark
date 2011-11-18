@@ -84,8 +84,13 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 			}
+			
+			@Override
+			protected void onBeforeRender() {
+				super.onBeforeRender();
+				setEnabled(false);
+			}
 		};
-		deleteButton.setEnabled(false);
 		arkCrudContainerVO.getEditButtonContainer().addOrReplace(deleteButton);
 	}
 
