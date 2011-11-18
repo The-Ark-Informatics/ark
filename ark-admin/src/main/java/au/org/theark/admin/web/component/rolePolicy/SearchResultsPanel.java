@@ -29,11 +29,13 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -91,10 +93,14 @@ public class SearchResultsPanel extends Panel {
 					@Override
 					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 						item.setEnabled(true);
-						item.get("arkCreatePermission").setEnabled(true);
-						item.get("arkReadPermission").setEnabled(true);
-						item.get("arkUpdatePermission").setEnabled(true);
-						item.get("arkDeletePermission").setEnabled(true);
+						item.get("arkCreatePermissionImg").setVisible(false);
+						item.get("arkReadPermissionImg").setVisible(false);
+						item.get("arkUpdatePermissionImg").setVisible(false);
+						item.get("arkDeletePermissionImg").setVisible(false);
+						item.addOrReplace(new CheckBox("arkCreatePermission", new PropertyModel(arkRoleModuleFunctionVo, "arkCreatePermission")).setEnabled(true));
+						item.addOrReplace(new CheckBox("arkReadPermission", new PropertyModel(arkRoleModuleFunctionVo, "arkReadPermission")).setEnabled(true));
+						item.addOrReplace(new CheckBox("arkUpdatePermission", new PropertyModel(arkRoleModuleFunctionVo, "arkUpdatePermission")).setEnabled(true));
+						item.addOrReplace(new CheckBox("arkDeletePermission", new PropertyModel(arkRoleModuleFunctionVo, "arkDeletePermission")).setEnabled(true));
 						item.get("rowSaveWMC").setVisible(true);
 						target.add(item);
 					}
@@ -129,10 +135,38 @@ public class SearchResultsPanel extends Panel {
 					item.add(new Label("arkFunction", ""));
 				}
 
-				item.addOrReplace(new CheckBox("arkCreatePermission", new PropertyModel(arkRoleModuleFunctionVo, "arkCreatePermission")).setEnabled(false));
-				item.addOrReplace(new CheckBox("arkReadPermission", new PropertyModel(arkRoleModuleFunctionVo, "arkReadPermission")).setEnabled(false));
-				item.addOrReplace(new CheckBox("arkUpdatePermission", new PropertyModel(arkRoleModuleFunctionVo, "arkUpdatePermission")).setEnabled(false));
-				item.addOrReplace(new CheckBox("arkDeletePermission", new PropertyModel(arkRoleModuleFunctionVo, "arkDeletePermission")).setEnabled(false));
+				if (arkRoleModuleFunctionVo.getArkCreatePermission()) {
+					item.addOrReplace(new ContextImage("arkCreatePermissionImg", new Model<String>("images/icons/tick.png")));
+				}
+				else {
+					item.addOrReplace(new ContextImage("arkCreatePermissionImg", new Model<String>("images/icons/cross.png")));
+				}
+				
+				if (arkRoleModuleFunctionVo.getArkReadPermission()) {
+					item.addOrReplace(new ContextImage("arkReadPermissionImg", new Model<String>("images/icons/tick.png")));
+				}
+				else {
+					item.addOrReplace(new ContextImage("arkReadPermissionImg", new Model<String>("images/icons/cross.png")));
+				}
+
+				if (arkRoleModuleFunctionVo.getArkUpdatePermission()) {
+					item.addOrReplace(new ContextImage("arkUpdatePermissionImg", new Model<String>("images/icons/tick.png")));
+				}
+				else {
+					item.addOrReplace(new ContextImage("arkUpdatePermissionImg", new Model<String>("images/icons/cross.png")));
+				}
+
+				if (arkRoleModuleFunctionVo.getArkDeletePermission()) {
+					item.addOrReplace(new ContextImage("arkDeletePermissionImg", new Model<String>("images/icons/tick.png")));
+				}
+				else {
+					item.addOrReplace(new ContextImage("arkDeletePermissionImg", new Model<String>("images/icons/cross.png")));
+				}
+				
+				item.addOrReplace(new CheckBox("arkCreatePermission", new PropertyModel(arkRoleModuleFunctionVo, "arkCreatePermission")).setVisible(false));
+				item.addOrReplace(new CheckBox("arkReadPermission", new PropertyModel(arkRoleModuleFunctionVo, "arkReadPermission")).setVisible(false));
+				item.addOrReplace(new CheckBox("arkUpdatePermission", new PropertyModel(arkRoleModuleFunctionVo, "arkUpdatePermission")).setVisible(false));
+				item.addOrReplace(new CheckBox("arkDeletePermission", new PropertyModel(arkRoleModuleFunctionVo, "arkDeletePermission")).setVisible(false));
 
 				WebMarkupContainer rowSaveWMC = new WebMarkupContainer("rowSaveWMC", item.getModel());
 				AjaxButton listSaveButton = new AjaxButton("listSaveButton", new StringResourceModel(au.org.theark.core.Constants.SAVE, this, null)) {
