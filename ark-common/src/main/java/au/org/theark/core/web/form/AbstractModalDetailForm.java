@@ -32,19 +32,17 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.EditModeButtonsPanel;
 import au.org.theark.core.web.component.button.IEditModeEventHandler;
-import au.org.theark.core.web.component.button.IViewModeEventHandler;
-import au.org.theark.core.web.component.button.ViewModeButtonsPanel;
 
 /**
  * @author cellis
- * @param <T>
  * 
  */
-public abstract class AbstractModalDetailForm<T> extends Form<T> implements IViewModeEventHandler, IEditModeEventHandler {
+public abstract class AbstractModalDetailForm<T> extends Form<T> implements  IEditModeEventHandler {
 	/**
 	 * 
 	 */
@@ -61,6 +59,8 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 
 	protected WebMarkupContainer			buttonsPanelWMC;
 
+	
+
 	public AbstractModalDetailForm(String id, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVo, CompoundPropertyModel<T> cpModel) {
 		super(id, cpModel);
 		this.feedbackPanel = feedbackPanel;
@@ -71,10 +71,6 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 		initialiseForm();
 	}
 
-	private void initialiseViewButtonsPanel() {
-		ViewModeButtonsPanel buttonsPanel = new ViewModeButtonsPanel("buttonsPanel", this);
-		buttonsPanelWMC.addOrReplace(buttonsPanel);
-	}
 
 	private void initialiseEditButtonsPanel(boolean isNew) {
 		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
@@ -82,6 +78,15 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 			buttonsPanel.setDeleteButtonVisible(false);
 			buttonsPanel.setDeleteButtonEnabled(false);
 		}
+		buttonsPanelWMC.addOrReplace(buttonsPanel);
+	}
+	
+	private void initialiseEditButtonsPanelForReadOnlyUser(){
+		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
+		buttonsPanel.setDeleteButtonVisible(false);
+		buttonsPanel.setDeleteButtonEnabled(false);
+		buttonsPanel.setSaveButtonVisible(false);
+		buttonsPanel.setSaveButtonEnabled(false);
 		buttonsPanelWMC.addOrReplace(buttonsPanel);
 	}
 	/**
@@ -99,7 +104,24 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 			arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
 		}
 		else {
-			initialiseViewButtonsPanel();
+			
+			SecurityManager securityManager = ThreadContext.getSecurityManager();
+			Subject currentUser = SecurityUtils.getSubject();
+			if( ArkPermissionHelper.hasEditPermission(securityManager,currentUser) || //User can UPDATE
+				ArkPermissionHelper.hasNewPermission(securityManager, currentUser) || //User can CREATE
+				ArkPermissionHelper.hasDeletePermission(securityManager, currentUser)){ //User can DELETE
+
+				initialiseEditButtonsPanel(false);
+				arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
+
+				
+			}else{
+				
+				initialiseEditButtonsPanelForReadOnlyUser();
+				
+			}
+			
+			
 		}
 
 		addComponentsToForm();
@@ -204,16 +226,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 	 * org.apache.wicket.markup.html.form.Form)
 	 */
 	public void onEditCancel(AjaxRequestTarget target, Form<?> form) {
-		if (isNew()) {
-			// ARK-333: If canceling the creation of a New record, then just close...
-			onClose(target);
-		}
-		else {
-			initialiseViewButtonsPanel(); // put View mode buttons back
-			arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(false);
-			target.add(arkCrudContainerVo.getDetailPanelFormContainer());
-			target.add(buttonsPanelWMC);			
-		}
+		onClose(target);
 		processErrors(target);
 	}
 
