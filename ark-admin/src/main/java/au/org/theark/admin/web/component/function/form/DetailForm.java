@@ -21,7 +21,6 @@ package au.org.theark.admin.web.component.function.form;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -34,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
-import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -53,8 +51,8 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	private int									mode;
 	private TextField<String>				idTxtFld;
 	private TextField<String>				nameTxtFld;
-	private TextArea<String>				descriptionTxtAreaFld;
-	private DropDownChoice<ArkFunction>	arkFunctionTypeDropDown;
+	private TextArea<String>						descriptionTxtAreaFld;
+	private DropDownChoice<ArkFunctionType>	arkFunctionTypeDropDown;
 	private TextField<String>				resourceKeyTxtFld;
 
 	/**
@@ -88,41 +86,29 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 			}
 		};
 		
-		resourceKeyTxtFld = new TextField<String>("arkFunction.resourceKey");
-		resourceKeyTxtFld.setEnabled(false);
-		
 		descriptionTxtAreaFld = new TextArea<String>("arkFunction.description");
 
 		// FunctionType selection
 		initArkFunctionTypeDropDown();
-
+		
+		resourceKeyTxtFld = new TextField<String>("arkFunction.resourceKey");
+		resourceKeyTxtFld.setEnabled(isNew());
+		
 		attachValidators();
 		addDetailFormComponents();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initArkFunctionTypeDropDown() {
 		List<ArkFunctionType> arkFunctionTypeList = iAdminService.getArkFunctionTypeList();
-		ChoiceRenderer<ArkFunction> defaultChoiceRenderer = new ChoiceRenderer<ArkFunction>("name", "id");
-		arkFunctionTypeDropDown = new DropDownChoice("arkFunction.arkFunctionType", arkFunctionTypeList, defaultChoiceRenderer);
-		arkFunctionTypeDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1007263623823525412L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-
-			}
-		});
+		ChoiceRenderer<ArkFunctionType> defaultChoiceRenderer = new ChoiceRenderer<ArkFunctionType>("name", "id");
+		arkFunctionTypeDropDown = new DropDownChoice<ArkFunctionType>("arkFunction.arkFunctionType", arkFunctionTypeList, defaultChoiceRenderer);
 	}
 
 	@Override
 	protected void attachValidators() {
-		// Set required field here
 		nameTxtFld.setRequired(true);
 		arkFunctionTypeDropDown.setRequired(true);
+		resourceKeyTxtFld.setRequired(true);
 	}
 
 	/* (non-Javadoc)

@@ -71,15 +71,8 @@ public class SearchResultsPanel extends Panel {
 			protected void populateItem(final Item<ArkFunction> item) {
 				ArkFunction arkFunction = item.getModelObject();
 
+				item.add(new Label("arkFunction.id", arkFunction.getId().toString()));
 				item.add(buildLink(arkFunction));
-
-				if (arkFunction.getName() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("arkFunction.name", arkFunction.getName()));
-				}
-				else {
-					item.add(new Label("arkFunction.name", ""));
-				}
 
 				if (arkFunction.getDescription() != null) {
 					// the ID here must match the ones in mark-up
@@ -204,7 +197,7 @@ public class SearchResultsPanel extends Panel {
 		};
 
 		// Add the label for the link
-		Label linkLabel = new Label("arkFunction.id", arkFunction.getId().toString());
+		Label linkLabel = new Label("arkFunction.name", arkFunction.getName());
 		link.add(linkLabel);
 		return link;
 	}

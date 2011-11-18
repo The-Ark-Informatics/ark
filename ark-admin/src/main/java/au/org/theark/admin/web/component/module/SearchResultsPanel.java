@@ -73,15 +73,9 @@ public class SearchResultsPanel extends Panel {
 			protected void populateItem(final Item<ArkModule> item) {
 				ArkModule arkModule = item.getModelObject();
 
+				item.add(new Label("arkModule.id", arkModule.getId().toString()));
+				
 				item.add(buildLink(arkModule));
-
-				if (arkModule.getName() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("arkModule.name", arkModule.getName()));
-				}
-				else {
-					item.add(new Label("arkModule.name", ""));
-				}
 
 				if (arkModule.getDescription() != null) {
 					// the ID here must match the ones in mark-up
@@ -185,7 +179,7 @@ public class SearchResultsPanel extends Panel {
 		};
 
 		// Add the label for the link
-		Label linkLabel = new Label("arkModule.id", arkModule.getId().toString());
+		Label linkLabel = new Label("arkModule.name", arkModule.getName());
 		link.add(linkLabel);
 		return link;
 	}
