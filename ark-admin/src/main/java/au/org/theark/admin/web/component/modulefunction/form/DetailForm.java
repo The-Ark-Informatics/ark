@@ -18,17 +18,29 @@
  ******************************************************************************/
 package au.org.theark.admin.web.component.modulefunction.form;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkModuleFunction;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractDetailForm;
 
 public class DetailForm extends AbstractDetailForm<AdminVO> {
@@ -36,19 +48,21 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= -770595464410732350L;
+	private static final long				serialVersionUID	= -770595464410732350L;
 
-	protected transient Logger		log					= LoggerFactory.getLogger(DetailForm.class);
+	protected transient Logger				log					= LoggerFactory.getLogger(DetailForm.class);
 
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
-	private IAdminService<Void>	iAdminService;
+	private IAdminService<Void>			iAdminService;
 
-	private int							mode;
-	private TextField<String>		idTxtFld;
-	private TextField<String>		nameTxtFld;
+	private DropDownChoice<ArkModule>	arkModuleDropDown;
+	private Palette<ArkModuleFunction>	arkModuleFunctionPalette;
+
+	private int	PALLETTE_ROWS				= 10;
 
 	/**
 	 * Constructor
+	 * 
 	 * @param id
 	 * @param feedbackPanel
 	 * @param containerForm
@@ -62,46 +76,54 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	}
 
 	public void initialiseDetailForm() {
-		idTxtFld = new TextField<String>("arkModuleFunction.id");
-		idTxtFld.setEnabled(false);
-		
-		nameTxtFld = new TextField<String>("arkModuleFunction.arkModule.name") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onBeforeRender() {
-				super.onBeforeRender();
-				setEnabled(isNew());
-			}
-		};
+		initArkModuleDropDown();
+		initArkModuleFunctionPalette();
 
 		attachValidators();
 		addDetailFormComponents();
 	}
 
-	@Override
-	protected void attachValidators() {
-		// Set required field here
-		nameTxtFld.setRequired(true);
+	private void initArkModuleDropDown() {
+		List<ArkModule> arkModuleList = iAdminService.getArkModuleList();
+		ChoiceRenderer<ArkModule> defaultChoiceRenderer = new ChoiceRenderer<ArkModule>("name", "id");
+		arkModuleDropDown = new DropDownChoice<ArkModule>("arkModuleFunction.arkModule", arkModuleList, defaultChoiceRenderer);
+		arkModuleDropDown.setOutputMarkupPlaceholderTag(true);
+		arkModuleDropDown.setEnabled(false);
 	}
 	
-	/* (non-Javadoc)
+	@SuppressWarnings("unchecked")
+	private void initArkModuleFunctionPalette() {
+		CompoundPropertyModel<AdminVO> cpModel = (CompoundPropertyModel<AdminVO>) containerForm.getModel();
+		cpModel.getObject().setAvailableArkFunctions(iAdminService.getArkFunctionList());
+		cpModel.getObject().setSelectedArkFunctions(iAdminService.getFunctionListByModule(containerForm.getModelObject().getArkModule()));
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "id");
+		PropertyModel<Collection<ArkFunction>> selectedModPm = new PropertyModel<Collection<ArkFunction>>(cpModel, "selectedArkFunctions");
+		PropertyModel<Collection<ArkFunction>> availableModulesPm = new PropertyModel<Collection<ArkFunction>>(cpModel, "availableArkFunctions");
+
+		arkModuleFunctionPalette = new ArkPalette("selectedArkModuleFunctions", selectedModPm, availableModulesPm, renderer, PALLETTE_ROWS, true);
+	}
+
+	@Override
+	protected void attachValidators() {
+		arkModuleDropDown.setRequired(true);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
 	 */
 	@Override
 	protected void addDetailFormComponents() {
-		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(arkModuleDropDown);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(arkModuleFunctionPalette);
 
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	protected void onSave(Form<AdminVO> containerForm, AjaxRequestTarget target) {
 		// Save or update
-		iAdminService.creatOrUpdateArkModule(containerForm.getModelObject());
+		iAdminService.creatOrUpdateArkModuleFunction(containerForm.getModelObject());
 
 		this.info("Ark Module Function: " + containerForm.getModelObject().getArkModule().getName() + " was created/updated successfully.");
 		target.add(feedBackPanel);
@@ -130,20 +152,5 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		else {
 			return false;
 		}
-	}
-
-	/**
-	 * @return the mode
-	 */
-	public int getMode() {
-		return mode;
-	}
-
-	/**
-	 * @param mode
-	 *           the mode to set
-	 */
-	public void setMode(int mode) {
-		this.mode = mode;
 	}
 }

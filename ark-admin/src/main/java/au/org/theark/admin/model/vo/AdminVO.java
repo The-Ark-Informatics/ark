@@ -20,6 +20,7 @@ package au.org.theark.admin.model.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -54,6 +55,8 @@ public class AdminVO implements Serializable {
 	private Boolean								arkDeletePermission;
 	private ArkRoleModuleFunctionVO			arkRoleModuleFunctionVo;
 	private List<ArkRoleModuleFunctionVO>	arkRoleModuleFunctionVoList;
+	private Collection<ArkFunction>			availableArkFunctions;
+	private Collection<ArkFunction>			selectedArkFunctions;
 
 	public AdminVO() {
 		this.arkRole = new ArkRole();
@@ -295,5 +298,21 @@ public class AdminVO implements Serializable {
 	 */
 	public List<ArkRoleModuleFunctionVO> getArkRoleModuleFunctionVoList() {
 		return arkRoleModuleFunctionVoList;
+	}
+
+	public Collection<ArkFunction> getAvailableArkFunctions() {
+		return availableArkFunctions;
+	}
+
+	public void setAvailableArkFunctions(Collection<ArkFunction> availableArkFunctions) {
+		this.availableArkFunctions = availableArkFunctions;
+	}
+
+	public Collection<ArkFunction> getSelectedArkFunctions() {
+		return selectedArkFunctions;
+	}
+
+	public void setSelectedArkFunctions(Collection<ArkFunction> selectedArkFunctions) {
+		this.selectedArkFunctions = selectedArkFunctions;
 	}
 }

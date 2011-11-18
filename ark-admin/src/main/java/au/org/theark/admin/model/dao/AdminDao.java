@@ -18,9 +18,13 @@
  ******************************************************************************/
 package au.org.theark.admin.model.dao;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
@@ -194,11 +198,13 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 	protected Criteria buildArkModuleCriteria(ArkModule arkModuleCriteria) {
 		Criteria criteria = getSession().createCriteria(ArkModule.class);
 
-		if (arkModuleCriteria.getId() != null)
+		if (arkModuleCriteria.getId() != null) {
 			criteria.add(Restrictions.eq("id", arkModuleCriteria.getId()));
+		}
 
-		if (arkModuleCriteria.getName() != null)
+		if (arkModuleCriteria.getName() != null) {
 			criteria.add(Restrictions.ilike("name", arkModuleCriteria.getName(), MatchMode.ANYWHERE));
+		}
 
 		return criteria;
 	}
@@ -382,10 +388,8 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 			criteria.add(Restrictions.eq("arkModule", arkModuleFunctionCriteria.getArkModule()));
 		}
 		
-		if (arkModuleFunctionCriteria.getArkFunction().getId() != null) {
-			criteria.add(Restrictions.eq("arkFunction", arkModuleFunctionCriteria.getArkFunction()));
-		}
-		
+		criteria.createAlias("arkModule", "module");
+		criteria.addOrder(Order.asc("module.name"));
 		criteria.addOrder(Order.asc("functionSequence"));
 
 		return criteria;
@@ -395,5 +399,92 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		Criteria criteria = getSession().createCriteria(ArkModuleFunction.class);
 		criteria.add(Restrictions.eq("id", id));
 		return (ArkModuleFunction) criteria.uniqueResult();
+	}
+	
+	public List<ArkModuleFunction> getArkModuleFunctionByArkModule(ArkModule arkModule) {
+		Criteria criteria = getSession().createCriteria(ArkModuleFunction.class);
+		criteria.add(Restrictions.eq("arkModule", arkModule));
+		return (List<ArkModuleFunction>) criteria.list();
+	}
+
+	public Collection<ArkFunction> getFunctionListByModule(ArkModule arkModule) {
+		Criteria criteria = getSession().createCriteria(ArkModuleFunction.class);
+		if(arkModule.getId() != null) {
+			criteria.add(Restrictions.eq("arkModule", arkModule));
+		}
+		criteria.createAlias("arkModule", "module");
+		criteria.addOrder(Order.asc("module.name"));
+		criteria.addOrder(Order.asc("functionSequence"));
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("arkFunction"), "arkFunction");
+		criteria.setProjection(projectionList);
+		return criteria.list();
+	}
+
+	public void creatOrUpdateArkModuleFunction(ArkModule arkModule, Collection<ArkFunction> selectedArkFunctions) {
+		Session session = getSession();
+		
+		// Remove previous list of ArkFunctions
+		Collection<ArkModuleFunction> arkModuleFunctions = getArkModuleFunctionByArkModule(arkModule);
+		for (ArkModuleFunction arkModuleFunctionToRemove: arkModuleFunctions) {
+			session.delete(arkModuleFunctionToRemove);
+		}
+		
+		// Insert the ArkFunctions for the ArkModule
+		Long functionSequence = new Long(1);
+		for (Iterator<ArkFunction> iterator = selectedArkFunctions.iterator(); iterator.hasNext();) {
+			ArkModuleFunction arkModuleFunction = new ArkModuleFunction();
+			ArkFunction arkFunction = iterator.next();
+			arkModuleFunction.setArkModule(arkModule);
+			arkModuleFunction.setArkFunction(arkFunction);
+			arkModuleFunction.setFunctionSequence(functionSequence++);
+			session.save(arkModuleFunction);
+		}
+
+		// Flush must be the last thing to call. If there is any other code/logic to be added make sure session.flush() is invoked after that.
+		session.flush();		
+	}
+	
+	/**
+	 * Creates a list of ArkFunctions to which the ArkModule should be linked to.
+	 * @param arkModule
+	 * @param selectedArkFunctions
+	 * @return
+	 */
+	protected Collection<ArkModuleFunction> getArkFunctionsToAddList(ArkModule arkModule, Collection<ArkFunction> selectedArkFunctions) {
+		Collection<ArkModuleFunction> arkModuleFunctionsToLink = new ArrayList<ArkModuleFunction>();
+		// Existing List of ArkFunctions that were linked to this ArkModule
+		Collection<ArkFunction> existingArkFunctions = getFunctionListByModule(arkModule);
+		for (Iterator<ArkFunction> iterator = selectedArkFunctions.iterator(); iterator.hasNext();) {
+			ArkFunction arkFunction = iterator.next();
+			if (!existingArkFunctions.contains(arkFunction)) {
+				ArkModuleFunction arkModuleFunction = new ArkModuleFunction();
+				arkModuleFunction.setArkModule(arkModule);
+				arkModuleFunction.setArkFunction(arkFunction);
+				arkModuleFunction.setFunctionSequence(new Long(1));
+				arkModuleFunctionsToLink.add(arkModuleFunction);
+			}
+		}
+		return arkModuleFunctionsToLink;
+	}
+	
+	/**
+	 * Creates a list of ArkFunctions that have been requested to be removed for a given ArkModule.
+	 * @param arkModule
+	 * @param selectedArkFunctions
+	 * @return
+	 */
+	protected Collection<ArkModuleFunction> getArkFunctionsToRemoveList(ArkModule arkModule, Collection<ArkFunction> selectedArkFunctions) {
+		Collection<ArkModuleFunction> arkModuleFunctionsToRemove = new ArrayList<ArkModuleFunction>();
+
+		for (ArkFunction arkFunction : selectedArkFunctions) {
+			ArkModuleFunction arkModuleFunction = new ArkModuleFunction();
+			arkModuleFunction.setArkModule(arkModule);
+			arkModuleFunction.setArkFunction(arkFunction);
+			arkModuleFunctionsToRemove.add(arkModuleFunction);
+		}
+
+		return arkModuleFunctionsToRemove;
 	}
 }
