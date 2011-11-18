@@ -96,6 +96,14 @@ public class SearchForm extends AbstractSearchForm<BiospecimenUidTemplate> {
 			}
 		};
 	}
+	
+	@Override
+	protected void onBeforeRender() {
+		super.onBeforeRender();
+		List<Study> studyListForUser = getStudyListForUser();
+		studyListForUser.removeAll(iLimsAdminService.getStudyListAssignedToBiospecimenUidTemplate());;
+		newButton.setEnabled(!studyListForUser.isEmpty());
+	}
 
 	/**
 	 * Returns a list of Studies the user is permitted to access
