@@ -141,6 +141,16 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		addDetailFormComponents();
 
 	}
+	@Override
+	public void onBeforeRender(){
+		super.onBeforeRender();
+		if(!isNew()){
+			userNameTxtField.setEnabled(false);
+		}else{
+			userNameTxtField.setEnabled(true);
+		}
+	}
+	
 
 	protected void addDetailFormComponents() {
 
@@ -284,10 +294,10 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	 * 
 	 * @see au.org.theark.core.web.form.AbstractUserDetailForm#onEditButtonClick()
 	 */
-	@Override
-	public void onEditButtonClick() {
-		userNameTxtField.setEnabled(false);
-	}
+//	@Override
+//	public void onEditButtonClick() {
+//		userNameTxtField.setEnabled(false);
+//	}
 
 	public void enableOrDisableRemoveButton() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
