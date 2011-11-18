@@ -20,6 +20,10 @@ package au.org.theark.core.web.form;
 
 import java.util.Iterator;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -31,6 +35,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 
 /**
  * @author nivedann
@@ -50,39 +55,8 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 	// Add a visitor class for required field marking/validation/highlighting
 	ArkFormVisitor	formVisitor = new ArkFormVisitor();
 
-	public void onBeforeRender() {
-		super.onBeforeRender();
-		visitChildren(formVisitor);
-	}
 
-	/**
-	 * @param id
-	 */
-	public AbstractArchiveDetailForm(String id) {
-		super(id);
-		initialiseForm();
-	}
 	
-	protected void onCancelPostProcess(AjaxRequestTarget target) {
-
-		crudVO.getViewButtonContainer().setVisible(true);
-		crudVO.getViewButtonContainer().setEnabled(true);
-		crudVO.getDetailPanelContainer().setVisible(true);
-		crudVO.getDetailPanelFormContainer().setEnabled(false);
-		crudVO.getSearchResultPanelContainer().setVisible(false);
-		crudVO.getSearchPanelContainer().setVisible(false);
-		crudVO.getEditButtonContainer().setVisible(false);
-
-		target.add(feedBackPanel);
-		target.add(crudVO.getSearchPanelContainer());
-		target.add(crudVO.getSearchResultPanelContainer());
-		target.add(crudVO.getDetailPanelContainer());
-		target.add(crudVO.getDetailPanelFormContainer());
-
-		target.add(crudVO.getViewButtonContainer());
-		target.add(crudVO.getEditButtonContainer());
-	}
-
 	/**
 	 * Constructor
 	 * 
@@ -99,6 +73,52 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 		this.feedBackPanel = feedBackPanel;
 		initialiseForm();
 	}
+	
+
+	/**
+	 * @param id
+	 */
+	public AbstractArchiveDetailForm(String id) {
+		super(id);
+		initialiseForm();
+	}
+	
+	/**
+	 * 
+	 */
+	public void onBeforeRender() {
+		super.onBeforeRender();
+		visitChildren(formVisitor);
+		
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		if( ArkPermissionHelper.hasEditPermission(securityManager,currentUser) || //User can UPDATE
+			ArkPermissionHelper.hasNewPermission(securityManager, currentUser) || //User can CREATE
+			ArkPermissionHelper.hasDeletePermission(securityManager, currentUser)){ //User can DELETE
+			
+			//If the logged in user has Create,Update Or Delete then by-pass the View/Read Only Screen and show the Edit Screen
+			ArkCRUDHelper.onBeforeRenderWithCRDPermissions(crudVO);
+		
+		}else{
+			
+			ArkCRUDHelper.onBeforeRenderWithReadPermission(crudVO);
+		}
+	}
+	
+	protected void onCancelPostProcess(AjaxRequestTarget target) {
+
+		crudVO.getDetailPanelContainer().setVisible(false);
+		crudVO.getSearchResultPanelContainer().setVisible(true);
+		crudVO.getSearchPanelContainer().setVisible(true);
+		target.add(feedBackPanel);
+		target.add(crudVO.getSearchPanelContainer());
+		target.add(crudVO.getSearchResultPanelContainer());
+		target.add(crudVO.getDetailPanelContainer());
+		target.add(crudVO.getDetailPanelFormContainer());
+		target.add(crudVO.getEditButtonContainer());
+		onCancel(target);
+	}
+
 
 	protected void initialiseForm() {
 
@@ -115,7 +135,7 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 					editCancelProcess(target);
 				}
 				else {
-					crudVO.getSearchResultPanelContainer().setVisible(false);// Hide the Search Result List Panel via the WebMarkupContainer
+					crudVO.getSearchResultPanelContainer().setVisible(true);// Hide the Search Result List Panel via the WebMarkupContainer
 					crudVO.getDetailPanelContainer().setVisible(false);// Hide the Detail Panle via the WebMarkupContainer
 					target.add(crudVO.getDetailPanelContainer());
 					target.add(crudVO.getSearchResultPanelContainer());// Attach the resultListContainer WebMarkupContainer to be re-rendered
@@ -169,60 +189,14 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 			}
 		};
 
-		editButton = new AjaxButton("edit") {
-
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-			}
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				crudVO.getViewButtonContainer().setVisible(false);
-				crudVO.getEditButtonContainer().setVisible(true);
-				crudVO.getDetailPanelFormContainer().setEnabled(true);
-
-				target.add(crudVO.getViewButtonContainer());
-				target.add(crudVO.getEditButtonContainer());
-				target.add(crudVO.getDetailPanelFormContainer());
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				processErrors(target);
-			}
-		};
-
-		editCancelButton = new AjaxButton("editCancel") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				editCancelProcess(target);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				processErrors(target);
-			}
-		};
-
 		addComponentsToForm();
 	}
 
 	protected void addComponentsToForm() {
 		crudVO.getEditButtonContainer().add(saveButton);
 		crudVO.getEditButtonContainer().add(cancelButton.setDefaultFormProcessing(false));
-		crudVO.getViewButtonContainer().add(editButton);
-		crudVO.getViewButtonContainer().add(editCancelButton.setDefaultFormProcessing(false));
-
 		add(crudVO.getDetailPanelFormContainer());
 		add(crudVO.getEditButtonContainer());
-		add(crudVO.getViewButtonContainer());
 	}
 
 	protected void editCancelProcess(AjaxRequestTarget target) {
@@ -247,20 +221,14 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 	protected void onSavePostProcess(AjaxRequestTarget target, ArkCrudContainerVO crudVO) {
 		// Visibility
 		crudVO.getDetailPanelContainer().setVisible(true);
-		crudVO.getViewButtonContainer().setVisible(true);
 		crudVO.getSearchResultPanelContainer().setVisible(false);
 		crudVO.getSearchPanelContainer().setVisible(false);
-		crudVO.getEditButtonContainer().setVisible(false);
-
 		// Enable
-		crudVO.getDetailPanelFormContainer().setEnabled(false);
-		crudVO.getViewButtonContainer().setEnabled(true);
-
+		crudVO.getDetailPanelFormContainer().setEnabled(true);
 		target.add(crudVO.getSearchResultPanelContainer());
 		target.add(crudVO.getDetailPanelContainer());
 		target.add(crudVO.getDetailPanelFormContainer());
 		target.add(crudVO.getSearchPanelContainer());
-		target.add(crudVO.getViewButtonContainer());
 		target.add(crudVO.getEditButtonContainer());
 
 		target.add(feedBackPanel);
