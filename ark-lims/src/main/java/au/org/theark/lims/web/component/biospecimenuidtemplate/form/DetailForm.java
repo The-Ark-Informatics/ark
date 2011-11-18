@@ -173,8 +173,21 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 			protected void onBeforeRender() {
 				super.onBeforeRender();
 				this.setChoices(getStudyListForUser());
+				setEnabled(isNew());
 			}
 		};
+	}
+	
+	@Override
+	public void onBeforeRender() {
+		super.onBeforeRender();
+		boolean hasBiospecimens = iLimsAdminService.studyHasBiospecimens(containerForm.getModelObject().getStudy());
+		biospecimenUidPrefixTxtFld.setEnabled(!hasBiospecimens);
+		biospecimenUidTokenDdc.setEnabled(!hasBiospecimens);
+		biospecimenUidPadCharDdc.setEnabled(!hasBiospecimens);
+		biospecimenUidExampleLbl.setEnabled(!hasBiospecimens);
+		saveButton.setEnabled(!hasBiospecimens);
+		deleteButton.setEnabled(false);
 	}
 
 	private void initBiospecimenUidTokenDdc() {
@@ -315,6 +328,11 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 			ArkModule arkModule = null;
 			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
 			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+			
+			// Remove possible Study's already assigned a BiospecimenUidTemplate
+			if(isNew()) {
+				studyListForUser.removeAll(iLimsAdminService.getStudyListAssignedToBiospecimenUidTemplate());
+			}
 		}
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
