@@ -484,4 +484,12 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		tx.commit();
 		session.close();
 	}
+	
+	public boolean studyHasBiospecimens(Study study) {
+		Criteria criteria = getSession().createCriteria(Biospecimen.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.setProjection(Projections.count("id"));
+		Integer count = (Integer) criteria.uniqueResult();
+		return count>0;
+	}
 }

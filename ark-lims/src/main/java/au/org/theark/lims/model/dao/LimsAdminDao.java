@@ -340,4 +340,10 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("study")));
 		return criteria.list();
 	}
+
+	public List<Study> getStudyListAssignedToBiospecimenUidTemplate() {
+		Criteria criteria = getSession().createCriteria(BiospecimenUidTemplate.class);
+		criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("study")));
+		return criteria.list();
+	}
 }
