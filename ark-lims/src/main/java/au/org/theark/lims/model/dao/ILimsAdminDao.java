@@ -202,4 +202,10 @@ public interface ILimsAdminDao {
 	 * @return
 	 */
 	public List<Study> getStudyListAssignedToBarcodeLabel();
+	
+	/**
+	 * Gets a list of Studys that are already assigned to biospeicmenUidTemplates
+	 * @return
+	 */
+	public List<Study> getStudyListAssignedToBiospecimenUidTemplate();
 }

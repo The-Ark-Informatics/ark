@@ -28,6 +28,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.lims.model.dao.IBiospecimenDao;
 import au.org.theark.lims.model.dao.ILimsAdminDao;
 
 /**
@@ -43,9 +44,11 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
 	private ILimsAdminDao			iLimsAdminDao;
+	private IBiospecimenDao			iBiospecimenDao;
 	private VelocityEngine			velocityEngine;
 	static private final String	REAL_NUMBER	= "^[-+]?\\d+(\\.\\d+)?$";
 	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+	
 	
 	/**
 	 * @param iArkCommonService
@@ -64,6 +67,15 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	@Autowired
 	public void setiLimsAdminDao(ILimsAdminDao iLimsAdminDao) {
 		this.iLimsAdminDao = iLimsAdminDao;
+	}
+
+	public IBiospecimenDao getiBiospecimenDao() {
+		return iBiospecimenDao;
+	}
+
+	@Autowired
+	public void setiBiospecimenDao(IBiospecimenDao iBiospecimenDao) {
+		this.iBiospecimenDao = iBiospecimenDao;
 	}
 
 	public VelocityEngine getVelocityEngine() {
@@ -393,5 +405,13 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	
 	public List<Study> getStudyListAssignedToBarcodeLabel() {
 		return iLimsAdminDao.getStudyListAssignedToBarcodeLabel();
+	}
+
+	public List<Study> getStudyListAssignedToBiospecimenUidTemplate() {
+		return iLimsAdminDao.getStudyListAssignedToBiospecimenUidTemplate();
+	}
+
+	public boolean studyHasBiospecimens(Study study) {
+		return iBiospecimenDao.studyHasBiospecimens(study);
 	}
 }

@@ -148,4 +148,6 @@ public interface IBiospecimenDao {
 	public List<BiospecimenQuality> getBiospecimenQualityList();
 	
 	public String getNextGeneratedBiospecimenUID(Study study);
+	
+	public boolean studyHasBiospecimens(Study study);
 }
