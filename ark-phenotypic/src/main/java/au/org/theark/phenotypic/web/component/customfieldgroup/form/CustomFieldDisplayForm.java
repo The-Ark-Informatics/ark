@@ -1,8 +1,13 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup.form;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -13,8 +18,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldGroupVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 
 /**
  * @author nivedann
@@ -32,7 +40,7 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO>{
 	protected FeedbackPanel	feedbackPanel;
 	protected ModalWindow	modalWindow;
 	private Boolean flag;
-	
+	protected WebMarkupContainer cfdMarkupContainer;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 	
@@ -50,7 +58,27 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO>{
 		addSearchComponentsToForm();
 	}
 	
+
+	public void onBeforeRender() {
+		super.onBeforeRender();
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		if( ArkPermissionHelper.hasEditPermission(securityManager,currentUser) || //User can UPDATE
+			ArkPermissionHelper.hasNewPermission(securityManager, currentUser) || //User can CREATE
+			ArkPermissionHelper.hasDeletePermission(securityManager, currentUser)){ //User can DELETE
+			
+			//If the logged in user has Create,Update Or Delete then by-pass the View/Read Only Screen and show the Edit Screen
+			saveButton.setEnabled(true);
+			cfdMarkupContainer.setEnabled(true);
+		
+		}else{
+			cfdMarkupContainer.setEnabled(false);
+			saveButton.setEnabled(false);
+		}
+	}
+	
 	public void initialiseForm(){
+		cfdMarkupContainer = new WebMarkupContainer("cfdFieldContainer");
 		customFieldDisplayIdTxtFld = new TextField<String>("customFieldDisplay.id");
 		requiredMessageTxtFld = new TextField<String>("customFieldDisplay.requiredMessage");
 		customFieldNameTxtFld = new TextField<String>("customFieldDisplay.customField.name");
@@ -112,11 +140,12 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO>{
 			requiredFieldCb.setEnabled(false);
 			requiredMessageTxtFld.setEnabled(false);
 		}
-		add(customFieldDisplayIdTxtFld);
-		add(customFieldNameTxtFld);
-		add(requiredFieldCb);
-		add(requiredMessageTxtFld);
+		cfdMarkupContainer.add(customFieldDisplayIdTxtFld);
+		cfdMarkupContainer.add(customFieldNameTxtFld);
+		cfdMarkupContainer.add(requiredFieldCb);
+		cfdMarkupContainer.add(requiredMessageTxtFld);
 		add(saveButton);
 		add(cancelButton.setDefaultFormProcessing(false));
+		add(cfdMarkupContainer);
 	}
 }
