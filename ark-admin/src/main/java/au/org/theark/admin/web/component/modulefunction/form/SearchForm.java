@@ -24,15 +24,17 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
+import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 
 public class SearchForm extends AbstractSearchForm<AdminVO> {
@@ -49,7 +51,6 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	private ArkCrudContainerVO					arkCrudContainerVo;
 	private ContainerForm						containerForm;
 	private FeedbackPanel						feedbackPanel;
-	private TextField<String>					idTxtFld;
 	private DropDownChoice<ArkModule>		arkModuleDropDown;
 
 	/**
@@ -67,6 +68,27 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 		this.arkCrudContainerVo = arkCrudContainerVo;
 		this.feedbackPanel = feedbackPanel;
 		setMultiPart(true);
+		
+		newButton = new ArkBusyAjaxButton(Constants.NEW) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public boolean isVisible() {
+				return false;
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+			}
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+			}
+		};
+		addOrReplace(newButton);
 
 		this.setCpmModel(cpmModel);
 
@@ -75,17 +97,14 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	}
 
 	protected void initialiseSearchForm() {
-		idTxtFld = new TextField<String>("arkModuleFunction.id");
 		initArkModuleDropDown();
 	}
 	
 	@SuppressWarnings("unchecked")
 	private void initArkModuleDropDown() {
 		List<ArkModule> arkModuleList = iAdminService.getArkModuleList();
-		// Restrict searching/selecting of Super Administrator
-		arkModuleList.remove(iAdminService.getArkRoleByName(au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR));
 		ChoiceRenderer<ArkModule> defaultChoiceRenderer = new ChoiceRenderer<ArkModule>("name", "id");
-		arkModuleDropDown = new DropDownChoice("arkModuleFunction.arkModule", arkModuleList, defaultChoiceRenderer);
+		arkModuleDropDown = new DropDownChoice("arkModule", arkModuleList, defaultChoiceRenderer);
 		arkModuleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			/**
 			 * 
@@ -113,7 +132,6 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	}
 
 	private void addSearchComponentsToForm() {
-		add(idTxtFld);
 		add(arkModuleDropDown);
 	}
 

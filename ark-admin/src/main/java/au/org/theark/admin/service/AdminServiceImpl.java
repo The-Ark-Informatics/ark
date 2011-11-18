@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.admin.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,5 +183,13 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 
 	public ArkModuleFunction getArkModuleFunction(Long id) {
 		return adminDao.getArkModuleFunction(id);
+	}
+
+	public Collection<ArkFunction> getFunctionListByModule(ArkModule arkModule) {
+		return adminDao.getFunctionListByModule(arkModule);
+	}
+
+	public void creatOrUpdateArkModuleFunction(AdminVO modelObject) {
+		adminDao.creatOrUpdateArkModuleFunction(modelObject.getArkModuleFunction().getArkModule(), modelObject.getSelectedArkFunctions());
 	}
 }

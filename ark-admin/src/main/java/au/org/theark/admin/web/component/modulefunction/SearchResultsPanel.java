@@ -69,22 +69,22 @@ public class SearchResultsPanel extends Panel {
 			protected void populateItem(final Item<ArkModuleFunction> item) {
 				ArkModuleFunction arkModuleFunction = item.getModelObject();
 
+				item.add(new Label("arkModuleFunction.id", arkModuleFunction.getId().toString()));
+				
 				item.add(buildLink(arkModuleFunction));
 
-				if (arkModuleFunction.getArkModule() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("arkModuleFunction.arkModule", arkModuleFunction.getArkModule().getName()));
-				}
-				else {
-					item.add(new Label("arkModuleFunction.arkModule", ""));
-				}
-
 				if (arkModuleFunction.getArkFunction() != null) {
-					// the ID here must match the ones in mark-up
 					item.add(new Label("arkModuleFunction.arkFunction", arkModuleFunction.getArkFunction().getName()));
 				}
 				else {
 					item.add(new Label("arkModuleFunction.arkFunction", ""));
+				}
+				
+				if (arkModuleFunction.getFunctionSequence() != null) {
+					item.add(new Label("arkModuleFunction.functionSequence", arkModuleFunction.getFunctionSequence().toString()));
+				}
+				else {
+					item.add(new Label("arkModuleFunction.functionSequence", ""));
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
@@ -111,6 +111,8 @@ public class SearchResultsPanel extends Panel {
 				Long id = arkModuleFunction.getId();
 				ArkModuleFunction arkModuleFunction = iAdminService.getArkModuleFunction(id);
 				containerForm.getModelObject().setArkModuleFunction(arkModuleFunction);
+				containerForm.getModelObject().setAvailableArkFunctions(iAdminService.getArkFunctionList());
+				containerForm.getModelObject().setSelectedArkFunctions(iAdminService.getFunctionListByModule(arkModuleFunction.getArkModule()));
 
 				arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
 				arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
@@ -134,7 +136,7 @@ public class SearchResultsPanel extends Panel {
 		};
 
 		// Add the label for the link
-		Label linkLabel = new Label("arkModuleFunction.id", arkModuleFunction.getId().toString());
+		Label linkLabel = new Label("arkModuleFunction.arkModule", arkModuleFunction.getArkModule().getName());
 		link.add(linkLabel);
 		return link;
 	}

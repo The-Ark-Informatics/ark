@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.admin.model.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
@@ -113,4 +114,8 @@ public interface IAdminDao {
 	public List<ArkModuleFunction> searchPageableArkModuleFunctions(ArkModuleFunction arkModuleFunctionCriteria, int first, int count);
 
 	public ArkModuleFunction getArkModuleFunction(Long id);
+
+	public Collection<ArkFunction> getFunctionListByModule(ArkModule arkModule);
+	
+	public void creatOrUpdateArkModuleFunction(ArkModule arkModule, Collection<ArkFunction> selectedArkFunctions);
 }

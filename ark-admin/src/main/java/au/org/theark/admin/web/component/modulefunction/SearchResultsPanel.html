@@ -12,8 +12,11 @@
 			<th width="35%">
 				<wicket:message key="arkModuleFunction.arkModule">module</wicket:message>
 			</th>
-			<th width="56%">
+			<th width="36%">
 				<wicket:message key="arkModuleFunction.arkFunction">function</wicket:message>
+			</th>
+			<th width="20%">
+				<wicket:message key="arkModuleFunction.functionSequence">sequence</wicket:message>
 			</th>
 			<th width="2%">
 				&nbsp;
@@ -24,15 +27,18 @@
 				&nbsp;
 			</td>
 			<td width="5%">
-				<a href="#" wicket:id="link">
-					<span wicket:id="arkModuleFunction.id">id</span>
-				</a>
+				<span wicket:id="arkModuleFunction.id">id</span>
 			</td>
 			<td width="35%">
-				<span wicket:id="arkModuleFunction.arkModule">module</span>
+				<a href="#" wicket:id="link">
+					<span wicket:id="arkModuleFunction.arkModule">module</span>
+				</a>
 			</td>
 			<td width="56%">
 				<span wicket:id="arkModuleFunction.arkFunction">function</span>
+			</td>
+			<td width="20%">
+				<span wicket:id="arkModuleFunction.functionSequence">sequence</span>
 			</td>
 			<td width="2%">
 				&nbsp;
@@ -42,7 +48,7 @@
 			<td width="2%">
 				&nbsp;
 			</td>
-			<td width="96%" colspan="3">
+			<td width="96%" colspan="4">
 				<span wicket:id="navigator" class="a">
 				</span>
 			</td>

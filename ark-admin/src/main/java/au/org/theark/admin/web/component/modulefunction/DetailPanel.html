@@ -7,44 +7,38 @@
 				<div id="detailPanelBreaker">&nbsp;</div>
 				
 				<div id="panelContentLeft">&nbsp;</div>
-
-				<div id="fldLabel">
-					<div class="label">
-						<label for="id">
-							<wicket:message key="arkModuleFunction.id">
-								ID
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-				<div id="fldControl">
-					<div class="label">
-						<input wicket:id="arkModuleFunction.id" type="text" />
-					</div>
-				</div>
-				
-				<div id="panelMargin">&nbsp;</div>
 				
 				<div id="fldLabel">
-					<div class="label">
-						<label for="name">
-							<wicket:message key="arkModuleFunction.arkModule">
-								Module
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="arkModuleFunction.arkModule">
+						Module
+					</wicket:message>
 				</div>
+				
 				<div id="fldControl">
-					<div class="label">
-						<input wicket:id="arkModuleFunction.arkModule" type="text" />
-					</div>
+					<select wicket:id="arkModuleFunction.arkModule">
+						<option>
+							1
+						</option>
+						<option>
+							2
+						</option>
+					</select>
 				</div>
 				
 				<div id="detailPanelBreaker">&nbsp;</div>
 				
 				<div id="panelContentLeft">&nbsp;</div>
+			
+				<div id="fldLabel">
+					<wicket:message	key="arkModuleFunctions">Module Functions:</wicket:message>
+					<span wicket:id="selectedArkModuleFunctions">[Palette]</span>
+				</div>
 				
-				<!-- Empty -->
+				<div id="fldControl">
+					&nbsp;
+				</div>
+				
+				<div id="panelMargin">&nbsp;</div>
 				
 				<div id="panelMargin">&nbsp;</div>
 				
