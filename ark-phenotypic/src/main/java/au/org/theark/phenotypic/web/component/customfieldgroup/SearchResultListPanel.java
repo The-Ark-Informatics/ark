@@ -23,6 +23,7 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldGroupVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.phenotypic.service.Constants;
@@ -162,25 +163,7 @@ public class SearchResultListPanel extends Panel{
 				
 				//The list of CFD must be displayed on the Detail form
 				//Create a CFD List Panel here and add it to the detailForm.
-				
-				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
-				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
-				// Button containers
-				// View Field, thus view container visible
-				arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
-				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
-				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
-			
-				target.add(arkCrudContainerVO.getSearchPanelContainer());
-				target.add(arkCrudContainerVO.getDetailPanelContainer());
-				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-				target.add(arkCrudContainerVO.getViewButtonContainer());
-				target.add(arkCrudContainerVO.getEditButtonContainer());
-				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
-				target.add(arkCrudContainerVO.getDetailPanelContainer());
-				
+				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
 			}
 			
 		};
