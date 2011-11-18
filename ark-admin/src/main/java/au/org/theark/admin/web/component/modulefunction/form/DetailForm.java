@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
+import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleFunction;
@@ -73,6 +75,24 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		this.containerForm = containerForm;
 		arkCrudContainerVO = arkCrudContainerVo;
 		setMultiPart(true);
+		
+		// Do not allow deletes
+		deleteButton = new AjaxButton(Constants.DELETE) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+			}
+		};
+		deleteButton.setEnabled(false);
+		addOrReplace(deleteButton);
 	}
 
 	public void initialiseDetailForm() {
