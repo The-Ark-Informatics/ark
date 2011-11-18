@@ -46,6 +46,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.manageuser.form.ContainerForm;
@@ -154,13 +155,14 @@ public class SearchResultListPanel extends Panel {
 						listView.removeAll();
 					}
 
+					/*
 					// Render the UI
 					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 					arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 					arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
 					arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
 					arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
-					
+				
 					try {
 						
 						String userName = containerForm.getModelObject().getArkUserEntity().getLdapUserName();
@@ -176,9 +178,11 @@ public class SearchResultListPanel extends Panel {
 						e.printStackTrace();
 					}
 					
-					arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 					
+					arkCrudContainerVO.getEditButtonContainer().setVisible(false);
+					*/
 					arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
+					/*
 					target.add(arkCrudContainerVO.getWmcForarkUserAccountPanel());// This should re-render the list again
 					target.add(arkCrudContainerVO.getSearchPanelContainer());
 					target.add(arkCrudContainerVO.getDetailPanelContainer());
@@ -186,6 +190,8 @@ public class SearchResultListPanel extends Panel {
 					target.add(arkCrudContainerVO.getViewButtonContainer());
 					target.add(arkCrudContainerVO.getEditButtonContainer());
 					target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+					*/
+					ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
 					target.add(feedbackPanel);
 					// Set the MODE here.Since the User Details are from LDAP we don't have a entity that we can use to check for a mode
 					containerForm.getModelObject().setMode(Constants.MODE_EDIT);
