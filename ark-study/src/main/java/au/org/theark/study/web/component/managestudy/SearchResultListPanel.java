@@ -44,6 +44,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
@@ -213,17 +214,6 @@ public class SearchResultListPanel extends Panel {
 					ArkModule arkModule = (ArkModule) iterator.next();
 					SecurityUtils.getSubject().getSession().setAttribute(arkModule.getName(), arkModule.getName());
 				}
-
-				studyCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
-				studyCrudContainerVO.getSearchPanelContainer().setVisible(false);
-				studyCrudContainerVO.getDetailPanelContainer().setVisible(true);
-				studyCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-
-				studyCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
-				studyCrudContainerVO.getViewButtonContainer().setEnabled(true);// saveBtn
-
-				studyCrudContainerVO.getEditButtonContainer().setVisible(false);
-
 				studyCrudContainerVO.getSummaryContainer().setVisible(true);
 
 				// Set Study Logo
@@ -235,13 +225,8 @@ public class SearchResultListPanel extends Panel {
 				contextHelper.resetContextLabel(target, studyCrudContainerVO.getArkContextMarkup());
 				contextHelper.setStudyContextLabel(target, searchStudy.getName(), studyCrudContainerVO.getArkContextMarkup());
 
-				target.add(studyCrudContainerVO.getSearchPanelContainer());
-				target.add(studyCrudContainerVO.getDetailPanelContainer());
-				target.add(studyCrudContainerVO.getSearchResultPanelContainer());
-				target.add(studyCrudContainerVO.getViewButtonContainer());
-				target.add(studyCrudContainerVO.getEditButtonContainer());
 				target.add(studyCrudContainerVO.getSummaryContainer());
-				target.add(studyCrudContainerVO.getDetailPanelFormContainer());
+				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, studyCrudContainerVO);
 
 				// Refresh base container form to remove any feedBack messages
 				target.add(studyContainerForm);
