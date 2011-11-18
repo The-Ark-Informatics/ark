@@ -91,8 +91,18 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		// FunctionType selection
 		initArkFunctionTypeDropDown();
 		
-		resourceKeyTxtFld = new TextField<String>("arkFunction.resourceKey");
-		resourceKeyTxtFld.setEnabled(isNew());
+		resourceKeyTxtFld = new TextField<String>("arkFunction.resourceKey") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onBeforeRender() {
+				super.onBeforeRender();
+				setEnabled(isNew());
+			}
+		};
 		
 		attachValidators();
 		addDetailFormComponents();
