@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.service.IAdminService;
-import au.org.theark.admin.web.component.modulefunction.form.ContainerForm;
+import au.org.theark.admin.web.component.ContainerForm;
 import au.org.theark.core.model.study.entity.ArkModuleFunction;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkDataProvider;

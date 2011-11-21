@@ -31,7 +31,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
-import au.org.theark.admin.web.component.modulefunction.form.ContainerForm;
+import au.org.theark.admin.web.component.ContainerForm;
 import au.org.theark.core.model.study.entity.ArkModuleFunction;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.AbstractContainerPanel;
