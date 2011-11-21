@@ -112,7 +112,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	private void initArkModuleDropDown() {
 		List<ArkModule> arkModuleList = iAdminService.getArkModuleList();
 		ChoiceRenderer<ArkModule> defaultChoiceRenderer = new ChoiceRenderer<ArkModule>("name", "id");
-		arkModuleDropDown = new DropDownChoice<ArkModule>("arkModuleFunction.arkModule", arkModuleList, defaultChoiceRenderer);
+		arkModuleDropDown = new DropDownChoice<ArkModule>("arkModuleRole.arkModule", arkModuleList, defaultChoiceRenderer);
 		arkModuleDropDown.setOutputMarkupPlaceholderTag(true);
 		arkModuleDropDown.setEnabled(false);
 	}
