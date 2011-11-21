@@ -129,8 +129,6 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	@SuppressWarnings("unchecked")
 	private void initArkModuleDropDown() {
 		List<ArkModule> arkModuleList = iAdminService.getArkModuleList();
-		// Restrict searching/selecting of Super Administrator
-		arkModuleList.remove(iAdminService.getArkRoleByName(au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR));
 		ChoiceRenderer<ArkModule> defaultChoiceRenderer = new ChoiceRenderer<ArkModule>("name", "id");
 		arkModuleDropDown = new DropDownChoice("arkRoleModuleFunctionVo.arkModule", arkModuleList, defaultChoiceRenderer);
 		arkModuleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
