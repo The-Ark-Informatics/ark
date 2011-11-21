@@ -20,27 +20,18 @@ package au.org.theark.admin.web.component.rolePolicy.form;
 
 import java.util.List;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.model.vo.AdminVO;
-import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.ContainerForm;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -48,7 +39,6 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
-import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 
@@ -62,11 +52,13 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
 	private IAdminService<Void>			iAdminService;
 
-	private int									mode;
 	private DropDownChoice<ArkRole>		arkRoleDropDown;
 	private DropDownChoice<ArkModule>	arkModuleDropDown;
-	@SuppressWarnings("unchecked")
-	private PageableListView				pageableListView;
+	private DropDownChoice<ArkFunction>	arkFunctionDropDown;
+	private CheckBox							createChk;
+	private CheckBox							readChk;
+	private CheckBox							updateChk;
+	private CheckBox							deleteChk;
 
 	/**
 	 * Constructor
@@ -83,68 +75,29 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		setMultiPart(true);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm() {
 		// Role selection
 		initArkRoleDropDown();
 
 		// Module selection
 		initArkModuleDropDown();
+		
+		// Function selection
+		initArkFunctionDropDown();
 
-		IModel<List<ArkUserRole>> iModel = new LoadableDetachableModel() {
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected Object load() {
-				return getModelObject().getArkRoleModuleFunctionVoList();
-			}
-		};
-
-		// Maybe user getModelObject().getArkRolePolicyTemplateList().size()
-		pageableListView = new PageableListView("arkRoleModuleFunctionVoList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void populateItem(final ListItem item) {
-				ArkRoleModuleFunctionVO	arkRoleModuleFunctionVo = (ArkRoleModuleFunctionVO) item.getModelObject();
-				item.add(new Label("arkFunction.name", arkRoleModuleFunctionVo.getArkFunction().getName()));
-				item.addOrReplace(new CheckBox("arkCreatePermission"));
-				item.addOrReplace(new CheckBox("arkReadPermission"));
-				item.addOrReplace(new CheckBox("arkUpdatePermission"));
-				item.addOrReplace(new CheckBox("arkDeletePermission"));
-				item.setEnabled(false);
-
-				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
-					private static final long	serialVersionUID	= -3761802307040022900L;
-
-					@Override
-					public String getObject() {
-						return (item.getIndex() % 2 == 1) ? "even" : "odd";
-					}
-				}));
-			}
-		};
-
-		pageableListView.setReuseItems(true);
-
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
-		add(pageNavigator);
+		createChk = new CheckBox("arkCreatePermission");
+		readChk = new CheckBox("arkReadPermission");
+		updateChk = new CheckBox("arkUpdatePermission");
+		deleteChk = new CheckBox("arkDeletePermission");
 
 		attachValidators();
 		addDetailFormComponents();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initArkRoleDropDown() {
 		List<ArkRole> arkRoleList = iAdminService.getArkRoleList();
 		ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>("name", "id");
-		arkRoleDropDown = new DropDownChoice("arkRolePolicyTemplate.arkRole", arkRoleList, defaultChoiceRenderer);
+		arkRoleDropDown = new DropDownChoice<ArkRole>("arkRolePolicyTemplate.arkRole", arkRoleList, defaultChoiceRenderer);
 		arkRoleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			/**
 			 * 
@@ -153,17 +106,19 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-
+				List<ArkModule> arkModuleList = iAdminService.getArkModuleListByArkRole(containerForm.getModelObject().getArkRolePolicyTemplate().getArkRole());
+				arkModuleDropDown.getChoices().clear();
+				arkModuleDropDown.setChoices(arkModuleList);
+				target.add(arkModuleDropDown);
 			}
 		});
-		arkRoleDropDown.setEnabled(false);
+		arkRoleDropDown.setEnabled(isNew());
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initArkModuleDropDown() {
-		List<ArkModule> arkModuleList = iAdminService.getArkModuleList();
+		List<ArkModule> arkModuleList = iAdminService.getArkModuleListByArkRole(containerForm.getModelObject().getArkRolePolicyTemplate().getArkRole());
 		ChoiceRenderer<ArkModule> defaultChoiceRenderer = new ChoiceRenderer<ArkModule>("name", "id");
-		arkModuleDropDown = new DropDownChoice("arkRolePolicyTemplate.arkModule", arkModuleList, defaultChoiceRenderer);
+		arkModuleDropDown = new DropDownChoice<ArkModule>("arkRolePolicyTemplate.arkModule", arkModuleList, defaultChoiceRenderer);
 		arkModuleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			/**
 			 * 
@@ -172,20 +127,35 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-
+				List<ArkFunction> arkFunctionList = iAdminService.getArkFunctionListByArkModule(containerForm.getModelObject().getArkModule());
+				arkFunctionDropDown.getChoices().clear();
+				arkFunctionDropDown.setChoices(arkFunctionList);
+				target.add(arkFunctionDropDown);
 			}
 		});
-		arkModuleDropDown.setEnabled(false);
+		arkModuleDropDown.setEnabled(isNew());
 	}
 	
-	/* (non-Javadoc)
+	private void initArkFunctionDropDown() {
+		List<ArkFunction> arkFunctionList = iAdminService.getArkFunctionListByArkModule(containerForm.getModelObject().getArkModule());
+		ChoiceRenderer<ArkFunction> defaultChoiceRenderer = new ChoiceRenderer<ArkFunction>("name", "id");
+		arkFunctionDropDown = new DropDownChoice<ArkFunction>("arkRolePolicyTemplate.arkFunction", arkFunctionList, defaultChoiceRenderer);
+		arkFunctionDropDown.setEnabled(isNew());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
 	 */
 	@Override
 	protected void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkRoleDropDown);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkModuleDropDown);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(pageableListView);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(createChk);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(readChk);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(updateChk);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(deleteChk);
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
@@ -278,20 +248,5 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		else {
 			return false;
 		}
-	}
-
-	/**
-	 * @return the mode
-	 */
-	public int getMode() {
-		return mode;
-	}
-
-	/**
-	 * @param mode
-	 *           the mode to set
-	 */
-	public void setMode(int mode) {
-		this.mode = mode;
 	}
 }
