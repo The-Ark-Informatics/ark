@@ -346,17 +346,9 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * @param isArkCrudContainerVOPattern
 	 */
 	protected void onCancelPostProcess(AjaxRequestTarget target) {
-		//arkCrudContainerVO.getViewButtonContainer().setVisible(true);
-		//arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
-		
-		//arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-		
-		//new pattern
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(false);//Go to search page/results
-		//arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);//Don't need to disable
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 		arkCrudContainerVO.getSearchPanelContainer().setVisible(true);
-		//arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 
 		target.add(feedBackPanel);
 		target.add(arkCrudContainerVO.getSearchPanelContainer());
@@ -365,8 +357,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
 		target.add(arkCrudContainerVO.getEditButtonContainer());
 		onCancel(target);
-		//target.add(arkCrudContainerVO.getViewButtonContainer());
-		//target.add(arkCrudContainerVO.getEditButtonContainer());
 	}
 
 	/**
@@ -405,20 +395,15 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		
 		// Visibility
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-		//arkCrudContainerVO.getViewButtonContainer().setVisible(true); //Commented for new pattern
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 		arkCrudContainerVO.getEditButtonContainer().setVisible(false);
-
 		// Enable
 		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-		//arkCrudContainerVO.getViewButtonContainer().setEnabled(true);//Commented for new pattern
-
 		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
 		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
 		target.add(arkCrudContainerVO.getSearchPanelContainer());
-		//target.add(arkCrudContainerVO.getViewButtonContainer());// For new pattern
 		target.add(arkCrudContainerVO.getEditButtonContainer());
 		target.add(feedBackPanel);
 	}
