@@ -115,7 +115,7 @@ public interface IAdminDao {
 
 	public ArkModuleFunction getArkModuleFunction(Long id);
 
-	public List<ArkFunction> getFunctionListByModule(ArkModule arkModule);
+	public List<ArkFunction> getArkFunctionListByArkModule(ArkModule arkModule);
 	
 	public void creatOrUpdateArkModuleFunction(ArkModule arkModule, Collection<ArkFunction> selectedArkFunctions);
 	
