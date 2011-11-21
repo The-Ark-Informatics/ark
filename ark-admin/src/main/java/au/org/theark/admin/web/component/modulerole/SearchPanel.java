@@ -24,7 +24,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.web.component.ContainerForm;
-import au.org.theark.admin.web.component.modulefunction.form.SearchForm;
+import au.org.theark.admin.web.component.modulerole.form.SearchForm;
 import au.org.theark.core.Constants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
