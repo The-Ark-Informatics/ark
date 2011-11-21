@@ -16,15 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.admin.web.component.rolePolicy.form;
-
-import java.util.List;
+package au.org.theark.admin.web.component.role.form;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -32,18 +27,15 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.ContainerForm;
-import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 
 public class SearchForm extends AbstractSearchForm<AdminVO> {
+
 	/**
 	 * 
 	 */
-	private static final long					serialVersionUID	= -204010204180506704L;
+	private static final long	serialVersionUID	= 8009286033696459459L;
 
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
 	private IAdminService<Void>				iAdminService;
@@ -52,15 +44,15 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	private ArkCrudContainerVO					arkCrudContainerVo;
 	private ContainerForm						containerForm;
 	private FeedbackPanel						feedbackPanel;
-	private DropDownChoice<ArkRole>			arkRoleDropDown;
-	private DropDownChoice<ArkModule>		arkModuleDropDown;
+	private TextField<String>					idTxtFld;
+	private TextField<String>					nameTxtFld;
 
 	/**
 	 * Constructor
+	 * 
 	 * @param id
-	 * @param cpmModel
-	 * @param arkCrudContainerVo
-	 * @param feedbackPanel
+	 * @param model
+	 * @param ArkCrudContainerVO
 	 * @param containerForm
 	 */
 	public SearchForm(String id, CompoundPropertyModel<AdminVO> cpmModel, ArkCrudContainerVO arkCrudContainerVo, FeedbackPanel feedbackPanel, ContainerForm containerForm) {
@@ -70,27 +62,6 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 		this.arkCrudContainerVo = arkCrudContainerVo;
 		this.feedbackPanel = feedbackPanel;
 		setMultiPart(true);
-		
-		newButton = new ArkBusyAjaxButton(Constants.NEW) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			public boolean isVisible() {
-				return false;
-			}
-
-			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-			}
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-			}
-		};
-		addOrReplace(newButton);
 
 		this.setCpmModel(cpmModel);
 
@@ -99,63 +70,13 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	}
 
 	protected void initialiseSearchForm() {
-		initArkRoleDropDown();
-		initArkModuleDropDown();
-	}
-
-	@SuppressWarnings("unchecked")
-	private void initArkRoleDropDown() {
-		List<ArkRole> arkRoleList = iAdminService.getArkRoleList();
-		// Restrict searching/selecting of Super Administrator
-		arkRoleList.remove(iAdminService.getArkRoleByName(au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR));
-		ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>("name", "id");
-		arkRoleDropDown = new DropDownChoice("arkRoleModuleFunctionVo.arkRole", arkRoleList, defaultChoiceRenderer);
-		arkRoleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 5591846326218931210L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				// Reset the Module list when the Role changes
-				ArkRole arkRole = getModelObject().getArkRoleModuleFunctionVo().getArkRole();
-				updateModuleDropDown(arkRole);
-            target.add(arkModuleDropDown);
-			}
-		});
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void initArkModuleDropDown() {
-		List<ArkModule> arkModuleList = iAdminService.getArkModuleList();
-		// Restrict searching/selecting of Super Administrator
-		arkModuleList.remove(iAdminService.getArkRoleByName(au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR));
-		ChoiceRenderer<ArkModule> defaultChoiceRenderer = new ChoiceRenderer<ArkModule>("name", "id");
-		arkModuleDropDown = new DropDownChoice("arkRoleModuleFunctionVo.arkModule", arkModuleList, defaultChoiceRenderer);
-		arkModuleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 5591846326218931210L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-
-			}
-		});
-		arkModuleDropDown.setOutputMarkupPlaceholderTag(true);
-	}
-	
-	protected void updateModuleDropDown(ArkRole arkRole) {
-		List<ArkModule> arkModuleList = iAdminService.getArkModuleList(arkRole);
-		arkModuleDropDown.getChoices().clear();
-		arkModuleDropDown.setChoices(arkModuleList);
+		idTxtFld = new TextField<String>("arkRole.id");
+		nameTxtFld = new TextField<String>("arkRole.name");
 	}
 
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
-		int count = iAdminService.getArkRoleModuleFunctionVOCount(containerForm.getModelObject().getArkRoleModuleFunctionVo());
+		int count = iAdminService.getArkRoleCount(containerForm.getModelObject().getArkRole());
 		if (count == 0) {
 			this.info("There are no records that matched your query. Please modify your filter");
 			target.add(feedbackPanel);
@@ -166,8 +87,8 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	}
 
 	private void addSearchComponentsToForm() {
-		add(arkRoleDropDown);
-		add(arkModuleDropDown);
+		add(idTxtFld);
+		add(nameTxtFld);
 	}
 
 	protected void onNew(AjaxRequestTarget target) {
@@ -177,9 +98,8 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 		arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
 		arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
 		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
-		arkCrudContainerVo.getViewButtonContainer().setVisible(true);
-		arkCrudContainerVo.getViewButtonContainer().setEnabled(true);
-		arkCrudContainerVo.getEditButtonContainer().setVisible(false);
+		arkCrudContainerVo.getViewButtonContainer().setVisible(false);
+		arkCrudContainerVo.getEditButtonContainer().setVisible(true);
 
 		// Refresh the markup containers
 		target.add(arkCrudContainerVo.getSearchResultPanelContainer());

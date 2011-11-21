@@ -117,5 +117,12 @@ public interface IAdminService<T> {
 	public Collection<ArkFunction> getFunctionListByModule(ArkModule arkModule);
 
 	public void creatOrUpdateArkModuleFunction(AdminVO modelObject);
+
+	public ArkRole getArkRole(Long id);
 	
+	public int getArkRoleCount(ArkRole arkRoleCriteria);
+
+	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, int first, int count);
+	
+	public void createOrUpdateArkRole(AdminVO modelObject);
 }

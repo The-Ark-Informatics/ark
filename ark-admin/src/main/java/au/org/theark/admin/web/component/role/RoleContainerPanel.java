@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.admin.web.component.module;
+package au.org.theark.admin.web.component.role;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,7 +32,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.ContainerForm;
-import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider;
@@ -41,26 +41,26 @@ import au.org.theark.core.web.component.ArkDataProvider;
  * @author cellis
  * 
  */
-public class ModuleContainerPanel extends AbstractContainerPanel<AdminVO> {
+public class RoleContainerPanel extends AbstractContainerPanel<AdminVO> {
 	/**
 	 * 
 	 */
-	private static final long									serialVersionUID	= 442185554812824590L;
-	private ContainerForm										containerForm;
-	private SearchPanel											searchPanel;
-	private DetailPanel											detailPanel;
-	private SearchResultsPanel									searchResultsPanel;
-	private DataView<ArkModule>								dataView;
+	private static final long	serialVersionUID	= -4681208116852062344L;
+	private ContainerForm									containerForm;
+	private SearchPanel										searchPanel;
+	private DetailPanel										detailPanel;
+	private SearchResultsPanel								searchResultsPanel;
+	private DataView<ArkRole>								dataView;
 	@SuppressWarnings("unchecked")
-	private ArkDataProvider<ArkModule, IAdminService>	dataProvider;
+	private ArkDataProvider<ArkRole, IAdminService>	dataProvider;
 
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
-	private IAdminService<Void>								iAdminService;
+	private IAdminService<Void>							iAdminService;
 
 	/**
 	 * @param id
 	 */
-	public ModuleContainerPanel(String id) {
+	public RoleContainerPanel(String id) {
 		super(id);
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<AdminVO>(new AdminVO());
@@ -109,24 +109,24 @@ public class ModuleContainerPanel extends AbstractContainerPanel<AdminVO> {
 	@SuppressWarnings( { "unchecked", "serial" })
 	private void initialiseDataView() {
 		// Data provider to paginate resultList
-		dataProvider = new ArkDataProvider<ArkModule, IAdminService>(iAdminService) {
+		dataProvider = new ArkDataProvider<ArkRole, IAdminService>(iAdminService) {
 			public int size() {
-				return service.getArkModuleCount(model.getObject());
+				return service.getArkRoleCount(model.getObject());
 			}
 
-			public Iterator<ArkModule> iterator(int first, int count) {
-				List<ArkModule> listCollection = new ArrayList<ArkModule>();
+			public Iterator<ArkRole> iterator(int first, int count) {
+				List<ArkRole> listCollection = new ArrayList<ArkRole>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
-					listCollection = service.searchPageableArkModules(model.getObject(), first, count);
+					listCollection = service.searchPageableArkRoles(model.getObject(), first, count);
 				}
 				return listCollection.iterator();
 			}
 		};
 		// Set the criteria into the data provider's model
-		dataProvider.setModel(new LoadableDetachableModel<ArkModule>() {
+		dataProvider.setModel(new LoadableDetachableModel<ArkRole>() {
 			@Override
-			protected ArkModule load() {
-				return cpModel.getObject().getArkModule();
+			protected ArkRole load() {
+				return cpModel.getObject().getArkRole();
 			}
 		});
 	}
