@@ -21,7 +21,6 @@ package au.org.theark.admin.model.dao;
 import java.util.Collection;
 import java.util.List;
 
-import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
@@ -128,6 +127,8 @@ public interface IAdminDao {
 	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, int first, int count);
 	
 	public void createOrUpdateArkRole(ArkRole arkRole);
+	
+	public ArkModuleRole getArkModuleRole(Long id);
 
 	public List<ArkRole> getArkRoleListByArkModule(ArkModule arkModule);
 	

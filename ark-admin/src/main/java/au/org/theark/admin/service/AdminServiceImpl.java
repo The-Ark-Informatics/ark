@@ -214,27 +214,22 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 	}
 
 	public void createOrUpdateArkModuleRole(AdminVO modelObject) {
-		// TODO Auto-generated method stub
-		
+		iAdminDao.createOrUpdateArkModuleRole(modelObject.getArkModuleRole().getArkModule(), modelObject.getSelectedArkRoles());
 	}
 
 	public ArkModuleRole getArkModuleRole(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return iAdminDao.getArkModuleRole(id);
 	}
 
-	public int getArkModuleRoleCount(ArkModuleRole arkModuleRole) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getArkModuleRoleCount(ArkModuleRole arkModuleRoleCriteria) {
+		return iAdminDao.getArkModuleRoleCount(arkModuleRoleCriteria);
 	}
 
 	public List<ArkRole> getArkRoleListByArkModule(ArkModule arkModule) {
-		// TODO Auto-generated method stub
-		return null;
+		return iAdminDao.getArkRoleListByArkModule(arkModule);
 	}
 
 	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, int first, int count) {
-		// TODO Auto-generated method stub
-		return null;
+		return iAdminDao.searchPageableArkModuleRoles(arkModulRoleCriteria, first, count);
 	}
 }
