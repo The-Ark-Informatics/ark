@@ -69,26 +69,6 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 		this.arkCrudContainerVo = arkCrudContainerVo;
 		this.feedbackPanel = feedbackPanel;
 		setMultiPart(true);
-		newButton = new ArkBusyAjaxButton(Constants.NEW) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			public boolean isVisible() {
-				return false;
-			}
-
-			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-			}
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-			}
-		};
-		addOrReplace(newButton);
 
 		this.setCpmModel(cpmModel);
 
@@ -138,6 +118,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	protected void onNew(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
 		containerForm.setModelObject(new AdminVO());
+		containerForm.getModelObject().setAvailableArkRoles(iAdminService.getArkRoleList());
 		arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
 		arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
 		arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
