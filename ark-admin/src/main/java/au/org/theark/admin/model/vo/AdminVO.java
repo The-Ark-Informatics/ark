@@ -66,6 +66,7 @@ public class AdminVO implements Serializable {
 		this.arkModule = new ArkModule();
 		this.arkFunction = new ArkFunction();
 		this.setArkModuleFunction(new ArkModuleFunction());
+		this.setArkModuleRole(new ArkModuleRole());
 		this.arkRolePolicyTemplate = new ArkRolePolicyTemplate();
 		this.study = new Study();
 		this.studyList = new ArrayList<Study>(0);
