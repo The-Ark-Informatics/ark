@@ -274,6 +274,7 @@ public class Constants {
 	public static final String		FUNCTION_KEY_VALUE_FUNCTION							= "FUNCTION";
 	public static final String		FUNCTION_KEY_VALUE_MODULE_FUNCTION					= "MODULE_FUNCTION";
 	public static final String		FUNCTION_KEY_VALUE_ROLE									= "ROLE";
+	public static final String		FUNCTION_KEY_VALUE_MODULE_ROLE						= "MODULE_ROLE";
 	public static final String		FUNCTION_KEY_VALUE_ROLE_POLICY_TEMPLATE			= "ROLE_POLICY_TEMPLATE";
 	public static final String		FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_FIELD	= "LIMS_COLLECTION_CUSTOM_FIELD";
 	public static final String		FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_DATA	= "LIMS_COLLECTION_CUSTOM_DATA";
@@ -320,11 +321,9 @@ public class Constants {
 	/* Default "from" paramter for emails */
 	public static final String		ARK_ADMIN_EMAIL											= "admin@the-ark.org.au";
 
-	public static final String[]	DATA_DICTIONARY_HEADER									= { "FIELD_NAME", "FIELD_TYPE", "DESCRIPTION", 
-																													"QUESTION", "UNITS", "ENCODED_VALUES", 
-																													"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE" };
-	
-	public static final String 		NAME													= "name";
-	public static final String		ID														= "id";
-	
+	public static final String[]	DATA_DICTIONARY_HEADER									= { "FIELD_NAME", "FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES", "MINIMUM_VALUE",
+			"MAXIMUM_VALUE", "MISSING_VALUE"													};
+
+	public static final String		NAME															= "name";
+	public static final String		ID																= "id";
 }
