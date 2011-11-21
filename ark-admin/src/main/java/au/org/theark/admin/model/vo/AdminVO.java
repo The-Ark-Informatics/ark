@@ -20,7 +20,6 @@ package au.org.theark.admin.model.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -55,8 +54,10 @@ public class AdminVO implements Serializable {
 	private Boolean								arkDeletePermission;
 	private ArkRoleModuleFunctionVO			arkRoleModuleFunctionVo;
 	private List<ArkRoleModuleFunctionVO>	arkRoleModuleFunctionVoList;
-	private Collection<ArkFunction>			availableArkFunctions;
-	private Collection<ArkFunction>			selectedArkFunctions;
+	private List<ArkFunction>					availableArkFunctions;
+	private List<ArkFunction>					selectedArkFunctions;
+	private List<ArkRole>						availableArkRoles;
+	private List<ArkRole>						selectedArkRoles;
 
 	public AdminVO() {
 		this.arkRole = new ArkRole();
@@ -300,19 +301,35 @@ public class AdminVO implements Serializable {
 		return arkRoleModuleFunctionVoList;
 	}
 
-	public Collection<ArkFunction> getAvailableArkFunctions() {
+	public List<ArkFunction> getAvailableArkFunctions() {
 		return availableArkFunctions;
 	}
 
-	public void setAvailableArkFunctions(Collection<ArkFunction> availableArkFunctions) {
+	public void setAvailableArkFunctions(List<ArkFunction> availableArkFunctions) {
 		this.availableArkFunctions = availableArkFunctions;
 	}
 
-	public Collection<ArkFunction> getSelectedArkFunctions() {
+	public List<ArkFunction> getSelectedArkFunctions() {
 		return selectedArkFunctions;
 	}
 
-	public void setSelectedArkFunctions(Collection<ArkFunction> selectedArkFunctions) {
+	public void setSelectedArkFunctions(List<ArkFunction> selectedArkFunctions) {
 		this.selectedArkFunctions = selectedArkFunctions;
+	}
+	
+	public List<ArkRole> getSelectedArkRoles() {
+		return selectedArkRoles;
+	}
+
+	public void setAvailableArkRoles(List<ArkRole> availableArkRoles) {
+		this.availableArkRoles = availableArkRoles;
+	}
+	
+	public List<ArkRole> getAvailableArkRoles() {
+		return availableArkRoles;
+	}
+
+	public void setSelectedArkRoles(List<ArkRole> selectedArkRoles) {
+		this.selectedArkRoles = selectedArkRoles;
 	}
 }
