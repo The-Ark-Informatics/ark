@@ -528,7 +528,7 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 			criteria.add(Restrictions.ilike("description", arkRoleCriteria.getName(), MatchMode.ANYWHERE));
 		}
 		
-		criteria.addOrder(Order.asc("name"));
+		criteria.addOrder(Order.asc("id"));
 		return criteria;
 	}
 }
