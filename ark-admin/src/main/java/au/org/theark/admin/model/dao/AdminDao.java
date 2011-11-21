@@ -594,6 +594,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		if(arkModule.getId() != null) {
 			criteria.add(Restrictions.eq("arkModule", arkModule));
 		}
+		
+		// Restrict searching/selecting of Super Administrator
+		criteria.add(Restrictions.ne("arkModule", getArkRoleByName(au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)));
+		
 		criteria.createAlias("arkRole", "role");
 		criteria.addOrder(Order.asc("role.name"));
 		
