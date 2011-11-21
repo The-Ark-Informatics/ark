@@ -627,4 +627,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 
 		return criteria;
 	}
+
+	public ArkModuleRole getArkModuleRole(Long id) {
+		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (ArkModuleRole) criteria.uniqueResult();
+	}
 }
