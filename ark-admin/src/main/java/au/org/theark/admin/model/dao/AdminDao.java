@@ -407,7 +407,7 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return (List<ArkModuleFunction>) criteria.list();
 	}
 
-	public List<ArkFunction> getFunctionListByModule(ArkModule arkModule) {
+	public List<ArkFunction> getArkFunctionListByArkModule(ArkModule arkModule) {
 		Criteria criteria = getSession().createCriteria(ArkModuleFunction.class);
 		if(arkModule.getId() != null) {
 			criteria.add(Restrictions.eq("arkModule", arkModule));
@@ -455,7 +455,7 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 	protected Collection<ArkModuleFunction> getArkFunctionsToAddList(ArkModule arkModule, Collection<ArkFunction> selectedArkFunctions) {
 		Collection<ArkModuleFunction> arkModuleFunctionsToLink = new ArrayList<ArkModuleFunction>();
 		// Existing List of ArkFunctions that were linked to this ArkModule
-		Collection<ArkFunction> existingArkFunctions = getFunctionListByModule(arkModule);
+		Collection<ArkFunction> existingArkFunctions = getArkFunctionListByArkModule(arkModule);
 		for (Iterator<ArkFunction> iterator = selectedArkFunctions.iterator(); iterator.hasNext();) {
 			ArkFunction arkFunction = iterator.next();
 			if (!existingArkFunctions.contains(arkFunction)) {
