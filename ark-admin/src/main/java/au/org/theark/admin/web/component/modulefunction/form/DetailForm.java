@@ -76,35 +76,13 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		this.containerForm = containerForm;
 		arkCrudContainerVO = arkCrudContainerVo;
 		setMultiPart(true);
-		
-		// Do not allow deletes
-		deleteButton = new AjaxButton(Constants.DELETE) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-			}
-			
-			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-			}
-			
-			@Override
-			protected void onBeforeRender() {
-				super.onBeforeRender();
-				setEnabled(false);
-			}
-		};
-		arkCrudContainerVO.getEditButtonContainer().addOrReplace(deleteButton);
 	}
 	
 	@Override
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		arkModuleDropDown.setEnabled(isNew());
+		deleteButton.setEnabled(false);
 	}
 
 	public void initialiseDetailForm() {
@@ -166,6 +144,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 			this.info("Ark Module Function: " + containerForm.getModelObject().getArkModule().getName() + " was created/updated successfully.");
 			target.add(feedBackPanel);
 		}
+		onSavePostProcess(target);
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {

@@ -116,21 +116,9 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 		target.add(feedbackPanel);
 		containerForm.setModelObject(new AdminVO());
 		containerForm.getModelObject().setAvailableArkRoles(iAdminService.getArkRoleList());
-		arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
-		arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
-		arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
-		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
-		arkCrudContainerVo.getViewButtonContainer().setVisible(false);
-		arkCrudContainerVo.getEditButtonContainer().setVisible(true);
-
-		// Refresh the markup containers
-		target.add(arkCrudContainerVo.getSearchResultPanelContainer());
-		target.add(arkCrudContainerVo.getDetailPanelContainer());
-		target.add(arkCrudContainerVo.getDetailPanelFormContainer());
-		target.add(arkCrudContainerVo.getSearchPanelContainer());
-		target.add(arkCrudContainerVo.getViewButtonContainer());
-		target.add(arkCrudContainerVo.getEditButtonContainer());
-
+		
+		preProcessDetailPanel(target);
+		
 		// Refresh base container form to remove any feedBack messages
 		target.add(containerForm);
 	}
