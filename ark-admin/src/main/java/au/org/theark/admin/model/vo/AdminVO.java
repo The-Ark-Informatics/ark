@@ -78,6 +78,8 @@ public class AdminVO implements Serializable {
 		this.arkDeletePermission = new Boolean("False");
 		this.arkRoleModuleFunctionVo = new ArkRoleModuleFunctionVO();
 		this.setArkRoleModuleFunctionVoList(new ArrayList<ArkRoleModuleFunctionVO>(0));
+		this.setSelectedArkFunctions(new ArrayList<ArkFunction>(0));
+		this.setSelectedArkRoles(new ArrayList<ArkRole>(0));
 	}
 
 	/**
