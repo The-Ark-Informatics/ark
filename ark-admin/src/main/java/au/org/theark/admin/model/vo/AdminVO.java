@@ -25,6 +25,7 @@ import java.util.List;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleFunction;
+import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.Study;
@@ -43,6 +44,7 @@ public class AdminVO implements Serializable {
 	private ArkModule								arkModule;
 	private ArkFunction							arkFunction;
 	private ArkModuleFunction					arkModuleFunction;
+	private ArkModuleRole						arkModuleRole;
 	private ArkRolePolicyTemplate				arkRolePolicyTemplate;
 	private Study									study;
 	private List<Study>							studyList;
@@ -134,6 +136,20 @@ public class AdminVO implements Serializable {
 	 */
 	public ArkModuleFunction getArkModuleFunction() {
 		return arkModuleFunction;
+	}
+
+	/**
+	 * @param arkModuleRole the arkModuleRole to set
+	 */
+	public void setArkModuleRole(ArkModuleRole arkModuleRole) {
+		this.arkModuleRole = arkModuleRole;
+	}
+
+	/**
+	 * @return the arkModuleRole
+	 */
+	public ArkModuleRole getArkModuleRole() {
+		return arkModuleRole;
 	}
 
 	/**
