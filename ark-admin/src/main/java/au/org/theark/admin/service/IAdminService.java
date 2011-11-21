@@ -114,7 +114,7 @@ public interface IAdminService<T> {
 
 	public ArkModuleFunction getArkModuleFunction(Long id);
 
-	public Collection<ArkFunction> getFunctionListByModule(ArkModule arkModule);
+	public List<ArkFunction> getFunctionListByModule(ArkModule arkModule);
 
 	public void creatOrUpdateArkModuleFunction(AdminVO modelObject);
 
