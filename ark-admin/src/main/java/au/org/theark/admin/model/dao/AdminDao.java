@@ -614,11 +614,11 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 	private Criteria buildArkModuleRoleCriteria(ArkModuleRole arkModuleRoleCriteria) {
 		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);
 
-		if (arkModuleRoleCriteria.getArkModule().getId() != null) {
+		if (arkModuleRoleCriteria.getArkModule() != null && arkModuleRoleCriteria.getArkModule().getId() != null) {
 			criteria.add(Restrictions.eq("arkModule", arkModuleRoleCriteria.getArkModule()));
 		}
 		
-		if (arkModuleRoleCriteria.getArkRole().getId() != null) {
+		if (arkModuleRoleCriteria.getArkRole() != null && arkModuleRoleCriteria.getArkRole().getId() != null) {
 			criteria.add(Restrictions.eq("arkRole", arkModuleRoleCriteria.getArkRole()));
 		}
 		
