@@ -100,6 +100,12 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		};
 		arkCrudContainerVO.getEditButtonContainer().addOrReplace(deleteButton);
 	}
+	
+	@Override
+	public void onBeforeRender() {
+		super.onBeforeRender();
+		arkModuleDropDown.setEnabled(isNew());
+	}
 
 	public void initialiseDetailForm() {
 		initArkModuleDropDown();
@@ -114,7 +120,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		ChoiceRenderer<ArkModule> defaultChoiceRenderer = new ChoiceRenderer<ArkModule>("name", "id");
 		arkModuleDropDown = new DropDownChoice<ArkModule>("arkModuleFunction.arkModule", arkModuleList, defaultChoiceRenderer);
 		arkModuleDropDown.setOutputMarkupPlaceholderTag(true);
-		arkModuleDropDown.setEnabled(false);
+		arkModuleDropDown.setEnabled(isNew());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -127,6 +133,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		PropertyModel<Collection<ArkFunction>> availableModulesPm = new PropertyModel<Collection<ArkFunction>>(cpModel, "availableArkFunctions");
 
 		arkModuleFunctionPalette = new ArkPalette("selectedArkModuleFunctions", selectedModPm, availableModulesPm, renderer, PALLETTE_ROWS, true);
+		
 	}
 
 	@Override
@@ -148,11 +155,17 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	}
 
 	protected void onSave(Form<AdminVO> containerForm, AjaxRequestTarget target) {
-		// Save or update
-		iAdminService.createOrUpdateArkModuleFunction(containerForm.getModelObject());
-
-		this.info("Ark Module Function: " + containerForm.getModelObject().getArkModule().getName() + " was created/updated successfully.");
-		target.add(feedBackPanel);
+		if (containerForm.getModelObject().getSelectedArkFunctions().isEmpty()) {
+			this.error("At least one Function must be selected");
+			target.add(feedBackPanel);
+		}
+		else {
+			// Save or update
+			iAdminService.createOrUpdateArkModuleFunction(containerForm.getModelObject());
+	
+			this.info("Ark Module Function: " + containerForm.getModelObject().getArkModule().getName() + " was created/updated successfully.");
+			target.add(feedBackPanel);
+		}
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
