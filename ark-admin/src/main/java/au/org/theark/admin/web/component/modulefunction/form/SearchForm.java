@@ -83,11 +83,10 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 		initArkModuleDropDown();
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void initArkModuleDropDown() {
 		List<ArkModule> arkModuleList = iAdminService.getArkModuleList();
 		ChoiceRenderer<ArkModule> defaultChoiceRenderer = new ChoiceRenderer<ArkModule>("name", "id");
-		arkModuleDropDown = new DropDownChoice("arkModule", arkModuleList, defaultChoiceRenderer);
+		arkModuleDropDown = new DropDownChoice<ArkModule>("arkModule", arkModuleList, defaultChoiceRenderer);
 		arkModuleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			/**
 			 * 
@@ -104,6 +103,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
+		containerForm.getModelObject().getArkModuleFunction().setArkModule(containerForm.getModelObject().getArkModule());
 		int count = iAdminService.getArkModuleFunctionCount(containerForm.getModelObject().getArkModuleFunction());
 		if (count == 0) {
 			this.info("There are no records that matched your query. Please modify your filter");
