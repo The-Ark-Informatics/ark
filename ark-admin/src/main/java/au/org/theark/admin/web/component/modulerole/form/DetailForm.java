@@ -39,9 +39,9 @@ import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.ContainerForm;
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
+import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -123,8 +123,8 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		cpModel.getObject().setAvailableArkRoles(iAdminService.getArkRoleList());
 		cpModel.getObject().setSelectedArkRoles(iAdminService.getArkRoleListByArkModule(containerForm.getModelObject().getArkModule()));
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "id");
-		PropertyModel<Collection<ArkFunction>> selectedModPm = new PropertyModel<Collection<ArkFunction>>(cpModel, "selectedArkRoles");
-		PropertyModel<Collection<ArkFunction>> availableModulesPm = new PropertyModel<Collection<ArkFunction>>(cpModel, "availableArkRoles");
+		PropertyModel<Collection<ArkRole>> selectedModPm = new PropertyModel<Collection<ArkRole>>(cpModel, "selectedArkRoles");
+		PropertyModel<Collection<ArkRole>> availableModulesPm = new PropertyModel<Collection<ArkRole>>(cpModel, "availableArkRoles");
 
 		arkModuleRolePalette = new ArkPalette("selectedArkModuleRoles", selectedModPm, availableModulesPm, renderer, PALLETTE_ROWS, true);
 	}
