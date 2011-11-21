@@ -134,11 +134,11 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return (ArkModule)  criteria.uniqueResult();
 	}
 
-	public void creatOrUpdateArkFunction(ArkFunction arkFunction) {
+	public void createOrUpdateArkFunction(ArkFunction arkFunction) {
 		getSession().saveOrUpdate(arkFunction);
 	}
 
-	public void creatOrUpdateArkModule(ArkModule arkModule) {
+	public void createOrUpdateArkModule(ArkModule arkModule) {
 		getSession().saveOrUpdate(arkModule);
 	}
 
@@ -422,7 +422,7 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return criteria.list();
 	}
 
-	public void creatOrUpdateArkModuleFunction(ArkModule arkModule, Collection<ArkFunction> selectedArkFunctions) {
+	public void createOrUpdateArkModuleFunction(ArkModule arkModule, Collection<ArkFunction> selectedArkFunctions) {
 		Session session = getSession();
 		
 		// Remove previous list of ArkFunctions
@@ -529,6 +529,102 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		}
 		
 		criteria.addOrder(Order.asc("id"));
+		return criteria;
+	}
+
+	public List<ArkModule> getArkModuleListByArkRole(ArkRole arkRole) {
+		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);
+		if(arkRole != null) {
+			criteria.add(Restrictions.eq("arkRole", arkRole));
+		}
+		criteria.createAlias("arkModule", "module");
+		criteria.addOrder(Order.asc("module.name"));
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("arkModule"), "arkModule");
+		criteria.setProjection(projectionList);
+		return criteria.list();
+	}
+
+	public void createOrUpdateArkModuleRole(ArkModule arkModule, Collection<ArkRole> selectedArkRoles) {
+		Session session = getSession();
+		
+		// Remove previous list of ArkRoles
+		List<ArkModuleRole> arkModuleRoles = getArkModuleRoleByArkModule(arkModule);
+		for (ArkModuleRole arkModuleRoleToRemove: arkModuleRoles) {
+			session.delete(arkModuleRoleToRemove);
+		}
+		
+		// Insert the ArkRoles for the ArkModule
+		for (Iterator<ArkRole> iterator = selectedArkRoles.iterator(); iterator.hasNext();) {
+			ArkModuleRole arkModuleRole = new ArkModuleRole();
+			ArkRole arkRole = iterator.next();
+			arkModuleRole.setArkModule(arkModule);
+			arkModuleRole.setArkRole(arkRole);
+			session.save(arkModuleRole);
+		}
+
+		// Flush must be the last thing to call. If there is any other code/logic to be added make sure session.flush() is invoked after that.
+		session.flush();	
+	}
+
+	private List<ArkModuleRole> getArkModuleRoleByArkModule(ArkModule arkModule) {
+		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);
+
+		if (arkModule.getId() != null) {
+			criteria.add(Restrictions.eq("arkModule", arkModule));
+		}
+		
+		criteria.createAlias("arkModule", "module");
+		criteria.addOrder(Order.asc("module.name"));
+		criteria.addOrder(Order.asc("functionSequence"));
+
+		return criteria.list();
+	}
+
+	public int getArkModuleRoleCount(ArkModuleRole arkModuleRoleCriteria) {
+		Criteria criteria = buildArkModuleRoleCriteria(arkModuleRoleCriteria);
+		criteria.setProjection(Projections.rowCount());
+		Integer totalCount = (Integer) criteria.uniqueResult();
+		return totalCount;
+	}
+
+	public List<ArkRole> getArkRoleListByArkModule(ArkModule arkModule) {
+		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);
+		if(arkModule != null) {
+			criteria.add(Restrictions.eq("arkModule", arkModule));
+		}
+		criteria.createAlias("arkRole", "role");
+		criteria.addOrder(Order.asc("role.name"));
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("arkRole"), "arkRole");
+		criteria.setProjection(projectionList);
+		return criteria.list();
+	}
+
+	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, int first, int count) {
+		Criteria criteria = buildArkModuleRoleCriteria(arkModulRoleCriteria);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<ArkModuleRole> list = criteria.list();
+		return list;
+	}
+	
+	private Criteria buildArkModuleRoleCriteria(ArkModuleRole arkModuleRoleCriteria) {
+		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);
+
+		if (arkModuleRoleCriteria.getArkModule().getId() != null) {
+			criteria.add(Restrictions.eq("arkModule", arkModuleRoleCriteria.getArkModule()));
+		}
+		
+		if (arkModuleRoleCriteria.getArkRole().getId() != null) {
+			criteria.add(Restrictions.eq("arkRole", arkModuleRoleCriteria.getArkRole()));
+		}
+		
+		criteria.createAlias("arkModule", "module");
+		criteria.addOrder(Order.asc("module.name"));
+
 		return criteria;
 	}
 }
