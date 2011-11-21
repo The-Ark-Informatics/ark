@@ -117,6 +117,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 
 		this.info("Ark Role: " + containerForm.getModelObject().getArkRole().getName() + " was created/updated successfully.");
 		target.add(feedBackPanel);
+		onSavePostProcess(target);
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {

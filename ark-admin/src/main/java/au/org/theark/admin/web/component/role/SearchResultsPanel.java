@@ -34,6 +34,7 @@ import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.ContainerForm;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 
@@ -109,23 +110,7 @@ public class SearchResultsPanel extends Panel {
 				Long id = arkRole.getId();
 				ArkRole arkRole = iAdminService.getArkRole(id);
 				containerForm.getModelObject().setArkRole(arkRole);
-
-				arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
-				arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
-				arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
-				arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(false);
-				arkCrudContainerVo.getViewButtonContainer().setVisible(true);
-				arkCrudContainerVo.getViewButtonContainer().setEnabled(true);
-				arkCrudContainerVo.getEditButtonContainer().setVisible(false);
-
-				// Refresh the markup containers
-				target.add(arkCrudContainerVo.getSearchResultPanelContainer());
-				target.add(arkCrudContainerVo.getDetailPanelContainer());
-				target.add(arkCrudContainerVo.getDetailPanelFormContainer());
-				target.add(arkCrudContainerVo.getSearchPanelContainer());
-				target.add(arkCrudContainerVo.getViewButtonContainer());
-				target.add(arkCrudContainerVo.getEditButtonContainer());
-
+				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVo);
 				// Refresh base container form to remove any feedBack messages
 				target.add(containerForm);
 			}

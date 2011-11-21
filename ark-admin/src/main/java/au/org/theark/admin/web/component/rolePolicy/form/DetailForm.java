@@ -235,7 +235,9 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		iAdminService.deleteArkRolePolicyTemplate(containerForm.getModelObject());
 
 		this.info("Ark Role Policy for Function: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkFunction().getName() + " was deleted successfully.");
+		target.add(feedBackPanel);
 		editCancelProcess(target);
+		
 	}
 
 	protected void processErrors(AjaxRequestTarget target) {
