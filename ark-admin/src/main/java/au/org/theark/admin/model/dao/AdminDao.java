@@ -384,7 +384,7 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 	private Criteria buildArkModuleFunctionCriteria(ArkModuleFunction arkModuleFunctionCriteria) {
 		Criteria criteria = getSession().createCriteria(ArkModuleFunction.class);
 
-		if (arkModuleFunctionCriteria.getArkModule().getId() != null) {
+		if (arkModuleFunctionCriteria.getArkModule() != null && arkModuleFunctionCriteria.getArkModule().getId() != null) {
 			criteria.add(Restrictions.eq("arkModule", arkModuleFunctionCriteria.getArkModule()));
 		}
 		
@@ -577,7 +577,6 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		
 		criteria.createAlias("arkModule", "module");
 		criteria.addOrder(Order.asc("module.name"));
-		criteria.addOrder(Order.asc("functionSequence"));
 
 		return criteria.list();
 	}
