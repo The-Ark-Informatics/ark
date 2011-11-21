@@ -152,6 +152,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	protected void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkRoleDropDown);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkModuleDropDown);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(arkFunctionDropDown);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(createChk);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(readChk);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(updateChk);
