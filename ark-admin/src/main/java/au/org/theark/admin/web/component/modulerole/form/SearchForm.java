@@ -24,7 +24,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -32,10 +31,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.ContainerForm;
-import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 
 public class SearchForm extends AbstractSearchForm<AdminVO> {
@@ -100,8 +97,8 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
-		containerForm.getModelObject().getArkModuleFunction().setArkModule(containerForm.getModelObject().getArkModule());
-		int count = iAdminService.getArkModuleFunctionCount(containerForm.getModelObject().getArkModuleFunction());
+		containerForm.getModelObject().getArkModuleRole().setArkModule(containerForm.getModelObject().getArkModule());
+		int count = iAdminService.getArkModuleRoleCount(containerForm.getModelObject().getArkModuleRole());
 		if (count == 0) {
 			this.info("There are no records that matched your query. Please modify your filter");
 			target.add(feedbackPanel);
