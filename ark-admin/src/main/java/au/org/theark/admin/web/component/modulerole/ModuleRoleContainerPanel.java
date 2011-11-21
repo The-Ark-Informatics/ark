@@ -45,17 +45,17 @@ public class ModuleRoleContainerPanel extends AbstractContainerPanel<AdminVO> {
 	/**
 	 * 
 	 */
-	private static final long									serialVersionUID	= 442185554812824590L;
-	private ContainerForm										containerForm;
-	private SearchPanel											searchPanel;
-	private DetailPanel											detailPanel;
-	private SearchResultsPanel									searchResultsPanel;
-	private DataView<ArkModuleRole>						dataView;
+	private static final long										serialVersionUID	= 442185554812824590L;
+	private ContainerForm											containerForm;
+	private SearchPanel												searchPanel;
+	private DetailPanel												detailPanel;
+	private SearchResultsPanel										searchResultsPanel;
+	private DataView<ArkModuleRole>								dataView;
 	@SuppressWarnings("unchecked")
 	private ArkDataProvider<ArkModuleRole, IAdminService>	dataProvider;
 
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
-	private IAdminService<Void>								iAdminService;
+	private IAdminService<Void>									iAdminService;
 
 	/**
 	 * @param id
