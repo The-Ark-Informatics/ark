@@ -48,7 +48,7 @@ import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 
 @SuppressWarnings("unchecked")
-@Repository("adminDao")
+@Repository("iAdminDao")
 public class AdminDao extends HibernateSessionDao implements IAdminDao {
 	static Logger	log	= LoggerFactory.getLogger(AdminDao.class);
 
@@ -486,5 +486,49 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		}
 
 		return arkModuleFunctionsToRemove;
+	}
+
+	public void createOrUpdateArkRole(ArkRole arkRole) {
+		getSession().saveOrUpdate(arkRole);
+	}
+
+	public ArkRole getArkRole(Long id) {
+		Criteria criteria = getSession().createCriteria(ArkRole.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (ArkRole) criteria.uniqueResult();
+	}
+
+	public int getArkRoleCount(ArkRole arkRoleCriteria) {
+		Criteria criteria = buildArkRoleCriteria(arkRoleCriteria);
+		criteria.setProjection(Projections.rowCount());
+		Integer totalCount = (Integer) criteria.uniqueResult();
+		return totalCount;
+	}
+
+	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, int first, int count) {
+		Criteria criteria = buildArkRoleCriteria(arkRoleCriteria);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<ArkRole> list = criteria.list();
+		return list;
+	}
+	
+	private Criteria buildArkRoleCriteria(ArkRole arkRoleCriteria) {
+		Criteria criteria = getSession().createCriteria(ArkRole.class);
+
+		if (arkRoleCriteria.getId() != null) {
+			criteria.add(Restrictions.eq("id", arkRoleCriteria.getId()));
+		}
+		
+		if (arkRoleCriteria.getName() != null) {
+			criteria.add(Restrictions.eq("name", arkRoleCriteria.getName()));
+		}
+		
+		if (arkRoleCriteria.getDescription() != null) {
+			criteria.add(Restrictions.ilike("description", arkRoleCriteria.getName(), MatchMode.ANYWHERE));
+		}
+		
+		criteria.addOrder(Order.asc("name"));
+		return criteria;
 	}
 }

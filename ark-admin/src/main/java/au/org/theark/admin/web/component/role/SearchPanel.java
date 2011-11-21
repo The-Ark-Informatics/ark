@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.admin.web.component.rolePolicy;
+package au.org.theark.admin.web.component.role;
 
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -24,7 +24,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.web.component.ContainerForm;
-import au.org.theark.admin.web.component.rolePolicy.form.SearchForm;
+import au.org.theark.admin.web.component.role.form.SearchForm;
 import au.org.theark.core.Constants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
@@ -32,7 +32,7 @@ public class SearchPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long					serialVersionUID	= -2689739291154679914L;
+	private static final long	serialVersionUID	= 7860082215947666367L;
 	private ContainerForm						containerForm;
 	private FeedbackPanel						feedBackPanel;
 	private CompoundPropertyModel<AdminVO>	cpmModel;

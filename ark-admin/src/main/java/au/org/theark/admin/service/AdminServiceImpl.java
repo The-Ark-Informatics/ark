@@ -46,150 +46,166 @@ import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 @Transactional
 @Service(au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
 public class AdminServiceImpl<T> implements IAdminService<T> {
-	private IAdminDao	adminDao;
+	private IAdminDao	iAdminDao;
 
 	public IAdminDao getAdminDao() {
-		return adminDao;
+		return iAdminDao;
 	}
 
 	@Autowired
 	public void setAdminDao(IAdminDao adminDao) {
-		this.adminDao = adminDao;
+		this.iAdminDao = adminDao;
 	}
 
 	public void createArkRolePolicyTemplate(AdminVO adminVo) {
-		adminDao.createArkRolePolicyTemplate(adminVo.getArkRolePolicyTemplate());
+		iAdminDao.createArkRolePolicyTemplate(adminVo.getArkRolePolicyTemplate());
 	}
 
 	public void updateArkRolePolicyTemplate(AdminVO adminVo) {
-		adminDao.updateArkRolePolicyTemplate(adminVo.getArkRolePolicyTemplate());
+		iAdminDao.updateArkRolePolicyTemplate(adminVo.getArkRolePolicyTemplate());
 	}
 
 	public void deleteArkRolePolicyTemplate(AdminVO adminVo) {
-		adminDao.deleteArkRolePolicyTemplate(adminVo.getArkRolePolicyTemplate());
+		iAdminDao.deleteArkRolePolicyTemplate(adminVo.getArkRolePolicyTemplate());
 	}
 
 	public void createOrUpdateArkRolePolicyTemplate(AdminVO adminVo) {
-		adminDao.createOrUpdateArkRolePolicyTemplate(adminVo.getArkRolePolicyTemplate());
+		iAdminDao.createOrUpdateArkRolePolicyTemplate(adminVo.getArkRolePolicyTemplate());
 	}
 
 	public List<ArkFunction> getArkFunctionList() {
-		return adminDao.getArkFunctionList();
+		return iAdminDao.getArkFunctionList();
 	}
 
 	public List<ArkModule> getArkModuleList() {
-		return adminDao.getArkModuleList();
+		return iAdminDao.getArkModuleList();
 	}
 
 	public ArkPermission getArkPermissionByName(String name) {
-		return adminDao.getArkPermissionByName(name);
+		return iAdminDao.getArkPermissionByName(name);
 	}
 
 	public List<ArkRole> getArkRoleList() {
-		return adminDao.getArkRoleList();
+		return iAdminDao.getArkRoleList();
 	}
 
 	public ArkRolePolicyTemplate getArkRolePolicyTemplate(Long id) {
-		return adminDao.getArkRolePolicyTemplate(id);
+		return iAdminDao.getArkRolePolicyTemplate(id);
 	}
 
 	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplateList() {
-		return adminDao.getArkRolePolicyTemplateList();
+		return iAdminDao.getArkRolePolicyTemplateList();
 	}
 
 	public ArkFunction getArkFunction(Long id) {
-		return adminDao.getArkFunction(id);
+		return iAdminDao.getArkFunction(id);
 	}
 
 	public ArkModule getArkModule(Long id) {
-		return adminDao.getArkModule(id);
+		return iAdminDao.getArkModule(id);
 	}
 
 	public void creatOrUpdateArkFunction(AdminVO adminVo) {
-		adminDao.creatOrUpdateArkFunction(adminVo.getArkFunction());
+		iAdminDao.creatOrUpdateArkFunction(adminVo.getArkFunction());
 	}
 
 	public void creatOrUpdateArkModule(AdminVO adminVo) {
-		adminDao.creatOrUpdateArkModule(adminVo.getArkModule());
+		iAdminDao.creatOrUpdateArkModule(adminVo.getArkModule());
 	}
 
 	public void deleteArkFunction(AdminVO adminVo) {
-		adminDao.deleteArkFunction(adminVo.getArkFunction());
+		iAdminDao.deleteArkFunction(adminVo.getArkFunction());
 	}
 
 	public void deleteArkModule(AdminVO adminVo) {
-		adminDao.deleteArkModule(adminVo.getArkModule());
+		iAdminDao.deleteArkModule(adminVo.getArkModule());
 	}
 
 	public List<ArkFunctionType> getArkFunctionTypeList() {
-		return adminDao.getArkFunctionTypeList();
+		return iAdminDao.getArkFunctionTypeList();
 	}
 
 	public List<ArkFunction> searchArkFunction(ArkFunction arkFunction) {
-		return adminDao.searchArkFunction(arkFunction);
+		return iAdminDao.searchArkFunction(arkFunction);
 	}
 
 	public List<ArkModule> searchArkModule(ArkModule arkModule) {
-		return adminDao.searchArkModule(arkModule);
+		return iAdminDao.searchArkModule(arkModule);
 	}
 
 	public int getArkFunctionCount(ArkFunction arkFunctionCriteria) {
-		return adminDao.getArkFunctionCount(arkFunctionCriteria);
+		return iAdminDao.getArkFunctionCount(arkFunctionCriteria);
 	}
 
 	public int getArkModuleCount(ArkModule arkModuleCriteria) {
-		return adminDao.getArkModuleCount(arkModuleCriteria);
+		return iAdminDao.getArkModuleCount(arkModuleCriteria);
 	}
 
 	public List<ArkFunction> searchPageableArkFunctions(ArkFunction arkFunctionCriteria, int first, int count) {
-		return adminDao.searchPageableArkFunctions(arkFunctionCriteria, first, count);
+		return iAdminDao.searchPageableArkFunctions(arkFunctionCriteria, first, count);
 	}
 
 	public List<ArkModule> searchPageableArkModules(ArkModule arkModuleCriteria, int first, int count) {
-		return adminDao.searchPageableArkModules(arkModuleCriteria, first, count);
+		return iAdminDao.searchPageableArkModules(arkModuleCriteria, first, count);
 	}
 
 	public int getArkRoleModuleFunctionVOCount(ArkRoleModuleFunctionVO arkRoleModuleFunctionVO) {
-		return adminDao.getArkRoleModuleFunctionVOCount(arkRoleModuleFunctionVO);
+		return iAdminDao.getArkRoleModuleFunctionVOCount(arkRoleModuleFunctionVO);
 	}
 
 	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, int first, int count) {
-		return adminDao.searchPageableArkRoleModuleFunctionVO(arkRoleModuleFunctionVo, first, count);
+		return iAdminDao.searchPageableArkRoleModuleFunctionVO(arkRoleModuleFunctionVo, first, count);
 	}
 
 	public ArkRole getArkRoleByName(String name) {
-		return adminDao.getArkRoleByName(name);
+		return iAdminDao.getArkRoleByName(name);
 	}
 
 	public List<ArkRoleModuleFunctionVO> getArkRoleModuleFunctionVoList(ArkRole arkRole) {
-		return adminDao.getArkRoleModuleFunctionVoList(arkRole);
+		return iAdminDao.getArkRoleModuleFunctionVoList(arkRole);
 	}
 
 	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplateList(ArkRolePolicyTemplate arkRolePolicyTemplate) {
-		return adminDao.getArkRolePolicyTemplateList(arkRolePolicyTemplate);
+		return iAdminDao.getArkRolePolicyTemplateList(arkRolePolicyTemplate);
 	}
 
 	public List<ArkModule> getArkModuleList(ArkRole arkRole) {
-		return adminDao.getArkModuleList(arkRole);
+		return iAdminDao.getArkModuleList(arkRole);
 	}
 
 	public int getArkModuleFunctionCount(ArkModuleFunction arkModuleFunctionCriteria) {
-		return adminDao.getArkModuleFunctionCount(arkModuleFunctionCriteria);
+		return iAdminDao.getArkModuleFunctionCount(arkModuleFunctionCriteria);
 	}
 
 	public List<ArkModuleFunction> searchPageableArkModuleFunctions(ArkModuleFunction arkModuleFunctionCriteria, int first, int count) {
-		return adminDao.searchPageableArkModuleFunctions(arkModuleFunctionCriteria, first, count);
+		return iAdminDao.searchPageableArkModuleFunctions(arkModuleFunctionCriteria, first, count);
 	}
 
 	public ArkModuleFunction getArkModuleFunction(Long id) {
-		return adminDao.getArkModuleFunction(id);
+		return iAdminDao.getArkModuleFunction(id);
 	}
 
 	public Collection<ArkFunction> getFunctionListByModule(ArkModule arkModule) {
-		return adminDao.getFunctionListByModule(arkModule);
+		return iAdminDao.getFunctionListByModule(arkModule);
 	}
 
 	public void creatOrUpdateArkModuleFunction(AdminVO modelObject) {
-		adminDao.creatOrUpdateArkModuleFunction(modelObject.getArkModuleFunction().getArkModule(), modelObject.getSelectedArkFunctions());
+		iAdminDao.creatOrUpdateArkModuleFunction(modelObject.getArkModuleFunction().getArkModule(), modelObject.getSelectedArkFunctions());
+	}
+
+	public void createOrUpdateArkRole(AdminVO modelObject) {
+		iAdminDao.createOrUpdateArkRole(modelObject.getArkRole());
+	}
+
+	public ArkRole getArkRole(Long id) {
+		return iAdminDao.getArkRole(id);
+	}
+
+	public int getArkRoleCount(ArkRole arkRoleCriteria) {
+		return iAdminDao.getArkRoleCount(arkRoleCriteria);
+	}
+
+	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, int first, int count) {
+		return iAdminDao.searchPageableArkRoles(arkRoleCriteria, first, count);
 	}
 }

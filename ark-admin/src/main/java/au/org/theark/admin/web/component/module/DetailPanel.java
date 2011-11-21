@@ -21,7 +21,7 @@ package au.org.theark.admin.web.component.module;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
-import au.org.theark.admin.web.component.module.form.ContainerForm;
+import au.org.theark.admin.web.component.ContainerForm;
 import au.org.theark.admin.web.component.module.form.DetailForm;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 

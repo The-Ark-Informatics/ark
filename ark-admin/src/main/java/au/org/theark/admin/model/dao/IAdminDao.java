@@ -118,4 +118,12 @@ public interface IAdminDao {
 	public Collection<ArkFunction> getFunctionListByModule(ArkModule arkModule);
 	
 	public void creatOrUpdateArkModuleFunction(ArkModule arkModule, Collection<ArkFunction> selectedArkFunctions);
+	
+	public ArkRole getArkRole(Long id);
+	
+	public int getArkRoleCount(ArkRole arkRoleCriteria);
+
+	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, int first, int count);
+	
+	public void createOrUpdateArkRole(ArkRole arkRole);
 }

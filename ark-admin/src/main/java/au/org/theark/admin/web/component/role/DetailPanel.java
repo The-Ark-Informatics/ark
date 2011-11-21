@@ -16,45 +16,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.admin.web.component.rolePolicy;
+package au.org.theark.admin.web.component.role;
 
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.web.component.ContainerForm;
-import au.org.theark.admin.web.component.rolePolicy.form.SearchForm;
-import au.org.theark.core.Constants;
+import au.org.theark.admin.web.component.role.form.DetailForm;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
-public class SearchPanel extends Panel {
+public class DetailPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long					serialVersionUID	= -2689739291154679914L;
-	private ContainerForm						containerForm;
-	private FeedbackPanel						feedBackPanel;
-	private CompoundPropertyModel<AdminVO>	cpmModel;
-	private ArkCrudContainerVO					arkCrudContainerVo;
+	private static final long	serialVersionUID	= -2562093040192063621L;
+	private FeedbackPanel		feedbackPanel;
+	private ContainerForm		containerForm;
+	private DetailForm			detailForm;
+	private ArkCrudContainerVO	arkCrudContainerVo;
 
 	/**
-	 * Constructor That uses the VO
+	 * Constructor
 	 * 
 	 * @param id
+	 * @param feedbackPanel
 	 * @param studyCrudContainerVO
+	 * @param containerForm
 	 */
-	public SearchPanel(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, CompoundPropertyModel<AdminVO> cpmModel, ArkCrudContainerVO arkCrudContainerVo) {
-
+	public DetailPanel(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo) {
 		super(id);
+		this.feedbackPanel = feedbackPanel;
 		this.containerForm = containerForm;
-		this.feedBackPanel = feedbackPanel;
-		this.cpmModel = cpmModel;
 		this.arkCrudContainerVo = arkCrudContainerVo;
 	}
 
 	public void initialisePanel() {
-		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, cpmModel, arkCrudContainerVo, feedBackPanel, containerForm);
-		add(searchForm);
+		detailForm = new DetailForm("detailForm", feedbackPanel, containerForm, arkCrudContainerVo);
+		detailForm.initialiseDetailForm();
+		add(detailForm); // Add the form to the panel
 	}
 }

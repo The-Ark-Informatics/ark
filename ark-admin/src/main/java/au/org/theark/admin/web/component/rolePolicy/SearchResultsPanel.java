@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.admin.service.IAdminService;
-import au.org.theark.admin.web.component.rolePolicy.form.ContainerForm;
+import au.org.theark.admin.web.component.ContainerForm;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.vo.ArkCrudContainerVO;
