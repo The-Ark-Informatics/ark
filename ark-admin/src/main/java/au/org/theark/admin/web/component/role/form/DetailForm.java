@@ -113,7 +113,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 
 	protected void onSave(Form<AdminVO> containerForm, AjaxRequestTarget target) {
 		// Save or update
-		iAdminService.creatOrUpdateArkModule(containerForm.getModelObject());
+		iAdminService.createOrUpdateArkRole(containerForm.getModelObject());
 
 		this.info("Ark Role: " + containerForm.getModelObject().getArkRole().getName() + " was created/updated successfully.");
 		target.add(feedBackPanel);
