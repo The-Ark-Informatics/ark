@@ -112,7 +112,7 @@ public class SearchResultsPanel extends Panel {
 				ArkModuleFunction arkModuleFunction = iAdminService.getArkModuleFunction(id);
 				containerForm.getModelObject().setArkModuleFunction(arkModuleFunction);
 				containerForm.getModelObject().setAvailableArkFunctions(iAdminService.getArkFunctionList());
-				containerForm.getModelObject().setSelectedArkFunctions(iAdminService.getFunctionListByModule(arkModuleFunction.getArkModule()));
+				containerForm.getModelObject().setSelectedArkFunctions(iAdminService.getArkFunctionListByArkModule(arkModuleFunction.getArkModule()));
 
 				arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
 				arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
