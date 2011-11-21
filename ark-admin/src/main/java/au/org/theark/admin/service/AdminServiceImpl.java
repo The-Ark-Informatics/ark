@@ -185,7 +185,7 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.getArkModuleFunction(id);
 	}
 
-	public Collection<ArkFunction> getFunctionListByModule(ArkModule arkModule) {
+	public List<ArkFunction> getFunctionListByModule(ArkModule arkModule) {
 		return iAdminDao.getFunctionListByModule(arkModule);
 	}
 
