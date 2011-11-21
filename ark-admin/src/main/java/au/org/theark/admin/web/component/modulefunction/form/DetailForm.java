@@ -121,7 +121,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	private void initArkModuleFunctionPalette() {
 		CompoundPropertyModel<AdminVO> cpModel = (CompoundPropertyModel<AdminVO>) containerForm.getModel();
 		cpModel.getObject().setAvailableArkFunctions(iAdminService.getArkFunctionList());
-		cpModel.getObject().setSelectedArkFunctions(iAdminService.getFunctionListByModule(containerForm.getModelObject().getArkModule()));
+		cpModel.getObject().setSelectedArkFunctions(iAdminService.getArkFunctionListByArkModule(containerForm.getModelObject().getArkModule()));
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "id");
 		PropertyModel<Collection<ArkFunction>> selectedModPm = new PropertyModel<Collection<ArkFunction>>(cpModel, "selectedArkFunctions");
 		PropertyModel<Collection<ArkFunction>> availableModulesPm = new PropertyModel<Collection<ArkFunction>>(cpModel, "availableArkFunctions");
