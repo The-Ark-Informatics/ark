@@ -21,11 +21,13 @@ package au.org.theark.admin.model.dao;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleFunction;
+import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
@@ -75,9 +77,9 @@ public interface IAdminDao {
 
 	public ArkModule getArkModule(Long id);
 
-	public void creatOrUpdateArkFunction(ArkFunction arkFunction);
+	public void createOrUpdateArkFunction(ArkFunction arkFunction);
 
-	public void creatOrUpdateArkModule(ArkModule arkModule);
+	public void createOrUpdateArkModule(ArkModule arkModule);
 
 	public void deleteArkFunction(ArkFunction arkFunction);
 
@@ -117,7 +119,7 @@ public interface IAdminDao {
 
 	public List<ArkFunction> getArkFunctionListByArkModule(ArkModule arkModule);
 	
-	public void creatOrUpdateArkModuleFunction(ArkModule arkModule, Collection<ArkFunction> selectedArkFunctions);
+	public void createOrUpdateArkModuleFunction(ArkModule arkModule, Collection<ArkFunction> selectedArkFunctions);
 	
 	public ArkRole getArkRole(Long id);
 	
@@ -126,4 +128,14 @@ public interface IAdminDao {
 	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, int first, int count);
 	
 	public void createOrUpdateArkRole(ArkRole arkRole);
+
+	public List<ArkRole> getArkRoleListByArkModule(ArkModule arkModule);
+	
+	public int getArkModuleRoleCount(ArkModuleRole arkModuleRoleCriteria);
+	
+	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, int first, int count);
+
+	public void createOrUpdateArkModuleRole(ArkModule arkModule, Collection<ArkRole> selectedArkRoles);
+
+	public List<ArkModule> getArkModuleListByArkRole(ArkRole arkRole);
 }

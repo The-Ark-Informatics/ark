@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.admin.service;
 
-import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.admin.model.vo.AdminVO;
@@ -27,6 +26,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleFunction;
+import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
@@ -80,11 +80,11 @@ public interface IAdminService<T> {
 
 	public List<ArkFunctionType> getArkFunctionTypeList();
 
-	public void creatOrUpdateArkFunction(AdminVO adminVo);
+	public void createOrUpdateArkFunction(AdminVO adminVo);
 
 	public void deleteArkFunction(AdminVO adminVo);
 
-	public void creatOrUpdateArkModule(AdminVO adminVo);
+	public void createOrUpdateArkModule(AdminVO adminVo);
 
 	public void deleteArkModule(AdminVO adminVo);
 
@@ -116,7 +116,7 @@ public interface IAdminService<T> {
 
 	public List<ArkFunction> getArkFunctionListByArkModule(ArkModule arkModule);
 
-	public void creatOrUpdateArkModuleFunction(AdminVO modelObject);
+	public void createOrUpdateArkModuleFunction(AdminVO modelObject);
 
 	public ArkRole getArkRole(Long id);
 	
@@ -125,4 +125,16 @@ public interface IAdminService<T> {
 	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, int first, int count);
 	
 	public void createOrUpdateArkRole(AdminVO modelObject);
+
+	public ArkModuleRole getArkModuleRole(Long id);
+	
+	public List<ArkRole> getArkRoleListByArkModule(ArkModule arkModule);
+	
+	public int getArkModuleRoleCount(ArkModuleRole arkModuleRole);
+	
+	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, int first, int count);
+
+	public void createOrUpdateArkModuleRole(AdminVO modelObject);
+
+	public List<ArkModule> getArkModuleListByArkRole(ArkRole arkRole);
 }

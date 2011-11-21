@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.admin.service;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleFunction;
+import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
@@ -105,12 +105,12 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.getArkModule(id);
 	}
 
-	public void creatOrUpdateArkFunction(AdminVO adminVo) {
-		iAdminDao.creatOrUpdateArkFunction(adminVo.getArkFunction());
+	public void createOrUpdateArkFunction(AdminVO adminVo) {
+		iAdminDao.createOrUpdateArkFunction(adminVo.getArkFunction());
 	}
 
-	public void creatOrUpdateArkModule(AdminVO adminVo) {
-		iAdminDao.creatOrUpdateArkModule(adminVo.getArkModule());
+	public void createOrUpdateArkModule(AdminVO adminVo) {
+		iAdminDao.createOrUpdateArkModule(adminVo.getArkModule());
 	}
 
 	public void deleteArkFunction(AdminVO adminVo) {
@@ -189,8 +189,8 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.getArkFunctionListByArkModule(arkModule);
 	}
 
-	public void creatOrUpdateArkModuleFunction(AdminVO modelObject) {
-		iAdminDao.creatOrUpdateArkModuleFunction(modelObject.getArkModuleFunction().getArkModule(), modelObject.getSelectedArkFunctions());
+	public void createOrUpdateArkModuleFunction(AdminVO modelObject) {
+		iAdminDao.createOrUpdateArkModuleFunction(modelObject.getArkModuleFunction().getArkModule(), modelObject.getSelectedArkFunctions());
 	}
 
 	public void createOrUpdateArkRole(AdminVO modelObject) {
@@ -207,5 +207,34 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 
 	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, int first, int count) {
 		return iAdminDao.searchPageableArkRoles(arkRoleCriteria, first, count);
+	}
+
+	public List<ArkModule> getArkModuleListByArkRole(ArkRole arkRole) {
+		return iAdminDao.getArkModuleListByArkRole(arkRole);
+	}
+
+	public void createOrUpdateArkModuleRole(AdminVO modelObject) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public ArkModuleRole getArkModuleRole(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int getArkModuleRoleCount(ArkModuleRole arkModuleRole) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public List<ArkRole> getArkRoleListByArkModule(ArkModule arkModule) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, int first, int count) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
