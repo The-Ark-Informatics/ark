@@ -33,14 +33,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.web.menu.AdminTabProviderImpl;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.menu.LimsTabProviderImpl;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
 import au.org.theark.report.web.menu.ReportTabProviderImpl;
+import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
 import au.org.theark.web.pages.login.LoginPage;
 
@@ -65,6 +72,9 @@ public class HomePage extends BasePage {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
+	@SpringBean(name = Constants.STUDY_SERVICE)
+	private IStudyService											studyService;
+	
 	/**
 	 * Constructor that is invoked when page is invoked without a session.
 	 * 
@@ -83,6 +93,38 @@ public class HomePage extends BasePage {
 		}
 	}
 
+	public void onBeforeRender(){
+		super.onBeforeRender();
+		Long studyIdInSession = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		System.out.println("OnBeforeRenderer invoked on Home page" + studyIdInSession);
+		Study study = null;
+		if(studyIdInSession != null){
+			study  = iArkCommonService.getStudy(studyIdInSession);
+		}
+		  
+		if(study != null){
+			ContextHelper contextHelper = new ContextHelper();
+			//searchStudy.getName(), studyCrudContainerVO.getArkContextMarkup()
+			contextHelper.setStudyContextLabel(study.getName(), this.arkContextPanelMarkup);
+			Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+			String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
+			if (sessionPersonType.equals(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)) {
+				Person person;
+				try {
+					person = studyService.getPerson(sessionPersonId);
+					LinkSubjectStudy lss  = iArkCommonService.getSubject(sessionPersonId);
+					contextHelper.setSubjectContextLabel(lss.getSubjectUID(), this.arkContextPanelMarkup);
+				}
+				catch (EntityNotFoundException e) {
+					log.error(e.getMessage());
+				}
+				catch (ArkSystemException e) {
+					log.error(e.getMessage());
+				}
+			}
+		}
+	
+	}
 	/**
 	 * Builds the ContextPanel that is used to store/show the context items in session, such as Study, SubjectUID etc)
 	 */
