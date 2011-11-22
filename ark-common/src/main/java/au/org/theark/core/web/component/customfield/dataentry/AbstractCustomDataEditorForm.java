@@ -18,6 +18,10 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield.dataentry;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
@@ -27,10 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.ICustomFieldData;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.button.EditModeButtonsPanel;
 import au.org.theark.core.web.component.button.IEditModeEventHandler;
-import au.org.theark.core.web.component.button.IViewModeEventHandler;
-import au.org.theark.core.web.component.button.ViewModeButtonsPanel;
 import au.org.theark.core.web.form.ArkFormVisitor;
 
 /**
@@ -38,7 +41,7 @@ import au.org.theark.core.web.form.ArkFormVisitor;
  * 
  */
 public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? extends ICustomFieldData>> 
-							extends Form<T> implements IViewModeEventHandler, IEditModeEventHandler {
+							extends Form<T> implements  IEditModeEventHandler {
 
 	/**
 	 * 
@@ -78,23 +81,43 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 			}
 		};
 		dataViewWMC.setOutputMarkupId(true);
-		dataViewWMC.setEnabled(false);	//default to View mode
+		
+		dataViewWMC.setEnabled(true);	//default to View mode
 		this.add(dataViewWMC);
 		
 		buttonsPanelWMC = new WebMarkupContainer("buttonsPanelWMC");
 		buttonsPanelWMC.setOutputMarkupPlaceholderTag(true);
-		initialiseViewButtonsPanel();
+		
+		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
+		buttonsPanel.setDeleteButtonEnabled(false);	// delete button not used in data entry
+		buttonsPanel.setDeleteButtonVisible(false);
+		buttonsPanelWMC.addOrReplace(buttonsPanel);
 		this.add(buttonsPanelWMC);
 		
 		return this;
 	}
 
-	private void initialiseViewButtonsPanel() {
-		ViewModeButtonsPanel buttonsPanel = new ViewModeButtonsPanel("buttonsPanel", this);
-		buttonsPanel.setCancelButtonVisible(false);	//hide the Cancel button in view mode
-		buttonsPanel.setCancelButtonEnabled(false);	//disable the Cancel button in view mode
-		buttonsPanelWMC.addOrReplace(buttonsPanel);
+	public void onBeforeRender() {
+		super.onBeforeRender();
+		visitChildren(formVisitor);
+		
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		if( ArkPermissionHelper.hasEditPermission(securityManager,currentUser) || //User can UPDATE
+			ArkPermissionHelper.hasNewPermission(securityManager, currentUser) || //User can CREATE
+			ArkPermissionHelper.hasDeletePermission(securityManager, currentUser)){ //User can DELETE
+			
+			dataViewWMC.setOutputMarkupId(true);
+			dataViewWMC.setEnabled(true);
+			this.add(dataViewWMC);
+	
+		}else{
+			dataViewWMC.setOutputMarkupId(true);
+			dataViewWMC.setEnabled(false);	//default to View mode
+			this.add(dataViewWMC);
+		}
 	}
+	
 
 	public WebMarkupContainer getDataViewWMC() {
 		return dataViewWMC;
@@ -102,8 +125,6 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 
 	public void onEditCancel(AjaxRequestTarget target, Form<?> form) {
 		target.add(feedbackPanel);
-		
-		initialiseViewButtonsPanel();	//put View mode buttons back
 		dataViewWMC.setEnabled(false);
 		target.add(dataViewWMC);
 		target.add(buttonsPanelWMC);
@@ -130,32 +151,4 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 	public void onEditSaveError(AjaxRequestTarget target, Form<?> form) {
 		target.add(feedbackPanel);
 	}
-	
-	public void onViewCancel(AjaxRequestTarget target, Form<?> form) {
-		// Should never get here
-		log.debug("Internal error: arriving here at CustomDataEditorForm.onViewCancel() should be imposible");
-	}
-
-	public void onViewCancelError(AjaxRequestTarget target, Form<?> form) {
-		// Should never get here
-		log.debug("Internal error: arriving here at CustomDataEditorForm.onViewCancelError() should be imposible");
-	}
-
-	public void onViewEdit(AjaxRequestTarget target, Form<?> form) {
-		//put Edit mode buttons in
-		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
-		buttonsPanel.setDeleteButtonEnabled(false);	// delete button not used in data entry
-		buttonsPanel.setDeleteButtonVisible(false);
-		buttonsPanelWMC.addOrReplace(buttonsPanel);
-		dataViewWMC.setEnabled(true);	//allow fields to be edited
-		target.add(dataViewWMC);
-		target.add(buttonsPanelWMC);
-	}
-
-	public void onViewEditError(AjaxRequestTarget target, Form<?> form) {
-		this.error("Couldn't go into edit mode.  If this persists, please contact your System Administrator.");
-		target.add(feedbackPanel);
-		log.error("Unknown error: Couldn't go into edit mode.");
-	}
-	
 }
