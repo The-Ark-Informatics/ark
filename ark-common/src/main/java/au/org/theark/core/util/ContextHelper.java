@@ -48,12 +48,29 @@ public class ContextHelper {
 		arkContextMarkup.addOrReplace(studyLabel);
 		target.add(arkContextMarkup);
 	}
+	
+	/**
+	 * Overloaded method that does not use a AjaxRequestTarget
+	 * @param label
+	 * @param arkContextMarkup
+	 */
+	@SuppressWarnings("unchecked")
+	public void setStudyContextLabel( String label, WebMarkupContainer arkContextMarkup) {
+		studyLabel = new Label("studyLabel", new Model("Study: " + label));
+		arkContextMarkup.addOrReplace(studyLabel);
+	}
 
 	@SuppressWarnings("unchecked")
 	public void setSubjectContextLabel(AjaxRequestTarget target, String label, WebMarkupContainer arkContextMarkup) {
 		subjectLabel = new Label("subjectLabel", new Model("Subject UID: " + label));
 		arkContextMarkup.addOrReplace(subjectLabel);
 		target.add(arkContextMarkup);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void setSubjectContextLabel( String label, WebMarkupContainer arkContextMarkup) {
+		subjectLabel = new Label("subjectLabel", new Model("Subject UID: " + label));
+		arkContextMarkup.addOrReplace(subjectLabel);
 	}
 
 	@SuppressWarnings("unchecked")
