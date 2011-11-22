@@ -22,6 +22,10 @@ import java.util.Iterator;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -60,7 +64,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 	protected FeedbackPanel			feedbackPanel;
 	protected WebMarkupContainer	detailContainer;
 	protected WebMarkupContainer	detailFormContainer;
-	protected WebMarkupContainer	viewButtonContainer;
+	//protected WebMarkupContainer	viewButtonContainer;
 	protected WebMarkupContainer	editButtonContainer;
 
 	protected AjaxButton				saveButton;
@@ -108,14 +112,8 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				if (isNew()) {
-					// On Cancel from new, simply hide the detailPanel/Container
-					detailContainer.setVisible(false);
-					target.add(detailContainer);
-				}
-				else {
-					onCancelPostProcess(target);
-				}
+				detailContainer.setVisible(false);
+				target.add(detailContainer);
 				processErrors(target);
 			}
 
@@ -191,40 +189,32 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 			}
 		};
 
-		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -6282464357368710796L;
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				deleteButton.setEnabled(true);
-				viewButtonContainer.setVisible(false);
-				editButtonContainer.setVisible(true);
-				detailFormContainer.setEnabled(true);
-				target.add(viewButtonContainer);
-				target.add(editButtonContainer);
-				target.add(detailFormContainer);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				processErrors(target);
-			}
-
-			@Override
-			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.EDIT);
-			}
-		};
+//		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
+//			/**
+//			 * 
+//			 */
+//			private static final long	serialVersionUID	= -6282464357368710796L;
+//
+//			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
+//				deleteButton.setEnabled(true);
+//				editButtonContainer.setVisible(true);
+//				detailFormContainer.setEnabled(true);
+//				target.add(editButtonContainer);
+//				target.add(detailFormContainer);
+//			}
+//
+//			public void onError(AjaxRequestTarget target, Form<?> form) {
+//				processErrors(target);
+//			}
+//
+//			@Override
+//			public boolean isVisible() {
+//				return ArkPermissionHelper.isActionPermitted(Constants.EDIT);
+//			}
+//		};
 		
-		editButton.setDefaultFormProcessing(false);
+		//editButton.setDefaultFormProcessing(false);
 		cancelButton.setDefaultFormProcessing(false);
-		
-		/* Defines a Read-Only Mode */
-		viewButtonContainer = new WebMarkupContainer("viewButtonContainer");
-		viewButtonContainer.setOutputMarkupPlaceholderTag(true);
-		viewButtonContainer.setVisible(!isNew());
-
 		/* Defines a edit mode */
 		editButtonContainer = new WebMarkupContainer("editButtonContainer");
 		editButtonContainer.setOutputMarkupPlaceholderTag(true);
@@ -245,17 +235,37 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		editButtonContainer.add(saveButton);
 		editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
 		editButtonContainer.add(deleteButton.setDefaultFormProcessing(false));
-
-		viewButtonContainer.add(editButton);
-
 		add(editButtonContainer);
-		add(viewButtonContainer);
 	}
 
 	@Override
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);
+		
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		if( ArkPermissionHelper.hasEditPermission(securityManager,currentUser) || //User can UPDATE
+			ArkPermissionHelper.hasNewPermission(securityManager, currentUser) || //User can CREATE
+			ArkPermissionHelper.hasDeletePermission(securityManager, currentUser)){ //User can DELETE
+			
+			detailFormContainer.setEnabled(true);
+			editButtonContainer.setVisible(true);
+			editButtonContainer.setEnabled(true);
+		
+		}else{
+			
+			detailFormContainer.setEnabled(false);
+			editButtonContainer.setVisible(true);
+			editButtonContainer.setEnabled(true);
+		}
+		
+		if(ArkPermissionHelper.isActionPermitted(Constants.DELETE)){
+			AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
+			if (ajaxButton != null) {
+				ajaxButton.setEnabled(true);
+			}
+		}
 	}
 
 	/**
@@ -289,23 +299,6 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		return this.detailContainer;
 	}
 
-	/**
-	 * Method to handle Cancel action when in Edit mode, disabling the Detail form, and hiding the "edit" button container
-	 * 
-	 * @param target
-	 */
-	protected void onCancelPostProcess(AjaxRequestTarget target) {
-		detailContainer.setVisible(true);
-		viewButtonContainer.setVisible(true);
-		viewButtonContainer.setEnabled(true);
-		detailFormContainer.setEnabled(false);
-		editButtonContainer.setVisible(false);
-
-		target.add(feedbackPanel);
-		target.add(detailFormContainer);
-		target.add(viewButtonContainer);
-		target.add(editButtonContainer);
-	}
 
 	/**
 	 * A helper method that will allow the toggle of panels and buttons. This method can be invoked by sub-classes as part of the onSave()
@@ -315,15 +308,10 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 	 * @param target
 	 */
 	protected void onSavePostProcess(AjaxRequestTarget target) {
-		detailFormContainer.setEnabled(false);
-		viewButtonContainer.setVisible(true);
-		viewButtonContainer.setEnabled(true);
-		editButtonContainer.setVisible(false);
-
+		detailFormContainer.setEnabled(true);
+		editButtonContainer.setVisible(true);
 		target.add(detailFormContainer);
-		target.add(viewButtonContainer);
 		target.add(editButtonContainer);
-		
 		// Refresh tree panel
 		target.add(tree.getParent());
 	}
