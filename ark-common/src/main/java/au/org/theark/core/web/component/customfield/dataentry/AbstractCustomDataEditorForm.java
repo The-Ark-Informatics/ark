@@ -27,11 +27,15 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ICustomFieldData;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.button.ArkAjaxButton;
 import au.org.theark.core.web.component.button.EditModeButtonsPanel;
 import au.org.theark.core.web.component.button.IEditModeEventHandler;
 import au.org.theark.core.web.form.ArkFormVisitor;
@@ -58,6 +62,9 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 	
 	// Add a visitor class for required field marking/validation/highlighting
 	protected ArkFormVisitor formVisitor = new ArkFormVisitor();
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>			iArkCommonService;
 
 	public AbstractCustomDataEditorForm(String id, CompoundPropertyModel<T> cpModel, FeedbackPanel feedbackPanel) {
 		super(id, cpModel);
@@ -116,6 +123,16 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 			dataViewWMC.setEnabled(false);	//default to View mode
 			this.add(dataViewWMC);
 		}
+		
+		Long arkFunctionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
+		ArkFunction arkFunction  = iArkCommonService.getArkFunctionById(arkFunctionId);
+		if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_DATA)){
+			EditModeButtonsPanel buttonPanel = (EditModeButtonsPanel)buttonsPanelWMC.get("buttonsPanel");
+			if(buttonPanel != null){
+				((ArkAjaxButton)buttonPanel.get("cancel")).setVisible(false);
+			}
+			
+		}
 	}
 	
 
@@ -125,7 +142,7 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 
 	public void onEditCancel(AjaxRequestTarget target, Form<?> form) {
 		target.add(feedbackPanel);
-		dataViewWMC.setEnabled(false);
+		dataViewWMC.setEnabled(true);
 		target.add(dataViewWMC);
 		target.add(buttonsPanelWMC);
 	}
