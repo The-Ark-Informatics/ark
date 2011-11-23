@@ -94,9 +94,11 @@ public class HomePage extends BasePage {
 	}
 
 	public void onBeforeRender(){
+		
 		super.onBeforeRender();
+		
 		Long studyIdInSession = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		System.out.println("OnBeforeRenderer invoked on Home page" + studyIdInSession);
+		
 		Study study = null;
 		if(studyIdInSession != null){
 			study  = iArkCommonService.getStudy(studyIdInSession);
@@ -104,11 +106,10 @@ public class HomePage extends BasePage {
 		  
 		if(study != null){
 			ContextHelper contextHelper = new ContextHelper();
-			//searchStudy.getName(), studyCrudContainerVO.getArkContextMarkup()
 			contextHelper.setStudyContextLabel(study.getName(), this.arkContextPanelMarkup);
 			Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 			String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
-			if (sessionPersonType.equals(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)) {
+			if (sessionPersonId != null && sessionPersonType != null && sessionPersonType.equals(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)) {
 				Person person;
 				try {
 					person = studyService.getPerson(sessionPersonId);
