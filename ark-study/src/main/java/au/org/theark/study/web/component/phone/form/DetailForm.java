@@ -145,7 +145,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 	@Override
 	protected void attachValidators() {
 		phoneNumberTxtFld.setRequired(true).setLabel((new StringResourceModel("phone.phoneNumber.RequiredValidator", this, new Model<String>("Phone Number"))));
-		phoneNumberTxtFld.add(StringValidator.maximumLength(10));
+		phoneNumberTxtFld.add(StringValidator.maximumLength(10)).setLabel(new StringResourceModel("phone.phoneNumber.StringValidator.maximum", this, null));
 		areaCodeTxtFld.add(StringValidator.maximumLength(10));
 		phoneTypeChoice.setRequired(true).setLabel((new StringResourceModel("phone.phoneType.RequiredValidator", this, new Model<String>("Phone Type"))));
 		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("phone.dateReceived.DateValidator.maximum", this, null));
