@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -38,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.ContainerForm;
-import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkRole;
@@ -76,36 +74,13 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		this.containerForm = containerForm;
 		arkCrudContainerVO = arkCrudContainerVo;
 		setMultiPart(true);
-		
-		// Do not allow deletes
-//		deleteButton = new AjaxButton(Constants.DELETE) {
-//			/**
-//			 * 
-//			 */
-//			private static final long	serialVersionUID	= 1L;
-//
-//			@Override
-//			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-//			}
-//			
-//			@Override
-//			protected void onError(AjaxRequestTarget target, Form<?> form) {
-//			}
-//			
-//			@Override
-//			protected void onBeforeRender() {
-//				super.onBeforeRender();
-//				setEnabled(false);
-//			}
-//		};
-		arkCrudContainerVO.getEditButtonContainer().addOrReplace(deleteButton);
 	}
 	
 	@Override
 	public void onBeforeRender() {
 		super.onBeforeRender();
-		deleteButton.setEnabled(false);
 		arkModuleDropDown.setEnabled(isNew());
+		deleteButton.setEnabled(false);
 	}
 
 	public void initialiseDetailForm() {
@@ -160,10 +135,16 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 			target.add(feedBackPanel);
 		}
 		else {
-			// Save or update
-			iAdminService.createOrUpdateArkModuleRole(containerForm.getModelObject());
+			if (containerForm.getModelObject().getArkModule().getId() == null) {
+				// Save
+				iAdminService.createArkModuleRole(containerForm.getModelObject());
+			}
+			else {
+				// Update
+				iAdminService.updateArkModuleRole(containerForm.getModelObject());
+			}
 	
-			this.info("Ark Module Role: " + containerForm.getModelObject().getArkModule().getName() + " was created/updated successfully.");
+			this.info("Ark Module Role: " + containerForm.getModelObject().getArkModuleRole().getArkModule().getName() + " was created/updated successfully.");
 			target.add(feedBackPanel);
 		}
 		
