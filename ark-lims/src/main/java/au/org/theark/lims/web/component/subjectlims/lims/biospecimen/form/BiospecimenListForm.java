@@ -420,6 +420,8 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		if (hasBioCollections) {
 			// Set new Biospecimen into model, then show modalWindow to save
 			CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
+			newModel.getObject().setLinkSubjectStudy(cpModel.getObject().getLinkSubjectStudy());
+			newModel.getObject().setStudy(cpModel.getObject().getStudy());
 			newModel.getObject().getBiospecimen().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 			newModel.getObject().getBiospecimen().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
 			newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
