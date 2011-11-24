@@ -206,6 +206,7 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 				target.add(biospecimenUidExampleLbl);
 			}
 		});
+		biospecimenUidTokenDdc.setNullValid(true);
 	}
 
 	private void initBiospecimenUidPadCharDdc() {
@@ -244,9 +245,6 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 	@Override
 	protected void attachValidators() {
 		studyDdc.setRequired(true).setLabel(new StringResourceModel("error.study.required", this, new Model<String>("Study")));
-		biospecimenUidPrefixTxtFld.setRequired(true).setLabel(new StringResourceModel("error.biospecimenUidPrefix.required", this, new Model<String>("Prefix")));
-		biospecimenUidTokenDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimenUidToken.required", this, new Model<String>("Token")));
-		biospecimenUidTokenDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimenUidPadChars.required", this, new Model<String>("PadChars")));
 	}
 
 	/*
@@ -267,7 +265,7 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 	 */
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-		containerForm.info("The Biospecimen template record was deleted successfully.");
+		containerForm.info("BiospecimenUID template record was deleted successfully.");
 		iLimsAdminService.deleteBiospecimenUidTemplate(containerForm.getModelObject());
 		editCancelProcess(target);
 		onCancel(target);
@@ -291,7 +289,7 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 		else {
 			iLimsAdminService.updateBiospecimenUidTemplate(containerForm.getModelObject());
 		}
-		this.info("Biospecimen template was created/updated successfully.");
+		this.info("BiospecimenUID template was created/updated successfully.");
 		onSavePostProcess(target);
 		target.add(feedBackPanel);
 	}
