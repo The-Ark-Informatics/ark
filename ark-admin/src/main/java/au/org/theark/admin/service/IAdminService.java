@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.admin.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.admin.model.vo.AdminVO;
@@ -134,7 +135,9 @@ public interface IAdminService<T> {
 	
 	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, int first, int count);
 
-	public void createOrUpdateArkModuleRole(AdminVO modelObject);
+	public void createArkModuleRole(AdminVO modelObject);
+	
+	public void updateArkModuleRole(AdminVO modelObject);
 
 	public List<ArkModule> getArkModuleListByArkRole(ArkRole arkRole);
 }

@@ -213,8 +213,12 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.getArkModuleListByArkRole(arkRole);
 	}
 
-	public void createOrUpdateArkModuleRole(AdminVO modelObject) {
-		iAdminDao.createOrUpdateArkModuleRole(modelObject.getArkModuleRole().getArkModule(), modelObject.getSelectedArkRoles());
+	public void createArkModuleRole(AdminVO modelObject) {
+		iAdminDao.createArkModuleRole(modelObject.getArkModuleRole().getArkModule(), modelObject.getSelectedArkRoles());
+	}
+	
+	public void updateArkModuleRole(AdminVO modelObject) {
+		iAdminDao.updateArkModuleRole(modelObject.getArkModuleRole().getArkModule(), modelObject.getSelectedArkRoles());
 	}
 
 	public ArkModuleRole getArkModuleRole(Long id) {

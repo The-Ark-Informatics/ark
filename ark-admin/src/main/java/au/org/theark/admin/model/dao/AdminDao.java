@@ -546,7 +546,45 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return criteria.list();
 	}
 
-	public void createOrUpdateArkModuleRole(ArkModule arkModule, Collection<ArkRole> selectedArkRoles) {
+	public void createArkModuleRole(ArkModule arkModule, Collection<ArkRole> selectedArkRoles) {
+		Session session = getSession();
+		
+		// Remove previous list of ArkRoles
+		List<ArkModuleRole> arkModuleRoles = getArkModuleRoleByArkModule(arkModule);
+		for (ArkModuleRole arkModuleRoleToRemove: arkModuleRoles) {
+			session.delete(arkModuleRoleToRemove);
+		}
+		
+		ArkPermission arkPermission = getArkPermissionByName("READ");
+		
+		// Insert the ArkRoles for the ArkModule
+		for (Iterator<ArkRole> iterator = selectedArkRoles.iterator(); iterator.hasNext();) {
+			ArkModuleRole arkModuleRole = new ArkModuleRole();
+			ArkRole arkRole = iterator.next();
+			arkModuleRole.setArkModule(arkModule);
+			arkModuleRole.setArkRole(arkRole);
+			
+			session.save(arkModuleRole);
+			
+			// Add a default READ permission to NEW module/roles
+			List<ArkFunction> arkFunctions = getArkFunctionListByArkModule(arkModule);
+			for (Iterator iterator2 = arkFunctions.iterator(); iterator2.hasNext();) {
+				ArkFunction arkFunction = (ArkFunction) iterator2.next();
+				ArkRolePolicyTemplate arkRolePolicyTemplate = new ArkRolePolicyTemplate();
+				arkRolePolicyTemplate.setArkRole(arkRole);
+				arkRolePolicyTemplate.setArkModule(arkModule);
+				arkRolePolicyTemplate.setArkFunction(arkFunction);
+				arkRolePolicyTemplate.setArkPermission(arkPermission);
+				
+				session.save(arkRolePolicyTemplate);
+			}
+		}
+
+		// Flush must be the last thing to call. If there is any other code/logic to be added make sure session.flush() is invoked after that.
+		session.flush();	
+	}
+	
+	public void updateArkModuleRole(ArkModule arkModule, Collection<ArkRole> selectedArkRoles) {
 		Session session = getSession();
 		
 		// Remove previous list of ArkRoles
