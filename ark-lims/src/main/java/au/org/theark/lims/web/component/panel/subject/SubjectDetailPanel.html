@@ -1,0 +1,69 @@
+<wicket:panel>
+	&nbsp;
+	<div id="detailsPanelBorder">
+		<form wicket:id="subjectDetailForm">
+			<div id="detailPanelBreaker">
+				&nbsp;
+			</div>
+
+			<div id="panelContentLeft">
+				&nbsp;
+			</div>
+
+			<div id="fldLabel">
+				<wicket:message key="subjectUID">
+					Subject UID:
+				</wicket:message>
+			</div>
+
+			<div id="fldControl">
+				<input wicket:id="linkSubjectStudy.subjectUID"/>
+			</div>
+
+			<div id="panelMargin">
+				&nbsp;
+			</div>
+
+			<div id="fldLabel">
+				<wicket:message key="firstName">
+					First Name:
+				</wicket:message>
+			</div>
+			<div id="fldControl">
+				<input wicket:id="linkSubjectStudy.person.firstName"/>
+			</div>
+
+			<div id="panelMargin">
+				&nbsp;
+			</div>
+
+			<div id="fldLabel">
+				<wicket:message key="lastName">
+					Last Name:
+				</wicket:message>
+			</div>
+			<div id="fldControl">
+				<input wicket:id="linkSubjectStudy.person.lastName"/>
+			</div>
+
+			<div id="panelMargin">
+				&nbsp;
+			</div>
+
+			<div id="fldLabel">
+				<wicket:message key="dateOfBirth">
+					Date Of Birth:
+				</wicket:message>
+			</div>
+
+			<div id="fldControl">
+				<input wicket:id="linkSubjectStudy.person.dateOfBirth" maxLength="10"/>
+			</div>
+
+			<div id="detailPanelBreaker">
+				&nbsp;
+			</div>
+		</form>
+	</div>
+	<!--	End detailsPanelBorder -->
+</wicket:panel>
