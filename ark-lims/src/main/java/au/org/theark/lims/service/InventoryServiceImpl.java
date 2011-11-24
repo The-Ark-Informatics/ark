@@ -364,4 +364,8 @@ public class InventoryServiceImpl implements IInventoryService {
 	public BiospecimenLocationVO getInvCellLocation(InvCell invCell) throws ArkSystemException {
 		return iInventoryDao.getInvCellLocation(invCell);
 	}
+
+	public boolean boxesExist() {
+		return iInventoryDao.boxesExist();
+	}
 }

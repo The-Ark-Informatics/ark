@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -461,5 +462,12 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 			biospecimenLocationVo.setRowLabel(rowLabel);
 		}
 		return biospecimenLocationVo;
+	}
+
+	public boolean boxesExist() {
+		Criteria criteria = getSession().createCriteria(InvBox.class);
+		criteria.setProjection(Projections.count("id"));
+		Integer count = (Integer) criteria.uniqueResult();
+		return count>0;
 	}
 }

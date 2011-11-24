@@ -6,10 +6,12 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.lims.service.IInventoryService;
 
 /**
  * Panel displaying the label "Biospecimen not allocated" for the Biospecimen in context
@@ -22,6 +24,8 @@ public class BioLocationNotAllocatedPanel extends Panel {
 	 * 
 	 */
 	private static final long						serialVersionUID	= 1L;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
+	private IInventoryService						iInventoryService;
 	protected CompoundPropertyModel<LimsVO>	cpModel;
 	private Label										notAllocatedLbl;
 	private ArkBusyAjaxButton						allocateButton;
@@ -65,6 +69,7 @@ public class BioLocationNotAllocatedPanel extends Panel {
 			}
 		};
 		allocateButton.setDefaultFormProcessing(false);
+		allocateButton.setEnabled(iInventoryService.boxesExist());
 		
 		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
 			/**
