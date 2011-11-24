@@ -136,7 +136,9 @@ public interface IAdminDao {
 	
 	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, int first, int count);
 
-	public void createOrUpdateArkModuleRole(ArkModule arkModule, Collection<ArkRole> selectedArkRoles);
+	public void createArkModuleRole(ArkModule arkModule, Collection<ArkRole> selectedArkRoles);
+	
+	public void updateArkModuleRole(ArkModule arkModule, Collection<ArkRole> selectedArkRoles);
 
 	public List<ArkModule> getArkModuleListByArkRole(ArkRole arkRole);
 }
