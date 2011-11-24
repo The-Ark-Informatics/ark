@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
@@ -51,6 +52,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.util.UniqueIdGenerator;
 import au.org.theark.lims.web.Constants;
@@ -66,6 +68,9 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	public void setArkUidGenerator(BiospecimenUidGenerator biospecimenUidGenerator) {
 		this.biospecimenUidGenerator = biospecimenUidGenerator;
 	}
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>							iArkCommonService;
 	
 	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException {	
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);
@@ -426,15 +431,16 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	}
 
 	public Integer getNextUidSequence(Study study) {
-		Integer result;
+		Integer result = null;
 		if (study == null) {
 			log.error("Error in Biospecimen insertion - Study was null");
 		}
-		if (study.getName() == null) {
+		else if (study.getName() == null) {
 			log.error("Error in Biospecimen insertion - Study name was null");
 		}
-
-		result = (Integer) biospecimenUidGenerator.getId(study.getName());
+		else {
+			result = (Integer) biospecimenUidGenerator.getId(study.getName());
+		}
 		return result;
 	}
 

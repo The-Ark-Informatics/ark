@@ -224,8 +224,16 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					@Override
 					public void onClick(AjaxRequestTarget target) {
 						CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
-						newModel.getObject().getBiospecimen().setId(biospecimen.getId());
-						showModalWindow(target, newModel);
+						try {
+							Biospecimen biospecimenFromDB = iLimsService.getBiospecimen(biospecimen.getId());
+							Study study = iArkCommonService.getStudy(biospecimenFromDB.getStudy().getId());
+							biospecimenFromDB.setStudy(study);
+							newModel.getObject().setBiospecimen(biospecimenFromDB);
+							showModalWindow(target, newModel);
+						}
+						catch (EntityNotFoundException e) {
+							log.error(e.getMessage());
+						}
 					}
 				};
 
