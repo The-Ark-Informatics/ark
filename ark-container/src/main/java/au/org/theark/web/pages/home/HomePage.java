@@ -231,20 +231,8 @@ public class HomePage extends BasePage {
 		catch (EntityNotFoundException e) {
 			log.error("ArkUser [" + ldapUserName + "] was not found!");
 			log.error(e.getMessage());
-			
-			// Study
-			studyMainTabProvider = new MainTabProviderImpl(au.org.theark.core.Constants.ARK_MODULE_STUDY);
-			// Pass in the Study logo mark up, to allow dynamic logo reference
-			moduleTabsList = studyMainTabProvider.buildTabs(this.studyNameMarkup, this.studyLogoMarkup, this.arkContextPanelMarkup);
-			
-			// Reporting
-			ReportTabProviderImpl reportTabProvider = new ReportTabProviderImpl(au.org.theark.core.Constants.ARK_MODULE_REPORTING);
-			List<ITab> reportTabList = reportTabProvider.buildTabs();
-			for (ITab tab : reportTabList) {
-				moduleTabsList.add(tab);
-			}
 		}
-
+		
 		moduleTabbedPanel = new ArkAjaxTabbedPanel("moduleTabsList", moduleTabsList);
 		moduleTabbedPanel.setOutputMarkupPlaceholderTag(true);
 		studyMainTabProvider.setModuleTabbedPanel(moduleTabbedPanel);
