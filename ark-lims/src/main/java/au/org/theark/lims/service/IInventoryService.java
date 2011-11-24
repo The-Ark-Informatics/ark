@@ -250,4 +250,6 @@ public interface IInventoryService {
 	 * @throws ArkSystemException
 	 */
 	public BiospecimenLocationVO getInvCellLocation(InvCell invCell) throws ArkSystemException;
+
+	public boolean boxesExist();
 }
