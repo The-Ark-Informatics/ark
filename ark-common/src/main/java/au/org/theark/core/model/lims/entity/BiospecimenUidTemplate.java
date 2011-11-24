@@ -44,23 +44,23 @@ public class BiospecimenUidTemplate implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= -8619498549995379154L;
+	private static final long		serialVersionUID	= -8619498549995379154L;
 	// Fields
 	private Long						id;
 	private Study						study;
 	private BiospecimenUidToken	biospecimenUidToken;
 	private String						biospecimenUidPrefix;
-	private BiospecimenUidPadChar biospecimenUidPadChar;
+	private BiospecimenUidPadChar	biospecimenUidPadChar;
 
 	// Constructors
 	/** default constructor */
 	public BiospecimenUidTemplate() {
 	}
-	
+
 	// Property accessors
 	@Id
-	@SequenceGenerator(name = "biospecimen_template", sequenceName = "biospecimen_template_SEQUENCE")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biospecimen_template")
+	@SequenceGenerator(name = "biospecimenUid_template", sequenceName = "biospecimenUid_template_sequence")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biospecimenUid_template")
 	public Long getId() {
 		return this.id;
 	}
@@ -79,6 +79,15 @@ public class BiospecimenUidTemplate implements java.io.Serializable {
 		this.study = study;
 	}
 
+	@Column(name = "BIOSPECIMENUID_PREFIX")
+	public String getBiospecimenUidPrefix() {
+		return biospecimenUidPrefix;
+	}
+
+	public void setBiospecimenUidPrefix(String biospecimenUidPrefix) {
+		this.biospecimenUidPrefix = biospecimenUidPrefix;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BIOSPECIMENUID_TOKEN_ID")
 	public BiospecimenUidToken getBiospecimenUidToken() {
@@ -89,15 +98,6 @@ public class BiospecimenUidTemplate implements java.io.Serializable {
 		this.biospecimenUidToken = biospecimenUidToken;
 	}
 
-	@Column(name = "BIOSPECIMENUID_PREFIX", nullable = false)
-	public String getBiospecimenUidPrefix() {
-		return biospecimenUidPrefix;
-	}
-
-	public void setBiospecimenUidPrefix(String biospecimenUidPrefix) {
-		this.biospecimenUidPrefix = biospecimenUidPrefix;
-	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BIOSPECIMENUID_PADCHAR_ID")
 	public BiospecimenUidPadChar getBiospecimenUidPadChar() {
@@ -106,5 +106,5 @@ public class BiospecimenUidTemplate implements java.io.Serializable {
 
 	public void setBiospecimenUidPadChar(BiospecimenUidPadChar biospecimenUidPadChar) {
 		this.biospecimenUidPadChar = biospecimenUidPadChar;
-	}	
+	}
 }
