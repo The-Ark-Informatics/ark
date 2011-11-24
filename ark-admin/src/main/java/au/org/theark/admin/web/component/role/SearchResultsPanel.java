@@ -110,7 +110,7 @@ public class SearchResultsPanel extends Panel {
 				Long id = arkRole.getId();
 				ArkRole arkRole = iAdminService.getArkRole(id);
 				containerForm.getModelObject().setArkRole(arkRole);
-				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVo);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVo);
 				// Refresh base container form to remove any feedBack messages
 				target.add(containerForm);
 			}
