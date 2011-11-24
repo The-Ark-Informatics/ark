@@ -74,6 +74,7 @@ import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
+import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
@@ -248,6 +249,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				
 				// Get/set location details
 				cpModel.getObject().setBiospecimenLocationVO(iInventoryService.getBiospecimenLocation(biospecimenFromDB));
+				cpModel.getObject().setStudy(biospecimenFromDB.getStudy());
 			}
 			catch (EntityNotFoundException e) {
 				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
@@ -774,6 +776,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
 			limsVo.getBiospecimen().setComments("Clone of " + parentBiospecimenUid);
 			limsVo.getBiospecimen().setBarcoded(false);
+			limsVo.setBiospecimenLocationVO(new BiospecimenLocationVO());
 
 			// Inital transaction detail (quantity grabbed from previous biospecimen)
 			limsVo.getBioTransaction().setId(null);
@@ -784,6 +787,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			cpModel.setObject(limsVo);
 			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was cloned from " + parentBiospecimenUid + " successfully");
 			target.add(feedbackPanel);
+			
+			// refresh the location panel
+			initialiseBiospecimenLocationPanel();
+			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenLocationPanel);
+			target.add(biospecimenLocationPanel);
 
 			// Go straight into edit mode
 			onViewEdit(target, BiospecimenModalDetailForm.this);
