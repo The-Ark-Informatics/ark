@@ -230,7 +230,7 @@ public class SearchResultListPanel extends Panel {
 				DetailsForm detailsForm = (DetailsForm) details.get("detailsForm");
 				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
 				
-				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 
 			}
 		};

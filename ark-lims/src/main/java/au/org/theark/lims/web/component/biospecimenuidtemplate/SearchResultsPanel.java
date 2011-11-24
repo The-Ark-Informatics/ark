@@ -22,15 +22,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,17 +71,8 @@ public class SearchResultsPanel extends Panel {
 				BiospecimenUidTemplate biospecimenUidTemplate = item.getModelObject();
 
 				item.add(buildLink(biospecimenUidTemplate));
-				
 				item.add(new Label("study", biospecimenUidTemplate.getStudy().getName()));
-
-				if (biospecimenUidTemplate.getBiospecimenUidPrefix() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("biospecimenUid.template", getBiospecimenUidExample(biospecimenUidTemplate)));
-				}
-				else {
-					item.add(new Label("biospecimenUid.template", ""));
-				}
-
+				item.add(new Label("biospecimenUid.template", getBiospecimenUidExample(biospecimenUidTemplate)));
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					/**
 					 * 
@@ -102,55 +89,18 @@ public class SearchResultsPanel extends Panel {
 		return dataView;
 	}
 
-	@SuppressWarnings("unchecked")
-	public PageableListView<BiospecimenUidTemplate> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
-		PageableListView<BiospecimenUidTemplate> pageableListView = new PageableListView<BiospecimenUidTemplate>("resultList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+	private AjaxLink<String> buildLink(final BiospecimenUidTemplate BiospecimenUidTemplate) {
+		ArkBusyAjaxLink<String> link = new ArkBusyAjaxLink<String>("link") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void populateItem(final ListItem<BiospecimenUidTemplate> item) {
-				BiospecimenUidTemplate biospecimenUidTemplate = item.getModelObject();
-
-				item.add(buildLink(biospecimenUidTemplate));
-				
-				item.add(new Label("study", biospecimenUidTemplate.getStudy().getName()));
-
-				if (biospecimenUidTemplate.getBiospecimenUidPrefix() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("biospecimenUid.template", getBiospecimenUidExample(biospecimenUidTemplate)));
-				}
-				else {
-					item.add(new Label("biospecimenUid.template", ""));
-				}
-
-				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
-					private static final long	serialVersionUID	= 1L;
-
-					@Override
-					public String getObject() {
-						return (item.getIndex() % 2 == 1) ? "even" : "odd";
-					}
-				}));
-
-			}
-		};
-		return pageableListView;
-	}
-
-	@SuppressWarnings( { "unchecked", "serial" })
-	private AjaxLink buildLink(final BiospecimenUidTemplate BiospecimenUidTemplate) {
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
-			@Override
 			public void onClick(AjaxRequestTarget target) {
 				BiospecimenUidTemplate BiospecimenUidTemplateFromDb = iLimsAdminService.searchBiospecimenUidTemplate(BiospecimenUidTemplate);
 				containerForm.setModelObject(BiospecimenUidTemplateFromDb);
-				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVo);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVo);
 				// Refresh base container form to remove any feedBack messages
 				target.add(containerForm);
 			}

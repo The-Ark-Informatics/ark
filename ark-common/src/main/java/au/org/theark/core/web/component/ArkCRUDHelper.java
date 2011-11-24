@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.core.web.component;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 
@@ -39,7 +38,7 @@ public class ArkCRUDHelper {
 	 * @param target
 	 * @param arkCrudContainerVO
 	 */
-	public static void preProcessDetaiPanelOnSearchResults(AjaxRequestTarget target, ArkCrudContainerVO arkCrudContainerVO){
+	public static void preProcessDetailPanelOnSearchResults(AjaxRequestTarget target, ArkCrudContainerVO arkCrudContainerVO){
 		// this check is required to make the delete button enabled if the user has Delete permissions. If the user had navigated from New to Detail Form first, 
 		// The delete button will be disabled. When he cancels out and then clicks on an existing record, even if the user had permissions the delete button will be disabled.
 		//The earlier code had two containers to manage this so it was possible. Now this has to be done through this method.

@@ -191,7 +191,7 @@ public class SearchResultListPanel extends Panel {
 					target.add(arkCrudContainerVO.getEditButtonContainer());
 					target.add(arkCrudContainerVO.getDetailPanelFormContainer());
 					*/
-					ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
+					ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 					target.add(feedbackPanel);
 					// Set the MODE here.Since the User Details are from LDAP we don't have a entity that we can use to check for a mode
 					containerForm.getModelObject().setMode(Constants.MODE_EDIT);
