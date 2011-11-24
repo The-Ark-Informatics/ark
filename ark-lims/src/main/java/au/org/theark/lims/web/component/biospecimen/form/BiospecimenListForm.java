@@ -227,7 +227,11 @@ public class BiospecimenListForm extends Form<LimsVO> {
 						try {
 							Biospecimen biospecimenFromDB = iLimsService.getBiospecimen(biospecimen.getId());
 							Study study = iArkCommonService.getStudy(biospecimenFromDB.getStudy().getId());
+							LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUID(biospecimenFromDB.getLinkSubjectStudy().getSubjectUID(), study); 
 							biospecimenFromDB.setStudy(study);
+							biospecimenFromDB.setLinkSubjectStudy(linkSubjectStudy);
+							
+							newModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
 							newModel.getObject().setBiospecimen(biospecimenFromDB);
 							showModalWindow(target, newModel);
 						}
