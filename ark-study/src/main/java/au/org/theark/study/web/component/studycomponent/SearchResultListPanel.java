@@ -130,7 +130,7 @@ public class SearchResultListPanel extends Panel {
 				studyCompVo.setMode(Constants.MODE_EDIT);
 				studyCompVo.setStudyComponent(studyComponent);// Sets the selected object into the model
 				// Render the UI
-				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				
 			}
 		};

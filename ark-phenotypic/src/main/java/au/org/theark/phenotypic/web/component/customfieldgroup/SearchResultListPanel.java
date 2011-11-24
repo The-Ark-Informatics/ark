@@ -163,7 +163,7 @@ public class SearchResultListPanel extends Panel{
 				
 				//The list of CFD must be displayed on the Detail form
 				//Create a CFD List Panel here and add it to the detailForm.
-				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 			}
 			
 		};

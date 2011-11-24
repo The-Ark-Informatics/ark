@@ -132,7 +132,7 @@ public class SearchResultsPanel extends Panel {
 				BarcodeLabel barcodeLabelFromDb = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 				containerForm.setModelObject(barcodeLabelFromDb);
 				
-				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVo);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVo);
 				// Refresh base container form to remove any feedBack messages
 				target.add(containerForm);
 			}

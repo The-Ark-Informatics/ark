@@ -184,7 +184,7 @@ public class SearchResultListPanel extends Panel {
 				DetailForm detailsForm = (DetailForm) details.get("detailsForm");
 				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
 
-				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 
 				// Refresh the contextUpdateTarget (add)

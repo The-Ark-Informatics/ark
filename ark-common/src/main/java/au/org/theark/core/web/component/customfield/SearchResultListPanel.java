@@ -160,7 +160,7 @@ public class SearchResultListPanel extends Panel {
 
 				DetailPanel detailsPanel = new DetailPanel("detailsPanel", feedbackPanel, newModel, arkCrudContainerVO);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailsPanel);
-				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				
 			}
 		};

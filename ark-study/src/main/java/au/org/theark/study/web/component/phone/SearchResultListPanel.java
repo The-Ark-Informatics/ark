@@ -118,7 +118,7 @@ public class SearchResultListPanel extends Panel {
 
 				containerForm.getModelObject().setPhone(phone);
 				
-				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				
 			}
 

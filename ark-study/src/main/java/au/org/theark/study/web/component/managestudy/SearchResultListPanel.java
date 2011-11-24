@@ -226,7 +226,7 @@ public class SearchResultListPanel extends Panel {
 				contextHelper.setStudyContextLabel(target, searchStudy.getName(), studyCrudContainerVO.getArkContextMarkup());
 
 				target.add(studyCrudContainerVO.getSummaryContainer());
-				ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, studyCrudContainerVO);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, studyCrudContainerVO);
 
 				// Refresh base container form to remove any feedBack messages
 				target.add(studyContainerForm);

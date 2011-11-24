@@ -146,7 +146,7 @@ public class SearchResultListPanel extends Panel {
 
 					new FormHelper().updateStudyCompStatusDates(target, consentFromBackend.getStudyComponentStatus().getName(), wmcPlain, wmcRequested, wmcRecieved, wmcCompleted);
 
-					ArkCRUDHelper.preProcessDetaiPanelOnSearchResults(target, arkCrudContainerVO);
+					ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 					
 				}
 				catch (ArkSystemException e) {
