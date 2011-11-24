@@ -25,6 +25,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.lims.web.component.panel.subject.SubjectDetailPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form.BiospecimenModalDetailForm;
 
 public class BiospecimenModalDetailPanel extends Panel {
@@ -57,7 +58,13 @@ public class BiospecimenModalDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new BiospecimenModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
+		// Always show minimal Subject detail at top of form
+		SubjectDetailPanel subjectDetailPanel = new SubjectDetailPanel("subjectDetailPanel", cpModel);
+		subjectDetailPanel.setDefaultModelObject(cpModel.getObject());
+		subjectDetailPanel.initialisePanel();
+		add(subjectDetailPanel);
+		
+		detailForm = new BiospecimenModalDetailForm("subjectDetailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
 		detailForm.initialiseDetailForm();
 		add(detailFeedbackPanel);
 		add(detailForm);
