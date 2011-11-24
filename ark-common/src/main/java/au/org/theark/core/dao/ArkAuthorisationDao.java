@@ -1019,20 +1019,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.addOrder(Order.asc("arkModule.id"));
 		
 		List<ArkModule> list = criteria.list();
-		
-		ArkModule lastArkModule = list.get(list.size()-1);
-		
-		// Add Reporting as a module to the list
-		ArkModule arkModule = getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_REPORTING);
-		
-		// Handle for Admin module (insert Report before it)
-		if(lastArkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_ADMIN)) {
-			list.add(list.size()-1, arkModule);
-		}
-		else {
-			list.add(arkModule);	
-		}
-		
 		return list;
 	}
 	
