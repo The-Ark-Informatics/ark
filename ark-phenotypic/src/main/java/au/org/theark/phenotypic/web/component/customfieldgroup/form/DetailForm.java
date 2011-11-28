@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
@@ -30,11 +31,14 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldGroupVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider2;
+import au.org.theark.core.web.component.button.ArkAjaxButton;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.service.Constants;
@@ -77,6 +81,20 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		this.cfdProvider = cfdProvider;
 	}
 	
+	public void onBeforeRender() {
+		
+		super.onBeforeRender();
+		ArrayList<CustomField> selectedList = cpModel.getObject().getSelectedCustomFields();
+		//If the Questionnaire is published then lock it and do not allow user to edit or delete it
+		//TODO Work on a back end custom sql to determine if there are fields that are linked to the questionnaire and based on it allow delete.
+		if(cpModel.getObject().getCustomFieldGroup().getPublished()){
+			ArkCRUDHelper.onBeforeRenderWithReadPermission(arkCrudContainerVO);	
+			AjaxButton saveButton = (AjaxButton)arkCrudContainerVO.getEditButtonContainer().get("save");
+			saveButton.setEnabled(false);
+			AjaxButton deleteButton = (AjaxButton)arkCrudContainerVO.getEditButtonContainer().get("delete");
+			deleteButton.setEnabled(false);
+		}
+	}
 	
 	private void initialiseCFDListPanel(){
 		
