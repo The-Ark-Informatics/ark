@@ -29,68 +29,78 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
-import au.org.theark.phenotypic.service.Constants;
-import au.org.theark.phenotypic.service.IPhenotypicService;
+
 /**
  * @author elam
- *
+ * 
  */
-public class PhenoDataEntryContainerPanel extends Panel {
+public class PhenotypicCollectionContainerPanel extends Panel {
+
+	/**
+	 * 
+	 */
 	private static final long	serialVersionUID	= 1L;
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	protected IArkCommonService<Void>					iArkCommonService;
 	
-	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService			iPhenotypicService;
-	
 	protected CompoundPropertyModel<PhenoDataCollectionVO> cpModel;
 
 	protected FeedbackPanel feedbackPanel;
-	protected WebMarkupContainer customDataEditorWMC;
+	protected WebMarkupContainer resultListWMC;
+	protected WebMarkupContainer detailWMC;
 
 	/**
-	 * Constructor requires the phenoCollection to be passed in
 	 * @param id
-	 * @param phenoCollection
 	 */
-	public PhenoDataEntryContainerPanel(String id, CompoundPropertyModel<PhenoDataCollectionVO> phenoCollectionModel) {
-		super(id, phenoCollectionModel);
-		this.cpModel = phenoCollectionModel;
+	public PhenotypicCollectionContainerPanel(String id) {
+		super(id);
+		cpModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
 	}
-
-	public PhenoDataEntryContainerPanel initialisePanel() {
+	
+	public PhenotypicCollectionContainerPanel initialisePanel() {
 		add(initialiseFeedbackPanel());
-		add(initialiseCustomDataEditorWMC());
+		add(initialiseResultListWMC());
+		add(initialiseDetailWMC());
 		if (!ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
 			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
-			customDataEditorWMC.setVisible(false);
+			resultListWMC.setVisible(false);
 		}
 		return this;
 	}
-	
-	protected WebMarkupContainer initialiseCustomDataEditorWMC() {
-		customDataEditorWMC = new WebMarkupContainer("customDataEditorWMC");
+
+	protected WebMarkupContainer initialiseResultListWMC() {
+		resultListWMC = new WebMarkupContainer("resultListContainer");
 		Panel dataEditorPanel;
 		boolean contextLoaded = prerenderContextCheck();
 		if (contextLoaded && isActionPermitted()) {
-			dataEditorPanel = new PhenoDataEditorPanel("customDataEditorPanel", cpModel, feedbackPanel).initialisePanel();;
+			dataEditorPanel = new ResultListPanel("resultList", feedbackPanel, cpModel).initialisePanel();;
 		}
 		else if (!contextLoaded) {
-			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
+			dataEditorPanel = new EmptyPanel("resultList");
 			this.error("A study and subject in context are required to proceed.");
 		}
 		else {
-			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
+			dataEditorPanel = new EmptyPanel("resultList");
 			this.error("You do not have sufficient permissions to access this function");
 		}
-		customDataEditorWMC.add(dataEditorPanel);
-		return customDataEditorWMC;
+		resultListWMC.add(dataEditorPanel);
+		return resultListWMC;
+	}
+
+	protected WebMarkupContainer initialiseDetailWMC() {
+		detailWMC = new WebMarkupContainer("detailContainer");
+		Panel detailPanel = new EmptyPanel("detailsPanel");
+		detailWMC.add(detailPanel);
+		return detailWMC;
 	}
 	
 	protected WebMarkupContainer initialiseFeedbackPanel() {
@@ -99,7 +109,7 @@ public class PhenoDataEntryContainerPanel extends Panel {
 		feedbackPanel.setOutputMarkupId(true);
 		return feedbackPanel;
 	}
-	
+
 	protected boolean isActionPermitted() {
 		boolean flag = false;
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
@@ -112,16 +122,32 @@ public class PhenoDataEntryContainerPanel extends Panel {
 		}
 		return flag;
 	}
-	
+
 	protected boolean prerenderContextCheck() {
-		
-		//TODO: Remove this test code later
-		PhenotypicCollection aPhenoCollection = iPhenotypicService.getPhenotypicCollection(new Long(1));
-		
+		// Get the Study, SubjectUID and ArkModule from Context
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+		Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+
 		boolean contextLoaded = false;
-		if (aPhenoCollection != null) {
-			cpModel.getObject().setPhenotypicCollection(aPhenoCollection);
-			contextLoaded = true;
+		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
+			LinkSubjectStudy linkSubjectStudy = null;
+			ArkModule arkModule = null;
+			Study study = null;
+			try {
+				study = iArkCommonService.getStudy(sessionStudyId);
+				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
+				cpModel.getObject().getPhenotypicCollection().setLinkSubjectStudy(linkSubjectStudy);
+				arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
+				if (study != null && linkSubjectStudy != null && arkModule != null) {
+					contextLoaded = true;
+					cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY));
+				}
+			}
+			catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return contextLoaded;
 	}
