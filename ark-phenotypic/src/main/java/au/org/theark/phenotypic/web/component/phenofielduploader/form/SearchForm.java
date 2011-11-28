@@ -34,7 +34,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyUpload;
@@ -42,9 +41,6 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.vo.PhenoFieldUploadVO;
-import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.fieldUpload.DetailPanel;
-import au.org.theark.phenotypic.web.component.fieldUpload.WizardPanel;
 
 /**
  * @author cellis
@@ -58,8 +54,6 @@ public class SearchForm extends AbstractSearchForm<PhenoFieldUploadVO> {
 
 	private PageableListView<StudyUpload>		listView;
 	private CompoundPropertyModel<PhenoFieldUploadVO>	cpmModel;
-	private DetailPanel								detailPanel;
-	private WizardPanel								wizardPanel;
 	private WebMarkupContainer						wizardContainer;
 
 	private TextField<String>						uploadIdTxtFld;
