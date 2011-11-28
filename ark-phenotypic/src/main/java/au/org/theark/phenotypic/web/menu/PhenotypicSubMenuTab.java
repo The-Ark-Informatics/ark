@@ -40,7 +40,7 @@ import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadContainerPanel;
-import au.org.theark.phenotypic.web.component.phenodataentry.PhenotypicCollectionContainerPanel;
+import au.org.theark.phenotypic.web.component.phenodataentry.PhenoCollectionDataEntryContainerPanel;
 import au.org.theark.phenotypic.web.component.phenofielduploader.FieldUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.summary.SummaryContainerPanel;
 
@@ -102,7 +102,7 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = new CustomFieldGroupContainerPanel(panelId, function);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA)) {
-			panelToReturn = new PhenotypicCollectionContainerPanel(panelId).initialisePanel();
+			panelToReturn = new PhenoCollectionDataEntryContainerPanel(panelId).initialisePanel();
 //			panelToReturn = new FieldDataContainerPanel(panelId);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD)) {
