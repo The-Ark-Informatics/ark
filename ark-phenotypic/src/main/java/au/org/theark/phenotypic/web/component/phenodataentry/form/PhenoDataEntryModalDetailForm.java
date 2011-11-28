@@ -58,12 +58,12 @@ import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataDataViewPa
  * 
  * @author elam
  */
-public class PhenotypicCollectionModalDetailForm extends AbstractModalDetailForm<PhenoDataCollectionVO> {
+public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<PhenoDataCollectionVO> {
 	/**
 	 * 
 	 */
 	private static final long					serialVersionUID	= 2727419197330261916L;
-	private static final Logger				log					= LoggerFactory.getLogger(PhenotypicCollectionModalDetailForm.class);
+	private static final Logger				log					= LoggerFactory.getLogger(PhenoDataEntryModalDetailForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
@@ -94,7 +94,7 @@ public class PhenotypicCollectionModalDetailForm extends AbstractModalDetailForm
 	 * @param modalWindow
 	 * @param listDetailPanel
 	 */
-	public PhenotypicCollectionModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
+	public PhenoDataEntryModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
 		this.modalWindow = modalWindow;
 		refreshEntityFromBackend();

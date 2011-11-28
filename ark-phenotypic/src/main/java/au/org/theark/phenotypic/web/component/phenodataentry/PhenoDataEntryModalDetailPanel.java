@@ -25,9 +25,9 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
-import au.org.theark.phenotypic.web.component.phenodataentry.form.PhenotypicCollectionModalDetailForm;
+import au.org.theark.phenotypic.web.component.phenodataentry.form.PhenoDataEntryModalDetailForm;
 
-public class PhenotypicCollectionModalDetailPanel extends Panel {
+public class PhenoDataEntryModalDetailPanel extends Panel {
 	/**
 	 * 
 	 */
@@ -35,12 +35,12 @@ public class PhenotypicCollectionModalDetailPanel extends Panel {
 
 	private FeedbackPanel								detailFeedbackPanel;
 	private ModalWindow									modalWindow;
-	private PhenotypicCollectionModalDetailForm	detailForm;
+	private PhenoDataEntryModalDetailForm	detailForm;
 	private ArkCrudContainerVO							arkCrudContainerVo;
 
 	protected CompoundPropertyModel<PhenoDataCollectionVO>	cpModel;
 
-	public PhenotypicCollectionModalDetailPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
+	public PhenoDataEntryModalDetailPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		super(id);
 		this.detailFeedbackPanel = initialiseFeedBackPanel();
 		this.setModalWindow(modalWindow);
@@ -57,7 +57,7 @@ public class PhenotypicCollectionModalDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new PhenotypicCollectionModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
+		detailForm = new PhenoDataEntryModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
 		detailForm.initialiseDetailForm();
 		add(detailFeedbackPanel);
 		add(detailForm);
