@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.phenotypic.web.component.phenotypiccollection.form;
+package au.org.theark.phenotypic.web.component.phenodataentry.form;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.phenotypiccollection.PhenotypicCollectionModalDetailPanel;
+import au.org.theark.phenotypic.web.component.phenodataentry.PhenotypicCollectionModalDetailPanel;
 
 /**
  * @author cellis
