@@ -40,8 +40,8 @@ import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadContainerPanel;
+import au.org.theark.phenotypic.web.component.phenodataentry.PhenotypicCollectionContainerPanel;
 import au.org.theark.phenotypic.web.component.phenofielduploader.FieldUploadContainerPanel;
-import au.org.theark.phenotypic.web.component.phenotypiccollection.PhenotypicCollectionContainerPanel;
 import au.org.theark.phenotypic.web.component.summary.SummaryContainerPanel;
 
 
