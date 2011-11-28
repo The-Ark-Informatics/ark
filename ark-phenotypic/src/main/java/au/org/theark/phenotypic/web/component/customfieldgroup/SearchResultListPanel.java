@@ -145,22 +145,7 @@ public class SearchResultListPanel extends Panel{
 				
 				TextField<String> questionnaireName = (TextField<String>)arkCrudContainerVO.getDetailPanelFormContainer().get("customFieldGroup.name");
 				questionnaireName.setEnabled(false);
-				
-				Boolean disableEditButton = false;
-				if(itemSelected.getPublished()){
-					for (CustomField customField : selectedList) {
-						if(customField.getCustomFieldHasData()){
-							disableEditButton = true;
-							break;
-						}
-					}
-				}
-				
-				if(disableEditButton){
-					AjaxButton editButtn = (AjaxButton) arkCrudContainerVO.getViewButtonContainer().get("edit");
-					editButtn.setEnabled(false);
-				}
-				
+
 				//The list of CFD must be displayed on the Detail form
 				//Create a CFD List Panel here and add it to the detailForm.
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
