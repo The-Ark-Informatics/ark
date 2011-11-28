@@ -56,7 +56,7 @@ import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.phenodataentry.PhenotypicCollectionModalDetailPanel;
+import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataEntryModalDetailPanel;
 
 /**
  * @author cellis
@@ -332,7 +332,7 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY));
-		modalContentPanel = new PhenotypicCollectionModalDetailPanel("content", modalWindow, cpModel);
+		modalContentPanel = new PhenoDataEntryModalDetailPanel("content", modalWindow, cpModel);
 
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Phenotypic Collection Detail");

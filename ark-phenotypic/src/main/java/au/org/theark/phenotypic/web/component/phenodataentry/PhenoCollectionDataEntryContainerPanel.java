@@ -42,7 +42,7 @@ import au.org.theark.core.vo.PhenoDataCollectionVO;
  * @author elam
  * 
  */
-public class PhenotypicCollectionContainerPanel extends Panel {
+public class PhenoCollectionDataEntryContainerPanel extends Panel {
 
 	/**
 	 * 
@@ -61,12 +61,12 @@ public class PhenotypicCollectionContainerPanel extends Panel {
 	/**
 	 * @param id
 	 */
-	public PhenotypicCollectionContainerPanel(String id) {
+	public PhenoCollectionDataEntryContainerPanel(String id) {
 		super(id);
 		cpModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
 	}
 	
-	public PhenotypicCollectionContainerPanel initialisePanel() {
+	public PhenoCollectionDataEntryContainerPanel initialisePanel() {
 		add(initialiseFeedbackPanel());
 		add(initialiseResultListWMC());
 		add(initialiseDetailWMC());
