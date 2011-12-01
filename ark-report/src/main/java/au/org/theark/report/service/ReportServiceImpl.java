@@ -274,7 +274,12 @@ public class ReportServiceImpl implements IReportService {
 		try {
 			if (subject == null) {
 				// no subject was passed in, retrieve from DB via subjectUID
-				subject = studyDao.getSubjectByUID(consentRow.getSubjectUID(), consent.getStudy());
+				if(consent == null) {
+					subject = studyDao.getSubjectByUID(consentRow.getSubjectUID(), study);
+				}
+				else {
+					subject = studyDao.getSubjectByUID(consentRow.getSubjectUID(), consent.getStudy());
+				}
 			}
 			else {
 				// set subjectUID if subject passed in
