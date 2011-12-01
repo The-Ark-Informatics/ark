@@ -24,7 +24,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -38,7 +37,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
@@ -134,14 +132,15 @@ public class SearchResultListPanel extends Panel {
 
 					ArkUserVO arkUserVOFromBackend = iUserService.lookupArkUser(arkUserVo.getUserName(), study);
 					if (!arkUserVOFromBackend.isArkUserPresentInDatabase()) {
-
 						containerForm.info(new StringResourceModel("user.not.linked.to.study", this, null).getString());
 						target.add(feedbackPanel);
 						arkUserVOFromBackend.setChangePassword(true);
 						arkUserVOFromBackend.getArkUserEntity().setLdapUserName(arkUserVo.getUserName());
+						arkUserVOFromBackend.setStudy(new Study());
 						prePopulateForNewUser(arkUserVOFromBackend);
 					}
 					else {
+						arkUserVOFromBackend.setStudy(study);
 						prePopulateArkUserRoleList(arkUserVOFromBackend);
 					}
 

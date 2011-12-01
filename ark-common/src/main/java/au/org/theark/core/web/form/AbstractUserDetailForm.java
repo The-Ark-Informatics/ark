@@ -26,6 +26,7 @@ import org.apache.wicket.model.StringResourceModel;
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 
 /**
@@ -69,7 +70,10 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 
 			@Override
 			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
+				boolean flag = false;
+				ArkUserVO arkUserVo = (ArkUserVO) containerForm.getModelObject();
+				flag = arkUserVo.getStudy().getId() != null;
+				return (flag && ArkPermissionHelper.isActionPermitted(Constants.DELETE));
 			}
 
 			@Override
