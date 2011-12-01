@@ -18,6 +18,12 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subjectFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 
 import org.apache.shiro.SecurityUtils;
@@ -36,8 +42,16 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
+import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.file.File;
+import org.apache.wicket.util.file.Files;
+import org.apache.wicket.util.io.IOUtils;
+import org.apache.wicket.util.resource.FileResourceStream;
+import org.apache.wicket.util.resource.IResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,13 +150,13 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				// Download file link button
-//				Panel downloadLinkPanel = buildDownloadLinkPanel(item.getModel());
-//				item.add(downloadLinkPanel);
+				// Panel downloadLinkPanel = buildDownloadLinkPanel(item.getModel());
+				// item.add(downloadLinkPanel);
 				AjaxButton downloadButton = buildDownloadButton(subjectFile);
 				item.add(downloadButton);
 
 				// Delete the upload file
-//				item.add(buildDeleteLinkPanel(item.getModel(), downloadLinkPanel));
+				// item.add(buildDeleteLinkPanel(item.getModel(), downloadLinkPanel));
 				item.add(buildDeleteButton(subjectFile, downloadButton));
 
 				// For the alternative stripes
@@ -176,9 +190,6 @@ public class SearchResultListPanel extends Panel {
 				SubjectFile subjectFile = innerModel.getObject();
 				if (subjectFile.getId() != null) {
 					try {
-						// TODO: implement disabling of other buttons on row when buttons clicked once
-						downloadLinkPanel.setEnabled(false);
-						target.add(downloadLinkPanel);
 						studyService.delete(subjectFile);
 					}
 					catch (ArkSystemException e) {
@@ -212,6 +223,7 @@ public class SearchResultListPanel extends Panel {
 		return deleteLinkPanel;
 	}
 
+	@SuppressWarnings("unused")
 	private Panel buildDownloadLinkPanel(final IModel<SubjectFile> subjectFileModel) {
 		DownloadIconLinkPanel<SubjectFile> downloadLinkPanel = new DownloadIconLinkPanel<SubjectFile>(au.org.theark.study.web.Constants.DOWNLOAD_FILE, subjectFileModel) {
 
@@ -239,24 +251,53 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxButton buildDownloadButton(final SubjectFile subjectFile) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
 				try {
 					data = subjectFile.getPayload().getBytes(1, (int) subjectFile.getPayload().length());
+
+					if (data != null) {
+						InputStream inputStream = new ByteArrayInputStream(data);
+						OutputStream outputStream;
+
+						final String tempDir = System.getProperty("java.io.tmpdir");
+						final java.io.File file = new File(tempDir, subjectFile.getFilename());
+						final String fileName = subjectFile.getFilename();
+						outputStream = new FileOutputStream(file);
+						IOUtils.copy(inputStream, outputStream);
+
+						IResourceStream resourceStream = new FileResourceStream(new org.apache.wicket.util.file.File(file));
+						getRequestCycle().scheduleRequestHandlerAfterCurrent(new ResourceStreamRequestHandler(resourceStream) {
+							@Override
+							public void respond(IRequestCycle requestCycle) {
+								super.respond(requestCycle);
+								Files.remove(file);
+							}
+						}.setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT));
+					}
+				}
+				catch (FileNotFoundException e) {
+					log.error(e.getMessage());
+				}
+				catch (IOException e) {
+					log.error(e.getMessage());
 				}
 				catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("", data, subjectFile.getFilename()));
 			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				this.error("Unexpected error: Download request could not be fulfilled.");
-				// TODO: Improve msg?
+				log.error("Unexpected error: Download request could not be fulfilled.");
 			};
 		};
 
@@ -272,32 +313,32 @@ public class SearchResultListPanel extends Panel {
 	private AjaxDeleteButton buildDeleteButton(final SubjectFile subjectFile, final AjaxButton downloadButton) {
 
 		DeleteButton ajaxButton = new DeleteButton(subjectFile, SearchResultListPanel.this) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to delete upload
 				if (subjectFile.getId() != null) {
 					try {
-						// TODO: implement disabling of other buttons on row when buttons clicked once
-						downloadButton.setEnabled(false);
-						target.add(downloadButton);
 						studyService.delete(subjectFile);
 					}
 					catch (ArkSystemException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 					catch (EntityNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 				}
 
 				containerForm.info("Attachment " + subjectFile.getFilename() + " was deleted successfully.");
 
 				// Update the result panel
-				//target.add(searchResultContainer);
+				// target.add(searchResultContainer);
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-				
+
 				target.add(containerForm);
 			}
 
@@ -316,15 +357,11 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				this.error("Unexpected error: Delete request could not be fulfilled.");
-				// TODO: Improve msg?
+				log.error("Unexpected error: Delete request could not be fulfilled.");
 			}
 		};
 
-		// TODO: Check permissions for delete
-		ajaxButton.setVisible(true);
 		ajaxButton.setDefaultFormProcessing(false);
-
 		return ajaxButton;
 	}
-
 }
