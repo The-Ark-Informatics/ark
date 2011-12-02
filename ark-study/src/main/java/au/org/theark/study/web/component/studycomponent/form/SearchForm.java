@@ -96,12 +96,8 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 	 */
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
-
-		StudyCompVo studyCompVo = new StudyCompVo();
-		studyCompVo.setMode(Constants.MODE_NEW);
-		setModelObject(studyCompVo);
+		getModelObject().setMode(Constants.MODE_NEW);
 		preProcessDetailPanel(target);
-
 	}
 
 	/*
