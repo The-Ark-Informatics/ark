@@ -23,12 +23,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -38,7 +36,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IOUtils;
-import org.hibernate.Hibernate;
 
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -47,8 +44,6 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.model.vo.PhenoFieldUploadVO;
-import au.org.theark.phenotypic.service.Constants;
-import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenofielduploader.form.WizardForm;
 
 /**
@@ -61,9 +56,6 @@ public class FieldUploadStep1 extends AbstractWizardStepPanel {
 	private static final long					serialVersionUID		= 4272918747277155957L;
 
 	public java.util.Collection<String>		validationMessages	= null;
-
-	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService					iPhenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
