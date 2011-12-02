@@ -467,6 +467,9 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		
 		criteria.add(Restrictions.eq("study", study));
 		criteria.add(Restrictions.ne("arkModule", arkModuleToExclude));
+		criteria.createAlias("arkModule", "module");
+		criteria.addOrder(Order.asc("module.id"));
+		
 		arkStudyLinkedModuleList = criteria.list();
 
 		// For each one in the List get the associated Roles i.e for each module get the Roles
@@ -485,6 +488,8 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	public Collection<ArkModule> getArkModulesLinkedWithStudy(Study study) {
 		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class);
 		criteria.add(Restrictions.eq("study", study));
+		criteria.createAlias("arkModule", "module");
+		criteria.addOrder(Order.asc("module.id"));
 		Collection<LinkStudyArkModule> arkStudyLinkedModuleList = new ArrayList<LinkStudyArkModule>();
 		arkStudyLinkedModuleList = criteria.list();
 		Collection<ArkModule> arkModuleList = new ArrayList<ArkModule>();
@@ -638,6 +643,8 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		arkUserVO.setArkUserPresentInDatabase(true);
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		criteria.add(Restrictions.eq("arkUser", arkUser));
+		criteria.createAlias("arkModule", "module");
+		criteria.addOrder(Order.asc("module.id"));
 
 		// Restrict by Study if NOT Super Administrator
 		if (!isUserAdminHelper(arkUser.getLdapUserName(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
