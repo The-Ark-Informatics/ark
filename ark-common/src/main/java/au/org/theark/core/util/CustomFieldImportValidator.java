@@ -220,38 +220,39 @@ public class CustomFieldImportValidator {
 
 				fileValidationMessages.add(stringBuffer.toString());
 			}
-
-			Collection<String> requiredHeaders = new ArrayList();
-			for (int i = 0; i < requiredHeaderArray.length; i++) {
-				requiredHeaders.add(requiredHeaderArray[i]);
-			}
-			for (int i = 0; i < fileHeaderColumnArray.length; i++) {
-				if (!requiredHeaders.contains(fileHeaderColumnArray[i])) {
-					fileValidationMessages.add("Error: the column name " + fileHeaderColumnArray[i] + " is not a valid column name.");
+			else {
+				Collection<String> requiredHeaders = new ArrayList();
+				for (int i = 0; i < requiredHeaderArray.length; i++) {
+					requiredHeaders.add(requiredHeaderArray[i]);
+				}
+				for (int i = 0; i < fileHeaderColumnArray.length; i++) {
+					if (!requiredHeaders.contains(fileHeaderColumnArray[i])) {
+						fileValidationMessages.add("Error: the column name " + fileHeaderColumnArray[i] + " is not a valid column name.");
+					}
+				}
+	
+				srcLength = inLength - csvReader.getHeaders().toString().length();
+				log.debug("Header length: " + csvReader.getHeaders().toString().length());
+	
+				row = 1;
+	
+				// Loop through all rows in file
+				while (csvReader.readRecord()) {
+					// do something with the newline to put the data into
+					// the variables defined above
+					stringLineArray = csvReader.getValues();
+	
+					// Loop through columns in current row in file, starting from the 2th position
+					for (int i = 0; i < stringLineArray.length; i++) {
+						// Update progress
+						curPos += stringLineArray[i].length() + 1; // update progress
+					}
+	
+					subjectCount++;
+					row++;
 				}
 			}
-
-			srcLength = inLength - csvReader.getHeaders().toString().length();
-			log.debug("Header length: " + csvReader.getHeaders().toString().length());
-
-			row = 1;
-
-			// Loop through all rows in file
-			while (csvReader.readRecord()) {
-				// do something with the newline to put the data into
-				// the variables defined above
-				stringLineArray = csvReader.getValues();
-
-				// Loop through columns in current row in file, starting from the 2th position
-				for (int i = 0; i < stringLineArray.length; i++) {
-					// Update progress
-					curPos += stringLineArray[i].length() + 1; // update progress
-				}
-
-				subjectCount++;
-				row++;
-			}
-
+			
 			if (fileValidationMessages.size() > 0) {
 				for (Iterator<String> iterator = fileValidationMessages.iterator(); iterator.hasNext();) {
 					String errorMessage = iterator.next();
