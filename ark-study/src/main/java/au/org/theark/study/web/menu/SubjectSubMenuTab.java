@@ -125,7 +125,6 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new SubjectCustomDataContainerPanel(panelId).initialisePanel();
 					}
-
 					return panelToReturn;
 				}
 
