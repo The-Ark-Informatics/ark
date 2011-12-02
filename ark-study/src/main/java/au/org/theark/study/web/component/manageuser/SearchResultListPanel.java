@@ -153,43 +153,8 @@ public class SearchResultListPanel extends Panel {
 					if (listView != null) {
 						listView.removeAll();
 					}
-
-					/*
-					// Render the UI
-					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
-					arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
-					arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-					arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-					arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
-				
-					try {
-						
-						String userName = containerForm.getModelObject().getArkUserEntity().getLdapUserName();
-						if(iArkCommonService.isSuperAdministrator(userName)){
-							AjaxButton editButton  = (AjaxButton) arkCrudContainerVO.getViewButtonContainer().get("edit");
-							editButton.setEnabled(false);
-						}
-						else{
-							AjaxButton editButton  = (AjaxButton) arkCrudContainerVO.getViewButtonContainer().get("edit");
-							editButton.setEnabled(true);
-						}
-					} catch (EntityNotFoundException e) {
-						e.printStackTrace();
-					}
 					
-					
-					arkCrudContainerVO.getEditButtonContainer().setVisible(false);
-					*/
 					arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
-					/*
-					target.add(arkCrudContainerVO.getWmcForarkUserAccountPanel());// This should re-render the list again
-					target.add(arkCrudContainerVO.getSearchPanelContainer());
-					target.add(arkCrudContainerVO.getDetailPanelContainer());
-					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-					target.add(arkCrudContainerVO.getViewButtonContainer());
-					target.add(arkCrudContainerVO.getEditButtonContainer());
-					target.add(arkCrudContainerVO.getDetailPanelFormContainer());
-					*/
 					ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 					target.add(feedbackPanel);
 					// Set the MODE here.Since the User Details are from LDAP we don't have a entity that we can use to check for a mode
