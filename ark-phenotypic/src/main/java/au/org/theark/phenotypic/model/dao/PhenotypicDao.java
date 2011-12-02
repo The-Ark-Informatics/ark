@@ -30,11 +30,14 @@ import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1680,6 +1683,35 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			session.delete(customFieldDisplay);
 		}
 		session.delete(customFieldGroupVO.getCustomFieldGroup());
+	}
+	
+	/**
+	 * The method checks if the given questionnaire's fields have data linked to it.
+	 * 
+	 * @param customFieldGroup
+	 */
+	public void isDataAvailableForQuestionnaire(CustomFieldGroup customFieldGroup){
+		
+		Criteria criteria = getSession().createCriteria(CustomField.class, "cf");
+		criteria.createAlias("customFieldDisplay", "cfd", Criteria.LEFT_JOIN);	// Left join to CustomFieldDisplay
+		criteria.createAlias("cfd.customFieldGroup", "cfg", Criteria.LEFT_JOIN); // Left join to CustomFieldGroup
+		criteria.add(Restrictions.eq("cf.study", customFieldGroup.getStudy()));
+		
+		ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+		criteria.add(Restrictions.eq("cf.arkFunction", function));
+		criteria.add(Restrictions.eq("cfg.id", customFieldGroup.getId()));
+		
+		DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(PhenoData.class, "pd");
+		// Join CustomFieldDisplay and PhenoData on ID FK
+		fieldDataCriteria.add(Property.forName("cfd.id").eqProperty("pd." + "customFieldDisplay.id"));
+		criteria.add(Subqueries.exists(fieldDataCriteria.setProjection(Projections.property("pd.customFieldDisplay"))));
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("cfg.name"), "questionnaire");
+		projectionList.add(Projections.property("cf.name"), "fieldName");
+		projectionList.add(Projections.property("cf.description"), "description");
+		
+		
 	}
 
 }
