@@ -71,6 +71,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 			public void onSubmit() {
 				ArkUserVO user = (ArkUserVO) getForm().getModelObject();
 				if (authenticate(user)) {
+					log.info( "\n ----" + user.getUserName() + " Logged in successfully. ---- \n");
 					// Place a default use case into session
 					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY);
 					// Place a default module into session
