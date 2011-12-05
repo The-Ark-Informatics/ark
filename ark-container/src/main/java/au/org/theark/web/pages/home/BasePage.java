@@ -65,6 +65,7 @@ public abstract class BasePage extends WebPage {
 
 	protected WebMarkupContainer	studyNameMarkup;
 	protected WebMarkupContainer	studyLogoMarkup;
+	protected WebMarkupContainer	hostedByImageMarkup;
 
 	private MyDetailModalWindow	modalWindow;
 
@@ -73,13 +74,14 @@ public abstract class BasePage extends WebPage {
 	 */
 	@SuppressWarnings("unchecked")
 	public BasePage() {
-		ContextImage hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
-		ContextImage studyLogoImage = new ContextImage("studyLogoImage", new Model<String>("images/" + Constants.NO_STUDY_LOGO_IMAGE));
-		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
+		
 
 		currentUser = SecurityUtils.getSubject();
 
 		if (currentUser.getPrincipal() != null) {
+			ContextImage hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
+			ContextImage studyLogoImage = new ContextImage("studyLogoImage", new Model<String>("images/" + Constants.NO_STUDY_LOGO_IMAGE));
+			ContextImage productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
 			principal = (String) currentUser.getPrincipal();
 			userNameLbl = new Label("loggedInUser", new Model<String>(principal));
 			studyNameLbl = new Label("studyNameLabel", new Model<String>(" "));
@@ -93,9 +95,13 @@ public abstract class BasePage extends WebPage {
 			studyLogoMarkup = new WebMarkupContainer("studyLogoMarkupContainer");
 			studyLogoMarkup.add(studyLogoImage);
 			studyLogoMarkup.setOutputMarkupPlaceholderTag(true);
-
+			
+			hostedByImageMarkup =  new WebMarkupContainer("hostedByImageMarkupContainer");
+			hostedByImageMarkup.add(hostedByImage);
+			hostedByImageMarkup.setOutputMarkupPlaceholderTag(true);
+			
 			// Add images
-			add(hostedByImage);
+			add(hostedByImageMarkup);
 			add(studyNameMarkup);
 			add(studyLogoMarkup);
 			add(productImage);
