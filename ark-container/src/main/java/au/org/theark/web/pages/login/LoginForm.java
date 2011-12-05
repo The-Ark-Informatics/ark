@@ -1,15 +1,16 @@
 package au.org.theark.web.pages.login;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
@@ -28,8 +29,8 @@ import au.org.theark.web.pages.reset.ResetPage;
 
 /**
  * <p>
- * The <code>LoginForm</code> class that extends the {@link org.apache.wicket.markup.html.form.Form Form} class. It provides the
- * implementation of the login form of The Ark application.
+ * The <code>LoginForm</code> class that extends the {@link org.apache.wicket.markup.html.form.Form Form} class. It provides the implementation of the
+ * login form of The Ark application.
  * </p>
  * 
  * @author nivedann
@@ -47,8 +48,8 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 	private TextField<String>			userNameTxtFld		= new TextField<String>("userName");
 	private PasswordTextField			passwordTxtFld		= new PasswordTextField("password");
 
-	private Button						signInButton;
-	private Button					forgotPasswordButton;
+	private Button							signInButton;
+	private Button							forgotPasswordButton;
 
 	/**
 	 * LoginForm constructor
@@ -71,7 +72,8 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 			public void onSubmit() {
 				ArkUserVO user = (ArkUserVO) getForm().getModelObject();
 				if (authenticate(user)) {
-					log.info( "\n ----" + user.getUserName() + " Logged in successfully. ---- \n");
+					DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+					log.info( "\n ----" + user.getUserName() + " Logged in successfully at: " + dateFormat.format(new Date()) + " ---- \n");
 					// Place a default use case into session
 					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY);
 					// Place a default module into session
@@ -79,8 +81,9 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY, arkFunction.getId());
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY, arkModule.getId());
-					setResponsePage(HomePage.class);
-				}else{
+					setResponsePage(HomePage.class); 
+				}
+				else {
 					setResponsePage(LoginPage.class);
 				}
 			}
@@ -90,9 +93,8 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 
 			}
 
-		
 		};
-		
+
 		forgotPasswordButton = new Button("forgotPasswordButton") {
 			/**
 			 * 
@@ -103,17 +105,16 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 			public void onSubmit() {
 				setResponsePage(ResetPage.class);
 			}
-			
+
 			@Override
 			public void onError() {
 				log.error("Error on click of forgotPasswordButton");
 			}
 		};
 		forgotPasswordButton.setDefaultFormProcessing(false);
-		
+
 		addComponentsToForm();
 	}
-	
 
 	private void addComponentsToForm() {
 		add(userNameTxtFld.setRequired(true));
@@ -131,7 +132,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 	 *           the given user to authenticate
 	 * @return
 	 */
-	public final boolean authenticate( ArkUserVO user) {
+	public final boolean authenticate(ArkUserVO user) {
 		Subject subject = SecurityUtils.getSubject();
 		// Disable Remember me
 		UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword(), false);
@@ -166,7 +167,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 			getSession().error(errMessage);
 			log.error(e.getMessage());
 		}
-		
+
 		addOrReplace(feedbackPanel);
 		return false;
 	}
