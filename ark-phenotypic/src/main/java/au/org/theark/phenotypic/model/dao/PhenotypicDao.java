@@ -1448,7 +1448,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		
 		CustomFieldGroup customFieldGroup = customFieldGroupVO.getCustomFieldGroup();
 		Session session = getSession();
-		
+		if(customFieldGroup.getPublished() == null){
+			customFieldGroup.setPublished( new Boolean("false"));
+		}
 		session.save(customFieldGroup);
 		ArrayList<CustomField> customFieldList = customFieldGroupVO.getSelectedCustomFields();
 		
