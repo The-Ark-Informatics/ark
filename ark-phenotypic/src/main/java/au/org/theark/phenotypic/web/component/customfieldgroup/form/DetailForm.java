@@ -87,7 +87,14 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO>{
 		ArrayList<CustomField> selectedList = cpModel.getObject().getSelectedCustomFields();
 		//If the Questionnaire is published then lock it and do not allow user to edit or delete it
 		//TODO Work on a back end custom sql to determine if there are fields that are linked to the questionnaire and based on it allow delete.
-		if(cpModel.getObject().getCustomFieldGroup().getPublished()){
+		CustomFieldGroup cg = cpModel.getObject().getCustomFieldGroup();
+		
+		boolean isFormPublished = false;
+		if(cg.getPublished() != null){
+			isFormPublished = cg.getPublished().booleanValue();
+		}
+		 
+		if(cg != null && isFormPublished ){
 			ArkCRUDHelper.onBeforeRenderWithReadPermission(arkCrudContainerVO);	
 			AjaxButton saveButton = (AjaxButton)arkCrudContainerVO.getEditButtonContainer().get("save");
 			saveButton.setEnabled(false);
