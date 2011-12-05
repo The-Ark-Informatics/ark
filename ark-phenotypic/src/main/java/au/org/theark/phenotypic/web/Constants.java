@@ -244,4 +244,8 @@ public class Constants {
 	public static final String		FIELD_PHENO_COLLECTION_FIELD								= "field";
 	public static final String		FIELD_PHENO_COLLECTION_STUDY								= "study";
 	public static final String		FIELD_PHENO_COLLECTION_PHENO_COLLECTION				= "phenoCollection";
+	
+	public static final String		QUESTIONNAIRE_ID											= "id";
+	public static final String		QUESTIONNAIRE_NAME										= "name";
+
 }
