@@ -27,6 +27,8 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.model.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
@@ -68,7 +70,7 @@ public abstract class BasePage extends WebPage {
 	protected WebMarkupContainer	hostedByImageMarkup;
 
 	private MyDetailModalWindow	modalWindow;
-
+	private transient static Logger	log =  LoggerFactory.getLogger(BasePage.class);
 	/**
 	 * Default constructor
 	 */
@@ -143,13 +145,19 @@ public abstract class BasePage extends WebPage {
 				@Override
 				public void onClick(AjaxRequestTarget target) {
 					Subject subject = SecurityUtils.getSubject();
+					currentUser = SecurityUtils.getSubject();
+					principal = (String) currentUser.getPrincipal();
+					log.info("\n -- " + principal + " has logged out. ----");
 					// Place the selected study in session context for the user
 					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
+					
 					subject.logout();
+					
 					Session.get().invalidateNow(); // invalidate the wicket session
 					setResponsePage(LoginPage.class);
+					
 				}
 			};
 			add(link);
