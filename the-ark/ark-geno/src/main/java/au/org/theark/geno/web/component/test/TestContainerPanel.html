@@ -1,0 +1,39 @@
+<wicket:panel>
+	<!--  Page Left Zone -->
+	<div id="leftZone">&nbsp;</div>
+	
+	<!-- Content Zone -->
+	<div id="contentZone">
+		<form wicket:id="testForm">
+			<div id="actionButtons">&nbsp;
+				<div>
+					<input wicket:id="fireInTheHole" type="submit" wicket:message="value:page.fireTest" />&nbsp;<br></br>
+					<input wicket:id="theGreatFlood" type="submit" wicket:message="value:page.waterTest" />&nbsp;<br></br>
+					<input wicket:id="noahsRescue" type="submit" wicket:message="value:page.noahsRescue" />&nbsp;<br></br>
+					<input wicket:id="helloTest" type="submit" wicket:message="value:page.helloServlet" />&nbsp;<br></br>
+				</div>
+			</div>
+		</form>
+		<form wicket:id="helloForm">
+			<input wicket:id="firstName" type="text"/>
+			<!--  input wicket:id="helloDirect" type="submit" wicket:message="value:page.helloDirect" />&nbsp;<br></br>-->
+			<input type="submit" value="Submit"/>
+		</form>
+		
+	    <!-- form wicket:id="ajax-simpleUpload">
+	     <fieldset>
+	      <legend>Upload form with ajax progress bar</legend>
+	        <p>
+	        <label for="upload">File</label>
+	        <input wicket:id="fileInput" id="upload" type="file"/>
+	        </p>
+	        <input type="submit" value="Upload!"/>
+	        <span wicket:id="progress">[[ajax upload progressbar]]</span>
+	     </fieldset>
+	    </form -->
+		
+	</div>
+	
+	<!--  Page right Zone -->
+	<div id="rightZone">&nbsp;</div>
+</wicket:panel>

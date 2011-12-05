@@ -1,0 +1,184 @@
+<wicket:panel>
+	&nbsp;
+	<!--	Page Left Zone -->
+	<div id="leftZone">
+		&nbsp;
+	</div>
+	<!--	Page right Zone -->
+	<div id="rightZone">
+		&nbsp;
+	</div>
+	<!-- Content Zone -->
+	<div id="contentZone">
+		<span wicket:id="detailFeedback">
+		</span>
+		<form wicket:id="detailForm">
+			<div id="detailsPanelBorder">
+				<div wicket:id="detailFormContainer">
+					<div id="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<!-- Row 1 ID and Name-->
+
+					<div id="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<div class="label">
+							<label for="id">
+								<wicket:message key="bioCollection.id">
+									Collection ID:
+								</wicket:message>
+							</label>
+						</div>
+					</div>
+					<div id="fldControl">
+						<div class="label">
+							<input wicket:id="bioCollection.id" type="text" />
+						</div>
+					</div>
+
+					<div id="panelMargin">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<div class="label">
+							<label for="name">
+								<wicket:message key="bioCollection.name">
+									Name:
+								</wicket:message>
+							</label>
+						</div>
+					</div>
+					<div id="fldControl">
+						<div class="label">
+							<input wicket:id="bioCollection.name" type="text" />
+						</div>
+					</div>
+
+					<div id="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div id="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<div class="label">
+							<label for="bioCollection.collectionDate">
+								<wicket:message key="bioCollection.collectionDate">
+									Collection Date:
+								</wicket:message>
+							</label>
+						</div>
+					</div>
+
+					<div id="fldControl">
+						<div class="label">
+							<input wicket:id="bioCollection.collectionDate"	type="text" maxLength="10"/>
+						</div>
+					</div>
+
+					<div id="panelMargin">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<div class="label">
+							<label for="bioCollection.surgeryDate">
+								<wicket:message key="bioCollection.surgeryDate">
+									Surgery Date:
+								</wicket:message>
+							</label>
+						</div>
+					</div>
+
+					<div id="fldControl">
+						<div class="label">
+							<input wicket:id="bioCollection.surgeryDate" type="text" maxLength="10"/>
+						</div>
+					</div>
+
+					<div id="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div id="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div id="fldLabel">
+						<div class="label">
+							<label for="bioCollection.comments">
+								<wicket:message key="bioCollection.comments">
+									Comments:
+								</wicket:message>
+							</label>
+						</div>
+					</div>
+
+					<div id="fldControl">
+						<div class="label">
+							<textarea wicket:id="bioCollection.comments" cols="25">
+							</textarea>
+						</div>
+					</div>
+
+					<div id="panelMargin">
+						&nbsp;
+					</div>
+
+					<div id="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div id="detailSectionBorder">
+						<div id="customFieldDataPanel">
+							<!-- BioCollection custom field data entry -->
+							<div wicket:id="bioCollectionCFDataEntryPanel">
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- detailFormContainer end-->
+
+				<!--	Row 2 Action Buttons -->
+				<div id="buttons">
+					<div wicket:id="buttonsPanelWMC">
+						<div wicket:id="buttonsPanel">
+						</div>
+					</div>
+
+					<div id="detailSectionBorder">
+						<div id="fldLabel">
+							&nbsp;
+						</div>
+						<div id="fldControl">
+							&nbsp;
+						</div>
+						<div id="panelMargin">
+							&nbsp;
+						</div>
+						<div id="actionButtons">
+							&nbsp;
+							<div class="label">
+								<!-- Print label Button -->
+								<input wicket:id="printBioCollectionLabel" type="button" wicket:message="value:button.printBioCollectionLabel" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--	End buttons -->
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+			</div>
+		</form>
+		<br>
+		&nbsp;
+	</div>
+</wicket:panel>

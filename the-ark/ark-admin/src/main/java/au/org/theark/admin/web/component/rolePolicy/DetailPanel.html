@@ -1,0 +1,160 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailForm">
+		<!--	Layouts and Content to be designed. this is a layout -->
+		<div id="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<wicket:message key="arkRolePolicyTemplate.arkRole">
+						Role
+					</wicket:message>
+				</div>
+				<div id="fldControl">
+					<select wicket:id="arkRolePolicyTemplate.arkRole">
+						<option>
+							1
+						</option>
+						<option>
+							2
+						</option>
+					</select>
+				</div>
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<wicket:message key="arkRolePolicyTemplate.arkModule">
+						Module
+					</wicket:message>
+				</div>
+
+				<div id="fldControl">
+					<select wicket:id="arkRolePolicyTemplate.arkModule">
+						<option>
+							1
+						</option>
+						<option>
+							2
+						</option>
+					</select>
+				</div>
+
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<wicket:message key="arkRolePolicyTemplate.arkFunction">
+						Function
+					</wicket:message>
+				</div>
+
+				<div id="fldControl">
+					<select wicket:id="arkRolePolicyTemplate.arkFunction">
+						<option>
+							1
+						</option>
+						<option>
+							2
+						</option>
+					</select>
+				</div>
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldControl">
+					<table width="100%" cellspacing="0" class="dataview" border="0">
+						<tr>
+							<th width="25%">
+								<wicket:message key="arkCreatePermission">
+									Create:
+								</wicket:message>
+							</th>
+							<th width="25%">
+								<wicket:message key="arkReadPermission">
+									Read:
+								</wicket:message>
+							</th>
+							<th width="25%">
+								<wicket:message key="arkUpdatePermission">
+									Update:
+								</wicket:message>
+							</th>
+							<th width="25%">
+								<wicket:message key="arkDeletePermission">
+									Delete:
+								</wicket:message>
+							</th>
+						</tr>
+						<tr>
+							<td width="25%" style="text-align:center">
+								<input type="checkbox" wicket:id="arkCreatePermission"/>
+							</td>
+							<td width="25%" style="text-align:center">
+								<input type="checkbox" wicket:id="arkReadPermission"/>
+							</td>
+							<td width="25%" style="text-align:center">
+								<input type="checkbox" wicket:id="arkUpdatePermission"/>
+							</td>
+							<td width="25%" style="text-align:center">
+								<input type="checkbox" wicket:id="arkDeletePermission"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+			</div>
+			<!-- End detailFormContainer -->
+			<div wicket:id="editButtonContainer">
+				<div id="fldLabel">
+					&nbsp;
+				</div>
+				<div id="fldControl">
+					&nbsp;
+				</div>
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				<div id="actionButtons">
+					&nbsp;
+					<div class="label">
+						<input wicket:id="save" type="submit" wicket:message="value:button.save" />
+						<div id="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
+						<div id="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
+					</div>
+				</div>
+			</div>
+			<div id="detailPanelBreaker">
+				&nbsp;
+			</div>
+		</div>
+		<!-- End detailsPanelBorder -->
+	</form>
+	<br>
+	<br>
+</wicket:panel>

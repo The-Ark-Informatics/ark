@@ -1,0 +1,85 @@
+<wicket:panel>
+	<div id="searchPanelBreaker">&nbsp;</div>
+	<table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">
+				&nbsp;
+			</th>
+			<th width="26%">
+				<wicket:message key="arkRole">arkRole</wicket:message>
+			</th>
+			<th width="25%">
+				<wicket:message key="arkModule">arkModule</wicket:message>
+			</th>
+			<th width="25%">
+				<wicket:message key="arkFunction">arkFunction</wicket:message>
+			</th>
+			<th width="5%" style="text-align:center">
+				<wicket:message key="arkCreatePermission">create</wicket:message>
+			</th>
+			<th width="5%" style="text-align:center">
+				<wicket:message key="arkReadPermission">read</wicket:message>
+			</th>
+			<th width="5%" style="text-align:center">
+				<wicket:message key="arkUpdatePermission">update</wicket:message>
+			</th>
+			<th width="5%" style="text-align:center">
+				<wicket:message key="arkDeletePermission">delete</wicket:message>
+			</th>
+			<th width="2%">
+				&nbsp;
+			</th>
+		</tr>
+		<tr wicket:id="arkRoleModuleFunctionVoList">
+			<td width="2%">
+				<span wicket:id="rowEditWMC">
+					<input wicket:id="listEditButton" type="submit" value="Edit"/>
+				</span>
+			</td>
+			<td width="26%">
+				<span wicket:id="arkRole">arkRole</span>
+			</td>
+			<td width="25%">
+				<span wicket:id="arkModule">arkModule</span>
+			</td>
+			<td width="25%">
+				<span wicket:id="arkFunction">arkFunction</span>
+			</td>
+			<td width="5%" align="center">
+				<img wicket:id="arkCreatePermissionImg"/>
+				<input type="checkbox" wicket:id="arkCreatePermission"/>
+			</td>
+			<td width="5%" align="center">
+				<img wicket:id="arkReadPermissionImg"/>
+				<input type="checkbox" wicket:id="arkReadPermission"/>
+			</td>
+			<td width="5%" align="center">
+				<img wicket:id="arkUpdatePermissionImg"/>
+				<input type="checkbox" wicket:id="arkUpdatePermission"/>
+			</td>
+			<td width="5%" align="center">
+				<img wicket:id="arkDeletePermissionImg"/>
+				<input type="checkbox" wicket:id="arkDeletePermission"/>
+			</td>
+			<td width="2%">
+				<span wicket:id="rowSaveWMC">
+					<input wicket:id="listSaveButton" type="submit" value="Save"/>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="96%" colspan="7">
+				<span wicket:id="navigator" class="a">
+				</span>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>

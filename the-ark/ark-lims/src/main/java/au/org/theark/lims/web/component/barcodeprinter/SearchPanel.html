@@ -1,0 +1,99 @@
+<wicket:panel>
+	&nbsp;
+	<div id="searchPanelContainer">
+		<form wicket:id="searchForm">
+			<div id="searchPanelContent">
+				<div id="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+				<!--	Row 1 -->
+				<div id="fldLabel">
+					<wicket:message key="id">
+						ID:
+					</wicket:message>
+				</div>
+				<div id="fldControl">
+					<input wicket:id="id" type="text" />
+				</div>
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<wicket:message key="study">
+						Study:
+					</wicket:message>
+				</div>
+
+				<div id="fldControl">
+					<select wicket:id="study">
+						<option>
+							Study selection
+						</option>
+					</select>
+				</div>
+
+				<div id="searchPanelBreaker">
+					&nbsp;
+				</div>
+				
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+				
+				<div id="fldLabel">
+					<wicket:message key="name">
+						Name:
+					</wicket:message>
+				</div>
+
+				<div id="fldControl">
+					<input wicket:id="name" type="text" />
+				</div>
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<wicket:message key="description">
+						Description:
+					</wicket:message>
+				</div>
+
+				<div id="fldControl">
+					<textarea wicket:id="description" maxlength="255" cols="25">
+					</textarea>
+				</div>
+
+				<div id="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<!--	Defines the location for buttons -->
+
+				<div id="actionButtons">
+					&nbsp;
+					<div>
+						<input wicket:id="search" type="submit" wicket:message="value:button.search" />
+						<div id="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />
+						<div id="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
+					</div>
+				</div>
+
+				<div id="searchPanelBreaker">
+					&nbsp;
+				</div>
+			</div>
+		</form>
+	</div>
+</wicket:panel>
