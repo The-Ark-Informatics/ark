@@ -140,6 +140,8 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 	protected void attachValidators() {
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
 		studyDdc.setRequired(true).setLabel(new StringResourceModel("error.study.required", this, new Model<String>("Study")));
+		locationTxtFld.setRequired(true).setLabel(new StringResourceModel("error.location.required", this, new Model<String>("Location")));
+		
 		hostTxtFld.setRequired(true).setLabel(new StringResourceModel("error.host.required", this, new Model<String>("Host")));
 		hostTxtFld.add(new PatternValidator(IP_V4_DOMAIN_PATTERN));
 
