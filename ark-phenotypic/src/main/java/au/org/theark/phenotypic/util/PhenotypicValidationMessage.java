@@ -21,6 +21,8 @@ package au.org.theark.phenotypic.util;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
+import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.study.entity.CustomField;
 
 /**
  * @author cellis
@@ -47,7 +49,7 @@ public class PhenotypicValidationMessage {
 
 	/**
 	 * Returns field not of the defined type error message
-	 * 
+	 * TODO: REMOVE when everything ported to new CustomField tables
 	 * @param field
 	 * @param fieldData
 	 * @return String
@@ -67,8 +69,29 @@ public class PhenotypicValidationMessage {
 	}
 
 	/**
-	 * Returns field greater than defined max value error message
+	 * Returns field not of the defined type error message
 	 * 
+	 * @param field
+	 * @param fieldData
+	 * @return String
+	 */
+	public static String fieldDataNotDefinedType(CustomField field, PhenoData fieldData) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Subject UID: ");
+		stringBuffer.append(fieldData.getPhenotypicCollection().getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(": ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" value ");
+		stringBuffer.append(fieldData.getTextDataValue().toString());
+		stringBuffer.append(" is not the defined field type: ");
+		stringBuffer.append(field.getFieldType().getName());
+		return (stringBuffer.toString());
+	}
+	
+	/**
+	 * Returns field greater than defined max value error message
+	 * TODO: Remove after change to new tables
 	 * @param field
 	 * @param fieldData
 	 * @return String
@@ -89,7 +112,7 @@ public class PhenotypicValidationMessage {
 
 	/**
 	 * Returns field less than defined min value error message
-	 * 
+	 * TODO: Remove after change to new tables
 	 * @param field
 	 * @param fieldData
 	 * @return String
@@ -110,7 +133,7 @@ public class PhenotypicValidationMessage {
 
 	/**
 	 * Returns field not within the defined encoded values error message
-	 * 
+	 * TODO: Remove after change to new tables
 	 * @param field
 	 * @param fieldData
 	 * @return String
@@ -131,7 +154,7 @@ public class PhenotypicValidationMessage {
 
 	/**
 	 * Returns field not a valid date format error message
-	 * 
+	 * TODO: Remove after change to new tables
 	 * @param field
 	 * @param fieldData
 	 * @return String
@@ -154,7 +177,7 @@ public class PhenotypicValidationMessage {
 	/**
 	 * Returns dateCollected not a valid date format error message
 	 * 
-	 * @param subkjecUid
+	 * @param subjectUid
 	 * @param dateCollectedStr
 	 * @return String
 	 */
@@ -278,4 +301,109 @@ public class PhenotypicValidationMessage {
 		stringBuffer.append(" was not found in the database. Please check the name and try again, or add the field to the Data Dictionary.");
 		return (stringBuffer.toString());
 	}
+
+	/**
+	 * Returns status not valid error message
+	 * 
+	 * @param subjectUid
+	 * @param statusStr
+	 * @return String
+	 */
+	public static String statusNotValid(String subjectUid, String statusStr) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("Subject UID: ");
+		stringBuffer.append(subjectUid);
+		stringBuffer.append(": ");
+		stringBuffer.append(" with the status: ");
+		stringBuffer.append(statusStr);
+		stringBuffer.append(" is not amongst the valid status options.");
+		return (stringBuffer.toString());
+	}
+
+	/**
+	 * Returns field not a valid date format error message
+	 * TODO: Remove after change to new tables
+	 * @param field
+	 * @param fieldData
+	 * @return String
+	 */
+	public static String fieldDataNotValidDate(CustomField field, PhenoData fieldData) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("Subject UID: ");
+		stringBuffer.append(fieldData.getPhenotypicCollection().getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(": ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" value ");
+		stringBuffer.append(fieldData.getErrorDataValue().toString());
+		stringBuffer.append(" is not in the valid date format of: ");
+		stringBuffer.append(Constants.DD_MM_YYYY.toLowerCase());
+		return (stringBuffer.toString());
+	}
+
+	/**
+	 * Returns field not within the defined encoded values error message
+	 * 
+	 * @param field
+	 * @param fieldData
+	 * @return String
+	 */
+	public static String fieldDataNotInEncodedValues(CustomField field, PhenoData fieldData) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Subject UID: ");
+		stringBuffer.append(fieldData.getPhenotypicCollection().getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(": ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" value ");
+		stringBuffer.append(fieldData.getErrorDataValue().toString());
+		stringBuffer.append(" is not in the encoded values: ");
+		stringBuffer.append(field.getEncodedValues().replace('\n', ' '));
+		return (stringBuffer.toString());
+	}
+	
+	/**
+	 * Returns field greater than defined max value error message
+	 * 
+	 * @param field
+	 * @param fieldData
+	 * @return String
+	 */
+	public static String fieldDataGreaterThanMaxValue(CustomField field, PhenoData fieldData) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Subject UID: ");
+		stringBuffer.append(fieldData.getPhenotypicCollection().getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(": ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" value ");
+		stringBuffer.append(fieldData.getErrorDataValue().toString());
+		stringBuffer.append(" is greater than the defined maximum value: ");
+		stringBuffer.append(field.getMaxValue());
+		return (stringBuffer.toString());
+	}
+
+	/**
+	 * Returns field less than defined min value error message
+	 * 
+	 * @param field
+	 * @param fieldData
+	 * @return String
+	 */
+	public static String fieldDataLessThanMinValue(CustomField field, PhenoData fieldData) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Subject UID: ");
+		stringBuffer.append(fieldData.getPhenotypicCollection().getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(": ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" value ");
+		stringBuffer.append(fieldData.getErrorDataValue().toString());
+		stringBuffer.append(" is less than the defined minimum value: ");
+		stringBuffer.append(field.getMinValue());
+		return (stringBuffer.toString());
+	}
+
 }

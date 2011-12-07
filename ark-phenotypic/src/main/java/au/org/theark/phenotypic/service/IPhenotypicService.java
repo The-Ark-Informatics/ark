@@ -246,4 +246,8 @@ public interface IPhenotypicService {
 	
 	public int getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup);
 
+	public QuestionnaireStatus getPhenotypicCollectionStatusByName(String statusName);
+
+	public QuestionnaireStatus getDefaultPhenotypicCollectionStatus();
+	
 }

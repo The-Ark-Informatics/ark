@@ -1005,4 +1005,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		phenotypicDao.deleteCustomFieldGroup(customFieldGroupVO);
 	}
 
+	public QuestionnaireStatus getPhenotypicCollectionStatusByName(String statusName) {
+		return phenotypicDao.getPhenotypicCollectionStatusByName(statusName);
+	}
+
+	public QuestionnaireStatus getDefaultPhenotypicCollectionStatus() {
+		return phenotypicDao.getPhenotypicCollectionStatusByName(Constants.PHENOCOLLECTION_STATUS_IN_PROGRESS);
+	}
+	
 }

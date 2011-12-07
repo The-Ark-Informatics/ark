@@ -281,4 +281,6 @@ public interface IPhenotypicDao {
 
 	public void deletePhenotypicCollection(PhenotypicCollection phenotypicCollection);
 	
+	public QuestionnaireStatus getPhenotypicCollectionStatusByName(String statusName);
+
 }

@@ -187,7 +187,7 @@ public class PhenoDataUploadStep3 extends AbstractWizardStepPanel {
 			try {
 				PhenoDataImportValidator phenotypicValidator = new PhenoDataImportValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
 				inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-				validationMessages = phenotypicValidator.validateMatrixPhenoFileData(inputStream, delimChar);
+				validationMessages = phenotypicValidator.validatePhenoDataImportFileFormat(inputStream, delimChar);
 
 				HashSet<Integer> insertRows = new HashSet<Integer>();
 				HashSet<Integer> updateRows = new HashSet<Integer>();
