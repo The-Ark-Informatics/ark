@@ -22,7 +22,9 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.panel.subject.SubjectDetailPanel;
@@ -59,8 +61,8 @@ public class BiospecimenModalDetailPanel extends Panel {
 
 	public void initialisePanel() {
 		// Always show minimal Subject detail at top of form
-		SubjectDetailPanel subjectDetailPanel = new SubjectDetailPanel("subjectDetailPanel", cpModel);
-		subjectDetailPanel.setDefaultModelObject(cpModel.getObject());
+		LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getBiospecimen().getLinkSubjectStudy();
+		SubjectDetailPanel subjectDetailPanel = new SubjectDetailPanel("subjectDetailPanel", new Model<LinkSubjectStudy>(linkSubjectStudy));
 		subjectDetailPanel.initialisePanel();
 		add(subjectDetailPanel);
 		

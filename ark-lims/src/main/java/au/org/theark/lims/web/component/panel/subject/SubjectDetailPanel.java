@@ -20,6 +20,9 @@ package au.org.theark.lims.web.component.panel.subject;
 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 
 /**
@@ -32,13 +35,15 @@ public class SubjectDetailPanel extends Panel {
 	 */
 	private static final long	serialVersionUID	= 858762052753650329L;
 	private SubjectDetailForm			subjectDetailForm;
+	protected Model<LinkSubjectStudy> model;
 
-	public SubjectDetailPanel(final String id, final IModel<?> model) {
+	public SubjectDetailPanel(final String id, final IModel<LinkSubjectStudy> model) {
 		super(id, model);
+		this.model = (Model<LinkSubjectStudy>) model;
 	}
 
 	public void initialisePanel() {
-		subjectDetailForm = new SubjectDetailForm("subjectDetailForm");
+		subjectDetailForm = new SubjectDetailForm("subjectDetailForm", model);
 		subjectDetailForm.initialiseDetailForm();
 		add(subjectDetailForm);
 	}
