@@ -68,6 +68,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenStatus;
 import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -844,25 +845,41 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			biospecimen.setBarcoded(false);
 			biospecimen.setUnit(parentBiospecimen.getUnit());
 			biospecimen.setTreatmentType(parentBiospecimen.getTreatmentType());
+			
+			Study studyFromParent = parentBiospecimen.getStudy();
+			//There should be a study and only then do the rest of the code here
+			if(studyFromParent != null){
+				Study study  = iArkCommonService.getStudy(studyFromParent.getId());
+				biospecimen.setStudy(study);
+				// Reset the biospecimen detail
+				cpModel.getObject().setBiospecimen(biospecimen);
+				cpModel.getObject().setBiospecimenProcessing(processOrAliquot);
 
-			// Reset the biospecimen detail
-			cpModel.getObject().setBiospecimen(biospecimen);
-			cpModel.getObject().setBiospecimenProcessing(processOrAliquot);
+				// Set the bioTransaction detail
+				org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
+				cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
+				cpModel.getObject().getBioTransaction().setQuantity(null);
 
-			// Set the bioTransaction detail
-			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
-			cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
-			cpModel.getObject().getBioTransaction().setQuantity(null);
+				enableQuantityTreatment(target);
 
-			enableQuantityTreatment(target);
+				// refresh the bioTransaction panel
+				initialiseBioTransactionListPanel();
+				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
 
-			// refresh the bioTransaction panel
-			initialiseBioTransactionListPanel();
-			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
+				// resresh the location panel
+				initialiseBiospecimenLocationPanel();
+				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenLocationPanel);
+				
+				// Notify in progress
+				this.info(processOrAliquot + " biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + ", please save to confirm");
+				target.add(feedbackPanel);
 
-			// resresh the location panel
-			initialiseBiospecimenLocationPanel();
-			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenLocationPanel);
+				// hide button panel
+				biospecimenbuttonsPanel.setVisible(false);
+				target.add(biospecimenbuttonsPanel);
+			}else{
+				log.error("Cannot find a study for the parent biospecimen.");
+			}
 		}
 		catch (IllegalAccessException e) {
 			log.error(e.getMessage());
@@ -874,13 +891,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			log.error(e.getMessage());
 		}
 
-		// Notify in progress
-		this.info(processOrAliquot + " biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + ", please save to confirm");
-		target.add(feedbackPanel);
 
-		// hide button panel
-		biospecimenbuttonsPanel.setVisible(false);
-		target.add(biospecimenbuttonsPanel);
 	}
 
 	public CheckBox getBarcodedChkBox() {
