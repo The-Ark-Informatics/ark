@@ -66,7 +66,7 @@ public class BiospecimenModalDetailPanel extends Panel {
 		subjectDetailPanel.initialisePanel();
 		add(subjectDetailPanel);
 		
-		detailForm = new BiospecimenModalDetailForm("subjectDetailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
+		detailForm = new BiospecimenModalDetailForm("biospecimenModalDetailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
 		detailForm.initialiseDetailForm();
 		add(detailFeedbackPanel);
 		add(detailForm);
