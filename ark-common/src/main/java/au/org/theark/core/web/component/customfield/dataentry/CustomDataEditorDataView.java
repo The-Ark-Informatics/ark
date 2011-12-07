@@ -23,11 +23,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -90,7 +88,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 			dateDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
 
 			if (cf.getMinValue() != null && !cf.getMinValue().isEmpty()) {
-				IConverter dateConverter = dateDataEntryPanel.getDateConverter();
+				IConverter<Date> dateConverter = dateDataEntryPanel.getDateConverter();
 				try {
 					Date minDate = (Date) dateConverter.convertToObject(cf.getMinValue(), getLocale());
 					dateDataEntryPanel.addValidator(DateValidator.minimum(minDate));
@@ -103,7 +101,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				}
 			}
 			if (cf.getMaxValue() != null && !cf.getMaxValue().isEmpty()) {
-				IConverter dateConverter = dateDataEntryPanel.getDateConverter();
+				IConverter<Date> dateConverter = dateDataEntryPanel.getDateConverter();
 				try {
 					Date maxDate = (Date) dateConverter.convertToObject(cf.getMaxValue(), getLocale());
 					dateDataEntryPanel.addValidator(DateValidator.maximum(maxDate));
@@ -171,7 +169,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 					numberDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
 										
 					if (cf.getMinValue() != null && !cf.getMinValue().isEmpty()) {
-						IConverter doubleConverter = numberDataEntryPanel.getNumberConverter();
+						IConverter<Double> doubleConverter = numberDataEntryPanel.getNumberConverter();
 						try {
 							Double minNumber = (Double) doubleConverter.convertToObject(cf.getMinValue(), getLocale());
 							numberDataEntryPanel.addValidator(new MinimumValidator<Double>(minNumber));
@@ -179,12 +177,12 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database
 							getLog().error("Unexpected error: customfield.maxValue is not in a valid number format");
-							this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
+							this.error("An unexpected error occurred loading the field validators from database. Please contact your System Administrator.");
 							getParentContainer().setEnabled(false);
 						}
 					}
 					if (cf.getMaxValue() != null && !cf.getMaxValue().isEmpty()) {
-						IConverter doubleConverter = numberDataEntryPanel.getNumberConverter();
+						IConverter<Double> doubleConverter = numberDataEntryPanel.getNumberConverter();
 						try {
 							Double maxNumber = (Double) doubleConverter.convertToObject(cf.getMaxValue(), getLocale());
 							numberDataEntryPanel.addValidator(new MaximumValidator<Double>(maxNumber));
@@ -192,7 +190,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 						catch (ConversionException ce) {
 							// This should not occur because it means the data is corrupted on the backend database
 							getLog().error("Unexpected error: customfield.maxValue is not in a valid number format");
-							this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
+							this.error("An unexpected error occurred loading the field validators from database. Please contact your System Administrator.");
 							getParentContainer().setEnabled(false);
 						}
 					}
