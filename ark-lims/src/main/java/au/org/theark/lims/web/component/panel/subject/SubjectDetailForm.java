@@ -18,21 +18,24 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.panel.subject;
 
+import java.util.Date;
+
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.web.Constants;
 
 /**
  * @author cellis
  * 
  */
-public class SubjectDetailForm extends Form<LimsVO> {
+public class SubjectDetailForm extends Form<LinkSubjectStudy> {
 	/**
 	 * 
 	 */
@@ -46,17 +49,16 @@ public class SubjectDetailForm extends Form<LimsVO> {
 
 	protected Study					study;
 
-	public SubjectDetailForm(String id) {
-		super(id);
+	public SubjectDetailForm(String id, IModel<LinkSubjectStudy> model) {
+		super(id, model);
 	}
 
 	public void initialiseDetailForm() {
-		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
+		subjectUIDTxtFld = new TextField<String>("subjectUID", new PropertyModel<String>(getDefaultModel(), "subjectUID"));
 		subjectUIDTxtFld.setOutputMarkupId(true);
-		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
-		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
-		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
-		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB, au.org.theark.core.Constants.DD_MM_YYYY);
+		firstNameTxtFld = new TextField<String>("person.firstName", new PropertyModel<String>(getDefaultModel(), "person.firstName"));
+		lastNameTxtFld = new TextField<String>("person.lastName", new PropertyModel<String>(getDefaultModel(), "person.lastName"));
+		dateOfBirthTxtFld = new DateTextField( "person.dateOfBirth", new PropertyModel<Date>(getDefaultModel(), "person.dateOfBirth"), au.org.theark.core.Constants.DD_MM_YYYY);
 		addDetailFormComponents();
 	}
 
