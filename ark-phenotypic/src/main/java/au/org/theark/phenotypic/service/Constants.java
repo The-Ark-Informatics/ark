@@ -26,6 +26,8 @@ public class Constants {
 	public static final String	STATUS_EXPIRED						= "Expired";
 	public static final String	STATUS_DISABLED					= "Disabled";
 
+	public static final String PHENOCOLLECTION_STATUS_IN_PROGRESS	= "In Progress";
+
 	// Attributes
 	public static final String	COLLECTION_ID						= "collectionId";
 

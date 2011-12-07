@@ -1716,4 +1716,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		
 	}
 
+	public QuestionnaireStatus getPhenotypicCollectionStatusByName(String statusName) {
+		Criteria criteria = getSession().createCriteria(QuestionnaireStatus.class);
+		criteria.add(Restrictions.eq("name", statusName).ignoreCase());
+		QuestionnaireStatus result = (QuestionnaireStatus)criteria.uniqueResult();
+		return result;
+	}
 }
