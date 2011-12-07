@@ -79,27 +79,28 @@ public class BioTransactionListForm extends Form<LimsVO> {
 		// Get session data (used for subject search)
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-
-		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
-			LinkSubjectStudy linkSubjectStudy = null;
-			Study study = null;
-			boolean contextLoaded = false;
-			try {
-				study = iArkCommonService.getStudy(sessionStudyId);
-				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
-				if (study != null && linkSubjectStudy != null) {
-					contextLoaded = true;
+		if(cpModel.getObject().getBiospecimen() == null || cpModel.getObject().getBiospecimen().getId() == null){
+			if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
+				LinkSubjectStudy linkSubjectStudy = null;
+				Study study = null;
+				boolean contextLoaded = false;
+				try {
+					study = iArkCommonService.getStudy(sessionStudyId);
+					linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
+					if (study != null && linkSubjectStudy != null) {
+						contextLoaded = true;
+					}
 				}
-			}
-			catch (EntityNotFoundException e) {
-				log.error(e.getMessage());
-			}
+				catch (EntityNotFoundException e) {
+					log.error(e.getMessage());
+				}
 
-			if (contextLoaded) {
-				// Successfully loaded from backend
-				cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
-				cpModel.getObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
-				cpModel.getObject().getBiospecimen().setStudy(study);
+				if (contextLoaded) {
+					// Successfully loaded from backend
+					cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
+					cpModel.getObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
+					cpModel.getObject().getBiospecimen().setStudy(study);
+				}
 			}
 		}
 
