@@ -48,10 +48,10 @@ public class NumberDataEntryPanel extends AbstractDataEntryPanel<Double> {
 			 */
 			private static final long	serialVersionUID	= 1L;
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public <C> IConverter<C> getConverter(Class<C> type) {
-				// TODO Auto-generated method stub
-				return super.getConverter(type);
+				return (IConverter<C>) NumberConverter.INSTANCE;
 			}
 		};
 		dataValueTxtFld.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
