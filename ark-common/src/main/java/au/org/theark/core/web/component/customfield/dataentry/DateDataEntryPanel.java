@@ -62,7 +62,7 @@ public class DateDataEntryPanel extends AbstractDataEntryPanel<Date> {
 		this.add(dataValueDateFld);
 	}
 
-	public IConverter getDateConverter() {
+	public IConverter<Date> getDateConverter() {
 		return dataValueDateFld.getConverter(dataValueDateFld.getType());
 	}
 
