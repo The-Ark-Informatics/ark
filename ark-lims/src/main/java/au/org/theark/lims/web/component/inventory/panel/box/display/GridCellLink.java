@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.image.MouseOverImage;
@@ -64,8 +66,14 @@ public class GridCellLink extends Panel {
 				if(!allocating) {
 					// Show biospecimen detail
 					CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
-					newModel.getObject().getBiospecimen().setId(invCell.getBiospecimen().getId());
-					showModalWindow(target, newModel);
+					try {
+						Biospecimen biospecimen = iLimsService.getBiospecimen(invCell.getBiospecimen().getId());
+						newModel.getObject().setBiospecimen(biospecimen);
+						showModalWindow(target, newModel);
+					}
+					catch (EntityNotFoundException e) {
+						log.error(e.getMessage());
+					}
 				}
 				else {
 					allocateBiospecimenToCell(target, invCell);
