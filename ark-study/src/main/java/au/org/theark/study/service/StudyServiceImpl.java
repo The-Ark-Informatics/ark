@@ -927,4 +927,8 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		return flag;
 	}
+	
+	public boolean isStudyComponentHasAttachments(StudyComp studyComp){
+		return studyDao.isStudyComponentHasAttachments(studyComp);
+	}
 }

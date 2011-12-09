@@ -20,7 +20,6 @@ package au.org.theark.study.web.component.studycomponent.form;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -35,6 +34,7 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -77,6 +77,18 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 		this.feedBackPanel = feedBackPanel;
 	}
 	
+	
+	public void onBeforeRender() {
+		super.onBeforeRender();
+		StudyCompVo studyComponent = containerForm.getModelObject();
+		StudyComp component  = studyComponent.getStudyComponent();;
+		if(component != null && component.getId() != null && studyService.isStudyComponentHasAttachments(component)){
+			deleteButton.setEnabled(false);
+		}
+		
+		//If the given component is attached to a file/consents then disable the delete button
+		
+	}
 
 	public void initialiseDetailForm() {
 
