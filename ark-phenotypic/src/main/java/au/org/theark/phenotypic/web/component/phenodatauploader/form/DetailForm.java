@@ -18,32 +18,48 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenodatauploader.form;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.exception.PhenotypicSystemException;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
-import au.org.theark.core.model.pheno.entity.FileFormat;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.FileFormat;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.vo.PhenoFieldDataUploadVO;
-import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.util.PhenoDataImportValidator;
 
 /**
  * @author cellis
@@ -61,15 +77,14 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
-
-	private ContainerForm						containerForm;
-
-	private TextField<String>					uploadIdTxtFld;
-	private DropDownChoice<FileFormat>		fileFormatDdc;
+	private DropDownChoice<CustomFieldGroup>	questionnaireDdc;
 	private FileUploadField						fileUploadField;
-	// private UploadProgressBar uploadProgressBar;
-	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
-
+	private DropDownChoice<DelimiterType>		delimiterTypeDdc;
+	/* Markup and checkbox */
+	private WebMarkupContainer				overrideDataValidationContainer;
+	private CheckBox						overrideDataValidationChkBox;
+	
+	private transient Logger					log						= LoggerFactory.getLogger(DetailForm.class);
 	/**
 	 * 
 	 * @param id
@@ -81,104 +96,114 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 	}
 	
-	@SuppressWarnings({ "unchecked" })
-	private void initialiseDropDownChoices() {
-		// Initialise Drop Down Choices
-		java.util.Collection<FileFormat> fieldFormatCollection = phenotypicService.getFileFormats();
-		ChoiceRenderer fieldFormatRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FILE_FORMAT_NAME, au.org.theark.phenotypic.web.Constants.FILE_FORMAT_ID);
-		fileFormatDdc = new DropDownChoice<FileFormat>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, (List) fieldFormatCollection, fieldFormatRenderer);
-
-		java.util.Collection<DelimiterType> delimiterTypeCollection = phenotypicService.getDelimiterTypes();
-		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_ID);
-		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
+	public void onBeforeRender() {
+		super.onBeforeRender();
+		deleteButton.setVisible(false);
+		cancelButton.setVisible(false);
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 	}
-
+	
 	public void initialiseDetailForm() {
-		// Set up field on form here
-		uploadIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_ID);
-		// uploadFilenameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME);
 
-		// progress bar for upload
-		// uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleUploadForm);
-
+		overrideDataValidationContainer = new WebMarkupContainer("overrideDataValidationContainer");
+		overrideDataValidationContainer.setOutputMarkupId(true);
+		overrideDataValidationChkBox = new CheckBox("overrideDataValidationChkBox");
+		overrideDataValidationChkBox.setOutputMarkupId(false);
+		overrideDataValidationChkBox.setVisible(true);
+		containerForm.getModelObject().setOverrideDataValidationChkBox(false);
+		
+		overrideDataValidationChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				//TODO
+				
+			}
+		});
+		
 		// fileUpload for payload
 		fileUploadField = new FileUploadField(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME);
-		fileUploadField.add(new ArkDefaultFormFocusBehavior());
-
 		// Initialise Drop Down Choices
 		initialiseDropDownChoices();
 
 		attachValidators();
+		
 		addDetailFormComponents();
+	}
+	
+
+	private void initialiseDropDownChoices() {
+		// Initialise Drop Down Choices
+		java.util.Collection<au.org.theark.core.model.study.entity.DelimiterType> delimiterTypeCollection = iArkCommonService.getDelimiterTypes();
+		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_ID);
+		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
+	
+		// Get a list of questionnaires for the subject in context by default
+		CustomFieldGroup cfgForStudyCriteria = new CustomFieldGroup(); 
+		//Get the Study From Context and set the correct ArkFunction
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study studyInContext = iArkCommonService.getStudy(studyId);
+		cfgForStudyCriteria.setStudy(studyInContext);
+		ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+		cfgForStudyCriteria.setArkFunction(function);
+		cfgForStudyCriteria.setPublished(true);	//make sure that we don't return non-published Questionnaires
+	
+		List<CustomFieldGroup> questionnaireList = iArkCommonService.getCustomFieldGroups(cfgForStudyCriteria, 0, Integer.MAX_VALUE);
+		ChoiceRenderer<CustomFieldGroup> choiceRenderer = new ChoiceRenderer<CustomFieldGroup>(au.org.theark.phenotypic.web.Constants.QUESTIONNAIRE_NAME, au.org.theark.phenotypic.web.Constants.QUESTIONNAIRE_ID);
+		questionnaireDdc = new DropDownChoice<CustomFieldGroup>("questionnaire", questionnaireList, choiceRenderer);
+		questionnaireDdc.setNullValid(false);
 	}
 
 	protected void attachValidators() {
 		// Field validation here
+		questionnaireDdc.setRequired(true).setLabel(new StringResourceModel("error.collection.required", this, new Model<String>("Collection")));
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
-		fileFormatDdc.setRequired(true).setLabel(new StringResourceModel("error.fileFormat.required", this, new Model<String>("File Format")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 	}
 
 
 	@Override
 	protected void onSave(Form<PhenoFieldDataUploadVO> containerForm, AjaxRequestTarget target) {
-		// Implement Save/Update
-//		if (containerForm.getModelObject().getUpload().getId() == null) {
-//			setMultiPart(true); // multipart required for file uploads
-//
-//			// Set study in context
-//			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-//			Study study = iArkCommonService.getStudy(studyId);
-//
-//			// Get Collection in context
-//			Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
-//
-//			// Retrieve file and store as Blob in databasse
-//			// TODO: AJAX-ified and asynchronous and hit database
-//			FileUpload fileUpload = fileUploadField.getFileUpload();
-//
-//			try {
-//				// Copy file to BLOB object
-//				Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
-//				containerForm.getModelObject().getUpload().setPayload(payload);
-//			}
-//			catch (IOException ioe) {
-//				System.out.println("Failed to save the uploaded file: " + ioe);
-//			}
-//
-//			// Set details of Upload object
-//			containerForm.getModelObject().getUpload().setStudy(study);
-//
-//			byte[] byteArray = fileUpload.getMD5();
-//			String checksum = getHex(byteArray);
-//			containerForm.getModelObject().getUpload().setChecksum(checksum);
-//			containerForm.getModelObject().getUpload().setFilename(fileUpload.getClientFileName());
-//
-//			containerForm.getModelObject().setPhenoCollection(phenotypicService.getPhenoCollection(sessionPhenoCollectionId));
-//
-//			// Set details of link table object
-//			PhenoCollectionUpload phenoCollectionUpload = new PhenoCollectionUpload();
-//			phenoCollectionUpload.setCollection(phenotypicService.getPhenoCollection(sessionPhenoCollectionId));
-//			phenoCollectionUpload.setUpload(containerForm.getModelObject().getUpload());
-//			containerForm.getModelObject().setPhenoCollectionUpload(phenoCollectionUpload);
-//
-//			// Save
-//			phenotypicService.createUpload(containerForm.getModelObject());
-//
-//			this.info("Data upload " + containerForm.getModelObject().getUpload().getFilename() + " was created successfully");
-//			processErrors(target);
-//		}
-//		else {
-//			// Update
-//			phenotypicService.updateUpload(containerForm.getModelObject().getUpload());
-//			this.info("Data upload " + containerForm.getModelObject().getUpload().getFilename() + " was updated successfully");
-//			processErrors(target);
-//		}
-
-		onSavePostProcess(target);
-		/*
-		 * TODO:(CE) To handle Business and System Exceptions here
-		 */
+		
+		saveFileInMemory();
+		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
+		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
+		PhenoFieldDataUploadVO vo = containerForm.getModelObject();
+		//Do the validation
+		PhenoDataImportValidator validator = new PhenoDataImportValidator(iArkCommonService, phenotypicService, vo);
+		try {
+			
+			InputStream stream = containerForm.getModelObject().getFileUpload().getInputStream();
+		    Collection<String> validationMessages = validator.validatePhenoDataImportFileFormat(stream, stream.toString().length());
+		    Boolean overrideValidation = overrideDataValidationChkBox.getModelObject();
+			if( !validator.getErrorCells().isEmpty()){
+				//Stop from further processing display an error message to the user or down-load an error report
+			}
+			else{
+				log.debug("No errors were returned from validation.");
+				if(!validator.getWarningCells().isEmpty()){
+					log.debug("Proceed to upload/import data with warnings.");
+				}else{
+					log.debug("There are warnings.");
+					if(overrideValidation){
+						log.debug("Proceed to upload/import data with warnings.");
+					}else{
+						log.debug("Do not upload with warnings.");
+					}
+				}
+			}
+			//TODO: Why do we need the type? Is it necessary
+			//containerForm.getModelObject().getUpload().setUploadType("FIELD_DATA");
+		}catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (PhenotypicSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	static final String	HEXES	= "0123456789ABCDEF";
@@ -217,29 +242,7 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 	 * 
 	 */
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-		setMultiPart(true); // multipart required for file uploads
 
-//		try {
-//			iArkCommonService.deleteUpload(containerForm.getModelObject().getUpload());
-			this.info("Upload file " + containerForm.getModelObject().getUpload().getFilename() + " was deleted successfully");
-//		}
-//		catch (ArkSystemException e) {
-//			this.error(e.getMessage());
-//		}
-//		catch (EntityCannotBeRemoved e) {
-//			this.error(e.getMessage());
-//		}
-
-		// Display delete confirmation message
-		target.add(feedBackPanel);
-		// TODO Implement Exceptions in PhentoypicService
-		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
-		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
-		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-		// Move focus back to Search form
-		PhenoFieldDataUploadVO uploadVo = new PhenoFieldDataUploadVO();
-		setModelObject(uploadVo);
-		onCancel(target);
 	}
 
 	/*
@@ -249,13 +252,8 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 	 */
 	@Override
 	protected boolean isNew() {
-		if (containerForm.getModelObject().getUpload().getId() == null) {
-			return true;
-		}
-		else {
-			return false;
-		}
-
+		
+		return true;
 	}
 
 	/* (non-Javadoc)
@@ -263,10 +261,78 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 	 */
 	@Override
 	protected void addDetailFormComponents() {
-		arkCrudContainerVO.getDetailPanelContainer().add(uploadIdTxtFld.setEnabled(false));
-		arkCrudContainerVO.getDetailPanelContainer().add(fileUploadField);
-		arkCrudContainerVO.getDetailPanelContainer().add(fileFormatDdc);
-		arkCrudContainerVO.getDetailPanelContainer().add(delimiterTypeDdc);
-		add(arkCrudContainerVO.getDetailPanelContainer());
+		arkCrudContainerVO.getDetailPanelFormContainer().add(questionnaireDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(delimiterTypeDdc);
+		
+		overrideDataValidationContainer.add(overrideDataValidationChkBox);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(overrideDataValidationContainer);
+	}
+	
+	private void saveFileInMemory() {
+		// Set study in context
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(studyId);
+
+		// Retrieve file and store as Blob in database
+		// TODO: AJAX-ified and asynchronous and hit database
+		FileUpload fileUpload = fileUploadField.getFileUpload();
+		PhenoFieldDataUploadVO vo = containerForm.getModelObject();
+		containerForm.getModelObject().setFileUpload(fileUpload);
+		
+		InputStream inputStream = null;
+		BufferedOutputStream outputStream = null;
+		File temp = null;
+		try {
+			// Copy all the contents of the file upload to a temp file (to read multiple times)...
+			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			// Create temp file 
+			temp = File.createTempFile("phenoFieldUploadBlob", ".tmp");
+			containerForm.getModelObject().setTempFile(temp);
+			// Delete temp file when program exits (just in case manual delete fails later)
+			temp.deleteOnExit();
+			// Write to temp file
+			outputStream = new BufferedOutputStream(new FileOutputStream(temp));
+			IOUtils.copy(inputStream, outputStream);
+		}
+		catch (IOException ioe) {
+			log.error("IOException " + ioe.getMessage());
+			// Something failed, so there is temp file is not valid (step 2 should check for null)
+			temp.delete();
+			temp = null;
+			containerForm.getModelObject().setTempFile(temp);
+		}
+		finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				}
+				catch (IOException e) {
+					log.error("Unable to close inputStream: " + e.getMessage());
+				}
+			}
+			if (outputStream != null) {
+				try {
+					outputStream.flush();
+					outputStream.close();
+				}
+				catch (IOException e) {
+					log.error("Unable to close outputStream: " + e.getMessage());
+				}
+			}
+		}
+
+		// Set details of Upload object
+		containerForm.getModelObject().getUpload().setStudy(study);
+		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
+		String fileFormatName = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
+		FileFormat fileFormat = new FileFormat();
+		fileFormat = iArkCommonService.getFileFormatByName(fileFormatName);
+		containerForm.getModelObject().getUpload().setFileFormat(fileFormat);
+
+		byte[] byteArray = fileUpload.getMD5();
+		String checksum = getHex(byteArray);
+		containerForm.getModelObject().getUpload().setChecksum(checksum);
+		containerForm.getModelObject().getUpload().setFilename(fileUpload.getClientFileName());
 	}
 }

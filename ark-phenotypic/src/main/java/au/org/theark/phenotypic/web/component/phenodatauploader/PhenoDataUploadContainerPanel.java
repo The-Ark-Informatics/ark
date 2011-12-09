@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenodatauploader;
 
+import java.util.ArrayList;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -28,23 +30,26 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.phenotypic.model.vo.UploadVO;
+import au.org.theark.phenotypic.model.vo.PhenoFieldDataUploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenodatauploader.form.ContainerForm;
+
 
 @SuppressWarnings({ "unused" })
-public class PhenoDataUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
+public class PhenoDataUploadContainerPanel extends AbstractContainerPanel<PhenoFieldDataUploadVO> {
+	
 	private static final long					serialVersionUID				= 1L;
 
-	private SearchPanel							searchPanel;
+	private transient Logger					log								= LoggerFactory.getLogger(PhenoDataUploadContainerPanel.class);
+	
 	private SearchResultListPanel				searchResultPanel;
 	private DetailPanel							detailPanel;
 	private WizardPanel							wizardPanel;
-	private PageableListView<PhenoUpload>	listView;
+	private PageableListView<StudyUpload>		listView;
 	private ContainerForm						containerForm;
 
 	@SpringBean(name = "phenotypicService")
@@ -53,19 +58,28 @@ public class PhenoDataUploadContainerPanel extends AbstractContainerPanel<Upload
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
 
-	private transient Logger					log								= LoggerFactory.getLogger(PhenoDataUploadContainerPanel.class);
+	
 	private boolean								phenoCollectionInContext	= false;
-
+	
+	public void setDefaultVisibility() {
+		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
+		arkCrudContainerVO.getEditButtonContainer().setVisible(true);
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+	}
+	
+	
+	
 	public PhenoDataUploadContainerPanel(String id) {
 		super(id);
-
+		setDefaultVisibility();
 		/* Initialise the CPM */
-		cpModel = new CompoundPropertyModel<UploadVO>(new UploadVO());
+		cpModel = new CompoundPropertyModel<PhenoFieldDataUploadVO>(new PhenoFieldDataUploadVO());
 
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseWizardPanel());
+		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchResults());
 		add(containerForm);
 	}
@@ -94,17 +108,18 @@ public class PhenoDataUploadContainerPanel extends AbstractContainerPanel<Upload
 
 				if (studyId != null) {
 					study = iArkCommonService.getStudy(studyId);
-					PhenoUpload phenoUpload = new PhenoUpload();
-					phenoUpload.setStudy(study);
+					StudyUpload studyUpload = new StudyUpload();
+					studyUpload.setStudy(study);
 
 					// Only show data uploads, not data dictionary uploads "FIELD"
-					phenoUpload.setUploadType("FIELD_DATA");
-
-					java.util.Collection<PhenoUpload> phenoUploads = iPhenotypicService.searchUpload(phenoUpload);
-					return phenoUploads;
+					//TODO no Upload Type in the schema
+					//studyUpload.setUploadType("FIELD_DATA");
+					java.util.Collection<StudyUpload> questionniareFieldDataUploads = new ArrayList<StudyUpload>();
+					//java.util.Collection<PhenoUpload> phenoUploads = iPhenotypicService.searchUpload(phenoUpload);
+					return questionniareFieldDataUploads;
 				}
 				else {
-					return null;
+					return null;//TODO? Why return null
 				}
 			}
 		};
@@ -119,10 +134,12 @@ public class PhenoDataUploadContainerPanel extends AbstractContainerPanel<Upload
 
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
+	
+	
 
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO);
+		detailPanel = new DetailPanel("detailsPanel", feedBackPanel, containerForm, arkCrudContainerVO);
 		detailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
@@ -130,10 +147,11 @@ public class PhenoDataUploadContainerPanel extends AbstractContainerPanel<Upload
 
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
-		searchPanel = new SearchPanel("searchPanel", feedBackPanel, listView, containerForm, arkCrudContainerVO);
+		/*searchPanel = new SearchPanel("searchPanel", feedBackPanel, listView, containerForm, arkCrudContainerVO);
 		searchPanel.initialisePanel();
 		searchPanel.setVisible(false);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
+		*/
 		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 }
