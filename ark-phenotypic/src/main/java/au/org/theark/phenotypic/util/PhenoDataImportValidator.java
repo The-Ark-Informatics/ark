@@ -200,7 +200,7 @@ public class PhenoDataImportValidator {
 	 */
 	public java.util.Collection<String> validatePhenoDataImportFileFormat(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException {
 		curPos = 0;
-
+		cfdHeaderList = new ArrayList<CustomFieldDisplay>();
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
