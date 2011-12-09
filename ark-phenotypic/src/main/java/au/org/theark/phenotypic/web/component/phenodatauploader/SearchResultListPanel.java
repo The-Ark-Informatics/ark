@@ -43,13 +43,14 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.pheno.entity.FieldPhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.pheno.entity.PhenoUpload;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenodatauploader.form.ContainerForm;
+
 
 public class SearchResultListPanel extends Panel {
 	/**
@@ -68,13 +69,16 @@ public class SearchResultListPanel extends Panel {
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public SearchResultListPanel(String id, PageableListView<PhenoUpload> listView, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchResultListPanel(String id, PageableListView<StudyUpload> listView, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
+		//TODO: Are we going to store the Questionnaire ID in session? To Rebame sessionPhenoCollectionId to questionnaireId
 		Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+		
 		if (sessionPhenoCollectionId != null) {
-			PhenoCollection phenoCollection = iPhenotypicService.getPhenoCollection(sessionPhenoCollectionId);
+		
+			PhenoCollection phenoCollection = iPhenotypicService.getPhenoCollection(sessionPhenoCollectionId);//TODO Get the specific Questionnaire from backend and get the related instances of questionnaires
 			Collection<FieldPhenoCollection> fieldsInCollection = iPhenotypicService.getFieldPhenoCollection(phenoCollection);
 
 			String[] fieldDataTemplate = new String[fieldsInCollection.size() + 2];
@@ -126,16 +130,16 @@ public class SearchResultListPanel extends Panel {
 	 * @return the pageableListView of Upload
 	 */
 	@SuppressWarnings("unchecked")
-	public PageableListView<PhenoUpload> buildPageableListView(IModel iModel) {
-		PageableListView<PhenoUpload> sitePageableListView = new PageableListView<PhenoUpload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+	public PageableListView<StudyUpload> buildPageableListView(IModel iModel) {
+		PageableListView<StudyUpload> sitePageableListView = new PageableListView<StudyUpload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void populateItem(final ListItem<PhenoUpload> item) {
-				PhenoUpload upload = item.getModelObject();
+			protected void populateItem(final ListItem<StudyUpload> item) {
+				StudyUpload upload = item.getModelObject();
 
 				// The ID
 				if (upload.getId() != null) {
@@ -147,7 +151,8 @@ public class SearchResultListPanel extends Panel {
 
 				// The collection
 				if (upload.getFilename() != null) {
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_PHENO_COLLECTION, iPhenotypicService.getPhenoCollectionByUpload(upload).getName()));
+					//item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_PHENO_COLLECTION, iPhenotypicService.getPhenoCollectionByUpload(upload).getName()));
+					//TODO use the appropriate service 
 				}
 				else {
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_PHENO_COLLECTION, ""));
@@ -220,7 +225,7 @@ public class SearchResultListPanel extends Panel {
 		return sitePageableListView;
 	}
 
-	private AjaxButton buildDownloadButton(final PhenoUpload upload) {
+	private AjaxButton buildDownloadButton(final StudyUpload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
 			/**
 			 * 
@@ -256,7 +261,7 @@ public class SearchResultListPanel extends Panel {
 		return ajaxButton;
 	}
 
-	private AjaxButton buildDownloadReportButton(final PhenoUpload upload) {
+	private AjaxButton buildDownloadReportButton(final StudyUpload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, new StringResourceModel("downloadReportKey", this, null)) {
 			/**
 			 * 
@@ -292,7 +297,7 @@ public class SearchResultListPanel extends Panel {
 		return ajaxButton;
 	}
 
-	private AjaxDeleteButton buildDeleteButton(final PhenoUpload upload) {
+	private AjaxDeleteButton buildDeleteButton(final StudyUpload upload) {
 		DeleteButton ajaxButton = new DeleteButton(upload, SearchResultListPanel.this) {
 			/**
 			 * 
@@ -303,16 +308,7 @@ public class SearchResultListPanel extends Panel {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to delete upload
 				if (upload.getId() != null) {
-					try {
-						iPhenotypicService.deleteUpload(upload);
-						containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
-					}
-					catch (ArkSystemException e) {
-						containerForm.error(e.getMessage());
-					}
-					catch (EntityCannotBeRemoved e) {
-						containerForm.error(e.getMessage());
-					}
+					//TODO
 				}
 
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());

@@ -22,15 +22,16 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm;
-import au.org.theark.phenotypic.web.component.fieldDataUpload.form.WizardForm;
+import au.org.theark.phenotypic.web.component.phenodatauploader.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenodatauploader.form.WizardForm;
+
 
 @SuppressWarnings("serial")
 public class WizardPanel extends Panel {
-	private WizardForm				wizardForm;
-	private FeedbackPanel			feedBackPanel;
-	private ContainerForm			containerForm;
-	private ArkCrudContainerVO		arkCrudContainerVO;
+	protected WizardForm				wizardForm;
+	protected FeedbackPanel			feedBackPanel;
+	protected ContainerForm			containerForm;
+	protected ArkCrudContainerVO		arkCrudContainerVO;
 	
 	public WizardPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
@@ -40,6 +41,7 @@ public class WizardPanel extends Panel {
 	}
 	
 	public void initialisePanel() {
+		
 		wizardForm = new WizardForm("wizardForm", feedBackPanel, containerForm, arkCrudContainerVO);
 		wizardForm.initialiseDetailForm();
 		add(wizardForm);

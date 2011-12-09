@@ -22,8 +22,9 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm;
-import au.org.theark.phenotypic.web.component.fieldDataUpload.form.DetailForm;
+import au.org.theark.phenotypic.web.component.phenodatauploader.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenodatauploader.form.DetailForm;
+
 
 @SuppressWarnings("serial")
 public class DetailPanel extends Panel {
@@ -40,7 +41,7 @@ public class DetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new DetailForm("detailForm", feedBackPanel, containerForm, arkCrudContainerVO);
+		detailForm = new DetailForm("detailsForm", feedBackPanel, containerForm, arkCrudContainerVO);
 		detailForm.initialiseDetailForm();
 		add(detailForm);
 	}

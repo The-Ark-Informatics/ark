@@ -18,15 +18,12 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenodatauploader.form;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
 
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -61,6 +58,8 @@ public class WizardForm extends AbstractWizardForm<PhenoFieldDataUploadVO> {
 	private String							fileName;
 
 	
+	
+//	public WizardForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 	public WizardForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		// TODO: Fix the AbstractWizardForm to use ArkCrudContainerVO
 		super(id, feedBackPanel, arkCrudContainerVO.getSearchResultPanelContainer(),
@@ -68,20 +67,20 @@ public class WizardForm extends AbstractWizardForm<PhenoFieldDataUploadVO> {
 				arkCrudContainerVO.getSearchPanelContainer(), containerForm);
 
 		// Set study in context
-		Study study = new Study();
-		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-
-		if (studyId != null) {
-			study = iArkCommonService.getStudy(studyId);
-			PhenoCollection phenoCollection = new PhenoCollection();
-			phenoCollection.setStudy(study);
-
-			java.util.Collection<PhenoCollection> phenoCollections = iPhenotypicService.searchPhenotypicCollection(phenoCollection);
-
-			if (phenoCollections.size() == 0) {
-				disableWizardForm(null, "There is no Phenotypic Collections defined for this study. Please create a Phenotypic Collection");
-			}
-		}
+//		Study study = new Study();
+//		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+//
+//		if (studyId != null) {
+//			study = iArkCommonService.getStudy(studyId);
+//			PhenoCollection phenoCollection = new PhenoCollection();
+//			phenoCollection.setStudy(study);
+//
+//			java.util.Collection<PhenoCollection> phenoCollections = iPhenotypicService.searchPhenotypicCollection(phenoCollection);
+//
+//			if (phenoCollections.size() == 0) {
+//				disableWizardForm(null, "There is no Phenotypic Collections defined for this study. Please create a Phenotypic Collection");
+//			}
+//		}
 	}
 
 	public void initialiseDetailForm() {

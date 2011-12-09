@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -116,26 +117,24 @@ public class PhenoDataUploadStep1 extends AbstractWizardStepPanel {
 	private void initQuestionnaireDdc() {
 		// Get a list of questionnaires for the subject in context by default
 		CustomFieldGroup cfgForStudyCriteria = new CustomFieldGroup(); 
-		cfgForStudyCriteria.setStudy(containerForm.getModelObject().getStudy());
-		cfgForStudyCriteria.setArkFunction(containerForm.getModelObject().getArkFunction());
+		//Get the Study From Context and set the correct ArkFunction
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study studyInContext = iArkCommonService.getStudy(studyId);
+		cfgForStudyCriteria.setStudy(studyInContext);
+		ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+		cfgForStudyCriteria.setArkFunction(function);
 		cfgForStudyCriteria.setPublished(true);	//make sure that we don't return non-published Questionnaires
-		
+	
 		List<CustomFieldGroup> questionnaireList = iArkCommonService.getCustomFieldGroups(cfgForStudyCriteria, 0, Integer.MAX_VALUE);
 		ChoiceRenderer<CustomFieldGroup> choiceRenderer = new ChoiceRenderer<CustomFieldGroup>(Constants.QUESTIONNAIRE_NAME, Constants.QUESTIONNAIRE_ID);
-		questionnaireDdc = new DropDownChoice<CustomFieldGroup>("phenotypicCollection.questionnaire", questionnaireList, choiceRenderer);
+		questionnaireDdc = new DropDownChoice<CustomFieldGroup>("questionnaire", questionnaireList, choiceRenderer);
 		questionnaireDdc.setNullValid(false);
 	}
 
 	public void initialiseDetailForm() {
-		// Set up field on form here
-
-		// progress bar for upload
-		// uploadProgressBar = new UploadProgressBar("progress",
-		// ajaxSimpleUploadForm);
 
 		// fileUpload for payload
 		fileUploadField = new FileUploadField(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME);
-
 		// Initialise Drop Down Choices
 		initialiseDropDownChoices();
 
