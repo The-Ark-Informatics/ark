@@ -267,5 +267,12 @@ public interface IStudyService {
 	 * @param subjectCustomFieldDataList
 	 */
 	public List<SubjectCustomFieldData>  createOrUpdateSubjectCustomFieldData(List<SubjectCustomFieldData> subjectCustomFieldDataList);
+	
+	/**
+	 * Checks if the given component(study) is or has attachments linked to it
+	 * @param studyComp
+	 * @return
+	 */
+	public boolean isStudyComponentHasAttachments(StudyComp studyComp);
 			
 }

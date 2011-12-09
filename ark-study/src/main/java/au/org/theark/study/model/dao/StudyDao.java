@@ -35,6 +35,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -296,7 +297,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		return flag;
 	}
-
+	
 	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria) {
 
 		Criteria criteria = getSession().createCriteria(StudyComp.class);
@@ -1658,6 +1659,19 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		count = (Long) query.uniqueResult();
 			
 		return count;
+	}
+	
+	public boolean isStudyComponentHasAttachments(StudyComp studyComp){
+		
+		boolean isFlag = false;
+		Criteria criteria  = getStatelessSession().createCriteria(SubjectFile.class);
+		criteria.add(Restrictions.eq("studyComp", studyComp));
+		criteria.setProjection(Projections.rowCount());
+		Integer i = (Integer) criteria.list().get(0);
+		if (i > 0) {
+			isFlag = true;
+		}
+		return isFlag;
 	}
 	
 }

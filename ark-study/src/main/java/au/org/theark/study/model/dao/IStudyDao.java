@@ -309,4 +309,7 @@ public interface IStudyDao {
 	public void deleteSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData);
 	
 	public Long isCustomFieldUsed(SubjectCustomFieldData subjectCustomFieldData);
+	
+	public boolean isStudyComponentHasAttachments(StudyComp studyComp);
+	
 }
