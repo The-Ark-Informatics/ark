@@ -14,6 +14,8 @@ public class PhenoFieldDataUploadVO extends UploadVO {
 	private CustomFieldGroup questionnaire;	// store the Questionnaire selected from drop-down
 	private ArkFunction arkFunction;
 	private boolean overrideDataValidationChkBox;
+	private String fileName;
+	private String	uploadType;
 
 	public File getTempFile() {
 		return tempFile;
@@ -45,6 +47,22 @@ public class PhenoFieldDataUploadVO extends UploadVO {
 
 	public void setOverrideDataValidationChkBox(boolean overrideDataValidationChkBox) {
 		this.overrideDataValidationChkBox = overrideDataValidationChkBox;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getUploadType() {
+		return uploadType;
+	}
+
+	public void setUploadType(String uploadType) {
+		this.uploadType = uploadType;
 	}
 
 }
