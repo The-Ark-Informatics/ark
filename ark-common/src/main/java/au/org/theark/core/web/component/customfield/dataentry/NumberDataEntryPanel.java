@@ -42,23 +42,13 @@ public class NumberDataEntryPanel extends AbstractDataEntryPanel<Double> {
 	public NumberDataEntryPanel(String id, IModel<Double> dataModel, IModel<String> labelModel) {
 		super(id, labelModel);
 		dataValueModel = dataModel;
-		dataValueTxtFld = new TextField<Double>("numberDataValue", dataValueModel, Double.class){
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public <C> IConverter<C> getConverter(Class<C> type) {
-				return (IConverter<C>) NumberConverter.INSTANCE;
-			}
-		};
+				
+		dataValueTxtFld = new TextField<Double>("numberDataValue", dataValueModel, Double.class);
 		dataValueTxtFld.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
 		this.add(dataValueTxtFld);
 	}
 	
-	public IConverter<Double> getNumberConverter() {
+	public IConverter getNumberConverter() {
 		return dataValueTxtFld.getConverter(dataValueTxtFld.getType());
 	}
 
