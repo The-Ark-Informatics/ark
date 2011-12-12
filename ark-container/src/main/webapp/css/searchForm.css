@@ -45,12 +45,6 @@ border-style:solid;
 border-width:1px;
 }
 
-#searchPanelContentRight {
-float:right;
-height:5%;
-width:5%;
-}
-
 #searchPanelFbContainer {
 float:left;
 width:100%;
