@@ -106,12 +106,6 @@ border-style:solid solid none;
 border-width:1px;
 }
 
-#detailPanelContentRight {
-float:right;
-height:5%;
-width:3%;
-}
-
 #detailPanelBreaker {
 float:left;
 width:100%;
