@@ -177,18 +177,17 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 		    Boolean overrideValidation = overrideDataValidationChkBox.getModelObject();
 			if( !validator.getErrorCells().isEmpty()){
 				//Stop from further processing display an error message to the user or down-load an error report
+				log.info("There were errors cannot proceed with upload of data.");
 			}
 			else{
-				log.debug("No errors were returned from validation.");
-				if(!validator.getWarningCells().isEmpty()){
-					log.debug("Proceed to upload/import data with warnings.");
+				
+				if(validator.getWarningCells().isEmpty()) {
+					log.info("Proceed to upload/import data.No warnings or errrors in validation.");
+				}
+				else if(!validator.getWarningCells().isEmpty() && overrideValidation){
+					log.info("Proceed to upload/import data with warnings.");
 				}else{
-					log.debug("There are warnings.");
-					if(overrideValidation){
-						log.debug("Proceed to upload/import data with warnings.");
-					}else{
-						log.debug("Do not upload with warnings.");
-					}
+					log.info("There are warnings and user has not specified to override validation. Aborting upload/import data.");
 				}
 			}
 			//TODO: Why do we need the type? Is it necessary
