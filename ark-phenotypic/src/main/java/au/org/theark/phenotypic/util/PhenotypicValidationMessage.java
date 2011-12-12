@@ -83,7 +83,7 @@ public class PhenotypicValidationMessage {
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" value ");
-		stringBuffer.append(fieldData.getTextDataValue().toString());
+		stringBuffer.append(fieldData.getErrorDataValue().toString());
 		stringBuffer.append(" is not the defined field type: ");
 		stringBuffer.append(field.getFieldType().getName());
 		return (stringBuffer.toString());
