@@ -326,4 +326,10 @@ public class Constants {
 
 	public static final String		NAME															= "name";
 	public static final String		ID																= "id";
+	
+	/* Ark Session Details */
+	public static final String		ARK_SESSION_ID												= "ARK_SESSION_ID";
+	public static final String		ARK_USERID													= "ARK_USERID";
+	public static final String		ARK_HOST														= "ARK_HOST";
+	public static final String		ARK_LOGOFF_SESSION_ID									= "ARK_LOGOFF_SESSION_ID";
 }
