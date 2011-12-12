@@ -69,27 +69,6 @@ public class PhenotypicValidationMessage {
 	}
 
 	/**
-	 * Returns field not of the defined type error message
-	 * 
-	 * @param field
-	 * @param fieldData
-	 * @return String
-	 */
-	public static String fieldDataNotDefinedType(CustomField field, PhenoData fieldData) {
-		stringBuffer = new StringBuffer();
-		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(fieldData.getPhenotypicCollection().getLinkSubjectStudy().getSubjectUID());
-		stringBuffer.append(": ");
-		stringBuffer.append("The field ");
-		stringBuffer.append(field.getName().toString());
-		stringBuffer.append(" value ");
-		stringBuffer.append(fieldData.getErrorDataValue().toString());
-		stringBuffer.append(" is not the defined field type: ");
-		stringBuffer.append(field.getFieldType().getName());
-		return (stringBuffer.toString());
-	}
-	
-	/**
 	 * Returns field greater than defined max value error message
 	 * TODO: Remove after change to new tables
 	 * @param field
@@ -174,6 +153,27 @@ public class PhenotypicValidationMessage {
 		return (stringBuffer.toString());
 	}
 
+	/**
+	 * Returns field not of the defined type error message
+	 * 
+	 * @param field
+	 * @param fieldData
+	 * @return String
+	 */
+	public static String fieldDataNotDefinedType(CustomField field, PhenoData fieldData) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Subject UID: ");
+		stringBuffer.append(fieldData.getPhenotypicCollection().getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(": ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" value ");
+		stringBuffer.append(fieldData.getErrorDataValue().toString());
+		stringBuffer.append(" is not the defined field type: ");
+		stringBuffer.append(field.getFieldType().getName());
+		return (stringBuffer.toString());
+	}
+	
 	/**
 	 * Returns dateCollected not a valid date format error message
 	 * 
