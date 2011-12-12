@@ -665,8 +665,8 @@ public class PhenoDataImportValidator {
 	public static boolean isInValidRange(PhenoData fieldData, java.util.Collection<String> errorMessages) {
 		boolean isInValidRange = true;
 		CustomField field = fieldData.getCustomFieldDisplay().getCustomField();
-		String minValue = field.getMinValue().trim();
-		String maxValue = field.getMaxValue().trim();
+		String minValue = StringUtils.trimToNull(field.getMinValue());
+		String maxValue = StringUtils.trimToNull(field.getMaxValue());
 		
 		if (StringUtils.isBlank(minValue) && StringUtils.isBlank(maxValue)) {
 			return isInValidRange;
