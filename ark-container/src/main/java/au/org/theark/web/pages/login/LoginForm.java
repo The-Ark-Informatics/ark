@@ -73,15 +73,19 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 				ArkUserVO user = (ArkUserVO) getForm().getModelObject();
 				if (authenticate(user)) {
 					DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-					log.info( "\n ----" + user.getUserName() + " Logged in successfully at: " + dateFormat.format(new Date()) + " ---- \n");
-					// Place a default use case into session
-					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY);
+					log.info( "\n ---- " + user.getUserName() + " logged in successfully at: " + dateFormat.format(new Date()) + " ---- \n");
+					
 					// Place a default module into session
 					ArkModule arkModule = iArkCommonService.getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_STUDY);
+					// Place a default function into session
+					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY);
 
-					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY, arkFunction.getId());
+					// Set session attributes
+					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_USERID, user.getUserName());
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY, arkModule.getId());
-					setResponsePage(HomePage.class); 
+					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY, arkFunction.getId());
+					
+					setResponsePage(HomePage.class);
 				}
 				else {
 					setResponsePage(LoginPage.class);
@@ -140,7 +144,6 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 		try {
 			// This will propagate to the Realm
 			subject.login(usernamePasswordToken);
-			log.info(user.getUserName() + " logged in.");
 			return true;
 		}
 		catch (IncorrectCredentialsException e) {
