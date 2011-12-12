@@ -233,24 +233,27 @@ public class PhenoDataImportValidator {
 			boolean headerError = false;
 			boolean databaseIntegrityError = false;
 
-			int col = 0;
-			if (!StringUtils.equalsIgnoreCase(fieldNameArray[col], "SUBJECTUID")) {
-				headerError = true;
-			}
-			col++;
-			if (!StringUtils.equalsIgnoreCase(fieldNameArray[col], "DATE_COLLECTED")) {
-				headerError = true;
-			}
-			col++;
-			if (!StringUtils.equalsIgnoreCase(fieldNameArray[col], "QUESTIONNAIRE_STATUS")) {
-				headerError = true;
-			}			
-			
 			int totalCols = fieldNameArray.length;
 			if (totalCols <= 3) {
 				headerError = true;
 			}
-			else {
+
+			int col = 0;
+			if (!headerError) {
+				if (!StringUtils.equalsIgnoreCase(fieldNameArray[col], "SUBJECTUID")) {
+					headerError = true;
+				}
+				col++;
+				if (!StringUtils.equalsIgnoreCase(fieldNameArray[col], "DATE_COLLECTED")) {
+					headerError = true;
+				}
+				col++;
+				if (!StringUtils.equalsIgnoreCase(fieldNameArray[col], "QUESTIONNAIRE_STATUS")) {
+					headerError = true;
+				}
+			}
+			
+			if (!headerError) {
 				try {
 					for (col = 3; col < totalCols; col++) {
 						CustomField cfCriteria = iArkCommonService.getCustomFieldByNameStudyArkFunction(fieldNameArray[col], study, arkFunction);
@@ -428,7 +431,7 @@ public class PhenoDataImportValidator {
 
 						ArkGridCell gridCell = new ArkGridCell(col, row);
 						// Validate the field data
-						boolean isValid = isFieldDataValid(fieldData, importValidationMessages);
+						boolean isValid = validateFieldData(fieldData, importValidationMessages);
 						if (!isValid) {
 							warningCells.add(gridCell);
 						}
