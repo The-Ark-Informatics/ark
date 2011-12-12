@@ -144,20 +144,13 @@ public abstract class BasePage extends WebPage {
 
 				@Override
 				public void onClick(AjaxRequestTarget target) {
-					Subject subject = SecurityUtils.getSubject();
 					currentUser = SecurityUtils.getSubject();
 					principal = (String) currentUser.getPrincipal();
 					log.info("\n -- " + principal + " has logged out. ----");
-					// Place the selected study in session context for the user
-					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
-					
-					subject.logout();
+					currentUser.logout();
 					
 					Session.get().invalidateNow(); // invalidate the wicket session
 					setResponsePage(LoginPage.class);
-					
 				}
 			};
 			add(link);
