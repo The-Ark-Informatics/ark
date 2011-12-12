@@ -116,7 +116,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * @param isArkCrudContainerVOPattern
 	 */
 	protected void initialiseForm() {
-		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null)) {
+		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("page.cancel", this, null)) {
 			/**
 			 * 
 			 */
@@ -138,7 +138,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 			}
 		};
 
-		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
+		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("page.save", this, null)) {
 			/**
 			 * 
 			 */
@@ -185,39 +185,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 			}
 
 		};
-
-		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
-			
-			private static final long	serialVersionUID	= -6282464357368710796L;
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				editButtonProcess(target);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				processErrors(target);
-			}
-
-			@Override
-			public boolean isVisible() {
-				// calling super.isVisible() will allow an external setVisible() to override visibility
-				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.EDIT);
-			}
-		};
-
-		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null)) {
-			
-			private static final long	serialVersionUID	= 5457464178392550628L;
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				editCancelProcess(target);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				processErrors(target);
-			}
-		};
-		
 		addComponentsToForm();
 	}
 
@@ -230,12 +197,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		arkCrudContainerVO.getEditButtonContainer().addOrReplace(saveButton);
 		arkCrudContainerVO.getEditButtonContainer().addOrReplace(cancelButton.setDefaultFormProcessing(false));
 		arkCrudContainerVO.getEditButtonContainer().addOrReplace(deleteButton.setDefaultFormProcessing(false));
-
-		arkCrudContainerVO.getViewButtonContainer().addOrReplace(editButton);
-		arkCrudContainerVO.getViewButtonContainer().addOrReplace(editCancelButton.setDefaultFormProcessing(false));
-
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
-		add(arkCrudContainerVO.getViewButtonContainer());
 		add(arkCrudContainerVO.getEditButtonContainer());
 	}
 
