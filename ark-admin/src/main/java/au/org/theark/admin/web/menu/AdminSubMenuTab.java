@@ -24,9 +24,11 @@ import java.util.List;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.admin.web.component.activitymonitor.ActivityMonitorContainerPanel;
 import au.org.theark.admin.web.component.function.FunctionContainerPanel;
 import au.org.theark.admin.web.component.module.ModuleContainerPanel;
 import au.org.theark.admin.web.component.modulefunction.ModuleFunctionContainerPanel;
@@ -72,6 +74,22 @@ public class AdminSubMenuTab extends AbstractArkTabPanel {
 			};
 			moduleSubTabsList.add(tab);
 		}
+		
+		// Add a new tab for activity monitoring
+		AbstractTab tab = new AbstractTab(new Model<String>("Activity Monitoring")){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public Panel getPanel(String panelId) {
+				Panel panel = new ActivityMonitorContainerPanel(panelId);
+				return panel;
+			}
+			
+		};
+		moduleSubTabsList.add(tab);
 
 		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel("adminSubMenus", moduleSubTabsList);
 		add(moduleTabbedPanel);
