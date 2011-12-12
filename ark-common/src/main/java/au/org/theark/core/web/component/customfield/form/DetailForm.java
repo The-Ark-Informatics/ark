@@ -409,8 +409,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		Boolean hasData = getModelObject().getCustomField().getCustomFieldHasData();
 		if (hasData != null) {
 			customFieldDetailWMC.setEnabled(!hasData);
-			editButton.setEnabled(!hasData);	//disable the Edit button when there is data
-			editButton.setVisible(!hasData);	//hide the Edit button when there is data
 			AjaxButton deleteButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
 			deleteButton.setEnabled(!hasData);//Disable Delete button if thre is data
 			// Disabling the editButtonContainer should disable the delete and save buttons in Edit mode
