@@ -239,20 +239,26 @@ public class PhenoDataImportValidator {
 			}
 
 			int col = 0;
-			if (!headerError) {
+			if (headerError) {
+				errorCells.add(new ArkGridCell(col, row));
+			}
+			else {
 				if (!StringUtils.equalsIgnoreCase(fieldNameArray[col], "SUBJECTUID")) {
 					headerError = true;
+					errorCells.add(new ArkGridCell(col, row));
 				}
 				col++;
 				if (!StringUtils.equalsIgnoreCase(fieldNameArray[col], "DATE_COLLECTED")) {
 					headerError = true;
+					errorCells.add(new ArkGridCell(col, row));
 				}
 				col++;
 				if (!StringUtils.equalsIgnoreCase(fieldNameArray[col], "QUESTIONNAIRE_STATUS")) {
 					headerError = true;
+					errorCells.add(new ArkGridCell(col, row));
 				}
 			}
-			
+
 			if (!headerError) {
 				try {
 					for (col = 3; col < totalCols; col++) {
@@ -260,12 +266,14 @@ public class PhenoDataImportValidator {
 						if (cfCriteria == null)
 						{
 							headerError = true;
+							errorCells.add(new ArkGridCell(col, row));
 							cfdHeaderList.add(null);
 						}
 						else {
 							CustomFieldDisplay cfdCheck = iArkCommonService.getCustomFieldDisplayByCustomField(cfCriteria, this.questionnaire);
 							if (cfdCheck == null) {
 								headerError = true;
+								errorCells.add(new ArkGridCell(col, row));
 							}
 							cfdHeaderList.add(cfdCheck);
 						}
@@ -274,6 +282,7 @@ public class PhenoDataImportValidator {
 				catch (HibernateException he) {
 					// if results are non-unique something is terribly wrong with the database
 					databaseIntegrityError = true;
+					errorCells.add(new ArkGridCell(col, row));
 				}
 			}
 			
@@ -286,7 +295,7 @@ public class PhenoDataImportValidator {
 				stringBuffer.append(this.questionnaire.getName());
 				stringBuffer.append("\n");
 				stringBuffer.append("Please contact your system administrator ASAP\n");
-				importValidationMessages.add(stringBuffer.toString());				
+				importValidationMessages.add(stringBuffer.toString());
 			}
 			else if (headerError) {
 				// Invalid file format
@@ -360,8 +369,7 @@ public class PhenoDataImportValidator {
 					}
 					catch (au.org.theark.core.exception.EntityNotFoundException enfe) {
 						// Subject not found...error
-						ArkGridCell cell = new ArkGridCell(col, row);
-						errorCells.add(cell);
+						errorCells.add(new ArkGridCell(col, row));
 						importValidationMessages.add(PhenotypicValidationMessage.fieldDataSubjectUidNotFound(subjectUid));
 					}
 	
