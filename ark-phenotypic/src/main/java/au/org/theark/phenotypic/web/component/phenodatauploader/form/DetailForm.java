@@ -18,11 +18,14 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenodatauploader.form;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Blob;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +46,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IOUtils;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +57,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -168,16 +173,21 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
 		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
 		PhenoFieldDataUploadVO vo = containerForm.getModelObject();
+		
+		File temp = containerForm.getModelObject().getTempFile();
+		InputStream inputStream = null;
 		//Do the validation
 		PhenoDataImportValidator validator = new PhenoDataImportValidator(iArkCommonService, phenotypicService, vo);
 		try {
+			inputStream = new BufferedInputStream(new FileInputStream(temp));
+			Collection<String> validationMessages = validator.validatePhenoDataImportFileFormat(inputStream, inputStream.toString().length());
+			inputStream.close();
+			inputStream = null;
 			
-			InputStream stream = containerForm.getModelObject().getFileUpload().getInputStream();
-		    Collection<String> validationMessages = validator.validatePhenoDataImportFileFormat(stream, stream.toString().length());
-		    Boolean overrideValidation = overrideDataValidationChkBox.getModelObject();
+			Boolean overrideValidation = overrideDataValidationChkBox.getModelObject();
 			if( !validator.getErrorCells().isEmpty()){
 				//Stop from further processing display an error message to the user or down-load an error report
-				log.info("There were errors cannot proceed with upload of data.");
+				log.info("There were errors cannot proceed with upload of data.");	
 			}
 			else{
 				
@@ -190,6 +200,23 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 					log.info("There are warnings and user has not specified to override validation. Aborting upload/import data.");
 				}
 			}
+			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD); 
+			StudyUpload newUpload = containerForm.getModelObject().getUpload();
+			newUpload.setArkFunction(arkFunction);
+			StringBuffer strBuf = new StringBuffer();
+			for (String message : validationMessages) {
+				strBuf.append(message +"\n");
+			}
+			byte[] bytes = strBuf.toString().getBytes();
+			Blob uploadReportBlob = Hibernate.createBlob(bytes);
+			inputStream = new BufferedInputStream(new FileInputStream(temp));
+			Blob payload = Hibernate.createBlob(inputStream);
+			newUpload.setPayload(payload);
+			newUpload.setUploadReport(uploadReportBlob);
+			newUpload.setFinishTime(new Date(System.currentTimeMillis()));
+			iArkCommonService.createUpload(newUpload);	// TODO: save the upload to database
+			inputStream.close();
+			inputStream = null;
 			//TODO: Why do we need the type? Is it necessary
 			//containerForm.getModelObject().getUpload().setUploadType("FIELD_DATA");
 		}catch (IOException e) {
@@ -202,6 +229,22 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 		} catch (FileFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				}
+				catch (IOException e) {
+					log.error("Unable to close inputStream: " + e.getMessage());
+				}
+			}
+			if (temp != null) {
+				// Attempt manual a delete
+				temp.delete();
+				temp = null;
+				containerForm.getModelObject().setTempFile(temp);
+			}
 		}
 	}
 
