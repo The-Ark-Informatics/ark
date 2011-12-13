@@ -1,5 +1,6 @@
 package au.org.theark.core.session;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -11,17 +12,23 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 
+import au.org.theark.core.vo.ArkSubjectVO;
+
 /**
  * A very simple implementation of a SessionAttribute listner, that maintains a synchronised List of current users logged into the ARK 
  * @author cellis
  *
  */
-public class SessionAttributeListener implements HttpSessionAttributeListener {
+public class SessionAttributeListener implements HttpSessionAttributeListener, Serializable {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 9115645497579631900L;
 	//TODO: Further implement to maintain detailed session information 
-	private static List<Subject>	activeUsers	= Collections.synchronizedList(new ArrayList<Subject>()); // listener is being called from multiple
+	private static List<ArkSubjectVO>	activeUsers	= Collections.synchronizedList(new ArrayList<ArkSubjectVO>()); // listener is being called from multiple
 																																		// threads and ArrayList is unsynchronized
 
-	public static List<Subject> getActiveUsers() {
+	public static List<ArkSubjectVO> getActiveUsers() {
 		return activeUsers;
 	}
 
@@ -29,7 +36,12 @@ public class SessionAttributeListener implements HttpSessionAttributeListener {
 	public void attributeAdded(HttpSessionBindingEvent event) {
 		if (event.getName().equals(au.org.theark.core.Constants.ARK_USERID))
 		{
-			activeUsers.add(SecurityUtils.getSubject());
+			Subject subject = SecurityUtils.getSubject();
+			String sessionId = subject.getSession().getId().toString();
+			String userId = subject.getPrincipal().toString();
+			String host = subject.getSession().getHost();
+			ArkSubjectVO arkSubjectVo = new ArkSubjectVO(sessionId, userId, host);
+			activeUsers.add(arkSubjectVo);
 		}
 	}
 
@@ -44,10 +56,10 @@ public class SessionAttributeListener implements HttpSessionAttributeListener {
 			
 		if(event.getName().equals(au.org.theark.core.Constants.ARK_LOGOFF_SESSION_ID)) {
 			// Forced session kill by admin
-			for (Iterator<Subject> iterator = activeUsers.iterator(); iterator.hasNext();) {
-				Subject subject = (Subject) iterator.next();
-				if(subject.getSession().getId().toString().equalsIgnoreCase(event.getValue().toString())){
-					activeUsers.remove(subject);
+			for (Iterator<ArkSubjectVO> iterator = activeUsers.iterator(); iterator.hasNext();) {
+				ArkSubjectVO arkSubjectVo = (ArkSubjectVO) iterator.next();
+				if(arkSubjectVo.getSessionId().equalsIgnoreCase(event.getValue().toString())){
+					activeUsers.remove(arkSubjectVo);
 				}
 			}
 		}
