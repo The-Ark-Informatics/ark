@@ -20,7 +20,6 @@ package au.org.theark.admin.web.component.activitymonitor;
 
 import java.util.List;
 
-import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -37,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.model.vo.ActivityMonitorVO;
 import au.org.theark.core.session.SessionAttributeListener;
+import au.org.theark.core.vo.ArkSubjectVO;
 
 /**
  * @author cellis
@@ -46,13 +46,13 @@ public class ActivityMonitorContainerPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long				serialVersionUID	= -7123740564278141980L;
-	protected transient Logger				log					= LoggerFactory.getLogger(ActivityMonitorContainerPanel.class);
-	protected FeedbackPanel					feedBackPanel;
-	private Form<ActivityMonitorVO>		form;
-	private SearchResultsPanel				searchResultsPanel;
-	private PageableListView<Subject>	listView;
-	private Button								refresh;
+	private static final long					serialVersionUID	= -7123740564278141980L;
+	protected transient Logger					log					= LoggerFactory.getLogger(ActivityMonitorContainerPanel.class);
+	protected FeedbackPanel						feedBackPanel;
+	private Form<ActivityMonitorVO>			form;
+	private SearchResultsPanel					searchResultsPanel;
+	private PageableListView<ArkSubjectVO>	listView;
+	private Button									refresh;
 
 	/**
 	 * @param id
@@ -93,7 +93,7 @@ public class ActivityMonitorContainerPanel extends Panel {
 
 	@SuppressWarnings("unchecked")
 	protected WebMarkupContainer initialiseSearchResults() {
-		List<Subject> activeUsers = SessionAttributeListener.getActiveUsers();
+		List<ArkSubjectVO> activeUsers = SessionAttributeListener.getActiveUsers();
 		form.getModelObject().setActiveUsers(activeUsers);
 		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", feedBackPanel);
 		listView = searchResultsPanel.buildPageableListView(new PropertyModel(form.getModelObject(), "activeUsers"));

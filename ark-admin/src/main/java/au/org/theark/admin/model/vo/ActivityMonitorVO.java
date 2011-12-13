@@ -1,22 +1,27 @@
 package au.org.theark.admin.model.vo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shiro.subject.Subject;
+import au.org.theark.core.vo.ArkSubjectVO;
 
-public class ActivityMonitorVO {
-	List<Subject>	activeUsers;
+public class ActivityMonitorVO implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 3901839049428295010L;
+	private List<ArkSubjectVO>	activeUsers;
 
 	public ActivityMonitorVO() {
-		activeUsers = new ArrayList<Subject>();
+		activeUsers = new ArrayList<ArkSubjectVO>();
 	}
 	
-	public List<Subject> getActiveUsers() {
+	public List<ArkSubjectVO> getActiveUsers() {
 		return activeUsers;
 	}
 
-	public void setActiveUsers(List<Subject> activeUsers) {
+	public void setActiveUsers(List<ArkSubjectVO> activeUsers) {
 		this.activeUsers = activeUsers;
 	}
 }
