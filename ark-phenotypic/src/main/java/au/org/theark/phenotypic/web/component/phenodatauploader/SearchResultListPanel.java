@@ -308,11 +308,10 @@ public class SearchResultListPanel extends Panel {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to delete upload
 				if (upload.getId() != null) {
-					//TODO
+					iPhenotypicService.deleteUpload(upload);
 				}
 
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-				target.add(containerForm);
 			}
 		};
 

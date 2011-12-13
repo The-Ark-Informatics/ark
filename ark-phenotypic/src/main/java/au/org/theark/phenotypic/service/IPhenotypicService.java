@@ -253,4 +253,6 @@ public interface IPhenotypicService {
 	
 	public java.util.Collection<StudyUpload> searchUpload(StudyUpload upload);
 	
+	public void deleteUpload(StudyUpload studyUpload);
+	
 }

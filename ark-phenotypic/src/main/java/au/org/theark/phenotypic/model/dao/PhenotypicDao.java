@@ -1756,5 +1756,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		return uploadCollection;
 	}
+	
+	public void deleteUpload(StudyUpload studyUpload){
+		//TODO if the upload was successful it must stop the user from removing an uploaded file
+		getSession().delete(studyUpload);
+	}
 
 }
