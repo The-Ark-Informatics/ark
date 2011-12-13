@@ -91,8 +91,9 @@ public class GridCellLink extends Panel {
 		//TODO: use Reference CellStatus
 		invCell.setStatus("Not Empty");
 	
-		// Update the model, saved to DB when user clicks 'Save'
 		limsVo.setInvCell(invCell);
+		
+		// Update InvCell and Biospecimen
 		try {
 			limsVo.setBiospecimenLocationVO(iInventoryService.getInvCellLocation(invCell));
 			limsVo.getBiospecimenLocationVO().setIsAllocated(true);
@@ -100,6 +101,8 @@ public class GridCellLink extends Panel {
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
 		}
+		iInventoryService.updateInvCell(invCell);
+		iLimsService.updateBiospecimen(limsVo);
 		modalWindow.close(target);
 	}
 
