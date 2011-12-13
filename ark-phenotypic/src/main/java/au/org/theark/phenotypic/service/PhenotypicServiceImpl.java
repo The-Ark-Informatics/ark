@@ -64,6 +64,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.vo.CustomFieldGroupVO;
@@ -1011,6 +1012,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 	public QuestionnaireStatus getDefaultPhenotypicCollectionStatus() {
 		return phenotypicDao.getPhenotypicCollectionStatusByName(Constants.PHENOCOLLECTION_STATUS_IN_PROGRESS);
+	}
+	
+	public java.util.Collection<StudyUpload> searchUpload(StudyUpload upload){
+		return phenotypicDao.searchUpload(upload);
 	}
 	
 }
