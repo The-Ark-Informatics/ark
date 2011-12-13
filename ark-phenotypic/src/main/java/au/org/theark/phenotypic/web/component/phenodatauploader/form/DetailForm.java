@@ -245,6 +245,10 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 				temp = null;
 				containerForm.getModelObject().setTempFile(temp);
 			}
+			
+			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+			
 		}
 	}
 
