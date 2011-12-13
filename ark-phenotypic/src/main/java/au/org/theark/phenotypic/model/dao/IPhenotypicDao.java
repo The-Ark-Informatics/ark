@@ -285,5 +285,7 @@ public interface IPhenotypicDao {
 	public QuestionnaireStatus getPhenotypicCollectionStatusByName(String statusName);
 	
 	public java.util.Collection<StudyUpload> searchUpload(StudyUpload upload);
+	
+	public void deleteUpload(StudyUpload studyUpload);
 
 }
