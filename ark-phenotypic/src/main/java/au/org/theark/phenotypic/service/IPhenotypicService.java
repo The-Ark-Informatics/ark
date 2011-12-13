@@ -44,6 +44,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
@@ -249,5 +250,7 @@ public interface IPhenotypicService {
 	public QuestionnaireStatus getPhenotypicCollectionStatusByName(String statusName);
 
 	public QuestionnaireStatus getDefaultPhenotypicCollectionStatus();
+	
+	public java.util.Collection<StudyUpload> searchUpload(StudyUpload upload);
 	
 }

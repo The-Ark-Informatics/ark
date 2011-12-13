@@ -71,6 +71,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.vo.CustomFieldGroupVO;
@@ -1722,4 +1723,38 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		QuestionnaireStatus result = (QuestionnaireStatus)criteria.uniqueResult();
 		return result;
 	}
+	
+	public java.util.Collection<StudyUpload> searchUpload(StudyUpload upload) {
+		Criteria criteria = getSession().createCriteria(StudyUpload.class);
+
+		if (upload.getId() != null) {
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.UPLOAD_ID, upload.getId()));
+		}
+
+		if (upload.getStudy() != null) {
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.UPLOAD_STUDY, upload.getStudy()));
+		}
+		
+		if(upload.getArkFunction() != null){
+			criteria.add(Restrictions.eq("arkFunction",upload.getArkFunction()));
+		}
+
+		if (upload.getFileFormat() != null) {
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.UPLOAD_FILE_FORMAT, upload.getFileFormat()));
+		}
+
+		if (upload.getDelimiterType() != null) {
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.UPLOAD_DELIMITER_TYPE, upload.getDelimiterType()));
+		}
+
+		if (upload.getFilename() != null) {
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.UPLOAD_FILENAME, upload.getFilename()));
+		}
+		
+		criteria.addOrder(Order.desc(au.org.theark.phenotypic.web.Constants.UPLOAD_ID));
+		java.util.Collection<StudyUpload> uploadCollection = criteria.list();
+
+		return uploadCollection;
+	}
+
 }
