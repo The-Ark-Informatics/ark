@@ -39,8 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.pheno.entity.FieldPhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.study.entity.StudyUpload;
@@ -149,14 +147,16 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_ID, ""));
 				}
 
-				// The collection
-				if (upload.getFilename() != null) {
+				// The collection/instance name will be replaced with Questionnaire Name
+				/*if (upload.getFilename() != null) {
+					
 					//item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_PHENO_COLLECTION, iPhenotypicService.getPhenoCollectionByUpload(upload).getName()));
 					//TODO use the appropriate service 
 				}
 				else {
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_PHENO_COLLECTION, ""));
 				}
+				*/
 
 				// Filename
 				if (upload.getFilename() != null) {

@@ -30,6 +30,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
@@ -48,7 +49,6 @@ public class PhenoDataUploadContainerPanel extends AbstractContainerPanel<PhenoF
 	
 	private SearchResultListPanel				searchResultPanel;
 	private DetailPanel							detailPanel;
-	private WizardPanel							wizardPanel;
 	private PageableListView<StudyUpload>		listView;
 	private ContainerForm						containerForm;
 
@@ -84,14 +84,6 @@ public class PhenoDataUploadContainerPanel extends AbstractContainerPanel<PhenoF
 		add(containerForm);
 	}
 
-	private WebMarkupContainer initialiseWizardPanel() {
-		wizardPanel = new WizardPanel("wizardPanel", feedBackPanel, containerForm, arkCrudContainerVO);
-		wizardPanel.initialisePanel();
-		arkCrudContainerVO.getWizardPanelContainer().setVisible(true);
-		arkCrudContainerVO.getWizardPanelContainer().add(wizardPanel);
-		return arkCrudContainerVO.getWizardPanelContainer();
-	}
-
 	protected WebMarkupContainer initialiseSearchResults() {
 		searchResultPanel = new SearchResultListPanel("searchResults", listView, containerForm, arkCrudContainerVO);
 
@@ -110,12 +102,10 @@ public class PhenoDataUploadContainerPanel extends AbstractContainerPanel<PhenoF
 					study = iArkCommonService.getStudy(studyId);
 					StudyUpload studyUpload = new StudyUpload();
 					studyUpload.setStudy(study);
-
-					// Only show data uploads, not data dictionary uploads "FIELD"
-					//TODO no Upload Type in the schema
-					//studyUpload.setUploadType("FIELD_DATA");
+					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD);
+					studyUpload.setArkFunction(arkFunction);
 					java.util.Collection<StudyUpload> questionniareFieldDataUploads = new ArrayList<StudyUpload>();
-					//java.util.Collection<PhenoUpload> phenoUploads = iPhenotypicService.searchUpload(phenoUpload);
+					questionniareFieldDataUploads = iPhenotypicService.searchUpload(studyUpload);
 					return questionniareFieldDataUploads;
 				}
 				else {
@@ -147,11 +137,6 @@ public class PhenoDataUploadContainerPanel extends AbstractContainerPanel<PhenoF
 
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
-		/*searchPanel = new SearchPanel("searchPanel", feedBackPanel, listView, containerForm, arkCrudContainerVO);
-		searchPanel.initialisePanel();
-		searchPanel.setVisible(false);
-		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
-		*/
 		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 }
