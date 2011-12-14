@@ -1022,4 +1022,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		phenotypicDao.deleteUpload(studyUpload);
 	}
 	
+	public StudyUpload getStudyUpload(Long id){
+		return phenotypicDao.getStudyUpload(id);
+	}
+	
 }
