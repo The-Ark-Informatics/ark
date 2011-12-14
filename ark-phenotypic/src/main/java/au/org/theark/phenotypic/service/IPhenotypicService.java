@@ -255,4 +255,6 @@ public interface IPhenotypicService {
 	
 	public void deleteUpload(StudyUpload studyUpload);
 	
+	public StudyUpload getStudyUpload(Long id);
+	
 }

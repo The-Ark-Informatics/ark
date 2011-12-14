@@ -234,16 +234,18 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				StudyUpload studyUpload = null;
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
 				try {
-					data = upload.getPayload().getBytes(1, (int) upload.getPayload().length());
+					studyUpload  =iPhenotypicService.getStudyUpload(upload.getId());
+					data = studyUpload.getPayload().getBytes(1, (int) studyUpload.getPayload().length());
 				}
 				catch (SQLException e) {
 					log.error(e.getMessage());
 				}
 				
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, studyUpload.getFilename()));
 			}
 
 			@Override
@@ -262,6 +264,8 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private AjaxButton buildDownloadReportButton(final StudyUpload upload) {
+		
+		
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, new StringResourceModel("downloadReportKey", this, null)) {
 			/**
 			 * 
@@ -272,14 +276,16 @@ public class SearchResultListPanel extends Panel {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
+				StudyUpload studyUpload = null;
 				try {
-					data = upload.getUploadReport().getBytes(1, (int) upload.getUploadReport().length());
+					studyUpload  =iPhenotypicService.getStudyUpload(upload.getId());
+					data = studyUpload.getUploadReport().getBytes(1, (int) studyUpload.getUploadReport().length());
 				}
 				catch (SQLException e) {
 					log.error(e.getMessage());
 				}
 				
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + studyUpload.getId()));
 			}
 
 			@Override
