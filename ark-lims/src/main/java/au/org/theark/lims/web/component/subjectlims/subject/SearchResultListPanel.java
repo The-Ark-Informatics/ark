@@ -40,6 +40,8 @@ import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.StudyCrudContainerVO;
+import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
@@ -63,7 +65,10 @@ public class SearchResultListPanel extends Panel {
 	private static final Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
 	private ArkCrudContainerVO		arkCrudContainerVO;
 	private WebMarkupContainer		arkContextMarkup;
+	private WebMarkupContainer		studyNameMarkup;
+	private WebMarkupContainer		studyLogoMarkup;
 	private ContainerForm			containerForm;
+	private transient StudyHelper	studyHelper;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
@@ -71,11 +76,13 @@ public class SearchResultListPanel extends Panel {
 	@SpringBean(name = "arkLdapRealm")
 	private ArkLdapRealm				realm;
 
-	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id);
 		this.containerForm = containerForm;
 		this.arkContextMarkup = arkContextMarkup;
 		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 	}
 
 	public DataView<LinkSubjectStudy> buildDataView(ArkDataProvider2<LimsVO, LinkSubjectStudy> subjectProvider) {
@@ -194,6 +201,13 @@ public class SearchResultListPanel extends Panel {
 					containerForm.getContextUpdateLimsWMC().addOrReplace(limsContainerPanel);
 					target.add(containerForm.getContextUpdateLimsWMC());
 				}
+				
+				// Set Study Logo
+				studyHelper = new StudyHelper();
+				StudyCrudContainerVO studyCrudContainerVO = new StudyCrudContainerVO();
+				studyCrudContainerVO.setStudyNameMarkup(studyNameMarkup);
+				studyCrudContainerVO.setStudyLogoMarkup(studyLogoMarkup);
+				studyHelper.setStudyLogo(subjectFromBackend.getStudy(), target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
 			}
 		};
 		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getSubjectUID());
