@@ -203,7 +203,7 @@ public class HomePage extends BasePage {
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_LIMS)) {
 					// LIMS
 					LimsTabProviderImpl limsTabProvider = new LimsTabProviderImpl(arkModule.getName());
-					List<ITab> limsTabList = limsTabProvider.buildTabs(this.arkContextPanelMarkup);
+					List<ITab> limsTabList = limsTabProvider.buildTabs(this.arkContextPanelMarkup, this.studyNameMarkup, this.studyLogoMarkup);
 					for (ITab tab : limsTabList) {
 						moduleTabsList.add(tab);
 					}
