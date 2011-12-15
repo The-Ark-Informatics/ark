@@ -21,6 +21,7 @@ package au.org.theark.study.web.component.managestudy;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import au.org.theark.core.vo.StudyCrudContainerVO;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
 

@@ -75,15 +75,15 @@ import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
+import au.org.theark.core.vo.StudyCrudContainerVO;
 import au.org.theark.core.vo.StudyModelVO;
+import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractArchiveDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.managestudy.StudyCrudContainerVO;
-import au.org.theark.study.web.component.managestudy.StudyHelper;
 import au.org.theark.study.web.component.managestudy.StudyLogoValidator;
 
 public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
