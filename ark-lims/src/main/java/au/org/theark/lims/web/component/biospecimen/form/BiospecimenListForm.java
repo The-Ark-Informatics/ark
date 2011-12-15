@@ -90,11 +90,11 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	private Label												idLblFld;
 	private Label												nameLblFld;
 	private Label												studyLblFld;
+	private Label												subjectUidLblFld;
 	private Label												sampleTypeLblFld;
 	private Label												collectionLblFld;
 	private Label												quantityLblFld;
 	private Label												unitsLblFld;
-	private Label												commentsLblFld;
 	private Label												locationLbl;
 	private ArkBusyAjaxLink									locationLink;
 
@@ -248,9 +248,9 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				rowDetailsWMC.add(listDetailsLink);
 
 				studyLblFld = new Label("biospecimen.study.name", biospecimen.getStudy().getName());
+				subjectUidLblFld = new Label("biospecimen.linkSubjectStudy.subjectUid", biospecimen.getLinkSubjectStudy().getSubjectUID());
 				sampleTypeLblFld = new Label("biospecimen.sampleType.name", biospecimen.getSampleType().getName());
 				collectionLblFld = new Label("biospecimen.bioCollection.name", biospecimen.getBioCollection().getName());
-				commentsLblFld = new Label("biospecimen.comments", biospecimen.getComments());
 				
 				biospecimen.setQuantity(iLimsService.getQuantityAvailable(biospecimen));
 				if (biospecimen.getQuantity() == null) {
@@ -320,9 +320,9 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				item.add(idLblFld);
 				item.add(rowDetailsWMC);
 				item.add(studyLblFld);
+				item.add(subjectUidLblFld);
 				item.add(sampleTypeLblFld);
 				item.add(collectionLblFld);
-				item.add(commentsLblFld);
 				item.add(quantityLblFld);
 				item.add(unitsLblFld);
 				item.add(locationLink);
