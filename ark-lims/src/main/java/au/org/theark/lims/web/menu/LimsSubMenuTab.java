@@ -64,10 +64,14 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 	private IArkCommonService<Void>	iArkCommonService;
 
 	private WebMarkupContainer			arkContextMarkup;
+	private WebMarkupContainer			studyNameMarkup;
+	private WebMarkupContainer			studyLogoMarkup;
 
-	public LimsSubMenuTab(String id, WebMarkupContainer arkContextMarkup) {
+	public LimsSubMenuTab(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 		buildTabs();
 	}
 
@@ -120,7 +124,7 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS, arkFunction);
 
 		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)) {
-			panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup);// Note the constructor
+			panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup);// Note the constructor
 		}
 //		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
 //			panelToReturn = new BioCollectionContainerPanel(panelId, arkContextMarkup);// Note the constructor

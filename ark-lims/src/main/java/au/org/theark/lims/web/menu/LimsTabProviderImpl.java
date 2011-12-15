@@ -40,6 +40,8 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 	private static final long			serialVersionUID	= -2064073261192985087L;
 	private transient static Logger	log					= LoggerFactory.getLogger(LimsTabProviderImpl.class);
 	private WebMarkupContainer			arkContextPanelMarkup;
+	private WebMarkupContainer			studyNameMarkup;
+	private WebMarkupContainer			studyLogoMarkup;
 	private List<ITab>					moduleTabsList;
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -50,8 +52,10 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 		moduleTabsList = new ArrayList<ITab>();
 	}
 
-	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup) {
+	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		this.arkContextPanelMarkup = arkContextPanelMarkup;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 
 		// Forms the Main Top level Tab
 		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_LIMS);
@@ -70,7 +74,7 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 			@Override
 			public Panel getPanel(String pid) {
 				// The sub menu(s)
-				return new LimsSubMenuTab(pid, arkContextPanelMarkup);
+				return new LimsSubMenuTab(pid, arkContextPanelMarkup, studyNameMarkup, studyLogoMarkup);
 			}
 
 			public boolean isAccessible() {
