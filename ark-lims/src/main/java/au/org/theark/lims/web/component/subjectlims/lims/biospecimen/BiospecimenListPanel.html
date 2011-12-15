@@ -11,17 +11,17 @@
 						<th width="2%">
 							&nbsp;
 						</th>
-						<th width="10%">
+						<th width="5%">
 							<label for="id">
 								<wicket:message	key="biospecimen.id">
-									Biospecimen ID:
+									ID:
 								</wicket:message>
 							</label>
 						</th>
 						<th width="10%">
 							<label for="biospecimenId">
 								<wicket:message	key="biospecimen.biospecimenUid">
-									Biospecimen UID:
+									BiospecimenUID:
 								</wicket:message>
 							</label>
 						</th>
@@ -31,41 +31,31 @@
 							</wicket:message>
 						</th>
 						<th width="15%">
-							<label for="sampleType">
-								<wicket:message	key="biospecimen.sampleType">
-									Sample Type:
-								</wicket:message>
-							</label>
+							<wicket:message	key="biospecimen.bioCollection">
+								Collection:
+							</wicket:message>
 						</th>
 						<th width="15%">
-							<label for="collection">
-								<wicket:message	key="biospecimen.bioCollection">
-									Collection:
-								</wicket:message>
-							</label>
+							<wicket:message	key="biospecimen.sampleType">
+								Sample Type:
+							</wicket:message>
 						</th>
 						<th width="10%">
-							<label for="quantity">
-								<wicket:message	key="biospecimen.quantity">
-									Quantity:
-								</wicket:message>
-							</label>
+							<wicket:message	key="biospecimen.quantity">
+								Quantity:
+							</wicket:message>
 						</th>
-						<th width="14%">
-							<label for="comments">
-								<wicket:message	key="biospecimen.comments">
-									Comments:
-								</wicket:message>
-							</label>
+						<th width="15%">
+							<wicket:message	key="biospecimen.comments">
+								Comments:
+							</wicket:message>
 						</th>
 						<th width="5%">
-							<label for="location">
-								<wicket:message	key="biospecimen.location">
-									Location:
-								</wicket:message>
-							</label>
+							<wicket:message	key="biospecimen.location">
+								Location:
+							</wicket:message>
 						</th>
-						<th width="5%">
+						<th width="6%">
 							<wicket:message	key="biospecimen.barcoded">
 								Barcoded:
 							</wicket:message>
@@ -80,7 +70,7 @@
 							<td width="2%">
 								&nbsp;
 							</td>
-							<td width="10%">
+							<td width="5%">
 								<span wicket:id="biospecimen.id">
 									ID
 								</span>
@@ -98,11 +88,11 @@
 								</span>
 							</td>
 							<td width="15%">
-								<span wicket:id="biospecimen.sampleType.name">
+								<span wicket:id="biospecimen.bioCollection.name">
 								</span>
 							</td>
 							<td width="15%">
-								<span wicket:id="biospecimen.bioCollection.name">
+								<span wicket:id="biospecimen.sampleType.name">
 								</span>
 							</td>
 							<td width="10%">
@@ -111,7 +101,7 @@
 								<span wicket:id="biospecimen.unit">
 								</span>
 							</td>
-							<td width="14%">
+							<td width="15%">
 								<span wicket:id="biospecimen.comments" type="text">
 								</span>
 							</td>
@@ -122,7 +112,7 @@
 									</span>
 								</a>
 							</td>
-							<td width="5%" align="center">
+							<td width="6%" align="center">
 								<img wicket:id="biospecimen.barcoded"/>
 							</td>
 							<td width="2%">
