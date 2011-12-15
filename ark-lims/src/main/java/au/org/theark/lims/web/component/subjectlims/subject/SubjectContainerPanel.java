@@ -64,6 +64,8 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	private ContainerForm										containerForm;
 
 	private WebMarkupContainer									arkContextMarkup;
+	private WebMarkupContainer									studyNameMarkup;
+	private WebMarkupContainer									studyLogoMarkup;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService									iArkCommonService;
@@ -82,9 +84,12 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	 * @param id
 	 * @param arkContextMarkup
 	 */
-	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
+	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
+		
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 		containerForm = new ContainerForm("containerForm", cpModel);
@@ -166,7 +171,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	}
 
 	protected WebMarkupContainer initialiseSearchResults() {
-		searchResultListPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO);
+		searchResultListPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup);
 		subjectProvider = new ArkDataProvider2<LimsVO, LinkSubjectStudy>() {
 			/**
 			 * 
