@@ -1,0 +1,160 @@
+<wicket:panel>&nbsp;
+	<div id="searchPanelContainer">
+		<form wicket:id="searchForm">
+		
+			<div id="searchPanelContent">
+				
+				<div id="searchPanelBreaker">&nbsp;</div>				
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+		 				<label for="fieldId"><wicket:message key="customField.id">Field Id:</wicket:message></label>
+		 			</div> 
+		 		</div>
+		 		
+				<div id="fldControl">
+					<div class="label"> <!--  this will change to ID -->
+						<input wicket:id="customField.id"  type="text" />
+					</div>
+				</div>
+				
+				<div  id="panelMargin">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+						<label for="fieldName"><wicket:message key="customField.name">Name:</wicket:message></label>
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="customField.name"  type="text" />
+					</div>
+				</div>
+					
+				
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+		       	
+		       	<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+						<label for="fieldType"><wicket:message key="customField.fieldType">Field Type:</wicket:message></label>
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<select wicket:id="customField.fieldType">
+		       				<option>Number</option>
+							<option>Character</option>
+							<option>Date</option>
+		       			</select>
+		       		</div>
+				</div>
+		       	   		       			
+		       	<div id="panelMargin">&nbsp;</div>
+						
+				<div id="fldLabel">
+		 			<div class="label">
+						<label for="fieldDescription"><wicket:message key="customField.description">Description:</wicket:message></label>
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<textarea wicket:id="customField.description" cols="25"></textarea> 
+					</div>
+				</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+		       	
+		       	<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+						<label for="fieldUnits"><wicket:message key="customField.unitType">Units:</wicket:message></label>
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="customField.unitType.name"  type="text" />
+					</div>
+				</div>
+		       	   		       			
+		       	<div id="panelMargin">&nbsp;</div>
+						
+				<div id="fldLabel">
+		 			<div class="label">
+						&nbsp;
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+				
+				
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+		       	
+		       	<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+						<label for="fieldMinValue"><wicket:message key="customField.minValue">Minimum Value:</wicket:message></label>
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="customField.minValue"  type="text" />
+					</div>
+				</div>
+		       	   		       			
+		       	<div id="panelMargin">&nbsp;</div>
+						
+				<div id="fldLabel">
+		 			<div class="label">
+						<label for="fieldMinValue"><wicket:message key="customField.maxValue">Maximum Value:</wicket:message></label>
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="customField.maxValue"  type="text" />
+					</div>
+				</div>
+				
+				
+				
+				<div id="searchPanelBreaker">&nbsp;</div>		
+				<!--  Defines the location for buttons -->			
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">&nbsp;</div>
+				
+				<div id="fldControl">&nbsp;</div>
+				
+				<div id="panelMargin">&nbsp;</div>
+				
+				<div id="actionButtons">&nbsp;
+					<div>
+						<input wicket:id="search" type="submit" wicket:message="value:button.search" />&nbsp;
+						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />&nbsp;
+						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
+					</div>
+				</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+			</div>
+		</form>
+	</div>
+</wicket:panel>

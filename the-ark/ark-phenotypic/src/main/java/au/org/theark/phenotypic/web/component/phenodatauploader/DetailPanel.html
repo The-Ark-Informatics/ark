@@ -1,0 +1,107 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailsForm">
+		<div id="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+				<!--	Row 1 -->
+				<div id="fldLabel">
+					<label for="questionnaire"><wicket:message key="questionnaire">Collection:</wicket:message></label>
+ 				</div>
+				<div id="fldControl">
+						<select wicket:id="questionnaire">
+		       				<option>1</option>
+							<option>2</option>
+							<option>3</option>
+		       			</select>
+				</div>
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<label for="filename"><wicket:message key="upload.filename">Filename:</wicket:message></label>
+				</div>
+				<div id="fldControl">
+	        		<input wicket:id="upload.filename" id="upload" type="file"/>
+	    		</div>
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+				<!--	Row 2 -->
+				<div id="fldLabel">
+					<div class="label">
+						<label for="delimiterType"><wicket:message	key="upload.delimiterType">Delimiter:</wicket:message></label> 
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<select wicket:id="upload.delimiterType">
+       						<option>1</option>
+       						<option>2</option>
+       						<option>3</option>
+       					</select>
+	       			</div>
+				</div>
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<div wicket:id="overrideDataValidationContainer">
+						<wicket:message	key="overrideDataValidationChkBox">Override Data validation:</wicket:message>
+						<input type="checkbox" wicket:id="overrideDataValidationChkBox"/>
+					</div>
+				</div>
+				<div id="fldControl">
+					&nbsp;
+				</div>
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+			</div>
+			<!--	Row 2 Action Buttons -->
+
+			<div wicket:id="editButtonContainer">
+				<div id="fldLabel">
+					&nbsp;
+				</div>
+				<div id="fldControl">
+					&nbsp;
+				</div>
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				<div id="actionButtons">
+					&nbsp;
+					<div class="label">
+						<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+						&nbsp;
+						<div id="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+						&nbsp;
+						<div id="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
+					</div>
+				</div>
+			</div>
+			<div id="detailPanelBreaker">
+				&nbsp;
+			</div>
+		</div>
+	</form>
+</wicket:panel>

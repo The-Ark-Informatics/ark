@@ -1,0 +1,96 @@
+<wicket:panel>&nbsp;
+	<form wicket:id="detailForm">
+		<div id="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div id="detailPanelBreaker">&nbsp;</div>
+				
+				<!-- Row 1 ID and Name-->
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+					<div class="label">
+						<label for="id">
+							<wicket:message key="subjectFile.id">ID:</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="subjectFile.id" type="text" />
+					</div>
+				</div>
+				
+				<div id="panelMargin">&nbsp;</div>
+
+				<div id="fldLabel">
+					<div class="label">
+						<label for="filename"><wicket:message key="subjectFile.filename">Filename:</wicket:message></label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+			        	<input wicket:id="subjectFile.filename" id="subjectFile" type="file"/>
+					</div>
+				</div>
+				
+				
+				<div id="detailPanelBreaker">&nbsp;</div>
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+					<div class="label">
+						<label for="studyComponent">
+							<label for="studyComponent"><wicket:message	key="subjectFile.studyComp">Study Component:</wicket:message></label>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<select wicket:id="subjectFile.studyComp">
+			       		  	<option>Blood</option>
+							<option>Saliva</option>
+			       		</select>
+					</div>
+				</div>
+				
+				<div id="panelMargin">&nbsp;</div>
+
+				<div id="fldLabel">
+					<div class="label">
+						<label for="filename"><wicket:message key="subjectFile.comments">Comments:</wicket:message></label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+			        	<textarea wicket:id="subjectFile.comments" id="subjectFile.comments" cols="25" maxLength="500"></textarea>
+					</div>
+				</div>
+				
+				
+				<div id="detailPanelBreaker">&nbsp;</div>
+				
+				
+			</div>
+			<!-- Detail container end-->
+			<div id="detailPanelBreaker">&nbsp;</div>
+			
+			<!--  Buttons -->
+			<div wicket:id="editButtonContainer">
+				<div id="fldLabel">&nbsp;</div>
+				<div id="fldControl">&nbsp;</div>
+				<div id="panelMargin">&nbsp;</div>
+				<div id="actionButtons">&nbsp;
+					<div class="label">
+					  <input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
+					  <div id="panelMargin">&nbsp;</div>
+					  <input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />&nbsp;
+					  <div id="panelMargin">&nbsp;</div>
+					  <input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
+				  	</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</wicket:panel>

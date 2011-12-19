@@ -1,0 +1,73 @@
+<wicket:panel>
+	<div id="gridBoxContent">
+		<table class="gridBoxTableContainer" width="100%" align="center">
+			<tr width="100%" align="center">
+				<td width="100%" align="center">
+					<div id="gridBox">
+						<table class="gridBoxTable">
+							<!-- the Grid Heading -->
+							<tr>
+								<th>
+									&nbsp;
+								</th>
+								<th wicket:id="heading">
+									<label wicket:id="cellHead">
+										[cellHead]
+									</label>
+								</th>
+							</tr>
+							<!-- the Grid Body -->
+							<tr wicket:id="rows">
+								<td align="center" valign="middle">
+									<!-- the Row Numbering Part -->
+									<label wicket:id="rowNo">
+										[rowNo]
+									</label>
+								</td>
+								<!-- the Cell	-->
+								<td wicket:id="cols" align="center" valign="middle" width="34px" height="34px">
+									<span wicket:id="cell">
+										[cell]
+									</span>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<br>
+		<div wicket:id="gridBoxKeyContainer" style="margin-left: auto; margin-right: auto; width: 100%; border: 1px solid;">
+			<table width="100%" border="0">
+				<tbody>
+					<tr>
+						<td width="5%">
+							KEY:
+						</td>
+						<td width="34px" align="center">
+							<img wicket:id="emptyCellIcon" width="34" height="34"/>
+						</td>
+						<td width="20%">
+							Indicates an empty cell
+						</td>
+						<td width="34px" align="center">
+							<img wicket:id="usedCellIcon" width="34" height="34"/>
+						</td>
+						<td width="20%">
+							Indicates a used cell
+						</td>
+						<td width="34px" align="center">
+							<img wicket:id="barcodeCellIcon" width="34" height="34"/>
+						</td>
+						<td width="20%">
+							Indicates a bardcoded cell
+						</td>
+						<td width="15%">
+							<a href="#" wicket:id="downloadGridBoxDataLink">Download as XLS</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</wicket:panel>

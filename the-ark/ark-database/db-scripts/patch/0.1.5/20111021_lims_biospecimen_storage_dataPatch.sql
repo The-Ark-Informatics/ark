@@ -1,0 +1,10 @@
+USE LIMS;
+INSERT INTO lims.biospecimen_storage (name, size, unit_id) VALUES ('0.5ml', 0.5, (SELECT id FROM lims.unit WHERE name = 'mL'));
+INSERT INTO lims.biospecimen_storage (name, size, unit_id) VALUES ('1.5ml', 1.5, (SELECT id FROM lims.unit WHERE name = 'mL'));
+INSERT INTO lims.biospecimen_storage (name, size, unit_id) VALUES ('10ml tube', 10, (SELECT id FROM lims.unit WHERE name = 'mL'));
+INSERT INTO lims.biospecimen_storage (name, size, unit_id) VALUES ('2ml tube', 2, (SELECT id FROM lims.unit WHERE name = 'mL'));
+INSERT INTO lims.biospecimen_storage (name, size, unit_id) VALUES ('2ml', 2, (SELECT id FROM lims.unit WHERE name = 'mL'));
+INSERT INTO lims.biospecimen_storage (name, size, unit_id) VALUES ('50ml tube', 50, (SELECT id FROM lims.unit WHERE name = 'mL'));
+INSERT INTO lims.biospecimen_storage (name, size) VALUES ('96 well plate', null);
+INSERT INTO lims.biospecimen_storage (name, size) VALUES ('Large tube', null);
+INSERT INTO lims.biospecimen_storage (name, size) VALUES ('Parrafin Block', null);

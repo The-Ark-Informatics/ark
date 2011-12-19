@@ -1,0 +1,12 @@
+span.requiredHint {
+font-size:12pt;
+}
+
+.register {
+background-color:#EEE;
+position:relative;
+border:1px solid #000;
+width:600px;
+margin:1em 0;
+padding:15px;
+}

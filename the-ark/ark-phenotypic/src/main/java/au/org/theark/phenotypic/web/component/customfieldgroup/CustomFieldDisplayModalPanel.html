@@ -1,0 +1,82 @@
+<wicket:panel>
+  &nbsp;
+  <span wicket:id="detailFeedback"></span>
+  <form wicket:id="customFieldDisplayForm">
+	<div id="detailsPanelBorder">
+
+		<div wicket:id="cfdFieldContainer">
+		    <div id="searchPanelBreaker">&nbsp;</div>
+			<div id="panelContentLeft">&nbsp;</div>
+			<!--  Row 1 -->
+			<div id="fldLabel">
+				<div class="label">
+					<label for="customFieldDisplay.id"><wicket:message key="customFieldDisplay.id">Custom Field Display Id:</wicket:message></label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="customFieldDisplay.id"/>
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="customField.name"><wicket:message key="customField.name">Custom Field Name:</wicket:message></label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="customFieldDisplay.customField.name"  type="text" />
+				</div>
+			</div>
+			
+			<div id="searchPanelBreaker">&nbsp;</div>
+
+		
+		    <div id="searchPanelBreaker">&nbsp;</div>
+			<div id="panelContentLeft">&nbsp;</div>
+			<!--  Row 1 -->
+			<div id="fldLabel">
+				<div class="label">
+					<label for="customFieldDisplay.required"><wicket:message key="customFieldDisplay.required">Required:</wicket:message></label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input type="checkbox" wicket:id="customFieldDisplay.required"/>
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="customFieldDisplay.required.message"><wicket:message key="customFieldDisplay.required.message">Required Message:</wicket:message></label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="customFieldDisplay.requiredMessage"  type="text" />
+				</div>
+			</div>
+			</div>
+			<div id="searchPanelBreaker">&nbsp;</div>
+			
+			<div id="fldLabel">&nbsp;</div>
+			<div id="fldControl">&nbsp;</div>
+			<div id="panelMargin">&nbsp;</div>
+			<div id="actionButtons">&nbsp;
+				<div class="label">
+				  <input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
+				  <div id="panelMargin">&nbsp;</div>
+				  <input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />&nbsp;
+				  <div id="panelMargin">&nbsp;</div>
+			  	</div>
+			</div>
+		
+    </div>
+  </form>
+</wicket:panel>
+	

@@ -1,0 +1,8 @@
+
+use study;
+CREATE  TABLE `study`.`ark_usecase` (
+  `ID` INT NOT NULL AUTO_INCREMENT ,
+  `NAME` VARCHAR(255) NOT NULL ,
+  `DESCRIPTION` VARCHAR(1000) NULL ,
+  PRIMARY KEY (`ID`) )
+ENGINE=InnoDB;
