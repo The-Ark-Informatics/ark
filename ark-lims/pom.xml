@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>au.org.theark.lims</groupId>
 	<artifactId>ark-lims</artifactId>
-	<version>0.1.7-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<name>Ark LIMS</name>
 	<description>ARK Laboratory Information Management System. Deals with all functions related to Biospecimen collection management (patient reference, biospecimen details, location etc)</description>
@@ -131,6 +131,6 @@
 	</build>
 	<properties>
 		<jetty.version>6.1.4</jetty.version>
-		<ark-common.version>0.1.7-SNAPSHOT</ark-common.version>
+		<ark-common.version>1.0.0</ark-common.version>
 	</properties>
 </project>
