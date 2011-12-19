@@ -4,7 +4,7 @@
 
   <groupId>au.org.theark</groupId>
   <artifactId>ark-user-account</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <name>Create Super User Account in LDAP </name>
