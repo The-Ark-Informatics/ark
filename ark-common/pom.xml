@@ -4,7 +4,7 @@
 	<groupId>au.org.theark.core</groupId>
 	<artifactId>ark-common</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.7-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>Ark Common</name>
 	<description>The common ARK module/project that holds all core/common classes that other modules/projects may reference, via a Maven dependency</description>
 	<organization>
