@@ -107,7 +107,7 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD)) {
 			//panelToReturn = new FieldDataUploadContainerPanel(panelId); //OLD Code
-			panelToReturn = new PhenoDataUploadContainerPanel(panelId);
+			//panelToReturn = new PhenoDataUploadContainerPanel(panelId);
 		}
 	
 
