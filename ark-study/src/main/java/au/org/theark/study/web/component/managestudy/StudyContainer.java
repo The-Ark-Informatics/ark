@@ -68,35 +68,6 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 	 * @param studyNameMarkup
 	 * @param studyLogoMarkup
 	 * @param arkContextMarkup
-	 */
-	public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup) {
-
-		super(id);
-		cpModel = new CompoundPropertyModel<StudyModelVO>(new StudyModelVO());
-		// Create the form that will hold the other controls
-		containerForm = new Container("containerForm", cpModel);
-
-		/* Initialise the study crud container vo that has all the WebMarkups */
-		studyCrudContainerVO = new StudyCrudContainerVO();
-		// Set the Markups that was passed in into the VO
-		studyCrudContainerVO.setStudyNameMarkup(studyNameMarkup);
-		studyCrudContainerVO.setStudyLogoMarkup(studyLogoMarkup);
-		studyCrudContainerVO.setArkContextMarkup(arkContextMarkup);
-
-		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseDetailPanel());
-		containerForm.add(initialiseSearchResults());
-		containerForm.add(initialiseSearchPanel());
-		add(containerForm);
-	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 * @param studyNameMarkup
-	 * @param studyLogoMarkup
-	 * @param arkContextMarkup
 	 * @param moduleTabbedPanel
 	 */
 	public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup, TabbedPanel moduleTabbedPanel) {
