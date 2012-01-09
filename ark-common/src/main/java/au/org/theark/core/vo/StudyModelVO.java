@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
 
@@ -43,9 +44,12 @@ public class StudyModelVO implements Serializable {
 
 	private String						studySummaryLabel;
 	private String						subjectUidExample;
+	
+	private BiospecimenUidTemplate biospecimentUidTemplate;
 
 	public StudyModelVO() {
 		study = new Study();
+		biospecimentUidTemplate = new BiospecimenUidTemplate();
 		lmcAvailableApps = new HashSet<String>();
 		lmcSelectedApps = new HashSet<String>();
 		studyList = new ArrayList<Study>();
@@ -148,5 +152,14 @@ public class StudyModelVO implements Serializable {
 
 	public void setSelectedArkModules(Collection<ArkModule> selectedArkModules) {
 		this.selectedArkModules = selectedArkModules;
+	}
+
+	public BiospecimenUidTemplate getBiospecimentUidTemplate() {
+		return biospecimentUidTemplate;
+	}
+
+	public void setBiospecimentUidTemplate(
+			BiospecimenUidTemplate biospecimentUidTemplate) {
+		this.biospecimentUidTemplate = biospecimentUidTemplate;
 	}
 }
