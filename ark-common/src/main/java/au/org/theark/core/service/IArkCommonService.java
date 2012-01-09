@@ -31,6 +31,8 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
+import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -561,5 +563,9 @@ public interface IArkCommonService<T> {
 	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter);
 
 	public void createCustomFieldUpload(CustomFieldUpload cfUpload);
+	
+	public List<BiospecimenUidToken> getBiospecimenUidTokens();
+	
+	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars();
 	
 }

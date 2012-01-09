@@ -29,14 +29,11 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.StatelessSession;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -45,6 +42,8 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
+import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -942,6 +941,16 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 	public void createCustomFieldUpload(CustomFieldUpload cfUpload) {
 		getSession().save(cfUpload);
+	}
+	
+	public List<BiospecimenUidToken> getBiospecimenUidTokens() {
+		Criteria criteria = getSession().createCriteria(BiospecimenUidToken.class);
+		return criteria.list();
+	}
+	
+	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars() {
+		Criteria criteria = getSession().createCriteria(BiospecimenUidPadChar.class);
+		return criteria.list();
 	}
 	
 }
