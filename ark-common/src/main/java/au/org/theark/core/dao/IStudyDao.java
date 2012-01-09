@@ -24,6 +24,8 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
+import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -501,5 +503,9 @@ public interface IStudyDao {
 	 * @param cfUpload
 	 */
 	public void createCustomFieldUpload(CustomFieldUpload cfUpload);
+	
+	public List<BiospecimenUidToken> getBiospecimenUidTokens();
+	
+	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars();
 	
 }
