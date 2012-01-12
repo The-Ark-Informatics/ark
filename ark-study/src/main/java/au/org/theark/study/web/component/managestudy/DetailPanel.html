@@ -330,6 +330,38 @@
 			<div id="detailPanelBreaker">&nbsp;</div>
 			<!--  Row 7 Ends -->
 			
+			<div id="panelContentLeft">&nbsp;</div>
+			<div wicket:id="biospecimenUidContainer">
+			   <div id="fldLabel">
+			    <label for="subjectUidPrefix">
+				  <wicket:message	key="study.biospecimenUid.pattern">Biospeciment UID Pattern:</wicket:message><br>
+				  <div id="note"><wicket:message	key="study.subjectUid.patternNote">[Note replaced from properties]</wicket:message></div>
+				</label>
+			   </div>
+			   <div id="fldControl">
+					<div class="label">
+						<input wicket:id="biospecimentUidTemplate.biospecimenUidPrefix" type="text" maxLength="3" size="3"/>
+						<select wicket:id="biospecimentUidTemplate.biospecimenUidToken">
+		       				<option>-</option>
+							<option>@</option>
+							<option>#</option>
+		       			</select>
+						<select wicket:id="biospecimentUidTemplate.biospecimenUidPadChar">
+		       				<option>1</option>
+							<option>2</option>
+							<option>3</option>
+		       			</select>
+					</div>
+					<div class="label">
+						<b><span wicket:id="biospecimenUid.example">ABC-#########</span></b>
+					</div>
+			   </div>
+			   <div id="panelMargin">&nbsp;</div>
+			   <div id="fldLabel">&nbsp;</div>
+			   <div id="fldControl">&nbsp;</div>  
+		   </div>
+		   	<div id="detailPanelBreaker">&nbsp;</div>
+		   	
 			<!--  Row 8  -->
 			<div id="panelContentLeft">&nbsp;</div>
 		
@@ -371,6 +403,27 @@
 			
 			<div id="panelContentRight">&nbsp;</div>				
 			<div id="detailPanelBreaker">&nbsp;</div>
+			
+			<div id="panelContentLeft">&nbsp;</div>
+			 <div id="fldLabel">
+			  <wicket:message key="study">Study:</wicket:message>
+			</div>
+
+			<div id="fldControl">
+			  <select wicket:id="linkedToStudy">
+				<option>
+				  Study selection
+				</option>
+			  </select>
+		  </div>
+		  <div id="panelMargin">&nbsp;</div>
+		  <div id="fldLabel">
+			&nbsp;
+		  </div>
+		  <div id="fldControl">&nbsp;</div>
+		  <div id="panelContentRight">&nbsp;</div>				
+		  <div id="detailPanelBreaker">&nbsp;</div>
+			
 		</div>
 			<!-- The Inner WebMarkupContainer for the Details Input area -->
 			<!--  Row 10 Action Buttons -->
