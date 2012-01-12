@@ -21,9 +21,12 @@ package au.org.theark.core.model.study.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
@@ -38,8 +41,8 @@ public class LinkStudySubstudy implements java.io.Serializable {
 	// Fields
 
 	private Long	id;
-	private Study	studyByStudyKey;
-	private Study	studyBySubstudyKey;
+	private Study	mainStudy;
+	private Study	subStudy;
 
 	// Constructors
 
@@ -53,14 +56,17 @@ public class LinkStudySubstudy implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public LinkStudySubstudy(Long id, Study studyByStudyKey, Study studyBySubstudyKey) {
+	public LinkStudySubstudy(Long id, Study mainStudy, Study subStudy) {
 		this.id = id;
-		this.studyByStudyKey = studyByStudyKey;
-		this.studyBySubstudyKey = studyBySubstudyKey;
+		this.mainStudy = mainStudy;
+		this.subStudy = subStudy;
 	}
 
 	// Property accessors
+	
 	@Id
+	@SequenceGenerator(name = "link_study_substudy_generator", sequenceName = "LSS_STUDY_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "link_study_substudy_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -72,22 +78,22 @@ public class LinkStudySubstudy implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
-	public Study getStudyByStudyKey() {
-		return this.studyByStudyKey;
+	public Study getMainStudy() {
+		return this.mainStudy;
 	}
 
-	public void setStudyByStudyKey(Study studyByStudyKey) {
-		this.studyByStudyKey = studyByStudyKey;
+	public void setMainStudy(Study mainStudy) {
+		this.mainStudy = mainStudy;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUB_STUDY_ID")
-	public Study getStudyBySubstudyKey() {
-		return this.studyBySubstudyKey;
+	public Study getSubStudy() {
+		return this.subStudy;
 	}
 
-	public void setStudyBySubstudyKey(Study studyBySubstudyKey) {
-		this.studyBySubstudyKey = studyBySubstudyKey;
+	public void setSubStudy(Study subStudy) {
+		this.subStudy = subStudy;
 	}
 
 }

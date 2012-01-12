@@ -288,7 +288,7 @@ public class Study implements java.io.Serializable {
 		this.subStudyBiospecimenPrefix = subStudyBiospecimenPrefix;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "studyBySubstudyKey")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "subStudy")
 	public Set<LinkStudySubstudy> getLinkStudySubstudiesForid() {
 		return this.linkStudySubstudiesForid;
 	}
@@ -351,7 +351,7 @@ public class Study implements java.io.Serializable {
 		this.linkStudyStudycomps = linkStudyStudycomps;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "studyByStudyKey")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "mainStudy")
 	public Set<LinkStudySubstudy> getLinkStudySubstudiesForSubid() {
 		return this.linkStudySubstudiesForSubid;
 	}
