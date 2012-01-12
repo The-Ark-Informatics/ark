@@ -47,6 +47,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -114,7 +115,12 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void createStudy(StudyModelVO studyModelVo) {
 		// Create the study group in the LDAP for the selected applications and also add the roles to each of the application.
-		studyDao.create(studyModelVo.getStudy(), studyModelVo.getSelectedArkModules());
+		studyDao.create(studyModelVo.getStudy(), studyModelVo.getSelectedArkModules(), studyModelVo.getLinkedToStudy());
+		BiospecimenUidTemplate template  = studyModelVo.getBiospecimentUidTemplate();
+		if(template != null && template.getBiospecimenUidPadChar() != null && template.getBiospecimenUidPrefix() != null && template.getBiospecimenUidToken() != null){
+			template.setStudy(studyModelVo.getStudy());
+			arkCommonService.createBiospecimenUidTemplate(template);
+		}
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 		ah.setComment("Created Study " + studyModelVo.getStudy().getName());
