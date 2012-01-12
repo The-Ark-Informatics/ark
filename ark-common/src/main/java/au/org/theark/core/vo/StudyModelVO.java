@@ -46,6 +46,7 @@ public class StudyModelVO implements Serializable {
 	private String						subjectUidExample;
 	
 	private BiospecimenUidTemplate biospecimentUidTemplate;
+	private Study linkedToStudy;
 
 	public StudyModelVO() {
 		study = new Study();
@@ -161,5 +162,13 @@ public class StudyModelVO implements Serializable {
 	public void setBiospecimentUidTemplate(
 			BiospecimenUidTemplate biospecimentUidTemplate) {
 		this.biospecimentUidTemplate = biospecimentUidTemplate;
+	}
+
+	public Study getLinkedToStudy() {
+		return linkedToStudy;
+	}
+
+	public void setLinkedToStudy(Study linkedToStudy) {
+		this.linkedToStudy = linkedToStudy;
 	}
 }
