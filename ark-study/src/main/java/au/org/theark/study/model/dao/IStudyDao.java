@@ -62,7 +62,7 @@ public interface IStudyDao {
 
 	public void create(Study study);
 
-	public void create(Study study, Collection<ArkModule> selectedApplications);
+	public void create(Study study, Collection<ArkModule> selectedApplications, Study linkedToStudy);
 
 	public void updateStudy(Study study, Collection<ArkModule> selectedApplications) throws CannotRemoveArkModuleException;
 

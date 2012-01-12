@@ -35,7 +35,6 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -72,6 +71,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
+import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -115,12 +115,18 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		getSession().save(study);
 	}
 
-	public void create(Study study, Collection<ArkModule> selectedApplications) {
+	public void create(Study study, Collection<ArkModule> selectedApplications, Study mainStudy){
 		Session session = getSession();
 		session.save(study);
 		linkStudyToArkModule(study, selectedApplications, session, au.org.theark.core.Constants.MODE_NEW);
+		if(mainStudy != null){
+			LinkStudySubstudy linkStudySubstudy = new LinkStudySubstudy();
+			linkStudySubstudy.setMainStudy(mainStudy);
+			linkStudySubstudy.setSubStudy(study);//The current study that is/was being created
+			session.save(linkStudySubstudy);
+		}
 	}
-
+	
 	private void linkStudyToArkModule(Study study, Collection<ArkModule> selectedApplications, Session session, int mode) {
 
 		for (ArkModule arkModule : selectedApplications) {
