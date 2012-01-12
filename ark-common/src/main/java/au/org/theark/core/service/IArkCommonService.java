@@ -32,6 +32,7 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
+import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
@@ -567,5 +568,9 @@ public interface IArkCommonService<T> {
 	public List<BiospecimenUidToken> getBiospecimenUidTokens();
 	
 	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars();
+	
+	public List<Study> getStudyListAssignedToBiospecimenUidTemplate();
+	
+	public void createBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
 	
 }
