@@ -61,6 +61,7 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
+import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -950,6 +951,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	
 	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars(){
 		return studyDao.getBiospecimenUidPadChars();
+	}
+	
+	public List<Study> getStudyListAssignedToBiospecimenUidTemplate(){
+		return studyDao.getStudyListAssignedToBiospecimenUidTemplate();
+	}
+	
+	public void createBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate){
+		studyDao.createBiospecimenUidTemplate(biospecimenUidTemplate);
 	}
 
 }
