@@ -115,12 +115,26 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void createStudy(StudyModelVO studyModelVo) {
 		// Create the study group in the LDAP for the selected applications and also add the roles to each of the application.
+		
 		studyDao.create(studyModelVo.getStudy(), studyModelVo.getSelectedArkModules(), studyModelVo.getLinkedToStudy());
 		BiospecimenUidTemplate template  = studyModelVo.getBiospecimentUidTemplate();
 		if(template != null && template.getBiospecimenUidPadChar() != null && template.getBiospecimenUidPrefix() != null && template.getBiospecimenUidToken() != null){
 			template.setStudy(studyModelVo.getStudy());
 			arkCommonService.createBiospecimenUidTemplate(template);
 		}
+	
+		Collection<SubjectVO> selectedSubjects = studyModelVo.getSelectedSubjects();
+		if(selectedSubjects != null && selectedSubjects.size() > 0){
+			for (SubjectVO subjectVO : selectedSubjects) {
+				LinkSubjectStudy lss = new LinkSubjectStudy();
+				lss.setStudy(studyModelVo.getStudy());//Current Study
+				lss.setPerson(subjectVO.getLinkSubjectStudy().getPerson());
+				lss.setSubjectUID(subjectVO.getLinkSubjectStudy().getSubjectUID());
+				lss.setSubjectStatus(subjectVO.getLinkSubjectStudy().getSubjectStatus());
+				cloneSubjectForSubStudy(lss);
+			  }
+		}
+			
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 		ah.setComment("Created Study " + studyModelVo.getStudy().getName());
@@ -936,5 +950,9 @@ public class StudyServiceImpl implements IStudyService {
 	
 	public boolean isStudyComponentHasAttachments(StudyComp studyComp){
 		return studyDao.isStudyComponentHasAttachments(studyComp);
+	}
+	
+	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy){
+		studyDao.cloneSubjectForSubStudy(linkSubjectStudy);
 	}
 }

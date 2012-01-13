@@ -312,4 +312,6 @@ public interface IStudyDao {
 	
 	public boolean isStudyComponentHasAttachments(StudyComp studyComp);
 	
+	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy);
+	
 }
