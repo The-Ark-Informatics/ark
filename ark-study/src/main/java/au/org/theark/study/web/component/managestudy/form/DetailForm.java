@@ -74,6 +74,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
@@ -84,6 +85,7 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyCrudContainerVO;
 import au.org.theark.core.vo.StudyModelVO;
+import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -128,6 +130,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private CheckBox									autoConsentChkBox;
 
 	private Palette<ArkModule>						arkModulePalette;
+	private Palette<SubjectVO>				subjectPalette;
 
 	// Study logo uploader
 	private FileUploadField							fileUploadField;
@@ -140,6 +143,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private Label										studySummaryLabel;
 	private WebMarkupContainer						autoSubjectUidContainer;
 	private WebMarkupContainer						subjectUidContainer;
+	
 	private String										subjectUidExampleTxt	= "";
 
 	private transient StudyHelper					studyHelper;
@@ -151,7 +155,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private Label	biospecimenUidExampleLbl;
 	private WebMarkupContainer biospecimentUidContainer;
 	private DropDownChoice<Study>	studyDdc;
-
+	private WebMarkupContainer subjectPaletteContainer;
 	
 	/**
 	 * Constructor
@@ -362,6 +366,11 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		dateOfApplicationDp.add(datePicker);
 
 		initialiseArkModulePalette();
+		
+		subjectPaletteContainer = new WebMarkupContainer("subjectPaletteContainer");
+		subjectPaletteContainer.setOutputMarkupPlaceholderTag(true);
+		
+		initialiseSubjectPalette();
 
 		CompoundPropertyModel<StudyModelVO> studyCmpModel = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel(); // details.getCpm();
 		initStudyStatusDropDown(studyCmpModel);
@@ -465,11 +474,23 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 						
 						subjectUidContainer.setEnabled(false);
 						biospecimentUidContainer.setEnabled(false);
+						
+						//Also get a list of subjects linked with the Main study
+					
+						LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
+						linkSubjectStudy.setStudy(study);
+						SubjectVO subjectVO = new SubjectVO();
+						subjectVO.setLinkSubjectStudy(linkSubjectStudy);
+						
+						Collection<SubjectVO> subjects = iArkCommonService.searchPageableSubjects(subjectVO, 0,Integer.MAX_VALUE);
+						containerForm.getModelObject().setAvailableSubjects(subjects);
+						//Populate the Pallette available and selected
 						target.add(subjectUidTokenDpChoices);
 						target.add(autoGenSubIdChkBox);
 						target.add(biospecimentUidContainer);
 						target.add(subjectUidContainer);
 						target.add(subjectUidExampleLbl);
+						target.add(subjectPaletteContainer);
 					}else if(isNew()){
 						initSubjectUidTokenDropDown();
 						if(autoGenSubIdChkBox.getModelObject()){
@@ -559,6 +580,14 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 		arkModulePalette = new ArkPalette("selectedArkModules", selectedModPm, availableModulesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false);
 	}
+	
+	private void initialiseSubjectPalette(){
+		CompoundPropertyModel<StudyModelVO> sm = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("subjectUID", "subjectUID");
+		PropertyModel<Collection<SubjectVO>> selectedSubjectsPm = new PropertyModel<Collection<SubjectVO>>(sm,"selectedSubjects");
+		PropertyModel<Collection<SubjectVO>> availableSubjectsPm = new PropertyModel<Collection<SubjectVO>>(sm,"availableSubjects");
+		subjectPalette = new ArkPalette("selectedSubjects", selectedSubjectsPm, availableSubjectsPm,renderer,au.org.theark.study.web.Constants.PALETTE_ROWS, false);
+	}
 
 	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModelVO> studyCmpModel) {
 		List<StudyStatus> studyStatusList = iArkCommonService.getListOfStudyStatus();
@@ -633,6 +662,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		studyCrudVO.getDetailPanelFormContainer().add(autoSubjectUidContainer);
 		studyCrudVO.getDetailPanelFormContainer().add(autoConsentChkBox);
 		studyCrudVO.getDetailPanelFormContainer().add(arkModulePalette);
+		
+		subjectPaletteContainer.add(subjectPalette);
+		studyCrudVO.getDetailPanelFormContainer().add(subjectPaletteContainer);
+		
 		studyCrudVO.getDetailPanelFormContainer().add(studyCrudVO.getStudyLogoUploadContainer());
 		studyCrudVO.getSummaryContainer().add(studySummaryLabel);
 		
@@ -851,5 +884,14 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			log.error(e.getMessage());
 		}
 		return studyListForUser;
+	}
+
+	public WebMarkupContainer getSubjectPaletteContainer() {
+		return subjectPaletteContainer;
+	}
+
+	public void setSubjectPaletteContainer(
+			WebMarkupContainer subjectPaletteContainer) {
+		this.subjectPaletteContainer = subjectPaletteContainer;
 	}
 }
