@@ -403,13 +403,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 					Session session = getSession();
 					Person person = subjectVo.getLinkSubjectStudy().getPerson();
-					session.save(person);
-
-					PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-					if (person.getLastName() != null) {
-						personLastNameHistory.setPerson(person);
-						personLastNameHistory.setLastName(person.getLastName());
-						session.save(personLastNameHistory);
+					if(person.getId() == null){
+						session.save(person);	
+						PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+						if (person.getLastName() != null) {
+							personLastNameHistory.setPerson(person);
+							personLastNameHistory.setLastName(person.getLastName());
+							session.save(personLastNameHistory);
+						}
 					}
 
 					// Update subjectPreviousLastname
@@ -418,7 +419,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 					LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
 					session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
 																// OpenSessionInViewFilter
-
 					// Auto-generate SubjectUID
 					if (subjectVo.getLinkSubjectStudy().getStudy().getAutoGenerateSubjectUid()) {
 						String subjectUID = getNextGeneratedSubjectUID(subjectVo.getLinkSubjectStudy().getStudy());
@@ -1678,6 +1678,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			isFlag = true;
 		}
 		return isFlag;
+	}
+	
+	/**
+	 * This is a lean version of CreateSubject. Here we basically copy the details of the existing subject and link it to the new study.
+	 * The person object will still remain same and is not duplicated.There is no generation of SubjectUID as it is inherited from the existing subject details of the main study.
+	 */
+	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy) {
+		// Add Business Validations here as well apart from UI validation
+		Session session = getSession();
+		session.save( linkSubjectStudy);
 	}
 	
 }

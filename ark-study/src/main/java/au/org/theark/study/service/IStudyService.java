@@ -274,5 +274,7 @@ public interface IStudyService {
 	 * @return
 	 */
 	public boolean isStudyComponentHasAttachments(StudyComp studyComp);
+	
+	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy);
 			
 }
