@@ -44,6 +44,7 @@ public class SubjectVO implements Serializable {
 	protected SubjectFile								subjectFile;
 	protected ConsentAnswer								consentAnswerSelect;
 	protected String										subjectPreviousLastname;
+	protected String subjectUID;
 
 	/** A List of phone numbers linked to this person/subject */
 	protected Collection<Phone>						phoneList;
@@ -171,5 +172,13 @@ public class SubjectVO implements Serializable {
 
 	public void setSubjectFileList(Collection<SubjectFile> subjectFileList) {
 		this.subjectFileList = subjectFileList;
+	}
+
+	public String getSubjectUID() {
+		return subjectUID;
+	}
+
+	public void setSubjectUID(String subjectUID) {
+		this.subjectUID = subjectUID;
 	}
 }

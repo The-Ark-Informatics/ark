@@ -27,6 +27,7 @@ import java.util.Set;
 
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 
 @SuppressWarnings("serial")
@@ -41,6 +42,9 @@ public class StudyModelVO implements Serializable {
 
 	private Collection<ArkModule>	availableArkModules;
 	private Collection<ArkModule>	selectedArkModules;
+	
+	private Collection<SubjectVO> availableSubjects;
+	private Collection<SubjectVO> selectedSubjects;
 
 	private String						studySummaryLabel;
 	private String						subjectUidExample;
@@ -58,6 +62,8 @@ public class StudyModelVO implements Serializable {
 		modulesSelected = new ArrayList<ModuleVO>();
 		availableArkModules = new ArrayList<ArkModule>();
 		selectedArkModules = new ArrayList<ArkModule>();
+		availableSubjects = new ArrayList<SubjectVO>();
+		selectedSubjects = new ArrayList<SubjectVO>();
 		setSubjectUidExample(new String());
 	}
 
@@ -170,5 +176,21 @@ public class StudyModelVO implements Serializable {
 
 	public void setLinkedToStudy(Study linkedToStudy) {
 		this.linkedToStudy = linkedToStudy;
+	}
+
+	public Collection<SubjectVO> getAvailableSubjects() {
+		return availableSubjects;
+	}
+
+	public void setAvailableSubjects(Collection<SubjectVO> availableSubjects) {
+		this.availableSubjects = availableSubjects;
+	}
+
+	public Collection<SubjectVO> getSelectedSubjects() {
+		return selectedSubjects;
+	}
+
+	public void setSelectedSubjects(Collection<SubjectVO> selectedSubjects) {
+		this.selectedSubjects = selectedSubjects;
 	}
 }
