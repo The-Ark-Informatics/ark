@@ -1,0 +1,7 @@
+use lims;
+CREATE  TABLE `lims`.`biocollectionuid_sequence` (
+  `STUDY_NAME_ID` VARCHAR(150) NOT NULL ,
+  `UID_SEQUENCE` INT NOT NULL DEFAULT 0 ,
+  `INSERT_LOCK` INT NOT NULL DEFAULT 0 ,
+  PRIMARY KEY (`STUDY_NAME_ID`) )
+ENGINE = InnoDB;
