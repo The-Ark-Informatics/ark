@@ -42,6 +42,8 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
+import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
@@ -963,6 +965,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 	public void createBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate){
 		getSession().save(biospecimenUidTemplate);
+	}
+	
+	public List<BioCollectionUidToken> getBioCollectionUidToken() {
+		Example token = Example.create(new BioCollectionUidToken());
+		Criteria criteria = getSession().createCriteria(BioCollectionUidToken.class).add(token);
+		return criteria.list();
+	}
+	
+	public List<BioCollectionUidPadChar> getBioCollectionUidPadChar() {
+		Criteria criteria = getSession().createCriteria(BioCollectionUidPadChar.class);
+		return criteria.list();
 	}
 	
 }

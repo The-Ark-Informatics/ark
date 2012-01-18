@@ -24,6 +24,8 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
+import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
@@ -512,5 +514,9 @@ public interface IStudyDao {
 	public List<Study> getStudyListAssignedToBiospecimenUidTemplate();
 	
 	public void createBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
+	
+	public List<BioCollectionUidToken> getBioCollectionUidToken();
+	
+	public List<BioCollectionUidPadChar> getBioCollectionUidPadChar();
 	
 }
