@@ -334,19 +334,19 @@
 			<div wicket:id="biospecimenUidContainer">
 			   <div id="fldLabel">
 			    <label for="subjectUidPrefix">
-				  <wicket:message	key="study.biospecimenUid.pattern">Biospeciment UID Pattern:</wicket:message><br>
+				  <wicket:message	key="study.biospecimenUid.pattern">Biospecimen UID Pattern:</wicket:message><br>
 				  <div id="note"><wicket:message	key="study.subjectUid.patternNote">[Note replaced from properties]</wicket:message></div>
 				</label>
 			   </div>
 			   <div id="fldControl">
 					<div class="label">
-						<input wicket:id="biospecimentUidTemplate.biospecimenUidPrefix" type="text" maxLength="3" size="3"/>
-						<select wicket:id="biospecimentUidTemplate.biospecimenUidToken">
+						<input wicket:id="biospecimenUidTemplate.biospecimenUidPrefix" type="text" maxLength="3" size="3"/>
+						<select wicket:id="biospecimenUidTemplate.biospecimenUidToken">
 		       				<option>-</option>
 							<option>@</option>
 							<option>#</option>
 		       			</select>
-						<select wicket:id="biospecimentUidTemplate.biospecimenUidPadChar">
+						<select wicket:id="biospecimenUidTemplate.biospecimenUidPadChar">
 		       				<option>1</option>
 							<option>2</option>
 							<option>3</option>
@@ -356,10 +356,36 @@
 						<b><span wicket:id="biospecimenUid.example">ABC-#########</span></b>
 					</div>
 			   </div>
-			   <div id="panelMargin">&nbsp;</div>
-			   <div id="fldLabel">&nbsp;</div>
-			   <div id="fldControl">&nbsp;</div>  
-		   </div>
+			 </div> 
+			 <div id="panelMargin">&nbsp;</div>
+			 
+			 <div wicket:id="bioCollectionUidContainer">
+				 <div id="fldLabel">
+				 	<label for="bioCollectionUidPrefix">
+				  		<wicket:message	key="study.bioCollectionUid.pattern">Biocollection UID Pattern:</wicket:message><br>
+				  		<div id="note"><wicket:message	key="study.bioCollectionUid.patternNote">[Note replaced from properties]</wicket:message></div>
+					</label>
+				 </div>
+				 <div id="fldControl">
+				 	<div class="label">
+							<input wicket:id="bioCollectionUidTemplate.bioCollectionUidPrefix" type="text" maxLength="3" size="3"/>
+							<select wicket:id="bioCollectionUidTemplate.bioCollectionUidToken">
+			       				<option>-</option>
+								<option>@</option>
+								<option>#</option>
+			       			</select>
+							<select wicket:id="bioCollectionUidTemplate.bioCollectionUidPadChar">
+			       				<option>1</option>
+								<option>2</option>
+								<option>3</option>
+			       			</select>
+						</div>
+						<div class="label">
+							<b><span wicket:id="study.bioCollectionUid.example">ABC-#########</span></b>
+						</div>
+				 </div>  
+			 </div>
+		   
 		   	<div id="detailPanelBreaker">&nbsp;</div>
 		   	
 			<!--  Row 8  -->
