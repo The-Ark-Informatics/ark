@@ -25,9 +25,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 
 @SuppressWarnings("serial")
@@ -49,12 +49,16 @@ public class StudyModelVO implements Serializable {
 	private String						studySummaryLabel;
 	private String						subjectUidExample;
 	
-	private BiospecimenUidTemplate biospecimentUidTemplate;
+	private BiospecimenUidTemplate biospecimenUidTemplate;
+	private BioCollectionUidTemplate bioCollectionUidTemplate;
+	private String bioCollectionUidExample;
+	
 	private Study linkedToStudy;
 
 	public StudyModelVO() {
 		study = new Study();
-		biospecimentUidTemplate = new BiospecimenUidTemplate();
+		biospecimenUidTemplate = new BiospecimenUidTemplate();
+		bioCollectionUidTemplate = new BioCollectionUidTemplate();
 		lmcAvailableApps = new HashSet<String>();
 		lmcSelectedApps = new HashSet<String>();
 		studyList = new ArrayList<Study>();
@@ -161,13 +165,13 @@ public class StudyModelVO implements Serializable {
 		this.selectedArkModules = selectedArkModules;
 	}
 
-	public BiospecimenUidTemplate getBiospecimentUidTemplate() {
-		return biospecimentUidTemplate;
+	public BiospecimenUidTemplate getBiospecimenUidTemplate() {
+		return biospecimenUidTemplate;
 	}
 
-	public void setBiospecimentUidTemplate(
+	public void setBiospecimenUidTemplate(
 			BiospecimenUidTemplate biospecimentUidTemplate) {
-		this.biospecimentUidTemplate = biospecimentUidTemplate;
+		this.biospecimenUidTemplate = biospecimentUidTemplate;
 	}
 
 	public Study getLinkedToStudy() {
@@ -192,5 +196,22 @@ public class StudyModelVO implements Serializable {
 
 	public void setSelectedSubjects(Collection<SubjectVO> selectedSubjects) {
 		this.selectedSubjects = selectedSubjects;
+	}
+
+	public BioCollectionUidTemplate getBioCollectionUidTemplate() {
+		return bioCollectionUidTemplate;
+	}
+
+	public void setBioCollectionUidTemplate(
+			BioCollectionUidTemplate bioCollectionUidTemplate) {
+		this.bioCollectionUidTemplate = bioCollectionUidTemplate;
+	}
+
+	public String getBioCollectionUidExample() {
+		return bioCollectionUidExample;
+	}
+
+	public void setBioCollectionUidExample(String bioCollectionUidExample) {
+		this.bioCollectionUidExample = bioCollectionUidExample;
 	}
 }
