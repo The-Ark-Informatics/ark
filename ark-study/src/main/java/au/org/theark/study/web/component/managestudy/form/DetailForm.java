@@ -70,7 +70,11 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
+import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
+import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
+import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -149,13 +153,26 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private transient StudyHelper					studyHelper;
 	protected StudyCrudContainerVO				studyCrudVO;
 
+	private WebMarkupContainer biospecimentUidContainer;
 	private TextField<String> biospecimenUidPrefixTxtFld;
+	private TextField<String> biospecimentUidTokenTxtFld;
 	private DropDownChoice<BiospecimenUidToken> biospecimenUidTokenDdc;
 	private DropDownChoice<BiospecimenUidPadChar> biospecimenUidPadCharDdc;
 	private Label	biospecimenUidExampleLbl;
-	private WebMarkupContainer biospecimentUidContainer;
+	private String biospecimenUidExampleTxt;
+	
 	private DropDownChoice<Study>	studyDdc;
 	private WebMarkupContainer subjectPaletteContainer;
+	
+	
+	private WebMarkupContainer bioCollectionUidContainer;
+	private TextField<String> bioCollectionUidPrefixTxtFld;
+	private TextField<String> bioCollectionUidTokenTxtFld;
+	private DropDownChoice<BioCollectionUidToken> bioCollectionUidTokenDdc;
+	private DropDownChoice<BioCollectionUidPadChar> bioCollectionUidPadCharDdc;
+	private Label  bioCollectionUidExampleLbl;
+	private String bioCollectionUidExampleTxt	= "";
+	
 	
 	/**
 	 * Constructor
@@ -197,12 +214,51 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		super.onBeforeRender();
 		initialiseStudyLogo();
 	}
+	
+	private void initBioCollectionUidTokenDropDown(){
+		
+		List<BioCollectionUidToken> bioCollectionUidToken = iArkCommonService.getBioCollectionUidToken();
+		ChoiceRenderer<BioCollectionUidToken> choiceRenderer = new ChoiceRenderer<BioCollectionUidToken>(Constants.NAME, Constants.ID);
+		bioCollectionUidTokenDdc = new DropDownChoice<BioCollectionUidToken>("bioCollectionUidTemplate.bioCollectionUidToken", bioCollectionUidToken,choiceRenderer);
+		
+		bioCollectionUidTokenDdc.add(new AjaxFormComponentUpdatingBehavior("onChange"){
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				
+				bioCollectionUidExampleTxt = getBiocollectionUidExample();
+				target.add(bioCollectionUidExampleLbl);
+			}
+		});
+	}
+	
+	private void initBioCollectionUidPadCharDdc() {
+		
+		List<BioCollectionUidPadChar> bioCollectionUidPadChar = new ArrayList<BioCollectionUidPadChar>(0);
+		bioCollectionUidPadChar = iArkCommonService.getBioCollectionUidPadChar();
+		ChoiceRenderer<BioCollectionUidPadChar> choiceRenderer = new ChoiceRenderer<BioCollectionUidPadChar>(Constants.NAME, Constants.ID);
+		bioCollectionUidPadCharDdc = new DropDownChoice<BioCollectionUidPadChar>("bioCollectionUidTemplate.bioCollectionUidPadChar", bioCollectionUidPadChar, choiceRenderer);
+		
+		bioCollectionUidPadCharDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				bioCollectionUidExampleTxt = getBiocollectionUidExample();
+				target.add(bioCollectionUidExampleLbl);
+			}
+		});
+	}
 
 	private void initBiospecimenUidTokenDropDown() {
 		List<BiospecimenUidToken> biospecimenUidTokens = new ArrayList<BiospecimenUidToken>(0);
 		biospecimenUidTokens = iArkCommonService.getBiospecimenUidTokens();
 		ChoiceRenderer<BiospecimenUidToken> choiceRenderer = new ChoiceRenderer<BiospecimenUidToken>(Constants.NAME, Constants.ID);
-		biospecimenUidTokenDdc = new DropDownChoice<BiospecimenUidToken>("biospecimentUidTemplate.biospecimenUidToken", biospecimenUidTokens, choiceRenderer);
+		biospecimenUidTokenDdc = new DropDownChoice<BiospecimenUidToken>("biospecimenUidTemplate.biospecimenUidToken", biospecimenUidTokens, choiceRenderer);
 		biospecimenUidTokenDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			/**
 			 * 
@@ -211,17 +267,17 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				//target.add(biospecimenUidExampleLbl);
+				biospecimenUidExampleTxt = getBiospecimenUidExample();
+				target.add(biospecimenUidExampleLbl);
 			}
 		});
-		biospecimenUidTokenDdc.setNullValid(true);
 	}
 	
 	private void initBiospecimenUidPadCharDdc() {
 		List<BiospecimenUidPadChar> biospecimenUidPadChars = new ArrayList<BiospecimenUidPadChar>(0);
 		biospecimenUidPadChars = iArkCommonService.getBiospecimenUidPadChars();
 		ChoiceRenderer<BiospecimenUidPadChar> choiceRenderer = new ChoiceRenderer<BiospecimenUidPadChar>(Constants.NAME, Constants.ID);
-		biospecimenUidPadCharDdc = new DropDownChoice<BiospecimenUidPadChar>("biospecimentUidTemplate.biospecimenUidPadChar", biospecimenUidPadChars, choiceRenderer);
+		biospecimenUidPadCharDdc = new DropDownChoice<BiospecimenUidPadChar>("biospecimenUidTemplate.biospecimenUidPadChar", biospecimenUidPadChars, choiceRenderer);
 		biospecimenUidPadCharDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			/**
 			 * 
@@ -230,44 +286,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
+				biospecimenUidExampleTxt = getBiospecimenUidExample();
 				target.add(biospecimenUidExampleLbl);
 			}
 		});
 	}
 	
-	
-	public String getBiospecimentUidExample(){
-		
-		String bioSpecimenUidPrefix = new String();
-		String bioSpecimenUidToken = new String();
-		String bioSpecimenUidPaddedIncrementor = new String();
-		String bioSpecimenUidPadChar = new String("0");
-		String bioSpecimenUidStart = new String("1");
-		StringBuilder bioSpecimenUidExample = new StringBuilder();
-
-		bioSpecimenUidPrefix = biospecimenUidPrefixTxtFld.getDefaultModelObjectAsString();
-		
-		if(biospecimenUidTokenDdc.getModelObject() != null){
-			bioSpecimenUidToken  = biospecimenUidTokenDdc.getModelObject().getName();
-		}
-		
-		if( biospecimenUidPadCharDdc.getModelObject() != null){
-			bioSpecimenUidPadChar = biospecimenUidPadCharDdc.getModelObject().getName();	
-		}
-		
-		if(bioSpecimenUidPadChar.isEmpty()) {
-			bioSpecimenUidPadChar = new String("0");
-		}
-		
-		int size = Integer.parseInt(bioSpecimenUidPadChar);
-		bioSpecimenUidPaddedIncrementor = StringUtils.leftPad(bioSpecimenUidStart, size, "0");
-		
-		bioSpecimenUidExample.append(bioSpecimenUidPrefix);
-		bioSpecimenUidExample.append(bioSpecimenUidToken);
-		bioSpecimenUidExample.append(bioSpecimenUidPaddedIncrementor);
-		
-		return bioSpecimenUidExample.toString();
-	}
 	
 	public void initialiseDetailForm() {
 		studyIdTxtFld = new TextField<String>(Constants.STUDY_ID);
@@ -417,21 +441,77 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		
 		biospecimentUidContainer = new WebMarkupContainer("biospecimenUidContainer");
 		biospecimentUidContainer.setOutputMarkupPlaceholderTag(true);
-		biospecimenUidPrefixTxtFld = new TextField<String>("biospecimentUidTemplate.biospecimenUidPrefix");
+		biospecimenUidPrefixTxtFld = new TextField<String>("biospecimenUidTemplate.biospecimenUidPrefix");
 		
 		biospecimenUidPrefixTxtFld.add( new AjaxFormComponentUpdatingBehavior("onChange"){
 			
 			protected void onUpdate(AjaxRequestTarget target) {
+				biospecimenUidExampleTxt = getBiospecimenUidExample();
 				target.add(biospecimenUidExampleLbl);
 			}
 		});
 		
+		
+		// Token to separate the string (e.g. "-")
+		biospecimentUidTokenTxtFld = new TextField<String>("biospecimenUidTemplate.biospecimenUidToken");
+		biospecimentUidTokenTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				biospecimenUidExampleTxt = getSubjectUidExample();
+				target.add(subjectUidExampleLbl);
+			}
+		});
+		subjectUidTokenTxtFld.setVisible(false);
+		
 		initBiospecimenUidTokenDropDown();
 		initBiospecimenUidPadCharDdc();
-		Model<String> someModel = new Model<String>( getBiospecimentUidExample());
-		biospecimenUidExampleLbl = new Label("biospecimenUid.example", someModel);
+		biospecimenUidExampleLbl = new Label("biospecimenUid.example",  new PropertyModel<String>(this,"biospecimenUidExampleTxt"));
 		biospecimenUidExampleLbl.setOutputMarkupId(true);
+		biospecimenUidExampleLbl.setVisible(true);
+		
 		initStudyDdc();
+		
+		
+		/* BioCollection UID Container and related controls */
+		bioCollectionUidContainer = new WebMarkupContainer("bioCollectionUidContainer");
+		bioCollectionUidContainer.setOutputMarkupPlaceholderTag(true);
+		
+		initBioCollectionUidTokenDropDown();
+		initBioCollectionUidPadCharDdc();
+		
+		bioCollectionUidPrefixTxtFld = new TextField<String>("bioCollectionUidTemplate.bioCollectionUidPrefix");
+		bioCollectionUidPrefixTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				//TODO
+			}
+		});
+		//bioCollectionUidPrefixTxtFld.setVisible(false);
+		
+		
+		// Label showing example auto-generated SubjectUIDs
+		bioCollectionUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
+		if (bioCollectionUidExampleTxt == null || bioCollectionUidExampleTxt.length() == 0) {
+			bioCollectionUidExampleTxt = Constants.BIOCOLLECTIONUID_EXAMPLE;
+		}
+		
+		bioCollectionUidExampleLbl = new Label("study.bioCollectionUid.example", new PropertyModel<String>(this, "bioCollectionUidExampleTxt"));
+		bioCollectionUidExampleLbl.setOutputMarkupId(true);
+		bioCollectionUidExampleLbl.setDefaultModelObject(containerForm.getModelObject().getBioCollectionUidExample());
+		bioCollectionUidExampleLbl.setVisible(true);
+		
+		
+		
 		attachValidators();
 		addComponents();
 	}
@@ -570,6 +650,63 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 		return subjectUidExample;
 	}
+	
+	
+	public String getBiospecimenUidExample(){
+	
+		BiospecimenUidTemplate template = containerForm.getModelObject().getBiospecimenUidTemplate();
+		StringBuffer sb = new StringBuffer();
+		String biospecimenUidPadChar = new String("0");
+		String uidStart = new String();
+		String uidExample = new String();
+		
+		
+		if(template != null && template.getBiospecimenUidPrefix() != null){
+			sb.append(template.getBiospecimenUidPrefix());
+			
+		}
+
+		if(template != null && template.getBiospecimenUidToken() != null){
+			sb.append(template.getBiospecimenUidToken().getName());
+		}
+
+		if(template != null && template.getBiospecimenUidPadChar() != null){
+			biospecimenUidPadChar = template.getBiospecimenUidPadChar().getName();
+			
+		}
+		
+		int size = Integer.parseInt(biospecimenUidPadChar);
+		String paddedIncrementor = StringUtils.leftPad(uidStart, size, "0");
+		uidExample = sb.append(paddedIncrementor).toString();
+		
+		return uidExample;
+	}
+	
+	public String getBiocollectionUidExample(){
+		
+		BioCollectionUidTemplate template = containerForm.getModelObject().getBioCollectionUidTemplate();
+		StringBuffer sb = new StringBuffer();
+		String uidPadChar = new String("0");
+		String uidStart = new String();
+		String uidExample = new String();
+
+		if(template != null && template.getBioCollectionUidPrefix() != null){
+			sb.append(template.getBioCollectionUidPrefix());
+		}
+
+		if(template != null && template.getBioCollectionUidToken() != null){
+			sb.append(template.getBioCollectionUidToken().getName());
+		}
+
+		if(template != null && template.getBioCollectionUidPadChar() != null){
+			uidPadChar = template.getBioCollectionUidPadChar().getName();
+		}
+		
+		int size = Integer.parseInt(uidPadChar);
+		String paddedIncrementor = StringUtils.leftPad(uidStart, size, "0");
+		uidExample = sb.append(paddedIncrementor).toString();
+		return uidExample;
+	}
 
 	@SuppressWarnings("unchecked")
 	private void initialiseArkModulePalette() {
@@ -607,8 +744,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				@SuppressWarnings("unused")
-				String subjectUidToken = subjectUidTokenDpChoices.getDefaultModelObjectAsString();
 				subjectUidExampleTxt = getSubjectUidExample();
 				target.add(subjectUidExampleLbl);
 			}
@@ -627,8 +762,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				@SuppressWarnings("unused")
-				String subjectUidPadChar = subjectUidPadCharsDpChoices.getDefaultModelObjectAsString();
 				subjectUidExampleTxt = getSubjectUidExample();
 				target.add(subjectUidExampleLbl);
 			}
@@ -674,8 +807,18 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		biospecimentUidContainer.add(biospecimenUidPrefixTxtFld);
 		biospecimentUidContainer.add(biospecimenUidPadCharDdc);
 		biospecimentUidContainer.add(biospecimenUidExampleLbl);
+		//biospecimentUidContainer.add(biospecimentUidTokenTxtFld);
 		
 		studyCrudVO.getDetailPanelFormContainer().add(biospecimentUidContainer);
+		
+		
+		bioCollectionUidContainer.add(bioCollectionUidTokenDdc);
+		bioCollectionUidContainer.add(bioCollectionUidPrefixTxtFld);
+		bioCollectionUidContainer.add(bioCollectionUidPadCharDdc);
+		bioCollectionUidContainer.add(bioCollectionUidExampleLbl);
+		//bioCollectionUidContainer.add()
+		studyCrudVO.getDetailPanelFormContainer().add(bioCollectionUidContainer);
+		
 		
 		add(studyCrudVO.getDetailPanelFormContainer());
 		add(studyCrudVO.getSummaryContainer());
@@ -893,5 +1036,22 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	public void setSubjectPaletteContainer(
 			WebMarkupContainer subjectPaletteContainer) {
 		this.subjectPaletteContainer = subjectPaletteContainer;
+	}
+
+	public String getBiospecimenUidExampleTxt() {
+		return biospecimenUidExampleTxt;
+	}
+
+	public void setBiospecimenUidExampleTxt(String biospecimenUidExampleTxt) {
+		this.biospecimenUidExampleTxt = biospecimenUidExampleTxt;
+	}
+
+	public TextField<String> getBioCollectionUidTokenTxtFld() {
+		return bioCollectionUidTokenTxtFld;
+	}
+
+	public void setBioCollectionUidTokenTxtFld(
+			TextField<String> bioCollectionUidTokenTxtFld) {
+		this.bioCollectionUidTokenTxtFld = bioCollectionUidTokenTxtFld;
 	}
 }
