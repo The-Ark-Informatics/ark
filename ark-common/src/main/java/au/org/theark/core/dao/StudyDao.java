@@ -42,8 +42,11 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
+import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
+import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
@@ -977,5 +980,52 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(BioCollectionUidPadChar.class);
 		return criteria.list();
 	}
+	
+	public void createBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate){
+		getSession().save(bioCollectionUidTemplate);
+	}
+	
+	public Boolean studyHasBiospecimen(Study study){
+		Integer totalCount = null;
+		StatelessSession session = getStatelessSession();
+		Criteria criteria = session.createCriteria(Biospecimen.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.setProjection(Projections.rowCount());
+		totalCount = (Integer) criteria.uniqueResult();
+		session.close();
+		return totalCount > 0;
+	}
+	
+	public Boolean studyHasBioCollection(Study study){
+		Integer totalCount = null;
+		StatelessSession session = getStatelessSession();
+		Criteria criteria = session.createCriteria(BioCollection.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.setProjection(Projections.rowCount());
+		totalCount = (Integer) criteria.uniqueResult();
+		session.close();
+		return totalCount > 0;
+	}
+	
+	public BiospecimenUidTemplate getBiospecimentUidTemplate(Study study){
+		Criteria criteria = getSession().createCriteria(BiospecimenUidTemplate.class);
+		criteria.add(Restrictions.eq("study",study));
+		return (BiospecimenUidTemplate)criteria.uniqueResult();
+	}
+	
+	public BioCollectionUidTemplate getBioCollectionUidTemplate(Study study){
+		Criteria criteria = getSession().createCriteria(BioCollectionUidTemplate.class);
+		criteria.add(Restrictions.eq("study",study));
+		return (BioCollectionUidTemplate)criteria.uniqueResult();
+	}
+	
+	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate){
+		getSession().saveOrUpdate(biospecimenUidTemplate);
+	}
+	
+	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate){
+		getSession().saveOrUpdate(bioCollectionUidTemplate);
+	}
+	
 	
 }

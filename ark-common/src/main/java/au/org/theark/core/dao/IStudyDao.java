@@ -25,6 +25,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
+import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
@@ -518,5 +519,19 @@ public interface IStudyDao {
 	public List<BioCollectionUidToken> getBioCollectionUidToken();
 	
 	public List<BioCollectionUidPadChar> getBioCollectionUidPadChar();
+	
+	public void createBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate);
+	
+	public Boolean studyHasBiospecimen(Study study);
+	
+	public Boolean studyHasBioCollection(Study study);
+	
+	public BiospecimenUidTemplate getBiospecimentUidTemplate(Study study);
+	
+	public BioCollectionUidTemplate getBioCollectionUidTemplate(Study study);
+	
+	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
+	
+	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate);
 	
 }

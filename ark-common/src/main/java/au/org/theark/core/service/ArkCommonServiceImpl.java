@@ -61,6 +61,7 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
+import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
@@ -969,6 +970,34 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	
 	public List<BioCollectionUidPadChar> getBioCollectionUidPadChar(){
 		return studyDao.getBioCollectionUidPadChar();
+	}
+	
+	public void createBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate){
+		studyDao.createBioCollectionUidTemplate(bioCollectionUidTemplate);
+	}
+	
+	public Boolean studyHasBiospecimen(Study study){
+		return studyDao.studyHasBiospecimen(study);
+	}
+	
+	public Boolean studyHasBioCollection(Study study){
+		return studyDao.studyHasBioCollection(study);
+	}
+	
+	public BiospecimenUidTemplate getBiospecimentUidTemplate(Study study){
+		return studyDao.getBiospecimentUidTemplate(study);
+	}
+	
+	public BioCollectionUidTemplate getBioCollectionUidTemplate(Study study){
+		return studyDao.getBioCollectionUidTemplate(study);
+	}
+	
+	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate){
+		 studyDao.updateBiospecimenUidTemplate(biospecimenUidTemplate);
+	}
+	
+	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate){
+		 studyDao.updateBioCollectionUidTemplate(bioCollectionUidTemplate);
 	}
 
 }
