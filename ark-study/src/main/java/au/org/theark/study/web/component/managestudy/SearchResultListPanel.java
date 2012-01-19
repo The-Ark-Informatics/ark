@@ -39,6 +39,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
+import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkLdapRealm;
@@ -164,6 +166,22 @@ public class SearchResultListPanel extends Panel {
 				realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 
 				Study searchStudy = iArkCommonService.getStudy(study.getId());
+				
+				//Get the BioSpecimen UID Pattern if present for the given study
+				BiospecimenUidTemplate biospecimentUidTemplate = iArkCommonService.getBiospecimentUidTemplate(searchStudy);
+				if(biospecimentUidTemplate != null){
+					studyContainerForm.getModelObject().setBiospecimenUidTemplate(biospecimentUidTemplate);
+				}
+
+				//Get the BioCollection UID pattern if present
+				BioCollectionUidTemplate bioCollectionUidTemplate = iArkCommonService.getBioCollectionUidTemplate(searchStudy);
+				if(bioCollectionUidTemplate != null){
+					studyContainerForm.getModelObject().setBioCollectionUidTemplate(bioCollectionUidTemplate);
+				}
+				
+				//Check if the study has been linked to a Main Study and if so get a reference to the main study.
+				//studyContainerForm.getModelObject().setLinkedToStudy(linkedToStudy)
+				
 				studyContainerForm.getModelObject().setStudy(searchStudy);
 				studyContainerForm.getModelObject().setSubjectUidExample(iArkCommonService.getSubjectUidExample(searchStudy));
 
@@ -174,6 +192,8 @@ public class SearchResultListPanel extends Panel {
 				// All SubjectUID generator fields grouped within a container(s)
 				WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
 				WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();
+				
+				
 
 				// Disable all SubjectUID generation fields is subjects exist
 				if (iArkCommonService.studyHasSubjects(searchStudy)) {
@@ -189,9 +209,26 @@ public class SearchResultListPanel extends Panel {
 						subjectUidcontainer.setEnabled(false);
 					}
 				}
+				
+				//Disable bioSpecimentUidContainer if there are no biospecimens created as yet
+				WebMarkupContainer biospecimenUidContainer = detailForm.getBiospecimenUidContainer();
+				if(iArkCommonService.studyHasBiospecimen(studyContainerForm.getModelObject().getStudy())){
+					biospecimenUidContainer.setEnabled(false);
+				}else{
+					biospecimenUidContainer.setEnabled(true);
+				}
+				
+				WebMarkupContainer bioCollectionUidContainer = detailForm.getBioCollectionUidContainer();
+				if(iArkCommonService.studyHasBioCollection(studyContainerForm.getModelObject().getStudy())){
+					bioCollectionUidContainer.setEnabled(false);
+				}else{
+					bioCollectionUidContainer.setEnabled(true);
+				}
 
 				target.add(autoSubjectUidcontainer);
 				target.add(subjectUidcontainer);
+				target.add(bioCollectionUidContainer);
+				target.add(biospecimenUidContainer);
 
 				// Example auto-generated SubjectUID
 				Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
