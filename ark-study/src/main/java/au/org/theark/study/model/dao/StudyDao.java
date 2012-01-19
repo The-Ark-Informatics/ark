@@ -556,9 +556,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		String subjectUid = new String("");
 
 		if (study.getId() != null && study.getAutoGenerateSubjectUid() != null) {
-			if (study.getSubjectUidPrefix() != null)
+			
+			if (study.getSubjectUidPrefix() != null){
 				subjectUidPrefix = study.getSubjectUidPrefix();
-
+			}
+			
 			if (study.getSubjectUidToken() != null && study.getSubjectUidToken().getName() != null) {
 				subjectUidToken = study.getSubjectUidToken().getName();
 			}
