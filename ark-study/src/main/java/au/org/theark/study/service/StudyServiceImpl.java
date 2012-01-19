@@ -47,6 +47,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -117,10 +118,16 @@ public class StudyServiceImpl implements IStudyService {
 		// Create the study group in the LDAP for the selected applications and also add the roles to each of the application.
 		
 		studyDao.create(studyModelVo.getStudy(), studyModelVo.getSelectedArkModules(), studyModelVo.getLinkedToStudy());
-		BiospecimenUidTemplate template  = studyModelVo.getBiospecimentUidTemplate();
+		BiospecimenUidTemplate template  = studyModelVo.getBiospecimenUidTemplate();
 		if(template != null && template.getBiospecimenUidPadChar() != null && template.getBiospecimenUidPrefix() != null && template.getBiospecimenUidToken() != null){
 			template.setStudy(studyModelVo.getStudy());
 			arkCommonService.createBiospecimenUidTemplate(template);
+		}
+		
+		BioCollectionUidTemplate bioCollectionUidTemplate = studyModelVo.getBioCollectionUidTemplate();
+		if(bioCollectionUidTemplate != null && bioCollectionUidTemplate.getBioCollectionUidPadChar() != null && bioCollectionUidTemplate.getBioCollectionUidToken() != null){
+			bioCollectionUidTemplate.setStudy(studyModelVo.getStudy());
+			arkCommonService.createBioCollectionUidTemplate(bioCollectionUidTemplate);
 		}
 	
 		Collection<SubjectVO> selectedSubjects = studyModelVo.getSelectedSubjects();
@@ -146,7 +153,24 @@ public class StudyServiceImpl implements IStudyService {
 	public void updateStudy(StudyModelVO studyModelVo) throws CannotRemoveArkModuleException {
 
 		studyDao.updateStudy(studyModelVo.getStudy(), studyModelVo.getSelectedArkModules());
-
+		
+		if(!arkCommonService.studyHasBiospecimen(studyModelVo.getStudy())){
+			//Defensive check to make sure no  biospecimens are attached to the study
+			BiospecimenUidTemplate template  = studyModelVo.getBiospecimenUidTemplate();
+			if(template != null &&  template.getBiospecimenUidPadChar() != null && template.getBiospecimenUidPrefix() != null && template.getBiospecimenUidToken() != null){
+				template.setStudy(studyModelVo.getStudy());
+				arkCommonService.updateBiospecimenUidTemplate(template);
+			}
+		}
+		
+		if(!arkCommonService.studyHasBioCollection(studyModelVo.getStudy())){
+			BioCollectionUidTemplate bioCollectionUidTemplate = studyModelVo.getBioCollectionUidTemplate();
+			if(bioCollectionUidTemplate != null && bioCollectionUidTemplate.getBioCollectionUidPadChar() != null && bioCollectionUidTemplate.getBioCollectionUidToken() != null){
+				bioCollectionUidTemplate.setStudy(studyModelVo.getStudy());
+				arkCommonService.updateBioCollectionUidTemplate(bioCollectionUidTemplate);
+			}
+		}
+		
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		ah.setComment("Updated Study " + studyModelVo.getStudy().getName());
