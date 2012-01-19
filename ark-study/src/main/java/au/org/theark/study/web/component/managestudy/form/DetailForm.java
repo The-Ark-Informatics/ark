@@ -153,7 +153,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private transient StudyHelper					studyHelper;
 	protected StudyCrudContainerVO				studyCrudVO;
 
-	private WebMarkupContainer biospecimentUidContainer;
+	private WebMarkupContainer biospecimenUidContainer;
 	private TextField<String> biospecimenUidPrefixTxtFld;
 	private TextField<String> biospecimentUidTokenTxtFld;
 	private DropDownChoice<BiospecimenUidToken> biospecimenUidTokenDdc;
@@ -439,8 +439,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 		initialiseStudyLogo();
 		
-		biospecimentUidContainer = new WebMarkupContainer("biospecimenUidContainer");
-		biospecimentUidContainer.setOutputMarkupPlaceholderTag(true);
+		biospecimenUidContainer = new WebMarkupContainer("biospecimenUidContainer");
+		biospecimenUidContainer.setOutputMarkupPlaceholderTag(true);
 		biospecimenUidPrefixTxtFld = new TextField<String>("biospecimenUidTemplate.biospecimenUidPrefix");
 		
 		biospecimenUidPrefixTxtFld.add( new AjaxFormComponentUpdatingBehavior("onChange"){
@@ -509,9 +509,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		bioCollectionUidExampleLbl.setOutputMarkupId(true);
 		bioCollectionUidExampleLbl.setDefaultModelObject(containerForm.getModelObject().getBioCollectionUidExample());
 		bioCollectionUidExampleLbl.setVisible(true);
-		
-		
-		
 		attachValidators();
 		addComponents();
 	}
@@ -553,7 +550,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 						//initSubjectUidTokenDropDown();
 						
 						subjectUidContainer.setEnabled(false);
-						biospecimentUidContainer.setEnabled(false);
+						biospecimenUidContainer.setEnabled(false);
 						
 						//Also get a list of subjects linked with the Main study
 					
@@ -567,7 +564,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 						//Populate the Pallette available and selected
 						target.add(subjectUidTokenDpChoices);
 						target.add(autoGenSubIdChkBox);
-						target.add(biospecimentUidContainer);
+						target.add(biospecimenUidContainer);
 						target.add(subjectUidContainer);
 						target.add(subjectUidExampleLbl);
 						target.add(subjectPaletteContainer);
@@ -579,10 +576,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 							subjectUidContainer.setEnabled(false);
 						}
 						
-						biospecimentUidContainer.setEnabled(true);
+						biospecimenUidContainer.setEnabled(true);
 						
 						target.add(subjectUidContainer);
-						target.add(biospecimentUidContainer);
+						target.add(biospecimenUidContainer);
 						target.add(subjectUidTokenDpChoices);
 					}
 				}
@@ -803,13 +800,13 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		studyCrudVO.getSummaryContainer().add(studySummaryLabel);
 		
 		
-		biospecimentUidContainer.add(biospecimenUidTokenDdc);
-		biospecimentUidContainer.add(biospecimenUidPrefixTxtFld);
-		biospecimentUidContainer.add(biospecimenUidPadCharDdc);
-		biospecimentUidContainer.add(biospecimenUidExampleLbl);
+		biospecimenUidContainer.add(biospecimenUidTokenDdc);
+		biospecimenUidContainer.add(biospecimenUidPrefixTxtFld);
+		biospecimenUidContainer.add(biospecimenUidPadCharDdc);
+		biospecimenUidContainer.add(biospecimenUidExampleLbl);
 		//biospecimentUidContainer.add(biospecimentUidTokenTxtFld);
 		
-		studyCrudVO.getDetailPanelFormContainer().add(biospecimentUidContainer);
+		studyCrudVO.getDetailPanelFormContainer().add(biospecimenUidContainer);
 		
 		
 		bioCollectionUidContainer.add(bioCollectionUidTokenDdc);
@@ -1053,5 +1050,23 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	public void setBioCollectionUidTokenTxtFld(
 			TextField<String> bioCollectionUidTokenTxtFld) {
 		this.bioCollectionUidTokenTxtFld = bioCollectionUidTokenTxtFld;
+	}
+
+	public WebMarkupContainer getBiospecimenUidContainer() {
+		return biospecimenUidContainer;
+	}
+
+	public void setBiospecimenUidContainer(
+			WebMarkupContainer biospecimenUidContainer) {
+		this.biospecimenUidContainer = biospecimenUidContainer;
+	}
+
+	public WebMarkupContainer getBioCollectionUidContainer() {
+		return bioCollectionUidContainer;
+	}
+
+	public void setBioCollectionUidContainer(
+			WebMarkupContainer bioCollectionUidContainer) {
+		this.bioCollectionUidContainer = bioCollectionUidContainer;
 	}
 }
