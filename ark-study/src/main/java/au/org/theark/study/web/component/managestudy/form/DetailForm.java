@@ -173,6 +173,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private Label  bioCollectionUidExampleLbl;
 	private String bioCollectionUidExampleTxt	= "";
 	
+	private WebMarkupContainer linkedToStudyDDContainer;
+	
 	
 	/**
 	 * Constructor
@@ -509,6 +511,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		bioCollectionUidExampleLbl.setOutputMarkupId(true);
 		bioCollectionUidExampleLbl.setDefaultModelObject(containerForm.getModelObject().getBioCollectionUidExample());
 		bioCollectionUidExampleLbl.setVisible(true);
+		
+		
+		linkedToStudyDDContainer = new WebMarkupContainer("linkedToStudyDDContainer");
+		linkedToStudyDDContainer.setOutputMarkupId(true);
+		
+		
 		attachValidators();
 		addComponents();
 	}
@@ -551,6 +559,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 						
 						subjectUidContainer.setEnabled(false);
 						biospecimenUidContainer.setEnabled(false);
+						bioCollectionUidContainer.setEnabled(false);
 						
 						//Also get a list of subjects linked with the Main study
 					
@@ -558,7 +567,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 						linkSubjectStudy.setStudy(study);
 						SubjectVO subjectVO = new SubjectVO();
 						subjectVO.setLinkSubjectStudy(linkSubjectStudy);
-						
 						Collection<SubjectVO> subjects = iArkCommonService.searchPageableSubjects(subjectVO, 0,Integer.MAX_VALUE);
 						containerForm.getModelObject().setAvailableSubjects(subjects);
 						//Populate the Pallette available and selected
@@ -566,6 +574,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 						target.add(autoGenSubIdChkBox);
 						target.add(biospecimenUidContainer);
 						target.add(subjectUidContainer);
+						target.add(bioCollectionUidContainer);
 						target.add(subjectUidExampleLbl);
 						target.add(subjectPaletteContainer);
 					}else if(isNew()){
@@ -577,7 +586,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 						}
 						
 						biospecimenUidContainer.setEnabled(true);
-						
+						bioCollectionUidContainer.setEnabled(true);
+						target.add(bioCollectionUidContainer);
 						target.add(subjectUidContainer);
 						target.add(biospecimenUidContainer);
 						target.add(subjectUidTokenDpChoices);
@@ -786,7 +796,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		subjectUidContainer.add(subjectUidExampleLbl);
 		
 		studyCrudVO.getDetailPanelFormContainer().add(subjectUidContainer);
-		studyCrudVO.getDetailPanelFormContainer().add(studyDdc);
+		linkedToStudyDDContainer.add(studyDdc);
+		studyCrudVO.getDetailPanelFormContainer().add(linkedToStudyDDContainer);
+		//studyCrudVO.getDetailPanelFormContainer().add(studyDdc);
 		// AutoGenerateSubjectUID needs own container to be disabled on certain criteria
 		autoSubjectUidContainer.add(autoGenSubIdChkBox);
 		studyCrudVO.getDetailPanelFormContainer().add(autoSubjectUidContainer);
@@ -1068,5 +1080,14 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	public void setBioCollectionUidContainer(
 			WebMarkupContainer bioCollectionUidContainer) {
 		this.bioCollectionUidContainer = bioCollectionUidContainer;
+	}
+
+	public WebMarkupContainer getLinkedToStudyDDContainer() {
+		return linkedToStudyDDContainer;
+	}
+
+	public void setLinkedToStudyDDContainer(
+			WebMarkupContainer linkedToStudyDDContainer) {
+		this.linkedToStudyDDContainer = linkedToStudyDDContainer;
 	}
 }
