@@ -18,6 +18,13 @@
 --
 -- Table structure for table `action_type`
 --
+--
+-- Current Database: `study`
+--
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `study` /*!40100 DEFAULT CHARACTER SET latin1 */;
+
+USE `study`;
 
 DROP TABLE IF EXISTS `action_type`;
 SET @saved_cs_client     = @@character_set_client;
