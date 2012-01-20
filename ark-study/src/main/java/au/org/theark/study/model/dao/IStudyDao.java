@@ -42,6 +42,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -313,5 +314,7 @@ public interface IStudyDao {
 	public boolean isStudyComponentHasAttachments(StudyComp studyComp);
 	
 	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy);
+	
+	public LinkStudySubstudy isSubStudy(Study study);
 	
 }

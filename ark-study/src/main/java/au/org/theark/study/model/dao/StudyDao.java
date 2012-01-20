@@ -1692,4 +1692,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		session.save( linkSubjectStudy);
 	}
 	
+	public LinkStudySubstudy isSubStudy(Study study){
+		Criteria criteria  = getStatelessSession().createCriteria(LinkStudySubstudy.class);
+		criteria.add(Restrictions.eq("subStudy", study));
+		LinkStudySubstudy linkedStudy = (LinkStudySubstudy)criteria.uniqueResult();
+		return linkedStudy;
+	}
+	
 }
