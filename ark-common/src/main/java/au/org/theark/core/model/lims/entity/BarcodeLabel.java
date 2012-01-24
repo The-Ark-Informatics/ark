@@ -32,6 +32,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.Study;
@@ -53,6 +54,8 @@ public class BarcodeLabel implements java.io.Serializable {
 	private String							labelPrefix;
 	private String							labelSuffix;
 	private List<BarcodeLabelData>	barcodeLabelData	= new ArrayList<BarcodeLabelData>(0);
+	private BarcodeLabel					barcodeLabelTemplate;
+	private Long							version;
 
 	public BarcodeLabel() {
 	}
@@ -104,7 +107,7 @@ public class BarcodeLabel implements java.io.Serializable {
 	public void setBarcodePrinter(BarcodePrinter printer) {
 		this.barcodePrinter = printer;
 	}
-	
+
 	@Column(name = "NAME", length = 50, nullable = false)
 	public String getName() {
 		return this.name;
@@ -148,5 +151,36 @@ public class BarcodeLabel implements java.io.Serializable {
 
 	public void setBarcodeLabelData(List<BarcodeLabelData> barcodeLabelData) {
 		this.barcodeLabelData = barcodeLabelData;
+	}
+
+	/**
+	 * @param barcodeLabelTemplate
+	 *           the barcodeLabelTemplate to set
+	 */
+	public void setBarcodeLabelTemplate(BarcodeLabel barcodeLabelTemplate) {
+		this.barcodeLabelTemplate = barcodeLabelTemplate;
+	}
+
+	/**
+	 * @return the cloneBarcodeLabel
+	 */
+	@Transient
+	public BarcodeLabel getBarcodeLabelTemplate() {
+		return barcodeLabelTemplate;
+	}
+
+	/**
+	 * @return the version
+	 */
+	@Column(name = "VERSION")
+	public Long getVersion() {
+		return version;
+	}
+
+	/**
+	 * @param version the version to set
+	 */
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 }
