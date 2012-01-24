@@ -107,7 +107,7 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 			}
 			else {
 				log.debug(tsplString);
-				target.appendJavaScript("printStrawBarcode(\"" + barcodePrinter.getName() + "\",\"" + tsplString + "\");");
+				target.appendJavaScript("printBarcode(\"" + barcodePrinter.getName() + "\",\"" + tsplString + "\");");
 				onPostSubmit(target, form);
 			}
 		}

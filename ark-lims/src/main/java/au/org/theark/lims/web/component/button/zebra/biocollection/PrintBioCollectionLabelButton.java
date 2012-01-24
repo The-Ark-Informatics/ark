@@ -126,7 +126,7 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 			}
 			else {
 				log.debug(zplString);
-				target.appendJavaScript("printZebraBarcode(\"" + zplString + "\");");
+				target.appendJavaScript("printBarcode(\"" + barcodePrinter.getName() + "\",\"" + zplString + "\");");
 				onPostSubmit(target, form);
 			}
 		}
