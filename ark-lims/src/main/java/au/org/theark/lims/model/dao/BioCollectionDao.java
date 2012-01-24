@@ -225,6 +225,40 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		return bioCollectionCustomFieldDataList;
 	}
 	
+	public BioCollectionCustomFieldData getBioCollectionCustomFieldData(BioCollection bioCollectionCriteria, ArkFunction arkFunction, String customFieldName) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
+		sb.append("LEFT JOIN cfd.bioCollectionCustomFieldData as fieldList ");
+		sb.append(" WITH fieldList.bioCollection.id = :bioCollectionId ");
+		sb.append( "  WHERE cfd.customField.study.id = :studyId" );
+		sb.append(" AND cfd.customField.arkFunction.id = :functionId");
+		sb.append(" AND cfd.customField.name = :customFieldName");
+		sb.append(" ORDER BY cfd.sequence");
+		
+		Query query = getSession().createQuery(sb.toString());
+		query.setParameter("bioCollectionId", bioCollectionCriteria.getId());
+		query.setParameter("studyId", bioCollectionCriteria.getStudy().getId());
+		query.setParameter("functionId", arkFunction.getId());
+		query.setParameter("customFieldName", customFieldName);
+		
+		BioCollectionCustomFieldData bccfd = new BioCollectionCustomFieldData();
+		List<Object[]> listOfObjects = query.list();
+		for (Object[] objects : listOfObjects) {
+			CustomFieldDisplay cfd = new CustomFieldDisplay();
+			
+			if(objects.length > 0 && objects.length >= 1){
+				
+					cfd = (CustomFieldDisplay)objects[0];
+					if(objects[1] != null){
+						bccfd = (BioCollectionCustomFieldData)objects[1];
+					}else{
+						bccfd.setCustomFieldDisplay(cfd);
+					}
+			}
+		}
+		return bccfd;
+	}
+	
 	public void createBioCollectionCustomFieldData(BioCollectionCustomFieldData bioCollectionCFData) {
 		getSession().save(bioCollectionCFData);	
 	}

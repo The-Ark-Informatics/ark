@@ -328,4 +328,6 @@ public interface ILimsService {
 	public List<BiospecimenQuality> getBiospecimenQualityList();
 	
 	public String getNextGeneratedBiospecimenUID(Study study);
+	
+	public BioCollectionCustomFieldData getBioCollectionCustomFieldData(BioCollection bioCollectionCriteria, ArkFunction arkFunction, String customFieldName);
 }

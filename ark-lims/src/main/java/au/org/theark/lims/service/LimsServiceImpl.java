@@ -398,6 +398,10 @@ public class LimsServiceImpl implements ILimsService {
 		customfieldDataList  = iBioCollectionDao.getBioCollectionCustomFieldDataList(bioCollectionCriteria, arkFunction, first, count);
 		return customfieldDataList;
 	}
+	
+	public BioCollectionCustomFieldData getBioCollectionCustomFieldData(BioCollection bioCollectionCriteria, ArkFunction arkFunction, String customFieldName) {
+		return iBioCollectionDao.getBioCollectionCustomFieldData(bioCollectionCriteria, arkFunction, customFieldName);
+	}
 
 	/*
 	 * (non-Javadoc)
