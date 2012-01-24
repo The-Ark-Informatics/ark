@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.Study;
@@ -48,6 +49,7 @@ public class BarcodePrinter implements java.io.Serializable {
 	private String		location;
 	private String		host;
 	private String		port;
+	private String		uniqueName;
 
 	public BarcodePrinter(){
 	}
@@ -131,5 +133,15 @@ public class BarcodePrinter implements java.io.Serializable {
 
 	public void setPort(String port) {
 		this.port = port;
+	}
+	
+	@Transient
+	public String getUniqueName() {
+		StringBuilder displayExpression = new StringBuilder();
+		displayExpression.append(" (");
+		displayExpression.append(study.getName());
+		displayExpression.append(") ");
+		displayExpression.append(name);
+		return displayExpression.toString();
 	}
 }
