@@ -121,6 +121,46 @@ function printStrawBarcode(printerName, barcodeString) {
 
 }
 
+function printBarcode(printerName, barcodeString) {
+	var applet = document.jZebra;
+	var INVALID_PRINTER = "Could not find printer: [" + printerName +"]";
+	
+	if (applet != null) {
+		// Try to find specified printer
+		applet.findPrinter(printerName);
+		while (!applet.isDoneFinding()) {
+			// Wait
+		}
+
+		// No suitable printer found, exit
+		if (applet.getPrinterName() == null) {
+			alert("ERROR: " + INVALID_PRINTER);
+			return;
+		}
+		
+		// Send characters/raw commands to applet using "append"
+		applet.append(unescape(barcodeString));
+		// Send characters/raw commands to printer
+		applet.print();
+	}
+
+	monitorPrinting();
+
+	/**
+	 * PHP PRINTING: // Uses the php `"echo"` function in conjunction with
+	 * jZebra `"append"` function // This assumes you have already assigned a
+	 * value to `"$commands"` with php document.jZebra.append(<?php echo
+	 * $commands; ?>);
+	 */
+
+	/**
+	 * SPECIAL ASCII ENCODING //applet.setEncoding("UTF-8");
+	 * applet.setEncoding("Cp1252"); applet.append("\xDA");
+	 * applet.append(String.fromCharCode(218)); applet.append(chr(218));
+	 */
+
+}
+
 function print64() {
 	var applet = document.jZebra;
 	if (applet != null) {
