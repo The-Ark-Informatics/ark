@@ -120,5 +120,7 @@ public interface IBioCollectionDao {
 	public void deleteBioCollectionCustomFieldData(BioCollectionCustomFieldData bioCollectionCFData);
 
 	public Long isCustomFieldUsed(BioCollectionCustomFieldData bioCollectionCFData);
+	
+	public BioCollectionCustomFieldData getBioCollectionCustomFieldData(BioCollection bioCollectionCriteria, ArkFunction arkFunction, String customFieldName);
 
 }

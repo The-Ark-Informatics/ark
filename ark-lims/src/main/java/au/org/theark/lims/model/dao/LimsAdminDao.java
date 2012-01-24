@@ -76,6 +76,9 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 			criteria.add(Restrictions.eq("name", barcodeLabel.getName()));
 		}
 		
+		// Restrict to latest version of label
+		criteria.add(Restrictions.eq("version", getMaxBarcodeVersion(barcodeLabel)));
+		
 		BarcodeLabel result = (BarcodeLabel) criteria.uniqueResult();
 		return result;
 	}
@@ -139,6 +142,7 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		Criteria criteria = buildBarcodeLabelCriteria(object);
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
+		criteria.add(Restrictions.ne("study", new Study(new Long(0))));
 		List<BarcodeLabel> list = criteria.list();
 		return list;
 	}
@@ -185,27 +189,27 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		return criteria;
 	}
 	
-	protected Criteria buildBarcodeLabelCriteria(BarcodeLabel object) {
+	protected Criteria buildBarcodeLabelCriteria(BarcodeLabel barcodeLabel) {
 		Criteria criteria = getSession().createCriteria(BarcodeLabel.class);
 		
-		if (object.getId() != null) {
-			criteria.add(Restrictions.eq("id", object.getId()));
+		if (barcodeLabel.getId() != null) {
+			criteria.add(Restrictions.eq("id", barcodeLabel.getId()));
 		}
 		
-		if(object.getStudy() != null) {
-			criteria.add(Restrictions.eq("study", object.getStudy()));
+		if(barcodeLabel.getStudy() != null) {
+			criteria.add(Restrictions.eq("study", barcodeLabel.getStudy()));
 		}
 		
-		if(object.getBarcodePrinter() != null) {
-			criteria.add(Restrictions.eq("barcodePrinter", object.getBarcodePrinter()));
+		if(barcodeLabel.getBarcodePrinter() != null) {
+			criteria.add(Restrictions.eq("barcodePrinter", barcodeLabel.getBarcodePrinter()));
 		}
 
-		if (object.getName() != null) {
-			criteria.add(Restrictions.eq("name", object.getName()));
+		if (barcodeLabel.getName() != null) {
+			criteria.add(Restrictions.eq("name", barcodeLabel.getName()));
 		}
 
-		if (object.getDescription() != null) {
-			criteria.add(Restrictions.ilike("description", object.getDescription(), MatchMode.ANYWHERE));
+		if (barcodeLabel.getDescription() != null) {
+			criteria.add(Restrictions.ilike("description", barcodeLabel.getDescription(), MatchMode.ANYWHERE));
 		}
 		
 		return criteria;
@@ -345,5 +349,55 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		Criteria criteria = getSession().createCriteria(BiospecimenUidTemplate.class);
 		criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("study")));
 		return criteria.list();
+	}
+
+	public List<BarcodeLabelData> getBarcodeLabelDataByBarcodeLabel(BarcodeLabel barcodeLabel) {
+		List<BarcodeLabelData> list = new ArrayList<BarcodeLabelData>(0);
+		
+		if(barcodeLabel != null && barcodeLabel.getId() != null) {
+			Criteria criteria = getSession().createCriteria(BarcodeLabelData.class);
+			criteria.add(Restrictions.eq("barcodeLabel", barcodeLabel));
+			list = criteria.list();
+		}
+		return list;
+	}
+
+	public List<BarcodeLabel> getBarcodeLabelsByStudy(Study study) {
+		List<BarcodeLabel> list = new ArrayList<BarcodeLabel>(0);
+		
+		if(study != null && study.getId() != null) {
+			Criteria criteria = getSession().createCriteria(BarcodeLabel.class);
+			criteria.add(Restrictions.eq("study", study));
+			list = criteria.list();
+		}
+		return list;
+	}
+	
+	public List<BarcodeLabel> getBarcodeLabelTemplates() {
+		List<BarcodeLabel> list = new ArrayList<BarcodeLabel>(0);
+		
+		Criteria criteria = getSession().createCriteria(BarcodeLabel.class);
+		criteria.add(Restrictions.isNull("study"));
+		list = criteria.list();
+		
+		return list;
+	}
+
+	public List<BarcodePrinter> getBarcodePrintersByStudyList(List<Study> studyListForUser) {
+		List<BarcodePrinter> list = new ArrayList<BarcodePrinter>(0);
+		
+		Criteria criteria = getSession().createCriteria(BarcodePrinter.class);
+		criteria.add(Restrictions.in("study", studyListForUser));
+		list = criteria.list();
+		
+		return list;
+	}
+	
+	public Long getMaxBarcodeVersion(BarcodeLabel barcodeLabel) {
+		Long maxVersion = new Long(1);
+		Criteria criteria = buildBarcodeLabelCriteria(barcodeLabel);
+		criteria.setProjection(Projections.max("version"));
+		maxVersion = (Long) criteria.uniqueResult();
+		return maxVersion;
 	}
 }

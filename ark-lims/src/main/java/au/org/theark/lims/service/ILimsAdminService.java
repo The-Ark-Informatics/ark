@@ -228,4 +228,38 @@ public interface ILimsAdminService {
 	public List<Study> getStudyListAssignedToBiospecimenUidTemplate();
 	
 	public boolean studyHasBiospecimens(Study study);
+	
+	/**
+	 * Gets the list of barcodeLabelData for the specified barcodeLabel
+	 * @param barcodeLabel
+	 * @return
+	 */
+	public List<BarcodeLabelData> getBarcodeLabelDataByBarcodeLabel(BarcodeLabel barcodeLabel);
+
+	/**
+	 * Get the barcode label template for the specified barcodeLabel
+	 * @param barcodeLabel
+	 * @return
+	 */
+	public String getBarcodeLabelTemplate(BarcodeLabel barcodeLabel);
+
+	/**
+	 * Get the barcode labels for the specified study
+	 * @param study
+	 * @return
+	 */
+	public List<BarcodeLabel> getBarcodeLabelsByStudy(Study study);
+	
+	/**
+	 * Get a list of BarcodeLabel templates
+	 * @return
+	 */
+	public List<BarcodeLabel> getBarcodeLabelTemplates();
+
+	/**
+	 * Gets a list of Printers for the specified list of Studies
+	 * @param studyListForUser
+	 * @return
+	 */
+	public List<BarcodePrinter> getBarcodePrintersByStudyList(List<Study> studyListForUser);
 }

@@ -4,8 +4,6 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -21,13 +19,16 @@ import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.BarcodeLabelData;
 import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.lims.model.dao.IBioCollectionDao;
 import au.org.theark.lims.model.dao.IBiospecimenDao;
 import au.org.theark.lims.model.dao.ILimsAdminDao;
 
@@ -45,6 +46,7 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	private IArkCommonService		iArkCommonService;
 	private ILimsAdminDao			iLimsAdminDao;
 	private IBiospecimenDao			iBiospecimenDao;
+	private IBioCollectionDao		iBioCollectionDao;
 	private VelocityEngine			velocityEngine;
 	static private final String	REAL_NUMBER	= "^[-+]?\\d+(\\.\\d+)?$";
 	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
@@ -78,6 +80,15 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		this.iBiospecimenDao = iBiospecimenDao;
 	}
 
+	public IBioCollectionDao getiBioCollectionDao() {
+		return iBioCollectionDao;
+	}
+
+	@Autowired
+	public void setiBioCollectionDao(IBioCollectionDao iBioCollectionDao) {
+		this.iBioCollectionDao = iBioCollectionDao;
+	}
+
 	public VelocityEngine getVelocityEngine() {
 		return velocityEngine;
 	}
@@ -86,6 +97,8 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	public void setVelocityEngine(VelocityEngine velocityEngine) {
 		this.velocityEngine = velocityEngine;
 	}
+	
+	
 
 	public void createBarcodePrinter(BarcodePrinter barcodePrinter) {
 		iLimsAdminDao.createBarcodePrinter(barcodePrinter);
@@ -101,6 +114,13 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 
 	public void createBarcodeLabel(BarcodeLabel barcodeLabel) {
 		iLimsAdminDao.createBarcodeLabel(barcodeLabel);
+		
+		// Create child data
+		for (Iterator<BarcodeLabelData> iterator = barcodeLabel.getBarcodeLabelData().iterator(); iterator.hasNext();) {
+			BarcodeLabelData barcodeLabelData = (BarcodeLabelData) iterator.next();
+			barcodeLabelData.setBarcodeLabel(barcodeLabel);
+			createBarcodeLabelData(barcodeLabelData);
+		}
 	}
 
 	public void createBarcodeLabelData(BarcodeLabelData barcodeLabelData) {
@@ -115,8 +135,15 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		iLimsAdminDao.deleteBarcodeLabelData(barcodeLabelData);
 	}
 
-	public void updateBarcodeLabel(BarcodeLabel BarcodeLabel) {
-		iLimsAdminDao.updateBarcodeLabel(BarcodeLabel);
+	public void updateBarcodeLabel(BarcodeLabel barcodeLabel) {
+		iLimsAdminDao.updateBarcodeLabel(barcodeLabel);
+		
+		// Update child data
+		for (Iterator<BarcodeLabelData> iterator = barcodeLabel.getBarcodeLabelData().iterator(); iterator.hasNext();) {
+			BarcodeLabelData barcodeLabelData = (BarcodeLabelData) iterator.next();
+			barcodeLabelData.setBarcodeLabel(barcodeLabel);
+			updateBarcodeLabelData(barcodeLabelData);
+		}
 	}
 
 	public void updateBarcodeLabelData(BarcodeLabelData barcodeLabelData) {
@@ -149,7 +176,11 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 
 		Velocity.evaluate(context, stringWriter, "bioCollectionLabelTemplate", template);
 		log.info("Created bioCollectionLabelTemplate: " + stringWriter);
-		return stringWriter.toString();
+		
+		String result = stringWriter.toString();
+		result = org.apache.commons.lang.StringUtils.replace(result, "\n", "%0A");
+		result = org.apache.commons.lang.StringUtils.replace(result, "\"", "%22");
+		return result;
 	}
 
 	public String createBiospecimenLabelTemplate(Biospecimen biospecimen, BarcodeLabel barcodeLabel) {
@@ -165,15 +196,18 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		stringWriter = new StringWriter();
 
 		Velocity.evaluate(context, stringWriter, "biospecimenLabelTemplate", template);
-		log.info("Created biospecimenLabelTemplate: " + stringWriter);
-		return stringWriter.toString();
+		log.info("Created biospecimenLabelTemplate: " + stringWriter);	
+		
+		String result = stringWriter.toString();
+		result = org.apache.commons.lang.StringUtils.replace(result, "\n", "%0A");
+		result = org.apache.commons.lang.StringUtils.replace(result, "\"", "%22");
+		return result;
 	}
 
 	public VelocityContext getBiospecimenLabelContext(Biospecimen biospecimen) {
 		/* lets make a Context and put data into it */
 		VelocityContext velocityContext = new VelocityContext();
-		String lastLineOfCircle = "";
-		String secondLineOfCircle = "";
+
 		String biospecimenUid = biospecimen.getBiospecimenUid();
 		
 		String dateOfBirth = "";
@@ -181,40 +215,51 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 			dateOfBirth = simpleDateFormat.format(biospecimen.getLinkSubjectStudy().getPerson().getDateOfBirth());
 		}
 
-		// Ok first check and see if last character is a number.
-		String lastChar = biospecimenUid.substring(biospecimenUid.length() - 1);
-		// Need to find out where the study code ends
-		// Trim off the year component
-		String withoutYear = biospecimenUid.substring(2);
-		Pattern pat = Pattern.compile("\\d");
-		Matcher matcher = pat.matcher(withoutYear);
-		boolean gotMatch = matcher.find();
-		int indexOfnum = -1;
-		if (gotMatch) {
-			indexOfnum = matcher.start() + 2;
-		}
-		if (lastChar.matches(REAL_NUMBER)) {
-			// We have a clone, therefore go one backwards.
-			lastLineOfCircle = biospecimenUid.substring(biospecimenUid.length() - 2);
-			secondLineOfCircle = biospecimenUid.substring(indexOfnum, biospecimenUid.length() - 2);
-		}
-		else {
-			lastLineOfCircle = lastChar;
-			secondLineOfCircle = biospecimenUid.substring(indexOfnum, biospecimenUid.length() - 1);
-		}
-		String secondLine = secondLineOfCircle;
-
-		try {
-			secondLine = new Integer(secondLineOfCircle).toString();
-		}
-		catch (NumberFormatException e) {
-			log.error(e.getMessage());
-		}
-
+//		// Ok first check and see if last character is a number.
+//		String lastLineOfCircle = "";
+//		String secondLineOfCircle = "";
+//		String lastChar = biospecimenUid.substring(biospecimenUid.length() - 1);
+//		// Need to find out where the study code ends
+//		// Trim off the year component
+//		String withoutYear = biospecimenUid.substring(2);
+//		Pattern pat = Pattern.compile("\\d");
+//		Matcher matcher = pat.matcher(withoutYear);
+//		boolean gotMatch = matcher.find();
+//		int indexOfnum = -1;
+//		if (gotMatch) {
+//			indexOfnum = matcher.start() + 2;
+//		}
+////		if (lastChar.matches(REAL_NUMBER)) {
+////			// We have a clone, therefore go one backwards.
+////			lastLineOfCircle = biospecimenUid.substring(biospecimenUid.length() - 2);
+////			secondLineOfCircle = biospecimenUid.substring(indexOfnum, biospecimenUid.length() - 2);
+////		}
+////		else {
+//			lastLineOfCircle = lastChar;
+//			secondLineOfCircle = biospecimenUid.substring(indexOfnum, biospecimenUid.length() - 1);
+////		}
+//		String secondLine = secondLineOfCircle;
+//
+//		try {
+//			secondLine = new Integer(secondLineOfCircle).toString();
+//		}
+//		catch (NumberFormatException e) {
+//			log.error(e.getMessage());
+//		}
+//
 		velocityContext.put("biospecimenUid", biospecimenUid);
-		velocityContext.put("firstLineOfCircle", biospecimenUid.substring(0, indexOfnum));
-		velocityContext.put("secondLineOfCircle", secondLine);
-		velocityContext.put("lastLineOfCircle", lastLineOfCircle);
+//		velocityContext.put("firstLineOfCircle", biospecimenUid.substring(0, indexOfnum));
+//		velocityContext.put("secondLineOfCircle", secondLine);
+//		velocityContext.put("lastLineOfCircle", lastLineOfCircle);
+		
+		// Pad out to at least 15 characters
+		biospecimenUid = org.apache.commons.lang.StringUtils.rightPad(biospecimenUid, 15);
+
+		// Split into 3 equal strings
+		velocityContext.put("firstLineOfCircle", biospecimenUid.substring(0, 5).trim());
+		velocityContext.put("secondLineOfCircle", biospecimenUid.substring(5, 11));
+		velocityContext.put("lastLineOfCircle", biospecimenUid.substring(11, biospecimenUid.length()));
+		
 		if (dateOfBirth != null) {
 			velocityContext.put("dateOfBirth", dateOfBirth);
 		}
@@ -231,10 +276,17 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 			log.error(e.getMessage());
 		}
 		String subjectUid = linkSubjectStudy.getSubjectUID();
-		//TODO: need to get custom field data
-		String familyId = "FAMILYID";
-		//TODO: need to get custom field data
-		String asrbno = "ASRBNO";
+		
+		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+		
+		// Custom field name "FAMILYID"
+		BioCollectionCustomFieldData bioCollectionCustomFieldData = iBioCollectionDao.getBioCollectionCustomFieldData(bioCollection, arkFunction, "FAMILYID");
+		String familyId = bioCollectionCustomFieldData.getTextDataValue();
+		
+		// Custom field name "ASRBNO"
+		bioCollectionCustomFieldData = iBioCollectionDao.getBioCollectionCustomFieldData(bioCollection, arkFunction, "ASRBNO");
+		String asrbno = bioCollectionCustomFieldData.getTextDataValue();
+		
 		String collectionDate = new String();
 		if(bioCollection.getCollectionDate() != null) {
 			collectionDate = simpleDateFormat.format(bioCollection.getCollectionDate());
@@ -270,9 +322,11 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	 */
 	public String getBarcodeLabelTemplate(BarcodeLabel barcodeLabel) {
 		StringBuffer sb = new StringBuffer();
+		barcodeLabel.setBarcodeLabelData(getBarcodeLabelDataByBarcodeLabel(barcodeLabel));
 		
 		if(barcodeLabel != null && barcodeLabel.getLabelPrefix() != null) {
 			sb.append(barcodeLabel.getLabelPrefix());
+			sb.append("\n");
 			
 			List<BarcodeLabelData> data = barcodeLabel.getBarcodeLabelData();
 			for (Iterator<BarcodeLabelData> iterator = data.iterator(); iterator.hasNext();) {
@@ -319,6 +373,11 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 					sb.append(",");
 				}
 				
+				if(barcodeLabelData.getP8() != null) {
+					sb.append(barcodeLabelData.getP7());
+					sb.append(",");
+				}
+				
 				// Quote the data
 				sb.append(barcodeLabelData.getQuoteLeft());
 				
@@ -329,11 +388,13 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 				sb.append(barcodeLabelData.getQuoteRight());
 				
 				// Add a line feed
-				sb.append(barcodeLabelData.getLineFeed());
+				//sb.append(barcodeLabelData.getLineFeed());
+				sb.append("\n");
 			}
 			
 			// add label suffix
 			sb.append(barcodeLabel.getLabelSuffix());
+			sb.append("\n");
 		}
 
 		return sb.toString();	
@@ -413,5 +474,21 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 
 	public boolean studyHasBiospecimens(Study study) {
 		return iBiospecimenDao.studyHasBiospecimens(study);
+	}
+
+	public List<BarcodeLabelData> getBarcodeLabelDataByBarcodeLabel(BarcodeLabel barcodeLabel) {
+		return iLimsAdminDao.getBarcodeLabelDataByBarcodeLabel(barcodeLabel);
+	}
+
+	public List<BarcodeLabel> getBarcodeLabelsByStudy(Study study) {
+		return iLimsAdminDao.getBarcodeLabelsByStudy(study);
+	}
+	
+	public List<BarcodeLabel> getBarcodeLabelTemplates() {
+		return iLimsAdminDao.getBarcodeLabelTemplates();
+	}
+
+	public List<BarcodePrinter> getBarcodePrintersByStudyList(List<Study> studyListForUser) {
+		return iLimsAdminDao.getBarcodePrintersByStudyList(studyListForUser);
 	}
 }
