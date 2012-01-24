@@ -18,19 +18,25 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.barcodelabel.form;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -39,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
+import au.org.theark.core.model.lims.entity.BarcodeLabelData;
 import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -49,6 +56,7 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.lims.service.ILimsAdminService;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.barcodelabeldata.BarcodeLabelDataPanel;
 
 /**
  * @author cellis
@@ -74,8 +82,12 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	private DropDownChoice<BarcodePrinter>	barcodePrinterDdc;
 	private TextField<String>					nameTxtFld;
 	private TextArea<String>					descriptionTxtArea;
-	private TextField<String>					labelPrefixTxtFld;
-	private TextField<String>					labelSuffixTxtFld;
+	private TextField<Number>					versionTxtFld;
+	
+	private Panel 									barcodeLabelDataPanel;
+	private Label									barcodeLabelTemplateLbl;
+	private DropDownChoice<BarcodeLabel>	barcodeLabelTemplateDdc;
+	private TextArea<String> 					exampleBarcodeDataFile;
 
 	/**
 	 * 
@@ -92,15 +104,45 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<Long>("id");
 		nameTxtFld = new TextField<String>("name");
+		nameTxtFld.setEnabled(false);
 		descriptionTxtArea = new TextArea<String>("description");
-		labelPrefixTxtFld = new TextField<String>("labelPrefix");
-		labelSuffixTxtFld = new TextField<String>("labelSuffix");
+		versionTxtFld = new TextField<Number>("version");
+		
+		barcodeLabelTemplateLbl = new Label("barcodeLabelTemplateLbl", "Clone from Barcode Label Template:"){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onBeforeRender() {
+				super.onBeforeRender();
+				this.setVisible(isNew());
+			}
+		};
 
 		initStudyDdc();
 		initBarcodePrinterDdc();
+		initBarcodeLabelTemplateDdc();
+		
+		barcodeLabelDataPanel = new EmptyPanel("barcodeLabelDataPanel");
+		exampleBarcodeDataFile = new TextArea<String>("exampleBarcodeDataFile", new Model<String>(""));
+		exampleBarcodeDataFile.setEnabled(false);
+		exampleBarcodeDataFile.setVisible(isNew());
 
 		addDetailFormComponents();
 		attachValidators();
+	}
+	
+	@Override
+	public void onBeforeRender() {
+		if(!isNew()) {
+			BarcodeLabelDataPanel barcodeLabelDataPanel = new BarcodeLabelDataPanel("barcodeLabelDataPanel", containerForm.getModelObject(), feedBackPanel);
+			barcodeLabelDataPanel.initialisePanel();
+			arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(barcodeLabelDataPanel);
+			exampleBarcodeDataFile.setModelObject(iLimsAdminService.getBarcodeLabelTemplate(containerForm.getModelObject()));
+		}
+		super.onBeforeRender();
 	}
 
 	private void initStudyDdc() {
@@ -130,12 +172,13 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				target.add(barcodePrinterDdc);
+				target.add(barcodeLabelTemplateDdc);
 			}
 		});
 	}
 
 	private void initBarcodePrinterDdc() {
-		ChoiceRenderer<BarcodePrinter> choiceRenderer = new ChoiceRenderer<BarcodePrinter>(Constants.NAME, Constants.ID);
+		ChoiceRenderer<BarcodePrinter> choiceRenderer = new ChoiceRenderer<BarcodePrinter>("uniqueName", Constants.ID);
 		barcodePrinterDdc = new DropDownChoice<BarcodePrinter>("barcodePrinter") {
 			/**
 			 * 
@@ -145,21 +188,83 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 			@Override
 			protected void onBeforeRender() {
 				super.onBeforeRender();
-				List<BarcodePrinter> barcodePrinters = iLimsAdminService.getBarcodePrintersByStudy(studyDdc.getModelObject());
-				this.setChoices(barcodePrinters);
+				List<BarcodePrinter> choices = iLimsAdminService.getBarcodePrintersByStudyList(getStudyListForUser());
+				this.setChoices(choices);
 			}
 		};
 		barcodePrinterDdc.setChoiceRenderer(choiceRenderer);
+		barcodePrinterDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				containerForm.getModelObject().setStudy(barcodePrinterDdc.getModelObject().getStudy());
+			}
+		});
+	}
+	
+	private void initBarcodeLabelTemplateDdc() {
+		ChoiceRenderer<BarcodeLabel> choiceRenderer = new ChoiceRenderer<BarcodeLabel>(Constants.NAME, Constants.ID);
+		barcodeLabelTemplateDdc = new DropDownChoice<BarcodeLabel>("barcodeLabelTemplate") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onBeforeRender() {
+				super.onBeforeRender();
+				setVisible(isNew());
+				List<BarcodeLabel> choices = iLimsAdminService.getBarcodeLabelTemplates();
+				this.setChoices(choices);
+			}
+		};
+		barcodeLabelTemplateDdc.setOutputMarkupPlaceholderTag(true);
+		barcodeLabelTemplateDdc.setChoiceRenderer(choiceRenderer);
+		
+		barcodeLabelTemplateDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				// Clone data from other BarcodeLabel
+				if (barcodeLabelTemplateDdc.getModelObject() != null) {
+					String labelPrefix = barcodeLabelTemplateDdc.getModelObject().getLabelPrefix();
+					String labelSuffix = barcodeLabelTemplateDdc.getModelObject().getLabelSuffix();
+					Long version = barcodeLabelTemplateDdc.getModelObject().getVersion();
+					
+					// Set default/required values
+					containerForm.getModelObject().setLabelPrefix(labelPrefix);
+					containerForm.getModelObject().setLabelSuffix(labelSuffix);
+					containerForm.getModelObject().setVersion(version);
+					
+					exampleBarcodeDataFile.setModelObject(iLimsAdminService.getBarcodeLabelTemplate(barcodeLabelTemplateDdc.getModelObject()));
+					exampleBarcodeDataFile.setVisible(true);
+					target.add(exampleBarcodeDataFile);
+					
+					nameTxtFld.setModelObject(barcodeLabelTemplateDdc.getModelObject().getName());
+					target.add(nameTxtFld);
+				}
+			}
+		});
 	}
 
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld.setEnabled(false));
 		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(studyDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(barcodePrinterDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(descriptionTxtArea);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(labelPrefixTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(labelSuffixTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(versionTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(barcodeLabelDataPanel);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(barcodeLabelTemplateLbl);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(barcodeLabelTemplateDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(exampleBarcodeDataFile);
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
@@ -173,8 +278,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
 		studyDdc.setRequired(true).setLabel(new StringResourceModel("error.study.required", this, new Model<String>("Study")));
 		barcodePrinterDdc.setRequired(true).setLabel(new StringResourceModel("error.barcodePrinter.required", this, new Model<String>("BarcodePrinter")));
-		labelPrefixTxtFld.setRequired(true).setLabel(new StringResourceModel("error.labelPrefix.required", this, new Model<String>("Prefix")));
-		labelSuffixTxtFld.setRequired(true).setLabel(new StringResourceModel("error.labelSuffix.required", this, new Model<String>("Suffix")));
+		versionTxtFld.setRequired(true).setLabel(new StringResourceModel("error.version.required", this, new Model<String>("Version")));
 	}
 
 	/*
@@ -214,6 +318,31 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	@Override
 	protected void onSave(Form<BarcodeLabel> containerForm, AjaxRequestTarget target) {
 		if (isNew()) {
+			if (barcodeLabelTemplateDdc.getModelObject() != null) {
+				List<BarcodeLabelData> cloneBarcodeLabelDataList = iLimsAdminService.getBarcodeLabelDataByBarcodeLabel(barcodeLabelTemplateDdc.getModelObject());
+				List<BarcodeLabelData> barcodeLabelDataList = new ArrayList<BarcodeLabelData>(0);
+				for (Iterator<BarcodeLabelData> iterator = cloneBarcodeLabelDataList.iterator(); iterator.hasNext();) {
+					BarcodeLabelData clonebarcodeLabelData = (BarcodeLabelData) iterator.next();
+					BarcodeLabelData barcodeLabelData = new BarcodeLabelData();
+					// Copy parent details to new barcodeLabelData
+					try {
+						PropertyUtils.copyProperties(barcodeLabelData, clonebarcodeLabelData);
+					}
+					catch (IllegalAccessException e) {
+						log.error(e.getMessage());
+					}
+					catch (InvocationTargetException e) {
+						log.error(e.getMessage());
+					}
+					catch (NoSuchMethodException e) {
+						log.error(e.getMessage());
+					}
+					barcodeLabelData.setId(null);
+					barcodeLabelDataList.add(barcodeLabelData);
+				}
+				containerForm.getModelObject().setBarcodeLabelData(barcodeLabelDataList);
+			}
+			
 			iLimsAdminService.createBarcodeLabel(containerForm.getModelObject());
 		}
 		else {
@@ -256,11 +385,6 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 			ArkModule arkModule = null;
 			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
 			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
-
-			if (isNew()) {
-				List<Study> studyListAssignedToBarcodeLabel = iLimsAdminService.getStudyListAssignedToBarcodeLabel();
-				studyListForUser.removeAll(studyListAssignedToBarcodeLabel);
-			}
 		}
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());

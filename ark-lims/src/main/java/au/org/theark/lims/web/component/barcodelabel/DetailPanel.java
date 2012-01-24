@@ -38,6 +38,7 @@ public class DetailPanel extends Panel {
 	private FeedbackPanel		feedBackPanel;
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
+	private Panel barcodeLabelDataPanel;
 
 	/**
 	 * 
@@ -56,6 +57,18 @@ public class DetailPanel extends Panel {
 	public void initialisePanel() {
 		detailForm = new DetailForm("detailsForm", feedBackPanel, arkCrudContainerVO, containerForm);
 		detailForm.initialiseDetailForm();
+		
+//		barcodeLabelDataPanel = new EmptyPanel("barcodeLabelDataPanel");	
+//		arkCrudContainerVO.getDetailPanelFormContainer().add(barcodeLabelDataPanel);
+		
 		add(detailForm);
 	}
+	
+//	@Override
+//	protected void onBeforeRender() {
+//		BarcodeLabelDataPanel barcodeLabelDataPanel = new BarcodeLabelDataPanel("barcodeLabelDataPanel", containerForm.getModelObject(), feedBackPanel);
+//		barcodeLabelDataPanel.initialisePanel();
+//		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(barcodeLabelDataPanel);
+//		super.onBeforeRender();
+//	}
 }

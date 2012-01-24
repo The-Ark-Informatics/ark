@@ -102,6 +102,13 @@ public class SearchResultsPanel extends Panel {
 				else {
 					item.add(new Label("description", ""));
 				}
+				
+				if (barcodeLabel.getVersion() != null) {
+					item.add(new Label("version", barcodeLabel.getVersion().toString()));
+				}
+				else {
+					item.add(new Label("version", ""));
+				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					/**
@@ -130,6 +137,7 @@ public class SearchResultsPanel extends Panel {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				BarcodeLabel barcodeLabelFromDb = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
+				barcodeLabelFromDb.setBarcodeLabelData(iLimsAdminService.getBarcodeLabelDataByBarcodeLabel(barcodeLabelFromDb));
 				containerForm.setModelObject(barcodeLabelFromDb);
 				
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVo);

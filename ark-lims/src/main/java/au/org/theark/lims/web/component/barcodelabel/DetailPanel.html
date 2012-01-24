@@ -33,31 +33,11 @@
 					<input wicket:id="name" type="text" />
 				</div>
 
-
-
 				<div id="detailPanelBreaker">
 					&nbsp;
 				</div>
 
 				<div id="panelContentLeft">
-					&nbsp;
-				</div>
-
-				<div id="fldLabel">
-					<wicket:message key="study">
-						Study:
-					</wicket:message>
-				</div>
-
-				<div id="fldControl">
-					<select wicket:id="study">
-						<option>
-							Study selection
-						</option>
-					</select>
-				</div>
-
-				<div id="panelMargin">
 					&nbsp;
 				</div>
 
@@ -71,6 +51,24 @@
 					<select wicket:id="barcodePrinter">
 						<option>
 							Barcode Printer
+						</option>
+					</select>
+				</div>
+				
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<span wicket:id="barcodeLabelTemplateLbl">
+						Clone from Barcode Label Template:
+					</span>
+				</div>
+
+				<div id="fldControl">
+					<select wicket:id="barcodeLabelTemplate">
+						<option>
+							Barcode Label Template
 						</option>
 					</select>
 				</div>
@@ -94,13 +92,24 @@
 					<textarea wicket:id="description" maxlength="255" cols="25">
 					</textarea>
 				</div>
-
+				
 				<div id="panelMargin">
 					&nbsp;
 				</div>
 
-				<!-- Empty -->
+				<div id="fldLabel">
+					<wicket:message key="version">
+						Version:
+					</wicket:message>
+				</div>
 
+				<div id="fldControl">
+					<input wicket:id="version" type="text" />
+				</div>
+				
+				<div id="detailPanel" wicket:id="barcodeLabelDataPanel">
+						[barcode label data]
+				</div>
 
 				<div id="detailPanelBreaker">
 					&nbsp;
@@ -111,32 +120,14 @@
 				</div>
 
 				<div id="fldLabel">
-					<wicket:message key="labelPrefix">
-						Label Prefix:
+					<wicket:message key="exampleBarcodeDataFileLbl">
+						Example Barcode Data File:
 					</wicket:message>
 				</div>
 
 				<div id="fldControl">
-					<input wicket:id="labelPrefix" type="text" />
-				</div>
-
-				<div id="panelMargin">
-					&nbsp;
-				</div>
-
-				<div id="fldLabel">
-					<wicket:message key="labelSuffix">
-						Label Suffix:
-					</wicket:message>
-				</div>
-
-				<div id="fldControl">
-					<input wicket:id="labelSuffix" type="text" />
-				</div>
-
-
-				<div id="detailPanelBreaker">
-					&nbsp;
+					<textarea wicket:id="exampleBarcodeDataFile" maxlength="255" cols="25">
+					</textarea>
 				</div>
 
 			</div>
