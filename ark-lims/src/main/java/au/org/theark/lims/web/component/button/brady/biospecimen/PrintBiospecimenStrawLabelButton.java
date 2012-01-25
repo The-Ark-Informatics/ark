@@ -70,7 +70,7 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 		barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(biospecimen.getStudy());
-		barcodeLabel.setName("brady straw barcode");
+		barcodeLabel.setName("straw barcode");
 		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 	}
 	
