@@ -178,6 +178,7 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		log.info("Created bioCollectionLabelTemplate: " + stringWriter);
 		
 		String result = stringWriter.toString();
+		result = org.apache.commons.lang.StringUtils.replace(result, "\r", "");
 		result = org.apache.commons.lang.StringUtils.replace(result, "\n", "%0A");
 		result = org.apache.commons.lang.StringUtils.replace(result, "\"", "%22");
 		return result;
@@ -199,6 +200,7 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		log.info("Created biospecimenLabelTemplate: " + stringWriter);	
 		
 		String result = stringWriter.toString();
+		result = org.apache.commons.lang.StringUtils.replace(result, "\r", "");
 		result = org.apache.commons.lang.StringUtils.replace(result, "\n", "%0A");
 		result = org.apache.commons.lang.StringUtils.replace(result, "\"", "%22");
 		return result;
