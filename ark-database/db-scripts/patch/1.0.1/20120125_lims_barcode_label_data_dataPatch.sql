@@ -42,11 +42,11 @@ INSERT INTO `barcode_label_data` (`ID`,`BARCODE_LABEL_ID`,`COMMAND`,`X_COORD`,`Y
 INSERT INTO `barcode_label_data` (`ID`,`BARCODE_LABEL_ID`,`COMMAND`,`X_COORD`,`Y_COORD`,`P1`,`P2`,`P3`,`P4`,`P5`,`P6`,`P7`,`P8`,`QUOTE_LEFT`,`DATA`,`QUOTE_RIGHT`,`LINE_FEED`) VALUES (96,4,'A',250,35,'0','1','1','2','N',NULL,NULL,NULL,'"','${dateOfBirth}','"','
 ');
 -- Zebra straw
-INSERT INTO `barcode_label_data` (`BARCODE_LABEL_ID`,`COMMAND`,`X_COORD`,`Y_COORD`,`P1`,`P2`,`P3`,`P4`,`P5`,`P6`,`P7`,`P8`,`QUOTE_LEFT`,`DATA`,`QUOTE_RIGHT`,`LINE_FEED`) VALUES (5,'B',150,5,'0','1','1','2','23',NULL,NULL,NULL,'"','${biospecimenUid}','"','
+INSERT INTO `barcode_label_data` (`BARCODE_LABEL_ID`,`COMMAND`,`X_COORD`,`Y_COORD`,`P1`,`P2`,`P3`,`P4`,`P5`,`P6`,`P7`,`P8`,`QUOTE_LEFT`,`DATA`,`QUOTE_RIGHT`,`LINE_FEED`) VALUES (5,'B',225,0,'0','1','2','2','75','N',NULL,NULL,'"','${biospecimenUid}','"','
 ');
-INSERT INTO `barcode_label_data` (`BARCODE_LABEL_ID`,`COMMAND`,`X_COORD`,`Y_COORD`,`P1`,`P2`,`P3`,`P4`,`P5`,`P6`,`P7`,`P8`,`QUOTE_LEFT`,`DATA`,`QUOTE_RIGHT`,`LINE_FEED`) VALUES (5,'B',250,5,'0','1','1','2','23',NULL,NULL,NULL,'"','${biospecimenUid}','"','
+INSERT INTO `barcode_label_data` (`BARCODE_LABEL_ID`,`COMMAND`,`X_COORD`,`Y_COORD`,`P1`,`P2`,`P3`,`P4`,`P5`,`P6`,`P7`,`P8`,`QUOTE_LEFT`,`DATA`,`QUOTE_RIGHT`,`LINE_FEED`) VALUES (5,'B',-100,0,'0','1','2','2','75','N',NULL,NULL,'"','${biospecimenUid}','"','
 ');
-INSERT INTO `barcode_label_data` (`BARCODE_LABEL_ID`,`COMMAND`,`X_COORD`,`Y_COORD`,`P1`,`P2`,`P3`,`P4`,`P5`,`P6`,`P7`,`P8`,`QUOTE_LEFT`,`DATA`,`QUOTE_RIGHT`,`LINE_FEED`) VALUES (5,'A',150,35,'0','1','1','2','N',NULL,NULL,NULL,'"','${biospecimenUid}','"','
+INSERT INTO `barcode_label_data` (`BARCODE_LABEL_ID`,`COMMAND`,`X_COORD`,`Y_COORD`,`P1`,`P2`,`P3`,`P4`,`P5`,`P6`,`P7`,`P8`,`QUOTE_LEFT`,`DATA`,`QUOTE_RIGHT`,`LINE_FEED`) VALUES (5,'A',250,75,'0','1','1','2','N',NULL,NULL,NULL,'"','${biospecimenUid}','"','
 ');
-INSERT INTO `barcode_label_data` (`BARCODE_LABEL_ID`,`COMMAND`,`X_COORD`,`Y_COORD`,`P1`,`P2`,`P3`,`P4`,`P5`,`P6`,`P7`,`P8`,`QUOTE_LEFT`,`DATA`,`QUOTE_RIGHT`,`LINE_FEED`) VALUES (5,'A',250,35,'0','1','1','2','N',NULL,NULL,NULL,'"','${biospecimenUid}','"','
+INSERT INTO `barcode_label_data` (`BARCODE_LABEL_ID`,`COMMAND`,`X_COORD`,`Y_COORD`,`P1`,`P2`,`P3`,`P4`,`P5`,`P6`,`P7`,`P8`,`QUOTE_LEFT`,`DATA`,`QUOTE_RIGHT`,`LINE_FEED`) VALUES (5,'A',-100,75,'0','1','1','2','N',NULL,NULL,NULL,'"','${biospecimenUid}','"','
 ');
