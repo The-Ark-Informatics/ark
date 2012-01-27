@@ -1,35 +1,35 @@
 <wicket:panel>
 	&nbsp;
 	<form wicket:id="detailsForm">
-		<div id="detailsPanelBorder">
+		<div class="detailsPanelBorder">
 			<div wicket:id="detailFormContainer">
-				<div id="detailPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
-				<div id="panelContentLeft">
+				<div class="panelContentLeft">
 					&nbsp;
 				</div>
 				<!--	Row 1 -->
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<wicket:message key="id">
 						ID:
 					</wicket:message>
 				</div>
-				<div id="fldControl">
+				<div class="fldControl">
 					<input wicket:id="id" type="text" />
 				</div>
 
-				<div id="panelMargin">
+				<div class="panelMargin">
 					&nbsp;
 				</div>
 				
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<wicket:message key="study">
 						Study:
 					</wicket:message>
 				</div>
 
-				<div id="fldControl">
+				<div class="fldControl">
 					<select wicket:id="study">
 						<option>
 							Study selection
@@ -37,24 +37,24 @@
 					</select>
 				</div>
 
-				<div id="detailPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 				
-				<div id="panelContentLeft">
+				<div class="panelContentLeft">
 					&nbsp;
 				</div>
 				
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<label for="subjectUidPrefix">
 						<wicket:message	key="biospecimenUid.template">BiospecimenUID Template:</wicket:message><br>
-						<div id="note">
+						<div class="note">
 							<wicket:message	key="biospecimenUid.templateNote">[Note replaced from properties]</wicket:message>
 						</div>
 					</label>
 				</div>
 				
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<input wicket:id="biospecimenUidPrefix" type="text" maxLength="3" size="3"/>
 						<select wicket:id="biospecimenUidToken">
@@ -73,38 +73,38 @@
 					</div>
 				</div>
 
-				<div id="detailPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 			</div>
 			<!-- End detailFormContainer -->
 
 			<div wicket:id="editButtonContainer">
-				<div id="fldLabel">
+				<div class="fldLabel">
 					&nbsp;
 				</div>
-				<div id="fldControl">
+				<div class="fldControl">
 					&nbsp;
 				</div>
-				<div id="panelMargin">
+				<div class="panelMargin">
 					&nbsp;
 				</div>
-				<div id="actionButtons">
+				<div class="actionButtons">
 					&nbsp;
 					<div class="label">
 						<input wicket:id="save" type="submit" wicket:message="value:button.save" />
-						<div id="panelMargin">
+						<div class="panelMargin">
 							&nbsp;
 						</div>
 						<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
-						<div id="panelMargin">
+						<div class="panelMargin">
 							&nbsp;
 						</div>
 						<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
 					</div>
 				</div>
 			</div>
-			<div id="detailPanelBreaker">
+			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
 		</div>

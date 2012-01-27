@@ -1,35 +1,35 @@
 <wicket:panel>
 	&nbsp;
-	<div id="searchPanelContainer">
+	<div class="searchPanelContainer">
 		<form wicket:id="searchForm">
-			<div id="searchPanelContent">
-				<div id="searchPanelBreaker">
+			<div class="searchPanelContent">
+				<div class="searchPanelBreaker">
 					&nbsp;
 				</div>
-				<div id="panelContentLeft">
+				<div class="panelContentLeft">
 					&nbsp;
 				</div>
 				<!--	Row 1 -->
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<wicket:message key="id">
 						ID:
 					</wicket:message>
 				</div>
-				<div id="fldControl">
+				<div class="fldControl">
 					<input wicket:id="id" type="text" />
 				</div>
 
-				<div id="panelMargin">
+				<div class="panelMargin">
 					&nbsp;
 				</div>
 
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<wicket:message key="study">
 						Study:
 					</wicket:message>
 				</div>
 
-				<div id="fldControl">
+				<div class="fldControl">
 					<select wicket:id="study">
 						<option>
 							Study selection
@@ -37,60 +37,51 @@
 					</select>
 				</div>
 
-				<div id="searchPanelBreaker">
+				<div class="searchPanelBreaker">
 					&nbsp;
 				</div>
 				
-				<div id="panelContentLeft">
+				<div class="panelContentLeft">
 					&nbsp;
 				</div>
 				
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<wicket:message key="name">
 						Name:
 					</wicket:message>
 				</div>
 
-				<div id="fldControl">
+				<div class="fldControl">
 					<input wicket:id="name" type="text" />
 				</div>
 
-				<div id="panelMargin">
+				<div class="panelMargin">
 					&nbsp;
 				</div>
 
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<wicket:message key="description">
 						Description:
 					</wicket:message>
 				</div>
 
-				<div id="fldControl">
+				<div class="fldControl">
 					<textarea wicket:id="description" maxlength="255" cols="25">
 					</textarea>
 				</div>
 
-				<div id="searchPanelBreaker">
+				<div class="searchPanelBreaker">
 					&nbsp;
 				</div>
+				
 				<!--	Defines the location for buttons -->
-
-				<div id="actionButtons">
-					&nbsp;
-					<div>
-						<input wicket:id="search" type="submit" wicket:message="value:button.search" />
-						<div id="panelMargin">
-							&nbsp;
-						</div>
-						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />
-						<div id="panelMargin">
-							&nbsp;
-						</div>
-						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
-					</div>
+				<div class="actionButtons">
+					<input wicket:id="search" type="submit" wicket:message="value:button.search" />
+					<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />
+					<input wicket:id="new" type="submit" wicket:message="value:button.new" />
 				</div>
 
-				<div id="searchPanelBreaker">
+				<div class="searchPanelBreaker">
 					&nbsp;
 				</div>
 			</div>
