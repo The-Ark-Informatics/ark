@@ -35,11 +35,11 @@ if [ "$?" != "0" ]; then
 exit 1
 fi
 
-cd $WORKSPACE_DIR/ark-geno
-mvn clean install
-if [ "$?" != "0" ]; then
-exit 1
-fi
+#cd $WORKSPACE_DIR/ark-geno
+#mvn clean install
+#if [ "$?" != "0" ]; then
+#exit 1
+#fi
 
 cd $WORKSPACE_DIR/ark-report
 mvn clean install
