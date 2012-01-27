@@ -287,6 +287,7 @@ public class Constants {
 	public static final String			SUBJECT_HEARD_ABOUT_STUDY_FROM							= "linkSubjectStudy.heardAboutStudy";
 	public static final String			SUBJECT_AUTO_GENERATED										= "Auto-generated";
 	public static final String			SUBJECTUID_EXAMPLE											= "AAA-000000001";
+	public static final String			BIOSPECIMENUID_EXAMPLE										= "AAA-000000001";
 	public static final String			BIOCOLLECTIONUID_EXAMPLE									= "AAA-000000001";
 
 	// UploadVO
