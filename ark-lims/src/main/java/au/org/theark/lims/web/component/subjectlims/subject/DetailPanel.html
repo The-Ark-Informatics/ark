@@ -1,19 +1,19 @@
 <wicket:panel>
 	&nbsp;
-	<div id="detailsPanelBorder">
+	<div class="detailsPanelBorder">
 		<form wicket:id="detailsForm">
 			<div wicket:id="detailFormContainer">
-				<div id="detailPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 
 				<!-- Row 1 Study ID and Name-->
 
-				<div id="panelContentLeft">
+				<div class="panelContentLeft">
 					&nbsp;
 				</div>
 
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<div class="label">
 						<label for="subjectId">
 							<wicket:message key="subjectUID">
@@ -22,17 +22,17 @@
 						</label>
 					</div>
 				</div>
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<input wicket:id="linkSubjectStudy.subjectUID"/>
 					</div>
 				</div>
 
-				<div id="panelMargin">
+				<div class="panelMargin">
 					&nbsp;
 				</div>
 
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<div class="label">
 						<label for="title">
 							<wicket:message	key="title">
@@ -41,7 +41,7 @@
 						</label>
 					</div>
 				</div>
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<select wicket:id="linkSubjectStudy.person.titleType">
 							<option>
@@ -53,17 +53,17 @@
 						</select>
 					</div>
 				</div>
-				<div id="detailPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 				<!-- Row 1 Ends-->
 
 				<!-- Row 2 -->
-				<div id="panelContentLeft">
+				<div class="panelContentLeft">
 					&nbsp;
 				</div>
 
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<div class="label">
 						<label for="firstName">
 							<wicket:message key="firstName">
@@ -72,17 +72,17 @@
 						</label>
 					</div>
 				</div>
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<input wicket:id="linkSubjectStudy.person.firstName"/>
 					</div>
 				</div>
 
-				<div id="panelMargin">
+				<div class="panelMargin">
 					&nbsp;
 				</div>
 
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<div class="label">
 						<label for="lastName">
 							<wicket:message key="lastName">
@@ -91,22 +91,22 @@
 						</label>
 					</div>
 				</div>
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<input wicket:id="linkSubjectStudy.person.lastName"/>
 					</div>
 				</div>
 
-				<div id="detailPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 
 				<!-- Row 4 -->
-				<div id="panelContentLeft">
+				<div class="panelContentLeft">
 					&nbsp;
 				</div>
 
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<div class="label">
 						<label for="dateOfBirth">
 							<wicket:message key="dateOfBirth">
@@ -115,17 +115,17 @@
 						</label>
 					</div>
 				</div>
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<input wicket:id="linkSubjectStudy.person.dateOfBirth" maxLength="10"/>
 					</div>
 				</div>
 
-				<div id="panelMargin">
+				<div class="panelMargin">
 					&nbsp;
 				</div>
 
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<div class="label">
 						<label for="vitalStatus">
 							<wicket:message key="vitalStatus">
@@ -134,7 +134,7 @@
 						</label>
 					</div>
 				</div>
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label" >
 						<select wicket:id="linkSubjectStudy.person.vitalStatus">
 							<option>
@@ -148,18 +148,18 @@
 				</div>
 
 
-				<div id="detailPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 				<!-- Row 4 Ends-->
 
 				<!-- Row 5 -->
-				<div id="panelContentLeft">
+				<div class="panelContentLeft">
 					&nbsp;
 				</div>
 
 				<div wicket:id="deathDetailsContainer">
-					<div id="fldLabel">
+					<div class="fldLabel">
 						<div class="label">
 							<label for="dateOfDeath">
 								<wicket:message key="dateOfDeath">
@@ -168,17 +168,17 @@
 							</label>
 						</div>
 					</div>
-					<div id="fldControl">
+					<div class="fldControl">
 						<div class="label">
 							<input wicket:id="linkSubjectStudy.person.dateOfDeath" maxLength="10"/>
 						</div>
 					</div>
 
-					<div id="panelMargin">
+					<div class="panelMargin">
 						&nbsp;
 					</div>
 
-					<div id="fldLabel">
+					<div class="fldLabel">
 						<div class="label">
 							<label for="causeOfDeath">
 								<wicket:message key="causeOfDeath">
@@ -187,24 +187,24 @@
 							</label>
 						</div>
 					</div>
-					<div id="fldControl">
+					<div class="fldControl">
 						<div class="label" >
 							<input wicket:id="linkSubjectStudy.person.causeOfDeath" maxLength="255"/>
 						</div>
 					</div>
 				</div>
 
-				<div id="detailPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 				<!-- Row 5 ends -->
 
 				<!-- Row 6 -->
-				<div id="panelContentLeft">
+				<div class="panelContentLeft">
 					&nbsp;
 				</div>
 
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<div class="label">
 						<label for="gender">
 							<wicket:message key="gender">
@@ -213,7 +213,7 @@
 						</label>
 					</div>
 				</div>
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<select wicket:id="linkSubjectStudy.person.genderType">
 							<option>
@@ -226,13 +226,13 @@
 					</div>
 				</div>
 
-				<div id="panelMargin">
+				<div class="panelMargin">
 					&nbsp;
 				</div>
 
 				<!-- Empty -->
 
-				<div id="detailPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 
@@ -240,27 +240,27 @@
 			</div>
 
 			<!--	Row 2 Action Buttons -->
-			<div id="buttons">
+			<div class="buttons">
 				<div wicket:id="editButtonContainer">
-					<div id="fldLabel">
+					<div class="fldLabel">
 						&nbsp;
 					</div>
-					<div id="fldControl">
+					<div class="fldControl">
 						&nbsp;
 					</div>
-					<div id="panelMargin">
+					<div class="panelMargin">
 						&nbsp;
 					</div>
-					<div id="actionButtons">
+					<div class="actionButtons">
 						&nbsp;
 						<div class="label">
 							<input wicket:id="save" type="submit" wicket:message="value:page.save" />
 							&nbsp;
-							<div id="panelMargin">
+							<div class="panelMargin">
 								&nbsp;
 							</div>
 							<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
-							<div id="panelMargin">
+							<div class="panelMargin">
 								&nbsp;
 							</div>
 							<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
@@ -270,21 +270,21 @@
 				</div>
 				<!-- 
 				<div wicket:id="viewButtonContainer">
-					<div id="fldLabel">
+					<div class="fldLabel">
 						&nbsp;
 					</div>
-					<div id="fldControl">
+					<div class="fldControl">
 						&nbsp;
 					</div>
-					<div id="panelMargin">
+					<div class="panelMargin">
 						&nbsp;
 					</div>
-					<div id="actionButtons">
+					<div class="actionButtons">
 						&nbsp;
 						<div class="label">
 							<input wicket:id="edit" type="submit" wicket:message="value:page.edit" />
 							&nbsp;
-							<div id="panelMargin">
+							<div class="panelMargin">
 								&nbsp;
 							</div>
 							<input wicket:id="editCancel" type="submit"	wicket:message="value:page.newSearch" />
@@ -292,7 +292,7 @@
 					</div>
 				</div>
 				 -->
-				<div id="detailPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 			</div>
