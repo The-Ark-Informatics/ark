@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>au.org.theark.lims</groupId>
 	<artifactId>ark-lims</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>jar</packaging>
 	<name>Ark LIMS</name>
 	<description>ARK Laboratory Information Management System. Deals with all functions related to Biospecimen collection management (patient reference, biospecimen details, location etc)</description>
