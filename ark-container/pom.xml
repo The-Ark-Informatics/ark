@@ -4,7 +4,7 @@
 	<groupId>au.org.theark</groupId>
 	<artifactId>ark-container</artifactId>
 	<packaging>war</packaging>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>Ark Container</name>
 	<description>The top level container web application that will contain other sub-modules.</description>
 	<organization>
@@ -14,7 +14,7 @@
 	<url>http://the-ark.org.au/</url>
 	<issueManagement>
 		<system>JIRA</system>
-		<url>http://projects.genepi.org.au/secure/Dashboard.jspa</url>
+		<url>http://projects.the-ark.org.au/secure/Dashboard.jspa</url>
 	</issueManagement>
 	<licenses>
 		<license>
@@ -223,7 +223,7 @@
 		<ark-phenotypic.version>1.0.0</ark-phenotypic.version>
 		<!-- <ark-geno.version>1.0.0</ark-geno.version> -->
 		<ark-registry.version>1.0.0</ark-registry.version>
-		<ark-lims.version>1.0.0</ark-lims.version>
+		<ark-lims.version>1.0.1</ark-lims.version>
 		<ark-report.version>1.0.0</ark-report.version>
 		<ark-admin.version>1.0.0</ark-admin.version>
 	</properties>
