@@ -1,7 +1,3 @@
-.fieldset {
-border:1px solid #6F6F6F;
-}
-
 .legend {
 background:#CCC;
 border:1px solid #6F6F6F;
@@ -22,13 +18,11 @@ height:5%;
 width:5%;
 }
 
-
 #searchPanelTextMessageRight{
 float:right;
 height:5%;
 width:5%;
 }
-
 
 #searchPanel {
 float:left;
@@ -89,6 +83,88 @@ height:10%;
 }
 
 #searchPanelBreaker {
+float:left;
+width:100%;
+height:10px;
+}
+
+.searchPanelTextMessage {
+float:left;
+width:90%;
+height:90%;
+}
+
+.searchPanelTextMessageLeft{
+float:right;
+height:5%;
+width:5%;
+}
+
+.searchPanelTextMessageRight{
+float:right;
+height:5%;
+width:5%;
+}
+
+.searchPanel {
+float:left;
+width:100%;
+height:90%;
+}
+
+.searchPanelContent {
+float:left;
+width:100%;
+height:100%;
+border-color:#6F6F6F;
+border-style:solid;
+border-width:1px;
+}
+
+.searchPanelFbContainer {
+float:left;
+width:100%;
+height:25%;
+}
+
+.searchPanelFbLeft {
+float:left;
+width:25%;
+height:25%;
+}
+
+.searchPanelFbRight {
+float:right;
+width:25%;
+height:25%;
+}
+
+.searchPanelFb {
+background-color:#FFF;
+float:left;
+width:50%;
+height:25%;
+}
+
+.searchPanelBtnLeft {
+float:left;
+width:75%;
+height:10%;
+}
+
+.searchPanelBtnRight {
+float:right;
+width:25%;
+height:10%;
+}
+
+.searchPanelBr {
+float:left;
+width:100%;
+height:10%;
+}
+
+.searchPanelBreaker {
 float:left;
 width:100%;
 height:10px;
