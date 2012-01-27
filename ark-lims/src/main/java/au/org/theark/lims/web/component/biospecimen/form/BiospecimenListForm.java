@@ -168,7 +168,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	}
 
 	private void initialiseNewButton() {
-		newButton = new ArkBusyAjaxButton("listNewButton", new StringResourceModel("listNewKey", this, null)) {
+		newButton = new ArkBusyAjaxButton(Constants.NEW) {
 			/**
 			 * 
 			 */
