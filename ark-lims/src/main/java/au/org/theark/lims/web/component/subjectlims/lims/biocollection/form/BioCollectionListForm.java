@@ -38,7 +38,6 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -200,7 +199,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 	}
 
 	private void initialiseNewButton() {
-		newButton = new ArkBusyAjaxButton("listNewButton", new StringResourceModel("listNewKey", this, null)) {
+		newButton = new ArkBusyAjaxButton(Constants.NEW) {
 			/**
 			 * 
 			 */
