@@ -160,3 +160,13 @@ border-color:#6F6F6F;
 border-style:solid;
 border-width:1px;
 }
+
+#detailSubForm {
+    background-color: #EEEEEE;
+    border-top: 1px solid;
+    float: left;
+    margin: 10px auto auto;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    width: 90%;
+}
