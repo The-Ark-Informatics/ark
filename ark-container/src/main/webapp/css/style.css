@@ -13,6 +13,10 @@ min-height: 50%;
 overflow: auto;
 padding-bottom: 10px;
 }
+#application {
+overflow: auto;
+padding-bottom: 10px;
+}
 body:before {
 content: "";
 height: 100%;
@@ -58,6 +62,28 @@ overflow: hidden;
 float: left;
 width: 3%;
 height: 75%;
+}
+.leftZone {
+float: left;
+width: 3%;
+height: 75%;
+}
+.contentZoneLeft {
+float: left;
+width: 20%;
+}
+.contentZoneCenter {
+margin: auto;
+width: 80%;
+}
+.contentZoneRight {
+float: right;
+width: 20%;
+}
+.contentZone {
+height: 75%;
+margin: auto;
+width: 95%;
 }
 #contentZoneLeft {
 float: left;
@@ -122,6 +148,27 @@ float: left;
 height: 5%;
 width: 5%;
 }
+.panelContentLeft {
+float: left;
+width: 5%;
+height: 3%;
+}
+.panelContentRight {
+float: right;
+width: 10%;
+height: 5%;
+}
+.panelContentCentre {
+margin-left: auto;
+margin-right: auto;
+width: 80%;
+height: 5%;
+}
+.panelMargin {
+float: left;
+height: 5%;
+width: 5%;
+}
 #imgCenter {
 clear: both;
 }
@@ -143,6 +190,16 @@ height: 5%;
 width: 17%;
 }
 #fldControl {
+float: left;
+height: 5%;
+width: 28%;
+}
+.fldLabel {
+float : left;
+height: 5%;
+width: 17%;
+}
+.fldControl {
 float: left;
 height: 5%;
 width: 28%;
@@ -176,6 +233,27 @@ width: 100%;
 height: 15%;
 }
 #feedbackZone {
+float: left;
+width: 40%;
+height: 10%;
+}
+.userContainerPanel {
+background-color: #e7e4c1;
+float: left;
+width: 80%;
+height: 75%;
+}
+.rightZone {
+float: right;
+width: 5%;
+height: 75%;
+}
+.menuZone {
+float: left;
+width: 100%;
+height: 15%;
+}
+.feedbackZone {
 float: left;
 width: 40%;
 height: 10%;
@@ -578,4 +656,7 @@ padding: 10px 10px 0;
 }
 div.tabpanel div.tab-row a:hover, div.tabpanel2 div.tab-row a:hover {
 color: #fff;
+}
+.fieldset {
+border:1px solid #6F6F6F;
 }
