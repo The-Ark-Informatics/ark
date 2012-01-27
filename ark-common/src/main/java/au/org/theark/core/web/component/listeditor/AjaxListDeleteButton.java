@@ -19,6 +19,8 @@
 package au.org.theark.core.web.component.listeditor;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.IAjaxCallDecorator;
+import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 
@@ -28,10 +30,12 @@ public abstract class AjaxListDeleteButton extends AjaxEditorButton {
 	 * 
 	 */
 	private static final long	serialVersionUID	= 8812772472624903905L;
+	private final IModel				confirm;
 
 	@SuppressWarnings("unchecked")
 	public AjaxListDeleteButton(String id, IModel confirm, IModel label) {
-		super(id, confirm, label);
+		super(id);
+		this.confirm = confirm;
 		setDefaultFormProcessing(false);
 	}
 
@@ -52,9 +56,21 @@ public abstract class AjaxListDeleteButton extends AjaxEditorButton {
 		getList().remove(idx);
 		getEditor().remove(getItem());
 
-		// only repaint ListDetailForm
-		target.add(form);
+		// only repaint ListDetailPanels
+		target.add(getEditor());
 		onDeleteConfirmed(target, form);
+	}
+	
+	@Override
+	protected IAjaxCallDecorator getAjaxCallDecorator() {
+		return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
+			private static final long	serialVersionUID	= 7495281332320552876L;
+
+			@Override
+			public CharSequence preDecorateScript(CharSequence script) {
+				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	this.disabled = true; " + "};" + script;
+			}
+		};
 	}
 
 	protected abstract void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form);
