@@ -1,6 +1,7 @@
 package au.org.theark.lims.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,22 +140,6 @@ public class InventoryServiceImpl implements IInventoryService {
 		iInventoryDao.createInvCell(invCell);
 	}
 
-	public void deleteInvBox(LimsVO modelObject) {
-		InvBox invBox = modelObject.getInvBox();
-		// update available of parent
-		invBox.getInvRack().setAvailable(invBox.getInvRack().getAvailable() + 1);
-		iInventoryDao.updateInvRack(invBox.getInvRack());
-
-		iInventoryDao.deleteInvBox(invBox);
-
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted InvBox " + invBox.getName());
-		ah.setEntityId(invBox.getId());
-		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_INV_BOX);
-		arkCommonService.createAuditHistory(ah);
-	}
-
 	public void deleteInvSite(LimsVO modelObject) {
 		InvSite invSite = modelObject.getInvSite();
 		iInventoryDao.deleteInvSite(invSite);
@@ -192,6 +177,23 @@ public class InventoryServiceImpl implements IInventoryService {
 		ah.setComment("Deleted InvRack " + invRack.getName());
 		ah.setEntityId(invRack.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_INV_RACK);
+		arkCommonService.createAuditHistory(ah);
+	}
+	
+	public void deleteInvBox(LimsVO modelObject) {
+		InvBox invBox = modelObject.getInvBox();
+		// update available of parent
+		invBox.getInvRack().setAvailable(invBox.getInvRack().getAvailable() + 1);
+		iInventoryDao.updateInvRack(invBox.getInvRack());
+		
+		// Delete box
+		iInventoryDao.deleteInvBox(invBox);
+
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted InvBox " + invBox.getName());
+		ah.setEntityId(invBox.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_INV_BOX);
 		arkCommonService.createAuditHistory(ah);
 	}
 
@@ -367,5 +369,9 @@ public class InventoryServiceImpl implements IInventoryService {
 
 	public boolean boxesExist() {
 		return iInventoryDao.boxesExist();
+	}
+
+	public boolean hasAllocatedCells(InvBox invBox) {
+		return iInventoryDao.hasAllocatedCells(invBox);
 	}
 }

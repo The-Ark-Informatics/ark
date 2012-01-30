@@ -470,4 +470,13 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		Integer count = (Integer) criteria.uniqueResult();
 		return count>0;
 	}
+
+	public boolean hasAllocatedCells(InvBox invBox) {
+		Criteria criteria = getSession().createCriteria(InvCell.class);
+		criteria.add(Restrictions.eq("invBox", invBox));
+		criteria.add(Restrictions.isNotNull("biospecimen"));
+		criteria.setProjection(Projections.count("id"));
+		Integer count = (Integer) criteria.uniqueResult();
+		return count>0;
+	}
 }
