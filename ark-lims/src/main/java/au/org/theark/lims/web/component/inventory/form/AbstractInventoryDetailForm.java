@@ -104,7 +104,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 	 * 
 	 */
 	protected void initialiseForm() {
-		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null)) {
+		cancelButton = new AjaxButton(Constants.CANCEL) {
 			/**
 			 * 
 			 */
@@ -123,7 +123,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 			}
 		};
 
-		saveButton = new ArkBusyAjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
+		saveButton = new ArkBusyAjaxButton(Constants.SAVE) {
 			/**
 			 * 
 			 */
@@ -186,6 +186,11 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				target.add(feedbackPanel);
+			}
+			
+			@Override
+			public boolean isEnabled() {
+				return canDelete();
 			}
 		};
 
@@ -373,9 +378,16 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 	abstract protected void processErrors(AjaxRequestTarget target);
 
 	/**
-	 * Abstract method for sub-classes to implement, to determine if a the form refers to a new object/entity
+	 * Abstract method for sub-classes to implement, to determine if the form refers to a new object/entity
 	 * 
 	 * @return
 	 */
 	abstract protected boolean isNew();
+	
+	/**
+	 * Abstract method for sub-classes to implement, to determine if the form model object can be deleted
+	 * 
+	 * @return
+	 */
+	abstract protected boolean canDelete();
 }

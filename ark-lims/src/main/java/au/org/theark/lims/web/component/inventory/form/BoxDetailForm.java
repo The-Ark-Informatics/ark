@@ -290,4 +290,9 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			return false;
 		}
 	}
+
+	@Override
+	protected boolean canDelete() {
+		return !iInventoryService.hasAllocatedCells(containerForm.getModelObject().getInvBox());
+	}
 }
