@@ -265,4 +265,6 @@ public interface IInventoryDao {
 	public BiospecimenLocationVO getInvCellLocation(InvCell invCell) throws ArkSystemException;
 
 	public boolean boxesExist();
+
+	public boolean hasAllocatedCells(InvBox invBox);
 }
