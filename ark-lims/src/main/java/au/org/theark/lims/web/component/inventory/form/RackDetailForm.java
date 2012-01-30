@@ -130,6 +130,8 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		
 		// Focus on Name
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
+		
+		deleteButton.setEnabled(containerForm.getModelObject().getInvRack().getChildren().isEmpty());
 	}
 	
 	private void initInvFreezerDdc() {
@@ -224,5 +226,10 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		else {
 			return false;
 		}
+	}
+
+	@Override
+	protected boolean canDelete() {
+		return containerForm.getModelObject().getInvRack().getChildren().isEmpty();
 	}
 }

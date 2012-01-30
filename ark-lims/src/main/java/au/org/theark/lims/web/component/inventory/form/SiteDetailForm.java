@@ -183,4 +183,9 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			return false;
 		}
 	}
+
+	@Override
+	protected boolean canDelete() {
+		return containerForm.getModelObject().getInvSite().getChildren().isEmpty();
+	}
 }

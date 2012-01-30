@@ -244,4 +244,9 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			return false;
 		}
 	}
+
+	@Override
+	protected boolean canDelete() {
+		return containerForm.getModelObject().getInvFreezer().getChildren().isEmpty();
+	}
 }
