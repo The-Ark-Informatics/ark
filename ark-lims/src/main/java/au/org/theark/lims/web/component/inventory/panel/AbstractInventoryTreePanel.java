@@ -11,7 +11,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.html.tree.AbstractTree;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +101,7 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 	}
 
 	private void initialiseButtons() {
-		addSite = new ArkBusyAjaxButton("addSite", new StringResourceModel("addSiteKey", this, null)) {
+		addSite = new ArkBusyAjaxButton("addSite") {
 
 			/**
 			 * 
@@ -126,7 +125,7 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 
 		};
 
-		addFreezer = new ArkBusyAjaxButton("addFreezer", new StringResourceModel("addFreezerKey", this, null)) {
+		addFreezer = new ArkBusyAjaxButton("addFreezer") {
 
 			/**
 			 * 
@@ -150,7 +149,7 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 
 		};
 
-		addRack = new ArkBusyAjaxButton("addRack", new StringResourceModel("addRackKey", this, null)) {
+		addRack = new ArkBusyAjaxButton("addRack") {
 
 			/**
 			 * 
@@ -174,7 +173,7 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 
 		};
 
-		addBox = new ArkBusyAjaxButton("addBox", new StringResourceModel("addBoxKey", this, null)) {
+		addBox = new ArkBusyAjaxButton("addBox") {
 
 			/**
 			 * 
