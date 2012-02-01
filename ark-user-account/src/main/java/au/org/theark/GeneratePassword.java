@@ -6,6 +6,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import au.org.theark.dao.ArkUserDao;
 import au.org.theark.vo.ArkUserVO;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
 /**
  * A Stand alone java application that can be used for the purpose of creating an Ark User in LDAP . It does not create the user in the
@@ -17,6 +19,9 @@ import au.org.theark.vo.ArkUserVO;
  */
 public class GeneratePassword {
 
+	private static String SQL_FILENAME = "initialArkUser.sql";
+	
+	
 	public static void main(String[] args) {
 
 		ArkUserVO arkUserVO = new ArkUserVO();
@@ -32,7 +37,9 @@ public class GeneratePassword {
 		if (context != null && arkUserDAO != null) {
 			try {
 				arkUserDAO.createArkUser(arkUserVO);
-				System.out.println("\n -- The ark user was successfully created in LDAP. ");
+				System.out.println("\n -- The ark user was successfully created in LDAP.");
+				generatePassword.writeSqlScript(arkUserVO);
+				System.out.println("\n -- Matching SQL script written to " + SQL_FILENAME + ".");
 			}
 			catch (InvalidNameException e) {
 				e.printStackTrace();
@@ -64,4 +71,38 @@ public class GeneratePassword {
 		}
 
 	}
+	
+	// Function to write an SQL script that creates the initial Ark user in the database backend.
+	// The username of this user matches the username entered into LDAP.
+	private void writeSqlScript(ArkUserVO arkUserVO) {
+	
+		try
+		{
+			// open the script file, overwriting any previous file
+			PrintStream outputStream = new PrintStream(new FileOutputStream(SQL_FILENAME));
+			// output the script's SQL
+			outputStream.println("-- This script will create in the database a super user account for " + 
+									arkUserVO.getArkUserId() + 
+									" (" + arkUserVO.getFirstName() + " " + arkUserVO.getLastName() + ")");
+			outputStream.println("USE study;");
+			outputStream.println("-- NOTE: You must first setup all the database schema with appropriate patches before importing this.");
+			outputStream.println("-- Insert first Super User as a valid account");
+			outputStream.println("INSERT INTO `study`.`ark_user` (`ID`, `LDAP_USER_NAME`) VALUES (1, '" + arkUserVO.getArkUserId() + "');");
+			outputStream.println("-- Set up the permissions for the first Super User (ark_role_id = 1)");
+			outputStream.println("INSERT INTO `study`.`ark_user_role` (ID,ARK_USER_ID,ARK_ROLE_ID,ARK_MODULE_ID,STUDY_ID) VALUES (1,1,1,1,NULL);");
+			outputStream.println("INSERT INTO `study`.`ark_user_role` (ID,ARK_USER_ID,ARK_ROLE_ID,ARK_MODULE_ID,STUDY_ID) VALUES (2,1,1,2,NULL);");
+			outputStream.println("INSERT INTO `study`.`ark_user_role` (ID,ARK_USER_ID,ARK_ROLE_ID,ARK_MODULE_ID,STUDY_ID) VALUES (3,1,1,3,NULL);");
+			outputStream.println("INSERT INTO `study`.`ark_user_role` (ID,ARK_USER_ID,ARK_ROLE_ID,ARK_MODULE_ID,STUDY_ID) VALUES (4,1,1,4,NULL);");
+			outputStream.println("INSERT INTO `study`.`ark_user_role` (ID,ARK_USER_ID,ARK_ROLE_ID,ARK_MODULE_ID,STUDY_ID) VALUES (5,1,1,5,NULL);");				
+			outputStream.println("-- NB: ark_module_id = 6 (Reporting) omitted, because reporting relies on permissions defined in other modules.");
+			outputStream.println("INSERT INTO `study`.`ark_user_role` (ID,ARK_USER_ID,ARK_ROLE_ID,ARK_MODULE_ID,STUDY_ID) VALUES (7,1,1,7,NULL);");
+			// script complete, close the file
+			outputStream.close();
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Error writing matching SQL script " + SQL_FILENAME + " for user " + arkUserVO.getArkUserId() + ".");
+		}
+	}
+
 }
