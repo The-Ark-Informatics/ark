@@ -1,4 +1,6 @@
 USE lims;
+DELETE FROM `barcode_label` WHERE id >0;
+
 INSERT INTO `barcode_label` (`ID`,`STUDY_ID`,`BARCODE_PRINTER_ID`,`NAME`,`DESCRIPTION`,`LABEL_PREFIX`,`LABEL_SUFFIX`,`VERSION`) VALUES (1,NULL,1,'zebra biospecimen','Generic Zebra Biospecimen Label','D14
 N','P1',1);
 INSERT INTO `barcode_label` (`ID`,`STUDY_ID`,`BARCODE_PRINTER_ID`,`NAME`,`DESCRIPTION`,`LABEL_PREFIX`,`LABEL_SUFFIX`,`VERSION`) VALUES (2,NULL,1,'zebra bioCollection','Generic Zebra BioCollection label','D15
