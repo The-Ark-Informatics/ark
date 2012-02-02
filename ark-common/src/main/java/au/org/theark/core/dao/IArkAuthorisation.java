@@ -181,4 +181,6 @@ public interface IArkAuthorisation<T> {
 	public List<ArkUserRole> getArkSuperAdministratorList() throws EntityNotFoundException;
 	
 	public ArkRole getArkRoleByName(String roleName);
+
+	public List<ArkUser> getArkUserListByStudy(Study study);
 }
