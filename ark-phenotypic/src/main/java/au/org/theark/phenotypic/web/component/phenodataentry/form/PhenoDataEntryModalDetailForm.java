@@ -21,7 +21,6 @@ package au.org.theark.phenotypic.web.component.phenodataentry.form;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -63,6 +62,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	 * 
 	 */
 	private static final long					serialVersionUID	= 2727419197330261916L;
+	@SuppressWarnings("unused")
 	private static final Logger				log					= LoggerFactory.getLogger(PhenoDataEntryModalDetailForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -122,6 +122,11 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			phenoDataCpModel.getObject().setArkFunction(cpModel.getObject().getArkFunction());
 			PhenoDataDataViewPanel phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel).initialisePanel(au.org.theark.core.Constants.ROWS_PER_PAGE);
 			dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView()) {
+				/**
+				 * 
+				 */
+				private static final long	serialVersionUID	= 1L;
+
 				@Override
 				protected void onAjaxEvent(AjaxRequestTarget target) {
 					target.add(dataEntryWMC);
@@ -177,7 +182,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		questionnaireDdc = new DropDownChoice<CustomFieldGroup>("phenotypicCollection.questionnaire", (List<CustomFieldGroup>) questionnaireList, choiceRenderer);
 		questionnaireDdc.setNullValid(false);
 		if (!isNew()) {
-			questionnaireDdc.setEnabled(false);	//can't change questionnaire after crating the phenoCollection
+			questionnaireDdc.setEnabled(false);	//can't change questionnaire after creating the phenoCollection
 		}
 	}
 
@@ -190,10 +195,10 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	}
 
 	private void initReviewedByDdc() {
-		List<ArkUser> userList = new ArrayList<ArkUser>(0);
-		ChoiceRenderer<ArkUser> choiceRenderer = new ChoiceRenderer<ArkUser>("name", "id");
-		reviewedByDdc = new DropDownChoice<ArkUser>("phenotypicCollection.reviewedBy", userList, choiceRenderer);
-		reviewedByDdc.setEnabled(false);	//TODO: temporarily disabled reviewedBy capability for now
+		List<ArkUser> arkUserList = new ArrayList<ArkUser>(0);
+		arkUserList = iArkCommonService.getArkUserListByStudy(cpModel.getObject().getPhenotypicCollection().getLinkSubjectStudy().getStudy());
+		ChoiceRenderer<ArkUser> choiceRenderer = new ChoiceRenderer<ArkUser>("ldapUserName", "id");
+		reviewedByDdc = new DropDownChoice<ArkUser>("phenotypicCollection.reviewedBy", arkUserList, choiceRenderer);
 	}
 
 	protected void attachValidators() {
@@ -223,9 +228,6 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	protected void onSave(AjaxRequestTarget target) {
 		if (cpModel.getObject().getPhenotypicCollection().getId() == null) {
 			// Save
-
-			// Inital transaction detail
-			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
 			iPhenotypicService.createPhenotypicCollection(cpModel.getObject().getPhenotypicCollection());
 			this.info("Phenotypic Collection " + cpModel.getObject().getPhenotypicCollection().getId() + " was created successfully");
 			processErrors(target);

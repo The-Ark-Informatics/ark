@@ -37,11 +37,11 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
@@ -49,7 +49,6 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
@@ -190,7 +189,7 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 	}
 
 	private void initialiseNewButton() {
-		newButton = new ArkBusyAjaxButton("listNewButton", new StringResourceModel("listNewKey", this, null)) {
+		newButton = new ArkBusyAjaxButton(Constants.NEW) {
 			/**
 			 * 
 			 */
@@ -213,7 +212,7 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Unable to proceed with New Biospecimen");
+				this.error("Unexpected error: Unable to proceed with New");
 			}
 		};
 		newButton.setDefaultFormProcessing(false);
@@ -224,7 +223,7 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 	/**
 	 * 
 	 * @param iModel
-	 * @return the pageableListView of BioCollection
+	 * @return the pageableListView of PhenotypicCollection
 	 */
 	public DataView<PhenotypicCollection> buildDataView(ArkDataProvider2<PhenoDataCollectionVO, PhenotypicCollection> phenotypicCollectionProvider) {
 
@@ -305,12 +304,13 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 	}
 
 	protected void onNew(AjaxRequestTarget target) {
-		// Needs CREATE permission AND at least one CustomFieldGroup (Questionnaire) to select from
+		// Needs CREATE permission AND at least one published CustomFieldGroup (Questionnaire) to select from
 		boolean hasQuestionnaires = false;
 
 		CustomFieldGroup questionnaire = new CustomFieldGroup();
 		questionnaire.setArkFunction(cpModel.getObject().getArkFunction());
 		questionnaire.setStudy(cpModel.getObject().getPhenotypicCollection().getLinkSubjectStudy().getStudy());
+		questionnaire.setPublished(true);
 		hasQuestionnaires = (iArkCommonService.getCustomFieldGroupCount(questionnaire) > 0);
 
 		if (hasQuestionnaires) {
@@ -324,7 +324,7 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 			showModalWindow(target, newModel); // listDetailsForm);
 		}
 		else {
-			this.error("No Phenotypic Questionnaires exist. Please create at least one Phenotypic Questionnaire for the study.");
+			this.error("No published Questionnaires exist. Please create and publish at least one Questionnaire for the study.");
 		}
 		// refresh the feedback messages
 		target.add(feedbackPanel);
