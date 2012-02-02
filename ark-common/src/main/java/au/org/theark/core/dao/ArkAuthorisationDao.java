@@ -176,11 +176,11 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		session.close();
 		return isAdminType;
 	}
-	
+
 	public List<ArkUserRole> getArkSuperAdministratorList() throws EntityNotFoundException {
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		ArkRole arkRole = getArkRoleByName(RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
-		criteria.add(Restrictions.eq("arkRole",arkRole));
+		criteria.add(Restrictions.eq("arkRole", arkRole));
 		return criteria.list();
 	}
 
@@ -451,25 +451,25 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 
 	/**
 	 * Get a list of Modules that are linked to the study and then get the roles linked to each module A VO List of ArkModuleVO will contain the
-	 * ArkModule and a list of ArkRoles.
-	 * Note:This implementation will exclude Reporting Module from the list specifically.
+	 * ArkModule and a list of ArkRoles. Note:This implementation will exclude Reporting Module from the list specifically.
+	 * 
 	 * @param study
 	 * @return Collection<ArkModuleVO> Minus the Reporting Module
 	 */
 	public Collection<ArkModuleVO> getArkModulesAndRolesLinkedToStudy(Study study) {
 
-		ArkModule arkModuleToExclude  = getArkModuleByName(Constants.ARK_MODULE_REPORTING);
-		
+		ArkModule arkModuleToExclude = getArkModuleByName(Constants.ARK_MODULE_REPORTING);
+
 		Collection<LinkStudyArkModule> arkStudyLinkedModuleList = new ArrayList<LinkStudyArkModule>();
 		Collection<ArkModuleVO> arkModuleVOList = new ArrayList<ArkModuleVO>();
-		
+
 		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class);
-		
+
 		criteria.add(Restrictions.eq("study", study));
 		criteria.add(Restrictions.ne("arkModule", arkModuleToExclude));
 		criteria.createAlias("arkModule", "module");
 		criteria.addOrder(Order.asc("module.id"));
-		
+
 		arkStudyLinkedModuleList = criteria.list();
 
 		// For each one in the List get the associated Roles i.e for each module get the Roles
@@ -650,11 +650,11 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		if (!isUserAdminHelper(arkUser.getLdapUserName(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 			criteria.add(Restrictions.eq("study", arkUserVO.getStudy()));
 		}
-		
-		try{
+
+		try {
 			arkUserRoleList = criteria.list();
 		}
-		catch(org.hibernate.TransientObjectException toe){
+		catch (org.hibernate.TransientObjectException toe) {
 			log.error(toe.getMessage());
 		}
 		return arkUserRoleList;
@@ -700,15 +700,14 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		for (ArkUserRole arkUserRole : arkUserVO.getArkUserRoleList()) {
 			session.delete(arkUserRole);
 		}
-		
-		List<ArkUserRole> listOfRoles  = getArkRoleListByUser(arkUserVO);
-		if(listOfRoles.size() <= 0){
-			//Remove the ArkUser From the database only
+
+		List<ArkUserRole> listOfRoles = getArkRoleListByUser(arkUserVO);
+		if (listOfRoles.size() <= 0) {
+			// Remove the ArkUser From the database only
 			session.delete(arkUserVO.getArkUserEntity());
 		}
 	}
 
-	
 	public StudyStatus getStudyStatus(String statusName) throws StatusNotAvailableException {
 		StudyStatus studyStatus = new StudyStatus();
 		studyStatus.setName("Archive");
@@ -731,7 +730,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
 		// Restrict by Study if NOT Super Administrator
 		try {
-			if(!isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+			if (!isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 				Criteria studycriteria = criteria.createCriteria("study");
 				studycriteria.addOrder(Order.asc("name"));
 			}
@@ -742,13 +741,13 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
 		}
-		
+
 		criteria.addOrder(Order.asc("arkModule"));
 		criteria.addOrder(Order.asc("arkRole"));
 		arkUserRoleList = (List<ArkUserRole>) criteria.list();
 		return arkUserRoleList;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study) {
 		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
@@ -774,27 +773,28 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		arkRolePolicyTemplateList = (List<ArkRolePolicyTemplate>) criteria.list();
 		return arkRolePolicyTemplateList;
 	}
-	
+
 	/**
-	 * Similar to the method above, this should be called for general queries to return studies because it assumes
-	 * that the query is being requested by a non-Super Administrator
+	 * Similar to the method above, this should be called for general queries to return studies because it assumes that the query is being requested by
+	 * a non-Super Administrator
+	 * 
 	 * @param searchStudy
 	 * @param studyCriteria
 	 */
 	private void applyStudySearchCriteria(Study searchStudy, Criteria studyCriteria) {
 		applyStudySearchCriteria(searchStudy, studyCriteria, false);
 	}
-	
+
 	/**
-	 * A common method that can be used to apply a search filter on Study entity via a Criteria that is passed from the caller.
-	 * The Criteria's entity can be determined by the caller ( i.e can be Study.class or ArkUserRole.class), this is useful
-	 * when the ArkUser is a SuperAdministrator when we want all the studies to be displayed.In such a case the Criteria object
-	 * must be the Study entity to include all studies.
+	 * A common method that can be used to apply a search filter on Study entity via a Criteria that is passed from the caller. The Criteria's entity
+	 * can be determined by the caller ( i.e can be Study.class or ArkUserRole.class), this is useful when the ArkUser is a SuperAdministrator when we
+	 * want all the studies to be displayed.In such a case the Criteria object must be the Study entity to include all studies.
+	 * 
 	 * @param searchStudy
 	 * @param studyCriteria
 	 */
-	private void applyStudySearchCriteria(Study searchStudy, Criteria studyCriteria, boolean isSuperUser){
-		
+	private void applyStudySearchCriteria(Study searchStudy, Criteria studyCriteria, boolean isSuperUser) {
+
 		if (searchStudy.getId() != null) {
 			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY, searchStudy.getId()));
 		}
@@ -830,7 +830,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 				}
 				catch (StatusNotAvailableException notAvailable) {
 					log.error("Cannot look up and filter on archive status. Reference data could be missing");
-				}	
+				}
 			}
 		}
 		else {
@@ -843,31 +843,33 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 				log.error("Cannot look up and filter on archive status. Reference data could be missing");
 			}
 		}
-		
+
 	}
+
 	/**
 	 * Invoke this mehod when the ArkUser is permitted(a Super Administrator) to view all studies.
+	 * 
 	 * @param searchStudy
 	 * @return List<Study>
 	 */
-	private List<Study> getAllStudiesForSuperAdmin(Study searchStudy){
-		
+	private List<Study> getAllStudiesForSuperAdmin(Study searchStudy) {
+
 		Criteria criteria = getSession().createCriteria(Study.class);
 		applyStudySearchCriteria(searchStudy, criteria, true);
 		return criteria.list();
 	}
-	
-	public List<Study> getStudyListForUser(ArkUserVO arkUserVo){
+
+	public List<Study> getStudyListForUser(ArkUserVO arkUserVo) {
 		List<Study> studyList = new ArrayList<Study>(0);
 		Study searchStudy = arkUserVo.getStudy();
-		
+
 		try {
-			
-			if( isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
-				
-				studyList = getAllStudiesForSuperAdmin(arkUserVo.getStudy());//Get all Studies
+
+			if (isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
+
+				studyList = getAllStudiesForSuperAdmin(arkUserVo.getStudy());// Get all Studies
 			}
-			else{
+			else {
 				/* Get only the studies the ArkUser is linked to via the ArkUserRole */
 				Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 				criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
@@ -877,28 +879,29 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 				projectionList.add(Projections.groupProperty("study"), "study");
 				criteria.setProjection(projectionList);
 				studyList = criteria.list();
-				
+
 			}
-		} catch (EntityNotFoundException e1) {
-			log.error("The specified Ark User does not exist "  + arkUserVo.getArkUserEntity().getLdapUserName());
+		}
+		catch (EntityNotFoundException e1) {
+			log.error("The specified Ark User does not exist " + arkUserVo.getArkUserEntity().getLdapUserName());
 			e1.printStackTrace();
 		}
 
-		return studyList;		
-		
+		return studyList;
+
 	}
-	
-	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule){
+
+	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule) {
 		List<Study> studyList = new ArrayList<Study>(0);
 		Study searchStudy = arkUserVo.getStudy();
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
-		
+
 		try {
 			// Restrict by user if NOT Super Administrator
-			if(isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+			if (isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 				// Fix another bug where the Super Administrator will never be able to INNER JOIN between ArkUserRole and Study on studyId
 				// (since a Super Admin should always have null in the arkUserRole's study column)
-				studyList = getAllStudiesForSuperAdmin(arkUserVo.getStudy());	//Get all Studies
+				studyList = getAllStudiesForSuperAdmin(arkUserVo.getStudy()); // Get all Studies
 				return studyList;
 			}
 			else {
@@ -909,8 +912,8 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
 		}
-		
-		if(arkModule != null) {
+
+		if (arkModule != null) {
 			criteria.add(Restrictions.eq("arkModule", arkModule));
 		}
 		else {
@@ -918,11 +921,10 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			log.error("No arkModule supplied, returning empty study list");
 			return studyList;
 		}
-		
-		
+
 		// Restrict on study criteria (by default, NOT 'Archive' status)
-		Criteria studyCriteria = criteria.createCriteria("study");	
-		
+		Criteria studyCriteria = criteria.createCriteria("study");
+
 		if (searchStudy.getId() != null) {
 			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY, searchStudy.getId()));
 		}
@@ -966,30 +968,30 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 				log.error("Cannot look up and filter on archive status. Reference data could be missing");
 			}
 		}
-		
+
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.groupProperty("study"), "study");
-		
+
 		criteria.setProjection(projectionList);
-		
+
 		studyList = criteria.list();
-		return studyList;		
-		
+		return studyList;
+
 	}
 
 	public boolean arkUserHasModuleAccess(ArkUser arkUser, ArkModule arkModule) {
 		boolean hasModuleAccess = false;
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
-		
+
 		try {
 			// Restrict by user if NOT Super Administrator
-			if(!isUserAdminHelper(arkUser.getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+			if (!isUserAdminHelper(arkUser.getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 				criteria.add(Restrictions.eq("arkUser", arkUser));
 			}
-			
+
 			// Restrict by arkModule
 			criteria.add(Restrictions.eq("arkModule", arkModule));
-			
+
 			List<?> list = criteria.list();
 			hasModuleAccess = (list.size() > 0);
 		}
@@ -999,18 +1001,18 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		catch (NullPointerException e) {
 			log.error(e.getMessage());
 		}
-		
+
 		return hasModuleAccess;
 	}
-	
+
 	public List<ArkModule> getArkModuleListByArkUser(ArkUser arkUser) {
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		ArkModule arkModule = null;
 		try {
 			// Restrict by user if NOT Super Administrator
-			if(!isUserAdminHelper(arkUser.getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+			if (!isUserAdminHelper(arkUser.getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 				criteria.add(Restrictions.eq("arkUser", arkUser));
-				arkModule = getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_REPORTING);	
+				arkModule = getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_REPORTING);
 			}
 		}
 		catch (EntityNotFoundException e) {
@@ -1019,33 +1021,46 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		catch (NullPointerException e) {
 			log.error(e.getMessage());
 		}
-		
+
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.groupProperty("arkModule"), "arkModule");
-		
+
 		criteria.setProjection(projectionList);
 		criteria.addOrder(Order.asc("arkModule.id"));
-		
-		//This was added since non-super admin users need access to Reporting Module Tab. In manager user module we do not list the Reporting Module and hence we cannot map a user based on his role to access this module.
+
+		// This was added since non-super admin users need access to Reporting Module Tab. In manager user module we do not list the Reporting Module
+		// and hence we cannot map a user based on his role to access this module.
 		List<ArkModule> list = criteria.list();
-		if(arkModule != null){
+		if (arkModule != null) {
 			list.add(arkModule);
 		}
-		
+
 		return list;
 	}
-	
-	public Boolean isArkUserLinkedToStudies(ArkUser arkUser){
-		
+
+	public Boolean isArkUserLinkedToStudies(ArkUser arkUser) {
 		Boolean flag = false;
-		
+
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		criteria.add(Restrictions.eq("arkUser", arkUser));
 		criteria.setProjection(Projections.rowCount());
 		Integer totalCount = (Integer) criteria.uniqueResult();
-		if(totalCount > 0){
+		if (totalCount > 0) {
 			flag = true;
 		}
 		return flag;
+	}
+
+	public List<ArkUser> getArkUserListByStudy(Study study) {
+		List<ArkUser> arkUserList = new ArrayList<ArkUser>(0);
+		
+		if(study != null && study.getId() != null) {
+			Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+			criteria.add(Restrictions.eq("study", study));
+			criteria.setProjection(Projections.groupProperty("arkUser"));
+			arkUserList = criteria.list();
+		}
+		
+		return arkUserList;
 	}
 }

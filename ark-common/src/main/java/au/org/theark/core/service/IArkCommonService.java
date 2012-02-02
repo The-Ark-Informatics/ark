@@ -37,8 +37,6 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
-import au.org.theark.core.model.pheno.entity.Field;
-import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -598,5 +596,7 @@ public interface IArkCommonService<T> {
 	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
 	
 	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate);
+
+	public List<ArkUser> getArkUserListByStudy(Study study);
 	
 }

@@ -128,10 +128,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	private IArkAuthorisation			arkAuthorisationDao;
 	private ICustomFieldDao				customFieldDao;
-	private IStudyDao					studyDao;
-	private ICSVLoaderDao 				csvLoaderDao;
+	private IStudyDao						studyDao;
+	private ICSVLoaderDao				csvLoaderDao;
 	private ArkLdapContextSource		ldapDataContextSource;
-	private ReCaptchaContextSource		reCaptchaContextSource;
+	private ReCaptchaContextSource	reCaptchaContextSource;
 	private JavaMailSender				javaMailSender;
 	private VelocityEngine				velocityEngine;
 
@@ -143,7 +143,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void setCustomFieldDao(ICustomFieldDao customFieldDao) {
 		this.customFieldDao = customFieldDao;
 	}
-	
+
 	/**
 	 * @return the velocityEngine
 	 */
@@ -211,16 +211,15 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void setLdapDataContextSource(ArkLdapContextSource ldapDataContextSource) {
 		this.ldapDataContextSource = ldapDataContextSource;
 	}
-	
+
 	public ICSVLoaderDao getCsvLoaderDao() {
 		return csvLoaderDao;
 	}
-	
+
 	@Autowired
 	public void setCsvLoaderDao(ICSVLoaderDao csvLoaderDao) {
 		this.csvLoaderDao = csvLoaderDao;
-	}	
-
+	}
 
 	private static class PersonContextMapper implements ContextMapper {
 
@@ -722,10 +721,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		try {
 			if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
 				String fieldName = customFieldVO.getCustomField().getName();
-				
-				if(customFieldVO.isUseCustomFieldDisplay()) {
+
+				if (customFieldVO.isUseCustomFieldDisplay()) {
 					customFieldDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
-					
+
 					// History for Custom Field Display
 					AuditHistory ah = new AuditHistory();
 					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
@@ -735,7 +734,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 					createAuditHistory(ah);
 				}
 				customFieldDao.deleteCustomField(customFieldVO.getCustomField());
-				
+
 				// History for Custom Field
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
@@ -850,10 +849,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				// Hostname in message footer
 				model.put("host", host);
 
-				//TODO: Add inline image(s)??
+				// TODO: Add inline image(s)??
 				// Add inline image header
-				//FileSystemResource res = new FileSystemResource(new File("c:/Sample.jpg"));
-				//message.addInline("bgHeaderImg", res);
+				// FileSystemResource res = new FileSystemResource(new File("c:/Sample.jpg"));
+				// message.addInline("bgHeaderImg", res);
 
 				// Set up the email text
 				String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, "au/org/theark/core/velocity/resetPasswordEmail.vm", model);
@@ -876,9 +875,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		/* send out the email */
 		return text;
 	}
-	
-	
-	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException{
+
+	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws ArkSystemException {
 		customFieldDao.updateCustomFieldDisplay(customFieldDisplay);
 	}
 
@@ -913,10 +911,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<StudyUpload> searchUploads(StudyUpload uploadCriteria) {
 		return studyDao.searchUploads(uploadCriteria);
 	}
-	
+
 	public void createUpload(StudyUpload studyUpload) {
 		studyDao.createUpload(studyUpload);
-	
+
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 		ah.setComment("Created studyUpload " + studyUpload.getId());
@@ -927,7 +925,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public void updateUpload(StudyUpload studyUpload) {
 		studyDao.updateUpload(studyUpload);
-	
+
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		ah.setComment("Updated studyUpload " + studyUpload.getId());
@@ -935,69 +933,73 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		ah.setEntityId(studyUpload.getId());
 		this.createAuditHistory(ah);
 	}
-	
-	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter){
+
+	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter) {
 		return studyDao.getDelimiterTypeNameByDelimiterChar(delimiterCharacter);
 	}
 
 	public void createCustomFieldUpload(CustomFieldUpload cfUpload) {
 		studyDao.createCustomFieldUpload(cfUpload);
 	}
-	
-	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria, CustomFieldGroup customFieldGroup){
+
+	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria, CustomFieldGroup customFieldGroup) {
 		return customFieldDao.getCustomFieldDisplayByCustomField(cfCriteria, customFieldGroup);
 	}
-	
-	public List<BiospecimenUidToken> getBiospecimenUidTokens(){
+
+	public List<BiospecimenUidToken> getBiospecimenUidTokens() {
 		return studyDao.getBiospecimenUidTokens();
 	}
-	
-	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars(){
+
+	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars() {
 		return studyDao.getBiospecimenUidPadChars();
 	}
-	
-	public List<Study> getStudyListAssignedToBiospecimenUidTemplate(){
+
+	public List<Study> getStudyListAssignedToBiospecimenUidTemplate() {
 		return studyDao.getStudyListAssignedToBiospecimenUidTemplate();
 	}
-	
-	public void createBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate){
+
+	public void createBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
 		studyDao.createBiospecimenUidTemplate(biospecimenUidTemplate);
 	}
-	
+
 	public List<BioCollectionUidToken> getBioCollectionUidToken() {
 		return studyDao.getBioCollectionUidToken();
 	}
-	
-	public List<BioCollectionUidPadChar> getBioCollectionUidPadChar(){
+
+	public List<BioCollectionUidPadChar> getBioCollectionUidPadChar() {
 		return studyDao.getBioCollectionUidPadChar();
 	}
-	
-	public void createBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate){
+
+	public void createBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate) {
 		studyDao.createBioCollectionUidTemplate(bioCollectionUidTemplate);
 	}
-	
-	public Boolean studyHasBiospecimen(Study study){
+
+	public Boolean studyHasBiospecimen(Study study) {
 		return studyDao.studyHasBiospecimen(study);
 	}
-	
-	public Boolean studyHasBioCollection(Study study){
+
+	public Boolean studyHasBioCollection(Study study) {
 		return studyDao.studyHasBioCollection(study);
 	}
-	
-	public BiospecimenUidTemplate getBiospecimentUidTemplate(Study study){
+
+	public BiospecimenUidTemplate getBiospecimentUidTemplate(Study study) {
 		return studyDao.getBiospecimentUidTemplate(study);
 	}
-	
-	public BioCollectionUidTemplate getBioCollectionUidTemplate(Study study){
+
+	public BioCollectionUidTemplate getBioCollectionUidTemplate(Study study) {
 		return studyDao.getBioCollectionUidTemplate(study);
 	}
-	
-	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate){
-		 studyDao.updateBiospecimenUidTemplate(biospecimenUidTemplate);
+
+	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
+		studyDao.updateBiospecimenUidTemplate(biospecimenUidTemplate);
 	}
-	
-	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate){
-		 studyDao.updateBioCollectionUidTemplate(bioCollectionUidTemplate);
+
+	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate) {
+		studyDao.updateBioCollectionUidTemplate(bioCollectionUidTemplate);
+	}
+
+	public List<ArkUser> getArkUserListByStudy(Study study) {
+		return arkAuthorisationDao.getArkUserListByStudy(study);
 	}
 
 }
