@@ -571,6 +571,11 @@ font-size: 7pt;
 font-weight: 700;
 width: 100%;
 }
+.note {
+font-size: 7pt;
+font-weight: 700;
+width: 100%;
+}
 wicket-ajax-indicator {
 float: left;
 position: absolute;
