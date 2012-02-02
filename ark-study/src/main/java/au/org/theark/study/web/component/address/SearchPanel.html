@@ -1,25 +1,25 @@
 <wicket:panel>&nbsp;
-	<div id="searchPanelContainer">
+	<div class="searchPanelContainer">
 		<form wicket:id="searchForm">
-			<div id="searchPanelContent">
-				<div id="searchPanelBreaker">&nbsp;</div>
+			<div class="searchPanelContent">
+				<div class="searchPanelBreaker">&nbsp;</div>
 				
-				<div id="panelContentLeft">&nbsp;</div>
+				<div class="panelContentLeft">&nbsp;</div>
 				
-				<div id="searchPanelTextMessage">
+				<div class="searchPanelTextMessage">
 					<div class="label">
 						<span wicket:id="generalLbl"></span>
 					</div>
 				</div>
 				
-				<div id="panelContentRight">&nbsp;</div>
+				<div class="panelContentRight">&nbsp;</div>
 			
 				<!-- 				
-				<div id="searchPanelBreaker">&nbsp;</div>				
+				<div class="searchPanelBreaker">&nbsp;</div>				
 				
-				<div id="panelContentLeft">&nbsp;</div>
+				<div class="panelContentLeft">&nbsp;</div>
 				
-				<div id="fldLabel">
+				<div class="fldLabel">
 		 			<div class="label">
 		 				<label for="streetAddress"><wicket:message key="street.address">Street Address:</wicket:message></label>		
 		 			</div> 
@@ -27,7 +27,7 @@
 		 		 -->
 		 		<!--  this will change to ID -->
 		 		<!-- 
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label"> 
 						<input wicket:id="address.streetAddress"  type="text" />
 					</div>
@@ -35,13 +35,13 @@
 			
 				<div  id="panelMargin">&nbsp;</div>
 				
-				<div id="fldLabel">
+				<div class="fldLabel">
 		 			<div class="label">
 						<label for="city"><wicket:message key="city">City:</wicket:message></label>		
 		 			</div> 
 		 		</div> 			       			
 				
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<input wicket:id="address.city"  type="text" />
 					</div>
@@ -49,29 +49,29 @@
 					
 				
 				
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div class="searchPanelBreaker">&nbsp;</div>
 		       	
-		       	<div id="panelContentLeft">&nbsp;</div>
+		       	<div class="panelContentLeft">&nbsp;</div>
 				
-				<div id="fldLabel">
+				<div class="fldLabel">
 		 			<div class="label">
 						<label for="postCode"><wicket:message key="postcode">Post Code:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
 				
-				<div id="fldControl">
+				<div class="fldControl">
 					<input wicket:id="address.postCode"  type="text" />
 				</div>
 		       	   		       			
-		       	<div id="panelMargin">&nbsp;</div>
+		       	<div class="panelMargin">&nbsp;</div>
 						
-				<div id="fldLabel">
+				<div class="fldLabel">
 		 			<div class="label">
 						<label for="country"><wicket:message key="country">Country:</wicket:message></label>		
 		 			</div> 
 		 		</div> 			       			
 				
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<select wicket:id="address.country" width="150" style="width: 150px">
 		       				<option>Australia</option>
@@ -81,16 +81,16 @@
 				</div>
 				
 				
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div class="searchPanelBreaker">&nbsp;</div>
 				
-				<div id="panelContentLeft">&nbsp;</div>
-				<div id="fldLabel">
+				<div class="panelContentLeft">&nbsp;</div>
+				<div class="fldLabel">
 		 			<div class="label">
 						<label for="state"><wicket:message key="state">State:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
 				
-				<div id="fldControl">
+				<div class="fldControl">
 				  <div class="label">
 				  	<div  wicket:id="countryStateSelector"> 
 						<select wicket:id="address.countryState">
@@ -101,15 +101,15 @@
 		       	  </div>
 				</div>
 		       	   		       			
-		       	<div id="panelMargin">&nbsp;</div>
+		       	<div class="panelMargin">&nbsp;</div>
 						
-				<div id="fldLabel">
+				<div class="fldLabel">
 		 			<div class="label">
 						<label for="state"><wicket:message key="addressType">Address Type:</wicket:message></label>		
 		 			</div> 
 		 		</div> 			       			
 				
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<select wicket:id="address.addressType">
 		       				<option>Work</option>
@@ -120,47 +120,47 @@
 				-->
 				<!-- This section of code was commented before ark-273. Incase someone reverts ark-273 behaviour make sure this section is commented or the components added in if the use case required it.
 				
-				<div id="searchPanelBreaker">&nbsp;</div>
-				<div id="panelContentLeft">&nbsp;</div>
+				<div class="searchPanelBreaker">&nbsp;</div>
+				<div class="panelContentLeft">&nbsp;</div>
 				
-				<div id="fldLabel">
+				<div class="fldLabel">
 		 			<div class="label">
 						<label for="addressStatus"><wicket:message key="addressStatus">Address Status:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
 				
-				<div id="fldControl">
+				<div class="fldControl">
 				  	<span wicket:id="addressStatusRadioId">
 				  		<input type="radio">Active</input>
 				  		<input type="radio">Inactive</input>
 					</span>
 				</div>
 		       	   		       			
-		       	<div id="panelMargin">&nbsp;</div>
+		       	<div class="panelMargin">&nbsp;</div>
 						
-				<div id="fldLabel">
+				<div class="fldLabel">
 		 			<div class="label">
 						&nbsp;		
 		 			</div> 
 		 		</div> 			       			
 				
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 					  &nbsp;
 					</div>
 				</div>
 				 -->
 				 		
+				<div class="searchPanelBreaker">&nbsp;</div>
+						
 				<!--  Defines the location for buttons -->
-				<div id="actionButtons">&nbsp;
-					<div>
-						<input wicket:id="search" type="submit" wicket:message="value:button.search" />&nbsp;
-						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />&nbsp;
-						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
-					</div>
+				<div class="actionButtons">
+					<input wicket:id="search" type="submit" wicket:message="value:page.search" />
+					<input wicket:id="reset" type="submit" wicket:message="value:page.reset" />
+					<input wicket:id="new" type="submit" wicket:message="value:page.new" />
 				</div>
 				
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div class="searchPanelBreaker">&nbsp;</div>
 			</div>
 		</form>
 	</div>
