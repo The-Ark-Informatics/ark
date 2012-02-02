@@ -1,20 +1,20 @@
 <wicket:panel>
 	&nbsp;
 	<form wicket:id="userDetailsForm">
-		<div id="detailsPanelBorder">
-			<div id="detailPanelBreaker">
+		<div class="detailsPanelBorder">
+			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
-			<div id="panelContentLeft">
+			<div class="panelContentLeft">
 				&nbsp;
 			</div>
-			<div id="fldLabel">
+			<div class="fldLabel">
 				<div class="label">
 					<label for="userName">
 						<wicket:message key="userNameKey">
 							User Name:
 						</wicket:message>
-						<div id="note">
+						<div class="note">
 							<wicket:message	key="userNameKey.note">
 								[Note replaced from properties]
 							</wicket:message>
@@ -22,22 +22,22 @@
 					</label>
 				</div>
 			</div>
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					<input wicket:id="userName"	type="text" size="30"/>
 				</div>
 			</div>
-			<div id="panelMargin">
+			<div class="panelMargin">
 				&nbsp;
 			</div>
 
-			<div id="fldLabel">
+			<div class="fldLabel">
 				<div class="label">
 					<label for="email">
 						<wicket:message key="emailKey">
 							Email:
 						</wicket:message>
-						<div id="note">
+						<div class="note">
 							<wicket:message	key="emailKey.note">
 								[Note replaced from properties]
 							</wicket:message>
@@ -45,23 +45,23 @@
 					</label>
 				</div>
 			</div>
-			<div id="fldLabel">
+			<div class="fldLabel">
 				<div class="email">
 					<input wicket:id="email" type="text" size="30" />
 				</div>
 			</div>
 
-			<div id="detailPanelContentRight">
+			<div class="detailPanelContentRight">
 				&nbsp;
 			</div>
-			<div id="detailPanelBreaker">
+			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
-			<div id="panelContentLeft">
+			<div class="panelContentLeft">
 				&nbsp;
 			</div>
 
-			<div id="fldLabel">
+			<div class="fldLabel">
 				<div class="label">
 					<label for="firstName">
 						<wicket:message key="firstNameKey">
@@ -70,17 +70,17 @@
 					</label>
 				</div>
 			</div>
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					<input wicket:id="firstName" type="text" />
 				</div>
 			</div>
 
-			<div id="panelMargin">
+			<div class="panelMargin">
 				&nbsp;
 			</div>
 
-			<div id="fldLabel">
+			<div class="fldLabel">
 				<div class="label">
 					<label for="lastName">
 						<wicket:message key="lastNameKey">
@@ -89,30 +89,30 @@
 					</label>
 				</div>
 			</div>
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					<input wicket:id="lastName"	type="text" />
 				</div>
 			</div>
 
-			<div id="detailPanelContentRight">
+			<div class="detailPanelContentRight">
 				&nbsp;
 			</div>
-			<div id="detailPanelBreaker">
+			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
-			<div id="panelContentLeft">
+			<div class="panelContentLeft">
 				&nbsp;
 			</div>
 
 			<div wicket:id="groupPasswordContainer">
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<div class="label">
 						<label for="password">
 							<wicket:message key="passwordKey">
 								New Password:
 							</wicket:message>
-							<div id="note">
+							<div class="note">
 								<wicket:message	key="passwordKey.note">
 									[Note replaced from properties]
 								</wicket:message>
@@ -120,15 +120,15 @@
 						</label>
 					</div>
 				</div>
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<input wicket:id="password"	type="password" maxlength="20"/>
 					</div>
 				</div>
-				<div id="panelMargin">
+				<div class="panelMargin">
 					&nbsp;
 				</div>
-				<div id="fldLabel">
+				<div class="fldLabel">
 					<div class="label">
 						<label for="confirmPassword">
 							<wicket:message key="confirmPasswordKey">
@@ -137,14 +137,14 @@
 						</label>
 					</div>
 				</div>
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<input wicket:id="confirmPassword"	type="password" maxlength="20"/>
 					</div>
 				</div>
 			</div>
 
-			<div id="detailPanelBreaker">
+			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
 
@@ -262,21 +262,16 @@
 			<table width="0%" cellspacing="0">
 			</table>
 
-			<div id="detailPanelBreaker">
+			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
 
-			<div id="actionButtons">
-				<div id="panelMargin">
-					&nbsp;
-				</div>
-				<div class="label">
-					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
-					&nbsp;
-					<input wicket:id="close" type="submit" wicket:message="value:page.close" />
-				</div>
+			<div class="actionButtons">
+				<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+				<input wicket:id="close" type="submit" wicket:message="value:page.close" />
 			</div>
-			<div id="detailPanelBreaker">
+
+			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
 		</div>

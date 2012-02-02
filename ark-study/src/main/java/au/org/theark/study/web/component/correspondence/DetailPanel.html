@@ -1,13 +1,13 @@
 <wicket:panel>
 	&nbsp;
 	<form wicket:id="detailsForm">
-		 <div id="detailsPanelBorder">
+		 <div class="detailsPanelBorder">
 		  <div wicket:id="detailFormContainer">
-		    <div id="detailPanelBreaker">&nbsp;</div>
-			<div id="panelContentLeft">&nbsp;</div>
+		    <div class="detailPanelBreaker">&nbsp;</div>
+			<div class="panelContentLeft">&nbsp;</div>
 			
 			<!--  Row 1 -->
-			<div id="fldLabel">
+			<div class="fldLabel">
 				<div class="label">
 						<label for="correspondenceStatus">
 							<wicket:message key="correspondenceStatus">Status:</wicket:message>
@@ -15,7 +15,7 @@
 				</div>
 			</div>
 			
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					<select wicket:id="correspondence.correspondenceStatusType">
 		       			<option>Archived</option>
@@ -23,9 +23,9 @@
 				</div>
 			</div>
 			
-			<div id="panelMargin">&nbsp;</div>
+			<div class="panelMargin">&nbsp;</div>
 			
-			<div id="fldLabel">
+			<div class="fldLabel">
 				<div class="label">
 					<label for="operator">
 						<wicket:message key="operator">Operator:</wicket:message>
@@ -33,7 +33,7 @@
 				</div>
 			</div>
 			
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					<select wicket:id="correspondence.operator">
 		       			<option>Adrian</option>
@@ -42,10 +42,10 @@
 			</div>
 			
 			
-			<div id="detailPanelBreaker">&nbsp;</div>
-			<div id="panelContentLeft">&nbsp;</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
+			<div class="panelContentLeft">&nbsp;</div>
 			
-			<div id="fldLabel">
+			<div class="fldLabel">
 				<div class="label">
 					<label for="date">
 						<wicket:message key="date">Date:</wicket:message>
@@ -53,15 +53,15 @@
 				</div>
 			</div>
 			
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					<input wicket:id="correspondence.date" type="text" maxlength="10" />
 				</div>
 			</div>			
 			
-			<div id="panelMargin">&nbsp;</div>
+			<div class="panelMargin">&nbsp;</div>
 					
-			<div id="fldLabel">
+			<div class="fldLabel">
 				<div class="label">
 					<label for="time">
 						<wicket:message key="time">Time:</wicket:message>
@@ -69,17 +69,17 @@
 				</div>
 			</div>
 			
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					<input wicket:id="correspondence.time"  type="text" />
 				</div>
 			</div>
 			
 			
-			<div id="detailPanelBreaker">&nbsp;</div>
-			<div id="panelContentLeft">&nbsp;</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
+			<div class="panelContentLeft">&nbsp;</div>
 
-			<div id="fldLabel">
+			<div class="fldLabel">
 		 		<div class="label">
 					<label for="correspondenceMode">
 						<wicket:message key="correspondenceMode">Mode:</wicket:message>
@@ -87,7 +87,7 @@
 		 		</div> 
 		 	</div> 			       			
 				
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					<select wicket:id="correspondence.correspondenceModeType">
 		       			<option>Mail</option>
@@ -95,9 +95,9 @@
 				</div>
 			</div>
 		       	
-	    	<div id="panelMargin">&nbsp;</div>
+	    	<div class="panelMargin">&nbsp;</div>
 
-			<div id="fldLabel">
+			<div class="fldLabel">
 		 		<div class="label">
 					<label for="correspondenceDirection">
 						<wicket:message key="correspondenceDirection">Direction:</wicket:message>
@@ -105,7 +105,7 @@
 		 		</div>
 		 	</div>		
 				
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					<select wicket:id="correspondence.correspondenceDirectionType">
 		       			<option>Outgoing</option>
@@ -114,10 +114,10 @@
 			</div>
 
 			
-			<div id="detailPanelBreaker">&nbsp;</div>
-			<div id="panelContentLeft">&nbsp;</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
+			<div class="panelContentLeft">&nbsp;</div>
 		    			
-			<div id="fldLabel">
+			<div class="fldLabel">
 	 			<div class="label">
 					<label for="correspondenceOutcome">
 						<wicket:message key="correspondenceOutcome">Outcome:</wicket:message>
@@ -125,7 +125,7 @@
 	 			</div> 
 	 		</div> 			       			
 				
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					<select wicket:id="correspondence.correspondenceOutcomeType">
 		       			<option>Sent</option>
@@ -133,9 +133,9 @@
 				</div>
 			</div>
 
-	    	<div id="panelMargin">&nbsp;</div>
+	    	<div class="panelMargin">&nbsp;</div>
 						
-			<div id="fldLabel">
+			<div class="fldLabel">
 				<div class="label">
 					<label for="reason">
 						<wicket:message key="reason">Reason:</wicket:message>
@@ -143,17 +143,17 @@
 				</div>
 			</div>
 			
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					<textarea wicket:id="correspondence.reason" id="correspondence.reason" cols="25" maxLength="4096"></textarea>
 				</div>
 			</div>
 		       	   		       			
 			
-			<div id="detailPanelBreaker">&nbsp;</div>
-			<div id="panelContentLeft">&nbsp;</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
+			<div class="panelContentLeft">&nbsp;</div>
 						
-			<div id="fldLabel">
+			<div class="fldLabel">
 		 		<div class="label">
 		 			<label for="details">
 						<wicket:message key="details">Details:</wicket:message>
@@ -161,15 +161,15 @@
 		 		</div> 
 		 	</div> 			       			
 				
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					 <textarea wicket:id="correspondence.details" id="correspondence.details" cols="25" maxLength="4096"></textarea>
 				</div>
 			</div>
 
-		    <div id="panelMargin">&nbsp;</div>
+		    <div class="panelMargin">&nbsp;</div>
 			
-			<div id="fldLabel">
+			<div class="fldLabel">
 		 			<div class="label">
 		 				<label for="comments">
 							<wicket:message key="comments">Comments:</wicket:message>
@@ -177,17 +177,17 @@
 		 			</div>
 		 	</div> 			       			
 				
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					 <textarea wicket:id="correspondence.comments" id="correspondence.comments" cols="25" maxLength="4096"></textarea>
 				</div>
 			</div>
 
 			
-			<div id="detailPanelBreaker">&nbsp;</div>
-			<div id="panelContentLeft">&nbsp;</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
+			<div class="panelContentLeft">&nbsp;</div>
 			
-			<div id="fldLabel">
+			<div class="fldLabel">
 		 		<div class="label">
 		 			<label for="attachmentUpload">
 						<wicket:message key="attachmentUpload">Upload file:</wicket:message>
@@ -195,45 +195,45 @@
 		 		</div> 
 		 	</div> 			       			
 
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					  <input wicket:id="correspondence.attachmentFilename" type="file" />
 				</div>
 			</div>
 
-		    <div id="panelMargin">&nbsp;</div>
+		    <div class="panelMargin">&nbsp;</div>
 			
-			<div id="fldLabel">
+			<div class="fldLabel">
 		 		<div class="label">
 					&nbsp;
 		 		</div>
 		 	</div> 			       			
 				
-			<div id="fldControl">
+			<div class="fldControl">
 				<div class="label">
 					&nbsp;
 				</div>
 			</div>
 
 			
-			<div id="detailPanelBreaker">&nbsp;</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
 			
-			<div id="detailPanelBreaker">&nbsp;</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
 				
 			</div>
 			
 			<!--  Row 2 Action Buttons -->
 			
 			<div wicket:id="editButtonContainer">
-				<div id="fldLabel">&nbsp;</div>
-				<div id="fldControl">&nbsp;</div>
-				<div id="panelMargin">&nbsp;</div>
-				<div id="actionButtons">&nbsp;
+				<div class="fldLabel">&nbsp;</div>
+				<div class="fldControl">&nbsp;</div>
+				<div class="panelMargin">&nbsp;</div>
+				<div class="actionButtons">&nbsp;
 					<div class="label">
 					  <input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
-					  <div id="panelMargin">&nbsp;</div>
+					  <div class="panelMargin">&nbsp;</div>
 					  <input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />&nbsp;
-					  <div id="panelMargin">&nbsp;</div>
+					  <div class="panelMargin">&nbsp;</div>
 					  <input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
 				  	</div>
 				</div>

@@ -1,19 +1,19 @@
 <wicket:panel>&nbsp;
-	<div id="searchPanelContainer">
+	<div class="searchPanelContainer">
 		<form wicket:id="searchForm">
 		
-			<div id="searchPanelContent">
-				<div id="searchPanelBreaker">&nbsp;</div>				
+			<div class="searchPanelContent">
+				<div class="searchPanelBreaker">&nbsp;</div>				
 				
-				<div id="panelContentLeft">&nbsp;</div>
+				<div class="panelContentLeft">&nbsp;</div>
 					
-				<div id="fldLabel">
+				<div class="fldLabel">
 		 			<div class="label">
 						<wicket:message	key="upload.id">Upload ID</wicket:message>
 		 			</div> 
 		 		</div>
 		 		
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
         				<input wicket:id="upload.id" type="text" />
 		 			</div> 
@@ -21,13 +21,13 @@
 				
 				<div  id="panelMargin">&nbsp;</div>
 				
-				<div id="fldLabel">
+				<div class="fldLabel">
 		 			<div class="label">
 						<wicket:message	key="upload.filename">Filename</wicket:message>
 		 			</div> 
 		 		</div> 			       			
 				
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
 						<input wicket:id="upload.filename"  type="text" />
 		 			</div> 
@@ -35,17 +35,17 @@
 					
 				
 				
-				<div id="searchPanelBreaker">&nbsp;</div>				
+				<div class="searchPanelBreaker">&nbsp;</div>				
 				
-				<div id="panelContentLeft">&nbsp;</div>
+				<div class="panelContentLeft">&nbsp;</div>
 					
-				<div id="fldLabel">
+				<div class="fldLabel">
 		 			<div class="label">
 						<wicket:message	key="upload.fileFormat">FileFormat</wicket:message>
 		 			</div> 
 		 		</div>
 		 		
-				<div id="fldControl">
+				<div class="fldControl">
 					<div class="label">
         				<select wicket:id="upload.fileFormat">
 		       				<option>1</option>
@@ -54,29 +54,17 @@
 		       			</select>
 		 			</div> 
 				</div>
-					
 				
-				
-				<div id="searchPanelBreaker">&nbsp;</div>		
-				<!--  Defines the location for buttons -->			
-				
-				<div id="panelContentLeft">&nbsp;</div>
-				
-				<div id="fldLabel">&nbsp;</div>
-				
-				<div id="fldControl">&nbsp;</div>
-				
-				<div id="panelMargin">&nbsp;</div>
-				
-				<div id="actionButtons">&nbsp;
-					<div>
-						<input wicket:id="search" type="submit" wicket:message="value:button.search" />&nbsp;
-						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />&nbsp;
-						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
-					</div>
+				<div class="searchPanelBreaker">&nbsp;</div>
+						
+				<!--  Defines the location for buttons -->
+				<div class="actionButtons">
+					<input wicket:id="search" type="submit" wicket:message="value:page.search" />
+					<input wicket:id="reset" type="submit" wicket:message="value:page.reset" />
+					<input wicket:id="new" type="submit" wicket:message="value:page.new" />
 				</div>
 				
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div class="searchPanelBreaker">&nbsp;</div>
 			</div>
 		</form>
 	</div>
