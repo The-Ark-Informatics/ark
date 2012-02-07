@@ -109,8 +109,8 @@ public class PhenoDataUploadJob implements Job {
 		char delimiter = (Character) data.get(DELIMITER);
 
 		log.info("PhenoUploadJob: " + jobKey + " executing at " + new Date());
-		log.info("PhenoUploadJob upliadId to be used in upload: " + file.getAbsolutePath());
-		log.info("PhenoUploadJob currentUser to be used: " + uploadId);
+		log.info("PhenoUploadJob file to be used in upload: " + file.getAbsolutePath());
+		log.info("PhenoUploadJob uploadId to be used: " + uploadId);
 		log.info("PhenoUploadJob currentUser to be used: " + currentUser);
 		log.info("PhenoUploadJob phenoCollection to be used in upload: " + phenoCollection.getName());
 		log.info("PhenoUploadJob study to be used in upload: " + study.getName());
