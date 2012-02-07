@@ -472,7 +472,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	}
 
 	private AjaxButton buildDownloadButton(final FileUpload fileUpload) {
-		AjaxButton ajaxButton = new AjaxButton("downloadGridData", new StringResourceModel("downloadGridData", this, null)) {
+		AjaxButton ajaxButton = new AjaxButton("downloadGridData") {
 			/**
 			 * 
 			 */
