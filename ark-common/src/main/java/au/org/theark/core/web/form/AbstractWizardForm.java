@@ -228,7 +228,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	}
 
 	private AjaxButton createNext() {
-		nextButton = new ArkBusyAjaxButton("next", new StringResourceModel("wizardNextKey", this, null)) {
+		nextButton = new ArkBusyAjaxButton("next") {
 			private static final long	serialVersionUID	= 0L;
 
 			@Override
@@ -259,7 +259,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	}
 
 	private AjaxButton createFinish() {
-		finishButton = new AjaxButton("finish", new StringResourceModel("wizardFinishKey", this, null)) {
+		finishButton = new AjaxButton("finish") {
 
 			private static final long	serialVersionUID	= 0L;
 
