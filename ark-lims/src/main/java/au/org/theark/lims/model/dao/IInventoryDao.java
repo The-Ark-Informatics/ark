@@ -267,4 +267,8 @@ public interface IInventoryDao {
 	public boolean boxesExist();
 
 	public boolean hasAllocatedCells(InvBox invBox);
+	
+	public InvCell getInvCellByLocationNames(String siteName, String freezerName, String rackName, String boxName, String row, String column) throws ArkSystemException;
+
+	public void batchUpdateInvCells(List<InvCell> updateInvCells);
 }

@@ -18,10 +18,12 @@
  ******************************************************************************/
 package au.org.theark.lims.model.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
@@ -29,6 +31,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenGrade;
 import au.org.theark.core.model.lims.entity.BiospecimenQuality;
 import au.org.theark.core.model.lims.entity.BiospecimenStatus;
 import au.org.theark.core.model.lims.entity.BiospecimenStorage;
+import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.Study;
@@ -150,4 +153,14 @@ public interface IBiospecimenDao {
 	public String getNextGeneratedBiospecimenUID(Study study);
 	
 	public boolean studyHasBiospecimens(Study study);
+
+	public void batchInsertBiospecimens(Collection<Biospecimen> insertBiospecimens);
+
+	public void batchUpdateBiospecimens(Collection<Biospecimen> updateBiospecimens);
+
+	public BioSampletype getBioSampleTypeByName(String name);
+
+	public TreatmentType getTreatmentTypeByName(String name);
+
+	public Unit getUnitByName(String name);
 }

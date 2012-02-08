@@ -305,4 +305,11 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 			
 		return count;
 	}
+
+	public BioCollection getBioCollectionByName(String name) {
+		Criteria criteria = getSession().createCriteria(BioCollection.class);
+		criteria.add(Restrictions.eq("name", name));
+		BioCollection bioCollection = (BioCollection) criteria.uniqueResult();
+		return bioCollection;
+	}
 }
