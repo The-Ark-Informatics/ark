@@ -46,6 +46,7 @@ import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCus
 import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
 import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataContainerPanel;
 import au.org.theark.lims.web.component.biospecimenuidtemplate.BiospecimenUidTemplateContainerPanel;
+import au.org.theark.lims.web.component.biospecimenupload.BiospecimenUploadContainerPanel;
 import au.org.theark.lims.web.component.inventory.panel.InventoryContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.SubjectContainerPanel;
 
@@ -134,6 +135,9 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_INVENTORY)) {
 			panelToReturn = new InventoryContainerPanel(panelId);
+		}
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD)) {
+			panelToReturn = new BiospecimenUploadContainerPanel(panelId, arkFunction);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_FIELD)) {
 			// useCustomFieldDisplay = true
