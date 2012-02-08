@@ -18,8 +18,10 @@
  ******************************************************************************/
 package au.org.theark.lims.service;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -29,8 +31,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IStudyDao;
+import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioSampletype;
@@ -58,6 +62,7 @@ import au.org.theark.lims.model.dao.IBioTransactionDao;
 import au.org.theark.lims.model.dao.IBiospecimenDao;
 import au.org.theark.lims.model.dao.IInventoryDao;
 import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.lims.util.BiospecimenUploader;
 import au.org.theark.lims.web.Constants;
 
 /**
@@ -76,6 +81,7 @@ public class LimsServiceImpl implements ILimsService {
 	private IBiospecimenDao		iBiospecimenDao;
 	private IBioTransactionDao	iBioTransactionDao;
 	private IInventoryDao 		iInventoryDao;
+	private IInventoryService  iInventoryService;
 
 	/**
 	 * @param arkCommonService
@@ -86,7 +92,9 @@ public class LimsServiceImpl implements ILimsService {
 	public void setArkCommonService(IArkCommonService arkCommonService) {
 		this.arkCommonService = arkCommonService;
 	}
-	
+
+
+
 	/**
 	 * @param iStudyDao
 	 *           the iStudyDao to set
@@ -130,6 +138,14 @@ public class LimsServiceImpl implements ILimsService {
 	@Autowired
 	public void setiInventoryDao(IInventoryDao iInventoryDao) {
 		this.iInventoryDao = iInventoryDao;
+	}
+	
+	/**
+	 * @param iInventoryService the iInventoryService to set
+	 */
+	@Autowired
+	public void setiInventoryService(IInventoryService iInventoryService) {
+		this.iInventoryService = iInventoryService;
 	}
 
 	/*
@@ -734,5 +750,50 @@ public class LimsServiceImpl implements ILimsService {
 	
 	public String getNextGeneratedBiospecimenUID(Study study) {
 		return iBiospecimenDao.getNextGeneratedBiospecimenUID(study);
+	}
+
+	public void batchInsertBiospecimens(Collection<Biospecimen> insertBiospecimens) {
+		iBiospecimenDao.batchInsertBiospecimens(insertBiospecimens);
+	}
+
+	public void batchUpdateBiospecimens(Collection<Biospecimen> updateBiospecimens) {
+		iBiospecimenDao.batchUpdateBiospecimens(updateBiospecimens);
+	}
+
+	public void batchUpdateInvCells(List<InvCell> updateInvCells) {
+		iInventoryDao.batchUpdateInvCells(updateInvCells);
+	}
+
+	public BioSampletype getBioSampleTypeByName(String name) {
+		return iBiospecimenDao.getBioSampleTypeByName(name);
+	}
+
+	public TreatmentType getTreatmentTypeByName(String name) {
+		return iBiospecimenDao.getTreatmentTypeByName(name);
+	}
+
+	public StringBuffer uploadAndReportMatrixBiospecimenFile(Study study, InputStream inputStream, long size, String fileFormat, char delimiterChar) {
+		StringBuffer uploadReport = null;
+		BiospecimenUploader biospecimenUploader = new BiospecimenUploader(study, arkCommonService, this, iInventoryService);
+		
+		try {
+			log.debug("Importing and reporting Biospecimen file");
+			uploadReport = biospecimenUploader.uploadAndReportMatrixBiospecimenFile(inputStream, size, fileFormat, delimiterChar);
+		}
+		catch (FileFormatException ffe) {
+			log.error(au.org.theark.core.Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe) {
+			log.error(au.org.theark.core.Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return uploadReport;
+	}
+
+	public BioCollection getBioCollectionByName(String name) {
+		return iBioCollectionDao.getBioCollectionByName(name);
+	}
+
+	public Unit getUnitByName(String name) {
+		return iBiospecimenDao.getUnitByName(name);
 	}
 }

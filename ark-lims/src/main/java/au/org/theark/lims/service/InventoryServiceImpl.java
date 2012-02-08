@@ -1,7 +1,6 @@
 package au.org.theark.lims.service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -373,5 +372,9 @@ public class InventoryServiceImpl implements IInventoryService {
 
 	public boolean hasAllocatedCells(InvBox invBox) {
 		return iInventoryDao.hasAllocatedCells(invBox);
+	}
+
+	public InvCell getInvCellByLocationNames(String siteName, String freezerName, String rackName, String boxName, String row, String column) throws ArkSystemException {
+		return iInventoryDao.getInvCellByLocationNames(siteName, freezerName, rackName, boxName, row, column);
 	}
 }

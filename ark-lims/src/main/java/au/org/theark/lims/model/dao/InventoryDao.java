@@ -23,6 +23,9 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.StatelessSession;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -43,7 +46,7 @@ import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 @SuppressWarnings("unchecked")
 @Repository("inventoryDao")
 public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
-	private static final Logger				log						= LoggerFactory.getLogger(InventoryDao.class);
+	private static final Logger	log	= LoggerFactory.getLogger(InventoryDao.class);
 
 	public void createInvSite(InvSite invSite) {
 		getSession().save(invSite);
@@ -56,7 +59,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	public void createInvRack(InvRack invRack) {
 		getSession().save(invRack);
 	}
-	
+
 	public void createInvBox(InvBox invBox) {
 		getSession().save(invBox);
 	}
@@ -99,7 +102,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		if (invSite.getPhone() != null) {
 			criteria.add(Restrictions.eq("phone", invSite.getPhone()));
 		}
-		
+
 		if (invSite.getStudy() != null) {
 			criteria.add(Restrictions.eq("study", invSite.getStudy()));
 		}
@@ -119,7 +122,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	public void updateInvRack(InvRack invRack) {
 		getSession().merge(invRack);
 	}
-	
+
 	public void updateInvBox(InvBox invBox) {
 		getSession().merge(invBox);
 	}
@@ -133,7 +136,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 
 		List<InvSite> list = criteria.list();
-		if(!list.isEmpty()) {
+		if (!list.isEmpty()) {
 			invSite = (InvSite) list.get(0);
 		}
 		return invSite;
@@ -146,12 +149,12 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		if (invBox != null) {
 			criteria.add(Restrictions.eq("invBox", invBox));
 		}
-		
+
 		criteria.add(Restrictions.eq("rowno", rowno));
 		criteria.add(Restrictions.eq("colno", colno));
-		
+
 		List<InvCell> list = criteria.list();
-		if(!list.isEmpty()) {
+		if (!list.isEmpty()) {
 			invCell = (InvCell) list.get(0);
 		}
 		return invCell;
@@ -162,8 +165,8 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		Criteria criteria = getSession().createCriteria(InvCell.class);
 		criteria.add(Restrictions.eq("id", invCell.getId()));
 		List<InvCell> list = criteria.list();
-		if(!list.isEmpty()){ 
-			biospecimen = (Biospecimen) list.get(0).getBiospecimen();	
+		if (!list.isEmpty()) {
+			biospecimen = (Biospecimen) list.get(0).getBiospecimen();
 		}
 		return biospecimen;
 	}
@@ -177,44 +180,44 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 
 		List<InvBox> list = criteria.list();
-		if(!list.isEmpty()){ 
+		if (!list.isEmpty()) {
 			invBox = (InvBox) list.get(0);
 		}
-		
-		if(invBox == null) {
+
+		if (invBox == null) {
 			log.error("InvBox with ID " + id + " is no longer in the database");
 		}
 		return invBox;
 	}
-	
-	public List<InvCell> getCellAndBiospecimenListByBox(InvBox invBox){
-		
+
+	public List<InvCell> getCellAndBiospecimenListByBox(InvBox invBox) {
+
 		List<InvCell> invCellList = new ArrayList<InvCell>();
-	
+
 		StringBuffer sb = new StringBuffer();
-		sb.append(  " FROM  InvCell AS cell ");
+		sb.append(" FROM  InvCell AS cell ");
 		sb.append("LEFT JOIN cell.biospecimen as biospecimenList ");
-		sb.append( "  WHERE cell.invBox.id = :invBoxId" );
+		sb.append("  WHERE cell.invBox.id = :invBoxId");
 		sb.append(" ORDER BY cell.rowno, cell.colno");
-		
+
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("invBoxId", invBox.getId());
-		
+
 		List<Object[]> listOfObjects = query.list();
 		for (Object[] objects : listOfObjects) {
 			InvCell invCell = new InvCell();
 			Biospecimen biospecimen = new Biospecimen();
-			
-			if(objects.length > 0 && objects.length >= 1){
+
+			if (objects.length > 0 && objects.length >= 1) {
 				invCell = (InvCell) objects[0];
-				if(objects[1] != null){
+				if (objects[1] != null) {
 					biospecimen = (Biospecimen) objects[1];
 					invCell.setBiospecimen(biospecimen);
 				}
 				invCellList.add(invCell);
 			}
 		}
-		
+
 		return invCellList;
 	}
 
@@ -227,11 +230,11 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	public void createInvCell(InvCell invCell) {
 		getSession().save(invCell);
 	}
-	
+
 	public void updateInvCell(InvCell invCell) {
 		getSession().update(invCell);
 	}
-	
+
 	public void deleteInvCell(InvCell invCell) {
 		getSession().delete(invCell);
 	}
@@ -245,11 +248,11 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 
 		List<InvFreezer> list = criteria.list();
-		if(!list.isEmpty()){ 
+		if (!list.isEmpty()) {
 			invFreezer = (InvFreezer) list.get(0);
 		}
-		
-		if(invFreezer == null) {
+
+		if (invFreezer == null) {
 			log.error("InvFreezer with ID " + id + " is no longer in the database");
 		}
 		return invFreezer;
@@ -264,11 +267,11 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 
 		List<InvRack> list = criteria.list();
-		if(!list.isEmpty()){ 
+		if (!list.isEmpty()) {
 			invRack = (InvRack) list.get(0);
 		}
-		
-		if(invRack == null) {
+
+		if (invRack == null) {
 			log.error("InvRack with ID " + id + " is no longer in the database");
 		}
 		return invRack;
@@ -283,11 +286,11 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 
 		List<InvCell> list = criteria.list();
-		if(!list.isEmpty()){ 
+		if (!list.isEmpty()) {
 			invCell = (InvCell) list.get(0);
 		}
-		
-		if(invCell == null) {
+
+		if (invCell == null) {
 			log.error("InvCell with biospecimen " + biospecimen.getId() + " is no longer in the database");
 		}
 		return invCell;
@@ -302,11 +305,11 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 
 		List<InvCell> list = criteria.list();
-		if(!list.isEmpty()){ 
+		if (!list.isEmpty()) {
 			invCell = (InvCell) list.get(0);
 		}
-		
-		if(invCell == null) {
+
+		if (invCell == null) {
 			log.error("InvRack with ID " + id + " is no longer in the database");
 		}
 		return invCell;
@@ -356,38 +359,39 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		List<InvRack> list = criteria.list();
 		return list;
 	}
-	
+
 	public BiospecimenLocationVO getBiospecimenLocation(Biospecimen biospecimen) {
 		BiospecimenLocationVO biospecimenLocationVo = new BiospecimenLocationVO();
 
 		StringBuilder hqlString = new StringBuilder();
-		hqlString.append("SELECT site.name AS siteName, freezer.name as freezerName, rack.name AS rackName, box.name AS boxName, cell.colno AS column, cell.rowno AS row, box.colnotype.name AS colNoType, box.rownotype.name AS rowNoType \n");
+		hqlString
+				.append("SELECT site.name AS siteName, freezer.name as freezerName, rack.name AS rackName, box.name AS boxName, cell.colno AS column, cell.rowno AS row, box.colnotype.name AS colNoType, box.rownotype.name AS rowNoType \n");
 		hqlString.append("FROM InvCell AS cell \n");
 		hqlString.append("LEFT JOIN cell.invBox AS box \n");
 		hqlString.append("LEFT JOIN box.invRack AS rack \n");
 		hqlString.append("LEFT JOIN rack.invFreezer AS freezer \n");
 		hqlString.append("LEFT JOIN freezer.invSite AS site \n");
 		hqlString.append("WHERE cell.biospecimen = :biospecimen");
-		
+
 		Query q = getSession().createQuery(hqlString.toString());
 		q.setParameter("biospecimen", biospecimen);
 		Object[] result = (Object[]) q.uniqueResult();
 
-		if(result != null) {
+		if (result != null) {
 			biospecimenLocationVo.setIsAllocated(true);
 			biospecimenLocationVo.setSiteName(result[0].toString());
 			biospecimenLocationVo.setFreezerName(result[1].toString());
 			biospecimenLocationVo.setRackName(result[2].toString());
 			biospecimenLocationVo.setBoxName(result[3].toString());
-			
+
 			Long colno = new Long((Long) result[4]);
-			Long rowno = new Long((Long)result[5]);
+			Long rowno = new Long((Long) result[5]);
 			biospecimenLocationVo.setColumn(colno);
 			biospecimenLocationVo.setRow(rowno);
-			
+
 			String colNoType = result[6].toString();
 			String rowNoType = result[7].toString();
-			
+
 			String colLabel = new String();
 			if (colNoType.equalsIgnoreCase("ALPHABET")) {
 				char character = (char) (colno + 64);
@@ -397,7 +401,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 				colLabel = new Integer(colno.intValue()).toString();
 			}
 			biospecimenLocationVo.setColLabel(colLabel);
-			
+
 			String rowLabel = new String();
 			if (rowNoType.equalsIgnoreCase("ALPHABET")) {
 				char character = (char) (rowno + 64);
@@ -415,32 +419,33 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		BiospecimenLocationVO biospecimenLocationVo = new BiospecimenLocationVO();
 
 		StringBuilder hqlString = new StringBuilder();
-		hqlString.append("SELECT site.name AS siteName, freezer.name as freezerName, rack.name AS rackName, box.name AS boxName, cell.colno AS column, cell.rowno AS row, box.colnotype.name AS colNoType, box.rownotype.name AS rowNoType \n");
+		hqlString
+				.append("SELECT site.name AS siteName, freezer.name as freezerName, rack.name AS rackName, box.name AS boxName, cell.colno AS column, cell.rowno AS row, box.colnotype.name AS colNoType, box.rownotype.name AS rowNoType \n");
 		hqlString.append("FROM InvCell AS cell \n");
 		hqlString.append("LEFT JOIN cell.invBox AS box \n");
 		hqlString.append("LEFT JOIN box.invRack AS rack \n");
 		hqlString.append("LEFT JOIN rack.invFreezer AS freezer \n");
 		hqlString.append("LEFT JOIN freezer.invSite AS site \n");
 		hqlString.append("WHERE cell.id = :id");
-		
+
 		Query q = getSession().createQuery(hqlString.toString());
 		q.setParameter("id", invCell.getId());
 		Object[] result = (Object[]) q.uniqueResult();
 
-		if(result != null) {
+		if (result != null) {
 			biospecimenLocationVo.setSiteName(result[0].toString());
 			biospecimenLocationVo.setFreezerName(result[1].toString());
 			biospecimenLocationVo.setRackName(result[2].toString());
 			biospecimenLocationVo.setBoxName(result[3].toString());
-			
+
 			Long colno = new Long((Long) result[4]);
-			Long rowno = new Long((Long)result[5]);
+			Long rowno = new Long((Long) result[5]);
 			biospecimenLocationVo.setColumn(colno);
 			biospecimenLocationVo.setRow(rowno);
-			
+
 			String colNoType = result[6].toString();
 			String rowNoType = result[7].toString();
-			
+
 			String colLabel = new String();
 			if (colNoType.equalsIgnoreCase("ALPHABET")) {
 				char character = (char) (colno + 64);
@@ -450,7 +455,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 				colLabel = new Integer(colno.intValue()).toString();
 			}
 			biospecimenLocationVo.setColLabel(colLabel);
-			
+
 			String rowLabel = new String();
 			if (rowNoType.equalsIgnoreCase("ALPHABET")) {
 				char character = (char) (rowno + 64);
@@ -468,7 +473,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		Criteria criteria = getSession().createCriteria(InvBox.class);
 		criteria.setProjection(Projections.count("id"));
 		Integer count = (Integer) criteria.uniqueResult();
-		return count>0;
+		return count > 0;
 	}
 
 	public boolean hasAllocatedCells(InvBox invBox) {
@@ -477,6 +482,56 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		criteria.add(Restrictions.isNotNull("biospecimen"));
 		criteria.setProjection(Projections.count("id"));
 		Integer count = (Integer) criteria.uniqueResult();
-		return count>0;
+		return count > 0;
+	}
+
+	public InvCell getInvCellByLocationNames(String siteName, String freezerName, String rackName, String boxName, String row, String column) throws ArkSystemException {
+		InvCell invCell = new InvCell();
+		
+		Long rowno;
+		Long colno;
+
+		try {
+			rowno = new Long(row);
+		}
+		catch (NumberFormatException e) {
+			char c = (char) row.charAt(0);
+			rowno = (long) (c - 64);
+		}
+
+		try {
+			colno = new Long(column);
+		}
+		catch (NumberFormatException e) {
+			char c = (char) column.charAt(0);
+			colno = (long) (c - 64);
+		}
+
+		Criteria criteria = getSession().createCriteria(InvCell.class);
+		criteria.createAlias("invBox","box",CriteriaSpecification.LEFT_JOIN);
+		criteria.createAlias("box.invRack","rack",CriteriaSpecification.LEFT_JOIN);
+		criteria.createAlias("rack.invFreezer","freezer",CriteriaSpecification.LEFT_JOIN);
+		criteria.createAlias("freezer.invSite","site",CriteriaSpecification.LEFT_JOIN);
+		criteria.createAlias("biospecimen","b",CriteriaSpecification.LEFT_JOIN);
+		criteria.add(Restrictions.eq("site.name", siteName));
+		criteria.add(Restrictions.eq("freezer.name", freezerName));
+		criteria.add(Restrictions.eq("rack.name", rackName));
+		criteria.add(Restrictions.eq("box.name", boxName));
+		criteria.add(Restrictions.eq("rowno", rowno));
+		criteria.add(Restrictions.eq("colno", colno));		
+		
+		invCell = (InvCell) criteria.uniqueResult();
+		return invCell;
+	}
+
+	public void batchUpdateInvCells(List<InvCell> updateInvCells) {
+		StatelessSession session = getStatelessSession();
+		Transaction tx = session.beginTransaction();
+
+		for (InvCell invCell : updateInvCells) {
+			session.update(invCell);
+		}
+		tx.commit();
+		session.close();
 	}
 }

@@ -19,6 +19,7 @@
 package au.org.theark.lims.model.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -37,6 +38,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
@@ -47,6 +49,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenStatus;
 import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.BiospecimenUidSequence;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
+import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -497,5 +500,49 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		criteria.setProjection(Projections.count("id"));
 		Integer count = (Integer) criteria.uniqueResult();
 		return count>0;
+	}
+
+	public void batchInsertBiospecimens(Collection<Biospecimen> insertBiospecimens) {
+		StatelessSession session = getStatelessSession();
+		Transaction tx = session.beginTransaction();
+
+		for (Biospecimen biospecimen : insertBiospecimens) {
+			session.insert(biospecimen);
+			
+			for(BioTransaction bioTransaction : biospecimen.getBioTransactions()){
+				session.insert(bioTransaction);
+			}
+		}
+		tx.commit();
+		session.close();
+	}
+
+	public void batchUpdateBiospecimens(Collection<Biospecimen> updateBiospecimens) {
+		StatelessSession session = getStatelessSession();
+		Transaction tx = session.beginTransaction();
+
+		for (Biospecimen biospecimen : updateBiospecimens) {
+			session.update(biospecimen);
+		}
+		tx.commit();
+		session.close();
+	}
+
+	public BioSampletype getBioSampleTypeByName(String name) {
+		Criteria criteria = getSession().createCriteria(BioSampletype.class);
+		criteria.add(Restrictions.eq("name", name));
+		return (BioSampletype) criteria.uniqueResult();
+	}
+
+	public TreatmentType getTreatmentTypeByName(String name) {
+		Criteria criteria = getSession().createCriteria(TreatmentType.class);
+		criteria.add(Restrictions.eq("name", name));
+		return (TreatmentType) criteria.uniqueResult();
+	}
+
+	public Unit getUnitByName(String name) {
+		Criteria criteria = getSession().createCriteria(Unit.class);
+		criteria.add(Restrictions.eq("name", name));
+		return (Unit) criteria.uniqueResult();
 	}
 }

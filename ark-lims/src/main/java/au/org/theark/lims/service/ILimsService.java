@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.lims.service;
 
+import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -34,6 +36,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenGrade;
 import au.org.theark.core.model.lims.entity.BiospecimenQuality;
 import au.org.theark.core.model.lims.entity.BiospecimenStatus;
 import au.org.theark.core.model.lims.entity.BiospecimenStorage;
+import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -330,4 +333,20 @@ public interface ILimsService {
 	public String getNextGeneratedBiospecimenUID(Study study);
 	
 	public BioCollectionCustomFieldData getBioCollectionCustomFieldData(BioCollection bioCollectionCriteria, ArkFunction arkFunction, String customFieldName);
+
+	public StringBuffer uploadAndReportMatrixBiospecimenFile(Study study, InputStream inputStream, long size, String fileFormat, char delimiterChar);
+
+	public void batchInsertBiospecimens(Collection<Biospecimen> insertBiospecimens);
+
+	public void batchUpdateBiospecimens(Collection<Biospecimen> updateSubjects);
+
+	public BioSampletype getBioSampleTypeByName(String name);
+
+	public TreatmentType getTreatmentTypeByName(String name);
+
+	public void batchUpdateInvCells(List<InvCell> updateInvCells);
+
+	public BioCollection getBioCollectionByName(String name);
+
+	public Unit getUnitByName(String name);
 }

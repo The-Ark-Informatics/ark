@@ -1,4 +1,4 @@
-/*******************************************************************************
+/*******************************************************************************s
  * Copyright (c) 2011  University of Western Australia. All rights reserved.
  * 
  * This file is part of The Ark.
@@ -122,5 +122,7 @@ public interface IBioCollectionDao {
 	public Long isCustomFieldUsed(BioCollectionCustomFieldData bioCollectionCFData);
 	
 	public BioCollectionCustomFieldData getBioCollectionCustomFieldData(BioCollection bioCollectionCriteria, ArkFunction arkFunction, String customFieldName);
+
+	public BioCollection getBioCollectionByName(String name);
 
 }
