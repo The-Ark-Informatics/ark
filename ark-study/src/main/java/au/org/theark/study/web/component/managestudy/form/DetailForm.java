@@ -905,7 +905,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			studyCrudVO.getSummaryContainer().setVisible(true);
 		}
 
-		SecurityUtils.getSubject().getSession().setAttribute("studyId", studyModel.getStudy().getId());
+		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, studyModel.getStudy().getId());
 		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 		containerForm.getModelObject().setStudy(studyModel.getStudy());
