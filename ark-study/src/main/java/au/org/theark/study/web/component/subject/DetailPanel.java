@@ -24,15 +24,18 @@ import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
-import au.org.theark.study.web.component.subject.form.DetailsForm;
+import au.org.theark.study.web.component.subject.form.DetailForm;
 
 /**
  * @author nivedann
  * 
  */
 public class DetailPanel extends Panel {
-
-	private DetailsForm			detailsForm;
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -5633334040450350186L;
+	private DetailForm			detailsForm;
 	private FeedbackPanel		feedBackPanel;
 	private WebMarkupContainer	arkContextContainer;
 	private ContainerForm		containerForm;
@@ -48,7 +51,7 @@ public class DetailPanel extends Panel {
 
 	public void initialisePanel() {
 
-		detailsForm = new DetailsForm("detailsForm", feedBackPanel, arkContextContainer, containerForm,arkCrudContainerVO);
+		detailsForm = new DetailForm("detailsForm", feedBackPanel, arkContextContainer, containerForm,arkCrudContainerVO);
 		detailsForm.initialiseDetailForm();
 		add(detailsForm);
 	}

@@ -65,7 +65,7 @@ import au.org.theark.study.web.Constants;
  * @author nivedann
  * 
  */
-public class DetailsForm extends AbstractDetailForm<SubjectVO> {
+public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 	/**
 	 * 
@@ -75,6 +75,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService									studyService;
 
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService								iArkCommonService;
 
@@ -122,14 +123,33 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 
 	protected Study											study;
 
-	public DetailsForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.arkContextMarkupContainer = arkContextContainer;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm() {
-		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
+		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onBeforeRender() {
+				boolean isNew = isNew();
+				boolean autoGenerate = containerForm.getModelObject().getLinkSubjectStudy().getStudy().getAutoGenerateSubjectUid();
+				if(isNew && !autoGenerate) {
+					setEnabled(true);	
+				}
+				else {
+					setEnabled(false);
+				}
+				super.onBeforeRender();
+			}
+		};
 		subjectUIDTxtFld.setOutputMarkupId(true);
 
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
@@ -182,6 +202,11 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.NAME, Constants.ID);
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS, (List<VitalStatus>) vitalStatusList, vitalStatusRenderer);
 		vitalStatusDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				setDeathDetailsContainer();
@@ -211,10 +236,15 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 		setPreferredEmailContainer();
 
 		// Person Contact Method
-		Collection<PersonContactMethod> contactMethodList = iArkCommonService.getPersonContactMethodList();
+		List<PersonContactMethod> contactMethodList = iArkCommonService.getPersonContactMethodList();
 		ChoiceRenderer<PersonContactMethod> contactMethodRender = new ChoiceRenderer<PersonContactMethod>(Constants.NAME, Constants.ID);
-		personContactMethodDdc = new DropDownChoice<PersonContactMethod>(Constants.PERSON_CONTACT_METHOD, (List) contactMethodList, contactMethodRender);
+		personContactMethodDdc = new DropDownChoice<PersonContactMethod>(Constants.PERSON_CONTACT_METHOD, (List<PersonContactMethod>) contactMethodList, contactMethodRender);
 		personContactMethodDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				// Check what was selected and then toggle
@@ -233,16 +263,18 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 	/**
 	 * Initialise the Consent Status Drop Down Choice Control
 	 */
+	@SuppressWarnings("unchecked")
 	protected void initialiseConsentStatusChoice() {
 		List<ConsentStatus> consentStatusList = iArkCommonService.getRecordableConsentStatus();
-		ChoiceRenderer<ConsentType> defaultChoiceRenderer = new ChoiceRenderer<ConsentType>(Constants.NAME, Constants.ID);
-		consentStatusChoice = new DropDownChoice(Constants.SUBJECT_CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
+		ChoiceRenderer<ConsentStatus> defaultChoiceRenderer = new ChoiceRenderer<ConsentStatus>(Constants.NAME, Constants.ID);
+		consentStatusChoice = new DropDownChoice<ConsentStatus>(Constants.SUBJECT_CONSENT_STATUS, (List<ConsentStatus>) consentStatusList, defaultChoiceRenderer);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void initialiseConsentTypeChoice() {
 		List<ConsentType> consentTypeList = iArkCommonService.getConsentType();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		consentTypeChoice = new DropDownChoice(Constants.SUBJECT_CONSENT_TYPE, consentTypeList, defaultChoiceRenderer);
+		consentTypeChoice = new DropDownChoice<ConsentType>(Constants.SUBJECT_CONSENT_TYPE, (List<ConsentType>) consentTypeList, defaultChoiceRenderer);
 	}
 
 	// Death details dependent on Vital Status selected to "Deceased"
@@ -280,6 +312,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void initConsentFields() {
 		consentDateTxtFld = new DateTextField(Constants.PERSON_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker consentDatePicker = new ArkDatePicker();
@@ -384,6 +417,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 		otherEmailTxtFld.add(EmailAddressValidator.getInstance());
 	}
 
+	@SuppressWarnings("unused")
 	private boolean validateCustomFields(Long fieldToValidate, String message, AjaxRequestTarget target) {
 		boolean validFlag = true;
 		Calendar calendar = Calendar.getInstance();

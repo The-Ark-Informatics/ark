@@ -49,20 +49,21 @@ import au.org.theark.study.web.component.subject.form.ContainerForm;
  * @author nivedann
  * 
  */
-public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
+public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= 2166285054533611912L;
-	private static final Logger								log					= LoggerFactory.getLogger(SubjectContainer.class);
+	private static final Logger								log					= LoggerFactory.getLogger(SubjectContainerPanel.class);
 	private SearchPanel														searchPanel;
 	private SearchResultListPanel											searchResultsPanel;
-	private DetailPanel													detailsPanel;
+	private DetailPanel													detailPanel;
 	private PageableListView<SubjectVO>							pageableListView;
 	private ContainerForm											containerForm;
 
 	private WebMarkupContainer										arkContextMarkup;
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService										iArkCommonService;
 
@@ -70,12 +71,13 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 	private IStudyService											studyService;
 
 	private DataView<SubjectVO>									dataView;
+	@SuppressWarnings("unchecked")
 	private ArkDataProvider<SubjectVO, IArkCommonService>	subjectProvider;
 
 	/**
 	 * @param id
 	 */
-	public SubjectContainer(String id, WebMarkupContainer arkContextMarkup) {
+	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
@@ -93,6 +95,7 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 		add(containerForm);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void prerenderContextCheck() {
 		// Get the Person in Context and determine the Person Type
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -145,15 +148,14 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-
-		detailsPanel = new DetailPanel("detailsPanel", feedBackPanel, arkContextMarkup, containerForm,arkCrudContainerVO);
-		detailsPanel.initialisePanel();
-		arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
+		detailPanel = new DetailPanel("detailPanel", feedBackPanel, arkContextMarkup, containerForm,arkCrudContainerVO);
+		detailPanel.initialisePanel();
+		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected WebMarkupContainer initialiseSearchResults() {
-
 		searchResultsPanel = new SearchResultListPanel("searchResults",arkContextMarkup, containerForm,arkCrudContainerVO);
 
 		// Restrict to subjects in current study in session
@@ -167,6 +169,11 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 
 		// Data providor to paginate resultList
 		subjectProvider = new ArkDataProvider<SubjectVO, IArkCommonService>(iArkCommonService) {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
 				return service.getStudySubjectCount(model.getObject());
@@ -191,8 +198,4 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
-
-	public void resetDataProvider() {
-	}
-
 }
