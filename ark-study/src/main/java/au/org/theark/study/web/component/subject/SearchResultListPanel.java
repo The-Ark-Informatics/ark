@@ -46,7 +46,6 @@ import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
-import au.org.theark.study.web.component.subject.form.DetailsForm;
 
 /**
  * @author nivedann
@@ -224,14 +223,8 @@ public class SearchResultListPanel extends Panel {
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
 				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
-
-				// Always disable subjectUID
-				DetailPanel details = (DetailPanel) arkCrudContainerVO.getDetailPanelContainer().get("detailsPanel");
-				DetailsForm detailsForm = (DetailsForm) details.get("detailsForm");
-				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
 				
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-
 			}
 		};
 		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getLinkSubjectStudy().getSubjectUID());
