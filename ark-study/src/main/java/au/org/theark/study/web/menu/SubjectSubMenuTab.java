@@ -39,30 +39,34 @@ import au.org.theark.study.web.component.address.AddressContainerPanel;
 import au.org.theark.study.web.component.consent.ConsentContainerPanel;
 import au.org.theark.study.web.component.correspondence.CorrespondenceContainerPanel;
 import au.org.theark.study.web.component.phone.PhoneContainerPanel;
-import au.org.theark.study.web.component.subject.SubjectContainer;
+import au.org.theark.study.web.component.subject.SubjectContainerPanel;
 import au.org.theark.study.web.component.subjectFile.SubjectFileContainerPanel;
 import au.org.theark.study.web.component.subjectUpload.SubjectUploadContainerPanel;
 import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataContainerPanel;
 
 /**
  * @author nivedann
+ * @author cellis
  * 
  */
 public class SubjectSubMenuTab extends AbstractArkTabPanel {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -467105983288558903L;
 
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
 
 	private WebMarkupContainer	arkContextMarkup;
-	private List<ITab>			tabList;
-
 	/**
 	 * @param id
 	 */
 	public SubjectSubMenuTab(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
-		tabList = new ArrayList<ITab>();
+		new ArrayList<ITab>();
 		buildTabs();
 	}
 
@@ -81,37 +85,30 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 				public Panel getPanel(String panelId) {
 					Panel panelToReturn = null;// Set
 					if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT)) {
-
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
-						panelToReturn = new SubjectContainer(panelId, arkContextMarkup);// Note the constructor
+						panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup);// Note the constructor
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHONE)) {
-
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new PhoneContainerPanel(panelId);
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ADDRESS)) {
-
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new AddressContainerPanel(panelId);
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CONSENT)) {
-
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new ConsentContainerPanel(panelId);
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ATTACHMENT)) {
-
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new SubjectFileContainerPanel(panelId);
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)) {
-
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new SubjectUploadContainerPanel(panelId,menuArkFunction);
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE)) {
-
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new CorrespondenceContainerPanel(panelId);
 					}
@@ -127,12 +124,10 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 					}
 					return panelToReturn;
 				}
-
 			});
 		}
 
 		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_SUBJECT_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}
-
 }
