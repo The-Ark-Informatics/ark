@@ -72,7 +72,7 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
 
-		detailPanel = new DetailPanel("detailsPanel", feedBackPanel, containerForm, arkCrudContainerVO);
+		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO);
 
 		detailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);

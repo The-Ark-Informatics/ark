@@ -138,7 +138,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailsPanel = new DetailPanel("detailsPanel", feedBackPanel, studyCrudContainerVO, containerForm);
+		detailsPanel = new DetailPanel("detailPanel", feedBackPanel, studyCrudContainerVO, containerForm);
 		detailsPanel.initialisePanel();
 		studyCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
 		return studyCrudContainerVO.getDetailPanelContainer();
