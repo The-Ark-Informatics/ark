@@ -89,7 +89,7 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
 		
-		detailPanel = new  DetailPanel("detailsPanel",feedBackPanel,arkCrudContainerVO,containerForm);
+		detailPanel = new  DetailPanel("detailPanel",feedBackPanel,arkCrudContainerVO,containerForm);
 		detailPanel.initialisePanel();;
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();

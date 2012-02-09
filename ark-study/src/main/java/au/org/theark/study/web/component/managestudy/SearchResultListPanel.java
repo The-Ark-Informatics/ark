@@ -193,7 +193,7 @@ public class SearchResultListPanel extends Panel {
 				studyContainerForm.getModelObject().setSubjectUidExample(iArkCommonService.getSubjectUidExample(searchStudy));
 
 				WebMarkupContainer wmc = (WebMarkupContainer) studyCrudContainerVO.getDetailPanelContainer();
-				DetailPanel detailsPanel = (DetailPanel) wmc.get("detailsPanel");
+				DetailPanel detailsPanel = (DetailPanel) wmc.get("detailPanel");
 				DetailForm detailForm = (DetailForm) detailsPanel.get("detailForm");
 
 				// All SubjectUID generator fields grouped within a container(s)

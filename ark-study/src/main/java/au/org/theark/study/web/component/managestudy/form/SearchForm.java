@@ -195,7 +195,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		//TODO: Suggest moving some of this "onNew" code into DetailPanel/DetailForm's onBeforeRender(..)
 		// Disable SubjectUID pattern fields by default for New study
 		WebMarkupContainer wmc = (WebMarkupContainer) studyCrudContainerVO.getDetailPanelContainer();
-		DetailPanel detailsPanel = (DetailPanel) wmc.get("detailsPanel");
+		DetailPanel detailsPanel = (DetailPanel) wmc.get("detailPanel");
 		DetailForm detailForm = (DetailForm) detailsPanel.get("detailForm");
 		WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
 		WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();

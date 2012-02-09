@@ -117,14 +117,13 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailsPanel = new DetailPanel("detailsPanel",feedBackPanel,arkCrudContainerVO,containerForm);
+		detailsPanel = new DetailPanel("detailPanel",feedBackPanel,arkCrudContainerVO,containerForm);
 		detailsPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
-
 		StudyCompVo studyCompVo = new StudyCompVo();
 
 		// Get a result-set by default
