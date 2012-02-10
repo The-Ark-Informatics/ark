@@ -685,9 +685,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @return List<LinkStudyArkModule>
 	 */
 	public List<LinkStudyArkModule> getLinkStudyArkModulesList(Study study) {
-
-		Collection<LinkStudyArkModule> arkStudyLinkedModuleList = new ArrayList<LinkStudyArkModule>();
-
 		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class);
 		criteria.add(Restrictions.eq("study", study));
 		return criteria.list();
@@ -794,7 +791,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @param studyCriteria
 	 */
 	private void applyStudySearchCriteria(Study searchStudy, Criteria studyCriteria, boolean isSuperUser) {
-
 		if (searchStudy.getId() != null) {
 			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY, searchStudy.getId()));
 		}
@@ -843,7 +839,9 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 				log.error("Cannot look up and filter on archive status. Reference data could be missing");
 			}
 		}
-
+		studyCriteria.addOrder(Order.asc("parentStudy"));
+		studyCriteria.addOrder(Order.asc("id"));
+		studyCriteria.addOrder(Order.asc("name"));
 	}
 
 	/**
@@ -853,7 +851,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @return List<Study>
 	 */
 	private List<Study> getAllStudiesForSuperAdmin(Study searchStudy) {
-
 		Criteria criteria = getSession().createCriteria(Study.class);
 		applyStudySearchCriteria(searchStudy, criteria, true);
 		return criteria.list();
@@ -862,11 +859,8 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	public List<Study> getStudyListForUser(ArkUserVO arkUserVo) {
 		List<Study> studyList = new ArrayList<Study>(0);
 		Study searchStudy = arkUserVo.getStudy();
-
 		try {
-
 			if (isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
-
 				studyList = getAllStudiesForSuperAdmin(arkUserVo.getStudy());// Get all Studies
 			}
 			else {
@@ -971,7 +965,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.groupProperty("study"), "study");
-
+		studyCriteria.addOrder(Order.asc("parentStudy"));
 		criteria.setProjection(projectionList);
 
 		studyList = criteria.list();
@@ -1063,4 +1057,92 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		
 		return arkUserList;
 	}
+
+	public List<Study> getParentStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule) {
+			List<Study> studyList = new ArrayList<Study>(0);
+			Study searchStudy = arkUserVo.getStudy();
+			Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+
+			try {
+				// Restrict by user if NOT Super Administrator
+				if (isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
+					// Fix another bug where the Super Administrator will never be able to INNER JOIN between ArkUserRole and Study on studyId
+					// (since a Super Admin should always have null in the arkUserRole's study column)
+					studyList = getAllStudiesForSuperAdmin(arkUserVo.getStudy()); // Get all Studies
+					return studyList;
+				}
+				else {
+					// Not Super Administrator, so continue with building the query
+					criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
+				}
+			}
+			catch (EntityNotFoundException e) {
+				log.error(e.getMessage());
+			}
+
+			if (arkModule != null) {
+				criteria.add(Restrictions.eq("arkModule", arkModule));
+			}
+			else {
+				// If no arkModule supplied, return empty list
+				log.error("No arkModule supplied, returning empty study list");
+				return studyList;
+			}
+
+			// Restrict on study criteria (by default, NOT 'Archive' status)
+			Criteria studyCriteria = criteria.createCriteria("study");
+
+			if (searchStudy.getId() != null) {
+				studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY, searchStudy.getId()));
+			}
+
+			if (searchStudy.getName() != null) {
+				studyCriteria.add(Restrictions.ilike(Constants.STUDY_NAME, searchStudy.getName(), MatchMode.ANYWHERE));
+			}
+
+			if (searchStudy.getDateOfApplication() != null) {
+				studyCriteria.add(Restrictions.eq(Constants.DATE_OF_APPLICATION, searchStudy.getDateOfApplication()));
+			}
+
+			if (searchStudy.getEstimatedYearOfCompletion() != null) {
+				studyCriteria.add(Restrictions.eq(Constants.EST_YEAR_OF_COMPLETION, searchStudy.getEstimatedYearOfCompletion()));
+			}
+
+			if (searchStudy.getChiefInvestigator() != null) {
+				studyCriteria.add(Restrictions.ilike(Constants.CHIEF_INVESTIGATOR, searchStudy.getChiefInvestigator(), MatchMode.ANYWHERE));
+			}
+
+			if (searchStudy.getContactPerson() != null) {
+				studyCriteria.add(Restrictions.ilike(Constants.CONTACT_PERSON, searchStudy.getContactPerson(), MatchMode.ANYWHERE));
+			}
+
+			if (searchStudy.getStudyStatus() != null) {
+				studyCriteria.add(Restrictions.eq("studyStatus", searchStudy.getStudyStatus()));
+				try {
+					StudyStatus status = getStudyStatus("Archive");
+					studyCriteria.add(Restrictions.ne("studyStatus", status));
+				}
+				catch (StatusNotAvailableException notAvailable) {
+					log.error("Cannot look up and filter on archive status. Reference data could be missing");
+				}
+			}
+			else {
+				try {
+					StudyStatus status = getStudyStatus("Archive");
+					studyCriteria.add(Restrictions.ne("studyStatus", status));
+				}
+				catch (StatusNotAvailableException notAvailable) {
+					log.error("Cannot look up and filter on archive status. Reference data could be missing");
+				}
+			}
+			
+			// Cannot select study with parent
+			//studyCriteria.add(Restrictions.isNull("parentStudy"));
+			studyCriteria.addOrder(Order.asc("parentStudy"));
+			ProjectionList projectionList = Projections.projectionList();
+			projectionList.add(Projections.groupProperty("study"), "study");
+			criteria.setProjection(projectionList);
+			studyList = criteria.list();
+			return studyList;
+		}
 }

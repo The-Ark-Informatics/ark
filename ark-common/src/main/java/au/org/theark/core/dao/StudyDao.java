@@ -567,9 +567,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
-	public LinkSubjectStudy getSubject(Long personId) throws EntityNotFoundException {
+	public LinkSubjectStudy getSubject(Long personId, Study study) throws EntityNotFoundException {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("person.id", personId));
+		criteria.add(Restrictions.eq("study", study));
 		LinkSubjectStudy subject = (LinkSubjectStudy) criteria.uniqueResult();
 		if (subject == null) {
 			throw new EntityNotFoundException("The Subject does not exist in the system");
