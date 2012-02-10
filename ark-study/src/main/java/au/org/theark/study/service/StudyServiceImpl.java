@@ -172,6 +172,16 @@ public class StudyServiceImpl implements IStudyService {
 			}
 		}
 		
+		Collection<SubjectVO> selectedSubjects = studyModelVo.getSelectedSubjects();
+		for (SubjectVO subjectVO : selectedSubjects) {
+			LinkSubjectStudy lss = new LinkSubjectStudy();
+			lss.setStudy(studyModelVo.getStudy());//Current Study
+			lss.setPerson(subjectVO.getLinkSubjectStudy().getPerson());
+			lss.setSubjectUID(subjectVO.getLinkSubjectStudy().getSubjectUID());
+			lss.setSubjectStatus(subjectVO.getLinkSubjectStudy().getSubjectStatus());
+			cloneSubjectForSubStudy(lss);
+		  }
+		
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		ah.setComment("Updated Study " + studyModelVo.getStudy().getName());
