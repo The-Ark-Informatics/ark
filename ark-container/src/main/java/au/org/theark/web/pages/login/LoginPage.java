@@ -20,7 +20,6 @@ package au.org.theark.web.pages.login;
 
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.image.ContextImage;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.cycle.RequestCycle;
 
@@ -41,18 +40,14 @@ public class LoginPage<T> extends WebPage {
 	 * 
 	 */
 	private static final long			serialVersionUID	= -985615571643703296L;
-	private FeedbackPanel				feedbackPanel		= new FeedbackPanel("feedbackMessage");
+	
 	
 	/**
 	 * LoginPage Constructor
 	 */
 	public LoginPage() {
-		feedbackPanel.setOutputMarkupId(true);
-
-		LoginForm form = new LoginForm("loginForm", feedbackPanel);
-
+		LoginForm form = new LoginForm("loginForm");
 		this.add(form);
-		this.add(feedbackPanel);
 
 		ContextImage hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));

@@ -10,7 +10,10 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
@@ -42,9 +45,11 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 	 */
 	private static final long			serialVersionUID	= -7482996457044513022L;
 	private transient static Logger	log					= LoggerFactory.getLogger(LoginForm.class);
+	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
-	private FeedbackPanel				feedbackPanel;
+	private FeedbackPanel				feedbackPanel		= new FeedbackPanel("feedbackMessage");
+	
 	private TextField<String>			userNameTxtFld		= new TextField<String>("userName");
 	private PasswordTextField			passwordTxtFld		= new PasswordTextField("password");
 
@@ -57,19 +62,24 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 	 * @param id
 	 *           the Component identifier
 	 */
-	public LoginForm(String id, final FeedbackPanel feedbackPanel) {
+	public LoginForm(String id) {
 		// Pass in the Model to the Form so the IFormSubmitListener can set the Model Object with values that were submitted.
 		super(id, new CompoundPropertyModel<ArkUserVO>(new ArkUserVO()));
-		this.feedbackPanel = feedbackPanel;
-
-		signInButton = new Button("signInButton") {
+		feedbackPanel.setOutputMarkupId(true);
+		add(feedbackPanel);
+		signInButton = new AjaxButton("signInButton") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(feedbackPanel);
+			}
 
 			@Override
-			public void onSubmit() {
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				ArkUserVO user = (ArkUserVO) getForm().getModelObject();
 				if (authenticate(user)) {
 					DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -90,13 +100,8 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 				else {
 					setResponsePage(LoginPage.class);
 				}
+				target.add(feedbackPanel);
 			}
-
-			@Override
-			public void onError() {
-
-			}
-
 		};
 
 		forgotPasswordButton = new Button("forgotPasswordButton") {
@@ -129,9 +134,6 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 
 	/**
 	 * Authenticate the given user
-	 * 
-	 * @param target
-	 *           the AjaxRequestTarget
 	 * @param user
 	 *           the given user to authenticate
 	 * @return
@@ -170,8 +172,6 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 			getSession().error(errMessage);
 			log.error(e.getMessage());
 		}
-
-		addOrReplace(feedbackPanel);
 		return false;
 	}
 }
