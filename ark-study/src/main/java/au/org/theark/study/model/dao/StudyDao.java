@@ -1688,10 +1688,19 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 */
 	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy) {
 		// Add Business Validations here as well apart from UI validation
-		Session session = getSession();
-		session.save( linkSubjectStudy);
+		if(!linkSubjectStudyExists(linkSubjectStudy)) {
+			Session session = getSession();
+			session.save(linkSubjectStudy);
+		}
 	}
 	
+	private boolean linkSubjectStudyExists(LinkSubjectStudy linkSubjectStudy) {
+		Criteria criteria  = getStatelessSession().createCriteria(LinkSubjectStudy.class);
+		criteria.add(Restrictions.eq("subjectUID", linkSubjectStudy.getSubjectUID()));
+		criteria.add(Restrictions.eq("study", linkSubjectStudy.getStudy()));
+		return criteria.uniqueResult() != null;
+	}
+
 	public LinkStudySubstudy isSubStudy(Study study){
 		Criteria criteria  = getStatelessSession().createCriteria(LinkStudySubstudy.class);
 		criteria.add(Restrictions.eq("subStudy", study));
