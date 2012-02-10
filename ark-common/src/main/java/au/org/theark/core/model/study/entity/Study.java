@@ -73,6 +73,9 @@ public class Study implements java.io.Serializable {
 	private SubjectUidToken					subjectUidToken;
 	private SubjectUidPadChar				subjectUidPadChar;
 
+	// Parent study link
+	private Study								parentStudy;
+	
 	private Set<LinkStudySubstudy>		linkStudySubstudiesForid		= new HashSet<LinkStudySubstudy>(0);
 	private Set<LinkStudyStudysite>		linkStudyStudysites				= new HashSet<LinkStudyStudysite>(0);
 	private Set<StudyComp>					studyComps							= new HashSet<StudyComp>(0);
@@ -401,6 +404,22 @@ public class Study implements java.io.Serializable {
 
 	public void setSubjectUidPadChar(SubjectUidPadChar subjectUidPadChar) {
 		this.subjectUidPadChar = subjectUidPadChar;
+	}
+
+	/**
+	 * @param parentStudy the parentStudy to set
+	 */
+	public void setParentStudy(Study parentStudy) {
+		this.parentStudy = parentStudy;
+	}
+
+	/**
+	 * @return the parentStudy
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PARENT_STUDY_ID")
+	public Study getParentStudy() {
+		return parentStudy;
 	}
 
 	@Override

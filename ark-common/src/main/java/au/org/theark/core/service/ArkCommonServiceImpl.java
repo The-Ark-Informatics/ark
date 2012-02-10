@@ -411,8 +411,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.isSubjectConsentedToComponent(studyComponent, subject, study);
 	}
 
-	public LinkSubjectStudy getSubject(Long personId) throws EntityNotFoundException {
-		return studyDao.getSubject(personId);
+	public LinkSubjectStudy getSubject(Long personId, Study study) throws EntityNotFoundException {
+		return studyDao.getSubject(personId, study);
 	}
 
 	public List<SubjectUidPadChar> getListOfSubjectUidPadChar() {
@@ -1000,6 +1000,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public List<ArkUser> getArkUserListByStudy(Study study) {
 		return arkAuthorisationDao.getArkUserListByStudy(study);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Study> getParentStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule) {
+		return arkAuthorisationDao.getParentStudyListForUserAndModule(arkUserVo, arkModule);
 	}
 
 }

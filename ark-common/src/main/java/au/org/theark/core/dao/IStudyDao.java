@@ -152,11 +152,12 @@ public interface IStudyDao {
 	/**
 	 * Returns a LinkSubjectStudy entity by comparing the Long personId with LinkSubjectStudy entity. The Long id passed in represents the Person
 	 * primary key or personId.
+	 * @param study 
 	 * 
 	 * @return LinkSubjectStudy
 	 * @throws EntityNotFoundException
 	 */
-	public LinkSubjectStudy getSubject(Long personId) throws EntityNotFoundException;
+	public LinkSubjectStudy getSubject(Long personId, Study study) throws EntityNotFoundException;
 
 	/**
 	 * Look up a list of subjects linked to the current study by passing in a primary key of the LinkSubjectStudy.

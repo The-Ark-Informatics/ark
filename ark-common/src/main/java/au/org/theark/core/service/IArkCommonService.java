@@ -182,10 +182,11 @@ public interface IArkCommonService<T> {
 	 * Returns a LinkSubjectStudy via the personId represented by the Long
 	 * 
 	 * @param personId
+	 * @param study 
 	 * @return
 	 * @throws EntityNotFoundException
 	 */
-	public LinkSubjectStudy getSubject(Long personId) throws EntityNotFoundException;
+	public LinkSubjectStudy getSubject(Long personId, Study study) throws EntityNotFoundException;
 
 	public List<SubjectUidPadChar> getListOfSubjectUidPadChar();
 
@@ -598,5 +599,7 @@ public interface IArkCommonService<T> {
 	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate);
 
 	public List<ArkUser> getArkUserListByStudy(Study study);
+	
+	public List<Study> getParentStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule);
 	
 }
