@@ -117,32 +117,32 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void createStudy(StudyModelVO studyModelVo) {
 		// Create the study group in the LDAP for the selected applications and also add the roles to each of the application.
-		
+
 		studyDao.create(studyModelVo.getStudy(), studyModelVo.getSelectedArkModules(), studyModelVo.getLinkedToStudy());
-		BiospecimenUidTemplate template  = studyModelVo.getBiospecimenUidTemplate();
-		if(template != null && template.getBiospecimenUidPadChar() != null && template.getBiospecimenUidPrefix() != null && template.getBiospecimenUidToken() != null){
+		BiospecimenUidTemplate template = studyModelVo.getBiospecimenUidTemplate();
+		if (template != null && template.getBiospecimenUidPadChar() != null && template.getBiospecimenUidPrefix() != null && template.getBiospecimenUidToken() != null) {
 			template.setStudy(studyModelVo.getStudy());
 			arkCommonService.createBiospecimenUidTemplate(template);
 		}
-		
+
 		BioCollectionUidTemplate bioCollectionUidTemplate = studyModelVo.getBioCollectionUidTemplate();
-		if(bioCollectionUidTemplate != null && bioCollectionUidTemplate.getBioCollectionUidPadChar() != null && bioCollectionUidTemplate.getBioCollectionUidToken() != null){
+		if (bioCollectionUidTemplate != null && bioCollectionUidTemplate.getBioCollectionUidPadChar() != null && bioCollectionUidTemplate.getBioCollectionUidToken() != null) {
 			bioCollectionUidTemplate.setStudy(studyModelVo.getStudy());
 			arkCommonService.createBioCollectionUidTemplate(bioCollectionUidTemplate);
 		}
-	
+
 		Collection<SubjectVO> selectedSubjects = studyModelVo.getSelectedSubjects();
-		if(selectedSubjects != null && selectedSubjects.size() > 0){
+		if (selectedSubjects != null && selectedSubjects.size() > 0) {
 			for (SubjectVO subjectVO : selectedSubjects) {
 				LinkSubjectStudy lss = new LinkSubjectStudy();
-				lss.setStudy(studyModelVo.getStudy());//Current Study
+				lss.setStudy(studyModelVo.getStudy());// Current Study
 				lss.setPerson(subjectVO.getLinkSubjectStudy().getPerson());
 				lss.setSubjectUID(subjectVO.getLinkSubjectStudy().getSubjectUID());
 				lss.setSubjectStatus(subjectVO.getLinkSubjectStudy().getSubjectStatus());
 				cloneSubjectForSubStudy(lss);
-			  }
+			}
 		}
-			
+
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 		ah.setComment("Created Study " + studyModelVo.getStudy().getName());
@@ -154,34 +154,34 @@ public class StudyServiceImpl implements IStudyService {
 	public void updateStudy(StudyModelVO studyModelVo) throws CannotRemoveArkModuleException {
 
 		studyDao.updateStudy(studyModelVo.getStudy(), studyModelVo.getSelectedArkModules());
-		
-		if(!arkCommonService.studyHasBiospecimen(studyModelVo.getStudy())){
-			//Defensive check to make sure no  biospecimens are attached to the study
-			BiospecimenUidTemplate template  = studyModelVo.getBiospecimenUidTemplate();
-			if(template != null &&  template.getBiospecimenUidPadChar() != null && template.getBiospecimenUidPrefix() != null && template.getBiospecimenUidToken() != null){
+
+		if (!arkCommonService.studyHasBiospecimen(studyModelVo.getStudy())) {
+			// Defensive check to make sure no biospecimens are attached to the study
+			BiospecimenUidTemplate template = studyModelVo.getBiospecimenUidTemplate();
+			if (template != null && template.getBiospecimenUidPadChar() != null && template.getBiospecimenUidPrefix() != null && template.getBiospecimenUidToken() != null) {
 				template.setStudy(studyModelVo.getStudy());
 				arkCommonService.updateBiospecimenUidTemplate(template);
 			}
 		}
-		
-		if(!arkCommonService.studyHasBioCollection(studyModelVo.getStudy())){
+
+		if (!arkCommonService.studyHasBioCollection(studyModelVo.getStudy())) {
 			BioCollectionUidTemplate bioCollectionUidTemplate = studyModelVo.getBioCollectionUidTemplate();
-			if(bioCollectionUidTemplate != null && bioCollectionUidTemplate.getBioCollectionUidPadChar() != null && bioCollectionUidTemplate.getBioCollectionUidToken() != null){
+			if (bioCollectionUidTemplate != null && bioCollectionUidTemplate.getBioCollectionUidPadChar() != null && bioCollectionUidTemplate.getBioCollectionUidToken() != null) {
 				bioCollectionUidTemplate.setStudy(studyModelVo.getStudy());
 				arkCommonService.updateBioCollectionUidTemplate(bioCollectionUidTemplate);
 			}
 		}
-		
+
 		Collection<SubjectVO> selectedSubjects = studyModelVo.getSelectedSubjects();
 		for (SubjectVO subjectVO : selectedSubjects) {
 			LinkSubjectStudy lss = new LinkSubjectStudy();
-			lss.setStudy(studyModelVo.getStudy());//Current Study
+			lss.setStudy(studyModelVo.getStudy());// Current Study
 			lss.setPerson(subjectVO.getLinkSubjectStudy().getPerson());
 			lss.setSubjectUID(subjectVO.getLinkSubjectStudy().getSubjectUID());
 			lss.setSubjectStatus(subjectVO.getLinkSubjectStudy().getSubjectStatus());
 			cloneSubjectForSubStudy(lss);
-		  }
-		
+		}
+
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		ah.setComment("Updated Study " + studyModelVo.getStudy().getName());
@@ -214,7 +214,7 @@ public class StudyServiceImpl implements IStudyService {
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void create(StudyComp studyComponent) throws UnAuthorizedOperation, ArkSystemException, EntityExistsException {
-		try{
+		try {
 			studyDao.create(studyComponent);
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
@@ -224,7 +224,8 @@ public class StudyServiceImpl implements IStudyService {
 			ah.setStudyStatus(studyComponent.getStudy().getStudyStatus());
 			ah.setEntityId(studyComponent.getId());
 			arkCommonService.createAuditHistory(ah);
-		}catch (ConstraintViolationException cvex) {
+		}
+		catch (ConstraintViolationException cvex) {
 			log.error("Study Component already exists.: " + cvex);
 			throw new EntityExistsException("A Study Component already exits.");
 		}
@@ -236,17 +237,18 @@ public class StudyServiceImpl implements IStudyService {
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void update(StudyComp studyComponent) throws UnAuthorizedOperation, ArkSystemException, EntityExistsException {
-		try{
+		try {
 			studyDao.update(studyComponent);
 			AuditHistory ah = new AuditHistory();
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-	
+
 			ah.setComment("Updated Study Component " + studyComponent.getName());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_COMPONENT);
 			ah.setStudyStatus(studyComponent.getStudy().getStudyStatus());
 			ah.setEntityId(studyComponent.getId());
 			arkCommonService.createAuditHistory(ah);
-		}catch (ConstraintViolationException cvex) {
+		}
+		catch (ConstraintViolationException cvex) {
 			log.error("Study Component already exists.: " + cvex);
 			throw new EntityExistsException("A Study Component already exists.");
 		}
@@ -486,7 +488,6 @@ public class StudyServiceImpl implements IStudyService {
 	public Consent getConsent(Long id) throws ArkSystemException {
 		return studyDao.getConsent(id);
 	}
-
 
 	/*** correspondence service functions ***/
 	public void create(Correspondences correspondence) throws ArkSystemException {
@@ -839,159 +840,154 @@ public class StudyServiceImpl implements IStudyService {
 		return studyDao.getSubjectLinkedToStudy(personId, study);
 	}
 
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count){
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count) {
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
-		customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, first, count);
+		customfieldDataList = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, first, count);
 		return customfieldDataList;
 	}
-	
+
 	/**
 	 * 
 	 */
 	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction) {
-		return   studyDao.getSubjectCustomFieldDataCount(linkSubjectStudyCriteria, arkFunction);
+		return studyDao.getSubjectCustomFieldDataCount(linkSubjectStudyCriteria, arkFunction);
 	}
-	
+
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public List<SubjectCustomFieldData> createOrUpdateSubjectCustomFieldData(List<SubjectCustomFieldData> subjectCustomFieldDataList){
-		
+	public List<SubjectCustomFieldData> createOrUpdateSubjectCustomFieldData(List<SubjectCustomFieldData> subjectCustomFieldDataList) {
+
 		List<SubjectCustomFieldData> listOfExceptions = new ArrayList<SubjectCustomFieldData>();
 		/* Iterate the list and call DAO to persist each Item */
 		for (SubjectCustomFieldData subjectCustomFieldData : subjectCustomFieldDataList) {
-			
-			
-			try{
-			/* Insert the Field if it does not have a  ID and has the required fields */
-				if( canInsert(subjectCustomFieldData)) {
-		
+
+			try {
+				/* Insert the Field if it does not have a ID and has the required fields */
+				if (canInsert(subjectCustomFieldData)) {
+
 					studyDao.createSubjectCustomFieldData(subjectCustomFieldData);
 					Long id = subjectCustomFieldData.getCustomFieldDisplay().getCustomField().getId();
-					
+
 					CustomField customField = arkCommonService.getCustomField(id);
 					customField.setCustomFieldHasData(true);
 					CustomFieldVO customFieldVO = new CustomFieldVO();
 					customFieldVO.setCustomField(customField);
-					
+
 					arkCommonService.updateCustomField(customFieldVO);
 
-				}else if(canUpdate(subjectCustomFieldData)){
-					
-					//If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and updated the record.
-					if(subjectCustomFieldData.getErrorDataValue() != null){
+				}
+				else if (canUpdate(subjectCustomFieldData)) {
+
+					// If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and
+					// updated the record.
+					if (subjectCustomFieldData.getErrorDataValue() != null) {
 						subjectCustomFieldData.setErrorDataValue(null);
-					} 
+					}
 					studyDao.updateSubjectCustomFieldData(subjectCustomFieldData);
-				
-				}else if(canDelete(subjectCustomFieldData)){
-					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
-					Long count  = studyDao.isCustomFieldUsed(subjectCustomFieldData);
-					
+
+				}
+				else if (canDelete(subjectCustomFieldData)) {
+					// Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
+					Long count = studyDao.isCustomFieldUsed(subjectCustomFieldData);
+
 					studyDao.deleteSubjectCustomFieldData(subjectCustomFieldData);
-					if(count <= 1){
-						//Then update the CustomField's hasDataFlag to false;
-						Long id = subjectCustomFieldData.getCustomFieldDisplay().getCustomField().getId();//Reload since the session was closed in the front end and the child objects won't be lazy loaded
+					if (count <= 1) {
+						// Then update the CustomField's hasDataFlag to false;
+						Long id = subjectCustomFieldData.getCustomFieldDisplay().getCustomField().getId();// Reload since the session was closed in the
+																																		// front end and the child objects won't be lazy
+																																		// loaded
 						CustomField customField = arkCommonService.getCustomField(id);
 						customField.setCustomFieldHasData(false);
 						CustomFieldVO customFieldVO = new CustomFieldVO();
 						customFieldVO.setCustomField(customField);
-						arkCommonService.updateCustomField(customFieldVO); //Update it
-						
+						arkCommonService.updateCustomField(customFieldVO); // Update it
+
 					}
 				}
-			}catch(Exception someException){
-				listOfExceptions.add(subjectCustomFieldData);//Continue with rest of the list
+			}
+			catch (Exception someException) {
+				listOfExceptions.add(subjectCustomFieldData);// Continue with rest of the list
 			}
 		}
-		
+
 		return listOfExceptions;
 	}
-	
+
 	/**
-	 * In order to delete it must satisfy the following conditions
-	 * 1. SubjectCustomFieldData must be a persistent entity(with a valid primary key/ID) AND
-	 * 2. SubjectCustomFieldData should have a valid Subject linked to it and must not be null AND
-	 * 3. SubjectCustomFieldData.TextDataValue is NULL OR is EMPTY
-	 * 4. SubjectCustomFieldData.NumberDataValue is NULL
-	 * 5. SubjectCustomFieldData.DatewDataValue is NULL
-	 * When these conditiosn are satisfied this method will return Boolean TRUE
+	 * In order to delete it must satisfy the following conditions 1. SubjectCustomFieldData must be a persistent entity(with a valid primary key/ID)
+	 * AND 2. SubjectCustomFieldData should have a valid Subject linked to it and must not be null AND 3. SubjectCustomFieldData.TextDataValue is NULL
+	 * OR is EMPTY 4. SubjectCustomFieldData.NumberDataValue is NULL 5. SubjectCustomFieldData.DatewDataValue is NULL When these conditiosn are
+	 * satisfied this method will return Boolean TRUE
+	 * 
 	 * @param subjectCustomFieldData
 	 * @return
 	 */
-	private Boolean canDelete(SubjectCustomFieldData subjectCustomFieldData){
+	private Boolean canDelete(SubjectCustomFieldData subjectCustomFieldData) {
 		Boolean flag = false;
-		
-		if(subjectCustomFieldData.getId() != null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && 
-				( subjectCustomFieldData.getTextDataValue() == null  	||		
-				  subjectCustomFieldData.getTextDataValue().isEmpty()  	|| 
-				  subjectCustomFieldData.getNumberDataValue() == null 	||
-				  subjectCustomFieldData.getDateDataValue() == null ) ){
-			
-			flag=true;
-			
+
+		if (subjectCustomFieldData.getId() != null
+				&& subjectCustomFieldData.getLinkSubjectStudy() != null
+				&& (subjectCustomFieldData.getTextDataValue() == null || subjectCustomFieldData.getTextDataValue().isEmpty() || subjectCustomFieldData.getNumberDataValue() == null || subjectCustomFieldData
+						.getDateDataValue() == null)) {
+
+			flag = true;
+
 		}
 		return flag;
 	}
-	
+
 	/**
-	 * In order to Update a SubjectCustomFieldData instance the following conditions must be met
-	 * 1. SubjectCustomFieldData must be a persistent entity(with a valid primary key/ID) AND
-	 * 2. SubjectCustomFieldData should have a valid Subject linked to it and must not be null AND
-	 * 3. SubjectCustomFieldData.TextDataValue is NOT NULL AND NOT EMPTY OR
-	 * 4. SubjectCustomFieldData.NumberDataValue is NOT NULL
-	 * 5. SubjectCustomFieldData.DateDataValue is NOT NULL	
-	 * When these conditions are satisfied the method will return Boolean TRUE
+	 * In order to Update a SubjectCustomFieldData instance the following conditions must be met 1. SubjectCustomFieldData must be a persistent
+	 * entity(with a valid primary key/ID) AND 2. SubjectCustomFieldData should have a valid Subject linked to it and must not be null AND 3.
+	 * SubjectCustomFieldData.TextDataValue is NOT NULL AND NOT EMPTY OR 4. SubjectCustomFieldData.NumberDataValue is NOT NULL 5.
+	 * SubjectCustomFieldData.DateDataValue is NOT NULL When these conditions are satisfied the method will return Boolean TRUE
+	 * 
 	 * @param subjectCustomFieldData
 	 * @return
 	 */
-	private Boolean canUpdate(SubjectCustomFieldData subjectCustomFieldData){
+	private Boolean canUpdate(SubjectCustomFieldData subjectCustomFieldData) {
 		Boolean flag = false;
-		
-		if(subjectCustomFieldData.getId() != null && subjectCustomFieldData.getLinkSubjectStudy() != null && 
-				(( subjectCustomFieldData.getTextDataValue() != null 	&& 
-				   !subjectCustomFieldData.getTextDataValue().isEmpty()) || 
-				   subjectCustomFieldData.getDateDataValue() != null  	|| 
-				   subjectCustomFieldData.getNumberDataValue() != null) ){
-			
-			flag=true;
-			
+
+		if (subjectCustomFieldData.getId() != null
+				&& subjectCustomFieldData.getLinkSubjectStudy() != null
+				&& ((subjectCustomFieldData.getTextDataValue() != null && !subjectCustomFieldData.getTextDataValue().isEmpty()) || subjectCustomFieldData.getDateDataValue() != null || subjectCustomFieldData
+						.getNumberDataValue() != null)) {
+
+			flag = true;
+
 		}
 		return flag;
 	}
-	
+
 	/**
-	 * In order to Insert a SubjectCustomFieldData instance the following conditions must be met.
-	 * 1. SubjectCustomFieldData must be a transient entity(Not yet associated with an ID/PK) AND
-	 * 2. SubjectCustomFieldData should have a valid Subject linked to it and must not be null AND
-	 * 3. SubjectCustomFieldData.TextDataValue is NOT NULL  OR
-	 * 4. SubjectCustomFieldData.NumberDataValue is NOT NULL OR
-	 * 5. SubjectCustomFieldData.DateDataValue is NOT NULL	
-	 * When these conditions are satisfied the method will return Boolean TRUE
+	 * In order to Insert a SubjectCustomFieldData instance the following conditions must be met. 1. SubjectCustomFieldData must be a transient
+	 * entity(Not yet associated with an ID/PK) AND 2. SubjectCustomFieldData should have a valid Subject linked to it and must not be null AND 3.
+	 * SubjectCustomFieldData.TextDataValue is NOT NULL OR 4. SubjectCustomFieldData.NumberDataValue is NOT NULL OR 5.
+	 * SubjectCustomFieldData.DateDataValue is NOT NULL When these conditions are satisfied the method will return Boolean TRUE
+	 * 
 	 * @param subjectCustomFieldData
 	 * @return
 	 */
-	private Boolean canInsert(SubjectCustomFieldData subjectCustomFieldData){
+	private Boolean canInsert(SubjectCustomFieldData subjectCustomFieldData) {
 		Boolean flag = false;
-		
-		if(subjectCustomFieldData.getId() == null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && 
-				(		subjectCustomFieldData.getNumberDataValue() != null || 
-						subjectCustomFieldData.getTextDataValue() != null 	|| 
-						subjectCustomFieldData.getDateDataValue() != null )){
-			
-			flag=true;
-			
+
+		if (subjectCustomFieldData.getId() == null && subjectCustomFieldData.getLinkSubjectStudy() != null
+				&& (subjectCustomFieldData.getNumberDataValue() != null || subjectCustomFieldData.getTextDataValue() != null || subjectCustomFieldData.getDateDataValue() != null)) {
+
+			flag = true;
+
 		}
 		return flag;
 	}
-	
-	public boolean isStudyComponentHasAttachments(StudyComp studyComp){
+
+	public boolean isStudyComponentHasAttachments(StudyComp studyComp) {
 		return studyDao.isStudyComponentHasAttachments(studyComp);
 	}
-	
-	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy){
+
+	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy) {
 		studyDao.cloneSubjectForSubStudy(linkSubjectStudy);
 	}
-	
-	public LinkStudySubstudy isSubStudy(Study study){
+
+	public LinkStudySubstudy isSubStudy(Study study) {
 		return studyDao.isSubStudy(study);
 	}
 }
