@@ -2,13 +2,28 @@ span.requiredHint {
 font-size:12pt;
 }
 #LoginFeedbackZone {
-width:100%;
+min-height:50px;
+text-align: center;
+width: 100%;
 }
 #login,#resetPassword {
-background-color:#EEE;
-position:relative;
-border:1px solid #000;
-width:600px;
-margin:1em 0;
-padding:15px;
+background-color: #EEEEEE;
+border: 1px solid #000000;
+margin: auto;
+padding: 15px;
+position: relative;
+width: 700px;
+}
+.loginFeedbackZone {
+min-height:50px;
+text-align: center;
+width: 100%;
+}
+.loginForm, .resetPassword {
+background-color: #EEEEEE;
+border: 1px solid #000000;
+margin: auto;
+padding: 15px;
+position: relative;
+width: 700px;
 }

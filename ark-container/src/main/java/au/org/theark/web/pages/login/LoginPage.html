@@ -52,167 +52,119 @@
 		<div id="wrap">
 			<!-- Start div main -->
 			<div id="main">
-				<table border="0" width="100%">
-					<tr>
-						<td width="20%" align="left">
-							<!--	Page Left Top Zone -->
-							<div id="leftZoneTop">
-								&nbsp;
-							</div>
-						</td>
 
-						<td width="60%" align="center">
-							<!-- Page Login Feedback zone-->
-							<div id="LoginFeedbackZone">
-								<span wicket:id="feedbackMessage">
-									[Feedback]
-								</span>
-							</div>
-						</td>
+				<!-- Content Zone Left -->
+				<div id="contentZoneLeft">
+					&nbsp;
+				</div>
 
-						<td width="20%" align="right">
-							<!--	Right Top Zone -->
-							<div id="rightZoneTop">
-								&nbsp;
-							</div>
-						</td>
-					</tr>
+				<!-- Content Zone Right -->
+				<div id="contentZoneRight">
+					&nbsp;
+				</div>
 
-					<tr>
-						<td width="20%" align="left">
-							<!--	Page Left Zone -->
-							<div id="leftZone">
-								&nbsp;
-							</div>
-						</td>
+				<!-- Content Zone Center -->
+				<div id="contentZoneCenter">
+					<!-- Form Row -->
+					<form wicket:id="loginForm">
+						<div class="loginFeedbackZone">
+							<span wicket:id="feedbackMessage">
+								[Feedback]
+							</span>
+						</div>
+						<!--	Start div loginForm -->
+						<div class="loginForm">
+							<table border="0" width="100%">
+								<!--	Information row -->
+								<tr>
+									<td align="left" colspan="3">
+										Welcome to The Ark.
+										<br/>
+										<br/>
+										For security reasons, please log out and exit your web browser when you are done accessing services that require authentication.
+										<br/>
+										<br/>
+										To sign in, please enter your user name (Email address) and password:
+										<br/>
+										<br/>
+									</td>
+								</tr>
+								<tr align="center">
+									<td align="left">
+										<wicket:message key="page.label.emailId">
+											Email Address:
+										</wicket:message>
+									</td>
+									<td align="left">
+										<input wicket:id="userName" type="text" size="30"/>
+										<span class="requiredHint">
+											*
+										</span>
+									</td>
+								</tr>
+								<tr align="center">
+									<td align="left">
+										<wicket:message key="page.label.passwordTxt">
+											Password:
+										</wicket:message>
+									</td>
+									<td align="left">
+										<input wicket:id="password" type="password" size="30"/>
+										<span class="requiredHint">
+											*
+										</span>
+									</td>
+								</tr>
+								<tr align="left">
+									<td>
+									</td>
+									<td align="left">
+										<input id="signInButton" wicket:id="signInButton" type="submit" wicket:message="value:page.signInButton" disabled="disabled"/>
+										<!-- Enable/disable submit button depending if JavaScript enabled -->
+										<script type="text/javascript">
+											var _onload = window.onload || function()
+											{
+												var signInButton = document.getElementsByName('signInButton')[0];
+												if (signInButton.disabled==true)
+												{
+													signInButton.disabled=false
+												}
+											}
 
-						<td width="60%" align="center">
-							<!-- Content Zone Left -->
-							<div id="contentZoneLeft">
-								&nbsp;
-							</div>
-
-							<!-- Content Zone Right -->
-							<div id="contentZoneRight">
-								&nbsp;
-							</div>
-
-							<!-- Content Zone Center -->
-							<div id="contentZoneCenter">
-								<!--	Start div login -->
-								<div id="login">
-									<table border="0" width="100%" cellpadding="5">
-										<!--	Information row -->
-										<tr>
-											<td align="left" colspan="3">
-												Welcome to The Ark.
-												<br/>
-												<br/>
-												For security reasons, please log out and exit your web browser when you are done accessing services that require
-												authentication.
-												<br/>
-												<br/>
-												To sign in, please enter your user name (Email address) and password:
-												<br/>
-												<br/>
-											</td>
-										</tr>
-										<!-- Form Row -->
-										<tr>
-											<td width="10%">
-											</td>
-											<td width="80%">
-												<form wicket:id="loginForm" >
-													<table border="0" width="100%">
-														<tr align="center">
-															<td align="left">
-																<wicket:message key="page.label.emailId">
-																	Email Address:
-																</wicket:message>
-															</td>
-															<td align="left">
-																<input wicket:id="userName" type="text" size="30"/><span class="requiredHint">*</span>
-															</td>
-														</tr>
-														<tr align="center">
-															<td align="left">
-																<wicket:message key="page.label.passwordTxt">
-																	Password:
-																</wicket:message>
-															</td>
-															<td align="left">
-																<input wicket:id="password" type="password" size="30"/><span class="requiredHint">*</span>
-															</td>
-														</tr>
-														<tr align="left">
-															<td>
-															</td>
-															<td align="left">
-																<input id="signInButton" wicket:id="signInButton" type="submit" wicket:message="value:page.signInButton" disabled="disabled"/>
-																<!-- Enable/disable submit button depending if JavaScript enabled -->
-																<script type="text/javascript">
-																	var _onload = window.onload || function()
-																	{
-																		var signInButton = document.getElementsByName('signInButton')[0];
-																		if (signInButton.disabled==true)
-																		{
-																			signInButton.disabled=false
-																		}
-																	}
-
-																	_onload();
-																</script>
-																<input id="forgotPasswordButton" wicket:id="forgotPasswordButton" type="submit" wicket:message="value:page.forgotPasswordButton" />
-																<noscript>
-																	<div class="note">
-																		This site will not run properly without JavaScript enabled.
-																	</div>
-																</noscript>
-															</td>
-														</tr>
-													</table>
-												</form>
-											</td>
-											<td width="10%">
-											</td>
-										</tr>
-										<tr>
-											<td width="100%" align="center" colspan="3">
-												<br/>
-												<div id="bestResolution">
-													<div id="note">
-														<wicket:message	key="page.bestResolutionNote">
-															[Note replaced from properties]
-														</wicket:message>
-													</div>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td width="100%" align="center" colspan="3">
-												<a href="http://jigsaw.w3.org/css-validator/check/referer">
-													<img style="border:0;width:88px;height:31px" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" />
-												</a>
-											</td>
-										</tr>
-									</table>
-								</div>
-								<!--	End div login -->
-							</div>
-						</td>
-
-						<td width="20%" align="right">
-							<!--	Page right Zone -->
-							<div id="rightZone">
-								&nbsp;
-							</div>
-						</td>
-					</tr>
-				</table>
+											_onload();
+										</script>
+										<input 
+												id="forgotPasswordButton"
+												wicket:id="forgotPasswordButton"
+												type="submit"
+												wicket:message="value:page.forgotPasswordButton"
+										/>
+										<noscript>
+											<div class="note">
+												This site will not run properly without JavaScript enabled.
+											</div>
+										</noscript>
+									</td>
+								</tr>
+								<tr align="center">
+									<td width="100%" colspan="2">
+										<div class="note">
+											<wicket:message	key="page.bestResolutionNote">
+												[Note replaced from properties]
+											</wicket:message>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</form>
+				</div>
+				<!-- End Content Zone Center -->
+				<div class="push">
+					&nbsp;
+				</div>
 			</div>
 			<!-- End div main -->
-			<div class="push">
-			</div>
 		</div>
 		<!-- End div wrap -->
 
