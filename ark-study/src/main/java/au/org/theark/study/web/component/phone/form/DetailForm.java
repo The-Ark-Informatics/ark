@@ -43,6 +43,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -212,8 +213,9 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 				String personType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 
 				if (personType != null && personType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)) {
-
-					LinkSubjectStudy subjectInContext = iArkCommonService.getSubject(personSessionId);// This is fetched basically to display the info
+					Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					Study study = iArkCommonService.getStudy(studyId);
+					LinkSubjectStudy subjectInContext = iArkCommonService.getSubject(personSessionId, study);// This is fetched basically to display the info
 																																	// message along with the Subject UID or Contact ID
 					if (containerForm.getModelObject().getPhone().getId() == null) {
 						studyService.create(containerForm.getModelObject().getPhone());

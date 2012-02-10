@@ -64,7 +64,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private static final long	serialVersionUID	= 8560698088787915274L;
 	private transient Logger						log	= LoggerFactory.getLogger(DetailForm.class);
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
-	private IStudyService							studyService;
+	private IStudyService							iStudyService;
 
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -115,11 +115,13 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	@Override
 	protected void onSave(Form<SubjectVO> containerForm, AjaxRequestTarget target) {
 		LinkSubjectStudy linkSubjectStudy = null;
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(studyId);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		String userId = SecurityUtils.getSubject().getPrincipal().toString();
 		
 		try {
-			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
+			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId, study);
 			containerForm.getModelObject().getSubjectFile().setLinkSubjectStudy(linkSubjectStudy);
 
 			// Implement Save/Update
@@ -149,14 +151,14 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				containerForm.getModelObject().getSubjectFile().setUserId(userId);
 				
 				// Save
-				studyService.create(containerForm.getModelObject().getSubjectFile());
+				iStudyService.create(containerForm.getModelObject().getSubjectFile());
 				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
 				processErrors(target);
 			}
 			else {
 				containerForm.getModelObject().getSubjectFile().setUserId(userId);
 				// Update
-				studyService.update(containerForm.getModelObject().getSubjectFile());
+				iStudyService.update(containerForm.getModelObject().getSubjectFile());
 				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was updated successfully");
 				processErrors(target);
 			}
@@ -193,8 +195,10 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		SubjectVO subjectVo = new SubjectVO();
 		LinkSubjectStudy linkSubjectStudy = null;
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(studyId);
 		try {
-			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
+			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId, study);
 		}
 		catch (EntityNotFoundException e) {
 			this.error("The Person/Subject in context does not exist in the system. Please contact support.");

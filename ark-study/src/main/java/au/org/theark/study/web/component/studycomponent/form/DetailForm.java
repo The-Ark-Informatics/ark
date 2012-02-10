@@ -52,7 +52,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
 
-	@SpringBean(name = "studyService")
+	@SpringBean(name = "iStudyService")
 	private IStudyService		studyService;
 	private Study					study;
 

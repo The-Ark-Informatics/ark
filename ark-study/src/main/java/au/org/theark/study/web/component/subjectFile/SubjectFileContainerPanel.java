@@ -32,6 +32,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
@@ -134,9 +135,11 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 					if (isActionPermitted()) {
 						SubjectFile subjectFile = containerForm.getModelObject().getSubjectFile();
 						Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+						Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+						Study study = iArkCommonService.getStudy(studyId);
 						
 						if(sessionPersonId != null){
-							LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
+							LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId, study);
 							subjectFile.setLinkSubjectStudy(linkSubjectStudy);
 							subjectFileList = studyService.searchSubjectFile(subjectFile);
 						}
