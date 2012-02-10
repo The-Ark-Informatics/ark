@@ -67,7 +67,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	protected IArkCommonService						iArkCommonService;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	protected IStudyService								studyService;
+	protected IStudyService								iStudyService;
 
 	protected DetailPanel								detailPanel;
 	protected PageableListView<SubjectFile>		pageableListView;
@@ -127,7 +127,9 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		try {
 			LinkSubjectStudy linkSubjectStudy = null;
 			Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
+			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study = iArkCommonService.getStudy(studyId);
+			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId, study);
 			subjectFile.setLinkSubjectStudy(linkSubjectStudy);
 		}
 		catch (EntityNotFoundException e1) {
@@ -137,7 +139,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 		try {
 			// Look up based on criteria via back end.
-			subjectFileList = studyService.searchSubjectFile(subjectFile);
+			subjectFileList = iStudyService.searchSubjectFile(subjectFile);
 
 			if (subjectFileList != null && subjectFileList.size() == 0) {
 				this.info("There are no subject files for the specified criteria.");
