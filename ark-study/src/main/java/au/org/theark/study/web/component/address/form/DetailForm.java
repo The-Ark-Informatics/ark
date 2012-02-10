@@ -47,6 +47,7 @@ import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -58,15 +59,22 @@ import au.org.theark.study.web.Constants;
 
 /**
  * @author nivedann
+ * @author cellis
  * 
  */
 public class DetailForm extends AbstractDetailForm<AddressVO> {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1423759632793367263L;
+
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService						studyService;
+	private IStudyService						iStudyService;
 
 	private TextField<String>					streetAddressTxtFld;
 	private TextField<String>					cityTxtFld;
@@ -92,8 +100,8 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 * @param containerForm
 	 */
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
-		
-		super(id,feedBackPanel,containerForm,arkCrudContainerVO);
+
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
 	}
 
@@ -129,7 +137,6 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(preferredMailingAddressChkBox);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(sourceTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(addressLineOneTxtFld);
-
 	}
 
 	private void initialiseAddressTypeDropDown() {
@@ -146,7 +153,6 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 * The MarkupContainer for The State DropDown control
 	 */
 	private void initialiseStateSelector() {
-
 		countryStateSelector = new WebMarkupContainer("countryStateSelector");
 		countryStateSelector.setOutputMarkupPlaceholderTag(true);
 		// Get the value selected in Country
@@ -170,7 +176,6 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	}
 
 	private void initialiaseCountryDropDown() {
-
 		List<Country> countryList = iArkCommonService.getCountries();
 		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
 		countryChoice = new DropDownChoice<Country>(Constants.ADDRESS_COUNTRY, countryList, defaultChoiceRenderer);
@@ -190,7 +195,6 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 * the argument and invokes the back-end to fetch relative states.
 	 */
 	private void updateCountryStateChoices(Country country) {
-
 		List<CountryState> countryStateList = iArkCommonService.getStates(country);
 		if (countryStateList != null && countryStateList.size() > 0) {
 			stateChoice.setVisible(true);
@@ -228,24 +232,24 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 */
 	@Override
 	protected void attachValidators() {
-
+		
 		addressLineOneTxtFld.add(StringValidator.maximumLength(255));
 		
 		sourceTxtFld.add(StringValidator.maximumLength(255));
 		
 		streetAddressTxtFld.setRequired(true).setLabel(new StringResourceModel("address.streetAddress.RequiredValidator", this, new Model<String>("Street Address")));
-		
+
 		streetAddressTxtFld.add(LengthBetweenValidator.maximumLength(255));
-		
+
 		cityTxtFld.setRequired(true).setLabel(new StringResourceModel("address.city.RequiredValidator", this, new Model<String>("City")));
-		
+
 		postCodeTxtFld.setRequired(true).setLabel(new StringResourceModel("address.postCode.RequiredValidator", this, new Model<String>("Post Code")));
-		//TODO User Centric ones for Max and Min
+		// TODO User Centric ones for Max and Min
 		postCodeTxtFld.add(LengthBetweenValidator.maximumLength(10));
 		postCodeTxtFld.add(LengthBetweenValidator.minimumLength(4));
-		
+
 		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("address.dateReceived.DateValidator.maximum", this, null));
-		
+
 		addressTypeChoice.setRequired(true).setLabel(new StringResourceModel("address.addressType.RequiredValidator", this, new Model<String>("Address Type")));
 		addressStatusChoice.setRequired(true).setLabel(new StringResourceModel("address.addressStatus.RequiredValidator", this, new Model<String>("Address Status")));
 		stateChoice.setRequired(true).setLabel(new StringResourceModel("address.state.RequiredValidator", this, new Model<String>("State")));
@@ -271,8 +275,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
-
-			studyService.delete(containerForm.getModelObject().getAddress());
+			iStudyService.delete(containerForm.getModelObject().getAddress());
 			this.info("The Address has been deleted successfully.");
 			editCancelProcess(target);
 		}
@@ -292,14 +295,13 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 */
 	@Override
 	protected void onSave(Form<AddressVO> containerForm, AjaxRequestTarget target) {
-
 		Long personSessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		StringBuffer feedBackMessageStr = new StringBuffer();
 		// Get the person and set it on the AddressVO.
 		try {
-			Person person = studyService.getPerson(personSessionId);
+			Person person = iStudyService.getPerson(personSessionId);
 
-			boolean hasPreferredMailing = studyService.personHasPreferredMailingAddress(person, containerForm.getModelObject().getAddress().getId());
+			boolean hasPreferredMailing = iStudyService.personHasPreferredMailingAddress(person, containerForm.getModelObject().getAddress().getId());
 			boolean preferredMailingAdressIsYes = false;
 
 			if (containerForm.getModelObject().getAddress().getPreferredMailingAddress() != null) {
@@ -311,24 +313,24 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 				containerForm.error("The person has already specified a Preferred Mailing address. This address cannot be set as Preferred Mailing address.");
 				processErrors(target);
 			}
-			else{
-				
-			
+			else {
 				containerForm.getModelObject().getAddress().setPerson(person);
 				if (containerForm.getModelObject().getAddress().getId() == null) {
-					studyService.create(containerForm.getModelObject().getAddress());
+					iStudyService.create(containerForm.getModelObject().getAddress());
 					feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
 				}
 				else {
-
-					studyService.update(containerForm.getModelObject().getAddress());
+					iStudyService.update(containerForm.getModelObject().getAddress());
 					feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
 				}
-				
-				if(person.getFirstName()  != null && person.getLastName() != null ){
+
+				if (person.getFirstName() != null && person.getLastName() != null) {
 					feedBackMessageStr.append(person.getFirstName() + " " + person.getLastName());
-				}else{
-					String uid = iArkCommonService.getSubject(person.getId()).getSubjectUID();
+				}
+				else {
+					Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					Study study = iArkCommonService.getStudy(studyId);
+					String uid = iArkCommonService.getSubject(person.getId(), study).getSubjectUID();
 					feedBackMessageStr.append(uid);
 				}
 				this.info(feedBackMessageStr.toString());
