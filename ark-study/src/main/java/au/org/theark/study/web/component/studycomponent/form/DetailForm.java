@@ -49,21 +49,26 @@ import au.org.theark.study.web.Constants;
  */
 public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -8267651986631341353L;
+
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
 
-	@SpringBean(name = "iStudyService")
-	private IStudyService		studyService;
+	@SpringBean(name = Constants.STUDY_SERVICE)
+	private IStudyService		iStudyService;
 	private Study					study;
 
 	private TextField<String>	componentIdTxtFld;
 	private TextField<String>	componentNameTxtFld;
 	private TextArea<String>	componentDescription;
 	private TextArea<String>	keywordTxtArea;
-	
-	private FeedbackPanel feedBackPanel;
 
-	
+	private FeedbackPanel		feedBackPanel;
+
 	/**
 	 * 
 	 * @param id
@@ -71,23 +76,23 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,ContainerForm containerForm){
-		
-		super(id,feedBackPanel,containerForm,arkCrudContainerVO);
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
 	}
-	
-	
+
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		StudyCompVo studyComponent = containerForm.getModelObject();
-		StudyComp component  = studyComponent.getStudyComponent();;
-		if(component != null && component.getId() != null && studyService.isStudyComponentHasAttachments(component)){
+		StudyComp component = studyComponent.getStudyComponent();
+		;
+		if (component != null && component.getId() != null && iStudyService.isStudyComponentHasAttachments(component)) {
 			deleteButton.setEnabled(false);
 		}
-		
-		//If the given component is attached to a file/consents then disable the delete button
-		
+
+		// If the given component is attached to a file/consents then disable the delete button
+
 	}
 
 	public void initialiseDetailForm() {
@@ -142,7 +147,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 	 */
 	@Override
 	protected void onSave(Form<StudyCompVo> containerForm, AjaxRequestTarget target) {
-		
+
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
 		try {
 
@@ -152,19 +157,19 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 
 			if (containerForm.getModelObject().getStudyComponent().getId() == null) {
 
-				studyService.create(containerForm.getModelObject().getStudyComponent());
+				iStudyService.create(containerForm.getModelObject().getStudyComponent());
 				this.info("Study Component " + containerForm.getModelObject().getStudyComponent().getName() + " was created successfully");
 				processErrors(target);
 
 			}
 			else {
 
-				studyService.update(containerForm.getModelObject().getStudyComponent());
+				iStudyService.update(containerForm.getModelObject().getStudyComponent());
 				this.info("Study Component " + containerForm.getModelObject().getStudyComponent().getName() + " was updated successfully");
 				processErrors(target);
 
 			}
-			
+
 			onSavePostProcess(target);
 
 		}
@@ -196,7 +201,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
-			studyService.delete(containerForm.getModelObject().getStudyComponent());
+			iStudyService.delete(containerForm.getModelObject().getStudyComponent());
 			StudyCompVo studyCompVo = new StudyCompVo();
 			containerForm.setModelObject(studyCompVo);
 			containerForm.info("The Study Component was deleted successfully.");
