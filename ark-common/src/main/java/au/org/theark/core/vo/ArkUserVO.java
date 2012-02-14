@@ -48,6 +48,8 @@ public class ArkUserVO extends BaseVO {
 	private StudyVO				studyVO;
 	private List<ArkUserVO>		userList;
 	private String 				captcha;
+	private List<Study>			availableChildStudies;
+	private List<Study>			selectedChildStudies;
 
 	/* Database Entity */
 	private ArkUser				arkUserEntity;
@@ -111,6 +113,8 @@ public class ArkUserVO extends BaseVO {
 		this.arkUserRoleList = new ArrayList<ArkUserRole>();
 		this.study = new Study();
 		this.userName = new String();
+		this.availableChildStudies = new ArrayList<Study>();
+		this.selectedChildStudies = new ArrayList<Study>();
 	}
 
 	public ArkUserVO(String userName, String firstName, String lastName, String email, String password, List<ModuleVO> modules, String phoneNumber, String confirmPassword, int mode,
@@ -393,5 +397,33 @@ public class ArkUserVO extends BaseVO {
 	 */
 	public String getCaptcha() {
 		return captcha;
+	}
+
+	/**
+	 * @param availableChildStudies the availableChildStudies to set
+	 */
+	public void setAvailableChildStudies(List<Study> availableChildStudies) {
+		this.availableChildStudies = availableChildStudies;
+	}
+
+	/**
+	 * @return the availableChildStudies
+	 */
+	public List<Study> getAvailableChildStudies() {
+		return availableChildStudies;
+	}
+
+	/**
+	 * @param selectedChildStudies the selectedChildStudies to set
+	 */
+	public void setSelectedChildStudies(List<Study> selectedChildStudies) {
+		this.selectedChildStudies = selectedChildStudies;
+	}
+
+	/**
+	 * @return the selectedChildStudies
+	 */
+	public List<Study> getSelectedChildStudies() {
+		return selectedChildStudies;
 	}
 }
