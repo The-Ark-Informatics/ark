@@ -24,4 +24,5 @@ public class RoleConstants {
 	 */
 	public static final String	ARK_ROLE_SUPER_ADMINISTATOR	= "Super Administrator";
 	public static final String	ARK_ROLE_ADMINISTATOR			= "Administrator";
+	public static final String	ARK_ROLE_STUDY_ADMINISTATOR	= "Study Administrator";
 }
