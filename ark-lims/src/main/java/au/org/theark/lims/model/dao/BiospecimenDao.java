@@ -23,11 +23,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -55,7 +55,6 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.util.UniqueIdGenerator;
 import au.org.theark.lims.web.Constants;
@@ -67,14 +66,14 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	
 	private BiospecimenUidGenerator		biospecimenUidGenerator;
 
+	/**
+	 * @param biospecimenUidGenerator the biospecimenUidGenerator to set
+	 */
 	@Autowired
-	public void setArkUidGenerator(BiospecimenUidGenerator biospecimenUidGenerator) {
+	public void setBiospecimenUidGenerator(BiospecimenUidGenerator biospecimenUidGenerator) {
 		this.biospecimenUidGenerator = biospecimenUidGenerator;
 	}
-	
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>							iArkCommonService;
-	
+
 	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException {	
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);
 		criteria.add(Restrictions.eq("id", id));
@@ -94,7 +93,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 			criteria.add(Restrictions.eq("id", biospecimen.getId()));
 
 		if (biospecimen.getBiospecimenUid() != null)
-			criteria.add(Restrictions.eq("biospecimenId", biospecimen.getBiospecimenUid()));
+			criteria.add(Restrictions.ilike("biospecimenUid", biospecimen.getBiospecimenUid(), MatchMode.ANYWHERE));
 
 		if (biospecimen.getLinkSubjectStudy() != null)
 			criteria.add(Restrictions.eq("linkSubjectStudy", biospecimen.getLinkSubjectStudy()));
@@ -158,7 +157,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 			criteria.add(Restrictions.eq("id", biospecimen.getId()));
 
 		if (biospecimen.getBiospecimenUid() != null)
-			criteria.add(Restrictions.eq("biospecimenId", biospecimen.getBiospecimenUid()));
+			criteria.add(Restrictions.ilike("biospecimenUid", biospecimen.getBiospecimenUid(), MatchMode.ANYWHERE));
 
 		if (biospecimen.getLinkSubjectStudy() != null)
 			criteria.add(Restrictions.eq("linkSubjectStudy", biospecimen.getLinkSubjectStudy()));
@@ -217,7 +216,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		}
 
 		if (biospecimen.getBiospecimenUid() != null) {
-			criteria.add(Restrictions.eq("biospecimenUid", biospecimen.getBiospecimenUid()));
+			criteria.add(Restrictions.ilike("biospecimenUid", biospecimen.getBiospecimenUid(), MatchMode.ANYWHERE));
 		}
 
 		if (biospecimen.getSampleType() != null) {
@@ -389,7 +388,14 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	}
 	
 	public String getNextGeneratedBiospecimenUID(Study study) {
-		BiospecimenUidTemplate biospecimenUidTemplate = getBiospecimenUidTemplate(study);
+		Study studyToUse = null; 
+		if(study.getParentStudy() != null) {
+			studyToUse = study.getParentStudy(); 
+		}
+		else {
+			studyToUse = study;
+		}
+		BiospecimenUidTemplate biospecimenUidTemplate = getBiospecimenUidTemplate(studyToUse);
 		String biospecimenUidPrefix = new String("");
 		String biospecimenUidToken = new String("");
 		String biospecimenUidPaddedIncrementor = new String("");
@@ -409,7 +415,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 				biospecimenUidPadChar = biospecimenUidTemplate.getBiospecimenUidPadChar().getName().trim();
 			}
 
-			int incrementedValue = getNextUidSequence(study).intValue() - 1;
+			int incrementedValue = getNextUidSequence(studyToUse).intValue() - 1;
 			nextIncrementedBiospecimenUid = nextIncrementedBiospecimenUid.append(incrementedValue);
 
 			int size = Integer.parseInt(biospecimenUidPadChar);
@@ -427,7 +433,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 			String uid = UniqueIdGenerator.generateUniqueId();
 			biospecimenUid = new StringBuilder();
 			biospecimenUid.append(uid);
-			log.error("Biospecimen Template is not defined for the Study: " + study.getName());
+			log.error("Biospecimen Template is not defined for the Study: " + studyToUse.getName());
 		}
 		
 		return biospecimenUid.toString();
