@@ -416,8 +416,8 @@ public class Study implements java.io.Serializable {
 	/**
 	 * @return the parentStudy
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PARENT_STUDY_ID")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "PARENT_ID")
 	public Study getParentStudy() {
 		return parentStudy;
 	}
