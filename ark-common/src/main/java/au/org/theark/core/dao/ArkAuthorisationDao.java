@@ -258,6 +258,18 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		session.close();
 		return userRoles;
 	}
+	
+	public List<ArkUserRole> getArkUserAdminRoles(String ldapUserName) throws EntityNotFoundException {
+		ArkUser arkUser = getArkUser(ldapUserName);
+		StatelessSession session = getStatelessSession();
+		Criteria criteria = session.createCriteria(ArkUserRole.class);// getSession().createCriteria(ArkUserRole.class);
+		ArkRole arkRoleStudyAdmin = getArkRoleByName(RoleConstants.ARK_ROLE_STUDY_ADMINISTATOR);
+		criteria.add(Restrictions.eq("arkRole", arkRoleStudyAdmin));
+		criteria.add(Restrictions.eq("arkUser", arkUser));
+		List<ArkUserRole> arkUserRoleList = (List<ArkUserRole>) criteria.list();
+		session.close();
+		return arkUserRoleList;
+	}
 
 	public String getUserRoleForStudy(String ldapUserName, Study study) throws EntityNotFoundException {
 		String roleName = "";
@@ -1136,8 +1148,9 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 				}
 			}
 			
-			// Cannot select study with parent
-			//studyCriteria.add(Restrictions.isNull("parentStudy"));
+			// Can only select studies with null parent, or where the study is a parent
+			studyCriteria.add(Restrictions.disjunction().add(Restrictions.isNull("parentStudy")).add(Restrictions.eqProperty("parentStudy.id", "id")));
+			
 			studyCriteria.addOrder(Order.asc("parentStudy"));
 			ProjectionList projectionList = Projections.projectionList();
 			projectionList.add(Projections.groupProperty("study"), "study");

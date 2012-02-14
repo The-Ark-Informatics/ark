@@ -21,6 +21,7 @@ package au.org.theark.core.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.velocity.exception.VelocityException;
 import org.springframework.mail.MailSendException;
@@ -590,7 +591,7 @@ public interface IArkCommonService<T> {
 	
 	public Boolean studyHasBioCollection(Study study);
 	
-	public BiospecimenUidTemplate getBiospecimentUidTemplate(Study study);
+	public BiospecimenUidTemplate getBiospecimenUidTemplate(Study study);
 	
 	public BioCollectionUidTemplate getBioCollectionUidTemplate(Study study);
 	
@@ -602,4 +603,12 @@ public interface IArkCommonService<T> {
 	
 	public List<Study> getParentStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule);
 	
+	/**
+	 * Sets up an ArkUserVO with the default administrator roles for the specified study and List of ArkModule names
+	 * @param userName the user to assign
+	 * @param study the study to assign to
+	 * @param moduleList the list of module names
+	 * @return
+	 */
+	public ArkUserVO getDefaultAdministratorRoles(String userName, Study study, Set<String> moduleList);
 }

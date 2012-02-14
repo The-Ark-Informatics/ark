@@ -22,8 +22,10 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.MimeMessage;
 import javax.naming.InvalidNameException;
@@ -108,6 +110,7 @@ import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
+import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.CustomFieldVO;
@@ -982,7 +985,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.studyHasBioCollection(study);
 	}
 
-	public BiospecimenUidTemplate getBiospecimentUidTemplate(Study study) {
+	public BiospecimenUidTemplate getBiospecimenUidTemplate(Study study) {
 		return studyDao.getBiospecimentUidTemplate(study);
 	}
 
@@ -1007,4 +1010,34 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return arkAuthorisationDao.getParentStudyListForUserAndModule(arkUserVo, arkModule);
 	}
 
+	public ArkUserVO getDefaultAdministratorRoles(String userName, Study study, Set arkModuleNames) {
+		ArkUserVO arkUserVo = new ArkUserVO();
+		try {
+			ArkUser arkUser;
+			arkUser = getArkUser(userName);
+			arkUserVo.setArkUserEntity(arkUser);
+			arkUserVo.setUserName(userName);
+			List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
+			
+			for (Iterator<String> iterator = arkModuleNames.iterator(); iterator.hasNext();) {
+				String arkModuleName = (String) iterator.next();
+				ArkUserRole arkUserRole = new ArkUserRole();
+				arkUserRole.setArkUser(arkUser);
+				StringBuilder adminName = new StringBuilder();
+				adminName.append(arkModuleName);
+				adminName.append(" ");
+				adminName.append(RoleConstants.ARK_ROLE_ADMINISTATOR);
+				arkUserRole.setArkRole(getArkRoleByName(adminName.toString()));
+				arkUserRole.setArkModule(getArkModuleByName(arkModuleName));
+				arkUserRole.setStudy(study);
+				arkUserRoleList.add(arkUserRole);
+			}
+			
+			arkUserVo.setArkUserRoleList(arkUserRoleList);
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		return arkUserVo;
+	}
 }
