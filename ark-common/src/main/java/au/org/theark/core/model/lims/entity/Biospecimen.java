@@ -118,7 +118,7 @@ public class Biospecimen implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "COLLECTION_ID")
+	@JoinColumn(name = "BIOCOLLECTION_ID")
 	public BioCollection getBioCollection() {
 		return this.bioCollection;
 	}
@@ -127,7 +127,7 @@ public class Biospecimen implements java.io.Serializable {
 		this.bioCollection = bioCollection;
 	}
 
-	@Column(name = "BIOSPECIMEN_ID", nullable = false)
+	@Column(name = "BIOSPECIMEN_UID", nullable = false)
 	public String getBiospecimenUid() {
 		return this.biospecimenUid;
 	}
