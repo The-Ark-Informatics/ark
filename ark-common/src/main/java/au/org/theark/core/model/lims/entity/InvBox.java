@@ -94,8 +94,8 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 	}
 
 	@Id
-	@SequenceGenerator(name = "invtray_generator", sequenceName = "INVTRAY_SEQUENCE")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "invtray_generator")
+	@SequenceGenerator(name = "inv_box_generator", sequenceName = "INV_BOX_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "inv_box_generator")
 	public Long getId() {
 		return this.id;
 	}
@@ -114,7 +114,7 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TRAY_ID", nullable = false)
+	@JoinColumn(name = "RACK_ID", nullable = false)
 	public InvRack getInvRack() {
 		return this.invRack;
 	}
