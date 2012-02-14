@@ -78,8 +78,8 @@ public class InvSite implements java.io.Serializable, InvTreeNode<InvFreezer> {
 	}
 
 	@Id
-	@SequenceGenerator(name = "invsite_generator", sequenceName = "INVSITE_SEQUENCE")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "invsite_generator")
+	@SequenceGenerator(name = "inv_site_generator", sequenceName = "INV_SITE_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "inv_site_generator")
 	public Long getId() {
 		return this.id;
 	}

@@ -47,7 +47,7 @@ import au.org.theark.core.model.Constants;
  * Note the hierarchy: site -< freezer -< rack -< box -< cell
  */
 @Entity
-@Table(name = "inv_tank", schema = Constants.LIMS_TABLE_SCHEMA)
+@Table(name = "inv_freezer", schema = Constants.LIMS_TABLE_SCHEMA)
 public class InvFreezer implements java.io.Serializable, InvTreeNode<InvRack> {
 
 	private Long			id;
@@ -95,8 +95,8 @@ public class InvFreezer implements java.io.Serializable, InvTreeNode<InvRack> {
 	}
 
 	@Id
-	@SequenceGenerator(name = "invtank_generator", sequenceName = "INVTANK_SEQUENCE")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "invtank_generator")
+	@SequenceGenerator(name = "inv_freezer_generator", sequenceName = "INV_FREEZER_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "inv_freezer_generator")
 	public Long getId() {
 		return this.id;
 	}
