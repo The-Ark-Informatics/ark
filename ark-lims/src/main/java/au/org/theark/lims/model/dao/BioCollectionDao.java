@@ -21,6 +21,7 @@ package au.org.theark.lims.model.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
@@ -29,6 +30,9 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
@@ -36,17 +40,28 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
+import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.lims.util.UniqueIdGenerator;
 
 @SuppressWarnings("unchecked")
 @Repository("bioCollectionDao")
 public class BioCollectionDao extends HibernateSessionDao implements IBioCollectionDao {
+	private static Logger		log	= LoggerFactory.getLogger(BioCollection.class);
+	private BioCollectionUidGenerator bioCollectionUidGenerator;
+
+	@Autowired
+	public void setBioCollectionUidGenerator(BioCollectionUidGenerator bioCollectionUidGenerator) {
+		this.bioCollectionUidGenerator = bioCollectionUidGenerator;
+	}
+
 	public BioCollection getBioCollection(Long id) throws EntityNotFoundException {
 		Criteria criteria = getSession().createCriteria(BioCollection.class);
 		criteria.add(Restrictions.eq("id", id));
@@ -85,7 +100,85 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 	}
 
 	public void createBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection) {
+		String bioCollectionUid = getNextGeneratedBiCollectionUID(bioCollection.getStudy());
+		if(bioCollectionUid.isEmpty()) {
+			bioCollectionUid = UniqueIdGenerator.generateUniqueId();
+		}
+		bioCollection.setName(bioCollectionUid);
 		getSession().save(bioCollection);
+	}
+
+	private String getNextGeneratedBiCollectionUID(Study study) {
+		Study studyToUse = null; 
+		if(study.getParentStudy() != null) {
+			studyToUse = study.getParentStudy(); 
+		}
+		else {
+			studyToUse = study;
+		}
+		BioCollectionUidTemplate biocollectionUidTemplate = getBioCollectionUidTemplate(studyToUse);
+		String bioCollectionUidPrefix = new String("");
+		String bioCollectionUidToken = new String("");
+		String bioCollectionUidPaddedIncrementor = new String("");
+		String bioCollectionUidPadChar = new String("0");
+		StringBuilder nextIncrementedBioCollectionUid = new StringBuilder("");
+		StringBuilder biospecimenUid = new StringBuilder();
+
+		if (biocollectionUidTemplate != null) {
+			if (biocollectionUidTemplate.getBioCollectionUidPrefix() != null)
+				bioCollectionUidPrefix = biocollectionUidTemplate.getBioCollectionUidPrefix();
+
+			if (biocollectionUidTemplate.getBioCollectionUidToken() != null && biocollectionUidTemplate.getBioCollectionUidToken().getName() != null) {
+				bioCollectionUidToken = biocollectionUidTemplate.getBioCollectionUidToken().getName();
+			}
+
+			if (biocollectionUidTemplate.getBioCollectionUidPadChar() != null && biocollectionUidTemplate.getBioCollectionUidPadChar().getName() != null) {
+				bioCollectionUidPadChar = biocollectionUidTemplate.getBioCollectionUidPadChar().getName().trim();
+			}
+
+			int incrementedValue = getNextUidSequence(studyToUse).intValue() - 1;
+			nextIncrementedBioCollectionUid = nextIncrementedBioCollectionUid.append(incrementedValue);
+
+			int size = Integer.parseInt(bioCollectionUidPadChar);
+			bioCollectionUidPaddedIncrementor = StringUtils.leftPad(nextIncrementedBioCollectionUid.toString(), size, "0");
+			biospecimenUid.append(bioCollectionUidPrefix);
+			biospecimenUid.append(bioCollectionUidToken);
+			biospecimenUid.append(bioCollectionUidPaddedIncrementor);
+		}
+		else {
+			biospecimenUid = null;
+		}
+		
+		// handle for a null BiospecimenUID
+		if(biospecimenUid == null || biospecimenUid.length() == 0){
+			String uid = UniqueIdGenerator.generateUniqueId();
+			biospecimenUid = new StringBuilder();
+			biospecimenUid.append(uid);
+			log.error("Biocollection Template is not defined for the Study: " + studyToUse.getName());
+		}
+		
+		return biospecimenUid.toString();
+	}
+	
+	public Integer getNextUidSequence(Study study) {
+		Integer result = null;
+		if (study == null) {
+			log.error("Error in Biospecimen insertion - Study was null");
+		}
+		else if (study.getName() == null) {
+			log.error("Error in Biospecimen insertion - Study name was null");
+		}
+		else {
+			result = (Integer) bioCollectionUidGenerator.getId(study.getName());
+		}
+		return result;
+	}
+	
+	public BioCollectionUidTemplate getBioCollectionUidTemplate(Study study) {
+		Criteria criteria = getSession().createCriteria(BioCollectionUidTemplate.class);
+		criteria.add(Restrictions.eq("study", study));
+		BioCollectionUidTemplate biocollectionUidTemplate = (BioCollectionUidTemplate) criteria.uniqueResult();
+		return biocollectionUidTemplate;
 	}
 
 	public void deleteBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection) {
