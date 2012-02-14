@@ -322,11 +322,9 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 		// Set new BioCollection into model, then show modalWindow to save
 		CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
+		newModel.getObject().getBioCollection().setName(Constants.AUTO_GENERATED);
 		newModel.getObject().getBioCollection().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 		newModel.getObject().getBioCollection().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
-		
-		// Create new generated Collection Name
-		newModel.getObject().getBioCollection().setName(UniqueIdGenerator.generateUniqueId());
 		
 		showModalWindow(target, newModel);
 	}
