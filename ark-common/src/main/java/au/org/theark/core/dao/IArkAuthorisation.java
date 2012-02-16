@@ -185,4 +185,12 @@ public interface IArkAuthorisation<T> {
 	public List<ArkUser> getArkUserListByStudy(Study study);
 	
 	public List<Study> getParentStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule);
+
+	public List<Study> getAssignedChildStudyListForUser(ArkUserVO arkUserVo);
+
+	public void deleteArkUserRole(ArkUserRole arkUserRole);
+
+	public void deleteArkUserRolesForStudy(Study study, ArkUser arkUser);
+	
+	public void createArkUserRole(ArkUserRole arkUserRole);
 }

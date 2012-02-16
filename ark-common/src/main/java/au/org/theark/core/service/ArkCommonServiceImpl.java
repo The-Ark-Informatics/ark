@@ -1040,4 +1040,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		}
 		return arkUserVo;
 	}
+
+	public List<Study> getAssignedChildStudyListForUser(ArkUserVO arkUserVo) {
+		return arkAuthorisationDao.getAssignedChildStudyListForUser(arkUserVo);
+	}
+
+	public void deleteArkUserRole(ArkUserRole arkUserRole) {
+		arkAuthorisationDao.deleteArkUserRole(arkUserRole);
+	}
 }
