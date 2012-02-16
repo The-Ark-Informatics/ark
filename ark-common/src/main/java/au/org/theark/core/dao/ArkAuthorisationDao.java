@@ -528,24 +528,29 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 
 	public List<ArkUserRole> getArkUserRoleList(Study study, ArkUser arkUser) {
 
-		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class, "linkStudyArkModule");
+//		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class, "linkStudyArkModule");
+//		criteria.add(Restrictions.eq("study", study));
+//		criteria.createAlias("arkUserRoleList", "userRole", Criteria.LEFT_JOIN);
+//		criteria.add(Restrictions.or(Restrictions.eq("userRole.arkUser", arkUser), Restrictions.isNull("userRole.arkUser")));
+//		criteria.add(Restrictions.eq("userRole.study", study));
+//
+//		ProjectionList projection = Projections.projectionList();
+//		projection.add(Projections.property("userRole.id"), "id");
+//		projection.add(Projections.property("userRole.arkUser"), "arkUser");
+//		projection.add(Projections.property("userRole.arkRole"), "arkRole");
+//		projection.add(Projections.property("linkStudyArkModule.arkModule"), "arkModule");
+//		projection.add(Projections.property("linkStudyArkModule.study"), "study");
+//
+//		criteria.setProjection(projection);
+//
+//		criteria.setResultTransformer(Transformers.aliasToBean(ArkUserRole.class));
+//		List<ArkUserRole> listOfResults = criteria.list();
+		
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		criteria.add(Restrictions.eq("study", study));
-		criteria.createAlias("arkUserRoleList", "userRole", Criteria.LEFT_JOIN);
-		criteria.add(Restrictions.or(Restrictions.eq("userRole.arkUser", arkUser), Restrictions.isNull("userRole.arkUser")));
-		criteria.add(Restrictions.eq("userRole.study", study));
-
-		ProjectionList projection = Projections.projectionList();
-		projection.add(Projections.property("userRole.id"), "id");
-		projection.add(Projections.property("userRole.arkUser"), "arkUser");
-		projection.add(Projections.property("userRole.arkRole"), "arkRole");
-		projection.add(Projections.property("linkStudyArkModule.arkModule"), "arkModule");
-		projection.add(Projections.property("linkStudyArkModule.study"), "study");
-
-		criteria.setProjection(projection);
-
-		criteria.setResultTransformer(Transformers.aliasToBean(ArkUserRole.class));
+		criteria.add(Restrictions.eq("arkUser", arkUser));
 		List<ArkUserRole> listOfResults = criteria.list();
-
+		
 		return listOfResults;
 
 	}
@@ -714,6 +719,16 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		if (listOfRoles.size() <= 0) {
 			// Remove the ArkUser From the database only
 			session.delete(arkUserVO.getArkUserEntity());
+		}
+	}
+	
+	public void deleteArkUserRole(ArkUserRole arkUserRole) {
+		getSession().delete(arkUserRole);
+	}
+	
+	public void deleteArkUserRolesForStudy(Study study, ArkUser arkUser) {
+		for(ArkUserRole arkUserRole : getArkUserRoleList(study, arkUser)){
+			getSession().delete(arkUserRole);
 		}
 	}
 
@@ -1158,4 +1173,27 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			studyList = criteria.list();
 			return studyList;
 		}
+
+	public List<Study> getAssignedChildStudyListForUser(ArkUserVO arkUserVo) {
+		List<Study> studyList = new ArrayList<Study>(0);
+		
+		/* Get only the studies the ArkUser is linked to via the ArkUserRole */
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
+		
+		// Restrict to child studies (without parent)
+		Criteria studyCriteria = criteria.createCriteria("study");
+		studyCriteria.add(Restrictions.eq("parentStudy", arkUserVo.getStudy()));
+		studyCriteria.add(Restrictions.neProperty("id", "parentStudy.id"));
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("study"), "study");
+		criteria.setProjection(projectionList);
+		studyList = criteria.list();
+		return studyList;
+	}
+	
+	public void createArkUserRole(ArkUserRole arkUserRole) {
+		getSession().save(arkUserRole);
+	}
 }

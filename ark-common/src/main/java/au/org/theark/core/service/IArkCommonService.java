@@ -611,4 +611,8 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public ArkUserVO getDefaultAdministratorRoles(String userName, Study study, Set<String> moduleList);
+	
+	public List<Study> getAssignedChildStudyListForUser(ArkUserVO arkUserVo);
+	
+	public void deleteArkUserRole(ArkUserRole arkUserRole);
 }
