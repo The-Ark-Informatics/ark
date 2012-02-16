@@ -35,6 +35,7 @@ import javax.naming.ldap.Rdn;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1047,5 +1048,13 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public void deleteArkUserRole(ArkUserRole arkUserRole) {
 		arkAuthorisationDao.deleteArkUserRole(arkUserRole);
+	}
+	
+	public int getCountOfSubjects(Study study){
+		return studyDao.getCountOfSubjects(study);
+	}
+
+	public List matchSubjectsFromInputFile(FileUpload subjectFileUpload, Study study) {
+		return studyDao.matchSubjectsFromInputFile(subjectFileUpload, study);
 	}
 }

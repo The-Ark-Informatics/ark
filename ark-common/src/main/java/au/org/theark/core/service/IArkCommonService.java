@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.velocity.exception.VelocityException;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -591,6 +592,8 @@ public interface IArkCommonService<T> {
 	
 	public Boolean studyHasBioCollection(Study study);
 	
+	public int getCountOfSubjects(Study study);
+	
 	public BiospecimenUidTemplate getBiospecimenUidTemplate(Study study);
 	
 	public BioCollectionUidTemplate getBioCollectionUidTemplate(Study study);
@@ -615,4 +618,12 @@ public interface IArkCommonService<T> {
 	public List<Study> getAssignedChildStudyListForUser(ArkUserVO arkUserVo);
 	
 	public void deleteArkUserRole(ArkUserRole arkUserRole);
+	
+	/**
+	 * Match a file containing a list of SubjectUid's for a given study, and return the matched list
+	 * @param subjectFileUpload
+	 * @param study
+	 * @return
+	 */
+	public List<SubjectVO> matchSubjectsFromInputFile(FileUpload subjectFileUpload, Study study);
 }
