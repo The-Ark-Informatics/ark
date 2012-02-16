@@ -44,7 +44,6 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
 /**
@@ -53,8 +52,10 @@ import au.org.theark.study.web.Constants;
  */
 public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
-	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService							studyService;
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
@@ -75,7 +76,6 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	 * @param cpmModel
 	 */
 	public SearchForm(String id, CompoundPropertyModel<SubjectVO> cpmModel, PageableListView<SubjectVO> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
-
 		// super(id, cpmModel);
 		super(id, cpmModel,feedBackPanel,arkCrudContainerVO);
 
@@ -144,7 +144,6 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 	@SuppressWarnings("unchecked")
 	protected void onNew(AjaxRequestTarget target) {
-
 		// Disable SubjectUID if auto-generation set
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study studyInContext = iArkCommonService.getStudy(sessionStudyId);
@@ -164,7 +163,6 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	}
 
 	protected void onSearch(AjaxRequestTarget target) {
-
 		target.add(feedbackPanel);
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
@@ -177,5 +175,13 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 		target.add(arkCrudContainerVO.getSearchResultPanelContainer());// For ajax this is required so
 	}
-
+	
+	@Override
+	protected void onBeforeRender() {
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		boolean parentStudy = (study.getParentStudy() == null || (study.getParentStudy() == study));
+		newButton.setEnabled(parentStudy);
+		super.onBeforeRender();
+	}
 }
