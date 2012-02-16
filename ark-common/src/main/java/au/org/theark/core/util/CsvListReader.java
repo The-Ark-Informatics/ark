@@ -18,42 +18,33 @@
  ******************************************************************************/
 package au.org.theark.core.util;
 
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CsvWriter {
-	private final PrintWriter	out;
-	private boolean				first	= true;
+import com.csvreader.CsvReader;
 
-	public CsvWriter(OutputStream os) {
-		out = new PrintWriter(os);
-	}
+public class CsvListReader {
+	/**
+	 * From an input stream, reads every line in the file, and returns a List<String> of values
+	 * @param inputStream
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<String> readColumnIntoList(InputStream inputStream) throws IOException {
+		InputStreamReader inputStreamReader = null;
+		CsvReader csvReader = null;
+		List<String> list = new ArrayList<String>(0);
+		
+		inputStreamReader = new InputStreamReader(inputStream);
+		csvReader = new CsvReader(inputStreamReader);
 
-	public CsvWriter write(Object value) {
-		if (!first) {
-			out.append(",");
+		// Loop through all rows in file
+		while (csvReader.readRecord()) {
+			list.add(csvReader.getRawRecord());
 		}
-		out.append("\"");
-		if (value != null) {
-			out.append(value.toString().replace("\"", "\"\"").replace("\n", " "));
-		}
-		out.append("\"");
-		first = false;
-		return this;
-	}
-
-	public CsvWriter endLine() {
-		out.append("\r\n");
-		first = true;
-		return this;
-	}
-
-	public CsvWriter flush() {
-		out.flush();
-		return this;
-	}
-
-	public void close() {
-		out.close();
+		return list;
 	}
 }
