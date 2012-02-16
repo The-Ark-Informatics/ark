@@ -21,6 +21,8 @@ package au.org.theark.core.dao;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
@@ -535,4 +537,13 @@ public interface IStudyDao {
 	
 	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate);
 	
+	public int getCountOfSubjects(Study study);
+	
+	/**
+	 * Match a file containing a list of SubjectUid's for a given study, and return the matched list
+	 * @param subjectFileUpload
+	 * @param study
+	 * @return
+	 */
+	public List<SubjectVO> matchSubjectsFromInputFile(FileUpload subjectFileUpload, Study study);
 }

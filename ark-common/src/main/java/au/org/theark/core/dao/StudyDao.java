@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.dao;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -27,6 +28,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Example;
@@ -88,6 +90,7 @@ import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
+import au.org.theark.core.util.CsvListReader;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -423,7 +426,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(StudyCompStatus.class);
 		return criteria.list();
 	}
-
 
 	public List<StudyComp> getStudyComponentByStudy(Study study) {
 		Criteria criteria = getSession().createCriteria(StudyComp.class);
@@ -838,13 +840,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		session.close();
 		return totalCount > 0;
 	}
-	
-	public List<Study> getStudiesForUser(ArkUser arkUser, Study study){
-		
-		Criteria criteria =  getSession().createCriteria(ArkUserRole.class);
+
+	public List<Study> getStudiesForUser(ArkUser arkUser, Study study) {
+
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		criteria.createAlias("arkStudy", "arkStudy");
-		
-		criteria.add(Restrictions.eq("arkUser",arkUser));//Represents the user either who is logged in or one that is provided
+
+		criteria.add(Restrictions.eq("arkUser", arkUser));// Represents the user either who is logged in or one that is provided
 		if (study.getId() != null) {
 			criteria.add(Restrictions.eq("arkStudy.id", study.getId()));
 		}
@@ -853,11 +855,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			criteria.add(Restrictions.ilike("arkStudy.name", study.getName(), MatchMode.ANYWHERE));
 		}
 		criteria.setProjection(Projections.distinct(Projections.property("study")));
-		List<Study> studies  = (List<Study>) criteria.list();
+		List<Study> studies = (List<Study>) criteria.list();
 		return studies;
-		
+
 	}
-	
+
 	public int getCountOfStudies() {
 		int total = 0;
 		Long longTotal = ((Long) getSession().createQuery("select count(*) from Study").iterate().next());
@@ -869,7 +871,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		FileFormat fileFormat = null;
 		Criteria criteria = getSession().createCriteria(FileFormat.class);
 		criteria.add(Restrictions.eq("name", name));
-	
+
 		if (criteria.list().size() > 0) {
 			fileFormat = (FileFormat) criteria.list().get(0);
 		}
@@ -897,7 +899,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(StudyUpload.class);
 		// Must be constrained on the arkFunction
 		criteria.add(Restrictions.eq("arkFunction", uploadCriteria.getArkFunction()));
-		
+
 		if (uploadCriteria.getId() != null) {
 			criteria.add(Restrictions.eq("id", uploadCriteria.getId()));
 		}
@@ -946,47 +948,47 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		delimiterTypeName = (String) criteria.uniqueResult();
 		return delimiterTypeName;
 	}
-	
+
 	public void createCustomFieldUpload(CustomFieldUpload cfUpload) {
 		getSession().save(cfUpload);
 	}
-	
+
 	public List<BiospecimenUidToken> getBiospecimenUidTokens() {
 		Criteria criteria = getSession().createCriteria(BiospecimenUidToken.class);
 		return criteria.list();
 	}
-	
+
 	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars() {
 		Criteria criteria = getSession().createCriteria(BiospecimenUidPadChar.class);
 		return criteria.list();
 	}
-	
+
 	public List<Study> getStudyListAssignedToBiospecimenUidTemplate() {
 		Criteria criteria = getSession().createCriteria(BiospecimenUidTemplate.class);
 		criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("study")));
 		return criteria.list();
 	}
-	
-	public void createBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate){
+
+	public void createBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
 		getSession().save(biospecimenUidTemplate);
 	}
-	
+
 	public List<BioCollectionUidToken> getBioCollectionUidToken() {
 		Example token = Example.create(new BioCollectionUidToken());
 		Criteria criteria = getSession().createCriteria(BioCollectionUidToken.class).add(token);
 		return criteria.list();
 	}
-	
+
 	public List<BioCollectionUidPadChar> getBioCollectionUidPadChar() {
 		Criteria criteria = getSession().createCriteria(BioCollectionUidPadChar.class);
 		return criteria.list();
 	}
-	
-	public void createBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate){
+
+	public void createBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate) {
 		getSession().save(bioCollectionUidTemplate);
 	}
-	
-	public Boolean studyHasBiospecimen(Study study){
+
+	public Boolean studyHasBiospecimen(Study study) {
 		Integer totalCount = null;
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(Biospecimen.class);
@@ -996,8 +998,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		session.close();
 		return totalCount > 0;
 	}
-	
-	public Boolean studyHasBioCollection(Study study){
+
+	public Boolean studyHasBioCollection(Study study) {
 		Integer totalCount = null;
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(BioCollection.class);
@@ -1007,26 +1009,60 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		session.close();
 		return totalCount > 0;
 	}
-	
-	public BiospecimenUidTemplate getBiospecimentUidTemplate(Study study){
+
+	public BiospecimenUidTemplate getBiospecimentUidTemplate(Study study) {
 		Criteria criteria = getSession().createCriteria(BiospecimenUidTemplate.class);
-		criteria.add(Restrictions.eq("study",study));
-		return (BiospecimenUidTemplate)criteria.uniqueResult();
+		criteria.add(Restrictions.eq("study", study));
+		return (BiospecimenUidTemplate) criteria.uniqueResult();
 	}
-	
-	public BioCollectionUidTemplate getBioCollectionUidTemplate(Study study){
+
+	public BioCollectionUidTemplate getBioCollectionUidTemplate(Study study) {
 		Criteria criteria = getSession().createCriteria(BioCollectionUidTemplate.class);
-		criteria.add(Restrictions.eq("study",study));
-		return (BioCollectionUidTemplate)criteria.uniqueResult();
+		criteria.add(Restrictions.eq("study", study));
+		return (BioCollectionUidTemplate) criteria.uniqueResult();
 	}
-	
-	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate){
+
+	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
 		getSession().saveOrUpdate(biospecimenUidTemplate);
 	}
-	
-	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate){
+
+	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate) {
 		getSession().saveOrUpdate(bioCollectionUidTemplate);
 	}
-	
-	
+
+	public int getCountOfSubjects(Study study) {
+		int total = 0;
+		total = ((Long) getSession().createQuery("select count(*) from LinkSubjectStudy where study = :study").setParameter("study", study).iterate().next()).intValue();
+		return total;
+	}
+
+	public List<SubjectVO> matchSubjectsFromInputFile(FileUpload subjectFileUpload, Study study) {
+		List<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
+		List<String> subjectUidList = new ArrayList<String>(0);
+
+		try {
+			subjectUidList = CsvListReader.readColumnIntoList(subjectFileUpload.getInputStream());
+		}
+		catch (IOException e) {
+			log.error("Error in Subject list file");
+			return subjectVOList;
+		}
+
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.in("subjectUID", subjectUidList));
+		List<LinkSubjectStudy> subjectList = criteria.list();
+
+		for (Iterator<LinkSubjectStudy> iterator = subjectList.iterator(); iterator.hasNext();) {
+			LinkSubjectStudy linkSubjectStudy = (LinkSubjectStudy) iterator.next();
+			// Place the LinkSubjectStudy instance into a SubjectVO and add the SubjectVO into a List
+			SubjectVO subject = new SubjectVO();
+			subject.setSubjectUID(linkSubjectStudy.getSubjectUID());
+			subject.setLinkSubjectStudy(linkSubjectStudy);
+			Person person = subject.getLinkSubjectStudy().getPerson();
+			subject.setSubjectPreviousLastname(getPreviousLastname(person));
+			subjectVOList.add(subject);
+		}
+		return subjectVOList;
+	}
 }
