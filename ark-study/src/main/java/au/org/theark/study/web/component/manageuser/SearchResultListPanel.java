@@ -18,13 +18,14 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.manageuser;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -46,6 +47,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.manageuser.form.ContainerForm;
@@ -61,6 +63,9 @@ public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
+	
+	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
+	private IStudyService		iStudyService;
 
 	@SpringBean(name = "userService")
 	private IUserService			iUserService;
@@ -126,7 +131,6 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				try {
-
 					// Fetch the user and related details from backend
 					Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 					Study study = iArkCommonService.getStudy(sessionStudyId);
@@ -160,6 +164,18 @@ public class SearchResultListPanel extends Panel {
 					target.add(feedbackPanel);
 					// Set the MODE here.Since the User Details are from LDAP we don't have a entity that we can use to check for a mode
 					containerForm.getModelObject().setMode(Constants.MODE_EDIT);
+					
+					// Available/assigned child studies
+					List<Study> availableChildStudies = new ArrayList<Study>(0);
+					List<Study> selectedChildStudies = new ArrayList<Study>(0);
+					
+					if(study.getParentStudy() != null) {
+						availableChildStudies = iStudyService.getChildStudyListOfParent(study);
+						selectedChildStudies = iArkCommonService.getAssignedChildStudyListForUser(arkUserVOFromBackend);
+					}
+					
+					containerForm.getModelObject().setAvailableChildStudies(availableChildStudies);
+					containerForm.getModelObject().setSelectedChildStudies(selectedChildStudies);
 				}
 				catch (ArkSystemException e) {
 					containerForm.error(new StringResourceModel("ark.system.error", this, null).getString());
