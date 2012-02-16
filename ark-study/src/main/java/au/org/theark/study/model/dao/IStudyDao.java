@@ -56,16 +56,34 @@ import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
 
 public interface IStudyDao {
-
+	/**
+	 * Create a new study
+	 * @param study
+	 */
 	public void create(Study study);
 
-	public void create(Study study, Collection<ArkModule> selectedApplications, Study linkedToStudy);
+	/**
+	 * Create a new child study, and assign it's parent study accordingly
+	 * @param study
+	 * @param selectedApplications
+	 * @param parentStudy
+	 */
+	public void create(Study study, Collection<ArkModule> selectedApplications, Study parentStudy);
+	
+	/**
+	 * Create a new study, and assign the user accordingly
+	 * @param study
+	 * @param arkUserVo
+	 * @param selectedModules
+	 */
+	public void create(Study study, ArkUserVO arkUserVo, Collection<ArkModule> selectedModules);
 
-	public void updateStudy(Study study, Collection<ArkModule> selectedApplications) throws CannotRemoveArkModuleException;
+	public void updateStudy(Study study, Collection<ArkModule> selectedModules) throws CannotRemoveArkModuleException;
 
 	public void create(StudyComp studyComponent) throws ArkSystemException, EntityExistsException;
 
@@ -316,5 +334,12 @@ public interface IStudyDao {
 	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy);
 	
 	public LinkStudySubstudy isSubStudy(Study study);
+	
+	/**
+	 * Gets the list of child studies for the specifed parent Study
+	 * @param study the parent study
+	 * @return
+	 */
+	public List<Study> getChildStudyListOfParent(Study study);
 	
 }
