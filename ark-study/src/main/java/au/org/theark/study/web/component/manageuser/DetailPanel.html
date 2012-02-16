@@ -50,9 +50,7 @@
 						<input wicket:id="email" type="text" size="30"/>
 					</div>
 				</div>
-				<div class="detailPanelContentRight">
-					&nbsp;
-				</div>
+				
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
@@ -95,12 +93,10 @@
 					</div>
 				</div>
 
-				<div class="detailPanelContentRight">
-					&nbsp;
-				</div>
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
+				
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
@@ -143,10 +139,7 @@
 						</div>
 					</div>
 				</div>
-
-				<div class="detailPanelContentRight">
-					&nbsp;
-				</div>
+				
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
@@ -156,8 +149,6 @@
 				<!--
 					The Panel that will render the List of Module and roles <div wicket:id="arkUserAccountPanel"></div>
 				-->
-
-
 				<div wicket:id="arkUserAccountPanelcontainer">
 					<table width="0%" cellspacing="0">
 					</table>
@@ -214,33 +205,33 @@
 					</table>
 				</div>
 
-				
 				<div class="detailPanelBreaker">&nbsp;</div>
+				
+				<div class="detailPanel">
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+	
+					<div class="fldLabel">
+						<span wicket:id="assignedChildStudiesLabel">
+							Assigned Child Studies:
+						</span>
+						<span wicket:id="assignedChildStudiesPalette">
+							[Palette]
+						</span>
+						<span wicket:id="assignedChildStudiesNote" class="note">
+							Note: Child studies will have the same roles as the parent study
+						</span>
+					</div>
+				</div>
+				
 				<div class="detailPanelBreaker">&nbsp;</div>
 			</div>
 			<div wicket:id="editButtonContainer">
-				<div class="fldLabel">
-					&nbsp;
-				</div>
-				<div class="fldControl">
-					&nbsp;
-				</div>
-				<div class="panelMargin">
-					&nbsp;
-				</div>
 				<div class="actionButtons">
-					&nbsp;
-					<div class="label">
-						<input wicket:id="save" type="submit" wicket:message="value:page.save" />
-						<div class="panelMargin">
-							&nbsp;
-						</div>
-						<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
-						<div class="panelMargin">
-							&nbsp;
-						</div>
-						<input wicket:id="remove" type="submit" wicket:message="value:page.remove" />
-					</div>
+					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					<input wicket:id="remove" type="submit" wicket:message="value:page.remove" />
 				</div>
 			</div>
 

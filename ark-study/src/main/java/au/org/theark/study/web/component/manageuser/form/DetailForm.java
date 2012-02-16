@@ -28,12 +28,14 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
@@ -54,7 +56,9 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractUserDetailForm;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 
@@ -71,6 +75,9 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
 
+	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
+	private IStudyService			iStudyService;
+
 	protected TextField<String>	userNameTxtField			= new TextField<String>(Constants.USER_NAME);
 	protected TextField<String>	firstNameTxtField			= new TextField<String>(Constants.FIRST_NAME);
 	protected TextField<String>	lastNameTxtField			= new TextField<String>(Constants.LAST_NAME);
@@ -79,6 +86,9 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	protected PasswordTextField	confirmPasswordField		= new PasswordTextField(Constants.CONFIRM_PASSWORD);
 	protected PasswordTextField	oldPasswordField			= new PasswordTextField(Constants.OLD_PASSWORD);
 	protected WebMarkupContainer	groupPasswordContainer	= new WebMarkupContainer("groupPasswordContainer");
+	protected Label					assignedChildStudiesLabel;
+	protected ArkPalette<Study>	assignedChildStudiesPalette;
+	protected Label					assignedChildStudiesNote;
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id, feedBackPanel, arkCrudContainerVO, containerForm);
@@ -137,23 +147,41 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 		listView.setReuseItems(true);
 		arkCrudContainerVO.getWmcForarkUserAccountPanel().add(listView);
+
+		initChildStudyPalette();
+
 		attachValidators();
 		addDetailFormComponents();
 
 	}
+
+	@SuppressWarnings("unchecked")
+	private void initChildStudyPalette() {
+		assignedChildStudiesLabel = new Label("assignedChildStudiesLabel", "Assigned Child Studies:");
+		CompoundPropertyModel<ArkUserVO> sm = (CompoundPropertyModel<ArkUserVO>) containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "name");
+		PropertyModel<List<Study>> availableChildStudiesPm = new PropertyModel<List<Study>>(sm, "availableChildStudies");
+		PropertyModel<List<Study>> selectedChildStudiesPm = new PropertyModel<List<Study>>(sm, "selectedChildStudies");
+		assignedChildStudiesPalette = new ArkPalette("assignedChildStudiesPalette", selectedChildStudiesPm, availableChildStudiesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false);
+		assignedChildStudiesNote = new Label("assignedChildStudiesNote", "Note: Child studies will have the same roles as the parent study");
+	}
+
 	@Override
-	public void onBeforeRender(){
-		super.onBeforeRender();
-		if(!isNew()){
+	public void onBeforeRender() {
+		if (!isNew()) {
 			userNameTxtField.setEnabled(false);
-		}else{
+			boolean hasChildStudies = (!containerForm.getModelObject().getAvailableChildStudies().isEmpty());
+			assignedChildStudiesLabel.setVisible(hasChildStudies);
+			assignedChildStudiesPalette.setVisible(hasChildStudies);
+			assignedChildStudiesNote.setVisible(hasChildStudies);
+		}
+		else {
 			userNameTxtField.setEnabled(true);
 		}
+		super.onBeforeRender();
 	}
-	
 
 	protected void addDetailFormComponents() {
-
 		arkCrudContainerVO.getDetailPanelFormContainer().add(userNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(firstNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(lastNameTxtField);
@@ -166,13 +194,17 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(groupPasswordContainer);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkCrudContainerVO.getWmcForarkUserAccountPanel());
 
+		// Child study assigning
+		arkCrudContainerVO.getDetailPanelFormContainer().add(assignedChildStudiesLabel);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(assignedChildStudiesPalette);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(assignedChildStudiesNote);
+
 		add(new EqualPasswordInputValidator(userPasswordField, confirmPasswordField));
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	@Override
 	protected void attachValidators() {
-
 		lastNameTxtField.add(StringValidator.lengthBetween(1, 50)).setLabel(new StringResourceModel("lastName", this, null));
 		lastNameTxtField.setRequired(true);
 
@@ -194,7 +226,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		userPasswordField.setLabel(Model.of("Password"));
 		userPasswordField.add(new PatternValidator(Constants.PASSWORD_PATTERN));
 		confirmPasswordField.setLabel(Model.of("Confirm Password"));
-
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
@@ -205,15 +236,12 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 	@Override
 	protected void onSave(Form<ArkUserVO> containerForm, AjaxRequestTarget target) {
-
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		containerForm.getModelObject().setStudy(study);
 
 		if (containerForm.getModelObject().getMode() == Constants.MODE_NEW) {
-
 			try {
-
 				iUserService.createArkUser(containerForm.getModelObject());
 				containerForm.getModelObject().setArkUserPresentInDatabase(true);
 				containerForm.getModelObject().setMode(Constants.MODE_EDIT);
@@ -221,7 +249,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 				onSavePostProcess(target);
 				this.info(new StringResourceModel("user.saved", this, null).getString());
 				target.add(feedBackPanel);
-
 			}
 			catch (UserNameExistsException e) {
 				this.error(new StringResourceModel("user.exists", this, null).getString());
@@ -232,13 +259,32 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 			catch (Exception e) {
 				this.error(new StringResourceModel("severe.system.error", this, null).getString());
 			}
-
 		}
 		else if (containerForm.getModelObject().getMode() == Constants.MODE_EDIT) {
-
 			try {
-
+				// Update ArkUser for study in context
 				iUserService.updateArkUser(containerForm.getModelObject());
+
+				// Delete ArkUser for all unassigned child studies
+				List<Study> availableChildStudies = null;
+				availableChildStudies = iStudyService.getChildStudyListOfParent(study);
+				for (Study childStudy : availableChildStudies) {
+					iUserService.deleteArkUserRolesForStudy(childStudy, containerForm.getModelObject().getArkUserEntity());
+				}
+
+				// Update ArkUser for all assigned child studies
+				List<Study> childStudies = containerForm.getModelObject().getSelectedChildStudies();
+				for (Study childStudy : childStudies) {
+					for (ArkUserRole parentArkUserRole : containerForm.getModelObject().getArkUserRoleList()) {
+						ArkUserRole arkUserRole = new ArkUserRole();
+						arkUserRole.setArkUser(containerForm.getModelObject().getArkUserEntity());
+						arkUserRole.setArkRole(parentArkUserRole.getArkRole());
+						arkUserRole.setArkModule(parentArkUserRole.getArkModule());
+						arkUserRole.setStudy(childStudy);
+						iUserService.createArkUserRole(arkUserRole);
+					}
+				}
+
 				containerForm.getModelObject().setArkUserPresentInDatabase(true);
 				this.info(new StringResourceModel("user.updated", this, null).getString());
 				onSavePostProcess(target);
@@ -258,7 +304,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
 		target.add(feedBackPanel);
-
 	}
 
 	@Override
@@ -273,7 +318,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-
 		// Remove the Ark User from the Ark Database and his roles.
 		try {
 			iUserService.deleteArkUser(containerForm.getModelObject());
@@ -289,16 +333,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		onCancel(target);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see au.org.theark.core.web.form.AbstractUserDetailForm#onEditButtonClick()
-	 */
-//	@Override
-//	public void onEditButtonClick() {
-//		userNameTxtField.setEnabled(false);
-//	}
-
 	public void enableOrDisableRemoveButton() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
@@ -310,7 +344,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 			else {
 				deleteButton.setEnabled(true);
 			}
-
 		}
 		catch (ArkSystemException e) {
 
