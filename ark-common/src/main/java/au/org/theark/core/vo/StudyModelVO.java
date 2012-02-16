@@ -54,6 +54,12 @@ public class StudyModelVO implements Serializable {
 	private String bioCollectionUidExample;
 	
 	private Study linkedToStudy;
+	
+	private String						subjectFileUploadLabel;
+	private String						subjectFileUpload;
+	private String						totalSubjectsLabel;
+	private int							totalSubjects;
+	private int							totalSubjectsOfParent;
 
 	public StudyModelVO() {
 		study = new Study();
@@ -69,6 +75,8 @@ public class StudyModelVO implements Serializable {
 		availableSubjects = new ArrayList<SubjectVO>();
 		selectedSubjects = new ArrayList<SubjectVO>();
 		setSubjectUidExample(new String());
+		setSubjectFileUpload(new String());
+		setSubjectFileUploadLabel(new String());
 	}
 
 	public Study getStudy() {
@@ -213,5 +221,84 @@ public class StudyModelVO implements Serializable {
 
 	public void setBioCollectionUidExample(String bioCollectionUidExample) {
 		this.bioCollectionUidExample = bioCollectionUidExample;
+	}
+
+	/**
+	 * @return the subjectFileUploadLabel
+	 */
+	public String getSubjectFileUploadLabel() {
+		return subjectFileUploadLabel;
+	}
+
+	/**
+	 * @param subjectFileUploadLabel the subjectFileUploadLabel to set
+	 */
+	public void setSubjectFileUploadLabel(String subjectFileUploadLabel) {
+		this.subjectFileUploadLabel = subjectFileUploadLabel;
+	}
+
+	/**
+	 * @return the subjectFileUpload
+	 */
+	public String getSubjectFileUpload() {
+		return subjectFileUpload;
+	}
+
+	/**
+	 * @param subjectFileUpload the subjectFileUpload to set
+	 */
+	public void setSubjectFileUpload(String subjectFileUpload) {
+		this.subjectFileUpload = subjectFileUpload;
+	}
+
+	/**
+	 * @param totalSubjects the totalSubjects to set
+	 */
+	public void setTotalSubjectsLabel(String totalSubjectsLabel) {
+		this.totalSubjectsLabel = totalSubjectsLabel;
+	}
+
+	/**
+	 * @return the totalSubjects
+	 */
+	public String getTotalSubjectsLabel() {
+		StringBuilder totalSubjects = new StringBuilder();
+		totalSubjects.append("Total Subjects: ");
+		totalSubjects.append(getTotalSubjects());
+		
+		if(study.getParentStudy() != null && study.getParentStudy() != study) {
+			totalSubjects.append(" (of ");
+			totalSubjects.append(getTotalSubjectsOfParent());
+			totalSubjects.append(" in parent)");
+		}
+		return totalSubjects.toString();
+	}
+
+	/**
+	 * @return the totalSubjects
+	 */
+	public int getTotalSubjects() {
+		return totalSubjects;
+	}
+
+	/**
+	 * @param totalSubjects the totalSubjects to set
+	 */
+	public void setTotalSubjects(int totalSubjects) {
+		this.totalSubjects = totalSubjects;
+	}
+
+	/**
+	 * @param totalSubjectsOfParent the totalSubjectsOfParent to set
+	 */
+	public void setTotalSubjectsOfParent(int totalSubjectsOfParent) {
+		this.totalSubjectsOfParent = totalSubjectsOfParent;
+	}
+
+	/**
+	 * @return the totalSubjectsOfParent
+	 */
+	public int getTotalSubjectsOfParent() {
+		return totalSubjectsOfParent;
 	}
 }
