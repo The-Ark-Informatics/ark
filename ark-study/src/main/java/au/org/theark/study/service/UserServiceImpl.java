@@ -241,4 +241,32 @@ public class UserServiceImpl implements IUserService {
 			log.error(e.getMessage());
 		}
 	}
+
+	public void deleteArkUserRole(ArkUserRole arkUserRole) {
+		iArkAuthorisationService.deleteArkUserRole(arkUserRole);
+	}
+	
+	public void deleteArkUserRolesForStudy(Study study, ArkUser arkUser) {
+		iArkAuthorisationService.deleteArkUserRolesForStudy(study, arkUser);
+	}
+
+	public void createArkUserForChildStudy(ArkUserVO arkUserVo) {
+		iArkAuthorisationService.createArkUser(arkUserVo);
+
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created User (in LDAP) " + arkUserVo.getUserName());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
+		iArkCommonService.createAuditHistory(ah);
+	}
+	
+	public void createArkUserRole(ArkUserRole arkUserRole) {
+		iArkAuthorisationService.createArkUserRole(arkUserRole);
+
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created ArkUserRole for " + arkUserRole.getArkUser().getLdapUserName());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
+		iArkCommonService.createAuditHistory(ah);
+	}
 }

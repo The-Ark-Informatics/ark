@@ -53,6 +53,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
@@ -66,6 +67,13 @@ public interface IStudyService {
 	 * @param studyModelVo
 	 */
 	public void createStudy(StudyModelVO studyModelVo);
+	
+	/**
+	 * Create a new study and assign the specified user
+	 * @param studyModelVo
+	 * @param arkUserVo
+	 */
+	public void createStudy(StudyModelVO studyModelVo, ArkUserVO arkUserVo);
 
 	public void updateStudy(StudyModelVO studyModelVo) throws CannotRemoveArkModuleException;
 
@@ -280,4 +288,10 @@ public interface IStudyService {
 	
 	public LinkStudySubstudy isSubStudy(Study study);
 			
+	/**
+	 * Gets the list of child studies for the specifed parent Study
+	 * @param study the parent study
+	 * @return
+	 */
+	public List<Study> getChildStudyListOfParent(Study study);
 }

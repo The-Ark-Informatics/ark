@@ -26,6 +26,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.ArkUserVO;
 
@@ -114,4 +115,16 @@ public interface IUserService {
 	 * @throws ArkSystemException
 	 */
 	public void resetArkUserPassword(ArkUserVO arkUserVo) throws ArkSystemException;
+	
+	/**
+	 * 
+	 * @param arkUserRole
+	 */
+	public void deleteArkUserRole(ArkUserRole arkUserRole);
+
+	public void deleteArkUserRolesForStudy(Study childStudy, ArkUser arkUser);
+
+	public void createArkUserForChildStudy(ArkUserVO arkUserVo);
+	
+	public void createArkUserRole(ArkUserRole arkUserRole);
 }
