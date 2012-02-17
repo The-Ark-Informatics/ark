@@ -43,6 +43,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.security.ModuleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkUserVO;
@@ -167,7 +168,17 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		containerForm.setModelObject(new StudyModelVO());
 		Collection<ArkModule> availableArkModules = new ArrayList<ArkModule>();
 		availableArkModules = iArkCommonService.getEntityList(ArkModule.class);
+		// Hide Admin and Reporting modules from "Available" view
+		availableArkModules.remove(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_ADMIN));
+		availableArkModules.remove(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_REPORTING));
+		
 		containerForm.getModelObject().setAvailableArkModules(availableArkModules);// ArkModule from database not LDAP.
+		
+		Collection<ArkModule> selectedArkModules = new ArrayList<ArkModule>();
+		selectedArkModules.add(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_STUDY));
+		selectedArkModules.add(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_SUBJECT));
+		containerForm.getModelObject().setSelectedArkModules(selectedArkModules);
+		
 
 		// Hide Summary details on new
 		studyCrudContainerVO.getSummaryContainer().setVisible(false);
