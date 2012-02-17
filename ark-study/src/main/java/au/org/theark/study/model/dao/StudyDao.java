@@ -133,14 +133,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		// Update parent study accordingly
 		if (parentStudy != null) {
-			// LinkStudySubstudy linkStudySubstudy = new LinkStudySubstudy();
-			// linkStudySubstudy.setMainStudy(parentStudy);
-			// linkStudySubstudy.setSubStudy(study);//The current study that is/was being created
-			// session.save(linkStudySubstudy);
 			parentStudy.setParentStudy(parentStudy);
 			session.update(parentStudy);
 		}
-
 	}
 
 	public void create(Study study, ArkUserVO arkUserVo, Collection<ArkModule> selectedModules) {
@@ -223,7 +218,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void updateStudy(Study study, Collection<ArkModule> selectedApplications) throws CannotRemoveArkModuleException {
 		Session session = getSession();
 		session.update(study);
-		// session.refresh(study);
 
 		Collection<LinkStudyArkModule> linkStudyArkModulesToAdd = getModulesToAddList(study, selectedApplications);
 		// Determine Removal List here
