@@ -36,7 +36,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
-import au.org.theark.study.web.component.managestudy.StudyContainer;
+import au.org.theark.study.web.component.managestudy.StudyContainerPanel;
 import au.org.theark.study.web.component.manageuser.UserContainerPanel;
 import au.org.theark.study.web.component.studycomponent.StudyComponentContainerPanel;
 
@@ -135,7 +135,7 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 						panelToReturn = new UserContainerPanel(panelId);
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY)) {
-						panelToReturn = new StudyContainer(panelId, studyNameMarkup, studyLogoMarkup, arkContextMarkup, mainTabProvider.getModuleTabbedPanel());
+						panelToReturn = new StudyContainerPanel(panelId, studyNameMarkup, studyLogoMarkup, arkContextMarkup, mainTabProvider.getModuleTabbedPanel());
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY_COMPONENT)) {
 						panelToReturn = new StudyComponentContainerPanel(panelId);

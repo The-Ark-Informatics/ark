@@ -43,16 +43,16 @@ import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.web.component.managestudy.form.Container;
 
-public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
+public class StudyContainerPanel extends AbstractContainerPanel<StudyModelVO> {
 	/**
 	 * 
 	 */
 	private static final long			serialVersionUID	= 6705316114204293307L;
-	private static final Logger		log					= LoggerFactory.getLogger(StudyContainer.class);
+	private static final Logger		log					= LoggerFactory.getLogger(StudyContainerPanel.class);
 	private Container						containerForm;
-	private DetailPanel						detailsPanel;
-	private SearchResultListPanel				searchResultsPanel;
-	private SearchPanel							searchStudyPanel;
+	private DetailPanel					detailsPanel;
+	private SearchResultListPanel		searchResultsPanel;
+	private SearchPanel					searchStudyPanel;
 	private TabbedPanel					moduleTabbedPanel;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -70,7 +70,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 	 * @param arkContextMarkup
 	 * @param moduleTabbedPanel
 	 */
-	public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup, TabbedPanel moduleTabbedPanel) {
+	public StudyContainerPanel(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup, TabbedPanel moduleTabbedPanel) {
 		super(id);
 		this.moduleTabbedPanel = moduleTabbedPanel;
 
@@ -116,7 +116,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 					arkUserVo.setStudy(containerForm.getModelObject().getStudy());
 					studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo);
 					if (studyListForUser.size() == 0) {
-						StudyContainer.this.error("There are no studies available.");
+						StudyContainerPanel.this.error("There are no studies available.");
 					}
 				}
 				catch (EntityNotFoundException e) {

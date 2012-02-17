@@ -42,10 +42,10 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkLdapRealm;
+import au.org.theark.core.security.ModuleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.StudyCrudContainerVO;
@@ -61,9 +61,9 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
-	
+
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService							studyService;
+	private IStudyService			studyService;
 
 	/**
 	 * 
@@ -77,8 +77,10 @@ public class SearchResultListPanel extends Panel {
 	private ArkLdapRealm				realm;
 
 	private Container					studyContainerForm;
-
 	private StudyCrudContainerVO	studyCrudContainerVO;
+	private Label 						childStudyNote = new Label("childStudyNote", "+ Indicates a child study");
+	private boolean 					childStudiesExist = false;
+	
 
 	public SearchResultListPanel(String id, StudyCrudContainerVO studyCrudContainerVO, Container containerForm) {
 		super(id);
@@ -91,11 +93,14 @@ public class SearchResultListPanel extends Panel {
 		this.studyCrudContainerVO = studyCrudContainerVO;
 		this.studyContainerForm = containerForm;
 		this.moduleTabbedPanel = moduleTabbedPanel;
+		
+		childStudyNote.setOutputMarkupId(true);
+		childStudyNote.setVisible(false);
+		add(childStudyNote);
 	}
 
 	@SuppressWarnings("unchecked")
 	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
-
 		PageableListView<Study> studyPageableListView = new PageableListView<Study>("studyList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			/**
 			 * 
@@ -114,6 +119,13 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("id", ""));
 				}
 
+				childStudiesExist = (study.getParentStudy() != null);
+				// Add "+" indicator if study has a parent (but handle for actual parent)
+				Label childStudyLabel = new Label("childStudyIndicator", "+");
+				childStudyLabel.setVisible(childStudiesExist && (study != study.getParentStudy()));
+				childStudyNote.setVisible(childStudiesExist);
+
+				item.add(childStudyLabel);
 				item.add(buildLink(study, searchResultsContainer));
 
 				if (study.getContactPerson() != null) {
@@ -160,7 +172,6 @@ public class SearchResultListPanel extends Panel {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-
 				Subject currentUser = SecurityUtils.getSubject();
 
 				// Place the selected study in session context for the user
@@ -173,22 +184,11 @@ public class SearchResultListPanel extends Panel {
 				realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 
 				Study searchStudy = iArkCommonService.getStudy(study.getId());
-				
-				//Get the BioSpecimen UID Pattern if present for the given study
-				BiospecimenUidTemplate biospecimentUidTemplate = iArkCommonService.getBiospecimentUidTemplate(searchStudy);
-				if(biospecimentUidTemplate != null){
-					studyContainerForm.getModelObject().setBiospecimenUidTemplate(biospecimentUidTemplate);
-				}
+				Study parentStudy = searchStudy.getParentStudy();
 
-				//Get the BioCollection UID pattern if present
-				BioCollectionUidTemplate bioCollectionUidTemplate = iArkCommonService.getBioCollectionUidTemplate(searchStudy);
-				if(bioCollectionUidTemplate != null){
-					studyContainerForm.getModelObject().setBioCollectionUidTemplate(bioCollectionUidTemplate);
-				}
-				
-				//Check if the study has been linked to a Main Study and if so get a reference to the main study.
-				//studyContainerForm.getModelObject().setLinkedToStudy(linkedToStudy)
-				
+				// Check if the study has been linked to a Main Study and if so get a reference to the main study.
+				// studyContainerForm.getModelObject().setLinkedToStudy(linkedToStudy)
+
 				studyContainerForm.getModelObject().setStudy(searchStudy);
 				studyContainerForm.getModelObject().setSubjectUidExample(iArkCommonService.getSubjectUidExample(searchStudy));
 
@@ -199,11 +199,9 @@ public class SearchResultListPanel extends Panel {
 				// All SubjectUID generator fields grouped within a container(s)
 				WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
 				WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();
-				
-				
 
-				// Disable all SubjectUID generation fields is subjects exist
-				if (iArkCommonService.studyHasSubjects(searchStudy)) {
+				// Disable all SubjectUID generation fields if subjects exist or is a child study
+				if (iArkCommonService.studyHasSubjects(searchStudy) || parentStudy != null) {
 					autoSubjectUidcontainer.setEnabled(false);
 					subjectUidcontainer.setEnabled(false);
 				}
@@ -216,38 +214,32 @@ public class SearchResultListPanel extends Panel {
 						subjectUidcontainer.setEnabled(false);
 					}
 				}
-				
-				//Disable bioSpecimentUidContainer if there are no biospecimens created as yet
+
+				// Enable bioSpecimenUidContainer if there are no biospecimens created as yet
 				WebMarkupContainer biospecimenUidContainer = detailForm.getBiospecimenUidContainer();
-				if(iArkCommonService.studyHasBiospecimen(studyContainerForm.getModelObject().getStudy())){
+				if (iArkCommonService.studyHasBiospecimen(studyContainerForm.getModelObject().getStudy())) {
 					biospecimenUidContainer.setEnabled(false);
-				}else{
-					biospecimenUidContainer.setEnabled(true);
 				}
-				
+				else {
+					biospecimenUidContainer.setEnabled(parentStudy == null);
+				}
+
 				WebMarkupContainer bioCollectionUidContainer = detailForm.getBioCollectionUidContainer();
-				if(iArkCommonService.studyHasBioCollection(studyContainerForm.getModelObject().getStudy())){
+				if (iArkCommonService.studyHasBioCollection(studyContainerForm.getModelObject().getStudy())) {
 					bioCollectionUidContainer.setEnabled(false);
-				}else{
-					bioCollectionUidContainer.setEnabled(true);
 				}
-
-				
-
-				// Example auto-generated SubjectUID
-				Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
-				subjectUidExampleLbl.setDefaultModelObject(studyContainerForm.getModelObject().getSubjectUidExample());
-				target.add(subjectUidExampleLbl);
+				else {
+					bioCollectionUidContainer.setEnabled(parentStudy == null);
+				}
 
 				// Get the Source Modules from database
 				Collection<ArkModule> availableArkModules = iArkCommonService.getEntityList(ArkModule.class);
-
 				// Hide Admin and Reporting modules from "Available" view
-				availableArkModules.remove(iArkCommonService.getArkModuleByName("Admin"));
-				availableArkModules.remove(iArkCommonService.getArkModuleByName("Reporting"));
+				availableArkModules.remove(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_ADMIN));
+				availableArkModules.remove(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_REPORTING));
 
 				// Get the Modules for the Study from database
-				Collection<ArkModule> arkModulesLinkedToStudy = iArkCommonService.getArkModulesLinkedWithStudy(study);
+				Collection<ArkModule> arkModulesLinkedToStudy = iArkCommonService.getArkModulesLinkedWithStudy(searchStudy);
 
 				studyContainerForm.getModelObject().setAvailableArkModules(availableArkModules);
 				studyContainerForm.getModelObject().setSelectedArkModules(arkModulesLinkedToStudy);
@@ -270,50 +262,94 @@ public class SearchResultListPanel extends Panel {
 
 				target.add(studyCrudContainerVO.getSummaryContainer());
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, studyCrudContainerVO);
-				LinkStudySubstudy linkedStudySubStudy  = studyService.isSubStudy(study);
-				/*
-				 * This is to load the subjects linked to the Main study as available subjects and also to laod a list of subjects linked to
-				 * the sub-study. The code below checks to see if the study selected is linked to a main study and if so works the subjects for main and sub-study so the palette is populated correctly.
-				 * 
-				 */
 				
-				if(linkedStudySubStudy != null ){
+				
+				// Example auto-generated SubjectUID
+				Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
+				
+				// Get the Biospecimen UID Pattern if present for the given study
+				BiospecimenUidTemplate biospecimentUidTemplate = null;
+				// Get the BioCollection UID pattern if present
+				BioCollectionUidTemplate bioCollectionUidTemplate = null;
+				
+				if(parentStudy == null || searchStudy == parentStudy) {
+					subjectUidExampleLbl.setDefaultModelObject(iArkCommonService.getSubjectUidExample(searchStudy));
+					biospecimentUidTemplate = iArkCommonService.getBiospecimenUidTemplate(searchStudy);
+					bioCollectionUidTemplate = iArkCommonService.getBioCollectionUidTemplate(searchStudy);
+				}
+				else {
+					subjectUidExampleLbl.setDefaultModelObject(iArkCommonService.getSubjectUidExample(parentStudy));
+					biospecimentUidTemplate = iArkCommonService.getBiospecimenUidTemplate(parentStudy);
+					bioCollectionUidTemplate = iArkCommonService.getBioCollectionUidTemplate(parentStudy);
+				}
+					
+				if (biospecimentUidTemplate != null) {
+					studyContainerForm.getModelObject().setBiospecimenUidTemplate(biospecimentUidTemplate);
+				}
+
+				if (bioCollectionUidTemplate != null) {
+					studyContainerForm.getModelObject().setBioCollectionUidTemplate(bioCollectionUidTemplate);
+				}
+				target.add(subjectUidExampleLbl);
+				
+				boolean isChildStudy = (parentStudy != null && parentStudy != searchStudy);
+				detailForm.getSubjectFileUploadContainer().setVisible(isChildStudy );
+				detailForm.getSubjectFileUploadContainer().setEnabled(isChildStudy );
+
+				int totalSubjects = iArkCommonService.getCountOfSubjects(searchStudy);
+				int totalSubjectsOfParent = iArkCommonService.getCountOfSubjects(searchStudy.getParentStudy());
+				
+				studyContainerForm.getModelObject().setTotalSubjects(totalSubjects);
+				studyContainerForm.getModelObject().setTotalSubjectsOfParent(totalSubjectsOfParent);
+				
+				/*
+				 * This is to load the subjects linked to the Main study as available subjects and also to load a list of subjects linked to the
+				 * sub-study. The code below checks to see if the study selected is linked to a main study and if so works the subjects for main and
+				 * sub-study so the palette is populated correctly.
+				 */
+				if ((searchStudy.getParentStudy() != null) && (searchStudy != searchStudy.getParentStudy())) {
 					LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-					linkSubjectStudy.setStudy(linkedStudySubStudy.getMainStudy());
+					//linkSubjectStudy.setStudy(linkedStudySubStudy.getMainStudy());
+					linkSubjectStudy.setStudy(searchStudy.getParentStudy());
 					SubjectVO subjectVO = new SubjectVO();
 					subjectVO.setLinkSubjectStudy(linkSubjectStudy);
-					Collection<SubjectVO> subjects = iArkCommonService.searchPageableSubjects(subjectVO, 0,Integer.MAX_VALUE);
+					Collection<SubjectVO> subjects = iArkCommonService.searchPageableSubjects(subjectVO, 0, Integer.MAX_VALUE);
 					studyContainerForm.getModelObject().setAvailableSubjects(subjects);
-					
+
 					subjectVO = new SubjectVO();
 					linkSubjectStudy = new LinkSubjectStudy();
-					linkSubjectStudy.setStudy(linkedStudySubStudy.getSubStudy());
+					//linkSubjectStudy.setStudy(linkedStudySubStudy.getSubStudy());
+					linkSubjectStudy.setStudy(searchStudy);
 					subjectVO.setLinkSubjectStudy(linkSubjectStudy);
-					//fetch the list of subjects linked to the sub study and set to selected subjects
-					Collection<SubjectVO> linkedSubjects  = iArkCommonService.searchPageableSubjects(subjectVO, 0,Integer.MAX_VALUE);
+					// fetch the list of subjects linked to the sub study and set to selected subjects
+					Collection<SubjectVO> linkedSubjects = iArkCommonService.searchPageableSubjects(subjectVO, 0, Integer.MAX_VALUE);
 					studyContainerForm.getModelObject().setSelectedSubjects(linkedSubjects);
-					
-					//CE - This is where the exception occurs while saving(Update) of study This section of code tries to tie the main study with the dropdown.
-					//At the moment ic does not throw exception but uncommenting it will. The reason is we are fetching the study via the ID in the same session.
-					//Study mainStudy  = iArkCommonService.getStudy(linkedStudySubStudy.getMainStudy().getId());
-					//studyContainerForm.getModelObject().setLinkedToStudy(mainStudy);
-					
-					if(linkedSubjects != null && linkedSubjects.size() > 0){
+
+					// CE - This is where the exception occurs while saving(Update) of study This section of code tries to tie the main study with the
+					// dropdown.
+					// At the moment ic does not throw exception but uncommenting it will. The reason is we are fetching the study via the ID in the same
+					// session.
+					// Study mainStudy = iArkCommonService.getStudy(linkedStudySubStudy.getMainStudy().getId());
+					// studyContainerForm.getModelObject().setLinkedToStudy(mainStudy);
+
+					if (linkedSubjects != null && linkedSubjects.size() > 0) {
 						detailForm.getLinkedToStudyDDContainer().setEnabled(false);
-					}else{
+					}
+					else {
 						detailForm.getLinkedToStudyDDContainer().setEnabled(true);
 					}
-					
-					//TODO: If it is a sub-study then Get the UID Patterns(SUbject UID, BioSpecimen and BioCollection UID from the main study and set it to the sub study's pattern 
-					// but we don't want to save it when user hits save. 
-					//Again For Subject UID its on the Study instance. The BioSpecimen and BioCollection have independent template tables. 
+
+					// TODO: If it is a sub-study then Get the UID Patterns(SUbject UID, Biospecimen and BioCollection UID from the main study and set it
+					// to the sub study's pattern
+					// but we don't want to save it when user hits save.
+					// Again For Subject UID its on the Study instance. The BioSpecimen and BioCollection have independent template tables.
 					studyContainerForm.getModelObject().setBiospecimenUidTemplate(biospecimentUidTemplate);
 					studyContainerForm.getModelObject().setBioCollectionUidTemplate(bioCollectionUidTemplate);
 					
 					
 				}
-				// Refresh base container form to remove any feedBack messages
 				
+				// Refresh base container form to remove any feedBack messages
 				target.add(autoSubjectUidcontainer);
 				target.add(subjectUidcontainer);
 				target.add(bioCollectionUidContainer);

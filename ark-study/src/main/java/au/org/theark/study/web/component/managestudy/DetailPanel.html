@@ -45,9 +45,9 @@
 						</div>
 					</div>
 					<div class="fldControl">
-						<div class="label">
-							&nbsp;
-						</div>
+						<span wicket:id="totalSubjectsLabel">
+							[TotalSubjects]
+						</span>
 					</div>
 
 					<div class="detailPanelBreaker">
@@ -57,7 +57,6 @@
 			</div>
 
 			<div wicket:id="detailFormContainer">
-
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
@@ -101,8 +100,6 @@
 						<input wicket:id="study.name" type="text" maxLength="25"/>
 					</div>
 				</div>
-
-
 
 				<div class="detailPanelBreaker">
 					&nbsp;
@@ -159,8 +156,6 @@
 					</div>
 				</div>
 
-
-
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
@@ -206,8 +201,6 @@
 					</div>
 				</div>
 
-
-
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
@@ -251,8 +244,6 @@
 						<input wicket:id="study.coInvestigator" type="text" maxLength="25"/>
 					</div>
 				</div>
-
-
 
 				<div class="detailPanelBreaker">
 					&nbsp;
@@ -300,263 +291,10 @@
 					</div>
 				</div>
 
-
-
-				<div class="detailPanelBreaker">
-					&nbsp;
-				</div>
-				<!--	Row 5 Ends -->
-
-				<!--	Row 6 Autogenerate Subject ID. -->
-
-				<div class="panelContentLeft">
-					&nbsp;
-				</div>
-
-				<div wicket:id="autoSubjectUidContainer">
-					<div class="fldLabel">
-						<div class="label">
-							<label for="autoGenSubId">
-								<wicket:message	key="study.subjectUid.autogen">
-									Autogenerate Subject UID:
-								</wicket:message>
-								<div class="note">
-									<wicket:message	key="study.subjectUid.autogenNote">
-										[Note replaced from properties]
-									</wicket:message>
-								</div>
-							</label>
-						</div>
-					</div>
-					<div class="fldControl">
-						<input type="checkbox" wicket:id="study.autoGenerateSubjectUid"/>
-					</div>
-				</div>
-
-				<div class="panelMargin">
-					&nbsp;
-				</div>
-
-				<div class="fldLabel">
-					<div class="label">
-						<label for="autoConsentSubject">
-							<wicket:message	key="study.autoconsent.subjects">
-								Auto consent:
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-				<div class="fldControl">
-					<input type="checkbox" wicket:id="study.autoConsent"/>
-				</div>
-
-
-
-				<div class="detailPanelBreaker">
-					&nbsp;
-				</div>
-				<!--	Row 6 Ends -->
-
-				<!--	Row 7 Subject Key Start At & Auto Consent -->
-
-				<div class="panelContentLeft">
-					&nbsp;
-				</div>
-
-				<div wicket:id="subjectUidContainer">
-					<div class="fldLabel">
-						<label for="subjectUidPrefix">
-							<wicket:message	key="study.subjectUid.pattern">
-								SubjectUID Pattern:
-							</wicket:message>
-							<br>
-							<div class="note">
-								<wicket:message	key="study.subjectUid.patternNote">
-									[Note replaced from properties]
-								</wicket:message>
-							</div>
-						</label>
-					</div>
-					<div class="fldControl">
-						<div class="label">
-							<input wicket:id="study.subjectUidPrefix" type="text" maxLength="3" size="3"/>
-							<input wicket:id="subjectUidToken" type="text" maxLength="1" size="1"/>
-							<select wicket:id="study.subjectUidToken">
-								<option>
-									-
-								</option>
-								<option>
-									@
-								</option>
-								<option>
-									#
-								</option>
-							</select>
-							<select wicket:id="study.subjectUidPadChar">
-								<option>
-									1
-								</option>
-								<option>
-									2
-								</option>
-								<option>
-									3
-								</option>
-							</select>
-						</div>
-						<div class="label">
-							<b>
-								<span wicket:id="study.subjectUid.example ">
-									ABC-#########
-								</span>
-							</b>
-						</div>
-					</div>
-
-					<div class="panelMargin">
-						&nbsp;
-					</div>
-
-					<div class="fldLabel">
-						<div class="label">
-							<label for="subjectUidStart">
-								<wicket:message	key="study.subjectUid.start">
-									Start Subject UID at:
-								</wicket:message>
-								<div class="note">
-									<wicket:message	key="study.subjectUid.start.note">
-										[Note replaced from properties]
-									</wicket:message>
-								</div>
-							</label>
-						</div>
-					</div>
-					<div class="fldControl">
-						<div class="text">
-							<input wicket:id="study.subjectUidStart" type="text"/>
-						</div>
-					</div>
-				</div>
-
-
-				<div class="detailPanelBreaker">
-					&nbsp;
-				</div>
-				<!--	Row 7 Ends -->
-
-				<div class="panelContentLeft">
-					&nbsp;
-				</div>
-
-				<div wicket:id="bioCollectionUidContainer">
-					<div class="fldLabel">
-						<label for="bioCollectionUidPrefix">
-							<wicket:message	key="study.bioCollectionUid.pattern">
-								BioCollection UID Pattern:
-							</wicket:message>
-							<br>
-							<div class="note">
-								<wicket:message	key="study.bioCollectionUid.patternNote">
-									[Note replaced from properties]
-								</wicket:message>
-							</div>
-						</label>
-					</div>
-					<div class="fldControl">
-						<div class="label">
-							<input wicket:id="bioCollectionUidTemplate.bioCollectionUidPrefix" type="text" maxLength="3" size="3"/>
-							<select wicket:id="bioCollectionUidTemplate.bioCollectionUidToken">
-								<option>
-									-
-								</option>
-								<option>
-									@
-								</option>
-								<option>
-									#
-								</option>
-							</select>
-							<select wicket:id="bioCollectionUidTemplate.bioCollectionUidPadChar">
-								<option>
-									1
-								</option>
-								<option>
-									2
-								</option>
-								<option>
-									3
-								</option>
-							</select>
-						</div>
-						<div class="label">
-							<b>
-								<span wicket:id="study.bioCollectionUid.example">
-									ABC-#########
-								</span>
-							</b>
-						</div>
-					</div>
-				</div>
-
-				<div class="panelMargin">
-					&nbsp;
-				</div>
-
-				<div wicket:id="biospecimenUidContainer">
-					<div class="fldLabel">
-						<label for="subjectUidPrefix">
-							<wicket:message	key="study.biospecimenUid.pattern">
-								Biospecimen UID Pattern:
-							</wicket:message>
-							<br>
-							<div class="note">
-								<wicket:message	key="study.subjectUid.patternNote">
-									[Note replaced from properties]
-								</wicket:message>
-							</div>
-						</label>
-					</div>
-					<div class="fldControl">
-						<div class="label">
-							<input wicket:id="biospecimenUidTemplate.biospecimenUidPrefix" type="text" maxLength="3" size="3"/>
-							<select wicket:id="biospecimenUidTemplate.biospecimenUidToken">
-								<option>
-									-
-								</option>
-								<option>
-									@
-								</option>
-								<option>
-									#
-								</option>
-							</select>
-							<select wicket:id="biospecimenUidTemplate.biospecimenUidPadChar">
-								<option>
-									1
-								</option>
-								<option>
-									2
-								</option>
-								<option>
-									3
-								</option>
-							</select>
-						</div>
-						<div class="label">
-							<b>
-								<span wicket:id="biospecimenUid.example">
-									ABC-#########
-								</span>
-							</b>
-						</div>
-					</div>
-				</div>
-
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 
-				<!--	Row 8	-->
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
@@ -604,9 +342,14 @@
 
 					<div class="fldControl">
 						<!--	Study Logo image -->
-						<img wicket:id="study.studyLogoImage" id="studyLogoImage"/>
+						<img wicket:id="study.studyLogoImage" id="studyLogoImage" style="margin-top: 10px;"/>
 					</div>
 				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
 
 				<div class="detailPanelBreaker">
 					&nbsp;
@@ -616,14 +359,19 @@
 					&nbsp;
 				</div>
 				<div class="fldLabel">
-					<wicket:message key="study">
-						Link study to:
+					<wicket:message key="study.parentStudy">
+						Parent Study:
 					</wicket:message>
+					<div class="note">
+						<wicket:message	key="study.parentStudy.note">
+							[Note replaced from properties]
+						</wicket:message>
+					</div>
 				</div>
 
 				<div class="fldControl">
-					<div wicket:id="linkedToStudyDDContainer">
-						<select wicket:id="linkedToStudy">
+					<div wicket:id="parentStudyContainer">
+						<select wicket:id="study.parentStudy">
 							<option>
 								Study selection
 							</option>
@@ -633,43 +381,263 @@
 				<div class="panelMargin">
 					&nbsp;
 				</div>
-				<div class="fldLabel">
-					&nbsp;
+
+				<div wicket:id="subjectFileUploadContainer">
+					<div class="fldLabel">
+						<wicket:message	key="subjectFileUploadLabel">
+							[Link Subjects from a list:]
+						</wicket:message>
+						<div class="note">
+							<wicket:message	key="subjectFileUploadLabel.note">
+								[Note replaced from properties]
+							</wicket:message>
+						</div>
+					</div>
+
+					<div class="fldControl">
+						<input wicket:id="subjectFileUpload" type="file" />
+					</div>
 				</div>
 
-				<div class="detailPanelBreaker">
-					&nbsp;
-				</div>
-				<div class="panelContentLeft">
-					&nbsp;
-				</div>
-				<div wicket:id="subjectPaletteContainer">
-					<div class="fldLabel">
-						<wicket:message	key="study.subjects">
-							Select Subjects:
-						</wicket:message>
-						<span wicket:id="selectedSubjects">
-							[Palette]
-						</span>
-					</div>
-					<div class="fldControl">
+				<div class="detailSectionBorder">
+					<div class="panelContentLeft">
 						&nbsp;
 					</div>
+
+					<div wicket:id="autoSubjectUidContainer">
+						<div class="fldLabel">
+							<div class="label">
+								<label for="autoGenSubId">
+									<wicket:message	key="study.subjectUid.autogen">
+										Autogenerate Subject UID:
+									</wicket:message>
+									<div class="note">
+										<wicket:message	key="study.subjectUid.autogenNote">
+											[Note replaced from properties]
+										</wicket:message>
+									</div>
+								</label>
+							</div>
+						</div>
+						<div class="fldControl">
+							<input type="checkbox" wicket:id="study.autoGenerateSubjectUid"/>
+						</div>
+					</div>
+
 					<div class="panelMargin">
 						&nbsp;
 					</div>
+
 					<div class="fldLabel">
-						&nbsp;
+						<div class="label">
+							<label for="autoConsentSubject">
+								<wicket:message	key="study.autoconsent.subjects">
+									Auto consent:
+								</wicket:message>
+							</label>
+						</div>
 					</div>
 					<div class="fldControl">
+						<input type="checkbox" wicket:id="study.autoConsent"/>
+					</div>
+
+					<div class="detailPanelBreaker">
 						&nbsp;
 					</div>
+					<!--	Row 6 Ends -->
+
+					<!--	Row 7 Subject Key Start At & Auto Consent -->
+
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div wicket:id="subjectUidContainer">
+						<div class="fldLabel">
+							<label for="subjectUidPrefix">
+								<wicket:message	key="study.subjectUid.pattern">
+									SubjectUID Pattern:
+								</wicket:message>
+								<br>
+								<div class="note">
+									<wicket:message	key="study.subjectUid.patternNote">
+										[Note replaced from properties]
+									</wicket:message>
+								</div>
+							</label>
+						</div>
+						<div class="fldControl">
+							<div class="label">
+								<input wicket:id="study.subjectUidPrefix" type="text" maxLength="3" size="3"/>
+								<input wicket:id="subjectUidToken" type="text" maxLength="1" size="1"/>
+								<select wicket:id="study.subjectUidToken">
+									<option>
+										-
+									</option>
+									<option>
+										@
+									</option>
+									<option>
+										#
+									</option>
+								</select>
+								<select wicket:id="study.subjectUidPadChar">
+									<option>
+										1
+									</option>
+									<option>
+										2
+									</option>
+									<option>
+										3
+									</option>
+								</select>
+							</div>
+							<div class="label">
+								<b>
+									<span wicket:id="study.subjectUid.example ">
+										ABC-#########
+									</span>
+								</b>
+							</div>
+						</div>
+
+						<div class="panelMargin">
+							&nbsp;
+						</div>
+
+						<div class="fldLabel">
+							<div class="label">
+								<label for="subjectUidStart">
+									<wicket:message	key="study.subjectUid.start">
+										Start Subject UID at:
+									</wicket:message>
+									<div class="note">
+										<wicket:message	key="study.subjectUid.start.note">
+											[Note replaced from properties]
+										</wicket:message>
+									</div>
+								</label>
+							</div>
+						</div>
+						<div class="fldControl">
+							<div class="text">
+								<input wicket:id="study.subjectUidStart" type="text"/>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="panelContentRight">
-					&nbsp;
-				</div>
-				<div class="detailPanelBreaker">
-					&nbsp;
+
+
+				<div class="detailSectionBorder">
+
+					<div class="panelContentLeft">
+						&nbsp;
+					</div>
+
+					<div wicket:id="bioCollectionUidContainer">
+						<div class="fldLabel">
+							<label for="bioCollectionUidPrefix">
+								<wicket:message	key="study.bioCollectionUid.pattern">
+									BioCollection UID Pattern:
+								</wicket:message>
+								<br>
+								<div class="note">
+									<wicket:message	key="study.bioCollectionUid.patternNote">
+										[Note replaced from properties]
+									</wicket:message>
+								</div>
+							</label>
+						</div>
+						<div class="fldControl">
+							<div class="label">
+								<input wicket:id="bioCollectionUidTemplate.bioCollectionUidPrefix" type="text" maxLength="3" size="3"/>
+								<select wicket:id="bioCollectionUidTemplate.bioCollectionUidToken">
+									<option>
+										-
+									</option>
+									<option>
+										@
+									</option>
+									<option>
+										#
+									</option>
+								</select>
+								<select wicket:id="bioCollectionUidTemplate.bioCollectionUidPadChar">
+									<option>
+										1
+									</option>
+									<option>
+										2
+									</option>
+									<option>
+										3
+									</option>
+								</select>
+							</div>
+							<div class="label">
+								<b>
+									<span wicket:id="study.bioCollectionUid.example">
+										ABC-#########
+									</span>
+								</b>
+							</div>
+						</div>
+					</div>
+
+					<div class="panelMargin">
+						&nbsp;
+					</div>
+
+					<div wicket:id="biospecimenUidContainer">
+						<div class="fldLabel">
+							<label for="subjectUidPrefix">
+								<wicket:message	key="study.biospecimenUid.pattern">
+									Biospecimen UID Pattern:
+								</wicket:message>
+								<br>
+								<div class="note">
+									<wicket:message	key="study.subjectUid.patternNote">
+										[Note replaced from properties]
+									</wicket:message>
+								</div>
+							</label>
+						</div>
+						<div class="fldControl">
+							<div class="label">
+								<input wicket:id="biospecimenUidTemplate.biospecimenUidPrefix" type="text" maxLength="3" size="3"/>
+								<select wicket:id="biospecimenUidTemplate.biospecimenUidToken">
+									<option>
+										-
+									</option>
+									<option>
+										@
+									</option>
+									<option>
+										#
+									</option>
+								</select>
+								<select wicket:id="biospecimenUidTemplate.biospecimenUidPadChar">
+									<option>
+										1
+									</option>
+									<option>
+										2
+									</option>
+									<option>
+										3
+									</option>
+								</select>
+							</div>
+							<div class="label">
+								<b>
+									<span wicket:id="biospecimenUid.example">
+										ABC-#########
+									</span>
+								</b>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<!-- The Inner WebMarkupContainer for the Details Input area -->
@@ -677,7 +645,7 @@
 			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
-			
+
 			<!-- Action Buttons -->
 			<div wicket:id="editButtonContainer">
 				<div class="actionButtons">
