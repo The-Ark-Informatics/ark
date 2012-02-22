@@ -121,12 +121,18 @@ public class GridBoxPanel extends Panel {
 		setVisible(limsVo.getInvBox().getId() != null);
 		initialiseGrid();
 	}
+	
+	@Override
+	protected void onBeforeRender() {
+		initialiseGrid();
+		super.onBeforeRender();
+	}
 
 	/**
 	 * Initialises the grid to display for the InvBox in question
 	 * @param invBox
 	 */
-	private void initialiseGrid() {
+	public void initialiseGrid() {
 		limsVo.setInvBox(iInventoryService.getInvBox(limsVo.getInvBox().getId()));
 		
 		List<InvCell> invCellList = new ArrayList<InvCell>(0);
@@ -251,6 +257,7 @@ public class GridBoxPanel extends Panel {
 						tag.put("style", "background: none repeat scroll 0 0 #FFFFFF; color: black; font-weight: bold; padding: 1px;");
 					};
 				});
+				rowLabel.setOutputMarkupId(true);
 				item.add(rowLabel);
 				
 				// We create an inner Loop instance and uses PropertyModel to bind the Loop iteration to invBox "noofcol" value
@@ -273,6 +280,8 @@ public class GridBoxPanel extends Panel {
 						else {
 							gridCellContentPanel = new GridCellContentPanel("cell", limsVo, invCell, modalWindow, false);
 						}
+						gridCellContentPanel.setOutputMarkupId(true);
+						gridCellContentPanel.setMarkupId("invCell" + invCell.getId().toString());
 						item.add(gridCellContentPanel);
 					}					
 				});

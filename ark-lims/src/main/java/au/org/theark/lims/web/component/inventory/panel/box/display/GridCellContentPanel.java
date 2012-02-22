@@ -57,10 +57,9 @@ public class GridCellContentPanel extends Panel {
 
 	@Override
 	protected void onBeforeRender() {
-		super.onBeforeRender();
 		initialiseContentPanel();
+		super.onBeforeRender();
 	}
-
 
 	private void initialiseContentPanel() {
 		if (allocating) {
@@ -89,12 +88,13 @@ public class GridCellContentPanel extends Panel {
 	 */
 	private void addToolTip() {
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("Column: ");
-		stringBuffer.append(invCell.getColno());
-		stringBuffer.append("\t");
 		stringBuffer.append("Row: ");
 		stringBuffer.append(invCell.getRowno());
 		stringBuffer.append("\t");
+		stringBuffer.append("Column: ");
+		stringBuffer.append(invCell.getColno());
+		stringBuffer.append("\t");
+		
 		stringBuffer.append("Status: ");
 
 		if (invCell.getBiospecimen() != null) {
@@ -107,8 +107,10 @@ public class GridCellContentPanel extends Panel {
 			stringBuffer.append(invCell.getBiospecimen().getSampleType().getName());
 			stringBuffer.append("\t");
 			stringBuffer.append("Quantity: ");
-			if (invCell.getBiospecimen().getQuantity() != null)
+			if (invCell.getBiospecimen().getQuantity() != null) {
 				stringBuffer.append(invCell.getBiospecimen().getQuantity());
+				stringBuffer.append(invCell.getBiospecimen().getUnit().getName());
+			}
 			else {
 				stringBuffer.append("0");
 			}
