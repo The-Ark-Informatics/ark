@@ -534,4 +534,18 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		tx.commit();
 		session.close();
 	}
+
+	public InvCell getNextAvailableInvCell(InvBox invBox) {
+		Criteria criteria = getSession().createCriteria(InvCell.class);
+		criteria.add(Restrictions.eq("invBox", invBox));
+		criteria.add(Restrictions.isNull("biospecimen"));
+		criteria.setMaxResults(1);
+		return (InvCell) criteria.list().get(0);
+	}
+
+	public Integer countAvailableCellsForBox(InvBox invBox) {
+		int total = 0;
+		total = ((Long) getSession().createQuery("SELECT COUNT(*) FROM InvCell WHERE invBox = :invBox and biospecimen IS NULL").setParameter("invBox", invBox).iterate().next()).intValue();
+		return total;
+	}
 }

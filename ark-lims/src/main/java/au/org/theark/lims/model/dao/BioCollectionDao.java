@@ -43,7 +43,6 @@ import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
