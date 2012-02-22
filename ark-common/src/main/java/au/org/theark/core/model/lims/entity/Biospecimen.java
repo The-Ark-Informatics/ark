@@ -22,6 +22,8 @@ package au.org.theark.core.model.lims.entity;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -60,7 +62,7 @@ public class Biospecimen implements java.io.Serializable {
 	private LinkSubjectStudy			linkSubjectStudy;
 	private BioCollection				bioCollection;
 	private BioSampletype				sampleType;
-	private Long							parentId;
+	//private Long							parentId;
 	private String							parentUid;
 	private Long							oldId;
 	private Boolean						deleted				= false;
@@ -86,6 +88,9 @@ public class Biospecimen implements java.io.Serializable {
 	private BiospecimenStatus			status;
 
 	private Set<BioTransaction>		bioTransactions	= new HashSet<BioTransaction>(0);
+
+	private Biospecimen parent;
+	private List<Biospecimen> children = new LinkedList<Biospecimen>();
 
 	public Biospecimen() {
 	}
@@ -117,7 +122,7 @@ public class Biospecimen implements java.io.Serializable {
 		this.timestamp = timestamp;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "BIOCOLLECTION_ID")
 	public BioCollection getBioCollection() {
 		return this.bioCollection;
@@ -175,14 +180,14 @@ public class Biospecimen implements java.io.Serializable {
 		this.sampleType = sampleType;
 	}
 
-	@Column(name = "PARENT_ID")
-	public Long getParentId() {
-		return this.parentId;
-	}
-
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
-	}
+//	@Column(name = "PARENT_ID")
+//	public Long getParentId() {
+//		return this.parentId;
+//	}
+//
+//	public void setParentId(Long parentId) {
+//		this.parentId = parentId;
+//	}
 
 	@Column(name = "PARENTID", length = 50)
 	public String getParentUid() {
@@ -401,6 +406,38 @@ public class Biospecimen implements java.io.Serializable {
 
 	public void setBioTransactions(Set<BioTransaction> bioTransactions) {
 		this.bioTransactions = bioTransactions;
+	}
+		
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(Biospecimen parent) {
+		this.parent = parent;
+	}
+
+	/**
+	 * @return the parent
+	 */
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "PARENT_ID")
+	public Biospecimen getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param children the children to set
+	 */
+	public void setChildren(List<Biospecimen> children) {
+		this.children = children;
+	}
+
+	/**
+	 * @return the children
+	 */
+	@OneToMany(fetch=FetchType.LAZY)
+	@JoinColumn(name = "PARENT_ID")
+	public List<Biospecimen> getChildren() {
+		return children;
 	}
 
 	@Override
