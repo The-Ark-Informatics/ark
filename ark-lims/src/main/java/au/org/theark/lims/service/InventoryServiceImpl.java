@@ -221,12 +221,16 @@ public class InventoryServiceImpl implements IInventoryService {
 	}
 
 	public void updateInvCell(InvCell invCell) {
-		// Decrement available cells in box
-		if(invCell.getBiospecimen() != null) {
-			invCell.getInvBox().setAvailable(invCell.getInvBox().getAvailable() -1);
-			iInventoryDao.updateInvBox(invCell.getInvBox());
-		}
+		// Update available cells in box
+		InvBox invBox = invCell.getInvBox();
+		invBox.setAvailable(countAvailableCellsForBox(invBox));
+		iInventoryDao.updateInvBox(invBox);
+		
 		iInventoryDao.updateInvCell(invCell);
+	}
+
+	private Integer countAvailableCellsForBox(InvBox invBox) {
+		return iInventoryDao.countAvailableCellsForBox(invBox);
 	}
 
 	public void updateInvSite(LimsVO modelObject) {
@@ -376,5 +380,9 @@ public class InventoryServiceImpl implements IInventoryService {
 
 	public InvCell getInvCellByLocationNames(String siteName, String freezerName, String rackName, String boxName, String row, String column) throws ArkSystemException {
 		return iInventoryDao.getInvCellByLocationNames(siteName, freezerName, rackName, boxName, row, column);
+	}
+
+	public InvCell getNextAvailableInvCell(InvBox invBox) {
+		return iInventoryDao.getNextAvailableInvCell(invBox);
 	}
 }

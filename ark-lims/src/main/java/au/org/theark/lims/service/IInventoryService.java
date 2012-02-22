@@ -256,4 +256,6 @@ public interface IInventoryService {
 	public boolean hasAllocatedCells(InvBox invBox);
 
 	public InvCell getInvCellByLocationNames(String siteName, String freezerName, String rackName, String boxName, String row, String column) throws ArkSystemException;
+
+	public InvCell getNextAvailableInvCell(InvBox invBox);
 }

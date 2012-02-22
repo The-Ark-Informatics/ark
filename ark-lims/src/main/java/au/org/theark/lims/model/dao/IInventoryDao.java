@@ -271,4 +271,8 @@ public interface IInventoryDao {
 	public InvCell getInvCellByLocationNames(String siteName, String freezerName, String rackName, String boxName, String row, String column) throws ArkSystemException;
 
 	public void batchUpdateInvCells(List<InvCell> updateInvCells);
+
+	public InvCell getNextAvailableInvCell(InvBox invBox);
+
+	public Integer countAvailableCellsForBox(InvBox invBox);
 }

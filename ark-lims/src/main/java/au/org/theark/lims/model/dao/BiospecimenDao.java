@@ -173,6 +173,10 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 
 		if (biospecimen.getQtyCollected() != null)
 			criteria.add(Restrictions.eq("qtyCollected", biospecimen.getQtyCollected()));
+		
+		if(biospecimen.getParent() != null) {
+			criteria.add(Restrictions.eq("parent", biospecimen.getParent()));
+		}
 
 		return criteria;
 	}
