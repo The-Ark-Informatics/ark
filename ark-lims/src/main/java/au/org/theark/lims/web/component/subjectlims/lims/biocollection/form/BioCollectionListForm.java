@@ -54,7 +54,6 @@ import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.util.UniqueIdGenerator;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionModalDetailPanel;
 
