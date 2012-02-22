@@ -4,13 +4,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.service.IInventoryService;
-import au.org.theark.lims.service.ILimsService;
 
 /**
  * Panel displaying the location/not allocated details for a Biospecimen in context
@@ -24,11 +19,6 @@ public class BioLocationDetailPanel extends Panel {
 	 * 
 	 */
 	private static final long						serialVersionUID	= 1L;
-	private static final Logger					log					= LoggerFactory.getLogger(BioLocationDetailPanel.class);
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
-	private ILimsService								iLimsService;
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
-	private IInventoryService						iInventoryService;
 	protected CompoundPropertyModel<LimsVO>	cpModel;
 	private Panel										locationPanel;
 	private Label										locationDetails;
