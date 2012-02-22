@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -46,10 +47,11 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
-import au.org.theark.core.web.form.AbstractContainerForm;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.inventory.panel.box.BoxAllocationPanel;
 
 /**
  * @author cellis
@@ -75,6 +77,8 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private DropDownChoice<InvColRowType>	colNoTypeDdc;
 	private DropDownChoice<InvColRowType>	rowNoTypeDdc;
 	private DropDownChoice<InvRack>			invTrayDdc;
+	private AjaxButton 							batchAllocate;
+	private BoxAllocationPanel 				boxAllocationPanel;
 	
 	/**
 	 * 
@@ -85,8 +89,9 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 * @param tree
 	 * @param node 
 	 */
-	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
+		boxAllocationPanel = new BoxAllocationPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
 	}
 
 	public void initialiseDetailForm() {
@@ -154,6 +159,32 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		initInvTrayDdc();
 		initColNoTypeDdc();
 		initRowNoTypeDdc();
+		
+		batchAllocate = new ArkBusyAjaxButton("batchAllocate") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// Refresh entire detail panel to allocation panel
+				boxAllocationPanel.initialisePanel();
+				detailContainer.addOrReplace(boxAllocationPanel);
+				target.add(detailContainer);
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+			}
+			
+			@Override
+			protected void onBeforeRender() {
+				setEnabled(!isNew() && containerForm.getModelObject().getInvBox().getAvailable() > 0);
+				super.onBeforeRender();
+			}
+		};
+		batchAllocate.setDefaultFormProcessing(false);
 
 		attachValidators();
 		addComponents();
@@ -225,6 +256,8 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		detailFormContainer.add(colNoTypeDdc);
 		detailFormContainer.add(rowNoTypeDdc);
 		add(detailFormContainer);
+		
+		add(batchAllocate);
 	}
 
 	@Override
@@ -233,6 +266,13 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			// Save
 			iInventoryService.createInvBox(containerForm.getModelObject());
 			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was created successfully");
+			
+			TreeNode[] path = node.getPath();
+			for (int i = 0; i < path.length; i++) {
+				tree.getTreeState().expandNode(path);
+			}
+			
+			tree.updateTree(target);
 			processErrors(target);
 		}
 		else {
