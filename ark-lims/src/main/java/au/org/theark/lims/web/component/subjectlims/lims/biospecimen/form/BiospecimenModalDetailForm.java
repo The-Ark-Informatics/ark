@@ -600,7 +600,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 					LimsVO limsVo = cpModel.getObject();
 					Biospecimen biospecimen = limsVo.getBiospecimen();
 					BioTransaction bioTransaction = limsVo.getBioTransaction();
-					Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParentId());
+					Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParent().getId());
 
 					if (bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
 						this.error("Cannot process more than the total amount of the parent biospecimen");
@@ -639,7 +639,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 					LimsVO limsVo = cpModel.getObject();
 					Biospecimen biospecimen = limsVo.getBiospecimen();
 					BioTransaction bioTransaction = limsVo.getBioTransaction();
-					Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParentId());
+					Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParent().getId());
 
 					if (bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
 						this.error("Cannot aliquot more than the total amount of the parent biospecimen");
@@ -774,7 +774,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 			PropertyUtils.copyProperties(limsVo, oldlimsVo);
 			limsVo.getBiospecimen().setId(null);
-			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
+			limsVo.getBiospecimen().setParent(oldlimsVo.getBiospecimen());
 			limsVo.getBiospecimen().setComments("Clone of " + parentBiospecimenUid);
 			limsVo.getBiospecimen().setBarcoded(false);
 			limsVo.setBiospecimenLocationVO(new BiospecimenLocationVO());
@@ -835,7 +835,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			biospecimen.setId(null);
 			biospecimen.setBiospecimenUid(Constants.AUTO_GENERATED);
 			
-			biospecimen.setParentId(parentBiospecimen.getId());
+			biospecimen.setParent(parentBiospecimen);
 			biospecimen.setParentUid(parentBiospecimen.getBiospecimenUid());
 			biospecimen.setSampleType(parentBiospecimen.getSampleType());
 			biospecimen.setBioCollection(parentBiospecimen.getBioCollection());
