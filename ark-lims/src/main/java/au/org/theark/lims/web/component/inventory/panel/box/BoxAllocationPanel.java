@@ -22,7 +22,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.html.tree.BaseTree;
@@ -30,26 +29,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
-import au.org.theark.lims.web.component.inventory.form.BoxDetailForm;
+import au.org.theark.lims.web.component.inventory.form.BoxAllocationDetailForm;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.panel.box.display.GridBoxPanel;
 
-public class BoxDetailPanel extends Panel {
+/**
+ * 
+ * @author cellis
+ * 
+ */
+public class BoxAllocationPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long				serialVersionUID	= 7132411215567811297L;
-	private static final Logger			log					= LoggerFactory.getLogger(BoxDetailPanel.class);
+	private static final long						serialVersionUID	= -1L;
+	private static final Logger					log					= LoggerFactory.getLogger(BoxAllocationPanel.class);
+
 	private FeedbackPanel					feedbackPanel;
 	private WebMarkupContainer				detailContainer;
-	private BoxDetailForm					detailForm;
+	private BoxAllocationDetailForm		detailForm;
 	private ContainerForm					containerForm;
 	private BaseTree							tree;
 	private DefaultMutableTreeNode		node;
-	private Panel								gridBoxPanel;
+	private GridBoxPanel						gridBoxPanel;
 	private AbstractDetailModalWindow	modalWindow;
 
-	public BoxDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+	public BoxAllocationPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.feedbackPanel = feedbackPanel;
@@ -60,9 +65,6 @@ public class BoxDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new BoxDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
-		detailForm.initialiseDetailForm();
-
 		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
 
 			/**
@@ -72,29 +74,25 @@ public class BoxDetailPanel extends Panel {
 
 			@Override
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
+				target.add(feedbackPanel);
 				target.add(detailForm);
 				target.add(gridBoxPanel);
 			}
 		};
-
-		// no need to show grid on New Box
-		if(containerForm.getModelObject().getInvBox().getId() == null) {
-			gridBoxPanel = new EmptyPanel("gridBoxPanel");
-		}
-		else {
-			gridBoxPanel = new GridBoxPanel("gridBoxPanel", containerForm.getModelObject(), modalWindow, false);
-		}
-
+		gridBoxPanel = new GridBoxPanel("gridBoxPanel", containerForm.getModelObject(), modalWindow, false);
+		detailForm = new BoxAllocationDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node, gridBoxPanel, modalWindow);
+		detailForm.initialiseDetailForm();
+		
 		add(detailForm);
 		add(gridBoxPanel);
 		add(modalWindow);
 	}
 
-	public BoxDetailForm getDetailForm() {
+	public BoxAllocationDetailForm getDetailForm() {
 		return detailForm;
 	}
 
-	public void setDetailForm(BoxDetailForm detailForm) {
+	public void setDetailForm(BoxAllocationDetailForm detailForm) {
 		this.detailForm = detailForm;
 	}
 
