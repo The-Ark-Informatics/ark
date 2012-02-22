@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>wicket-tree</groupId>
 			<artifactId>wicket-tree</artifactId>
-			<version>0.5.0</version>
+			<version>0.5-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
