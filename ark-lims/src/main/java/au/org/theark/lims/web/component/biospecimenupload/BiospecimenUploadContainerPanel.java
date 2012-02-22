@@ -20,7 +20,6 @@ package au.org.theark.lims.web.component.biospecimenupload;
 
 import java.util.ArrayList;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
