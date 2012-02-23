@@ -21,8 +21,10 @@ package au.org.theark.lims.web.component.inventory.form;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -33,6 +35,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
@@ -79,6 +82,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private DropDownChoice<InvRack>			invTrayDdc;
 	private AjaxButton 							batchAllocate;
 	private BoxAllocationPanel 				boxAllocationPanel;
+	private Panel panel;
 	
 	/**
 	 * 
@@ -89,8 +93,9 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 * @param tree
 	 * @param node 
 	 */
-	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node, Panel panel) {
 		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
+		this.panel = panel;
 		boxAllocationPanel = new BoxAllocationPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
 	}
 
@@ -266,19 +271,26 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			// Save
 			iInventoryService.createInvBox(containerForm.getModelObject());
 			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was created successfully");
-			
-			TreeNode[] path = node.getPath();
-			for (int i = 0; i < path.length; i++) {
-				tree.getTreeState().expandNode(path);
-			}
-			
-			tree.updateTree(target);
 			processErrors(target);
 		}
 		else {
 			// Update
 			iInventoryService.updateInvBox(containerForm.getModelObject());
 			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was updated successfully");
+			
+			//tree.invalidateAll();
+			
+			// trigger redraw of clicked node
+	      tree.treeNodesChanged(new TreeModelEvent(this, new TreePath(node.getParent()), new int[]{0}, new TreeNode[]{node} ));
+	      
+//			TreeNode[] path = node.getPath();
+//			for (int i = 0; i < path.length; i++) {
+//				tree.getTreeState().expandNode(path[i]);
+//			}
+			tree.updateTree(target);
+			
+			// update node panel
+			target.add(panel);
 			processErrors(target);
 		}
 

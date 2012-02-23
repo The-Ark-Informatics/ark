@@ -318,7 +318,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		target.add(detailFormContainer);
 		target.add(editButtonContainer);
 		// Refresh tree panel
-		target.add(tree.getParent());
+		//target.add(tree.getParent());
 	}
 
 	/**
