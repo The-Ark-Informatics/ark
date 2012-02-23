@@ -1,54 +1,29 @@
-/*******************************************************************************
- * Copyright (c) 2011  University of Western Australia. All rights reserved.
- * 
- * This file is part of The Ark.
- * 
- * The Ark is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * 
- * The Ark is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
 package au.org.theark.lims.web.component.inventory.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkIconPanel;
-import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
-import au.org.theark.core.model.lims.entity.InvTreeNode;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.InventoryModel;
-import au.org.theark.lims.model.TreeNodeModel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
@@ -57,13 +32,7 @@ import au.org.theark.lims.web.component.inventory.panel.freezer.FreezerDetailPan
 import au.org.theark.lims.web.component.inventory.panel.rack.RackDetailPanel;
 import au.org.theark.lims.web.component.inventory.panel.site.SiteDetailPanel;
 
-public class InventoryLinkTree extends LinkTree {
-	/**
-	 * 
-	 */
-	private static final long					serialVersionUID	= -3736908668279170191L;
-	private static final Logger	log					= LoggerFactory.getLogger(InventoryLinkTree.class);
-
+public class InventoryNodePanel extends LinkIconPanel {
 	private static final PackageResourceReference	STUDY_ICON			= new PackageResourceReference(InventoryLinkTree.class, "study.gif");
 	private static final PackageResourceReference	SITE_ICON			= new PackageResourceReference(InventoryLinkTree.class, "site.gif");
 	private static final PackageResourceReference	EMPTY_FREEZER_ICON	= new PackageResourceReference(InventoryLinkTree.class, "empty_tank.gif");
@@ -76,142 +45,36 @@ public class InventoryLinkTree extends LinkTree {
 	private static final PackageResourceReference	YELLOW_BOX_ICON	= new PackageResourceReference(InventoryLinkTree.class, "yellow_box.gif");
 	private static final PackageResourceReference	FULL_BOX_ICON		= new PackageResourceReference(InventoryLinkTree.class, "full_box.gif");
 	
-	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
-	private IInventoryService					iInventoryService;
-	
-	private List<InvSite>			invSites				= new ArrayList<InvSite>(0);
-	
 	private FeedbackPanel feedbackPanel;
 	private WebMarkupContainer detailContainer;
 	private ContainerForm containerForm;
+	
+	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
+	private IInventoryService					iInventoryService;
+	
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 
-	public InventoryLinkTree(String id, TreeModel model, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm) {
-		super(id, model);
+	public InventoryNodePanel(String id, IModel<Object> model, BaseTree tree, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm) {
+		super(id, model, tree);
+		setOutputMarkupPlaceholderTag(true);
+		
 		this.feedbackPanel = feedbackPanel;
 		this.detailContainer = detailContainer;
 		this.containerForm = containerForm;
-		createTreeModel();
-	}
-	
-	/**
-	 * Creates the model that feeds the tree.
-	 * 
-	 * @return New instance of tree model.
-	 */
-	protected TreeModel createTreeModel() {
-		InvSite invSite = new InvSite();
 		
-
-		try {
-			invSites = iInventoryService.searchInvSite(invSite);
-		}
-		catch (ArkSystemException e) {
-			log.error(e.getMessage());
-		}
-		return convertToTreeModel();
-	}
-
-	private TreeModel convertToTreeModel() {
-		TreeModel model = null;
-		// Default root node (set to not show)
-		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(new TreeNodeModel("ROOT"));
-		add(rootNode, invSites);
-		model = new DefaultTreeModel(rootNode);
-		return model;
+		// Add tooltip to the node/panel
+		addToolTipToNode(model.getObject());
 	}
 	
-	@SuppressWarnings("unchecked")
-	private void add(DefaultMutableTreeNode parentNode, List<? extends InvTreeNode> childNodes) {
-		for (InvTreeNode node : childNodes) {
-			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(new InventoryModel(node, node.getNodeType()));
-			parentNode.add(childNode);
-
-			// If no children, don't bother
-			if (node.getChildren() != null && !node.getChildren().isEmpty()) {
-				add(childNode, node.getChildren());
-			}
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	protected Component newNodeComponent(String id, IModel model) {
-		// Override standard node creation so we can setup our own component
-		// This kind of blows if the standard LinkTree implementation changes
-//		final LinkIconPanel panel = new LinkIconPanel(id, model, this) {
-//			private static final long	serialVersionUID	= 1L;
-//
-//			@Override
-//			protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
-//				InventoryLinkTree.this.onNodeLinkClicked(node, tree, target);
-//			}
-//
-//			@Override
-//			protected Component newContentComponent(String componentId, BaseTree tree, IModel model) {
-//				return new Label(componentId, getNodeTextModel(model));
-//			}
-//
-//			@Override
-//			protected Component newImageComponent(String componentId, final BaseTree tree, final IModel<Object> model) {
-//				return new Image(componentId) {
-//					private static final long	serialVersionUID	= 1L;
-//
-//					@Override
-//					protected ResourceReference getImageResourceReference() {
-//						return getIconResourceReference(model.getObject());
-//					}
-//				};
-//			}
-//
-//			@Override
-//			protected void addComponents(final IModel model, final BaseTree tree) {
-//				MarkupContainer link = new ArkBusyAjaxLink("iconLink"){
-//					/**
-//					 * 
-//					 */
-//					private static final long	serialVersionUID	= 1857552996891982138L;
-//
-//					@Override
-//					public void onClick(AjaxRequestTarget target) {
-//						onNodeLinkClicked(model.getObject(), tree, target);
-//					}
-//				};
-//				add(link);
-//				
-//				link.add(newImageComponent("icon", tree, model));
-//
-//				link = new ArkBusyAjaxLink("contentLink"){
-//					/**
-//					 * 
-//					 */
-//					private static final long	serialVersionUID	= 1857552996891982138L;
-//
-//					@Override
-//					public void onClick(AjaxRequestTarget target) {
-//						onNodeLinkClicked(model.getObject(), tree, target);
-//					}
-//				};
-//				add(link);
-//				
-//				link.add(newContentComponent("content", tree, model));
-//			}
-//		};
-//		
-//		// Add tooltip to the node
-//		addToolTipToNode(panel, model.getObject()); 
-//
-//		return panel;
-		InventoryNodePanel panel = new InventoryNodePanel(id, model, InventoryLinkTree.this, feedbackPanel, detailContainer, containerForm);
-		return panel;
-	}
-
 	/**
 	 * Adds a tooltip to the tree node/panel
-	 * @param panel
 	 * @param object
 	 */
 	@SuppressWarnings("unchecked")
-	private void addToolTipToNode(LinkIconPanel panel, Object object) {
+	private void addToolTipToNode(Object object) {
 		final DefaultMutableTreeNode defaultMutableTreeNode = (DefaultMutableTreeNode) object;
 		final StringBuffer stringBuffer = new StringBuffer();
 
@@ -237,6 +100,8 @@ public class InventoryLinkTree extends LinkTree {
 			}
 			if (inventoryModel.getObject() instanceof InvBox) {
 				InvBox nodeObject = (InvBox) inventoryModel.getObject();
+				nodeObject = iInventoryService.getInvBox(nodeObject.getId());
+				
 				stringBuffer.append(nodeObject.getName());
 				stringBuffer.append("\t");
 				stringBuffer.append(percentUsed(nodeObject.getAvailable(), nodeObject.getCapacity()));
@@ -244,37 +109,62 @@ public class InventoryLinkTree extends LinkTree {
 		}
 		
 		String toolTip = stringBuffer.toString();
-		panel.add(new AttributeModifier("showtooltip", new Model<Boolean>(true)));
-		panel.add(new AttributeModifier("title", new Model<String>(toolTip)));
+		add(new AttributeModifier("showtooltip", new Model<Boolean>(true)));
+		add(new AttributeModifier("title", new Model<String>(toolTip)));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Component newContentComponent(String componentId, BaseTree tree, IModel model) {
+		return new Label(componentId, getNodeTextModel(model));
+	}
+
+	@Override
+	protected Component newImageComponent(String componentId, final BaseTree tree, final IModel<Object> model) {
+		return new Image(componentId) {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected ResourceReference getImageResourceReference() {
+				return getIconResourceReference(model.getObject());
+			}
+		};
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void addComponents(final IModel model, final BaseTree tree) {
+		MarkupContainer link = new ArkBusyAjaxLink("iconLink"){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1857552996891982138L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target) {
+				onNodeLinkClicked(model.getObject(), tree, target);
+			}
+		};
+		add(link);
+		
+		link.add(newImageComponent("icon", tree, model));
+
+		link = new ArkBusyAjaxLink<String>("contentLink"){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1857552996891982138L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target) {
+				onNodeLinkClicked(model.getObject(), tree, target);
+			}
+		};
+		add(link);
+		
+		link.add(newContentComponent("content", tree, model));
 	}
 	
-	/**
-	 * 
-	 * @param available
-	 * @param capacity
-	 * @return
-	 */
-	private String percentUsed(float available, float capacity) {
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("(Used: ");
-		stringBuffer.append("\t");
-		stringBuffer.append(calculatePercentUsed(available, capacity));
-		stringBuffer.append("%)");
-		return stringBuffer.toString();
-	}
-
-	/**
-	 * Calculates the percent used of the tank/shelf/box
-	 * @param available
-	 * @param capacity
-	 * @return
-	 */
-	private float calculatePercentUsed(float available, float capacity) {
-		float percentUsed = ((capacity - available) / capacity) * 100;
-		percentUsed = Math.round(percentUsed);
-		return percentUsed;
-	}
-
 	/**
 	 * Expand or collapse a node if the user clicks on a node (in addition to the +/- signs)
 	 */
@@ -327,7 +217,7 @@ public class InventoryLinkTree extends LinkTree {
 				invBox = iInventoryService.getInvBox(invBox.getId());
 				containerForm.getModelObject().setInvBox(invBox);
 				
-				BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node, null);
+				BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node, InventoryNodePanel.this);
 				detailPanel.initialisePanel();
 				
 				detailContainer.addOrReplace(detailPanel);
@@ -350,6 +240,11 @@ public class InventoryLinkTree extends LinkTree {
 		
 		target.add(feedbackPanel);
 		target.add(detailContainer);
+	}
+	
+	protected IModel<?> getNodeTextModel(IModel<?> nodeModel)
+	{
+		return nodeModel;
 	}
 	
 	/**
@@ -431,4 +326,32 @@ public class InventoryLinkTree extends LinkTree {
 			return EMPTY_BOX_ICON;
 		}
 	}
+	
+	/**
+	 * 
+	 * @param available
+	 * @param capacity
+	 * @return
+	 */
+	private String percentUsed(float available, float capacity) {
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("(Used: ");
+		stringBuffer.append("\t");
+		stringBuffer.append(calculatePercentUsed(available, capacity));
+		stringBuffer.append("%)");
+		return stringBuffer.toString();
+	}
+
+	/**
+	 * Calculates the percent used of the tank/shelf/box
+	 * @param available
+	 * @param capacity
+	 * @return
+	 */
+	private float calculatePercentUsed(float available, float capacity) {
+		float percentUsed = ((capacity - available) / capacity) * 100;
+		percentUsed = Math.round(percentUsed);
+		return percentUsed;
+	}
+
 }

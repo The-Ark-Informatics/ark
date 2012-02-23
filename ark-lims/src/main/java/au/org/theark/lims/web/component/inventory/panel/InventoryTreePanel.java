@@ -37,7 +37,7 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 		this.detailContainer = detailContainer;
 		this.containerForm = containerForm;
 
-		tree = new InventoryLinkTree("tree", createTreeModel(), feedbackPanel, detailContainer, containerForm);
+		tree = new InventoryLinkTree("tree", null, feedbackPanel, detailContainer, containerForm);
 		tree.setRootLess(true);
 		
 		addComponents();
@@ -98,7 +98,7 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 	public void onAddBoxSubmit(AjaxRequestTarget target) {
 		resetModel();
 
-		BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null);
+		BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null, null);
 		detailPanel.initialisePanel();
 
 		refreshDetailPanel(target, detailPanel);
