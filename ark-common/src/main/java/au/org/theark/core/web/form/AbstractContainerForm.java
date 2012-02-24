@@ -20,20 +20,21 @@ package au.org.theark.core.web.form;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import au.org.theark.core.vo.ArkCrudContainerVO;
 
 /**
- * An Abstract class for a top level Container Form, which will house the Search,SearchResults and Detail Panel and their child objects.
+ * An Abstract class for a top level Container Form, which will house the Search, Results and Detail Panels and their child objects.
  * 
  * @author nivedann
+ * @author cellis
  * @param <T>
  * 
  */
-@SuppressWarnings("serial")
 public abstract class AbstractContainerForm<T> extends Form<T> {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 8511781901281993808L;
+
 	/**
 	 * Constructor
 	 * 
