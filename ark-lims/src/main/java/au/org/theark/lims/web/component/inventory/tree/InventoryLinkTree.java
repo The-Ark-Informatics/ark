@@ -25,18 +25,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.tree.BaseTree;
-import org.apache.wicket.markup.html.tree.LinkIconPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.request.resource.PackageResourceReference;
-import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,10 +45,6 @@ import au.org.theark.lims.model.TreeNodeModel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
-import au.org.theark.lims.web.component.inventory.panel.box.BoxDetailPanel;
-import au.org.theark.lims.web.component.inventory.panel.freezer.FreezerDetailPanel;
-import au.org.theark.lims.web.component.inventory.panel.rack.RackDetailPanel;
-import au.org.theark.lims.web.component.inventory.panel.site.SiteDetailPanel;
 
 public class InventoryLinkTree extends LinkTree {
 	/**
@@ -63,18 +52,6 @@ public class InventoryLinkTree extends LinkTree {
 	 */
 	private static final long					serialVersionUID	= -3736908668279170191L;
 	private static final Logger	log					= LoggerFactory.getLogger(InventoryLinkTree.class);
-
-	private static final PackageResourceReference	STUDY_ICON			= new PackageResourceReference(InventoryLinkTree.class, "study.gif");
-	private static final PackageResourceReference	SITE_ICON			= new PackageResourceReference(InventoryLinkTree.class, "site.gif");
-	private static final PackageResourceReference	EMPTY_FREEZER_ICON	= new PackageResourceReference(InventoryLinkTree.class, "empty_tank.gif");
-	private static final PackageResourceReference	GREEN_FREEZER_ICON	= new PackageResourceReference(InventoryLinkTree.class, "green_tank.gif");
-	private static final PackageResourceReference	YELLOW_FREEZER_ICON	= new PackageResourceReference(InventoryLinkTree.class, "yellow_tank.gif");
-	private static final PackageResourceReference	FULL_FREEZER_ICON		= new PackageResourceReference(InventoryLinkTree.class, "full_tank.gif");
-
-	private static final PackageResourceReference	EMPTY_BOX_ICON		= new PackageResourceReference(InventoryLinkTree.class, "empty_box.gif");
-	private static final PackageResourceReference	GREEN_BOX_ICON		= new PackageResourceReference(InventoryLinkTree.class, "green_box.gif");
-	private static final PackageResourceReference	YELLOW_BOX_ICON	= new PackageResourceReference(InventoryLinkTree.class, "yellow_box.gif");
-	private static final PackageResourceReference	FULL_BOX_ICON		= new PackageResourceReference(InventoryLinkTree.class, "full_box.gif");
 	
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService					iInventoryService;
@@ -100,8 +77,6 @@ public class InventoryLinkTree extends LinkTree {
 	 */
 	protected TreeModel createTreeModel() {
 		InvSite invSite = new InvSite();
-		
-
 		try {
 			invSites = iInventoryService.searchInvSite(invSite);
 		}
@@ -114,321 +89,48 @@ public class InventoryLinkTree extends LinkTree {
 	private TreeModel convertToTreeModel() {
 		TreeModel model = null;
 		// Default root node (set to not show)
-		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(new TreeNodeModel("ROOT"));
-		add(rootNode, invSites);
+		MutableTreeNode rootNode = new MutableTreeNode(new TreeNodeModel("ROOT"));
+		//add(rootNode, invSites);
+		addSites(rootNode, invSites);
 		model = new DefaultTreeModel(rootNode);
 		return model;
 	}
-	
-	@SuppressWarnings("unchecked")
-	private void add(DefaultMutableTreeNode parentNode, List<? extends InvTreeNode> childNodes) {
-		for (InvTreeNode node : childNodes) {
-			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(new InventoryModel(node, node.getNodeType()));
-			parentNode.add(childNode);
 
-			// If no children, don't bother
-			if (node.getChildren() != null && !node.getChildren().isEmpty()) {
-				add(childNode, node.getChildren());
-			}
+	void addSites(DefaultMutableTreeNode parentNode, List<InvSite> sites) {
+		for (InvSite site : sites){
+			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(site);
+			parentNode.add(childNode);
+			addFreezers(childNode, site.getInvFreezers());
+		}
+	}
+	
+	void addFreezers(DefaultMutableTreeNode parentNode, List<InvFreezer> freezers){
+		for (InvFreezer freezer : freezers){
+			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(freezer);
+			parentNode.add(childNode);
+			addRacks(childNode, freezer.getInvRacks());
+		}
+	}
+	
+	void addRacks(DefaultMutableTreeNode parentNode, List<InvRack> racks){
+		for (InvRack rack : racks){
+			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(rack);
+			parentNode.add(childNode);
+			addBoxes(childNode, rack.getInvBoxes());
+		}
+	}
+
+	void addBoxes(DefaultMutableTreeNode parentNode, List<InvBox> boxes){
+		for (InvBox box : boxes){
+			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(box);
+			parentNode.add(childNode);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Component newNodeComponent(String id, IModel model) {
-		// Override standard node creation so we can setup our own component
-		// This kind of blows if the standard LinkTree implementation changes
-//		final LinkIconPanel panel = new LinkIconPanel(id, model, this) {
-//			private static final long	serialVersionUID	= 1L;
-//
-//			@Override
-//			protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
-//				InventoryLinkTree.this.onNodeLinkClicked(node, tree, target);
-//			}
-//
-//			@Override
-//			protected Component newContentComponent(String componentId, BaseTree tree, IModel model) {
-//				return new Label(componentId, getNodeTextModel(model));
-//			}
-//
-//			@Override
-//			protected Component newImageComponent(String componentId, final BaseTree tree, final IModel<Object> model) {
-//				return new Image(componentId) {
-//					private static final long	serialVersionUID	= 1L;
-//
-//					@Override
-//					protected ResourceReference getImageResourceReference() {
-//						return getIconResourceReference(model.getObject());
-//					}
-//				};
-//			}
-//
-//			@Override
-//			protected void addComponents(final IModel model, final BaseTree tree) {
-//				MarkupContainer link = new ArkBusyAjaxLink("iconLink"){
-//					/**
-//					 * 
-//					 */
-//					private static final long	serialVersionUID	= 1857552996891982138L;
-//
-//					@Override
-//					public void onClick(AjaxRequestTarget target) {
-//						onNodeLinkClicked(model.getObject(), tree, target);
-//					}
-//				};
-//				add(link);
-//				
-//				link.add(newImageComponent("icon", tree, model));
-//
-//				link = new ArkBusyAjaxLink("contentLink"){
-//					/**
-//					 * 
-//					 */
-//					private static final long	serialVersionUID	= 1857552996891982138L;
-//
-//					@Override
-//					public void onClick(AjaxRequestTarget target) {
-//						onNodeLinkClicked(model.getObject(), tree, target);
-//					}
-//				};
-//				add(link);
-//				
-//				link.add(newContentComponent("content", tree, model));
-//			}
-//		};
-//		
-//		// Add tooltip to the node
-//		addToolTipToNode(panel, model.getObject()); 
-//
-//		return panel;
 		InventoryNodePanel panel = new InventoryNodePanel(id, model, InventoryLinkTree.this, feedbackPanel, detailContainer, containerForm);
 		return panel;
-	}
-
-	/**
-	 * Adds a tooltip to the tree node/panel
-	 * @param panel
-	 * @param object
-	 */
-	@SuppressWarnings("unchecked")
-	private void addToolTipToNode(LinkIconPanel panel, Object object) {
-		final DefaultMutableTreeNode defaultMutableTreeNode = (DefaultMutableTreeNode) object;
-		final StringBuffer stringBuffer = new StringBuffer();
-
-		if (defaultMutableTreeNode.getUserObject() instanceof InventoryModel) {
-			final InventoryModel inventoryModel = (InventoryModel) defaultMutableTreeNode.getUserObject();
-
-			if (inventoryModel.getObject() instanceof InvSite) {
-				InvSite nodeObject = (InvSite) inventoryModel.getObject();
-				stringBuffer.append(nodeObject.getName()); 
-				stringBuffer.append("\t");
-			}
-			if (inventoryModel.getObject() instanceof InvFreezer) {
-				InvFreezer nodeObject = (InvFreezer) inventoryModel.getObject();
-				stringBuffer.append(nodeObject.getName());
-				stringBuffer.append("\t");
-				stringBuffer.append(percentUsed(nodeObject.getAvailable(), nodeObject.getCapacity()));
-			}
-			if (inventoryModel.getObject() instanceof InvRack) {
-				InvRack nodeObject = (InvRack) inventoryModel.getObject();
-				stringBuffer.append(nodeObject.getName());
-				stringBuffer.append("\t");
-				stringBuffer.append(percentUsed(nodeObject.getAvailable(), nodeObject.getCapacity()));
-			}
-			if (inventoryModel.getObject() instanceof InvBox) {
-				InvBox nodeObject = (InvBox) inventoryModel.getObject();
-				stringBuffer.append(nodeObject.getName());
-				stringBuffer.append("\t");
-				stringBuffer.append(percentUsed(nodeObject.getAvailable(), nodeObject.getCapacity()));
-			}
-		}
-		
-		String toolTip = stringBuffer.toString();
-		panel.add(new AttributeModifier("showtooltip", new Model<Boolean>(true)));
-		panel.add(new AttributeModifier("title", new Model<String>(toolTip)));
-	}
-	
-	/**
-	 * 
-	 * @param available
-	 * @param capacity
-	 * @return
-	 */
-	private String percentUsed(float available, float capacity) {
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("(Used: ");
-		stringBuffer.append("\t");
-		stringBuffer.append(calculatePercentUsed(available, capacity));
-		stringBuffer.append("%)");
-		return stringBuffer.toString();
-	}
-
-	/**
-	 * Calculates the percent used of the tank/shelf/box
-	 * @param available
-	 * @param capacity
-	 * @return
-	 */
-	private float calculatePercentUsed(float available, float capacity) {
-		float percentUsed = ((capacity - available) / capacity) * 100;
-		percentUsed = Math.round(percentUsed);
-		return percentUsed;
-	}
-
-	/**
-	 * Expand or collapse a node if the user clicks on a node (in addition to the +/- signs)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void onNodeLinkClicked(Object object, BaseTree tree, AjaxRequestTarget target) {
-		final DefaultMutableTreeNode node = (DefaultMutableTreeNode) object;
-
-		if (node.getUserObject() instanceof InventoryModel) {
-			final InventoryModel inventoryModel = (InventoryModel) node.getUserObject();
-
-			if (inventoryModel.getObject() instanceof InvSite) {
-				InvSite invSite = (InvSite) inventoryModel.getObject();
-				// Get object from database again, to be sure of persistence
-				invSite = iInventoryService.getInvSite(invSite.getId());
-				containerForm.getModelObject().setInvSite(invSite);
-				
-				SiteDetailPanel detailPanel = new SiteDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
-				detailPanel.initialisePanel();
-				
-				detailContainer.addOrReplace(detailPanel);
-				detailContainer.setVisible(true);
-			}
-			if (inventoryModel.getObject() instanceof InvFreezer) {
-				InvFreezer invFreezer = (InvFreezer) inventoryModel.getObject();
-				
-				containerForm.getModelObject().setInvFreezer(invFreezer);
-				
-				FreezerDetailPanel detailPanel = new FreezerDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
-				detailPanel.initialisePanel();
-				
-				detailContainer.addOrReplace(detailPanel);
-				detailContainer.setVisible(true);
-			}
-			if (inventoryModel.getObject() instanceof InvRack) {
-				InvRack invRack = (InvRack) inventoryModel.getObject();
-				// Get object from database again, to be sure of persistence
-				invRack = iInventoryService.getInvRack(invRack.getId());
-				containerForm.getModelObject().setInvRack(invRack);
-				
-				RackDetailPanel detailPanel = new RackDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
-				detailPanel.initialisePanel();
-				
-				detailContainer.addOrReplace(detailPanel);
-				detailContainer.setVisible(true);
-			}
-			if (inventoryModel.getObject() instanceof InvBox) {
-				InvBox invBox = (InvBox) inventoryModel.getObject();
-				// Get object from database again, to be sure of persistence
-				invBox = iInventoryService.getInvBox(invBox.getId());
-				containerForm.getModelObject().setInvBox(invBox);
-				
-				BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node, null);
-				detailPanel.initialisePanel();
-				
-				detailContainer.addOrReplace(detailPanel);
-				detailContainer.setVisible(true);
-			}
-		}
-
-		if (!node.isLeaf()) {
-			if (tree.getTreeState().isNodeExpanded(node)) {
-				tree.getTreeState().collapseNode(node);
-			}
-			else {
-				tree.getTreeState().expandNode(node);
-			}
-		}
-		
-		// Handle node clicked (highlight)
-		tree.getTreeState().selectNode(node, true);
-		tree.updateTree(target);
-		
-		target.add(feedbackPanel);
-		target.add(detailContainer);
-	}
-	
-	/**
-	 * Determine what icon to display on the node
-	 * 
-	 * @param object
-	 *           the reference object of the node
-	 * @return resourceReference to the icon for the node in question
-	 */
-	@SuppressWarnings("unchecked")
-	private ResourceReference getIconResourceReference(Object object) {
-		final DefaultMutableTreeNode defaultMutableTreeNode = (DefaultMutableTreeNode) object;
-		ResourceReference resourceReference = STUDY_ICON;
-
-		if (defaultMutableTreeNode.getUserObject() instanceof InventoryModel) {
-			final InventoryModel inventoryModel = (InventoryModel) defaultMutableTreeNode.getUserObject();
-
-			if (inventoryModel.getObject() instanceof InvSite) {
-				resourceReference = SITE_ICON;
-			}
-			if (inventoryModel.getObject() instanceof InvFreezer) {
-				InvFreezer invTank = (InvFreezer) inventoryModel.getObject();
-				resourceReference = getTankIcon(invTank.getAvailable(), invTank.getCapacity());
-			}
-			if (inventoryModel.getObject() instanceof InvRack) {
-				InvRack invTray = (InvRack) inventoryModel.getObject();
-				resourceReference = getTankIcon(invTray.getAvailable(), invTray.getCapacity());
-			}
-			if (inventoryModel.getObject() instanceof InvBox) {
-				InvBox invBox = (InvBox) inventoryModel.getObject();
-				resourceReference = getBoxIcon(invBox.getAvailable(), invBox.getCapacity());
-			}
-		}
-		return resourceReference;
-	}
-
-	/**
-	 * Get the Tank/Site empty/half/nearly full/full icon, determined by the (available/capacity) ratio
-	 * @param available
-	 * @param capacity
-	 * @return
-	 */
-	protected ResourceReference getTankIcon(float available, float capacity) {
-		float result = available / capacity;
-		
-		if (result == 0) {
-			return FULL_FREEZER_ICON;
-		}
-		else if ((result > 0) && (result < 0.5)) {
-			return YELLOW_FREEZER_ICON;
-		}
-		else if ((result >= 0.5) && (result < 1)) {
-			return GREEN_FREEZER_ICON;
-		}
-		else {
-			return EMPTY_FREEZER_ICON;
-		}
-	}
-
-	/**
-	 * Get the Box empty/half/nearly full/full icon, determined by the (available/capacity) ratio
-	 * @param available
-	 * @param capacity
-	 * @return
-	 */
-	protected ResourceReference getBoxIcon(float available, float capacity) {
-		float result = available / capacity;
-		
-		if (result == 0) {
-			return FULL_BOX_ICON;
-		}
-		else if ((result > 0) && (result < 0.5)) {
-			return YELLOW_BOX_ICON;
-		}
-		else if ((result >= 0.5) && (result < 1)) {
-			return GREEN_BOX_ICON;
-		}
-		else {
-			return EMPTY_BOX_ICON;
-		}
-	}
+	}	
 }

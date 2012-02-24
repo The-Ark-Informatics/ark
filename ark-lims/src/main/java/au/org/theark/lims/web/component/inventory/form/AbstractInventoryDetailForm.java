@@ -20,7 +20,10 @@ package au.org.theark.lims.web.component.inventory.form;
 
 import java.util.Iterator;
 
+import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
@@ -317,8 +320,10 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		editButtonContainer.setVisible(true);
 		target.add(detailFormContainer);
 		target.add(editButtonContainer);
-		// Refresh tree panel
-		//target.add(tree.getParent());
+		
+		// trigger redraw of corresponding node
+      tree.treeNodesChanged(new TreeModelEvent(this, new TreePath(node.getParent()), new int[]{0}, new TreeNode[]{node} ));
+		tree.updateTree(target);
 	}
 
 	/**

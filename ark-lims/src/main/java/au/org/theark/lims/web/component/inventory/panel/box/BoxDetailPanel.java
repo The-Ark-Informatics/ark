@@ -48,9 +48,8 @@ public class BoxDetailPanel extends Panel {
 	private DefaultMutableTreeNode		node;
 	private Panel								gridBoxPanel;
 	private AbstractDetailModalWindow	modalWindow;
-	private Panel panel;
 
-	public BoxDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node, Panel panel) {
+	public BoxDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.feedbackPanel = feedbackPanel;
@@ -58,11 +57,10 @@ public class BoxDetailPanel extends Panel {
 		this.containerForm = containerForm;
 		this.tree = tree;
 		this.node = node;
-		this.panel = panel;
 	}
 
 	public void initialisePanel() {
-		detailForm = new BoxDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node, panel);
+		detailForm = new BoxDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
 		detailForm.initialiseDetailForm();
 
 		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {

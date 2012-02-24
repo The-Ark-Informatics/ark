@@ -82,7 +82,6 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private DropDownChoice<InvRack>			invTrayDdc;
 	private AjaxButton 							batchAllocate;
 	private BoxAllocationPanel 				boxAllocationPanel;
-	private Panel panel;
 	
 	/**
 	 * 
@@ -93,9 +92,8 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 * @param tree
 	 * @param node 
 	 */
-	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node, Panel panel) {
+	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
-		this.panel = panel;
 		boxAllocationPanel = new BoxAllocationPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
 	}
 
@@ -277,20 +275,6 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			// Update
 			iInventoryService.updateInvBox(containerForm.getModelObject());
 			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was updated successfully");
-			
-			//tree.invalidateAll();
-			
-			// trigger redraw of clicked node
-	      tree.treeNodesChanged(new TreeModelEvent(this, new TreePath(node.getParent()), new int[]{0}, new TreeNode[]{node} ));
-	      
-//			TreeNode[] path = node.getPath();
-//			for (int i = 0; i < path.length; i++) {
-//				tree.getTreeState().expandNode(path[i]);
-//			}
-			tree.updateTree(target);
-			
-			// update node panel
-			target.add(panel);
 			processErrors(target);
 		}
 

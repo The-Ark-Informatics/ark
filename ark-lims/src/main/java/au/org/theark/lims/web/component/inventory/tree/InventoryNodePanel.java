@@ -83,17 +83,20 @@ public class InventoryNodePanel extends LinkIconPanel {
 
 			if (inventoryModel.getObject() instanceof InvSite) {
 				InvSite nodeObject = (InvSite) inventoryModel.getObject();
+				nodeObject = iInventoryService.getInvSite(nodeObject.getId());
 				stringBuffer.append(nodeObject.getName()); 
 				stringBuffer.append("\t");
 			}
 			if (inventoryModel.getObject() instanceof InvFreezer) {
 				InvFreezer nodeObject = (InvFreezer) inventoryModel.getObject();
+				nodeObject = iInventoryService.getInvFreezer(nodeObject.getId());
 				stringBuffer.append(nodeObject.getName());
 				stringBuffer.append("\t");
 				stringBuffer.append(percentUsed(nodeObject.getAvailable(), nodeObject.getCapacity()));
 			}
 			if (inventoryModel.getObject() instanceof InvRack) {
 				InvRack nodeObject = (InvRack) inventoryModel.getObject();
+				nodeObject = iInventoryService.getInvRack(nodeObject.getId());
 				stringBuffer.append(nodeObject.getName());
 				stringBuffer.append("\t");
 				stringBuffer.append(percentUsed(nodeObject.getAvailable(), nodeObject.getCapacity()));
@@ -116,7 +119,35 @@ public class InventoryNodePanel extends LinkIconPanel {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Component newContentComponent(String componentId, BaseTree tree, IModel model) {
-		return new Label(componentId, getNodeTextModel(model));
+		String name = new String();
+		final DefaultMutableTreeNode defaultMutableTreeNode = (DefaultMutableTreeNode) model.getObject();
+		
+		if (defaultMutableTreeNode.getUserObject() instanceof InventoryModel) {
+			final InventoryModel inventoryModel = (InventoryModel) defaultMutableTreeNode.getUserObject();
+
+			if (inventoryModel.getObject() instanceof InvSite) {
+				InvSite invSite = (InvSite) inventoryModel.getObject();
+				invSite = iInventoryService.getInvSite(invSite.getId());
+				name = invSite.getName();
+			}
+			if (inventoryModel.getObject() instanceof InvFreezer) {
+				InvFreezer invFreezer = (InvFreezer) inventoryModel.getObject();
+				invFreezer = iInventoryService.getInvFreezer(invFreezer.getId());
+				name = invFreezer.getName();
+			}
+			if (inventoryModel.getObject() instanceof InvRack) {
+				InvRack invRack = (InvRack) inventoryModel.getObject();
+				invRack = iInventoryService.getInvRack(invRack.getId());
+				name = invRack.getName();
+			}
+			if (inventoryModel.getObject() instanceof InvBox) {
+				InvBox invBox = (InvBox) inventoryModel.getObject();
+				invBox = iInventoryService.getInvBox(invBox.getId());
+				name = invBox.getName();
+			}
+		}
+		
+		return new Label(componentId, name);
 	}
 
 	@Override
@@ -217,7 +248,7 @@ public class InventoryNodePanel extends LinkIconPanel {
 				invBox = iInventoryService.getInvBox(invBox.getId());
 				containerForm.getModelObject().setInvBox(invBox);
 				
-				BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node, InventoryNodePanel.this);
+				BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
 				detailPanel.initialisePanel();
 				
 				detailContainer.addOrReplace(detailPanel);
@@ -242,11 +273,6 @@ public class InventoryNodePanel extends LinkIconPanel {
 		target.add(detailContainer);
 	}
 	
-	protected IModel<?> getNodeTextModel(IModel<?> nodeModel)
-	{
-		return nodeModel;
-	}
-	
 	/**
 	 * Determine what icon to display on the node
 	 * 
@@ -266,15 +292,18 @@ public class InventoryNodePanel extends LinkIconPanel {
 				resourceReference = SITE_ICON;
 			}
 			if (inventoryModel.getObject() instanceof InvFreezer) {
-				InvFreezer invTank = (InvFreezer) inventoryModel.getObject();
-				resourceReference = getTankIcon(invTank.getAvailable(), invTank.getCapacity());
+				InvFreezer invFreezer = (InvFreezer) inventoryModel.getObject();
+				invFreezer = iInventoryService.getInvFreezer(invFreezer.getId());
+				resourceReference = getTankIcon(invFreezer.getAvailable(), invFreezer.getCapacity());
 			}
 			if (inventoryModel.getObject() instanceof InvRack) {
-				InvRack invTray = (InvRack) inventoryModel.getObject();
-				resourceReference = getTankIcon(invTray.getAvailable(), invTray.getCapacity());
+				InvRack invRack = (InvRack) inventoryModel.getObject();
+				invRack = iInventoryService.getInvRack(invRack.getId());
+				resourceReference = getTankIcon(invRack.getAvailable(), invRack.getCapacity());
 			}
 			if (inventoryModel.getObject() instanceof InvBox) {
 				InvBox invBox = (InvBox) inventoryModel.getObject();
+				invBox = iInventoryService.getInvBox(invBox.getId());
 				resourceReference = getBoxIcon(invBox.getAvailable(), invBox.getCapacity());
 			}
 		}
@@ -353,5 +382,4 @@ public class InventoryNodePanel extends LinkIconPanel {
 		percentUsed = Math.round(percentUsed);
 		return percentUsed;
 	}
-
 }
