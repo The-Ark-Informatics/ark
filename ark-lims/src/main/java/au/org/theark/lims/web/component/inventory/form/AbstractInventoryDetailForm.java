@@ -322,8 +322,10 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		target.add(editButtonContainer);
 		
 		// trigger redraw of corresponding node
-      tree.treeNodesChanged(new TreeModelEvent(this, new TreePath(node.getParent()), new int[]{0}, new TreeNode[]{node} ));
-		tree.updateTree(target);
+		if(node != null) {
+			tree.treeNodesChanged(new TreeModelEvent(this, new TreePath(node.getParent()), new int[]{0}, new TreeNode[]{node} ));
+			tree.updateTree(target);
+		}
 	}
 
 	/**
