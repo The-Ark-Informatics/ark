@@ -57,7 +57,7 @@ public class InvSite implements java.io.Serializable, InvTreeNode<InvFreezer> {
 	private String			phone;
 	private String			ldapGroup;
 	private Study			study;
-	private List<InvFreezer>	invTanks	= new ArrayList<InvFreezer>(0);
+	private List<InvFreezer>	invFreezers	= new ArrayList<InvFreezer>(0);
 
 	public InvSite() {
 	}
@@ -67,7 +67,7 @@ public class InvSite implements java.io.Serializable, InvTreeNode<InvFreezer> {
 		this.name = name;
 	}
 
-	public InvSite(Long id, Integer deleted, String contact, String address, String name, String phone, String ldapGroup, List<InvFreezer> invTanks) {
+	public InvSite(Long id, Integer deleted, String contact, String address, String name, String phone, String ldapGroup, List<InvFreezer> invFreezers) {
 		this.id = id;
 		this.deleted = deleted;
 		this.contact = contact;
@@ -75,7 +75,7 @@ public class InvSite implements java.io.Serializable, InvTreeNode<InvFreezer> {
 		this.name = name;
 		this.phone = phone;
 		this.ldapGroup = ldapGroup;
-		this.invTanks = invTanks;
+		this.invFreezers = invFreezers;
 	}
 
 	@Id
@@ -170,17 +170,17 @@ public class InvSite implements java.io.Serializable, InvTreeNode<InvFreezer> {
 
 	@OrderBy(value="name")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "invSite")
-	public List<InvFreezer> getInvTanks() {
-		return this.invTanks;
+	public List<InvFreezer> getInvFreezers() {
+		return this.invFreezers;
 	}
 
-	public void setInvTanks(List<InvFreezer> invTanks) {
-		this.invTanks = invTanks;
+	public void setInvFreezers(List<InvFreezer> invFreezers) {
+		this.invFreezers = invFreezers;
 	}
 
 	@Transient
 	public List<InvFreezer> getChildren() {
-		return getInvTanks();
+		return getInvFreezers();
 	}
 
 	@Transient
