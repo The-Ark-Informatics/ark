@@ -98,7 +98,7 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 	public void onAddBoxSubmit(AjaxRequestTarget target) {
 		resetModel();
 
-		BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null, null);
+		BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null);
 		detailPanel.initialisePanel();
 
 		refreshDetailPanel(target, detailPanel);
