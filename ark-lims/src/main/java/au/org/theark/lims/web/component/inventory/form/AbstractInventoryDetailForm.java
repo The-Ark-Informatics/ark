@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.inventory.form;
 
-import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.event.TreeModelEvent;
