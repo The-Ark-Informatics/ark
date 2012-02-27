@@ -20,13 +20,19 @@ package au.org.theark.lims.web.component.inventory.panel.rack;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.html.tree.BaseTree;
 
+import au.org.theark.core.model.lims.entity.InvBox;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.form.RackDetailForm;
+import au.org.theark.lims.web.component.inventory.panel.box.BoxDetailPanel;
+import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
 
 @SuppressWarnings("serial")
 public class RackDetailPanel extends Panel {
@@ -34,10 +40,11 @@ public class RackDetailPanel extends Panel {
 	private WebMarkupContainer			detailContainer;
 	private RackDetailForm				detailForm;
 	private ContainerForm				containerForm;
-	private BaseTree						tree;
+	private InventoryLinkTree						tree;
 	private DefaultMutableTreeNode	node;
+	private AjaxButton 					addBox;
 
-	public RackDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+	public RackDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, InventoryLinkTree tree, DefaultMutableTreeNode node) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.feedbackPanel = feedbackPanel;
@@ -50,7 +57,27 @@ public class RackDetailPanel extends Panel {
 	public void initialisePanel() {
 		detailForm = new RackDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
 		detailForm.initialiseDetailForm();
+		
+		addBox = new ArkBusyAjaxButton("addBox") {
+			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				containerForm.getModelObject().setInvBox(new InvBox());
+				containerForm.getModelObject().getInvBox().setInvRack(containerForm.getModelObject().getInvRack());
+				BoxDetailPanel boxDetailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node); 
+				boxDetailPanel.initialisePanel();
+				
+				RackDetailPanel.this.replaceWith(boxDetailPanel);
+				target.add(detailContainer);
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+			}
+		};
+		
 		add(detailForm);
+		add(addBox);
 	}
 
 	public RackDetailForm getDetailForm() {

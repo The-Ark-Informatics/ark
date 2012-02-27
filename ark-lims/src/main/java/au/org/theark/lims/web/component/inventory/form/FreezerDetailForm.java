@@ -34,7 +34,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -53,6 +52,7 @@ import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
 
 /**
  * @author cellis
@@ -93,7 +93,7 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 * @param tree
 	 * @param node 
 	 */
-	public FreezerDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+	public FreezerDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, InventoryLinkTree tree, DefaultMutableTreeNode node) {
 
 		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
 	}
@@ -188,6 +188,14 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			iInventoryService.createInvFreezer(containerForm.getModelObject());
 			this.info("Freezer " + containerForm.getModelObject().getInvFreezer().getName() + " was created successfully");
 			processErrors(target);
+			
+			if(node != null) {
+				DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(containerForm.getModelObject().getInvFreezer());
+				node.add(newNode);
+				tree.getTreeState().selectNode(newNode, true);
+				tree.getTreeState().expandNode(node);
+				node = newNode;
+			}
 		}
 		else {
 			// Update

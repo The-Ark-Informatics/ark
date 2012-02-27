@@ -1,16 +1,19 @@
 package au.org.theark.lims.web.component.inventory.panel;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.html.tree.AbstractTree;
-import org.apache.wicket.markup.html.tree.BaseTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.panel.box.BoxDetailPanel;
 import au.org.theark.lims.web.component.inventory.panel.freezer.FreezerDetailPanel;
@@ -18,18 +21,24 @@ import au.org.theark.lims.web.component.inventory.panel.rack.RackDetailPanel;
 import au.org.theark.lims.web.component.inventory.panel.site.SiteDetailPanel;
 import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
 
-public class InventoryTreePanel extends AbstractInventoryTreePanel {
+public class InventoryTreePanel extends Panel {
 
 	/**
 	 * 
 	 */
 	private static final long		serialVersionUID	= -6281929692337423853L;
-	private static final Logger	log					= LoggerFactory.getLogger(AbstractInventoryTreePanel.class);
-	private final BaseTree			tree;
+	private static final Logger	log					= LoggerFactory.getLogger(InventoryTreePanel.class);
 	private Form<Void>				treeForm				= new Form<Void>("treeForm");
 	private FeedbackPanel			feedbackPanel;
 	private WebMarkupContainer		detailContainer;
 	private ContainerForm			containerForm;
+	
+	protected ArkBusyAjaxButton	addSite;
+	protected ArkBusyAjaxButton	addFreezer;
+	protected ArkBusyAjaxButton	addRack;
+	protected ArkBusyAjaxButton	addBox;
+	
+	protected InventoryLinkTree   tree;
 
 	public InventoryTreePanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm) {
 		super(id);
@@ -37,16 +46,110 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 		this.detailContainer = detailContainer;
 		this.containerForm = containerForm;
 
-		tree = new InventoryLinkTree("tree", null, feedbackPanel, detailContainer, containerForm);
+		tree = new InventoryLinkTree("tree", feedbackPanel, detailContainer, containerForm);
 		tree.setRootLess(true);
 		
+		setOutputMarkupPlaceholderTag(true);
+		initialiseButtons();
 		addComponents();
 	}
 
-	@Override
-	protected void onBeforeRender() {
-		tree.setModelObject(createTreeModel());
-		super.onBeforeRender();
+	private void initialiseButtons() {
+		addSite = new ArkBusyAjaxButton("addSite") {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public boolean isVisible() {
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+			}
+
+			@Override
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onAddSiteSubmit(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to process Add Site button");
+			}
+
+		};
+
+		addFreezer = new ArkBusyAjaxButton("addFreezer") {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public boolean isVisible() {
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+			}
+
+			@Override
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onAddFreezerSubmit(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to process Add Freezer button");
+			}
+
+		};
+
+		addRack = new ArkBusyAjaxButton("addRack") {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public boolean isVisible() {
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+			}
+
+			@Override
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onAddRackSubmit(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to process Add Rack button");
+			}
+
+		};
+
+		addBox = new ArkBusyAjaxButton("addBox") {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public boolean isVisible() {
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+			}
+
+			@Override
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onAddBoxSubmit(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to process Add Box button");
+			}
+
+		};
 	}
 
 	private void addComponents() {
@@ -59,22 +162,15 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 		addOrReplace(tree);
 	}
 
-	@Override
-	protected AbstractTree getTree() {
-		return tree;
-	}
-
-	@Override
 	public void onAddSiteSubmit(AjaxRequestTarget target) {
 		resetModel();
 
-		SiteDetailPanel detailPanel = new SiteDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null);
+		SiteDetailPanel detailPanel = new SiteDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, (DefaultMutableTreeNode) null);
 		detailPanel.initialisePanel();
 
 		refreshDetailPanel(target, detailPanel);
 	}
 
-	@Override
 	public void onAddFreezerSubmit(AjaxRequestTarget target) {
 		resetModel();
 
@@ -84,7 +180,6 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 		refreshDetailPanel(target, detailPanel);
 	}
 
-	@Override
 	public void onAddRackSubmit(AjaxRequestTarget target) {
 		resetModel();
 
@@ -94,7 +189,6 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 		refreshDetailPanel(target, detailPanel);
 	}
 
-	@Override
 	public void onAddBoxSubmit(AjaxRequestTarget target) {
 		resetModel();
 

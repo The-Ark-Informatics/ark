@@ -25,7 +25,6 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.html.tree.BaseTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +32,7 @@ import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.web.component.inventory.form.BoxDetailForm;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.panel.box.display.GridBoxPanel;
+import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
 
 public class BoxDetailPanel extends Panel {
 	/**
@@ -44,12 +44,12 @@ public class BoxDetailPanel extends Panel {
 	private WebMarkupContainer				detailContainer;
 	private BoxDetailForm					detailForm;
 	private ContainerForm					containerForm;
-	private BaseTree							tree;
+	private InventoryLinkTree				tree;
 	private DefaultMutableTreeNode		node;
 	private Panel								gridBoxPanel;
 	private AbstractDetailModalWindow	modalWindow;
 
-	public BoxDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+	public BoxDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, InventoryLinkTree tree, DefaultMutableTreeNode node) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.feedbackPanel = feedbackPanel;
