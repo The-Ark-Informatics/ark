@@ -46,8 +46,12 @@ import au.org.theark.core.model.study.entity.Study;
  */
 @Entity
 @Table(name = "inv_site", schema = Constants.LIMS_TABLE_SCHEMA)
-public class InvSite implements java.io.Serializable, InvTreeNode<InvFreezer> {
+public class InvSite implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -6935200652465629982L;
 	private Long			id;
 	private String			timestamp;
 	private Integer		deleted;

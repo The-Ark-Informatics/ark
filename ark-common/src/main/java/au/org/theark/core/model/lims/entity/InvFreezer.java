@@ -48,8 +48,12 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "inv_freezer", schema = Constants.LIMS_TABLE_SCHEMA)
-public class InvFreezer implements java.io.Serializable, InvTreeNode<InvRack> {
+public class InvFreezer implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 6323844284982753499L;
 	private Long			id;
 	private String			timestamp;
 	private InvSite		invSite;
@@ -65,7 +69,7 @@ public class InvFreezer implements java.io.Serializable, InvTreeNode<InvRack> {
 	private Date			lastservicedate;
 	private String			description;
 	private List<InvRack>	invRacks	= new ArrayList<InvRack>(0);
-	private String			siteFreezer;
+	protected String			siteFreezer;
 
 	public InvFreezer() {
 	}
