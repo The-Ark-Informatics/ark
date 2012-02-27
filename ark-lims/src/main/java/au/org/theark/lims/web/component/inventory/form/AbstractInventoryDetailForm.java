@@ -18,10 +18,13 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.inventory.form;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -36,7 +39,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.tree.BaseTree;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.Constants;
@@ -44,6 +47,7 @@ import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.ArkFormVisitor;
+import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
 
 /**
  * <p>
@@ -78,7 +82,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 	// Add a visitor class for required field marking/validation/highlighting
 	protected ArkFormVisitor		formVisitor			= new ArkFormVisitor();
 
-	protected BaseTree 				tree;
+	protected InventoryLinkTree		tree;
 	protected DefaultMutableTreeNode node;
 	
 	/**
@@ -90,7 +94,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 	 * @param tree
 	 * @param node 
 	 */
-	public AbstractInventoryDetailForm(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, Form<T> containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+	public AbstractInventoryDetailForm(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, Form<T> containerForm, InventoryLinkTree tree, DefaultMutableTreeNode node) {
 		super(id, containerForm.getModel());
 		this.feedbackPanel = feedbackPanel;
 		this.detailContainer = detailContainer;
@@ -177,8 +181,14 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 				target.add(feedbackPanel);
 				detailContainer.setVisible(false);
 				target.add(detailContainer);
+				
+				// remove node
+				DefaultTreeModel treeModel = (DefaultTreeModel) tree.getDefaultModelObject();
+				for (Object selectedNode : tree.getTreeState().getSelectedNodes()) {
+					treeModel.removeNodeFromParent((MutableTreeNode) selectedNode);
+				}
+				
 				tree.updateTree(target);
-				target.add(tree);
 			}
 
 			@Override
@@ -196,30 +206,6 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 				return canDelete();
 			}
 		};
-
-//		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
-//			/**
-//			 * 
-//			 */
-//			private static final long	serialVersionUID	= -6282464357368710796L;
-//
-//			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-//				deleteButton.setEnabled(true);
-//				editButtonContainer.setVisible(true);
-//				detailFormContainer.setEnabled(true);
-//				target.add(editButtonContainer);
-//				target.add(detailFormContainer);
-//			}
-//
-//			public void onError(AjaxRequestTarget target, Form<?> form) {
-//				processErrors(target);
-//			}
-//
-//			@Override
-//			public boolean isVisible() {
-//				return ArkPermissionHelper.isActionPermitted(Constants.EDIT);
-//			}
-//		};
 		
 		//editButton.setDefaultFormProcessing(false);
 		cancelButton.setDefaultFormProcessing(false);
@@ -324,8 +310,8 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		// trigger redraw of corresponding node
 		if(node != null) {
 			tree.treeNodesChanged(new TreeModelEvent(this, new TreePath(node.getParent()), new int[]{0}, new TreeNode[]{node} ));
-			tree.updateTree(target);
 		}
+		tree.updateTree(target);
 	}
 
 	/**
@@ -397,4 +383,19 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 	 * @return
 	 */
 	abstract protected boolean canDelete();
+	
+	/**
+	 * Refresh/repaint the detailPanel
+	 * 
+	 * @param target
+	 * @param detailPanel
+	 */
+	public void refreshDetailPanel(AjaxRequestTarget target, Panel detailPanel) {
+		detailContainer.addOrReplace(detailPanel);
+		detailContainer.setVisible(true);
+
+		target.add(feedbackPanel);
+		target.add(detailContainer);
+		target.add(detailPanel);
+	}
 }

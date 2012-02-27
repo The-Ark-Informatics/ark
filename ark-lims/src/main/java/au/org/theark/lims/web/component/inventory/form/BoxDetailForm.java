@@ -32,7 +32,6 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -51,6 +50,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.inventory.panel.box.BoxAllocationPanel;
+import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
 
 /**
  * @author cellis
@@ -88,7 +88,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 * @param tree
 	 * @param node 
 	 */
-	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, InventoryLinkTree tree, DefaultMutableTreeNode node) {
 		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
 		boxAllocationPanel = new BoxAllocationPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
 	}
@@ -266,6 +266,14 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			iInventoryService.createInvBox(containerForm.getModelObject());
 			this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was created successfully");
 			processErrors(target);
+			
+			if(node != null) {
+				DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(containerForm.getModelObject().getInvBox());
+				node.add(newNode);
+				tree.getTreeState().selectNode(newNode, true);
+				tree.getTreeState().expandNode(node);
+				node = newNode;
+			}
 		}
 		else {
 			// Update

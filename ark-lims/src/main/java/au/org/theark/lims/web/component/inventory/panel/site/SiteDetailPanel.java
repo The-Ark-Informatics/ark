@@ -20,13 +20,19 @@ package au.org.theark.lims.web.component.inventory.panel.site;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.html.tree.BaseTree;
 
+import au.org.theark.core.model.lims.entity.InvFreezer;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.form.SiteDetailForm;
+import au.org.theark.lims.web.component.inventory.panel.freezer.FreezerDetailPanel;
+import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
 
 @SuppressWarnings("serial")
 public class SiteDetailPanel extends Panel {
@@ -34,10 +40,11 @@ public class SiteDetailPanel extends Panel {
 	private WebMarkupContainer			detailContainer;
 	private SiteDetailForm				detailForm;
 	private ContainerForm				containerForm;
-	private BaseTree						tree;
+	private InventoryLinkTree			tree;
 	private DefaultMutableTreeNode	node;
+	private AjaxButton					addFreezer;
 
-	public SiteDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+	public SiteDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, InventoryLinkTree tree, DefaultMutableTreeNode node) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.feedbackPanel = feedbackPanel;
@@ -50,7 +57,26 @@ public class SiteDetailPanel extends Panel {
 	public void initialisePanel() {
 		detailForm = new SiteDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
 		detailForm.initialiseDetailForm();
+		
+		addFreezer = new ArkBusyAjaxButton("addFreezer") {
+			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				containerForm.getModelObject().setInvFreezer(new InvFreezer());
+				containerForm.getModelObject().getInvFreezer().setInvSite(containerForm.getModelObject().getInvSite());
+				FreezerDetailPanel freezerDetailPanel = new FreezerDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node); 
+				freezerDetailPanel.initialisePanel();
+				
+				SiteDetailPanel.this.replaceWith(freezerDetailPanel);
+				target.add(detailContainer);
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+			}
+		};
 		add(detailForm);
+		add(addFreezer);
 	}
 
 	public SiteDetailForm getDetailForm() {

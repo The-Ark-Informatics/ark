@@ -23,12 +23,13 @@ import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
+import org.apache.wicket.markup.html.tree.WicketTreeModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
@@ -39,8 +40,6 @@ import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
-import au.org.theark.core.model.lims.entity.InvTreeNode;
-import au.org.theark.lims.model.InventoryModel;
 import au.org.theark.lims.model.TreeNodeModel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
@@ -62,12 +61,12 @@ public class InventoryLinkTree extends LinkTree {
 	private WebMarkupContainer detailContainer;
 	private ContainerForm containerForm;
 
-	public InventoryLinkTree(String id, TreeModel model, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm) {
-		super(id, model);
+	public InventoryLinkTree(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm) {
+		super(id, new WicketTreeModel());
 		this.feedbackPanel = feedbackPanel;
 		this.detailContainer = detailContainer;
 		this.containerForm = containerForm;
-		createTreeModel();
+		setModelObject(createTreeModel());
 	}
 	
 	/**
@@ -75,7 +74,7 @@ public class InventoryLinkTree extends LinkTree {
 	 * 
 	 * @return New instance of tree model.
 	 */
-	protected TreeModel createTreeModel() {
+	protected DefaultTreeModel createTreeModel() {
 		InvSite invSite = new InvSite();
 		try {
 			invSites = iInventoryService.searchInvSite(invSite);
@@ -86,11 +85,10 @@ public class InventoryLinkTree extends LinkTree {
 		return convertToTreeModel();
 	}
 
-	private TreeModel convertToTreeModel() {
-		TreeModel model = null;
+	private DefaultTreeModel convertToTreeModel() {
+		DefaultTreeModel model = null;
 		// Default root node (set to not show)
 		MutableTreeNode rootNode = new MutableTreeNode(new TreeNodeModel("ROOT"));
-		//add(rootNode, invSites);
 		addSites(rootNode, invSites);
 		model = new DefaultTreeModel(rootNode);
 		return model;
@@ -125,6 +123,28 @@ public class InventoryLinkTree extends LinkTree {
 			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(box);
 			parentNode.add(childNode);
 		}
+	}
+	
+	@Override
+	protected void onJunctionLinkClicked(AjaxRequestTarget target, Object node) {
+		final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node;
+		parentNode.removeAllChildren();
+		if (parentNode.getUserObject() instanceof InvSite) {
+			InvSite invSite = (InvSite) parentNode.getUserObject();
+			invSite = iInventoryService.getInvSite(invSite.getId());
+			addFreezers(parentNode, invSite.getInvFreezers());
+		}
+		if (parentNode.getUserObject() instanceof InvFreezer) {
+			InvFreezer invFreezer = (InvFreezer) parentNode.getUserObject();
+			invFreezer = iInventoryService.getInvFreezer(invFreezer.getId());
+			addRacks(parentNode, invFreezer.getInvRacks());
+		}
+		if (parentNode.getUserObject() instanceof InvRack) {
+			InvRack invRack = (InvRack) parentNode.getUserObject();
+			invRack = iInventoryService.getInvRack(invRack.getId());
+			addBoxes(parentNode, invRack.getInvBoxes());
+		}
+		this.updateTree(target);
 	}
 
 	@SuppressWarnings("unchecked")
