@@ -18,25 +18,17 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biolocation.form;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.lims.entity.InvBox;
-import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.component.inventory.panel.box.display.GridBoxPanel;
 import au.org.theark.lims.web.component.inventory.tree.AllocationLinkTree;
 
@@ -49,17 +41,11 @@ public class BioModalAllocateDetailForm extends Form<LimsVO> {
 	/**
 	 * 
 	 */
-	private static final long				serialVersionUID	= 9211020895417833151L;
-	private static final Logger			log					= LoggerFactory.getLogger(BioModalAllocateDetailForm.class);
-
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
-	private IInventoryService				iInventoryService;
-
-	private CompoundPropertyModel<LimsVO> cpModel;
-	private AbstractDetailModalWindow modalWindow;
-	private final BaseTree					tree;
-	private List<InvSite>					invSites				= new ArrayList<InvSite>(0);
-	private Panel								gridBoxPanel;
+	private static final long					serialVersionUID	= 9211020895417833151L;
+	private CompoundPropertyModel<LimsVO>	cpModel;
+	private AbstractDetailModalWindow		modalWindow;
+	private final BaseTree						tree;
+	private Panel									gridBoxPanel;
 
 	/**
 	 * Constructor
@@ -90,11 +76,11 @@ public class BioModalAllocateDetailForm extends Form<LimsVO> {
 		};
 		tree.getTreeState().collapseAll();
 		tree.setRootLess(true);
-		
+
 		gridBoxPanel = new GridBoxPanel("gridBoxPanel", cpModel.getObject(), modalWindow, true);
 		gridBoxPanel.setVisible(false);
 	}
-	
+
 	public void initialiseDetailForm() {
 		addComponents();
 	}
