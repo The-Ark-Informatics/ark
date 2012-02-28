@@ -91,7 +91,32 @@ public class StudyServiceImpl implements IStudyService {
 	private static Logger		log	= LoggerFactory.getLogger(StudyServiceImpl.class);
 
 	private IArkCommonService	iArkCommonService;
+	private IUserService			iUserService;
 	private IStudyDao				iStudyDao;
+
+	public IArkCommonService getiArkCommonService() {
+		return iArkCommonService;
+	}
+
+	@Autowired
+	public void setiArkCommonService(IArkCommonService iArkCommonService) {
+		this.iArkCommonService = iArkCommonService;
+	}
+
+	/**
+	 * @return the iUserService
+	 */
+	public IUserService getiUserService() {
+		return iUserService;
+	}
+
+	/**
+	 * @param iUserService the iUserService to set
+	 */
+	@Autowired
+	public void setiUserService(IUserService iUserService) {
+		this.iUserService = iUserService;
+	}
 
 	/* To access Hibernate Study Dao */
 	@Autowired
@@ -103,14 +128,7 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao;
 	}
 
-	public IArkCommonService getiArkCommonService() {
-		return iArkCommonService;
-	}
 
-	@Autowired
-	public void setiArkCommonService(IArkCommonService iArkCommonService) {
-		this.iArkCommonService = iArkCommonService;
-	}
 
 	public List<StudyStatus> getListOfStudyStatus() {
 		return iStudyDao.getListOfStudyStatus();
@@ -360,8 +378,9 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkSubjectInsertException {
-
 		iStudyDao.createSubject(subjectVO);
+		
+		assignChildStudies(subjectVO);
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
@@ -372,8 +391,9 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException {
-
 		iStudyDao.updateSubject(subjectVO);
+		
+		assignChildStudies(subjectVO);
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
@@ -381,6 +401,45 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT);
 		ah.setEntityId(subjectVO.getLinkSubjectStudy().getId());
 		iArkCommonService.createAuditHistory(ah);
+	}
+
+	private void assignChildStudies(SubjectVO subjectVO) {
+		// Archive LinkSubjectStudy for all unassigned child studies
+		List<Study> availableChildStudies = null;
+		availableChildStudies = getChildStudyListOfParent(subjectVO.getLinkSubjectStudy().getStudy());
+		for (Study childStudy : availableChildStudies) {
+			LinkSubjectStudy linkSubjectStudy;
+			try {
+				linkSubjectStudy = iArkCommonService.getSubject(subjectVO.getLinkSubjectStudy().getPerson().getId(), childStudy);
+				linkSubjectStudy.setSubjectStatus(iArkCommonService.getSubjectStatus("Archive"));
+				iStudyDao.update(linkSubjectStudy);
+			}
+			catch (EntityNotFoundException e) {
+				log.error(e.getMessage());
+			}
+		}
+
+		// Update ArkUser for all assigned child studies
+		List<Study> childStudies = subjectVO.getSelectedChildStudies();
+		for (Study childStudy : childStudies) {
+			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
+			try {
+				// Found a previous archived record
+				linkSubjectStudy = iArkCommonService.getSubject(subjectVO.getLinkSubjectStudy().getPerson().getId(), childStudy);
+				linkSubjectStudy.setSubjectStatus(iArkCommonService.getSubjectStatus("Subject"));
+				iStudyDao.update(linkSubjectStudy);
+			}
+			catch (EntityNotFoundException e) {
+				// Subject not assigned to child study, clone/assign accordingly
+				log.info("Assigning LinkSubjectStudy to child Study: " + childStudy.getName());
+				linkSubjectStudy = new LinkSubjectStudy();
+				linkSubjectStudy.setStudy(childStudy);
+				linkSubjectStudy.setPerson(subjectVO.getLinkSubjectStudy().getPerson());
+				linkSubjectStudy.setSubjectUID(subjectVO.getLinkSubjectStudy().getSubjectUID());
+				linkSubjectStudy.setSubjectStatus(subjectVO.getLinkSubjectStudy().getSubjectStatus());
+				cloneSubjectForSubStudy(linkSubjectStudy);
+			}
+		}
 	}
 
 	/**
@@ -1020,6 +1079,13 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy) {
 		iStudyDao.cloneSubjectForSubStudy(linkSubjectStudy);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Cloned Subject " + linkSubjectStudy.getSubjectUID());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT);
+		ah.setEntityId(linkSubjectStudy.getId());
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public LinkStudySubstudy isSubStudy(Study study) {
