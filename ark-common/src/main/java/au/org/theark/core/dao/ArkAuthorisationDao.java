@@ -35,7 +35,6 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -1177,19 +1176,26 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	public List<Study> getAssignedChildStudyListForUser(ArkUserVO arkUserVo) {
 		List<Study> studyList = new ArrayList<Study>(0);
 		
-		/* Get only the studies the ArkUser is linked to via the ArkUserRole */
-		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
-		criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
+		try {
+			ArkUser arkUser = getArkUser(arkUserVo.getArkUserEntity().getLdapUserName());
+			
+			/* Get only the studies the ArkUser is linked to via the ArkUserRole */
+			Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+			criteria.add(Restrictions.eq("arkUser", arkUser));
+			// Restrict to child studies (without parent)
+			Criteria studyCriteria = criteria.createCriteria("study");
+			studyCriteria.add(Restrictions.eq("parentStudy", arkUserVo.getStudy()));
+			studyCriteria.add(Restrictions.neProperty("id", "parentStudy.id"));
+			
+			ProjectionList projectionList = Projections.projectionList();
+			projectionList.add(Projections.groupProperty("study"), "study");
+			criteria.setProjection(projectionList);
+			studyList = criteria.list();
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
 		
-		// Restrict to child studies (without parent)
-		Criteria studyCriteria = criteria.createCriteria("study");
-		studyCriteria.add(Restrictions.eq("parentStudy", arkUserVo.getStudy()));
-		studyCriteria.add(Restrictions.neProperty("id", "parentStudy.id"));
-		
-		ProjectionList projectionList = Projections.projectionList();
-		projectionList.add(Projections.groupProperty("study"), "study");
-		criteria.setProjection(projectionList);
-		studyList = criteria.list();
 		return studyList;
 	}
 	
