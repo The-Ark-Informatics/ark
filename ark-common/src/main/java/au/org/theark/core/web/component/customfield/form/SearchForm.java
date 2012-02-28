@@ -158,8 +158,8 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		newCF.setMaxValue(cf.getMaxValue());
 		newModel.getObject().setUseCustomFieldDisplay(getModelObject().isUseCustomFieldDisplay());
 		
-		DetailPanel detailsPanel = new DetailPanel("detailsPanel", feedbackPanel, newModel, arkCrudContainerVO);
-		arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailsPanel);
+		DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
+		arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 		
 		// Reset model's CF object (do NOT replace the CustomFieldVO in the model)
 		cf = new CustomField();

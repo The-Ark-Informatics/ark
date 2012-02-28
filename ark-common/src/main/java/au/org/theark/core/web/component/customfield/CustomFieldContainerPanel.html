@@ -1,27 +1,37 @@
 <wicket:panel>
-	<!--  Page Left Zone -->
-	<div id="leftZone">&nbsp;</div>
-	
+	<!-- Page Left Zone -->
+	<div class="leftZone">
+		&nbsp;
+	</div>
+	<!-- Page right Zone -->
+	<div class="rightZone">
+		&nbsp;
+	</div>
 	<!-- Content Zone -->
-	<div id="contentZone">
+	<div class="contentZone">
 		<form wicket:id="containerForm">
-		 	<span wicket:id="feedbackMessage"> </span>
-		 	<!--  The Search WebMarkupContainer that has the SearchPanel -->
-		 	<div wicket:id="searchContainer">
-				 <div wicket:id="searchComponentPanel"></div>
+			<span wicket:id="feedbackMessage">
+			</span>
+			<!--	The Search WebMarkupContainer that has the SearchPanel -->
+			<div wicket:id="searchContainer">
+				<div wicket:id="searchPanel">
+					[Search Panel]
+				</div>
 			</div>
-			
-			<!--  The SearchResults  WebMarkupContainer that has the SearchResultsPanel -->
+
 			<div wicket:id="resultListContainer">
-				 <div wicket:id="searchResults"></div>
+				<!--	Result list panel -->
+				<div wicket:id="resultListPanel">
+					[Search Result panel]
+				</div>
 			</div>
 			
 			<div wicket:id="detailContainer">
-				 <div wicket:id="detailsPanel"></div>
+				<!-- Detail panel -->
+				 <div wicket:id="detailPanel">
+				 	[Detail panel]
+				 </div>
 			</div>
 		</form>
 	</div>
-	
-	<!--  Page right Zone -->
-	<div id="rightZone">&nbsp;</div>
 </wicket:panel>

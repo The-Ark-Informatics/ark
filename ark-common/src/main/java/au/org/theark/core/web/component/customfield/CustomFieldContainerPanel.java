@@ -54,24 +54,26 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	/**
 	 * 
 	 */
-	private static final long			serialVersionUID	= -1L;
-	private static final Logger		log					= LoggerFactory.getLogger(CustomFieldContainerPanel.class);
-	
-	private ContainerForm				containerForm;
+	private static final long									serialVersionUID	= -1L;
+	private static final Logger								log					= LoggerFactory.getLogger(CustomFieldContainerPanel.class);
 
-	private WebMarkupContainer			arkContextMarkup;
+	private ContainerForm										containerForm;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService			iArkCommonService;
+	private IArkCommonService									iArkCommonService;
 
-	private DataView<CustomField>		dataView;
+	private DataView<CustomField>								dataView;
 	private ArkDataProvider2<CustomField, CustomField>	customFieldProvider;
 
 	/**
-	 * @param id - 
-	 * @param arkContextMarkup - 
-	 * @param useCustomFieldDisplay - enables saving of the VO's customFieldDisplay as well as the customField
-	 * @param associatedPrimaryFn - primary function that the customFields will belong to
+	 * @param id
+	 *           -
+	 * @param arkContextMarkup
+	 *           -
+	 * @param useCustomFieldDisplay
+	 *           - enables saving of the VO's customFieldDisplay as well as the customField
+	 * @param associatedPrimaryFn
+	 *           - primary function that the customFields will belong to
 	 */
 	public CustomFieldContainerPanel(String id, boolean useCustomFieldDisplay, ArkFunction associatedPrimaryFn) {
 
@@ -80,9 +82,9 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 		cpModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
 		cpModel.getObject().getCustomField().setArkFunction(associatedPrimaryFn);
 		cpModel.getObject().setUseCustomFieldDisplay(useCustomFieldDisplay);
-		
+
 		prerenderContextCheck();
-		
+
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
@@ -108,7 +110,7 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 			Study study = null;
 			study = iArkCommonService.getStudy(sessionStudyId);
 			arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
-			
+
 			if (study != null && arkModule != null) {
 				cpModel.getObject().getCustomField().setStudy(study);
 				// TODO: Maybe check that the primary function supplied is of the same module?
@@ -117,7 +119,7 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
-		SearchPanel searchPanel = new SearchPanel("searchComponentPanel", cpModel, arkCrudContainerVO, feedBackPanel);
+		SearchPanel searchPanel = new SearchPanel("searchPanel", cpModel, arkCrudContainerVO, feedBackPanel);
 
 		searchPanel.initialisePanel();
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
@@ -125,17 +127,22 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-		Panel detailsPanel = new EmptyPanel("detailsPanel");
-		detailsPanel.setOutputMarkupPlaceholderTag(true);	//ensure this is replaceable
-		arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
+		Panel detailPanel = new EmptyPanel("detailPanel");
+		detailPanel.setOutputMarkupPlaceholderTag(true); // ensure this is replaceable
+		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	protected WebMarkupContainer initialiseSearchResults() {
-		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("searchResults", cpModel, arkCrudContainerVO, feedBackPanel);
+		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("resultListPanel", cpModel, arkCrudContainerVO, feedBackPanel);
 
 		// Data providor to paginate resultList
 		customFieldProvider = new ArkDataProvider2<CustomField, CustomField>() {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
 				return iArkCommonService.getCustomFieldCount(criteriaModel.getObject());
@@ -156,6 +163,11 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
