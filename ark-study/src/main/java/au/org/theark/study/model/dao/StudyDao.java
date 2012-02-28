@@ -1748,4 +1748,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		List<Study> childStudyList = (List<Study>) criteria.list();
 		return childStudyList;
 	}
+
+	public void update(LinkSubjectStudy linkSubjectStudy) {
+		getSession().update(linkSubjectStudy);
+	}
 }
