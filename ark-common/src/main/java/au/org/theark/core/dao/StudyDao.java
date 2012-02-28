@@ -34,6 +34,7 @@ import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -1064,5 +1065,19 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			subjectVOList.add(subject);
 		}
 		return subjectVOList;
+	}
+
+	public List<Study> getAssignedChildStudyListForPerson(Study study, Person person) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
+		criteria.createAlias("study", "s");
+		criteria.add(Restrictions.eq("person", person));
+		criteria.add(Restrictions.eq("s.parentStudy", study));
+		criteria.add(Restrictions.ne("s.id", study.getId()));
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("study"), "study");
+		criteria.setProjection(projectionList);
+		
+		return criteria.list();
 	}
 }
