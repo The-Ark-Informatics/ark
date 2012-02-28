@@ -82,7 +82,12 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO>{
 		customFieldNameTxtFld = new TextField<String>("customFieldDisplay.customField.name");
 		requiredFieldCb = new CheckBox("customFieldDisplay.required");
 		
-		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
+		saveButton = new AjaxButton(Constants.SAVE) {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				//Save the CFD TODO
@@ -104,11 +109,11 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO>{
 			}
 		};
 		
-		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null)) {
+		cancelButton = new AjaxButton(Constants.CANCEL) {
 			/**
 			 * 
 			 */
-			private static final long	serialVersionUID	= 1684005199059571017L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
