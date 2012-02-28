@@ -60,6 +60,7 @@ import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.subject.ChildStudyPalettePanel;
 
 /**
  * @author nivedann
@@ -120,6 +121,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	// Webmarkup for Ajax refreshing of items based on particular criteria
 	protected WebMarkupContainer							wmcPreferredEmailContainer;
 	protected WebMarkupContainer							wmcDeathDetailsContainer;
+	
+	protected ChildStudyPalettePanel<SubjectVO>		childStudyPalettePanel;
 
 	protected Study											study;
 
@@ -127,6 +130,13 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.arkContextMarkupContainer = arkContextContainer;
+	}
+	
+	@Override
+	public void onBeforeRender() {
+		childStudyPalettePanel = new ChildStudyPalettePanel<SubjectVO>("childStudyPalette", containerForm.getModel());
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(childStudyPalettePanel);
+		super.onBeforeRender();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -254,6 +264,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		});
 
 		initConsentFields();
+		
 		attachValidators();
 		addDetailFormComponents();
 
@@ -551,5 +562,19 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 	public void setSubjectUIDTxtFld(TextField<String> subjectUIDTxtFld) {
 		this.subjectUIDTxtFld = subjectUIDTxtFld;
+	}
+
+	/**
+	 * @return the childStudyPalettePanel
+	 */
+	public ChildStudyPalettePanel<SubjectVO> getChildStudyPalettePanel() {
+		return childStudyPalettePanel;
+	}
+
+	/**
+	 * @param childStudyPalettePanel the childStudyPalettePanel to set
+	 */
+	public void setChildStudyPalettePanel(ChildStudyPalettePanel<SubjectVO> childStudyPalettePanel) {
+		this.childStudyPalettePanel = childStudyPalettePanel;
 	}
 }
