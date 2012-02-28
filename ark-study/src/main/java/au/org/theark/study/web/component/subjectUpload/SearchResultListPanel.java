@@ -20,10 +20,6 @@ package au.org.theark.study.web.component.subjectUpload;
 
 import java.sql.SQLException;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -36,20 +32,14 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.StudyUpload;
-import au.org.theark.core.security.PermissionConstants;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
-import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 
 /**
@@ -64,23 +54,10 @@ public class SearchResultListPanel extends Panel {
 	 */
 	private static final long	serialVersionUID	= 6150100976180421479L;
 
-	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService		studyService;
-
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService					iArkCommonService;
-
 	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
-
-	private ArkCrudContainerVO	arkCrudContainerVO;
-	private ContainerForm		containerForm;
-
 
 	public SearchResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
-		this.arkCrudContainerVO = arkCrudContainerVO;
-		this.containerForm = containerForm;
-
 		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "SubjectUpload", au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_CELLS) {
 			/**
 			 * 
@@ -278,7 +255,7 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private AjaxButton buildDownloadReportButton(final StudyUpload upload) {
-		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, new StringResourceModel("downloadReportKey", this, null)) {
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT) {
 			/**
 			 * 
 			 */
