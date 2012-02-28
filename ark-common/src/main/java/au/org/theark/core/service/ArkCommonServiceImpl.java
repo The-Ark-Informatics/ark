@@ -1057,4 +1057,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List matchSubjectsFromInputFile(FileUpload subjectFileUpload, Study study) {
 		return studyDao.matchSubjectsFromInputFile(subjectFileUpload, study);
 	}
+
+	public List<Study> getAssignedChildStudyListForPerson(Study study, Person person) {
+		return studyDao.getAssignedChildStudyListForPerson(study, person);
+	}
 }
