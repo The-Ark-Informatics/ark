@@ -28,12 +28,8 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
@@ -44,22 +40,17 @@ import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
  * @author elam
  * 
  */
-@SuppressWarnings({ "unchecked", "serial" })
+@SuppressWarnings( { "unchecked", "serial" })
 public class SearchResultListPanel extends Panel {
 
 	/**
 	 * 
 	 */
-	private static final long		serialVersionUID	= -1L;
-	private static final Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
+	private static final long							serialVersionUID	= -1L;
+	private CompoundPropertyModel<CustomFieldVO>	cpModel;
 
-	private CompoundPropertyModel<CustomFieldVO>			cpModel;
-
-	private FeedbackPanel			feedbackPanel;
-	private ArkCrudContainerVO		arkCrudContainerVO;
-
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService		iArkCommonService;
+	private FeedbackPanel								feedbackPanel;
+	private ArkCrudContainerVO							arkCrudContainerVO;
 
 	public SearchResultListPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
 		super(id);
@@ -77,7 +68,6 @@ public class SearchResultListPanel extends Panel {
 			protected void populateItem(final Item<CustomField> item) {
 				CustomField field = item.getModelObject();
 
-				/* The Field ID */
 				if (field.getId() != null) {
 					// Add the id component here
 					item.add(new Label(Constants.CUSTOMFIELD_ID, field.getId().toString()));
@@ -89,7 +79,6 @@ public class SearchResultListPanel extends Panel {
 				// Component Name Link
 				item.add(buildLinkWMC(item));
 
-				// TODO when displaying text escape any special characters
 				// Field Type
 				if (field.getFieldType() != null) {
 					item.add(new Label(Constants.CUSTOMFIELD_FIELD_TYPE, field.getFieldType().getName()));
@@ -98,7 +87,6 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.CUSTOMFIELD_FIELD_TYPE, ""));
 				}
 
-				// TODO when displaying text escape any special characters
 				// Description
 				if (field.getDescription() != null) {
 					item.add(new Label(Constants.CUSTOMFIELD_DESCRIPTION, field.getDescription()));
@@ -107,15 +95,14 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.CUSTOMFIELD_DESCRIPTION, ""));
 				}
 
-				// TODO when displaying text escape any special characters
 				// Units
 				if (field.getUnitType() != null && field.getUnitType().getName() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, field.getUnitType().getName()));				}
+					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, field.getUnitType().getName()));
+				}
 				else {
 					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, ""));
 				}
 
-				// TODO when displaying text escape any special characters
 				// Min
 				if (field.getMinValue() != null) {
 					item.add(new Label(Constants.CUSTOMFIELD_MIN_VALUE, field.getMinValue()));
@@ -124,7 +111,6 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.CUSTOMFIELD_MIN_VALUE, ""));
 				}
 
-				// TODO when displaying text escape any special characters
 				// Max
 				if (field.getMinValue() != null) {
 					item.add(new Label(Constants.CUSTOMFIELD_MAX_VALUE, field.getMaxValue()));
@@ -158,15 +144,14 @@ public class SearchResultListPanel extends Panel {
 				newModel.getObject().setCustomField(cf);
 				newModel.getObject().setUseCustomFieldDisplay(cpModel.getObject().isUseCustomFieldDisplay());
 
-				DetailPanel detailsPanel = new DetailPanel("detailsPanel", feedbackPanel, newModel, arkCrudContainerVO);
-				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailsPanel);
+				DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
+				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-				
+
 			}
 		};
 
 		// Add the label for the link
-		// TODO when displaying text escape any special characters
 		CustomField field = item.getModelObject();
 		Label nameLinkLabel = new Label("nameLbl", field.getName());
 		link.add(nameLinkLabel);
