@@ -276,12 +276,15 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 				List<Study> childStudies = containerForm.getModelObject().getSelectedChildStudies();
 				for (Study childStudy : childStudies) {
 					for (ArkUserRole parentArkUserRole : containerForm.getModelObject().getArkUserRoleList()) {
-						ArkUserRole arkUserRole = new ArkUserRole();
-						arkUserRole.setArkUser(containerForm.getModelObject().getArkUserEntity());
-						arkUserRole.setArkRole(parentArkUserRole.getArkRole());
-						arkUserRole.setArkModule(parentArkUserRole.getArkModule());
-						arkUserRole.setStudy(childStudy);
-						iUserService.createArkUserRole(arkUserRole);
+						// Only create roles where selected
+						if(parentArkUserRole.getArkRole() != null) {
+							ArkUserRole arkUserRole = new ArkUserRole();
+							arkUserRole.setArkUser(containerForm.getModelObject().getArkUserEntity());
+							arkUserRole.setArkRole(parentArkUserRole.getArkRole());
+							arkUserRole.setArkModule(parentArkUserRole.getArkModule());
+							arkUserRole.setStudy(childStudy);
+							iUserService.createArkUserRole(arkUserRole);
+						}
 					}
 				}
 
