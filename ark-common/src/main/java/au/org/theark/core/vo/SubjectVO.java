@@ -21,12 +21,14 @@ package au.org.theark.core.vo;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.EmailAccount;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 
@@ -55,6 +57,9 @@ public class SubjectVO implements Serializable {
 
 	/** A List of Files linked to this person/subject */
 	protected Collection<SubjectFile>				subjectFileList;
+	
+	private List<Study>			availableChildStudies;
+	private List<Study>			selectedChildStudies;
 
 	/**
 	 * Constructor
@@ -67,6 +72,8 @@ public class SubjectVO implements Serializable {
 		subjectFile = new SubjectFile();
 		subjectFileList = new ArrayList<SubjectFile>();
 		subjectPreviousLastname = new String();
+		availableChildStudies = new ArrayList<Study>();
+		selectedChildStudies  = new ArrayList<Study>();
 	}
 
 	public String getSubjectFullName() {
@@ -180,5 +187,32 @@ public class SubjectVO implements Serializable {
 
 	public void setSubjectUID(String subjectUID) {
 		this.subjectUID = subjectUID;
+	}
+	/**
+	 * @param availableChildStudies the availableChildStudies to set
+	 */
+	public void setAvailableChildStudies(List<Study> availableChildStudies) {
+		this.availableChildStudies = availableChildStudies;
+	}
+
+	/**
+	 * @return the availableChildStudies
+	 */
+	public List<Study> getAvailableChildStudies() {
+		return availableChildStudies;
+	}
+
+	/**
+	 * @param selectedChildStudies the selectedChildStudies to set
+	 */
+	public void setSelectedChildStudies(List<Study> selectedChildStudies) {
+		this.selectedChildStudies = selectedChildStudies;
+	}
+
+	/**
+	 * @return the selectedChildStudies
+	 */
+	public List<Study> getSelectedChildStudies() {
+		return selectedChildStudies;
 	}
 }
