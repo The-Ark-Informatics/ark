@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subject.form;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -44,6 +45,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
 /**
@@ -59,6 +61,9 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
+	
+	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
+	private IStudyService		iStudyService;
 
 	private TextField<String>						subjectUIDTxtFld;
 	private TextField<String>						firstNameTxtFld;
@@ -158,6 +163,13 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 			subjectUIDTxtFld.setEnabled(true);
 			target.add(subjectUIDTxtFld);
 		}
+		
+		// Available child studies
+		List<Study> availableChildStudies = new ArrayList<Study>(0);
+		if(studyInContext.getParentStudy() != null) {
+			availableChildStudies = iStudyService.getChildStudyListOfParent(studyInContext);
+		}
+		getModelObject().setAvailableChildStudies(availableChildStudies);
 
 		preProcessDetailPanel(target);
 	}
