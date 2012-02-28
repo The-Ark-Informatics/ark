@@ -1,347 +1,258 @@
 <wicket:panel>
 	&nbsp;
 	<form wicket:id="detailForm">
-		<div id="detailsPanelBorder">
+		<div class="detailsPanelBorder">
 			<div wicket:id="detailFormContainer">
 				<div wicket:id="customFieldDetailWMC">
-					<div id="detailPanelBreaker">
+					<div class="detailPanelBreaker">
 						&nbsp;
 					</div>
 
 					<!-- Row 1 Study ID and Name-->
 
-					<div id="panelContentLeft">
+					<div class="panelContentLeft">
 						&nbsp;
 					</div>
 
-					<div id="fldLabel">
-						<div class="label">
-							<label for="fieldId">
-								<wicket:message key="customField.id">
-									Field Id:
-								</wicket:message>
-							</label>
-						</div>
-					</div>
-					<div id="fldControl">
-						<div class="label">
-							<input wicket:id="customField.id" type="text" />
-						</div>
+					<div class="fldLabel">
+						<wicket:message key="customField.id">
+							Field Id:
+						</wicket:message>
 					</div>
 
-					<div id="panelMargin">
+					<div class="fldControl">
+						<input wicket:id="customField.id" type="text" />
+					</div>
+
+					<div class="panelMargin">
 						&nbsp;
 					</div>
 
-					<div id="fldLabel">
-						<div class="label">
-							<label for="fieldName">
-								<wicket:message key="customField.name">
-									Name:
-								</wicket:message>
-							</label>
-						</div>
-					</div>
-					<div id="fldControl">
-						<div class="label">
-							<input wicket:id="customField.name" type="text" />
-						</div>
+					<div class="fldLabel">
+						<wicket:message key="customField.name">
+							Name:
+						</wicket:message>
 					</div>
 
+					<div class="fldControl">
+						<input wicket:id="customField.name" type="text" />
+					</div>
 
-
-					<div id="detailPanelBreaker">
+					<div class="detailPanelBreaker">
 						&nbsp;
 					</div>
 
-					<div id="panelContentLeft">
+					<div class="panelContentLeft">
 						&nbsp;
 					</div>
 
-					<div id="fldLabel">
-						<div class="label">
-							<label for="fieldType">
-								<wicket:message key="customField.fieldType">
-									Field Type:
-								</wicket:message>
-							</label>
-							<div id="note">
-								<wicket:message key="customField.fieldType.note">
-									[Note]
-								</wicket:message>
-							</div>
+					<div class="fldLabel">
+						<wicket:message key="customField.fieldType">
+							Field Type:
+						</wicket:message>
+						<div class="note">
+							<wicket:message key="customField.fieldType.note">
+								[Note]
+							</wicket:message>
 						</div>
 					</div>
-					<div id="fldControl">
-						<div class="label">
-							<select wicket:id="customField.fieldType">
-								<option>
-									Number
-								</option>
-								<option>
-									Character
-								</option>
-								<option>
-									Date
-								</option>
-							</select>
-						</div>
+					<div class="fldControl">
+						<select wicket:id="customField.fieldType">
+							<option>
+								Number
+							</option>
+							<option>
+								Character
+							</option>
+							<option>
+								Date
+							</option>
+						</select>
 					</div>
 
-					<div id="panelMargin">
+					<div class="panelMargin">
 						&nbsp;
 					</div>
 
-					<div id="fldLabel">
-						<div class="label">
-							<label for="fieldDescription">
-								<wicket:message key="customField.description">
-									Description:
-								</wicket:message>
-							</label>
-						</div>
+					<div class="fldLabel">
+						<wicket:message key="customField.description">
+							Description:
+						</wicket:message>
 					</div>
 
-					<div id="fldControl">
-						<div class="label">
-							<textarea wicket:id="customField.description" rows="4" cols="25">
-							</textarea>
-						</div>
+					<div class="fldControl">
+						<textarea wicket:id="customField.description" rows="4" cols="25">
+						</textarea>
 					</div>
 
-					<div id="detailPanelBreaker">
+					<div class="detailPanelBreaker">
 						&nbsp;
 					</div>
 
-					<div id="panelContentLeft">
+					<div class="panelContentLeft">
 						&nbsp;
 					</div>
 
-					<div id="fldLabel">
-						<div class="label">
-							<label for="fieldLabel">
-								<wicket:message key="customField.fieldLabel">
-									Label:
-								</wicket:message>
-							</label>
-						</div>
+					<div class="fldLabel">
+						<wicket:message key="customField.fieldLabel">
+							Label:
+						</wicket:message>
 					</div>
 
-					<div id="fldControl">
-						<div class="label">
-							<textarea wicket:id="customField.fieldLabel" rows="3" cols="100">
-							</textarea>
-						</div>
+					<div class="fldControl">
+						<textarea wicket:id="customField.fieldLabel" rows="3" cols="100">
+						</textarea>
 					</div>
 
-
-
-					<div id="detailPanelBreaker">
+					<div class="detailPanelBreaker">
 						&nbsp;
 					</div>
 
-					<div id="panelContentLeft">
+					<div class="panelContentLeft">
 						&nbsp;
 					</div>
 
-					<div id="fldLabel">
-						<div class="label">
-							<label for="fieldUnits">
-								<wicket:message key="customField.unitType">
-									Units:
-								</wicket:message>
-							</label>
-						</div>
+					<div class="fldLabel">
+						<wicket:message key="customField.unitType">
+							Units:
+						</wicket:message>
 					</div>
 
-					<div id="fldControl">
-						<div class="label">
-							<select wicket:id="customField.unitType">
-								<option>
-									kg
-								</option>
-								<option>
-									cm
-								</option>
-							</select>
-						</div>
+					<div class="fldControl">
+						<select wicket:id="customField.unitType">
+							<option>
+								kg
+							</option>
+							<option>
+								cm
+							</option>
+						</select>
 					</div>
 
-					<div id="panelMargin">
+					<div class="panelMargin">
 						&nbsp;
 					</div>
 
-					<div id="fldLabel">
-						<div class="label">
-							<label for="fieldEncodedValues">
-								<wicket:message key="customField.encodedValues">
-									Encoded Values:
-								</wicket:message>
-							</label>
-							<div id="note">
-								<wicket:message key="customField.encodedValues.note">
-									[Note]
-								</wicket:message>
-							</div>
+					<div class="fldLabel">
+						<wicket:message key="customField.encodedValues">
+							Encoded Values:
+						</wicket:message>
+						<div class="note">
+							<wicket:message key="customField.encodedValues.note">
+								[Note]
+							</wicket:message>
 						</div>
 					</div>
 
-					<div id="fldControl">
-						<div class="label">
-							<textarea wicket:id="customField.encodedValues" cols="25">
-							</textarea>
-						</div>
+					<div class="fldControl">
+						<textarea wicket:id="customField.encodedValues" cols="25">
+						</textarea>
 					</div>
 
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
 
 					<div wicket:id="minMaxValueEntryWMC">
-						<div id="detailPanelBreaker">
+						<div class="panelContentLeft">
 							&nbsp;
 						</div>
 
-						<div id="panelContentLeft">
+						<div class="fldLabel">
+							<wicket:message key="customField.minValue">
+								Minimum Value:
+							</wicket:message>
+						</div>
+
+						<div class="fldControl">
+							<div wicket:id="minValueEntryPanel">
+								[minValueEntryPanel]
+							</div>
+						</div>
+
+						<div class="panelMargin">
 							&nbsp;
 						</div>
 
-						<div id="fldLabel">
-							<div class="label">
-								<label for="fieldMinValue">
-									<wicket:message key="customField.minValue">
-										Minimum Value:
-									</wicket:message>
-								</label>
+						<div class="fldLabel">
+							<wicket:message key="customField.maxValue">
+								Maximum Value:
+							</wicket:message>
+						</div>
+
+						<div class="fldControl">
+							<div wicket:id="maxValueEntryPanel">
+								[maxValueEntryPanel]
 							</div>
 						</div>
-
-						<div id="fldControl">
-							<div class="label">
-								<!-- <input wicket:id="customField.minValue"	type="text" /> -->
-								<div wicket:id="minValueEntryPanel">
-								</div>
-							</div>
-						</div>
-
-						<div id="panelMargin">
-							&nbsp;
-						</div>
-
-						<div id="fldLabel">
-							<div class="label">
-								<label for="fieldMinValue">
-									<wicket:message key="customField.maxValue">
-										Maximum Value:
-									</wicket:message>
-								</label>
-							</div>
-						</div>
-
-						<div id="fldControl">
-							<div class="label">
-								<!-- <input wicket:id="customField.maxValue"	type="text" /> -->
-								<div wicket:id="maxValueEntryPanel">
-								</div>
-							</div>
-						</div>
-
-
 					</div>
 
-					<div id="detailPanelBreaker">
+					<div class="detailPanelBreaker">
 						&nbsp;
 					</div>
 
-					<div id="panelContentLeft">
+					<div class="panelContentLeft">
 						&nbsp;
 					</div>
 
-					<div id="fldLabel">
-						<div class="label">
-							<label for="fieldMissingValue">
-								<wicket:message key="customField.missingValue">
-									Missing Value:
-								</wicket:message>
-							</label>
-							<div id="note">
-								<wicket:message key="customField.missingValue.note">
-									[Note]
-								</wicket:message>
-							</div>
+					<div class="fldLabel">
+						<wicket:message key="customField.missingValue">
+							Missing Value:
+						</wicket:message>
+						<div class="note">
+							<wicket:message key="customField.missingValue.note">
+								[Note]
+							</wicket:message>
 						</div>
 					</div>
 
-					<div id="fldControl">
-						<div class="label">
-							<input wicket:id="customField.missingValue"	type="text" />
-						</div>
+					<div class="fldControl">
+						<input wicket:id="customField.missingValue"	type="text" />
 					</div>
 				</div>
 
 				<div wicket:id="customFieldDisplayDetailWMC">
-					<div id="panelMargin">
+					<div class="panelMargin">
 						&nbsp;
 					</div>
 
 					<!-- This will slot the Required field at the back of Missing Value -->
-					<div id="fldLabel">
-						<div class="label">
-							<label for="fieldId">
-								<wicket:message key="customFieldDisplay.required">
-									Required Field:
-								</wicket:message>
-							</label>
-						</div>
+					<div class="fldLabel">
+						<wicket:message key="customFieldDisplay.required">
+							Required Field:
+						</wicket:message>
 					</div>
-					<div id="fldControl">
-						<div class="label">
-							<input wicket:id="customFieldDisplay.required" type="checkbox" />
-						</div>
+					<div class="fldControl">
+						<input wicket:id="customFieldDisplay.required" type="checkbox" />
 					</div>
 
-
-
-					<div id="detailPanelBreaker">
+					<div class="detailPanelBreaker">
 						&nbsp;
 					</div>
 
 					<!--
-						<div id="panelContentLeft">&nbsp;</div> <div id="fldLabel"> <div class="label"> <label for="requireMsg"><wicket:message
-						key="customFieldDisplay.requiredMessage">Required Message:</wicket:message></label> </div> </div> <div id="fldControl"> <div
+						<div class="panelContentLeft">&nbsp;</div> <div class="fldLabel"> <div class="label"> <label for="requireMsg"><wicket:message
+						key="customFieldDisplay.requiredMessage">Required Message:</wicket:message></label> </div> </div> <div class="fldControl"> <div
 						class="label"> <textarea wicket:id="customFieldDisplay.requiredMessage" rows="3" cols="25"></textarea> </div> <div
-						id="panelMargin">&nbsp;</div> </div> <div id="panelMargin">&nbsp;</div>
+						id="panelMargin">&nbsp;</div> </div> <div class="panelMargin">&nbsp;</div>
 					-->
 					<div wicket:id="customFieldDisplayPositionPanel">
 					</div>
 				</div>
 			</div>
 			<!-- Detail container end-->
-			<div wicket:id="editButtonContainer">
-				<div id="fldLabel">
-					&nbsp;
-				</div>
-				<div id="fldControl">
-					&nbsp;
-				</div>
-				<div id="panelMargin">
-					&nbsp;
-				</div>
-				<div id="actionButtons">
-					&nbsp;
-					<div class="label">
-						<input wicket:id="save" type="submit" wicket:message="value:button.save" />
-						&nbsp;
-						<div id="panelMargin">
-							&nbsp;
-						</div>
-						<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
-						<div id="panelMargin">
-							&nbsp;
-						</div>
-						<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
-						&nbsp;
-					</div>
+
+			<div class="detailPanelBreaker">
+				&nbsp;
+			</div>
+			<div class="actionButtons">
+				<div wicket:id="editButtonContainer">
+					<input wicket:id="save" type="submit" wicket:message="value:button.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
 				</div>
 			</div>
-			<div id="detailPanelBreaker">
+			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
 		</div>

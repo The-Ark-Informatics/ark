@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -405,14 +404,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	
 	@Override
 	public void onBeforeRender() {
-		// Disable fieldType Edit (customFieldDetailWMC) if data exists
+		// Disable form/save button if data existss
 		Boolean hasData = getModelObject().getCustomField().getCustomFieldHasData();
 		if (hasData != null) {
 			customFieldDetailWMC.setEnabled(!hasData);
-			AjaxButton deleteButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
-			deleteButton.setEnabled(!hasData);//Disable Delete button if thre is data
-			// Disabling the editButtonContainer should disable the delete and save buttons in Edit mode
-			arkCrudContainerVO.getEditButtonContainer().setEnabled(!hasData);
+			arkCrudContainerVO.getEditButtonContainer().get("save").setVisible(!hasData);
 		}
 		super.onBeforeRender();
 	}

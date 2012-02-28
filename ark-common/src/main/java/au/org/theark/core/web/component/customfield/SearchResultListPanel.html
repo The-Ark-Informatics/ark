@@ -1,81 +1,114 @@
 <wicket:panel>
-	<div id="searchPanelBreaker">&nbsp;</div>
-    <table width="0%" cellspacing="0"></table>
+	<div class="searchPanelBreaker">
+		&nbsp;
+	</div>
+	<table width="0%" cellspacing="0">
+	</table>
 	<table width="100%" cellspacing="0" class="dataview">
 		<tr>
-			<th width="2%">&nbsp;</th>
+			<th width="2%">
+				&nbsp;
+			</th>
 			<th width="5%">
-				<label for="fieldId">
-					<wicket:message	key="customField.id">Field ID:</wicket:message>
-				</label>
+				<wicket:message	key="customField.id">
+					Field ID:
+				</wicket:message>
 			</th>
 			<th width="15%">
-				<label for="fieldName">
-					<wicket:message	key="customField.name">Field Name:</wicket:message>
-				</label>
+				<wicket:message	key="customField.name">
+					Field Name:
+				</wicket:message>
 			</th>
 			<th width="10%">
-				<label for="fieldType">
-					<wicket:message	key="customField.fieldType">Field Type:</wicket:message>
-				</label>
+				<wicket:message	key="customField.fieldType">
+					Field Type:
+				</wicket:message>
 			</th>
 			<th width="25%">
-				<label for="fieldDescription">
-					<wicket:message	key="customField.description">Description:</wicket:message>
-				</label>
+				<wicket:message	key="customField.description">
+					Description:
+				</wicket:message>
 			</th>
 			<th width="10%">
-				<label for="fieldUnits">
-					<wicket:message	key="customField.unitType">Units:</wicket:message>
-				</label>
+				<wicket:message	key="customField.unitType">
+					Units:
+				</wicket:message>
 			</th>
 			<th width="10%">
-				<label for="fieldMinValue">
-					<wicket:message	key="customField.min">Min:</wicket:message>
-				</label>
+				<wicket:message	key="customField.min">
+					Min:
+				</wicket:message>
 			</th>
 			<th width="10%">
-				<label for="fieldMaxValue">
-					<wicket:message	key="customField.max">Max:</wicket:message>
-				</label>
+				<wicket:message	key="customField.max">
+					Max:
+				</wicket:message>
 			</th>
-			<th width="2%">&nbsp;</th>
+			<th width="2%">
+				&nbsp;
+			</th>
 		</tr>
-		<!--  The Data Result Set -->
+		<!--	The Data Result Set -->
 		<tr wicket:id="customFieldList">
-			<td width="2%">&nbsp;</td>
+			<td width="2%">
+				&nbsp;
+			</td>
 			<td width="5%">
-				<span wicket:id="id">100</span>
+				<span wicket:id="id">
+					100
+				</span>
 			</td>
 			<td width="15%">
-			  <div wicket:id="customfieldLinkWMC">
-			    <a href="#"wicket:id="name">
-			    	<span wicket:id="nameLbl">Name</span>
-			    </a>
-			  </div>
+				<div wicket:id="customfieldLinkWMC">
+					<a href="#"wicket:id="name">
+						<span wicket:id="nameLbl">
+							Name
+						</span>
+					</a>
+				</div>
 			</td>
 			<td width="10%">
-				<span wicket:id="fieldType">Field Type</span>
+				<span wicket:id="fieldType">
+					Field Type
+				</span>
 			</td>
 			<td width="25%">
-				<span wicket:id="description">Description</span>
+				<span wicket:id="description">
+					Description
+				</span>
 			</td>
 			<td width="10%">
-				<span wicket:id="unitType">Units</span>
+				<span wicket:id="unitType">
+					Units
+				</span>
 			</td>
 			<td width="10%">
-				<span wicket:id="minValue">MinValue</span>
+				<span wicket:id="minValue">
+					MinValue
+				</span>
 			</td>
 			<td width="10%">
-				<span wicket:id="maxValue">MaxValue</span>
+				<span wicket:id="maxValue">
+					MaxValue
+				</span>
 			</td>
-			<td width="2%">&nbsp;</td>
+			<td width="2%">
+				&nbsp;
+			</td>
 		</tr>
 		<tr>
-			<td width="2%">&nbsp;</td>
-			<td width="60%" colspan="7"><span wicket:id="navigator" class="a"></span></td>
-			<td width="2%">&nbsp;</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="96%" colspan="7">
+				<span wicket:id="navigator" class="a">
+				</span>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
 		</tr>
 	</table>
-	<table width="0%" cellspacing="0"></table>
+	<table width="0%" cellspacing="0">
+	</table>
 </wicket:panel>
