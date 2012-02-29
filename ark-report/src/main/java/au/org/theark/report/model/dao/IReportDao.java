@@ -100,5 +100,7 @@ public interface IReportDao {
 	public List<StudyUserRolePermissionsDataRow> getStudyUserRolePermissions(Study study);
 
 	public List<CustomFieldGroup> getQuestionnaireList(Study study);
+	
+	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsDataRowList(ConsentDetailsReportVO cdrVO);
 
 }
