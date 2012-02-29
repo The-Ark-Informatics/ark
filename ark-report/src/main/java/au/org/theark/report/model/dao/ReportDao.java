@@ -245,6 +245,76 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 
 		return (List<LinkSubjectStudy>) criteria.list();
 	}
+	
+	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsDataRowList(ConsentDetailsReportVO cdrVO) {
+		List<ConsentDetailsDataRow> resultList = new ArrayList<ConsentDetailsDataRow>(0);
+
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class, "lss");
+		// Add study in context to criteria first (linkSubjectStudy on the VO should never be null)
+		criteria.add(Restrictions.eq("lss." + Constants.LINKSUBJECTSTUDY_STUDY, cdrVO.getLinkSubjectStudy().getStudy()));
+		if (cdrVO.getLinkSubjectStudy().getSubjectUID() != null) {
+			criteria.add(Restrictions.ilike("lss." + Constants.LINKSUBJECTSTUDY_SUBJECTUID, cdrVO.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
+		}
+		if (cdrVO.getLinkSubjectStudy().getSubjectStatus() != null) {
+			criteria.add(Restrictions.eq("lss." + Constants.LINKSUBJECTSTUDY_SUBJECTSTATUS, cdrVO.getLinkSubjectStudy().getSubjectStatus()));
+		}
+
+		// we are dealing with study-level consent
+		if (cdrVO.getConsentStatus() != null) {
+			if (cdrVO.getConsentStatus().getName().equals(Constants.NOT_CONSENTED)) {
+				// Special-case: Treat the null FK for consentStatus as "Not Consented"
+				criteria.add(Restrictions.or(Restrictions.eq("lss." + Constants.LINKSUBJECTSTUDY_CONSENTSTATUS, cdrVO.getConsentStatus()), Restrictions.isNull(Constants.LINKSUBJECTSTUDY_CONSENTSTATUS)));
+			}
+			else {
+				criteria.add(Restrictions.eq("lss." + Constants.LINKSUBJECTSTUDY_CONSENTSTATUS, cdrVO.getConsentStatus()));
+			}
+		}
+		if (cdrVO.getConsentDate() != null) {
+			criteria.add(Restrictions.eq("lss." + Constants.LINKSUBJECTSTUDY_CONSENTDATE, cdrVO.getConsentDate()));
+		}
+		
+		criteria.createAlias("lss.consentStatus", "cs", Criteria.LEFT_JOIN);
+		criteria.createAlias("lss.subjectStatus", "ss");
+		criteria.createAlias("lss.person", "p");
+		criteria.createAlias("lss.person.genderType", "genderType");
+		
+		// Restrict any addresses to the preferred mailing address
+		Criteria addressCriteria = criteria.createAlias("lss.person.addresses", "a", Criteria.LEFT_JOIN);
+		addressCriteria.add(Restrictions.eq("a.preferredMailingAddress", true));
+		
+		criteria.createAlias("lss.person.addresses.country", "c", Criteria.LEFT_JOIN);
+		criteria.createAlias("lss.person.addresses.countryState", "countryState", Criteria.LEFT_JOIN);
+		criteria.createAlias("lss.person.phones", "phone", Criteria.LEFT_JOIN);
+		criteria.createAlias("lss.person.phones.phoneType", "phoneType", Criteria.LEFT_JOIN).add(Restrictions.or(Restrictions.eq("phoneType.name", "Home"), Restrictions.isNull("phoneType.name")));
+		criteria.createAlias("lss.person.titleType", "title");
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("lss.subjectUID"), "subjectUID");
+		projectionList.add(Projections.property("cs.name"), "consentStatus");
+		projectionList.add(Projections.property("ss.name"), "subjectStatus");
+		projectionList.add(Projections.property("title.name"), "title");
+		projectionList.add(Projections.property("p.firstName"), "firstName");
+		projectionList.add(Projections.property("p.lastName"), "lastName");
+		projectionList.add(Projections.property("a.streetAddress"), "streetAddress");
+		projectionList.add(Projections.property("a.city"), "suburb");
+		projectionList.add(Projections.property("a.postCode"), "postcode");
+		projectionList.add(Projections.property("countryState.state"), "state");
+		projectionList.add(Projections.property("c.name"), "country");
+		projectionList.add(Projections.property("phone.phoneNumber"), "homePhone");
+		projectionList.add(Projections.property("p.preferredEmail"), "email");
+		projectionList.add(Projections.property("genderType.name"), "sex");
+		projectionList.add(Projections.property("lss.consentDate"), "consentDate");
+		
+		criteria.setProjection(projectionList); // only return fields required for report
+
+		criteria.addOrder(Order.asc("lss.consentStatus")); // although MySQL causes NULLs to come first
+		criteria.addOrder(Order.asc("lss.subjectUID"));
+		
+		criteria.setResultTransformer(Transformers.aliasToBean(ConsentDetailsDataRow.class));
+		resultList = (criteria.list());
+		
+		return resultList;
+	}
 
 	public List<ConsentDetailsDataRow> getStudyCompConsentList(ConsentDetailsReportVO cdrVO) {
 		// NB: There should only ever be one Consent record for a particular Subject for a particular StudyComp

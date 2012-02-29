@@ -50,7 +50,7 @@ public class StudyLevelConsentReportDataSource implements Serializable, JRDataSo
 	 *
 	 */
 	public StudyLevelConsentReportDataSource(IReportService reportService, ConsentDetailsReportVO cdrVO) {
-		data = reportService.getStudyLevelConsentDetailsList(cdrVO);
+		data = reportService.getStudyLevelConsentDetailsDataRowList(cdrVO);
 	}
 
 	/**
