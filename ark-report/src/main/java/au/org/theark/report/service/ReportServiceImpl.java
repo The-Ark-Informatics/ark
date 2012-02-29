@@ -359,5 +359,8 @@ public class ReportServiceImpl implements IReportService {
 	public List<CustomFieldGroup> getQuestionnaireList(Study study) {
 		return reportDao.getQuestionnaireList(study);
 	}
-	
+
+	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsDataRowList(ConsentDetailsReportVO cdrVO) {
+		return reportDao.getStudyLevelConsentDetailsDataRowList(cdrVO);
+	}
 }
