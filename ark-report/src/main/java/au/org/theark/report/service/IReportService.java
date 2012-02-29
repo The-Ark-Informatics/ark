@@ -67,4 +67,6 @@ public interface IReportService {
 
 	public List<CustomFieldGroup> getQuestionnaireList(Study study);
 
+	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsDataRowList(ConsentDetailsReportVO cdrVO);
+
 }
