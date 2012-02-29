@@ -29,7 +29,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
@@ -82,7 +81,7 @@ public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> ex
 	}
 
 	private void initialiseComponents() {
-		generateButton = new ArkBusyAjaxButton(Constants.GENERATE_BUTTON, new StringResourceModel("generateKey", this, null)) {
+		generateButton = new ArkBusyAjaxButton(Constants.GENERATE_BUTTON) {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				target.add(feedbackPanel);
 				onGenerateProcess(target);
