@@ -21,6 +21,7 @@ package au.org.theark.core.model.study.entity;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -71,6 +72,7 @@ public class Person implements java.io.Serializable {
 	private Set<PersonAddress>				personAddresses						= new HashSet<PersonAddress>(0);
 	private Set<LinkSubjectContact>		linkSubjectContactsForSubjectKey	= new HashSet<LinkSubjectContact>(0);
 	private Set<PersonLastnameHistory>	personLastnameHistory				= new HashSet<PersonLastnameHistory>(0);
+	private Set<Address>						addresses								= new HashSet<Address>(0);
 
 	// Constructors
 
@@ -376,4 +378,18 @@ public class Person implements java.io.Serializable {
 		this.dateLastKnownAlive = dateLastKnownAlive;
 	}
 
+	/**
+	 * @param addresses the addresses to set
+	 */
+	public void setAddresses(Set<Address> addresses) {
+		this.addresses = addresses;
+	}
+
+	/**
+	 * @return the addresses
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
+	public Set<Address> getAddresses() {
+		return addresses;
+	}
 }
