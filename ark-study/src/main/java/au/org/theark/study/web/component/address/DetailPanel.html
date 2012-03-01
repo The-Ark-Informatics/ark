@@ -11,18 +11,13 @@
 				</div>
 				<!--	Row 1 -->
 				<div class="fldLabel">
-					<div class="label">
-						<label for="addressLineOne">
-							<wicket:message key="buildingName">
-								Building:
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="buildingName">
+						Building:
+					</wicket:message>
 				</div>
+
 				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="address.addressLineOne"	type="text" />
-					</div>
+					<input wicket:id="address.addressLineOne"	type="text" />
 				</div>
 
 				<div class="panelMargin">
@@ -30,19 +25,13 @@
 				</div>
 
 				<div class="fldLabel">
-					<div class="label">
-						<label for="streetAddress">
-							<wicket:message key="street.address">
-								Street Address:
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="street.address">
+						Street Address:
+					</wicket:message>
 				</div>
 
 				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="address.streetAddress"	type="text" />
-					</div>
+					<input wicket:id="address.streetAddress"	type="text" />
 				</div>
 
 
@@ -53,20 +42,16 @@
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
+
 				<!--	Row 2 -->
 				<div class="fldLabel">
-					<div class="label">
-						<label for="city">
-							<wicket:message key="city">
-								City:
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="city">
+						City:
+					</wicket:message>
 				</div>
+
 				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="address.city"	type="text" />
-					</div>
+					<input wicket:id="address.city"	type="text" />
 				</div>
 
 				<div class="panelMargin">
@@ -74,21 +59,14 @@
 				</div>
 
 				<div class="fldLabel">
-					<div class="label">
-						<label for="postCode">
-							<wicket:message key="postcode">
-								Post Code:
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="postcode">
+						Post Code:
+					</wicket:message>
 				</div>
 
 				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="address.postCode"	type="text" />
-					</div>
+					<input wicket:id="address.postCode"	type="text" />
 				</div>
-
 
 				<div class="detailPanelBreaker">
 					&nbsp;
@@ -97,59 +75,47 @@
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
+
 				<div class="fldLabel">
-					<div class="label">
-						<label for="country">
-							<wicket:message key="country">
-								Country:
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="country">
+						Country:
+					</wicket:message>
 				</div>
 
 				<div class="fldControl">
-					<div class="label">
-						<select wicket:id="address.country" width="150" style="width: 150px">
+					<select wicket:id="address.country" width="150" style="width: 150px">
+						<option>
+							Australia
+						</option>
+						<option>
+							United Kingdom
+						</option>
+					</select>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="state">
+						State:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<div wicket:id="countryStateSelector">
+						<select wicket:id="address.countryState">
 							<option>
-								Australia
+								WA
 							</option>
 							<option>
-								United Kingdom
+								QLD
 							</option>
 						</select>
+						<input wicket:id="address.otherState"/>
 					</div>
 				</div>
-
-				<div class="panelMargin">
-					&nbsp;
-				</div>
-
-				<div class="fldLabel">
-					<div class="label">
-						<label for="state">
-							<wicket:message key="state">
-								State:
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-
-				<div class="fldControl">
-					<div class="label">
-						<div	wicket:id="countryStateSelector">
-							<select wicket:id="address.countryState">
-								<option>
-									WA
-								</option>
-								<option>
-									QLD
-								</option>
-							</select>
-							<input wicket:id="address.otherState"/>
-						</div>
-					</div>
-				</div>
-
 
 				<div class="detailPanelBreaker">
 					&nbsp;
@@ -158,27 +124,22 @@
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
+
 				<div class="fldLabel">
-					<div class="label">
-						<label for="state">
-							<wicket:message key="addressType">
-								Address Type:
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="addressType">
+						Address Type:
+					</wicket:message>
 				</div>
 
 				<div class="fldControl">
-					<div class="label">
-						<select wicket:id="address.addressType">
-							<option>
-								Work
-							</option>
-							<option>
-								Home
-							</option>
-						</select>
-					</div>
+					<select wicket:id="address.addressType">
+						<option>
+							Work
+						</option>
+						<option>
+							Home
+						</option>
+					</select>
 				</div>
 
 				<div class="panelMargin">
@@ -186,28 +147,21 @@
 				</div>
 
 				<div class="fldLabel">
-					<div class="label">
-						<label for="addressStatus">
-							<wicket:message key="addressStatus">
-								Address Status:
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="addressStatus">
+						Address Status:
+					</wicket:message>
 				</div>
 
 				<div class="fldControl">
-					<div class="label">
-						<select wicket:id="address.addressStatus">
-							<option>
-								Work
-							</option>
-							<option>
-								Home
-							</option>
-						</select>
-					</div>
+					<select wicket:id="address.addressStatus">
+						<option>
+							Work
+						</option>
+						<option>
+							Home
+						</option>
+					</select>
 				</div>
-
 
 				<div class="detailPanelBreaker">
 					&nbsp;
@@ -216,62 +170,20 @@
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
-				<div class="fldLabel">
-					<div class="label">
-						<label for="address.preferredMailing">
-							<wicket:message key="address.preferredMailingAddress">
-								Preferred Mailing address:
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-
-				<div class="fldControl">
-					<div class="label">
-						<input type="checkbox" wicket:id="address.preferredMailingAddress" />
-					</div>
-				</div>
-
-				<div class="panelMargin">
-					&nbsp;
-				</div>
 
 				<div class="fldLabel">
-					<div class="label">
-						<label for="address.dateReceived">
-							<wicket:message key="address.dateReceived">
-								Date Received:
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-
-				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="address.dateReceived" type="text"	maxlength="10" />
-					</div>
-				</div>
-
-
-				<div class="detailPanelBreaker">
-					&nbsp;
-				</div>
-
-				<div class="panelContentLeft">
-					&nbsp;
-				</div>
-				<div class="fldLabel">
-					<div class="label">
-						<wicket:message key="address.source">
-							Source:
+					<wicket:message key="address.preferredMailingAddress">
+						Preferred Mailing address:
+					</wicket:message>
+					<div class="note">
+						<wicket:message key="address.preferredMailingAddress.note">
+							[Note]
 						</wicket:message>
 					</div>
 				</div>
 
 				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="address.source" type="text"	maxlength="255" />
-					</div>
+					<input type="checkbox" wicket:id="address.preferredMailingAddress" />
 				</div>
 
 				<div class="panelMargin">
@@ -279,65 +191,62 @@
 				</div>
 
 				<div class="fldLabel">
-					<div class="label">
-						<label for="label">
-							<label for="comments">
-								<wicket:message key="address.comments">
-									Comments:
-								</wicket:message>
-							</label>
-						</label>
-					</div>
+					<wicket:message key="address.dateReceived">
+						Date Received:
+					</wicket:message>
 				</div>
 
 				<div class="fldControl">
-					<div class="label">
-						<textarea wicket:id="address.comments" maxlength="255" cols="25">
-						</textarea>
-					</div>
+					<input wicket:id="address.dateReceived" type="text"	maxlength="10" />
 				</div>
-
 
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="address.source">
+						Source:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="address.source" type="text"	maxlength="255" />
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="address.comments">
+						Comments:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<textarea wicket:id="address.comments" maxlength="255" cols="25">
+					</textarea>
+				</div>
 
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
-
 			</div>
 
 			<!--	Row 2 Action Buttons -->
-
 			<div wicket:id="editButtonContainer">
-				<div class="fldLabel">
-					&nbsp;
-				</div>
-				<div class="fldControl">
-					&nbsp;
-				</div>
-				<div class="panelMargin">
-					&nbsp;
-				</div>
 				<div class="actionButtons">
-					&nbsp;
-					<div class="label">
-						<input wicket:id="save" type="submit" wicket:message="value:page.save" />
-						&nbsp;
-						<div class="panelMargin">
-							&nbsp;
-						</div>
-						<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
-						&nbsp;
-						<div class="panelMargin">
-							&nbsp;
-						</div>
-						<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
-					</div>
+					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
 				</div>
 			</div>
+
 			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>

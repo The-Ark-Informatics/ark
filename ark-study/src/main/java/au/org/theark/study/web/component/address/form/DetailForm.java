@@ -104,6 +104,13 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
 	}
+	
+	@Override
+	public void onBeforeRender() {
+		// Disable preferred mailing for new addresses
+		preferredMailingAddressChkBox.setEnabled(!isNew());
+		super.onBeforeRender();
+	}
 
 	public void initialiseDetailForm() {
 		streetAddressTxtFld = new TextField<String>("address.streetAddress");
