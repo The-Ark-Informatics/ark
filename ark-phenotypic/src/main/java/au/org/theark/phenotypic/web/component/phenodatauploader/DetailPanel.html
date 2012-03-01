@@ -11,25 +11,39 @@
 				</div>
 				<!--	Row 1 -->
 				<div class="fldLabel">
-					<label for="questionnaire"><wicket:message key="questionnaire">Collection:</wicket:message></label>
- 				</div>
-				<div class="fldControl">
-						<select wicket:id="questionnaire">
-		       				<option>1</option>
-							<option>2</option>
-							<option>3</option>
-		       			</select>
+					<wicket:message key="questionnaire">
+						Collection:
+					</wicket:message>
 				</div>
+				
+				<div class="fldControl">
+					<select wicket:id="questionnaire">
+						<option>
+							1
+						</option>
+						<option>
+							2
+						</option>
+						<option>
+							3
+						</option>
+					</select>
+				</div>
+				
 				<div class="panelMargin">
 					&nbsp;
 				</div>
 
 				<div class="fldLabel">
-					<label for="filename"><wicket:message key="upload.filename">Filename:</wicket:message></label>
+					<wicket:message key="upload.filename">
+						Filename:
+					</wicket:message>
 				</div>
+				
 				<div class="fldControl">
-	        		<input wicket:id="upload.filename" id="upload" type="file"/>
-	    		</div>
+					<input wicket:id="upload.filename" id="upload" type="file"/>
+				</div>
+				
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
@@ -37,20 +51,26 @@
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
+				
 				<!--	Row 2 -->
 				<div class="fldLabel">
-					<div class="label">
-						<label for="delimiterType"><wicket:message	key="upload.delimiterType">Delimiter:</wicket:message></label> 
-					</div>
+					<wicket:message	key="upload.delimiterType">
+						Delimiter:
+					</wicket:message>
 				</div>
+				
 				<div class="fldControl">
-					<div class="label">
-						<select wicket:id="upload.delimiterType">
-       						<option>1</option>
-       						<option>2</option>
-       						<option>3</option>
-       					</select>
-	       			</div>
+					<select wicket:id="upload.delimiterType">
+						<option>
+							1
+						</option>
+						<option>
+							2
+						</option>
+						<option>
+							3
+						</option>
+					</select>
 				</div>
 
 				<div class="panelMargin">
@@ -59,46 +79,31 @@
 
 				<div class="fldLabel">
 					<div wicket:id="overrideDataValidationContainer">
-						<wicket:message	key="overrideDataValidationChkBox">Override Data validation:</wicket:message>
+						<wicket:message	key="overrideDataValidationChkBox">
+							Override Data validation:
+						</wicket:message>
 						<input type="checkbox" wicket:id="overrideDataValidationChkBox"/>
 					</div>
 				</div>
+
 				<div class="fldControl">
 					&nbsp;
 				</div>
+
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 			</div>
-			<!--	Row 2 Action Buttons -->
 
+			<!--	Row 2 Action Buttons -->
 			<div wicket:id="editButtonContainer">
-				<div class="fldLabel">
-					&nbsp;
-				</div>
-				<div class="fldControl">
-					&nbsp;
-				</div>
-				<div class="panelMargin">
-					&nbsp;
-				</div>
 				<div class="actionButtons">
-					&nbsp;
-					<div class="label">
-						<input wicket:id="save" type="submit" wicket:message="value:page.save" />
-						&nbsp;
-						<div class="panelMargin">
-							&nbsp;
-						</div>
-						<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
-						&nbsp;
-						<div class="panelMargin">
-							&nbsp;
-						</div>
-						<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
-					</div>
+					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
 				</div>
 			</div>
+
 			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
