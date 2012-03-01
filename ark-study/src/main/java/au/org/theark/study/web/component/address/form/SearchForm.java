@@ -239,6 +239,10 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 			final List<Country> countryList = iArkCommonService.getCountries();
 			setDefaultCountry();
 		}
+		
+		// Force new address to be preferred
+		getModelObject().getAddress().setPreferredMailingAddress(true);
+		
 		updateDetailFormPrerender(getModelObject().getAddress());
 
 		preProcessDetailPanel(target);
@@ -264,6 +268,5 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 			detailStateSelector.setVisible(false);
 			otherState.setVisible(true);
 		}
-
 	}
 }
