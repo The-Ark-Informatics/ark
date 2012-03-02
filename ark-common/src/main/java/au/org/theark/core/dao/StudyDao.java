@@ -832,14 +832,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public Boolean studyHasSubjects(Study study) {
-		Long totalCount = null;
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setProjection(Projections.rowCount());
-		totalCount = (Long) criteria.uniqueResult();
+		Integer totalCount = (Integer) criteria.uniqueResult();
 		session.close();
-		return totalCount > 0;
+		return totalCount.intValue() > 0;
 	}
 
 	public List<Study> getStudiesForUser(ArkUser arkUser, Study study) {
