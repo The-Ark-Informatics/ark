@@ -138,7 +138,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		}
 		Criteria criteria = buildBiospecimenCriteria(biospecimenCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Long totalCount = (Long) criteria.uniqueResult();
+		Integer totalCount = (Integer) criteria.uniqueResult();
 		return totalCount.intValue();
 	}
 
@@ -191,7 +191,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	public int getBiospecimenCount(LimsVO limsVo) {
 		Criteria criteria = buildBiospecimenCriteria(limsVo);
 		criteria.setProjection(Projections.rowCount());
-		Long totalCount = (Long) criteria.uniqueResult();
+		Integer totalCount = (Integer) criteria.uniqueResult();
 		return totalCount.intValue();
 	}
 	

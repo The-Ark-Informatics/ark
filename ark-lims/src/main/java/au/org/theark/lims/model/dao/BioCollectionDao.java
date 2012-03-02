@@ -231,7 +231,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		}
 		Criteria criteria = buildBioCollectionCriteria(bioCollectionCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Long totalCount = (Long) criteria.uniqueResult();
+		Integer totalCount = (Integer) criteria.uniqueResult();
 		return totalCount.intValue();
 	}
 
