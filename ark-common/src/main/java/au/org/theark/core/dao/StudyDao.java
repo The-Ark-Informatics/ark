@@ -687,7 +687,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		Criteria criteria = buildGeneralSubjectCriteria(subjectVO);
 		criteria.setProjection(Projections.rowCount());
-		Long totalCount = (Long) criteria.uniqueResult();
+		Integer totalCount = (Integer) criteria.uniqueResult();
 		return totalCount.intValue();
 	}
 

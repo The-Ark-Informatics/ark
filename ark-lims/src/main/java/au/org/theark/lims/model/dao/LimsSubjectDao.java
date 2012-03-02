@@ -46,7 +46,7 @@ public class LimsSubjectDao extends HibernateSessionDao implements ILimsSubjectD
 		if (studyList != null && !studyList.isEmpty()) {
 			Criteria criteria = buildGeneralSubjectCriteria(limsVo, studyList);
 			criteria.setProjection(Projections.rowCount());
-			Long totalCount = (Long) criteria.uniqueResult();
+			Integer totalCount = (Integer) criteria.uniqueResult();
 			return totalCount.intValue();
 		}
 		else {

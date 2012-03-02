@@ -66,7 +66,7 @@ public class BioTransactionDao extends HibernateSessionDao implements IBioTransa
 		Criteria criteria = buildBioTransactionCriteria(bioTransaction);
 		criteria.setProjection(Projections.rowCount());
 		
-		Long totalCount = (Long) criteria.uniqueResult();
+		Integer totalCount = (Integer) criteria.uniqueResult();
 		return totalCount.intValue();
 	}
 
