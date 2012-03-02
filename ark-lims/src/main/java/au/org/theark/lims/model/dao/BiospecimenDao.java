@@ -138,8 +138,8 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		}
 		Criteria criteria = buildBiospecimenCriteria(biospecimenCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
-		return totalCount;
+		Long totalCount = (Long) criteria.uniqueResult();
+		return totalCount.intValue();
 	}
 
 	public List<Biospecimen> searchPageableBiospecimens(Biospecimen biospecimenCriteria, int first, int count) {
@@ -191,8 +191,8 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	public int getBiospecimenCount(LimsVO limsVo) {
 		Criteria criteria = buildBiospecimenCriteria(limsVo);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
-		return totalCount;
+		Long totalCount = (Long) criteria.uniqueResult();
+		return totalCount.intValue();
 	}
 	
 	protected Criteria buildBiospecimenCriteria(LimsVO limsVo) {
@@ -253,7 +253,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		criteria.add(Restrictions.eq("cfield.study", biospecimenCriteria.getStudy()));
 		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
 		criteria.setProjection(Projections.rowCount());
-		Integer count = (Integer) criteria.uniqueResult();
+		Long count = (Long) criteria.uniqueResult();
 		return count.intValue();
 	}
 
