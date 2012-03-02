@@ -989,25 +989,23 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public Boolean studyHasBiospecimen(Study study) {
-		Long totalCount = null;
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(Biospecimen.class);
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setProjection(Projections.rowCount());
-		totalCount = (Long) criteria.uniqueResult();
+		Integer totalCount = (Integer) criteria.uniqueResult();
 		session.close();
-		return totalCount > 0;
+		return totalCount.intValue() > 0;
 	}
 
 	public Boolean studyHasBioCollection(Study study) {
-		Long totalCount = null;
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(BioCollection.class);
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setProjection(Projections.rowCount());
-		totalCount = (Long) criteria.uniqueResult();
+		Integer totalCount = (Integer) criteria.uniqueResult();
 		session.close();
-		return totalCount > 0;
+		return totalCount.intValue() > 0;
 	}
 
 	public BiospecimenUidTemplate getBiospecimentUidTemplate(Study study) {
