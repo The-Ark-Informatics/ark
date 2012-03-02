@@ -687,8 +687,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		Criteria criteria = buildGeneralSubjectCriteria(subjectVO);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
-		return totalCount;
+		Long totalCount = (Long) criteria.uniqueResult();
+		return totalCount.intValue();
 	}
 
 	private Criteria buildGeneralSubjectCriteria(SubjectVO subjectVO) {
@@ -832,12 +832,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public Boolean studyHasSubjects(Study study) {
-		Integer totalCount = null;
+		Long totalCount = null;
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setProjection(Projections.rowCount());
-		totalCount = (Integer) criteria.uniqueResult();
+		totalCount = (Long) criteria.uniqueResult();
 		session.close();
 		return totalCount > 0;
 	}
@@ -990,23 +990,23 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public Boolean studyHasBiospecimen(Study study) {
-		Integer totalCount = null;
+		Long totalCount = null;
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(Biospecimen.class);
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setProjection(Projections.rowCount());
-		totalCount = (Integer) criteria.uniqueResult();
+		totalCount = (Long) criteria.uniqueResult();
 		session.close();
 		return totalCount > 0;
 	}
 
 	public Boolean studyHasBioCollection(Study study) {
-		Integer totalCount = null;
+		Long totalCount = null;
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(BioCollection.class);
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setProjection(Projections.rowCount());
-		totalCount = (Integer) criteria.uniqueResult();
+		totalCount = (Long) criteria.uniqueResult();
 		session.close();
 		return totalCount > 0;
 	}
