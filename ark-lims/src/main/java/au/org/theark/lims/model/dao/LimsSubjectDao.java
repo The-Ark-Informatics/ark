@@ -46,8 +46,8 @@ public class LimsSubjectDao extends HibernateSessionDao implements ILimsSubjectD
 		if (studyList != null && !studyList.isEmpty()) {
 			Criteria criteria = buildGeneralSubjectCriteria(limsVo, studyList);
 			criteria.setProjection(Projections.rowCount());
-			Integer totalCount = (Integer) criteria.uniqueResult();
-			return totalCount;
+			Long totalCount = (Long) criteria.uniqueResult();
+			return totalCount.intValue();
 		}
 		else {
 			// Fixes to handle for if the studyList is empty (i.e. don't bother querying the database)
