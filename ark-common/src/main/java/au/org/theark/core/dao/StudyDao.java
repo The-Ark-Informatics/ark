@@ -101,7 +101,6 @@ import au.org.theark.core.vo.SubjectVO;
  */
 @Repository("commonStudyDao")
 public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
-
 	private static Logger	log	= LoggerFactory.getLogger(StudyDao.class);
 
 	/*
