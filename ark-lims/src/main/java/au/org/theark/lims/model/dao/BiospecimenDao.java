@@ -253,7 +253,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		criteria.add(Restrictions.eq("cfield.study", biospecimenCriteria.getStudy()));
 		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
 		criteria.setProjection(Projections.rowCount());
-		Long count = (Long) criteria.uniqueResult();
+		Integer count = (Integer) criteria.uniqueResult();
 		return count.intValue();
 	}
 

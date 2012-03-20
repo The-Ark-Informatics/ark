@@ -472,7 +472,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	public boolean boxesExist() {
 		Criteria criteria = getSession().createCriteria(InvBox.class);
 		criteria.setProjection(Projections.count("id"));
-		Long count = (Long) criteria.uniqueResult();
+		Integer count = (Integer) criteria.uniqueResult();
 		return count > 0;
 	}
 
@@ -481,7 +481,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		criteria.add(Restrictions.eq("invBox", invBox));
 		criteria.add(Restrictions.isNotNull("biospecimen"));
 		criteria.setProjection(Projections.count("id"));
-		Long count = (Long) criteria.uniqueResult();
+		Integer count = (Integer) criteria.uniqueResult();
 		return count > 0;
 	}
 
