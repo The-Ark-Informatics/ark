@@ -203,7 +203,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		sizeCriteria.add(Property.forName("lss.id").eqProperty("bc.linkSubjectStudy.id"));
 		criteria.add(Subqueries.exists(sizeCriteria.setProjection(Projections.property("bc.id"))));
 		criteria.setProjection(Projections.rowCount());
-		Boolean result = ((Long) criteria.uniqueResult()) > 0;
+		Boolean result = ((Integer) criteria.uniqueResult()) > 0;
 		session.close();
 
 		return result;
@@ -218,7 +218,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		sizeCriteria.add(Property.forName("bc.id").eqProperty("b.bioCollection.id"));
 		criteria.add(Subqueries.exists(sizeCriteria.setProjection(Projections.property("b.id"))));
 		criteria.setProjection(Projections.rowCount());
-		Boolean result = ((Long) criteria.uniqueResult()) > 0;
+		Boolean result = ((Integer) criteria.uniqueResult()) > 0;
 		session.close();
 
 		return result;
@@ -277,7 +277,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		criteria.add(Restrictions.eq("cfield.study", bioCollectionCriteria.getStudy()));
 		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
 		criteria.setProjection(Projections.rowCount());
-		Long count = (Long) criteria.uniqueResult();
+		Integer count = (Integer) criteria.uniqueResult();
 		return count.intValue();
 	}
 	
