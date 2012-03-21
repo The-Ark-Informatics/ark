@@ -1,7 +1,6 @@
-/*SELECT * FROM `study`.`audit_history`;
-*/
-
 /*
+could default with something like this;
+
 update study.unit_type
 set measurement_type_id = 0; /* other /
 
@@ -10,7 +9,6 @@ some may warrent a new type of density, maybe molarity, iu,   or something else
 
 to find out those without category yet ;
 	select distinct name from study.unit_type where measurement_type_id is null;
-
 
  */
 
