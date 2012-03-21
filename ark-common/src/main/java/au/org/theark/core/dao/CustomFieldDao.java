@@ -97,6 +97,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	}
 
 	protected Criteria buildGeneralUnitTypeCriteria(UnitType unitTypeCriteria) {
+		
 		Criteria criteria = getSession().createCriteria(UnitType.class);
 		// Bring back units that are module-specific as well as the global unit types (null FK)
 		if (unitTypeCriteria.getArkFunction() != null) {
@@ -108,6 +109,8 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		if (unitTypeCriteria.getName() != null) {
 			criteria.add(Restrictions.ilike("name", unitTypeCriteria.getName(), MatchMode.START));
 		}
+		criteria.addOrder(Order.asc("measurementType.id")); //is hardcoding all of this as I see throughout the code the best way?  I guess a DAO is as close to db code as we allow at least
+		criteria.addOrder(Order.asc("displayOrder")); //is hardcoding all of this as I see throughout the code the best way?  I guess a DAO is as close to db code as we allow at least
 		return criteria;
 	}
 
