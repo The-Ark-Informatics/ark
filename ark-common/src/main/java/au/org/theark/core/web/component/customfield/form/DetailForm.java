@@ -245,7 +245,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		unitTypeCriteria.setArkFunction(cpModel.getObject().getCustomField().getArkFunction());
 		List<UnitType> unitTypeList = iArkCommonService.getUnitTypes(unitTypeCriteria);
 		// assumes that if the unit.name will appear within the unit.description 
+		
 		ChoiceRenderer unitTypeRenderer = new ChoiceRenderer(Constants.UNITTYPE_DESCRIPTION, Constants.UNITTYPE_ID);
+		//ChoiceRenderer unitTypeRenderer = new ChoiceRenderer(Constants.UNITTYPE_DESCRIPTION );
 		fieldUnitTypeDdc = new DropDownChoice<UnitType>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE, unitTypeList, unitTypeRenderer);
 		fieldUnitTypeDdc.setNullValid(true);	// null is ok for units
 		fieldUnitTypeDdc.setOutputMarkupId(true);	// unitTypeDdc can be enabled/disabled
