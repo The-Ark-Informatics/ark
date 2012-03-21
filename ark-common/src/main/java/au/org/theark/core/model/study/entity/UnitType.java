@@ -42,6 +42,8 @@ public class UnitType implements Serializable{
 	private ArkFunction	arkFunction;
 	private String		name;
 	private String		description;
+	private MeasurementType measurementType;
+	private Long		displayOrder;
 	
 	public UnitType(){
 		arkFunction = new ArkFunction();
@@ -85,6 +87,26 @@ public class UnitType implements Serializable{
 		this.description = description;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MEASUREMENT_TYPE_ID")
+	public MeasurementType getMeasurementType() {
+		return this.measurementType;
+	}
+
+	public void setMeasurementType(MeasurementType measurementType) {
+		this.measurementType = measurementType;
+	}
+	
+	@Column(name = "DISPLAY_ORDER")
+	public Long getDisplayOrder() {
+		return this.displayOrder;
+	}
+
+	public void setDisplayOrder(Long displayOrder) {
+		this.displayOrder = displayOrder;
+	}
+
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
