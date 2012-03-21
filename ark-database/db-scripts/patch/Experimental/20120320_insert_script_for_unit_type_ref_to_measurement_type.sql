@@ -1,8 +1,8 @@
 /*
-could default with something like this;
+could default with something like this (especially given nulls go first in mysql and nulls are just meaningless here anyway;
 
 update study.unit_type
-set measurement_type_id = 0; /* other /
+set measurement_type_id = 999; / * other /
 
 this is a catchall until someone steps up to fill this inother
 some may warrent a new type of density, maybe molarity, iu,   or something else

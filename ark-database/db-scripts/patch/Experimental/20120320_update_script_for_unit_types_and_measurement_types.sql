@@ -26,7 +26,7 @@ ALTER TABLE study.unit_type
 
 
 INSERT INTO study.measurement_type(ID, VALUE)
-VALUES (0, 'Other');
+VALUES (999, 'Other');
 INSERT INTO study.measurement_type(ID, VALUE)
 VALUES (1, 'Distance');
 INSERT INTO study.measurement_type(ID, VALUE)
@@ -41,4 +41,6 @@ INSERT INTO study.measurement_type(ID, VALUE)
 VALUES (6, 'Distance per Time');
 INSERT INTO study.measurement_type(ID, VALUE)
 VALUES (7, 'Percentage or Fraction');
+
+
 
