@@ -187,8 +187,9 @@ public class Constants {
 	public static final int				ROWS_PER_PAGE													= 10;
 	public static final String			RESULT_LIST														= "resultList";
 
-	/* Study Schema */
+	/* Schema */
 	public static final String			STUDY_SCHEMA													= "study";
+	public static final String			AUDIT_SCHEMA													= "audit";
 
 	/* Default Country */
 	public static final String			DEFAULT_COUNTRY												= "Australia";
