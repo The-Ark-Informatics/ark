@@ -58,6 +58,7 @@ import au.org.theark.study.web.Constants;
 
 /**
  * @author nivedann
+ * @author cellis
  * 
  */
 public class DetailForm extends AbstractDetailForm<ConsentVO> {
@@ -65,13 +66,14 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long						serialVersionUID	= 1L;
 
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	protected IArkCommonService					iArkCommonService;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	protected IStudyService							studyService;
+	protected IStudyService							iStudyService;
 
 	/**
 	 * Form Components
@@ -95,7 +97,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
-}
+	}
 
 	public void initialiseDetailForm() {
 		consentedBy = new TextField<String>(Constants.CONSENT_CONSENTED_BY);
@@ -153,25 +155,6 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		Collection<YesNo> yesNoList = iArkCommonService.getYesNoList();
 		ChoiceRenderer<YesNo> yesnoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME, Constants.ID);
 		consentDownloadedDdc = new DropDownChoice<YesNo>(Constants.CONSENT_CONSENT_DOWNLOADED, (List) yesNoList, yesnoRenderer);
-
-	}
-
-	public void addDetailFormComponents() {
-		arkCrudContainerVO.getDetailPanelFormContainer().add(consentedBy);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(consentedDatePicker);
-
-		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcPlain);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcRecieved);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcRequested);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcCompleted);
-
-		arkCrudContainerVO.getDetailPanelFormContainer().add(studyComponentChoice);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(studyComponentStatusChoice);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(consentStatusChoice);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(consentTypeChoice);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(commentTxtArea);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDownloadedDdc);
-
 	}
 
 	/**
@@ -179,8 +162,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 */
 	protected void initialiseConsentTypeChoice() {
 		List<ConsentType> consentTypeList = iArkCommonService.getConsentType();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		consentTypeChoice = new DropDownChoice(Constants.CONSENT_CONSENT_TYPE, consentTypeList, defaultChoiceRenderer);
+		ChoiceRenderer<ConsentType> defaultChoiceRenderer = new ChoiceRenderer<ConsentType>(Constants.NAME, Constants.ID);
+		consentTypeChoice = new DropDownChoice<ConsentType>(Constants.CONSENT_CONSENT_TYPE, consentTypeList, defaultChoiceRenderer);
 	}
 
 	/**
@@ -188,32 +171,35 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 */
 	protected void initialiseConsentStatusChoice() {
 		List<ConsentStatus> consentStatusList = iArkCommonService.getRecordableConsentStatus();
-		ChoiceRenderer<ConsentType> defaultChoiceRenderer = new ChoiceRenderer<ConsentType>(Constants.NAME, Constants.ID);
-		consentStatusChoice = new DropDownChoice(Constants.CONSENT_CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
+		ChoiceRenderer<ConsentStatus> defaultChoiceRenderer = new ChoiceRenderer<ConsentStatus>(Constants.NAME, Constants.ID);
+		consentStatusChoice = new DropDownChoice<ConsentStatus>(Constants.CONSENT_CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
 	}
 
 	/**
 	 * Initialise the Consent StudyComp Drop Down Choice Control
 	 */
 	protected void initialiseComponentChoice() {
-
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(study);
 		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
-		studyComponentChoice = new DropDownChoice(Constants.CONSENT_STUDY_COMP, studyCompList, defaultChoiceRenderer);
+		studyComponentChoice = new DropDownChoice<StudyComp>(Constants.CONSENT_STUDY_COMP, studyCompList, defaultChoiceRenderer);
 		studyComponentChoice.add(new ArkDefaultFormFocusBehavior());
 		studyComponentChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 
 				try {
 					Study study = iArkCommonService.getStudy(sessionStudyId);
-					Person subject = studyService.getPerson(sessionPersonId);
+					Person subject = iStudyService.getPerson(sessionPersonId);
 					boolean isConsented = iArkCommonService.isSubjectConsentedToComponent(studyComponentChoice.getModelObject(), subject, study);
 					processErrors(target);
 					if (isConsented) {
@@ -223,7 +209,6 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 						containerForm.error(sb.toString());
 						processErrors(target);
 					}
-
 				}
 				catch (EntityNotFoundException e) {
 					containerForm.error("The subject in context does not exist in system anymore.Please re-do the operation.");
@@ -232,10 +217,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 				catch (ArkSystemException e) {
 					containerForm.error("There was a system error. Please contact support.");
 				}
-
 			}
 		});
-
 	}
 
 	protected void initialiseComponentStatusChoice() {
@@ -244,6 +227,11 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		studyComponentStatusChoice = new DropDownChoice<StudyCompStatus>(Constants.CONSENT_STUDY_COMP_STATUS, studyCompList, defaultChoiceRenderer);
 
 		studyComponentStatusChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
@@ -276,6 +264,23 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		consentReceivedDtf.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("received.date.DateValidator.maximum", this, null));
 	}
 
+	public void addDetailFormComponents() {
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentedBy);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentedDatePicker);
+
+		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcPlain);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcRecieved);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcRequested);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcCompleted);
+
+		arkCrudContainerVO.getDetailPanelFormContainer().add(studyComponentChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(studyComponentStatusChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentStatusChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentTypeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(commentTxtArea);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDownloadedDdc);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -296,9 +301,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 */
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-
 		try {
-			studyService.delete(containerForm.getModelObject().getConsent());
+			iStudyService.delete(containerForm.getModelObject().getConsent());
 			containerForm.info("The Consent has been deleted successfully.");
 			editCancelProcess(target);
 		}
@@ -320,49 +324,44 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 */
 	@Override
 	protected void onSave(Form<ConsentVO> containerForm, AjaxRequestTarget target) {
-		Long personSessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		// save new
 		boolean isOkToSave = true;
-		
+
 		String status = containerForm.getModelObject().getConsent().getStudyComponentStatus().getName();
-		
-		if(status.equalsIgnoreCase(Constants.STUDY_STATUS_COMPLETED) && containerForm.getModelObject().getConsent().getCompletedDate() == null){
+
+		if (status.equalsIgnoreCase(Constants.STUDY_STATUS_COMPLETED) && containerForm.getModelObject().getConsent().getCompletedDate() == null) {
 			isOkToSave = false;
-			this.error("Completed Date is a required field.");
-		}else if(status.equalsIgnoreCase(Constants.STUDY_STATUS_REQUESTED) &&  containerForm.getModelObject().getConsent().getRequestedDate() == null){
+			this.error("Field 'Completed Date' is required.");
+		}
+		else if (status.equalsIgnoreCase(Constants.STUDY_STATUS_REQUESTED) && containerForm.getModelObject().getConsent().getRequestedDate() == null) {
 			isOkToSave = false;
-			this.error("Requested Date is a required field.");
-		}else if(status.equalsIgnoreCase(Constants.STUDY_STATUS_RECEIVED) &&  containerForm.getModelObject().getConsent().getReceivedDate() == null){
+			this.error("Field 'Requested Date' is required.");
+		}
+		else if (status.equalsIgnoreCase(Constants.STUDY_STATUS_RECEIVED) && containerForm.getModelObject().getConsent().getReceivedDate() == null) {
 			isOkToSave = false;
-			this.error("Received Date is a required field.");
-		}else{
+			this.error("Field 'Received Date' is required.");
+		}
+		else {
 			isOkToSave = true;
 		}
-		
-		if(isOkToSave){
-			try {
 
-				// Subject in Context
-				Person subject = studyService.getPerson(personSessionId);
-				// containerForm.getModelObject().getConsent().setSubject(subject);
-				// TODO Get the LinkSubjectStudy here and place it int he model
+		if (isOkToSave) {
+			try {
 				// Study in Context
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				Study study = iArkCommonService.getStudy(studyId);
 				containerForm.getModelObject().getConsent().setStudy(study);
-				
-				if (containerForm.getModelObject().getConsent().getId() == null) {
 
-					studyService.create(containerForm.getModelObject().getConsent());
+				if (containerForm.getModelObject().getConsent().getId() == null) {
+					iStudyService.create(containerForm.getModelObject().getConsent());
 					this.info("Consent was successfuly created for the Subject ");
 					processErrors(target);
 				}
 				else {
-					studyService.update(containerForm.getModelObject().getConsent());
+					iStudyService.update(containerForm.getModelObject().getConsent());
 					this.info("Consent was successfuly updated for the Subject ");
 					processErrors(target);
 				}
-
 			}
 			catch (EntityNotFoundException e) {
 				this.error("The Consent record you tried to update is no longer available in the system");
@@ -375,12 +374,10 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 			finally {
 				onSavePostProcess(target);
 			}
-			
-		}else{
+		}
+		else {
 			processErrors(target);
 		}
-	
-
 	}
 
 	/*
@@ -406,7 +403,5 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		else {
 			return false;
 		}
-
 	}
-
 }
