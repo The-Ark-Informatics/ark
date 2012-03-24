@@ -280,7 +280,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		
 		// Restrict any addresses to the preferred mailing address
 		Criteria addressCriteria = criteria.createAlias("lss.person.addresses", "a", Criteria.LEFT_JOIN);
-		addressCriteria.add(Restrictions.eq("a.preferredMailingAddress", true));
+		addressCriteria.add(Restrictions.or(Restrictions.eq("a.preferredMailingAddress", true), Restrictions.isNull("a.preferredMailingAddress")));
 		
 		criteria.createAlias("lss.person.addresses.country", "c", Criteria.LEFT_JOIN);
 		criteria.createAlias("lss.person.addresses.countryState", "countryState", Criteria.LEFT_JOIN);
