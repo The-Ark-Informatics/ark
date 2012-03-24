@@ -44,7 +44,7 @@ import au.org.theark.core.model.study.entity.YesNo;
  * LinkSubjectStudyHistory entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "LSS_CONSENT_HISTORY", schema = Constants.STUDY_SCHEMA)
+@Table(name = "LSS_CONSENT_HISTORY", schema = Constants.AUDIT_SCHEMA)
 public class LssConsentHistory implements java.io.Serializable {
 
 	// Fields
