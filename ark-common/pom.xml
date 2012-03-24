@@ -192,9 +192,12 @@
 
 		<!--
 			WiQuery <dependency> <groupId>org.odlabs.wiquery</groupId>
-			<artifactId>wiquery</artifactId> <version>1.2.3</version>
+			<artifactId>wiquery-core</artifactId> <version>1.5.4</version>
+			</dependency> <dependency> <groupId>org.odlabs.wiquery</groupId>
+			<artifactId>wiquery-jquery-ui</artifactId> <version>1.5.4</version>
 			</dependency>
 		-->
+
 		<!--  Quartz (Job scheduling) -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
@@ -240,6 +243,13 @@
 			<version>1.1.1</version>
 			<type>jar</type>
 		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.jqwicket</groupId>
+			<artifactId>jqwicket</artifactId>
+			<version>0.8</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<resources>
@@ -331,5 +341,15 @@
 			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
 			</repository>
 		-->
+		<repository>
+			<id>wiquery-maven-repo</id>
+			<name>WiQuery repository</name>
+			<url>https://wiquery.googlecode.com/svn/repo/</url>
+		</repository>
+
+		<repository>
+			<id>googlecode</id>
+			<url>http://jqwicket.googlecode.com/svn/m2-repo/releases/</url>
+		</repository>
 	</repositories>
 </project>
