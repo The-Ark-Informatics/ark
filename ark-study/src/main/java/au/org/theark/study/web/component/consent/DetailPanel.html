@@ -3,7 +3,7 @@
 	<form wicket:id="detailsForm">
 		<div class="detailsPanelBorder">
 			<div wicket:id="detailFormContainer">
-				<div class="searchPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 				<div class="panelContentLeft">
@@ -39,8 +39,7 @@
 					&nbsp;
 				</div>
 
-
-				<div class="searchPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 
@@ -88,7 +87,7 @@
 					</div>
 
 					<div class="fldControl">
-						<input wicket:id="consent.requestedDate"	type="text" maxLength="10"/>
+						<input wicket:id="consent.requestedDate" type="text" maxLength="10"/>
 						<span class="requiredHint">
 							*
 						</span>
@@ -125,10 +124,9 @@
 					</div>
 				</div>
 
-				<div class="searchPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
-
 
 				<!--	Row 2 -->
 				<div class="panelContentLeft">
@@ -174,10 +172,9 @@
 				</div>
 
 
-				<div class="searchPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
-
 
 				<!--	Row 3 -->
 				<div class="panelContentLeft">
@@ -215,8 +212,7 @@
 					<input wicket:id="consent.consentedBy"	type="text" />
 				</div>
 
-
-				<div class="searchPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 
@@ -250,10 +246,21 @@
 					</textarea>
 				</div>
 
-				<div class="searchPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div wicket:id="consentHistoryPanel" class="customPanelBorder">
+					[Consent history]
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
 			</div>
 
 			<!--	Row 2 Action Buttons -->
