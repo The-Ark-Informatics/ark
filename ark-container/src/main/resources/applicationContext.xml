@@ -52,8 +52,8 @@
 		THe following keys are for the domain: http://the-ark.org.au
 	-->
 	<bean id="reCaptchaContextSource" class="au.org.theark.core.dao.ReCaptchaContextSource">
-		<property name="reCaptchaPublicKey" value="insert-public-key" />
-		<property name="reCaptchaPrivateKey" value="insert-private-key" />
+		<property name="reCaptchaPublicKey" value="6LeH1soSAAAAAFJDIJlP3sjPiHu7QMTxVmYuxX_M" />
+		<property name="reCaptchaPrivateKey" value="6LeH1soSAAAAAHo5FTWfUzS5AQZ6Jea-9dBVtuyL" />
 	</bean>
 	
 	<!-- SMTP Configuration -->
@@ -83,7 +83,7 @@
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://ark-database:3306" />
 		<property name="username" value="arkadmin" />
-		<property name="password" value="insert-password" />
+		<property name="password" value="v@Tym4np[]" />
 	</bean>
 
 	<!--  Ark LDAP configuration (includes the LDAP data source) -->
@@ -97,7 +97,7 @@
 		<property name="basePeopleDn" value="ou=arkUsers" />
 		<property name="base" value="dc=the-ark,dc=org,dc=au" />
 		<property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" />
-		<property name="password" value="insert-password" />
+		<property name="password" value="v@Tym4np[]" />
 	</bean>
 	
 	<!--  Hibernate Session Factory -->
@@ -113,6 +113,7 @@
 				<value>au.org.theark.core.model.report.entity</value>
 				<!-- <value>au.org.theark.registry.model.entity</value>-->
 				<value>au.org.theark.core.model.lims.entity</value>
+				<value>au.org.theark.core.model.audit.entity</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -212,8 +213,7 @@
 		-->
 		<property name="cacheManager" ref="cacheManager" />
 	</bean>
-
-
+	
 	<bean id="arkLdapRealm" class="au.org.theark.core.security.ArkLdapRealm" />
 
 	<!--
