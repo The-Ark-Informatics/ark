@@ -1061,4 +1061,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<Study> getAssignedChildStudyListForPerson(Study study, Person person) {
 		return studyDao.getAssignedChildStudyListForPerson(study, person);
 	}
+
+	public List getConsentOptionList() {
+		return studyDao.getConsentOptionList();
+	}
 }

@@ -628,4 +628,6 @@ public interface IArkCommonService<T> {
 	public List<SubjectVO> matchSubjectsFromInputFile(FileUpload subjectFileUpload, Study study);
 
 	public List<Study> getAssignedChildStudyListForPerson(Study study, Person person);
+
+	public List<YesNo> getConsentOptionList();
 }
