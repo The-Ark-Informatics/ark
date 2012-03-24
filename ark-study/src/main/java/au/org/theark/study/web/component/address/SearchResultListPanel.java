@@ -46,6 +46,10 @@ import au.org.theark.study.web.component.address.form.SearchForm;
  */
 public class SearchResultListPanel extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
 
@@ -55,9 +59,15 @@ public class SearchResultListPanel extends Panel {
 		this.containerForm = containerForm;
 	}
 
+	@SuppressWarnings("unchecked")
 	public PageableListView<Address> buildPageableListView(IModel iModel) {
 
 		PageableListView<Address> pageableListView = new PageableListView<Address>(Constants.ADDRESS_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void populateItem(final ListItem<Address> item) {
@@ -135,9 +145,14 @@ public class SearchResultListPanel extends Panel {
 
 	}
 
-	private AjaxLink buildLink(final Address address) {
+	private AjaxLink<String> buildLink(final Address address) {
 
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("address") {
+		ArkBusyAjaxLink<String> link = new ArkBusyAjaxLink<String>("address") {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
