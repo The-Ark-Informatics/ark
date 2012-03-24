@@ -54,11 +54,11 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 2166285054533611912L;
-	private static final Logger								log					= LoggerFactory.getLogger(SubjectContainerPanel.class);
-	private SearchPanel														searchPanel;
-	private SearchResultListPanel											searchResultsPanel;
-	private DetailPanel													detailPanel;
+	private static final long										serialVersionUID	= 2166285054533611912L;
+	private static final Logger									log					= LoggerFactory.getLogger(SubjectContainerPanel.class);
+	private SearchPanel												searchPanel;
+	private SearchResultListPanel									searchResultsPanel;
+	private DetailPanel												detailPanel;
 	private PageableListView<SubjectVO>							pageableListView;
 	private ContainerForm											containerForm;
 
@@ -66,6 +66,8 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService										iArkCommonService;
+	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
+	private IStudyService											iStudyService;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService											studyService;
@@ -123,6 +125,19 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 				}
 
 				if (contextLoaded) {
+					// Available/assigned child studies
+					List<Study> availableChildStudies = new ArrayList<Study>(0);
+					List<Study> selectedChildStudies = new ArrayList<Study>(0);
+
+					if (containerForm.getModelObject().getLinkSubjectStudy().getStudy().getParentStudy() != null) {
+						availableChildStudies = iStudyService.getChildStudyListOfParent(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
+						selectedChildStudies = iArkCommonService.getAssignedChildStudyListForPerson(containerForm.getModelObject().getLinkSubjectStudy().getStudy(), containerForm.getModelObject()
+								.getLinkSubjectStudy().getPerson());
+					}
+
+					containerForm.getModelObject().setAvailableChildStudies(availableChildStudies);
+					containerForm.getModelObject().setSelectedChildStudies(selectedChildStudies);
+
 					// Put into Detail View mode
 					arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
@@ -140,7 +155,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 			containerForm.getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		}
 
-		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView,arkCrudContainerVO,containerForm);
+		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView, arkCrudContainerVO, containerForm);
 
 		searchPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
@@ -148,7 +163,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailPanel = new DetailPanel("detailPanel", feedBackPanel, arkContextMarkup, containerForm,arkCrudContainerVO);
+		detailPanel = new DetailPanel("detailPanel", feedBackPanel, arkContextMarkup, containerForm, arkCrudContainerVO);
 		detailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
@@ -156,7 +171,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
 	@SuppressWarnings("unchecked")
 	protected WebMarkupContainer initialiseSearchResults() {
-		searchResultsPanel = new SearchResultListPanel("searchResults",arkContextMarkup, containerForm,arkCrudContainerVO);
+		searchResultsPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO);
 
 		// Restrict to subjects in current study in session
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
