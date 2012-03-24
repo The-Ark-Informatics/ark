@@ -64,6 +64,7 @@ import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
+import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
@@ -201,7 +202,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public List<StudyStatus> getListOfStudyStatus() {
-
 		Example studyStatus = Example.create(new StudyStatus());
 		Criteria studyStatusCriteria = getSession().createCriteria(StudyStatus.class).add(studyStatus);
 		return studyStatusCriteria.list();
@@ -485,7 +485,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					auditHistory.setStudyStatus(study.getStudyStatus());
 				}
 			}
-
 		}
 
 		auditHistory.setDateTime(date);
@@ -1075,6 +1074,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		projectionList.add(Projections.groupProperty("study"), "study");
 		criteria.setProjection(projectionList);
 		
+		return criteria.list();
+	}
+
+	public List<ConsentOption> getConsentOptionList() {
+		Criteria criteria = getSession().createCriteria(ConsentOption.class);
 		return criteria.list();
 	}
 }
