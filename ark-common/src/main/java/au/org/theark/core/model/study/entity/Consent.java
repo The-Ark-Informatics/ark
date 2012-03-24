@@ -198,7 +198,7 @@ public class Consent implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUBJECT_ID")
+	@JoinColumn(name = "LINK_SUBJECT_STUDY_ID")
 	public LinkSubjectStudy getLinkSubjectStudy() {
 		return linkSubjectStudy;
 	}
@@ -206,5 +206,4 @@ public class Consent implements Serializable {
 	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
 		this.linkSubjectStudy = linkSubjectStudy;
 	}
-
 }
