@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.dao.IAuditDao;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
@@ -47,6 +48,8 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.core.model.audit.entity.ConsentHistory;
+import au.org.theark.core.model.audit.entity.LssConsentHistory;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.Address;
@@ -93,6 +96,7 @@ public class StudyServiceImpl implements IStudyService {
 	private IArkCommonService	iArkCommonService;
 	private IUserService			iUserService;
 	private IStudyDao				iStudyDao;
+	private IAuditDao				iAuditDao;
 
 	public IArkCommonService getiArkCommonService() {
 		return iArkCommonService;
@@ -128,7 +132,20 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao;
 	}
 
+	/**
+	 * @return the iAuditDao
+	 */
+	public IAuditDao getiAuditDao() {
+		return iAuditDao;
+	}
 
+	/**
+	 * @param iAuditDao the iAuditDao to set
+	 */
+	@Autowired
+	public void setiAuditDao(IAuditDao iAuditDao) {
+		this.iAuditDao = iAuditDao;
+	}
 
 	public List<StudyStatus> getListOfStudyStatus() {
 		return iStudyDao.getListOfStudyStatus();
@@ -379,6 +396,7 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkSubjectInsertException {
 		iStudyDao.createSubject(subjectVO);
+		createLssConsentHistory(subjectVO.getLinkSubjectStudy());
 		
 		assignChildStudies(subjectVO);
 
@@ -392,6 +410,7 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException {
 		iStudyDao.updateSubject(subjectVO);
+		updateLssConsentHistory(subjectVO.getLinkSubjectStudy());
 		
 		assignChildStudies(subjectVO);
 
@@ -401,6 +420,43 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT);
 		ah.setEntityId(subjectVO.getLinkSubjectStudy().getId());
 		iArkCommonService.createAuditHistory(ah);
+	}
+	
+	private void createLssConsentHistory(LinkSubjectStudy newLinkSubjectStudy) {
+		LssConsentHistory lssConsentHistory = new LssConsentHistory();
+		lssConsentHistory.setLinkSubjectStudy(newLinkSubjectStudy);
+		lssConsentHistory.setConsentToActiveContact(newLinkSubjectStudy.getConsentToActiveContact());
+		lssConsentHistory.setConsentToPassiveDataGathering(newLinkSubjectStudy.getConsentToActiveContact());
+		lssConsentHistory.setConsentToUseData(newLinkSubjectStudy.getConsentToUseData());
+		lssConsentHistory.setConsentStatus(newLinkSubjectStudy.getConsentStatus());
+		lssConsentHistory.setConsentType(newLinkSubjectStudy.getConsentType());
+		lssConsentHistory.setConsentDate(newLinkSubjectStudy.getConsentDate());
+		lssConsentHistory.setConsentDownloaded(newLinkSubjectStudy.getConsentDownloaded());
+		iAuditDao.createLssConsentHistory(lssConsentHistory);
+	}
+	
+	private void updateLssConsentHistory(LinkSubjectStudy newLinkSubjectStudy) {
+		try {
+			LinkSubjectStudy oldLinkSubjectStudy = getLinkSubjectStudy(newLinkSubjectStudy.getId());
+			
+			// TODO: Only add audit log if changes actually made
+			/*
+			if(((newLinkSubjectStudy.getConsentDate() != null && !newLinkSubjectStudy.getConsentDate().equals(oldLinkSubjectStudy.getConsentDate())) || (newLinkSubjectStudy.getConsentDate() != null && oldLinkSubjectStudy.getConsentDate() == null)) ||
+				((newLinkSubjectStudy.getConsentStatus() != null && !newLinkSubjectStudy.getConsentStatus().equals(oldLinkSubjectStudy.getConsentStatus())) || (newLinkSubjectStudy.getConsentStatus() != null && oldLinkSubjectStudy.getConsentStatus() == null)) ||
+				((newLinkSubjectStudy.getConsentType() != null && !newLinkSubjectStudy.getConsentType().equals(oldLinkSubjectStudy.getConsentType())) || (newLinkSubjectStudy.getConsentType() != null && oldLinkSubjectStudy.getConsentType() == null)) ||
+				((newLinkSubjectStudy.getConsentDownloaded() != null && !newLinkSubjectStudy.getConsentDownloaded().equals(oldLinkSubjectStudy.getConsentDownloaded())) || (newLinkSubjectStudy.getConsentDownloaded() != null && oldLinkSubjectStudy.getConsentDownloaded() == null))
+				) {
+			}
+			*/
+			createLssConsentHistory(newLinkSubjectStudy);
+		}
+		catch (EntityNotFoundException e) {
+			log.error(("Entity not found: " + newLinkSubjectStudy.getId().toString()));
+		}
+	}
+
+	private LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException {
+		return iStudyDao.getLinkSubjectStudy(id);
 	}
 
 	private void assignChildStudies(SubjectVO subjectVO) {
@@ -530,6 +586,7 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void create(Consent consent) throws ArkSystemException {
 		iStudyDao.create(consent);
+		createConsentHistory(consent);
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
@@ -549,6 +606,7 @@ public class StudyServiceImpl implements IStudyService {
 	 * @see au.org.theark.study.service.IStudyService#update(au.org.theark.core.model.study.entity.Consent)
 	 */
 	public void update(Consent consent) throws ArkSystemException, EntityNotFoundException {
+		updateConsentHistory(consent);
 		iStudyDao.update(consent);
 
 		AuditHistory ah = new AuditHistory();
@@ -557,6 +615,44 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT);
 		ah.setEntityId(consent.getId());
 		iArkCommonService.createAuditHistory(ah);
+	}
+	
+	private void createConsentHistory(Consent newConsent) {
+		ConsentHistory consentHistory = new ConsentHistory();
+		consentHistory.setLinkSubjectStudy(newConsent.getLinkSubjectStudy());
+		consentHistory.setStudyComponentStatus(newConsent.getStudyComponentStatus());
+		consentHistory.setConsentDate(newConsent.getConsentDate());
+		consentHistory.setConsentedBy(newConsent.getConsentedBy());
+		consentHistory.setConsentStatus(newConsent.getConsentStatus());
+		consentHistory.setConsentType(newConsent.getConsentType());
+		consentHistory.setComments(newConsent.getComments());
+		consentHistory.setRequestedDate(newConsent.getRequestedDate());
+		consentHistory.setReceivedDate(newConsent.getReceivedDate());
+		consentHistory.setCompletedDate(newConsent.getCompletedDate());
+		consentHistory.setConsentDownloaded(newConsent.getConsentDownloaded());
+		iAuditDao.createConsentHistory(consentHistory);
+	}
+
+	private void updateConsentHistory(Consent newConsent) throws ArkSystemException {
+		Consent oldConsent = getConsent(newConsent.getId());
+		
+		// Only add audit log if changes actually made
+		/*
+		if((newConsent.getStudyComponentStatus() != oldConsent.getStudyComponentStatus()) ||
+			((newConsent.getConsentedBy() != oldConsent.getConsentedBy()) || (newConsent.getConsentedBy() != null && oldConsent.getConsentedBy() == null)) ||
+			((newConsent.getConsentDate() != oldConsent.getConsentDate()) || (newConsent.getConsentDate() != null && oldConsent.getConsentDate() == null)) ||
+			((newConsent.getConsentStatus() != oldConsent.getConsentStatus()) || (newConsent.getConsentStatus() != null && oldConsent.getConsentStatus() == null)) ||
+			((newConsent.getConsentType() != oldConsent.getConsentType()) || (newConsent.getConsentType() != null && oldConsent.getConsentType() == null)) ||
+			((newConsent.getComments() != oldConsent.getComments()) || (newConsent.getComments() != null && oldConsent.getComments() == null)) ||
+			((newConsent.getRequestedDate() != oldConsent.getRequestedDate()) || (newConsent.getRequestedDate() != null && oldConsent.getRequestedDate() == null)) ||
+			((newConsent.getReceivedDate() != oldConsent.getReceivedDate()) || (newConsent.getReceivedDate() != null && oldConsent.getReceivedDate() == null)) ||
+			((newConsent.getCompletedDate() != oldConsent.getCompletedDate()) || (newConsent.getCompletedDate() != null && oldConsent.getCompletedDate() == null)) ||
+			((newConsent.getConsentDownloaded() != oldConsent.getConsentDownloaded()) || (newConsent.getConsentDownloaded() != null && oldConsent.getConsentDownloaded() == null))
+			) {
+			*/
+		if(!newConsent.equals(oldConsent)) {
+			createConsentHistory(newConsent);
+		}
 	}
 
 	public List<Consent> searchConsent(ConsentVO consentVO) throws EntityNotFoundException, ArkSystemException {
@@ -1094,5 +1190,13 @@ public class StudyServiceImpl implements IStudyService {
 
 	public List<Study> getChildStudyListOfParent(Study study) {
 		return iStudyDao.getChildStudyListOfParent(study);
+	}
+
+	public List<LssConsentHistory> getLssConsentHistoryList(LinkSubjectStudy linkSubjectStudy) {
+		return iAuditDao.getLssConsentHistoryList(linkSubjectStudy);
+	}
+	
+	public List<ConsentHistory> getConsentHistoryList(LinkSubjectStudy linkSubjectStudy) {
+		return iAuditDao.getConsentHistoryList(linkSubjectStudy);
 	}
 }

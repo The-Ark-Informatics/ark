@@ -33,6 +33,8 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.core.model.audit.entity.ConsentHistory;
+import au.org.theark.core.model.audit.entity.LssConsentHistory;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -294,4 +296,18 @@ public interface IStudyService {
 	 * @return
 	 */
 	public List<Study> getChildStudyListOfParent(Study study);
+
+	/**
+	 * Return a list of LinkSubjectStudy ConsentHistory entities
+	 * @param linkSubjectStudy
+	 * @return
+	 */
+	public List<LssConsentHistory> getLssConsentHistoryList(LinkSubjectStudy linkSubjectStudy);
+	
+	/**
+	 * Return a list of ConsentHistory entities
+	 * @param linkSubjectStudy
+	 * @return
+	 */
+	public List<ConsentHistory> getConsentHistoryList(LinkSubjectStudy linkSubjectStudy);
 }

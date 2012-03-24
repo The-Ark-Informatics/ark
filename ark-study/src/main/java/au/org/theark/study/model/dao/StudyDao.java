@@ -53,6 +53,7 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.audit.entity.LssConsentHistory;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
@@ -60,6 +61,7 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
@@ -474,10 +476,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			linkSubjectStudy.setConsentDate(new Date());
 			linkSubjectStudy.setConsentStatus(getConsentStatusByName("Consented"));
 			linkSubjectStudy.setConsentType(getConsentTypeByName("Electronic"));
-			YesNo yesno = getYesNo("Yes");
-			linkSubjectStudy.setConsentToActiveContact(yesno);
-			linkSubjectStudy.setConsentToPassiveDataGathering(yesno);
-			linkSubjectStudy.setConsentToUseData(yesno);
+			
+			ConsentOption defaultConsentOption = getConsentOption("Yes");
+			linkSubjectStudy.setConsentToActiveContact(defaultConsentOption);
+			linkSubjectStudy.setConsentToPassiveDataGathering(defaultConsentOption);
+			linkSubjectStudy.setConsentToUseData(defaultConsentOption);
 		}
 	}
 
@@ -1244,10 +1247,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	private YesNo getYesNo(String value) {
-
 		Criteria criteria = getSession().createCriteria(YesNo.class);
 		criteria.add(Restrictions.ilike("name", value));
 		return (YesNo) criteria.list().get(0);
+	}
+	
+	private ConsentOption getConsentOption(String value) {
+		Criteria criteria = getSession().createCriteria(ConsentOption.class);
+		criteria.add(Restrictions.ilike("name", value));
+		return (ConsentOption) criteria.list().get(0);
 	}
 
 	public boolean personHasPreferredMailingAddress(Person person, Long currentAddressId) {
@@ -1752,4 +1760,5 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void update(LinkSubjectStudy linkSubjectStudy) {
 		getSession().update(linkSubjectStudy);
 	}
+
 }
