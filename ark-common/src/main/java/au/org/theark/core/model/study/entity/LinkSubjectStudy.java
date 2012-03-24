@@ -55,9 +55,9 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private String							subjectUID;
 	private String							otherState;
 	private Date							studyApproachDate;
-	private YesNo							consentToActiveContact;
-	private YesNo							consentToPassiveDataGathering;
-	private YesNo							consentToUseData;
+	private ConsentOption				consentToActiveContact;
+	private ConsentOption				consentToPassiveDataGathering;
+	private ConsentOption				consentToUseData;
 	private ConsentStatus				consentStatus;
 	private ConsentType					consentType;
 	private Date							consentDate;
@@ -103,31 +103,31 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TO_PASSIVE_DATA_GATHERING_ID")
-	public YesNo getConsentToPassiveDataGathering() {
+	public ConsentOption	getConsentToPassiveDataGathering() {
 		return consentToPassiveDataGathering;
 	}
 
-	public void setConsentToPassiveDataGathering(YesNo consentToPassiveDataGathering) {
+	public void setConsentToPassiveDataGathering(ConsentOption consentToPassiveDataGathering) {
 		this.consentToPassiveDataGathering = consentToPassiveDataGathering;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TO_USE_DATA_ID")
-	public YesNo getConsentToUseData() {
+	public ConsentOption getConsentToUseData() {
 		return consentToUseData;
 	}
 
-	public void setConsentToUseData(YesNo consentToUseData) {
+	public void setConsentToUseData(ConsentOption consentToUseData) {
 		this.consentToUseData = consentToUseData;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TO_ACTIVE_CONTACT_ID")
-	public YesNo getConsentToActiveContact() {
+	public ConsentOption getConsentToActiveContact() {
 		return consentToActiveContact;
 	}
 
-	public void setConsentToActiveContact(YesNo consentToActiveContact) {
+	public void setConsentToActiveContact(ConsentOption consentToActiveContact) {
 		this.consentToActiveContact = consentToActiveContact;
 	}
 
