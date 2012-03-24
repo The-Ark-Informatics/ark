@@ -110,7 +110,7 @@ public class ConsentHistoryPanel extends Panel {
 				ConsentHistory consentHistory = item.getModelObject();
 
 				if(consentHistory.getTimestamp() != null ) {
-					item.add(new Label("timestamp", simpleDateFormat.format(consentHistory.getTimestamp())));
+					item.add(new Label("timestamp", simpleDateTimeFormat.format(consentHistory.getTimestamp())));
 				}
 				else {
 					item.add(new Label("timestamp"));
