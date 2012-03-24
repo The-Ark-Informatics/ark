@@ -74,3 +74,11 @@ background-image:url("../images/righton.gif");
 color:#333;
 padding-bottom:5px;
 }
+
+.collapsiblePanel{
+border:thin;
+border-color:#eee;
+border-style:solid;
+margin-bottom:5px;
+width:98%;
+}
