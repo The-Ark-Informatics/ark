@@ -34,6 +34,9 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
@@ -41,6 +44,8 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
 
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.model.audit.entity.LssConsentHistory;
+import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -57,9 +62,11 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.panel.collapsiblepanel.CollapsiblePanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.consenthistory.LinkSubjectStudyConsentHistoryPanel;
 import au.org.theark.study.web.component.subject.ChildStudyPalettePanel;
 
 /**
@@ -98,9 +105,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	protected DropDownChoice<YesNo>						consentDownloadedChoice;
 
 	// Consents at Subject Study Level
-	protected DropDownChoice<YesNo>						consentToActiveContactDdc;
-	protected DropDownChoice<YesNo>						consentToUseDataDdc;
-	protected DropDownChoice<YesNo>						consentToPassDataGatheringDdc;
+	protected DropDownChoice<ConsentOption>			consentToActiveContactDdc;
+	protected DropDownChoice<ConsentOption>			consentToUseDataDdc;
+	protected DropDownChoice<ConsentOption>			consentToPassDataGatheringDdc;
 
 	// Address Stuff comes here
 	protected TextField<String>							preferredEmailTxtFld;
@@ -118,6 +125,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	protected DropDownChoice<ConsentStatus>			consentStatusChoice;
 	protected DropDownChoice<ConsentType>				consentTypeChoice;
 	protected DateTextField									consentDateTxtFld;
+	protected CollapsiblePanel 							consentHistoryPanel;
+	
 	// Webmarkup for Ajax refreshing of items based on particular criteria
 	protected WebMarkupContainer							wmcPreferredEmailContainer;
 	protected WebMarkupContainer							wmcDeathDetailsContainer;
@@ -138,7 +147,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(childStudyPalettePanel);
 		super.onBeforeRender();
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm() {
 		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID) {
@@ -334,16 +343,29 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		ChoiceRenderer<YesNo> yesNoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME, Constants.ID);
 		consentDownloadedChoice = new DropDownChoice<YesNo>(Constants.PERSON_CONSENT_DOWNLOADED, yesNoListSource, yesNoRenderer);
 
-		Collection<YesNo> yesNoList = iArkCommonService.getYesNoList();
-		ChoiceRenderer<YesNo> yesnoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME, Constants.ID);
-		consentToActiveContactDdc = new DropDownChoice<YesNo>(Constants.SUBJECT_CONSENT_TO_ACTIVE_CONTACT, (List) yesNoList, yesnoRenderer);
-
-		consentToUseDataDdc = new DropDownChoice<YesNo>(Constants.SUBJECT_CONSENT_TO_USEDATA, (List) yesNoList, yesnoRenderer);
-
-		consentToPassDataGatheringDdc = new DropDownChoice<YesNo>(Constants.SUBJECT_CONSENT_PASSIVE_DATA_GATHER, (List) yesNoList, yesnoRenderer);
+		List<ConsentOption> consentOptionList = iArkCommonService.getConsentOptionList();
+		ChoiceRenderer<ConsentOption> consentOptionRenderer = new ChoiceRenderer<ConsentOption>(Constants.NAME, Constants.ID);
+		
+		consentToActiveContactDdc = new DropDownChoice<ConsentOption>(Constants.SUBJECT_CONSENT_TO_ACTIVE_CONTACT, (List) consentOptionList, consentOptionRenderer);
+		consentToUseDataDdc = new DropDownChoice<ConsentOption>(Constants.SUBJECT_CONSENT_TO_USEDATA, (List) consentOptionList, consentOptionRenderer);
+		consentToPassDataGatheringDdc = new DropDownChoice<ConsentOption>(Constants.SUBJECT_CONSENT_PASSIVE_DATA_GATHER, (List) consentOptionList, consentOptionRenderer);
 
 		initialiseConsentStatusChoice();
 		initialiseConsentTypeChoice();
+		
+		consentHistoryPanel = new CollapsiblePanel("consentHistoryPanel", new Model<String>("Consent History"), false) {
+			
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected Panel getInnerPanel(String markupId) {
+				LinkSubjectStudyConsentHistoryPanel consentHistoryPanel = new LinkSubjectStudyConsentHistoryPanel(markupId, new CompoundPropertyModel<LssConsentHistory>(new LssConsentHistory()));
+				return consentHistoryPanel;
+			}
+		};
 	}
 
 	public void addDetailFormComponents() {
@@ -384,6 +406,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentTypeChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDateTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDownloadedChoice);
+		
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentHistoryPanel);
 	}
 
 	/*
