@@ -33,6 +33,9 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
@@ -40,6 +43,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.audit.entity.ConsentHistory;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Person;
@@ -52,9 +56,11 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.panel.collapsiblepanel.CollapsiblePanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.consenthistory.ConsentHistoryPanel;
 
 /**
  * @author nivedann
@@ -94,6 +100,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	protected WebMarkupContainer					wmcRecieved;
 	protected WebMarkupContainer					wmcCompleted;
 	protected DropDownChoice<YesNo>				consentDownloadedDdc;
+	protected CollapsiblePanel 					consentHistoryPanel;
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
@@ -142,16 +149,40 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		wmcCompleted.add(consentCompletedDtf);
 
 		commentTxtArea = new TextArea<String>(Constants.CONSENT_CONSENT_COMMENT);
-		initialiseConsentTypeChoice();
-		initialiseConsentStatusChoice();
-		initialiseComponentChoice();
-		initialiseComponentStatusChoice();
-		initialiseConsentDownloadChoice();
+		initConsentTypeChoice();
+		initConsentStatusChoice();
+		initComponentChoice();
+		initStudyComponentStatusChoice();
+		initConsentDownloadChoice();
+		initConsentHistoryPanel();
 		addDetailFormComponents();
 		attachValidators();
 	}
+	
+	@SuppressWarnings("unchecked")
+	protected void initStudyComponentStatusChoice() {
+		List<StudyCompStatus> studyCompList = iArkCommonService.getStudyComponentStatus();
+		ChoiceRenderer<StudyCompStatus> defaultChoiceRenderer = new ChoiceRenderer<StudyCompStatus>(Constants.NAME, Constants.ID);
+		studyComponentStatusChoice = new DropDownChoice<StudyCompStatus>(Constants.CONSENT_STUDY_COMP_STATUS, studyCompList, defaultChoiceRenderer);
+		studyComponentStatusChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
-	private void initialiseConsentDownloadChoice() {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				// Check what was selected and then toggle
+				StudyCompStatus status = studyComponentStatusChoice.getModelObject();
+				String statusName = status.getName();
+				new FormHelper().updateStudyCompStatusDates(target, statusName, wmcPlain, wmcRequested, wmcRecieved, wmcCompleted);
+			}
+		});
+	}
+
+	@SuppressWarnings("unchecked")
+	private void initConsentDownloadChoice() {
 		Collection<YesNo> yesNoList = iArkCommonService.getYesNoList();
 		ChoiceRenderer<YesNo> yesnoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME, Constants.ID);
 		consentDownloadedDdc = new DropDownChoice<YesNo>(Constants.CONSENT_CONSENT_DOWNLOADED, (List) yesNoList, yesnoRenderer);
@@ -160,7 +191,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	/**
 	 * Initialise the Consent Type Drop Down Choice Control
 	 */
-	protected void initialiseConsentTypeChoice() {
+	@SuppressWarnings("unchecked")
+	protected void initConsentTypeChoice() {
 		List<ConsentType> consentTypeList = iArkCommonService.getConsentType();
 		ChoiceRenderer<ConsentType> defaultChoiceRenderer = new ChoiceRenderer<ConsentType>(Constants.NAME, Constants.ID);
 		consentTypeChoice = new DropDownChoice<ConsentType>(Constants.CONSENT_CONSENT_TYPE, consentTypeList, defaultChoiceRenderer);
@@ -169,7 +201,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	/**
 	 * Initialise the Consent Status Drop Down Choice Control
 	 */
-	protected void initialiseConsentStatusChoice() {
+	@SuppressWarnings("unchecked")
+	protected void initConsentStatusChoice() {
 		List<ConsentStatus> consentStatusList = iArkCommonService.getRecordableConsentStatus();
 		ChoiceRenderer<ConsentStatus> defaultChoiceRenderer = new ChoiceRenderer<ConsentStatus>(Constants.NAME, Constants.ID);
 		consentStatusChoice = new DropDownChoice<ConsentStatus>(Constants.CONSENT_CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
@@ -178,7 +211,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	/**
 	 * Initialise the Consent StudyComp Drop Down Choice Control
 	 */
-	protected void initialiseComponentChoice() {
+	@SuppressWarnings("unchecked")
+	protected void initComponentChoice() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(study);
@@ -220,28 +254,21 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 			}
 		});
 	}
-
-	protected void initialiseComponentStatusChoice() {
-		List<StudyCompStatus> studyCompList = iArkCommonService.getStudyComponentStatus();
-		ChoiceRenderer<StudyCompStatus> defaultChoiceRenderer = new ChoiceRenderer<StudyCompStatus>(Constants.NAME, Constants.ID);
-		studyComponentStatusChoice = new DropDownChoice<StudyCompStatus>(Constants.CONSENT_STUDY_COMP_STATUS, studyCompList, defaultChoiceRenderer);
-
-		studyComponentStatusChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-
+	
+	private void initConsentHistoryPanel() {
+		consentHistoryPanel = new CollapsiblePanel("consentHistoryPanel", new Model<String>("Consent History"), false) {
+			
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				// Check what was selected and then toggle
-				StudyCompStatus status = studyComponentStatusChoice.getModelObject();
-				String statusName = status.getName();
-				new FormHelper().updateStudyCompStatusDates(target, statusName, wmcPlain, wmcRequested, wmcRecieved, wmcCompleted);
+			protected Panel getInnerPanel(String markupId) {
+				ConsentHistoryPanel consentHistoryPanel = new ConsentHistoryPanel(markupId, new CompoundPropertyModel<ConsentHistory>(new ConsentHistory()));
+				return consentHistoryPanel;
 			}
-		});
-
+		};
 	}
 
 	/*
@@ -279,6 +306,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentTypeChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDownloadedDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentHistoryPanel);
 	}
 
 	/*
@@ -359,6 +387,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 				}
 				else {
 					iStudyService.update(containerForm.getModelObject().getConsent());
+					
 					this.info("Consent was successfuly updated for the Subject ");
 					processErrors(target);
 				}
