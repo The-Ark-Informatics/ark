@@ -343,5 +343,6 @@ public interface IStudyDao {
 	public List<Study> getChildStudyListOfParent(Study study);
 	
 	public void update(LinkSubjectStudy linkSubjectStudy);
-	
+
+	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException;	
 }
