@@ -31,6 +31,10 @@ import au.org.theark.core.web.component.customfield.form.DetailForm;
  * 
  */
 public class DetailPanel extends Panel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private DetailForm			detailForm;
 	private FeedbackPanel		feedbackPanel;
 

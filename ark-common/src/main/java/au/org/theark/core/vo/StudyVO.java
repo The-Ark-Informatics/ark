@@ -24,6 +24,10 @@ import java.util.List;
 
 public class StudyVO extends BaseVO {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String				studyName;
 	private List<ModuleVO>	modules;
 	private List<RoleVO>		roles;		// From a user' perspective the list of roles for a study in context. E.g. study_admin or ordinary_user

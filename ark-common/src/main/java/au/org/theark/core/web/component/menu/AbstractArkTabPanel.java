@@ -34,6 +34,11 @@ import au.org.theark.core.service.IArkCommonService;
  */
 public class AbstractArkTabPanel extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@SpringBean(name = "arkLdapRealm")
 	private ArkLdapRealm					realm;
 

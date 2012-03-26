@@ -38,6 +38,10 @@ import au.org.theark.core.Constants;
 @Table(name = "correspondence_audit_attachment", schema = Constants.STUDY_SCHEMA)
 public class CorrespondenceAuditAttachment implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long						id;
 	private CorrespondenceAudit	correspondenceAudit;
 	private String						filename;

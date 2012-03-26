@@ -35,6 +35,10 @@ import au.org.theark.core.Constants;
 @Table(name = "ARK_FUNCTION_TYPE", schema = Constants.STUDY_SCHEMA)
 public class ArkFunctionType implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// Fields
 	private Long	id;
 	private String	name;

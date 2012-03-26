@@ -40,6 +40,10 @@ public class ImportType implements java.io.Serializable {
 
 	// Fields
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long						id;
 	private String						name;
 	private Set<CollectionImport>	collectionImports	= new HashSet<CollectionImport>(0);

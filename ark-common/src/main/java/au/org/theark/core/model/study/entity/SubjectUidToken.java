@@ -18,9 +18,6 @@
  ******************************************************************************/
 package au.org.theark.core.model.study.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -37,6 +34,10 @@ public class SubjectUidToken implements java.io.Serializable {
 
 	// Fields
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private String	name;
 

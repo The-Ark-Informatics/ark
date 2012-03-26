@@ -19,7 +19,6 @@
 package au.org.theark.core.model.pheno.entity;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

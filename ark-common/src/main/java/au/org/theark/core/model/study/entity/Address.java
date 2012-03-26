@@ -46,6 +46,10 @@ import au.org.theark.core.Constants;
 @Table(name = "ADDRESS", schema = Constants.STUDY_SCHEMA)
 public class Address implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// Fields
 	private Long				id;
 	private Person				person;

@@ -37,6 +37,10 @@ import au.org.theark.core.Constants;
 @Table(name = "ARK_ROLE_POLICY_TEMPLATE", schema = Constants.STUDY_SCHEMA)
 public class ArkRolePolicyTemplate implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long				id;
 	private ArkRole			arkRole;
 	private ArkModule			arkModule;

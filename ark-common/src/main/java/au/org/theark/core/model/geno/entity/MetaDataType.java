@@ -43,6 +43,10 @@ public class MetaDataType implements java.io.Serializable {
 
 	// Fields
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long					id;
 	private String					name;
 	private Set<MetaDataField>	metaDataFields	= new HashSet<MetaDataField>(0);

@@ -39,6 +39,10 @@ import au.org.theark.core.Constants;
 @Table(name = "CONSENT_ANSWER", schema = Constants.STUDY_SCHEMA)
 public class ConsentAnswer implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private String	name;
 

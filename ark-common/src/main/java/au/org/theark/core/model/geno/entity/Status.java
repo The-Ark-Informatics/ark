@@ -40,6 +40,7 @@ public class Status implements java.io.Serializable {
 
 	// Fields
 
+	private static final long serialVersionUID = 1L;
 	private Long						id;
 	private String						name;
 	private Set<GenoCollection>	collections	= new HashSet<GenoCollection>(0);

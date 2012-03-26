@@ -19,17 +19,11 @@
 package au.org.theark.core.model.study.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -43,6 +37,10 @@ import au.org.theark.core.Constants;
 @Table(name = "ARK_MODULE", schema = Constants.STUDY_SCHEMA)
 public class ArkModule implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private String	name;
 	private String	description;

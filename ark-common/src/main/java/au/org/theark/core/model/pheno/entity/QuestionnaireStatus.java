@@ -21,6 +21,10 @@ import au.org.theark.core.model.Constants;
 @Table(name = "QUESTIONNAIRE_STATUS", schema = Constants.PHENO_TABLE_SCHEMA)
 public class QuestionnaireStatus implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private String	name;
 	private String	description;

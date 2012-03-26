@@ -30,6 +30,10 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 public class CustomFieldVO implements Serializable {
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private CustomField customField;
 	private CustomFieldDisplay customFieldDisplay;
 	

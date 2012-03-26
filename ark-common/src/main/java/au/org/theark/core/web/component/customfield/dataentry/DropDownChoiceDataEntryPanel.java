@@ -22,11 +22,7 @@ import java.util.List;
 
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.string.Strings;
 import org.apache.wicket.validation.IValidator;
 
@@ -65,6 +61,11 @@ public class DropDownChoiceDataEntryPanel extends AbstractDataEntryPanel<Encoded
 		underlyingDataModel = dataModel;
 		// Slightly tricky mapping from the EncodedVO's key to the underlying dataValue (i.e. a String) 
 		dataValueModel = new IModel<EncodedValueVO>() {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			public EncodedValueVO getObject() {
 				EncodedValueVO object = null;
