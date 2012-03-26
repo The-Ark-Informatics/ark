@@ -18,16 +18,12 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
-import au.org.theark.core.web.component.customfield.form.ContainerForm;
 import au.org.theark.core.web.component.customfield.form.SearchForm;
 
 /**

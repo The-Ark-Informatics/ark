@@ -36,6 +36,10 @@ public class TestPhone implements java.io.Serializable {
 
 	// Fields
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private BigDecimal	id;
 	private String			phoneNumber;
 	private boolean		status;

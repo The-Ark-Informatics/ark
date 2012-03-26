@@ -37,6 +37,10 @@ import au.org.theark.core.model.Constants;
 @Table(name = "listofvalues_description", schema = Constants.LIMS_TABLE_SCHEMA)
 public class ListofvaluesDescription implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long		id;
 	private String		timestamp;
 	private Integer	deleted;

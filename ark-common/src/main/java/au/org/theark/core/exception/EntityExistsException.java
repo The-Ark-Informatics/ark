@@ -20,6 +20,11 @@ package au.org.theark.core.exception;
 
 public class EntityExistsException extends ArkBaseException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3348027960945477391L;
+
 	public EntityExistsException() {
 		super();
 	}

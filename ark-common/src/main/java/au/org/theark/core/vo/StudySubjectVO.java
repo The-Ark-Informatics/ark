@@ -28,6 +28,11 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
  */
 public class StudySubjectVO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public StudySubjectVO() {
 		subjectStudy = new LinkSubjectStudy();
 	}

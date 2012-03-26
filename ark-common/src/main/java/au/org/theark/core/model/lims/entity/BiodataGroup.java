@@ -40,9 +40,19 @@ import au.org.theark.core.model.Constants;
 @Table(name = "biodata_group", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BiodataGroup implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long								id;
 	private String								groupName;
 	private String								domain;
+
+	/*TODO: this seems not to be able to be accessed/mutated?  which is it here and in constructors??????
+	 * 
+	 * For that matter, being private this info will never go anywhere, and has no relationship, and the constructor is maybe giving false hope of something happening.
+	 * 
+	 * */
 	private Set<BiodataGroupCriteria>	biodataGroupCriterias	= new HashSet<BiodataGroupCriteria>(0);
 	private Set<BiodataFieldGroup>		biodataFieldGroups		= new HashSet<BiodataFieldGroup>(0);
 

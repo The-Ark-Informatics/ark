@@ -35,6 +35,10 @@ import au.org.theark.core.Constants;
 @Table(name = "TITLE_TYPE", schema = Constants.STUDY_SCHEMA)
 public class TitleType implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private String	name;
 	private String	description;

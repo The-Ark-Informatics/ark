@@ -30,6 +30,11 @@ import au.org.theark.core.model.study.entity.Phone;
  */
 public class PhoneVO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Phone					phone;
 
 	private Collection<Phone>	phoneList;

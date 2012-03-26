@@ -40,6 +40,10 @@ public class MarkerType implements java.io.Serializable {
 
 	// Fields
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long					id;
 	private String					name;
 	private Set<MarkerGroup>	markerGroups	= new HashSet<MarkerGroup>(0);

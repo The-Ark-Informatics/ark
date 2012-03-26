@@ -44,6 +44,10 @@ public class CollectionImport implements java.io.Serializable {
 
 	// Fields
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long				id;
 	private ImportType		importType;
 	// private DelimiterType delimiterType;
@@ -70,7 +74,7 @@ public class CollectionImport implements java.io.Serializable {
 		// this.delimiterType = delimiterType;
 		this.markerGroup = markerGroup;
 		this.collection = collection;
-		this.startTime = startTime;
+//		this.startTime = startTime;
 		this.userId = userId;
 		this.insertTime = insertTime;
 	}

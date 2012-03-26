@@ -43,7 +43,6 @@ import jxl.read.biff.BiffException;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
-import org.hibernate.hql.ast.ErrorReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,6 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.PhenotypicSystemException;
-import au.org.theark.core.exception.SystemDataMismatchException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.FieldType;

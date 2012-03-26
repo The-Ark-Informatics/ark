@@ -41,6 +41,10 @@ import au.org.theark.core.Constants;
 @Table(name = "correspondences", schema = Constants.STUDY_SCHEMA)
 public class Correspondences implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long								id;
 	private Person								person;
 	private Study								study;

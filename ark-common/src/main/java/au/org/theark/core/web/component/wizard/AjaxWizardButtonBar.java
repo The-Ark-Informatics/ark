@@ -30,7 +30,6 @@ import org.apache.wicket.extensions.wizard.NextButton;
 import org.apache.wicket.extensions.wizard.PreviousButton;
 import org.apache.wicket.extensions.wizard.WizardButton;
 import org.apache.wicket.extensions.wizard.WizardButtonBar;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.IFormSubmittingComponent;
 import org.apache.wicket.markup.html.panel.Panel;

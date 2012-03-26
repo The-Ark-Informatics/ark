@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield.dataentry;
 
-import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -29,6 +29,10 @@ import au.org.theark.core.model.study.entity.ICustomFieldData;
 @Table(name = "PHENO_DATA", schema = Constants.PHENO_TABLE_SCHEMA)
 public class PhenoData implements Serializable, ICustomFieldData {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private CustomFieldDisplay customFieldDisplay;
 	private PhenotypicCollection phenotypicCollection;

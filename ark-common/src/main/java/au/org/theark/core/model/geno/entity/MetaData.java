@@ -48,6 +48,10 @@ public class MetaData implements java.io.Serializable {
 
 	// Fields
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long								id;
 	private MetaDataField					metaDataField;
 	private GenoCollection					collection;
