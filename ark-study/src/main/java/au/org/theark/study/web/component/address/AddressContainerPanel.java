@@ -44,6 +44,11 @@ import au.org.theark.study.web.component.address.form.ContainerForm;
  */
 public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService					studyService;
 

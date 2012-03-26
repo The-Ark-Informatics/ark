@@ -30,6 +30,11 @@ import au.org.theark.core.web.form.AbstractContainerForm;
 public class ContainerForm extends AbstractContainerForm<PhoneVO> {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * @param id
 	 * @param cpmModel
 	 */

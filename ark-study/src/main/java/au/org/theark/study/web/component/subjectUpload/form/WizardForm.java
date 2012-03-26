@@ -19,7 +19,6 @@
 package au.org.theark.study.web.component.subjectUpload.form;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.util.file.File;
@@ -32,7 +31,6 @@ import au.org.theark.study.web.component.subjectUpload.SubjectUploadStep2;
 import au.org.theark.study.web.component.subjectUpload.SubjectUploadStep3;
 import au.org.theark.study.web.component.subjectUpload.SubjectUploadStep4;
 import au.org.theark.study.web.component.subjectUpload.SubjectUploadStep5;
-import au.org.theark.study.web.component.subjectUpload.WizardPanel;
 
 /**
  * @author cellis

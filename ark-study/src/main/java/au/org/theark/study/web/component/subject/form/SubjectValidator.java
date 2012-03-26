@@ -26,6 +26,11 @@ import org.apache.wicket.validation.ValidationError;
 
 public class SubjectValidator implements IValidator<Long> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/*
 	 * (non-Javadoc)
 	 * 

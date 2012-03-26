@@ -45,6 +45,11 @@ import au.org.theark.study.web.component.phone.form.ContainerForm;
  */
 public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService			iArkCommonService;
 
