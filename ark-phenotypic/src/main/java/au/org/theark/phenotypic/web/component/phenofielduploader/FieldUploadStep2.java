@@ -19,10 +19,8 @@
 package au.org.theark.phenotypic.web.component.phenofielduploader;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -67,6 +65,11 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel {
 	private IPhenotypicService				iPhenotypicService;
 
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt")  {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		protected void onError(AjaxRequestTarget target, Form<?> form) {
@@ -144,6 +147,11 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel {
 					target.add(form.getWizardButtonContainer());
 					downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
 	
+						/**
+						 * 
+						 */
+						private static final long serialVersionUID = 1L;
+
 						@Override
 						protected void onError(AjaxRequestTarget target, Form<?> form) {
 							this.error("Unexpected Error: Download request could not be processed");

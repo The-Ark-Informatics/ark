@@ -38,6 +38,10 @@ import au.org.theark.phenotypic.service.IPhenotypicService;
  */
 public class SearchResultListPanel extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private CompoundPropertyModel<CustomFieldGroupVO>						cpmModel;
 	private FeedbackPanel															feedbackPanel;
 	private ArkCrudContainerVO														arkCrudContainerVO;
@@ -126,6 +130,11 @@ public class SearchResultListPanel extends Panel {
 
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("name") {
 
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 
@@ -149,6 +158,11 @@ public class SearchResultListPanel extends Panel {
 
 				// Data providor to paginate a list of CustomFieldDisplays linked to the CustomFieldGroup
 				cfdArkDataProvider = new ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>() {
+
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
 
 					public int size() {
 						return iPhenotypicService.getCFDLinkedToQuestionnaireCount(itemSelected);

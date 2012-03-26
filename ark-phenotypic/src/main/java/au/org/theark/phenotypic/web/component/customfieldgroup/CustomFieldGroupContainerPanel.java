@@ -33,6 +33,12 @@ import au.org.theark.phenotypic.web.component.customfieldgroup.form.ContainerFor
 public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<CustomFieldGroupVO>{
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
 	
@@ -112,6 +118,11 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 		// Data providor to paginate resultList
 		arkDataProvider = new ArkDataProvider2<CustomFieldGroup, CustomFieldGroup>() {
 
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public int size() {
 				return iArkCommonService.getCustomFieldGroupCount(criteriaModel.getObject());
 			}
@@ -132,6 +143,11 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());

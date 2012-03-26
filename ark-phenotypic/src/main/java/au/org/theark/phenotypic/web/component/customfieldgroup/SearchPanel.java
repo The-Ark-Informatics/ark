@@ -14,6 +14,10 @@ import au.org.theark.phenotypic.web.component.customfieldgroup.form.SearchForm;
  */
 public class SearchPanel extends Panel{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private FeedbackPanel	feedbackPanel;
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private CompoundPropertyModel<CustomFieldGroupVO> cpModel;

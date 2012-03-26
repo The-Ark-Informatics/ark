@@ -13,7 +13,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
@@ -28,6 +27,10 @@ import au.org.theark.core.vo.CustomFieldGroupVO;
  */
 public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private TextField<String> requiredMessageTxtFld;
 	private TextField<String> customFieldNameTxtFld;
 	private TextField<String> customFieldDisplayIdTxtFld;

@@ -118,6 +118,11 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 		containerForm.getModelObject().setOverrideDataValidationChkBox(false);
 		
 		overrideDataValidationChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				//TODO
