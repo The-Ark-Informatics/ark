@@ -9,7 +9,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -38,6 +37,11 @@ import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupD
  *
  */
 public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
@@ -96,6 +100,10 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 		final CustomFieldGroup cfg = newModel.getObject().getCustomFieldGroup();
 		cfdArkDataProvider = new ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>() {
 
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 			public int size() {
 				return iPhenotypicService.getCFDLinkedToQuestionnaireCount(cfg);
 			}

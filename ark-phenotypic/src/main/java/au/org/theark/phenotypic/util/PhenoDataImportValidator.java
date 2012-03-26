@@ -53,8 +53,6 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.PhenotypicSystemException;
-import au.org.theark.core.model.pheno.entity.Field;
-import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;

@@ -19,10 +19,8 @@
 package au.org.theark.phenotypic.web.component.phenofielduploader;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -46,9 +44,6 @@ import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.model.vo.PhenoFieldUploadVO;
-import au.org.theark.phenotypic.service.Constants;
-import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.util.PhenotypicValidator;
 import au.org.theark.phenotypic.web.component.phenofielduploader.form.WizardForm;
 
 /**
@@ -72,6 +67,11 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 	private CheckBox							updateChkBox;
 
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		protected void onError(AjaxRequestTarget target, Form<?> form) {
@@ -241,6 +241,11 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 				target.add(form.getWizardButtonContainer());
 				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
 	
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+
 					@Override
 					protected void onError(AjaxRequestTarget target, Form<?> form) {
 						this.error("Unexpected Error: Download request could not be processed");
