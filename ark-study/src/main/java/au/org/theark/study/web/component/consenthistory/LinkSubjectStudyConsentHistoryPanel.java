@@ -129,20 +129,6 @@ public class LinkSubjectStudyConsentHistoryPanel extends Panel {
 					item.add(new Label("consentStatus"));
 				}
 
-				if (consentHistory.getConsentType() != null) {
-					item.add(new Label("consentType", consentHistory.getConsentType().getName()));
-				}
-				else {
-					item.add(new Label("consentType"));
-				}
-				
-				if (consentHistory.getConsentDownloaded() != null) {
-					item.add(new Label("consentDownloaded", consentHistory.getConsentDownloaded().getName()));
-				}
-				else {
-					item.add(new Label("consentDownloaded"));
-				}
-
 				if (consentHistory.getConsentToPassiveDataGathering() != null) {
 					item.add(new Label("consentToPassiveDataGathering", consentHistory.getConsentToPassiveDataGathering().getName()));
 				}
