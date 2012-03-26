@@ -136,6 +136,11 @@ public class ReportSelectPanel extends Panel {
 	public PageableListView<ReportTemplate> buildPageableListView(IModel iModel) {
 
 		PageableListView<ReportTemplate> sitePageableListView = new PageableListView<ReportTemplate>("reportList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void populateItem(final ListItem<ReportTemplate> item) {
 
@@ -195,6 +200,11 @@ public class ReportSelectPanel extends Panel {
 
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -210,6 +220,11 @@ public class ReportSelectPanel extends Panel {
 	private AjaxLink buildLink(final ReportTemplate reportTemplate) {
 
 		AjaxLink link = new AjaxLink("reportTemplate.link") {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
