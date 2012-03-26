@@ -136,20 +136,6 @@ public class ConsentHistoryPanel extends Panel {
 				else {
 					item.add(new Label("consentDate"));
 				}
-
-				if (consentHistory.getConsentType() != null) {
-					item.add(new Label("consentType", consentHistory.getConsentType().getName()));
-				}
-				else {
-					item.add(new Label("consentType"));
-				}
-				
-				if (consentHistory.getConsentDownloaded() != null) {
-					item.add(new Label("consentDownloaded", consentHistory.getConsentDownloaded().getName()));
-				}
-				else {
-					item.add(new Label("consentDownloaded"));
-				}
 				
 				if (consentHistory.getRequestedDate() != null) {
 					item.add(new Label("requestedDate", simpleDateFormat.format(consentHistory.getRequestedDate())));
