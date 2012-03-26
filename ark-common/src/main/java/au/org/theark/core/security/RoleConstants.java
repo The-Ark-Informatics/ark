@@ -18,11 +18,16 @@
  ******************************************************************************/
 package au.org.theark.core.security;
 
+/**
+ * These Role Constants and Permissions are for the new user management. The role names here should match 'name' in the ark_role table
+ * @author cellis
+ *
+ */
 public class RoleConstants {
-	/**
-	 * These Role Constants and Permissions are for the new user management. The role names here should match the string one Role_Name table
-	 */
-	public static final String	ARK_ROLE_SUPER_ADMINISTATOR	= "Super Administrator";
 	public static final String	ARK_ROLE_ADMINISTATOR			= "Administrator";
+	public static final String	ARK_ROLE_SUPER_ADMINISTATOR	= "Super Administrator";
 	public static final String	ARK_ROLE_STUDY_ADMINISTATOR	= "Study Administrator";
+	public static final String	ARK_ROLE_SUBJECT_ADMINISTATOR	= "Subject Administrator";
+	public static final String	ARK_ROLE_PHENO_ADMINISTATOR	= "Pheno Administrator";
+	public static final String	ARK_ROLE_LIMS_ADMINISTATOR		= "LIMS Administrator";
 }
