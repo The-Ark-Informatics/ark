@@ -189,6 +189,11 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 
 		// Attach a behavior, so when it changes it does something
 		countryChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				updateCountryStateChoices(countryChoice.getModelObject());

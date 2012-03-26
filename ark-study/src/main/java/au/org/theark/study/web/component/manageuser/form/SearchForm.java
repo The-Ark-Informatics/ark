@@ -49,6 +49,10 @@ import au.org.theark.study.web.Constants;
 
 public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private CompoundPropertyModel<ArkUserVO>	cpmModel;
 	private ContainerForm							containerForm;
 	private ArkCrudContainerVO						arkCrudContainerVO;

@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.manageuser;
 
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -32,6 +31,10 @@ import au.org.theark.study.web.component.manageuser.form.SearchForm;
 
 public class SearchPanel extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private FeedbackPanel					feedBackPanel;
 	private ArkCrudContainerVO				arkCrudContainerVO;
 	private ContainerForm					containerForm;

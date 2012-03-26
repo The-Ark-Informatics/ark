@@ -49,6 +49,11 @@ import au.org.theark.study.web.component.consent.form.FormHelper;
  */
 public class SearchResultListPanel extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	protected IStudyService		studyService;
 
@@ -69,6 +74,11 @@ public class SearchResultListPanel extends Panel {
 	public PageableListView<Consent> buildPageableListView(IModel iModel) {
 
 		PageableListView<Consent> pageableListView = new PageableListView<Consent>(Constants.CONSENT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected void populateItem(final ListItem<Consent> item) {
@@ -114,6 +124,11 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -128,6 +143,11 @@ public class SearchResultListPanel extends Panel {
 	private AjaxLink buildLink(final Consent consent) {
 
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("studyComp.name") {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {

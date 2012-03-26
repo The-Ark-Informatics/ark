@@ -41,6 +41,10 @@ import au.org.theark.study.web.component.phone.form.ContainerForm;
  */
 public class SearchResultListPanel extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ContainerForm		containerForm;
 	protected ArkCrudContainerVO arkCrudContainerVO;
 	
@@ -64,6 +68,11 @@ public class SearchResultListPanel extends Panel {
 	public PageableListView<Phone> buildPageableListView(IModel iModel) {
 
 		PageableListView<Phone> pageableListView = new PageableListView<Phone>(Constants.PHONE_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected void populateItem(final ListItem<Phone> item) {
@@ -112,6 +121,11 @@ public class SearchResultListPanel extends Panel {
 	private AjaxLink buildLink(final Phone phone) {
 
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("phoneNumberLink") {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {

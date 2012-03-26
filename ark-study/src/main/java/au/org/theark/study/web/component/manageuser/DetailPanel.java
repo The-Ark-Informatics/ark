@@ -27,6 +27,10 @@ import au.org.theark.study.web.component.manageuser.form.DetailForm;
 
 public class DetailPanel extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ContainerForm		containerForm;
 	private FeedbackPanel		feedbackPanel;
 	private DetailForm			detailForm;

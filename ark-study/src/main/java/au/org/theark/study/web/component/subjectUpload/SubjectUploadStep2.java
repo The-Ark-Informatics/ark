@@ -55,6 +55,11 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		@Override
 		protected void onError(AjaxRequestTarget target, Form<?> form) {
 			this.error("Unexpected Error: Download request could not be processed");
@@ -139,6 +144,11 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
 				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
+
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
 
 					@Override
 					protected void onError(AjaxRequestTarget target, Form<?> form) {

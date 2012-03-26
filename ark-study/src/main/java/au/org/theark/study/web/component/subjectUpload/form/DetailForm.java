@@ -65,10 +65,10 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
 
-	private int										mode;
+//REMOVED BY TRAV	private int										mode;
 
 	private TextField<String>					uploadIdTxtFld;
-	private TextField<String>					uploadFilenameTxtFld;
+//REMOVED BY TRAV	private TextField<String>					uploadFilenameTxtFld;
 	private DropDownChoice<FileFormat>		fileFormatDdc;
 	private FileUploadField						fileUploadField;
 	// private UploadProgressBar uploadProgressBar;

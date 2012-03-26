@@ -33,6 +33,10 @@ import au.org.theark.core.model.study.entity.StudyComp;
  */
 public class StudyCompVo implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private StudyComp			studyComponent;
 	private List<StudyComp>	studyCompList;
 	private int					mode;
