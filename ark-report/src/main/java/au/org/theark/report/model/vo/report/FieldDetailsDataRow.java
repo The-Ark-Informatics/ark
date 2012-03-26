@@ -19,7 +19,6 @@
 package au.org.theark.report.model.vo.report;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class FieldDetailsDataRow implements Serializable {
 	/**

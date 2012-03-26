@@ -20,8 +20,6 @@ package au.org.theark.report.model.vo;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Properties;
-
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 
