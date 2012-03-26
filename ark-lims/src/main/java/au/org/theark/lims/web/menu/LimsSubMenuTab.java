@@ -103,8 +103,8 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 						SecurityManager securityManager = ThreadContext.getSecurityManager();
 						Subject currentUser = SecurityUtils.getSubject();
 
-						// Only a Super Administrator can see the biospecimenuidtemplate/barcodeprinter/barcodelabel tabs
-						if (securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
+						// Only a LIMS Administrator can see the biospecimenuidtemplate/barcodeprinter/barcodelabel tabs
+						if (securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_LIMS_ADMINISTATOR)) {
 							flag = currentUser.isAuthenticated();
 						}
 						else {
