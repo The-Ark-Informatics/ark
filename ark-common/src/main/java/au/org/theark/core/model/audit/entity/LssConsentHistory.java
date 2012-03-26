@@ -46,7 +46,10 @@ import au.org.theark.core.model.study.entity.YesNo;
 @Entity
 @Table(name = "LSS_CONSENT_HISTORY", schema = Constants.AUDIT_SCHEMA)
 public class LssConsentHistory implements java.io.Serializable {
-
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 	// Fields
 	private Long							id;
 	private Date							timestamp;
