@@ -90,7 +90,7 @@ public class DropDownChoiceDataEntryPanel extends AbstractDataEntryPanel<Encoded
 			
 		};
 		dataValueDdc = new DropDownChoice<EncodedValueVO>("ddcDataValue", dataValueModel, choiceList, renderer);
-		dataValueDdc.setNullValid(true);	// nullValid allows you to set the "(no value)" option
+		dataValueDdc.setNullValid(true);	// nullValid allows you to set the "Choose One" option
 		dataValueDdc.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
 		this.add(dataValueDdc);
 	}
@@ -101,8 +101,8 @@ public class DropDownChoiceDataEntryPanel extends AbstractDataEntryPanel<Encoded
 		return missingValueVo.getKey();
 	}
 
+	@SuppressWarnings("unchecked")
 	public void setMissingValue(String aMissingValue) {
-
 		if (this.missingValueVo != null) {
 			// try to remove the original missingValue from choices
 			List<EncodedValueVO> choiceList = (List<EncodedValueVO>) dataValueDdc.getChoices();
@@ -119,7 +119,9 @@ public class DropDownChoiceDataEntryPanel extends AbstractDataEntryPanel<Encoded
 			// replace the previous missingValue if the removal failed) 
 			List<EncodedValueVO> choiceList = (List<EncodedValueVO>) dataValueDdc.getChoices();
 			choiceList.add(newMissingValueVo);	// add new missingValue to choices
-			setRequired(true);	// make the field required and !nullValid
+			
+			// Is field really required when missing vlaue not-null? 
+			//setRequired(true);	// make the field required and !nullValid
 			this.missingValueVo = newMissingValueVo;
 		}
 	}
@@ -150,7 +152,7 @@ public class DropDownChoiceDataEntryPanel extends AbstractDataEntryPanel<Encoded
 	@Override
 	public void setRequired(boolean required) {
 		dataValueDdc.setRequired(required);
-		dataValueDdc.setNullValid(!required);	// if required is true, then it can not be nullValid
+		//dataValueDdc.setNullValid(!required);	// if required is true, then it can not be nullValid
 	}
 	
 	@Override
