@@ -110,9 +110,10 @@ public class HomePage extends BasePage {
 			Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 			String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 			if (sessionPersonId != null && sessionPersonType != null && sessionPersonType.equals(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)) {
-				Person person;
+			
 				try {
-					person = studyService.getPerson(sessionPersonId);
+					//todo:  are we are getting just to catch an exception and log an error????
+					studyService.getPerson(sessionPersonId);
 					LinkSubjectStudy lss  = iArkCommonService.getSubject(sessionPersonId, study);
 					contextHelper.setSubjectContextLabel(lss.getSubjectUID(), this.arkContextPanelMarkup);
 				}
