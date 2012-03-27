@@ -35,7 +35,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.file.File;
 import org.hibernate.Hibernate;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -121,15 +120,15 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 	}
 
+	/* TODO remove unused
 	private void createDirectoryIfNeeded(String directoryName) {
 		File theDir = new File(directoryName);
-
 		// if the directory does not exist, create it
 		if (!theDir.exists()) {
 			System.out.println("creating directory: " + directoryName);
 			theDir.mkdir();
 		}
-	}
+	}*/
 
 	@Override
 	protected void onSave(Form<UploadVO> containerForm, AjaxRequestTarget target) {

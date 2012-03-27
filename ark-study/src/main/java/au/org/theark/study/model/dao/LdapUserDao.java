@@ -58,7 +58,6 @@ import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.vo.SiteVO;
 import au.org.theark.study.service.Constants;
 
 @Repository("ldapUserDao")
@@ -204,13 +203,13 @@ public class LdapUserDao implements ILdapUserDao {
 		}
 		return etaUserVO;
 	}
-
+/* TODO
 	private String buildPersonDN(String userName) throws InvalidNameException {
 		LdapName ldapName = new LdapName(ldapDataContextSource.getBaseLdapPathAsString());
 		ldapName.add(new Rdn("ou", "people"));
 		ldapName.add(new Rdn("cn", userName));
 		return ldapName.toString();
-	}
+	}*/
 
 	private static class PersonContextMapper implements ContextMapper {
 
@@ -244,7 +243,7 @@ public class LdapUserDao implements ILdapUserDao {
 		}
 	}
 
-	private static class LiteSiteContextMapper implements ContextMapper {
+	/*TODO private static class LiteSiteContextMapper implements ContextMapper {
 
 		public Object mapFromContext(Object ctx) {
 			log.debug("\n LiteSiteContext Mapper...");
@@ -255,7 +254,7 @@ public class LdapUserDao implements ILdapUserDao {
 			// If the schema has other attributes then set/add them here
 			return siteVo;
 		}
-	}
+	}*/
 
 	/**
 	 * Use when you want to return ALL users from LDAP. Applies for a Super User and Study Admin only. The criteria is supplied in the userVO
@@ -330,12 +329,12 @@ public class LdapUserDao implements ILdapUserDao {
 			throw new ArkSystemException("A system errror occured. ");
 		}
 
-		
-
 		return userList;
 	}
 
-	private static class GroupMembersContextMapper implements ContextMapper {
+	/* TODO:  Cleanup
+	  
+	  private static class GroupMembersContextMapper implements ContextMapper {
 
 		public GroupMembersContextMapper() {
 			super();
@@ -350,7 +349,7 @@ public class LdapUserDao implements ILdapUserDao {
 			}
 			return memberList;
 		}
-	}
+	}*/
 
 	/**
 	 * Retrieves a sub-set of users from LDAP. The memberCnList List<String> contains the list of userNames or CN, and ArkUserVO acts as a criteria
@@ -442,6 +441,7 @@ public class LdapUserDao implements ILdapUserDao {
 		return userList;
 	}
 
+	/*TODO remove?
 	// Returns the Member attribute value of a group
 	private static class GroupContextMapper implements ContextMapper {
 		public Object mapFromContext(Object ctx) {
@@ -449,7 +449,7 @@ public class LdapUserDao implements ILdapUserDao {
 			String[] members = context.getStringAttributes("member");
 			return members;
 		}
-	}
+	}*/
 
 	/**
 	 * Checks if the given user exists in the LDAP System. If present it will return a boolean true.

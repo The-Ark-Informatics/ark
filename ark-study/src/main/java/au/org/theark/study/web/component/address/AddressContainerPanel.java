@@ -56,7 +56,6 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 
 	// Panels
 	private SearchPanel						searchPanel;
-	private SearchResultListPanel			searchResultListPanel;
 	private DetailPanel						detailPanel;
 	private PageableListView<Address>	listView;
 
@@ -96,9 +95,6 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or
-																																														// Contact:
-																																														// Denotes
 																																														// if it was
 		// Set the person who this address should be associated with
 		Collection<Address> addressList = new ArrayList<Address>();
@@ -149,9 +145,6 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 							addressList = studyService.getPersonAddressList(sessionPersonId, containerForm.getModelObject().getAddress());
 						}
 					}
-				}
-				catch (EntityNotFoundException e) {
-					containerForm.error("The specified Address is not found in the system.");
 				}
 				catch (ArkSystemException e) {
 					containerForm.error("A System Exception has occured please contact support.");

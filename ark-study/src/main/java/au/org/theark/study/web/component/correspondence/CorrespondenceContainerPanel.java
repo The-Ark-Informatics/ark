@@ -51,7 +51,6 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 	// container form
 	private ContainerForm							containerForm;
 	// panels
-	private SearchResultListPanel					searchResultListPanel;
 	private SearchPanel								searchPanel;
 	private DetailPanel								detailPanel;
 	private PageableListView<Correspondences>	pageableListView;
@@ -85,8 +84,8 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 		// get the person in context
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		
-		//todo evaluate unused code
-		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
+		//todo remove / evaluate unused code
+		//String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 
 		try {
 			// initialize the correspondence list
@@ -97,7 +96,7 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 				personCorrespondenceList = studyService.getPersonCorrespondenceList(sessionPersonId, containerForm.getModelObject().getCorrespondence());
 			}
 
-			// add the correspondence items related to the person if one found in session, or an empty list
+			// add the corresponden\ce items related to the person if one found in session, or an empty list
 			cpModel.getObject().setCorrespondenceList(personCorrespondenceList);
 			searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView, arkCrudContainerVO);
 			searchPanel.initialisePanel(cpModel);
@@ -139,9 +138,6 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 							correspondenceList = studyService.getPersonCorrespondenceList(sessionPersonId, containerForm.getModelObject().getCorrespondence());
 						}
 					}
-				}
-				catch (EntityNotFoundException ex) {
-					ex.printStackTrace();
 				}
 				catch (ArkSystemException ex) {
 					ex.printStackTrace();

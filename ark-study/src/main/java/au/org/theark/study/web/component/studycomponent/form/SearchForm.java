@@ -50,6 +50,7 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 	private ArkCrudContainerVO				arkCrudContainerVO;
 	private TextField<String>				studyCompIdTxtFld;
 	private TextField<String>				compNameTxtFld;
+
 	private TextArea<String>				descriptionTxtArea;
 	private TextArea<String>				keywordTxtArea;
 	private PageableListView<StudyComp>	listView;

@@ -437,6 +437,7 @@ public class StudyServiceImpl implements IStudyService {
 	
 	private void updateLssConsentHistory(LinkSubjectStudy newLinkSubjectStudy) {
 		try {
+			//todo remove unused assignment...
 			LinkSubjectStudy oldLinkSubjectStudy = getLinkSubjectStudy(newLinkSubjectStudy.getId());
 			
 			// TODO: Only add audit log if changes actually made
@@ -515,11 +516,10 @@ public class StudyServiceImpl implements IStudyService {
 	 * Look up the phones connected with the person(subject or contact)
 	 * 
 	 * @param personId
-	 * @return List<Phone>
-	 * @throws EntityNotFoundException
+	 * @return List<Phone> or empty list is none exist
 	 * @throws ArkSystemException
 	 */
-	public List<Phone> getPersonPhoneList(Long personId) throws EntityNotFoundException, ArkSystemException {
+	public List<Phone> getPersonPhoneList(Long personId) throws ArkSystemException {
 		return iStudyDao.getPersonPhoneList(personId);
 	}
 
@@ -530,10 +530,9 @@ public class StudyServiceImpl implements IStudyService {
 	 * @param personId
 	 * @param phone
 	 * @return
-	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
-	public List<Phone> getPersonPhoneList(Long personId, Phone phone) throws EntityNotFoundException, ArkSystemException {
+	public List<Phone> getPersonPhoneList(Long personId, Phone phone) throws ArkSystemException {
 		return iStudyDao.getPersonPhoneList(personId, phone);
 	}
 
@@ -546,7 +545,7 @@ public class StudyServiceImpl implements IStudyService {
 	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
-	public List<Address> getPersonAddressList(Long personId, Address address) throws EntityNotFoundException, ArkSystemException {
+	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException {
 		return iStudyDao.getPersonAddressList(personId, address);
 	}
 
@@ -692,7 +691,7 @@ public class StudyServiceImpl implements IStudyService {
 		iStudyDao.delete(correspondence);
 	}
 
-	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws EntityNotFoundException, ArkSystemException {
+	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException {
 		return iStudyDao.getPersonCorrespondenceList(personId, correspondence);
 	}
 
@@ -962,15 +961,16 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar) {
-		java.util.Collection<String> validationMessages = null;
+//		java.util.Collection<String> validationMessages = null;
 		Subject currentUser = SecurityUtils.getSubject();
 		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(studyId);
+//		Study study = iArkCommonService.getStudy(studyId);
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 
 		try {
 			log.debug("Validating Subject file data");
-			validationMessages = subjectUploadValidator.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+//			validationMessages = subjectUploadValidator.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			subjectUploadValidator.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe) {
 			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);

@@ -46,7 +46,6 @@ import au.org.theark.core.vo.PhoneVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.phone.DetailPanel;
 
 /**
  * @author Nivedan

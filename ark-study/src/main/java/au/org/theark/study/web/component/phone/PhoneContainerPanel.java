@@ -109,15 +109,7 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 
 		//TODO: analyze unused 
 		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or
-																																														// Contact:
-																																														// Denotes
-																																														// if it was
-																																														// a subject
-																																														// or
-																																														// contact
-																																														// placed in
-																																														// session
-
+		
 		try {
 			// Initialise the phoneList;
 			Collection<Phone> personPhoneList = new ArrayList<Phone>();
@@ -167,10 +159,6 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 					if (isActionPermitted() && sessionPersonId != null) {
 						personPhoneList = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhone());
 					}
-				}
-				catch (EntityNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 				catch (ArkSystemException e) {
 					// TODO Auto-generated catch block

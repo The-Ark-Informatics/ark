@@ -149,10 +149,9 @@ public interface IStudyDao {
 	 * 
 	 * @param personId
 	 * @return List<Phone>
-	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
-	public List<Phone> getPersonPhoneList(Long personId) throws EntityNotFoundException, ArkSystemException;
+	public List<Phone> getPersonPhoneList(Long personId) throws ArkSystemException;
 
 	/**
 	 * Looks up the phones linked to a person and applies any filter supplied with the phone object.Used in Search Phone functionality. One can look up
@@ -164,7 +163,7 @@ public interface IStudyDao {
 	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
-	public List<Phone> getPersonPhoneList(Long personId, Phone phone) throws EntityNotFoundException, ArkSystemException;
+	public List<Phone> getPersonPhoneList(Long personId, Phone phone) throws ArkSystemException;
 
 	/**
 	 * Looks up the addresses linked to a person and applies any filter supplied with the address object.Used in Search Address functionality.
@@ -172,10 +171,9 @@ public interface IStudyDao {
 	 * @param personId
 	 * @param address
 	 * @return
-	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
-	public List<Address> getPersonAddressList(Long personId, Address address) throws EntityNotFoundException, ArkSystemException;
+	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException;
 
 	/**
 	 * 
@@ -281,7 +279,7 @@ public interface IStudyDao {
 
 	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
 
-	public List<Correspondences> getPersonCorrespondenceList(Long id, Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
+	public List<Correspondences> getPersonCorrespondenceList(Long id, Correspondences correspondence) throws ArkSystemException;
 
 	public void create(CorrespondenceAttachment correspondenceAttachment);
 
