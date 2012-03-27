@@ -742,6 +742,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		phoneCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
 		List<Phone> personPhoneList = phoneCriteria.list();
 		log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
+
+		//TODO:  blatent NPE in the making
 		if (personPhoneList == null && personPhoneList.size() == 0) {
 			throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 		}
@@ -779,6 +781,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		List<Phone> personPhoneList = phoneCriteria.list();
 		log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
+
+
+		//TODO:  blatent NPE in the making
 		if (personPhoneList == null && personPhoneList.size() == 0) {
 			throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 		}
@@ -830,6 +835,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 
 		List<Address> personAddressList = criteria.list();
+		//TODO:  blatent NPE in the making
 		if (personAddressList == null && personAddressList.size() == 0) {
 			throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 		}
@@ -1059,6 +1065,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		List<Correspondences> personCorrespondenceList = criteria.list();
 		log.info("Number of correspondences fetched " + personCorrespondenceList.size() + "  Person Id" + personId.intValue());
+
+		//TODO:  blatent NPE in the making
 		if (personCorrespondenceList == null && personCorrespondenceList.size() == 0) {
 			throw new EntityNotFoundException("The entity with id " + personId.toString() + " cannot be found.");
 		}
