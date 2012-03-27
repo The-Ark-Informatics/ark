@@ -75,9 +75,6 @@ public class CustomFieldImportValidator {
 	private String							fieldName;
 	private long							subjectCount;
 	private long							fieldCount;
-	private long							insertCount;
-	private long							updateCount;
-	private double							speed;
 	private long							curPos;
 	private long							srcLength					= -1;																// -1 means nothing being processed
 	private StopWatch						timer							= null;
@@ -87,7 +84,6 @@ public class CustomFieldImportValidator {
 	java.util.Collection<String>		dataValidationMessages	= new ArrayList<String>();
 	private IArkCommonService<Void>	iArkCommonService			= null;
 	
-	private StringBuffer					uploadReport				= null;
 	private HashSet<Integer>			insertRows					= new HashSet<Integer>();
 	private HashSet<Integer>			updateRows					= new HashSet<Integer>();
 	private HashSet<ArkGridCell>		insertCells					= new HashSet<ArkGridCell>();
@@ -702,10 +698,9 @@ public class CustomFieldImportValidator {
 		// Date field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
 			try {
-				Date dateFieldValue = new Date();
 				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				dateFormat.setLenient(false);
-				dateFieldValue = dateFormat.parse(field.getMissingValue());
+				dateFormat.parse(field.getMissingValue());
 				isValid = true;
 			}
 			catch (ParseException pe) {
@@ -731,7 +726,7 @@ public class CustomFieldImportValidator {
 		// Number field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 			try {
-				Float floatFieldValue = Float.parseFloat(field.getMaxValue());
+				Float.parseFloat(field.getMaxValue());
 				isValid = true;
 			}
 			catch (NumberFormatException nfe) {
@@ -746,10 +741,9 @@ public class CustomFieldImportValidator {
 		// Date field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
 			try {
-				Date dateFieldValue = new Date();
 				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				dateFormat.setLenient(false);
-				dateFieldValue = dateFormat.parse(field.getMaxValue());
+				dateFormat.parse(field.getMaxValue());
 				isValid = true;
 			}
 			catch (ParseException pe) {
@@ -775,7 +769,7 @@ public class CustomFieldImportValidator {
 		// Number field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 			try {
-				Float floatFieldValue = Float.parseFloat(field.getMinValue());
+				Float.parseFloat(field.getMinValue());
 				isValid = true;
 			}
 			catch (NumberFormatException nfe) {
@@ -792,10 +786,9 @@ public class CustomFieldImportValidator {
 		// Date field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
 			try {
-				Date dateFieldValue = new Date();
 				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				dateFormat.setLenient(false);
-				dateFieldValue = dateFormat.parse(field.getMinValue());
+				dateFormat.parse(field.getMinValue());
 				isValid = true;
 			}
 			catch (ParseException pe) {
@@ -817,7 +810,7 @@ public class CustomFieldImportValidator {
 		// Number field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 			try {
-				Float floatFieldValue = Float.parseFloat(field.getMinValue());
+				Float.parseFloat(field.getMinValue());
 				isValid = true;
 			}
 			catch (NumberFormatException nfe) {
@@ -831,7 +824,7 @@ public class CustomFieldImportValidator {
 			}
 
 			try {
-				Float floatFieldValue = Float.parseFloat(field.getMaxValue());
+				Float.parseFloat(field.getMaxValue());
 				isValid = true;
 			}
 			catch (NumberFormatException nfe) {
@@ -845,7 +838,7 @@ public class CustomFieldImportValidator {
 			}
 
 			try {
-				Float floatFieldValue = Float.parseFloat(field.getMissingValue());
+				Float.parseFloat(field.getMissingValue());
 				isValid = true;
 			}
 			catch (NumberFormatException nfe) {
@@ -861,11 +854,17 @@ public class CustomFieldImportValidator {
 
 		// Date field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-			try {
+			try {/* TODO Evaluate...travis changed from this; to the code below...it seems all it is doing is validating
+							so all the extra instantiating not necessary
 				Date dateFieldValue = new Date();
 				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				dateFormat.setLenient(false);
 				dateFieldValue = dateFormat.parse(field.getMinValue());
+				isValid = true;
+				*/
+				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				dateFormat.setLenient(false);
+				dateFormat.parse(field.getMinValue());
 				isValid = true;
 			}
 			catch (ParseException pe) {
@@ -879,10 +878,9 @@ public class CustomFieldImportValidator {
 			}
 
 			try {
-				Date dateFieldValue = new Date();
 				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				dateFormat.setLenient(false);
-				dateFieldValue = dateFormat.parse(field.getMaxValue());
+				dateFormat.parse(field.getMaxValue());
 				isValid = true;
 			}
 			catch (ParseException pe) {
@@ -896,10 +894,9 @@ public class CustomFieldImportValidator {
 			}
 
 			try {
-				Date dateFieldValue = new Date();
 				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				dateFormat.setLenient(false);
-				dateFieldValue = dateFormat.parse(field.getMissingValue());
+				dateFormat.parse(field.getMissingValue());
 				isValid = true;
 			}
 			catch (ParseException pe) {
