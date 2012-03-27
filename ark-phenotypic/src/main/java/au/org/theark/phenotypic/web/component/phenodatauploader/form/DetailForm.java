@@ -328,7 +328,7 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 		// Retrieve file and store as Blob in database
 		// TODO: AJAX-ified and asynchronous and hit database
 		FileUpload fileUpload = fileUploadField.getFileUpload();
-		PhenoFieldDataUploadVO vo = containerForm.getModelObject();
+		//PhenoFieldDataUploadVO vo = containerForm.getModelObject();
 		containerForm.getModelObject().setFileUpload(fileUpload);
 		
 		InputStream inputStream = null;
