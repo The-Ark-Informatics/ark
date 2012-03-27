@@ -103,7 +103,7 @@ public class ReCaptchaImplTest extends TestCase {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = dbf.newDocumentBuilder();
         Document doc = builder.parse(new ByteArrayInputStream(html.getBytes()));
-
+        doc.getDoctype();
         // should be OK here.
     }
 	
