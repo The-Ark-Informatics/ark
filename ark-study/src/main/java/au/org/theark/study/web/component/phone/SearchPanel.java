@@ -26,7 +26,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhoneVO;
-import au.org.theark.study.web.component.phone.form.ContainerForm;
 import au.org.theark.study.web.component.phone.form.SearchForm;
 
 /**
@@ -38,7 +37,7 @@ public class SearchPanel extends Panel {
 
 	private FeedbackPanel				feedBackPanel;
 	private PageableListView<Phone>	pageableListView;
-	private ContainerForm				containerForm;
+//	private ContainerForm				containerForm;
 	
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	

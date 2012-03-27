@@ -73,6 +73,8 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	private DropDownChoice<GenderType>			genderTypeDdc;
 	private DropDownChoice<SubjectStatus>		subjectStatusDdc;
 	private DateTextField							dateOfBirthTxtFld;
+	
+	//TODO get explanation never accessed, yet we can set it - maybe wicket can access?
 	private PageableListView<SubjectVO>			listView;
 	private CompoundPropertyModel<SubjectVO>	cpmModel;
 

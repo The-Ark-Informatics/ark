@@ -37,6 +37,7 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.omg.PortableInterceptor.LOCATION_FORWARD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,6 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
-import au.org.theark.core.model.audit.entity.LssConsentHistory;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
@@ -737,21 +737,22 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
-	public List<Phone> getPersonPhoneList(Long personId) throws EntityNotFoundException, ArkSystemException {
+	public List<Phone> getPersonPhoneList(Long personId) throws ArkSystemException {
 		Criteria phoneCriteria = getSession().createCriteria(Phone.class);
 		phoneCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
 		List<Phone> personPhoneList = phoneCriteria.list();
 		log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
 
 		//TODO:  blatent NPE in the making
-		if (personPhoneList == null && personPhoneList.size() == 0) {
-			throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+		if (personPhoneList.isEmpty()) {
+			log.error("this person has no phone;  " + personId);
+			//throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 		}
 		log.info("Number of phone items retrieved for person Id " + personId + " " + personPhoneList.size());
 		return personPhoneList;
 	}
 
-	public List<Phone> getPersonPhoneList(Long personId, Phone phone) throws EntityNotFoundException, ArkSystemException {
+	public List<Phone> getPersonPhoneList(Long personId, Phone phone) throws ArkSystemException {
 
 		Criteria phoneCriteria = getSession().createCriteria(Phone.class);
 
@@ -782,10 +783,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		List<Phone> personPhoneList = phoneCriteria.list();
 		log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
 
-
-		//TODO:  blatent NPE in the making
-		if (personPhoneList == null && personPhoneList.size() == 0) {
-			throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+		if (personPhoneList.isEmpty()) {
+			//throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+			log.info(" personId " +  personId + " had no phones.  No drama");
 		}
 		return personPhoneList;
 	}
@@ -799,7 +799,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
-	public List<Address> getPersonAddressList(Long personId, Address address) throws EntityNotFoundException, ArkSystemException {
+	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException {
 
 		Criteria criteria = getSession().createCriteria(Address.class);
 
@@ -836,8 +836,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		List<Address> personAddressList = criteria.list();
 		//TODO:  blatent NPE in the making
-		if (personAddressList == null && personAddressList.size() == 0) {
-			throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+		if (personAddressList.isEmpty()) {
+			//throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+			log.info("person " + personId + " does not have any addresses");
 		}
 		return personAddressList;
 	}
@@ -1021,7 +1022,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	}
 
-	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException, EntityNotFoundException {
+	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException  {
 
 		Criteria criteria = getSession().createCriteria(Correspondences.class);
 
@@ -1067,8 +1068,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		log.info("Number of correspondences fetched " + personCorrespondenceList.size() + "  Person Id" + personId.intValue());
 
 		//TODO:  blatent NPE in the making
-		if (personCorrespondenceList == null && personCorrespondenceList.size() == 0) {
-			throw new EntityNotFoundException("The entity with id " + personId.toString() + " cannot be found.");
+		if (personCorrespondenceList.isEmpty()) {
+			//throw new EntityNotFoundException("The entity with id " + personId.toString() + " cannot be found.");
+			//TODO:  does this need handling?
+			log.error("this person has no correspondance");
+			
 		}
 
 		return personCorrespondenceList;
@@ -1425,8 +1429,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException {
 		StatelessSession session = getStatelessSession();
 		Study study = null;
-		int i = 1;
-
+		
 		Transaction tx = session.beginTransaction();
 
 		for (Iterator<SubjectVO> iterator = subjectVoCollection.iterator(); iterator.hasNext();) {
@@ -1496,8 +1499,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) {
 		StatelessSession session = getStatelessSession();
-		int i = 1;
-
+		
 		Transaction tx = session.beginTransaction();
 
 		for (Iterator<SubjectVO> iterator = subjectVoCollection.iterator(); iterator.hasNext();) {

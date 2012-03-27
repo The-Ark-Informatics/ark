@@ -48,7 +48,6 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.address.DetailPanel;
 
 /**
  * @author nivedann
@@ -68,7 +67,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 	private IStudyService						studyService;
 
 	private ArkCrudContainerVO				arkCrudContainerVO;
-	private DetailPanel							detailPanel;
+
 	private PageableListView<Address>		listView;
 
 	private TextField<String>					streetAddressTxtFld;
@@ -198,17 +197,9 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+//		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or
-																																														// Contact:
-																																														// Denotes
-																																														// if it was
-																																														// a subject
-																																														// or
-																																														// contact
-																																														// placed in
-																																														// session
+	//	String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or contact placed insession
 		try {
 
 			// if(sessionPersonType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)){
@@ -246,7 +237,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 		// ARK-108:: no longer do full reset to VO
 		// Set a default Country on new when the Country field is empty
 		if (getModelObject().getAddress() == null || getModelObject().getAddress().getCountry() == null) {
-			final List<Country> countryList = iArkCommonService.getCountries();
+			//final List<Country> countryList = iArkCommonService.getCountries();
 			setDefaultCountry();
 		}
 		
