@@ -63,14 +63,16 @@ public class EncodedData implements java.io.Serializable {
 		this.subject = subject;
 	}
 
-	/** full constructor */
+	/* TODO remove unused
+	 * 
+	 *  full constructor *
 	private EncodedData(Long id, GenoCollection collection, LinkSubjectStudy subject, Blob encodedBit1, Blob encodedBit2) {
 		this.id = id;
 		this.collection = collection;
 		this.subject = subject;
 		this.encodedBit1 = encodedBit1;
 		this.encodedBit2 = encodedBit2;
-	}
+	}*/
 
 	// Property accessors
 	@Id

@@ -30,7 +30,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.regex.Pattern;
@@ -683,7 +682,7 @@ public class CustomFieldImportValidator {
 		// Number field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 			try {
-				Float floatFieldValue = Float.parseFloat(field.getMissingValue());
+				Float.parseFloat(field.getMissingValue());
 				isValid = true;
 			}
 			catch (NumberFormatException nfe) {
@@ -803,7 +802,7 @@ public class CustomFieldImportValidator {
 		}
 		return isValid;
 	}
-
+/* TODO remove
 	private static boolean validateFieldDefinition(CustomField field, Collection<String> errorMessages) {
 		boolean isValid = false;
 
@@ -854,14 +853,14 @@ public class CustomFieldImportValidator {
 
 		// Date field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-			try {/* TODO Evaluate...travis changed from this; to the code below...it seems all it is doing is validating
+			try {* TODO Evaluate...travis changed from this; to the code below...it seems all it is doing is validating
 							so all the extra instantiating not necessary
 				Date dateFieldValue = new Date();
 				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				dateFormat.setLenient(false);
 				dateFieldValue = dateFormat.parse(field.getMinValue());
 				isValid = true;
-				*/
+				*
 				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				dateFormat.setLenient(false);
 				dateFormat.parse(field.getMinValue());
@@ -913,7 +912,7 @@ public class CustomFieldImportValidator {
 
 		return isValid;
 	}
-
+*/
 	private static boolean validateFieldType(String fieldName, String fieldType, Collection<String> errorMessages) {
 		boolean isValid = false;
 

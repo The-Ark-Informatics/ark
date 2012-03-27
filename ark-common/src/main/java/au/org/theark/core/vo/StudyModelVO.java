@@ -46,7 +46,6 @@ public class StudyModelVO implements Serializable {
 	private Collection<SubjectVO> availableSubjects;
 	private Collection<SubjectVO> selectedSubjects;
 
-	private String						studySummaryLabel;
 	private String						subjectUidExample;
 	
 	private BiospecimenUidTemplate biospecimenUidTemplate;
@@ -57,6 +56,12 @@ public class StudyModelVO implements Serializable {
 	
 	private String						subjectFileUploadLabel;
 	private String						subjectFileUpload;
+	
+	//todo we can set it, cant get it?
+	@SuppressWarnings("unused")
+	private String						studySummaryLabel;
+	//todo we can set it, cant get it?
+	@SuppressWarnings("unused")
 	private String						totalSubjectsLabel;
 	private int							totalSubjects;
 	private int							totalSubjectsOfParent;

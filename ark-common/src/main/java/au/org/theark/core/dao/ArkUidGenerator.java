@@ -73,11 +73,13 @@ public class ArkUidGenerator extends HibernateSessionDao {
 	private static class Id {
 		private Integer	id;
 
+		@SuppressWarnings("unused")
 		@javax.persistence.Id
 		public Integer getId() {
 			return id;
 		}
 
+		@SuppressWarnings("unused")
 		public void setId(Integer id) {
 			this.id = id;
 		}
