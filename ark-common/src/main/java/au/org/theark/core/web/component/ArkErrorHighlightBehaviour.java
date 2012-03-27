@@ -19,11 +19,11 @@
 package au.org.theark.core.web.component;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.form.FormComponent;
 
-public class ArkErrorHighlightBehaviour extends AbstractBehavior {
+public class ArkErrorHighlightBehaviour extends Behavior {
 	/**
 	 * 
 	 */

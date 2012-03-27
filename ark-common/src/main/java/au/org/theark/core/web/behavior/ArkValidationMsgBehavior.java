@@ -19,10 +19,10 @@
 package au.org.theark.core.web.behavior;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.html.form.FormComponent;
 
-public class ArkValidationMsgBehavior extends AbstractBehavior {
+public class ArkValidationMsgBehavior extends Behavior {
 	/**
 	 * 
 	 */
