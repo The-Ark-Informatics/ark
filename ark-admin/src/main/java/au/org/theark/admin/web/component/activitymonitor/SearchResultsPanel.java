@@ -42,7 +42,7 @@ public class SearchResultsPanel extends Panel {
 	public SearchResultsPanel(String id, FeedbackPanel feedbackPanel) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
-		this.feedbackPanel = feedbackPanel;
+		this.setFeedbackPanel(feedbackPanel);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -79,5 +79,13 @@ public class SearchResultsPanel extends Panel {
 			}
 		};
 		return pageableListView;
+	}
+
+	public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
+		this.feedbackPanel = feedbackPanel;
+	}
+
+	public FeedbackPanel getFeedbackPanel() {
+		return feedbackPanel;
 	}
 }
