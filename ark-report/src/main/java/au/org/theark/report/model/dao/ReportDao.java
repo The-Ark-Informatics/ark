@@ -19,12 +19,9 @@
 package au.org.theark.report.model.dao;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.DetachedCriteria;
@@ -78,8 +75,6 @@ import au.org.theark.report.service.Constants;
 public class ReportDao extends HibernateSessionDao implements IReportDao {
 
 	private static Logger	log	= LoggerFactory.getLogger(ReportDao.class);
-	private Subject			currentUser;
-	private Date				dateNow;
 
 	private IArkCommonService<Void>	iArkCommonService;
 	@Autowired
