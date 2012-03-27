@@ -15,7 +15,6 @@
  */
 package net.tanesha.recaptcha;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -26,6 +25,10 @@ import net.tanesha.recaptcha.http.SimpleHttpLoader;
 
 public class ReCaptchaImpl implements ReCaptcha, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final String PROPERTY_THEME = "theme";
 	public static final String PROPERTY_TABINDEX = "tabindex";
 	

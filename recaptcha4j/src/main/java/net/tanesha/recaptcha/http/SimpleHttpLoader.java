@@ -13,6 +13,11 @@ import net.tanesha.recaptcha.ReCaptchaException;
 
 public class SimpleHttpLoader implements HttpLoader, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public String httpGet(String urlS) {
 		InputStream in = null;
 		URLConnection connection = null;
