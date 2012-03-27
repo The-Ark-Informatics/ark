@@ -40,6 +40,7 @@ import org.apache.wicket.validation.validator.MaximumValidator;
 import org.apache.wicket.validation.validator.MinimumValidator;
 import org.slf4j.Logger;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.ICustomFieldData;
 
@@ -91,7 +92,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				IConverter<Date> dateConverter = dateDataEntryPanel.getDateConverter();
 				try {
 					Date minDate = (Date) dateConverter.convertToObject(cf.getMinValue(), getLocale());
-					dateDataEntryPanel.addValidator(DateValidator.minimum(minDate));
+					dateDataEntryPanel.addValidator(DateValidator.minimum(minDate, Constants.DD_MM_YYYY));
 				}
 				catch (ConversionException ce) {
 					// This should not occur because it means the data is corrupted on the backend database
@@ -104,7 +105,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				IConverter<Date> dateConverter = dateDataEntryPanel.getDateConverter();
 				try {
 					Date maxDate = (Date) dateConverter.convertToObject(cf.getMaxValue(), getLocale());
-					dateDataEntryPanel.addValidator(DateValidator.maximum(maxDate));
+					dateDataEntryPanel.addValidator(DateValidator.maximum(maxDate, Constants.DD_MM_YYYY));
 				}
 				catch (ConversionException ce) {
 					// This should not occur because it means the data is corrupted on the backend database
