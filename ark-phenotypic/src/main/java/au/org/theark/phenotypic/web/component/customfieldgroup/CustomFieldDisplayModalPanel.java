@@ -10,22 +10,23 @@ import au.org.theark.phenotypic.web.component.customfieldgroup.form.CustomFieldD
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class CustomFieldDisplayModalPanel extends Panel{
+public class CustomFieldDisplayModalPanel extends Panel {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private ModalWindow	modalWindow;
-	private CompoundPropertyModel<CustomFieldGroupVO> cpmModel;
-	private FeedbackPanel detailFeedbackPanel;
-	Boolean flag;
+	private static final long									serialVersionUID	= 1L;
+	private ModalWindow											modalWindow;
+	private CompoundPropertyModel<CustomFieldGroupVO>	cpmModel;
+	private FeedbackPanel										detailFeedbackPanel;
+	private Boolean												flag;
+
 	/**
 	 * @param id
 	 */
-	public CustomFieldDisplayModalPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<CustomFieldGroupVO> cpmModel,FeedbackPanel feedbackPanel, Boolean flag) {
+	public CustomFieldDisplayModalPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<CustomFieldGroupVO> cpmModel, FeedbackPanel feedbackPanel, Boolean flag) {
 		super(id);
 		this.modalWindow = modalWindow;
 		this.cpmModel = cpmModel;
@@ -33,18 +34,16 @@ public class CustomFieldDisplayModalPanel extends Panel{
 		initialiseFeedBackPanel();
 		initialisePanel();
 	}
-	
+
 	protected void initialiseFeedBackPanel() {
 		/* Feedback Panel */
 		detailFeedbackPanel = new FeedbackPanel("detailFeedback");
 		detailFeedbackPanel.setOutputMarkupId(true);
 	}
-	
-	public void initialisePanel(){
-		
-		CustomFieldDisplayForm cfdForm = new CustomFieldDisplayForm("customFieldDisplayForm",cpmModel,modalWindow,detailFeedbackPanel,flag);
+
+	public void initialisePanel() {
+		CustomFieldDisplayForm cfdForm = new CustomFieldDisplayForm("customFieldDisplayForm", cpmModel, modalWindow, detailFeedbackPanel, flag);
 		add(cfdForm);
 		add(detailFeedbackPanel);
 	}
-
 }
