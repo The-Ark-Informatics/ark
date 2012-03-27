@@ -25,6 +25,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -98,7 +99,7 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 
 			// add the corresponden\ce items related to the person if one found in session, or an empty list
 			cpModel.getObject().setCorrespondenceList(personCorrespondenceList);
-			searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView, arkCrudContainerVO);
+			searchPanel = new SearchPanel("searchPanel", feedBackPanel, pageableListView, arkCrudContainerVO);
 			searchPanel.initialisePanel(cpModel);
 			arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 

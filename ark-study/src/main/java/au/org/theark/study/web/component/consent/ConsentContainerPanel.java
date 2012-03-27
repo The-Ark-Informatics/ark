@@ -33,7 +33,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
@@ -100,16 +99,8 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 
 		// Get the Person in Context and determine the Person Type
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or
-																																														// Contact:
-																																														// Denotes
-																																														// if it was
-																																														// a subject
-																																														// or
-																																														// contact
-																																														// placed in
-																																														// session
-
+		//String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
+				
 		try {
 			// Initialise the phoneList;
 			Collection<Consent> consentList = new ArrayList<Consent>();
@@ -125,7 +116,7 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 
 			// All the phone items related to the person if one found in session or an empty list
 			cpModel.getObject().setConsentList(consentList);
-			searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView, arkCrudContainerVO);
+			searchPanel = new SearchPanel("searchPanel", feedBackPanel, pageableListView, arkCrudContainerVO);
 			searchPanel.initialisePanel(cpModel);
 			arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 
@@ -168,7 +159,7 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 					if (isActionPermitted()) {
 						if (sessionPersonId != null) {
 							Study study = iArkCommonService.getStudy(sessionStudyId);
-							Person subject = studyService.getPerson(sessionPersonId);
+							//Person subject = studyService.getPerson(sessionPersonId);
 							LinkSubjectStudy linkSubjectStudy = studyService.getSubjectLinkedToStudy(sessionPersonId, study);
 							containerForm.getModelObject().getConsent().setLinkSubjectStudy(linkSubjectStudy);
 							containerForm.getModelObject().getConsent().setStudy(study);

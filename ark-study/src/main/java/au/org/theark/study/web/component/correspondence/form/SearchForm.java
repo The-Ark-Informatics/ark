@@ -49,6 +49,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CorrespondenceVO;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -86,16 +87,16 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 		this.pageableListView = listView;
 		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model() ));
 		add(generalTextLbl);
-		//TODO initialiseSearchForm();// See Ark-374, if in future we need it uncomment this and uncomment a section of code in the markup
+		//initialiseSearchForm();// See Ark-374, if in future we need it uncomment this and uncomment a section of code in the markup
 		resetButton.setVisible(false);
 		searchButton.setVisible(false);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a subject or contact.");
 	}
 
-/*	 TODO:  see above comment re:374 above
-  
- 	private void initialiseSearchForm() {
+	
+ 	@SuppressWarnings("unused")
+	private void initialiseSearchForm() {
 
 		initialiseStatusTypeDropDown();
 		initialiseOperatorDropDown();
@@ -113,7 +114,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 
 		addSearchComponentsToForm();
 	}
-*/
+
 	private void initialiseOperatorDropDown() {
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
