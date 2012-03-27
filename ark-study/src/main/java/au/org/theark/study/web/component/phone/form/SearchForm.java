@@ -61,9 +61,9 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService						studyService;
 
-	private DetailPanel							detailPanel;
+//	private DetailPanel							detailPanel;
 	private PageableListView<Phone>			pageableListView;
-	private CompoundPropertyModel<PhoneVO>	cpmModel;
+//	private CompoundPropertyModel<PhoneVO>	cpmModel;
 
 	private TextField<Long>						phoneIdTxtFld;
 	private TextField<String>					areaCodeTxtFld;
@@ -113,15 +113,14 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
+		
+		//TODO: analyze unused 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		
+		//TODO: analyze unused 
 		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or
-																																														// Contact:
-																																														// Denotes
-																																														// if it was
-																																														// a subject
-																																														// or
-																																														// contact
+																																													// contact
 																																														// placed in
 																																														// session
 		try {
