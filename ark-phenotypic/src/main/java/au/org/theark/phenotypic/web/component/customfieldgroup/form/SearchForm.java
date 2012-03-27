@@ -9,7 +9,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -23,7 +22,6 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldGroupVO;
@@ -52,7 +50,6 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private TextField<String> groupNameTxtFld;
 	private CheckBox publishedStatusCb;	
-	private DropDownChoice<YesNo> publishedDDC;
 	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdArkDataProvider;
 	private Label generalTextLbl; 
 	/**

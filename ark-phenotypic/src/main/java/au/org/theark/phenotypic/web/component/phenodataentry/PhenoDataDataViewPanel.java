@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
-import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
@@ -84,14 +83,14 @@ public class PhenoDataDataViewPanel extends Panel {
 				
 				public int size() {
 					PhenotypicCollection phenoCollection = criteriaModel.getObject().getPhenotypicCollection();
-					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
+//					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 	
 					return iPhenotypicService.getPhenoDataCount(phenoCollection);
 				}
 	
 				public Iterator<PhenoData> iterator(int first, int count) {
 					PhenotypicCollection phenoCollection = criteriaModel.getObject().getPhenotypicCollection();
-					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
+//					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 	
 					List<PhenoData> phenoDataList = iPhenotypicService.getPhenoDataList(phenoCollection, first, count);
 					cpModel.getObject().setCustomFieldDataList(phenoDataList);

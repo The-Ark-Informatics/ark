@@ -61,6 +61,7 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>		iArkCommonService;
 
+	//TODO analyze this field, is this bean injection used by wicket possibly?
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService				iPhenotypicService;
 
