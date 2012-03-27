@@ -20,9 +20,6 @@ package au.org.theark.core.model.lims.entity;
 
 // Generated 15/06/2011 1:22:58 PM by Hibernate Tools 3.3.0.GA
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -52,10 +49,11 @@ public class BiodataGroup implements java.io.Serializable {
 	 * 
 	 * For that matter, being private this info will never go anywhere, and has no relationship, and the constructor is maybe giving false hope of something happening.
 	 * 
-	 * */
 	private Set<BiodataGroupCriteria>	biodataGroupCriterias	= new HashSet<BiodataGroupCriteria>(0);
 	private Set<BiodataFieldGroup>		biodataFieldGroups		= new HashSet<BiodataFieldGroup>(0);
 
+	 * */
+	
 	public BiodataGroup() {
 	}
 
@@ -63,7 +61,7 @@ public class BiodataGroup implements java.io.Serializable {
 		this.id = id;
 		this.groupName = groupName;
 	}
-
+	/*
 	public BiodataGroup(Long id, String groupName, String domain, Set<BiodataGroupCriteria> biodataGroupCriterias, Set<BiodataFieldGroup> biodataFieldGroups) {
 		this.id = id;
 		this.groupName = groupName;
@@ -71,6 +69,7 @@ public class BiodataGroup implements java.io.Serializable {
 		this.biodataGroupCriterias = biodataGroupCriterias;
 		this.biodataFieldGroups = biodataFieldGroups;
 	}
+	*/
 
 	@Id
 	@SequenceGenerator(name = "biodatagroup_generator", sequenceName = "BIODATAGROUP_SEQUENCE")

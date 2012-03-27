@@ -37,7 +37,7 @@ public class StudyHelper implements Serializable {
 	 * 
 	 */
 	private static final long		serialVersionUID	= 8485137084667518625L;
-	private Image						studyLogoImage;
+//	private Image						studyLogoImage;
 	private ContextImage				noStudyLogoImage;
 	private Label						studyNameLabel		= null;
 	private Label						studyLabel			= null;
