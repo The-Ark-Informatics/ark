@@ -50,6 +50,7 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	//TODO: analyze unused 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService			iArkCommonService;
 
@@ -59,6 +60,7 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 	// Container Form
 	private ContainerForm				containerForm;
 	// Panels
+	//TODO: analyze unused 
 	private SearchResultListPanel		searchResultListPanel;
 	private SearchPanel					searchPanel;
 	private DetailPanel					detailPanel;
@@ -104,6 +106,8 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 
 		// Get the Person in Context and determine the Person Type
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+
+		//TODO: analyze unused 
 		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or
 																																														// Contact:
 																																														// Denotes

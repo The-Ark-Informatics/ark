@@ -50,9 +50,11 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 	 */
 	private static final long	serialVersionUID	= 1L;
 
+	//TODO: analyze unused 
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService							studyService;
 
+	//TODO: analyze unused 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
 
