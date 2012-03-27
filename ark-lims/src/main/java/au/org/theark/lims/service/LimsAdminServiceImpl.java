@@ -48,7 +48,7 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	private IBiospecimenDao			iBiospecimenDao;
 	private IBioCollectionDao		iBioCollectionDao;
 	private VelocityEngine			velocityEngine;
-	static private final String	REAL_NUMBER			= "^[-+]?\\d+(\\.\\d+)?$";
+//	static private final String	REAL_NUMBER			= "^[-+]?\\d+(\\.\\d+)?$";
 	private SimpleDateFormat		simpleDateFormat	= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 
 	/**

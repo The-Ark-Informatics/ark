@@ -19,13 +19,13 @@
 package au.org.theark.lims;
 
 import junit.framework.TestCase;
-import org.apache.wicket.util.tester.WicketTester;
 
 /**
  * Simple test using the WicketTester
  */
 public class TestHomePage extends TestCase {
-	private WicketTester	tester;
+	// TODO:  remove class or write some tests!
+	 //private WicketTester	tester;
 
 	@Override
 	public void setUp() {

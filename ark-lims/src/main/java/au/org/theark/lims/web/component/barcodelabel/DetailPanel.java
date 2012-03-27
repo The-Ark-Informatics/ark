@@ -38,7 +38,6 @@ public class DetailPanel extends Panel {
 	private FeedbackPanel		feedBackPanel;
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
-	private Panel barcodeLabelDataPanel;
 
 	/**
 	 * 
