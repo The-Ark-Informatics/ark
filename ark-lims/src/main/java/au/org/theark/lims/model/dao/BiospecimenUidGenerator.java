@@ -71,6 +71,8 @@ public class BiospecimenUidGenerator extends HibernateSessionDao {
 
 	/**
 	 * Target object for ID generation
+	 * 
+	 * TODO:  Evaluate is this working fine?  
 	 */
 	private static class Id {
 		private Integer	id;
