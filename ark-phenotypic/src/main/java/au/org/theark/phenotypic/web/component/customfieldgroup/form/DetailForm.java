@@ -26,9 +26,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -55,7 +52,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 	 * 
 	 */
 	private static final long														serialVersionUID	= 1L;
-	private static final Logger													log = LoggerFactory.getLogger(DetailForm.class);
+//	private static final Logger													log = LoggerFactory.getLogger(DetailForm.class);
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService														iPhenotypicService;
@@ -168,10 +165,10 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 
 	private void initCustomFieldPalette() {
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "name");
-		List<CustomField> customFieldList = cpModel.getObject().getSelectedCustomFields();
+//		List<CustomField> customFieldList = cpModel.getObject().getSelectedCustomFields();
 		List<CustomField> selectedCustomFieldList = cpModel.getObject().getSelectedCustomFields();
 
-		PropertyModel<Collection<CustomField>> selectedPm = new PropertyModel<Collection<CustomField>>(cpModel, "selectedCustomFields");
+//		PropertyModel<Collection<CustomField>> selectedPm = new PropertyModel<Collection<CustomField>>(cpModel, "selectedCustomFields");
 		PropertyModel<Collection<CustomField>> availablePm = new PropertyModel<Collection<CustomField>>(cpModel, "availableCustomFields");
 		customFieldPalette = new ArkPalette("selectedCustomFields", new ListModel(selectedCustomFieldList), availablePm, renderer, au.org.theark.core.Constants.PALETTE_ROWS, true);
 	}

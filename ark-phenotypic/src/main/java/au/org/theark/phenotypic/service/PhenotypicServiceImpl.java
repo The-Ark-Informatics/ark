@@ -82,6 +82,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 	private IArkCommonService<Void>	iArkCommonService;
 	private IPhenotypicDao				phenotypicDao;
+
+	//TODO analyze if accessed
 	private IStudyDao						studyDao;
 	private Long							studyId;
 	private Study							study;

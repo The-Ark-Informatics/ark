@@ -161,7 +161,7 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 		if (temp != null && temp.exists()) {
 			InputStream inputStream = null;
 			try {
-				ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+//				ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 	
 				CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
 				

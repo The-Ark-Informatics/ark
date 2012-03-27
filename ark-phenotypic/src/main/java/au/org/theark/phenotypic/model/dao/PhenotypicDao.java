@@ -476,7 +476,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		FieldData returnFieldData = new FieldData();
 		if (criteria != null && criteria.list() != null && criteria.list().size() > 0) {
-			int i = criteria.list().size();
+			//int i = criteria.list().size();
 			returnFieldData = (FieldData) criteria.list().get(0);
 		}
 		else {
@@ -946,11 +946,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 		criteria.addOrder(Order.desc(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_ID));
 		java.util.Collection<PhenoCollectionUpload> phenoCollectionUploadCollection = criteria.list();
-		java.util.Collection<PhenoUpload> phenoUploadCollection = null;
+		java.util.Collection<PhenoUpload> phenoUploadCollection = new java.util.ArrayList<PhenoUpload>();
 
 		for (Iterator iterator = phenoCollectionUploadCollection.iterator(); iterator.hasNext();) {
 			PhenoCollectionUpload phenoCollectionUpload = (PhenoCollectionUpload) iterator.next();
 			PhenoUpload phenoUpload = phenoCollectionUpload.getUpload();
+			
 			phenoUploadCollection.add(phenoUpload);
 		}
 
@@ -1018,7 +1019,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected) {
 		Criteria criteria = getSession().createCriteria(FieldData.class);
-		String dateStr = dateCollected.toString();
+//		String dateStr = dateCollected.toString();
 
 		if (linkSubjectStudy.getId() != null) {
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_LINK_SUBJECT_STUDY, linkSubjectStudy));
@@ -1616,7 +1617,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 				cfdisplayList.add(customFieldDisplay);
 			}else{
 				//Retrieve the customField for the sequence could have changed
-				String name = customField.getName();
+				//String name = customField.getName();
 				CustomFieldDisplay cfd = iArkCommonService.getCustomFieldDisplayByCustomField(customField);
 				cfdisplayList.add(cfd);
 			}

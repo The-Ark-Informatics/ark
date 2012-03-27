@@ -80,12 +80,8 @@ public class PhenoDataImportValidator {
 	static Logger							log							= LoggerFactory.getLogger(PhenoDataImportValidator.class);
 	boolean									qualityControl				= false;
 	private Study							study;
-	private String							fieldName;
 	private long							subjectCount;
 	private long							fieldCount;
-	private long							insertCount;
-	private long							updateCount;
-	private double							speed;
 	private long							curPos;
 	private long							srcLength					= -1;																// -1 means nothing being processed
 	private StopWatch						timer							= null;
@@ -97,7 +93,6 @@ public class PhenoDataImportValidator {
 	private IPhenotypicService			iPhenotypicService		= null;
 	private IArkCommonService<Void>	iArkCommonService			= null;
 	
-	private StringBuffer					uploadReport				= null;
 	private HashSet<Integer>			insertRows					= new HashSet<Integer>();
 	private HashSet<Integer>			updateRows					= new HashSet<Integer>();
 	private HashSet<ArkGridCell>		insertCells					= new HashSet<ArkGridCell>();
@@ -108,7 +103,6 @@ public class PhenoDataImportValidator {
 	private int								row							= 1;
 	private ArkFunction 					arkFunction;
 	private CustomFieldGroup			questionnaire;
-	private PhenotypicCollection		phenoDataCollection;
 	private List<CustomFieldDisplay>	cfdHeaderList;
 
 	/**
