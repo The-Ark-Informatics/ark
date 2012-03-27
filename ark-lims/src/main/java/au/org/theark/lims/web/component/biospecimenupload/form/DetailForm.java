@@ -35,7 +35,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.file.File;
 import org.hibernate.Hibernate;
 
 import au.org.theark.core.Constants;
@@ -62,10 +61,10 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
 
-	private int										mode;
+//	private int										mode;
 
 	private TextField<String>					uploadIdTxtFld;
-	private TextField<String>					uploadFilenameTxtFld;
+//	private TextField<String>					uploadFilenameTxtFld;
 	private DropDownChoice<FileFormat>		fileFormatDdc;
 	private FileUploadField						fileUploadField;
 	// private UploadProgressBar uploadProgressBar;
@@ -117,6 +116,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 	}
 
+	/*TODO remove unused
 	private void createDirectoryIfNeeded(String directoryName) {
 		File theDir = new File(directoryName);
 
@@ -125,7 +125,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 			System.out.println("creating directory: " + directoryName);
 			theDir.mkdir();
 		}
-	}
+	}*/
 
 	@Override
 	protected void onSave(Form<UploadVO> containerForm, AjaxRequestTarget target) {

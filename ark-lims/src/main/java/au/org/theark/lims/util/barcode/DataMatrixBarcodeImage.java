@@ -44,7 +44,7 @@ public class DataMatrixBarcodeImage extends NonCachingImage {
 	private static final Logger	log					= LoggerFactory.getLogger(DataMatrixBarcodeImage.class);
 	private static int				dpi					= 200;
 	private boolean					antiAlias			= true;
-	private int							orientation			= 0;
+	private int						orientation			= 0;
 
 	/**
 	 * Create a new DataMatrixBarcode of the specified barcodeString
@@ -71,8 +71,8 @@ public class DataMatrixBarcodeImage extends NonCachingImage {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		DataMatrixBarcodeImage.dpi = dpi;
-		this.antiAlias = anitAlias;
-		this.orientation = orientation;
+		this.setAntiAlias(anitAlias);
+		this.setOrientation(orientation);
 	}
 
 	/**
@@ -127,6 +127,22 @@ public class DataMatrixBarcodeImage extends NonCachingImage {
 		// Generate the bufferedImage
 		BufferedImage bufferedImage = canvas.getBufferedImage();
 		return bufferedImage;
+	}
+
+	public void setAntiAlias(boolean antiAlias) {
+		this.antiAlias = antiAlias;
+	}
+
+	public boolean isAntiAlias() {
+		return antiAlias;
+	}
+
+	public void setOrientation(int orientation) {
+		this.orientation = orientation;
+	}
+
+	public int getOrientation() {
+		return orientation;
 	}
 
 }
