@@ -78,6 +78,14 @@ public class SearchResultListPanel extends Panel {
 
 				// Component Name Link
 				item.add(buildLinkWMC(item));
+				
+				// Field Label
+				if (field.getFieldType() != null) {
+					item.add(new Label(Constants.CUSTOMFIELD_FIELD_LABEL, field.getFieldLabel()));
+				}
+				else {
+					item.add(new Label(Constants.CUSTOMFIELD_FIELD_LABEL, ""));
+				}
 
 				// Field Type
 				if (field.getFieldType() != null) {
