@@ -84,6 +84,8 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 
 		// get the person in context
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		
+		//todo evaluate unused code
 		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 
 		try {
