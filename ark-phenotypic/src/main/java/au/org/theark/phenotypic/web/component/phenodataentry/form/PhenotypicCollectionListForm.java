@@ -239,8 +239,9 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 				// DO NOT store the item.getModelObject! Checking it is ok...
 				final PhenotypicCollection phenotypicCollection = item.getModelObject();
 
-				WebMarkupContainer rowDetailsWMC = new WebMarkupContainer("rowDetailsWMC", item.getModel());
-				ArkBusyAjaxLink listDetailsLink = new ArkBusyAjaxLink("listDetailsLink") {
+				idLbl = new Label("phenotypicCollection.id", String.valueOf(phenotypicCollection.getId()));
+				questionnaireLbl = new Label("phenotypicCollection.questionnaire", phenotypicCollection.getQuestionnaire().getName());
+				ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
 
 					/**
 					 * 
@@ -256,12 +257,8 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 						showModalWindow(target, newModel);
 					}
 				};
-
-				idLbl = new Label("phenotypicCollection.id", String.valueOf(phenotypicCollection.getId()));
-				listDetailsLink.add(idLbl);
-				rowDetailsWMC.add(listDetailsLink);				
-
-				questionnaireLbl = new Label("phenotypicCollection.questionnaire", phenotypicCollection.getQuestionnaire().getName());
+				link.add(questionnaireLbl);
+				
 				nameLbl = new Label("phenotypicCollection.name", phenotypicCollection.getName());
 				descriptionLbl = new Label("phenotypicCollection.description", phenotypicCollection.getDescription());
 				statusLbl = new Label("phenotypicCollection.status", phenotypicCollection.getStatus().getName());
@@ -277,9 +274,9 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 					reviewedDateLbl = new Label("phenotypicCollection.reviewedDate", simpleDateFormat.format(phenotypicCollection.getReviewedDate()));	
 				}
 
-				item.add(rowDetailsWMC);
+				item.add(idLbl);
+				item.add(link);
 				item.add(nameLbl);
-				item.add(questionnaireLbl);
 				item.add(descriptionLbl);
 				item.add(statusLbl);
 				item.add(recordDateLbl);
