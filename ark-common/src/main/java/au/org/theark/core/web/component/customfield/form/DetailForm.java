@@ -410,6 +410,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		Boolean hasData = getModelObject().getCustomField().getCustomFieldHasData();
 		if (hasData != null) {
 			customFieldDetailWMC.setEnabled(!hasData);
+			fieldDisplayRequiredChkBox.setEnabled(!hasData);
 			arkCrudContainerVO.getEditButtonContainer().get("save").setVisible(!hasData);
 		}
 		super.onBeforeRender();
