@@ -87,14 +87,16 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 		this.pageableListView = listView;
 		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model() ));
 		add(generalTextLbl);
-		//initialiseSearchForm();// See Ark-374, if in future we need it uncomment this and uncomment a section of code in the markup
+		//TODO initialiseSearchForm();// See Ark-374, if in future we need it uncomment this and uncomment a section of code in the markup
 		resetButton.setVisible(false);
 		searchButton.setVisible(false);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a subject or contact.");
 	}
 
-	private void initialiseSearchForm() {
+/*	 TODO:  see above comment re:374 above
+  
+ 	private void initialiseSearchForm() {
 
 		initialiseStatusTypeDropDown();
 		initialiseOperatorDropDown();
@@ -112,7 +114,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 
 		addSearchComponentsToForm();
 	}
-
+*/
 	private void initialiseOperatorDropDown() {
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -177,7 +179,6 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	protected void onSearch(AjaxRequestTarget target) {
 
 		target.add(feedbackPanel);
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 
 		try {
