@@ -97,7 +97,7 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 			Session session = getSession();
 			session.beginTransaction();
 			
-			StringBuffer sqlBlobToFile = new StringBuffer();
+			//StringBuffer sqlBlobToFile = new StringBuffer();
 			/*
 			sqlBlobToFile.append("SELECT csv_blob ");
 			sqlBlobToFile.append("FROM study.csv_blob ");
