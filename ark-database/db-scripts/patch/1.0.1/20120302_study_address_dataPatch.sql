@@ -19,7 +19,7 @@ BEGIN
 	WHERE address.person_id = p.id
 	AND p.id = lss.person_id
 	AND lss.study_id = study_id
-	GROUP BY a.person_id;
+	GROUP BY address.person_id;
 	
 	-- Declare 'handlers' for exceptions
 	DECLARE CONTINUE HANDLER FOR NOT FOUND
