@@ -107,7 +107,6 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 			sqlBlobToFile.append("INTO OUTFILE '");
 			sqlBlobToFile.append(temporaryFileName);
 			sqlBlobToFile.append("' ");
-			
 			sqlBlobToFile.append("CALL ");
 			sqlBlobToFile.append(databaseName);
 			sqlBlobToFile.append(".");
