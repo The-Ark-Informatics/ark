@@ -15,7 +15,7 @@ BEGIN
 	-- Declare the cursor (the latest address)
 	DECLARE first_addresses CURSOR FOR
 	SELECT max(a.id) as id
-	FROM `study`.`address` a. `study`.`person` p, `study`.`link_subject_study` lss
+	FROM `study`.`address` a, `study`.`person` p, `study`.`link_subject_study` lss
 	WHERE a.person_id = p.id
 	AND p.id = lss.person_id
 	AND lss.study_id = study_id
