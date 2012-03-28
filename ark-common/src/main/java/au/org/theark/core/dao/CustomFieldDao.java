@@ -201,7 +201,6 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	}
 
 	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria){
-		
 		Criteria criteria = buildGeneralCustomFieldCritera(customFieldCriteria);
 		// Return fields ordered alphabetically
 		criteria.addOrder(Order.asc("name"));
