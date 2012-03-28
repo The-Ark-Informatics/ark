@@ -3,7 +3,7 @@
 -- --------------------------------------------------------------------------------
 USE study;
 DELIMITER $$
-DROP PROCEDURE IF EXISTS update_address_preferred;
+DROP PROCEDURE IF EXISTS `update_address_preferred`$$
 CREATE PROCEDURE `update_address_preferred`(study_id LONG)
 BEGIN
 	-- Declare variables used just for cursor and loop control
@@ -14,9 +14,9 @@ BEGIN
 	
 	-- Declare the cursor (the latest address)
 	DECLARE first_addresses CURSOR FOR
-	SELECT max(a.id) as id
-	FROM `study`.`address` a, `study`.`person` p, `study`.`link_subject_study` lss
-	WHERE a.person_id = p.id
+	SELECT max(address.id) as id
+	FROM `study`.`address` address, `study`.`person` p, `study`.`link_subject_study` lss
+	WHERE address.person_id = p.id
 	AND p.id = lss.person_id
 	AND lss.study_id = study_id
 	GROUP BY a.person_id;
@@ -53,3 +53,4 @@ BEGIN
 		select num_rows, loop_cntr;
 	END IF;
 END;
+$$
