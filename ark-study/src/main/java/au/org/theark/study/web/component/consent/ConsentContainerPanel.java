@@ -42,9 +42,9 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.consent.form.ContainerForm;
 
 public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
-
 	private static final long				serialVersionUID	= 1L;
 
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
 
@@ -82,7 +82,6 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 	 */
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-
 		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO);
 		detailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
@@ -96,10 +95,8 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 	 */
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
-
 		// Get the Person in Context and determine the Person Type
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		//String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 				
 		try {
 			// Initialise the phoneList;
@@ -119,7 +116,6 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 			searchPanel = new SearchPanel("searchPanel", feedBackPanel, pageableListView, arkCrudContainerVO);
 			searchPanel.initialisePanel(cpModel);
 			arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
-
 		}
 		catch (EntityNotFoundException entityNotFoundException) {
 			containerForm.error("The Person/Subject cannot be found in the system. Please contact Support.");
@@ -139,7 +135,6 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 	 */
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-
 		// TODO: Should eventually remove containerForm and instead pass over the cpModel
 		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", containerForm, arkCrudContainerVO);
 		iModel = new LoadableDetachableModel<Object>() {
@@ -159,18 +154,15 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 					if (isActionPermitted()) {
 						if (sessionPersonId != null) {
 							Study study = iArkCommonService.getStudy(sessionStudyId);
-							//Person subject = studyService.getPerson(sessionPersonId);
 							LinkSubjectStudy linkSubjectStudy = studyService.getSubjectLinkedToStudy(sessionPersonId, study);
 							containerForm.getModelObject().getConsent().setLinkSubjectStudy(linkSubjectStudy);
 							containerForm.getModelObject().getConsent().setStudy(study);
 							consentList = studyService.searchConsent(containerForm.getModelObject());
 						}
-
 					}
 				}
 				catch (EntityNotFoundException e) {
 					containerForm.error("Subject is not available in the system");
-
 				}
 				catch (ArkSystemException e) {
 					containerForm.error("A System Error has occured please contact Support");
@@ -188,7 +180,5 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 		searchResultPanel.add(pageableListView);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
-
 	}
-
 }
