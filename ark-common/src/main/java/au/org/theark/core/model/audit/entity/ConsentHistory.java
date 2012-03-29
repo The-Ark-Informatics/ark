@@ -38,6 +38,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 
@@ -55,6 +56,7 @@ public class ConsentHistory implements Serializable {
 	private Long					id;
 	private Date					timestamp;
 	private LinkSubjectStudy	linkSubjectStudy;
+	private StudyComp				studyComp;
 	private StudyCompStatus		studyComponentStatus;
 	private ConsentStatus		consentStatus;
 	private ConsentType			consentType;
@@ -110,6 +112,16 @@ public class ConsentHistory implements Serializable {
 
 	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
 		this.linkSubjectStudy = linkSubjectStudy;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDY_COMP_ID")
+	public StudyComp getStudyComp() {
+		return studyComp;
+	}
+	
+	public void setStudyComp(StudyComp studyComp) {
+		this.studyComp = studyComp;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)

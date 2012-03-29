@@ -27,7 +27,9 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.model.audit.entity.ConsentHistory;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.StudyComp;
 
 /**
  * Provides CRUD and accessor methods to Audit entities
@@ -36,6 +38,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
  */
 @Repository("auditDao")
 public class AuditDao extends HibernateSessionDao implements IAuditDao {
+	@SuppressWarnings("unchecked")
 	public List<LssConsentHistory> getLssConsentHistoryList(LinkSubjectStudy linkSubjectStudy) {
 		Criteria criteria = getSession().createCriteria(LssConsentHistory.class);
 		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
@@ -43,9 +46,17 @@ public class AuditDao extends HibernateSessionDao implements IAuditDao {
 		return criteria.list();
 	}
 
-	public List<ConsentHistory> getConsentHistoryList(LinkSubjectStudy linkSubjectStudy) {
+	@SuppressWarnings("unchecked")
+	public List<ConsentHistory> getConsentHistoryList(Consent consent) {
 		Criteria criteria = getSession().createCriteria(ConsentHistory.class);
-		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
+		criteria.add(Restrictions.eq("linkSubjectStudy", consent.getLinkSubjectStudy()));
+		
+		if(consent.getStudyComp() != null) {
+			criteria.add(Restrictions.eq("studyComp", consent.getStudyComp()));
+		}
+		else {
+			criteria.add(Restrictions.isNull("studyComp"));
+		}
 		criteria.addOrder(Order.desc("id"));
 		return criteria.list();
 	}
