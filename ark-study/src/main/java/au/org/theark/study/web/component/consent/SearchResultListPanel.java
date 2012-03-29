@@ -71,6 +71,7 @@ public class SearchResultListPanel extends Panel {
 		this.containerForm = containerForm;
 	}
 
+	@SuppressWarnings("unchecked")
 	public PageableListView<Consent> buildPageableListView(IModel iModel) {
 
 		PageableListView<Consent> pageableListView = new PageableListView<Consent>(Constants.CONSENT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
@@ -140,9 +141,9 @@ public class SearchResultListPanel extends Panel {
 
 	}
 
-	private AjaxLink buildLink(final Consent consent) {
+	private AjaxLink<String> buildLink(final Consent consent) {
 
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("studyComp.name") {
+		ArkBusyAjaxLink<String> link = new ArkBusyAjaxLink<String>("studyComp.name") {
 
 			/**
 			 * 
