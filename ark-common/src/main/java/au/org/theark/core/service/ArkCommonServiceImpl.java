@@ -686,23 +686,21 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		}
 		try {
 
-			if (!customFieldVO.getCustomField().getCustomFieldHasData()) {
-				customFieldDao.updateCustomField(customFieldVO.getCustomField());
-				// Custom Field History
-				AuditHistory ah = new AuditHistory();
-				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-				ah.setComment("Updated Custom Field " + customFieldVO.getCustomField().getName());
-				ah.setEntityId(customFieldVO.getCustomField().getId());
-				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
-				createAuditHistory(ah);
-			}
+			customFieldDao.updateCustomField(customFieldVO.getCustomField());
+			// Custom Field History
+			AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+			ah.setComment("Updated Custom Field " + customFieldVO.getCustomField().getName());
+			ah.setEntityId(customFieldVO.getCustomField().getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
+			createAuditHistory(ah);
 
 			// Only Update CustomFieldDisplay when it is allowed
 			if (customFieldVO.isUseCustomFieldDisplay()) {
 				customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
 				customFieldDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 				// Custom Field Display History
-				AuditHistory ah = new AuditHistory();
+				ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 				ah.setComment("Updated Custom Field Display " + customFieldVO.getCustomField().getName());
 				ah.setEntityId(customFieldVO.getCustomField().getId());
