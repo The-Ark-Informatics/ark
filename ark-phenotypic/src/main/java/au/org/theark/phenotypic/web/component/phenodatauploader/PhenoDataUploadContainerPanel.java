@@ -85,7 +85,7 @@ public class PhenoDataUploadContainerPanel extends AbstractContainerPanel<PhenoF
 	}
 
 	protected WebMarkupContainer initialiseSearchResults() {
-		searchResultPanel = new SearchResultListPanel("searchResults", listView, containerForm, arkCrudContainerVO);
+		searchResultPanel = new SearchResultListPanel("searchResults", listView, arkCrudContainerVO);
 
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
