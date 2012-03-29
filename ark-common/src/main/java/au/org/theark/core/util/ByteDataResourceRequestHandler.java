@@ -19,11 +19,9 @@
 package au.org.theark.core.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.wicket.IResourceFactory;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -31,9 +29,8 @@ import org.apache.wicket.request.resource.ByteArrayResource;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.apache.wicket.util.resource.StringResourceStream;
 
-public class ByteDataResourceRequestHandler extends ByteArrayResource implements IRequestHandler{
+public class ByteDataResourceRequestHandler extends ByteArrayResource implements IRequestHandler {
 	/**
 	 * 
 	 */
@@ -56,49 +53,49 @@ public class ByteDataResourceRequestHandler extends ByteArrayResource implements
 		this.fileName = fileName;
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.wicket.request.IRequestHandler#detach(org.apache.wicket.request.IRequestCycle)
 	 */
 	public void detach(IRequestCycle arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.wicket.request.IRequestHandler#respond(org.apache.wicket.request.IRequestCycle)
 	 */
 	public void respond(IRequestCycle requestCycle) {
-		//StringResourceStream stringResourceStream = new StringResourceStream( new String(this.getData(null)));
-		
-		File file = new File(this.fileName);//how about accessors mutators?
+		// StringResourceStream stringResourceStream = new StringResourceStream( new String(this.getData(null)));
+		File file = new File(this.fileName);// how about accessors mutators?
 		FileOutputStream fos = null;
-		try{
+		try {
 			fos = new FileOutputStream(file);
-	        fos.write(this.getData(null));
-	        fos.flush();
+			fos.write(this.getData(null));
+			fos.flush();
 		}
-		catch(IOException fe){
+		catch (IOException fe) {
 			fe.printStackTrace();
 		}
-		finally{
-			try{
-				if(fos!=null){
+		finally {
+			try {
+				if (fos != null) {
 					fos.close();
 				}
 			}
-			catch(IOException e ){
-				e.printStackTrace();//TODO handle this
+			catch (IOException e) {
+				e.printStackTrace();// TODO handle this
 			}
 		}
-		IResourceStream resourceStream = new FileResourceStream(
-		            new org.apache.wicket.util.file.File(file));
+		IResourceStream resourceStream = new FileResourceStream(new org.apache.wicket.util.file.File(file));
 
-		//ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stringResourceStream);
+		// ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stringResourceStream);
 		ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(resourceStream);
 		resourceStreamRequestHandler.setFileName(fileName);
 		resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
 		requestCycle.scheduleRequestHandlerAfterCurrent(resourceStreamRequestHandler);
 	}
-
 }
