@@ -619,6 +619,7 @@ public class StudyServiceImpl implements IStudyService {
 	private void createConsentHistory(Consent newConsent) {
 		ConsentHistory consentHistory = new ConsentHistory();
 		consentHistory.setLinkSubjectStudy(newConsent.getLinkSubjectStudy());
+		consentHistory.setStudyComp(newConsent.getStudyComp());
 		consentHistory.setStudyComponentStatus(newConsent.getStudyComponentStatus());
 		consentHistory.setConsentDate(newConsent.getConsentDate());
 		consentHistory.setConsentedBy(newConsent.getConsentedBy());
@@ -1196,7 +1197,7 @@ public class StudyServiceImpl implements IStudyService {
 		return iAuditDao.getLssConsentHistoryList(linkSubjectStudy);
 	}
 	
-	public List<ConsentHistory> getConsentHistoryList(LinkSubjectStudy linkSubjectStudy) {
-		return iAuditDao.getConsentHistoryList(linkSubjectStudy);
+	public List<ConsentHistory> getConsentHistoryList(Consent consent) {
+		return iAuditDao.getConsentHistoryList(consent);
 	}
 }

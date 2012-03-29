@@ -384,6 +384,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 					iStudyService.create(containerForm.getModelObject().getConsent());
 					this.info("Consent was successfuly created for the Subject ");
 					processErrors(target);
+					// Store session object (used for history)
+					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID, containerForm.getModelObject().getConsent().getId());
 				}
 				else {
 					iStudyService.update(containerForm.getModelObject().getConsent());

@@ -22,7 +22,9 @@ import java.util.List;
 
 import au.org.theark.core.model.audit.entity.ConsentHistory;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.StudyComp;
 
 
 /**
@@ -39,10 +41,10 @@ public interface IAuditDao {
 	
 	/**
 	 * Return a list of ConsentHistory entities
-	 * @param linkSubjectStudy
+	 * @param consent
 	 * @return
 	 */
-	public List<ConsentHistory> getConsentHistoryList(LinkSubjectStudy linkSubjectStudy);
+	public List<ConsentHistory> getConsentHistoryList(Consent consent);
 
 	/**
 	 * Creates a new audit history log
@@ -55,4 +57,6 @@ public interface IAuditDao {
 	 * @param consentHistory
 	 */
 	public void createConsentHistory(ConsentHistory consentHistory);
+
+	
 }

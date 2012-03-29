@@ -34,10 +34,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.audit.entity.ConsentHistory;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
@@ -47,9 +46,6 @@ public class ConsentHistoryPanel extends Panel {
 	 * 
 	 */
 	private static final long						serialVersionUID	= 1L;
-	@SuppressWarnings("unchecked")
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService						iArkCommonService;
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService							iStudyService;
 	private PageableListView<ConsentHistory>	listView;
@@ -77,14 +73,15 @@ public class ConsentHistoryPanel extends Panel {
 			@Override
 			protected Object load() {
 				List<ConsentHistory> consentHistoryList = new ArrayList<ConsentHistory>();
-				LinkSubjectStudy linkSubjectStudy = null;
+				Consent consent = new Consent();
 				try {
-					String subjectUid = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-					Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-					linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid, iArkCommonService.getStudy(sessionStudyId));
-					consentHistoryList = iStudyService.getConsentHistoryList(linkSubjectStudy);
+					Long sessionConsentId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID);
+					if(sessionConsentId != null) {
+						consent = iStudyService.getConsent(sessionConsentId);
+					}
+					consentHistoryList = iStudyService.getConsentHistoryList(consent);
 				}
-				catch (EntityNotFoundException e) {
+				catch (ArkSystemException e) {
 					e.printStackTrace();
 				}
 				

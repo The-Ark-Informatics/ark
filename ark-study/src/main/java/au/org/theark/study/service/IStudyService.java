@@ -310,8 +310,8 @@ public interface IStudyService {
 	
 	/**
 	 * Return a list of ConsentHistory entities
-	 * @param linkSubjectStudy
+	 * @param consent
 	 * @return
 	 */
-	public List<ConsentHistory> getConsentHistoryList(LinkSubjectStudy linkSubjectStudy);
+	public List<ConsentHistory> getConsentHistoryList(Consent consent);
 }
