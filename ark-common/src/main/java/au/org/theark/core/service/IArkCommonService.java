@@ -631,4 +631,6 @@ public interface IArkCommonService<T> {
 	public List<Study> getAssignedChildStudyListForPerson(Study study, Person person);
 
 	public List<ConsentOption> getConsentOptionList();
+	
+	public boolean customFieldHasData(CustomField customField);
 }
