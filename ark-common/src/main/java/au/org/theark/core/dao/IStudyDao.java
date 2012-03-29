@@ -44,6 +44,7 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -551,4 +552,6 @@ public interface IStudyDao {
 	public List<Study> getAssignedChildStudyListForPerson(Study study, Person person);
 
 	public List<ConsentOption> getConsentOptionList();
+
+	public boolean customFieldHasData(CustomField customField);
 }

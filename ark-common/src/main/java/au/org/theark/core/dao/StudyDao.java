@@ -30,6 +30,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
@@ -53,6 +54,7 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -69,6 +71,8 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -1080,5 +1084,22 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public List<ConsentOption> getConsentOptionList() {
 		Criteria criteria = getSession().createCriteria(ConsentOption.class);
 		return criteria.list();
+	}
+
+	public boolean customFieldHasData(CustomField customField) {		
+		StringBuffer sb = new StringBuffer();
+		sb.append("SELECT count(*) FROM ");
+		sb.append(" CustomField cf, ");
+		sb.append(" CustomFieldDisplay cfd, ");
+		sb.append(" PhenoData pd ");
+		sb.append("WHERE cf.study.id = :studyId ");
+		sb.append(" AND cf.arkFunction.id = :arkFunctionId ");
+		sb.append(" AND cf.id = cfd.customField.id ");
+		sb.append(" AND pd.customFieldDisplay.id = cfd.id");
+		
+		Query query = getSession().createQuery(sb.toString());
+		query.setParameter("studyId", customField.getStudy().getId());
+		query.setParameter("arkFunctionId", customField.getArkFunction().getId());
+		return ((Number) query.iterate().next()).intValue() > 0;
 	}
 }

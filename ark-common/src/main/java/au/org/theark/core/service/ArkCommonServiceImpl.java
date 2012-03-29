@@ -1066,4 +1066,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<ConsentOption> getConsentOptionList() {
 		return studyDao.getConsentOptionList();
 	}
+
+	public boolean customFieldHasData(CustomField customField) {
+		return studyDao.customFieldHasData(customField);
+	}
 }
