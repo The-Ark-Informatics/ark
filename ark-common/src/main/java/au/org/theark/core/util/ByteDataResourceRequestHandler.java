@@ -69,7 +69,6 @@ public class ByteDataResourceRequestHandler extends ByteArrayResource implements
 	 * @see org.apache.wicket.request.IRequestHandler#respond(org.apache.wicket.request.IRequestCycle)
 	 */
 	public void respond(IRequestCycle requestCycle) {
-		System.out.println("calling respond...................	.....................................................................................");
 		//StringResourceStream stringResourceStream = new StringResourceStream( new String(this.getData(null)));
 		
 		File file = new File(this.fileName);//how about accessors mutators?
@@ -95,7 +94,6 @@ public class ByteDataResourceRequestHandler extends ByteArrayResource implements
 		IResourceStream resourceStream = new FileResourceStream(
 		            new org.apache.wicket.util.file.File(file));
 
-		//org.apache.wicket.util.resource.
 		//ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stringResourceStream);
 		ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(resourceStream);
 		resourceStreamRequestHandler.setFileName(fileName);
