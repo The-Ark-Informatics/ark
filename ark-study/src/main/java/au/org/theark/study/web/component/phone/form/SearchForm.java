@@ -51,35 +51,32 @@ import au.org.theark.study.web.Constants;
  * @author Nivedan
  * 
  */
-@SuppressWarnings({ "serial", "unchecked" })
+@SuppressWarnings( { "serial", "unchecked" })
 public class SearchForm extends AbstractSearchForm<PhoneVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService					iArkCommonService;
+	private IArkCommonService				iArkCommonService;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService						studyService;
+	private IStudyService					studyService;
 
-//	private DetailPanel							detailPanel;
-	private PageableListView<Phone>			pageableListView;
-//	private CompoundPropertyModel<PhoneVO>	cpmModel;
+	private PageableListView<Phone>		pageableListView;
 
-	private TextField<Long>						phoneIdTxtFld;
-	private TextField<String>					areaCodeTxtFld;
-	private TextField<String>					phoneNumberTxtFld;
-	private DropDownChoice<PhoneType>		phoneTypeChoice;
+	private TextField<Long>					phoneIdTxtFld;
+	private TextField<String>				areaCodeTxtFld;
+	private TextField<String>				phoneNumberTxtFld;
+	private DropDownChoice<PhoneType>	phoneTypeChoice;
 	private ArkCrudContainerVO				arkCrudContainerVO;
-	
-	
-	public SearchForm(String id, CompoundPropertyModel<PhoneVO> cpmModel,ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedBackPanel,PageableListView<Phone> listView){
-		super(id,cpmModel,feedBackPanel,arkCrudContainerVO);
+
+	public SearchForm(String id, CompoundPropertyModel<PhoneVO> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<Phone> listView) {
+		super(id, cpmModel, feedBackPanel, arkCrudContainerVO);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
-		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model() ));
+		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model()));
 		add(generalTextLbl);
 		resetButton.setVisible(false);
 		searchButton.setVisible(false);
-		//initialiseSearchForm();
+		// initialiseSearchForm();
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
 	}
@@ -93,8 +90,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 		List<PhoneType> phoneTypeList = iArkCommonService.getListOfPhoneType();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		phoneTypeChoice = new DropDownChoice("phone.phoneType", phoneTypeList, defaultChoiceRenderer);
-		//addSearchComponentsToForm();
-
+		addSearchComponentsToForm();
 	}
 
 	protected void addSearchComponentsToForm() {
@@ -112,26 +108,12 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
-		
-		//TODO: analyze unused 
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		
-		//TODO: analyze unused 
-		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or
-																																													// contact
-																																														// placed in
-																																														// session
-		try {
 
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		try {
 			Phone phone = getModelObject().getPhone();
 			phone.setPerson(studyService.getPerson(sessionPersonId));
 
-			// if(sessionPersonType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)){
-			//
-			// }else if(sessionPersonType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)){
-			//
-			// }
 			Collection<Phone> phones = studyService.getPersonPhoneList(sessionPersonId, getModelObject().getPhone());
 			if (phones != null && phones.size() == 0) {
 				this.info("No records match the specified criteria.");
@@ -152,7 +134,6 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 			this.error("The Ark Application has encountered a system error.");
 			target.add(feedbackPanel);
 		}
-
 	}
 
 	@Override
@@ -161,5 +142,4 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 		getModelObject().getPhone().setId(null); // only reset ID (not user definable)
 		preProcessDetailPanel(target);
 	}
-
 }
