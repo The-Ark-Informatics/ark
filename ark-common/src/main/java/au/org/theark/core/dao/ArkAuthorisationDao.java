@@ -437,6 +437,8 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.createAlias("arkModule", "moduleName");
 		criteria.addOrder(Order.asc("moduleName.name"));
 		arkModuleList = criteria.list();
+	
+		//TODO:  What  are we iterating for if we are not doing anything?
 		for (Iterator iterator = arkModuleList.iterator(); iterator.hasNext();) {
 			ArkModuleRole arkModuleRole = (ArkModuleRole) iterator.next();
 
