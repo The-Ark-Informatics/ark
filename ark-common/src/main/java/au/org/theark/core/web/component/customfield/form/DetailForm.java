@@ -123,7 +123,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		refreshEntityFromBackend();
 	}
 	
-
 	protected void refreshEntityFromBackend() {
 		// Refresh the entity from the backend
 		if (getModelObject().getCustomField().getId() != null) {
@@ -145,7 +144,17 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	private void initFieldTypeDdc() {
 		List<FieldType> fieldTypeCollection = iArkCommonService.getFieldTypes();
 		ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(Constants.FIELDTYPE_NAME, Constants.FIELDTYPE_ID);
-		fieldTypeDdc = new DropDownChoice<FieldType>(Constants.FIELDVO_CUSTOMFIELD_FIELD_TYPE, fieldTypeCollection, fieldTypeRenderer);
+		fieldTypeDdc = new DropDownChoice<FieldType>(Constants.FIELDVO_CUSTOMFIELD_FIELD_TYPE, fieldTypeCollection, fieldTypeRenderer) {
+			@Override
+			protected void onBeforeRender() {
+				if(!isNew()) {
+					boolean hasData = iArkCommonService.customFieldHasData(cpModel.getObject().getCustomField());
+					// Disable fieldType if data exists for the field
+					setEnabled(!hasData);
+				}
+				super.onBeforeRender();
+			}
+		};
 		fieldTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			protected void onUpdate(AjaxRequestTarget target) {
 				updateEncodedValueFld();
@@ -402,18 +411,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			return false;
 		}
 
-	}
-	
-	@Override
-	public void onBeforeRender() {
-		// Disable form/save button if data existss
-		Boolean hasData = getModelObject().getCustomField().getCustomFieldHasData();
-		if (hasData != null) {
-			customFieldDetailWMC.setEnabled(!hasData);
-			fieldDisplayRequiredChkBox.setEnabled(!hasData);
-			arkCrudContainerVO.getEditButtonContainer().get("save").setVisible(!hasData);
-		}
-		super.onBeforeRender();
 	}
 	
 	// Allow the model for the CustomFieldGroups to be assessed (but not allow it be to be set)
