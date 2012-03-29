@@ -80,6 +80,7 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
+import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
@@ -1054,7 +1055,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getCountOfSubjects(study);
 	}
 
-	public List matchSubjectsFromInputFile(FileUpload subjectFileUpload, Study study) {
+	public List<SubjectVO> matchSubjectsFromInputFile(FileUpload subjectFileUpload, Study study) {
 		return studyDao.matchSubjectsFromInputFile(subjectFileUpload, study);
 	}
 
@@ -1062,7 +1063,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getAssignedChildStudyListForPerson(study, person);
 	}
 
-	public List getConsentOptionList() {
+	public List<ConsentOption> getConsentOptionList() {
 		return studyDao.getConsentOptionList();
 	}
 }

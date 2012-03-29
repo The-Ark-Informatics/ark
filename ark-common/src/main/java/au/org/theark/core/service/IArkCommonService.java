@@ -50,6 +50,7 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
+import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
@@ -629,5 +630,5 @@ public interface IArkCommonService<T> {
 
 	public List<Study> getAssignedChildStudyListForPerson(Study study, Person person);
 
-	public List<YesNo> getConsentOptionList();
+	public List<ConsentOption> getConsentOptionList();
 }
