@@ -34,6 +34,7 @@ public class Constants {
 	public static final String		CUSTOMFIELD_UNIT_TYPE										= "unitType";
 	public static final String		CUSTOMFIELD_MIN_VALUE										= "minValue";
 	public static final String		CUSTOMFIELD_MAX_VALUE										= "maxValue";
+	public static final String		CUSTOMFIELD_HAS_DATA											= "customFieldHasData";
 	
 	public static final String		FIELDTYPE 														= "fieldType";
 	public static final String		FIELDTYPE_ID 													= "id";
@@ -77,5 +78,6 @@ public class Constants {
 	public static final String		FIELDVO_CUSTOMFIELDDISPLAY_REQUIRED						= "customFieldDisplay.required";
 	public static final String		FIELDVO_CUSTOMFIELDDISPLAY_REQUIRED_MSG				= "customFieldDisplay.requiredMessage";
 	public static final String		FIELDVO_CUSTOMFIELDDISPLAY_FIELD_GROUP					= "customFieldDisplay.customFieldGroup";
+	
 
 }
