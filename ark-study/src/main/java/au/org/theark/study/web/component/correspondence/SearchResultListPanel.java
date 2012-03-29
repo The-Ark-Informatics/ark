@@ -21,6 +21,8 @@ package au.org.theark.study.web.component.correspondence;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
+import java.sql.Blob;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -173,18 +175,34 @@ public class SearchResultListPanel extends Panel {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
 				try {
-					data = correspondences.getAttachmentPayload().getBytes(1, (int) correspondences.getAttachmentPayload().length());
+					//breaking this down to discover issues/excpetions seen when downloading correspondence
+					
+					//import java.sql.Blob;
+					Blob payload = correspondences.getAttachmentPayload();
+					if(payload == null){
+						System.out.println(" payload null ");
+					}
+					else{
+						System.out.println("payload.length() = " + payload.length() +
+											" payloadlengthasint = " + ((int)payload.length()));
+						data =payload.getBytes(1, (int) payload.length());
+	
+					}
 				}
 				catch (SQLException e) {
 					// TODO Auto-generated catch block
+					// Really TODO :  Handle this exception rather than logging something nobody will see
 					e.printStackTrace();
 				}
+				//TODO:  may be significant to lack mime-type
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("", data, correspondences.getAttachmentFilename()));
 			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("There was an error while downloading file.Please contact Administrator");
+				//TODO:  log!
+				System.out.println("\n\n\n\n Error Download File ");
+				this.error("There was an error while downloading file.  Please contact Administrator");
 			};
 		};
 
