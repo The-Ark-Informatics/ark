@@ -436,9 +436,9 @@ public class StudyServiceImpl implements IStudyService {
 	}
 	
 	private void updateLssConsentHistory(LinkSubjectStudy newLinkSubjectStudy) {
-		try {
+		//try {
 			//todo remove unused assignment...
-			LinkSubjectStudy oldLinkSubjectStudy = getLinkSubjectStudy(newLinkSubjectStudy.getId());
+			//LinkSubjectStudy oldLinkSubjectStudy = getLinkSubjectStudy(newLinkSubjectStudy.getId());
 			
 			// TODO: Only add audit log if changes actually made
 			/*
@@ -450,15 +450,15 @@ public class StudyServiceImpl implements IStudyService {
 			}
 			*/
 			createLssConsentHistory(newLinkSubjectStudy);
-		}
-		catch (EntityNotFoundException e) {
-			log.error(("Entity not found: " + newLinkSubjectStudy.getId().toString()));
-		}
+		//}
+		//catch (EntityNotFoundException e) {
+		//	log.error(("Entity not found: " + newLinkSubjectStudy.getId().toString()));
+		//}
 	}
 
-	private LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException {
+/*	private LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException {
 		return iStudyDao.getLinkSubjectStudy(id);
-	}
+	}*/
 
 	private void assignChildStudies(SubjectVO subjectVO) {
 		// Archive LinkSubjectStudy for all unassigned child studies
@@ -904,13 +904,14 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public SubjectUploadValidator validateSubjectFileData(File file, String fileFormat, char delimChar) {
-		java.util.Collection<String> validationMessages = null;
+		//java.util.Collection<String> validationMessages = null;
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 
 		try {
 			log.debug("Validating Subject file data");
 			InputStream is = new FileInputStream(file);
-			validationMessages = subjectUploadValidator.validateMatrixSubjectFileData(is, file.length(), fileFormat, delimChar);
+			//validationMessages = 
+			subjectUploadValidator.validateMatrixSubjectFileData(is, file.length(), fileFormat, delimChar);
 		}
 		catch (IOException ioe) {
 			log.error(Constants.IO_EXCEPTION + ioe);
@@ -925,13 +926,14 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public SubjectUploadValidator validateSubjectFileFormat(File file, String fileFormat, char delimChar) {
-		java.util.Collection<String> validationMessages = null;
+		//java.util.Collection<String> validationMessages = null;
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 
 		try {
 			log.debug("Validating Subject file format");
 			InputStream is = new FileInputStream(file);
-			validationMessages = subjectUploadValidator.validateSubjectMatrixFileFormat(is, file.length(), fileFormat, delimChar);
+			//validationMessages = 
+			subjectUploadValidator.validateSubjectMatrixFileFormat(is, file.length(), fileFormat, delimChar);
 		}
 		catch (IOException ioe) {
 			log.error(Constants.IO_EXCEPTION + ioe);
@@ -946,11 +948,12 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public SubjectUploadValidator validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
-		java.util.Collection<String> validationMessages = null;
+		//java.util.Collection<String> validationMessages = null;
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 
 		try {
-			validationMessages = subjectUploadValidator.validateSubjectMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			//validationMessages = 
+			subjectUploadValidator.validateSubjectMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe) {
 			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -963,8 +966,8 @@ public class StudyServiceImpl implements IStudyService {
 
 	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar) {
 //		java.util.Collection<String> validationMessages = null;
-		Subject currentUser = SecurityUtils.getSubject();
-		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+	//	Subject currentUser = SecurityUtils.getSubject();
+//		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 //		Study study = iArkCommonService.getStudy(studyId);
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 
