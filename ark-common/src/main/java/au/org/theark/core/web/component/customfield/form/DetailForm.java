@@ -41,6 +41,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
@@ -308,10 +309,12 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		addDetailFormComponents();
 	}
 
-
 	protected void attachValidators() {
 		fieldNameTxtFld.setRequired(true);
 		fieldTypeDdc.setRequired(true);
+		
+		fieldLabelTxtAreaFld.add(StringValidator.maximumLength(255));
+		
 		// TODO: Add correct validator, possibly custom with better validation message
 		fieldEncodedValuesTxtFld.add(new PatternValidator("(\\b[\\w]+=[^;]+;)*")).setLabel(
 				new StringResourceModel("customField.encodedValues.validation", this, new Model<String>("Encoded Value definition")));
