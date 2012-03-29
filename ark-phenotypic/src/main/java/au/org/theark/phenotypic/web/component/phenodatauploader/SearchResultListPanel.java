@@ -47,7 +47,6 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.phenodatauploader.form.ContainerForm;
 
 
 public class SearchResultListPanel extends Panel {
@@ -58,25 +57,22 @@ public class SearchResultListPanel extends Panel {
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService	iPhenotypicService;
 	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
-	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	
 	/**
 	 * 
 	 * @param id
 	 * @param arkCrudContainerVO
-	 * @param containerForm
 	 */
-	public SearchResultListPanel(String id, PageableListView<StudyUpload> listView, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchResultListPanel(String id, PageableListView<StudyUpload> listView, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
-		this.containerForm = containerForm;
-		//TODO: Are we going to store the Questionnaire ID in session? To Rebame sessionPhenoCollectionId to questionnaireId
+		//TODO: Are we going to store the Questionnaire ID in session? To Rename sessionPhenoCollectionId to questionnaireId
 		Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		
 		if (sessionPhenoCollectionId != null) {
-		
-			PhenoCollection phenoCollection = iPhenotypicService.getPhenoCollection(sessionPhenoCollectionId);//TODO Get the specific Questionnaire from backend and get the related instances of questionnaires
+			PhenoCollection phenoCollection = iPhenotypicService.getPhenoCollection(sessionPhenoCollectionId);
+			//TODO Get the specific Questionnaire from back-end and get the related instances of questionnaires
 			Collection<FieldPhenoCollection> fieldsInCollection = iPhenotypicService.getFieldPhenoCollection(phenoCollection);
 
 			String[] fieldDataTemplate = new String[fieldsInCollection.size() + 2];
