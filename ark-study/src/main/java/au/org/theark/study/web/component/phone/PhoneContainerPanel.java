@@ -32,7 +32,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Phone;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.PhoneVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.service.IStudyService;
@@ -50,18 +49,11 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	//TODO: analyze unused 
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService			iArkCommonService;
-
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService				studyService;
 
 	// Container Form
 	private ContainerForm				containerForm;
-	// Panels
-	//TODO: analyze unused 
-	private SearchResultListPanel		searchResultListPanel;
 	private SearchPanel					searchPanel;
 	private DetailPanel					detailPanel;
 	private PageableListView<Phone>	pageableListView;
@@ -107,9 +99,6 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 		// Get the Person in Context and determine the Person Type
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 
-		//TODO: analyze unused 
-		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or
-		
 		try {
 			// Initialise the phoneList;
 			Collection<Phone> personPhoneList = new ArrayList<Phone>();
