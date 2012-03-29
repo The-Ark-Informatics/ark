@@ -65,6 +65,7 @@ public class SearchResultListPanel extends Panel {
 	 * @param iModel
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public PageableListView<Phone> buildPageableListView(IModel iModel) {
 
 		PageableListView<Phone> pageableListView = new PageableListView<Phone>(Constants.PHONE_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
@@ -118,9 +119,9 @@ public class SearchResultListPanel extends Panel {
 
 	}
 
-	private AjaxLink buildLink(final Phone phone) {
+	private AjaxLink<String> buildLink(final Phone phone) {
 
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("phoneNumberLink") {
+		ArkBusyAjaxLink<String> link = new ArkBusyAjaxLink<String>("phoneNumberLink") {
 
 			/**
 			 * 
