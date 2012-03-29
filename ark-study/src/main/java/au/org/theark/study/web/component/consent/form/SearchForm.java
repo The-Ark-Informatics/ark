@@ -56,6 +56,7 @@ import au.org.theark.study.web.Constants;
  * @author Nivedan
  * 
  */
+@SuppressWarnings("unchecked")
 public class SearchForm extends AbstractSearchForm<ConsentVO> {
 
 	/**
@@ -91,7 +92,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 		this.pageableListView = listView;
 		//initialiseSearchForm();
 		//addSearchComponentsToForm();
-		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model() ));
+		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model<String>() ));
 		add(generalTextLbl);
 		resetButton.setVisible(false);
 		searchButton.setVisible(false);
@@ -124,8 +125,8 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 	 */
 	protected void initialiseConsentTypeChoice() {
 		List<ConsentType> consentTypeList = iArkCommonService.getConsentType();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		consentTypeChoice = new DropDownChoice(Constants.CONSENT_CONSENT_TYPE, consentTypeList, defaultChoiceRenderer);
+		ChoiceRenderer<ConsentType> defaultChoiceRenderer = new ChoiceRenderer<ConsentType>(Constants.NAME, Constants.ID);
+		consentTypeChoice = new DropDownChoice<ConsentType>(Constants.CONSENT_CONSENT_TYPE, consentTypeList, defaultChoiceRenderer);
 	}
 
 	/**
@@ -133,8 +134,8 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 	 */
 	protected void initialiseConsentStatusChoice() {
 		List<ConsentStatus> consentStatusList = iArkCommonService.getRecordableConsentStatus();
-		ChoiceRenderer<ConsentType> defaultChoiceRenderer = new ChoiceRenderer<ConsentType>(Constants.NAME, Constants.ID);
-		consentStatusChoice = new DropDownChoice(Constants.CONSENT_CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
+		ChoiceRenderer<ConsentStatus> defaultChoiceRenderer = new ChoiceRenderer<ConsentStatus>(Constants.NAME, Constants.ID);
+		consentStatusChoice = new DropDownChoice<ConsentStatus>(Constants.CONSENT_CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
 	}
 
 	/**
@@ -145,15 +146,13 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(study);
 		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
-		studyComponentChoice = new DropDownChoice(Constants.CONSENT_STUDY_COMP, studyCompList, defaultChoiceRenderer);
+		studyComponentChoice = new DropDownChoice<StudyComp>(Constants.CONSENT_STUDY_COMP, studyCompList, defaultChoiceRenderer);
 	}
 
 	protected void initialiseComponentStatusChoice() {
-
 		List<StudyCompStatus> studyCompList = iArkCommonService.getStudyComponentStatus();
 		ChoiceRenderer<StudyCompStatus> defaultChoiceRenderer = new ChoiceRenderer<StudyCompStatus>(Constants.NAME, Constants.ID);
-		studyComponentStatusChoice = new DropDownChoice(Constants.CONSENT_STUDY_COMP_STATUS, studyCompList, defaultChoiceRenderer);
-
+		studyComponentStatusChoice = new DropDownChoice<StudyCompStatus>(Constants.CONSENT_STUDY_COMP_STATUS, studyCompList, defaultChoiceRenderer);
 	}
 
 	protected void addSearchComponentsToForm() {
@@ -171,19 +170,10 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 		target.add(feedbackPanel);
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or
-																																														// Contact:
-																																														// Denotes
-																																														// if it was
-																																														// a subject
-																																														// or
-																																														// contact
-																																														// placed in
-																																														// session
+																																										// session
 		Consent consent = getModelObject().getConsent();
 
 		try {
-
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			// Person subject = studyService.getPerson(sessionPersonId);
 
@@ -221,6 +211,8 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
 		// ARK-108:: no longer do full reset to VO
+		// Remove session object
+		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID);
 		preProcessDetailPanel(target);
 	}
 
