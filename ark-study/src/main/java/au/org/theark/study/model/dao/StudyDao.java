@@ -37,7 +37,6 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.omg.PortableInterceptor.LOCATION_FORWARD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,7 +88,6 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidSequence;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
-import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
@@ -1258,11 +1256,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return isUnique;
 	}
 
-	private YesNo getYesNo(String value) {
+/*	private YesNo getYesNo(String value) {
 		Criteria criteria = getSession().createCriteria(YesNo.class);
 		criteria.add(Restrictions.ilike("name", value));
 		return (YesNo) criteria.list().get(0);
-	}
+	}*/
 	
 	private ConsentOption getConsentOption(String value) {
 		Criteria criteria = getSession().createCriteria(ConsentOption.class);
