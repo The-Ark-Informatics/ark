@@ -52,9 +52,9 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.PhenotypicSystemException;
-import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyUpload;
@@ -143,9 +143,9 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 
 	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
-		java.util.Collection<au.org.theark.core.model.study.entity.DelimiterType> delimiterTypeCollection = iArkCommonService.getDelimiterTypes();
-		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_ID);
-		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
+		java.util.Collection<DelimiterType> delimiterTypeCollection = iArkCommonService.getDelimiterTypes();
+		ChoiceRenderer<DelimiterType> delimiterTypeRenderer = new ChoiceRenderer<DelimiterType>(au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_ID);
+		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List<DelimiterType>) delimiterTypeCollection, delimiterTypeRenderer);
 	
 		// Get a list of questionnaires for the subject in context by default
 		CustomFieldGroup cfgForStudyCriteria = new CustomFieldGroup(); 
