@@ -867,6 +867,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
 
 				// refresh the location panel
+				cpModel.getObject().setBiospecimenLocationVO(new BiospecimenLocationVO());
 				initialiseBiospecimenLocationPanel();
 				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenLocationPanel);
 				target.add(biospecimenLocationPanel);
