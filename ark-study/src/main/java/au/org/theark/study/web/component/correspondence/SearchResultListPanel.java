@@ -176,16 +176,11 @@ public class SearchResultListPanel extends Panel {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
 				try {
-					//breaking this down to discover issues/excpetions seen when downloading correspondence
-					
-					//import java.sql.Blob;
 					Blob payload = correspondences.getAttachmentPayload();
 					if(payload == null){
 						System.out.println(" payload null ");
 					}
 					else{
-						System.out.println("payload.length() = " + payload.length() +
-											" payloadlengthasint = " + ((int)payload.length()));
 						data =payload.getBytes(1, (int) payload.length());
 	
 					}
@@ -195,7 +190,7 @@ public class SearchResultListPanel extends Panel {
 					// Really TODO :  Handle this exception rather than logging something nobody will see
 					e.printStackTrace();
 				}
-				//TODO:  may be significant to lack mime-type
+
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("", data, correspondences.getAttachmentFilename()));
 			}
 
