@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Blob;
 import java.sql.SQLException;
 
 import org.apache.shiro.SecurityUtils;
@@ -250,7 +251,7 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private AjaxButton buildDownloadButton(final SubjectFile subjectFile) {
-		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE) {
 			/**
 			 * 
 			 */
@@ -258,7 +259,26 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				final String fileName = subjectFile.getFilename();
 				// Attempt to download the Blob as an array of bytes
+				byte[] data = null;
+				try {
+					Blob payload = subjectFile.getPayload();
+					if(payload == null){
+						System.out.println(" payload null ");
+					}
+					else{
+						data =payload.getBytes(1, (int) payload.length());
+					}
+				}
+				catch (SQLException e) {
+					// Really TODO :  Handle this exception rather than logging something nobody will see
+					e.printStackTrace();
+				}
+
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("", data, fileName));
+
+				/*// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
 				try {
 					data = subjectFile.getPayload().getBytes(1, (int) subjectFile.getPayload().length());
@@ -266,10 +286,8 @@ public class SearchResultListPanel extends Panel {
 					if (data != null) {
 						InputStream inputStream = new ByteArrayInputStream(data);
 						OutputStream outputStream;
-
-						final String tempDir = System.getProperty("java.io.tmpdir");
-						final java.io.File file = new File(tempDir, subjectFile.getFilename());
 						final String fileName = subjectFile.getFilename();
+						final java.io.File file = new File(fileName);
 						outputStream = new FileOutputStream(file);
 						IOUtils.copy(inputStream, outputStream);
 
@@ -282,16 +300,7 @@ public class SearchResultListPanel extends Panel {
 							}
 						}.setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT));
 					}
-				}
-				catch (FileNotFoundException e) {
-					log.error(e.getMessage());
-				}
-				catch (IOException e) {
-					log.error(e.getMessage());
-				}
-				catch (SQLException e) {
-					log.error(e.getMessage());
-				}
+				}*/
 			}
 
 			@Override
