@@ -270,6 +270,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		fieldIdTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_ID);
 		fieldNameTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_NAME);
 		fieldNameTxtFld.add(new ArkDefaultFormFocusBehavior());
+		
 		fieldDescriptionTxtAreaFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELD_DESCRIPTION);
 		fieldLabelTxtAreaFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELD_FIELD_LABEL);
 //		fieldMinValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
@@ -311,6 +312,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 
 	protected void attachValidators() {
 		fieldNameTxtFld.setRequired(true);
+		// Enforce particular characters for fieldName
+		fieldNameTxtFld.add(new PatternValidator("[a-zA-Z0-9_-]+"));
 		fieldTypeDdc.setRequired(true);
 		
 		fieldLabelTxtAreaFld.add(StringValidator.maximumLength(255));
@@ -322,8 +325,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 
 	@Override
 	protected void onSave(Form<CustomFieldVO> containerForm, AjaxRequestTarget target) {
-		// Make the fieldName UPPPERCASE
-		getModelObject().getCustomField().setName(getModelObject().getCustomField().getName().toUpperCase());
 		// NB: creating/updating the customFieldDisplay will be tied to the customField by the service
 		if (getModelObject().getCustomField().getId() == null) {
 			// Save the Field
