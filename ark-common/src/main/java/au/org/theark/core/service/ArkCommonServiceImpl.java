@@ -634,6 +634,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		try {
 			// Create Both CustomField and CustomFieldDisplay
 			AuditHistory ah = new AuditHistory();
+			
+			// Force uppercase and replace erroneous characters
+			customFieldVO.getCustomField().getName().toUpperCase();
+			customFieldVO.getCustomField().getName().replaceAll(" ", "_");
+			
 			// Field can not have data yet (since it's new)
 			customFieldVO.getCustomField().setCustomFieldHasData(false);
 			customFieldDao.createCustomField(customFieldVO.getCustomField());
