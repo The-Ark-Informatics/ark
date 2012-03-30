@@ -330,12 +330,13 @@
 			<name>Wicket-tree Repository</name>
 			<url>http://wicket-tree.googlecode.com/svn/repo</url>
 		</repository>
+		<!--
 		<repository>
 			<id>org.wicketstuff</id>
 			<name>Wicket Stuff Repo</name>
 			<url>http://wicketstuff.org/maven/repository</url>
 		</repository>
-		<!--
+		
 			<repository> <id>thirdparty-releases</id> <name>JBoss Thirdparty
 			Releases</name>
 			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
