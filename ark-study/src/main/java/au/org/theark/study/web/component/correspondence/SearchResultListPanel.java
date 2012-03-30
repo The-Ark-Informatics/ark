@@ -44,6 +44,7 @@ import au.org.theark.study.web.component.correspondence.form.ContainerForm;
 
 public class SearchResultListPanel extends Panel {
 
+	
 	/**
 	 * 
 	 */
