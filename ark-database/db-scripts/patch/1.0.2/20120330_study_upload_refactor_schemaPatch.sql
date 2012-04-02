@@ -1,17 +1,16 @@
 alter table study.upload
-add column status varchar(64)
+add column STATUSstudy.upload ENUM('UPLOADING', 'COMPLETE', 'ERRORS');
 
-add constraint status in 'UPLOADING', 'COMPLETE', 'ERRORS'
 
- 
 
 create table upload_error(
-id pk,
-error_msg,
-row_number,
-original_row_data
+id int primary key,
+upload_id int,	
+error_msg varchar(256),
+row_number int,
+original_row_data text,
+foreign key fk_upload_error_upload 
+	(upload_id) references study.upload(id)
 )
-
-#add constraint error_msg in 'UPLOADING', 'COMPLETE', 'ERRORS'
 
 
