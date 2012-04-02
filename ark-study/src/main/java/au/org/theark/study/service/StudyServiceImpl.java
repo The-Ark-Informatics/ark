@@ -426,7 +426,7 @@ public class StudyServiceImpl implements IStudyService {
 		LssConsentHistory lssConsentHistory = new LssConsentHistory();
 		lssConsentHistory.setLinkSubjectStudy(newLinkSubjectStudy);
 		lssConsentHistory.setConsentToActiveContact(newLinkSubjectStudy.getConsentToActiveContact());
-		lssConsentHistory.setConsentToPassiveDataGathering(newLinkSubjectStudy.getConsentToActiveContact());
+		lssConsentHistory.setConsentToPassiveDataGathering(newLinkSubjectStudy.getConsentToPassiveDataGathering());
 		lssConsentHistory.setConsentToUseData(newLinkSubjectStudy.getConsentToUseData());
 		lssConsentHistory.setConsentStatus(newLinkSubjectStudy.getConsentStatus());
 		lssConsentHistory.setConsentType(newLinkSubjectStudy.getConsentType());
@@ -436,29 +436,9 @@ public class StudyServiceImpl implements IStudyService {
 	}
 	
 	private void updateLssConsentHistory(LinkSubjectStudy newLinkSubjectStudy) {
-		//try {
-			//todo remove unused assignment...
-			//LinkSubjectStudy oldLinkSubjectStudy = getLinkSubjectStudy(newLinkSubjectStudy.getId());
-			
-			// TODO: Only add audit log if changes actually made
-			/*
-			if(((newLinkSubjectStudy.getConsentDate() != null && !newLinkSubjectStudy.getConsentDate().equals(oldLinkSubjectStudy.getConsentDate())) || (newLinkSubjectStudy.getConsentDate() != null && oldLinkSubjectStudy.getConsentDate() == null)) ||
-				((newLinkSubjectStudy.getConsentStatus() != null && !newLinkSubjectStudy.getConsentStatus().equals(oldLinkSubjectStudy.getConsentStatus())) || (newLinkSubjectStudy.getConsentStatus() != null && oldLinkSubjectStudy.getConsentStatus() == null)) ||
-				((newLinkSubjectStudy.getConsentType() != null && !newLinkSubjectStudy.getConsentType().equals(oldLinkSubjectStudy.getConsentType())) || (newLinkSubjectStudy.getConsentType() != null && oldLinkSubjectStudy.getConsentType() == null)) ||
-				((newLinkSubjectStudy.getConsentDownloaded() != null && !newLinkSubjectStudy.getConsentDownloaded().equals(oldLinkSubjectStudy.getConsentDownloaded())) || (newLinkSubjectStudy.getConsentDownloaded() != null && oldLinkSubjectStudy.getConsentDownloaded() == null))
-				) {
-			}
-			*/
-			createLssConsentHistory(newLinkSubjectStudy);
-		//}
-		//catch (EntityNotFoundException e) {
-		//	log.error(("Entity not found: " + newLinkSubjectStudy.getId().toString()));
-		//}
+		// Always simply add to the history table
+		createLssConsentHistory(newLinkSubjectStudy);
 	}
-
-/*	private LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException {
-		return iStudyDao.getLinkSubjectStudy(id);
-	}*/
 
 	private void assignChildStudies(SubjectVO subjectVO) {
 		// Archive LinkSubjectStudy for all unassigned child studies
