@@ -149,14 +149,74 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		wmcCompleted.add(consentCompletedDtf);
 
 		commentTxtArea = new TextArea<String>(Constants.CONSENT_CONSENT_COMMENT);
+		
+		initStudyComponentChoice();
 		initConsentTypeChoice();
 		initConsentStatusChoice();
-		initComponentChoice();
 		initStudyComponentStatusChoice();
 		initConsentDownloadChoice();
 		initConsentHistoryPanel();
+		
 		addDetailFormComponents();
 		attachValidators();
+	}
+	
+	/**
+	 * Initialise the Consent StudyComp Drop Down Choice Control
+	 */
+	@SuppressWarnings("unchecked")
+	protected void initStudyComponentChoice() {
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(study);
+		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
+		studyComponentChoice = new DropDownChoice<StudyComp>(Constants.CONSENT_STUDY_COMP, studyCompList, defaultChoiceRenderer){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onBeforeRender() {
+				setEnabled(isNew());
+				super.onBeforeRender();
+			}
+		};
+		studyComponentChoice.add(new ArkDefaultFormFocusBehavior());
+		studyComponentChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+
+				try {
+					Study study = iArkCommonService.getStudy(sessionStudyId);
+					Person subject = iStudyService.getPerson(sessionPersonId);
+					boolean isConsented = iArkCommonService.isSubjectConsentedToComponent(studyComponentChoice.getModelObject(), subject, study);
+					processErrors(target);
+					if (isConsented) {
+						StringBuffer sb = new StringBuffer();
+						sb.append("Please choose another component. The Subject has already consented to Component: ");
+						sb.append(studyComponentChoice.getModelObject().getName());
+						containerForm.error(sb.toString());
+						processErrors(target);
+					}
+				}
+				catch (EntityNotFoundException e) {
+					containerForm.error("The subject in context does not exist in system anymore.Please re-do the operation.");
+
+				}
+				catch (ArkSystemException e) {
+					containerForm.error("There was a system error. Please contact support.");
+				}
+			}
+		});
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -208,52 +268,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		consentStatusChoice = new DropDownChoice<ConsentStatus>(Constants.CONSENT_CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
 	}
 
-	/**
-	 * Initialise the Consent StudyComp Drop Down Choice Control
-	 */
-	@SuppressWarnings("unchecked")
-	protected void initComponentChoice() {
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(sessionStudyId);
-		List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(study);
-		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
-		studyComponentChoice = new DropDownChoice<StudyComp>(Constants.CONSENT_STUDY_COMP, studyCompList, defaultChoiceRenderer);
-		studyComponentChoice.add(new ArkDefaultFormFocusBehavior());
-		studyComponentChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-
-				try {
-					Study study = iArkCommonService.getStudy(sessionStudyId);
-					Person subject = iStudyService.getPerson(sessionPersonId);
-					boolean isConsented = iArkCommonService.isSubjectConsentedToComponent(studyComponentChoice.getModelObject(), subject, study);
-					processErrors(target);
-					if (isConsented) {
-						StringBuffer sb = new StringBuffer();
-						sb.append("Please choose another component. The Subject has already consented to Component: ");
-						sb.append(studyComponentChoice.getModelObject().getName());
-						containerForm.error(sb.toString());
-						processErrors(target);
-					}
-				}
-				catch (EntityNotFoundException e) {
-					containerForm.error("The subject in context does not exist in system anymore.Please re-do the operation.");
-
-				}
-				catch (ArkSystemException e) {
-					containerForm.error("There was a system error. Please contact support.");
-				}
-			}
-		});
-	}
+	
 	
 	private void initConsentHistoryPanel() {
 		consentHistoryPanel = new CollapsiblePanel("consentHistoryPanel", new Model<String>("Consent History"), false) {
