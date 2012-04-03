@@ -753,7 +753,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		List<Phone> personPhoneList = phoneCriteria.list();
 		log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
 
-		//TODO:  blatent NPE in the making
 		if (personPhoneList.isEmpty()) {
 			log.error("this person has no phone;  " + personId);
 			//throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
@@ -845,7 +844,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 
 		List<Address> personAddressList = criteria.list();
-		//TODO:  blatent NPE in the making
+
 		if (personAddressList.isEmpty()) {
 			//throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 			log.info("person " + personId + " does not have any addresses");
@@ -1075,13 +1074,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 
 		List<Correspondences> personCorrespondenceList = criteria.list();
-		log.info("Number of correspondences fetched " + personCorrespondenceList.size() + "  Person Id" + personId.intValue());
+		log.info("Number of correspondences fetched " + personCorrespondenceList.size() + "  Person Id" + personId);
 
-		//TODO:  blatent NPE in the making
 		if (personCorrespondenceList.isEmpty()) {
 			//throw new EntityNotFoundException("The entity with id " + personId.toString() + " cannot be found.");
 			//TODO:  does this need handling?
-			log.error("this person has no correspondance");
+			log.error("this person" + personId + 
+					" has no correspondance");
 			
 		}
 
