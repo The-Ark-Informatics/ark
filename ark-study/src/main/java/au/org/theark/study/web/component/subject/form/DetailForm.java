@@ -174,8 +174,18 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
-		previousLastNameTxtFld = new TextField<String>(Constants.SUBJECT_PREVIOUS_LAST_NAME);
-		previousLastNameTxtFld.setEnabled(false);
+		previousLastNameTxtFld = new TextField<String>(Constants.SUBJECT_PREVIOUS_LAST_NAME){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onBeforeRender() {
+				setEnabled(isNew());
+				super.onBeforeRender();
+			}
+		};
 		preferredNameTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_NAME);
 
 		preferredEmailTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_EMAIL);
