@@ -1518,14 +1518,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			Person person = subjectVo.getLinkSubjectStudy().getPerson();
 			session.update(person);// Update Person and associated Phones
 
-			PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
 			String currentLastName = getCurrentLastname(person);
 
 			if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName()))) {
 				if (person.getLastName() != null) {
+					PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();		
 					personLastNameHistory.setPerson(person);
 					personLastNameHistory.setLastName(person.getLastName());
-					session.update(personLastNameHistory);
+					session.insert(personLastNameHistory);
 				}
 
 				// Update subjectPreviousLastname
