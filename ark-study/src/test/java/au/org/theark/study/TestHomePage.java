@@ -24,7 +24,7 @@ import junit.framework.TestCase;
  * Simple test using the WicketTester
  */
 public class TestHomePage extends TestCase {
-	//private WicketTester	tester;
+	// private WicketTester tester;
 
 	@Override
 	public void setUp() {
