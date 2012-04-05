@@ -54,7 +54,6 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
-import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -72,7 +71,6 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -178,8 +176,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Example example = Example.create(subjectStatus);
 
 		Criteria criteria = getSession().createCriteria(SubjectStatus.class).add(example);
-		if (criteria != null && criteria.list() != null && criteria.list().size() > 0) {
-			statusToReturn = (SubjectStatus) criteria.list().get(0);
+
+		
+		if (criteria != null){
+			List<SubjectStatus> results = criteria.list();
+			if(results != null && !results.isEmpty()) {
+				statusToReturn = (SubjectStatus) results.get(0);
+			}
 		}
 
 		return statusToReturn;
@@ -194,14 +197,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Example studyStatusExample = Example.create(studyStatus);
 
 		Criteria studyStatusCriteria = getSession().createCriteria(StudyStatus.class).add(studyStatusExample);
-		if (studyStatusCriteria != null && studyStatusCriteria.list() != null && studyStatusCriteria.list().size() > 0) {
-			return (StudyStatus) studyStatusCriteria.list().get(0);
+		if (studyStatusCriteria != null){
+			List<StudyStatus> results = studyStatusCriteria.list();
+			if(results != null && results.size() > 0) {
+				return (StudyStatus)results.get(0);
+			}
 		}
-		else {
-			log.error("Study Status Table maybe out of synch. Please check if it has an entry for Archive status");
-			System.out.println("Cannot locate a study status with " + statusName + " in the database");
-			throw new StatusNotAvailableException();
-		}
+
+		log.error("Study Status Table maybe out of synch. Please check if it has an entry for Archive status.  Cannot locate a study status with " + statusName + " in the database");
+		throw new StatusNotAvailableException();
 
 	}
 
@@ -229,7 +233,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
-	public Collection<GenderType> getGenderType() {
+	//TODO:  cache?
+	public Collection<GenderType> getGenderTypes() {
 		Example example = Example.create(new GenderType());
 		Criteria criteria = getSession().createCriteria(GenderType.class).add(example);
 		return criteria.list();
@@ -321,7 +326,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Collection<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
 
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-
+			
 			LinkSubjectStudy linkSubjectStudy = (LinkSubjectStudy) iterator.next();
 			// Place the LinkSubjectStudy instance into a SubjectVO and add the SubjectVO into a List
 			SubjectVO subject = new SubjectVO();
@@ -541,6 +546,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		criteria.addOrder(Order.desc("id"));
 		PersonLastnameHistory personLastameHistory = new PersonLastnameHistory();
 		if (!criteria.list().isEmpty()) {
+			//what he is saying is get the second-last last-name to display as "previous lastname"
 			if (criteria.list().size() > 1)
 				personLastameHistory = (PersonLastnameHistory) criteria.list().get(1);
 		}
@@ -636,18 +642,21 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(GenderType.class);
 		criteria.add(Restrictions.eq("name", name));
 		GenderType genderType = new GenderType();
-		if (!criteria.list().isEmpty()) {
-			genderType = (GenderType) criteria.list().get(0);
+		List<GenderType> results = criteria.list();
+		if (!results.isEmpty()) {	
+			genderType = (GenderType) results.get(0);
 		}
 		return genderType;
 	}
-
+	
 	public VitalStatus getVitalStatus(String name) {
 		Criteria criteria = getSession().createCriteria(VitalStatus.class);
 		criteria.add(Restrictions.eq("name", name));
 		VitalStatus vitalStatus = new VitalStatus();
-		if (!criteria.list().isEmpty()) {
-			vitalStatus = (VitalStatus) criteria.list().get(0);
+		List<VitalStatus> results = criteria.list();
+
+		if (!results.isEmpty()) {
+			vitalStatus = (VitalStatus) results.get(0);
 		}
 		return vitalStatus;
 	}
@@ -656,8 +665,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(TitleType.class);
 		criteria.add(Restrictions.eq("name", name));
 		TitleType titleType = new TitleType();
-		if (!criteria.list().isEmpty()) {
-			titleType = (TitleType) criteria.list().get(0);
+		List<TitleType> results = criteria.list();
+		if (!results.isEmpty()) {
+			titleType = (TitleType)results.get(0);
 		}
 		return titleType;
 	}
@@ -666,8 +676,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(MaritalStatus.class);
 		criteria.add(Restrictions.eq("name", name));
 		MaritalStatus maritalStatus = new MaritalStatus();
-		if (!criteria.list().isEmpty()) {
-			maritalStatus = (MaritalStatus) criteria.list().get(0);
+		List<MaritalStatus> results = criteria.list();
+		if (!results.isEmpty()) {
+			maritalStatus = (MaritalStatus) results.get(0);
 		}
 		return maritalStatus;
 	}
@@ -676,8 +687,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(PersonContactMethod.class);
 		criteria.add(Restrictions.eq("name", name));
 		PersonContactMethod personContactMethod = new PersonContactMethod();
-		if (!criteria.list().isEmpty()) {
-			personContactMethod = (PersonContactMethod) criteria.list().get(0);
+		List<PersonContactMethod> results = criteria.list();
+		if (!results.isEmpty()) {
+			personContactMethod = (PersonContactMethod) results.get(0);
 		}
 		return personContactMethod;
 	}
