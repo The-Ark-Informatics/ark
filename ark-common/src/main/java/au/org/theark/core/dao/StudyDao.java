@@ -549,10 +549,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		PersonLastnameHistory personLastameHistory = new PersonLastnameHistory();
 
 		List<PersonLastnameHistory> results = criteria.list();
-		if (!results.isEmpty()) {
+		if (results.size()>1) {
+			
 			//what this is saying is get the second-last last-name to display as "previous lastname"
 			personLastameHistory = (PersonLastnameHistory) results.get(1);
-		}
+		}//else it doesnt have a previous...only a current
 
 		return personLastameHistory.getLastName();
 	}
