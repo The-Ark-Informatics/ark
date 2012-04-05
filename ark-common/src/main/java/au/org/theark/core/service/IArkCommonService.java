@@ -107,7 +107,7 @@ public interface IArkCommonService<T> {
 
 	public Collection<VitalStatus> getVitalStatus();
 
-	public Collection<GenderType> getGenderType();
+	public Collection<GenderType> getGenderTypes();
 
 	public List<PhoneType> getListOfPhoneType();
 

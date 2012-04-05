@@ -306,9 +306,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 * 
 	 * @see au.org.theark.core.service.IArkCommonService#getGenderType()
 	 */
-	public Collection<GenderType> getGenderType() {
+	public Collection<GenderType> getGenderTypes() {
 
-		return studyDao.getGenderType();
+		return studyDao.getGenderTypes();
 	}
 
 	/*
