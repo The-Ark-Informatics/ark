@@ -106,7 +106,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 			log.error(e.getMessage());
 		}
 
-		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
+		saveButton = new AjaxButton(Constants.SAVE) {
 			/**
 			 * 
 			 */
@@ -122,7 +122,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 			}
 		};
 
-		closeButton = new AjaxButton(Constants.CLOSE, new StringResourceModel("closeKey", this, null)) {
+		closeButton = new AjaxButton(Constants.CLOSE) {
 			/**
 			 * 
 			 */
