@@ -367,8 +367,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_STUDY, study));
 		}
 
-		if (criteria.list().size() > 0) {
-			field = (Field) criteria.list().get(0);
+		List<Field> results = criteria.list();
+		if (results.size() > 0) {
+			field = (Field)results.get(0);
 		}
 		else {
 			throw new EntityNotFoundException();
@@ -432,8 +433,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Criteria criteria = getSession().createCriteria(FieldType.class);
 		criteria.add(Restrictions.eq("name", fieldTypeName));
 
-		if (criteria != null && criteria.list() != null && criteria.list().size() > 0) {
-			fieldType = (FieldType) criteria.list().get(0);
+		if (criteria != null){ 
+			List<FieldType> results = criteria.list();
+			if(results != null && !results.isEmpty()) {
+				fieldType = (FieldType) results.get(0);
+			}
 		}
 		else {
 			log.error("Field Type Table maybe out of synch. Please check if it has an entry for " + fieldTypeName + " status");
@@ -475,9 +479,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 
 		FieldData returnFieldData = new FieldData();
-		if (criteria != null && criteria.list() != null && criteria.list().size() > 0) {
-			//int i = criteria.list().size();
-			returnFieldData = (FieldData) criteria.list().get(0);
+		if (criteria != null){
+			List<FieldData> results = criteria.list();
+			if(results != null && results.size() > 0) {
+				returnFieldData = (FieldData) results.get(0);
+			}
 		}
 		else {
 			log.error("Field Data table maybe out of synch. Please check if it has an entry for a fieldData with id:" + fieldData.getId());
@@ -524,8 +530,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 
 		FieldData fieldData = new FieldData();
-		if (criteria != null && criteria.list() != null && criteria.list().size() > 0) {
-			fieldData = (FieldData) criteria.list().get(0);
+		if (criteria != null){
+			List<FieldData> results = criteria.list();
+			if(results != null && !results.isEmpty()) {
+				fieldData = (FieldData) results.get(0);
+			}
 		}
 		else {
 			log.error("Field Data table maybe out of synch. Please check if it has an entry for a fieldData with id:" + fieldData.getId());
@@ -1095,8 +1104,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 
 		FieldPhenoCollection aFieldPhenoCollection = null;
-		if (criteria.list().size() > 0)
-			aFieldPhenoCollection = (FieldPhenoCollection) criteria.list().get(0);
+
+		List<FieldPhenoCollection> results = criteria.list();
+		if (results.size() > 0)
+			aFieldPhenoCollection = (FieldPhenoCollection) results.get(0);
 
 		return aFieldPhenoCollection;
 	}
@@ -1263,8 +1274,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		if (upload != null) {
 			criteria.add(Restrictions.eq("upload", upload));
-			if (criteria.list().size() > 0)
-				hasData = true;
+			if (criteria.list().size() > 0){
+				return true;
+			}
+				//hasData = true; save execution of big data below
 		}
 
 		// field data upload
@@ -1272,8 +1285,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		if (upload != null) {
 			criteria.add(Restrictions.eq("upload", upload));
-			if (criteria.list().size() > 0)
+			if (criteria.list().size() > 0){
 				hasData = true;
+			}
 		}
 
 		return hasData;
