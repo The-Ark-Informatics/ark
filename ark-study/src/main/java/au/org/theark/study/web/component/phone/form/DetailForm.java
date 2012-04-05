@@ -215,8 +215,9 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 				if (personType != null && personType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)) {
 					Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 					Study study = iArkCommonService.getStudy(studyId);
-					LinkSubjectStudy subjectInContext = iArkCommonService.getSubject(personSessionId, study);// This is fetched basically to display the info
-																																	// message along with the Subject UID or Contact ID
+					LinkSubjectStudy subjectInContext = iArkCommonService.getSubject(personSessionId, study);// This is fetched basically to display the
+																																			// info
+					// message along with the Subject UID or Contact ID
 					if (containerForm.getModelObject().getPhone().getId() == null) {
 						studyService.create(containerForm.getModelObject().getPhone());
 						this.info("Phone number was added and linked to Subject UID: " + subjectInContext.getSubjectUID());
@@ -229,13 +230,14 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 				else if (personType != null && personType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)) {
 					// TODO: Contact Interface implementation
 				}
-				
+
 				processErrors(target);
 				onSavePostProcess(target);
-			}else{
-				
+			}
+			else {
+
 				processErrors(target);
-				
+
 			}
 		}
 		catch (ArkUniqueException aue) {

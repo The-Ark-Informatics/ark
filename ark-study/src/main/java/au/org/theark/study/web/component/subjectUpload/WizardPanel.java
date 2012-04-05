@@ -30,7 +30,7 @@ public class WizardPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= -3052058152472704291L;
+	private static final long			serialVersionUID	= -3052058152472704291L;
 	private ArkCrudContainerVO			arkCrudContainerVO;
 	private WizardForm					wizardForm;
 	private FeedbackPanel				feedBackPanel;

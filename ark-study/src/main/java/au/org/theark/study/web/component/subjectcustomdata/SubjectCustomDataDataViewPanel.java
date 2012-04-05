@@ -41,41 +41,40 @@ import au.org.theark.study.model.vo.SubjectCustomDataVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
-
 /**
  * @author elam
  * 
  */
-@SuppressWarnings({ "serial" })
+@SuppressWarnings( { "serial" })
 public class SubjectCustomDataDataViewPanel extends Panel {
 
 	/**
 	 * 
 	 */
-	private static final long		serialVersionUID	= -1L;
-	private static final Logger	log					= LoggerFactory.getLogger(SubjectCustomDataDataViewPanel.class);
+	private static final long																serialVersionUID	= -1L;
+	private static final Logger															log					= LoggerFactory.getLogger(SubjectCustomDataDataViewPanel.class);
 
-	private CompoundPropertyModel<SubjectCustomDataVO>			cpModel;
+	private CompoundPropertyModel<SubjectCustomDataVO>								cpModel;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService							studyService;
-	
-	protected ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData> scdDataProvider;
-	protected DataView<SubjectCustomFieldData> dataView;
+	private IStudyService																	studyService;
+
+	protected ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData>	scdDataProvider;
+	protected DataView<SubjectCustomFieldData>										dataView;
 
 	public SubjectCustomDataDataViewPanel(String id, CompoundPropertyModel<SubjectCustomDataVO> cpModel) {
 		super(id);
 		this.cpModel = cpModel;
-		
+
 		this.setOutputMarkupPlaceholderTag(true);
 	}
-	
-	public SubjectCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage) {	
+
+	public SubjectCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage) {
 		initialiseDataView();
 		if (numRowsPerPage != null) {
-			dataView.setItemsPerPage(numRowsPerPage);	// au.org.theark.core.Constants.ROWS_PER_PAGE);
+			dataView.setItemsPerPage(numRowsPerPage); // au.org.theark.core.Constants.ROWS_PER_PAGE);
 		}
-		
+
 		this.add(dataView);
 		return this;
 	}
@@ -83,20 +82,20 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 	private void initialiseDataView() {
 		// TODO fix for READ permission check
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
-		// Data provider to get pageable results from backend
+			// Data provider to get pageable results from backend
 			scdDataProvider = new ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData>() {
-				
+
 				public int size() {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-	
+
 					return studyService.getSubjectCustomFieldDataCount(lss, arkFunction);
 				}
-	
+
 				public Iterator<SubjectCustomFieldData> iterator(int first, int count) {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
-	
+
 					List<SubjectCustomFieldData> subjectCustomDataList = studyService.getSubjectCustomFieldDataList(lss, arkFunction, first, count);
 					cpModel.getObject().setCustomFieldDataList(subjectCustomDataList);
 					return cpModel.getObject().getCustomFieldDataList().iterator();
@@ -108,7 +107,7 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 		else {
 			// Since module is not accessible, create a dummy dataProvider that returns nothing
 			scdDataProvider = new ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData>() {
-				
+
 				public Iterator<? extends SubjectCustomFieldData> iterator(int first, int count) {
 					return null;
 				}
@@ -118,10 +117,10 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 				}
 			};
 		}
-		
+
 		dataView = this.buildDataView(scdDataProvider);
 	}
-	
+
 	public DataView<SubjectCustomFieldData> buildDataView(ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData> scdDataProvider2) {
 
 		DataView<SubjectCustomFieldData> subjectCFDataDataView = new CustomDataEditorDataView<SubjectCustomFieldData>("customDataList", scdDataProvider2) {
@@ -148,11 +147,11 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 		};
 		return subjectCFDataDataView;
 	}
-	
+
 	public DataView<SubjectCustomFieldData> getDataView() {
 		return dataView;
 	}
-	
+
 	public void saveCustomData() {
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SAVE)) {
 			List<SubjectCustomFieldData> errorList = studyService.createOrUpdateSubjectCustomFieldData(cpModel.getObject().getCustomFieldDataList());
@@ -164,7 +163,7 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 						this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getDateDataValue());
 					}
 					else {
-						this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getTextDataValue());					
+						this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getTextDataValue());
 					}
 				}
 			}

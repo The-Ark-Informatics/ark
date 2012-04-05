@@ -37,12 +37,11 @@ public class SearchPanel extends Panel {
 
 	private FeedbackPanel				feedBackPanel;
 	private PageableListView<Phone>	pageableListView;
-//	private ContainerForm				containerForm;
-	
-	private ArkCrudContainerVO	arkCrudContainerVO;
-	
+	// private ContainerForm containerForm;
 
-	public SearchPanel(String id,ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedBackPanel,  PageableListView<Phone> listView){
+	private ArkCrudContainerVO			arkCrudContainerVO;
+
+	public SearchPanel(String id, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<Phone> listView) {
 		super(id);
 		this.pageableListView = listView;
 		this.arkCrudContainerVO = arkCrudContainerVO;
@@ -50,7 +49,7 @@ public class SearchPanel extends Panel {
 	}
 
 	public void initialisePanel(CompoundPropertyModel<PhoneVO> phoneVOCpm) {
-		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, phoneVOCpm, arkCrudContainerVO,feedBackPanel, pageableListView);
+		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, phoneVOCpm, arkCrudContainerVO, feedBackPanel, pageableListView);
 		add(searchForm);
 	}
 }

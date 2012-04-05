@@ -39,9 +39,9 @@ public class DetailPanel extends Panel {
 	private FeedbackPanel		feedBackPanel;
 	private WebMarkupContainer	arkContextContainer;
 	private ContainerForm		containerForm;
-	private ArkCrudContainerVO arkCrudContainerVO;
+	private ArkCrudContainerVO	arkCrudContainerVO;
 
-	public DetailPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm,ArkCrudContainerVO arkCrudContainerVO) {
+	public DetailPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
 		this.feedBackPanel = feedBackPanel;
 		this.arkContextContainer = arkContextContainer;
@@ -51,7 +51,7 @@ public class DetailPanel extends Panel {
 
 	public void initialisePanel() {
 
-		detailsForm = new DetailForm("detailsForm", feedBackPanel, arkContextContainer, containerForm,arkCrudContainerVO);
+		detailsForm = new DetailForm("detailsForm", feedBackPanel, arkContextContainer, containerForm, arkCrudContainerVO);
 		detailsForm.initialiseDetailForm();
 		add(detailsForm);
 	}

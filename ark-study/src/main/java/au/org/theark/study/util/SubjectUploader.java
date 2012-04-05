@@ -64,7 +64,7 @@ public class SubjectUploader {
 	private long						updateCount;
 	private long						curPos;
 	private long						srcLength				= -1;																				// -1 means nothing being
-																																								// processed
+	// processed
 	private StopWatch					timer						= null;
 	private char						delimiterCharacter	= Constants.DEFAULT_DELIMITER_CHARACTER;									// default
 	// delimiter:
@@ -200,8 +200,13 @@ public class SubjectUploader {
 					}
 
 					if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
+
+						log.info("about to get gender");
 						genderType = iArkCommonService.getGenderType(stringLineArray[index]);
+						log.info("got gender...setting gender");
 						person.setGenderType(genderType);
+
+						log.info("gender set");
 					}
 				}
 

@@ -280,7 +280,9 @@ public class SubjectUploadValidator {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
-			validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			// TODO Travis: Change this to an initial Validation, then can choose to kick off batch
+			// validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -361,13 +363,13 @@ public class SubjectUploadValidator {
 				stringBuffer.append("The default format should be as follows:\n");
 				// SUBJECTUID TITLE FIRST_NAME MIDDLE_NAME LAST_NAME PREFERRED_NAME DATE_OF_BIRTH VITAL_STATUS GENDER STATUS DATE_OF_DEATH CAUSE_OF_DEATH
 				// MARITAL_STATUS PREFERRED_CONTACT EMAIL
-				
+
 				// Column headers
-				stringBuffer.append(Constants.SUBJECTUID); 
+				stringBuffer.append(Constants.SUBJECTUID);
 				stringBuffer.append(delimiterCharacter);
 				stringBuffer.append("TITLE");
-				stringBuffer.append(delimiterCharacter); 
-				stringBuffer.append("FIRST_NAME"); 
+				stringBuffer.append(delimiterCharacter);
+				stringBuffer.append("FIRST_NAME");
 				stringBuffer.append(delimiterCharacter);
 				stringBuffer.append("MIDDLE_NAME");
 				stringBuffer.append(delimiterCharacter);
@@ -392,7 +394,7 @@ public class SubjectUploadValidator {
 				stringBuffer.append("PREFERRED_CONTACT");
 				stringBuffer.append(delimiterCharacter);
 				stringBuffer.append("EMAIL\n");
-				
+
 				// Column values
 				stringBuffer.append("[ABC000001]");
 				stringBuffer.append(delimiterCharacter);
@@ -408,11 +410,11 @@ public class SubjectUploadValidator {
 				stringBuffer.append(delimiterCharacter);
 				stringBuffer.append("[19/02/1976]");
 				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[Alive]" );
+				stringBuffer.append("[Alive]");
 				stringBuffer.append(delimiterCharacter);
 				stringBuffer.append("[Male]");
 				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[Active]" );
+				stringBuffer.append("[Active]");
 				stringBuffer.append(delimiterCharacter);
 				stringBuffer.append("[]");
 				stringBuffer.append(delimiterCharacter);
@@ -460,6 +462,9 @@ public class SubjectUploadValidator {
 		}
 		finally {
 			// Clean up the IO objects
+
+			// TODO What is this timer for...?
+
 			timer.stop();
 			// fileValidationMessages.add("Total elapsed time: " +
 			// timer.getTime() + " ms or " +
@@ -502,13 +507,16 @@ public class SubjectUploadValidator {
 	 *           is the input stream of a file
 	 * @param inLength
 	 *           is the length of a file
+	 * @param rowsToValidate
+	 *           validate the number of rows specified (or as many as exist, if that number is greater).
 	 * @throws FileFormatException
 	 *            file format Exception
 	 * @throws ArkBaseException
 	 *            general ARK Exception
 	 * @return a collection of data validation messages
 	 */
-	public java.util.Collection<String> validateMatrixSubjectFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
+	public java.util.Collection<String> validateMatrixSubjectFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate) throws FileFormatException,
+			ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		curPos = 0;

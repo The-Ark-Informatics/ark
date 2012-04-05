@@ -44,9 +44,9 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 	private static final long				serialVersionUID	= 1L;
 
 	// Panels
-	private SearchPanel								searchComponentPanel;
-	private SearchResultListPanel				searchResultPanel;
-	private DetailPanel							detailsPanel;
+	private SearchPanel						searchComponentPanel;
+	private SearchResultListPanel			searchResultPanel;
+	private DetailPanel						detailsPanel;
 
 	private PageableListView<StudyComp>	pageableListView;
 
@@ -81,8 +81,7 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		
-		searchResultPanel = new SearchResultListPanel("searchResults",arkCrudContainerVO,containerForm);
+		searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm);
 
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
@@ -117,7 +116,7 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailsPanel = new DetailPanel("detailPanel",feedBackPanel,arkCrudContainerVO,containerForm);
+		detailsPanel = new DetailPanel("detailPanel", feedBackPanel, arkCrudContainerVO, containerForm);
 		detailsPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
@@ -139,11 +138,11 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 		}
 
 		cpModel.getObject().setStudyCompList(resultList);
-		searchComponentPanel = new SearchPanel("searchComponentPanel",arkCrudContainerVO,feedBackPanel,containerForm,pageableListView);
+		searchComponentPanel = new SearchPanel("searchComponentPanel", arkCrudContainerVO, feedBackPanel, containerForm, pageableListView);
 		searchComponentPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchComponentPanel);
 		return arkCrudContainerVO.getSearchPanelContainer();
-		
+
 	}
 
 }

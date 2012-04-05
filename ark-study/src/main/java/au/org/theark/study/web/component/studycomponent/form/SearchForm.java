@@ -42,11 +42,11 @@ import au.org.theark.study.web.Constants;
  * 
  */
 public class SearchForm extends AbstractSearchForm<StudyCompVo> {
-	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long				serialVersionUID	= 1L;
 	private ArkCrudContainerVO				arkCrudContainerVO;
 	private TextField<String>				studyCompIdTxtFld;
 	private TextField<String>				compNameTxtFld;
@@ -57,7 +57,7 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService					studyService;
-	
+
 	/**
 	 * 
 	 * @param id
@@ -66,9 +66,9 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 	 * @param feedBackPanel
 	 * @param listView
 	 */
-	public SearchForm(String id,CompoundPropertyModel<StudyCompVo> cpmModel, ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedBackPanel,PageableListView<StudyComp> listView){
-		
-		super(id,cpmModel,feedBackPanel,arkCrudContainerVO);
+	public SearchForm(String id, CompoundPropertyModel<StudyCompVo> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<StudyComp> listView) {
+
+		super(id, cpmModel, feedBackPanel, arkCrudContainerVO);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
 		this.listView = listView;
@@ -92,7 +92,6 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 		descriptionTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_DESCRIPTION);
 		keywordTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_KEYWORD);
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -122,7 +121,7 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 				this.info("Study Component with the specified criteria does not exist in the system.");
 				target.add(feedbackPanel);
 			}
-			
+
 			getModelObject().setStudyCompList(resultList);
 			listView.removeAll();
 

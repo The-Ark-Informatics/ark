@@ -28,7 +28,7 @@ public class ContainerForm extends AbstractContainerForm<StudyCompVo> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long	serialVersionUID	= 1L;
 
 	public ContainerForm(String id, CompoundPropertyModel<StudyCompVo> model) {
 		super(id, model);

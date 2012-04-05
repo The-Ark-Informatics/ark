@@ -55,7 +55,7 @@ import au.org.theark.study.web.component.subject.form.ContainerForm;
  * @author nivedann
  * 
  */
-@SuppressWarnings({ "unchecked", "serial" })
+@SuppressWarnings( { "unchecked", "serial" })
 public class SearchResultListPanel extends Panel {
 
 	/**
@@ -64,13 +64,13 @@ public class SearchResultListPanel extends Panel {
 	private static final long	serialVersionUID	= -8517602411833622907L;
 	private WebMarkupContainer	arkContextMarkup;
 	private ContainerForm		subjectContainerForm;
-	private ArkCrudContainerVO arkCrudContainerVO;
+	private ArkCrudContainerVO	arkCrudContainerVO;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService		iStudyService;
 
-	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm,ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
 		super(id);
 		this.subjectContainerForm = containerForm;
@@ -129,15 +129,15 @@ public class SearchResultListPanel extends Panel {
 				item.add(new Label("linkSubjectStudy.person.vitalStatus.statusName", subject.getPerson().getVitalStatus().getName()));
 
 				item.add(new Label("linkSubjectStudy.subjectStatus.name", subject.getSubjectStatus().getName()));
-				
-				if(subject.getConsentStatus() != null) {
+
+				if (subject.getConsentStatus() != null) {
 					item.add(new Label("linkSubjectStudy.consentStatus.name", subject.getConsentStatus().getName()));
 				}
 				else {
 					item.add(new Label("linkSubjectStudy.consentStatus.name", ""));
 				}
 
-				item.add(new AttributeModifier(Constants.CLASS,  new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
@@ -200,7 +200,7 @@ public class SearchResultListPanel extends Panel {
 
 				item.add(new Label("linkSubjectStudy.subjectStatus.name", subject.getSubjectStatus().getName()));
 
-				item.add(new AttributeModifier(Constants.CLASS,  new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
@@ -228,22 +228,22 @@ public class SearchResultListPanel extends Panel {
 					subjectFromBackend = subjectVO2;
 					break;
 				}
-				
+
 				// Available/assigned child studies
 				List<Study> availableChildStudies = new ArrayList<Study>(0);
 				List<Study> selectedChildStudies = new ArrayList<Study>(0);
-				
-				if(subject.getLinkSubjectStudy().getStudy().getParentStudy() != null) {
+
+				if (subject.getLinkSubjectStudy().getStudy().getParentStudy() != null) {
 					availableChildStudies = iStudyService.getChildStudyListOfParent(subject.getLinkSubjectStudy().getStudy());
 					selectedChildStudies = iArkCommonService.getAssignedChildStudyListForPerson(subject.getLinkSubjectStudy().getStudy(), subjectFromBackend.getLinkSubjectStudy().getPerson());
 				}
-				
+
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-				
+
 				subjectContainerForm.setModelObject(subjectFromBackend);
 				subjectContainerForm.getModelObject().setAvailableChildStudies(availableChildStudies);
 				subjectContainerForm.getModelObject().setSelectedChildStudies(selectedChildStudies);
-				
+
 				// Set SubjectUID into context
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getLinkSubjectStudy().getSubjectUID());
 				ContextHelper contextHelper = new ContextHelper();

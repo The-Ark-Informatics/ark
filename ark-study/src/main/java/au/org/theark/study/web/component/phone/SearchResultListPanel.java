@@ -44,22 +44,22 @@ public class SearchResultListPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private ContainerForm		containerForm;
-	protected ArkCrudContainerVO arkCrudContainerVO;
-	
+	private static final long		serialVersionUID	= 1L;
+	private ContainerForm			containerForm;
+	protected ArkCrudContainerVO	arkCrudContainerVO;
+
 	/**
 	 * 
 	 * @param id
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO,ContainerForm containerForm){
+	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
 	}
-	
+
 	/**
 	 * 
 	 * @param iModel
@@ -73,7 +73,7 @@ public class SearchResultListPanel extends Panel {
 			/**
 			 * 
 			 */
-			private static final long serialVersionUID = 1L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void populateItem(final ListItem<Phone> item) {
@@ -126,15 +126,15 @@ public class SearchResultListPanel extends Panel {
 			/**
 			 * 
 			 */
-			private static final long serialVersionUID = 1L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 
 				containerForm.getModelObject().setPhone(phone);
-				
+
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-				
+
 			}
 
 		};

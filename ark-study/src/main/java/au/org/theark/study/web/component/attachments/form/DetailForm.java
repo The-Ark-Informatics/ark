@@ -61,23 +61,22 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 8560698088787915274L;
-	private transient Logger						log	= LoggerFactory.getLogger(DetailForm.class);
+	private static final long				serialVersionUID	= 8560698088787915274L;
+	private transient Logger				log					= LoggerFactory.getLogger(DetailForm.class);
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
-	private IStudyService							iStudyService;
+	private IStudyService					iStudyService;
 
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService						iArkCommonService;
+	private IArkCommonService				iArkCommonService;
 
-	private TextField<String>						subjectFileIdTxtFld;
-	private FileUploadField							fileSubjectFileField;
-	private DropDownChoice<StudyComp>			studyComponentChoice;
-	private TextArea<String>						commentsTxtArea;
+	private TextField<String>				subjectFileIdTxtFld;
+	private FileUploadField					fileSubjectFileField;
+	private DropDownChoice<StudyComp>	studyComponentChoice;
+	private TextArea<String>				commentsTxtArea;
 
-	
-	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,AbstractContainerForm<SubjectVO> containerForm){
-		super(id,feedBackPanel,containerForm,arkCrudContainerVO);
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, AbstractContainerForm<SubjectVO> containerForm) {
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -119,7 +118,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		Study study = iArkCommonService.getStudy(studyId);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		String userId = SecurityUtils.getSubject().getPrincipal().toString();
-		
+
 		try {
 			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId, study);
 			containerForm.getModelObject().getSubjectFile().setLinkSubjectStudy(linkSubjectStudy);
@@ -149,7 +148,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
 				containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
 				containerForm.getModelObject().getSubjectFile().setUserId(userId);
-				
+
 				// Save
 				iStudyService.create(containerForm.getModelObject().getSubjectFile());
 				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
@@ -166,7 +165,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			onSavePostProcess(target);
 			AjaxButton deleteButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
 			deleteButton.setEnabled(false);
-			
+
 		}
 		catch (EntityNotFoundException e) {
 			this.error("The record you tried to update is no longer available in the system");
@@ -249,7 +248,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
 	 */
 	@Override
@@ -257,7 +258,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		// Add components
 		subjectFileIdTxtFld.setEnabled(false);
 		subjectFileIdTxtFld.setVisible(true);
-		
+
 		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectFileIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(fileSubjectFileField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(studyComponentChoice);
@@ -267,6 +268,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		// ajaxSimpleConsentFileForm.add(new UploadProgressBar("progress", ajaxSimpleConsentFileForm));
 		// add(ajaxSimpleConsentFileForm);
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
-		
+
 	}
 }

@@ -87,7 +87,7 @@ public class UserServiceImpl implements IUserService {
 	public IUserDao getUserDAO() {
 		return iUserDao;
 	}
-	
+
 	public ILdapUserDao getiLdapUserDao() {
 		return iLdapUserDao;
 	}
@@ -199,7 +199,7 @@ public class UserServiceImpl implements IUserService {
 		iArkAuthorisationService.deleteArkUser(arkUserVO);
 
 	}
-	
+
 	/**
 	 * 
 	 * @param arkUserVO
@@ -219,16 +219,16 @@ public class UserServiceImpl implements IUserService {
 
 		return arkUserVo;
 	}
-	
+
 	public ArkUser getArkUser(String arkLdapUserName) throws EntityNotFoundException {
 		ArkUser arkUserEntity = iArkAuthorisationService.getArkUser(arkLdapUserName);
 		return arkUserEntity;
 	}
-	
+
 	public void resetArkUserPassword(ArkUserVO arkUserVO) throws ArkSystemException {
 		try {
 			// Deny rest of Super administrator password!
-			if(!iArkAuthorisationService.isSuperAdministrator(arkUserVO.getUserName())) {
+			if (!iArkAuthorisationService.isSuperAdministrator(arkUserVO.getUserName())) {
 				iLdapUserDao.updateArkUser(arkUserVO);// Update the LDAP entry
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
@@ -245,7 +245,7 @@ public class UserServiceImpl implements IUserService {
 	public void deleteArkUserRole(ArkUserRole arkUserRole) {
 		iArkAuthorisationService.deleteArkUserRole(arkUserRole);
 	}
-	
+
 	public void deleteArkUserRolesForStudy(Study study, ArkUser arkUser) {
 		iArkAuthorisationService.deleteArkUserRolesForStudy(study, arkUser);
 	}
@@ -259,7 +259,7 @@ public class UserServiceImpl implements IUserService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
 		iArkCommonService.createAuditHistory(ah);
 	}
-	
+
 	public void createArkUserRole(ArkUserRole arkUserRole) {
 		iArkAuthorisationService.createArkUserRole(arkUserRole);
 

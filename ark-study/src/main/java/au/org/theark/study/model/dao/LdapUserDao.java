@@ -63,12 +63,12 @@ import au.org.theark.study.service.Constants;
 @Repository("ldapUserDao")
 public class LdapUserDao implements ILdapUserDao {
 
-	static Logger			log	= LoggerFactory.getLogger(LdapUserDao.class);
+	static Logger						log	= LoggerFactory.getLogger(LdapUserDao.class);
 
-	private IStudyDao	studyDao;
-	private ArkLdapContextSource		ldapDataContextSource;
-	
-	private IArkAuthorisation	arkAuthorisationService;
+	private IStudyDao					studyDao;
+	private ArkLdapContextSource	ldapDataContextSource;
+
+	private IArkAuthorisation		arkAuthorisationService;
 
 	/* To access Hibernate Study Dao */
 	@Autowired
@@ -79,7 +79,7 @@ public class LdapUserDao implements ILdapUserDao {
 	public IStudyDao getStudyDao() {
 		return studyDao;
 	}
-	
+
 	public ArkLdapContextSource getLdapDataContextSource() {
 		return ldapDataContextSource;
 	}
@@ -88,7 +88,7 @@ public class LdapUserDao implements ILdapUserDao {
 	public void setLdapDataContextSource(ArkLdapContextSource ldapDataContextSource) {
 		this.ldapDataContextSource = ldapDataContextSource;
 	}
-	
+
 	public IArkAuthorisation getArkAuthorisationService() {
 		return arkAuthorisationService;
 	}
@@ -97,7 +97,7 @@ public class LdapUserDao implements ILdapUserDao {
 	public void setArkAuthorisationService(IArkAuthorisation arkAuthorisationService) {
 		this.arkAuthorisationService = arkAuthorisationService;
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -203,13 +203,12 @@ public class LdapUserDao implements ILdapUserDao {
 		}
 		return etaUserVO;
 	}
-/* TODO
-	private String buildPersonDN(String userName) throws InvalidNameException {
-		LdapName ldapName = new LdapName(ldapDataContextSource.getBaseLdapPathAsString());
-		ldapName.add(new Rdn("ou", "people"));
-		ldapName.add(new Rdn("cn", userName));
-		return ldapName.toString();
-	}*/
+
+	/*
+	 * TODO private String buildPersonDN(String userName) throws InvalidNameException { LdapName ldapName = new
+	 * LdapName(ldapDataContextSource.getBaseLdapPathAsString()); ldapName.add(new Rdn("ou", "people")); ldapName.add(new Rdn("cn", userName)); return
+	 * ldapName.toString(); }
+	 */
 
 	private static class PersonContextMapper implements ContextMapper {
 
@@ -243,18 +242,14 @@ public class LdapUserDao implements ILdapUserDao {
 		}
 	}
 
-	/*TODO private static class LiteSiteContextMapper implements ContextMapper {
-
-		public Object mapFromContext(Object ctx) {
-			log.debug("\n LiteSiteContext Mapper...");
-			DirContextAdapter context = (DirContextAdapter) ctx;
-			SiteVO siteVo = new SiteVO();
-			siteVo.setSiteName(context.getStringAttribute("cn"));
-			siteVo.setSiteDescription(context.getStringAttribute("description"));
-			// If the schema has other attributes then set/add them here
-			return siteVo;
-		}
-	}*/
+	/*
+	 * TODO private static class LiteSiteContextMapper implements ContextMapper {
+	 * 
+	 * public Object mapFromContext(Object ctx) { log.debug("\n LiteSiteContext Mapper..."); DirContextAdapter context = (DirContextAdapter) ctx;
+	 * SiteVO siteVo = new SiteVO(); siteVo.setSiteName(context.getStringAttribute("cn"));
+	 * siteVo.setSiteDescription(context.getStringAttribute("description")); // If the schema has other attributes then set/add them here return
+	 * siteVo; } }
+	 */
 
 	/**
 	 * Use when you want to return ALL users from LDAP. Applies for a Super User and Study Admin only. The criteria is supplied in the userVO
@@ -268,7 +263,7 @@ public class LdapUserDao implements ILdapUserDao {
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 		List<ArkUserVO> userList = new ArrayList<ArkUserVO>();
-		
+
 		try {
 			List<ArkUserRole> adminUserNameList = arkAuthorisationService.getArkSuperAdministratorList();
 			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)
@@ -305,13 +300,13 @@ public class LdapUserDao implements ILdapUserDao {
 						ldapName.add(new Rdn(Constants.EMAIL, userCriteriaVO.getEmail()));
 						andFilter.and(new WhitespaceWildcardsFilter(Constants.EMAIL, userCriteriaVO.getEmail()));
 					}
-					
+
 					for (ArkUserRole superAdmin : adminUserNameList) {
 						ldapName.add(new Rdn(Constants.CN, superAdmin.getArkUser().getLdapUserName()));
 						Filter filter = new NotFilter(new EqualsFilter(Constants.CN, superAdmin.getArkUser().getLdapUserName()));
 						andFilter.and(filter);
 					}
-					
+
 					/* Status is not defined as yet in the schema */
 					userList = ldapDataContextSource.getLdapTemplate().search(ldapDataContextSource.getBasePeopleDn(), andFilter.encode(), new PersonContextMapper());
 					log.debug("Size of list " + userList.size());
@@ -322,8 +317,9 @@ public class LdapUserDao implements ILdapUserDao {
 					throw new ArkSystemException("A system errror occured");
 				}
 			}
-			
-		} catch (EntityNotFoundException e) {
+
+		}
+		catch (EntityNotFoundException e) {
 
 			log.error("Exception occured in searchAllUsers " + e);
 			throw new ArkSystemException("A system errror occured. ");
@@ -332,24 +328,17 @@ public class LdapUserDao implements ILdapUserDao {
 		return userList;
 	}
 
-	/* TODO:  Cleanup
-	  
-	  private static class GroupMembersContextMapper implements ContextMapper {
-
-		public GroupMembersContextMapper() {
-			super();
-		}
-
-		public Object mapFromContext(Object ctx) {
-			DirContextAdapter context = (DirContextAdapter) ctx;
-			String[] members = context.getStringAttributes("member");
-			ArrayList<String> memberList = new ArrayList<String>();
-			for (int i = 0; i < members.length; i++) {
-				memberList.add(members[i].substring(members[i].indexOf("cn=") + 3, members[i].indexOf(",")));
-			}
-			return memberList;
-		}
-	}*/
+	/*
+	 * TODO: Cleanup
+	 * 
+	 * private static class GroupMembersContextMapper implements ContextMapper {
+	 * 
+	 * public GroupMembersContextMapper() { super(); }
+	 * 
+	 * public Object mapFromContext(Object ctx) { DirContextAdapter context = (DirContextAdapter) ctx; String[] members =
+	 * context.getStringAttributes("member"); ArrayList<String> memberList = new ArrayList<String>(); for (int i = 0; i < members.length; i++) {
+	 * memberList.add(members[i].substring(members[i].indexOf("cn=") + 3, members[i].indexOf(","))); } return memberList; } }
+	 */
 
 	/**
 	 * Retrieves a sub-set of users from LDAP. The memberCnList List<String> contains the list of userNames or CN, and ArkUserVO acts as a criteria
@@ -441,15 +430,11 @@ public class LdapUserDao implements ILdapUserDao {
 		return userList;
 	}
 
-	/*TODO remove?
-	// Returns the Member attribute value of a group
-	private static class GroupContextMapper implements ContextMapper {
-		public Object mapFromContext(Object ctx) {
-			DirContextAdapter context = (DirContextAdapter) ctx;
-			String[] members = context.getStringAttributes("member");
-			return members;
-		}
-	}*/
+	/*
+	 * TODO remove? // Returns the Member attribute value of a group private static class GroupContextMapper implements ContextMapper { public Object
+	 * mapFromContext(Object ctx) { DirContextAdapter context = (DirContextAdapter) ctx; String[] members = context.getStringAttributes("member");
+	 * return members; } }
+	 */
 
 	/**
 	 * Checks if the given user exists in the LDAP System. If present it will return a boolean true.

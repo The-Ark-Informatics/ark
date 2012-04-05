@@ -44,7 +44,6 @@ import au.org.theark.study.web.component.correspondence.form.ContainerForm;
 
 public class SearchResultListPanel extends Panel {
 
-	
 	/**
 	 * 
 	 */
@@ -137,7 +136,7 @@ public class SearchResultListPanel extends Panel {
 		return pageableListView;
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings( { "unchecked" })
 	private AjaxLink buildLink(final Correspondences correspondence) {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("correspondence") {
 			/**
@@ -149,7 +148,7 @@ public class SearchResultListPanel extends Panel {
 			public void onClick(AjaxRequestTarget target) {
 				containerForm.getModelObject().setCorrespondence(correspondence);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-				
+
 			}
 		};
 
@@ -177,17 +176,17 @@ public class SearchResultListPanel extends Panel {
 				byte[] data = null;
 				try {
 					Blob payload = correspondences.getAttachmentPayload();
-					if(payload == null){
+					if (payload == null) {
 						System.out.println(" payload null ");
 					}
-					else{
-						data =payload.getBytes(1, (int) payload.length());
-	
+					else {
+						data = payload.getBytes(1, (int) payload.length());
+
 					}
 				}
 				catch (SQLException e) {
 					// TODO Auto-generated catch block
-					// Really TODO :  Handle this exception rather than logging something nobody will see
+					// Really TODO : Handle this exception rather than logging something nobody will see
 					e.printStackTrace();
 				}
 
@@ -196,7 +195,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				//TODO:  log!
+				// TODO: log!
 				System.out.println("\n\n\n\n Error Download File ");
 				this.error("There was an error while downloading file.  Please contact Administrator");
 			};

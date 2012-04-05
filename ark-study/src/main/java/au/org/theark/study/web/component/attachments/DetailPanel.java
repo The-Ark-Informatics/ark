@@ -30,16 +30,17 @@ public class DetailPanel extends Panel {
 	private DetailForm			detailForm;
 	private FeedbackPanel		feedBackPanel;
 	private ContainerForm		containerForm;
-	private ArkCrudContainerVO arkCrudContainerVO;
-	
+	private ArkCrudContainerVO	arkCrudContainerVO;
+
 	/**
 	 * Constructor
+	 * 
 	 * @param id
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public DetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,ContainerForm containerForm){
+	public DetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id);
 		this.feedBackPanel = feedBackPanel;
 		this.containerForm = containerForm;
@@ -48,7 +49,7 @@ public class DetailPanel extends Panel {
 
 	public void initialisePanel() {
 
-		detailForm = new DetailForm("detailForm",feedBackPanel, arkCrudContainerVO,containerForm);
+		detailForm = new DetailForm("detailForm", feedBackPanel, arkCrudContainerVO, containerForm);
 		detailForm.initialiseDetailForm();
 		add(detailForm);
 	}

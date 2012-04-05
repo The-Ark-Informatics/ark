@@ -39,7 +39,6 @@ import au.org.theark.core.model.study.entity.Person;
 @Repository("userDao")
 public class UserDao extends HibernateSessionDao implements IUserDao {
 
-
 	public Person createPerson(Person personEntity) {
 
 		getSession().save(personEntity);

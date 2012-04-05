@@ -46,7 +46,7 @@ import au.org.theark.study.web.component.attachments.form.ContainerForm;
  * @author nivedann
  * @author elam
  * @author cellis
- *
+ * 
  */
 public class AttachmentsContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
@@ -89,9 +89,10 @@ public class AttachmentsContainerPanel extends AbstractContainerPanel<SubjectVO>
 	 */
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-		
-		detailPanel = new  DetailPanel("detailPanel",feedBackPanel,arkCrudContainerVO,containerForm);
-		detailPanel.initialisePanel();;
+
+		detailPanel = new DetailPanel("detailPanel", feedBackPanel, arkCrudContainerVO, containerForm);
+		detailPanel.initialisePanel();
+		;
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
 	}
@@ -104,15 +105,15 @@ public class AttachmentsContainerPanel extends AbstractContainerPanel<SubjectVO>
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
 		// Get the Person in Context and determine the Person Type
-		//Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		// Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		Collection<SubjectFile> subjectFileList = new ArrayList<SubjectFile>();
 
 		// All the subject file items related to the subject if one found in session or an empty list
 		cpModel.getObject().setSubjectFileList(subjectFileList);
-		searchPanel = new SearchPanel("searchComponentPanel",feedBackPanel,arkCrudContainerVO,pageableListView);
+		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, arkCrudContainerVO, pageableListView);
 		searchPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
-		return arkCrudContainerVO.getSearchPanelContainer(); //searchPanelContainer;
+		return arkCrudContainerVO.getSearchPanelContainer(); // searchPanelContainer;
 	}
 
 	/*
@@ -122,7 +123,7 @@ public class AttachmentsContainerPanel extends AbstractContainerPanel<SubjectVO>
 	 */
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults",arkCrudContainerVO,containerForm);
+		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm);
 		iModel = new LoadableDetachableModel<Object>() {
 
 			private static final long	serialVersionUID	= 1L;
@@ -137,8 +138,8 @@ public class AttachmentsContainerPanel extends AbstractContainerPanel<SubjectVO>
 						Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 						Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 						Study study = iArkCommonService.getStudy(studyId);
-						
-						if(sessionPersonId != null){
+
+						if (sessionPersonId != null) {
 							LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId, study);
 							subjectFile.setLinkSubjectStudy(linkSubjectStudy);
 							subjectFileList = studyService.searchSubjectFile(subjectFile);
@@ -162,9 +163,9 @@ public class AttachmentsContainerPanel extends AbstractContainerPanel<SubjectVO>
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
-		
+
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
-		
+
 	}
 }

@@ -97,7 +97,7 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 	protected WebMarkupContainer initialiseSearchPanel() {
 		// Get the Person in Context and determine the Person Type
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-				
+
 		try {
 			// Initialise the phoneList;
 			Collection<Consent> consentList = new ArrayList<Consent>();

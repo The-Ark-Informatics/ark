@@ -44,7 +44,7 @@ public class MyDetailsContainer extends Panel {
 	 */
 	private static final long	serialVersionUID	= 3880466028840378961L;
 
-	private transient Logger	log	= LoggerFactory.getLogger(MyDetailsContainer.class);
+	private transient Logger	log					= LoggerFactory.getLogger(MyDetailsContainer.class);
 
 	/**
 	 * The spring injected reference to a UserService implementation

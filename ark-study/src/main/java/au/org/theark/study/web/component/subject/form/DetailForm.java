@@ -125,12 +125,12 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	protected DropDownChoice<ConsentStatus>			consentStatusChoice;
 	protected DropDownChoice<ConsentType>				consentTypeChoice;
 	protected DateTextField									consentDateTxtFld;
-	protected CollapsiblePanel 							consentHistoryPanel;
-	
+	protected CollapsiblePanel								consentHistoryPanel;
+
 	// Webmarkup for Ajax refreshing of items based on particular criteria
 	protected WebMarkupContainer							wmcPreferredEmailContainer;
 	protected WebMarkupContainer							wmcDeathDetailsContainer;
-	
+
 	protected ChildStudyPalettePanel<SubjectVO>		childStudyPalettePanel;
 
 	protected Study											study;
@@ -140,14 +140,14 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.arkContextMarkupContainer = arkContextContainer;
 	}
-	
+
 	@Override
 	public void onBeforeRender() {
 		childStudyPalettePanel = new ChildStudyPalettePanel<SubjectVO>("childStudyPalette", containerForm.getModel());
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(childStudyPalettePanel);
 		super.onBeforeRender();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm() {
 		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID) {
@@ -160,8 +160,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			protected void onBeforeRender() {
 				boolean isNew = isNew();
 				boolean autoGenerate = containerForm.getModelObject().getLinkSubjectStudy().getStudy().getAutoGenerateSubjectUid();
-				if(isNew && !autoGenerate) {
-					setEnabled(true);	
+				if (isNew && !autoGenerate) {
+					setEnabled(true);
 				}
 				else {
 					setEnabled(false);
@@ -174,7 +174,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
-		previousLastNameTxtFld = new TextField<String>(Constants.SUBJECT_PREVIOUS_LAST_NAME){
+		previousLastNameTxtFld = new TextField<String>(Constants.SUBJECT_PREVIOUS_LAST_NAME) {
 			/**
 			 * 
 			 */
@@ -244,7 +244,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		});
 
 		// Gender Type
-		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType();
+		Collection<GenderType> genderTypeList = iArkCommonService.getGenderTypes();
 		ChoiceRenderer<GenderType> genderTypeRenderer = new ChoiceRenderer<GenderType>(Constants.NAME, Constants.ID);
 		genderTypeDdc = new DropDownChoice<GenderType>(Constants.PERSON_GENDER_TYPE, (List<GenderType>) genderTypeList, genderTypeRenderer);
 
@@ -283,7 +283,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		});
 
 		initConsentFields();
-		
+
 		attachValidators();
 		addDetailFormComponents();
 
@@ -341,7 +341,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void initConsentFields() {
 		consentDateTxtFld = new DateTextField(Constants.PERSON_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
@@ -355,16 +355,16 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 		List<ConsentOption> consentOptionList = iArkCommonService.getConsentOptionList();
 		ChoiceRenderer<ConsentOption> consentOptionRenderer = new ChoiceRenderer<ConsentOption>(Constants.NAME, Constants.ID);
-		
+
 		consentToActiveContactDdc = new DropDownChoice<ConsentOption>(Constants.SUBJECT_CONSENT_TO_ACTIVE_CONTACT, (List) consentOptionList, consentOptionRenderer);
 		consentToUseDataDdc = new DropDownChoice<ConsentOption>(Constants.SUBJECT_CONSENT_TO_USEDATA, (List) consentOptionList, consentOptionRenderer);
 		consentToPassDataGatheringDdc = new DropDownChoice<ConsentOption>(Constants.SUBJECT_CONSENT_PASSIVE_DATA_GATHER, (List) consentOptionList, consentOptionRenderer);
 
 		initialiseConsentStatusChoice();
 		initialiseConsentTypeChoice();
-		
+
 		consentHistoryPanel = new CollapsiblePanel("consentHistoryPanel", new Model<String>("Consent History"), false) {
-			
+
 			/**
 			 * 
 			 */
@@ -416,7 +416,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentTypeChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDateTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDownloadedChoice);
-		
+
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentHistoryPanel);
 	}
 
@@ -451,7 +451,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		subjectUIDTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.uid.required", this, null));
 		dateOfBirthTxtFld.setLabel(new StringResourceModel("linkSubjectStudy.person.dateOfBirth.DateValidator.maximum", this, null));
 
-		//studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.studyApproachDate.DateValidator.maximum", this, null));
+		// studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new
+		// StringResourceModel("linkSubjectStudy.studyApproachDate.DateValidator.maximum", this, null));
 
 		subjectStatusDdc.setRequired(true).setLabel(new StringResourceModel("subject.status.required", this, null));
 		consentDateTxtFld.setLabel(new StringResourceModel("consentDate", this, null));
@@ -489,11 +490,11 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				sb.append(" has been created successfully and linked to the study in context: ");
 				sb.append(study.getName());
 				sb.append(".");
-				
-				if(study.getAutoConsent()){
+
+				if (study.getAutoConsent()) {
 					sb.append(" The Subject has been automatically consented to the Study.");
 				}
-				
+
 				onSavePostProcess(target);
 				this.info(sb.toString());
 
@@ -606,7 +607,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	}
 
 	/**
-	 * @param childStudyPalettePanel the childStudyPalettePanel to set
+	 * @param childStudyPalettePanel
+	 *           the childStudyPalettePanel to set
 	 */
 	public void setChildStudyPalettePanel(ChildStudyPalettePanel<SubjectVO> childStudyPalettePanel) {
 		this.childStudyPalettePanel = childStudyPalettePanel;

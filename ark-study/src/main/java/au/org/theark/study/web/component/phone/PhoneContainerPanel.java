@@ -47,7 +47,7 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long			serialVersionUID	= 1L;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService				studyService;
@@ -82,7 +82,7 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 	 */
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailPanel = new DetailPanel("detailPanel", feedBackPanel,arkCrudContainerVO, containerForm);
+		detailPanel = new DetailPanel("detailPanel", feedBackPanel, arkCrudContainerVO, containerForm);
 		detailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
@@ -110,7 +110,7 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 
 			// All the phone items related to the person if one found in session or an empty list
 			cpModel.getObject().setPhoneList(personPhoneList);
-			searchPanel = new SearchPanel("searchComponentPanel", arkCrudContainerVO, feedBackPanel,pageableListView);
+			searchPanel = new SearchPanel("searchComponentPanel", arkCrudContainerVO, feedBackPanel, pageableListView);
 			searchPanel.initialisePanel(cpModel);
 			arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 
@@ -134,7 +134,7 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults",arkCrudContainerVO, containerForm);
+		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm);
 		iModel = new LoadableDetachableModel<Object>() {
 
 			private static final long	serialVersionUID	= 1L;

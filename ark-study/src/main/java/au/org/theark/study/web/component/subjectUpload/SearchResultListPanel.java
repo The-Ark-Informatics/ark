@@ -46,7 +46,7 @@ import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
  * 
  * @author cellis
  * @author elam
- *
+ * 
  */
 public class SearchResultListPanel extends Panel {
 	/**
@@ -54,7 +54,7 @@ public class SearchResultListPanel extends Panel {
 	 */
 	private static final long	serialVersionUID	= 6150100976180421479L;
 
-	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
+	private transient Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
 
 	public SearchResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
@@ -68,7 +68,7 @@ public class SearchResultListPanel extends Panel {
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				this.error("Unexpected Error: Could not proceed with download of the template.");
 			}
-			
+
 		};
 		add(downloadTemplateButton);
 	}
@@ -147,7 +147,7 @@ public class SearchResultListPanel extends Panel {
 				item.add(buildDownloadReportButton(upload));
 
 				// Delete the upload file
-//				item.add(buildDeleteButton(upload));
+				// item.add(buildDeleteButton(upload));
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
@@ -276,7 +276,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not process download upload report request");				
+				this.error("Unexpected Error: Could not process download upload report request");
 			};
 		};
 
@@ -288,53 +288,53 @@ public class SearchResultListPanel extends Panel {
 
 		return ajaxButton;
 	}
-	
-/* TODO: DELETE of uploaded file is not supported till we can verify whether all subjects 
-	within the upload have also been deleted. At present, there is no linking table clearly 
-	indicating which subjects came from which upload (i.e. will need to be looked at 1st). 
-*/
-//	private AjaxDeleteButton buildDeleteButton(final StudyUpload upload) {
-//		DeleteButton ajaxButton = new DeleteButton(upload, SearchResultListPanel.this) {
-//			/**
-//			 * 
-//			 */
-//			private static final long	serialVersionUID	= 1L;
-//
-//			@Override
-//			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-//				// Attempt to delete upload
-//				if (upload.getId() != null) {
-//					iArkCommonService.deleteUpload(upload);
-//				}
-//				
-//				containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
-//
-//				// Update the result panel and contianerForm (for feedBack message)
-//				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-//				target.add(containerForm);
-//			}
-//
-//			@Override
-//			public boolean isVisible() {
-//				SecurityManager securityManager = ThreadContext.getSecurityManager();
-//				Subject currentUser = SecurityUtils.getSubject();
-//				boolean flag = false;
-//				if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE)) {
-//					return flag = true;
-//				}
-//
-//				return flag;
-//			}
-//
-//			@Override
-//			protected void onError(AjaxRequestTarget target, Form<?> form) {
-//				this.error("Unexpected Error: Could not process delete request");
-//			}
-//
-//		};
-//
-//		ajaxButton.setDefaultFormProcessing(false);
-//
-//		return ajaxButton;
-//	}
+
+	/*
+	 * TODO: DELETE of uploaded file is not supported till we can verify whether all subjects within the upload have also been deleted. At present,
+	 * there is no linking table clearly indicating which subjects came from which upload (i.e. will need to be looked at 1st).
+	 */
+	// private AjaxDeleteButton buildDeleteButton(final StudyUpload upload) {
+	// DeleteButton ajaxButton = new DeleteButton(upload, SearchResultListPanel.this) {
+	// /**
+	// *
+	// */
+	// private static final long serialVersionUID = 1L;
+	//
+	// @Override
+	// protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+	// // Attempt to delete upload
+	// if (upload.getId() != null) {
+	// iArkCommonService.deleteUpload(upload);
+	// }
+	//				
+	// containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
+	//
+	// // Update the result panel and contianerForm (for feedBack message)
+	// target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+	// target.add(containerForm);
+	// }
+	//
+	// @Override
+	// public boolean isVisible() {
+	// SecurityManager securityManager = ThreadContext.getSecurityManager();
+	// Subject currentUser = SecurityUtils.getSubject();
+	// boolean flag = false;
+	// if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE)) {
+	// return flag = true;
+	// }
+	//
+	// return flag;
+	// }
+	//
+	// @Override
+	// protected void onError(AjaxRequestTarget target, Form<?> form) {
+	// this.error("Unexpected Error: Could not process delete request");
+	// }
+	//
+	// };
+	//
+	// ajaxButton.setDefaultFormProcessing(false);
+	//
+	// return ajaxButton;
+	// }
 }

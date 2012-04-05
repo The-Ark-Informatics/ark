@@ -77,6 +77,7 @@ public interface IUserService {
 
 	/**
 	 * Lookup a user from the Ark Database system, with a study in cointext
+	 * 
 	 * @param arkLdapUserName
 	 * @param study
 	 * @return
@@ -92,17 +93,19 @@ public interface IUserService {
 	 * @throws EntityNotFoundException
 	 */
 	public void deleteArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException;
-	
+
 	/**
 	 * Lookup a user from the Ark Database system.
+	 * 
 	 * @param arkLdapUserName
 	 * @return
 	 * @throws ArkSystemException
 	 */
 	public ArkUserVO lookupArkUser(String arkLdapUserName) throws ArkSystemException;
-	
+
 	/**
 	 * Get an ArkUser entiry formthe database
+	 * 
 	 * @param arkLdapUserName
 	 * @return
 	 * @throws EntityNotFoundException
@@ -115,7 +118,7 @@ public interface IUserService {
 	 * @throws ArkSystemException
 	 */
 	public void resetArkUserPassword(ArkUserVO arkUserVo) throws ArkSystemException;
-	
+
 	/**
 	 * 
 	 * @param arkUserRole
@@ -125,6 +128,6 @@ public interface IUserService {
 	public void deleteArkUserRolesForStudy(Study childStudy, ArkUser arkUser);
 
 	public void createArkUserForChildStudy(ArkUserVO arkUserVo);
-	
+
 	public void createArkUserRole(ArkUserRole arkUserRole);
 }

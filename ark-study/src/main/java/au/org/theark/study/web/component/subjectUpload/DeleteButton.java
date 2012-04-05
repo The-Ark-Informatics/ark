@@ -27,7 +27,8 @@ import au.org.theark.core.web.component.button.AjaxDeleteButton;
 
 public abstract class DeleteButton extends AjaxDeleteButton {
 	private static final long	serialVersionUID	= 4966354164332401574L;
-//	private transient Logger	log					= LoggerFactory.getLogger(DeleteButton.class);
+
+	// private transient Logger log = LoggerFactory.getLogger(DeleteButton.class);
 
 	DeleteButton(final StudyUpload upload, Component component) {
 		// Properties contains:

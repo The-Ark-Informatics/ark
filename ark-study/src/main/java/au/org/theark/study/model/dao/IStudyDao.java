@@ -63,20 +63,23 @@ import au.org.theark.core.vo.SubjectVO;
 public interface IStudyDao {
 	/**
 	 * Create a new study
+	 * 
 	 * @param study
 	 */
 	public void create(Study study);
 
 	/**
 	 * Create a new child study, and assign it's parent study accordingly
+	 * 
 	 * @param study
 	 * @param selectedApplications
 	 * @param parentStudy
 	 */
 	public void create(Study study, Collection<ArkModule> selectedApplications, Study parentStudy);
-	
+
 	/**
 	 * Create a new study, and assign the user accordingly
+	 * 
 	 * @param study
 	 * @param arkUserVo
 	 * @param selectedModules
@@ -125,7 +128,7 @@ public interface IStudyDao {
 
 	public Collection<VitalStatus> getVitalStatus();
 
-	public Collection<GenderType> getGenderType();
+	public Collection<GenderType> getGenderTypes();
 
 	public Collection<SubjectStatus> getSubjectStatus();
 
@@ -312,35 +315,38 @@ public interface IStudyDao {
 	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId, Study study) throws EntityNotFoundException, ArkSystemException;
 
 	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction);
-	
+
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
-	
+
 	/**
 	 * Create a single record of type SubjectCustomFieldData
+	 * 
 	 * @param subjectCustomFieldData
 	 */
 	public void createSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData);
-	
+
 	public void updateSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData);
-	
+
 	public void deleteSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData);
-	
+
 	public Long isCustomFieldUsed(SubjectCustomFieldData subjectCustomFieldData);
-	
+
 	public boolean isStudyComponentHasAttachments(StudyComp studyComp);
-	
+
 	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy);
-	
+
 	public LinkStudySubstudy isSubStudy(Study study);
-	
+
 	/**
 	 * Gets the list of child studies for the specifed parent Study
-	 * @param study the parent study
+	 * 
+	 * @param study
+	 *           the parent study
 	 * @return
 	 */
 	public List<Study> getChildStudyListOfParent(Study study);
-	
+
 	public void update(LinkSubjectStudy linkSubjectStudy);
 
-	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException;	
+	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException;
 }

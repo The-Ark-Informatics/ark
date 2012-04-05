@@ -38,11 +38,11 @@ public class SearchPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private ArkCrudContainerVO	arkCrudContainerVO;
-	private FeedbackPanel	feedBackPanel;
+	private static final long				serialVersionUID	= 1L;
+	private ArkCrudContainerVO				arkCrudContainerVO;
+	private FeedbackPanel					feedBackPanel;
 	private PageableListView<Address>	listView;
-	
+
 	/**
 	 * 
 	 * @param id
@@ -51,14 +51,13 @@ public class SearchPanel extends Panel {
 	 * @param containerForm
 	 * @param listView
 	 */
-	public SearchPanel(String id,ArkCrudContainerVO crudContainerVO, FeedbackPanel feedBackPanel, 
-								ContainerForm containerForm, PageableListView<Address> listView) {
+	public SearchPanel(String id, ArkCrudContainerVO crudContainerVO, FeedbackPanel feedBackPanel, ContainerForm containerForm, PageableListView<Address> listView) {
 		super(id);
 		arkCrudContainerVO = crudContainerVO;
-		this.feedBackPanel = feedBackPanel; 
+		this.feedBackPanel = feedBackPanel;
 		this.listView = listView;
 	}
-	
+
 	public void initialisePanel(CompoundPropertyModel<AddressVO> addressVoCpm) {
 
 		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, addressVoCpm, arkCrudContainerVO, feedBackPanel, listView);

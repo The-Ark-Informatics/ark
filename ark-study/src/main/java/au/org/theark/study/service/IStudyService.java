@@ -69,9 +69,10 @@ public interface IStudyService {
 	 * @param studyModelVo
 	 */
 	public void createStudy(StudyModelVO studyModelVo);
-	
+
 	/**
 	 * Create a new study and assign the specified user
+	 * 
 	 * @param studyModelVo
 	 * @param arkUserVo
 	 */
@@ -139,7 +140,7 @@ public interface IStudyService {
 	 * @return
 	 * @throws ArkSystemException
 	 */
-	public List<Phone> getPersonPhoneList(Long personId, Phone phone) throws  ArkSystemException;
+	public List<Phone> getPersonPhoneList(Long personId, Phone phone) throws ArkSystemException;
 
 	/**
 	 * Looks up the addresses linked to a person and applies any filter supplied with the address object.Used in Search Address functionality.
@@ -169,7 +170,6 @@ public interface IStudyService {
 
 	public List<Consent> searchConsent(ConsentVO consentVO) throws EntityNotFoundException, ArkSystemException;
 
-
 	/**
 	 * 
 	 * @param consentFile
@@ -193,7 +193,7 @@ public interface IStudyService {
 	 * 
 	 * @param personId
 	 * @param correspondence
-	 * @return a list of correspondence for person.  if empty, returns an empty list
+	 * @return a list of correspondence for person. if empty, returns an empty list
 	 * @throws ArkSystemException
 	 */
 	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException;
@@ -249,8 +249,6 @@ public interface IStudyService {
 
 	public SubjectUploadValidator validateSubjectFileFormat(UploadVO uploadVo);
 
-	public SubjectUploadValidator validateSubjectFileData(File file, String fileFormat, char delimChar);
-
 	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar);
 
 	public SubjectUploadValidator validateSubjectFileData(UploadVO uploadVo);
@@ -274,42 +272,49 @@ public interface IStudyService {
 	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId, Study study) throws EntityNotFoundException, ArkSystemException;
 
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
-	
+
 	public int getSubjectCustomFieldDataCount(LinkSubjectStudy criteria, ArkFunction arkFunction);
+
 	/**
-	 * Allows to Save(Insert) or Update  SubjectCustomFieldData. If there are SubjectCustomFieldData
-	 * with no data value then it will discard it from the save/update process.
+	 * Allows to Save(Insert) or Update SubjectCustomFieldData. If there are SubjectCustomFieldData with no data value then it will discard it from the
+	 * save/update process.
+	 * 
 	 * @param subjectCustomFieldDataList
 	 */
-	public List<SubjectCustomFieldData>  createOrUpdateSubjectCustomFieldData(List<SubjectCustomFieldData> subjectCustomFieldDataList);
-	
+	public List<SubjectCustomFieldData> createOrUpdateSubjectCustomFieldData(List<SubjectCustomFieldData> subjectCustomFieldDataList);
+
 	/**
 	 * Checks if the given component(study) is or has attachments linked to it
+	 * 
 	 * @param studyComp
 	 * @return
 	 */
 	public boolean isStudyComponentHasAttachments(StudyComp studyComp);
-	
+
 	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy);
-	
+
 	public LinkStudySubstudy isSubStudy(Study study);
-			
+
 	/**
 	 * Gets the list of child studies for the specifed parent Study
-	 * @param study the parent study
+	 * 
+	 * @param study
+	 *           the parent study
 	 * @return
 	 */
 	public List<Study> getChildStudyListOfParent(Study study);
 
 	/**
 	 * Return a list of LinkSubjectStudy ConsentHistory entities
+	 * 
 	 * @param linkSubjectStudy
 	 * @return
 	 */
 	public List<LssConsentHistory> getLssConsentHistoryList(LinkSubjectStudy linkSubjectStudy);
-	
+
 	/**
 	 * Return a list of ConsentHistory entities
+	 * 
 	 * @param consent
 	 * @return
 	 */

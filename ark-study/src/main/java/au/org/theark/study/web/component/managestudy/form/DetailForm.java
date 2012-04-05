@@ -187,7 +187,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		this.containerForm = containerForm;
 		AjaxFormValidatingBehavior.addToAllFormComponents(this, "onKeyup", Duration.seconds(2));
 	}
-	
+
 	@Override
 	public void onBeforeRender() {
 		initStudyLogo();
@@ -534,10 +534,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				Study study = containerForm.getModelObject().getStudy();
 				Study parentStudy = parentStudyDdc.getModelObject();
-				
-				if(parentStudy != null && (parentStudy.getId() != study.getId())) {
+
+				if (parentStudy != null && (parentStudy.getId() != study.getId())) {
 					parentStudy = iArkCommonService.getStudy(parentStudy.getId());
-					
+
 					// Set auto-generated patterns to that of the parent study
 					study.setAutoGenerateSubjectUid(parentStudy.getAutoGenerateSubjectUid());
 					study.setSubjectUidPrefix(parentStudy.getSubjectUidPrefix());
@@ -545,10 +545,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 					study.setSubjectUidPadChar(parentStudy.getSubjectUidPadChar());
 					study.setSubjectUidStart(parentStudy.getSubjectUidStart());
 					subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(parentStudy);
-					
+
 					// Set BioCollection template
 					BioCollectionUidTemplate parentBioCollectionUidTemplate = iArkCommonService.getBioCollectionUidTemplate(parentStudy);
-					if(parentBioCollectionUidTemplate != null) {
+					if (parentBioCollectionUidTemplate != null) {
 						BioCollectionUidTemplate bioCollectionUidTemplate = new BioCollectionUidTemplate();
 						bioCollectionUidTemplate.setBioCollectionUidPrefix(parentBioCollectionUidTemplate.getBioCollectionUidPrefix());
 						bioCollectionUidTemplate.setBioCollectionUidToken(parentBioCollectionUidTemplate.getBioCollectionUidToken());
@@ -561,11 +561,11 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 						containerForm.getModelObject().setBioCollectionUidTemplate(new BioCollectionUidTemplate());
 						initBioCollectionUid();
 					}
-					
+
 					// Set Biospecimen template
 					BiospecimenUidTemplate parentBiospecimenUidTemplate = iArkCommonService.getBiospecimenUidTemplate(parentStudy);
-					if(parentBiospecimenUidTemplate != null) {
-						BiospecimenUidTemplate biospecimenUidTemplate = new BiospecimenUidTemplate(); 
+					if (parentBiospecimenUidTemplate != null) {
+						BiospecimenUidTemplate biospecimenUidTemplate = new BiospecimenUidTemplate();
 						biospecimenUidTemplate.setBiospecimenUidPrefix(parentBiospecimenUidTemplate.getBiospecimenUidPrefix());
 						biospecimenUidTemplate.setBiospecimenUidToken(parentBiospecimenUidTemplate.getBiospecimenUidToken());
 						biospecimenUidTemplate.setBiospecimenUidPadChar(parentBiospecimenUidTemplate.getBiospecimenUidPadChar());
@@ -577,7 +577,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 						containerForm.getModelObject().setBiospecimenUidTemplate(new BiospecimenUidTemplate());
 						initBiospecimenUid();
 					}
-					
+
 					autoGenSubIdChkBox.setEnabled(false);
 					subjectUidContainer.setEnabled(false);
 					biospecimenUidContainer.setEnabled(false);
@@ -591,24 +591,24 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 					containerForm.getModelObject().getStudy().setSubjectUidPadChar(new SubjectUidPadChar());
 					containerForm.getModelObject().getStudy().setSubjectUidStart(null);
 					initSubjectUid();
-					
+
 					containerForm.getModelObject().setBioCollectionUidTemplate(new BioCollectionUidTemplate());
 					initBioCollectionUid();
-					
+
 					containerForm.getModelObject().setBiospecimenUidTemplate(new BiospecimenUidTemplate());
 					initBiospecimenUid();
 
 					autoGenSubIdChkBox.setEnabled(true);
 					subjectUidContainer.setEnabled(true);
 					subjectUidStartTxtFld.setEnabled(true);
-					
+
 					biospecimenUidContainer.setEnabled(true);
 					bioCollectionUidContainer.setEnabled(true);
 					subjectUidExampleLbl.setDefaultModelObject(new String(""));
 					bioCollectionUidExampleLbl.setDefaultModelObject(new String(""));
 					biospecimenUidExampleLbl.setDefaultModelObject(new String(""));
 				}
-				
+
 				subjectUidContainer.addOrReplace(subjectUidPrefixTxtFld);
 				subjectUidContainer.addOrReplace(subjectUidTokenTxtFld);
 				subjectUidContainer.addOrReplace(subjectUidTokenDpChoices);
@@ -616,19 +616,19 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 				subjectUidContainer.addOrReplace(subjectUidStartTxtFld);
 				subjectUidContainer.addOrReplace(subjectUidExampleLbl);
 				studyCrudVO.getDetailPanelFormContainer().addOrReplace(subjectUidContainer);
-				
+
 				bioCollectionUidContainer.addOrReplace(bioCollectionUidTokenDdc);
 				bioCollectionUidContainer.addOrReplace(bioCollectionUidPrefixTxtFld);
 				bioCollectionUidContainer.addOrReplace(bioCollectionUidPadCharDdc);
 				bioCollectionUidContainer.addOrReplace(bioCollectionUidExampleLbl);
 				studyCrudVO.getDetailPanelFormContainer().addOrReplace(bioCollectionUidContainer);
-				
+
 				biospecimenUidContainer.addOrReplace(biospecimenUidTokenDdc);
 				biospecimenUidContainer.addOrReplace(biospecimenUidPrefixTxtFld);
 				biospecimenUidContainer.addOrReplace(biospecimenUidPadCharDdc);
 				biospecimenUidContainer.addOrReplace(biospecimenUidExampleLbl);
 				studyCrudVO.getDetailPanelFormContainer().addOrReplace(biospecimenUidContainer);
-				
+
 				// Repaint
 				target.add(autoGenSubIdChkBox);
 				target.add(subjectUidContainer);
@@ -776,18 +776,18 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		PropertyModel<Collection<ArkModule>> selectedModPm = new PropertyModel<Collection<ArkModule>>(sm, "selectedArkModules");
 		PropertyModel<Collection<ArkModule>> availableModulesPm = new PropertyModel<Collection<ArkModule>>(sm, "availableArkModules");
 		arkModulePalette = new ArkPalette("selectedArkModules", selectedModPm, availableModulesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false);
-//		arkModulePalette.getRecorderComponent().add(new AjaxFormComponentUpdatingBehavior("onchange"){
-//			/**
-//			 * 
-//			 */
-//			private static final long	serialVersionUID	= 1L;
-//
-//			@Override
-//			protected void onUpdate(AjaxRequestTarget target) {
-//				target.add(biospecimenUidContainer);
-//				target.add(bioCollectionUidContainer);
-//			}
-//		});
+		// arkModulePalette.getRecorderComponent().add(new AjaxFormComponentUpdatingBehavior("onchange"){
+		// /**
+		// *
+		// */
+		// private static final long serialVersionUID = 1L;
+		//
+		// @Override
+		// protected void onUpdate(AjaxRequestTarget target) {
+		// target.add(biospecimenUidContainer);
+		// target.add(bioCollectionUidContainer);
+		// }
+		// });
 	}
 
 	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModelVO> studyCmpModel) {
@@ -1070,7 +1070,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		studyModel.setTotalSubjects(totalSubjects);
 		studyModel.setTotalSubjectsOfParent(totalSubjectsOfParent);
 		target.add(totalSubjectsLabel);
-		
+
 		target.add(subjectUidContainer);
 		target.add(bioCollectionUidContainer);
 		target.add(biospecimenUidContainer);
@@ -1120,12 +1120,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			ArkModule arkModule = null;
 			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
 			parentStudyListForUser = iArkCommonService.getParentStudyListForUserAndModule(arkUserVo, arkModule);
-			
-			if(!isNew()) {
+
+			if (!isNew()) {
 				boolean hasNoChildStudies = iStudyService.getChildStudyListOfParent(containerForm.getModelObject().getStudy()).isEmpty();
-				if(hasNoChildStudies) {
+				if (hasNoChildStudies) {
 					// Remove current study (cannot select itself, but child assigns accordingly)
-					parentStudyListForUser.remove(containerForm.getModelObject().getStudy());	
+					parentStudyListForUser.remove(containerForm.getModelObject().getStudy());
 				}
 			}
 		}
@@ -1134,7 +1134,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		}
 		return parentStudyListForUser;
 	}
-	
 
 	public WebMarkupContainer getSubjectUidContainer() {
 		return subjectUidContainer;

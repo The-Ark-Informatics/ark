@@ -386,7 +386,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
-	public Collection<GenderType> getGenderType() {
+	public Collection<GenderType> getGenderTypes() {
 		Example example = Example.create(new GenderType());
 		Criteria criteria = getSession().createCriteria(GenderType.class).add(example);
 		return criteria.list();
@@ -403,7 +403,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 					throw new ArkSubjectInsertException("Subject insertion locked by another process");
 				}
 				else {
-					// Enable insertion lock
+					// Enable insertion lock  TODO:  Fully evaluate probability and performance issues
 					setSubjectUidSequenceLock(study, true);
 
 					// Set default foreign key reference
@@ -432,11 +432,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 					Session session = getSession();
 					Person person = subjectVo.getLinkSubjectStudy().getPerson();
-					
+
 					if (person.getId() == null) {
 						session.save(person);
 						PersonLastnameHistory personLastNameHistory = null;
-						
+
 						// Previous LastName (if supplied on new Subject)
 						if (subjectVo.getSubjectPreviousLastname() != null && !subjectVo.getSubjectPreviousLastname().isEmpty()) {
 							personLastNameHistory = new PersonLastnameHistory();
@@ -486,7 +486,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			linkSubjectStudy.setConsentDate(new Date());
 			linkSubjectStudy.setConsentStatus(getConsentStatusByName("Consented"));
 			linkSubjectStudy.setConsentType(getConsentTypeByName("Electronic"));
-			
+
 			ConsentOption defaultConsentOption = getConsentOption("Yes");
 			linkSubjectStudy.setConsentToActiveContact(defaultConsentOption);
 			linkSubjectStudy.setConsentToPassiveDataGathering(defaultConsentOption);
@@ -755,7 +755,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		if (personPhoneList.isEmpty()) {
 			log.error("this person has no phone;  " + personId);
-			//throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+			// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 		}
 		log.info("Number of phone items retrieved for person Id " + personId + " " + personPhoneList.size());
 		return personPhoneList;
@@ -793,8 +793,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
 
 		if (personPhoneList.isEmpty()) {
-			//throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
-			log.info(" personId " +  personId + " had no phones.  No drama");
+			// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+			log.info(" personId " + personId + " had no phones.  No drama");
 		}
 		return personPhoneList;
 	}
@@ -846,7 +846,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		List<Address> personAddressList = criteria.list();
 
 		if (personAddressList.isEmpty()) {
-			//throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+			// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 			log.info("person " + personId + " does not have any addresses");
 		}
 		return personAddressList;
@@ -1031,7 +1031,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	}
 
-	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException  {
+	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException {
 
 		Criteria criteria = getSession().createCriteria(Correspondences.class);
 
@@ -1077,11 +1077,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		log.info("Number of correspondences fetched " + personCorrespondenceList.size() + "  Person Id" + personId);
 
 		if (personCorrespondenceList.isEmpty()) {
-			//throw new EntityNotFoundException("The entity with id " + personId.toString() + " cannot be found.");
-			//TODO:  does this need handling?
-			log.error("this person" + personId + 
-					" has no correspondance");
-			
+			// throw new EntityNotFoundException("The entity with id " + personId.toString() + " cannot be found.");
+			// TODO: does this need handling?
+			log.error("this person" + personId + " has no correspondance");
 		}
 
 		return personCorrespondenceList;
@@ -1267,12 +1265,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return isUnique;
 	}
 
-/*	private YesNo getYesNo(String value) {
-		Criteria criteria = getSession().createCriteria(YesNo.class);
-		criteria.add(Restrictions.ilike("name", value));
-		return (YesNo) criteria.list().get(0);
-	}*/
-	
+	/*
+	 * private YesNo getYesNo(String value) { Criteria criteria = getSession().createCriteria(YesNo.class); criteria.add(Restrictions.ilike("name",
+	 * value)); return (YesNo) criteria.list().get(0); }
+	 */
+
 	private ConsentOption getConsentOption(String value) {
 		Criteria criteria = getSession().createCriteria(ConsentOption.class);
 		criteria.add(Restrictions.ilike("name", value));
@@ -1438,7 +1435,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException {
 		StatelessSession session = getStatelessSession();
 		Study study = null;
-		
+
 		Transaction tx = session.beginTransaction();
 
 		for (Iterator<SubjectVO> iterator = subjectVoCollection.iterator(); iterator.hasNext();) {
@@ -1473,7 +1470,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 							subjectVo.getLinkSubjectStudy().getPerson().setTitleType(titleType);
 						}
 						// Set default foreign key reference
-						if (subjectVo.getLinkSubjectStudy().getPerson().getGenderType() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getGenderType().getName())) {
+						if (subjectVo.getLinkSubjectStudy().getPerson().getGenderType() == null || 
+									StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getGenderType().getName())) {
+
 							GenderType genderType = getGenderType(new Long(0));
 							subjectVo.getLinkSubjectStudy().getPerson().setGenderType(genderType);
 						}
@@ -1508,7 +1507,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) {
 		StatelessSession session = getStatelessSession();
-		
+
 		Transaction tx = session.beginTransaction();
 
 		for (Iterator<SubjectVO> iterator = subjectVoCollection.iterator(); iterator.hasNext();) {
@@ -1521,7 +1520,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 			if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName()))) {
 				if (person.getLastName() != null) {
-					PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();		
+					PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
 					personLastNameHistory.setPerson(person);
 					personLastNameHistory.setLastName(person.getLastName());
 					session.insert(personLastNameHistory);

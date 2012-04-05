@@ -47,9 +47,8 @@ public class WizardForm extends AbstractWizardForm<UploadVO> {
 
 	public WizardForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		// TODO: Fix the AbstractWizardForm to use ArkCrudContainerVO
-		super(id, feedBackPanel, arkCrudContainerVO.getSearchResultPanelContainer(),
-				arkCrudContainerVO.getWizardPanelContainer(), arkCrudContainerVO.getWizardPanelFormContainer(), 
-				arkCrudContainerVO.getSearchPanelContainer(), containerForm);
+		super(id, feedBackPanel, arkCrudContainerVO.getSearchResultPanelContainer(), arkCrudContainerVO.getWizardPanelContainer(), arkCrudContainerVO.getWizardPanelFormContainer(), arkCrudContainerVO
+				.getSearchPanelContainer(), containerForm);
 	}
 
 	public void initialiseDetailForm() {

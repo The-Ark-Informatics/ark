@@ -60,6 +60,7 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 	private IArkCommonService	iArkCommonService;
 
 	private WebMarkupContainer	arkContextMarkup;
+
 	/**
 	 * @param id
 	 */
@@ -70,7 +71,7 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 		buildTabs();
 	}
 
-	@SuppressWarnings({ "serial", "unchecked" })
+	@SuppressWarnings( { "serial", "unchecked" })
 	public void buildTabs() {
 
 		List<ITab> moduleSubTabsList = new ArrayList<ITab>();
@@ -106,7 +107,7 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)) {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
-						panelToReturn = new SubjectUploadContainerPanel(panelId,menuArkFunction);
+						panelToReturn = new SubjectUploadContainerPanel(panelId, menuArkFunction);
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE)) {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
@@ -115,8 +116,7 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)) {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						// useCustomFieldDisplay = true
-						panelToReturn = new CustomFieldContainerPanel(panelId, true, 
-														iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT));
+						panelToReturn = new CustomFieldContainerPanel(panelId, true, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT));
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_DATA)) {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);

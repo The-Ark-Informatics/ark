@@ -35,12 +35,11 @@ import au.org.theark.study.web.component.subjectUpload.form.SearchForm;
  */
 @SuppressWarnings("serial")
 public class SearchPanel extends Panel {
-	
+
 	private ArkCrudContainerVO					arkCrudContainerVO;
 	private FeedbackPanel						feedBackPanel;
 	private PageableListView<StudyUpload>	listView;
 	private ContainerForm						containerForm;
-
 
 	/* Constructor */
 	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<StudyUpload> listView, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
