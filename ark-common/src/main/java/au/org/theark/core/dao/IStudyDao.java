@@ -136,7 +136,7 @@ public interface IStudyDao {
 	 * 
 	 * @return
 	 */
-	public Collection<GenderType> getGenderType();
+	public Collection<GenderType> getGenderTypes();
 
 	/**
 	 * An interface to return a list of Subject Status types
