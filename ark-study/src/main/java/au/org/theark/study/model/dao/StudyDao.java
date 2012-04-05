@@ -554,6 +554,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 
 		List<SubjectStatus> subjectStatus = criteria.list();
+		
+		//TODO analyze
 		if (subjectStatus.size() > 0) {
 			if (subjectStatus.size() > 1) {
 				log.error("Backend database has non-unique Status names, returned the first one");
