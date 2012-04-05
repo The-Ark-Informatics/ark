@@ -211,8 +211,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	public List<StudyStatus> getListOfStudyStatus() {
 		Example studyStatus = Example.create(new StudyStatus());
-		Criteria studyStatusCriteria = getSession().createCriteria(StudyStatus.class).add(studyStatus);
-		return studyStatusCriteria.list();
+		Criteria criteria = getSession().createCriteria(StudyStatus.class).add(studyStatus);
+		return criteria.list();
 
 	}
 
@@ -382,12 +382,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
+	//TODO
 	public Country getCountry(Long id) {
 		Criteria criteria = getSession().createCriteria(Country.class);
 		criteria.add(Restrictions.eq("id", id));
 		return (Country) criteria.list().get(0);
 	}
 
+	//TODO
 	public Country getCountry(String countryCode) {
 		Criteria criteria = getSession().createCriteria(Country.class);
 		criteria.add(Restrictions.eq("countryCode", countryCode));
@@ -399,11 +401,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		if (country == null) {
 			country = getCountry(Constants.DEFAULT_COUNTRY_CODE);
 		}
-		Criteria stateCriteria = getSession().createCriteria(CountryState.class);
-		stateCriteria.add(Restrictions.eq("country", country));
-		stateCriteria.addOrder(Order.asc("state"));
-		List<CountryState> stateList = (List<CountryState>) stateCriteria.list();
-		return stateList;
+		Criteria criteria = getSession().createCriteria(CountryState.class);
+		criteria.add(Restrictions.eq("country", country));
+		criteria.addOrder(Order.asc("state"));
+		return criteria.list();	
 	}
 
 	/**
@@ -440,7 +441,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public List<StudyComp> getStudyComponentByStudy(Study study) {
 		Criteria criteria = getSession().createCriteria(StudyComp.class);
 		criteria.add(Restrictions.eq("study", study));
-		//List<StudyComp> studyCompList = criteria.list();
 		return criteria.list();
 	}
 
@@ -452,7 +452,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		criteria.createAlias("linkSubjectStudy", "lss");
 		criteria.add(Restrictions.eq("lss.person", person));
 		List list = criteria.list();
-		if (list != null && criteria.list().size() > 0) {
+		if (list != null && list.size() > 0) {
 			isConsented = true;
 		}
 		return isConsented;
@@ -511,10 +511,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Example example = Example.create(personSurnameHistory);
 
 		Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class).add(example);
-		if (criteria != null && criteria.list() != null && criteria.list().size() > 0) {
-			personLastnameHistoryToReturn = (PersonLastnameHistory) criteria.list().get(0);
+		if (criteria != null){//should it ever?
+			List<PersonLastnameHistory> results = criteria.list();
+			if(results != null && !results.isEmpty()) {
+				personLastnameHistoryToReturn = (PersonLastnameHistory) results.get(0);
+			}
 		}
-
 		return personLastnameHistoryToReturn;
 	}
 
@@ -545,10 +547,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		criteria.addOrder(Order.desc("id"));
 		PersonLastnameHistory personLastameHistory = new PersonLastnameHistory();
-		if (!criteria.list().isEmpty()) {
-			//what he is saying is get the second-last last-name to display as "previous lastname"
-			if (criteria.list().size() > 1)
-				personLastameHistory = (PersonLastnameHistory) criteria.list().get(1);
+
+		List<PersonLastnameHistory> results = criteria.list();
+		if (!results.isEmpty()) {
+			//what this is saying is get the second-last last-name to display as "previous lastname"
+			personLastameHistory = (PersonLastnameHistory) results.get(1);
 		}
 
 		return personLastameHistory.getLastName();
@@ -561,9 +564,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			criteria.add(Restrictions.eq(Constants.PERSON_SURNAME_HISTORY_PERSON, person));
 		}
 		criteria.addOrder(Order.desc("id"));
+
+		List<PersonLastnameHistory> results = criteria.list();
 		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory();
-		if (!criteria.list().isEmpty()) {
-			personLastnameHistory = (PersonLastnameHistory) criteria.list().get(0);
+		if (!results.isEmpty()) {
+			personLastnameHistory = (PersonLastnameHistory) results.get(0);
 		}
 
 		return personLastnameHistory.getLastName();
@@ -772,6 +777,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		List<LinkSubjectStudy> list = criteria.list();
 		List<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
 
+		//TODO analyse
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 
 			LinkSubjectStudy linkSubjectStudy = (LinkSubjectStudy) iterator.next();
