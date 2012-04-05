@@ -260,9 +260,9 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 			String delimiterTypeName = null;
 			Criteria criteria = getSession().createCriteria(DelimiterType.class);
 			criteria.add(Restrictions.eq("delimiterCharacter", delimiterCharacter));
-
-			if (criteria.list().size() > 0) {
-				DelimiterType delimiterType = (DelimiterType) criteria.list().get(0);
+			List<DelimiterType> results = criteria.list();
+			if (results.size() > 0) {
+				DelimiterType delimiterType = (DelimiterType) results.get(0);
 				delimiterTypeName = delimiterType.getName();
 			}
 			return delimiterTypeName;
