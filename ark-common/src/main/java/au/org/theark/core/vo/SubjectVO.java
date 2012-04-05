@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2011  University of Western Australia. All rights reserved.
  * 
+ * Copyright (c) 2011  University of Western Australia. All rights reserved.
  * This file is part of The Ark.
  * 
  * The Ark is free software; you can redistribute it and/or
