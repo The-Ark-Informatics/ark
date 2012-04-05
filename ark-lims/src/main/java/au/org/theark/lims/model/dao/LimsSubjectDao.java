@@ -133,8 +133,13 @@ public class LimsSubjectDao extends HibernateSessionDao implements ILimsSubjectD
 		Example example = Example.create(subjectStatus);
 
 		Criteria criteria = getSession().createCriteria(SubjectStatus.class).add(example);
-		if (criteria != null && criteria.list() != null && criteria.list().size() > 0) {
-			statusToReturn = (SubjectStatus) criteria.list().get(0);
+		
+		if (criteria != null ){
+
+			List<SubjectStatus> results = criteria.list();
+			if(results != null && !results.isEmpty()) {
+				statusToReturn = (SubjectStatus) results.get(0);
+			}
 		}
 
 		return statusToReturn;
@@ -147,10 +152,11 @@ public class LimsSubjectDao extends HibernateSessionDao implements ILimsSubjectD
 			criteria.add(Restrictions.eq(Constants.PERSON_SURNAME_HISTORY_PERSON, person));
 		}
 		criteria.addOrder(Order.desc("id"));
-		PersonLastnameHistory personLastameHistory = new PersonLastnameHistory();
-		if (!criteria.list().isEmpty()) {
-			if (criteria.list().size() > 1)
-				personLastameHistory = (PersonLastnameHistory) criteria.list().get(1);
+		PersonLastnameHistory personLastameHistory = null;
+		List<PersonLastnameHistory> results = criteria.list();
+
+		if (!results.isEmpty()) {
+				personLastameHistory = (PersonLastnameHistory)results.get(1);
 		}
 
 		return personLastameHistory.getLastName();
