@@ -204,7 +204,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS, (List<VitalStatus>) vitalStatusList, vitalStatusRenderer);
 
 		// Gender Type
-		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType();
+		Collection<GenderType> genderTypeList = iArkCommonService.getGenderTypes();
 		ChoiceRenderer<GenderType> genderTypeRenderer = new ChoiceRenderer<GenderType>(Constants.NAME, Constants.ID);
 		genderTypeDdc = new DropDownChoice<GenderType>(Constants.PERSON_GENDER_TYPE, (List<GenderType>) genderTypeList, genderTypeRenderer);
 

@@ -200,7 +200,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
 		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm, Constants.PERSON);
 		PropertyModel<GenderType> genderTypePm = new PropertyModel<GenderType>(personPm, Constants.GENDER_TYPE);
-		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType();
+		Collection<GenderType> genderTypeList = iArkCommonService.getGenderTypes();
 		ChoiceRenderer<GenderType> genderTypeRenderer = new ChoiceRenderer<GenderType>(Constants.NAME, Constants.ID);
 		genderTypeDdc = new DropDownChoice<GenderType>(Constants.GENDER_TYPE, genderTypePm, (List<GenderType>) genderTypeList, genderTypeRenderer);
 	}
