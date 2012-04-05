@@ -48,19 +48,19 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long						serialVersionUID	= 1L;
 
-	//TODO: analyze unused 
+	// TODO: analyze unused
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService							studyService;
 
-	//TODO: analyze unused 
+	// TODO: analyze unused
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
 
 	private PageableListView<StudyUpload>		listView;
 	private CompoundPropertyModel<UploadVO>	cpmModel;
-	
+
 	private TextField<String>						uploadIdTxtFld;
 	private TextField<String>						uploadFilenameTxtFld;
 	private DropDownChoice<FileFormat>			fileFormatDdc;
@@ -72,7 +72,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		initialiseFieldForm();
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");	
+		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
 	}
 
 	@SuppressWarnings("unchecked")

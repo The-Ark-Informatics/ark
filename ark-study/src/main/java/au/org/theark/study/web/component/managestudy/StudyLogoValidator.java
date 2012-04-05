@@ -41,11 +41,11 @@ public class StudyLogoValidator implements IValidator<List<FileUpload>> {
 	private SerializableBufferedImage	image;
 
 	public void validate(IValidatable<List<FileUpload>> pValidatable) {
-		
+
 		List<FileUpload> fileUploadList = pValidatable.getValue();
-		
+
 		for (FileUpload fileUploadImage : fileUploadList) {
-			
+
 			String fileExtension = StringUtils.getFilenameExtension(fileUploadImage.getClientFileName());
 			ValidationError error = new ValidationError();
 
@@ -75,8 +75,8 @@ public class StudyLogoValidator implements IValidator<List<FileUpload>> {
 				error.addMessageKey("study.studyLogoImageError");
 				pValidatable.error(error);
 			}
-			
+
 		}
-		
+
 	}
 }

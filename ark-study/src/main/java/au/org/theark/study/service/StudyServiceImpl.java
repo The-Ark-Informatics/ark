@@ -115,7 +115,8 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	/**
-	 * @param iUserService the iUserService to set
+	 * @param iUserService
+	 *           the iUserService to set
 	 */
 	@Autowired
 	public void setiUserService(IUserService iUserService) {
@@ -140,7 +141,8 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	/**
-	 * @param iAuditDao the iAuditDao to set
+	 * @param iAuditDao
+	 *           the iAuditDao to set
 	 */
 	@Autowired
 	public void setiAuditDao(IAuditDao iAuditDao) {
@@ -185,7 +187,7 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
 		iArkCommonService.createAuditHistory(ah);
 	}
-	
+
 	public void createStudy(StudyModelVO studyModelVo, ArkUserVO arkUserVo) {
 		// Create the study group in the LDAP for the selected applications and also add the roles to each of the application.
 		iStudyDao.create(studyModelVo.getStudy(), arkUserVo, studyModelVo.getSelectedArkModules());
@@ -397,7 +399,7 @@ public class StudyServiceImpl implements IStudyService {
 	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkSubjectInsertException {
 		iStudyDao.createSubject(subjectVO);
 		createLssConsentHistory(subjectVO.getLinkSubjectStudy());
-		
+
 		assignChildStudies(subjectVO);
 
 		AuditHistory ah = new AuditHistory();
@@ -411,7 +413,7 @@ public class StudyServiceImpl implements IStudyService {
 	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException {
 		iStudyDao.updateSubject(subjectVO);
 		updateLssConsentHistory(subjectVO.getLinkSubjectStudy());
-		
+
 		assignChildStudies(subjectVO);
 
 		AuditHistory ah = new AuditHistory();
@@ -421,7 +423,7 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityId(subjectVO.getLinkSubjectStudy().getId());
 		iArkCommonService.createAuditHistory(ah);
 	}
-	
+
 	private void createLssConsentHistory(LinkSubjectStudy newLinkSubjectStudy) {
 		LssConsentHistory lssConsentHistory = new LssConsentHistory();
 		lssConsentHistory.setLinkSubjectStudy(newLinkSubjectStudy);
@@ -434,7 +436,7 @@ public class StudyServiceImpl implements IStudyService {
 		lssConsentHistory.setConsentDownloaded(newLinkSubjectStudy.getConsentDownloaded());
 		iAuditDao.createLssConsentHistory(lssConsentHistory);
 	}
-	
+
 	private void updateLssConsentHistory(LinkSubjectStudy newLinkSubjectStudy) {
 		// Always simply add to the history table
 		createLssConsentHistory(newLinkSubjectStudy);
@@ -595,7 +597,7 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityId(consent.getId());
 		iArkCommonService.createAuditHistory(ah);
 	}
-	
+
 	private void createConsentHistory(Consent newConsent) {
 		ConsentHistory consentHistory = new ConsentHistory();
 		consentHistory.setLinkSubjectStudy(newConsent.getLinkSubjectStudy());
@@ -615,22 +617,23 @@ public class StudyServiceImpl implements IStudyService {
 
 	private void updateConsentHistory(Consent newConsent) throws ArkSystemException {
 		Consent oldConsent = getConsent(newConsent.getId());
-		
+
 		// Only add audit log if changes actually made
 		/*
-		if((newConsent.getStudyComponentStatus() != oldConsent.getStudyComponentStatus()) ||
-			((newConsent.getConsentedBy() != oldConsent.getConsentedBy()) || (newConsent.getConsentedBy() != null && oldConsent.getConsentedBy() == null)) ||
-			((newConsent.getConsentDate() != oldConsent.getConsentDate()) || (newConsent.getConsentDate() != null && oldConsent.getConsentDate() == null)) ||
-			((newConsent.getConsentStatus() != oldConsent.getConsentStatus()) || (newConsent.getConsentStatus() != null && oldConsent.getConsentStatus() == null)) ||
-			((newConsent.getConsentType() != oldConsent.getConsentType()) || (newConsent.getConsentType() != null && oldConsent.getConsentType() == null)) ||
-			((newConsent.getComments() != oldConsent.getComments()) || (newConsent.getComments() != null && oldConsent.getComments() == null)) ||
-			((newConsent.getRequestedDate() != oldConsent.getRequestedDate()) || (newConsent.getRequestedDate() != null && oldConsent.getRequestedDate() == null)) ||
-			((newConsent.getReceivedDate() != oldConsent.getReceivedDate()) || (newConsent.getReceivedDate() != null && oldConsent.getReceivedDate() == null)) ||
-			((newConsent.getCompletedDate() != oldConsent.getCompletedDate()) || (newConsent.getCompletedDate() != null && oldConsent.getCompletedDate() == null)) ||
-			((newConsent.getConsentDownloaded() != oldConsent.getConsentDownloaded()) || (newConsent.getConsentDownloaded() != null && oldConsent.getConsentDownloaded() == null))
-			) {
-			*/
-		if(!newConsent.equals(oldConsent)) {
+		 * if((newConsent.getStudyComponentStatus() != oldConsent.getStudyComponentStatus()) || ((newConsent.getConsentedBy() !=
+		 * oldConsent.getConsentedBy()) || (newConsent.getConsentedBy() != null && oldConsent.getConsentedBy() == null)) ||
+		 * ((newConsent.getConsentDate() != oldConsent.getConsentDate()) || (newConsent.getConsentDate() != null && oldConsent.getConsentDate() ==
+		 * null)) || ((newConsent.getConsentStatus() != oldConsent.getConsentStatus()) || (newConsent.getConsentStatus() != null &&
+		 * oldConsent.getConsentStatus() == null)) || ((newConsent.getConsentType() != oldConsent.getConsentType()) || (newConsent.getConsentType() !=
+		 * null && oldConsent.getConsentType() == null)) || ((newConsent.getComments() != oldConsent.getComments()) || (newConsent.getComments() != null
+		 * && oldConsent.getComments() == null)) || ((newConsent.getRequestedDate() != oldConsent.getRequestedDate()) || (newConsent.getRequestedDate()
+		 * != null && oldConsent.getRequestedDate() == null)) || ((newConsent.getReceivedDate() != oldConsent.getReceivedDate()) ||
+		 * (newConsent.getReceivedDate() != null && oldConsent.getReceivedDate() == null)) || ((newConsent.getCompletedDate() !=
+		 * oldConsent.getCompletedDate()) || (newConsent.getCompletedDate() != null && oldConsent.getCompletedDate() == null)) ||
+		 * ((newConsent.getConsentDownloaded() != oldConsent.getConsentDownloaded()) || (newConsent.getConsentDownloaded() != null &&
+		 * oldConsent.getConsentDownloaded() == null)) ) {
+		 */
+		if (!newConsent.equals(oldConsent)) {
 			createConsentHistory(newConsent);
 		}
 	}
@@ -883,36 +886,14 @@ public class StudyServiceImpl implements IStudyService {
 		return uploadReport;
 	}
 
-	public SubjectUploadValidator validateSubjectFileData(File file, String fileFormat, char delimChar) {
-		//java.util.Collection<String> validationMessages = null;
-		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
-
-		try {
-			log.debug("Validating Subject file data");
-			InputStream is = new FileInputStream(file);
-			//validationMessages = 
-			subjectUploadValidator.validateMatrixSubjectFileData(is, file.length(), fileFormat, delimChar);
-		}
-		catch (IOException ioe) {
-			log.error(Constants.IO_EXCEPTION + ioe);
-		}
-		catch (FileFormatException ffe) {
-			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
-		}
-		catch (ArkBaseException abe) {
-			log.error(Constants.ARK_BASE_EXCEPTION + abe);
-		}
-		return subjectUploadValidator;
-	}
-
 	public SubjectUploadValidator validateSubjectFileFormat(File file, String fileFormat, char delimChar) {
-		//java.util.Collection<String> validationMessages = null;
+		// java.util.Collection<String> validationMessages = null;
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 
 		try {
 			log.debug("Validating Subject file format");
 			InputStream is = new FileInputStream(file);
-			//validationMessages = 
+			// validationMessages =
 			subjectUploadValidator.validateSubjectMatrixFileFormat(is, file.length(), fileFormat, delimChar);
 		}
 		catch (IOException ioe) {
@@ -928,11 +909,11 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public SubjectUploadValidator validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
-		//java.util.Collection<String> validationMessages = null;
+		// java.util.Collection<String> validationMessages = null;
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 
 		try {
-			//validationMessages = 
+			// validationMessages =
 			subjectUploadValidator.validateSubjectMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe) {
@@ -945,16 +926,17 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar) {
-//		java.util.Collection<String> validationMessages = null;
-	//	Subject currentUser = SecurityUtils.getSubject();
-//		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-//		Study study = iArkCommonService.getStudy(studyId);
+		// java.util.Collection<String> validationMessages = null;
+		// Subject currentUser = SecurityUtils.getSubject();
+		// Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		// Study study = iArkCommonService.getStudy(studyId);
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 
 		try {
 			log.debug("Validating Subject file data");
-//			validationMessages = subjectUploadValidator.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
-			subjectUploadValidator.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			// validationMessages = subjectUploadValidator.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat,
+			// delimChar);
+			subjectUploadValidator.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE);
 		}
 		catch (FileFormatException ffe) {
 			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -1067,8 +1049,8 @@ public class StudyServiceImpl implements IStudyService {
 					if (count <= 1) {
 						// Then update the CustomField's hasDataFlag to false;
 						Long id = subjectCustomFieldData.getCustomFieldDisplay().getCustomField().getId();// Reload since the session was closed in the
-																																		// front end and the child objects won't be lazy
-																																		// loaded
+						// front end and the child objects won't be lazy
+						// loaded
 						CustomField customField = iArkCommonService.getCustomField(id);
 						customField.setCustomFieldHasData(false);
 						CustomFieldVO customFieldVO = new CustomFieldVO();
@@ -1159,7 +1141,7 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void cloneSubjectForSubStudy(LinkSubjectStudy linkSubjectStudy) {
 		iStudyDao.cloneSubjectForSubStudy(linkSubjectStudy);
-		
+
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		ah.setComment("Cloned Subject " + linkSubjectStudy.getSubjectUID());
@@ -1179,7 +1161,7 @@ public class StudyServiceImpl implements IStudyService {
 	public List<LssConsentHistory> getLssConsentHistoryList(LinkSubjectStudy linkSubjectStudy) {
 		return iAuditDao.getLssConsentHistoryList(linkSubjectStudy);
 	}
-	
+
 	public List<ConsentHistory> getConsentHistoryList(Consent consent) {
 		return iAuditDao.getConsentHistoryList(consent);
 	}

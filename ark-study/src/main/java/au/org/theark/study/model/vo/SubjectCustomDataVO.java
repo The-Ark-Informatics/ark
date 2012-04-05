@@ -30,8 +30,8 @@ public class SubjectCustomDataVO extends CustomDataVO<SubjectCustomFieldData> im
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
-	
-	protected LinkSubjectStudy linkSubjectStudy;
+
+	protected LinkSubjectStudy	linkSubjectStudy;
 
 	public SubjectCustomDataVO() {
 		super();

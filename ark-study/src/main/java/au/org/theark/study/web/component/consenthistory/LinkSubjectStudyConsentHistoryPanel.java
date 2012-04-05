@@ -46,15 +46,15 @@ public class LinkSubjectStudyConsentHistoryPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long						serialVersionUID	= 1L;
+	private static final long							serialVersionUID	= 1L;
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService						iArkCommonService;
+	private IArkCommonService							iArkCommonService;
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService							iStudyService;
+	private IStudyService								iStudyService;
 	private PageableListView<LssConsentHistory>	listView;
-	private PagingNavigator							pageNavigator;
-	private SimpleDateFormat						simpleDateFormat	= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
+	private PagingNavigator								pageNavigator;
+	private SimpleDateFormat							simpleDateFormat	= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
 
 	/**
 	 * Construct a ConsentHistoryPanel for the linkSubjectStudy in question
@@ -86,7 +86,7 @@ public class LinkSubjectStudyConsentHistoryPanel extends Panel {
 				catch (EntityNotFoundException e) {
 					e.printStackTrace();
 				}
-				
+
 				listView.removeAll();
 				return consentHistoryList;
 			}
@@ -108,21 +108,21 @@ public class LinkSubjectStudyConsentHistoryPanel extends Panel {
 			protected void populateItem(final ListItem<LssConsentHistory> item) {
 				LssConsentHistory consentHistory = item.getModelObject();
 
-				if(consentHistory.getTimestamp() != null ) {
+				if (consentHistory.getTimestamp() != null) {
 					item.add(new Label("timestamp", simpleDateFormat.format(consentHistory.getTimestamp())));
 				}
 				else {
 					item.add(new Label("timestamp"));
 				}
-				
+
 				if (consentHistory.getConsentDate() != null) {
 					item.add(new Label("consentDate", simpleDateFormat.format(consentHistory.getConsentDate())));
 				}
 				else {
 					item.add(new Label("consentDate"));
 				}
-				
-				if(consentHistory.getConsentStatus() != null) {
+
+				if (consentHistory.getConsentStatus() != null) {
 					item.add(new Label("consentStatus", consentHistory.getConsentStatus().getName()));
 				}
 				else {
@@ -135,7 +135,7 @@ public class LinkSubjectStudyConsentHistoryPanel extends Panel {
 				else {
 					item.add(new Label("consentType"));
 				}
-				
+
 				if (consentHistory.getConsentDownloaded() != null) {
 					item.add(new Label("consentDownloaded", consentHistory.getConsentDownloaded().getName()));
 				}
@@ -149,7 +149,7 @@ public class LinkSubjectStudyConsentHistoryPanel extends Panel {
 				else {
 					item.add(new Label("consentToPassiveDataGathering"));
 				}
-				
+
 				if (consentHistory.getConsentToActiveContact() != null) {
 					item.add(new Label("consentToActiveContact", consentHistory.getConsentToActiveContact().getName()));
 				}

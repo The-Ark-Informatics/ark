@@ -44,8 +44,8 @@ public class MyDetails extends Panel {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 8278822398202036799L;
-	private transient Logger						log	= LoggerFactory.getLogger(MyDetails.class);
+	private static final long						serialVersionUID	= 8278822398202036799L;
+	private transient Logger						log					= LoggerFactory.getLogger(MyDetails.class);
 	@SpringBean(name = "userService")
 	private IUserService								userService;
 	private CompoundPropertyModel<ArkUserVO>	arkUserModelCpm;
@@ -63,9 +63,8 @@ public class MyDetails extends Panel {
 
 			protected void onSave(AjaxRequestTarget target) {
 				ArkUserVO arkUser = getModelObject();
-				
-				if((arkUser.getPassword() != null && arkUser.getConfirmPassword() != null) &&
-						(!arkUser.getPassword().isEmpty() && !arkUser.getConfirmPassword().isEmpty())	){
+
+				if ((arkUser.getPassword() != null && arkUser.getConfirmPassword() != null) && (!arkUser.getPassword().isEmpty() && !arkUser.getConfirmPassword().isEmpty())) {
 					// Temporary allow the user to select if he wants to change it
 					arkUser.setChangePassword(true);
 				}

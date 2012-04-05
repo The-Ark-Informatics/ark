@@ -62,7 +62,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long							serialVersionUID	= 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	protected IArkCommonService						iArkCommonService;
@@ -84,15 +84,14 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 	protected DropDownChoice<ConsentStatus>		consentStatusChoice;
 	protected DropDownChoice<ConsentType>			consentTypeChoice;
 
-	public SearchForm(String id, PageableListView<Consent> listView, FeedbackPanel feedBackPanel, 
-							CompoundPropertyModel<ConsentVO> model, ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchForm(String id, PageableListView<Consent> listView, FeedbackPanel feedBackPanel, CompoundPropertyModel<ConsentVO> model, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, model, feedBackPanel, arkCrudContainerVO);
 
 		this.cpmModel = model;
 		this.pageableListView = listView;
-		//initialiseSearchForm();
-		//addSearchComponentsToForm();
-		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model<String>() ));
+		// initialiseSearchForm();
+		// addSearchComponentsToForm();
+		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model<String>()));
 		add(generalTextLbl);
 		resetButton.setVisible(false);
 		searchButton.setVisible(false);
@@ -170,7 +169,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 		target.add(feedbackPanel);
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-																																										// session
+		// session
 		Consent consent = getModelObject().getConsent();
 
 		try {
@@ -194,7 +193,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 
 			getModelObject().setConsentList(consentList);
 			pageableListView.removeAll();
-			
+
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		}

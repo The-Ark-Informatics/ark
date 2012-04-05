@@ -129,7 +129,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 			ArkUserVO arkUserVo = new ArkUserVO();
 			arkUserVo.setArkUserEntity(arkUser);
 			arkUserVo.setStudy(searchStudyCriteria);
-			
+
 			studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo);
 
 			if (studyListForUser.size() == 0) {
@@ -171,14 +171,13 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		// Hide Admin and Reporting modules from "Available" view
 		availableArkModules.remove(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_ADMIN));
 		availableArkModules.remove(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_REPORTING));
-		
+
 		containerForm.getModelObject().setAvailableArkModules(availableArkModules);// ArkModule from database not LDAP.
-		
+
 		Collection<ArkModule> selectedArkModules = new ArrayList<ArkModule>();
 		selectedArkModules.add(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_STUDY));
 		selectedArkModules.add(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_SUBJECT));
 		containerForm.getModelObject().setSelectedArkModules(selectedArkModules);
-		
 
 		// Hide Summary details on new
 		studyCrudContainerVO.getSummaryContainer().setVisible(false);
@@ -190,7 +189,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 
 		StudyHelper studyHelper = new StudyHelper();
 		studyHelper.setStudyLogo(containerForm.getModelObject().getStudy(), target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
-		
+
 		target.add(studyCrudContainerVO.getStudyLogoMarkup());
 		target.add(studyCrudContainerVO.getStudyLogoUploadContainer());
 
@@ -203,7 +202,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		containerForm.getModelObject().getStudy().setAutoGenerateSubjectUid(false);
 		containerForm.getModelObject().getStudy().setAutoConsent(false);
 
-		//TODO: Suggest moving some of this "onNew" code into DetailPanel/DetailForm's onBeforeRender(..)
+		// TODO: Suggest moving some of this "onNew" code into DetailPanel/DetailForm's onBeforeRender(..)
 		// Disable SubjectUID pattern fields by default for New study
 		WebMarkupContainer wmc = (WebMarkupContainer) studyCrudContainerVO.getDetailPanelContainer();
 		DetailPanel detailsPanel = (DetailPanel) wmc.get("detailPanel");

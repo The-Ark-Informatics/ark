@@ -78,9 +78,8 @@ public class SearchResultListPanel extends Panel {
 
 	private Container					studyContainerForm;
 	private StudyCrudContainerVO	studyCrudContainerVO;
-	private Label 						childStudyNote = new Label("childStudyNote", "+ Indicates a child study");
-	private boolean 					childStudiesExist = false;
-	
+	private Label						childStudyNote		= new Label("childStudyNote", "+ Indicates a child study");
+	private boolean					childStudiesExist	= false;
 
 	public SearchResultListPanel(String id, StudyCrudContainerVO studyCrudContainerVO, Container containerForm) {
 		super(id);
@@ -93,7 +92,7 @@ public class SearchResultListPanel extends Panel {
 		this.studyCrudContainerVO = studyCrudContainerVO;
 		this.studyContainerForm = containerForm;
 		this.moduleTabbedPanel = moduleTabbedPanel;
-		
+
 		childStudyNote.setOutputMarkupId(true);
 		childStudyNote.setVisible(false);
 		add(childStudyNote);
@@ -262,17 +261,16 @@ public class SearchResultListPanel extends Panel {
 
 				target.add(studyCrudContainerVO.getSummaryContainer());
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, studyCrudContainerVO);
-				
-				
+
 				// Example auto-generated SubjectUID
 				Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
-				
+
 				// Get the Biospecimen UID Pattern if present for the given study
 				BiospecimenUidTemplate biospecimentUidTemplate = null;
 				// Get the BioCollection UID pattern if present
 				BioCollectionUidTemplate bioCollectionUidTemplate = null;
-				
-				if(parentStudy == null || searchStudy == parentStudy) {
+
+				if (parentStudy == null || searchStudy == parentStudy) {
 					subjectUidExampleLbl.setDefaultModelObject(iArkCommonService.getSubjectUidExample(searchStudy));
 					biospecimentUidTemplate = iArkCommonService.getBiospecimenUidTemplate(searchStudy);
 					bioCollectionUidTemplate = iArkCommonService.getBioCollectionUidTemplate(searchStudy);
@@ -282,7 +280,7 @@ public class SearchResultListPanel extends Panel {
 					biospecimentUidTemplate = iArkCommonService.getBiospecimenUidTemplate(parentStudy);
 					bioCollectionUidTemplate = iArkCommonService.getBioCollectionUidTemplate(parentStudy);
 				}
-					
+
 				if (biospecimentUidTemplate != null) {
 					studyContainerForm.getModelObject().setBiospecimenUidTemplate(biospecimentUidTemplate);
 				}
@@ -291,17 +289,17 @@ public class SearchResultListPanel extends Panel {
 					studyContainerForm.getModelObject().setBioCollectionUidTemplate(bioCollectionUidTemplate);
 				}
 				target.add(subjectUidExampleLbl);
-				
+
 				boolean isChildStudy = (parentStudy != null && parentStudy != searchStudy);
-				detailForm.getSubjectFileUploadContainer().setVisible(isChildStudy );
-				detailForm.getSubjectFileUploadContainer().setEnabled(isChildStudy );
+				detailForm.getSubjectFileUploadContainer().setVisible(isChildStudy);
+				detailForm.getSubjectFileUploadContainer().setEnabled(isChildStudy);
 
 				int totalSubjects = iArkCommonService.getCountOfSubjects(searchStudy);
 				int totalSubjectsOfParent = iArkCommonService.getCountOfSubjects(searchStudy.getParentStudy());
-				
+
 				studyContainerForm.getModelObject().setTotalSubjects(totalSubjects);
 				studyContainerForm.getModelObject().setTotalSubjectsOfParent(totalSubjectsOfParent);
-				
+
 				/*
 				 * This is to load the subjects linked to the Main study as available subjects and also to load a list of subjects linked to the
 				 * sub-study. The code below checks to see if the study selected is linked to a main study and if so works the subjects for main and
@@ -309,7 +307,7 @@ public class SearchResultListPanel extends Panel {
 				 */
 				if ((searchStudy.getParentStudy() != null) && (searchStudy != searchStudy.getParentStudy())) {
 					LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-					//linkSubjectStudy.setStudy(linkedStudySubStudy.getMainStudy());
+					// linkSubjectStudy.setStudy(linkedStudySubStudy.getMainStudy());
 					linkSubjectStudy.setStudy(searchStudy.getParentStudy());
 					SubjectVO subjectVO = new SubjectVO();
 					subjectVO.setLinkSubjectStudy(linkSubjectStudy);
@@ -318,7 +316,7 @@ public class SearchResultListPanel extends Panel {
 
 					subjectVO = new SubjectVO();
 					linkSubjectStudy = new LinkSubjectStudy();
-					//linkSubjectStudy.setStudy(linkedStudySubStudy.getSubStudy());
+					// linkSubjectStudy.setStudy(linkedStudySubStudy.getSubStudy());
 					linkSubjectStudy.setStudy(searchStudy);
 					subjectVO.setLinkSubjectStudy(linkSubjectStudy);
 					// fetch the list of subjects linked to the sub study and set to selected subjects
@@ -345,10 +343,9 @@ public class SearchResultListPanel extends Panel {
 					// Again For Subject UID its on the Study instance. The BioSpecimen and BioCollection have independent template tables.
 					studyContainerForm.getModelObject().setBiospecimenUidTemplate(biospecimentUidTemplate);
 					studyContainerForm.getModelObject().setBioCollectionUidTemplate(bioCollectionUidTemplate);
-					
-					
+
 				}
-				
+
 				// Refresh base container form to remove any feedBack messages
 				target.add(autoSubjectUidcontainer);
 				target.add(subjectUidcontainer);

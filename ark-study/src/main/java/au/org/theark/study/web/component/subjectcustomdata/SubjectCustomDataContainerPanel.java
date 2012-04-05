@@ -48,26 +48,26 @@ public class SubjectCustomDataContainerPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
-	
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	protected IArkCommonService<Void>					iArkCommonService;
-	
-	protected CompoundPropertyModel<SubjectCustomDataVO> cpModel;
+	private static final long										serialVersionUID		= 1L;
 
-	protected FeedbackPanel feedbackPanel;
-	protected WebMarkupContainer customDataEditorWMC;
-	
-	private CustomField customFieldCriteria = new CustomField();
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	protected IArkCommonService<Void>							iArkCommonService;
+
+	protected CompoundPropertyModel<SubjectCustomDataVO>	cpModel;
+
+	protected FeedbackPanel											feedbackPanel;
+	protected WebMarkupContainer									customDataEditorWMC;
+
+	private CustomField												customFieldCriteria	= new CustomField();
 
 	/**
 	 * @param id
 	 */
 	public SubjectCustomDataContainerPanel(String id) {
 		super(id);
-		cpModel = new CompoundPropertyModel<SubjectCustomDataVO>(new SubjectCustomDataVO());		
+		cpModel = new CompoundPropertyModel<SubjectCustomDataVO>(new SubjectCustomDataVO());
 	}
-	
+
 	public SubjectCustomDataContainerPanel initialisePanel() {
 		add(initialiseFeedbackPanel());
 		add(initialiseCustomDataEditorWMC());
@@ -82,21 +82,22 @@ public class SubjectCustomDataContainerPanel extends Panel {
 		customDataEditorWMC = new WebMarkupContainer("customDataEditorWMC");
 		Panel dataEditorPanel;
 		boolean contextLoaded = prerenderContextCheck();
-		
+
 		if (contextLoaded && isActionPermitted()) {
 			int fieldCount = iArkCommonService.getCustomFieldCount(customFieldCriteria);
-			if(fieldCount <= 0) {
+			if (fieldCount <= 0) {
 				dataEditorPanel = new EmptyPanel("customDataEditorPanel");
 				this.error("There are currently no custom fields defined.");
 			}
 			else {
-				dataEditorPanel = new SubjectCustomDataEditorPanel("customDataEditorPanel", cpModel, feedbackPanel).initialisePanel();;
+				dataEditorPanel = new SubjectCustomDataEditorPanel("customDataEditorPanel", cpModel, feedbackPanel).initialisePanel();
+				;
 			}
 		}
 		else if (!contextLoaded) {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
 			this.error("A study and subject in context are required to proceed.");
-		} 
+		}
 		else {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
 			this.error("You do not have sufficient permissions to access this function");
@@ -142,11 +143,11 @@ public class SubjectCustomDataContainerPanel extends Panel {
 				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
 				cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
 				arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
-//				cpModel.getObject().setArkModule(arkModule);
+				// cpModel.getObject().setArkModule(arkModule);
 				if (study != null && linkSubjectStudy != null && arkModule != null) {
 					contextLoaded = true;
 					cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT));
-					
+
 					customFieldCriteria.setStudy(study);
 					customFieldCriteria.setArkFunction(cpModel.getObject().getArkFunction());
 				}

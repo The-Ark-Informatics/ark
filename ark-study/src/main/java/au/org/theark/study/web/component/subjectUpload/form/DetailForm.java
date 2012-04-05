@@ -56,7 +56,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long					serialVersionUID	= 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService						studyService;
@@ -64,15 +64,15 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
 
-//REMOVED BY TRAV	private int										mode;
+	// REMOVED BY TRAV private int mode;
 
 	private TextField<String>					uploadIdTxtFld;
-//REMOVED BY TRAV	private TextField<String>					uploadFilenameTxtFld;
+	// REMOVED BY TRAV private TextField<String> uploadFilenameTxtFld;
 	private DropDownChoice<FileFormat>		fileFormatDdc;
 	private FileUploadField						fileUploadField;
 	// private UploadProgressBar uploadProgressBar;
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
-	private ArkFunction arkFunction;
+	private ArkFunction							arkFunction;
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, ArkFunction arkFunction) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
@@ -94,7 +94,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	public void initialiseDetailForm() {
 		// Do not allow delete for upload - see TODO in onDeleteConfirmed(..)
 		deleteButton.setVisible(false);
-		
+
 		// Set up field on form here
 		uploadIdTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_ID);
 		// uploadFilenameTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILENAME);
@@ -120,15 +120,10 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 	}
 
-	/* TODO remove unused
-	private void createDirectoryIfNeeded(String directoryName) {
-		File theDir = new File(directoryName);
-		// if the directory does not exist, create it
-		if (!theDir.exists()) {
-			System.out.println("creating directory: " + directoryName);
-			theDir.mkdir();
-		}
-	}*/
+	/*
+	 * TODO remove unused private void createDirectoryIfNeeded(String directoryName) { File theDir = new File(directoryName); // if the directory does
+	 * not exist, create it if (!theDir.exists()) { System.out.println("creating directory: " + directoryName); theDir.mkdir(); } }
+	 */
 
 	@Override
 	protected void onSave(Form<UploadVO> containerForm, AjaxRequestTarget target) {
@@ -226,26 +221,26 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	 * 
 	 */
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-	/* TODO: DELETE of uploaded file is not supported till we can verify whether all subjects 
-		within the upload have also been deleted. At present, there is no linking table clearly 
-		indicating which subjects came from which upload (i.e. will need to be looked at 1st). 
-	*/
-//		setMultiPart(true); // multipart required for file uploads
-//
-//		// TODO:(CE) To handle Business and System Exceptions here
-//		iArkCommonService.deleteUpload(containerForm.getModelObject().getUpload());
-//		this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was deleted successfully");
-//
-//		// Display delete confirmation message
-//		target.add(feedBackPanel);
-//		// TODO Implement Exceptions in PhentoypicService
-//		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
-//		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
-//		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-//		// Move focus back to Search form
-//		UploadVO uploadVo = new UploadVO();
-//		setModelObject(uploadVo);
-//		onCancel(target);
+		/*
+		 * TODO: DELETE of uploaded file is not supported till we can verify whether all subjects within the upload have also been deleted. At present,
+		 * there is no linking table clearly indicating which subjects came from which upload (i.e. will need to be looked at 1st).
+		 */
+		// setMultiPart(true); // multipart required for file uploads
+		//
+		// // TODO:(CE) To handle Business and System Exceptions here
+		// iArkCommonService.deleteUpload(containerForm.getModelObject().getUpload());
+		// this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was deleted successfully");
+		//
+		// // Display delete confirmation message
+		// target.add(feedBackPanel);
+		// // TODO Implement Exceptions in PhentoypicService
+		// // } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
+		// // study.getName()); processFeedback(target); } catch (ArkSystemException e) {
+		// // this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
+		// // Move focus back to Search form
+		// UploadVO uploadVo = new UploadVO();
+		// setModelObject(uploadVo);
+		// onCancel(target);
 	}
 
 	/*
@@ -264,7 +259,9 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
 	 */
 	@Override
@@ -280,6 +277,6 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		// add(ajaxSimpleUploadForm);
 
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
-		
+
 	}
 }

@@ -64,8 +64,8 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	 * 
 	 */
 	private static final long			serialVersionUID			= 2381693804874240001L;
-	private transient static Logger	log					= LoggerFactory.getLogger(MyDetailsForm.class);
-	
+	private transient static Logger	log							= LoggerFactory.getLogger(MyDetailsForm.class);
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 	@SpringBean(name = "userService")
@@ -149,7 +149,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 			}
 		};
 
-		//TODO: Amend hard-coded 50 row limit, pageableListView didn't work within a ModalWindow
+		// TODO: Amend hard-coded 50 row limit, pageableListView didn't work within a ModalWindow
 		pageableListView = new PageableListView("arkUserRoleList", iModel, 50) {
 
 			/**
@@ -167,7 +167,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 				else {
 					item.addOrReplace(new Label("studyName", "[All Study Access]"));
 				}
-				
+
 				item.addOrReplace(new Label("moduleName", arkUserRole.getArkModule().getName()));
 				item.addOrReplace(new Label("roleName", arkUserRole.getArkRole().getName()));
 

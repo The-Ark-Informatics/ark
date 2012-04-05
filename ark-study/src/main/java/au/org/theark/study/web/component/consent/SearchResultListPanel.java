@@ -52,7 +52,7 @@ public class SearchResultListPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long	serialVersionUID	= 1L;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	protected IStudyService		studyService;
@@ -62,7 +62,7 @@ public class SearchResultListPanel extends Panel {
 
 	/**
 	 * @param id
-	 * @param arkCrudContainerVO 
+	 * @param arkCrudContainerVO
 	 */
 	public SearchResultListPanel(String id, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
@@ -79,7 +79,7 @@ public class SearchResultListPanel extends Panel {
 			/**
 			 * 
 			 */
-			private static final long serialVersionUID = 1L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void populateItem(final ListItem<Consent> item) {
@@ -128,7 +128,7 @@ public class SearchResultListPanel extends Panel {
 					/**
 					 * 
 					 */
-					private static final long serialVersionUID = 1L;
+					private static final long	serialVersionUID	= 1L;
 
 					@Override
 					public String getObject() {
@@ -148,7 +148,7 @@ public class SearchResultListPanel extends Panel {
 			/**
 			 * 
 			 */
-			private static final long serialVersionUID = 1L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
@@ -168,7 +168,7 @@ public class SearchResultListPanel extends Panel {
 					new FormHelper().updateStudyCompStatusDates(target, consentFromBackend.getStudyComponentStatus().getName(), wmcPlain, wmcRequested, wmcRecieved, wmcCompleted);
 
 					ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-					
+
 				}
 				catch (ArkSystemException e) {
 					containerForm.error("A System Error has occured please contact Support");

@@ -90,7 +90,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 		List<PhoneType> phoneTypeList = iArkCommonService.getListOfPhoneType();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		phoneTypeChoice = new DropDownChoice("phone.phoneType", phoneTypeList, defaultChoiceRenderer);
-		addSearchComponentsToForm();//TODO TRAVIS HAS THIS COMMENTED...MERGE WITH CHRIS WHO  HAS IT GONE...CHECK IF NEEDED...
+		addSearchComponentsToForm();// TODO TRAVIS HAS THIS COMMENTED...MERGE WITH CHRIS WHO HAS IT GONE...CHECK IF NEEDED...
 	}
 
 	protected void addSearchComponentsToForm() {

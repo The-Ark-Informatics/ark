@@ -100,7 +100,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	protected WebMarkupContainer					wmcRecieved;
 	protected WebMarkupContainer					wmcCompleted;
 	protected DropDownChoice<YesNo>				consentDownloadedDdc;
-	protected CollapsiblePanel 					consentHistoryPanel;
+	protected CollapsiblePanel						consentHistoryPanel;
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
@@ -160,7 +160,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		addDetailFormComponents();
 		attachValidators();
 	}
-	
+
 	/**
 	 * Initialise the Consent StudyComp Drop Down Choice Control
 	 */
@@ -269,10 +269,10 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	}
 
 	
-	
+
 	private void initConsentHistoryPanel() {
 		consentHistoryPanel = new CollapsiblePanel("consentHistoryPanel", new Model<String>("Consent History"), false) {
-			
+
 			/**
 			 * 
 			 */
@@ -404,7 +404,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 				}
 				else {
 					iStudyService.update(containerForm.getModelObject().getConsent());
-					
+
 					this.info("Consent was successfuly updated for the Subject ");
 					processErrors(target);
 				}

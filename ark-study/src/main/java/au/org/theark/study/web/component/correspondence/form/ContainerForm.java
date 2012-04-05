@@ -28,7 +28,7 @@ public class ContainerForm extends AbstractContainerForm<CorrespondenceVO> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long	serialVersionUID	= 1L;
 
 	public ContainerForm(String id, CompoundPropertyModel<CorrespondenceVO> cpmModel) {
 		super(id, cpmModel);

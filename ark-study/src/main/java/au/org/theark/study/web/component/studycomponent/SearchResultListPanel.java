@@ -42,7 +42,7 @@ public class SearchResultListPanel extends Panel {
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
-	
+
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
 
@@ -52,11 +52,12 @@ public class SearchResultListPanel extends Panel {
 	 * @param crudContainerVO
 	 * @param studyCompContainerForm
 	 */
-	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO,ContainerForm studyCompContainerForm){
+	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm studyCompContainerForm) {
 		super(id);
 		arkCrudContainerVO = crudContainerVO;
 		containerForm = studyCompContainerForm;
 	}
+
 	/**
 	 * 
 	 * @param iModel
@@ -69,7 +70,7 @@ public class SearchResultListPanel extends Panel {
 			/**
 			 * 
 			 */
-			private static final long serialVersionUID = 1L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void populateItem(final ListItem<StudyComp> item) {
@@ -123,7 +124,7 @@ public class SearchResultListPanel extends Panel {
 		return sitePageableListView;
 	}
 
-	@SuppressWarnings({ "unchecked", "serial" })
+	@SuppressWarnings( { "unchecked", "serial" })
 	private AjaxLink buildLink(final StudyComp studyComponent) {
 
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("studyComponent.name") {
@@ -136,7 +137,7 @@ public class SearchResultListPanel extends Panel {
 				studyCompVo.setStudyComponent(studyComponent);// Sets the selected object into the model
 				// Render the UI
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-				
+
 			}
 		};
 

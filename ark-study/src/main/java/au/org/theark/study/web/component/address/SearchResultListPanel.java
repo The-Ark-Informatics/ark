@@ -162,9 +162,8 @@ public class SearchResultListPanel extends Panel {
 				// Update the state choices based on selected address pre-render...
 				SearchForm searchForm = (SearchForm) ((SearchPanel) arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel")).get("searchForm");
 				searchForm.updateDetailFormPrerender(address);
-				
+
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-				
 
 			}
 

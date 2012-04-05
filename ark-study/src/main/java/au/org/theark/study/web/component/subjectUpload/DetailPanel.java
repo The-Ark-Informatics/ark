@@ -28,14 +28,14 @@ import au.org.theark.study.web.component.subjectUpload.form.DetailForm;
 
 @SuppressWarnings("serial")
 public class DetailPanel extends Panel {
-	
-	private ArkCrudContainerVO arkCrudContainerVO;
+
+	private ArkCrudContainerVO	arkCrudContainerVO;
 	private DetailForm			detailForm;
 	private FeedbackPanel		feedBackPanel;
 	private ContainerForm		containerForm;
-	private ArkFunction arkFunction;
+	private ArkFunction			arkFunction;
 
-	public DetailPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO,ArkFunction arkFunction) {
+	public DetailPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, ArkFunction arkFunction) {
 		super(id);
 		this.feedBackPanel = feedBackPanel;
 		this.containerForm = containerForm;
@@ -43,7 +43,7 @@ public class DetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new DetailForm("detailForm", feedBackPanel, containerForm, arkCrudContainerVO,arkFunction);
+		detailForm = new DetailForm("detailForm", feedBackPanel, containerForm, arkCrudContainerVO, arkFunction);
 
 		detailForm.initialiseDetailForm();
 		add(detailForm);

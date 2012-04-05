@@ -35,12 +35,12 @@ public class SearchPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
-	
-	private ArkCrudContainerVO	arkCrudContainerVO;
-	private FeedbackPanel	feedBackPanel;
+	private static final long				serialVersionUID	= 1L;
+
+	private ArkCrudContainerVO				arkCrudContainerVO;
+	private FeedbackPanel					feedBackPanel;
 	private PageableListView<StudyComp>	listView;
-	
+
 	/**
 	 * 
 	 * @param id
@@ -49,17 +49,16 @@ public class SearchPanel extends Panel {
 	 * @param containerForm
 	 * @param listView
 	 */
-	public SearchPanel(String id,ArkCrudContainerVO crudContainerVO,FeedbackPanel feedBackPanel,ContainerForm containerForm, PageableListView<StudyComp> listView){
+	public SearchPanel(String id, ArkCrudContainerVO crudContainerVO, FeedbackPanel feedBackPanel, ContainerForm containerForm, PageableListView<StudyComp> listView) {
 		super(id);
 		arkCrudContainerVO = crudContainerVO;
-		this.feedBackPanel = feedBackPanel; 
+		this.feedBackPanel = feedBackPanel;
 		this.listView = listView;
 	}
-	
 
 	public void initialisePanel(CompoundPropertyModel<StudyCompVo> studyCompCpm) {
 
-		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM,studyCompCpm,arkCrudContainerVO,feedBackPanel,listView);
+		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, studyCompCpm, arkCrudContainerVO, feedBackPanel, listView);
 		add(searchStudyCompForm);
 	}
 

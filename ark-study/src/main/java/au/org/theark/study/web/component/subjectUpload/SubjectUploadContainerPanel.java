@@ -52,7 +52,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 	private WizardPanel							wizardPanel;
 	private PageableListView<StudyUpload>	listView;
 	private ContainerForm						containerForm;
-	private ArkFunction arkFunction;
+	private ArkFunction							arkFunction;
 
 	public SubjectUploadContainerPanel(String id, ArkFunction arkFunction) {
 		super(id);
@@ -114,7 +114,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO,arkFunction);
+		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO, arkFunction);
 		detailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();

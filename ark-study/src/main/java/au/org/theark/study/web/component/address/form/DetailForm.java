@@ -67,7 +67,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1423759632793367263L;
+	private static final long					serialVersionUID	= 1423759632793367263L;
 
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -104,7 +104,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
 	}
-	
+
 	@Override
 	public void onBeforeRender() {
 		// Disable preferred mailing for new addresses
@@ -192,7 +192,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 			/**
 			 * 
 			 */
-			private static final long serialVersionUID = 1L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
@@ -244,11 +244,11 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 */
 	@Override
 	protected void attachValidators() {
-		
+
 		addressLineOneTxtFld.add(StringValidator.maximumLength(255));
-		
+
 		sourceTxtFld.add(StringValidator.maximumLength(255));
-		
+
 		streetAddressTxtFld.setRequired(true).setLabel(new StringResourceModel("address.streetAddress.RequiredValidator", this, new Model<String>("Street Address")));
 
 		streetAddressTxtFld.add(LengthBetweenValidator.maximumLength(255));

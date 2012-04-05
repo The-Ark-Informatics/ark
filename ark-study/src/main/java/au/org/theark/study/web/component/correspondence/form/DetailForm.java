@@ -108,7 +108,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		detailsTxtArea = new TextArea<String>("correspondence.details");
 		commentsTxtArea = new TextArea<String>("correspondence.comments");
 
-		//fileUploadField = new FileUploadField("correspondence.attachmentFilename", new Model<List<FileUpload>>());
+		// fileUploadField = new FileUploadField("correspondence.attachmentFilename", new Model<List<FileUpload>>());
 		fileUploadField = new FileUploadField("correspondence.attachmentFilename");
 		setMaxSize(Bytes.kilobytes(2048));
 

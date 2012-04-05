@@ -47,7 +47,7 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long				serialVersionUID	= 1L;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService					studyService;
@@ -95,7 +95,7 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-																																														// if it was
+		// if it was
 		// Set the person who this address should be associated with
 		Collection<Address> addressList = new ArrayList<Address>();
 

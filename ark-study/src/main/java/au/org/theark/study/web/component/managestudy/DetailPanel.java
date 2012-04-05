@@ -30,8 +30,8 @@ public class DetailPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
-	
+	private static final long		serialVersionUID	= 1L;
+
 	private FeedbackPanel			fbPanel;
 	private Container					studyContainerForm;
 
@@ -52,7 +52,7 @@ public class DetailPanel extends Panel {
 		this.studyCrudContainerVO = studyCrudContainerVO;
 		fbPanel = feedbackPanel;
 	}
-	
+
 	public void initialisePanel() {
 		detailForm = new DetailForm("detailForm", studyCrudContainerVO, fbPanel, studyContainerForm);
 		detailForm.initialiseDetailForm();

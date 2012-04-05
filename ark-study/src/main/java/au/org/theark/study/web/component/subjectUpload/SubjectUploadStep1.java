@@ -55,7 +55,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 
 	public java.util.Collection<String>		validationMessages	= null;
 
-	//TODO: analyze unused 
+	// TODO: analyze unused
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService						iStudyService;
 
@@ -81,7 +81,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		initialiseDetailForm();
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings( { "unchecked" })
 	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
 		java.util.Collection<DelimiterType> delimiterTypeCollection = iArkCommonService.getDelimiterTypes();

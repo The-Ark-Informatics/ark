@@ -57,13 +57,13 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long						serialVersionUID	= 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
-	
+
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService		iStudyService;
+	private IStudyService							iStudyService;
 
 	private TextField<String>						subjectUIDTxtFld;
 	private TextField<String>						firstNameTxtFld;
@@ -73,8 +73,8 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	private DropDownChoice<GenderType>			genderTypeDdc;
 	private DropDownChoice<SubjectStatus>		subjectStatusDdc;
 	private DateTextField							dateOfBirthTxtFld;
-	
-	//TODO get explanation never accessed, yet we can set it - maybe wicket can access?
+
+	// TODO get explanation never accessed, yet we can set it - maybe wicket can access?
 	private PageableListView<SubjectVO>			listView;
 	private CompoundPropertyModel<SubjectVO>	cpmModel;
 
@@ -84,7 +84,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	 */
 	public SearchForm(String id, CompoundPropertyModel<SubjectVO> cpmModel, PageableListView<SubjectVO> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
 		// super(id, cpmModel);
-		super(id, cpmModel,feedBackPanel,arkCrudContainerVO);
+		super(id, cpmModel, feedBackPanel, arkCrudContainerVO);
 
 		this.cpmModel = cpmModel;
 		this.listView = listView;
@@ -144,7 +144,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
 		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm, Constants.PERSON);
 		PropertyModel<GenderType> genderTypePm = new PropertyModel<GenderType>(personPm, Constants.GENDER_TYPE);
-		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType();
+		Collection<GenderType> genderTypeList = iArkCommonService.getGenderTypes();
 		ChoiceRenderer genderTypeRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		genderTypeDdc = new DropDownChoice<GenderType>(Constants.GENDER_TYPE, genderTypePm, (List) genderTypeList, genderTypeRenderer);
 	}
@@ -165,10 +165,10 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 			subjectUIDTxtFld.setEnabled(true);
 			target.add(subjectUIDTxtFld);
 		}
-		
+
 		// Available child studies
 		List<Study> availableChildStudies = new ArrayList<Study>(0);
-		if(studyInContext.getParentStudy() != null) {
+		if (studyInContext.getParentStudy() != null) {
 			availableChildStudies = iStudyService.getChildStudyListOfParent(studyInContext);
 		}
 		getModelObject().setAvailableChildStudies(availableChildStudies);
@@ -189,7 +189,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 		target.add(arkCrudContainerVO.getSearchResultPanelContainer());// For ajax this is required so
 	}
-	
+
 	@Override
 	protected void onBeforeRender() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);

@@ -41,8 +41,8 @@ import au.org.theark.study.web.Constants;
 public class CustomDataEditorForm extends AbstractCustomDataEditorForm<SubjectCustomDataVO> {
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService studyService;
-	
+	private IStudyService	studyService;
+
 	public CustomDataEditorForm(String id, CompoundPropertyModel<SubjectCustomDataVO> cpModel, FeedbackPanel feedbackPanel) {
 		super(id, cpModel, feedbackPanel);
 	}
@@ -57,7 +57,7 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<SubjectCu
 					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getDateDataValue());
 				}
 				else {
-					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getTextDataValue());					
+					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getTextDataValue());
 				}
 			}
 		}
@@ -65,9 +65,8 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<SubjectCu
 			this.info("Successfully saved all edits");
 		}
 		/*
-		 * Need to update the dataView, which forces a refresh of the model objects from backend.
-		 * This is because deleted fields still remain in the model, and are stale objects if we 
-		 * try to use them for future saves.
+		 * Need to update the dataView, which forces a refresh of the model objects from backend. This is because deleted fields still remain in the
+		 * model, and are stale objects if we try to use them for future saves.
 		 */
 		target.add(dataViewWMC);
 		target.add(feedbackPanel);

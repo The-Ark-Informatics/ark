@@ -36,30 +36,30 @@ import au.org.theark.study.web.component.subjectcustomdata.form.CustomDataEditor
  * @author elam
  * 
  */
-@SuppressWarnings({ "serial" })
+@SuppressWarnings( { "serial" })
 public class SubjectCustomDataEditorPanel extends Panel {
 
 	/**
 	 * 
 	 */
-	private static final long		serialVersionUID	= -1L;
+	private static final long												serialVersionUID	= -1L;
 
-	private CompoundPropertyModel<SubjectCustomDataVO>			cpModel;
+	private CompoundPropertyModel<SubjectCustomDataVO>				cpModel;
 
-	protected FeedbackPanel				feedbackPanel;
+	protected FeedbackPanel													feedbackPanel;
 	protected AbstractCustomDataEditorForm<SubjectCustomDataVO>	customDataEditorForm;
-	protected SubjectCustomDataDataViewPanel dataViewPanel;
-	protected Label warnSaveLabel;
-	
+	protected SubjectCustomDataDataViewPanel							dataViewPanel;
+	protected Label															warnSaveLabel;
+
 	public SubjectCustomDataEditorPanel(String id, CompoundPropertyModel<SubjectCustomDataVO> cpModel, FeedbackPanel feedBackPanel) {
 		super(id);
 
 		this.cpModel = cpModel;
 		this.feedbackPanel = feedBackPanel;
 	}
-	
+
 	public SubjectCustomDataEditorPanel initialisePanel() {
-		
+
 		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(null);
 
 		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm();
@@ -72,15 +72,15 @@ public class SubjectCustomDataEditorPanel extends Panel {
 		};
 		pageNavigator.setVisible(false);
 		customDataEditorForm.getDataViewWMC().add(dataViewPanel);
-		
+
 		warnSaveLabel = new Label("warnSaveLabel", new ResourceModel("warnSaveLabel"));
 		warnSaveLabel.setVisible(ArkPermissionHelper.isActionPermitted(Constants.NEW));
-		
+
 		this.add(customDataEditorForm);
 		this.add(pageNavigator);
 		this.add(warnSaveLabel);
-		
+
 		return this;
 	}
-	
+
 }

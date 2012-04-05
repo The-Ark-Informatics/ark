@@ -44,7 +44,7 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long						serialVersionUID	= 1L;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService							studyService;
@@ -84,9 +84,9 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 
 		// get the person in context
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		
-		//todo remove / evaluate unused code
-		//String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
+
+		// todo remove / evaluate unused code
+		// String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 
 		try {
 			// initialize the correspondence list

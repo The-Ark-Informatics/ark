@@ -45,12 +45,12 @@ public class ConsentHistoryPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long						serialVersionUID	= 1L;
+	private static final long						serialVersionUID		= 1L;
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService							iStudyService;
 	private PageableListView<ConsentHistory>	listView;
 	private PagingNavigator							pageNavigator;
-	private SimpleDateFormat						simpleDateFormat	= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+	private SimpleDateFormat						simpleDateFormat		= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	private SimpleDateFormat						simpleDateTimeFormat	= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
 
 	/**
@@ -76,7 +76,7 @@ public class ConsentHistoryPanel extends Panel {
 				Consent consent = new Consent();
 				try {
 					Long sessionConsentId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID);
-					if(sessionConsentId != null) {
+					if (sessionConsentId != null) {
 						consent = iStudyService.getConsent(sessionConsentId);
 					}
 					consentHistoryList = iStudyService.getConsentHistoryList(consent);
@@ -84,7 +84,7 @@ public class ConsentHistoryPanel extends Panel {
 				catch (ArkSystemException e) {
 					e.printStackTrace();
 				}
-				
+
 				listView.removeAll();
 				return consentHistoryList;
 			}
@@ -106,48 +106,48 @@ public class ConsentHistoryPanel extends Panel {
 			protected void populateItem(final ListItem<ConsentHistory> item) {
 				ConsentHistory consentHistory = item.getModelObject();
 
-				if(consentHistory.getTimestamp() != null ) {
+				if (consentHistory.getTimestamp() != null) {
 					item.add(new Label("timestamp", simpleDateTimeFormat.format(consentHistory.getTimestamp())));
 				}
 				else {
 					item.add(new Label("timestamp"));
 				}
-				
+
 				if (consentHistory.getStudyComponentStatus() != null) {
 					item.add(new Label("studyComponentStatus", consentHistory.getStudyComponentStatus().getName()));
 				}
 				else {
 					item.add(new Label("studyComponentStatus"));
 				}
-				
-				if(consentHistory.getConsentStatus() != null) {
+
+				if (consentHistory.getConsentStatus() != null) {
 					item.add(new Label("consentStatus", consentHistory.getConsentStatus().getName()));
 				}
 				else {
 					item.add(new Label("consentStatus"));
 				}
-				
+
 				if (consentHistory.getConsentDate() != null) {
 					item.add(new Label("consentDate", simpleDateFormat.format(consentHistory.getConsentDate())));
 				}
 				else {
 					item.add(new Label("consentDate"));
 				}
-				
+
 				if (consentHistory.getRequestedDate() != null) {
 					item.add(new Label("requestedDate", simpleDateFormat.format(consentHistory.getRequestedDate())));
 				}
 				else {
 					item.add(new Label("requestedDate"));
 				}
-				
+
 				if (consentHistory.getReceivedDate() != null) {
 					item.add(new Label("receivedDate", simpleDateFormat.format(consentHistory.getReceivedDate())));
 				}
 				else {
 					item.add(new Label("receivedDate"));
 				}
-				
+
 				if (consentHistory.getCompletedDate() != null) {
 					item.add(new Label("completedDate", simpleDateFormat.format(consentHistory.getCompletedDate())));
 				}

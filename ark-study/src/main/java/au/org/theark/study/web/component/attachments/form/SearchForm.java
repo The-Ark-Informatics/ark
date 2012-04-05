@@ -97,7 +97,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 	@SuppressWarnings("unchecked")
 	private void initialiseDropDownChoices() {
-		
+
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study studyInContext = iArkCommonService.getStudy(studyId);
 		List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(studyInContext);

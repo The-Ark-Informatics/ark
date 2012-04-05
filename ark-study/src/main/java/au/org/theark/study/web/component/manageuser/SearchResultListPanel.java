@@ -63,7 +63,7 @@ public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
-	
+
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService		iStudyService;
 
@@ -158,22 +158,22 @@ public class SearchResultListPanel extends Panel {
 					if (listView != null) {
 						listView.removeAll();
 					}
-					
+
 					arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
 					ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 					target.add(feedbackPanel);
 					// Set the MODE here.Since the User Details are from LDAP we don't have a entity that we can use to check for a mode
 					containerForm.getModelObject().setMode(Constants.MODE_EDIT);
-					
+
 					// Available/assigned child studies
 					List<Study> availableChildStudies = new ArrayList<Study>(0);
 					List<Study> selectedChildStudies = new ArrayList<Study>(0);
-					
-					if(study.getParentStudy() != null) {
+
+					if (study.getParentStudy() != null) {
 						availableChildStudies = iStudyService.getChildStudyListOfParent(study);
 						selectedChildStudies = iArkCommonService.getAssignedChildStudyListForUser(arkUserVOFromBackend);
 					}
-					
+
 					containerForm.getModelObject().setAvailableChildStudies(availableChildStudies);
 					containerForm.getModelObject().setSelectedChildStudies(selectedChildStudies);
 				}

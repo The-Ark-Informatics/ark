@@ -262,14 +262,14 @@ public class Constants {
 	public static final String			SUBJECT_FILE_USER_ID											= "subjectFile.userId";
 	public static final String			SUBJECT_FILE_COMMENTS										= "subjectFile.comments";
 
-	public static final String			COUNTRY_STATE_SELECTOR_WMC									= "countryStateSelector";												// WebMarkupContainer
-																																																	// that
-																																																	// will
-																																																	// house
-																																																	// the
-																																																	// DropDowns
-																																																	// for
-																																																	// States
+	public static final String			COUNTRY_STATE_SELECTOR_WMC									= "countryStateSelector";																								// WebMarkupContainer
+	// that
+	// will
+	// house
+	// the
+	// DropDowns
+	// for
+	// States
 	public static final String			SUBJECT_STATE													= "linkSubjectStudy.state";
 	public static final String			SUBJECT_OTHER_STATE											= "linkSubjectStudy.otherState";
 	public static final String			SUBJECT_COUNTRY												= "linkSubjectStudy.country";
@@ -354,6 +354,5 @@ public class Constants {
 
 	// 1 digit, 1 lower, 1 upper, 1 symbol "~!@#$%^&*()_-+={}[]:;\"<>|", from 6 to 20
 	public static final String			PASSWORD_PATTERN												= "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_\\-\\+\\=\\{\\}\\[\\]:;\\\"<>|]).{6,20})";
-	
 
 }

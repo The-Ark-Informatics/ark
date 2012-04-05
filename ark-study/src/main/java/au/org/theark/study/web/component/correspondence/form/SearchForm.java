@@ -59,7 +59,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= -8154756272240757773L;
+	private static final long										serialVersionUID	= -8154756272240757773L;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService											studyService;
@@ -67,7 +67,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService										iArkCommonService;
 
-	protected CompoundPropertyModel<CorrespondenceVO>	cpmModel;
+	protected CompoundPropertyModel<CorrespondenceVO>		cpmModel;
 
 	private PageableListView<Correspondences>					pageableListView;
 
@@ -81,21 +81,19 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	private DropDownChoice<CorrespondenceOutcomeType>		outcomeTypeChoice;
 	private TextArea<String>										detailsTxtArea;
 
-	public SearchForm(String id, CompoundPropertyModel<CorrespondenceVO> model, PageableListView<Correspondences> listView, FeedbackPanel feedBackPanel,
-			ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchForm(String id, CompoundPropertyModel<CorrespondenceVO> model, PageableListView<Correspondences> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, model, feedBackPanel, arkCrudContainerVO);
 		this.pageableListView = listView;
-		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model() ));
+		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model()));
 		add(generalTextLbl);
-		//initialiseSearchForm();// See Ark-374, if in future we need it uncomment this and uncomment a section of code in the markup
+		// initialiseSearchForm();// See Ark-374, if in future we need it uncomment this and uncomment a section of code in the markup
 		resetButton.setVisible(false);
 		searchButton.setVisible(false);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a subject or contact.");
 	}
 
-	
- 	@SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private void initialiseSearchForm() {
 
 		initialiseStatusTypeDropDown();
@@ -192,7 +190,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 
 			getModelObject().setCorrespondenceList(correspondenceList);
 			pageableListView.removeAll();
-			
+
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		}

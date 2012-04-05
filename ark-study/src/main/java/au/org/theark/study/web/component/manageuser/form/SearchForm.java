@@ -52,26 +52,26 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-//	private CompoundPropertyModel<ArkUserVO>	cpmModel;
-	private ContainerForm							containerForm;
-	private ArkCrudContainerVO						arkCrudContainerVO;
-	private FeedbackPanel							feedbackPanel;
+	private static final long				serialVersionUID	= 1L;
+	// private CompoundPropertyModel<ArkUserVO> cpmModel;
+	private ContainerForm					containerForm;
+	private ArkCrudContainerVO				arkCrudContainerVO;
+	private FeedbackPanel					feedbackPanel;
 
 	// Form Fields
-	private TextField<String>						userNameTxtField	= new TextField<String>(Constants.USER_NAME);
-	private TextField<String>						firstNameTxtField	= new TextField<String>(Constants.FIRST_NAME);
-	private TextField<String>						lastNameTxtField	= new TextField<String>(Constants.LAST_NAME);
-	private TextField<String>						emailTxtField		= new TextField<String>(Constants.EMAIL);
-	protected DropDownChoice<YesNo>				usersLinkedToStudyOnlyChoice;
+	private TextField<String>				userNameTxtField	= new TextField<String>(Constants.USER_NAME);
+	private TextField<String>				firstNameTxtField	= new TextField<String>(Constants.FIRST_NAME);
+	private TextField<String>				lastNameTxtField	= new TextField<String>(Constants.LAST_NAME);
+	private TextField<String>				emailTxtField		= new TextField<String>(Constants.EMAIL);
+	protected DropDownChoice<YesNo>		usersLinkedToStudyOnlyChoice;
 
 	@SpringBean(name = "userService")
-	private IUserService								userService;
+	private IUserService						userService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService						iArkCommonService;
+	private IArkCommonService				iArkCommonService;
 
-	private PageableListView<ArkUserVO>			pageableListView;
+	private PageableListView<ArkUserVO>	pageableListView;
 
 	/**
 	 * Constructor
@@ -134,7 +134,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 		prePopulateArkUserRoleList();
 		arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
 		// This should re-render the list again
-		ListView listView = (ListView)arkCrudContainerVO.getWmcForarkUserAccountPanel().get("arkUserRoleList");
+		ListView listView = (ListView) arkCrudContainerVO.getWmcForarkUserAccountPanel().get("arkUserRoleList");
 		listView.removeAll();
 		preProcessDetailPanel(target);
 		target.add(arkCrudContainerVO.getEditButtonContainer());
@@ -142,7 +142,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 	}
 
 	protected void initialiseSearchForm() {
-		
+
 		newButton = new ArkBusyAjaxButton(Constants.NEW) {
 			/**
 			 * 
@@ -171,13 +171,12 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 				target.add(feedbackPanel);
 			}
 		};
-		
+
 		userNameTxtField = new TextField<String>(Constants.USER_NAME);
 		firstNameTxtField = new TextField<String>(Constants.FIRST_NAME);
 		lastNameTxtField = new TextField<String>(Constants.LAST_NAME);
 		emailTxtField = new TextField<String>(Constants.EMAIL);
 	}
-
 
 	private void addSearchComponentsToForm() {
 		addOrReplace(newButton);
