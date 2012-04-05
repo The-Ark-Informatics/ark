@@ -142,7 +142,7 @@ public class SubjectUploader {
 			csvReader.readHeaders();
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
-			log.debug("Header length: " + csvReader.getHeaders().toString().length());
+			//log.debug("Header length: " + csvReader.getHeaders().toString().length());
 
 			int index = 0;
 
@@ -200,13 +200,8 @@ public class SubjectUploader {
 					}
 
 					if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
-
-						log.info("about to get gender");
 						genderType = iArkCommonService.getGenderType(stringLineArray[index]);
-						log.info("got gender...setting gender");
 						person.setGenderType(genderType);
-
-						log.info("gender set");
 					}
 				}
 
@@ -326,7 +321,7 @@ public class SubjectUploader {
 					updateCount++;
 				}
 
-				log.debug("\n");
+				//log.debug("\n");
 				subjectCount++;
 			}
 		}
