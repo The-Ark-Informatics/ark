@@ -439,7 +439,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.addOrder(Order.asc("moduleName.name"));
 		arkModuleList = criteria.list();
 	
-		//TODO:  What  are we iterating for if we are not doing anything?
+		//TODO:  What  are we iterating for if we are not doing anything?  delete?
 		for (Iterator iterator = arkModuleList.iterator(); iterator.hasNext();) {
 			ArkModuleRole arkModuleRole = (ArkModuleRole) iterator.next();
 
@@ -504,8 +504,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.add(Restrictions.eq("study", study));
 		criteria.createAlias("arkModule", "module");
 		criteria.addOrder(Order.asc("module.id"));
-		Collection<LinkStudyArkModule> arkStudyLinkedModuleList = new ArrayList<LinkStudyArkModule>();
-		arkStudyLinkedModuleList = criteria.list();
+		Collection<LinkStudyArkModule> arkStudyLinkedModuleList = criteria.list();
 		Collection<ArkModule> arkModuleList = new ArrayList<ArkModule>();
 		for (LinkStudyArkModule linkStudyArkModule : arkStudyLinkedModuleList) {
 			arkModuleList.add(linkStudyArkModule.getArkModule());
@@ -522,6 +521,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		arkModuleList = criteria.list();
 		ArrayList<ArkRole> moduleArkRolesList = new ArrayList<ArkRole>();
 		for (ArkModuleRole arkModuleRole : arkModuleList) {
+			
 			ArkRole arkRole = arkModuleRole.getArkRole();
 			moduleArkRolesList.add(arkRole);
 		}
