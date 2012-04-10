@@ -43,13 +43,20 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 	private WebMarkupContainer			studyNameMarkup;
 	private WebMarkupContainer			studyLogoMarkup;
 	private List<ITab>					moduleTabsList;
+	boolean visible;
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
 	public LimsTabProviderImpl(String panelId) {
 		super(panelId);
+		visible = iArkCommonService.getCountOfStudies() > 0;
 		moduleTabsList = new ArrayList<ITab>();
+	}
+	
+	@Override
+	public boolean isVisible() {
+		return visible;
 	}
 
 	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
@@ -82,9 +89,7 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 			}
 
 			public boolean isVisible() {
-				int studyCount = iArkCommonService.getCountOfStudies();
-				boolean visible = (studyCount > 0);
-				return visible;
+				return true;
 			}
 		};
 	}
