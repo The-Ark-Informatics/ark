@@ -12,7 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * 	
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -385,10 +385,13 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 
 		if (arkRole != null) {
 			criteria.add(Restrictions.eq("arkRole", arkRole));
-			List<ArkRolePolicyTemplate> templateList = criteria.list();
-			for (ArkRolePolicyTemplate arkRolePolicyTemplate : templateList) {
-				stringPermissions.add(arkRolePolicyTemplate.getArkPermission().getName());
-			}
+			
+			criteria.createAlias("arkPermission", "permission");
+			ProjectionList projectionList = Projections.projectionList();
+			projectionList.add(Projections.groupProperty("permission.name"));
+			criteria.setProjection(projectionList);
+			
+			stringPermissions = criteria.list();
 		}
 		return stringPermissions;
 	}
@@ -399,14 +402,12 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @return
 	 */
 	public Collection<String> getArkPermission() {
-
 		Collection<String> arkStringPermissions = new ArrayList<String>();
 		Criteria criteria = getSession().createCriteria(ArkPermission.class);
-		List<ArkPermission> arkPermissionList = (List<ArkPermission>) criteria.list();
-		for (Iterator<ArkPermission> iterator = arkPermissionList.iterator(); iterator.hasNext();) {
-			ArkPermission arkPermission = iterator.next();
-			arkStringPermissions.add(arkPermission.getName());
-		}
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("name"));
+		criteria.setProjection(projectionList);
+		arkStringPermissions = criteria.list();
 		return arkStringPermissions;
 	}
 
