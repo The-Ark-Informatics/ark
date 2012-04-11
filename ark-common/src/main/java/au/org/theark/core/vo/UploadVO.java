@@ -180,6 +180,11 @@ public class UploadVO implements Serializable {
 
 	/**
 	 * @return the fileUpload
+	 * 
+	 * TODO : see java docs re this class;
+	 " Model for file uploads. Objects of this class should not be kept between requests, and should
+  therefore be marked as <code>transient</code> if they become a property of an IModel."
+  Do we need to analyze what this is doing
 	 */
 	public FileUpload getFileUpload() {
 		return fileUpload;
