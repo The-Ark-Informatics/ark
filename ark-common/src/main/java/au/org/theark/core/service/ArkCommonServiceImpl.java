@@ -760,11 +760,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			throw new ArkSystemException("Unable to delete Custom Field: " + ex.getMessage());
 		}
 	}
-
-	private FieldType getFieldTypeById(Long filedTypeId) {
-		return customFieldDao.getFieldTypeById(filedTypeId);
-	}
-
+	
 	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo) {
 		return arkAuthorisationDao.getArkRoleListByUser(arkUserVo);
 	}
