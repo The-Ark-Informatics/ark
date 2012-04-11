@@ -894,8 +894,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(FileFormat.class);
 		criteria.add(Restrictions.eq("name", name));
 
-		if (criteria.list().size() > 0) {
-			fileFormat = (FileFormat) criteria.list().get(0);
+		List<FileFormat> results = criteria.list();
+		if (results.size() > 0) {
+			fileFormat = (FileFormat) results.get(0);
 		}
 		return fileFormat;
 	}
