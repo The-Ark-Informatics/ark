@@ -53,11 +53,11 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService					iLimsService;
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
-	private ILimsAdminService				iLimsAdminService;
+	private ILimsAdminService			iLimsAdminService;
 	private BioCollection				bioCollection;
 	private String							zplString;
 	private BarcodePrinter				barcodePrinter;
-	private BarcodeLabel 				barcodeLabel;
+	private BarcodeLabel					barcodeLabel;
 
 	/**
 	 * Construct an ajax button to send the specified barcodeString to a ZebraTLP2844 printer<br>
@@ -85,7 +85,7 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 		barcodePrinter.setStudy(bioCollection.getStudy());
 		barcodePrinter.setName("zebra");
 		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
-		
+
 		barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(bioCollection.getStudy());
@@ -101,8 +101,8 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 			log.error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
 			barcodePrinterAvailable = false;
 		}
-		
-		if(barcodeLabel == null) {
+
+		if (barcodeLabel == null) {
 			log.error("A Zebra barcode label is currently not available. Please define the label and try again");
 			barcodePrinterAvailable = false;
 		}
@@ -116,10 +116,10 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	}
 
 	@Override
-	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {		
-		if(barcodeLabel != null) {
+	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+		if (barcodeLabel != null) {
 			this.zplString = iLimsAdminService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel);
-	
+
 			if (zplString == null || zplString.isEmpty()) {
 				this.error("There was an error when attempting to print the barcode for: " + bioCollection.getName());
 				log.error("There was an error when attempting to print the barcode for: " + bioCollection.getName());
