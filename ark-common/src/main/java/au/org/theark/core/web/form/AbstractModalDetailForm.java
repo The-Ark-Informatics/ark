@@ -269,6 +269,8 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements  IEd
 	public void onEditSave(AjaxRequestTarget target, Form<?> form) {
 		onSave(target);
 		target.add(arkCrudContainerVo.getDetailPanelContainer());
+		String s ="jQuery('form#" + form.getMarkupId() + "').cleanDirty();"; 
+		target.appendJavaScript(s);
 	}
 
 	/*
