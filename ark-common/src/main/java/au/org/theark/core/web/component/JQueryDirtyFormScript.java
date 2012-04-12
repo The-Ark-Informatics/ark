@@ -66,17 +66,7 @@ public class JQueryDirtyFormScript extends Label {
 		jQueryScript.append("jQuery('#");
 		jQueryScript.append(componentId);
 		jQueryScript.append("').dirtyForms();");
-		jQueryScript.append("\n});\n");
-		jQueryScript.append("jQuery('#");
-		jQueryScript.append(componentId);
-		jQueryScript.append("').mouseout(function() {\n\t");
-		jQueryScript.append("if(jQuery.DirtyForms.isDirty()){");
-		jQueryScript.append("\n\t\t");
-		jQueryScript.append("if(!confirm('You have unsaved changes are your sure?'))\n\t\t{");	
-		jQueryScript.append("\n\t\t\t");
-		jQueryScript.append("return false");
-		jQueryScript.append("\n\t\t}\n");
-		jQueryScript.append("\t}\n});\n");
+		jQueryScript.append("\n});");
 		return jQueryScript.toString();
 	}
 }
