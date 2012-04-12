@@ -19,24 +19,27 @@
 package au.org.theark.phenotypic.web.component.phenodataentry;
 
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
+import au.org.theark.core.web.component.JQueryDirtyFormScript;
 import au.org.theark.phenotypic.web.component.phenodataentry.form.PhenoDataEntryModalDetailForm;
 
 public class PhenoDataEntryModalDetailPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long						serialVersionUID	= 1755709689461138709L;
+	private static final long											serialVersionUID	= 1755709689461138709L;
 
-	private FeedbackPanel								detailFeedbackPanel;
-	private ModalWindow									modalWindow;
-	private PhenoDataEntryModalDetailForm	detailForm;
-	private ArkCrudContainerVO							arkCrudContainerVo;
+	private FeedbackPanel												detailFeedbackPanel;
+	private ModalWindow													modalWindow;
+	private PhenoDataEntryModalDetailForm							detailForm;
+	private ArkCrudContainerVO											arkCrudContainerVo;
+	protected Label														jQueryLabel;
 
 	protected CompoundPropertyModel<PhenoDataCollectionVO>	cpModel;
 
@@ -57,10 +60,14 @@ public class PhenoDataEntryModalDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new PhenoDataEntryModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
+		jQueryLabel = new Label("jQueryDirtyFormScript", "");
+		jQueryLabel.setOutputMarkupId(true);
+		detailForm = new PhenoDataEntryModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel, jQueryLabel);
 		detailForm.initialiseDetailForm();
+		jQueryLabel = new JQueryDirtyFormScript("jQueryDirtyFormScript", detailForm.getMarkupId());
 		add(detailFeedbackPanel);
 		add(detailForm);
+		add(jQueryLabel);
 	}
 
 	/**

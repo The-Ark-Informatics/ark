@@ -26,6 +26,7 @@ import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -47,6 +48,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.navigator.ArkAjaxPagingNavigator;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.Constants;
@@ -84,20 +86,22 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	private ModalWindow							modalWindow;
 	private AjaxPagingNavigator				dataEntryNavigator;
 	private WebMarkupContainer					dataEntryWMC;
+	protected Label								jQueryLabel;
 
 	/**
 	 * Constructor
-	 * 
 	 * @param id
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVo
 	 * @param modalWindow
-	 * @param listDetailPanel
+	 * @param cpModel
+	 * @param jQueryLabel
 	 */
-	public PhenoDataEntryModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
+	public PhenoDataEntryModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel, Label jQueryLabel) {
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
 		this.modalWindow = modalWindow;
 		refreshEntityFromBackend();
+		this.jQueryLabel = jQueryLabel;
 	}
 
 	protected void refreshEntityFromBackend() {
@@ -121,10 +125,11 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			phenoDataCpModel.getObject().setPhenotypicCollection(pc);
 			phenoDataCpModel.getObject().setArkFunction(cpModel.getObject().getArkFunction());
 			PhenoDataDataViewPanel phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel).initialisePanel(au.org.theark.core.Constants.ROWS_PER_PAGE);
-			dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView()) {
+			/*
+			 * dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView()) {
 				/**
 				 * 
-				 */
+				 * /
 				private static final long	serialVersionUID	= 1L;
 
 				@Override
@@ -132,6 +137,9 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 					target.add(dataEntryWMC);
 				}
 			};
+			*/
+			
+			dataEntryNavigator = new ArkAjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView(), dataEntryWMC, jQueryLabel);
 			phenoCollectionDataEntryPanel = phenoCFDataEntryPanel;
 			replacePanel = true;
 		}
@@ -161,6 +169,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		
 		dataEntryWMC = new WebMarkupContainer("dataEntryWMC");
 		dataEntryWMC.setOutputMarkupId(true);
+		
 		initialisePhenotypicCollectionDataEntry();
 
 		attachValidators();
