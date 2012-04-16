@@ -24,8 +24,10 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -43,6 +45,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.lims.service.ILimsAdminService;
 import au.org.theark.lims.web.Constants;
@@ -68,10 +71,41 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 	private TextField<String>					nameTxtFld;
 	private TextArea<String>					descriptionTxtArea;
 
-	public SearchForm(String id, CompoundPropertyModel<BarcodeLabel> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
+	public SearchForm(String id, CompoundPropertyModel<BarcodeLabel> cpmModel, final ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
 		super(id, cpmModel, feedBackPanel, arkCrudContainerVO);
 		this.feedbackPanel = feedBackPanel;
 		initialiseSearchForm();
+		
+		newButton = new ArkBusyAjaxButton(Constants.NEW) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1666656098281624401L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// Make the details panel visible, disabling delete button (if found)
+				// AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
+				AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
+				if (ajaxButton != null) {
+					ajaxButton.setEnabled(false);
+					target.add(ajaxButton);
+				}
+				// Call abstract method
+				onNew(target);
+			}
+
+			@Override
+			public boolean isVisible() {
+				return true;
+			}
+
+			@Override
+			protected void onError(final AjaxRequestTarget target, Form<?> form) {
+				target.add(feedbackPanel);
+			}
+		};
+		addOrReplace(newButton);
 	}
 
 	protected void initialiseSearchForm() {
