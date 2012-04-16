@@ -47,6 +47,7 @@ import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataDataViewPanel;
 import au.org.theark.lims.web.component.button.zebra.biocollection.PrintBioCollectionLabelButton;
+import au.org.theark.lims.web.component.button.zebra.biocollection.PrintBiospecimensForBioCollectionButton;
 
 /**
  * @author cellis
@@ -72,6 +73,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 	private ModalWindow					modalWindow;
 	private Panel 							bioCollectionCFDataEntryPanel;
 	private AjaxButton					printBioCollectionLabelButton;
+	private AjaxButton					printBiospecimensForBioCollectionButton;
 
 	/**
 	 * Constructor
@@ -149,6 +151,18 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 			}
 		};
 		printBioCollectionLabelButton.setDefaultFormProcessing(false);
+		
+		printBiospecimensForBioCollectionButton = new PrintBiospecimensForBioCollectionButton("printBiospecimensForBioCollectionButton", bioCollection) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onPostSubmit(AjaxRequestTarget target, Form<?> form) {
+			}
+		};
+		printBioCollectionLabelButton.setDefaultFormProcessing(false);
 
 		attachValidators();
 		addComponents();
@@ -171,6 +185,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioCollectionCFDataEntryPanel);
 		
 		add(printBioCollectionLabelButton);
+		add(printBiospecimensForBioCollectionButton);
 		
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
