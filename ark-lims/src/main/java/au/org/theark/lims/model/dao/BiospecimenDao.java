@@ -38,6 +38,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
@@ -554,5 +555,11 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		Criteria criteria = getSession().createCriteria(Unit.class);
 		criteria.add(Restrictions.eq("name", name));
 		return (Unit) criteria.uniqueResult();
+	}
+
+	public List<Biospecimen> getBiospecimenByBioCollection(BioCollection bioCollection) {
+		Criteria criteria = getSession().createCriteria(Biospecimen.class);
+		criteria.add(Restrictions.eq("bioCollection", bioCollection));
+		return criteria.list();
 	}
 }
