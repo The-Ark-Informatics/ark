@@ -96,8 +96,6 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-		
-
 		if(barcodeLabel != null) {
 			this.zplString = iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
 	
