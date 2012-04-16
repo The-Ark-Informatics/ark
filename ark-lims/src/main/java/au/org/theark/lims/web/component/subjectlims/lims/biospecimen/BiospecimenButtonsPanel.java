@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims.biospecimen;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -30,6 +31,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.button.ArkAjaxButton;
+import au.org.theark.lims.web.component.button.NumberOfLabelsPanel;
 import au.org.theark.lims.web.component.button.brady.biospecimen.PrintBiospecimenStrawLabelButton;
 import au.org.theark.lims.web.component.button.zebra.biospecimen.PrintBiospecimenLabelButton;
 
@@ -44,14 +46,17 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long				serialVersionUID	= 1L;
-	private static final Logger			log					= LoggerFactory.getLogger(BiospecimenButtonsPanel.class);
+	private static final long		serialVersionUID	= 1L;
+	private static final Logger	log					= LoggerFactory.getLogger(BiospecimenButtonsPanel.class);
 
-	protected AjaxButton						cloneButton;
-	protected AjaxButton						processButton;
-	protected AjaxButton						aliquotButton;
-	protected AjaxButton						printBarcodeButton;
-	protected AjaxButton						printStrawBarcodeButton;
+	protected AjaxButton				cloneButton;
+	protected AjaxButton				processButton;
+	protected AjaxButton				aliquotButton;
+
+	protected AjaxButton				printBarcodeButton;
+	protected AjaxButton				printStrawBarcodeButton;
+
+	protected NumberOfLabelsPanel	numberOfLabels;
 
 	public BiospecimenButtonsPanel(String id, IModel<Biospecimen> model) {
 		super(id, model);
@@ -59,6 +64,7 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 		initialisePanel();
 	}
 
+	@SuppressWarnings( { })
 	protected void initialisePanel() {
 		cloneButton = new ArkAjaxButton("clone") {
 			/**
@@ -90,6 +96,7 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 				}
 			}
 		};
+		cloneButton.add(new AttributeModifier("class", "floatLeft"));
 		this.add(cloneButton);
 
 		processButton = new ArkAjaxButton("process") {
@@ -123,6 +130,7 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 			}
 		};
 		processButton.setDefaultFormProcessing(false);
+		processButton.add(new AttributeModifier("class", "floatLeft"));
 		this.add(processButton);
 
 		aliquotButton = new ArkAjaxButton("aliquot") {
@@ -157,9 +165,13 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 		};
 
 		aliquotButton.setDefaultFormProcessing(false);
+		aliquotButton.add(new AttributeModifier("class", "floatLeft"));
 		this.add(aliquotButton);
 
-		printBarcodeButton = new PrintBiospecimenLabelButton("printBarcode", BiospecimenButtonsPanel.this.getDefaultModel()) {
+		numberOfLabels = new NumberOfLabelsPanel("numberOfLabels");
+		this.add(numberOfLabels);
+
+		printBarcodeButton = new PrintBiospecimenLabelButton("printBarcode", BiospecimenButtonsPanel.this.getDefaultModel(), numberOfLabels.getDefaultModel()) {
 			/**
 			 * 
 			 */
@@ -171,8 +183,8 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 			}
 		};
 		this.add(printBarcodeButton);
-		
-		printStrawBarcodeButton = new PrintBiospecimenStrawLabelButton("printStrawBarcode", BiospecimenButtonsPanel.this.getDefaultModel()) {
+
+		printStrawBarcodeButton = new PrintBiospecimenStrawLabelButton("printStrawBarcode", BiospecimenButtonsPanel.this.getDefaultModel(), numberOfLabels.getDefaultModel()) {
 			/**
 			 * 
 			 */
@@ -187,39 +199,45 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 	}
 
 	/**
-	 * Calling class to implement clone functionality 
+	 * Calling class to implement clone functionality
+	 * 
 	 * @param target
 	 */
 	public abstract void onClone(AjaxRequestTarget target);
 
 	/**
-	 * Calling class to implement process functionality 
+	 * Calling class to implement process functionality
+	 * 
 	 * @param target
 	 */
 	public abstract void onProcess(AjaxRequestTarget target);
 
 	/**
-	 * Calling class to implement aliquot functionality 
+	 * Calling class to implement aliquot functionality
+	 * 
 	 * @param target
 	 */
 	public abstract void onAliquot(AjaxRequestTarget target);
 
 	/**
-	 * Calling class to implement print barcode functionality 
+	 * Calling class to implement print barcode functionality
+	 * 
 	 * @param target
 	 */
 	public abstract void onPrintBarcode(AjaxRequestTarget target);
-	
+
 	/**
-	 * Calling class to implement clone functionality 
+	 * Calling class to implement clone functionality
+	 * 
 	 * @param target
-	 * @return 
+	 * @return
 	 */
 	public abstract void onPrintStrawBarcode(AjaxRequestTarget target);
 
 	public boolean isCloneButtonVisible() {
 		return cloneButton.isVisible();
 	}
+
 	public void setCloneButtonVisible(boolean visible) {
 		cloneButton.setVisible(visible);
 	}

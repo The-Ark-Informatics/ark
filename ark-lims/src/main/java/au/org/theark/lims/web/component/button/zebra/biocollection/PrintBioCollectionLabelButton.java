@@ -22,6 +22,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,18 +59,24 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	private String							zplString;
 	private BarcodePrinter				barcodePrinter;
 	private BarcodeLabel					barcodeLabel;
+	private IModel<?>						numberModel;
+	private Number							barcodesToPrint;
 
 	/**
 	 * Construct an ajax button to send the specified barcodeString to a ZebraTLP2844 printer<br>
 	 * <b>NOTE:</b> Assumes there is an applet on the page with the name "jZebra"
 	 * 
-	 * @param id
-	 * @param bioCollection
+	 * @param id the markup identifier
+	 * @param bioCollection the bioCollection in context
+	 * @param numberModel the number of labels to print
 	 */
-	public PrintBioCollectionLabelButton(String id, final BioCollection bioCollection) {
+	public PrintBioCollectionLabelButton(String id, final BioCollection bioCollection, IModel<Number> numberModel) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.bioCollection = bioCollection;
+		this.numberModel = numberModel;
+		this.barcodesToPrint = (Number) numberModel.getObject();
+		
 		try {
 			this.bioCollection = iLimsService.getBioCollection(bioCollection.getId());
 			String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
@@ -118,7 +125,21 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 		if (barcodeLabel != null) {
-			this.zplString = iLimsAdminService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel);
+			StringBuffer sb = new StringBuffer();
+			
+			if(numberModel == null) {
+				barcodesToPrint = 1;
+			}
+			else {
+				barcodesToPrint = (Number) numberModel.getObject();
+			}
+			
+			for (int i = 0; i < barcodesToPrint.intValue(); i++) {
+				sb.append(iLimsAdminService.createBioCollectionLabelTemplate(bioCollection, barcodeLabel));
+				sb.append("%0A");
+			}
+			
+			this.zplString = sb.toString();
 
 			if (zplString == null || zplString.isEmpty()) {
 				this.error("There was an error when attempting to print the barcode for: " + bioCollection.getName());

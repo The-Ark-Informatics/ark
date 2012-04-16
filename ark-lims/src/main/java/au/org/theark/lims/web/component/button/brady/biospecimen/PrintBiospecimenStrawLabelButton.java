@@ -33,22 +33,25 @@ import au.org.theark.lims.service.ILimsAdminService;
 
 /**
  * Class that represents a button to print a straw barcode label to a Brady printer (specifically the BPP 11 model), using TSPL/TSPL2 commands
+ * 
  * @author cellis
  */
 public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= -8280115613440342737L;
+	private static final long		serialVersionUID	= -8280115613440342737L;
 
 	private static final Logger	log					= LoggerFactory.getLogger(PrintBiospecimenStrawLabelButton.class);
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_ADMIN_SERVICE)
-	private ILimsAdminService			iLimsAdminService;
+	private ILimsAdminService		iLimsAdminService;
 	private final Biospecimen		biospecimen;
+	private IModel<?>					numberModel;
+	private Number						barcodesToPrint;
 	private String						tsplString;
 	private BarcodePrinter			barcodePrinter;
-	private BarcodeLabel 			barcodeLabel;
+	private BarcodeLabel				barcodeLabel;
 
 	/**
 	 * Construct an ajax button to send the specified barcodeString to a Brady BPP 11 printer<br>
@@ -56,24 +59,29 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 	 * 
 	 * @param id
 	 * @param iModel
+	 *           the Biospecimen model
+	 * @param numberModel
+	 *           the model defining the number of barcodes to print
 	 */
-	public PrintBiospecimenStrawLabelButton(String id, final IModel<?> iModel) {
+	public PrintBiospecimenStrawLabelButton(String id, final IModel<?> iModel, final IModel<?> numberModel) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.biospecimen = (Biospecimen) iModel.getObject();
-
+		this.numberModel = numberModel;
+		this.barcodesToPrint = (Number) numberModel.getObject();
+		
 		barcodePrinter = new BarcodePrinter();
 		barcodePrinter.setStudy(biospecimen.getStudy());
 		barcodePrinter.setName("brady_bbp_11");
 		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
-		
+
 		barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(biospecimen.getStudy());
 		barcodeLabel.setName("straw barcode");
 		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 	}
-	
+
 	@Override
 	public boolean isEnabled() {
 		boolean barcodePrinterAvailable = true;
@@ -82,12 +90,12 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 			log.error("A Brady barcode printer is currently not available. Please add the printer to the client machine and try again");
 			barcodePrinterAvailable = false;
 		}
-		
-		if(barcodeLabel == null) {
+
+		if (barcodeLabel == null) {
 			log.error("A Brady barcode label is currently not available. Please define the label and try again");
 			barcodePrinterAvailable = false;
 		}
-		
+
 		return (barcodePrinterAvailable);
 	}
 
@@ -97,10 +105,24 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 	}
 
 	@Override
-	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {		
-		if(barcodeLabel != null) {
-			this.tsplString = iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel);
-	
+	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+		if (barcodeLabel != null) {
+			StringBuffer sb = new StringBuffer();
+			
+			if(numberModel == null) {
+				barcodesToPrint = 1;
+			}
+			else {
+				barcodesToPrint = (Number) numberModel.getObject();
+			}
+			
+			for (int i = 0; i < barcodesToPrint.intValue(); i++) {
+				sb.append(iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel));
+				sb.append("%0A");
+			}
+
+			this.tsplString = sb.toString();
+
 			if (tsplString == null || tsplString.isEmpty()) {
 				this.error("There was an error when attempting to print the straw barcode for: " + biospecimen.getBiospecimenUid());
 				log.error("There was an error when attempting to print the straw barcode for: " + biospecimen.getBiospecimenUid());
