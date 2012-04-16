@@ -28,6 +28,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -46,6 +47,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataDataViewPanel;
+import au.org.theark.lims.web.component.button.NumberOfLabelsPanel;
 import au.org.theark.lims.web.component.button.zebra.biocollection.PrintBioCollectionLabelButton;
 import au.org.theark.lims.web.component.button.zebra.biocollection.PrintBiospecimensForBioCollectionButton;
 
@@ -74,6 +76,8 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 	private Panel 							bioCollectionCFDataEntryPanel;
 	private AjaxButton					printBioCollectionLabelButton;
 	private AjaxButton					printBiospecimensForBioCollectionButton;
+	
+	protected NumberOfLabelsPanel numberOfLabels;
 
 	/**
 	 * Constructor
@@ -140,7 +144,10 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		initialiseBioCollectionCFDataEntry();
 		
 		BioCollection bioCollection = cpModel.getObject().getBioCollection();
-		printBioCollectionLabelButton = new PrintBioCollectionLabelButton("printBioCollectionLabel", bioCollection) {
+		
+		numberOfLabels = new NumberOfLabelsPanel("numberOfLabels");
+		
+		printBioCollectionLabelButton = new PrintBioCollectionLabelButton("printBioCollectionLabel", bioCollection, (IModel<Number>) numberOfLabels.getDefaultModel()) {
 			/**
 			 * 
 			 */
@@ -184,6 +191,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		arkCrudContainerVo.getDetailPanelFormContainer().add(surgeryDateTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioCollectionCFDataEntryPanel);
 		
+		add(numberOfLabels);
 		add(printBioCollectionLabelButton);
 		add(printBiospecimensForBioCollectionButton);
 		
