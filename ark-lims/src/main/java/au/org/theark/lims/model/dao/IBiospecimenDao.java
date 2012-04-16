@@ -23,6 +23,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
@@ -163,4 +164,6 @@ public interface IBiospecimenDao {
 	public TreatmentType getTreatmentTypeByName(String name);
 
 	public Unit getUnitByName(String name);
+
+	public List<Biospecimen> getBiospecimenByBioCollection(BioCollection bioCollection);
 }

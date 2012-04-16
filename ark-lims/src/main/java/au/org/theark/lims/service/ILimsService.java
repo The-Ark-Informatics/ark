@@ -349,4 +349,6 @@ public interface ILimsService {
 	public BioCollection getBioCollectionByName(String name);
 
 	public Unit getUnitByName(String name);
+
+	public List<Biospecimen> getBiospecimenByBioCollection(BioCollection bioCollection);
 }

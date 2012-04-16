@@ -796,4 +796,8 @@ public class LimsServiceImpl implements ILimsService {
 	public Unit getUnitByName(String name) {
 		return iBiospecimenDao.getUnitByName(name);
 	}
+
+	public List<Biospecimen> getBiospecimenByBioCollection(BioCollection bioCollection) {
+		return iBiospecimenDao.getBiospecimenByBioCollection(bioCollection);
+	}
 }
