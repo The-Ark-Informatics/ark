@@ -145,10 +145,10 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 	 */
 	@Override
 	protected void attachValidators() {
-		phoneNumberTxtFld.setRequired(true).setLabel((new StringResourceModel("phone.phoneNumber.RequiredValidator", this, new Model<String>("Phone Number"))));
-		phoneNumberTxtFld.add(StringValidator.maximumLength(10)).setLabel(new StringResourceModel("phone.phoneNumber.StringValidator.maximum", this, null));
 		areaCodeTxtFld.add(StringValidator.maximumLength(10));
-		phoneTypeChoice.setRequired(true).setLabel((new StringResourceModel("phone.phoneType.RequiredValidator", this, new Model<String>("Phone Type"))));
+		phoneTypeChoice.setRequired(true).setLabel((new StringResourceModel("phone.phoneType.required", this, new Model<String>("Phone Type"))));
+		phoneNumberTxtFld.setRequired(true).setLabel((new StringResourceModel("phone.phoneNumber.required", this, new Model<String>("Phone Number"))));
+		phoneNumberTxtFld.add(StringValidator.maximumLength(20));
 		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("phone.dateReceived.DateValidator.maximum", this, null));
 	}
 
@@ -195,12 +195,14 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 		Long personSessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		// Get the person and set it on the Phone object.
 		try {
+			boolean saveOk = true;
 			Person person = studyService.getPerson(personSessionId);
 			containerForm.getModelObject().getPhone().setPerson(person);
+			
+			/*
 			// Make the area code mandatory only for landline phone (home/work) entries
 			String phType = containerForm.getModelObject().getPhone().getPhoneType().getName().toLowerCase();
-			boolean saveOk = true;
-
+			
 			if (!phType.equals("mobile")) {
 				// must be landline
 				if (containerForm.getModelObject().getPhone().getAreaCode() == null || containerForm.getModelObject().getPhone().getAreaCode().length() < 1) {
@@ -208,6 +210,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 					saveOk = false;
 				}
 			}
+			*/
 			if (saveOk) {
 				// Ok to save...
 				String personType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
