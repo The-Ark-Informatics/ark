@@ -21,6 +21,7 @@ package au.org.theark.study.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -31,6 +32,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
@@ -60,6 +62,7 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 	private IArkCommonService	iArkCommonService;
 
 	private WebMarkupContainer	arkContextMarkup;
+	boolean childStudy;
 
 	/**
 	 * @param id
@@ -69,6 +72,10 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 		this.arkContextMarkup = arkContextMarkup;
 		new ArrayList<ITab>();
 		buildTabs();
+		
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		childStudy = study.getParentStudy() != null  && (study != study.getParentStudy());
 	}
 
 	@SuppressWarnings( { "serial", "unchecked" })
@@ -123,6 +130,15 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 						panelToReturn = new SubjectCustomDataContainerPanel(panelId).initialisePanel();
 					}
 					return panelToReturn;
+				}
+				
+				@Override
+				public boolean isVisible() {
+					// Subject Upload only visible to parent studies 
+					if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)) {
+						return (!childStudy);
+					}
+					return true;
 				}
 			});
 		}
