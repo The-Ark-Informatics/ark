@@ -125,11 +125,11 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			phenoDataCpModel.getObject().setPhenotypicCollection(pc);
 			phenoDataCpModel.getObject().setArkFunction(cpModel.getObject().getArkFunction());
 			PhenoDataDataViewPanel phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel).initialisePanel(au.org.theark.core.Constants.ROWS_PER_PAGE);
-			/*
-			 * dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView()) {
+			
+			dataEntryNavigator = new AjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView()) {
 				/**
 				 * 
-				 * /
+				 */
 				private static final long	serialVersionUID	= 1L;
 
 				@Override
@@ -137,9 +137,9 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 					target.add(dataEntryWMC);
 				}
 			};
-			*/
 			
-			dataEntryNavigator = new ArkAjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView(), dataEntryWMC, jQueryLabel);
+			
+			//dataEntryNavigator = new ArkAjaxPagingNavigator("dataEntryNavigator", phenoCFDataEntryPanel.getDataView(), dataEntryWMC, jQueryLabel);
 			phenoCollectionDataEntryPanel = phenoCFDataEntryPanel;
 			replacePanel = true;
 		}
