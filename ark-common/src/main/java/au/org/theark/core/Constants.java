@@ -393,17 +393,17 @@ public class Constants {
 	// 1 digit, 1 lower, 1 upper, 1 symbol "~!@#$%^&*()_-+={}[]:;\"<>|", from 6 to 20
 	public static final String			PASSWORD_PATTERN												= "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_\\-\\+\\=\\{\\}\\[\\]:;\\\"<>|]).{6,20})";
 
-	public static final String[]		BIOSPECIMEN_TEMPLATE_HEADER								= { "SUBJECTUID", "BIOSPECIMENUID", "BIOCOLLECTION", "SAMPLETYPE", "QUANTITY", "UNITS", "TREATMENT", "SITE", "FREEZER",
-			"RACK", "BOX", "ROW", "COLUMN"																};
+	public static final String[]		BIOSPECIMEN_TEMPLATE_HEADER								= { "SUBJECTUID", "BIOSPECIMENUID", "BIOCOLLECTION", "SAMPLETYPE", "QUANTITY", "UNITS", "TREATMENT", "SITE",
+			"FREEZER", "RACK", "BOX", "ROW", "COLUMN"												};
 	public static final String[][]	BIOSPECIMEN_TEMPLATE_CELLS									= {
 			{ "", "SUBJECTUID", "BIOSPECIMENUID", "BIOCOLLECTION", "SAMPLETYPE", "QUANTITY", "UNITS", "TREATMENT", "SITE", "FREEZER", "RACK", "BOX", "ROW", "COLUMN" },
-			{ "DESCRIPTION", "The unique identifier assigned for this subject.  This may be automatically generated on upload into The Ark", "The unique identifier of the biospecimen",
-			"The collection to which the biospeicmen is assoicated with", "The sample type of the biospecimen", "The quantity of the bispecimen", "The units of quanitty", "The treatement type of the bispecimen",
-			"The site of the bispecimen location", "The freezer of the bispecimen location", "The rack of the bispecimen location", "The box of the bispecimen location",
-			"The row of the bispecimen location", "The column of the bispecimen location"},
+			{ "DESCRIPTION", "The unique identifier assigned for this subject.", "The unique identifier of the biospecimen", "The collection to which the biospecimen is assoicated with",
+			"The sample type of the biospecimen", "The quantity of the bispecimen", "The units of quanity", "The treatement type of the bispecimen", "The site of the bispecimen location",
+			"The freezer of the bispecimen location", "The rack of the bispecimen location", "The box of the bispecimen location", "The row of the bispecimen location",
+			"The column of the bispecimen location" },
 			{ "MANDATORY", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "No", "No", "No", "No", "No", "No" },
-			{ "VALID VALUES", "", "", "", "", "", "70% Alcohol Fixed, Formalin Fixed, Frozen, RN later, RNA later, then Formalin Fixed, RNA later, then Snap Frozen, Tissue Cultured, Unprocessed", "", "",
-			"", "", "", "", "" }, { "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", "", "", "", "", "", "" } };
+			{ "VALID VALUES", "", "", "", "", "", "70% Alcohol Fixed, Formalin Fixed, Frozen, RN later, RNA later, then Formalin Fixed, RNA later, then Snap Frozen, Tissue Cultured, Unprocessed", "",
+			"", "", "", "", "", "" }, { "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", "", "", "", "", "", "", "" } };
 	public static final String			DOWNLOAD_FILE													= "downloadFile";
 	public static final String			DELETE_FILE														= "deleteFile";
 
@@ -413,5 +413,5 @@ public class Constants {
 	public static final String			ARK_SYSTEM_EXCEPTION											= "General ARK System Exception: ";
 	public static final String			ARK_BASE_EXCEPTION											= "Base ARK System Exception: ";
 	public static final String			FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD					= "BIOSPECIMEN_UPLOAD";
-	
+
 }
