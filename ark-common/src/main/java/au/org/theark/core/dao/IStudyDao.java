@@ -76,6 +76,7 @@ import au.org.theark.core.vo.SubjectVO;
  */
 public interface IStudyDao {
 
+
 	/**
 	 * Looks up a Study based on the filter supplied as part of the Study.
 	 * 
