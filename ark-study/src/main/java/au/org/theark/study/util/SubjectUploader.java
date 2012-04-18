@@ -26,6 +26,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,6 +150,7 @@ public class SubjectUploader {
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
+				log.warn("reading msg " + subjectCount);
 				// do something with the newline to put the data into
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
@@ -323,6 +326,7 @@ public class SubjectUploader {
 
 				//log.debug("\n");
 				subjectCount++;
+				log.warn("finished message for " + subjectCount);
 			}
 		}
 		catch (IOException ioe) {
@@ -410,6 +414,80 @@ public class SubjectUploader {
 		return uploadReport;
 	}
 
+
+	/**
+	 * 
+	 * @param fileInputStream
+	 *           is the input stream of a file
+	 * @param inLength
+	 *           is the length of a file
+	 */
+	public List getListOfUidsFromInputStream(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
+		List uids = new ArrayList<String>();
+		delimiterCharacter = inDelimChr;
+		curPos = 0;
+
+		InputStreamReader inputStreamReader = null;
+		CsvReader csvReader = null;
+
+		try {
+			inputStreamReader = new InputStreamReader(fileInputStream);
+			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+			String[] stringLineArray;
+
+			srcLength = inLength;
+			if (srcLength <= 0) {
+				uploadReport.append("The input size was not greater than 0. Actual length reported: ");
+				uploadReport.append(srcLength);
+				uploadReport.append("\n");
+				throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + srcLength);
+			}
+			csvReader.readHeaders();
+			
+			// Loop through all rows in file
+			while (csvReader.readRecord()) {
+				log.warn("reading msg " + subjectCount);
+				stringLineArray = csvReader.getValues();
+				String subjectUID = stringLineArray[0];
+				uids.add(subjectUID);
+				subjectCount++;
+				log.warn("finished message for " + subjectCount);
+			}
+		}
+		catch (IOException ioe) {
+			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+		}
+		catch (Exception ex) {
+			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
+			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+		}
+		finally {
+			if (csvReader != null) {
+				try {
+					csvReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}
+			}
+			// Restore the state of variables
+			srcLength = -1;
+		}
+
+		return uids;
+	}
+
+	
+	
 	/**
 	 * Return the progress of the current process in %
 	 * 

@@ -82,6 +82,7 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -1781,4 +1782,24 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		getSession().update(linkSubjectStudy);
 	}
 
+	public long countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjects) {
+		String queryString = "select count(*) " +
+									"from LinkSubjectStudy subject " +
+									"where study =:study " +
+									"and subjectUID in  (:subjects) ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("study", study);
+		query.setParameterList("subjects", subjects);
+		
+		return (Long)query.uniqueResult();
+	}
+
+	public StudyUpload refreshUpload(StudyUpload upload) {
+		getSession().refresh(upload);
+		return upload;
+	}
+
+	public StudyUpload getUpload(Long id) {
+		return (StudyUpload) getSession().get(StudyUpload.class, id);
+	}
 }

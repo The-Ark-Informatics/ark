@@ -73,6 +73,7 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.service.IArkCommonService;
@@ -1165,4 +1166,20 @@ public class StudyServiceImpl implements IStudyService {
 	public List<ConsentHistory> getConsentHistoryList(Consent consent) {
 		return iAuditDao.getConsentHistoryList(consent);
 	}
+
+	public long countNumberOfUniqueSubjects(Study study, List subjects) {
+		if(study!=null && subjects!=null){
+			return iStudyDao.countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(study, subjects);
+		}
+		return 0;
+	}
+
+	public StudyUpload getUpload(Long id) {
+		return iStudyDao.getUpload(id);
+	}
+
+	public StudyUpload refreshUpload(StudyUpload upload) {
+		return iStudyDao.refreshUpload(upload);
+	}
+
 }

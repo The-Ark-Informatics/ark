@@ -53,6 +53,7 @@ import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.vo.ArkUserVO;
@@ -64,6 +65,10 @@ import au.org.theark.study.util.SubjectUploadValidator;
 
 public interface IStudyService {
 
+	
+	public long countNumberOfUniqueSubjects(Study study, List subjects);
+	
+	
 	/**
 	 * 
 	 * @param studyModelVo
@@ -319,4 +324,21 @@ public interface IStudyService {
 	 * @return
 	 */
 	public List<ConsentHistory> getConsentHistoryList(Consent consent);
+
+
+	/**
+	 * Return the upload for the given id
+	 * 
+	 * @param consent
+	 * @return
+	 */
+	public StudyUpload getUpload(Long id);
+	
+	/**
+	 * Refresh this entity with latest from db
+	 * 
+	 * @param consent
+	 * @return
+	 */
+	public StudyUpload refreshUpload(StudyUpload upload);
 }

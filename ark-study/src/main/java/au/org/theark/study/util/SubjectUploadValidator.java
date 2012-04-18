@@ -334,7 +334,7 @@ public class SubjectUploadValidator {
 			csvReader.readHeaders();
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
-			log.debug("Header length: " + csvReader.getHeaders().toString().length());
+			//log.debug("Header length: " + csvReader.getHeaders().toString().length());
 			String[] headerColumnArray = csvReader.getHeaders();
 
 			Collection<String> subjectColumns = new ArrayList<String>();
@@ -485,7 +485,8 @@ public class SubjectUploadValidator {
 			}
 			if (inputStreamReader != null) {
 				try {
-					inputStreamReader.close();
+					//TODO ASAP : reinstate below
+					//inputStreamReader.close();
 				}
 				catch (Exception ex) {
 					log.error("Cleanup operation failed: isr.close()", ex);
@@ -559,6 +560,8 @@ public class SubjectUploadValidator {
 
 				// If no SubjectUID found, caught by exception catch
 				try {
+					
+					//TODO TRAV try to replace this with outer loop for updates and inserts
 					LinkSubjectStudy linksubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID, study));
 					linksubjectStudy.setStudy(study);
 					updateRows.add(row);
@@ -613,20 +616,20 @@ public class SubjectUploadValidator {
 					}
 				}
 
-				log.debug("\n");
+				//log.debug("\n");
 				subjectCount++;
 				row++;
 			}
 
 			if (dataValidationMessages.size() > 0) {
-				log.debug("Validation messages: " + dataValidationMessages.size());
+				log.warn("Validation messages: " + dataValidationMessages.size());
 				for (Iterator<String> iterator = dataValidationMessages.iterator(); iterator.hasNext();) {
 					String errorMessage = iterator.next();
-					log.debug(errorMessage);
+					log.warn(errorMessage);
 				}
 			}
 			else {
-				log.debug("Validation is ok");
+				//log.debug("Validation is ok");
 			}
 		}
 		catch (IOException ioe) {
@@ -640,8 +643,8 @@ public class SubjectUploadValidator {
 		finally {
 			// Clean up the IO objects
 			timer.stop();
-			log.debug("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
-			log.debug("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
+			log.warn("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
+			log.warn("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
 			if (timer != null)
 				timer = null;
 			if (csvReader != null) {

@@ -82,6 +82,19 @@ public class SubjectUploadReport {
 		appendAndNewLine(studyUpload.getDelimiterType().getName());
 	}
 
+	public void appendDetails(StudyUpload studyUpload, String studyName) {
+		append("Study: ");
+		appendAndNewLine(studyName);
+		append("UserID: ");
+		appendAndNewLine(SecurityUtils.getSubject().getPrincipal().toString());
+		append("Filename: ");
+		appendAndNewLine(studyUpload.getFilename());
+		append("File Format: ");
+		appendAndNewLine(studyUpload.getFileFormat().getName());
+		append("Delimiter Type ");
+		appendAndNewLine(studyUpload.getDelimiterType().getName());
+	}
+
 	public Blob getReportAsBlob() {
 		Blob reportAsBlob = Hibernate.createBlob(this.getInputStream());
 		return reportAsBlob;
