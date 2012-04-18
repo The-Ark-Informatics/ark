@@ -270,17 +270,7 @@ public class Constants {
 	// DropDowns
 	// for
 	// States
-	public static final String			SUBJECT_STATE													= "linkSubjectStudy.state";
-	public static final String			SUBJECT_OTHER_STATE											= "linkSubjectStudy.otherState";
-	public static final String			SUBJECT_COUNTRY												= "linkSubjectStudy.country";
-	public static final String			SUBJECT_AMDRFID												= "linkSubjectStudy.amdrfId";
-	public static final String			SUBJECT_STUDY_APPROACH_DATE								= "linkSubjectStudy.studyApproachDate";
-	public static final String			SUBJECT_YR_FIRST_MAMMOGRAM									= "linkSubjectStudy.yearOfFirstMamogram";
-	public static final String			SUBJECT_YR_RECENT_MAMMOGRAM								= "linkSubjectStudy.yearOfRecentMamogram";
-	public static final String			SUBJECT_TOTAL_MAMMOGRAM										= "linkSubjectStudy.totalNumberOfMamograms";
-	public static final String			SUBJECT_SITE_ADDRESS											= "linkSubjectStudy.siteAddress";
-	public static final String			SUBJECT_CITY													= "linkSubjectStudy.city";
-	public static final String			SUBJECT_POST_CODE												= "linkSubjectStudy.postCode";
+
 	public static final String			SUBJECT_CONSENT_TO_ACTIVE_CONTACT						= "linkSubjectStudy.consentToActiveContact";
 	public static final String			SUBJECT_CONSENT_TO_USEDATA									= "linkSubjectStudy.consentToUseData";
 	public static final String			SUBJECT_CONSENT_PASSIVE_DATA_GATHER						= "linkSubjectStudy.consentToPassiveDataGathering";
