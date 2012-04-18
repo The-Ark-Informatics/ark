@@ -57,7 +57,7 @@ public class StudyDataUploadExecutor {
 	private char							delimiter		= Constants.IMPORT_DELIM_CHAR_COMMA;
 	private long							size;
 
-	private SubjectUploadReport	report;
+	private String							report;
 	
 	/**
 	 * StudyDataUploadExecutor constructor
@@ -80,7 +80,7 @@ public class StudyDataUploadExecutor {
 //											File file, 
 											String fileFormat,
 											char delimiter,
-											long size, SubjectUploadReport report) {
+											long size, String report) {
 		this.iArkCommonService = iArkCommonService;
 		this.iStudyService = iStudyService;
 		this.inputStream = inputStream;
