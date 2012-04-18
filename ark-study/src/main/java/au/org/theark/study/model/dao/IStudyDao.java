@@ -51,6 +51,7 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -61,6 +62,16 @@ import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
 
 public interface IStudyDao {
+	
+	/**
+	 *	count number of subjects that do not already exist in db for the given list of subjects and the study provided as parms
+	 * 
+	 * @param study
+	 * @param subjects
+	 * @return
+	 */
+	public long countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjects);
+	
 	/**
 	 * Create a new study
 	 * 
@@ -349,4 +360,8 @@ public interface IStudyDao {
 	public void update(LinkSubjectStudy linkSubjectStudy);
 
 	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException;
+
+	public StudyUpload refreshUpload(StudyUpload upload);
+
+	public StudyUpload getUpload(Long id);
 }

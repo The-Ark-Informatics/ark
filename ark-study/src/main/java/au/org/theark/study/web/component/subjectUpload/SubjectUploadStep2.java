@@ -27,7 +27,6 @@ import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
@@ -52,20 +51,17 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
+	
+	//@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
+	//private IStudyService					iStudyService;
 
-	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
-
-																					/**
-		 * 
-		 */
-																					private static final long	serialVersionUID	= 1L;
-
-																					@Override
-																					protected void onError(AjaxRequestTarget target, Form<?> form) {
-																						this.error("Unexpected Error: Download request could not be processed");
-																					}
-
-																				};
+	private ArkDownloadAjaxButton		downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
+													private static final long	serialVersionUID	= 1L;
+													@Override
+													protected void onError(AjaxRequestTarget target, Form<?> form) {
+														this.error("Unexpected Error: Download request could not be processed");
+													}
+												};
 
 	public SubjectUploadStep2(String id) {
 		super(id);
@@ -74,7 +70,6 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 
 	public SubjectUploadStep2(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 2/5: File Format Validation", "The file format has been validated. If there are no errors, click Next to continue.");
-
 		this.containerForm = containerForm;
 		initialiseDetailForm();
 	}
@@ -108,13 +103,14 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		try {
-			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
-			String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
+			InputStream inputStream = fileUpload.getInputStream();//TODO : should something this big be thrown around model object in wicket?
+
+			String filename = fileUpload.getClientFileName();
 			String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 
-			// Only allow csv, txt or xls
+			// Only allow csv, txt or xls  TODO : if we are hardcoding things like this, why do we fetch file formats
 			if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
 				throw new FileFormatException();
 			}
@@ -141,25 +137,20 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 
 			if (validationMessage != null && validationMessage.length() > 0) {
+				log.warn("validation = " + validationMessage);
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
 				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
-
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
-
 					@Override
 					protected void onError(AjaxRequestTarget target, Form<?> form) {
 						this.error("Unexpected Error: Download request could not be processed");
-						// TODO Auto-generated method stub
 					}
-
 				};
 				addOrReplace(downloadValMsgButton);
 				target.add(downloadValMsgButton);
 			}
+			
 		}
 		catch (IOException e) {
 			validationMessage = "Error attempting to display the file. Please check the file and try again.";
@@ -173,6 +164,7 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			form.getNextButton().setEnabled(false);
 			target.add(form.getWizardButtonContainer());
 		}
+		//TODO : finally?  close io?
 	}
 
 	@Override

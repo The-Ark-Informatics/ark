@@ -33,6 +33,7 @@ import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
+//import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 
@@ -63,10 +64,8 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
-		// containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseWizardPanel());
 		containerForm.add(initialiseSearchResults());
-		// containerForm.add(initialiseSearchPanel());
 		containerForm.setMultiPart(true);
 		add(containerForm);
 	}
