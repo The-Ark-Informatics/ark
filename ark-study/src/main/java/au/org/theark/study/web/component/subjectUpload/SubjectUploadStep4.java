@@ -108,7 +108,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 			long size = containerForm.getModelObject().getFileUpload().getSize();
 			Long uploadId = containerForm.getModelObject().getUpload().getId();
 			//TODO ASAP remove this experimental else statemtnt, this is to test a batch call
-			SubjectUploadReport report = updateUploadReport("");
+			String report = updateUploadReport();
 			log.warn("..try a batch");
 												
 			log.warn("uploadId= " + uploadId + "size = " + size);
@@ -137,14 +137,13 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 		// Save all objects to the database
 		//save();
 	}
-	public SubjectUploadReport updateUploadReport(String importReport) {
+	public String updateUploadReport() {
 		SubjectUploadReport subjectUploadReport = new SubjectUploadReport();
 		subjectUploadReport.appendDetails(containerForm.getModelObject().getUpload());
-		subjectUploadReport.append(importReport);
 //		byte[] bytes = subjectUploadReport.getReport().toString().getBytes();
 //		Blob uploadReportBlob = Hibernate.createBlob(bytes);
 //		containerForm.getModelObject().getUpload().setUploadReport(uploadReportBlob);
-		return subjectUploadReport;
+		return subjectUploadReport.getReport().toString();
 	}
 
 	/*
