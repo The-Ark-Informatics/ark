@@ -67,6 +67,7 @@ public class Constants {
 
 	/* Common Service Names */
 	public static final String			ARK_COMMON_SERVICE											= "arkCommonService";
+//	public static final String			ARK_STUDY_SERVICE												= "StudyService";
 	public static final String			ARK_CSV_LOADER_SERVICE										= "arkCsvLoaderService";
 
 	/* Global constants */

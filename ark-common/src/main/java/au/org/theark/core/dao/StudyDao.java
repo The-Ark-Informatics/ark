@@ -19,6 +19,7 @@
 package au.org.theark.core.dao;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -498,6 +499,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		auditHistory.setDateTime(date);
 		getSession().save(auditHistory);
+
+		//getSession().flush();
 	}
 
 	public List<PersonContactMethod> getPersonContactMethodList() {
@@ -953,14 +956,25 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Subject currentUser = SecurityUtils.getSubject();
 		String userId = (String) currentUser.getPrincipal();
 		studyUpload.setUserId(userId);
+		try {
+			log.warn("why is this blowing up ... ");
+			log.warn("why is this blowing up ... file size is "  + studyUpload.getPayload().length());
+		}
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		getSession().save(studyUpload);
+		//getSession().flush();
 	}
 
 	public void updateUpload(StudyUpload studyUpload) {
+		//getSession().flush();
 		Subject currentUser = SecurityUtils.getSubject();
 		String userId = (String) currentUser.getPrincipal();
 		studyUpload.setUserId(userId);
 		getSession().update(studyUpload);
+		//getSession().flush();
 	}
 
 	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter) {
@@ -1122,4 +1136,5 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		query.setParameter("arkFunctionId", customField.getArkFunction().getId());
 		return ((Number) query.iterate().next()).intValue() > 0;
 	}
+
 }

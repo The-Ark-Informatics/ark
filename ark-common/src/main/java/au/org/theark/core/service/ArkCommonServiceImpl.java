@@ -406,6 +406,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public void createAuditHistory(AuditHistory auditHistory) {
 		studyDao.createAuditHistory(auditHistory);
+		
 	}
 
 	public List<PersonContactMethod> getPersonContactMethodList() {
@@ -917,6 +918,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	public void createUpload(StudyUpload studyUpload) {
+		log.debug("about to studydao.createupload");
+
 		studyDao.createUpload(studyUpload);
 
 		AuditHistory ah = new AuditHistory();
@@ -925,10 +928,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
 		ah.setEntityId(studyUpload.getId());
 		this.createAuditHistory(ah);
+
 	}
 
 	public void updateUpload(StudyUpload studyUpload) {
 		studyDao.updateUpload(studyUpload);
+		
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
