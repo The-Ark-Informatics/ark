@@ -57,7 +57,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private SubjectStatus				subjectStatus;
 	private Person							person;
 	private String							subjectUID;
-	private String							otherState;
 	private Date							studyApproachDate;
 	private ConsentOption				consentToActiveContact;
 	private ConsentOption				consentToPassiveDataGathering;
@@ -226,15 +225,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	public void setConsentDate(Date consentDate) {
 		this.consentDate = consentDate;
-	}
-
-	@Column(name = "OTHER_STATE", length = 255)
-	public String getOtherState() {
-		return otherState;
-	}
-
-	public void setOtherState(String otherState) {
-		this.otherState = otherState;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "linkSubjectStudy")
