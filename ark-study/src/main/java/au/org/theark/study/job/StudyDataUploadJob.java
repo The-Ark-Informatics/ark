@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.study.service.IStudyService;
@@ -61,7 +62,7 @@ public class StudyDataUploadJob implements Job {
 	public static final String		ISTUDYSERVICE		= "iStudyService";
 	public static final String		UPLOADID				= "uploadId";
 	public static final String		CURRENT_USER		= "currentUser";
-	public static final String		STUDY					= "study";
+	public static final String		STUDY_ID					= "study";
 	public static final String		PHENO_COLLECTION	= "phenoCollection";
 	public static final String		DATA_FILE			= "dataFile";
 	public static final String		FILE_FORMAT			= "fileFormat";
@@ -104,9 +105,11 @@ public class StudyDataUploadJob implements Job {
 		InputStream inputStream = (InputStream) data.get(INPUT_STREAM);
 		long size 					= data.getLongValue(SIZE);
 		String originalReport 	= data.getString(REPORT);		
-		//String currentUser = (String) data.get(CURRENT_USER); //PhenoCollection phenoCollection = (PhenoCollection) data.get(PHENO_COLLECTION);//Study study = (Study) data.get(STUDY); //TODO get back to file and make sure saved beforehand   //File file = (File) data.get(DATA_FILE);
+		//String currentUser = (String) data.get(CURRENT_USER); //PhenoCollection phenoCollection = (PhenoCollection) data.get(PHENO_COLLECTION);
+		Long studyId 					= data.getLongValue(STUDY_ID); //TODO get back to file and make sure saved beforehand   //File file = (File) data.get(DATA_FILE);
 		log.warn("UploadJob delimiter: [" + delimiter + "]");
 		log.warn("UploadJob format: [" + fileFormat + "]");
+		log.warn("studyid: [" + studyId + "]");
 		log.warn("UploadJob uopload ID: [" + uploadId + "]");
 		log.warn("UploadJob is iArkCommonService null? [" + (iArkCommonService == null) + "]");
 		log.warn("UploadJob is iStudyService null? [" + (iStudyService == null) + "]");
@@ -119,7 +122,7 @@ public class StudyDataUploadJob implements Job {
 			//TRAV CODE TO START USING 
 				//iStudyService.countNumberOfUniqueSubjects(study, uploader.getListOfUidsFromInputStream(fileIS, file.length(), fileFormat, delimiter));
 			//InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			StringBuffer uploadReport = iStudyService.uploadAndReportMatrixSubjectFile(inputStream, size, fileFormat, delimiter);
+			StringBuffer uploadReport = iStudyService.uploadAndReportMatrixSubjectFile(inputStream, size, fileFormat, delimiter, studyId);
 			StudyUpload upload = iStudyService.getUpload(uploadId);
 			//updateUploadReport(originalReport, uploadReport.toString(), upload);
 			save(upload, uploadReport.toString(), originalReport);
