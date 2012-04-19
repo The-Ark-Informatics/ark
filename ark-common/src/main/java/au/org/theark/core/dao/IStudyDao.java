@@ -539,6 +539,14 @@ public interface IStudyDao {
 	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
 	
 	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate);
+
+	/**
+	 * returns a the subject (linksubjectystudy) IF there is one, else returns null
+	 * @param subjectUID
+	 * @param study
+	 * @return LinkSubjectStudy
+	 */
+	public LinkSubjectStudy getSubjectByUIDAndStudy(String subjectUID, Study study);
 	
 	public int getCountOfSubjects(Study study);
 	
