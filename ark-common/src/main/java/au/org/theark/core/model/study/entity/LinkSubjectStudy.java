@@ -46,18 +46,12 @@ import au.org.theark.core.Constants;
 @Table(name = "LINK_SUBJECT_STUDY", schema = Constants.STUDY_SCHEMA)
 public class LinkSubjectStudy implements java.io.Serializable {
 
-	// Fields
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Long							id;
 	private Study							study;
 	private SubjectStatus				subjectStatus;
 	private Person							person;
 	private String							subjectUID;
-	private Date							studyApproachDate;
 	private ConsentOption				consentToActiveContact;
 	private ConsentOption				consentToPassiveDataGathering;
 	private ConsentOption				consentToUseData;
@@ -69,22 +63,17 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private YesNo							consentDownloaded;
 
 	private Set<Consent>					consents					= new HashSet<Consent>();
-	//private Set<SubjectCustFldDat>	subjectCustFldDats	= new HashSet<SubjectCustFldDat>(0);
 	private Set<SubjectCustomFieldData> subjectCustomFieldDataSet = new HashSet<SubjectCustomFieldData>();
 
-	
-	/** default constructor */
 	public LinkSubjectStudy() {
 		person = new Person();
 
 	}
 
-	/** minimal constructor */
 	public LinkSubjectStudy(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public LinkSubjectStudy(Long id, Study study, SubjectStatus subjectStatus, Person person, Set<SubjectCustomFieldData> subjectCustomFieldDataSet) {
 		this.id = id;
 		this.study = study;
@@ -94,7 +83,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		
 	}
 	
-
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "linkSubjectStudy")
 	public Set<SubjectCustomFieldData> getSubjectCustomFieldDataSet() {
 		return subjectCustomFieldDataSet;
@@ -146,17 +134,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "STUDY_APPROACH_DATE", length = 7)
-	public Date getStudyApproachDate() {
-		return studyApproachDate;
-	}
-
-	public void setStudyApproachDate(Date studyApproachDate) {
-		this.studyApproachDate = studyApproachDate;
-	}
-
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
@@ -235,7 +212,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	public void setConsents(Set<Consent> consents) {
 		this.consents = consents;
 	}
-
 
 	@Column(name = "HEARD_ABOUT_STUDY", length = 1000)
 	public String getHeardAboutStudy() {
