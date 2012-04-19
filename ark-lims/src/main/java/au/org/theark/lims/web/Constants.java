@@ -126,7 +126,6 @@ public class Constants {
 	public static final String	SUBJECT_OTHER_STATE							= "linkSubjectStudy.otherState";
 	public static final String	SUBJECT_COUNTRY								= "linkSubjectStudy.country";
 	public static final String	SUBJECT_AMDRIFID								= "linkSubjectStudy.amdrifId";
-	public static final String	SUBJECT_STUDY_APPROACH_DATE				= "linkSubjectStudy.studyApproachDate";
 	public static final String	SUBJECT_YR_FIRST_MAMMOGRAM					= "linkSubjectStudy.yearOfFirstMamogram";
 	public static final String	SUBJECT_YR_RECENT_MAMMOGRAM				= "linkSubjectStudy.yearOfRecentMamogram";
 	public static final String	SUBJECT_TOTAL_MAMMOGRAM						= "linkSubjectStudy.totalNumberOfMamograms";
