@@ -45,12 +45,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
@@ -317,6 +314,9 @@ public class SubjectUploadValidator {
 		curPos = 0;
 		row = 0;
 
+		//TODO ASAP TRAV ... make one query instead of something times n like it currently is  ... need a list more than a count really...but the count will still be useful for uid locking
+		//iStudyService.countNumberOfUniqueSubjects(study, uploader.getListOfUidsFromInputStream(fileIS, file.length(), fileFormat, delimiter));
+
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		try {
@@ -464,17 +464,11 @@ public class SubjectUploadValidator {
 			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
 		}
 		finally {
-			// Clean up the IO objects
-
-			// TODO What is this timer for...?
+			// TODO can the timer go sometime soon
 
 			timer.stop();
-			// fileValidationMessages.add("Total elapsed time: " +
-			// timer.getTime() + " ms or " +
-			// decimalFormat.format(timer.getTime() / 1000.0) + " s");
-			// fileValidationMessages.add("Total file size: " + srcLength +
-			// " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) +
-			// " MB");
+			// fileValidationMessages.add("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
+			// fileValidationMessages.add("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
 
 			if (timer != null)
 				timer = null;

@@ -35,7 +35,6 @@ public class StudyUserRolePermissionsReportContainer extends AbstractSelectedRep
 
 	public StudyUserRolePermissionsReportContainer(String id) {
 		super(id);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

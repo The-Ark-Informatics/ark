@@ -38,7 +38,6 @@ public class ReportFilterPanel extends Panel {
 
 	public ReportFilterPanel(String id) {
 		super(id);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void initialisePanel(CompoundPropertyModel<GenericReportViewVO> cpModel, FeedbackPanel feedbackPanel, ReportOutputPanel reportOutputPanel) {

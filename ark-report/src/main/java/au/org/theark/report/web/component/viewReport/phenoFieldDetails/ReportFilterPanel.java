@@ -37,7 +37,6 @@ public class ReportFilterPanel extends Panel {
 
 	public ReportFilterPanel(String id) {
 		super(id);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void initialisePanel(CompoundPropertyModel<CustomFieldDetailsReportVO> cpModel, FeedbackPanel feedbackPanel, au.org.theark.report.web.component.viewReport.ReportOutputPanel reportOutputPanel) {
