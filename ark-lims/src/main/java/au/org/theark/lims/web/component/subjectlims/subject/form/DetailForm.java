@@ -90,7 +90,6 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 
 	// Custom Fields and Consents at Subject Study Level
 	protected TextField<String>							amdrifIdTxtFld;
-	protected DateTextField									studyApproachDate;
 	protected TextField<Long>								yearOfFirstMamogramTxtFld;
 	protected TextField<String>							yearOfRecentMamogramTxtFld;
 	protected TextField<String>							totalNumberOfMamogramsTxtFld;
