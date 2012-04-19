@@ -18,9 +18,7 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subjectUpload;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.util.Date;
 
 import org.apache.shiro.SecurityUtils;
@@ -28,11 +26,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
 
-import au.org.theark.core.Constants;
-import au.org.theark.core.model.geno.entity.Upload;
-import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -90,21 +84,18 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 		form.getNextButton().setEnabled(false);
 		target.add(form.getNextButton());
 
-		// Filename seems to be lost from model when moving between steps in wizard
-		//travcontainerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
-
-		// Perform actual import of data
-		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
+		// Filename seems to be lost from model when moving between steps in wizard?  is this a symptom of something greater?
+		containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
+		//technically upload started earlier...already recorded   containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
 
 		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
 		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
-		//StringBuffer uploadReport = null;
+
 		try {
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			//uploadReport = iStudyService.uploadAndReportMatrixSubjectFile(inputStream, containerForm.getModelObject().getFileUpload().getSize(), fileFormat, delimiterChar);
 			long size = containerForm.getModelObject().getFileUpload().getSize();
 			Long uploadId = containerForm.getModelObject().getUpload().getId();
-			//TODO ASAP remove this experimental else statemtnt, this is to test a batch call
 			String report = updateUploadReport();
 			log.warn("..try a batch");
 

@@ -32,8 +32,6 @@ public class SummaryForm extends Form<StudyModelVO> {
 
 	public SummaryForm(String id, CompoundPropertyModel<StudyModelVO> model) {
 		super(id);
-		// TODO Auto-generated constructor stub
-
 	}
 
 }

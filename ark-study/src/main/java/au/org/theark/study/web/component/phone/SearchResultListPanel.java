@@ -77,9 +77,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void populateItem(final ListItem<Phone> item) {
-				// TODO Auto-generated method stub
 				Phone phone = item.getModelObject();
-
 				item.add(buildLink(phone));
 
 				if (phone.getId() != null) {
@@ -103,9 +101,7 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
+					
 					private static final long	serialVersionUID	= 1L;
 
 					@Override

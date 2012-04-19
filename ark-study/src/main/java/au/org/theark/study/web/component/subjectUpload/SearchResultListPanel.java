@@ -290,7 +290,7 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	/*
-	 * TODO: DELETE of uploaded file is not supported till we can verify whether all subjects within the upload have also been deleted. At present,
+	 * TO DO: DELETE of uploaded file is not supported till we can verify whether all subjects within the upload have also been deleted. At present,
 	 * there is no linking table clearly indicating which subjects came from which upload (i.e. will need to be looked at 1st).
 	 */
 	// private AjaxDeleteButton buildDeleteButton(final StudyUpload upload) {

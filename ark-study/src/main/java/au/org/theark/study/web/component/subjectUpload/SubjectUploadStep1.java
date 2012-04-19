@@ -57,13 +57,6 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 
 	public java.util.Collection<String>		validationMessages	= null;
 
-	// TODO: analyze unused
-	//@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	//private IStudyService						iStudyService;
-
-//	@SpringBean(name = "asynchSubjectUploadProcessor")
-//	private AsynchSubjectUploadProcessor	asynchSubjectUploadProcessor;
-
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
 
@@ -97,10 +90,8 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	}
 
 	public void initialiseDetailForm() {
-		// Set up field on form here
-		// progress bar for upload
-		// uploadProgressBar = new UploadProgressBar("progress",
-		// ajaxSimpleUploadForm);
+		// Set up field on form here   
+		// uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleUploadForm);
 
 		// fileUpload for payload
 		fileUploadField = new FileUploadField(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILENAME);
@@ -130,9 +121,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 
 	@Override
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
-		log.warn("should be saving file in mem now");
 		saveFileInMemory();
-		log.warn("file should have been saved now");
 	}
 
 	public void setWizardForm(WizardForm wizardForm) {
@@ -144,45 +133,36 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	}
 
 	private void saveFileInMemory() {
-		// Set study in context
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
 
-		// Retrieve file and store as Blob in database
-		// TODO: AJAX-ified and asynchronous and hit database
 		FileUpload fileUpload = fileUploadField.getFileUpload();
 		containerForm.getModelObject().setFileUpload(fileUpload);	//TODO analyze why VO pattern throughout code, is it always necessary in attion to entity/detached-entity concepts
 
 		try {
-			// Copy file to BLOB object
 			Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
 			containerForm.getModelObject().getUpload().setPayload(payload);
 		}
 		catch (IOException ioe) {
 			System.out.println("Failed to save the uploaded file: " + ioe);
 		}
-
-		// Set details of Upload object
-		containerForm.getModelObject().getUpload().setStudy(study);//TODO: analyze containerForm.getModelObject().getUpload()
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 		String fileFormatName = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 		au.org.theark.core.model.study.entity.FileFormat fileFormat = new au.org.theark.core.model.study.entity.FileFormat();
 		fileFormat = iArkCommonService.getFileFormatByName(fileFormatName);
-		containerForm.getModelObject().getUpload().setFileFormat(fileFormat);
-
-		//TODO ASAP : this is just a test of asynch processing;
-		//asynchSubjectUploadProcessor.fire(53);
-		
 		byte[] byteArray = fileUpload.getMD5();
 		String checksum = getHex(byteArray);
+		
+		containerForm.getModelObject().getUpload().setStudy(study);//TODO: analyze costs of repeated containerForm.getModelObject().getUpload()
+		containerForm.getModelObject().getUpload().setFileFormat(fileFormat);
 		containerForm.getModelObject().getUpload().setChecksum(checksum);
-		containerForm.getModelObject().getUpload().setFilename(fileUpload.getClientFileName());
+		containerForm.getModelObject().getUpload().setFilename(filename);
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
-		wizardForm.setFileName(fileUpload.getClientFileName());
-
 		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
-		log.warn("______________________everything should be setup______________--now why dont we persist to the db...and if we need, set an err msg");
-		//TODO ASAP REMOVE THIE NEXT LINE;
+
+		wizardForm.setFileName(filename);
+
+		//TODO analyse how many times this is saved and where it should be saved
 		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 	}
 }

@@ -18,35 +18,28 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subjectUpload.form;
 
-import java.io.IOException;
-import java.sql.Blob;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractDetailForm;
-import au.org.theark.study.service.IStudyService;
 
 /**
  * @author cellis
@@ -58,20 +51,18 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	 */
 	private static final long					serialVersionUID	= 1L;
 
-	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService						studyService;
-
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
 
 	// REMOVED BY TRAV private int mode;
 
 	private TextField<String>					uploadIdTxtFld;
-	// REMOVED BY TRAV private TextField<String> uploadFilenameTxtFld;
+//	private TextField<String> uploadFilenameTxtFld;
 	private DropDownChoice<FileFormat>		fileFormatDdc;
 	private FileUploadField						fileUploadField;
 	// private UploadProgressBar uploadProgressBar;
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
+	@SuppressWarnings("unused")
 	private ArkFunction							arkFunction;
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, ArkFunction arkFunction) {
@@ -92,12 +83,12 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	}
 
 	public void initialiseDetailForm() {
-		// Do not allow delete for upload - see TODO in onDeleteConfirmed(..)
+		// Do not allow delete for upload - see to do in onDeleteConfirmed(..)
 		deleteButton.setVisible(false);
 
 		// Set up field on form here
 		uploadIdTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_ID);
-		// uploadFilenameTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILENAME);
+//		uploadFilenameTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILENAME);
 
 		// progress bar for upload
 		// uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleUploadForm);
@@ -120,14 +111,11 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 	}
 
-	/*
-	 * TODO remove unused private void createDirectoryIfNeeded(String directoryName) { File theDir = new File(directoryName); // if the directory does
-	 * not exist, create it if (!theDir.exists()) { System.out.println("creating directory: " + directoryName); theDir.mkdir(); } }
-	 */
-
 	@Override
 	protected void onSave(Form<UploadVO> containerForm, AjaxRequestTarget target) {
-		// Implement Save/Update
+		System.err.println("*********************************************************************************" +
+				"******************************************************************************************************************" +
+				"WHY ARE WE SAVING HERE TOO???? ARE WE?????");/*
 		if (containerForm.getModelObject().getUpload().getId() == null) {
 			setMultiPart(true); // multipart required for file uploads
 
@@ -135,34 +123,22 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			Study study = iArkCommonService.getStudy(studyId);
 
-			// Retrieve file and store as Blob in database
-			// TODO: AJAX-ified and asynchronous and hit database
 			FileUpload fileUpload = fileUploadField.getFileUpload();
-
 			try {
-				// Copy file to BLOB object
 				Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
 				containerForm.getModelObject().getUpload().setPayload(payload);
 			}
 			catch (IOException ioe) {
 				System.out.println("Failed to save the uploaded file: " + ioe);
+				//TO DO this really ought to be handled appropriately
 			}
-
-			// Set details of Upload object
-			containerForm.getModelObject().getUpload().setStudy(study);
 
 			byte[] byteArray = fileUpload.getMD5();
 			String checksum = getHex(byteArray);
+
+			containerForm.getModelObject().getUpload().setStudy(study);
 			containerForm.getModelObject().getUpload().setChecksum(checksum);
 			containerForm.getModelObject().getUpload().setFilename(fileUpload.getClientFileName());
-
-			// containerForm.getModelObject().setPhenoCollection(studyService.getPhenoCollection(sessionPhenoCollectionId));
-
-			// Set details of link table object
-			// PhenoCollectionUpload phenoCollectionUpload = new PhenoCollectionUpload();
-			// phenoCollectionUpload.setCollection(studyService.getPhenoCollection(sessionPhenoCollectionId));
-			// phenoCollectionUpload.setUpload(containerForm.getModelObject().getUpload());
-			// containerForm.getModelObject().setPhenoCollectionUpload(phenoCollectionUpload);
 
 			// Save
 			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
@@ -180,8 +156,8 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		}
 
 		onSavePostProcess(target);
-		/*
-		 * TODO:(CE) To handle Business and System Exceptions here
+		*
+		 * TO DO :(CE) To handle Business and System Exceptions here
 		 */
 	}
 
@@ -222,18 +198,17 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	 */
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		/*
-		 * TODO: DELETE of uploaded file is not supported till we can verify whether all subjects within the upload have also been deleted. At present,
+		 * TO DO: DELETE of uploaded file is not supported till we can verify whether all subjects within the upload have also been deleted. At present,
 		 * there is no linking table clearly indicating which subjects came from which upload (i.e. will need to be looked at 1st).
 		 */
 		// setMultiPart(true); // multipart required for file uploads
-		//
-		// // TODO:(CE) To handle Business and System Exceptions here
+		// 
 		// iArkCommonService.deleteUpload(containerForm.getModelObject().getUpload());
 		// this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was deleted successfully");
 		//
 		// // Display delete confirmation message
 		// target.add(feedBackPanel);
-		// // TODO Implement Exceptions in PhentoypicService
+
 		// // } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
 		// // study.getName()); processFeedback(target); } catch (ArkSystemException e) {
 		// // this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
@@ -271,10 +246,6 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(fileFormatDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(delimiterTypeDdc);
-
-		// TODO: AJAXify the form to show progress bar
-		// ajaxSimpleUploadForm.add(new UploadProgressBar("progress", ajaxSimpleUploadForm));
-		// add(ajaxSimpleUploadForm);
 
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 

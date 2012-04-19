@@ -196,7 +196,7 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				// TODO: log!
-				System.out.println("\n\n\n\n Error Download File ");
+				System.err.println(" Error Downloading File ");
 				this.error("There was an error while downloading file.  Please contact Administrator");
 			};
 		};
