@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core;
 
+
 /*
  * Common constants that apply to
  *  all of the Ark modules
@@ -285,6 +286,10 @@ public class Constants {
 	public static final String			FUNCTION_KEY_VALUE_BIOSPECIMENUID_TEMPLATE			= "BIOSPECIMENUID_TEMPLATE";
 	public static final String			FUNCTION_KEY_VALUE_BARCODE_PRINTER						= "BARCODE_PRINTER";
 	public static final String			FUNCTION_KEY_VALUE_BARCODE_LABEL							= "BARCODE_LABEL";
+	public static final String			FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD					= "BIOSPECIMEN_UPLOAD";
+	public static final String			FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD_UPLOAD		= "SUBJECT_CUSTOM_FIELD_UPLOAD";
+	public static final String			FUNCTION_KEY_VALUE_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD		= "BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
+	public static final String			FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD_UPLOAD		= "BIOSPECIMEN_CUSTOM_FIELD_UPLOAD";
 
 	/* Ark Module Keys */
 	public static final String			ARK_MODULE_KEY													= "MODULE_KEY";
@@ -325,6 +330,8 @@ public class Constants {
 
 	public static final String[]		DATA_DICTIONARY_HEADER										= { "FIELD_NAME", "FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES", "MINIMUM_VALUE",
 			"MAXIMUM_VALUE", "MISSING_VALUE"															};
+	public static final String[]		CUSTOM_FIELD_UPLOAD_HEADER										= { "FIELD_NAME", "FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES", "MINIMUM_VALUE",
+		"MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED"															};
 
 	public static final String			NAME																= "name";
 	public static final String			ID																	= "id";
@@ -413,6 +420,7 @@ public class Constants {
 	public static final String			FILE_FORMAT_EXCEPTION										= "File Format Exception: Input error. ";
 	public static final String			ARK_SYSTEM_EXCEPTION											= "General ARK System Exception: ";
 	public static final String			ARK_BASE_EXCEPTION											= "Base ARK System Exception: ";
-	public static final String			FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD					= "BIOSPECIMEN_UPLOAD";
+	public static final String	DOWNLOAD_REPORT	= "downloadReport";
+
 
 }
