@@ -26,7 +26,6 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -41,10 +40,8 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.SystemDataMismatchException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.model.pheno.entity.FieldUpload;
+import au.org.theark.core.exception.SystemDataMismatchException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
@@ -205,6 +202,7 @@ public class CustomFieldImporter {
 					// Try to update the oldField
 					CustomFieldVO updateCFVo = new CustomFieldVO();
 					updateCFVo.setCustomField(oldField);
+					updateCFVo.getCustomFieldDisplay().setRequired(csvReader.get("REQUIRED") != null);
 					
 					iArkCommonService.updateCustomField(updateCFVo);
 					updateCount++;
@@ -246,7 +244,9 @@ public class CustomFieldImporter {
 					// Try to create the field
 					CustomFieldVO customFieldVo = new CustomFieldVO();
 					customFieldVo.setCustomField(customField);
-					customFieldVo.setUseCustomFieldDisplay(false);	// do not create the CustomFieldDisplay entity
+					customFieldVo.setUseCustomFieldDisplay(true);	// do not create the CustomFieldDisplay entity
+					
+					customFieldVo.getCustomFieldDisplay().setRequired(csvReader.get("REQUIRED") != null);
 					iArkCommonService.createCustomField(customFieldVo);
 					insertCount++;
 
