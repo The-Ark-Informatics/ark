@@ -45,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -280,7 +281,9 @@ public class SubjectUploadValidator {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
-			// TODO Travis: Change this to an initial Validation, then can choose to kick off batch
+			// TODO Travis: If can't be sped up adequately, change this to an initial Validation, then can choose to kick off batch
+			//performance has improved from timeout after 50 to validation of ~6K per minute...still this is a user interface element...so will try to speed up 
+			// which should save user from having to send this to batch, only to find out there were error discovered in first few rows
 			// validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
 			validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE);
 		}
@@ -548,6 +551,9 @@ public class SubjectUploadValidator {
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 
 			String[] fieldNameArray = csvReader.getHeaders();
+			
+			//TODO ASAP...implement
+			//List<LinkSubjectStudy> subjectsAlreadyExisting = iArkCommonService.getSubjectsThatAlreadyExistFromThisCollection(study, subjectVO)
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
@@ -558,17 +564,10 @@ public class SubjectUploadValidator {
 				// First/0th column should be the SubjectUID
 				String subjectUID = stringLineArray[0];
 
-				// If no SubjectUID found, caught by exception catch
-				try {
-					
-					//TODO TRAV try to replace this with outer loop for updates and inserts
-					LinkSubjectStudy linksubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID, study));
-					linksubjectStudy.setStudy(study);
+				if(iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study) != null){
 					updateRows.add(row);
-
 				}
-				catch (EntityNotFoundException enf) {
-					// Subject not found, thus a new subject to be inserted
+				else{
 					insertRows.add(row);
 				}
 

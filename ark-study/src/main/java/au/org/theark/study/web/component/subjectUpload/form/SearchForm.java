@@ -38,23 +38,15 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.study.service.IStudyService;
 
 /**
  * @author cellis
  * 
  */
 public class SearchForm extends AbstractSearchForm<UploadVO> {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= 1L;
 
-	// TODO: analyze unused
-	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService							studyService;
-
-	// TODO: analyze unused
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
 
@@ -102,17 +94,13 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		add(fileFormatDdc);
 	}
 
-	// Reset button implemented in AbstractSearchForm
-
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
 
-		// Set study in context
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		// Get a list of all Fields for the Study in context
 		Study study = iArkCommonService.getStudy(studyId);
-
 		StudyUpload searchUpload = getModelObject().getUpload();
 		searchUpload.setStudy(study);
 

@@ -110,7 +110,7 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 
-			// Only allow csv, txt or xls  TODO : if we are hardcoding things like this, why do we fetch file formats
+			// Only allow csv, txt or xls  TODO : if we are hardcoding things like this, why do we fetch file formats from db and store as a fk reference?
 			if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
 				throw new FileFormatException();
 			}
