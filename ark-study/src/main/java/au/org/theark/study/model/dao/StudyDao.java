@@ -75,6 +75,7 @@ import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
@@ -525,6 +526,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 
 		return (VitalStatus) criteria.list().get(0);
+	}
+	
+	private MaritalStatus getMaritalStatusNyName(String name) {
+		Criteria criteria = getSession().createCriteria(MaritalStatus.class);
+
+		if (name != null) {
+			criteria.add(Restrictions.eq("name", name));
+		}
+
+		return (MaritalStatus) criteria.list().get(0);
 	}
 
 	private GenderType getGenderType(Long id) {
@@ -1467,23 +1478,28 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 							SubjectStatus subjectStatus = getSubjectStatusByName("Subject");
 							subjectVo.getLinkSubjectStudy().setSubjectStatus(subjectStatus);
 						}
-
+						// Set default foreign key reference
 						if (subjectVo.getLinkSubjectStudy().getPerson().getTitleType() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getTitleType().getName())) {
 							TitleType titleType = getTitleType(new Long(0));
 							subjectVo.getLinkSubjectStudy().getPerson().setTitleType(titleType);
 						}
 						// Set default foreign key reference
 						if (subjectVo.getLinkSubjectStudy().getPerson().getGenderType() == null || 
-									StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getGenderType().getName())) {
-
+								StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getGenderType().getName())) {
 							GenderType genderType = getGenderType(new Long(0));
 							subjectVo.getLinkSubjectStudy().getPerson().setGenderType(genderType);
 						}
-
 						// Set default foreign key reference
-						if (subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus().getName())) {
+						if (subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus() == null || 
+								StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus().getName())) {
 							VitalStatus vitalStatus = getVitalStatus(new Long(0));
 							subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
+						}
+						// Set default foreign key reference
+						if (subjectVo.getLinkSubjectStudy().getPerson().getMaritalStatus() == null || 
+								StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getMaritalStatus().getName())) {
+							MaritalStatus maritalStatus = getMaritalStatusNyName("Unknown");
+							subjectVo.getLinkSubjectStudy().getPerson().setMaritalStatus(maritalStatus);
 						}
 
 						autoConsentLinkSubjectStudy(subjectVo.getLinkSubjectStudy());
