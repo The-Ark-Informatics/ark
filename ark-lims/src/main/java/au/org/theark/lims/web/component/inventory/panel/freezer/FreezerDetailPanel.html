@@ -153,13 +153,36 @@
 						</textarea>
 					</div>
 				</div>
+				
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+				
+				<div class="fldLabel">
+					<div class="label">
+						<wicket:message key="invFreezer.lastservicedate">
+							Last Service Date:
+						</wicket:message>
+					</div>
+				</div>
+				
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="invFreezer.lastservicedate" type="text" maxLength="10"/>
+					</div>
+				</div>
+				
 				<div class="panelMargin">
 					&nbsp;
 				</div>
 
 				<div class="fldLabel">
 					<div class="label">
-						<label for="address">
+						<label for="invFreezer.lastservicenote">
 							<wicket:message key="invFreezer.lastservicenote">
 								Last Service Note:
 							</wicket:message>
@@ -183,6 +206,24 @@
 
 				<div class="fldLabel">
 					<div class="label">
+						<wicket:message key="invFreezer.commissiondate">
+							Commission Date:
+						</wicket:message>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="invFreezer.commissiondate" type="text" maxLength="10"/>
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
 						<wicket:message key="invFreezer.decommissiondate">
 							Decommission Date:
 						</wicket:message>
@@ -194,12 +235,6 @@
 						<input wicket:id="invFreezer.decommissiondate"	type="text" maxLength="10"/>
 					</div>
 				</div>
-
-				<div class="panelMargin">
-					&nbsp;
-				</div>
-
-				<!-- empty -->
 			</div>
 			<!-- End detailFormContainer" -->
 

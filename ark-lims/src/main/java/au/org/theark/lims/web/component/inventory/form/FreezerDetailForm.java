@@ -77,13 +77,15 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 	private TextField<String>			idTxtFld;
 	private TextField<String>			nameTxtFld;
+	private DropDownChoice<InvSite>	invSiteDdc;
 	private TextField<Integer>			capacityTxtFld;
 	private TextField<Integer>			availableTxtFld;
-	private TextArea<String>			lastservicenoteTxtAreaFld;
-	private DateTextField				decommissiondateDateTxtFld;
 	private TextArea<String>			descriptionTxtAreaFld;
-	private DropDownChoice<InvSite>	invSiteDdc;
-
+	private TextArea<String>			lastservicenoteTxtAreaFld;
+	private DateTextField				commissiondateDateTxtFld;
+	private DateTextField				decommissiondateDateTxtFld;
+	private DateTextField				lastservicedateDateTxtFld;
+	
 	/**
 	 * 
 	 * @param id
@@ -130,13 +132,26 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		});
 		availableTxtFld = new TextField<Integer>("invFreezer.available");
 		availableTxtFld.setEnabled(false);
-		lastservicenoteTxtAreaFld = new TextArea<String>("invFreezer.lastservicenote");
-		decommissiondateDateTxtFld = new DateTextField("invFreezer.decommissiondate");
+		
 		descriptionTxtAreaFld = new TextArea<String>("invFreezer.description");
-
+		
+		lastservicedateDateTxtFld = new DateTextField("invFreezer.lastservicedate", au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker arkDatePicker = new ArkDatePicker();
-		arkDatePicker.bind(decommissiondateDateTxtFld);
-		decommissiondateDateTxtFld.add(arkDatePicker);
+		arkDatePicker.bind(lastservicedateDateTxtFld);
+		lastservicedateDateTxtFld.add(arkDatePicker);
+		
+		lastservicenoteTxtAreaFld = new TextArea<String>("invFreezer.lastservicenote");
+		
+		commissiondateDateTxtFld = new DateTextField("invFreezer.commissiondate", au.org.theark.core.Constants.DD_MM_YYYY);
+		ArkDatePicker arkDatePicker2 = new ArkDatePicker();
+		arkDatePicker2.bind(commissiondateDateTxtFld);
+		commissiondateDateTxtFld.add(arkDatePicker2);
+		
+		decommissiondateDateTxtFld = new DateTextField("invFreezer.decommissiondate", au.org.theark.core.Constants.DD_MM_YYYY);
+
+		ArkDatePicker arkDatePicker3 = new ArkDatePicker();
+		arkDatePicker3.bind(decommissiondateDateTxtFld);
+		decommissiondateDateTxtFld.add(arkDatePicker3);
 
 		initSiteDdc();
 		
@@ -172,12 +187,19 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private void addComponents() {
 		detailFormContainer.add(idTxtFld.setEnabled(false));
 		detailFormContainer.add(nameTxtFld);
+		detailFormContainer.add(invSiteDdc);
+		
 		detailFormContainer.add(capacityTxtFld);
 		detailFormContainer.add(availableTxtFld);
-		detailFormContainer.add(lastservicenoteTxtAreaFld);
-		detailFormContainer.add(decommissiondateDateTxtFld);
+		
 		detailFormContainer.add(descriptionTxtAreaFld);
-		detailFormContainer.add(invSiteDdc);
+		
+		detailFormContainer.add(lastservicedateDateTxtFld);
+		detailFormContainer.add(lastservicenoteTxtAreaFld);
+		
+		detailFormContainer.add(commissiondateDateTxtFld);
+		detailFormContainer.add(decommissiondateDateTxtFld);
+		
 		add(detailFormContainer);
 	}
 
