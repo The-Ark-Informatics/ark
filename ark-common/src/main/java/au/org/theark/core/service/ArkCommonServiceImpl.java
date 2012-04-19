@@ -356,6 +356,16 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getSubjectByUID(subjectUID, study);
 	}
 
+	/**
+	 * returns a the subject (linksubjectystudy) IF there is one, else returns null
+	 * @param subjectUID
+	 * @param study
+	 * @return LinkSubjectStudy
+	 */
+	public LinkSubjectStudy getSubjectByUIDAndStudy(String subjectUID, Study study)  {
+		return studyDao.getSubjectByUIDAndStudy(subjectUID, study);
+	}
+
 	public Collection<MaritalStatus> getMaritalStatus() {
 		return studyDao.getMaritalStatus();
 	}
@@ -918,8 +928,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	public void createUpload(StudyUpload studyUpload) {
-		log.debug("about to studydao.createupload");
-
+		//log.debug("about to studydao.createupload");
 		studyDao.createUpload(studyUpload);
 
 		AuditHistory ah = new AuditHistory();
@@ -933,7 +942,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public void updateUpload(StudyUpload studyUpload) {
 		studyDao.updateUpload(studyUpload);
-		
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);

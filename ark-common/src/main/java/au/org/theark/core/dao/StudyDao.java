@@ -375,6 +375,24 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	/**
+	 * returns a the subject (linksubjectystudy) IF there is one, else returns null
+	 * @param subjectUID
+	 * @param study
+	 * @return LinkSubjectStudy
+	 */
+	public LinkSubjectStudy getSubjectByUIDAndStudy(String subjectUID, Study study) {
+
+		Criteria linkSubjectStudyCriteria = getSession().createCriteria(LinkSubjectStudy.class);
+		linkSubjectStudyCriteria.add(Restrictions.eq("subjectUID", subjectUID));
+		linkSubjectStudyCriteria.add(Restrictions.eq("study", study));
+		List<LinkSubjectStudy> listOfSubjects = linkSubjectStudyCriteria.list();
+		if (listOfSubjects != null && listOfSubjects.size() > 0) {
+			return listOfSubjects.get(0);
+		}
+		return null;
+	}
+
+	/**
 	 * Returns a list of Countries
 	 */
 	public List<Country> getCountries() {
@@ -956,14 +974,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Subject currentUser = SecurityUtils.getSubject();
 		String userId = (String) currentUser.getPrincipal();
 		studyUpload.setUserId(userId);
-		try {
-			log.warn("why is this blowing up ... ");
-			log.warn("why is this blowing up ... file size is "  + studyUpload.getPayload().length());
-		}
-		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		getSession().save(studyUpload);
 		//getSession().flush();
 	}
