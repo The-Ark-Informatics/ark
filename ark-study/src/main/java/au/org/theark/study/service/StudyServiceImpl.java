@@ -948,10 +948,10 @@ public class StudyServiceImpl implements IStudyService {
 		return subjectUploadValidator;
 	}
 
-	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, long size, String fileFormat, char delimChar) {
+	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId) {
 		StringBuffer uploadReport = null;
-		Subject currentUser = SecurityUtils.getSubject();
-		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		//Subject currentUser = SecurityUtils.getSubject();
+		//Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
 
 		SubjectUploader subjectUploader = new SubjectUploader(study, iArkCommonService, this);

@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Date;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -98,11 +100,6 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 		//StringBuffer uploadReport = null;
 		try {
-	//		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
-			
-
-			
-			//BELOW CODE MUST BE REINSTATED...Travis Is just trying some batch work now.
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			//uploadReport = iStudyService.uploadAndReportMatrixSubjectFile(inputStream, containerForm.getModelObject().getFileUpload().getSize(), fileFormat, delimiterChar);
 			long size = containerForm.getModelObject().getFileUpload().getSize();
@@ -110,11 +107,16 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 			//TODO ASAP remove this experimental else statemtnt, this is to test a batch call
 			String report = updateUploadReport();
 			log.warn("..try a batch");
-												
-			log.warn("uploadId= " + uploadId + "size = " + size);
+
+
+			Subject currentUser = SecurityUtils.getSubject();
+			Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			
+			log.warn("uploadId= " + uploadId + "size = " + size + "study = " + studyId + 
+							" because this didnt work; containerForm.getModelObject().getStudy().getId()");
 																							//com						study		uploadid, usr,study,fileformat,delim										
 				StudyDataUploadExecutor task = new StudyDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
-									containerForm.getModelObject().getStudy(), fileFormat, delimiterChar, size, report);
+						studyId, fileFormat, delimiterChar, size, report);
 				log.warn("..exectuter setup");
 
 				task.run();
@@ -129,13 +131,6 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
-		// Update the report
-		//TODO ASAP put this back 
-		//updateUploadReport(uploadReport.toString());
-
-		// Save all objects to the database
-		//save();
 	}
 	public String updateUploadReport() {
 		SubjectUploadReport subjectUploadReport = new SubjectUploadReport();

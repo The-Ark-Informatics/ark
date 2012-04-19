@@ -49,7 +49,7 @@ public class StudyDataUploadExecutor {
 	private IStudyService				iStudyService				= null;
 	private Long							uploadId;
 //	private String							currentUser;
-	private Study							study;
+	private Long							studyId;
 //	private PhenoCollection				phenoCollection;
 //	private File							file;
 	private String							fileFormat;
@@ -75,7 +75,7 @@ public class StudyDataUploadExecutor {
 											IStudyService iStudyService,
 											InputStream inputStream,
 											Long uploadId,
-											Study study, 
+											Long studyId, 
 //											PhenoCollection phenoCollection,
 //											File file, 
 											String fileFormat,
@@ -85,7 +85,7 @@ public class StudyDataUploadExecutor {
 		this.iStudyService = iStudyService;
 		this.inputStream = inputStream;
 		this.uploadId = uploadId;
-		this.study = study;
+		this.studyId = studyId;
 //		this.phenoCollection = phenoCollection;
 //		this.file = file;
 		this.fileFormat = fileFormat;
@@ -117,9 +117,8 @@ public class StudyDataUploadExecutor {
 		job1.getJobDataMap().put(StudyDataUploadJob.IARKCOMMONSERVICE, iArkCommonService);
 		job1.getJobDataMap().put(StudyDataUploadJob.ISTUDYSERVICE, iStudyService);
 		job1.getJobDataMap().put(StudyDataUploadJob.UPLOADID, uploadId);
-		job1.getJobDataMap().put(StudyDataUploadJob.STUDY, study);
+		job1.getJobDataMap().put(StudyDataUploadJob.STUDY_ID, studyId);
 		job1.getJobDataMap().put(StudyDataUploadJob.REPORT, report);
-//		job1.getJobDataMap().put(StudyDataUploadJob.DATA_FILE, file);
 		job1.getJobDataMap().put(StudyDataUploadJob.FILE_FORMAT, fileFormat);
 		job1.getJobDataMap().put(StudyDataUploadJob.INPUT_STREAM, inputStream);
 		job1.getJobDataMap().put(StudyDataUploadJob.DELIMITER, delimiter);
