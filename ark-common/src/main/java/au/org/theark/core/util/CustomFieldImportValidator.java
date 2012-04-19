@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import jxl.Cell;
@@ -47,8 +48,8 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
+import au.org.theark.core.exception.CustomFieldSystemException;
 import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.exception.PhenotypicSystemException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.FieldType;
@@ -61,8 +62,9 @@ import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import com.csvreader.CsvReader;
 
 /**
- * CustomFieldImportValidator provides support for validating import file before 
- * trying to use CustomFieldImporter to import it into data dictionary
+ * CustomFieldImportValidator provides support for validating import file before trying to use  <br>
+ * CustomFieldImporter to import it into custom field table for the specifed function in question <br>
+ * i.e. Function could be Subject, BioCollection or Biospecimen (or others if set up)
  * 
  * @author cellis
  * @author elam
@@ -75,29 +77,28 @@ public class CustomFieldImportValidator {
 	private long							subjectCount;
 	private long							fieldCount;
 	private long							curPos;
-	private long							srcLength					= -1;																// -1 means nothing being processed
+	private long							srcLength					= -1;
 	private StopWatch						timer							= null;
-	private char							phenotypicDelimChr		= Constants.IMPORT_DELIM_CHAR_COMMA;						// default phenotypic file
-																																						// delimiter: COMMA
-	java.util.Collection<String>		fileValidationMessages	= new ArrayList<String>();
-	java.util.Collection<String>		dataValidationMessages	= new ArrayList<String>();
+	private char							delimChr						= Constants.IMPORT_DELIM_CHAR_COMMA;
+	private List<String>					fileValidationMessages	= new ArrayList<String>();
+	private List<String>					dataValidationMessages	= new ArrayList<String>();
 	private IArkCommonService<Void>	iArkCommonService			= null;
-	
+
 	private HashSet<Integer>			insertRows					= new HashSet<Integer>();
 	private HashSet<Integer>			updateRows					= new HashSet<Integer>();
 	private HashSet<ArkGridCell>		insertCells					= new HashSet<ArkGridCell>();
 	private HashSet<ArkGridCell>		updateCells					= new HashSet<ArkGridCell>();
 	private HashSet<ArkGridCell>		warningCells				= new HashSet<ArkGridCell>();
 	private HashSet<ArkGridCell>		errorCells					= new HashSet<ArkGridCell>();
-	private String							fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;	// default
+	private String							fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
 	private int								row							= 1;
-	private ArkFunction 					arkFunction;
+	private ArkFunction					arkFunction;
 
 	/**
-	 * PhenotypicValidator constructor
-	 * 
+	 * CustomFieldImportValidator constructor
+	 * @param iArkCommonService
+	 * @param uploadVo
 	 */
-
 	public CustomFieldImportValidator(IArkCommonService<Void> iArkCommonService, UploadVO uploadVo) {
 		this.iArkCommonService = iArkCommonService;
 		this.arkFunction = uploadVo.getUpload().getArkFunction();
@@ -114,8 +115,8 @@ public class CustomFieldImportValidator {
 		String filename = uploadVo.getFileUpload().getClientFileName();
 		this.fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 
-		this.phenotypicDelimChr = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-			
+		this.delimChr = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
+
 	}
 
 	public boolean isQualityControl() {
@@ -127,17 +128,19 @@ public class CustomFieldImportValidator {
 	}
 
 	/**
-	 * Validates the data dictionary file's general structure/format:
-	 * "FIELD_NAME","FIELD_TYPE","DESCRIPTION", "QUESTION", "UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE"
+	 * Validates the data dictionary file's general structure/format:<BR>
+	 * "FIELD_NAME","FIELD_TYPE","DESCRIPTION", "QUESTION", "UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE","REQUIRED"
 	 * 
 	 * @param fileInputStream
 	 *           is the input stream of a file
+	 @param inLength
+	 *           is the length of the file
 	 * @throws IOException
 	 *            input/output Exception
-	 * @throws OutOfMemoryError
-	 *            out of memory Exception
+	 * @throws CustomFieldSystemException
+	 *            custom field system Exception
 	 */
-	public java.util.Collection<String> validateMatrixPhenoFileFormat(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException {
+	public java.util.Collection<String> validateMatrixFileFormat(InputStream fileInputStream, long inLength) throws FileFormatException, CustomFieldSystemException {
 		curPos = 0;
 		row = 0;
 
@@ -146,7 +149,7 @@ public class CustomFieldImportValidator {
 
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
-			csvReader = new CsvReader(inputStreamReader, phenotypicDelimChr);
+			csvReader = new CsvReader(inputStreamReader, delimChr);
 			String[] stringLineArray;
 
 			srcLength = inLength;
@@ -160,17 +163,17 @@ public class CustomFieldImportValidator {
 			csvReader.readHeaders();
 
 			// Set field list (note 2th column to Nth column)
-			// FIELD_NAME FIELD_TYPE DESCRIPTION QUESTION UNITS ENCODED_VALUES MINIMUM_VALUE MAXIMUM_VALUE MISSING_VALUE
+			// FIELD_NAME FIELD_TYPE DESCRIPTION QUESTION UNITS ENCODED_VALUES MINIMUM_VALUE MAXIMUM_VALUE MISSING_VALUE REQUIRED
 			// 0 1 2 3 4 5 6 7 8
 			String[] fileHeaderColumnArray = csvReader.getHeaders();
 			boolean headerError = false;
 
-			// Uploading a Field (Data Dictionary) file
+			// Uploading a Custom Field (Data Dictionary) file
 			Collection<String> fileHeaderCollection = new ArrayList<String>();
-			String[] requiredHeaderArray = Constants.DATA_DICTIONARY_HEADER;
+			String[] requiredHeaderArray = Constants.CUSTOM_FIELD_UPLOAD_HEADER;
 
 			/*
-			 *  In general, all columns are mandatory
+			 * In general, all columns are mandatory
 			 */
 			if (fileHeaderColumnArray.length < requiredHeaderArray.length) {
 				headerError = true;
@@ -190,22 +193,22 @@ public class CustomFieldImportValidator {
 			if (headerError) {
 				// Invalid file format
 				StringBuffer stringBuffer = new StringBuffer();
-				String delimiterTypeName = iArkCommonService.getDelimiterTypeNameByDelimiterChar(phenotypicDelimChr);
+				String delimiterTypeName = iArkCommonService.getDelimiterTypeNameByDelimiterChar(delimChr);
 
 				stringBuffer.append("The specified file does not appear to conform to the expected data dictionary file format.\n");
 				stringBuffer.append("The specified file format was: " + fileFormat + "\n");
-				stringBuffer.append("The specified delimiter was: [" + phenotypicDelimChr + "] (" + delimiterTypeName + ")\n");
+				stringBuffer.append("The specified delimiter was: [" + delimChr + "] (" + delimiterTypeName + ")\n");
 				stringBuffer.append("The default data dictionary format is as follows:\n");
 				for (int i = 0; i < requiredHeaderArray.length; i++) {
 					if (i > 0) {
-						stringBuffer.append(phenotypicDelimChr);
+						stringBuffer.append(delimChr);
 					}
 					stringBuffer.append(requiredHeaderArray[i]);
 				}
 				stringBuffer.append("\n");
 				for (int i = 0; i < requiredHeaderArray.length; i++) {
 					if (i > 0) {
-						stringBuffer.append(phenotypicDelimChr);
+						stringBuffer.append(delimChr);
 					}
 					stringBuffer.append("[...]");
 				}
@@ -214,7 +217,7 @@ public class CustomFieldImportValidator {
 				fileValidationMessages.add(stringBuffer.toString());
 			}
 			else {
-				Collection<String> requiredHeaders = new ArrayList();
+				List<String> requiredHeaders = new ArrayList<String>();
 				for (int i = 0; i < requiredHeaderArray.length; i++) {
 					requiredHeaders.add(requiredHeaderArray[i]);
 				}
@@ -223,29 +226,29 @@ public class CustomFieldImportValidator {
 						fileValidationMessages.add("Error: the column name " + fileHeaderColumnArray[i] + " is not a valid column name.");
 					}
 				}
-	
+
 				srcLength = inLength - csvReader.getHeaders().toString().length();
 				log.debug("Header length: " + csvReader.getHeaders().toString().length());
-	
+
 				row = 1;
-	
+
 				// Loop through all rows in file
 				while (csvReader.readRecord()) {
 					// do something with the newline to put the data into
 					// the variables defined above
 					stringLineArray = csvReader.getValues();
-	
+
 					// Loop through columns in current row in file, starting from the 2th position
 					for (int i = 0; i < stringLineArray.length; i++) {
 						// Update progress
 						curPos += stringLineArray[i].length() + 1; // update progress
 					}
-	
+
 					subjectCount++;
 					row++;
 				}
 			}
-			
+
 			if (fileValidationMessages.size() > 0) {
 				for (Iterator<String> iterator = fileValidationMessages.iterator(); iterator.hasNext();) {
 					String errorMessage = iterator.next();
@@ -258,11 +261,11 @@ public class CustomFieldImportValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixPhenoFile IOException stacktrace:", ioe);
-			throw new PhenotypicSystemException("Unexpected I/O exception whilst reading the phenotypic data file");
+			throw new CustomFieldSystemException("Unexpected I/O exception whilst reading the phenotypic data file");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixPhenoFile Exception stacktrace:", ex);
-			throw new PhenotypicSystemException("Unexpected exception occurred when trying to process phenotypic data file");
+			throw new CustomFieldSystemException("Unexpected exception occurred when trying to process phenotypic data file");
 		}
 		finally {
 			// Clean up the IO objects
@@ -300,12 +303,14 @@ public class CustomFieldImportValidator {
 	 * 
 	 * @param fileInputStream
 	 *           is the input stream of a file
+	 * @param inLength
+	 *           is the length of the file
 	 * @throws IOException
 	 *            input/output Exception
-	 * @throws OutOfMemoryError
-	 *            out of memory Exception
+	 * @throws CustomFieldSystemException
+	 *            CustomField System Exception
 	 */
-	public java.util.Collection<String> validateDataDictionaryFileData(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException {
+	public java.util.Collection<String> validateDataDictionaryFileData(InputStream fileInputStream, long inLength) throws FileFormatException, CustomFieldSystemException {
 		curPos = 0;
 		int rowIdx = 1;
 
@@ -316,13 +321,12 @@ public class CustomFieldImportValidator {
 		/*
 		 * Field table requires: ID, STUDY_ID, FIELD_TYPE_ID, NAME, DESCRIPTION, UNITS, MIN_VALUE, MAX_VALUE, ENCODED_VALUES, MISSING_VALUE
 		 */
-
 		CustomField field = new CustomField();
 		field.setStudy(study);
 
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
-			csvReader = new CsvReader(inputStreamReader, phenotypicDelimChr);
+			csvReader = new CsvReader(inputStreamReader, delimChr);
 			String[] stringLineArray;
 
 			srcLength = inLength;
@@ -346,7 +350,7 @@ public class CustomFieldImportValidator {
 
 				ArkGridCell gridCell = null;
 
-				// Fist column should be Field Name
+				// First column should be Field Name
 				fieldName = csvReader.get("FIELD_NAME");
 
 				// Only check rows with a valid fieldName
@@ -371,16 +375,16 @@ public class CustomFieldImportValidator {
 							dataValidationMessages.add(stringBuffer.toString());
 							errorCells.add(gridCell);
 						}
-						else  {
+						else {
 							field.setUnitType(unitType);
 						}
 					}
-					
+
 					FieldType studyFieldType = new FieldType();
 					studyFieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
 
 					field.setFieldType(studyFieldType);
-					
+
 					field.setEncodedValues(csvReader.get("ENCODED_VALUES"));
 					field.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
@@ -389,16 +393,17 @@ public class CustomFieldImportValidator {
 					CustomField oldField = iArkCommonService.getCustomFieldByNameStudyArkFunction(csvReader.get("FIELD_NAME"), study, arkFunction);
 					if (oldField == null) {
 						// This is a new record - not able to find an existing field by that name
-						insertRows.add(rowIdx);							
+						insertRows.add(rowIdx);
 					}
 					else {
 						// Determine updates
 						if (oldField.getId() != null) {
 							if (oldField.getCustomFieldHasData()) {
 								// Block updates to field that already have data
-								for (int colIdx = 0; colIdx < cols; colIdx++)
+								for (int colIdx = 0; colIdx < cols; colIdx++) {
 									errorCells.add(new ArkGridCell(colIdx, rowIdx));
-								
+								}
+
 								StringBuffer stringBuffer = new StringBuffer();
 								stringBuffer.append("Error: ");
 								stringBuffer.append("The existing field ");
@@ -409,8 +414,9 @@ public class CustomFieldImportValidator {
 							}
 							else {
 								updateRows.add(rowIdx);
-								for (int colIdx = 0; colIdx < cols; colIdx++)
+								for (int colIdx = 0; colIdx < cols; colIdx++) {
 									updateCells.add(new ArkGridCell(colIdx, rowIdx));
+								}
 							}
 						}
 					}
@@ -472,12 +478,12 @@ public class CustomFieldImportValidator {
 			}
 		}
 		catch (IOException ioe) {
-			log.error("processMatrixPhenoFile IOException stacktrace:", ioe);
-			throw new PhenotypicSystemException("Unexpected I/O exception whilst reading the phenotypic data file");
+			log.error("processMatrixFile IOException stacktrace:", ioe);
+			throw new CustomFieldSystemException("Unexpected I/O exception whilst reading the data file");
 		}
 		catch (Exception ex) {
-			log.error("processMatrixPhenoFile Exception stacktrace:", ex);
-			throw new PhenotypicSystemException("Unexpected exception occurred when trying to process phenotypic data file");
+			log.error("processMatrixFile Exception stacktrace:", ex);
+			throw new CustomFieldSystemException("Unexpected exception occurred when trying to process data file");
 		}
 		finally {
 			// Clean up the IO objects
@@ -537,7 +543,7 @@ public class CustomFieldImportValidator {
 		else {
 			isValid = true;
 		}
-		
+
 		return isValid;
 	}
 
@@ -563,7 +569,7 @@ public class CustomFieldImportValidator {
 					w = Workbook.getWorkbook(inputStream);
 					inputStream = convertXlsToCsv(w);
 					inputStream.reset();
-					phenotypicDelimChr = ',';
+					delimChr = ',';
 				}
 				catch (BiffException e) {
 					log.error(e.getMessage());
@@ -572,7 +578,7 @@ public class CustomFieldImportValidator {
 					log.error(e.getMessage());
 				}
 			}
-			validationMessages = validateMatrixPhenoFileFormat(inputStream, inputStream.toString().length());
+			validationMessages = validateMatrixFileFormat(inputStream, inputStream.toString().length());
 		}
 		catch (FileFormatException ffe) {
 			log.error("FILE_FORMAT_EXCPEPTION: " + ffe);
@@ -606,7 +612,7 @@ public class CustomFieldImportValidator {
 					w = Workbook.getWorkbook(inputStream);
 					inputStream = convertXlsToCsv(w);
 					inputStream.reset();
-					phenotypicDelimChr = ',';
+					delimChr = ',';
 				}
 				catch (BiffException e) {
 					log.error(e.getMessage());
@@ -648,7 +654,7 @@ public class CustomFieldImportValidator {
 				if (row.length > 0) {
 					osw.write(row[0].getContents());
 					for (int j = 1; j < row.length; j++) {
-						osw.write(phenotypicDelimChr);
+						osw.write(delimChr);
 						osw.write(row[j].getContents());
 					}
 				}
@@ -802,117 +808,7 @@ public class CustomFieldImportValidator {
 		}
 		return isValid;
 	}
-/* TODO remove
-	private static boolean validateFieldDefinition(CustomField field, Collection<String> errorMessages) {
-		boolean isValid = false;
-
-		// Number field type
-		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-			try {
-				Float.parseFloat(field.getMinValue());
-				isValid = true;
-			}
-			catch (NumberFormatException nfe) {
-				errorMessages.add(CustomFieldValidationMessage.fieldMinValueNotDefinedType(field));
-				log.error("Field data number format exception " + nfe.getMessage());
-				isValid = false;
-			}
-			catch (NullPointerException npe) {
-				log.error("Field data null pointer exception " + npe.getMessage());
-				isValid = false;
-			}
-
-			try {
-				Float.parseFloat(field.getMaxValue());
-				isValid = true;
-			}
-			catch (NumberFormatException nfe) {
-				errorMessages.add(CustomFieldValidationMessage.fieldMaxValueNotDefinedType(field));
-				log.error("Field data number format exception " + nfe.getMessage());
-				isValid = false;
-			}
-			catch (NullPointerException npe) {
-				log.error("Field data null pointer exception " + npe.getMessage());
-				isValid = false;
-			}
-
-			try {
-				Float.parseFloat(field.getMissingValue());
-				isValid = true;
-			}
-			catch (NumberFormatException nfe) {
-				errorMessages.add(CustomFieldValidationMessage.fieldMissingValueNotDefinedType(field));
-				log.error("Field data number format exception " + nfe.getMessage());
-				isValid = false;
-			}
-			catch (NullPointerException npe) {
-				log.error("Field data null pointer exception " + npe.getMessage());
-				isValid = false;
-			}
-		}
-
-		// Date field type
-		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-			try {* TODO Evaluate...travis changed from this; to the code below...it seems all it is doing is validating
-							so all the extra instantiating not necessary
-				Date dateFieldValue = new Date();
-				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-				dateFormat.setLenient(false);
-				dateFieldValue = dateFormat.parse(field.getMinValue());
-				isValid = true;
-				*
-				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-				dateFormat.setLenient(false);
-				dateFormat.parse(field.getMinValue());
-				isValid = true;
-			}
-			catch (ParseException pe) {
-				errorMessages.add(CustomFieldValidationMessage.fieldDefinitionMinValueNotValidDate(field));
-				log.error("Field data date parse exception " + pe.getMessage());
-				isValid = false;
-			}
-			catch (NullPointerException npe) {
-				log.error("Field data null pointer exception " + npe.getMessage());
-				isValid = false;
-			}
-
-			try {
-				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-				dateFormat.setLenient(false);
-				dateFormat.parse(field.getMaxValue());
-				isValid = true;
-			}
-			catch (ParseException pe) {
-				errorMessages.add(CustomFieldValidationMessage.fieldDefinitionMaxValueNotValidDate(field));
-				log.error("Field data date parse exception " + pe.getMessage());
-				isValid = false;
-			}
-			catch (NullPointerException npe) {
-				log.error("Field data null pointer exception " + npe.getMessage());
-				isValid = false;
-			}
-
-			try {
-				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-				dateFormat.setLenient(false);
-				dateFormat.parse(field.getMissingValue());
-				isValid = true;
-			}
-			catch (ParseException pe) {
-				errorMessages.add(CustomFieldValidationMessage.fieldDefinitionMissingValueNotValidDate(field));
-				log.error("Field data date parse exception " + pe.getMessage());
-				isValid = false;
-			}
-			catch (NullPointerException npe) {
-				log.error("Field data null pointer exception " + npe.getMessage());
-				isValid = false;
-			}
-
-		}
-
-		return isValid;
-	}
-*/
+	
 	private static boolean validateFieldType(String fieldName, String fieldType, Collection<String> errorMessages) {
 		boolean isValid = false;
 
