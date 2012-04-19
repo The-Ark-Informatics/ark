@@ -21,7 +21,6 @@ package au.org.theark.study.job;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Date;
-import java.util.List;
 
 import org.hibernate.Hibernate;
 import org.quartz.DisallowConcurrentExecution;
@@ -34,17 +33,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.util.SubjectUploadReport;
-
 
 /**
  * 
- * @author cellis
+ * @author tendersby
  *
  */
 @PersistJobDataAfterExecution
@@ -97,6 +92,7 @@ public class StudyDataUploadJob implements Job {
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		
 		JobDataMap data = context.getJobDetail().getJobDataMap();
+		
 		iArkCommonService			= (IArkCommonService<Void>) data.get(IARKCOMMONSERVICE);
 		iStudyService				= (IStudyService) data.get(ISTUDYSERVICE);
 		Long uploadId 				= (Long) data.get(UPLOADID);
@@ -104,9 +100,9 @@ public class StudyDataUploadJob implements Job {
 		String fileFormat 		= (String) data.get(FILE_FORMAT);
 		InputStream inputStream = (InputStream) data.get(INPUT_STREAM);
 		long size 					= data.getLongValue(SIZE);
-		String originalReport 	= data.getString(REPORT);		
-		//String currentUser = (String) data.get(CURRENT_USER); //PhenoCollection phenoCollection = (PhenoCollection) data.get(PHENO_COLLECTION);
-		Long studyId 					= data.getLongValue(STUDY_ID); //TODO get back to file and make sure saved beforehand   //File file = (File) data.get(DATA_FILE);
+		String originalReport 	= data.getString(REPORT);
+		Long studyId 					= data.getLongValue(STUDY_ID);
+		
 		log.warn("UploadJob delimiter: [" + delimiter + "]");
 		log.warn("UploadJob format: [" + fileFormat + "]");
 		log.warn("studyid: [" + studyId + "]");
@@ -116,20 +112,17 @@ public class StudyDataUploadJob implements Job {
 		log.warn("UploadJob is input stream null? [" + (inputStream == null) + "]");
 		log.warn("UploadJob size from cricket: [" + size + "]");
 
-		//SubjectUploader uploader = new SubjectUploader(study, iArkCommonService, iStudyService);
-		
 		try {
-			//TRAV CODE TO START USING 
+			//TODO ASAP TRAV CODE TO START USING 
 				//iStudyService.countNumberOfUniqueSubjects(study, uploader.getListOfUidsFromInputStream(fileIS, file.length(), fileFormat, delimiter));
-			//InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			
 			StringBuffer uploadReport = iStudyService.uploadAndReportMatrixSubjectFile(inputStream, size, fileFormat, delimiter, studyId);
 			StudyUpload upload = iStudyService.getUpload(uploadId);
-			//updateUploadReport(originalReport, uploadReport.toString(), upload);
 			save(upload, uploadReport.toString(), originalReport);
 		}
 		/*catch (FileFormatException e) {	}catch (ArkSystemException e) {	}*/
 		catch(Exception e){
-			// TODO Auto-generated catch block
+			// TODO Auto-generated catch block ...fix
 			e.printStackTrace();
 		}
 	}

@@ -53,7 +53,7 @@ public class RegistryTabProviderImpl extends Panel implements IMainTabProvider {
 			@Override
 			public Panel getPanel(String panelId) {
 				Panel panelToReturn = null;
-				// TODO Auto-generated method stub
+
 				if (tabName.equals(au.org.theark.core.Constants.ARK_MODULE_REGISTRY)) {
 					return new RegistrySubMenuTab(panelId);
 				}

@@ -35,7 +35,6 @@ public class PhenoFieldDetailsReportContainer extends AbstractSelectedReportCont
 
 	public PhenoFieldDetailsReportContainer(String id) {
 		super(id);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

@@ -567,7 +567,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		List<SubjectStatus> subjectStatus = criteria.list();
 		
-		//TODO analyze
+		//TODO - this should just be not permitted at db level...code shouldnt be checking for poor data - particularly on something which is more enum like than data like
 		if (subjectStatus.size() > 0) {
 			if (subjectStatus.size() > 1) {
 				log.error("Backend database has non-unique Status names, returned the first one");

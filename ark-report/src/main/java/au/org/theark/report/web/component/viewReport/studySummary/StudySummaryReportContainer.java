@@ -35,7 +35,6 @@ public class StudySummaryReportContainer extends AbstractSelectedReportContainer
 
 	public StudySummaryReportContainer(String id) {
 		super(id);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
