@@ -981,12 +981,17 @@ public class StudyServiceImpl implements IStudyService {
 		return subjectUploadValidator;
 	}
 
-	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException {
-		iStudyDao.batchInsertSubjects(subjectVoCollection);
+//	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException {
+//		iStudyDao.batchInsertSubjects(subjectVoCollection);
+//	}
+
+	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException {
+		iStudyDao.batchInsertSubjects(subjectList);
 	}
 
-	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException {
-		iStudyDao.batchUpdateSubjects(subjectVoCollection);
+
+	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException {
+		iStudyDao.batchUpdateSubjects(subjectList);
 	}
 
 	public Collection<ArkUser> lookupArkUser(Study study) {
@@ -1167,12 +1172,6 @@ public class StudyServiceImpl implements IStudyService {
 		return iAuditDao.getConsentHistoryList(consent);
 	}
 
-	public long countNumberOfUniqueSubjects(Study study, List subjects) {
-		if(study!=null && subjects!=null){
-			return iStudyDao.countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(study, subjects);
-		}
-		return 0;
-	}
 
 	public StudyUpload getUpload(Long id) {
 		return iStudyDao.getUpload(id);
@@ -1181,5 +1180,6 @@ public class StudyServiceImpl implements IStudyService {
 	public StudyUpload refreshUpload(StudyUpload upload) {
 		return iStudyDao.refreshUpload(upload);
 	}
+
 
 }

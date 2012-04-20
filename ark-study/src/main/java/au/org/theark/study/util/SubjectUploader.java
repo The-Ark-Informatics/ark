@@ -33,11 +33,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -49,7 +47,6 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 
 import com.csvreader.CsvReader;
@@ -77,8 +74,8 @@ public class SubjectUploader {
 	private IStudyService			iStudyService			= null;
 	private StringBuffer				uploadReport			= null;
 	private SimpleDateFormat		simpleDateFormat		= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-	private Collection<SubjectVO>	insertSubjects			= new ArrayList<SubjectVO>();
-	private Collection<SubjectVO>	updateSubjects			= new ArrayList<SubjectVO>();
+	private List<LinkSubjectStudy>	insertSubjects			= new ArrayList<LinkSubjectStudy>();
+	private List<LinkSubjectStudy>	updateSubjects			= new ArrayList<LinkSubjectStudy>();
 
 	/**
 	 * SubjectUploader constructor
@@ -96,8 +93,392 @@ public class SubjectUploader {
 		this.iStudyService = iStudyService;
 		simpleDateFormat.setLenient(false);
 	}
+	
+	
+	 /* Imports the subject data file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file format:
+		 * SUBJECTUID,FIELD1,FIELD2,FIELDN... 1,01/01/1900,99.99,99.99,, ...
+		 * 
+		 * Where N is any number of columns
+		 * 
+		 * @param fileInputStream
+		 *           is the input stream of a file
+		 * @param inLength
+		 *           is the length of a file
+		 * @throws FileFormatException
+		 *            file format Exception
+		 * @throws ArkBaseException
+		 *            general ARK Exception
+		 * @return the upload report detailing the upload process
+		 */
+		public StringBuffer uploadAndReportMatrixSubjectFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
+			
+			delimiterCharacter = inDelimChr;
+			uploadReport = new StringBuffer();
+			curPos = 0;
+
+			InputStreamReader inputStreamReader = null;
+			CsvReader csvReader = null;
+			DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
+			try {
+				inputStreamReader = new InputStreamReader(fileInputStream);
+				csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+				String[] stringLineArray;
+
+				//this is a list of all our somewhat enum like ref tables...
+				//much better to call this once than each one n times in the for loop
+				//should save 100,000-150,000 selects for a 17K insert 
+				Collection<MaritalStatus> maritalStatiiPossible = iArkCommonService.getMaritalStatus();
+				Collection<SubjectStatus> subjectStatiiPossible = iArkCommonService.getSubjectStatus();
+				Collection<GenderType> genderTypesPossible = iArkCommonService.getGenderTypes();
+				Collection<TitleType> titleTypesPossible = iArkCommonService.getTitleType();
+				Collection<VitalStatus> vitalStatiiPossible = iArkCommonService.getVitalStatus();
+				Collection<PersonContactMethod> personContactMethodPossible = iArkCommonService.getPersonContactMethodList();
+				//Collection<MaritalStatus> yesNoList = iArkCommonService.getYesNoList();
+				
+				
+				srcLength = inLength;
+				if (srcLength <= 0) {
+					uploadReport.append("The input size was not greater than 0. Actual length reported: ");
+					uploadReport.append(srcLength);
+					uploadReport.append("\n");
+					throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + srcLength);
+				}
+
+				timer = new StopWatch();
+				timer.start();
+
+				// Set field list (note 2th column to Nth column)
+				// SUBJECTUID DATE_COLLECTED F1 F2 FN
+				// 0 1 2 3 N
+				csvReader.readHeaders();
+
+				srcLength = inLength - csvReader.getHeaders().toString().length();
+				//log.debug("Header length: " + csvReader.getHeaders().toString().length());
+
+				int index = 0;
+
+				// Loop through all rows in file
+				while (csvReader.readRecord()) {
+					log.warn("reading msg " + subjectCount);
+					// do something with the newline to put the data into
+					// the variables defined above
+					stringLineArray = csvReader.getValues();
+					String subjectUID = stringLineArray[0];
+
+					//SubjectVO subjectVo = new SubjectVO();
+					LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study);
+					
+
+					//TODO: make this smarter.  we should just carry in the list of whether to update or insert
+					/*try {
+						linkSubjectStudy = iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study);
+					}
+					catch (EntityNotFoundException enf) {
+						// New subject
+						linkSubjectStudy.setSubjectUID(subjectUID);
+						linkSubjectStudy.setStudy(study);
+					}*/
+					//TODO: make this smarter.  we should just carry in the list of whether to update or insert
+					if(linkSubjectStudy==null){
+						linkSubjectStudy = new LinkSubjectStudy();
+						linkSubjectStudy.setSubjectUID(subjectUID);//TODO ASAP: this seems wrong...if it's supposed to be autogenerated...we're maybe screwing next method 
+						linkSubjectStudy.setStudy(study);
+					}
+					else{
+//						maybe exception...maybe forget it
+						//linkSubjectStudy should be cool as is
+					}
+
+					Person person = linkSubjectStudy.getPerson();
+//					subjectVo.setLinkSubjectStudy(linkSubjectStudy);
+
+					if (linkSubjectStudy.getId() == null && linkSubjectStudy.getPerson().getId() == null) {
+						person = new Person();
+					}
+					else {
+						person = linkSubjectStudy.getPerson();
+					}
+
+					if (csvReader.getIndex("FIRST_NAME") > 0)
+						person.setFirstName(stringLineArray[csvReader.getIndex("FIRST_NAME")]);
+
+					if (csvReader.getIndex("MIDDLE_NAME") > 0)
+						person.setMiddleName(stringLineArray[csvReader.getIndex("MIDDLE_NAME")]);
+
+					if (csvReader.getIndex("LAST_NAME") > 0)
+						person.setLastName(stringLineArray[csvReader.getIndex("LAST_NAME")]);
+
+					if (csvReader.getIndex("PREFERRED_NAME") > 0)
+						person.setPreferredName(stringLineArray[csvReader.getIndex("PREFERRED_NAME")]);
+
+					if (csvReader.getIndex("GENDER_TYPE") > 0 || csvReader.getIndex("GENDER") > 0 || csvReader.getIndex("SEX") > 0) {
+						//GenderType genderType;
+						if (csvReader.getIndex("GENDER_TYPE") > 0) {
+							index = csvReader.getIndex("GENDER_TYPE");
+						}
+						else if (csvReader.getIndex("GENDER") > 0) {
+							index = csvReader.getIndex("GENDER");
+						}
+						else {
+							index = csvReader.getIndex("SEX");
+						}
+
+						if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
+							//TODO ASAP - this should be from a list that we include above...or a useful service method
+							//genderType = iArkCommonService.getGenderType(stringLineArray[index]);
+							for(GenderType boygirl : genderTypesPossible){
+								if(boygirl.getName().equalsIgnoreCase(stringLineArray[index])){
+									person.setGenderType(boygirl);		
+								}	//TODO else might belonog here really...but its already written in the batch insert anyway
+							}
+						}	
+					}
+
+					if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0) {
+						Date dateOfBirth = new Date();
+
+						if (csvReader.getIndex("DATE_OF_BIRTH") > 0) {
+							index = csvReader.getIndex("DATE_OF_BIRTH");
+						}
+						else {
+							index = csvReader.getIndex("DOB");
+						}
+
+						if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
+							dateOfBirth = simpleDateFormat.parse(stringLineArray[index]);
+							person.setDateOfBirth(dateOfBirth);
+						}
+					}
+
+					if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0) {
+						Date dateOfDeath = new Date();
+						if (csvReader.getIndex("DATE_OF_DEATH") > 0) {
+							index = csvReader.getIndex("DATE_OF_DEATH");
+						}
+						else {
+							index = csvReader.getIndex("DODEATH");
+						}
+
+						if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
+							dateOfDeath = simpleDateFormat.parse(stringLineArray[index]);
+							person.setDateOfDeath(dateOfDeath);
+						}
+					}
+
+					if (csvReader.getIndex("CAUSE_OF_DEATH") > 0 || csvReader.getIndex("CODEATH") > 0) {
+						if (csvReader.getIndex("CAUSE_OF_DEATH") > 0) {
+							index = csvReader.getIndex("CAUSE_OF_DEATH");
+						}
+						else {
+							index = csvReader.getIndex("CODEATH");
+						}
+
+						if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
+							person.setCauseOfDeath(stringLineArray[index]);
+						}
+					}
+
+					//TODO make this smarter about making a db call every time for just getting an emum
+					if (csvReader.getIndex("VITAL_STATUS") > 0) {
+						String vitalStatusStr = (stringLineArray[csvReader.getIndex("VITAL_STATUS")]);
+						//VitalStatus vitalStatus = iArkCommonService.getVitalStatus(vitalStatusStr);
+						for(VitalStatus vitalStat : vitalStatiiPossible){
+							if(vitalStat.getName().equalsIgnoreCase(vitalStatusStr)){
+								person.setVitalStatus(vitalStat);		
+							}	//TODO else might belonog here really...but its already written in the batch insert anyway
+						}
+					}
+
+					//TODO make this smarter about making a db call every time for just getting an emum
+					if (csvReader.getIndex("PREFERRED_EMAIL") > 0) {
+						person.setPreferredEmail(stringLineArray[csvReader.getIndex("PREFERRED_EMAIL")]);
+					}
+
+					//TODO make this smarter about making a db call every time for just getting an emum
+					if (csvReader.getIndex("OTHER_EMAIL") > 0) {
+						person.setPreferredEmail(stringLineArray[csvReader.getIndex("OTHER_EMAIL")]);
+					}
+
+					//TODO make this smarter about making a db call every time for just getting an emum
+					if (csvReader.getIndex("TITLE") > 0) {
+						String titleStr = (stringLineArray[csvReader.getIndex("TITLE")]);
+						//TitleType titleType = iArkCommonService.getTitleType(titleStr);
+						//person.setTitleType(titleType);
+						for(TitleType titleType : titleTypesPossible){
+							if(titleType.getName().equalsIgnoreCase(titleStr)){
+								person.setTitleType(titleType);		
+							}	//TODO else might belonog here really...but its already written in the batch insert anyway
+						}
+					}
+
+					//TODO make this smarter about making a db call every time for just getting an emum
+					if (csvReader.getIndex("MARITAL_STATUS") > 0) {
+						String maritalStatusStr = (stringLineArray[csvReader.getIndex("MARITAL_STATUS")]);
+						//MaritalStatus maritalStatus = iArkCommonService.getMaritalStatus(maritalStatusStr);
+						//person.setMaritalStatus(maritalStatus);
+						for(MaritalStatus maritalStat : maritalStatiiPossible){
+							if(maritalStat.getName().equalsIgnoreCase(maritalStatusStr)){
+								person.setMaritalStatus(maritalStat);		
+							}	//TODO else might belonog here really...but its already written in the batch insert anyway
+						}
+					}
+
+					//TODO make this smarter about making a db call every time for just getting an emum
+					if (csvReader.getIndex("PERSON_CONTACT_METHOD") > 0 || csvReader.getIndex("CONTACT_METHOD") > 0) {
+						String personContactMethodStr = null;
+						if (csvReader.getIndex("PERSON_CONTACT_METHOD") > 0) {
+							personContactMethodStr = (stringLineArray[csvReader.getIndex("PERSON_CONTACT_METHOD")]);
+						}
+						else {
+							personContactMethodStr = (stringLineArray[csvReader.getIndex("CONTACT_METHOD")]);
+						}
+						//PersonContactMethod personContactMethod = iArkCommonService.getPersonContactMethod(personContactMethodStr);
+						//person.setPersonContactMethod(personContactMethod);
+						for(PersonContactMethod possibleMethod : personContactMethodPossible){
+							if(possibleMethod.getName().equalsIgnoreCase(personContactMethodStr)){
+								person.setPersonContactMethod(possibleMethod);		
+							}	//TODO else might belonog here really...but its already written in the batch insert anyway
+						}
+						
+					}
+
+					if (csvReader.getIndex("STATUS") > 0) {
+						String statusStr = (stringLineArray[csvReader.getIndex("STATUS")]);
+						//SubjectStatus subjectStatus = iArkCommonService.getSubjectStatus(statusStr);
+						//linkSubjectStudy.setSubjectStatus(subjectStatus);
+						for(SubjectStatus subjectStat : subjectStatiiPossible){
+							if(subjectStat.getName().equalsIgnoreCase(statusStr)){
+								linkSubjectStudy.setSubjectStatus(subjectStat);		
+							}	//TODO else might belonog here really...but its already written in the batch insert anyway
+						}
+					}
+
+					linkSubjectStudy.setPerson(person);
+//					subjectVo.setLinkSubjectStudy(linkSubjectStudy);
+
+					if (linkSubjectStudy.getId() == null || linkSubjectStudy.getPerson().getId() == 0) {
+						// iStudyService.createSubject(subjectVo);
+						insertSubjects.add(linkSubjectStudy);
+						StringBuffer sb = new StringBuffer();
+						sb.append("Subject UID: ");
+						sb.append(linkSubjectStudy.getSubjectUID());
+						sb.append(" has been created successfully and linked to the study: ");
+						sb.append(study.getName());
+						sb.append("\n");
+						uploadReport.append(sb);
+						insertCount++;
+					}
+					else {
+						// iStudyService.updateSubject(subjectVo);
+						updateSubjects.add(linkSubjectStudy);
+						StringBuffer sb = new StringBuffer();
+						sb.append("Subject UID: ");
+						sb.append(linkSubjectStudy.getSubjectUID());
+						sb.append(" has been updated successfully and linked to the study: ");
+						sb.append(study.getName());
+						sb.append("\n");
+						uploadReport.append(sb);
+						updateCount++;
+					}
+
+					subjectCount++;
+					log.warn("finished message for " + subjectCount);
+				}
+			}
+			catch (IOException ioe) {
+				uploadReport.append("Unexpected I/O exception whilst reading the subject data file\n");
+				log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
+				throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			}
+			catch (Exception ex) {
+				uploadReport.append("Unexpected exception whilst reading the subject data file\n");
+				log.error("processMatrixSubjectFile Exception stacktrace:", ex);
+				throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			}
+			finally {
+				// Clean up the IO objects
+				timer.stop();
+				uploadReport.append("\n");
+				uploadReport.append("Total elapsed time: ");
+//				uploadReport.append(timer.getTime());
+//				uploadReport.append(" ms or ");
+				uploadReport.append(decimalFormat.format(timer.getTime() / 1000.0));
+				uploadReport.append(" s");
+				uploadReport.append("\n");
+				uploadReport.append("Total file size: ");
+//				uploadReport.append(inLength);
+//				uploadReport.append(" B or ");
+				uploadReport.append(decimalFormat.format(inLength / 1024.0 / 1024.0));
+				uploadReport.append(" MB");
+				uploadReport.append("\n");
+
+				if (timer != null)
+					timer = null;
+
+				if (csvReader != null) {
+					try {
+						csvReader.close();
+					}
+					catch (Exception ex) {
+						log.error("Cleanup operation failed: csvRdr.close()", ex);
+					}
+				}
+				if (inputStreamReader != null) {
+					try {
+						inputStreamReader.close();
+					}
+					catch (Exception ex) {
+						log.error("Cleanup operation failed: isr.close()", ex);
+					}
+				}
+				// Restore the state of variables
+				srcLength = -1;
+			}
+			uploadReport.append("Processed ");
+			uploadReport.append(subjectCount);
+			uploadReport.append(" subjects.");
+			uploadReport.append("\n");
+			uploadReport.append("Inserted ");
+			uploadReport.append(insertCount);
+			uploadReport.append(" subjects.");
+			uploadReport.append("\n");
+			uploadReport.append("Updated ");
+			uploadReport.append(updateCount);
+			uploadReport.append(" subjects.");
+			uploadReport.append("\n");
+
+			// Batch insert/update
+			try {
+				iStudyService.batchInsertSubjects(insertSubjects);
+			}
+			catch (ArkUniqueException e) {
+				e.printStackTrace();
+			}
+			catch (ArkSubjectInsertException e) {
+				e.printStackTrace();
+			}
+			try {
+				iStudyService.batchUpdateSubjects(updateSubjects);
+			}
+			catch (ArkUniqueException e) {
+				e.printStackTrace();
+			}
+			catch (ArkSubjectInsertException e) {
+				e.printStackTrace();
+			}
+
+			return uploadReport;
+		}
 
 	/**
+	 * getallexistingsubjectuids
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
 	 * Imports the subject data file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file format:
 	 * SUBJECTUID,FIELD1,FIELD2,FIELDN... 1,01/01/1900,99.99,99.99,, ...
 	 * 
@@ -112,7 +493,7 @@ public class SubjectUploader {
 	 * @throws ArkBaseException
 	 *            general ARK Exception
 	 * @return the upload report detailing the upload process
-	 */
+	 *
 	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		uploadReport = new StringBuffer();
@@ -413,7 +794,7 @@ public class SubjectUploader {
 
 		return uploadReport;
 	}
-
+*/
 
 	/**
 	 * 
