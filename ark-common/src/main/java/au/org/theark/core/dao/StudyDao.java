@@ -19,7 +19,6 @@
 package au.org.theark.core.dao;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -1147,4 +1146,42 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return ((Number) query.iterate().next()).intValue() > 0;
 	}
 
+
+	public long countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids) {
+		String queryString = "select count(*) " +
+									"from LinkSubjectStudy subject " +
+									"where study =:study " +
+									"and subjectUID in  (:subjects) ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("study", study);
+		query.setParameterList("subjects", subjectUids);
+		
+		return (Long)query.uniqueResult();
+	}
+
+	@Override
+	public List<String> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids) {
+		String queryString = "select subject.subjectUID " +
+		"from LinkSubjectStudy subject " +
+		"where study =:study " +
+		"and subjectUID in  (:subjects) ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("study", study);
+		query.setParameterList("subjects", subjectUids);
+
+		return query.list();
+	}
+
+	public List<String> getAllSubjectUIDs(Study study) {
+		String queryString = "select subject.subjectUID " +
+		"from LinkSubjectStudy subject " +
+		"where study =:study " +
+		"order by subjectUID ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("study", study);
+
+		return query.list();
+	}
+
+	
 }

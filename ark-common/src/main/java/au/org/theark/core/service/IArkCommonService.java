@@ -594,6 +594,9 @@ public interface IArkCommonService<T> {
 	public Boolean studyHasBioCollection(Study study);
 	
 	public int getCountOfSubjects(Study study);
+
+//	public long countNumberOfUniqueSubjects(Study study, List subjects);
+	public long countNumberOfUniqueSubjectsWithTheseUIDs(Study study, List subjectUIDs);
 	
 	public BiospecimenUidTemplate getBiospecimenUidTemplate(Study study);
 	
@@ -641,4 +644,8 @@ public interface IArkCommonService<T> {
 	public LinkSubjectStudy getSubjectByUIDAndStudy(String subjectUID, Study study);
 	
 	public boolean customFieldHasData(CustomField customField);
+
+	public List<String> getUniqueSubjectsWithTheseUIDs(Study study, Collection subjectUIDs);
+	
+	public List<String> getAllSubjectUIDs(Study study);
 }
