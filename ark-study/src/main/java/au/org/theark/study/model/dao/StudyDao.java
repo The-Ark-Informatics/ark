@@ -1446,6 +1446,96 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return list;
 	}
 
+	//TODO ASAP we need to handle excepions and ROLLBACK if something hits the fan.
+	//We also need to discuss uid create and external references and user training
+	public void batchInsertSubjects(List<LinkSubjectStudy> subjectsToInsert) throws ArkUniqueException, ArkSubjectInsertException {
+		StatelessSession session = getStatelessSession();
+		Study study = null;
+		
+		SubjectStatus defaultSubjectStatus = getSubjectStatusByName("Subject");
+		TitleType defaultTitleType = getTitleType(new Long(0));
+		GenderType defaultGenderType = getGenderType(new Long(0));
+		VitalStatus defaultVitalStatus = getVitalStatus(new Long(0));
+		MaritalStatus defaultMaritalStatus = getMaritalStatusNyName("Unknown");
+		
+		Transaction tx = session.beginTransaction();
+		for(LinkSubjectStudy subject : subjectsToInsert){
+			
+			study = subject.getStudy();
+
+			try {
+				// Auto-generate SubjectUID
+				if (study.getAutoGenerateSubjectUid()) {
+					String subjectUID = getNextGeneratedSubjectUID(study);//TODO ASAP generate without DB hit and PRE-lock it for all of our inserts
+					subject.setSubjectUID(subjectUID);
+				}
+
+//				if (isSubjectUIDUnique(subjectVo.getLinkSubjectStudy().getSubjectUID(), subjectVo.getLinkSubjectStudy().getStudy().getId(), "Insert")) {
+					// Check insertion lock
+//					if (getSubjectUidSequenceLock(study) == true) {
+						// TODO Fix the exception to be custom
+//						throw new ArkSubjectInsertException("Subject insertion locked by another process");
+//					}
+//					else {
+						// Enable insertion lock
+//						setSubjectUidSequenceLock(study, true);
+
+						// Set default foreign key reference 
+				//TODO ASAP This whole thing might even belong in previous class...but for now just put above the for loop
+						if (subject.getSubjectStatus() == null || StringUtils.isBlank(subject.getSubjectStatus().getName())) {
+							subject.setSubjectStatus(defaultSubjectStatus);
+						}
+						// Set default foreign key reference
+						if (subject.getPerson().getTitleType() == null || StringUtils.isBlank(subject.getPerson().getTitleType().getName())) {
+							subject.getPerson().setTitleType(defaultTitleType);
+						}
+						// Set default foreign key reference
+						if (subject.getPerson().getGenderType() == null || 
+								StringUtils.isBlank(subject.getPerson().getGenderType().getName())) {
+							subject.getPerson().setGenderType(defaultGenderType);
+						}
+						// Set default foreign key reference
+						if (subject.getPerson().getVitalStatus() == null || 
+								StringUtils.isBlank(subject.getPerson().getVitalStatus().getName())) {
+							subject.getPerson().setVitalStatus(defaultVitalStatus);
+						}
+						// Set default foreign key reference
+						if (subject.getPerson().getMaritalStatus() == null || 
+								StringUtils.isBlank(subject.getPerson().getMaritalStatus().getName())) {
+							subject.getPerson().setMaritalStatus(defaultMaritalStatus);
+						}
+
+						//TODO ASAP THIS MAY BE DOING 3n hits to the DB eg; 3*17000 hits just to find out what yes and no is???
+						//maybe just an outerloop for defaul consents -- the might need a slight tweak to method
+						autoConsentLinkSubjectStudy(subject);
+
+						/*Person person = subject.getPerson();
+						session.insert(person);
+
+						LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
+						session.insert(linkSubjectStudy);*/
+						//Person person = ;
+						session.insert(subject.getPerson());
+
+						//LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
+						session.insert(subject);
+	//				}
+//				}
+//				else {
+//					throw new ArkUniqueException("Subject UID must be unique");
+//				}
+			}
+			finally {
+//				// Disable insertion lock
+				//setSubjectUidSequenceLock(study, false);
+			}
+//		}
+		}
+
+		tx.commit();
+		session.close();
+	}
+	/*
 	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException {
 		StatelessSession session = getStatelessSession();
 		Study study = null;
@@ -1555,7 +1645,33 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		tx.commit();
 		session.close();
 	}
+	*/
+	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) {
+		StatelessSession session = getStatelessSession();
+		Transaction tx = session.beginTransaction();
 
+		for (LinkSubjectStudy subject : subjectList) {
+			Person person = subject.getPerson();
+			session.update(person);// Update Person and associated Phones
+			String currentLastName = getCurrentLastname(person);
+
+			//TODO ASAP review ... this might need some refactoring
+			if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName()))) {
+				if (person.getLastName() != null) {
+					PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+					personLastNameHistory.setPerson(person);
+					personLastNameHistory.setLastName(person.getLastName());
+					session.insert(personLastNameHistory);
+				}
+				// Update subjectPreviousLastname
+				//subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
+			}
+
+			session.update(subject);
+		}
+		tx.commit();
+		session.close();
+	}
 	public Collection<ArkUser> lookupArkUser(Study study) {
 		StringBuffer hqlQuery = new StringBuffer();
 		hqlQuery.append("  select distinct arkUserObj from ArkUserRole as arkuserRole,ArkUser as arkUserObj ");
@@ -1798,18 +1914,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		getSession().update(linkSubjectStudy);
 	}
 
-	public long countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjects) {
-		String queryString = "select count(*) " +
-									"from LinkSubjectStudy subject " +
-									"where study =:study " +
-									"and subjectUID in  (:subjects) ";
-		Query query =  getSession().createQuery(queryString);
-		query.setParameter("study", study);
-		query.setParameterList("subjects", subjects);
-		
-		return (Long)query.uniqueResult();
-	}
-
 	public StudyUpload refreshUpload(StudyUpload upload) {
 		getSession().refresh(upload);
 		return upload;
@@ -1818,4 +1922,5 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public StudyUpload getUpload(Long id) {
 		return (StudyUpload) getSession().get(StudyUpload.class, id);
 	}
+
 }

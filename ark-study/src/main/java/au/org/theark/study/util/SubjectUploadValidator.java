@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import jxl.Cell;
 import jxl.Sheet;
@@ -48,6 +49,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
@@ -61,9 +63,6 @@ import com.csvreader.CsvReader;
  * @author cellis
  */
 public class SubjectUploadValidator {
-	/**
-	 * 
-	 */
 	private static final long		serialVersionUID			= -1933045886948087734L;
 	private static Logger			log							= LoggerFactory.getLogger(SubjectUploadValidator.class);
 	@SuppressWarnings("unchecked")
@@ -545,9 +544,8 @@ public class SubjectUploadValidator {
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 
 			String[] fieldNameArray = csvReader.getHeaders();
-			
-			//TODO ASAP...implement
-			//List<LinkSubjectStudy> subjectsAlreadyExisting = iArkCommonService.getSubjectsThatAlreadyExistFromThisCollection(study, subjectVO)
+
+			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
@@ -557,12 +555,21 @@ public class SubjectUploadValidator {
 
 				// First/0th column should be the SubjectUID
 				String subjectUID = stringLineArray[0];
+				//subjectUIDsInCSV.add(subjectUID);
 
-				if(iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study) != null){
+/*				if(iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study) != null){
 					updateRows.add(row);
 				}
 				else{
 					insertRows.add(row);
+				}*/
+				for(String subjectFromDB : subjectUIDsAlreadyExisting){
+					if(subjectFromDB.equals(subjectUID)){
+						updateRows.add(row);
+					}
+					else{
+						insertRows.add(row);
+					}
 				}
 
 				int col = 0;
@@ -614,6 +621,7 @@ public class SubjectUploadValidator {
 				row++;
 			}
 
+
 			if (dataValidationMessages.size() > 0) {
 				log.warn("Validation messages: " + dataValidationMessages.size());
 				for (Iterator<String> iterator = dataValidationMessages.iterator(); iterator.hasNext();) {
@@ -638,6 +646,7 @@ public class SubjectUploadValidator {
 			timer.stop();
 			log.warn("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
 			log.warn("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
+			log.warn("updates = " + updateRows.size() + "     inserts = " + insertRows.size());
 			if (timer != null)
 				timer = null;
 			if (csvReader != null) {

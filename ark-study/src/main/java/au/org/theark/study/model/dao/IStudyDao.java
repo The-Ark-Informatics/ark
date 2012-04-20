@@ -64,13 +64,12 @@ import au.org.theark.core.vo.SubjectVO;
 public interface IStudyDao {
 	
 	/**
-	 *	count number of subjects that do not already exist in db for the given list of subjects and the study provided as parms
-	 * 
-	 * @param study
-	 * @param subjects
-	 * @return
+	 * This will take a list of detached LinkSubjectStudies (whcih will contain associated Persons, etc and insert them.
+	 * @param subjectsToInsert
+	 * @throws ArkUniqueException
+	 * @throws ArkSubjectInsertException
 	 */
-	public long countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjects);
+	public void batchInsertSubjects(List<LinkSubjectStudy> subjectsToInsert) throws ArkUniqueException, ArkSubjectInsertException;
 	
 	/**
 	 * Create a new study
@@ -311,9 +310,9 @@ public interface IStudyDao {
 
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes();
 
-	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
+// TODO trav might make this deprecated	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
 
-	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
+	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException;
 
 	/**
 	 * Returns a Collection of ArkUser entities who are linked to a particular study.

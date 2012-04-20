@@ -97,6 +97,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 			long size = containerForm.getModelObject().getFileUpload().getSize();
 			Long uploadId = containerForm.getModelObject().getUpload().getId();
 			String report = updateUploadReport();
+			report.charAt(0);
 			log.warn("..try a batch");
 
 

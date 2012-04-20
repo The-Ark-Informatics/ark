@@ -66,7 +66,7 @@ import au.org.theark.study.util.SubjectUploadValidator;
 public interface IStudyService {
 
 	
-	public long countNumberOfUniqueSubjects(Study study, List subjects);
+	//public long countNumberOfUniqueSubjects(Study study, List subjects);
 	
 	
 	/**
@@ -262,9 +262,10 @@ public interface IStudyService {
 
 	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId);
 
-	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
+//TODO Trav Deprecated	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
+	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException;
 
-	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
+	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException;
 
 	/**
 	 * Returns a Collection of ArkUser entities from the backend for users who are linked to the passed in study.
