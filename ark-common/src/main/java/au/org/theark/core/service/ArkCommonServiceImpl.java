@@ -1082,4 +1082,24 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public boolean customFieldHasData(CustomField customField) {
 		return studyDao.customFieldHasData(customField);
 	}
+
+	public long countNumberOfUniqueSubjectsWithTheseUIDs(Study study, List subjectUIDs) {
+		if(study!=null && subjectUIDs!=null){
+			return studyDao.countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(study, subjectUIDs);
+		}
+		return 0;
+	}
+	public List<String> getUniqueSubjectsWithTheseUIDs(Study study, Collection subjectUIDs) {
+		if(study!=null && subjectUIDs!=null){
+			return studyDao.getSubjectsThatAlreadyExistWithTheseUIDs(study, subjectUIDs);
+		}
+		return new ArrayList<String>();//maybe exception actually good here
+	}
+	
+	public List<String> getAllSubjectUIDs(Study study){
+		if(study!=null){
+			return studyDao.getAllSubjectUIDs(study);
+		}
+		return new ArrayList<String>();//maybe exception actually good here
+	}
 }

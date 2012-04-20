@@ -563,4 +563,11 @@ public interface IStudyDao {
 	public List<ConsentOption> getConsentOptionList();
 
 	public boolean customFieldHasData(CustomField customField);
+
+	public long countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids);
+
+	//TODO evaluate performance vs return list of strings as needed for large comparisons
+	public List<String> getAllSubjectUIDs(Study study);
+	
+	public List<String> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids);
 }
