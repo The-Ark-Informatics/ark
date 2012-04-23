@@ -241,8 +241,17 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 			setDefaultCountry();
 		}
 
-		// Force new address to be preferred
-		getModelObject().getAddress().setPreferredMailingAddress(true);
+		// Force new address to be preferred if totally new address
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		try {
+			getModelObject().setAddresses(studyService.getPersonAddressList(sessionPersonId, null));
+		}
+		catch (ArkSystemException e) {
+			e.printStackTrace();
+		}
+		if(getModelObject().getAddresses().size() == 0) {
+			getModelObject().getAddress().setPreferredMailingAddress(true);
+		}
 
 		updateDetailFormPrerender(getModelObject().getAddress());
 
