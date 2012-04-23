@@ -1,0 +1,136 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">
+		&nbsp;
+	</div>
+	<table width="0%" cellspacing="0">
+	</table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">
+				&nbsp;
+			</th>
+			<th width="20%">
+				<label for="streetAddress">
+					<wicket:message	key="street.address">
+						Street Address:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="city">
+					<wicket:message	key="city">
+						City:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="state">
+					<wicket:message	key="state">
+						State:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="postCode">
+					<wicket:message	key="postcode">
+						Post Code:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="country">
+					<wicket:message key="country">
+						Country:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="addressType">
+					<wicket:message key="addressType">
+						Address Type:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="dateReceived">
+					<wicket:message key="address.dateReceived">
+						DateReceived:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="preferredMailingAddress">
+					<wicket:message key="address.preferredMailingAddress">
+						Preferred Mailing Address:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="2%">
+				&nbsp;
+			</th>
+		</tr>
+		<!--	The Data Result Set -->
+		<tr wicket:id="addressList">
+
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="15%">
+				<a href="#" wicket:id="address">
+					<span wicket:id="addressLabel">
+						Some Address Link
+					</span>
+				</a>
+			</td>
+			<td width="15%">
+				<span wicket:id="city">
+					Perth
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="countryState.state">
+					WA
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="postCode">
+					6000
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="country.name">
+					Australia
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="addressType.name">
+					Home
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="address.dateReceived">
+					Date Received
+				</span>
+			</td>
+			<td width="10%">
+				<img wicket:id="address.preferredMailingAddress"/>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="96%" colspan="7">
+				<span wicket:id="addressNavigator" class="a"></span>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0">
+	</table>
+</wicket:panel>

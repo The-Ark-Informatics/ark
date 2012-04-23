@@ -1,0 +1,276 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailsForm">
+		<div class="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<!--	Row 1 Study component Drop Down Choice-->
+				<div class="fldLabel">
+					<wicket:message	key="studyComponent">
+						Study Component:
+					</wicket:message>
+				</div>
+				<div class="fldControl">
+					<select wicket:id="consent.studyComp">
+						<option>
+							Blood
+						</option>
+						<option>
+							Saliva
+						</option>
+					</select>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					&nbsp;
+				</div>
+
+				<div class="fldControl">
+					&nbsp;
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<!--	Row 1 Study component Drop Down Choice-->
+				<div class="fldLabel">
+					<wicket:message key="studyComponent.status">
+						Study Component Status:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="consent.studyComponentStatus">
+						<option>
+							Completed
+						</option>
+						<option>
+							Not Completed
+						</option>
+					</select>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div wicket:id="wmc-plain">
+					<div class="fldLabel">
+						&nbsp;
+					</div>
+
+					<div class="fldControl">
+						&nbsp;
+					</div>
+				</div>
+
+				<div wicket:id="wmc-requested">
+					<div class="fldLabel">
+						<wicket:message key="consent.requestedDate">
+							Requested Date:
+						</wicket:message>
+					</div>
+
+					<div class="fldControl">
+						<input wicket:id="consent.requestedDate" type="text" maxLength="10"/>
+						<span class="requiredHint">
+							*
+						</span>
+					</div>
+				</div>
+
+				<div wicket:id="wmc-received">
+					<div class="fldLabel">
+						<wicket:message key="consent.receivedDate">
+							Received Date:
+						</wicket:message>
+					</div>
+
+					<div class="fldControl">
+						<input wicket:id="consent.receivedDate"	type="text" maxLength="10"/>
+						<span class="requiredHint">
+							*
+						</span>
+					</div>
+				</div>
+
+				<div wicket:id="wmc-completed">
+					<div class="fldLabel">
+						<wicket:message key="consent.completedDate">
+							Completed Date:
+						</wicket:message>
+					</div>
+
+					<div class="fldControl">
+						<input wicket:id="consent.completedDate"	type="text" maxLength="10"/>
+						<span class="requiredHint">
+							*
+						</span>
+					</div>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!--	Row 2 -->
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="consent.type">
+						Consent Type:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="consent.consentType">
+						<option>
+							Hard Copy
+						</option>
+						<option>
+							Electronic Copy
+						</option>
+					</select>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="consent.consentStatus">
+						Consent Status:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="consent.consentStatus">
+						<option>
+							Consented
+						</option>
+						<option>
+							Not Consented
+						</option>
+					</select>
+				</div>
+
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!--	Row 3 -->
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="consent.downloaded">
+						Consented Downloaded:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="consent.consentDownloaded">
+						<option>
+							Yes
+						</option>
+						<option>
+							No
+						</option>
+					</select>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="consent.consentedBy">
+						Consented By:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="consent.consentedBy"	type="text" />
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!--	Row 5 -->
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="consent.date">
+						Consent Date:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="consent.consentDate"	type="text" maxLength="10"/>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="consent.comments">
+						Comments:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<textarea wicket:id="consent.comments" cols="25" maxLength="500">
+					</textarea>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div wicket:id="consentHistoryPanel" class="customPanelBorder">
+					[Consent history]
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+			</div>
+
+			<!--	Row 2 Action Buttons -->
+			<div wicket:id="editButtonContainer">
+				<div class="actionButtons">
+					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
+				</div>
+			</div>
+		</div>
+	</form>
+</wicket:panel>

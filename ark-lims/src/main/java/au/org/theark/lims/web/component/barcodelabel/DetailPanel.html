@@ -1,0 +1,153 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailsForm">
+		<div class="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+				<!--	Row 1 -->
+				<div class="fldLabel">
+					<wicket:message key="id">
+						ID:
+					</wicket:message>
+				</div>
+				<div class="fldControl">
+					<input wicket:id="id" type="text" />
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="name">
+						Name:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="name" type="text" />
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="barcodePrinter">
+						Barcode Printer
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="barcodePrinter">
+						<option>
+							Barcode Printer
+						</option>
+					</select>
+				</div>
+				
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<span wicket:id="barcodeLabelTemplateLbl">
+						Clone from Barcode Label Template:
+					</span>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="barcodeLabelTemplate">
+						<option>
+							Barcode Label Template
+						</option>
+					</select>
+				</div>
+
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="description">
+						Description:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<textarea wicket:id="description" maxlength="255" cols="25">
+					</textarea>
+				</div>
+				
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="version">
+						Version:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="version" type="text" />
+				</div>
+				
+				<div class="detailSubForm" wicket:id="barcodeLabelDataPanel">
+						[barcode label data]
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="exampleBarcodeDataFileLbl">
+						Example Barcode Data File:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<textarea wicket:id="exampleBarcodeDataFile" maxlength="255" cols="25">
+					</textarea>
+				</div>
+
+			</div>
+			<!-- End detailFormContainer -->
+			
+			<div wicket:id="editButtonContainer" class="detailPanel">
+				<div class="actionButtons">
+					<input wicket:id="save" type="submit" wicket:message="value:button.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
+				</div>
+			</div>
+			<div class="detailPanelBreaker">
+				&nbsp;
+			</div>
+		</div>
+		<!-- End detailsPanelBorder -->
+	</form>
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+</wicket:panel>

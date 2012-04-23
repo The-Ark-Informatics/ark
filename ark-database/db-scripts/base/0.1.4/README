@@ -1,0 +1,3 @@
+To import into mysql, run the following command:
+mysql -u arkadmin -p < ark-0.1.4.sql
+

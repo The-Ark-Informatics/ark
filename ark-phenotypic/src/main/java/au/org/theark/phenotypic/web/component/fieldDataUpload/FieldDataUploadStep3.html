@@ -1,0 +1,23 @@
+<wicket:panel>
+	<div class="wizardStepBorder">
+		<div wicket:id="header" />
+		<div class="wizardStepContent">
+			<div class="wizardErrorMessages">
+				<span wicket:id="multiLineLabel" class="mark">
+					this text will be replaced
+				</span>
+			</div>
+			<input wicket:id="downloadValMsg" type="submit" value="Download Validation Messages" />&nbsp;
+			<div class="wizardPanelBreaker">&nbsp;</div>
+			<div wicket:id="overrideDataValidationContainer">
+				<wicket:message	key="overrideDataValidationChkBox">Override Data validation:</wicket:message>
+				<input type="checkbox" wicket:id="overrideDataValidationChkBox"/>
+			</div>
+			<div class="wizardPanelBreaker">&nbsp;</div>
+			<div wicket:id="updateExistingDataContainer">
+				<wicket:message	key="updateExistingData">Update existing data:</wicket:message>
+				<input type="checkbox" wicket:id="updateChkBox"/>
+			</div>
+		</div>
+	</div>
+</wicket:panel>

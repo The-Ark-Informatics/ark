@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- Enable annotation configuration -->
+	<context:annotation-config />
+
+	<!--  Belongs to the Ark Container Application -->
+	<context:component-scan base-package="au.org.theark.dao" />
+	<context:component-scan base-package="au.org.theark.service" />
+	<context:component-scan base-package="au.org.theark.security" />
+
+	<!-- Imports the sub-module contexts (dynamically) -->
+	<!-- If they're in a JAR in WEB-INF/lib the following will work: -->
+	<import resource="classpath*:/META-INF/services/sub-module.ctx.xml" />
+
+	<!--
+		Spring AOP auto-proxy creation (required to support Shiro annotations)
+	-->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+	
+	<!--  reCAPTCHA configuration -->
+	<!--
+		NOTE: reCaptcha configurations require a public key and private key
+		These keys are different depending on the domain where your application is deployed 
+		(by default works for any key when using localhost domain).
+		You can generate keys here: https://www.google.com/recaptcha/admin/create
+		THe following keys are for the domain: http://the-ark.org.au
+	-->
+	<bean id="reCaptchaContextSource" class="au.org.theark.core.dao.ReCaptchaContextSource">
+		<property name="reCaptchaPublicKey" value="6LeH1soSAAAAAFJDIJlP3sjPiHu7QMTxVmYuxX_M" />
+		<property name="reCaptchaPrivateKey" value="6LeH1soSAAAAAHo5FTWfUzS5AQZ6Jea-9dBVtuyL" />
+	</bean>
+	
+	<!-- SMTP Configuration -->
+	<!--
+		NOTE: host will now use "ark-smtp" mapping as defined in the host file.
+	-->
+	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="ark-smtp"  />
+	</bean>
+	
+	<!--   velocity allows us to use a template for the email-->
+	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+		<property name="velocityProperties">
+			<value>
+				resource.loader=class
+				class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+			</value>
+		</property>
+	</bean>
+
+	<!--  MySql Data Source -->
+	<!--
+		NOTE: URL will now use "ark-database" mapping as defined in the host file.
+	-->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://ark-database:3306" />
+		<property name="username" value="arkadmin" />
+		<property name="password" value="insert-password-here" />
+	</bean>
+
+	<!--  Ark LDAP configuration (includes the LDAP data source) -->
+	<!--
+		NOTE: URL will now use "ark-ldap" mapping as defined in the host file.
+		NOTE: No longer required to update LDAP details in sub-module.ctx.xml,
+		it has been centralised to the follow au.org.theark.core.dao.ArkLdapContextSource
+	-->
+	<bean id="ldapDataContextSource" class="au.org.theark.core.dao.ArkLdapContextSource">
+		<property name="url" value="ldap://ark-ldap:389" />
+		<property name="basePeopleDn" value="ou=arkUsers" />
+		<property name="base" value="dc=the-ark,dc=org,dc=au" />
+		<property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" />
+		<property name="password" value="insert-password-here" />
+	</bean>
+	
+	<!--  Hibernate Session Factory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan">
+			<list>
+				<value>au.org.theark.core.model.study.entity</value>
+				<value>au.org.theark.core.model.pheno.entity</value>
+				<value>au.org.theark.core.model.geno.entity</value>
+				<value>au.org.theark.core.model.report.entity</value>
+				<!-- <value>au.org.theark.registry.model.entity</value>-->
+				<value>au.org.theark.core.model.lims.entity</value>
+				<value>au.org.theark.core.model.audit.entity</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="cache.use_query_cache">false</prop>
+				<prop key="cache.use_second_level_cache">false</prop>
+				<prop key="hibernate.order_updates">true</prop>
+				<prop key="hibernate.order_inserts">true</prop>
+				<prop key="hibernate.jdbc.batch_size">50</prop>
+				<prop key="hibernate.jdbc.batch_versioned_data">true</prop>
+				<prop key="hibernate.current_session_context_class">org.hibernate.context.ThreadLocalSessionContext
+				</prop>
+			</props>
+		</property>
+		<property name="eventListeners">
+			<map>
+				<entry key="merge">
+					<bean
+						class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener" />
+				</entry>
+			</map>
+		</property>
+
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<tx:annotation-driven />
+
+	<!--
+		========================================================= Shiro
+		Components =========================================================
+	-->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/" />
+		<!--
+			override these for application-specific URLs if you like: <property
+			name="loginUrl" value="/login.jsp"/> <property name="successUrl"
+			value="/home.jsp"/> <property name="unauthorizedUrl"
+			value="/unauthorized.jsp"/>
+		-->
+		<!--
+			The 'filters' property is not necessary since any declared
+			javax.servlet.Filter bean
+		-->
+		<!--
+			defined will be automatically acquired and available via its beanName
+			in chain
+		-->
+		<!--
+			definitions, but you can perform instance overrides or name aliases
+			here if you like:
+		-->
+		<!--
+			<property name="filters"> <util:map> <entry key="anAlias"
+			value-ref="someFilter"/> </util:map> </property>
+		-->
+		<!--
+			<property name="filterChainDefinitions"> <value> # some example chain
+			definitions: /admin/** = authc, roles[admin] /docs/** = authc,
+			perms[document:read] /** = authc # more URL-to-FilterChain
+			definitions here </value> </property>
+		-->
+	</bean>
+
+	<!--
+		Shiro's main business-tier object for web-enabled applications (use
+		org.apache.shiro.web.DefaultWebSecurityManager instead when there is
+		no web environment)
+	-->
+
+
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManager" ref="ehCacheManager" />
+	</bean>
+
+	<bean id="ehCacheManager" class="net.sf.ehcache.CacheManager" />
+
+
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!--
+			Single realm app (realm configured next, below). If you have multiple
+			realms, use the 'realms' property instead.
+		-->
+		<property name="realm" ref="arkLdapRealm" />
+		<!--
+			Uncomment this next property if you want heterogenous session access
+			or clusterable/distributable sessions. The default value is 'http'
+			which uses the Servlet container's HttpSession as the underlying
+			Session implementation. <property name="sessionMode" value="shiro"/>
+		-->
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+	
+	<bean id="arkLdapRealm" class="au.org.theark.core.security.ArkLdapRealm" />
+
+	<!--
+		Post processor that automatically invokes init() and destroy() methods
+	-->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+	<!--
+		========================================================= The Wicket
+		Application we want Spring to manage.Without Spring we would define
+		this in the web.xml, since we want Spring to manage it we need to
+		declare it here. The wicket-spring module provides a factory that
+		delegates the call to 'Spring' to get an instance of the web
+		application defined below.See web.xml for the declaration of the
+		factory. =========================================================
+	-->
+	<bean id="wicketApplication" class="au.org.theark.web.application.ArkWebApplication" />
+
+</beans>
+

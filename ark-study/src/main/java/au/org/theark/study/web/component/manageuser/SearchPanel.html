@@ -1,0 +1,119 @@
+<wicket:panel>
+	&nbsp;
+	<!-- Start of searchPanelContainer-->
+	<div class="searchPanelContainer">
+		<form wicket:id="searchForm">
+			<div class="searchPanelContent">
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+				<div class="fldLabel">
+					<div class="label">
+						<label for="userName">
+							<wicket:message key="userNameKey">
+								User Name:
+							</wicket:message>
+							<div class="note">
+								<wicket:message	key="userNameKey.note">
+									[Note replaced from properties]
+								</wicket:message>
+							</div>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="userName" type="text" size="30"/>
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="email">
+							<wicket:message key="emailKey">
+								Email:
+							</wicket:message>
+							<div class="note">
+								<wicket:message	key="emailKey.note">
+									[Note replaced from properties]
+								</wicket:message>
+							</div>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="email" type="text" size="30"/>
+					</div>
+				</div>
+
+
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="firstName">
+							<wicket:message key="firstNameKey">
+								First Name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="firstName" type="text" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="lastName">
+							<wicket:message key="lastNameKey">
+								Last Name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="lastName" type="text" />
+					</div>
+				</div>
+
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!--	Defines the location for buttons -->
+				<div class="actionButtons">
+					<input wicket:id="search" type="submit" wicket:message="value:page.search" />
+					<input wicket:id="reset" type="submit" wicket:message="value:page.reset" />
+					<input wicket:id="new" type="submit" wicket:message="value:page.new" />
+				</div>
+
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- End of searchPanelContainer-->
+</wicket:panel>

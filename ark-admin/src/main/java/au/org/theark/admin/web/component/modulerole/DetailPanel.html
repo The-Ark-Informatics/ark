@@ -1,0 +1,78 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailForm">
+		<!--	Layouts and Content to be designed. this is a layout -->
+		<div class="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div class="detailPanelBreaker">&nbsp;</div>
+				
+				<div class="panelContentLeft">&nbsp;</div>
+				
+				<div class="fldLabel">
+					<wicket:message key="arkModuleRole.arkModule">
+						Module
+					</wicket:message>
+				</div>
+				
+				<div class="fldControl">
+					<select wicket:id="arkModuleRole.arkModule">
+						<option>
+							1
+						</option>
+						<option>
+							2
+						</option>
+					</select>
+				</div>
+				
+				<div class="detailPanelBreaker">&nbsp;</div>
+				
+				<div class="panelContentLeft">&nbsp;</div>
+			
+				<div class="fldLabel">
+					<wicket:message	key="arkModuleRoles">Module Roles:</wicket:message>
+					<span wicket:id="selectedArkModuleRoles">[Palette]</span>
+				</div>
+				
+				<div class="fldControl">
+					&nbsp;
+				</div>
+				
+				<div class="panelMargin">&nbsp;</div>
+				
+				<!-- Empty -->
+				
+				<div class="detailPanelBreaker">&nbsp;</div>
+				
+				<div class="panelContentLeft">&nbsp;</div>
+			
+				<div class="fldLabel">
+					<div class="note">
+						<wicket:message	key="note">NOTE</wicket:message>
+					</div>
+				</div>
+				
+				<div class="detailPanelBreaker">&nbsp;</div>
+			</div>
+			<!-- End detailFormContainer -->
+			<div wicket:id="editButtonContainer">
+				<div class="fldLabel">&nbsp;</div>
+				<div class="fldControl">&nbsp;</div>
+				<div class="panelMargin">&nbsp;</div>
+				<div class="actionButtons">&nbsp;
+					<div class="label">
+						<input wicket:id="save" type="submit" wicket:message="value:button.save" />&nbsp;
+						<div class="panelMargin">&nbsp;</div>
+						<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
+						<div class="panelMargin">&nbsp;</div>
+						<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />&nbsp;
+				  	</div>
+				</div>
+			</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
+		</div>
+		<!-- End detailsPanelBorder -->
+	</form>
+	<br>&nbsp;
+	<br>&nbsp;
+</wicket:panel>

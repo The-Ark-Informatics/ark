@@ -1,0 +1,650 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailsForm">
+		<div class="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!-- Row 1 Study ID and Name-->
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="subjectUID">
+						Subject UID:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="linkSubjectStudy.subjectUID"/>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message	key="title">
+						Title:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="linkSubjectStudy.person.titleType">
+						<option>
+							Mr.
+						</option>
+						<option>
+							Mrs.
+						</option>
+					</select>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				<!-- Row 1 Ends-->
+
+				<!-- Row 2 -->
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="firstName">
+						First Name:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="linkSubjectStudy.person.firstName"/>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message	key="middleName">
+						Middle Name:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="linkSubjectStudy.person.middleName"/>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				<!-- Row 2 Ends-->
+
+				<!-- Row 3 -->
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="lastName">
+						Last Name:
+					</wicket:message>
+					<div>
+						<wicket:message key="subjectPreviousLastname">
+							(previous)
+						</wicket:message>
+					</div>
+					<div class="note">
+						<wicket:message	key="subjectPreviousLastname.note">
+							[Note replaced from properties]
+						</wicket:message>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="linkSubjectStudy.person.lastName"/>
+					<div style="padding-top: 5px;">
+						<input wicket:id="subjectPreviousLastname"/>
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message	key="preferredName">
+						Preferred Name:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="linkSubjectStudy.person.preferredName"/>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!-- Row 3 Ends-->
+
+
+				<!-- Row 4 -->
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="dateOfBirth">
+						Date Of Birth:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="linkSubjectStudy.person.dateOfBirth" maxLength="10"/>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="vitalStatus">
+						Vital Status:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="linkSubjectStudy.person.vitalStatus">
+						<option>
+							Alive
+						</option>
+						<option>
+							Deceased
+						</option>
+					</select>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				<!-- Row 4 Ends-->
+				<!--	Row 4.1 -->
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="dateLastKnownAlive">
+						Date Last Known Alive:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="linkSubjectStudy.person.dateLastKnownAlive" maxLength="10"/>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					&nbsp;
+				</div>
+
+				<div class="fldControl">
+					&nbsp;
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				<!-- Row 4.1 Ends	-->
+
+				<!-- Row 5 -->
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div wicket:id="deathDetailsContainer">
+					<div class="fldLabel">
+						<wicket:message key="dateOfDeath">
+							Date Of Death:
+						</wicket:message>
+					</div>
+
+					<div class="fldControl">
+						<input wicket:id="linkSubjectStudy.person.dateOfDeath" maxLength="10"/>
+					</div>
+
+					<div class="panelMargin">
+						&nbsp;
+					</div>
+
+					<div class="fldLabel">
+						<wicket:message key="causeOfDeath">
+							Cause of Death:
+						</wicket:message>
+					</div>
+
+					<div class="fldControl">
+						<input wicket:id="linkSubjectStudy.person.causeOfDeath" maxLength="255"/>
+					</div>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				<!-- Row 5 ends -->
+
+				<!-- Row 6 -->
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="gender">
+						Gender:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="linkSubjectStudy.person.genderType">
+						<option>
+							Male
+						</option>
+						<option>
+							Female
+						</option>
+					</select>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="subjectStatus">
+						Subject Status:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="linkSubjectStudy.subjectStatus">
+						<option>
+							Status
+						</option>
+					</select>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!--	Row 7 -->
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="maritalStatus">
+						Marital Status:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="linkSubjectStudy.person.maritalStatus">
+						<option>
+							Single
+						</option>
+						<option>
+							Married
+						</option>
+					</select>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="personContactMethod">
+						Preferred Contact Method:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="linkSubjectStudy.person.personContactMethod">
+						<option>
+							Home telephone
+						</option>
+						<option>
+							Mobile telephone
+						</option>
+						<option>
+							Email
+						</option>
+						<option>
+							Post
+						</option>
+					</select>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!--	Row 8 -->
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="preferredEmail">
+						Preferred Email:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<div wicket:id="preferredEmailContainer">
+						<input wicket:id="linkSubjectStudy.person.preferredEmail" size="30" maxLength="150"/>
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="otherEmail">
+						Other Email:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="linkSubjectStudy.person.otherEmail" size="30" maxLength="150"/>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!--	Row 8 -->
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="heardAboutStudy">
+						Heard About Study:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="linkSubjectStudy.heardAboutStudy"/>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="comment">
+						Comment:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<textarea wicket:id="linkSubjectStudy.comment" maxlength="1000" cols="25">
+					</textarea>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<!--	Place consent fields here -->
+				<div class="customPanelBorder">
+					<div class="customPanelContentLeft">
+						&nbsp;
+					</div>
+
+					<div class="fldLabel">
+						<wicket:message key="consentDate">
+							Consent Date:
+						</wicket:message>
+					</div>
+					<div class="fldControl">
+						<input wicket:id="linkSubjectStudy.consentDate"/>
+					</div>
+
+					<div class="customPanelMargin">
+						&nbsp;
+					</div>
+
+					<div class="fldLabel">
+						<wicket:message key="consentStatus">
+							Consent Status:
+						</wicket:message>
+					</div>
+
+					<div class="fldControl">
+						<select wicket:id="linkSubjectStudy.consentStatus">
+							<option>
+								Consented
+							</option>
+							<option>
+								Not Consented
+							</option>
+						</select>
+					</div>
+
+					<div class="customPanelContentRight">
+						&nbsp;
+					</div>
+
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div class="customPanelContentLeft">
+						&nbsp;
+					</div>
+
+					<div class="fldLabel">
+						<wicket:message key="consentType">
+							Consent Type:
+						</wicket:message>
+					</div>
+
+					<div class="fldControl">
+						<select wicket:id="linkSubjectStudy.consentType">
+							<option>
+								Hard Copy
+							</option>
+							<option>
+								Electronic Copy
+							</option>
+						</select>
+					</div>
+
+					<div class="customPanelMargin">
+						&nbsp;
+					</div>
+
+					<div class="fldLabel">
+						<wicket:message key="consent.downloaded">
+							Consent Downloaded:
+						</wicket:message>
+					</div>
+
+					<div class="fldControl">
+						<select wicket:id="linkSubjectStudy.consentDownloaded">
+							<option>
+								Yes
+							</option>
+							<option>
+								No
+							</option>
+						</select>
+					</div>
+
+					<div class="customPanelContentRight">
+						&nbsp;
+					</div>
+
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div class="customPanelContentLeft">
+						&nbsp;
+					</div>
+
+					<div class="fldLabel">
+						<wicket:message key="consentToPassiveDataGathering">
+							Consent to Passive Data Gathering To Active Contact:
+						</wicket:message>
+					</div>
+
+					<div class="fldControl">
+						<select wicket:id="linkSubjectStudy.consentToPassiveDataGathering">
+							<option>
+								Yes
+							</option>
+							<option>
+								No
+							</option>
+						</select>
+					</div>
+
+					<div class="customPanelMargin">
+						&nbsp;
+					</div>
+
+					<div class="fldLabel">
+						<wicket:message key="consentToActiveContact">
+							Consent To Active Contact:
+						</wicket:message>
+					</div>
+
+					<div class="fldControl">
+						<select wicket:id="linkSubjectStudy.consentToActiveContact">
+							<option>
+								Yes
+							</option>
+							<option>
+								No
+							</option>
+						</select>
+					</div>
+
+					<div class="customPanelContentRight">
+						&nbsp;
+					</div>
+
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+					<div class="customPanelContentLeft">
+						&nbsp;
+					</div>
+
+					<div class="fldLabel">
+						<wicket:message key="consentToUseData">
+							Consent To Active Contact:
+						</wicket:message>
+					</div>
+
+					<div class="fldControl">
+						<select wicket:id="linkSubjectStudy.consentToUseData">
+							<option>
+								Yes
+							</option>
+							<option>
+								No
+							</option>
+						</select>
+					</div>
+
+					<div class="customPanelMargin">
+						&nbsp;
+					</div>
+
+					<div class="fldLabel">
+						&nbsp;
+					</div>
+
+					<div class="fldControl">
+						&nbsp;
+					</div>
+
+					<div class="customPanelContentRight">
+						&nbsp;
+					</div>
+					
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+					
+					<div class="customPanelContentLeft">
+						&nbsp;
+					</div>
+					
+					<div wicket:id="consentHistoryPanel" class="customPanelBorder">
+						[Consent history]
+					</div>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div wicket:id="childStudyPalette">
+					[Child Study Palette]
+				</div>
+			</div>
+			<!-- End detailFormContainer -->
+
+			<div class="detailPanelBreaker">
+				&nbsp;
+			</div>
+
+			<!--	Row 2 Action Buttons -->
+			<div wicket:id="editButtonContainer">
+				<div class="actionButtons">
+					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
+				</div>
+			</div>
+			<!--	End buttons -->
+
+			<div class="detailPanelBreaker">
+				&nbsp;
+			</div>
+			<!--	End detailsPanelBorder -->
+		</div>
+		<div class="detailPanelBreaker">
+			&nbsp;
+		</div>
+	</form>
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+</wicket:panel>

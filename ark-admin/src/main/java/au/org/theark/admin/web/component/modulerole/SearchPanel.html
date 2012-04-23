@@ -1,0 +1,44 @@
+<wicket:panel>&nbsp;
+     	<div class="searchPanelContainer">
+			<form wicket:id="searchForm">
+		  		<div class="searchPanelContent">
+					<div class="searchPanelBreaker">&nbsp;</div>				
+					<div class="panelContentLeft">&nbsp;</div>
+					
+		       		<div class="fldLabel">
+						<div class="label">
+							<label for="id">
+								<wicket:message key="arkModuleRole.arkModule">
+									Module
+								</wicket:message>
+							</label>
+						</div>
+					</div>
+					
+					<div class="fldControl">
+						<div class="label">
+							<select wicket:id="arkModule">
+								<option>
+									1
+								</option>
+								<option>
+									2
+								</option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="searchPanelBreaker">&nbsp;</div>		
+		       		
+					<!--  Defines the location for buttons -->
+					<div class="actionButtons">
+						<input wicket:id="search" type="submit" wicket:message="value:page.search" />
+						<input wicket:id="reset" type="submit" wicket:message="value:page.reset" />
+						<input wicket:id="new" type="submit" wicket:message="value:page.new" />
+					</div>
+					
+					<div class="searchPanelBreaker">&nbsp;</div>
+				</div>
+			</form>
+       </div><!-- Container-->
+</wicket:panel>

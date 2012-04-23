@@ -1,0 +1,139 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailForm">
+		<div id="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div id="searchPanelBreaker">&nbsp;</div>
+				
+				<!-- Row 1 ID and Name-->
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+					<div class="label">
+						<label for="id">
+							<wicket:message key="uploadCollection.id">Collection ID:</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="uploadCollection.id" type="text" />
+					</div>
+				</div>
+				
+				<div id="panelMargin">&nbsp;</div>
+
+				<div id="fldLabel">
+					<div class="label">
+						<label for="filename"><wicket:message key="uploadCollection.upload.filename">Filename:</wicket:message></label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+			        	<input wicket:id="uploadCollection.upload.filename" id="upload" type="file"/>
+					</div>
+				</div>
+				
+				<div id="searchPanelContentRight">&nbsp;</div>
+			
+				<div id="searchPanelBreaker">&nbsp;</div>
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+					<div class="label">
+						<label for="fileFormat"><wicket:message	key="uploadCollection.upload.fileFormat">File format:</wicket:message></label> 
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<select wicket:id="uploadCollection.upload.fileFormat">
+		       				<option>Test</option>
+		       			</select>
+			       	</div>
+				</div>
+				
+				<div id="panelMargin">&nbsp;</div>
+				
+				<div id="fldLabel">
+					<div class="label">
+						<label for="delimiterType"><wicket:message	key="uploadCollection.upload.delimiterType">Delimiter:</wicket:message></label> 
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<select wicket:id="uploadCollection.upload.delimiterType">
+		       				<option>Test</option>
+		       			</select>
+			       	</div>
+				</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+		       	
+		       	<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+						&nbsp;
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+		       	   		       			
+		       	<div id="panelMargin">&nbsp;</div>
+						
+				<div id="fldLabel">
+		 			<div class="label">
+						&nbsp;
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+				
+				<div id="searchPanelContentRight">&nbsp;</div>
+				<!-- ModalWindow for confirm Delete window -->
+				<div wicket:id="modalwindow"></div>
+			</div>
+			<!-- Detail container end-->
+			
+			<!--  Buttons -->
+			<div wicket:id="viewButtonContainer">
+				<div id="fldLabel">&nbsp;</div>
+				<div id="fldControl">&nbsp;</div>
+				<div id="panelMargin">&nbsp;</div>
+				<div id="actionButtons">&nbsp;
+					<div class="label">
+						<input wicket:id="edit" type="submit" wicket:message="value:button.edit" />&nbsp;
+						<div id="panelMargin">&nbsp;</div>
+						<input wicket:id="editCancel" type="submit"	wicket:message="value:button.cancel" />
+				  	</div>
+				</div>
+			</div>
+			
+			<div wicket:id="editButtonContainer">
+				<div id="fldLabel">&nbsp;</div>
+				<div id="fldControl">&nbsp;</div>
+				<div id="panelMargin">&nbsp;</div>
+				<div id="actionButtons">&nbsp;
+					<div class="label">
+						<input wicket:id="save" type="submit" wicket:message="value:button.save" />&nbsp;
+						<div id="panelMargin">&nbsp;</div>
+						<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />&nbsp;
+						<div id="panelMargin">&nbsp;</div>
+						<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
+				  	</div>
+				</div>
+			</div>
+		</div>
+	
+	</form>
+</wicket:panel>

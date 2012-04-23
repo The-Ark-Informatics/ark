@@ -1,0 +1,89 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">
+		&nbsp;
+	</div>
+	<table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">
+				&nbsp;
+			</th>
+			<th width="5%">
+				<label for="phoneId">
+					<wicket:message	key="phoneId">
+						Phone ID:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="5%">
+				<label for="areaCode">
+					<wicket:message	key="areaCode">
+						Area Code:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="30%">
+				<label for="phoneNumber">
+					<wicket:message	key="phoneNumber">
+						Phone Number:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="20%">
+				<label for="phoneType">
+					<wicket:message	key="phoneType">
+						Phone Type:
+					</wicket:message>
+				</label>
+			</th>
+			
+			<th width="2%">
+				&nbsp;
+			</th>
+		</tr>
+		<!--	The Data Result Set -->
+		<tr wicket:id="phoneList">
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="5%">
+				<span wicket:id="id">
+					100
+				</span>
+			</td>
+			<td width="5%">
+				<span wicket:id="areaCode">
+					08
+				</span>
+			</td>
+			<td width="30%">
+				<a href="#"wicket:id="phoneNumberLink">
+					<span wicket:id="phoneNumberValue">
+						92568489
+					</span>
+				</a>
+			</td>
+			<td width="15%">
+				<span wicket:id="phoneType.name">
+					Work
+				</span>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="96%" colspan="4" align="left">
+				<span wicket:id="phoneNavigator" class="a"></span>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0">
+	</table>
+</wicket:panel>

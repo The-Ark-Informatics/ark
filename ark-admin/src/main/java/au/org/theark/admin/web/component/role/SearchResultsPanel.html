@@ -1,0 +1,55 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">&nbsp;</div>
+	<table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">
+				&nbsp;
+			</th>
+			<th width="5%">
+				<wicket:message key="arkRole.id">id</wicket:message>
+			</th>
+			<th width="35%">
+				<wicket:message key="arkRole.name">name</wicket:message>
+			</th>
+			<th width="56%">
+				<wicket:message key="arkRole.description">description</wicket:message>
+			</th>
+			<th width="2%">
+				&nbsp;
+			</th>
+		</tr>
+		<tr wicket:id="arkRoleList">
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="5%">
+				<span wicket:id="arkRole.id">id</span>
+			</td>
+			<td width="35%">
+				<a href="#" wicket:id="link">
+					<span wicket:id="arkRole.name">name</span>
+				</a>
+			</td>
+			<td width="56%">
+				<span wicket:id="arkRole.description">description</span>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="96%" colspan="3">
+				<span wicket:id="navigator" class="a">
+				</span>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>

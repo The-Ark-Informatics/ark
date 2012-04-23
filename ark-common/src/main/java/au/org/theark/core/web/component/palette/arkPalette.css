@@ -1,0 +1,133 @@
+table.palette td.header {
+background-color:#EEE;
+border-bottom:1px solid #6F6F6F;
+border-top:1px solid #6F6F6F;
+font-size:10pt;
+font-weight:700;
+text-align:center;
+padding:2px;
+}
+
+table.palette {
+border:0;
+}
+
+table.palette td.pane {
+width:100px;
+text-align:center;
+}
+
+table.palette td.pane select {
+width:200px;
+}
+
+table.palette td.buttons {
+text-align:center;
+padding-left:10px;
+padding-right:10px;
+}
+
+table.palette td.buttons button {
+width:40px;
+height:40px;
+}
+
+#paletteAvailableLabel {
+background-color:#EEE;
+border-bottom:1px solid #6F6F6F;
+border-top:1px solid #6F6F6F;
+font-size:10pt;
+font-weight:700;
+float:left;
+margin-bottom:5px;
+text-align:center;
+width:100%;
+}
+
+#paletteSelectedLabel {
+background-color:#EEE;
+border-bottom:1px solid #6F6F6F;
+border-top:1px solid #6F6F6F;
+font-size:10pt;
+font-weight:700;
+float:right;
+margin-bottom:5px;
+text-align:center;
+width:100%;
+}
+
+#paletteAvailable {
+float:left;
+height:100%;
+width:40%;
+}
+
+#paletteSelected {
+float:right;
+height:100%;
+width:40%;
+}
+
+#paletteButtons {
+display:block;
+height:100%;
+margin-left:auto;
+margin-right:auto;
+width:10%;
+padding:20px;
+}
+
+#paletteCenter {
+float:center;
+height:100%;
+width:10%;
+}
+
+#paletteAddAllButtons {
+float:left;
+height:20%;
+width:100%;
+}
+
+#paletteBreaker,#paletteBorder {
+float:left;
+width:100%;
+}
+
+#addSelectedBtn,#removeSelectedBtn,#addAllBtn,#removeAllBtn {
+width:100%;
+}
+
+button.button.add div {
+background: url("add.gif"); 
+height: 15px;
+margin: auto;
+width: 15px;
+}
+
+button.button.remove div {
+background: url("remove.gif"); 
+height: 15px;
+margin: auto;
+width: 15px;
+}
+
+button.button.up div {
+background: url("up.gif"); 
+height: 15px;
+margin: auto;
+width: 15px;
+}
+
+button.button.down div {
+background: url("down.gif"); 
+height: 15px;
+margin: auto;
+width: 15px;
+}
+
+/* Fix a firefox (2.0.0.4) bug : https://bugzilla.mozilla.org/show_bug.cgi?id=382600 */
+select::-moz-dummy-option { 
+	visibility: hidden; 
+	content: ""; 
+}
