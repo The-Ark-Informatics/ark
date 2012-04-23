@@ -1923,4 +1923,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return (StudyUpload) getSession().get(StudyUpload.class, id);
 	}
 
+	public void setPreferredMailingAdressToFalse(Person person) {
+		String queryString = "UPDATE Address SET preferredMailingAddress = 0 WHERE person = :person";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("person", person);
+		query.executeUpdate();
+	}
+
 }

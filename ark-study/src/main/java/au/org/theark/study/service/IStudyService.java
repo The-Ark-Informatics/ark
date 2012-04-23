@@ -342,4 +342,7 @@ public interface IStudyService {
 	 * @return
 	 */
 	public StudyUpload refreshUpload(StudyUpload upload);
+
+
+	public void setPreferredMailingAdressToFalse(Person person);
 }
