@@ -100,15 +100,15 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 * @param containerForm
 	 */
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
-
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
 	}
 
 	@Override
 	public void onBeforeRender() {
-		// Disable preferred mailing for new addresses
-		preferredMailingAddressChkBox.setEnabled(!isNew());
+		// Disable preferred mailing for new address and no others exist
+		boolean enabled = !(isNew() && containerForm.getModelObject().getAddresses().size() == 0);
+		preferredMailingAddressChkBox.setEnabled(enabled);
 		super.onBeforeRender();
 	}
 
@@ -313,42 +313,38 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		try {
 			Person person = iStudyService.getPerson(personSessionId);
 
-			boolean hasPreferredMailing = iStudyService.personHasPreferredMailingAddress(person, containerForm.getModelObject().getAddress().getId());
-			boolean preferredMailingAdressIsYes = false;
-
-			if (containerForm.getModelObject().getAddress().getPreferredMailingAddress() != null) {
-				preferredMailingAdressIsYes = (containerForm.getModelObject().getAddress().getPreferredMailingAddress() == true);
-			}
-
-			// Check if other address already set to preferredMailingAddress
-			if (hasPreferredMailing && preferredMailingAdressIsYes) {
-				containerForm.error("The person has already specified a Preferred Mailing address. This address cannot be set as Preferred Mailing address.");
-				processErrors(target);
+			containerForm.getModelObject().getAddress().setPerson(person);
+			if (containerForm.getModelObject().getAddress().getId() == null) {
+				if(containerForm.getModelObject().getAddress().getPreferredMailingAddress()){
+					// Update any other preferredMailingAddresses to false
+					iStudyService.setPreferredMailingAdressToFalse(person);
+				}
+				
+				iStudyService.create(containerForm.getModelObject().getAddress());
+				feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
 			}
 			else {
-				containerForm.getModelObject().getAddress().setPerson(person);
-				if (containerForm.getModelObject().getAddress().getId() == null) {
-					iStudyService.create(containerForm.getModelObject().getAddress());
-					feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
+				if(containerForm.getModelObject().getAddress().getPreferredMailingAddress()){
+					// Update any other preferredMailingAddresses to false
+					iStudyService.setPreferredMailingAdressToFalse(person);
 				}
-				else {
-					iStudyService.update(containerForm.getModelObject().getAddress());
-					feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
-				}
-
-				if (person.getFirstName() != null && person.getLastName() != null) {
-					feedBackMessageStr.append(person.getFirstName() + " " + person.getLastName());
-				}
-				else {
-					Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-					Study study = iArkCommonService.getStudy(studyId);
-					String uid = iArkCommonService.getSubject(person.getId(), study).getSubjectUID();
-					feedBackMessageStr.append(uid);
-				}
-				this.info(feedBackMessageStr.toString());
-				processErrors(target);
-				onSavePostProcess(target);
+				
+				iStudyService.update(containerForm.getModelObject().getAddress());
+				feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
 			}
+
+			if (person.getFirstName() != null && person.getLastName() != null) {
+				feedBackMessageStr.append(person.getFirstName() + " " + person.getLastName());
+			}
+			else {
+				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				Study study = iArkCommonService.getStudy(studyId);
+				String uid = iArkCommonService.getSubject(person.getId(), study).getSubjectUID();
+				feedBackMessageStr.append(uid);
+			}
+			this.info(feedBackMessageStr.toString());
+			processErrors(target);
+			onSavePostProcess(target);
 			// Invoke backend to persist the AddressVO
 		}
 		catch (EntityNotFoundException e) {
