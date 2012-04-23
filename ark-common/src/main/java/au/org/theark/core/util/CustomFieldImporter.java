@@ -113,16 +113,15 @@ public class CustomFieldImporter {
 
 
 	/**
-	 * Imports the data dictionary file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file
-	 * format: "FIELD_NAME","FIELD_TYPE","DESCRIPTION", "QUESTION", "UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE"
-	 * 
+	 * Imports the data dictionary file to the database tables, and creates report on the process. Assumes the file is in the default "matrix" file
+	 * format:<br>"FIELD_NAME","FIELD_TYPE","DESCRIPTION","QUESTION","UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE","REQUIRED"
 	 * @param fileInputStream
-	 *           is the input stream of a file
-	 * @throws IOException
-	 *            input/output Exception
-	 * @throws OutOfMemoryError
-	 *            out of memory Exception
-	 * @return the import report detailing the import process
+	 * 		the input stream of the file
+	 * @param inLength
+	 * 		the lenght of the file
+	 * @return A String containing the import report details
+	 * @throws FileFormatException
+	 * @throws ArkSystemException
 	 */
 	public StringBuffer uploadAndReportMatrixDataDictionaryFile(InputStream fileInputStream, long inLength) throws FileFormatException, ArkSystemException {
 		uploadReport = new StringBuffer();
