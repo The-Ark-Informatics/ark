@@ -363,4 +363,6 @@ public interface IStudyDao {
 	public StudyUpload refreshUpload(StudyUpload upload);
 
 	public StudyUpload getUpload(Long id);
+
+	public void setPreferredMailingAdressToFalse(Person person);
 }

@@ -588,8 +588,8 @@ public class StudyServiceImpl implements IStudyService {
 	 * @see au.org.theark.study.service.IStudyService#update(au.org.theark.core.model.study.entity.Consent)
 	 */
 	public void update(Consent consent) throws ArkSystemException, EntityNotFoundException {
-		updateConsentHistory(consent);
 		iStudyDao.update(consent);
+		createConsentHistory(consent);
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
@@ -614,29 +614,6 @@ public class StudyServiceImpl implements IStudyService {
 		consentHistory.setCompletedDate(newConsent.getCompletedDate());
 		consentHistory.setConsentDownloaded(newConsent.getConsentDownloaded());
 		iAuditDao.createConsentHistory(consentHistory);
-	}
-
-	private void updateConsentHistory(Consent newConsent) throws ArkSystemException {
-		Consent oldConsent = getConsent(newConsent.getId());
-
-		// Only add audit log if changes actually made
-		/*
-		 * if((newConsent.getStudyComponentStatus() != oldConsent.getStudyComponentStatus()) || ((newConsent.getConsentedBy() !=
-		 * oldConsent.getConsentedBy()) || (newConsent.getConsentedBy() != null && oldConsent.getConsentedBy() == null)) ||
-		 * ((newConsent.getConsentDate() != oldConsent.getConsentDate()) || (newConsent.getConsentDate() != null && oldConsent.getConsentDate() ==
-		 * null)) || ((newConsent.getConsentStatus() != oldConsent.getConsentStatus()) || (newConsent.getConsentStatus() != null &&
-		 * oldConsent.getConsentStatus() == null)) || ((newConsent.getConsentType() != oldConsent.getConsentType()) || (newConsent.getConsentType() !=
-		 * null && oldConsent.getConsentType() == null)) || ((newConsent.getComments() != oldConsent.getComments()) || (newConsent.getComments() != null
-		 * && oldConsent.getComments() == null)) || ((newConsent.getRequestedDate() != oldConsent.getRequestedDate()) || (newConsent.getRequestedDate()
-		 * != null && oldConsent.getRequestedDate() == null)) || ((newConsent.getReceivedDate() != oldConsent.getReceivedDate()) ||
-		 * (newConsent.getReceivedDate() != null && oldConsent.getReceivedDate() == null)) || ((newConsent.getCompletedDate() !=
-		 * oldConsent.getCompletedDate()) || (newConsent.getCompletedDate() != null && oldConsent.getCompletedDate() == null)) ||
-		 * ((newConsent.getConsentDownloaded() != oldConsent.getConsentDownloaded()) || (newConsent.getConsentDownloaded() != null &&
-		 * oldConsent.getConsentDownloaded() == null)) ) {
-		 */
-		if (!newConsent.equals(oldConsent)) {
-			createConsentHistory(newConsent);
-		}
 	}
 
 	public List<Consent> searchConsent(ConsentVO consentVO) throws EntityNotFoundException, ArkSystemException {
@@ -1181,5 +1158,7 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.refreshUpload(upload);
 	}
 
-
+	public void setPreferredMailingAdressToFalse(Person person) {
+		iStudyDao.setPreferredMailingAdressToFalse(person);	
+	}
 }
