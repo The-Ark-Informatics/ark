@@ -49,7 +49,6 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
@@ -277,10 +276,8 @@ public class SubjectUploadValidator {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
-			// TODO Travis: If can't be sped up adequately, change this to an initial Validation, then can choose to kick off batch
-			//performance has improved from timeout after 50 to validation of ~6K per minute...still this is a user interface element...so will try to speed up 
-			// which should save user from having to send this to batch, only to find out there were error discovered in first few rows
-			// validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			//TODO performance of valdation now approx 60-90K records per minute, file creation of validation doubles that
+			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though
 			validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE);
 		}
 		catch (FileFormatException ffe) {
@@ -313,9 +310,6 @@ public class SubjectUploadValidator {
 		curPos = 0;
 		row = 0;
 
-		//TODO ASAP TRAV ... make one query instead of something times n like it currently is  ... need a list more than a count really...but the count will still be useful for uid locking
-		//iStudyService.countNumberOfUniqueSubjects(study, uploader.getListOfUidsFromInputStream(fileIS, file.length(), fileFormat, delimiter));
-
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		try {
@@ -330,16 +324,14 @@ public class SubjectUploadValidator {
 			timer = new StopWatch();
 			timer.start();
 
-			// Set field list (note 2th column to Nth column)
-			// SUBJECTUID DATE_COLLECTED F1 F2 FN
-			// 0 1 2 3 N
+			// Set field list (note 2th column to Nth column)	// SUBJECTUID DATE_COLLECTED F1 F2 FN
+																				// 0 1 2 3 N
 			csvReader.readHeaders();
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
-			//log.debug("Header length: " + csvReader.getHeaders().toString().length());
 			String[] headerColumnArray = csvReader.getHeaders();
 
-			Collection<String> subjectColumns = new ArrayList<String>();
+			List<String> subjectColumns = new ArrayList<String>();
 			String[] subjectHeaderColumnArray = au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_HEADER;
 			boolean headerError = false;
 			for (int i = 0; i < subjectHeaderColumnArray.length; i++) {
@@ -437,22 +429,7 @@ public class SubjectUploadValidator {
 					}
 				}
 			}
-
 			row = 1;
-
-			// Loop through all rows in file
-			/*
-			 * while (csvReader.readRecord()) { // do something with the newline to put the data into // the variables defined above stringLineArray =
-			 * csvReader.getValues();
-			 * 
-			 * // Check each line has same number of columns as header if (stringLineArray.length < headerColumnArray.length) {
-			 * fileValidationMessages.add("Error: the row " + row + " has missing cells, or missing the required number of delimiters."); }
-			 * 
-			 * row++; subjectCount++; }
-			 * 
-			 * if (fileValidationMessages.size() > 0) { for (Iterator<String> iterator = fileValidationMessages.iterator(); iterator.hasNext();) { String
-			 * errorMessage = iterator.next(); log.debug(errorMessage); } } else { log.debug("Validation is ok"); }
-			 */
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
@@ -463,14 +440,7 @@ public class SubjectUploadValidator {
 			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
 		}
 		finally {
-			// TODO can the timer go sometime soon
 
-			timer.stop();
-			// fileValidationMessages.add("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
-			// fileValidationMessages.add("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
-
-			if (timer != null)
-				timer = null;
 			if (csvReader != null) {
 				try {
 					csvReader.close();
@@ -481,8 +451,8 @@ public class SubjectUploadValidator {
 			}
 			if (inputStreamReader != null) {
 				try {
-					//TODO ASAP : reinstate below
-					//inputStreamReader.close();
+					//TODO ASAP : re-evaluate below
+					inputStreamReader.close();
 				}
 				catch (Exception ex) {
 					log.error("Cleanup operation failed: isr.close()", ex);
@@ -545,7 +515,7 @@ public class SubjectUploadValidator {
 
 			String[] fieldNameArray = csvReader.getHeaders();
 
-			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);
+			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
@@ -555,14 +525,7 @@ public class SubjectUploadValidator {
 
 				// First/0th column should be the SubjectUID
 				String subjectUID = stringLineArray[0];
-				//subjectUIDsInCSV.add(subjectUID);
 
-/*				if(iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study) != null){
-					updateRows.add(row);
-				}
-				else{
-					insertRows.add(row);
-				}*/
 				for(String subjectFromDB : subjectUIDsAlreadyExisting){
 					if(subjectFromDB.equals(subjectUID)){
 						updateRows.add(row);
@@ -616,22 +579,18 @@ public class SubjectUploadValidator {
 					}
 				}
 
-				//log.debug("\n");
 				subjectCount++;
 				row++;
 			}
 
-
-			if (dataValidationMessages.size() > 0) {
-				log.warn("Validation messages: " + dataValidationMessages.size());
+/*			if (dataValidationMessages.size() > 0) {
+				//log.warn("Validation messages: " + dataValidationMessages.size());
 				for (Iterator<String> iterator = dataValidationMessages.iterator(); iterator.hasNext();) {
 					String errorMessage = iterator.next();
 					log.warn(errorMessage);
 				}
-			}
-			else {
-				//log.debug("Validation is ok");
-			}
+			}*/
+
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);

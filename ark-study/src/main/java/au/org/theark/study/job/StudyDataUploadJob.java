@@ -29,8 +29,6 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.StudyUpload;
@@ -45,14 +43,8 @@ import au.org.theark.study.service.IStudyService;
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
 public class StudyDataUploadJob implements Job {
-	private static final Logger	log					= LoggerFactory.getLogger(StudyDataUploadJob.class);
+	//private static final Logger	log					= LoggerFactory.getLogger(StudyDataUploadJob.class);
 
-/* not in spring context	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService	iArkCommonService;
-	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService		iStudyService;*/
-	
-	// parameter names specific to this job
 	public static final String		IARKCOMMONSERVICE	= "iArkCommonService";
 	public static final String		ISTUDYSERVICE		= "iStudyService";
 	public static final String		UPLOADID				= "uploadId";
@@ -69,28 +61,19 @@ public class StudyDataUploadJob implements Job {
 	private IStudyService	iStudyService;
 	private IArkCommonService<Void>	iArkCommonService;
 	/**
-	 * <p>
 	 * Empty constructor for job initialization
-	 * </p>
-	 * <p>
 	 * Quartz requires a public empty constructor so that the scheduler can instantiate the class whenever it needs.
-	 * </p>
 	 */
 	public StudyDataUploadJob() {
 	}
 
 	/**
-	 * <p>
 	 * Called by the <code>{@link org.quartz.Scheduler}</code> when a <code>{@link org.quartz.Trigger}</code> fires that is associated with the
 	 * <code>Job</code>.
-	 * </p>
-	 * 
-	 * @throws JobExecutionException
-	 *            if there is an exception while executing the job.
+	 * @throws JobExecutionException  if there is an exception while executing the job.
 	 */
 	@SuppressWarnings("unchecked")
-	public void execute(JobExecutionContext context) throws JobExecutionException {
-		
+	public void execute(JobExecutionContext context) throws JobExecutionException {		
 		JobDataMap data = context.getJobDetail().getJobDataMap();
 		
 		iArkCommonService			= (IArkCommonService<Void>) data.get(IARKCOMMONSERVICE);
@@ -101,21 +84,9 @@ public class StudyDataUploadJob implements Job {
 		InputStream inputStream = (InputStream) data.get(INPUT_STREAM);
 		long size 					= data.getLongValue(SIZE);
 		String originalReport 	= data.getString(REPORT);
-		Long studyId 					= data.getLongValue(STUDY_ID);
+		Long studyId 				= data.getLongValue(STUDY_ID);
 		
-		log.warn("UploadJob delimiter: [" + delimiter + "]");
-		log.warn("UploadJob format: [" + fileFormat + "]");
-		log.warn("studyid: [" + studyId + "]");
-		log.warn("UploadJob uopload ID: [" + uploadId + "]");
-		log.warn("UploadJob is iArkCommonService null? [" + (iArkCommonService == null) + "]");
-		log.warn("UploadJob is iStudyService null? [" + (iStudyService == null) + "]");
-		log.warn("UploadJob is input stream null? [" + (inputStream == null) + "]");
-		log.warn("UploadJob size from cricket: [" + size + "]");
-
 		try {
-			//TODO ASAP TRAV CODE TO START USING 
-				//iStudyService.countNumberOfUniqueSubjects(study, uploader.getListOfUidsFromInputStream(fileIS, file.length(), fileFormat, delimiter));
-			
 			StringBuffer uploadReport = iStudyService.uploadAndReportMatrixSubjectFile(inputStream, size, fileFormat, delimiter, studyId);
 			StudyUpload upload = iStudyService.getUpload(uploadId);
 			save(upload, uploadReport.toString(), originalReport);
@@ -127,7 +98,6 @@ public class StudyDataUploadJob implements Job {
 		}
 	}
 
-
 	private void save(StudyUpload upload, String report, String originalReport) {
 		iStudyService.refreshUpload(upload);
 		byte[] bytes = (originalReport + report).getBytes();
@@ -137,55 +107,5 @@ public class StudyDataUploadJob implements Job {
 		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
 		iArkCommonService.updateUpload(upload);
 	}
-	/**
-	 * Upload and report on the data upload process
-	 * @param iArkCommonService
-	 * @param iPhenoService
-	 * @param study
-	 * @param phenoCollection
-	 * @param file
-	 * @param delimiterChar
-	 * @return
-	 *
-	public StringBuffer uploadAndReportPhenotypicDataFile(IArkCommonService<Void> iArkCommonService, IPhenotypicService iPhenoService, Study study, PhenoCollection phenoCollection, File file, char delimiterChar) {
-		log.info("running uploadAndReportPhenotypicDataFile");
-		StringBuffer importReport = null;
-		String fileFormat = "CSV";
-		PhenoDataUploader pi = new PhenoDataUploader(iPhenoService, study, phenoCollection, iArkCommonService, fileFormat, delimiterChar);
 
-		try {
-			InputStream inputStream = new FileInputStream(file);
-			importReport = pi.uploadAndReportMatrixFieldDataFile(inputStream, file.length());
-		}
-		catch (IOException ioe) {
-			log.error(Constants.IO_EXCEPTION + ioe);
-		}
-		catch (FileFormatException ffe) {
-			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
-		}
-		catch (PhenotypicSystemException pse) {
-			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
-		}
-		return importReport;
-	}*/
-	
-	/**
-	 * Update the database row with the upload job results
-	 * @param iPhenoService
-	 * @param id
-	 * @param uploadReport
-	 *
-	private void updateDatabase(IPhenotypicService iPhenoService, Long id, StringBuffer uploadReport) {
-		PhenoUpload upload = iPhenoService.getUpload(id);
-		
-		// Set Upload report
-		PhenoUploadReport phenoUploadReport = new PhenoUploadReport();
-		phenoUploadReport.append(uploadReport.toString());
-		byte[] bytes = phenoUploadReport.getReport().toString().getBytes();
-		Blob uploadReportBlob = Hibernate.createBlob(bytes);
-		upload.setUploadReport(uploadReportBlob);
-		iPhenoService.updateUpload(upload);
-	}
-*/
-	
 }

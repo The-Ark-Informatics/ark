@@ -35,6 +35,9 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.ConsentOption;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
@@ -44,6 +47,7 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
@@ -363,6 +367,24 @@ public interface IStudyDao {
 	public StudyUpload refreshUpload(StudyUpload upload);
 
 	public StudyUpload getUpload(Long id);
+	
+	public GenderType getGenderType(Long id);
+	
+	public SubjectStatus getSubjectStatusByName(String name);
+	
+	public SubjectStatus getDefaultSubjectStatus();
+
+	public TitleType getDefaultTitleType();
+
+	public GenderType getDefaultGenderType();
+
+	public VitalStatus getDefaultVitalStatus();
+
+	public MaritalStatus getDefaultMaritalStatus();
+
+	public ConsentOption getConsentOptionForBoolean(boolean trueForYesFalseForNo);
+	public ConsentType getConsentTypeByName(String name);
+	public ConsentStatus getConsentStatusByName(String name);
 
 	public void setPreferredMailingAdressToFalse(Person person);
 }

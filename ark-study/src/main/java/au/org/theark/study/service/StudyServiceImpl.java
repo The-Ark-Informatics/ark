@@ -58,6 +58,9 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.ConsentOption;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
@@ -65,8 +68,10 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
@@ -76,6 +81,9 @@ import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
@@ -639,6 +647,10 @@ public class StudyServiceImpl implements IStudyService {
 	public Consent getConsent(Long id) throws ArkSystemException {
 		return iStudyDao.getConsent(id);
 	}
+	
+	public ConsentOption getConsentOptionForBoolean(boolean trueForYesFalseForNo) throws ArkSystemException {
+		return iStudyDao.getConsentOptionForBoolean(trueForYesFalseForNo);
+	}
 
 	/*** correspondence service functions ***/
 	public void create(Correspondences correspondence) throws ArkSystemException {
@@ -904,16 +916,9 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar) {
-		// java.util.Collection<String> validationMessages = null;
-		// Subject currentUser = SecurityUtils.getSubject();
-		// Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		// Study study = iArkCommonService.getStudy(studyId);
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
-
 		try {
 			log.debug("Validating Subject file data");
-			// validationMessages = subjectUploadValidator.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat,
-			// delimChar);
 			subjectUploadValidator.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE);
 		}
 		catch (FileFormatException ffe) {
@@ -927,14 +932,10 @@ public class StudyServiceImpl implements IStudyService {
 
 	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId) {
 		StringBuffer uploadReport = null;
-		//Subject currentUser = SecurityUtils.getSubject();
-		//Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
-
 		SubjectUploader subjectUploader = new SubjectUploader(study, iArkCommonService, this);
 
 		try {
-			log.debug("Importing and reporting Subject file");
 			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(inputStream, size, fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe) {
@@ -957,10 +958,6 @@ public class StudyServiceImpl implements IStudyService {
 		subjectUploadValidator.validateSubjectFileData(uploadVo);
 		return subjectUploadValidator;
 	}
-
-//	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException {
-//		iStudyDao.batchInsertSubjects(subjectVoCollection);
-//	}
 
 	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException {
 		iStudyDao.batchInsertSubjects(subjectList);
@@ -1158,7 +1155,36 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.refreshUpload(upload);
 	}
 
+	public GenderType getDefaultGenderType() {
+		return iStudyDao.getDefaultGenderType();
+	}
+
 	public void setPreferredMailingAdressToFalse(Person person) {
 		iStudyDao.setPreferredMailingAdressToFalse(person);	
 	}
+	
+	public MaritalStatus getDefaultMaritalStatus() {
+		return iStudyDao.getDefaultMaritalStatus();
+	}
+
+	public SubjectStatus getDefaultSubjectStatus() {
+		 return iStudyDao.getDefaultSubjectStatus();
+	}
+
+	public TitleType getDefaultTitleType() {
+		return iStudyDao.getDefaultTitleType();
+	}
+
+	public VitalStatus getDefaultVitalStatus() {
+		return iStudyDao.getDefaultVitalStatus();
+	}
+
+	public ConsentStatus getConsentStatusByName(String name) {
+		return iStudyDao.getConsentStatusByName(name);
+	}
+
+	public ConsentType getConsentTypeByName(String name) {
+		return iStudyDao.getConsentTypeByName(name);
+	}
+
 }

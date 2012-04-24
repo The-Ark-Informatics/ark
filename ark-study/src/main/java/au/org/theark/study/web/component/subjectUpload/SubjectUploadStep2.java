@@ -51,9 +51,6 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
-	
-	//@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	//private IStudyService					iStudyService;
 
 	private ArkDownloadAjaxButton		downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
 													private static final long	serialVersionUID	= 1L;
@@ -80,17 +77,10 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 		add(downloadValMsgButton);
 	}
 
-	/**
-	 * @param validationMessage
-	 *           the validationMessages to set
-	 */
 	public void setValidationMessage(String validationMessage) {
 		this.validationMessage = validationMessage;
 	}
 
-	/**
-	 * @return the validationMessage
-	 */
 	public String getValidationMessage() {
 		return validationMessage;
 	}

@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,11 +38,15 @@ import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.study.entity.ConsentOption;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
@@ -127,7 +132,7 @@ public class SubjectUploader {
 
 				//this is a list of all our somewhat enum like ref tables...
 				//much better to call this once than each one n times in the for loop
-				//should save 100,000-150,000 selects for a 17K insert 
+				//should save 100,000-150,000 selects for a 17K insert.  may still wish to evaluate whats best here
 				Collection<MaritalStatus> maritalStatiiPossible = iArkCommonService.getMaritalStatus();
 				Collection<SubjectStatus> subjectStatiiPossible = iArkCommonService.getSubjectStatus();
 				Collection<GenderType> genderTypesPossible = iArkCommonService.getGenderTypes();
@@ -135,7 +140,19 @@ public class SubjectUploader {
 				Collection<VitalStatus> vitalStatiiPossible = iArkCommonService.getVitalStatus();
 				Collection<PersonContactMethod> personContactMethodPossible = iArkCommonService.getPersonContactMethodList();
 				//Collection<MaritalStatus> yesNoList = iArkCommonService.getYesNoList();
+
+				SubjectStatus defaultSubjectStatus = iStudyService.getDefaultSubjectStatus();
+				TitleType defaultTitleType = iStudyService.getDefaultTitleType();
+				GenderType defaultGenderType = iStudyService.getDefaultGenderType();
+				VitalStatus defaultVitalStatus = iStudyService.getDefaultVitalStatus();
+				MaritalStatus defaultMaritalStatus = iStudyService.getDefaultMaritalStatus();
+				ConsentOption concentOptionOfYes = iStudyService.getConsentOptionForBoolean(true);//sounds a lot like boolean blah = true????
+				ConsentStatus consentStatusOfConsented = iStudyService.getConsentStatusByName("Consented");
+				ConsentType consentTypeOfElectronic = iStudyService.getConsentTypeByName("Electronic");
 				
+				List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
+				
+				boolean autoConsent = study.getAutoConsent();
 				
 				srcLength = inLength;
 				if (srcLength <= 0) {
@@ -147,184 +164,173 @@ public class SubjectUploader {
 
 				timer = new StopWatch();
 				timer.start();
-
-				// Set field list (note 2th column to Nth column)
-				// SUBJECTUID DATE_COLLECTED F1 F2 FN
-				// 0 1 2 3 N
+				// Set field list (note 2th column to Nth column)		// SUBJECTUID DATE_COLLECTED F1 F2 FN
+																						// 0 1 2 3 N      this must be done
 				csvReader.readHeaders();
 
 				srcLength = inLength - csvReader.getHeaders().toString().length();
-				//log.debug("Header length: " + csvReader.getHeaders().toString().length());
 
-				int index = 0;
-
+				int firstNameIndex 		= csvReader.getIndex("FIRST_NAME");
+				int middleNameIndex 		= csvReader.getIndex("MIDDLE_NAME");
+				int lastNameIndex 		= csvReader.getIndex("LAST_NAME");
+				int preferredNameIndex 	= csvReader.getIndex("PREFERRED_NAME");
+				int preferredEmailIndex = csvReader.getIndex("PREFERRED_EMAIL");
+				int otherEmailIndex 		= csvReader.getIndex("OTHER_EMAIL");
+				int titleIndex 			= csvReader.getIndex("TITLE");
+				int vitalStatusIndex		= csvReader.getIndex("VITAL_STATUS");
+				int maritalStatusIndex 	= csvReader.getIndex("MARITAL_STATUS");
+				int statusIndex 			= csvReader.getIndex("STATUS");
+				
+				
+				//if(PERSON_CONTACT_METHOD is in headers, use it, 
+									//else, if CONTACT_METHOD, us IT, else, just set to -1 
+				int personContactIndex 	= ((csvReader.getIndex("PERSON_CONTACT_METHOD")>0)?csvReader.getIndex("PERSON_CONTACT_METHOD"):
+												((csvReader.getIndex("CONTACT_METHOD") > 0)?csvReader.getIndex("CONTACT_METHOD"):-1));
+				int dateOfBirthIndex 				= ((csvReader.getIndex("DATE_OF_BIRTH")>0)?csvReader.getIndex("DATE_OF_BIRTH"):
+					((csvReader.getIndex("DOB") > 0)?csvReader.getIndex("DOB"):-1));
+				int dateOfDeathIndex 				= ((csvReader.getIndex("DATE_OF_DEATH")>0)?csvReader.getIndex("DATE_OF_DEATH"):
+					((csvReader.getIndex("DODEATH") > 0)?csvReader.getIndex("DODEATH"):-1));
+				int causeOfDeathIndex 				= ((csvReader.getIndex("CAUSE_OF_DEATH")>0)?csvReader.getIndex("CAUSE_OF_DEATH"):
+					((csvReader.getIndex("CODEATH") > 0)?csvReader.getIndex("CODEATH"):-1));
+				
+				//in reality, validation doesnt permit this yet anyway...but probably not bad to align it over in validation
+				int genderIndex 			= ( (csvReader.getIndex("GENDER_TYPE") > 0) ? csvReader.getIndex("GENDER_TYPE") :
+													((csvReader.getIndex("GENDER") > 0) ? csvReader.getIndex("GENDER"): 
+													((csvReader.getIndex("SEX") > 0) ? csvReader.getIndex("SEX"):-1)));   
+				
+				//log.warn("    genderIndex   "+genderIndex);
+		
 				// Loop through all rows in file
 				while (csvReader.readRecord()) {
-					log.warn("reading msg " + subjectCount);
-					// do something with the newline to put the data into
-					// the variables defined above
+					//log.warn("reading msg " + subjectCount);
 					stringLineArray = csvReader.getValues();
 					String subjectUID = stringLineArray[0];
 
-					//SubjectVO subjectVo = new SubjectVO();
-					LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study);
-					
+					boolean thisSubjectAlreadyExists = subjectUIDsAlreadyExisting.contains(subjectUID);
 
-					//TODO: make this smarter.  we should just carry in the list of whether to update or insert
-					/*try {
-						linkSubjectStudy = iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study);
-					}
-					catch (EntityNotFoundException enf) {
-						// New subject
-						linkSubjectStudy.setSubjectUID(subjectUID);
-						linkSubjectStudy.setStudy(study);
-					}*/
-					//TODO: make this smarter.  we should just carry in the list of whether to update or insert
-					if(linkSubjectStudy==null){
-						linkSubjectStudy = new LinkSubjectStudy();
-						linkSubjectStudy.setSubjectUID(subjectUID);//TODO ASAP: this seems wrong...if it's supposed to be autogenerated...we're maybe screwing next method 
-						linkSubjectStudy.setStudy(study);
+					//TODO ASAP maybe this can be replaced with a getAllSubjectUIDsForThisStudy up top...then just search throw all uids for a match?
+					//can even pre-getAllSubjects in the already exists group
+					LinkSubjectStudy subject = null;
+					Person person = null;
+					if(thisSubjectAlreadyExists){
+						log.warn("about to ask service right now");
+						subject = iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study);
+						log.warn("got the hibernate result back now");
+						//subject should always have a person
+						person = subject.getPerson();
 					}
 					else{
-//						maybe exception...maybe forget it
-						//linkSubjectStudy should be cool as is
-					}
-
-					Person person = linkSubjectStudy.getPerson();
-//					subjectVo.setLinkSubjectStudy(linkSubjectStudy);
-
-					if (linkSubjectStudy.getId() == null && linkSubjectStudy.getPerson().getId() == null) {
+						subject = new LinkSubjectStudy();
+						subject.setSubjectUID(subjectUID);//TODO ASAP: this seems wrong...if it's supposed to be autogenerated...we're maybe screwing next method 
+						subject.setStudy(study);
 						person = new Person();
 					}
-					else {
-						person = linkSubjectStudy.getPerson();
+					log.warn("got the person");
+
+					if (firstNameIndex > 0)
+						person.setFirstName(stringLineArray[firstNameIndex]);
+
+					if (middleNameIndex > 0)
+						person.setMiddleName(stringLineArray[middleNameIndex]);
+
+					if (lastNameIndex > 0){
+						String lastnameFromFile = stringLineArray[lastNameIndex];
+						
+						if (thisSubjectAlreadyExists  && lastnameFromFile!=null  && !lastnameFromFile.equalsIgnoreCase(person.getLastName()) ) {
+							PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+							personLastNameHistory.setPerson(person);
+							personLastNameHistory.setLastName(person.getLastName());
+							person.getPersonLastnameHistory().add(personLastNameHistory);//TODO ASAP analyze this
+						}
+						person.setLastName(lastnameFromFile);
+					}
+					if (preferredNameIndex > 0){
+						person.setPreferredName(stringLineArray[preferredNameIndex]);
 					}
 
-					if (csvReader.getIndex("FIRST_NAME") > 0)
-						person.setFirstName(stringLineArray[csvReader.getIndex("FIRST_NAME")]);
-
-					if (csvReader.getIndex("MIDDLE_NAME") > 0)
-						person.setMiddleName(stringLineArray[csvReader.getIndex("MIDDLE_NAME")]);
-
-					if (csvReader.getIndex("LAST_NAME") > 0)
-						person.setLastName(stringLineArray[csvReader.getIndex("LAST_NAME")]);
-
-					if (csvReader.getIndex("PREFERRED_NAME") > 0)
-						person.setPreferredName(stringLineArray[csvReader.getIndex("PREFERRED_NAME")]);
-
-					if (csvReader.getIndex("GENDER_TYPE") > 0 || csvReader.getIndex("GENDER") > 0 || csvReader.getIndex("SEX") > 0) {
-						//GenderType genderType;
-						if (csvReader.getIndex("GENDER_TYPE") > 0) {
-							index = csvReader.getIndex("GENDER_TYPE");
-						}
-						else if (csvReader.getIndex("GENDER") > 0) {
-							index = csvReader.getIndex("GENDER");
-						}
-						else {
-							index = csvReader.getIndex("SEX");
-						}
-
-						if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
-							//TODO ASAP - this should be from a list that we include above...or a useful service method
-							//genderType = iArkCommonService.getGenderType(stringLineArray[index]);
+					if(genderIndex>0){
+						if (stringLineArray[genderIndex] != null && stringLineArray[genderIndex].length() > 0) {
 							for(GenderType boygirl : genderTypesPossible){
-								if(boygirl.getName().equalsIgnoreCase(stringLineArray[index])){
+								if(boygirl.getName().equalsIgnoreCase(stringLineArray[genderIndex])){
 									person.setGenderType(boygirl);		
 								}	//TODO else might belonog here really...but its already written in the batch insert anyway
+							}
+							if (person.getGenderType() == null || 
+									StringUtils.isBlank(person.getGenderType().getName())) {
+								person.setGenderType(defaultGenderType);
 							}
 						}	
 					}
 
-					if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0) {
+					if (dateOfBirthIndex > 0) {
 						Date dateOfBirth = new Date();
-
-						if (csvReader.getIndex("DATE_OF_BIRTH") > 0) {
-							index = csvReader.getIndex("DATE_OF_BIRTH");
-						}
-						else {
-							index = csvReader.getIndex("DOB");
-						}
-
-						if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
-							dateOfBirth = simpleDateFormat.parse(stringLineArray[index]);
+						
+						if (stringLineArray[dateOfBirthIndex] != null && stringLineArray[dateOfBirthIndex].length() > 0) {
+							dateOfBirth = simpleDateFormat.parse(stringLineArray[dateOfBirthIndex]);
 							person.setDateOfBirth(dateOfBirth);
 						}
 					}
 
-					if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0) {
+					if (dateOfDeathIndex > 0) {
 						Date dateOfDeath = new Date();
-						if (csvReader.getIndex("DATE_OF_DEATH") > 0) {
-							index = csvReader.getIndex("DATE_OF_DEATH");
-						}
-						else {
-							index = csvReader.getIndex("DODEATH");
-						}
-
-						if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
-							dateOfDeath = simpleDateFormat.parse(stringLineArray[index]);
+						if (stringLineArray[dateOfDeathIndex] != null && stringLineArray[dateOfDeathIndex].length() > 0) {
+							dateOfDeath = simpleDateFormat.parse(stringLineArray[dateOfDeathIndex]);
 							person.setDateOfDeath(dateOfDeath);
 						}
 					}
 
-					if (csvReader.getIndex("CAUSE_OF_DEATH") > 0 || csvReader.getIndex("CODEATH") > 0) {
-						if (csvReader.getIndex("CAUSE_OF_DEATH") > 0) {
-							index = csvReader.getIndex("CAUSE_OF_DEATH");
-						}
-						else {
-							index = csvReader.getIndex("CODEATH");
-						}
-
-						if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
-							person.setCauseOfDeath(stringLineArray[index]);
+					if (causeOfDeathIndex > 0) {
+						if (stringLineArray[causeOfDeathIndex] != null && stringLineArray[causeOfDeathIndex].length() > 0) {
+							person.setCauseOfDeath(stringLineArray[causeOfDeathIndex]);
 						}
 					}
 
 					//TODO make this smarter about making a db call every time for just getting an emum
-					if (csvReader.getIndex("VITAL_STATUS") > 0) {
-						String vitalStatusStr = (stringLineArray[csvReader.getIndex("VITAL_STATUS")]);
-						//VitalStatus vitalStatus = iArkCommonService.getVitalStatus(vitalStatusStr);
+					if (vitalStatusIndex > 0) {
+						String vitalStatusStr = (stringLineArray[vitalStatusIndex]);
 						for(VitalStatus vitalStat : vitalStatiiPossible){
 							if(vitalStat.getName().equalsIgnoreCase(vitalStatusStr)){
 								person.setVitalStatus(vitalStat);		
-							}	//TODO else might belonog here really...but its already written in the batch insert anyway
+							}	
+						}					
+						if (person.getVitalStatus() == null || StringUtils.isBlank(person.getVitalStatus().getName())) {
+							person.setVitalStatus(defaultVitalStatus);
 						}
 					}
 
-					//TODO make this smarter about making a db call every time for just getting an emum
-					if (csvReader.getIndex("PREFERRED_EMAIL") > 0) {
-						person.setPreferredEmail(stringLineArray[csvReader.getIndex("PREFERRED_EMAIL")]);
+					if (preferredEmailIndex > 0) {
+						person.setPreferredEmail(stringLineArray[preferredEmailIndex]);
 					}
 
-					//TODO make this smarter about making a db call every time for just getting an emum
-					if (csvReader.getIndex("OTHER_EMAIL") > 0) {
-						person.setPreferredEmail(stringLineArray[csvReader.getIndex("OTHER_EMAIL")]);
+					if (otherEmailIndex > 0) {
+						person.setPreferredEmail(stringLineArray[otherEmailIndex]);
 					}
 
-					//TODO make this smarter about making a db call every time for just getting an emum
-					if (csvReader.getIndex("TITLE") > 0) {
-						String titleStr = (stringLineArray[csvReader.getIndex("TITLE")]);
-						//TitleType titleType = iArkCommonService.getTitleType(titleStr);
-						//person.setTitleType(titleType);
+					if (titleIndex > 0) {
+						String titleStr = (stringLineArray[titleIndex]);
 						for(TitleType titleType : titleTypesPossible){
 							if(titleType.getName().equalsIgnoreCase(titleStr)){
 								person.setTitleType(titleType);		
-							}	//TODO else might belonog here really...but its already written in the batch insert anyway
+							}
+						}
+						if (person.getTitleType() == null || StringUtils.isBlank(person.getTitleType().getName())) {
+							person.setTitleType(defaultTitleType);
 						}
 					}
-
-					//TODO make this smarter about making a db call every time for just getting an emum
-					if (csvReader.getIndex("MARITAL_STATUS") > 0) {
-						String maritalStatusStr = (stringLineArray[csvReader.getIndex("MARITAL_STATUS")]);
-						//MaritalStatus maritalStatus = iArkCommonService.getMaritalStatus(maritalStatusStr);
-						//person.setMaritalStatus(maritalStatus);
+					
+					if (maritalStatusIndex > 0) {
+						String maritalStatusStr = (stringLineArray[maritalStatusIndex]);
 						for(MaritalStatus maritalStat : maritalStatiiPossible){
 							if(maritalStat.getName().equalsIgnoreCase(maritalStatusStr)){
 								person.setMaritalStatus(maritalStat);		
-							}	//TODO else might belonog here really...but its already written in the batch insert anyway
+							}
+						}
+						if (person.getMaritalStatus() == null || 
+								StringUtils.isBlank(person.getMaritalStatus().getName())) {
+							person.setMaritalStatus(defaultMaritalStatus);
 						}
 					}
-
-					//TODO make this smarter about making a db call every time for just getting an emum
+					/*cleaned this up...replaced it with code below
 					if (csvReader.getIndex("PERSON_CONTACT_METHOD") > 0 || csvReader.getIndex("CONTACT_METHOD") > 0) {
 						String personContactMethodStr = null;
 						if (csvReader.getIndex("PERSON_CONTACT_METHOD") > 0) {
@@ -333,57 +339,77 @@ public class SubjectUploader {
 						else {
 							personContactMethodStr = (stringLineArray[csvReader.getIndex("CONTACT_METHOD")]);
 						}
-						//PersonContactMethod personContactMethod = iArkCommonService.getPersonContactMethod(personContactMethodStr);
-						//person.setPersonContactMethod(personContactMethod);
 						for(PersonContactMethod possibleMethod : personContactMethodPossible){
 							if(possibleMethod.getName().equalsIgnoreCase(personContactMethodStr)){
 								person.setPersonContactMethod(possibleMethod);		
-							}	//TODO else might belonog here really...but its already written in the batch insert anyway
+							}	
 						}
+						//TODO if we get to the end and personcontactmethod doesnt exist...what do we do?  do we want a default or does it get ignored
 						
+					}*/
+					if (personContactIndex > 0) {
+						String personContactMethodStr = null;
+						personContactMethodStr = (stringLineArray[personContactIndex]);				
+						for(PersonContactMethod possibleMethod : personContactMethodPossible){
+							if(possibleMethod.getName().equalsIgnoreCase(personContactMethodStr)){
+								person.setPersonContactMethod(possibleMethod);		
+							}	
+						}//TODO if we get to the end and personcontactmethod doesnt exist...what do we do?  do we want a default or does it get ignored
 					}
 
-					if (csvReader.getIndex("STATUS") > 0) {
-						String statusStr = (stringLineArray[csvReader.getIndex("STATUS")]);
-						//SubjectStatus subjectStatus = iArkCommonService.getSubjectStatus(statusStr);
-						//linkSubjectStudy.setSubjectStatus(subjectStatus);
+					if (statusIndex > 0) {
+						String statusStr = (stringLineArray[statusIndex]);
 						for(SubjectStatus subjectStat : subjectStatiiPossible){
 							if(subjectStat.getName().equalsIgnoreCase(statusStr)){
-								linkSubjectStudy.setSubjectStatus(subjectStat);		
-							}	//TODO else might belonog here really...but its already written in the batch insert anyway
+								subject.setSubjectStatus(subjectStat);		
+							}
+						}
+						if (subject.getSubjectStatus() == null || StringUtils.isBlank(subject.getSubjectStatus().getName())) {
+							subject.setSubjectStatus(defaultSubjectStatus);
+						}
+						//if the study is autoconsent...then there are some defaults we have to set TODO get rid of hardcoding
+						if(autoConsent && subject.getSubjectStatus().getName().equalsIgnoreCase("Subject")) {
+							subject.setConsentDate(new Date());
+							subject.setConsentStatus(consentStatusOfConsented);
+							subject.setConsentType(consentTypeOfElectronic);
+
+							ConsentOption defaultConsentOption = concentOptionOfYes;
+							subject.setConsentToActiveContact(defaultConsentOption);
+							subject.setConsentToPassiveDataGathering(defaultConsentOption);
+							subject.setConsentToUseData(defaultConsentOption);
 						}
 					}
 
-					linkSubjectStudy.setPerson(person);
-//					subjectVo.setLinkSubjectStudy(linkSubjectStudy);
+					log.warn("did all the statii junk..now about to set person and add to the insert or update list");
+					subject.setPerson(person);
 
-					if (linkSubjectStudy.getId() == null || linkSubjectStudy.getPerson().getId() == 0) {
-						// iStudyService.createSubject(subjectVo);
-						insertSubjects.add(linkSubjectStudy);
-						StringBuffer sb = new StringBuffer();
-						sb.append("Subject UID: ");
-						sb.append(linkSubjectStudy.getSubjectUID());
-						sb.append(" has been created successfully and linked to the study: ");
-						sb.append(study.getName());
-						sb.append("\n");
-						uploadReport.append(sb);
+					if (subject.getId() == null || subject.getPerson().getId() == 0) {
+						insertSubjects.add(subject);
+						/*StringBuffer sb = new StringBuffer();	//does this report have to happen? ... and in reality it hasnt had success yet
+						sb.append("\nCreated subject from original Subject UID: ");
+						sb.append(subject.getSubjectUID());
+						//sb.append(" has been created successfully and linked to the study: ");
+						//sb.append(study.getName());
+						//sb.append("\n");
+						uploadReport.append(sb);*/
 						insertCount++;
 					}
 					else {
 						// iStudyService.updateSubject(subjectVo);
-						updateSubjects.add(linkSubjectStudy);
-						StringBuffer sb = new StringBuffer();
-						sb.append("Subject UID: ");
-						sb.append(linkSubjectStudy.getSubjectUID());
-						sb.append(" has been updated successfully and linked to the study: ");
-						sb.append(study.getName());
-						sb.append("\n");
-						uploadReport.append(sb);
+						updateSubjects.add(subject);
+						/*StringBuffer sb = new StringBuffer();
+						sb.append("\nUpdate subject with Subject UID: ");
+						sb.append(subject.getSubjectUID());
+						//sb.append(" has been updated successfully and linked to the study: ");
+						//sb.append(study.getName());
+						//sb.append("\n");
+						uploadReport.append(sb);*/
 						updateCount++;
 					}
 
 					subjectCount++;
-					log.warn("finished message for " + subjectCount);
+					log.warn("finished message for " + subjectCount + "         updates= " + updateCount + "     inserts = " + insertCount + "   " );//+
+							//" travsguessatupdatestotal= " +  travsguessatupdatestotal + " " +	"   size of uploadReport= " + uploadReport.length());
 				}
 			}
 			catch (IOException ioe) {
@@ -827,12 +853,12 @@ public class SubjectUploader {
 			
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
-				log.warn("reading msg " + subjectCount);
+				log.warn("reading row # " + subjectCount);
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[0];
 				uids.add(subjectUID);
 				subjectCount++;
-				log.warn("finished message for " + subjectCount);
+				//log.warn("finished message for " + subjectCount);
 			}
 		}
 		catch (IOException ioe) {
