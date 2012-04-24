@@ -50,9 +50,6 @@ import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
  */
 public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 
-	/**
-	 * 
-	 */
 	private static final long					serialVersionUID		= -3267334731280446472L;
 
 	public java.util.Collection<String>		validationMessages	= null;
@@ -85,20 +82,14 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		java.util.Collection<DelimiterType> delimiterTypeCollection = iArkCommonService.getDelimiterTypes();
 		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.study.web.Constants.DELIMITER_TYPE_ID);
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
-		// Set to default delimiterType
 		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
 	}
 
 	public void initialiseDetailForm() {
 		// Set up field on form here   
 		// uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleUploadForm);
-
-		// fileUpload for payload
 		fileUploadField = new FileUploadField(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILENAME);
-
-		// Initialise Drop Down Choices
 		initialiseDropDownChoices();
-
 		attachValidators();
 		addComponents();
 	}
@@ -144,7 +135,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 			containerForm.getModelObject().getUpload().setPayload(payload);
 		}
 		catch (IOException ioe) {
-			System.out.println("Failed to save the uploaded file: " + ioe);
+			log.error("Failed to save the uploaded file: " + ioe);
 		}
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 		String fileFormatName = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
@@ -156,6 +147,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setStudy(study);//TODO: analyze costs of repeated containerForm.getModelObject().getUpload()
 		containerForm.getModelObject().getUpload().setFileFormat(fileFormat);
 		containerForm.getModelObject().getUpload().setChecksum(checksum);
+		//containerForm.getModelObject().getUpload().;
 		containerForm.getModelObject().getUpload().setFilename(filename);
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
 		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));

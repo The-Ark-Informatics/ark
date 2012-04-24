@@ -496,7 +496,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
-	private ConsentType getConsentTypeByName(String name) {
+	public ConsentType getConsentTypeByName(String name) {
 		ConsentType consentType = null;
 		Criteria criteria = getSession().createCriteria(ConsentType.class);
 		criteria.add(Restrictions.eq("name", name));
@@ -507,7 +507,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return consentType;
 	}
 
-	private ConsentStatus getConsentStatusByName(String name) {
+	public ConsentStatus getConsentStatusByName(String name) {
 		ConsentStatus consentStatus = null;
 		Criteria criteria = getSession().createCriteria(ConsentStatus.class);
 		criteria.add(Restrictions.eq("name", name));
@@ -528,7 +528,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return (VitalStatus) criteria.list().get(0);
 	}
 	
-	private MaritalStatus getMaritalStatusNyName(String name) {
+	public MaritalStatus getMaritalStatusNyName(String name) {
 		Criteria criteria = getSession().createCriteria(MaritalStatus.class);
 
 		if (name != null) {
@@ -538,7 +538,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return (MaritalStatus) criteria.list().get(0);
 	}
 
-	private GenderType getGenderType(Long id) {
+	public GenderType getGenderType(Long id) {
 		Criteria criteria = getSession().createCriteria(GenderType.class);
 
 		if (id != null) {
@@ -548,7 +548,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return (GenderType) criteria.list().get(0);
 	}
 
-	private TitleType getTitleType(Long id) {
+	public TitleType getTitleType(Long id) {
 		Criteria criteria = getSession().createCriteria(TitleType.class);
 
 		if (id != null) {
@@ -558,7 +558,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return (TitleType) criteria.list().get(0);
 	}
 
-	private SubjectStatus getSubjectStatusByName(String name) {
+	public SubjectStatus getSubjectStatusByName(String name) {
 		Criteria criteria = getSession().createCriteria(SubjectStatus.class);
 
 		if (name != null) {
@@ -1451,16 +1451,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void batchInsertSubjects(List<LinkSubjectStudy> subjectsToInsert) throws ArkUniqueException, ArkSubjectInsertException {
 		StatelessSession session = getStatelessSession();
 		Study study = null;
-		
-		SubjectStatus defaultSubjectStatus = getSubjectStatusByName("Subject");
-		TitleType defaultTitleType = getTitleType(new Long(0));
-		GenderType defaultGenderType = getGenderType(new Long(0));
-		VitalStatus defaultVitalStatus = getVitalStatus(new Long(0));
-		MaritalStatus defaultMaritalStatus = getMaritalStatusNyName("Unknown");
-		
+		int count = 0;		
 		Transaction tx = session.beginTransaction();
 		for(LinkSubjectStudy subject : subjectsToInsert){
-			
+
+			log.warn("inserting " + count++);
 			study = subject.getStudy();
 
 			try {
@@ -1480,44 +1475,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 						// Enable insertion lock
 //						setSubjectUidSequenceLock(study, true);
 
-						// Set default foreign key reference 
-				//TODO ASAP This whole thing might even belong in previous class...but for now just put above the for loop
-						if (subject.getSubjectStatus() == null || StringUtils.isBlank(subject.getSubjectStatus().getName())) {
-							subject.setSubjectStatus(defaultSubjectStatus);
-						}
-						// Set default foreign key reference
-						if (subject.getPerson().getTitleType() == null || StringUtils.isBlank(subject.getPerson().getTitleType().getName())) {
-							subject.getPerson().setTitleType(defaultTitleType);
-						}
-						// Set default foreign key reference
-						if (subject.getPerson().getGenderType() == null || 
-								StringUtils.isBlank(subject.getPerson().getGenderType().getName())) {
-							subject.getPerson().setGenderType(defaultGenderType);
-						}
-						// Set default foreign key reference
-						if (subject.getPerson().getVitalStatus() == null || 
-								StringUtils.isBlank(subject.getPerson().getVitalStatus().getName())) {
-							subject.getPerson().setVitalStatus(defaultVitalStatus);
-						}
-						// Set default foreign key reference
-						if (subject.getPerson().getMaritalStatus() == null || 
-								StringUtils.isBlank(subject.getPerson().getMaritalStatus().getName())) {
-							subject.getPerson().setMaritalStatus(defaultMaritalStatus);
-						}
 
-						//TODO ASAP THIS MAY BE DOING 3n hits to the DB eg; 3*17000 hits just to find out what yes and no is???
-						//maybe just an outerloop for defaul consents -- the might need a slight tweak to method
-						autoConsentLinkSubjectStudy(subject);
-
-						/*Person person = subject.getPerson();
-						session.insert(person);
-
-						LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
-						session.insert(linkSubjectStudy);*/
-						//Person person = ;
 						session.insert(subject.getPerson());
-
-						//LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
 						session.insert(subject);
 	//				}
 //				}
@@ -1649,24 +1608,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) {
 		StatelessSession session = getStatelessSession();
 		Transaction tx = session.beginTransaction();
-
 		for (LinkSubjectStudy subject : subjectList) {
 			Person person = subject.getPerson();
-			session.update(person);// Update Person and associated Phones
-			String currentLastName = getCurrentLastname(person);
-
-			//TODO ASAP review ... this might need some refactoring
-			if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName()))) {
-				if (person.getLastName() != null) {
-					PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-					personLastNameHistory.setPerson(person);
-					personLastNameHistory.setLastName(person.getLastName());
-					session.insert(personLastNameHistory);
-				}
-				// Update subjectPreviousLastname
-				//subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
-			}
-
+			session.update(person);// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
 			session.update(subject);
 		}
 		tx.commit();
@@ -1923,11 +1867,40 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return (StudyUpload) getSession().get(StudyUpload.class, id);
 	}
 
+	public GenderType getDefaultGenderType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public MaritalStatus getDefaultMaritalStatus() {
+		return getMaritalStatusNyName("Unknown");
+	}
+
+	public SubjectStatus getDefaultSubjectStatus() {
+		return getSubjectStatusByName("Subject");
+	}
+
+	public TitleType getDefaultTitleType() {
+		return getTitleType(new Long(0));
+	}
+
+	public VitalStatus getDefaultVitalStatus() {
+		return getVitalStatus(new Long(0));
+	}
+
+	public ConsentOption getConsentOptionForBoolean(boolean trueForYesFalseForNo) {
+		if(trueForYesFalseForNo){
+			return getConsentOption("YES");
+		}
+		else{
+			return getConsentOption("NO");
+		}
+	}
+
 	public void setPreferredMailingAdressToFalse(Person person) {
 		String queryString = "UPDATE Address SET preferredMailingAddress = 0 WHERE person = :person";
 		Query query =  getSession().createQuery(queryString);
 		query.setParameter("person", person);
 		query.executeUpdate();
 	}
-
 }

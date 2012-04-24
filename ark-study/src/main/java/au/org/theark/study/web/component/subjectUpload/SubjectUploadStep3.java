@@ -40,13 +40,8 @@ import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
-/**
- * The first step of this wizard.
- */
 public class SubjectUploadStep3 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID		= 2987959815074138750L;
 	private Form<UploadVO>					containerForm;
 	private String								validationMessage;
@@ -60,9 +55,6 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
 
-																					/**
-		 * 
-		 */
 																					private static final long	serialVersionUID	= 1L;
 
 																					@Override
@@ -72,9 +64,6 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 
 																				};
 
-	/**
-	 * Construct.
-	 */
 	public SubjectUploadStep3(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 3/5: Data Validation", "The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.");
 		this.containerForm = containerForm;
@@ -114,17 +103,10 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 		add(updateExistingDataContainer);
 	}
 
-	/**
-	 * @param validationMessages
-	 *           the validationMessages to set
-	 */
 	public void setValidationMessage(String validationMessage) {
 		this.validationMessage = validationMessage;
 	}
 
-	/**
-	 * @return the validationMessages
-	 */
 	public String getValidationMessage() {
 		return validationMessage;
 	}
@@ -209,32 +191,18 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 		}
 	}
 
-	/**
-	 * @param updateChkBox
-	 *           the updateChkBox to set
-	 */
 	public void setUpdateChkBox(CheckBox updateChkBox) {
 		this.updateChkBox = updateChkBox;
 	}
 
-	/**
-	 * @return the updateChkBox
-	 */
 	public CheckBox getUpdateChkBox() {
 		return updateChkBox;
 	}
 
-	/**
-	 * @param updateExistingDataContainer
-	 *           the updateExistingDataContainer to set
-	 */
 	public void setUpdateExistingDataContainer(WebMarkupContainer updateExistingDataContainer) {
 		this.updateExistingDataContainer = updateExistingDataContainer;
 	}
 
-	/**
-	 * @return the updateExistingDataContainer
-	 */
 	public WebMarkupContainer getUpdateExistingDataContainer() {
 		return updateExistingDataContainer;
 	}

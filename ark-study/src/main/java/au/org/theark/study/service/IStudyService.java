@@ -40,14 +40,19 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.ConsentOption;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
@@ -56,6 +61,9 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.StudyModelVO;
@@ -170,6 +178,14 @@ public interface IStudyService {
 	public void delete(Consent consent) throws ArkSystemException, EntityNotFoundException;
 
 	public Consent getConsent(Long id) throws ArkSystemException;
+
+	/**
+	 * for simplification's sake.   true is yes, false is no.  todo...look at whether booleans or something else are more appropriate in many of the situations
+	 * @param trueOrFalse
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public ConsentOption getConsentOptionForBoolean(boolean trueForYesOrFalseForNo) throws ArkSystemException;
 
 	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException, ArkSystemException;
 
@@ -343,6 +359,19 @@ public interface IStudyService {
 	 */
 	public StudyUpload refreshUpload(StudyUpload upload);
 
+	public SubjectStatus getDefaultSubjectStatus();
+
+	public TitleType getDefaultTitleType();
+
+	public GenderType getDefaultGenderType();
+
+	public VitalStatus getDefaultVitalStatus();
+
+	public MaritalStatus getDefaultMaritalStatus();
+
+	public ConsentStatus getConsentStatusByName(String string);
+
+	public ConsentType getConsentTypeByName(String string);
 
 	public void setPreferredMailingAdressToFalse(Person person);
 }

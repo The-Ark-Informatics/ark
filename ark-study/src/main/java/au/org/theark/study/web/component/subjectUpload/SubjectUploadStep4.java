@@ -19,7 +19,6 @@
 package au.org.theark.study.web.component.subjectUpload;
 
 import java.io.InputStream;
-import java.util.Date;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -86,34 +85,24 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 
 		// Filename seems to be lost from model when moving between steps in wizard?  is this a symptom of something greater?
 		containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
-		//technically upload started earlier...already recorded   containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
 
 		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
 		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 
 		try {
+			
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			//uploadReport = iStudyService.uploadAndReportMatrixSubjectFile(inputStream, containerForm.getModelObject().getFileUpload().getSize(), fileFormat, delimiterChar);
 			long size = containerForm.getModelObject().getFileUpload().getSize();
 			Long uploadId = containerForm.getModelObject().getUpload().getId();
-			String report = updateUploadReport();
-			report.charAt(0);
-			log.warn("..try a batch");
-
+			String report = generateInitialUploadReport();
 
 			Subject currentUser = SecurityUtils.getSubject();
 			Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			
-			log.warn("uploadId= " + uploadId + "size = " + size + "study = " + studyId + 
-							" because this didnt work; containerForm.getModelObject().getStudy().getId()");
-																							//com						study		uploadid, usr,study,fileformat,delim										
-				StudyDataUploadExecutor task = new StudyDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
+			StudyDataUploadExecutor task = new StudyDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
 						studyId, fileFormat, delimiterChar, size, report);
-				log.warn("..exectuter setup");
-
-				task.run();
-				
-				log.warn("finished a batch?");
+			task.run();
+			log.warn("finished a batch?");
 			
 		}
 		/*catch (IOException e) {
@@ -124,22 +113,10 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 			e1.printStackTrace();
 		}
 	}
-	public String updateUploadReport() {
+	public String generateInitialUploadReport() {
 		SubjectUploadReport subjectUploadReport = new SubjectUploadReport();
 		subjectUploadReport.appendDetails(containerForm.getModelObject().getUpload());
-//		byte[] bytes = subjectUploadReport.getReport().toString().getBytes();
-//		Blob uploadReportBlob = Hibernate.createBlob(bytes);
-//		containerForm.getModelObject().getUpload().setUploadReport(uploadReportBlob);
 		return subjectUploadReport.getReport().toString();
 	}
 
-	/*
-	private void save() {
-		StudyUpload upload = containerForm.getModelObject().getUpload();
-
-		iStudyService.refreshUpload(upload);
-		upload.setFinishTime(new Date(System.currentTimeMillis()));
-		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
-		iArkCommonService.updateUpload(upload);
-	}*/
 }
