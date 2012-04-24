@@ -273,6 +273,12 @@ public interface IStudyDao {
 	public void createAuditHistory(AuditHistory auditHistory);
 
 	/**
+	 * Create an AuditHistory
+	 * @param auditHistory
+	 */
+	public void createAuditHistory(AuditHistory auditHistory, String userId);
+
+	/**
 	 * Get a List of PersonContactMethod(s)
 	 * @return
 	 */

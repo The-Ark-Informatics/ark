@@ -416,7 +416,15 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public void createAuditHistory(AuditHistory auditHistory) {
 		studyDao.createAuditHistory(auditHistory);
-		
+	}
+
+	/**
+	 * create audit history, forcing userID, necessary due to batch job not maintaining session info
+	 * @param auditHistory
+	 * @param userID
+	 */
+	public void createAuditHistory(AuditHistory auditHistory, String userId) {
+		studyDao.createAuditHistory(auditHistory, userId);
 	}
 
 	public List<PersonContactMethod> getPersonContactMethodList() {
@@ -942,13 +950,13 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public void updateUpload(StudyUpload studyUpload) {
 		studyDao.updateUpload(studyUpload);
-
+		String userId = studyUpload.getUserId();
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		ah.setComment("Updated studyUpload " + studyUpload.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
 		ah.setEntityId(studyUpload.getId());
-		this.createAuditHistory(ah);
+		this.createAuditHistory(ah, userId);
 	}
 
 	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter) {
