@@ -375,20 +375,31 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	/**
 	 * returns a the subject (linksubjectystudy) IF there is one, else returns null
+	 * 
+	 * Note this is actively fetching person
+	 * 
 	 * @param subjectUID
 	 * @param study
 	 * @return LinkSubjectStudy
 	 */
 	public LinkSubjectStudy getSubjectByUIDAndStudy(String subjectUID, Study study) {
-
+		log.warn("about to create query right now");
 		Criteria linkSubjectStudyCriteria = getSession().createCriteria(LinkSubjectStudy.class);
 		linkSubjectStudyCriteria.add(Restrictions.eq("subjectUID", subjectUID));
 		linkSubjectStudyCriteria.add(Restrictions.eq("study", study));
-		List<LinkSubjectStudy> listOfSubjects = linkSubjectStudyCriteria.list();
-		if (listOfSubjects != null && listOfSubjects.size() > 0) {
-			return listOfSubjects.get(0);
-		}
-		return null;
+	//	Query linkSubjectStudyCriteria = getSession().createQuery(" select subject from LinkSubjectStudy subject " +
+	//			" where study =:study and subjectUID=:subjectUID " +
+	//			" left join fetch subject.person ");
+	//	linkSubjectStudyCriteria.setParameter("subjectUID", subjectUID);
+	//	linkSubjectStudyCriteria.setParameter("study", study);
+		log.warn("about to ask hibernate for list right now");
+		return (LinkSubjectStudy)linkSubjectStudyCriteria.uniqueResult();
+		//		List<LinkSubjectStudy> listOfSubjects = linkSubjectStudyCriteria.uniqueResult();
+
+//		if (listOfSubjects != null && listOfSubjects.size() > 0) {
+//			return listOfSubjects.get(0);
+//		}
+//		return null;
 	}
 
 	/**
@@ -496,8 +507,16 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
-	public void createAuditHistory(AuditHistory auditHistory) {
+	@Override
+	public void createAuditHistory(AuditHistory auditHistory, String userId) {
 		Date date = new Date(System.currentTimeMillis());
+		if(userId == null){//if not forcing a userID manually, get currentuser
+			Subject currentUser = SecurityUtils.getSubject();
+			auditHistory.setArkUserId((String) currentUser.getPrincipal());			
+		}
+		else{
+			auditHistory.setArkUserId(userId);		
+		}
 		Subject currentUser = SecurityUtils.getSubject();
 		auditHistory.setArkUserId((String) currentUser.getPrincipal());
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -516,8 +535,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		auditHistory.setDateTime(date);
 		getSession().save(auditHistory);
-
-		//getSession().flush();
+		//getSession().flush();		
+	}
+	public void createAuditHistory(AuditHistory auditHistory) {
+		createAuditHistory(auditHistory, null);
 	}
 
 	public List<PersonContactMethod> getPersonContactMethodList() {
@@ -1182,6 +1203,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		return query.list();
 	}
+
 
 	
 }
