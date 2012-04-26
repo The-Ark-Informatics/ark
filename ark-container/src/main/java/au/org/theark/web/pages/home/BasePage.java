@@ -67,7 +67,6 @@ public abstract class BasePage extends WebPage {
 
 	protected WebMarkupContainer	studyNameMarkup;
 	protected WebMarkupContainer	studyLogoMarkup;
-	protected WebMarkupContainer	hostedByImageMarkup;
 
 	private MyDetailModalWindow	modalWindow;
 	private transient static Logger	log =  LoggerFactory.getLogger(BasePage.class);
@@ -98,12 +97,8 @@ public abstract class BasePage extends WebPage {
 			studyLogoMarkup.add(studyLogoImage);
 			studyLogoMarkup.setOutputMarkupPlaceholderTag(true);
 			
-			hostedByImageMarkup =  new WebMarkupContainer("hostedByImageMarkupContainer");
-			hostedByImageMarkup.add(hostedByImage);
-			hostedByImageMarkup.setOutputMarkupPlaceholderTag(true);
-			
 			// Add images
-			add(hostedByImageMarkup);
+			add(hostedByImage);
 			add(studyNameMarkup);
 			add(studyLogoMarkup);
 			add(productImage);
