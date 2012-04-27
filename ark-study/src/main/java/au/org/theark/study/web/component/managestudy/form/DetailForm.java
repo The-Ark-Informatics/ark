@@ -191,7 +191,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	@Override
 	public void onBeforeRender() {
 		initStudyLogo();
-		parentStudyDdc.setEnabled(isNew());
+		parentStudyContainer.setEnabled(isNew());
 		super.onBeforeRender();
 	}
 
@@ -641,18 +641,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			}
 		});
 
-		parentStudyContainer = new WebMarkupContainer("parentStudyContainer") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onBeforeRender() {
-				// setEnabled(containerForm.getModelObject().getStudy() != containerForm.getModelObject().getStudy().getParentStudy());
-				super.onBeforeRender();
-			}
-		};
+		parentStudyContainer = new WebMarkupContainer("parentStudyContainer");
 		parentStudyContainer.setOutputMarkupId(true);
 	}
 
