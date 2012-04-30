@@ -280,6 +280,8 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.createAlias("lss.person.addresses.country", "c", Criteria.LEFT_JOIN);
 		criteria.createAlias("lss.person.addresses.countryState", "countryState", Criteria.LEFT_JOIN);
 		criteria.createAlias("lss.person.phones", "phone", Criteria.LEFT_JOIN);
+		
+		//TODO: Get work phone returned as well
 		criteria.createAlias("lss.person.phones.phoneType", "phoneType", Criteria.LEFT_JOIN).add(Restrictions.or(Restrictions.eq("phoneType.name", "Home"), Restrictions.isNull("phoneType.name")));
 		criteria.createAlias("lss.person.titleType", "title");
 		
