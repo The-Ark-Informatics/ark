@@ -145,6 +145,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	public void onBeforeRender() {
 		childStudyPalettePanel = new ChildStudyPalettePanel<SubjectVO>("childStudyPalette", containerForm.getModel());
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(childStudyPalettePanel);
+		consentHistoryPanel.setVisible(!isNew());
 		super.onBeforeRender();
 	}
 
