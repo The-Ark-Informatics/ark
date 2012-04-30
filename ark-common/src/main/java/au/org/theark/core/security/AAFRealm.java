@@ -160,7 +160,6 @@ public class AAFRealm extends AuthorizingRealm {
 			log.error(e.getMessage());
 		}
 		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
 			throw new UnknownAccountException(UNKNOWN_ACCOUNT);
 		}
 		return sai;
