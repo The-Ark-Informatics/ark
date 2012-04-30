@@ -449,4 +449,10 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 			return false;
 		}
 	}
+	
+	@Override
+	public void onBeforeRender() {
+		super.onBeforeRender();
+		consentHistoryPanel.setVisible(!isNew());
+	}
 }
