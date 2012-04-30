@@ -566,31 +566,30 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @throws ArkSystemException
 	 */
 	public void updateArkUser(ArkUserVO arkUserVO) throws EntityNotFoundException, ArkSystemException {
-
 		try {
-
-			if (arkUserVO.getArkUserEntity() != null && arkUserVO.getArkUserEntity().getId() != null) {
-				// User is present in the ArkUserTable can go for update of the entity and related objects (ArkUserRoles)
-				Session session = getSession();
-				session.update(arkUserVO.getArkUserEntity());
-
-				// Insert new ArkUserRole
-				for (ArkUserRole arkUserRoleToAdd : getArkUserRolesToAdd(arkUserVO)) {
-					if (arkUserRoleToAdd.getArkRole() != null) {
-						arkUserRoleToAdd.setArkUser(arkUserVO.getArkUserEntity());
-						session.save(arkUserRoleToAdd);
+			if (arkUserVO.getArkUserEntity() != null && arkUserVO.getArkUserEntity().getId() != null) {	
+				// Never update/delete Super User records
+				if(!isUserAdminHelper(arkUserVO.getArkUserEntity().getLdapUserName(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
+					// User is present in the ArkUserTable can go for update of the entity and related objects (ArkUserRoles)
+					Session session = getSession();
+					session.update(arkUserVO.getArkUserEntity());
+	
+					// Insert new ArkUserRole
+					for (ArkUserRole arkUserRoleToAdd : getArkUserRolesToAdd(arkUserVO)) {
+						if (arkUserRoleToAdd.getArkRole() != null) {
+							arkUserRoleToAdd.setArkUser(arkUserVO.getArkUserEntity());
+							session.save(arkUserRoleToAdd);
+						}
 					}
-				}
-
-				for (ArkUserRole arkUserRoleToRemove : getArkUserRolesToRemove(arkUserVO)) {
-					session.delete(arkUserRoleToRemove);
+	
+					for (ArkUserRole arkUserRoleToRemove : getArkUserRolesToRemove(arkUserVO)) {
+						session.delete(arkUserRoleToRemove);
+					}
 				}
 			}
 			else {
 				createArkUser(arkUserVO);
-
 			}
-
 		}
 		catch (Exception exception) {
 			StringBuffer sb = new StringBuffer();
@@ -599,7 +598,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			log.error(sb.toString());
 			throw new ArkSystemException();
 		}
-
 	}
 
 	/**
