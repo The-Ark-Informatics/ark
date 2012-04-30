@@ -68,38 +68,7 @@ public class ArkLdapRealm extends AuthorizingRealm {
 		hashedCredentialsMatcher.setHashAlgorithmName(Sha256Hash.ALGORITHM_NAME);
 		setCredentialsMatcher(hashedCredentialsMatcher);
 	}
-
-	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
-		SimpleAuthenticationInfo sai = null;
-		ArkUserVO userVO = null;
-		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-		try {
-			userVO = iArkCommonService.getUser(token.getUsername().trim());// Example to use core services to get user
-			if (userVO != null) {
-				// Check if the user is in the Ark Database
-				ArkUser arkUser = iArkCommonService.getArkUser(token.getUsername().trim());
-				// Also check if the Ark User is linked with any study and has roles if not stop the user from logging in until an administrator has set
-				// it up
-				if (!iArkCommonService.isArkUserLinkedToStudies(arkUser)) {
-					throw new UnknownAccountException(UNKNOWN_ACCOUNT);
-				}
-
-				sai = new SimpleAuthenticationInfo(userVO.getUserName(), userVO.getPassword(), getName());
-			}
-		}
-		catch (ArkSystemException e) {
-			log.error(e.getMessage());
-		}
-		catch (EntityNotFoundException e) {
-			throw new UnknownAccountException(UNKNOWN_ACCOUNT);
-		}
-
-		return sai;
-	}
-
-	/**
-	 * This method will check for roles.Wicket calls this method.
-	 */
+	
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 		SimpleAuthorizationInfo simpleAuthInfo = new SimpleAuthorizationInfo();
 
@@ -159,6 +128,40 @@ public class ArkLdapRealm extends AuthorizingRealm {
 		}
 
 		return simpleAuthInfo;
+	}
+
+	@Override
+	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
+		log.info("Authenticating: " + authcToken.getPrincipal() + " against LDAP");
+		
+		SimpleAuthenticationInfo sai = null;
+		ArkUserVO userVO = null;
+		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
+		try {
+			userVO = iArkCommonService.getUser(token.getUsername().trim());// Example to use core services to get user
+			if (userVO != null) {
+				// Check if the user is in the Ark Database
+				ArkUser arkUser = iArkCommonService.getArkUser(token.getUsername().trim());
+				// Also check if the Ark User is linked with any study and has roles.
+				// If no roles found, stop the user from logging in until an administrator has set it up
+				if (!iArkCommonService.isArkUserLinkedToStudies(arkUser)) {
+					throw new UnknownAccountException(UNKNOWN_ACCOUNT);
+				}
+
+				sai = new SimpleAuthenticationInfo(userVO.getUserName(), userVO.getPassword(), getName());
+			}
+		}
+		catch (ArkSystemException e) {
+			log.error(e.getMessage());
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+			log.info("Attempting to authenticate through other realm");
+			// By returning null, we then try to authenticate from other AuthorizingRealm(s), ie AAFRealm
+			return null;
+		}
+
+		return sai;
 	}
 
 	@Override
