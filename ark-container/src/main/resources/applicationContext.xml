@@ -190,21 +190,21 @@
 		org.apache.shiro.web.DefaultWebSecurityManager instead when there is
 		no web environment)
 	-->
-
-
-	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
-		<property name="cacheManager" ref="ehCacheManager" />
-	</bean>
-
-	<bean id="ehCacheManager" class="net.sf.ehcache.CacheManager" />
-
-
+	
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<!--
 			Single realm app (realm configured next, below). If you have multiple
 			realms, use the 'realms' property instead.
+			<property name="realm" ref="arkLdapRealm" />
 		-->
-		<property name="realm" ref="arkLdapRealm" />
+			
+		<property name="realms">
+	      <list>
+	        <ref bean="arkLdapRealm" />
+	        <ref bean="aafRealm" />
+	      </list>
+	    </property>
+		
 		<!--
 			Uncomment this next property if you want heterogenous session access
 			or clusterable/distributable sessions. The default value is 'http'
@@ -214,7 +214,14 @@
 		<property name="cacheManager" ref="cacheManager" />
 	</bean>
 	
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManager" ref="ehCacheManager" />
+	</bean>
+
+	<bean id="ehCacheManager" class="net.sf.ehcache.CacheManager" />
+
 	<bean id="arkLdapRealm" class="au.org.theark.core.security.ArkLdapRealm" />
+	<bean id="aafRealm" class="au.org.theark.core.security.AAFRealm" />
 
 	<!--
 		Post processor that automatically invokes init() and destroy() methods
