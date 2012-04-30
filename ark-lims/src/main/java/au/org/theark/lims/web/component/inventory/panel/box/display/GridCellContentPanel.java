@@ -109,7 +109,9 @@ public class GridCellContentPanel extends Panel {
 			stringBuffer.append("Quantity: ");
 			if (invCell.getBiospecimen().getQuantity() != null) {
 				stringBuffer.append(invCell.getBiospecimen().getQuantity());
-				stringBuffer.append(invCell.getBiospecimen().getUnit().getName());
+				if (invCell.getBiospecimen().getUnit() != null) {
+					stringBuffer.append(invCell.getBiospecimen().getUnit().getName());
+				}
 			}
 			else {
 				stringBuffer.append("0");
