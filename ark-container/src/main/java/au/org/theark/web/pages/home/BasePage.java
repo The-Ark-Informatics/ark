@@ -22,6 +22,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.MarkupException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -151,6 +152,17 @@ public abstract class BasePage extends WebPage {
 			add(link);
 		}
 		else {
+			setResponsePage(LoginPage.class);
+		}
+	}
+	
+	@Override
+	protected void onRender() {
+		try{
+			super.onRender();
+		}
+		catch(MarkupException mue) {
+			log.warn("Session was expired, redirecting to login page");
 			setResponsePage(LoginPage.class);
 		}
 	}
