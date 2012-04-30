@@ -78,12 +78,7 @@ public class BoxDetailPanel extends Panel {
 		};
 
 		// no need to show grid on New Box
-		if(containerForm.getModelObject().getInvBox().getId() == null) {
-			gridBoxPanel = new EmptyPanel("gridBoxPanel");
-		}
-		else {
-			gridBoxPanel = new GridBoxPanel("gridBoxPanel", containerForm.getModelObject(), modalWindow, false);
-		}
+		gridBoxPanel = new EmptyPanel("gridBoxPanel");
 
 		add(detailForm);
 		add(gridBoxPanel);
@@ -100,5 +95,13 @@ public class BoxDetailPanel extends Panel {
 
 	public static Logger getLog() {
 		return log;
+	}
+	
+	@Override
+	protected void onBeforeRender() {
+		super.onBeforeRender();
+		if(containerForm.getModelObject().getInvBox().getId() != null) {
+			gridBoxPanel.replaceWith(new GridBoxPanel("gridBoxPanel", containerForm.getModelObject(), modalWindow, false));
+		}
 	}
 }
