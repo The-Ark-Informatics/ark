@@ -137,6 +137,7 @@ public class ArkLdapRealm extends AuthorizingRealm {
 		SimpleAuthenticationInfo sai = null;
 		ArkUserVO userVO = null;
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
+		
 		try {
 			userVO = iArkCommonService.getUser(token.getUsername().trim());// Example to use core services to get user
 			if (userVO != null) {
@@ -155,12 +156,8 @@ public class ArkLdapRealm extends AuthorizingRealm {
 			log.error(e.getMessage());
 		}
 		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
-			log.info("Attempting to authenticate through other realm");
-			// By returning null, we then try to authenticate from other AuthorizingRealm(s), ie AAFRealm
-			return null;
+			throw new UnknownAccountException(UNKNOWN_ACCOUNT);
 		}
-
 		return sai;
 	}
 
