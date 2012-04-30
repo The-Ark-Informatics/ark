@@ -151,24 +151,20 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 		catch (IncorrectCredentialsException e) {
 			String errMessage = getLocalizer().getString("page.incorrect.password", LoginForm.this, "Password is incorrect");
 			getSession().error(errMessage);
-			error(errMessage);
 			log.error(e.getMessage());
 		}
 		catch (UnknownAccountException e) {
 			String errMessage = getLocalizer().getString("page.account.notfound", LoginForm.this, "User account not found.");
-			error(errMessage);
 			getSession().error(errMessage);
 			log.error(e.getMessage());
 		}
 		catch (AuthenticationException e) {
 			String errMessage = getLocalizer().getString("page.invalid.username.password", LoginForm.this, "Invalid username and/or password.");
-			error(errMessage);
 			getSession().error(errMessage);
 			log.error(e.getMessage());
 		}
 		catch (Exception e) {
 			String errMessage = getLocalizer().getString("page.login.failed", LoginForm.this, "Login Failed.");
-			error(errMessage);
 			getSession().error(errMessage);
 			log.error(e.getMessage());
 		}
