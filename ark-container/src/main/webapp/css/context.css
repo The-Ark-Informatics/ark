@@ -1,15 +1,15 @@
 #contextMenu {
-height:15px;
+height:20px;
 width:100%;
 background:url("../images/context_bg.gif") repeat-x scroll center bottom #000;
 }
 
 #contextMenu ul {
-width:100%;
 float:left;
+font:bold 13px Verdana, sans-serif;
 margin-left:0;
-font:bold 11px Verdana, sans-serif;
 padding:0;
+width:100%;
 }
 
 #contextMenu ul li {
