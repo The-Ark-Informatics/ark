@@ -282,6 +282,9 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			processErrors(target);
 		}
 
+		// Repaint container (shoe box/cells)
+		target.add(detailContainer);
+		
 		onSavePostProcess(target);
 	}
 
