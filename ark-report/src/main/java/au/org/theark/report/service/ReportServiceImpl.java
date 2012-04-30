@@ -158,17 +158,19 @@ public class ReportServiceImpl implements IReportService {
 				postcode = a.getPostCode();
 				country = a.getCountry().getCountryCode();
 			}
-			String workPhone = "-NA-";
-			String homePhone = "-NA-";
+			StringBuilder workPhone = new StringBuilder("-NA-");
+			StringBuilder homePhone = new StringBuilder("-NA-");
 			// TODO: Fix this so that there are not subsequent queries after getStudyLevelConsentDetailsList(..)
 			Phone aPhone = reportDao.getWorkPhone(subject);
 			if (aPhone != null) {
-				workPhone = aPhone.getAreaCode() + " " + aPhone.getPhoneNumber();
+				workPhone.append(aPhone.getAreaCode());
+				workPhone.append(aPhone.getPhoneNumber());
 			}
 			// TODO: Fix this so that there are not subsequent queries after getStudyLevelConsentDetailsList(..)
 			aPhone = reportDao.getHomePhone(subject);
 			if (aPhone != null) {
-				homePhone = aPhone.getAreaCode() + " " + aPhone.getPhoneNumber();
+				homePhone.append(aPhone.getAreaCode());
+				homePhone.append(aPhone.getPhoneNumber());
 			}
 			String email = "-NA-";
 			if (p.getPreferredEmail() != null) {
@@ -176,7 +178,7 @@ public class ReportServiceImpl implements IReportService {
 			}
 			String sex = p.getGenderType().getName().substring(0, 1);
 			Date consentDate = subject.getConsentDate();
-			consentDetailsList.add(new ConsentDetailsDataRow(subjectUID, consentStatus, subjectStatus, title, firstName, lastName, streetAddress, suburb, state, postcode, country, workPhone, homePhone,
+			consentDetailsList.add(new ConsentDetailsDataRow(subjectUID, consentStatus, subjectStatus, title, firstName, lastName, streetAddress, suburb, state, postcode, country, workPhone.toString(), homePhone.toString(),
 					email, sex, consentDate));
 		}
 
