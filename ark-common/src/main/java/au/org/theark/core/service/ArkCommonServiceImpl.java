@@ -40,6 +40,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ldap.NameNotFoundException;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.mail.MailSendException;
@@ -243,7 +244,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		}
 	}
 
-	public ArkUserVO getUser(String username) throws ArkSystemException {
+	public ArkUserVO getUser(String username) throws ArkSystemException, EntityNotFoundException {
 		ArkUserVO userVO = new ArkUserVO();
 		try {
 
@@ -255,9 +256,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 		}
 		catch (InvalidNameException ne) {
-
 			throw new ArkSystemException("A System error has occured");
-
+		}
+		catch (NameNotFoundException ex) {
+			log.error(username + " not found in LDAP");
+			throw new EntityNotFoundException();
 		}
 
 		return userVO;

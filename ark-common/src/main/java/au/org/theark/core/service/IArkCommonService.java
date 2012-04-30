@@ -91,7 +91,7 @@ public interface IArkCommonService<T> {
 
 	// Place here any common services that must be visible to sub-applications
 	// Get reference data etc.get study maybe required but sub-applications access a study via ETA Study module
-	public ArkUserVO getUser(String name) throws ArkSystemException;
+	public ArkUserVO getUser(String name) throws ArkSystemException, EntityNotFoundException;
 
 	public List<Study> getStudy(Study study);
 
