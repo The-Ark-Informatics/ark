@@ -608,7 +608,7 @@ public interface IArkCommonService<T> {
 
 	public List<ArkUser> getArkUserListByStudy(Study study);
 	
-	public List<Study> getParentStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule);
+	public List<Study> getParentStudyList();
 	
 	/**
 	 * Sets up an ArkUserVO with the default administrator roles for the specified study and List of ArkModule names

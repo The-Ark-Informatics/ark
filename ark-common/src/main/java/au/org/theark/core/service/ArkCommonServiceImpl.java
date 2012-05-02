@@ -1031,8 +1031,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Study> getParentStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule) {
-		return arkAuthorisationDao.getParentStudyListForUserAndModule(arkUserVo, arkModule);
+	public List<Study> getParentStudyList() {
+		return arkAuthorisationDao.getParentStudyList();
 	}
 
 	public ArkUserVO getDefaultAdministratorRoles(String userName, Study study, Set arkModuleNames) {

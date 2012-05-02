@@ -184,7 +184,7 @@ public interface IArkAuthorisation<T> {
 
 	public List<ArkUser> getArkUserListByStudy(Study study);
 	
-	public List<Study> getParentStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule);
+	public List<Study> getParentStudyList();
 
 	public List<Study> getAssignedChildStudyListForUser(ArkUserVO arkUserVo);
 
