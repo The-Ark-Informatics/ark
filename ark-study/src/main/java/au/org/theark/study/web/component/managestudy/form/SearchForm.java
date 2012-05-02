@@ -25,11 +25,13 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -43,7 +45,9 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.ModuleConstants;
+import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkUserVO;
@@ -51,6 +55,7 @@ import au.org.theark.core.vo.StudyCrudContainerVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.DetailPanel;
@@ -83,7 +88,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 	 * @param studyCrudContainerVO
 	 * @param containerForm
 	 */
-	public SearchForm(String id, CompoundPropertyModel<StudyModelVO> studyModelVOCpm, StudyCrudContainerVO studyCrudContainerVO, FeedbackPanel feedbackPanel, Container containerForm) {
+	public SearchForm(String id, CompoundPropertyModel<StudyModelVO> studyModelVOCpm, StudyCrudContainerVO studyCrudContainerVO, final FeedbackPanel feedbackPanel, Container containerForm) {
 
 		super(id, studyModelVOCpm, feedbackPanel, studyCrudContainerVO);
 
@@ -95,6 +100,36 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		cpmModel = studyModelVOCpm;
 		initialiseSearchForm();
 		addSearchComponentsToForm();
+		
+		newButton.replaceWith(new ArkBusyAjaxButton(Constants.NEW) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1666656098281624401L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// Make the details panel visible, disabling delete button (if found)
+				// AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
+				AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
+				if (ajaxButton != null) {
+					ajaxButton.setEnabled(false);
+					target.add(ajaxButton);
+				}
+				// Call abstract method
+				onNew(target);
+			}
+
+			@Override
+			public boolean isVisible() {
+				return SecurityUtils.getSubject().hasRole(RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
+			}
+
+			@Override
+			protected void onError(final AjaxRequestTarget target, Form<?> form) {
+				target.add(feedbackPanel);
+			}
+		});
 	}
 
 	@SuppressWarnings("unchecked")

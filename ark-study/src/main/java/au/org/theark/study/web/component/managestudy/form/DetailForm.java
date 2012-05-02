@@ -34,6 +34,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -77,11 +78,11 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.ModuleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
@@ -93,6 +94,7 @@ import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractArchiveDetailForm;
 import au.org.theark.study.service.IStudyService;
@@ -156,7 +158,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private DropDownChoice<BiospecimenUidPadChar>	biospecimenUidPadCharDdc;
 	private Label												biospecimenUidExampleLbl;
 	private String												biospecimenUidExampleTxt;
-
+	
+	private WebMarkupContainer								parentStudyContainer;
 	private DropDownChoice<Study>							parentStudyDdc;
 
 	private WebMarkupContainer								bioCollectionUidContainer;
@@ -167,11 +170,11 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private Label												bioCollectionUidExampleLbl;
 	private String												bioCollectionUidExampleTxt	= "";
 
-	private WebMarkupContainer								parentStudyContainer;
-
 	private WebMarkupContainer								subjectFileUploadContainer;
 	private FileUploadField									subjectFileUploadField;
 	private Label												totalSubjectsLabel;
+	
+	private ArkBusyAjaxButton								newChildStudyButton;
 
 	/**
 	 * Constructor
@@ -271,6 +274,127 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		initArkModulePalette();
 
 		initSubjectFileUpload();
+		
+		newChildStudyButton = new ArkBusyAjaxButton("newChildStudy") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1666656098281624401L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// Make the details panel visible, disabling delete button (if found)
+				// AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
+				AjaxButton ajaxButton = (AjaxButton) studyCrudVO.getEditButtonContainer().get("delete");
+				if (ajaxButton != null) {
+					ajaxButton.setEnabled(false);
+					target.add(ajaxButton);
+				}
+				
+				StudyModelVO newVo = new StudyModelVO();
+				Study study = newVo.getStudy();
+				Study parentStudy = containerForm.getModelObject().getStudy();
+				
+				study.setId(null);
+				study.setDescription("Child study of " + parentStudy.getName());
+				study.setParentStudy(parentStudy);
+				study.setName(null);
+				
+				// Modules of parent
+				Collection<ArkModule> availableArkModules = containerForm.getModelObject().getAvailableArkModules();
+				newVo.setAvailableArkModules(availableArkModules);
+				
+				Collection<ArkModule> selectedArkModules = containerForm.getModelObject().getSelectedArkModules();
+				newVo.setSelectedArkModules(selectedArkModules);
+				
+				// Set auto-generated patterns to that of the parent study
+				study.setAutoGenerateSubjectUid(parentStudy.getAutoGenerateSubjectUid());
+				study.setSubjectUidPrefix(parentStudy.getSubjectUidPrefix());
+				study.setSubjectUidToken(parentStudy.getSubjectUidToken());
+				study.setSubjectUidPadChar(parentStudy.getSubjectUidPadChar());
+				study.setSubjectUidStart(parentStudy.getSubjectUidStart());
+				subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(parentStudy);
+
+				// Set BioCollection template
+				BioCollectionUidTemplate parentBioCollectionUidTemplate = iArkCommonService.getBioCollectionUidTemplate(parentStudy);
+				if (parentBioCollectionUidTemplate != null) {
+					BioCollectionUidTemplate bioCollectionUidTemplate = new BioCollectionUidTemplate();
+					bioCollectionUidTemplate.setBioCollectionUidPrefix(parentBioCollectionUidTemplate.getBioCollectionUidPrefix());
+					bioCollectionUidTemplate.setBioCollectionUidToken(parentBioCollectionUidTemplate.getBioCollectionUidToken());
+					bioCollectionUidTemplate.setBioCollectionUidPadChar(parentBioCollectionUidTemplate.getBioCollectionUidPadChar());
+					bioCollectionUidTemplate.setStudy(study);
+					containerForm.getModelObject().setBioCollectionUidTemplate(bioCollectionUidTemplate);
+					bioCollectionUidExampleTxt = getBiocollectionUidExample();
+				}
+				else {
+					containerForm.getModelObject().setBioCollectionUidTemplate(new BioCollectionUidTemplate());
+					initBioCollectionUid();
+				}
+
+				// Set Biospecimen template
+				BiospecimenUidTemplate parentBiospecimenUidTemplate = iArkCommonService.getBiospecimenUidTemplate(parentStudy);
+				if (parentBiospecimenUidTemplate != null) {
+					BiospecimenUidTemplate biospecimenUidTemplate = new BiospecimenUidTemplate();
+					biospecimenUidTemplate.setBiospecimenUidPrefix(parentBiospecimenUidTemplate.getBiospecimenUidPrefix());
+					biospecimenUidTemplate.setBiospecimenUidToken(parentBiospecimenUidTemplate.getBiospecimenUidToken());
+					biospecimenUidTemplate.setBiospecimenUidPadChar(parentBiospecimenUidTemplate.getBiospecimenUidPadChar());
+					biospecimenUidTemplate.setStudy(study);
+					containerForm.getModelObject().setBiospecimenUidTemplate(biospecimenUidTemplate);
+					biospecimenUidExampleTxt = getBiospecimenUidExample();
+				}
+				else {
+					containerForm.getModelObject().setBiospecimenUidTemplate(new BiospecimenUidTemplate());
+					initBiospecimenUid();
+				}
+
+				autoGenSubIdChkBox.setEnabled(false);
+				subjectUidContainer.setEnabled(false);
+				biospecimenUidContainer.setEnabled(false);
+				bioCollectionUidContainer.setEnabled(false);
+				
+				containerForm.setDefaultModelObject(newVo);
+				target.add(studyCrudVO.getDetailPanelFormContainer());
+				
+				// Hide Summary details on new
+				studyCrudVO.getSummaryContainer().setVisible(false);
+				target.add(studyCrudVO.getSummaryContainer());
+				
+				getAutoSubjectUidContainer().setEnabled(false);
+				getSubjectUidContainer().setEnabled(false);
+				bioCollectionUidContainer.setEnabled(false);
+				biospecimenUidContainer.setEnabled(false);
+				
+				target.add(getAutoSubjectUidContainer());
+				target.add(getSubjectUidContainer());
+				target.add(bioCollectionUidContainer);
+				target.add(biospecimenUidContainer);
+				
+				// hide new child study button
+				this.setVisible(false);
+				target.add(this);
+			}
+
+			@Override
+			public boolean isVisible() {
+				Study study = null;
+				Study parentStudy = null;
+				
+				if(containerForm.getModelObject().getStudy() != null) {
+					study = containerForm.getModelObject().getStudy();
+					parentStudy= containerForm.getModelObject().getStudy().getParentStudy();
+				}
+				
+				return (ArkPermissionHelper.isActionPermitted(Constants.NEW) && 
+						!isNew() && 
+						(parentStudy == null || study == parentStudy)
+						);
+			}
+
+			@Override
+			protected void onError(final AjaxRequestTarget target, Form<?> form) {
+				target.add(feedBackPanel);
+			}
+		};
 
 		attachValidators();
 		addComponents();
@@ -519,7 +643,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 			@Override
 			protected void onBeforeRender() {
-				this.setChoices(getParentStudyListForUser());
+				this.setChoices(getParentStudyList());
 				super.onBeforeRender();
 			}
 		};
@@ -765,18 +889,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		PropertyModel<Collection<ArkModule>> selectedModPm = new PropertyModel<Collection<ArkModule>>(sm, "selectedArkModules");
 		PropertyModel<Collection<ArkModule>> availableModulesPm = new PropertyModel<Collection<ArkModule>>(sm, "availableArkModules");
 		arkModulePalette = new ArkPalette("selectedArkModules", selectedModPm, availableModulesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false);
-		// arkModulePalette.getRecorderComponent().add(new AjaxFormComponentUpdatingBehavior("onchange"){
-		// /**
-		// *
-		// */
-		// private static final long serialVersionUID = 1L;
-		//
-		// @Override
-		// protected void onUpdate(AjaxRequestTarget target) {
-		// target.add(biospecimenUidContainer);
-		// target.add(bioCollectionUidContainer);
-		// }
-		// });
 	}
 
 	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModelVO> studyCmpModel) {
@@ -873,6 +985,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		subjectFileUploadContainer.add(subjectFileUploadField);
 		studyCrudVO.getDetailPanelFormContainer().add(subjectFileUploadContainer);
 
+		studyCrudVO.getEditButtonContainer().add(newChildStudyButton);
+		
 		add(studyCrudVO.getDetailPanelFormContainer());
 		add(studyCrudVO.getSummaryContainer());
 	}
@@ -900,6 +1014,20 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		subjectUidStartTxtFld.add(new RangeValidator<Integer>(1, Integer.MAX_VALUE)).setLabel(new StringResourceModel("error.study.subject.key.prefix", this, null));
 		// file image validator, checking size, type etc
 		logoFileUploadField.add(new StudyLogoValidator());
+		
+		// Make parentStudy drop-down required for Study Administrators and study in context
+		Subject currentUser = SecurityUtils.getSubject();
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if(studyId != null) {
+			try {
+				if(!iArkCommonService.isSuperAdministrator(currentUser.getPrincipal().toString())) {
+					parentStudyDdc.setRequired(true).setLabel(new StringResourceModel("study.parentStudy.required", this, new Model<String>("Parent Study")));
+				}
+			}
+			catch (EntityNotFoundException e) {
+				log.error(e.getMessage());
+			}
+		}
 	}
 
 	private boolean validateEstYearOfComp(Long yearOfCompletion, Date dateOfApplication, String message, AjaxRequestTarget target) {
@@ -1097,31 +1225,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		return studyLogoImage;
 	}
 
-	private List<Study> getParentStudyListForUser() {
-		List<Study> parentStudyListForUser = new ArrayList<Study>(0);
-		try {
-			Subject currentUser = SecurityUtils.getSubject();
-			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
-			ArkUserVO arkUserVo = new ArkUserVO();
-			arkUserVo.setArkUserEntity(arkUser);
-
-			Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
-			ArkModule arkModule = null;
-			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
-			parentStudyListForUser = iArkCommonService.getParentStudyListForUserAndModule(arkUserVo, arkModule);
-
-			if (!isNew()) {
-				boolean hasNoChildStudies = iStudyService.getChildStudyListOfParent(containerForm.getModelObject().getStudy()).isEmpty();
-				if (hasNoChildStudies) {
-					// Remove current study (cannot select itself, but child assigns accordingly)
-					parentStudyListForUser.remove(containerForm.getModelObject().getStudy());
-				}
-			}
-		}
-		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
-		}
-		return parentStudyListForUser;
+	private List<Study> getParentStudyList() {
+		List<Study> parentStudyList = iArkCommonService.getParentStudyList();
+		return parentStudyList;
 	}
 
 	public WebMarkupContainer getSubjectUidContainer() {
