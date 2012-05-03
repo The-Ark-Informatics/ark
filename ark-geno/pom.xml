@@ -138,6 +138,6 @@
 	</build>
 	<properties>
 		<jetty.version>6.1.4</jetty.version>
-		<ark-common.version>0.1.5-SNAPSHOT</ark-common.version>
+		<ark-common.version>1.0.0</ark-common.version>
 	</properties>
 </project>
