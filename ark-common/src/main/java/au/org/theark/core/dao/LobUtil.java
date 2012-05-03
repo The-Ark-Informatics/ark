@@ -23,8 +23,6 @@ import java.sql.Blob;
 
 import java.io.InputStream;
 
-import org.hibernate.LobHelper;
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 
@@ -32,7 +30,7 @@ import org.springframework.stereotype.Repository;
 public class LobUtil extends HibernateSessionDao {
 
 	public Blob createBlob(byte[] bytes) {
-		Session session = getSession();
+	/*	Session session = getSession();
 		if(session==null){
 			System.err.println("Get Session Call is failing! Therefore going to try open and close");
 			session = openSession();
@@ -47,13 +45,12 @@ public class LobUtil extends HibernateSessionDao {
 		else{
 			LobHelper helper = session.getLobHelper();
 			return helper.createBlob(bytes);
-		}
+		}*/
+		return getSession().getLobHelper().createBlob(bytes);
 	}
-/*	public Blob createBlob(InputStream inputStream, long length) {
-		return getSession().getLobHelper().createBlob(inputStream, length);
-	}*/
+
 	public Blob createBlob(InputStream inputStream, long length) {
-		Session session = getSession();
+		/*Session session = getSession();
 		if(session==null){
 			System.err.println("Get Session Call is failing! Therefore going to try open and close");
 			session = openSession();
@@ -68,6 +65,7 @@ public class LobUtil extends HibernateSessionDao {
 		else{
 			LobHelper helper = session.getLobHelper();
 			return helper.createBlob(inputStream, length);
-		}
+		}*/
+		return getSession().getLobHelper().createBlob(inputStream, length);
 	}
 }

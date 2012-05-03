@@ -31,12 +31,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import au.org.theark.core.model.Constants;
 
@@ -136,7 +140,9 @@ public class Upload implements java.io.Serializable {
 		this.filename = filename;
 	}
 
-	@Column(name = "PAYLOAD")
+	@Lob
+	@Fetch(FetchMode.SELECT)
+	@Column(name = "PAYLOAD") //if this doesnt take affect, articles like this; http://stackoverflow.com/questions/2605477/spring-hibernate-blob-lazy-loading recommend adding this ALSO;  @Type(type="org.hibernate.type.PrimitiveByteArrayBlobType")
 	public Blob getPayload() {
 		return this.payload;
 	}
