@@ -179,10 +179,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return criteria.list();
 	}
 
-	public int getArkModuleCount(ArkModule arkModuleCriteria) {
+	public long getArkModuleCount(ArkModule arkModuleCriteria) {
 		Criteria criteria = buildArkModuleCriteria(arkModuleCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
 
@@ -209,10 +209,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return criteria;
 	}
 
-	public int getArkFunctionCount(ArkFunction arkFunctionCriteria) {
+	public long getArkFunctionCount(ArkFunction arkFunctionCriteria) {
 		Criteria criteria = buildArkFunctionCriteria(arkFunctionCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
 
@@ -240,10 +240,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return criteria;
 	}
 
-	public int getArkRoleModuleFunctionVOCount(ArkRoleModuleFunctionVO arkRoleModuleFunctionVoCriteria) {
+	public long getArkRoleModuleFunctionVOCount(ArkRoleModuleFunctionVO arkRoleModuleFunctionVoCriteria) {
 		Criteria criteria = buildArkRoleModuleFunctionVoCriteria(arkRoleModuleFunctionVoCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
 	
@@ -366,10 +366,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return criteria.list();
 	}
 
-	public int getArkModuleFunctionCount(ArkModuleFunction arkModuleFunctionCriteria) {
+	public long getArkModuleFunctionCount(ArkModuleFunction arkModuleFunctionCriteria) {
 		Criteria criteria = buildArkModuleFunctionCriteria(arkModuleFunctionCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
 
@@ -498,10 +498,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return (ArkRole) criteria.uniqueResult();
 	}
 
-	public int getArkRoleCount(ArkRole arkRoleCriteria) {
+	public long getArkRoleCount(ArkRole arkRoleCriteria) {
 		Criteria criteria = buildArkRoleCriteria(arkRoleCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
 
@@ -619,10 +619,10 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return criteria.list();
 	}
 
-	public int getArkModuleRoleCount(ArkModuleRole arkModuleRoleCriteria) {
+	public long getArkModuleRoleCount(ArkModuleRole arkModuleRoleCriteria) {
 		Criteria criteria = buildArkModuleRoleCriteria(arkModuleRoleCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
 

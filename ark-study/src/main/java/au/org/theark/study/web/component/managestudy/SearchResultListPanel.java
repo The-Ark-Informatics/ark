@@ -294,8 +294,8 @@ public class SearchResultListPanel extends Panel {
 				detailForm.getSubjectFileUploadContainer().setVisible(isChildStudy);
 				detailForm.getSubjectFileUploadContainer().setEnabled(isChildStudy);
 
-				int totalSubjects = iArkCommonService.getCountOfSubjects(searchStudy);
-				int totalSubjectsOfParent = iArkCommonService.getCountOfSubjects(searchStudy.getParentStudy());
+				long totalSubjects = iArkCommonService.getCountOfSubjects(searchStudy);
+				long totalSubjectsOfParent = iArkCommonService.getCountOfSubjects(searchStudy.getParentStudy());
 
 				studyContainerForm.getModelObject().setTotalSubjects(totalSubjects);
 				studyContainerForm.getModelObject().setTotalSubjectsOfParent(totalSubjectsOfParent);

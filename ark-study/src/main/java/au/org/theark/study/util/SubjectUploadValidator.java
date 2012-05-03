@@ -242,7 +242,7 @@ public class SubjectUploadValidator {
 	 *           is the UploadVO of the file
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateSubjectFileData(UploadVO uploadVo) {
+	public Collection<String> validateSubjectFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
 		java.util.Collection<String> validationMessages = null;
 		try {
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
@@ -264,7 +264,7 @@ public class SubjectUploadValidator {
 				}
 			}
 
-			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter);
+			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -272,13 +272,13 @@ public class SubjectUploadValidator {
 		return validationMessages;
 	}
 
-	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar) {
+	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateRefence) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
 			//TODO performance of valdation now approx 60-90K records per minute, file creation of validation doubles that
 			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though
-			validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE);
+			validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateRefence);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -482,12 +482,13 @@ public class SubjectUploadValidator {
 	 *            general ARK Exception
 	 * @return a collection of data validation messages
 	 */
-	public java.util.Collection<String> validateMatrixSubjectFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate) throws FileFormatException,
+	public java.util.Collection<String> validateMatrixSubjectFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate, List<String> uidsToUpdateReferenceToBeUpdated) throws FileFormatException,
 			ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		curPos = 0;
 		row = 1;
+//		List<String> uidsToUpdate = new ArrayList<String>();
 
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
@@ -525,16 +526,21 @@ public class SubjectUploadValidator {
 
 				// First/0th column should be the SubjectUID
 				String subjectUID = stringLineArray[0];
-
-				for(String subjectFromDB : subjectUIDsAlreadyExisting){
+				boolean isUpdate = subjectUIDsAlreadyExisting.contains(subjectUID);
+/*				for(String subjectFromDB : subjectUIDsAlreadyExisting){
 					if(subjectFromDB.equals(subjectUID)){
-						updateRows.add(row);
+						isUpdate = true;
 					}
-					else{
-						insertRows.add(row);
-					}
-				}
+				}*/
 
+				if(isUpdate){
+					updateRows.add(row);
+					uidsToUpdateReferenceToBeUpdated.add(subjectUID);
+				}
+				else{
+					insertRows.add(row);
+				}
+				
 				int col = 0;
 				String dateStr = new String();
 
@@ -558,7 +564,7 @@ public class SubjectUploadValidator {
 						errorCells.add(new ArkGridCell(col, row));
 					}
 				}
-
+				
 				if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0) {
 
 					if (csvReader.getIndex("DATE_OF_DEATH") > 0) {
@@ -601,6 +607,7 @@ public class SubjectUploadValidator {
 			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
 		}
 		finally {
+	//		 uidsToUpdateReferenceToBeUpdated;
 			// Clean up the IO objects
 			timer.stop();
 			log.warn("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");

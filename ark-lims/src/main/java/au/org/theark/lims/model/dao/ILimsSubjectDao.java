@@ -37,7 +37,7 @@ public interface ILimsSubjectDao {
 	 * @param studyList
 	 * @return
 	 */
-	public abstract int getSubjectCount(LimsVO subjectVO, List<Study> studyList);
+	public abstract long getSubjectCount(LimsVO subjectVO, List<Study> studyList);
 
 	/**
 	 * Search for a Subject based on a SubjectVO criteria, and a list of Studies (user ha access to)

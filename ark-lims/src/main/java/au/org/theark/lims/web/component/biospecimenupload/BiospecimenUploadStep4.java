@@ -26,9 +26,8 @@ import java.util.Date;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
-
 import au.org.theark.core.Constants;
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -41,9 +40,9 @@ import au.org.theark.lims.web.component.biospecimenupload.form.WizardForm;
  * The 4th step of this wizard.
  */
 public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
 	private static final long	serialVersionUID	= 2971945948091031160L;
 	private Form<UploadVO>		containerForm;
 	private WizardForm			wizardForm;
@@ -116,7 +115,7 @@ public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 		biospecimenUploadReport.appendDetails(containerForm.getModelObject().getUpload());
 		biospecimenUploadReport.append(importReport);
 		byte[] bytes = biospecimenUploadReport.getReport().toString().getBytes();
-		Blob uploadReportBlob = Hibernate.createBlob(bytes);
+		Blob uploadReportBlob = util.createBlob(bytes);
 		containerForm.getModelObject().getUpload().setUploadReport(uploadReportBlob);
 	}
 

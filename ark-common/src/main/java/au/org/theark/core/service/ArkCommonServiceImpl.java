@@ -19,6 +19,7 @@
 package au.org.theark.core.service;
 
 import java.net.InetAddress;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import javax.naming.ldap.Rdn;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +61,7 @@ import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.dao.ICSVLoaderDao;
 import au.org.theark.core.dao.ICustomFieldDao;
 import au.org.theark.core.dao.IStudyDao;
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.dao.ReCaptchaContextSource;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
@@ -145,6 +148,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return customFieldDao;
 	}
 
+	public Blob createBlob(byte[] bytes) {
+		return csvLoaderDao.createBlob(bytes);
+	}
+	
 	@Autowired
 	public void setCustomFieldDao(ICustomFieldDao customFieldDao) {
 		this.customFieldDao = customFieldDao;
@@ -426,8 +433,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 * @param auditHistory
 	 * @param userID
 	 */
-	public void createAuditHistory(AuditHistory auditHistory, String userId) {
-		studyDao.createAuditHistory(auditHistory, userId);
+	public void createAuditHistory(AuditHistory auditHistory, String userId, Study study) {
+		studyDao.createAuditHistory(auditHistory, userId, study);
 	}
 
 	public List<PersonContactMethod> getPersonContactMethodList() {
@@ -565,7 +572,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return arkAuthorisationDao.getEntityList(aClass);
 	}
 
-	public int getStudySubjectCount(SubjectVO subjectVoCriteria) {
+	public long getStudySubjectCount(SubjectVO subjectVoCriteria) {
 		return studyDao.getStudySubjectCount(subjectVoCriteria);
 	}
 
@@ -623,7 +630,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getStudiesForUser(arkUser, study);
 	}
 
-	public int getCustomFieldCount(CustomField customFieldCriteria) {
+	public long getCustomFieldCount(CustomField customFieldCriteria) {
 		return customFieldDao.getCustomFieldCount(customFieldCriteria);
 	}
 
@@ -811,7 +818,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return arkAuthorisationDao.getArkModuleListByArkUser(arkUser);
 	}
 
-	public int getCountOfStudies() {
+	public long getCountOfStudies() {
 		return studyDao.getCountOfStudies();
 	}
 
@@ -823,7 +830,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return customFieldDao.getCustomFieldGroups(customFieldGroup, first, count);
 	}
 
-	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup) {
+	public long getCustomFieldGroupCount(CustomFieldGroup customFieldGroup) {
 		return customFieldDao.getCustomFieldGroupCount(customFieldGroup);
 	}
 
@@ -959,7 +966,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		ah.setComment("Updated studyUpload " + studyUpload.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
 		ah.setEntityId(studyUpload.getId());
-		this.createAuditHistory(ah, userId);
+		this.createAuditHistory(ah, userId, studyUpload.getStudy());
 	}
 
 	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter) {
@@ -1074,7 +1081,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		arkAuthorisationDao.deleteArkUserRole(arkUserRole);
 	}
 	
-	public int getCountOfSubjects(Study study){
+	public long getCountOfSubjects(Study study){
 		return studyDao.getCountOfSubjects(study);
 	}
 
@@ -1100,11 +1107,18 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		}
 		return 0;
 	}
-	public List<String> getUniqueSubjectsWithTheseUIDs(Study study, Collection subjectUIDs) {
+	public List<String> getUniqueSubjectUIDsWithTheseUIDs(Study study, Collection subjectUIDs) {
+		if(study!=null && subjectUIDs!=null){
+			return studyDao.getSubjectUIDsThatAlreadyExistWithTheseUIDs(study, subjectUIDs);
+		}
+		return new ArrayList<String>();//maybe exception actually good here
+	}
+
+	public List<LinkSubjectStudy> getUniqueSubjectsWithTheseUIDs(Study study, Collection subjectUIDs) {
 		if(study!=null && subjectUIDs!=null){
 			return studyDao.getSubjectsThatAlreadyExistWithTheseUIDs(study, subjectUIDs);
 		}
-		return new ArrayList<String>();//maybe exception actually good here
+		return new ArrayList<LinkSubjectStudy>();//maybe exception actually good here
 	}
 	
 	public List<String> getAllSubjectUIDs(Study study){

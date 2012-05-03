@@ -63,8 +63,8 @@ public class StudyModelVO implements Serializable {
 	//todo we can set it, cant get it?
 	@SuppressWarnings("unused")
 	private String						totalSubjectsLabel;
-	private int							totalSubjects;
-	private int							totalSubjectsOfParent;
+	private long							totalSubjects;
+	private long							totalSubjectsOfParent;
 
 	public StudyModelVO() {
 		study = new Study();
@@ -282,28 +282,28 @@ public class StudyModelVO implements Serializable {
 	/**
 	 * @return the totalSubjects
 	 */
-	public int getTotalSubjects() {
+	public long getTotalSubjects() {
 		return totalSubjects;
 	}
 
 	/**
 	 * @param totalSubjects the totalSubjects to set
 	 */
-	public void setTotalSubjects(int totalSubjects) {
+	public void setTotalSubjects(long totalSubjects) {
 		this.totalSubjects = totalSubjects;
 	}
 
 	/**
 	 * @param totalSubjectsOfParent the totalSubjectsOfParent to set
 	 */
-	public void setTotalSubjectsOfParent(int totalSubjectsOfParent) {
+	public void setTotalSubjectsOfParent(long totalSubjectsOfParent) {
 		this.totalSubjectsOfParent = totalSubjectsOfParent;
 	}
 
 	/**
 	 * @return the totalSubjectsOfParent
 	 */
-	public int getTotalSubjectsOfParent() {
+	public long getTotalSubjectsOfParent() {
 		return totalSubjectsOfParent;
 	}
 }

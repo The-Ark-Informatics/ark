@@ -34,9 +34,8 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
-
 import au.org.theark.core.Constants;
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -168,7 +167,8 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 
 		try {
 			// Copy file to BLOB object
-			Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+			LobUtil util = new LobUtil();
+			Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
 			containerForm.getModelObject().getUpload().setPayload(payload);
 		}
 		catch (IOException ioe) {

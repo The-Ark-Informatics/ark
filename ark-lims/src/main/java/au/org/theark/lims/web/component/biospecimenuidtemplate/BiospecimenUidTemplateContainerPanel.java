@@ -139,7 +139,7 @@ public class BiospecimenUidTemplateContainerPanel extends AbstractContainerPanel
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return service.getBiospecimenUidTemplateCount(model.getObject());
+				return (int) service.getBiospecimenUidTemplateCount(model.getObject());
 			}
 
 			public Iterator<BiospecimenUidTemplate> iterator(int first, int count) {

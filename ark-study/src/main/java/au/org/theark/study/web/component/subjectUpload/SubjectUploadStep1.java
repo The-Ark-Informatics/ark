@@ -33,16 +33,15 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
-//import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
 /**
@@ -56,6 +55,9 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
+
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
 
 	private Form<UploadVO>						containerForm;
 	private FileUploadField						fileUploadField;
@@ -131,7 +133,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().setFileUpload(fileUpload);	//TODO analyze why VO pattern throughout code, is it always necessary in attion to entity/detached-entity concepts
 
 		try {
-			Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+			Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
 			containerForm.getModelObject().getUpload().setPayload(payload);
 		}
 		catch (IOException ioe) {

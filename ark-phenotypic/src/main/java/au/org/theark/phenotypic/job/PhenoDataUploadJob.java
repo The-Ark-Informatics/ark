@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Date;
 
-import org.hibernate.Hibernate;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -36,6 +36,7 @@ import org.quartz.PersistJobDataAfterExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.PhenotypicSystemException;
@@ -68,6 +69,9 @@ public class PhenoDataUploadJob implements Job {
 	public static final String		PHENO_COLLECTION	= "phenoCollection";
 	public static final String		DATA_FILE			= "dataFile";
 	public static final String		DELIMITER			= "delimiter";
+
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
 	
 	/**
 	 * <p>
@@ -114,7 +118,7 @@ public class PhenoDataUploadJob implements Job {
 		log.info("PhenoUploadJob currentUser to be used: " + currentUser);
 		log.info("PhenoUploadJob phenoCollection to be used in upload: " + phenoCollection.getName());
 		log.info("PhenoUploadJob study to be used in upload: " + study.getName());
-		int phenoTest = iPhenoService.getCountOfCollectionsInStudy(study);
+		long phenoTest = iPhenoService.getCountOfCollectionsInStudy(study);
 		log.info("PhenoUploadJob collections in study (iPhenoServiceTest): " + phenoTest);
 		try {
 			ArkUser arkUser = iArkCommonService.getArkUser(currentUser);
@@ -176,7 +180,7 @@ public class PhenoDataUploadJob implements Job {
 		PhenoUploadReport phenoUploadReport = new PhenoUploadReport();
 		phenoUploadReport.append(uploadReport.toString());
 		byte[] bytes = phenoUploadReport.getReport().toString().getBytes();
-		Blob uploadReportBlob = Hibernate.createBlob(bytes);
+		Blob uploadReportBlob = util.createBlob(bytes);
 		upload.setUploadReport(uploadReportBlob);
 		iPhenoService.updateUpload(upload);
 	}

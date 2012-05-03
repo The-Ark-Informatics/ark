@@ -86,7 +86,7 @@ public interface IBiospecimenDao {
 	 *           criteria
 	 * @return counts
 	 */
-	public int getBiospecimenCount(Biospecimen biospecimenCriteria);
+	public long getBiospecimenCount(Biospecimen biospecimenCriteria);
 
 	/**
 	 * A generic interface that will return a list Biospecimens specified by a particular criteria, and a paginated reference point
@@ -109,7 +109,7 @@ public interface IBiospecimenDao {
 	 * @param limsVo
 	 * @return
 	 */
-	public int getBiospecimenCount(LimsVO limsVo);
+	public long getBiospecimenCount(LimsVO limsVo);
 
 	/**
 	 * Search Biospecimen based on a LimsVO criteria
@@ -120,7 +120,7 @@ public interface IBiospecimenDao {
 	 */
 	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count);
 
-	public int getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction);
+	public long getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction);
 	
 	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, int first, int count);
 

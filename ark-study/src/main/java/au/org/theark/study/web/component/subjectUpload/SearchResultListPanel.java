@@ -205,6 +205,7 @@ public class SearchResultListPanel extends Panel {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
 				try {
+					//TODO ASAP - make this be lazy about getting the payload
 					data = upload.getPayload().getBytes(1, (int) upload.getPayload().length());
 				}
 				catch (SQLException e) {

@@ -133,11 +133,11 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.searchArkModule(arkModule);
 	}
 
-	public int getArkFunctionCount(ArkFunction arkFunctionCriteria) {
+	public long getArkFunctionCount(ArkFunction arkFunctionCriteria) {
 		return iAdminDao.getArkFunctionCount(arkFunctionCriteria);
 	}
 
-	public int getArkModuleCount(ArkModule arkModuleCriteria) {
+	public long getArkModuleCount(ArkModule arkModuleCriteria) {
 		return iAdminDao.getArkModuleCount(arkModuleCriteria);
 	}
 
@@ -149,7 +149,7 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.searchPageableArkModules(arkModuleCriteria, first, count);
 	}
 
-	public int getArkRoleModuleFunctionVOCount(ArkRoleModuleFunctionVO arkRoleModuleFunctionVO) {
+	public long getArkRoleModuleFunctionVOCount(ArkRoleModuleFunctionVO arkRoleModuleFunctionVO) {
 		return iAdminDao.getArkRoleModuleFunctionVOCount(arkRoleModuleFunctionVO);
 	}
 
@@ -173,7 +173,7 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.getArkModuleList(arkRole);
 	}
 
-	public int getArkModuleFunctionCount(ArkModuleFunction arkModuleFunctionCriteria) {
+	public long getArkModuleFunctionCount(ArkModuleFunction arkModuleFunctionCriteria) {
 		return iAdminDao.getArkModuleFunctionCount(arkModuleFunctionCriteria);
 	}
 
@@ -201,7 +201,7 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.getArkRole(id);
 	}
 
-	public int getArkRoleCount(ArkRole arkRoleCriteria) {
+	public long getArkRoleCount(ArkRole arkRoleCriteria) {
 		return iAdminDao.getArkRoleCount(arkRoleCriteria);
 	}
 
@@ -225,7 +225,7 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return iAdminDao.getArkModuleRole(id);
 	}
 
-	public int getArkModuleRoleCount(ArkModuleRole arkModuleRoleCriteria) {
+	public long getArkModuleRoleCount(ArkModuleRole arkModuleRoleCriteria) {
 		return iAdminDao.getArkModuleRoleCount(arkModuleRoleCriteria);
 	}
 

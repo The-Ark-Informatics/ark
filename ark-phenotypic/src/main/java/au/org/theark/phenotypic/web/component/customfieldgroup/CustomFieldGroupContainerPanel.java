@@ -118,13 +118,10 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 		// Data providor to paginate resultList
 		arkDataProvider = new ArkDataProvider2<CustomFieldGroup, CustomFieldGroup>() {
 
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			public int size() {
-				return iArkCommonService.getCustomFieldGroupCount(criteriaModel.getObject());
+				return (int)iArkCommonService.getCustomFieldGroupCount(criteriaModel.getObject());//TODO safe
 			}
 
 			public Iterator<CustomFieldGroup> iterator(int first, int count) {

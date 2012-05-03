@@ -147,13 +147,10 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		// Data provider to paginate resultList
 		bioColectionProvider = new ArkDataProvider<BioCollection, ILimsService>(iLimsService) {
 
-			/**
-			 * 
-			 */
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return service.getBioCollectionCount(model.getObject());
+				return (int)service.getBioCollectionCount(model.getObject());
 			}
 
 			public Iterator<BioCollection> iterator(int first, int count) {
@@ -199,9 +196,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 	private void initialiseNewButton() {
 		newButton = new ArkBusyAjaxButton(Constants.NEW) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

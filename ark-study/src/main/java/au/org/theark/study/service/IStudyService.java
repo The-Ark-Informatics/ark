@@ -270,16 +270,16 @@ public interface IStudyService {
 
 	public SubjectUploadValidator validateSubjectFileFormat(UploadVO uploadVo);
 
-	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar);
+	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> referenceOfListStringsToUpdate);
 
-	public SubjectUploadValidator validateSubjectFileData(UploadVO uploadVo);
+	public SubjectUploadValidator validateSubjectFileData(UploadVO uploadVo, List<String> referenceOfListStringsToUpdate);
 
-	public StringBuffer uploadAndReportMatrixSubjectFile(File file, String fileFormat, char delimChar);
+	public StringBuffer uploadAndReportMatrixSubjectFile(File file, String fileFormat, char delimChar, List<String> listOfUIDsToUpdate);
 
-	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId);
+	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId,  List<String> listOfUIDsToUpdate);
 
 //TODO Trav Deprecated	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
-	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException;
+	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList, Study study) throws ArkUniqueException, ArkSubjectInsertException;
 
 	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException;
 
@@ -295,7 +295,7 @@ public interface IStudyService {
 
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
 
-	public int getSubjectCustomFieldDataCount(LinkSubjectStudy criteria, ArkFunction arkFunction);
+	public long getSubjectCustomFieldDataCount(LinkSubjectStudy criteria, ArkFunction arkFunction);
 
 	/**
 	 * Allows to Save(Insert) or Update SubjectCustomFieldData. If there are SubjectCustomFieldData with no data value then it will discard it from the
@@ -374,4 +374,6 @@ public interface IStudyService {
 	public ConsentType getConsentTypeByName(String string);
 
 	public void setPreferredMailingAdressToFalse(Person person);
+	
+	public void processBatch(List<LinkSubjectStudy> subjectList, Study study, List<LinkSubjectStudy> subjectsToInsert);
 }

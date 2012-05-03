@@ -29,7 +29,8 @@ import au.org.theark.core.model.audit.entity.ConsentHistory;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.StudyComp;
+
+import org.springframework.orm.hibernate4.SessionFactoryUtils;
 
 /**
  * Provides CRUD and accessor methods to Audit entities

@@ -138,7 +138,7 @@ public class BarcodePrinterContainerPanel extends AbstractContainerPanel<Barcode
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return service.getBarcodePrinterCount(model.getObject());
+				return (int)service.getBarcodePrinterCount(model.getObject());
 			}
 
 			public Iterator<BarcodePrinter> iterator(int first, int count) {

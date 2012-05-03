@@ -25,6 +25,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -49,6 +50,7 @@ public class StudyDataUploadExecutor {
 	private long							size;
 
 	private String							report;
+	private List<String>					uidsToUpload;
 	
 	/**
 	 * StudyDataUploadExecutor constructor
@@ -61,6 +63,7 @@ public class StudyDataUploadExecutor {
 	 * @param file
 	 * @param delimiter
 	 * @param report 
+	 * @param uidsToUpload 
 	 */
 	public StudyDataUploadExecutor(IArkCommonService iArkCommonService,
 											IStudyService iStudyService,
@@ -69,7 +72,7 @@ public class StudyDataUploadExecutor {
 											Long studyId,
 											String fileFormat,
 											char delimiter,
-											long size, String report) {
+											long size, String report, List<String> uidsToUpload) {
 		this.iArkCommonService = iArkCommonService;
 		this.iStudyService = iStudyService;
 		this.inputStream = inputStream;
@@ -79,6 +82,7 @@ public class StudyDataUploadExecutor {
 		this.delimiter = delimiter;
 		this.size = size;
 		this.report = report;
+		this.uidsToUpload = uidsToUpload;
 	}
 
 	public void run() throws Exception {
@@ -97,6 +101,7 @@ public class StudyDataUploadExecutor {
 		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.INPUT_STREAM, inputStream);
 		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.DELIMITER, delimiter);
 		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.SIZE, size);
+		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
 
 		Date startTime = nextGivenSecondDate(null, 1);
 		

@@ -58,7 +58,7 @@ public interface ICustomFieldDao {
 	 * @param customFieldCriteria
 	 * @return
 	 */
-	public int getCustomFieldCount(CustomField customFieldCriteria);
+	public long getCustomFieldCount(CustomField customFieldCriteria);
 
 	/**
 	 * Get a CustomFieldDisplay based on it's id
@@ -74,7 +74,7 @@ public interface ICustomFieldDao {
 	 */
 	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria);
 
-	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup);
+	public long getCustomFieldGroupCount(CustomFieldGroup customFieldGroup);
 
 	/**
 	 * Look up and return a list of CustomFieldGroup entities that match the search criteria. The mandatory parameters

@@ -68,12 +68,20 @@ import au.org.theark.core.vo.SubjectVO;
 public interface IStudyDao {
 	
 	/**
+	 * Perform all inserts and updates as an atomic unit
+	 * @param subjectsToInsert
+	 * @param study
+	 * @param subjectsToUpdate
+	 */
+	public void processBatch(List<LinkSubjectStudy> subjectsToInsert, Study study, List<LinkSubjectStudy> subjectsToUpdate);
+
+	/**
 	 * This will take a list of detached LinkSubjectStudies (whcih will contain associated Persons, etc and insert them.
 	 * @param subjectsToInsert
 	 * @throws ArkUniqueException
 	 * @throws ArkSubjectInsertException
 	 */
-	public void batchInsertSubjects(List<LinkSubjectStudy> subjectsToInsert) throws ArkUniqueException, ArkSubjectInsertException;
+	public List<LinkSubjectStudy> batchInsertSubjects(List<LinkSubjectStudy> subjectsToInsert, Study study) throws ArkUniqueException, ArkSubjectInsertException;
 	
 	/**
 	 * Create a new study
@@ -328,7 +336,7 @@ public interface IStudyDao {
 
 	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId, Study study) throws EntityNotFoundException, ArkSystemException;
 
-	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction);
+	public long getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction);
 
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
 

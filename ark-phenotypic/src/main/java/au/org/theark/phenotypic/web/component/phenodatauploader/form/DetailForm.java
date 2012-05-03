@@ -46,10 +46,10 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IOUtils;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.PhenotypicSystemException;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -72,9 +72,11 @@ import au.org.theark.phenotypic.util.PhenoDataImportValidator;
  * 
  */
 public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
-	/**
-	 * 
-	 */
+
+
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
+	
 	private static final long	serialVersionUID	= -8266132080909805310L;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
@@ -213,9 +215,10 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 				strBuf.append(message +"\n");
 			}
 			byte[] bytes = strBuf.toString().getBytes();
-			Blob uploadReportBlob = Hibernate.createBlob(bytes);
+
+			Blob uploadReportBlob = util.createBlob(bytes);
 			inputStream = new BufferedInputStream(new FileInputStream(temp));
-			Blob payload = Hibernate.createBlob(inputStream);
+			Blob payload = util.createBlob(inputStream, temp.length());
 			newUpload.setPayload(payload);
 			newUpload.setUploadReport(uploadReportBlob);
 			newUpload.setFinishTime(new Date(System.currentTimeMillis()));

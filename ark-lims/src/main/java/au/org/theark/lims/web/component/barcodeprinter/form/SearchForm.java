@@ -42,7 +42,6 @@ import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
@@ -173,8 +172,8 @@ public class SearchForm extends AbstractSearchForm<BarcodePrinter> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
-		int count = iLimsAdminService.getBarcodePrinterCount(getModelObject());
-		if (count == 0) {
+		long count = iLimsAdminService.getBarcodePrinterCount(getModelObject());
+		if (count == 0L) {
 			this.info("There are no records that matched your query. Please modify your filter");
 			target.add(feedbackPanel);
 		}

@@ -132,14 +132,14 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		getSession().update(biospecimen);
 	}
 
-	public int getBiospecimenCount(Biospecimen biospecimenCriteria) {
+	public long getBiospecimenCount(Biospecimen biospecimenCriteria) {
 		// Handle for study not in context
 		if (biospecimenCriteria.getStudy() == null) {
 			return 0;
 		}
 		Criteria criteria = buildBiospecimenCriteria(biospecimenCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount.intValue();
 	}
 
@@ -189,10 +189,10 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		return biospecimen;
 	}
 
-	public int getBiospecimenCount(LimsVO limsVo) {
+	public long getBiospecimenCount(LimsVO limsVo) {
 		Criteria criteria = buildBiospecimenCriteria(limsVo);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount.intValue();
 	}
 	
@@ -248,14 +248,13 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		return list;
 	}
 
-	public int getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction) {
+	public long getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction) {
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.createAlias("customField", "cfield");
 		criteria.add(Restrictions.eq("cfield.study", biospecimenCriteria.getStudy()));
 		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
 		criteria.setProjection(Projections.rowCount());
-		Integer count = (Integer) criteria.uniqueResult();
-		return count.intValue();
+		return  (Long)criteria.uniqueResult();
 	}
 
 	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, int first, int count) {
@@ -420,7 +419,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 				biospecimenUidPadChar = biospecimenUidTemplate.getBiospecimenUidPadChar().getName().trim();
 			}
 
-			int incrementedValue = getNextUidSequence(studyToUse).intValue() - 1;
+			int incrementedValue = getNextUidSequence(studyToUse).intValue();
 			nextIncrementedBiospecimenUid = nextIncrementedBiospecimenUid.append(incrementedValue);
 
 			int size = Integer.parseInt(biospecimenUidPadChar);
@@ -509,7 +508,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setProjection(Projections.count("id"));
-		Integer count = (Integer) criteria.uniqueResult();
+		Long count = (Long) criteria.uniqueResult();
 		return count>0;
 	}
 

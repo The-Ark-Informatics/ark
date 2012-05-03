@@ -1000,7 +1000,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		getSession().update(phenoCollectionUpload);
 	}
 
-	public int getCountOfFieldsInStudy(Study study) {
+	public long getCountOfFieldsInStudy(Study study) {
 		int count = 0;
 
 		if (study.getId() != null) {
@@ -1013,7 +1013,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return count;
 	}
 
-	public int getCountOfFieldsWithDataInStudy(Study study) {
+	public long getCountOfFieldsWithDataInStudy(Study study) {
 		int count = 0;
 
 		if (study.getId() != null) {
@@ -1054,7 +1054,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return phenoUploadCollection;
 	}
 
-	public int getCountOfCollectionsInStudy(Study study) {
+	public long getCountOfCollectionsInStudy(Study study) {
 		int count = 0;
 
 		if (study.getId() != null) {
@@ -1068,8 +1068,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return count;
 	}
 
-	public int getCountOfCollectionsWithDataInStudy(Study study) {
-		int count = 0;
+	public long getCountOfCollectionsWithDataInStudy(Study study) {
+		long count = 0;
 
 		if (study.getId() != null) {
 			Collection<PhenoCollection> phenoCollectionColn = getPhenoCollectionByStudy(study);
@@ -1083,7 +1083,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 				projList.add(Projections.countDistinct("collection"));
 				criteria.setProjection(projList);
 				List list = criteria.list();
-				count = count + (Integer) list.get(0);
+				count = count + ((Long) list.get(0));
 			}
 		}
 
@@ -1120,7 +1120,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		getSession().update(fieldPhenoCollection);
 	}
 
-	public int getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria) {
+	public long getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria) {
 		// Handle for study not in context
 		if (phenoCollectionVoCriteria.getStudy() == null) {
 			return 0;
@@ -1128,7 +1128,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		Criteria criteria = buildGeneralCriteria(phenoCollectionVoCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
 
@@ -1380,12 +1380,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return (PhenotypicCollection) getSession().get(PhenotypicCollection.class, id);
 	}
 
-	public int getPhenoDataCount(PhenotypicCollection phenoCollection) {
+	public long getPhenoDataCount(PhenotypicCollection phenoCollection) {
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.createAlias("customFieldGroup", "qnaire");
 		criteria.add(Restrictions.eq("qnaire.id", phenoCollection.getQuestionnaire().getId()));
 		criteria.setProjection(Projections.rowCount());
-		Integer count = (Integer) criteria.uniqueResult();
+		Long count = (Long) criteria.uniqueResult();
 		return count.intValue();
 	}
 
@@ -1482,14 +1482,14 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 	}
 
-	public int getPhenotypicCollectionCount(PhenoDataCollectionVO collectionCriteria) {
+	public long getPhenotypicCollectionCount(PhenoDataCollectionVO collectionCriteria) {
 		Criteria criteria = getSession().createCriteria(PhenotypicCollection.class);
 		criteria.createAlias("questionnaire", "qnaire");
 		criteria.add(Restrictions.eq("linkSubjectStudy", collectionCriteria.getPhenotypicCollection().getLinkSubjectStudy()));
 		// Just a precaution (PhenoCollection to should always map to a CustomFieldGroup where the ArkFunction will correspond to Pheno) 
 		criteria.add(Restrictions.eq("qnaire.arkFunction", collectionCriteria.getArkFunction()));	
 		criteria.setProjection(Projections.rowCount());
-		Integer count = (Integer) criteria.uniqueResult();
+		Long count = (Long) criteria.uniqueResult();
 		return count;
 	}
 
@@ -1672,12 +1672,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		
 	}
 	
-	public int getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup){
+	public long getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup){
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
 		criteria.setProjection(Projections.rowCount());
-		Integer count  = (Integer)criteria.uniqueResult();
-		return count.intValue();
+		return (Long)criteria.uniqueResult();
 	}
 
 	public void createPhenotypicCollection(PhenotypicCollection phenotypicCollection) {

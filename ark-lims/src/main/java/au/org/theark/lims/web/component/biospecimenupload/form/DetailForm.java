@@ -35,9 +35,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
-
 import au.org.theark.core.Constants;
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -58,6 +57,8 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	 */
 	private static final long	serialVersionUID	= 1L;
 
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
 
@@ -143,7 +144,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 
 			try {
 				// Copy file to BLOB object
-				Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+				Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
 				containerForm.getModelObject().getUpload().setPayload(payload);
 			}
 			catch (IOException ioe) {

@@ -21,15 +21,13 @@ package au.org.theark.study.job;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Date;
-
-import org.hibernate.Hibernate;
+import java.util.List;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
-
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
@@ -55,11 +53,13 @@ public class StudyDataUploadJob implements Job {
 	public static final String		FILE_FORMAT			= "fileFormat";
 	public static final String		DELIMITER			= "delimiter";
 	public static final String		INPUT_STREAM		= "inputStream";
-	public static final String		SIZE					= "size";
-
-	public static final String		REPORT				= "report";
+	public static final String		SIZE						= "size";
+	public static final String		REPORT						= "report";
+	public static final String		LIST_OF_UIDS_TO_UPDATE	= "listOfUidsToUpdate";
+	
 	private IStudyService	iStudyService;
 	private IArkCommonService<Void>	iArkCommonService;
+
 	/**
 	 * Empty constructor for job initialization
 	 * Quartz requires a public empty constructor so that the scheduler can instantiate the class whenever it needs.
@@ -85,24 +85,27 @@ public class StudyDataUploadJob implements Job {
 		long size 					= data.getLongValue(SIZE);
 		String originalReport 	= data.getString(REPORT);
 		Long studyId 				= data.getLongValue(STUDY_ID);
+		List<String> uidsToUpdate=(List<String>)data.get(LIST_OF_UIDS_TO_UPDATE);
 		
 		try {
-			StringBuffer uploadReport = iStudyService.uploadAndReportMatrixSubjectFile(inputStream, size, fileFormat, delimiter, studyId);
+			Date startTime = new Date(System.currentTimeMillis());
+			StringBuffer uploadReport = iStudyService.uploadAndReportMatrixSubjectFile(inputStream, size, fileFormat, delimiter, studyId, uidsToUpdate);
 			StudyUpload upload = iStudyService.getUpload(uploadId);
-			save(upload, uploadReport.toString(), originalReport);
+			save(upload, uploadReport.toString(), originalReport, startTime);
 		}
 		/*catch (FileFormatException e) {	}catch (ArkSystemException e) {	}*/
 		catch(Exception e){
-			// TODO Auto-generated catch block ...fix
+			// TODO Auto-generated catch block ...fix this throughout the application
 			e.printStackTrace();
 		}
 	}
 
-	private void save(StudyUpload upload, String report, String originalReport) {
+	private void save(StudyUpload upload, String report, String originalReport, Date startTime) {
 		iStudyService.refreshUpload(upload);
 		byte[] bytes = (originalReport + report).getBytes();
-		Blob uploadReportBlob = Hibernate.createBlob(bytes);
+		Blob uploadReportBlob = iArkCommonService.createBlob(bytes);
 		upload.setUploadReport(uploadReportBlob);
+		upload.setStartTime(startTime);
 		upload.setFinishTime(new Date(System.currentTimeMillis()));
 		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
 		iArkCommonService.updateUpload(upload);

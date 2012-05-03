@@ -154,7 +154,7 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return iPhenotypicService.getPhenotypicCollectionCount(criteriaModel.getObject());
+				return (int)iPhenotypicService.getPhenotypicCollectionCount(criteriaModel.getObject());
 			}
 
 			public Iterator<PhenotypicCollection> iterator(int first, int count) {

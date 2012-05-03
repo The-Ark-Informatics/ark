@@ -135,7 +135,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 				bioCollectionUidPadChar = biocollectionUidTemplate.getBioCollectionUidPadChar().getName().trim();
 			}
 
-			int incrementedValue = getNextUidSequence(studyToUse).intValue() - 1;
+			int incrementedValue = getNextUidSequence(studyToUse).intValue();
 			nextIncrementedBioCollectionUid = nextIncrementedBioCollectionUid.append(incrementedValue);
 
 			int size = Integer.parseInt(bioCollectionUidPadChar);
@@ -203,7 +203,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		sizeCriteria.add(Property.forName("lss.id").eqProperty("bc.linkSubjectStudy.id"));
 		criteria.add(Subqueries.exists(sizeCriteria.setProjection(Projections.property("bc.id"))));
 		criteria.setProjection(Projections.rowCount());
-		Boolean result = ((Integer) criteria.uniqueResult()) > 0;
+		Boolean result = ((Long) criteria.uniqueResult()) > 0L;
 		session.close();
 
 		return result;
@@ -218,21 +218,21 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		sizeCriteria.add(Property.forName("bc.id").eqProperty("b.bioCollection.id"));
 		criteria.add(Subqueries.exists(sizeCriteria.setProjection(Projections.property("b.id"))));
 		criteria.setProjection(Projections.rowCount());
-		Boolean result = ((Integer) criteria.uniqueResult()) > 0;
+		Boolean result = ((Long) criteria.uniqueResult()) > 0L;
 		session.close();
 
 		return result;
 	}
 
-	public int getBioCollectionCount(BioCollection bioCollectionCriteria) {
+	public long getBioCollectionCount(BioCollection bioCollectionCriteria) {
 		// Handle for study not in context
 		if (bioCollectionCriteria.getStudy() == null) {
 			return 0;
 		}
 		Criteria criteria = buildBioCollectionCriteria(bioCollectionCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
-		return totalCount.intValue();
+		Long totalCount = (Long) criteria.uniqueResult();
+		return totalCount;
 	}
 
 	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, int first, int count) {
@@ -271,14 +271,13 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 	/**
 	 * This count can be based on CustomFieldDisplay alone (i.e. does not need left join to BioCollectionCustomFieldData)
 	 */
-	public int getBioCollectionCustomFieldDataCount(BioCollection bioCollectionCriteria, ArkFunction arkFunction) {
+	public long getBioCollectionCustomFieldDataCount(BioCollection bioCollectionCriteria, ArkFunction arkFunction) {
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.createAlias("customField", "cfield");
 		criteria.add(Restrictions.eq("cfield.study", bioCollectionCriteria.getStudy()));
 		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
 		criteria.setProjection(Projections.rowCount());
-		Integer count = (Integer) criteria.uniqueResult();
-		return count.intValue();
+		return (Long) criteria.uniqueResult();
 	}
 	
 	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, int first, int count) {

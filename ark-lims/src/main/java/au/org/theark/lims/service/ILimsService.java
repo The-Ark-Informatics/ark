@@ -151,7 +151,7 @@ public interface ILimsService {
 	 *           criteria
 	 * @return counts
 	 */
-	public int getBioTransactionCount(BioTransaction bioTransactionCriteria);
+	public long getBioTransactionCount(BioTransaction bioTransactionCriteria);
 
 	/**
 	 * Look up a List of LIMS BioTransaction(s) based on the supplied bioTransaction criteria
@@ -213,7 +213,7 @@ public interface ILimsService {
 	 *           criteria
 	 * @return counts
 	 */
-	public int getBioCollectionCount(BioCollection bioCollection);
+	public long getBioCollectionCount(BioCollection bioCollection);
 
 	/**
 	 * A generic interface that will return a list BioCollections specified by a particular criteria, and a paginated reference point
@@ -231,7 +231,7 @@ public interface ILimsService {
 	 *           criteria
 	 * @return counts
 	 */
-	public int getBiospecimenCount(Biospecimen biospecimenCriteria);
+	public long getBiospecimenCount(Biospecimen biospecimenCriteria);
 
 	/**
 	 * A generic interface that will return a list Biospecimens specified by a particular criteria, and a paginated reference point
@@ -249,7 +249,7 @@ public interface ILimsService {
 	 */
 	public Biospecimen getBiospecimenByUid(String biospecimenUid);
 
-	public int getBioCollectionCustomFieldDataCount(BioCollection criteria, ArkFunction arkFunction);
+	public long getBioCollectionCustomFieldDataCount(BioCollection criteria, ArkFunction arkFunction);
 	
 	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, int first, int count);
 	
@@ -266,7 +266,7 @@ public interface ILimsService {
 	 * @param limsVo
 	 * @return
 	 */
-	public int getBiospecimenCount(LimsVO limsVo);
+	public long getBiospecimenCount(LimsVO limsVo);
 
 	/**
 	 * Get a list of Biospecimen(s) based on a LimsVO criteria
@@ -277,7 +277,7 @@ public interface ILimsService {
 	 */
 	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count);
 
-	public int getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction);
+	public long getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction);
 
 	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, int first, int count);
 	

@@ -31,7 +31,7 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 	 * 
 	 */
 	private static final long										serialVersionUID	= 1L;
-	private TextField<String>										requiredMessageTxtFld;
+//	private TextField<String>										requiredMessageTxtFld;
 	private TextField<String>										customFieldNameTxtFld;
 	private TextField<String>										customFieldDisplayIdTxtFld;
 	private CheckBox													requiredFieldCb;

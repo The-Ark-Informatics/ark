@@ -42,11 +42,11 @@ public class LimsSubjectDao extends HibernateSessionDao implements ILimsSubjectD
 	/* (non-Javadoc)
 	 * @see au.org.theark.lims.model.dao.ILimsSubjectDao#getSubjectCount(au.org.theark.core.vo.LimsVO, java.util.List)
 	 */
-	public int getSubjectCount(LimsVO limsVo, List<Study> studyList) {
+	public long getSubjectCount(LimsVO limsVo, List<Study> studyList) {
 		if (studyList != null && !studyList.isEmpty()) {
 			Criteria criteria = buildGeneralSubjectCriteria(limsVo, studyList);
 			criteria.setProjection(Projections.rowCount());
-			Integer totalCount = (Integer) criteria.uniqueResult();
+			Long totalCount = (Long) criteria.uniqueResult();
 			return totalCount.intValue();
 		}
 		else {

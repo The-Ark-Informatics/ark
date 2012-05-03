@@ -169,8 +169,8 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
-		int count = iLimsAdminService.getBarcodeLabelCount(getModelObject());
-		if (count == 0) {
+		long count = iLimsAdminService.getBarcodeLabelCount(getModelObject());
+		if (count == 0L) {
 			this.info("There are no records that matched your query. Please modify your filter");
 			target.add(feedbackPanel);
 		}

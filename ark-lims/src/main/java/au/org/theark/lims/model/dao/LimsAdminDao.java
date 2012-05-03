@@ -124,17 +124,17 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		return result;
 	}
 
-	public int getBarcodeLabelCount(BarcodeLabel object) {
+	public long getBarcodeLabelCount(BarcodeLabel object) {
 		Criteria criteria = buildBarcodeLabelCriteria(object);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
 
-	public int getBarcodePrinterCount(BarcodePrinter object) {
+	public long getBarcodePrinterCount(BarcodePrinter object) {
 		Criteria criteria = buildBarcodePrinterCriteria(object);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
 
@@ -248,10 +248,10 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		return criteria.list();
 	}
 
-	public int getBiospecimenUidTemplateCount(BiospecimenUidTemplate modelObject) {
+	public long getBiospecimenUidTemplateCount(BiospecimenUidTemplate modelObject) {
 		Criteria criteria = buildBiospecimenUidTemplateCriteria(modelObject);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
 

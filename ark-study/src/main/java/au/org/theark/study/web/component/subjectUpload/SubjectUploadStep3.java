@@ -20,7 +20,9 @@ package au.org.theark.study.web.component.subjectUpload;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -129,7 +131,13 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 
 			SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
-			validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject());
+			
+			//this is not the best way to do this fix TODO
+			List<String> listOfUidsToUpdate = new ArrayList<String>();
+			validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject(), listOfUidsToUpdate);
+			log.warn("________________________________________________________" +
+					"-list of uids is of size " + listOfUidsToUpdate.size() + "________________________________________________________");
+			containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 			this.containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));

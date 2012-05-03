@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.service;
 
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -393,7 +394,7 @@ public interface IArkCommonService<T> {
 	 * 
 	 * @return int
 	 */
-	public int getStudySubjectCount(SubjectVO subjectVoCriteria);
+	public long getStudySubjectCount(SubjectVO subjectVoCriteria);
 
 	public Collection<ArkModuleRole> getArkModuleAndLinkedRoles();
 
@@ -432,7 +433,7 @@ public interface IArkCommonService<T> {
 	 * @param customFieldCriteria
 	 * @return int
 	 */
-	public int getCustomFieldCount(CustomField customFieldCriteria);
+	public long getCustomFieldCount(CustomField customFieldCriteria);
 
 	/**
 	 * A generic interface that will return a list CustomFields specified by a particular criteria, and a paginated reference point
@@ -491,7 +492,7 @@ public interface IArkCommonService<T> {
 	
 	public List<ArkModule> getArkModuleListByArkUser(ArkUser arkUser);
 	
-	public int getCountOfStudies();
+	public long getCountOfStudies();
 	
 	public Boolean isArkUserLinkedToStudies(ArkUser arkUser);
 	
@@ -502,7 +503,7 @@ public interface IArkCommonService<T> {
 	 * @param customFieldGroup
 	 * @return
 	 */
-	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup);
+	public long getCustomFieldGroupCount(CustomFieldGroup customFieldGroup);
 
 	public CustomField getFieldByNameAndStudyAndFunction(String fieldName, Study study, ArkFunction arkFunction) throws EntityNotFoundException;
 
@@ -566,6 +567,8 @@ public interface IArkCommonService<T> {
 
 	public void updateUpload(StudyUpload studyUpload);
 	
+	public Blob createBlob(byte[] bytes);
+	
 	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter);
 
 	public void createCustomFieldUpload(CustomFieldUpload cfUpload);
@@ -593,7 +596,7 @@ public interface IArkCommonService<T> {
 	
 	public Boolean studyHasBioCollection(Study study);
 	
-	public int getCountOfSubjects(Study study);
+	public long getCountOfSubjects(Study study);
 
 //	public long countNumberOfUniqueSubjects(Study study, List subjects);
 	public long countNumberOfUniqueSubjectsWithTheseUIDs(Study study, List subjectUIDs);
@@ -645,7 +648,9 @@ public interface IArkCommonService<T> {
 	
 	public boolean customFieldHasData(CustomField customField);
 
-	public List<String> getUniqueSubjectsWithTheseUIDs(Study study, Collection subjectUIDs);
+	public List<String> getUniqueSubjectUIDsWithTheseUIDs(Study study, Collection subjectUIDs);
+
+	public List<LinkSubjectStudy> getUniqueSubjectsWithTheseUIDs(Study study, Collection subjectUIDs);
 	
 	public List<String> getAllSubjectUIDs(Study study);
 }

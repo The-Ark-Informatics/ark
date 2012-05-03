@@ -98,8 +98,8 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
 		containerForm.getModelObject().getArkModuleRole().setArkModule(containerForm.getModelObject().getArkModule());
-		int count = iAdminService.getArkModuleRoleCount(containerForm.getModelObject().getArkModuleRole());
-		if (count == 0) {
+		long count = iAdminService.getArkModuleRoleCount(containerForm.getModelObject().getArkModuleRole());
+		if (count == 0L) {
 			this.info("There are no records that matched your query. Please modify your filter");
 			target.add(feedbackPanel);
 		}

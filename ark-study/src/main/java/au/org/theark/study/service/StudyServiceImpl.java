@@ -850,7 +850,7 @@ public class StudyServiceImpl implements IStudyService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public StringBuffer uploadAndReportMatrixSubjectFile(File file, String fileFormat, char delimChar) {
+	public StringBuffer uploadAndReportMatrixSubjectFile(File file, String fileFormat, char delimChar, List<String> uidsToUpdate) {
 		StringBuffer uploadReport = null;
 		Subject currentUser = SecurityUtils.getSubject();
 		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -862,7 +862,7 @@ public class StudyServiceImpl implements IStudyService {
 			InputStream is = new FileInputStream(file);
 
 			log.debug("Importing and reporting Subject file");
-			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(is, file.length(), fileFormat, delimChar);
+			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(is, file.length(), fileFormat, delimChar, uidsToUpdate);
 		}
 		catch (IOException ioe) {
 			log.error(Constants.IO_EXCEPTION + ioe);
@@ -915,11 +915,11 @@ public class StudyServiceImpl implements IStudyService {
 		return subjectUploadValidator;
 	}
 
-	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar) {
+	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 		try {
 			log.debug("Validating Subject file data");
-			subjectUploadValidator.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE);
+			subjectUploadValidator.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateReference);
 		}
 		catch (FileFormatException ffe) {
 			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -930,13 +930,14 @@ public class StudyServiceImpl implements IStudyService {
 		return subjectUploadValidator;
 	}
 
-	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId) {
+	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId, List<String> listOfUIDsToUpdate) {
+		//log.warn("do i still have a list of uids?    this many: " + listOfUIDsToUpdate);
 		StringBuffer uploadReport = null;
 		Study study = iArkCommonService.getStudy(studyId);
 		SubjectUploader subjectUploader = new SubjectUploader(study, iArkCommonService, this);
 
 		try {
-			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(inputStream, size, fileFormat, delimChar);
+			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate);
 		}
 		catch (FileFormatException ffe) {
 			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -953,14 +954,18 @@ public class StudyServiceImpl implements IStudyService {
 		return subjectUploadValidator;
 	}
 
-	public SubjectUploadValidator validateSubjectFileData(UploadVO uploadVo) {
+	public SubjectUploadValidator validateSubjectFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
-		subjectUploadValidator.validateSubjectFileData(uploadVo);
+		subjectUploadValidator.validateSubjectFileData(uploadVo, uidsToUpdateReference);
 		return subjectUploadValidator;
 	}
 
-	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException {
-		iStudyDao.batchInsertSubjects(subjectList);
+	public void processBatch(List<LinkSubjectStudy> subjectList, Study study, List<LinkSubjectStudy> subjectsToInsert) {
+		iStudyDao.processBatch(subjectList, study, subjectsToInsert);
+	}
+
+	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList, Study study) throws ArkUniqueException, ArkSubjectInsertException {
+		iStudyDao.batchInsertSubjects(subjectList, study);
 	}
 
 
@@ -985,7 +990,7 @@ public class StudyServiceImpl implements IStudyService {
 	/**
 	 * 
 	 */
-	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction) {
+	public long getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction) {
 		return iStudyDao.getSubjectCustomFieldDataCount(linkSubjectStudyCriteria, arkFunction);
 	}
 
@@ -1186,5 +1191,7 @@ public class StudyServiceImpl implements IStudyService {
 	public ConsentType getConsentTypeByName(String name) {
 		return iStudyDao.getConsentTypeByName(name);
 	}
+
+
 
 }

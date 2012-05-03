@@ -35,8 +35,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
 
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
@@ -56,9 +56,10 @@ import au.org.theark.phenotypic.service.IPhenotypicService;
  * 
  */
 public class DetailForm extends AbstractDetailForm<UploadVO> {
-	/**
-	 * 
-	 */
+
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
+	
 	private static final long	serialVersionUID	= -8266132080909805310L;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
@@ -144,7 +145,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 
 			try {
 				// Copy file to BLOB object
-				Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+				Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
 				containerForm.getModelObject().getUpload().setPayload(payload);
 			}
 			catch (IOException ioe) {

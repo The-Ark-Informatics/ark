@@ -85,7 +85,7 @@ public class PhenoDataDataViewPanel extends Panel {
 					PhenotypicCollection phenoCollection = criteriaModel.getObject().getPhenotypicCollection();
 //					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 	
-					return iPhenotypicService.getPhenoDataCount(phenoCollection);
+					return (int)iPhenotypicService.getPhenoDataCount(phenoCollection);
 				}
 	
 				public Iterator<PhenoData> iterator(int first, int count) {

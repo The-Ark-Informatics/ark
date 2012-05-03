@@ -48,7 +48,6 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.component.navigator.ArkAjaxPagingNavigator;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.Constants;

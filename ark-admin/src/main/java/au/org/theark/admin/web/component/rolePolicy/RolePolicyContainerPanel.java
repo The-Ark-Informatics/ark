@@ -119,7 +119,7 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> {
 		// Data provider to paginate resultList
 		dataProvider = new ArkDataProvider<ArkRoleModuleFunctionVO, IAdminService>(iAdminService) {
 			public int size() {
-				return service.getArkRoleModuleFunctionVOCount(model.getObject());
+				return (int)service.getArkRoleModuleFunctionVOCount(model.getObject());
 			}
 
 			public Iterator<ArkRoleModuleFunctionVO> iterator(int first, int count) {

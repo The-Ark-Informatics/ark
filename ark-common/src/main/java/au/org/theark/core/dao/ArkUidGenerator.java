@@ -20,68 +20,54 @@ package au.org.theark.core.dao;
 
 /*** 
  * @author elam
- * Based on: http://www.pointyspoon.com/categories/java/hibernate/
  */
 
-import java.io.Serializable;
-import java.util.Properties;
-
-import org.hibernate.StatelessSession;
-import org.hibernate.id.IdentifierGenerator;
-import org.hibernate.id.IdentifierGeneratorFactory;
-import org.hibernate.id.enhanced.TableGenerator;
-import org.hibernate.impl.StatelessSessionImpl;
-import org.hibernate.type.IntegerType;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+
+import au.org.theark.core.model.study.entity.SubjectUidSequence;
 
 @Repository("arkUidGenerator")
 public class ArkUidGenerator extends HibernateSessionDao {
 
-	private IdentifierGenerator	generator;
-	private Properties				configuration;
-	private String						studyNameKy;
-
-	// No-Arg constructor
-	public ArkUidGenerator() {
-		initProperties();
-	}
-
-	private void initProperties() {
-		configuration = new Properties();
-		configuration.setProperty(TableGenerator.TABLE_PARAM, "study.subjectuid_sequence");
-		configuration.setProperty(TableGenerator.SEGMENT_COLUMN_PARAM, "STUDY_NAME_ID");
-		configuration.setProperty(TableGenerator.VALUE_COLUMN_PARAM, "UID_SEQUENCE");
-		configuration.setProperty(TableGenerator.INCREMENT_PARAM, "1");
-	}
-
-	public Serializable getId(String studyNameKy) {
-		if (!studyNameKy.equals(this.studyNameKy)) {
-			this.studyNameKy = studyNameKy;
-			configuration.setProperty(TableGenerator.SEGMENT_VALUE_PARAM, studyNameKy);
-			generator = IdentifierGeneratorFactory.create("org.hibernate.id.enhanced.TableGenerator", new IntegerType(), configuration, getDialect());
-		}
-
-		StatelessSession session = getStatelessSession();
-		Serializable id = generator.generate((StatelessSessionImpl) session, new Id());
-		session.close();
-		return id;
+	private static Logger		log	= LoggerFactory.getLogger(ArkUidGenerator.class);
+	
+	/**
+	 * TODO this should use a real fkey
+	 * @param studyNameKy
+	 * @return
+	 */
+	public Integer getUidAndIncrement(String studyNameKy) {
+		return getUidAndIncrement(studyNameKy, 1);
 	}
 
 	/**
-	 * Target object for ID generation
+	 * TODO this should use a real fkey
+	 * @param studyNameKy
+	 * @return
 	 */
-	private static class Id {
-		private Integer	id;
-
-		@SuppressWarnings("unused")
-		@javax.persistence.Id
-		public Integer getId() {
-			return id;
+	public Integer getUidAndIncrement(String studyNameKy, int numToInsert) {
+		Criteria criteria = getSession().createCriteria(SubjectUidSequence.class);
+		criteria.add(Restrictions.eq("studyNameId", studyNameKy));
+		SubjectUidSequence seqData = (SubjectUidSequence) criteria.uniqueResult();
+		if(seqData==null){
+			log.error("sequence does not exist...creating");
+			SubjectUidSequence seq = new SubjectUidSequence(studyNameKy, numToInsert, false);
+			getSession().persist(seq);
+			getSession().flush();
+			return new Integer(0);
 		}
-
-		@SuppressWarnings("unused")
-		public void setId(Integer id) {
-			this.id = id;
+		else{
+			log.warn("so we hav a seq");
+			int currentSeqNumber = seqData.getUidSequence();
+			seqData.setUidSequence((currentSeqNumber + numToInsert));
+			getSession().update(seqData);
+			getSession().flush();
+			return currentSeqNumber;//TODO asap...this should be handled transactionally in one class, and probably with generators...although this isnt really even a key
 		}
 	}
+
 }

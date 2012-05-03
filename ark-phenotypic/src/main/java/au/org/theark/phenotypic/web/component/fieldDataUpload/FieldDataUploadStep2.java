@@ -37,7 +37,6 @@ import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.service.ICSVLoaderService;
 import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -69,8 +68,8 @@ public class FieldDataUploadStep2 extends AbstractWizardStepPanel {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService				iPhenotypicService;
 
-	@SpringBean(name = au.org.theark.core.Constants.ARK_CSV_LOADER_SERVICE)
-	private ICSVLoaderService				iCSVLoaderService;
+//	@SpringBean(name = au.org.theark.core.Constants.ARK_CSV_LOADER_SERVICE)
+//	private ICSVLoaderService				iCSVLoaderService;
 
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt"){
 

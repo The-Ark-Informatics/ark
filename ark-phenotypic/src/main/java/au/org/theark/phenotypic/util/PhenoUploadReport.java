@@ -22,8 +22,9 @@ import java.sql.Blob;
 import java.util.Date;
 
 import org.apache.shiro.SecurityUtils;
-import org.hibernate.Hibernate;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.StudyUpload;
 
@@ -31,6 +32,9 @@ public class PhenoUploadReport {
 	private StringBuffer	report	= new StringBuffer();
 	private Date			dateNow;
 
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
+	
 	public PhenoUploadReport() {
 		/*
 		 * Example report:
@@ -97,7 +101,7 @@ public class PhenoUploadReport {
 	}
 	
 	public Blob getReportAsBlob() {
-		Blob reportAsBlob = Hibernate.createBlob(this.getInputStream());
+		Blob reportAsBlob = util.createBlob(this.getInputStream());
 		return reportAsBlob;
 	}
 

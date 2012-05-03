@@ -24,8 +24,8 @@ import java.util.Date;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
 
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.model.vo.UploadVO;
@@ -38,9 +38,10 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.form.WizardForm;
  * The 4th step of this wizard.
  */
 public class FieldDataUploadStep4 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
+	
 	private static final long	serialVersionUID	= -2788948560672351760L;
 	private Form<UploadVO>		containerForm;
 	private WizardForm			wizardForm;
@@ -95,7 +96,7 @@ public class FieldDataUploadStep4 extends AbstractWizardStepPanel {
 		phenoUploadReport.appendAndNewLine("Collection: " + containerForm.getModelObject().getPhenoCollection().getName());
 		phenoUploadReport.append(uploadReport);
 		byte[] bytes = phenoUploadReport.getReport().toString().getBytes();
-		Blob uploadReportBlob = Hibernate.createBlob(bytes);
+		Blob uploadReportBlob = util.createBlob(bytes);
 		containerForm.getModelObject().getUpload().setUploadReport(uploadReportBlob);
 	}
 

@@ -139,13 +139,10 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 		// Data providor to paginate resultList
 		customFieldProvider = new ArkDataProvider2<CustomField, CustomField>() {
 
-			/**
-			 * 
-			 */
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return iArkCommonService.getCustomFieldCount(criteriaModel.getObject());
+				return (int)iArkCommonService.getCustomFieldCount(criteriaModel.getObject());//todo safe int conversion
 			}
 
 			public Iterator<CustomField> iterator(int first, int count) {

@@ -66,7 +66,7 @@ public class UserDao extends HibernateSessionDao implements IUserDao {
 		}
 
 		criteria.setProjection(Projections.rowCount());
-		Integer count = (Integer) criteria.list().get(0);
+		Long count = (Long) criteria.uniqueResult();
 		if (count > 0) {
 			isPresent = true;
 		}

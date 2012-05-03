@@ -159,13 +159,10 @@ public class SearchResultListPanel extends Panel {
 				// Data providor to paginate a list of CustomFieldDisplays linked to the CustomFieldGroup
 				cfdArkDataProvider = new ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>() {
 
-					/**
-					 * 
-					 */
 					private static final long serialVersionUID = 1L;
 
 					public int size() {
-						return iPhenotypicService.getCFDLinkedToQuestionnaireCount(itemSelected);
+						return (int)iPhenotypicService.getCFDLinkedToQuestionnaireCount(itemSelected);
 					}
 
 					public Iterator<CustomFieldDisplay> iterator(int first, int count) {

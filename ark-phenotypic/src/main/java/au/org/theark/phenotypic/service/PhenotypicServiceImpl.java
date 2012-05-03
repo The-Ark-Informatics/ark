@@ -453,11 +453,11 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public int getCountOfFieldsInStudy(Study study) {
+	public long getCountOfFieldsInStudy(Study study) {
 		return phenotypicDao.getCountOfFieldsInStudy(study);
 	}
 
-	public int getCountOfFieldsWithDataInStudy(Study study) {
+	public long getCountOfFieldsWithDataInStudy(Study study) {
 		return phenotypicDao.getCountOfFieldsWithDataInStudy(study);
 	}
 
@@ -669,11 +669,11 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getFieldPhenoCollection(phenoCollection);
 	}
 
-	public int getCountOfCollectionsInStudy(Study study) {
+	public long getCountOfCollectionsInStudy(Study study) {
 		return phenotypicDao.getCountOfCollectionsInStudy(study);
 	}
 
-	public int getCountOfCollectionsWithDataInStudy(Study study) {
+	public long getCountOfCollectionsWithDataInStudy(Study study) {
 		return phenotypicDao.getCountOfCollectionsWithDataInStudy(study);
 	}
 
@@ -689,7 +689,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getFieldPhenoCollection(fieldPhenoCollection);
 	}
 
-	public int getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria) {
+	public long getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria) {
 		return phenotypicDao.getStudyFieldDataCount(phenoCollectionVoCriteria);
 	}
 
@@ -869,7 +869,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return flag;
 	}
 
-	public int getPhenoDataCount(PhenotypicCollection phenoCollection) {
+	public long getPhenoDataCount(PhenotypicCollection phenoCollection) {
 		return phenotypicDao.getPhenoDataCount(phenoCollection);
 	}
 
@@ -903,7 +903,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		
 	}
 
-	public int getPhenotypicCollectionCount(PhenoDataCollectionVO criteria) {
+	public long getPhenotypicCollectionCount(PhenoDataCollectionVO criteria) {
 		return phenotypicDao.getPhenotypicCollectionCount(criteria);
 	}
 
@@ -941,7 +941,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getCFDLinkedToQuestionnaire(customFieldGroup, first, count);
 	}
 	
-	public int getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup){
+	public long getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup){
 		return phenotypicDao.getCFDLinkedToQuestionnaireCount(customFieldGroup);
 	}
 

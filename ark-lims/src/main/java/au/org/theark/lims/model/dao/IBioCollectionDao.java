@@ -98,7 +98,7 @@ public interface IBioCollectionDao {
 	 *           criteria
 	 * @return counts
 	 */
-	public int getBioCollectionCount(BioCollection bioCollectionCriteria);
+	public long getBioCollectionCount(BioCollection bioCollectionCriteria);
 
 	/**
 	 * A generic interface that will return a list BioCollections specified by a particular criteria, and a paginated reference point
@@ -109,7 +109,7 @@ public interface IBioCollectionDao {
 	 */
 	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, int first, int count);
 
-	public int getBioCollectionCustomFieldDataCount(BioCollection bioCollectionCriteria, ArkFunction arkFunction);
+	public long getBioCollectionCustomFieldDataCount(BioCollection bioCollectionCriteria, ArkFunction arkFunction);
 	
 	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, int first, int count);
 

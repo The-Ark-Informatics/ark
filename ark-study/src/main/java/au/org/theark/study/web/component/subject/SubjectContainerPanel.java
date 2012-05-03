@@ -185,13 +185,10 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		// Data providor to paginate resultList
 		subjectProvider = new ArkDataProvider<SubjectVO, IArkCommonService>(iArkCommonService) {
 
-			/**
-			 * 
-			 */
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return service.getStudySubjectCount(model.getObject());
+				return (int)service.getStudySubjectCount(model.getObject());
 			}
 
 			public Iterator<SubjectVO> iterator(int first, int count) {

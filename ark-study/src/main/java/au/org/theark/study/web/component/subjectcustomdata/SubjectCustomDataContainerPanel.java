@@ -84,8 +84,8 @@ public class SubjectCustomDataContainerPanel extends Panel {
 		boolean contextLoaded = prerenderContextCheck();
 
 		if (contextLoaded && isActionPermitted()) {
-			int fieldCount = iArkCommonService.getCustomFieldCount(customFieldCriteria);
-			if (fieldCount <= 0) {
+			long fieldCount = iArkCommonService.getCustomFieldCount(customFieldCriteria);
+			if (fieldCount <= 0L) {
 				dataEditorPanel = new EmptyPanel("customDataEditorPanel");
 				this.error("There are currently no custom fields defined.");
 			}

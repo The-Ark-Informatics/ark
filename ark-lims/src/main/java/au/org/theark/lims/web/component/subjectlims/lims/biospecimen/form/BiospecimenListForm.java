@@ -158,13 +158,10 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		// Data provider to paginate resultList
 		biospecimenProvider = new ArkDataProvider2<LimsVO, Biospecimen>() {
 
-			/**
-			 * 
-			 */
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return iLimsService.getBiospecimenCount(criteriaModel.getObject());
+				return (int)iLimsService.getBiospecimenCount(criteriaModel.getObject());
 			}
 
 			public Iterator<Biospecimen> iterator(int first, int count) {

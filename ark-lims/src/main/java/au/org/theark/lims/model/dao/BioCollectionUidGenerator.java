@@ -20,25 +20,63 @@ package au.org.theark.lims.model.dao;
 
 /*** 
  * @author cellis
- * Based on: http://www.pointyspoon.com/categories/java/hibernate/
  */
 
 import java.io.Serializable;
-import java.util.Properties;
 
-import org.hibernate.StatelessSession;
-import org.hibernate.id.IdentifierGenerator;
-import org.hibernate.id.IdentifierGeneratorFactory;
-import org.hibernate.id.enhanced.TableGenerator;
-import org.hibernate.impl.StatelessSessionImpl;
-import org.hibernate.type.IntegerType;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.model.lims.entity.BioCollectionUidSequence;
 
 @Repository("biocollectionUidGenerator")
 public class BioCollectionUidGenerator extends HibernateSessionDao {
 
+	private static Logger		log	= LoggerFactory.getLogger(BioCollectionUidGenerator.class);
+	
+	/**
+	 * get Id and increment sequence table
+	 * @param studyNameKey
+	 * @return
+	 */
+	public Serializable getId(String studyNameKey) {
+		return getUidAndIncrement(studyNameKey, 1);
+	}
+
+
+	/**
+	 * TODO this should use a real fkey
+	 * @param studyNameKy
+	 * @return
+	 */
+	public Integer getUidAndIncrement(String studyNameKy, int numToInsert) {
+		Criteria criteria = getSession().createCriteria(BioCollectionUidSequence.class);
+		criteria.add(Restrictions.eq("studyNameId", studyNameKy));
+		BioCollectionUidSequence seqData = (BioCollectionUidSequence) criteria.uniqueResult();
+		if(seqData==null){
+			log.error("sequence does not exist...creating");
+			BioCollectionUidSequence seq = new BioCollectionUidSequence();
+			seq.setInsertLock(false);
+			seq.setStudyNameId(studyNameKy);
+			seq.setUidSequence(numToInsert);
+			getSession().persist(seq);
+			getSession().flush();
+			return new Integer(0);
+		}
+		else{
+			log.warn("so we hav a seq");
+			int currentSeqNumber = seqData.getUidSequence();
+			seqData.setUidSequence((currentSeqNumber + numToInsert));
+			getSession().update(seqData);
+			getSession().flush();
+			return currentSeqNumber;//TODO asap...this should be handled transactionally in one class, and probably with generators...although this isnt really even a key
+		}
+	}
+/*
 	private IdentifierGenerator	generator;
 	private Properties				configuration;
 	private String						studyNameKey;
@@ -60,9 +98,12 @@ public class BioCollectionUidGenerator extends HibernateSessionDao {
 		if (!studyNameKey.equals(this.studyNameKey)) {
 			this.studyNameKey = studyNameKey;
 			configuration.setProperty(TableGenerator.SEGMENT_VALUE_PARAM, studyNameKey);
-			generator = IdentifierGeneratorFactory.create("org.hibernate.id.enhanced.TableGenerator", new IntegerType(), configuration, getDialect());
+//			generator = IdentifierGeneratorFactory.create("org.hibernate.id.enhanced.TableGenerator", new IntegerType(), configuration, getDialect());
+			DefaultIdentifierGeneratorFactory factory = new DefaultIdentifierGeneratorFactory();			
+			factory.createIdentifierGenerator("org.hibernate.id.enhanced.TableGenerator", new IntegerType(), configuration);//TODO analyze where dialect comes in
+			factory.setDialect(getDialect());
+			generator = factory.createIdentifierGenerator("org.hibernate.id.enhanced.TableGenerator", new IntegerType(), configuration);
 		}
-
 		StatelessSession session = getStatelessSession();
 		Serializable id = generator.generate((StatelessSessionImpl) session, new Id());
 		session.close();
@@ -71,7 +112,7 @@ public class BioCollectionUidGenerator extends HibernateSessionDao {
 
 	/**
 	 * Target object for ID generation
-	 */
+	 *
 	private static class Id {
 		private Integer	id;
 
@@ -83,5 +124,5 @@ public class BioCollectionUidGenerator extends HibernateSessionDao {
 		public void setId(Integer id) {
 			this.id = id;
 		}
-	}
+	}*/
 }

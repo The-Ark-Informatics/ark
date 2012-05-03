@@ -51,7 +51,7 @@ public class LimsSubjectServiceImpl implements ILimsSubjectService  {
 	 * @see au.org.theark.lims.service.ILimsSubjectService#getSubjectCount(au.org.theark.core.vo.SubjectVO, java.util.List)
 	 */
 	public int getSubjectCount(LimsVO subjectVO, List<Study> studyList) {
-		return iLimsSubjectDao.getSubjectCount(subjectVO, studyList);
+		return (int)iLimsSubjectDao.getSubjectCount(subjectVO, studyList);
 	}
 
 	/* (non-Javadoc)

@@ -61,10 +61,10 @@ import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.CannotRemoveArkModuleException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -141,6 +141,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	// Study logo uploader
 	private FileUploadField									logoFileUploadField;
 
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
 	// Summary Details
 	private Label												studySummaryLabel;
 	private WebMarkupContainer								autoSubjectUidContainer;
@@ -1065,7 +1067,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 				FileUpload fileUpload = logoFileUploadField.getFileUpload();
 
 				// Copy file to Blob object
-				Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+				Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
 				containerForm.getModelObject().getStudy().setStudyLogoBlob(payload);
 				containerForm.getModelObject().getStudy().setFilename(fileUpload.getClientFileName());
 			}
@@ -1181,8 +1183,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		target.add(studyCrudVO.getStudyLogoMarkup());
 
 		// Update summary
-		int totalSubjects = iArkCommonService.getCountOfSubjects(studyModel.getStudy());
-		int totalSubjectsOfParent = iArkCommonService.getCountOfSubjects(studyModel.getStudy().getParentStudy());
+		long totalSubjects = iArkCommonService.getCountOfSubjects(studyModel.getStudy());
+		long totalSubjectsOfParent = iArkCommonService.getCountOfSubjects(studyModel.getStudy().getParentStudy());
 
 		studyModel.setTotalSubjects(totalSubjects);
 		studyModel.setTotalSubjectsOfParent(totalSubjectsOfParent);

@@ -181,8 +181,8 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 
-		int count = iArkCommonService.getStudySubjectCount(cpmModel.getObject());
-		if (count == 0) {
+		long count = iArkCommonService.getStudySubjectCount(cpmModel.getObject());
+		if (count == 0L) {
 			this.info("There are no subjects with the specified criteria.");
 			target.add(feedbackPanel);
 		}

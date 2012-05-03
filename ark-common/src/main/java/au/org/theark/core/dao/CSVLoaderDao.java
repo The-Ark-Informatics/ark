@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.math.BigInteger;
+import java.sql.Blob;
 import java.util.Iterator;
 import java.util.List;
 
@@ -266,6 +267,10 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 				delimiterTypeName = delimiterType.getName();
 			}
 			return delimiterTypeName;
+	}
+
+	public Blob createBlob(byte[] bytes) {
+		return getSession().getLobHelper().createBlob(bytes);
 	}
 
 }	

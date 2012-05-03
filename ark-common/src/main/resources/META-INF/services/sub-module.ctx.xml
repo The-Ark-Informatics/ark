@@ -11,8 +11,9 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:component-scan base-package="au.org.theark.core.model"/>  
-    <context:component-scan base-package="au.org.theark.core.dao"/> 
     <context:component-scan base-package="au.org.theark.core.service"/>
+    <context:component-scan base-package="au.org.theark.core.dao"/> 
+    <context:component-scan base-package="au.org.theark.core.util"/>
    
 	<!-- All LDAP configurations have been centralised into application-context.xml -->
 

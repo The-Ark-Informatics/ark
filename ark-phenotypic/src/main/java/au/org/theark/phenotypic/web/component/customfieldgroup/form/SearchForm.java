@@ -97,12 +97,9 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 		final CustomFieldGroup cfg = newModel.getObject().getCustomFieldGroup();
 		cfdArkDataProvider = new ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>() {
 
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 			public int size() {
-				return iPhenotypicService.getCFDLinkedToQuestionnaireCount(cfg);
+				return (int)iPhenotypicService.getCFDLinkedToQuestionnaireCount(cfg);
 			}
 			public Iterator<CustomFieldDisplay> iterator(int first, int count) {
 				
@@ -128,9 +125,9 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		getModelObject().getCustomFieldGroup().setStudy(study);
 		
-		int count = iArkCommonService.getCustomFieldGroupCount(getModelObject().getCustomFieldGroup());
+		long count = iArkCommonService.getCustomFieldGroupCount(getModelObject().getCustomFieldGroup());
 
-		if (count <= 0) {
+		if (count <= 0L) {
 			this.info("No records match the specified criteria.");
 			target.add(feedbackPanel);
 		}

@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.study.model.dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -329,8 +330,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(Consent.class);
 		criteria.add(Restrictions.eq("studyComp", studyComp));
 		criteria.setProjection(Projections.rowCount());
-		Integer i = (Integer) criteria.list().get(0);
-		if (i > 0) {
+		Long i = (Long) criteria.uniqueResult();
+		if (i > 0L) {
 			flag = true;
 		}
 		return flag;
@@ -396,90 +397,80 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public void createSubject(SubjectVO subjectVo) throws ArkUniqueException, ArkSubjectInsertException {
 		Study study = subjectVo.getLinkSubjectStudy().getStudy();
-		// Add Business Validations here as well apart from UI validation
-		try {
-			if (isSubjectUIDUnique(subjectVo.getLinkSubjectStudy().getSubjectUID(), subjectVo.getLinkSubjectStudy().getStudy().getId(), "Insert")) {
-				// Check insertion lock
-				if (getSubjectUidSequenceLock(study) == true) {
-					// TODO Fix the exception to be custom
-					throw new ArkSubjectInsertException("Subject insertion locked by another process");
-				}
-				else {
-					// Enable insertion lock  TODO:  Fully evaluate probability and performance issues
-					setSubjectUidSequenceLock(study, true);
+		if (study.getAutoGenerateSubjectUid()) {
+			String subjectUID = getNextGeneratedSubjectUID(study);
 
-					// Set default foreign key reference
-					if (subjectVo.getLinkSubjectStudy().getSubjectStatus() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getSubjectStatus().getName())) {
-						SubjectStatus subjectStatus = getSubjectStatusByName("Subject");
-						subjectVo.getLinkSubjectStudy().setSubjectStatus(subjectStatus);
-					}
-
-					// Set default foreign key reference
-					if (subjectVo.getLinkSubjectStudy().getPerson().getTitleType() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getTitleType().getName())) {
-						TitleType titleType = getTitleType(new Long(0));
-						subjectVo.getLinkSubjectStudy().getPerson().setTitleType(titleType);
-					}
-
-					// Set default foreign key reference
-					if (subjectVo.getLinkSubjectStudy().getPerson().getGenderType() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getGenderType().getName())) {
-						GenderType genderType = getGenderType(new Long(0));
-						subjectVo.getLinkSubjectStudy().getPerson().setGenderType(genderType);
-					}
-
-					// Set default foreign key reference
-					if (subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus().getName())) {
-						VitalStatus vitalStatus = getVitalStatus(new Long(0));
-						subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
-					}
-
-					Session session = getSession();
-					Person person = subjectVo.getLinkSubjectStudy().getPerson();
-
-					if (person.getId() == null) {
-						session.save(person);
-						PersonLastnameHistory personLastNameHistory = null;
-
-						// Previous LastName (if supplied on new Subject)
-						if (subjectVo.getSubjectPreviousLastname() != null && !subjectVo.getSubjectPreviousLastname().isEmpty()) {
-							personLastNameHistory = new PersonLastnameHistory();
-							personLastNameHistory.setPerson(person);
-							personLastNameHistory.setLastName(subjectVo.getSubjectPreviousLastname());
-							session.save(personLastNameHistory);
-						}
-
-						// Current lastName
-						if (person.getLastName() != null) {
-							personLastNameHistory = new PersonLastnameHistory();
-							personLastNameHistory.setPerson(person);
-							personLastNameHistory.setLastName(person.getLastName());
-							session.save(personLastNameHistory);
-						}
-					}
-
-					// Update subjectPreviousLastname
-					subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
-
-					LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
-					session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
-					// OpenSessionInViewFilter
-					// Auto-generate SubjectUID
-					if (subjectVo.getLinkSubjectStudy().getStudy().getAutoGenerateSubjectUid()) {
-						String subjectUID = getNextGeneratedSubjectUID(subjectVo.getLinkSubjectStudy().getStudy());
-						linkSubjectStudy.setSubjectUID(subjectUID);
-						session.update(linkSubjectStudy);
-					}
-
-					autoConsentLinkSubjectStudy(subjectVo.getLinkSubjectStudy());
-				}
+			if (isSubjectUIDUnique(subjectUID, study.getId(), "Insert")) {
+				subjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
 			}
-			else {
+			else{//TODO : maybe a for loop to guard against a manual db insert, or just throw exception and holds someone up from further inserts until investigated why?
+				subjectUID = getNextGeneratedSubjectUID(study);
+				subjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);	
+			}
+		}
+		else{
+			if(!isSubjectUIDUnique(subjectVo.getLinkSubjectStudy().getSubjectUID(), subjectVo.getLinkSubjectStudy().getStudy().getId(), "Insert")){
 				throw new ArkUniqueException("Subject UID must be unique");
 			}
 		}
-		finally {
-			// Disable insertion lock
-			setSubjectUidSequenceLock(study, false);
+
+		// Set default foreign key reference
+		if (subjectVo.getLinkSubjectStudy().getSubjectStatus() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getSubjectStatus().getName())) {
+			SubjectStatus subjectStatus = getSubjectStatusByName("Subject");
+			subjectVo.getLinkSubjectStudy().setSubjectStatus(subjectStatus);
 		}
+
+		// Set default foreign key reference
+		if (subjectVo.getLinkSubjectStudy().getPerson().getTitleType() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getTitleType().getName())) {
+			TitleType titleType = getTitleType(new Long(0));
+			subjectVo.getLinkSubjectStudy().getPerson().setTitleType(titleType);
+		}
+
+		// Set default foreign key reference
+		if (subjectVo.getLinkSubjectStudy().getPerson().getGenderType() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getGenderType().getName())) {
+			GenderType genderType = getGenderType(new Long(0));
+			subjectVo.getLinkSubjectStudy().getPerson().setGenderType(genderType);
+		}
+
+		// Set default foreign key reference
+		if (subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus().getName())) {
+			VitalStatus vitalStatus = getVitalStatus(new Long(0));
+			subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
+		}
+
+		Session session = getSession();
+		Person person = subjectVo.getLinkSubjectStudy().getPerson();
+
+		if (person.getId() == null) {
+			session.save(person);
+			PersonLastnameHistory personLastNameHistory = null;
+
+			// Previous LastName (if supplied on new Subject)
+			if (subjectVo.getSubjectPreviousLastname() != null && !subjectVo.getSubjectPreviousLastname().isEmpty()) {
+				personLastNameHistory = new PersonLastnameHistory();
+				personLastNameHistory.setPerson(person);
+				personLastNameHistory.setLastName(subjectVo.getSubjectPreviousLastname());
+				session.save(personLastNameHistory);
+			}
+
+			// Current lastName
+			if (person.getLastName() != null) {
+				personLastNameHistory = new PersonLastnameHistory();
+				personLastNameHistory.setPerson(person);
+				personLastNameHistory.setLastName(person.getLastName());
+				session.save(personLastNameHistory);
+			}
+		}
+
+		// Update subjectPreviousLastname TODO investigate
+		subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
+
+		LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
+		session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
+
+		autoConsentLinkSubjectStudy(subjectVo.getLinkSubjectStudy());
+			
+		//TODO EXCEPTIONHANDLING
 	}
 
 	private void autoConsentLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
@@ -600,7 +591,41 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		LinkSubjectStudy linkSubjectStudy = subjectVO.getLinkSubjectStudy();
 		session.update(linkSubjectStudy);
 	}
+		
+	/**
+	 * note the numbers coming in 
+	 * 
+	 * @param nextSequenceNumber  - IMPORTANT this is the NEXT (ie already incremented and gotten from the DB, with the DB updated)
+	 * @param subjectUidPrefix
+	 * @param subjectUidToken
+	 * @param padChar
+	 * @param subjectUidPaddedIncrementor
+	 * @param subjectUidPadChar
+	 * @return
+	 */																																								//called padchar in db?
+	public String getUIDGiven(long startingAtNumber, long nextSequenceNumber, String subjectUidPrefix, String subjectUidToken, int padThisManyChars){
+																				//ABC-0000123
+//		String subjectUidPrefix = new String("");					//ABC
+//		String subjectUidToken = new String("");					//   -
+//		String subjectUidPadChar = 									//(how many chars to pad to...eg; "7" here 0000001 0000012 0234567
+//		String nextIncrementedsubjectUid = new String("");		//124
+//		String subjectUid = new String("");							//ABC-0000124
+		String theCompletedUID = "";
+		long incrementedValue = startingAtNumber + nextSequenceNumber;
+		log.warn("after convoluted analysis...sequenceuid = " + incrementedValue);
+		String numberAsString ="" + incrementedValue;
+		String subjectUidPaddedIncrementor = StringUtils.leftPad(numberAsString, (int)padThisManyChars, "0");
+		theCompletedUID = subjectUidPrefix + subjectUidToken + subjectUidPaddedIncrementor;
+		log.warn("completeUID = " + theCompletedUID);
+		return theCompletedUID;
+	}
 
+	/**
+	 * TODO : make this and batch use same mechanism
+	 * @param study
+	 * @return
+	 * @throws ArkSubjectInsertException
+	 */
 	protected String getNextGeneratedSubjectUID(Study study) throws ArkSubjectInsertException {
 		String subjectUidPrefix = new String("");
 		String subjectUidToken = new String("");
@@ -628,8 +653,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 				subjectUidStart = new Long(1); // if null, then use: 1
 				study.setSubjectUidStart(subjectUidStart);
 			}
-			Long incrementedValue = subjectUidStart + getNextUidSequence(study) - 1;
+			Long incrementedValue = subjectUidStart + getNextUidSequence(study);
 			nextIncrementedsubjectUid = incrementedValue.toString();
+			log.warn("after convoluted analysis...uid = " + nextIncrementedsubjectUid);
 
 			int size = Integer.parseInt(subjectUidPadChar);
 			subjectUidPaddedIncrementor = StringUtils.leftPad(nextIncrementedsubjectUid, size, "0");
@@ -652,25 +678,30 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			log.error("Error in Subject insertion - Study name was null");
 			throw new ArkSubjectInsertException("Error in Subject insertion - Empty�� study name");
 		}
+		log.warn("Ark uid generator nnull??? " +  (arkUidGenerator == null));
+		//arkUidGenerator.
 
-		result = (Integer) arkUidGenerator.getId(study.getName());
-
+		result = (Integer) arkUidGenerator.getUidAndIncrement(study.getName());
+		log.warn("about to return uid # of " + result + " for study " + study.getName());
 		return result;
 	}
 
 	protected boolean getSubjectUidSequenceLock(Study study) {
-		boolean lock;
+		boolean lock = false;
 		SubjectUidSequence subjUidSeq = getSubjectUidSequence(study);
+	//	log.warn("uid seq = " + subjUidSeq);
 		if (subjUidSeq == null) {
 			lock = false; // not locked if record doesn't exist
 		}
 		else {
+	//		log.warn("got subjectuid with a lock = " + subjUidSeq.getInsertLock());
 			lock = subjUidSeq.getInsertLock();
 		}
 		return lock;
 	}
 
 	protected SubjectUidSequence getSubjectUidSequence(Study study) {
+	//	log.info("Getting uid seq entity for study " + study.getName());
 		// Stateless sessions should be used to avoid locking the record for future update
 		// by getSession(), which relies on the "open session filter" mechanism
 		StatelessSession session = getStatelessSession();
@@ -679,10 +710,12 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.setMaxResults(1);
 		SubjectUidSequence result = (SubjectUidSequence) criteria.uniqueResult();
 		session.close();
+		log.warn("and got entity with lock = " + result.getInsertLock() + " for study " + study.getName());
 		return result;
 	}
 
-	protected void setSubjectUidSequenceLock(Study study, boolean lock) {
+/*	protected void setSubjectUidSequenceLock(Study study, boolean lock) {
+		log.info("***********************SETTING LOCK ON STUDY = " + study.getName() + " to " + lock);
 		// Stateless sessions should be used to avoid locking the record for future update
 		// by getSession(), which relies on the "open session filter" mechanism
 		StatelessSession session = getStatelessSession();
@@ -704,7 +737,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		tx.commit();
 		session.close();
 	}
-
+*/
 	public Long getSubjectCount(Study study) {
 		Long subjectCount = new Long(0);
 		if (study.getId() != null) {
@@ -1445,138 +1478,128 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		List<SubjectFile> list = criteria.list();
 		return list;
 	}
+	
+	public void processBatch(List<LinkSubjectStudy> subjectsToInsert, Study study, List<LinkSubjectStudy> subjectsToUpdate){
+		log.warn("about to process " + subjectsToInsert.size() + " inserts and " + subjectsToUpdate.size() + " updates!");
+		//Transaction tx = null;
+		//Session session  = getSession();
+		//StatelessSession session = getStatelessSession();
+		try{
+			//tx = getSession().beginTransaction();
+			batchInsertSubjects(subjectsToInsert, study);
+			for (LinkSubjectStudy subject : subjectsToInsert) {
+				Person person = subject.getPerson();
+				getSession().save(person);// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
+				getSession().save(subject);
+			}
+			//batchUpdateSubjects(subjectsToUpdate);
+			for (LinkSubjectStudy subject : subjectsToUpdate) {
+				Person person = subject.getPerson();
+				getSession().update(person);// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
+				getSession().update(subject);
+			}
+			//tx.commit();
+		}
+		catch	(ArkUniqueException e){
+			log.error("Got a unique insertion error" + e);
+			//if(tx!=null){
+			//	tx.rollback();
+			//}
+		}
+		catch (HibernateException e){
+			log.error("Got an exception from hibernate " + e);
+			//if(tx!=null){
+			//	tx.rollback();
+			//}
+		}
+		catch (ArkSubjectInsertException e) {
+			log.error("ArkSubjectInsertion Exception while performing batch" + e);
+			//if(tx!=null){
+			//	tx.rollback();
+			//}
+		}
+		catch (RuntimeException e){
+			log.error("Runtime Exception while performing batch" + e);
+			//if(tx!=null){
+			//	tx.rollback();
+			//}
+		}
+		catch (Exception e){
+			log.error("Generic unknown Exception while performing batch" + e);
+			//if(tx!=null){
+			//	tx.rollback();
+			//}
+		}
+		finally{
+			//session.close();
+		}
+	}
 
 	//TODO ASAP we need to handle excepions and ROLLBACK if something hits the fan.
 	//We also need to discuss uid create and external references and user training
-	public void batchInsertSubjects(List<LinkSubjectStudy> subjectsToInsert) throws ArkUniqueException, ArkSubjectInsertException {
-		StatelessSession session = getStatelessSession();
-		Study study = null;
-		int count = 0;		
-		Transaction tx = session.beginTransaction();
-		for(LinkSubjectStudy subject : subjectsToInsert){
-
-			log.warn("inserting " + count++);
-			study = subject.getStudy();
-
-			try {
+	public List<LinkSubjectStudy> batchInsertSubjects(List<LinkSubjectStudy> subjectsToInsert, Study study) throws ArkUniqueException, ArkSubjectInsertException {
+		boolean rollback = false;
+//		StatelessSession session = getStatelessSession();
+//		Transaction tx = session.beginTransaction();
+																			
+		Integer nextSequenceNumber = null;
+		long start =1L;
+		String prefix=null;
+		String token=null;
+		int howManyCharsToPad=0;
+		
+		if (study.getAutoGenerateSubjectUid()) {
+			nextSequenceNumber = arkUidGenerator.getUidAndIncrement(study.getName(), subjectsToInsert.size());
+			start = study.getSubjectUidStart()==null ? 1L : study.getSubjectUidStart();
+			prefix = study.getSubjectUidPrefix()==null ? "" : study.getSubjectUidPrefix();
+			token = study.getSubjectUidToken()==null?"":study.getSubjectUidToken().getName();
+			howManyCharsToPad = study.getSubjectUidPadChar()==null?0:study.getSubjectUidToken().getId().intValue();
+			log.warn("\n\nnextSequenceNumber = '" + nextSequenceNumber + "'" +
+			"\nstart = '" + start +"'" +
+			"\nprefix = '" + prefix +"'" +
+			"\ntoken = '" + token +"'" +
+			"\nhowManyCharsToPad = '" + howManyCharsToPad + "'" );
+		}
+																																	//actually num chars to pad
+		try{
+			for(LinkSubjectStudy subject : subjectsToInsert){
 				// Auto-generate SubjectUID
 				if (study.getAutoGenerateSubjectUid()) {
-					String subjectUID = getNextGeneratedSubjectUID(study);//TODO ASAP generate without DB hit and PRE-lock it for all of our inserts
-					subject.setSubjectUID(subjectUID);
+					//String subjectUID = getNextGeneratedSubjectUID(study);//TODO ASAP generate without DB hit and PRE-lock it for all of our inserts
+					String nextsubjectUID = getUIDGiven(start, nextSequenceNumber++, prefix, token, howManyCharsToPad);
+					log.warn("setting uid to " + nextsubjectUID);
+					subject.setSubjectUID(nextsubjectUID);			
 				}
-
-//				if (isSubjectUIDUnique(subjectVo.getLinkSubjectStudy().getSubjectUID(), subjectVo.getLinkSubjectStudy().getStudy().getId(), "Insert")) {
-					// Check insertion lock
-//					if (getSubjectUidSequenceLock(study) == true) {
-						// TODO Fix the exception to be custom
-//						throw new ArkSubjectInsertException("Subject insertion locked by another process");
-//					}
-//					else {
-						// Enable insertion lock
-//						setSubjectUidSequenceLock(study, true);
-
-
-						session.insert(subject.getPerson());
-						session.insert(subject);
-	//				}
-//				}
-//				else {
-//					throw new ArkUniqueException("Subject UID must be unique");
-//				}
-			}
-			finally {
-//				// Disable insertion lock
-				//setSubjectUidSequenceLock(study, false);
-			}
-//		}
-		}
-
-		tx.commit();
-		session.close();
-	}
-	/*
-	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException {
-		StatelessSession session = getStatelessSession();
-		Study study = null;
-
-		Transaction tx = session.beginTransaction();
-
-		for (Iterator<SubjectVO> iterator = subjectVoCollection.iterator(); iterator.hasNext();) {
-			SubjectVO subjectVo = (SubjectVO) iterator.next();
-			study = subjectVo.getLinkSubjectStudy().getStudy();
-
-			try {
-				// Auto-generate SubjectUID
-				if (subjectVo.getLinkSubjectStudy().getStudy().getAutoGenerateSubjectUid()) {
-					String subjectUID = getNextGeneratedSubjectUID(subjectVo.getLinkSubjectStudy().getStudy());
-					subjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
-				}
-
-				if (isSubjectUIDUnique(subjectVo.getLinkSubjectStudy().getSubjectUID(), subjectVo.getLinkSubjectStudy().getStudy().getId(), "Insert")) {
-					// Check insertion lock
-					if (getSubjectUidSequenceLock(study) == true) {
-						// TODO Fix the exception to be custom
-						throw new ArkSubjectInsertException("Subject insertion locked by another process");
-					}
-					else {
-						// Enable insertion lock
-						setSubjectUidSequenceLock(study, true);
-
-						// Set default foreign key reference
-						if (subjectVo.getLinkSubjectStudy().getSubjectStatus() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getSubjectStatus().getName())) {
-							SubjectStatus subjectStatus = getSubjectStatusByName("Subject");
-							subjectVo.getLinkSubjectStudy().setSubjectStatus(subjectStatus);
-						}
-						// Set default foreign key reference
-						if (subjectVo.getLinkSubjectStudy().getPerson().getTitleType() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getTitleType().getName())) {
-							TitleType titleType = getTitleType(new Long(0));
-							subjectVo.getLinkSubjectStudy().getPerson().setTitleType(titleType);
-						}
-						// Set default foreign key reference
-						if (subjectVo.getLinkSubjectStudy().getPerson().getGenderType() == null || 
-								StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getGenderType().getName())) {
-							GenderType genderType = getGenderType(new Long(0));
-							subjectVo.getLinkSubjectStudy().getPerson().setGenderType(genderType);
-						}
-						// Set default foreign key reference
-						if (subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus() == null || 
-								StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus().getName())) {
-							VitalStatus vitalStatus = getVitalStatus(new Long(0));
-							subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
-						}
-						// Set default foreign key reference
-						if (subjectVo.getLinkSubjectStudy().getPerson().getMaritalStatus() == null || 
-								StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getMaritalStatus().getName())) {
-							MaritalStatus maritalStatus = getMaritalStatusNyName("Unknown");
-							subjectVo.getLinkSubjectStudy().getPerson().setMaritalStatus(maritalStatus);
-						}
-
-						autoConsentLinkSubjectStudy(subjectVo.getLinkSubjectStudy());
-
-						Person person = subjectVo.getLinkSubjectStudy().getPerson();
-						session.insert(person);
-
-						LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
-						session.insert(linkSubjectStudy);
-					}
-				}
-				else {
-					throw new ArkUniqueException("Subject UID must be unique");
-				}
-			}
-			finally {
-				// Disable insertion lock
-				setSubjectUidSequenceLock(study, false);
+				//getSession().save(subject.getPerson());
+				//getSession().save(subject);
 			}
 		}
-		tx.commit();
-		session.close();
+		catch(HibernateException e){//TODO ASAP exception handling
+			log.error("SQL Exception which we must intelligently handle asap" + e);
+			rollback = true;
+			
+		}
+		catch(Exception e){
+			log.error("Generic Exception which we must intelligently handle asap" + e);
+			rollback = true;
+		}
+		finally {/*
+			log.warn("in the finally");
+			//TODO ASAP handle success failure	
+			if(rollback){
+				return false;
+			}
+			else{
+				return true;
+			}*/
+		}
+		return subjectsToInsert;
 	}
-
+/*
 	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) {
 		StatelessSession session = getStatelessSession();
 
-		Transaction tx = session.beginTransaction();
+		//Transaction tx = session.beginTransaction();
 
 		for (Iterator<SubjectVO> iterator = subjectVoCollection.iterator(); iterator.hasNext();) {
 			SubjectVO subjectVo = (SubjectVO) iterator.next();
@@ -1601,20 +1624,20 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
 			session.update(linkSubjectStudy);
 		}
-		tx.commit();
+		//tx.commit();
 		session.close();
 	}
-	*/
+*/
 	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) {
-		StatelessSession session = getStatelessSession();
-		Transaction tx = session.beginTransaction();
+		//StatelessSession session = getStatelessSession();
+		//Transaction tx = session.beginTransaction();
 		for (LinkSubjectStudy subject : subjectList) {
 			Person person = subject.getPerson();
-			session.update(person);// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
-			session.update(subject);
+			getSession().update(person);// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
+			getSession().update(subject);	
 		}
-		tx.commit();
-		session.close();
+		//tx.commit();
+		//session.close();
 	}
 	public Collection<ArkUser> lookupArkUser(Study study) {
 		StringBuffer hqlQuery = new StringBuffer();
@@ -1684,14 +1707,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	/**
 	 * The count can be based on CustomFieldDisplay only instead of a left join with it using SubjectCustomFieldData
 	 */
-	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction) {
+	public long getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction) {
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.createAlias("customField", "cfield");
 		criteria.add(Restrictions.eq("cfield.study", linkSubjectStudyCriteria.getStudy()));
 		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
 		criteria.setProjection(Projections.rowCount());
-		Integer count = (Integer) criteria.uniqueResult();
-		return count.intValue();
+		return (Long) criteria.uniqueResult();
 	}
 
 	/**
@@ -1810,8 +1832,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getStatelessSession().createCriteria(SubjectFile.class);
 		criteria.add(Restrictions.eq("studyComp", studyComp));
 		criteria.setProjection(Projections.rowCount());
-		Integer i = (Integer) criteria.list().get(0);
-		if (i > 0) {
+		Long i = (Long) criteria.uniqueResult();
+		if (i > 0L) {
 			isFlag = true;
 		}
 		return isFlag;
@@ -1903,4 +1925,5 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		query.setParameter("person", person);
 		query.executeUpdate();
 	}
+
 }

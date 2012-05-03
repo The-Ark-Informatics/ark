@@ -89,7 +89,7 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 
-					return studyService.getSubjectCustomFieldDataCount(lss, arkFunction);
+					return (int)studyService.getSubjectCustomFieldDataCount(lss, arkFunction);//TODO safeintconversion
 				}
 
 				public Iterator<SubjectCustomFieldData> iterator(int first, int count) {

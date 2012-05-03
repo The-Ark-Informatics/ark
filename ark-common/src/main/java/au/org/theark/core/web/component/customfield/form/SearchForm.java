@@ -123,8 +123,8 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		getModelObject().getCustomField().setStudy(study);
 
-		int count = iArkCommonService.getCustomFieldCount(getModelObject().getCustomField());
-		if (count <= 0) {
+		long count = iArkCommonService.getCustomFieldCount(getModelObject().getCustomField());
+		if (count <= 0L) {
 			this.info("No records match the specified criteria.");
 			target.add(feedbackPanel);
 		}

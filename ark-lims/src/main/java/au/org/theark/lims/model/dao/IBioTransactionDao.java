@@ -43,7 +43,7 @@ public interface IBioTransactionDao {
 	 * @param bioTransaction
 	 * @return total count of transactions given the criteria 
 	 */
-	public int getBioTransactionCount(BioTransaction bioTransaction);
+	public long getBioTransactionCount(BioTransaction bioTransaction);
 
 	/**
 	 * Look up a List of LIMS BioTransaction(s) based on the supplied bioTransactionCriteria

@@ -472,8 +472,8 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	public boolean boxesExist() {
 		Criteria criteria = getSession().createCriteria(InvBox.class);
 		criteria.setProjection(Projections.count("id"));
-		Integer count = (Integer) criteria.uniqueResult();
-		return count > 0;
+		Long count = (Long) criteria.uniqueResult();
+		return count > 0L;
 	}
 
 	public boolean hasAllocatedCells(InvBox invBox) {
@@ -481,8 +481,8 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		criteria.add(Restrictions.eq("invBox", invBox));
 		criteria.add(Restrictions.isNotNull("biospecimen"));
 		criteria.setProjection(Projections.count("id"));
-		Integer count = (Integer) criteria.uniqueResult();
-		return count > 0;
+		Long count = (Long) criteria.uniqueResult();
+		return count > 0L;
 	}
 
 	public InvCell getInvCellByLocationNames(String siteName, String freezerName, String rackName, String boxName, String row, String column) throws ArkSystemException {

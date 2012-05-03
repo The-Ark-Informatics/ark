@@ -88,8 +88,8 @@ public class SummaryPanel extends Panel {
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 
 			defaultPieDataset = new DefaultPieDataset();
-			defaultPieDataset.setValue("Fields with Data", new Integer(iPhenotypicService.getCountOfFieldsWithDataInStudy(study)));
-			defaultPieDataset.setValue("Fields without Data", new Integer(iPhenotypicService.getCountOfFieldsInStudy(study) - iPhenotypicService.getCountOfFieldsWithDataInStudy(study)));
+			defaultPieDataset.setValue("Fields with Data", new Long(iPhenotypicService.getCountOfFieldsWithDataInStudy(study)));
+			defaultPieDataset.setValue("Fields without Data", new Long(iPhenotypicService.getCountOfFieldsInStudy(study) - iPhenotypicService.getCountOfFieldsWithDataInStudy(study)));
 
 			jFreeChart = ChartFactory.createPieChart("Phenotypic Field Summary", defaultPieDataset, true, // Show legend
 					true, // Show tooltips
@@ -99,12 +99,12 @@ public class SummaryPanel extends Panel {
 			addOrReplace(new JFreeChartImage("phenoFieldSummaryImage", jFreeChart, 400, 400).setVersioned(true));
 
 			defaultPieDataset = new DefaultPieDataset();
-			int intValue = iPhenotypicService.getCountOfCollectionsWithDataInStudy(study);
+			long longValue = iPhenotypicService.getCountOfCollectionsWithDataInStudy(study);
 
-			defaultPieDataset.setValue("Collections with Data", new Integer(intValue));
+			defaultPieDataset.setValue("Collections with Data", new Long(longValue));
 
-			intValue = iPhenotypicService.getCountOfCollectionsInStudy(study) - iPhenotypicService.getCountOfCollectionsWithDataInStudy(study);
-			defaultPieDataset.setValue("Collections without Data", new Integer(intValue));
+			longValue = iPhenotypicService.getCountOfCollectionsInStudy(study) - iPhenotypicService.getCountOfCollectionsWithDataInStudy(study);
+			defaultPieDataset.setValue("Collections without Data", new Long(longValue));
 
 			jFreeChart = ChartFactory.createPieChart("Phenotypic Collection Summary", defaultPieDataset, true, // Show legend
 					true, // Show tooltips

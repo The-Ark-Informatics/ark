@@ -97,19 +97,19 @@ public class ReportServiceImpl implements IReportService {
 		return result;
 	}
 
-	public Integer getTotalSubjectCount(Study study) {
+	public long getTotalSubjectCount(Study study) {
 		return reportDao.getTotalSubjectCount(study);
 	}
 
-	public Map<String, Integer> getSubjectStatusCounts(Study study) {
+	public Map<String, Long> getSubjectStatusCounts(Study study) {
 		return reportDao.getSubjectStatusCounts(study);
 	}
 
-	public Map<String, Integer> getStudyConsentCounts(Study study) {
+	public Map<String, Long> getStudyConsentCounts(Study study) {
 		return reportDao.getStudyConsentCounts(study);
 	}
 
-	public Map<String, Integer> getStudyCompConsentCounts(Study study, StudyComp studyComp) {
+	public Map<String, Long> getStudyCompConsentCounts(Study study, StudyComp studyComp) {
 		return reportDao.getStudyCompConsentCounts(study, studyComp);
 	}
 

@@ -24,7 +24,6 @@ import au.org.theark.core.model.audit.entity.ConsentHistory;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.StudyComp;
 
 
 /**

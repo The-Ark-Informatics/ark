@@ -58,16 +58,15 @@ public class BioTransactionDao extends HibernateSessionDao implements IBioTransa
 		return criteria;
 	}
 
-	public int getBioTransactionCount(BioTransaction bioTransaction) {
+	public long getBioTransactionCount(BioTransaction bioTransaction) {
 		// Handle for biospecimen not in context
 		if (bioTransaction.getBiospecimen() == null) {
-			return 0;
+			return 0L;
 		}
 		Criteria criteria = buildBioTransactionCriteria(bioTransaction);
 		criteria.setProjection(Projections.rowCount());
 		
-		Integer totalCount = (Integer) criteria.uniqueResult();
-		return totalCount.intValue();
+		return (Long) criteria.uniqueResult();
 	}
 
 	public List<BioTransaction> searchPageableBioTransactions(BioTransaction bioTransaction, int first, int count) {

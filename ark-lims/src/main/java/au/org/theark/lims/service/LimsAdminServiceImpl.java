@@ -403,11 +403,11 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		return sb.toString();
 	}
 
-	public int getBarcodeLabelCount(BarcodeLabel object) {
+	public long getBarcodeLabelCount(BarcodeLabel object) {
 		return iLimsAdminDao.getBarcodeLabelCount(object);
 	}
 
-	public int getBarcodePrinterCount(BarcodePrinter object) {
+	public long getBarcodePrinterCount(BarcodePrinter object) {
 		return iLimsAdminDao.getBarcodePrinterCount(object);
 	}
 
@@ -443,7 +443,7 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		return iLimsAdminDao.getBiospecimenUidPadChars();
 	}
 
-	public int getBiospecimenUidTemplateCount(BiospecimenUidTemplate modelObject) {
+	public long getBiospecimenUidTemplateCount(BiospecimenUidTemplate modelObject) {
 		return iLimsAdminDao.getBiospecimenUidTemplateCount(modelObject);
 	}
 

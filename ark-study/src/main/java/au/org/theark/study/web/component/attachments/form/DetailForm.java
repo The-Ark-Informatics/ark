@@ -35,10 +35,10 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -70,6 +70,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
 
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
+	
 	private TextField<String>				subjectFileIdTxtFld;
 	private FileUploadField					fileSubjectFileField;
 	private DropDownChoice<StudyComp>	studyComponentChoice;
@@ -134,7 +137,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 				try {
 					// Copy file to BLOB object
-					Blob payload = Hibernate.createBlob(fileSubjectFile.getInputStream());
+					Blob payload = util.createBlob(fileSubjectFile.getInputStream(), fileSubjectFile.getSize());
 					containerForm.getModelObject().getSubjectFile().setPayload(payload);
 				}
 				catch (IOException ioe) {

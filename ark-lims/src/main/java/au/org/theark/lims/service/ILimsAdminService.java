@@ -127,7 +127,7 @@ public interface ILimsAdminService {
 	 * @param object
 	 * @return
 	 */
-	public int getBarcodePrinterCount(BarcodePrinter object);
+	public long getBarcodePrinterCount(BarcodePrinter object);
 
 	/**
 	 * Search the entities, restricted by a pageable count
@@ -143,7 +143,7 @@ public interface ILimsAdminService {
 	 * @param object
 	 * @return
 	 */
-	public int getBarcodeLabelCount(BarcodeLabel object);
+	public long getBarcodeLabelCount(BarcodeLabel object);
 
 	/**
 	 * Search the entities, restricted by a pageable count
@@ -192,7 +192,7 @@ public interface ILimsAdminService {
 	 */
 	public void deleteBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
 
-	public int getBiospecimenUidTemplateCount(BiospecimenUidTemplate modelObject);
+	public long getBiospecimenUidTemplateCount(BiospecimenUidTemplate modelObject);
 
 	public List<BiospecimenUidToken> getBiospecimenUidTokens();
 

@@ -21,6 +21,7 @@ package au.org.theark.core.vo;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
@@ -35,6 +36,7 @@ import au.org.theark.core.model.study.entity.StudyUpload;
 @SuppressWarnings("serial")
 public class UploadVO implements Serializable {
 	private StudyUpload								upload;
+	private List<String>								uidsToUpload;
 	private FileFormat								fileFormat;
 	private FileUpload								fileUpload;
 	private Study										study;
@@ -188,5 +190,13 @@ public class UploadVO implements Serializable {
 	 */
 	public FileUpload getFileUpload() {
 		return fileUpload;
+	}
+
+	public void setUidsToUpload(List<String> uidsToUpload) {
+		this.uidsToUpload = uidsToUpload;
+	}
+
+	public List<String> getUidsToUpload() {
+		return uidsToUpload;
 	}
 }

@@ -82,17 +82,14 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		this.iArkCommonService = iArkCommonService;
 	}
 	
-	public Integer getTotalSubjectCount(Study study) {
-		Integer totalCount = 0;
+	public long getTotalSubjectCount(Study study) {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setProjection(Projections.rowCount());
-		totalCount = (Integer) criteria.uniqueResult();
-
-		return totalCount;
+		return (Long) criteria.uniqueResult();
 	}
 
-	public Map<String, Integer> getSubjectStatusCounts(Study study) {
+	public Map<String, Long> getSubjectStatusCounts(Study study) {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("study", study));
 		ProjectionList projectionList = Projections.projectionList();
@@ -101,17 +98,17 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		projectionList.add(Projections.rowCount());
 		criteria.setProjection(projectionList);
 		List results = criteria.list();
-		Map<String, Integer> statusMap = new HashMap<String, Integer>();
+		Map<String, Long> statusMap = new HashMap<String, Long>();
 		for (Object r : results) {
 			Object[] obj = (Object[]) r;
 			String statusName = (String) obj[0];
-			statusMap.put(statusName, (Integer) obj[1]);
+			statusMap.put(statusName, (Long) obj[1]);
 		}
 		return statusMap;
 	}
 
-	public Map<String, Integer> getStudyConsentCounts(Study study) {
-		Map<String, Integer> statusMap = new HashMap<String, Integer>();
+	public Map<String, Long> getStudyConsentCounts(Study study) {
+		Map<String, Long> statusMap = new HashMap<String, Long>();
 
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("study", study));
@@ -124,7 +121,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		for (Object r : results) {
 			Object[] obj = (Object[]) r;
 			String statusName = (String) obj[0];
-			statusMap.put(statusName, (Integer) obj[1]);
+			statusMap.put(statusName, (Long) obj[1]);
 		}
 
 		// Tack on count of when consentStatus = undefined (NULL)
@@ -134,15 +131,15 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		projectionList = Projections.projectionList();
 		projectionList.add(Projections.rowCount());
 		criteria.setProjection(projectionList);
-		Integer undefCount = (Integer) criteria.uniqueResult();
+		Long undefCount = (Long) criteria.uniqueResult();
 		String statusName = Constants.NOT_CONSENTED;
-		statusMap.put(statusName, undefCount);
+		statusMap.put(statusName,undefCount);
 
 		return statusMap;
 	}
 
-	public Map<String, Integer> getStudyCompConsentCounts(Study study, StudyComp studyComp) {
-		Map<String, Integer> statusMap = new HashMap<String, Integer>();
+	public Map<String, Long> getStudyCompConsentCounts(Study study, StudyComp studyComp) {
+		Map<String, Long> statusMap = new HashMap<String, Long>();
 
 		Criteria criteria = getSession().createCriteria(Consent.class);
 		criteria.add(Restrictions.eq("study", study));
@@ -157,11 +154,11 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			for (Object r : results) {
 				Object[] obj = (Object[]) r;
 				String statusName = (String) obj[0];
-				statusMap.put(statusName, (Integer) obj[1]);
+				statusMap.put(statusName, (Long) obj[1]);
 			}
 		}
 		else {
-			statusMap.put("(none found)", new Integer(0));
+			statusMap.put("(none found)", new Long(0));
 		}
 		return statusMap;
 	}

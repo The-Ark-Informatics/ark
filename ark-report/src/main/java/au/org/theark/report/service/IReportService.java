@@ -38,13 +38,13 @@ import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 
 public interface IReportService {
 
-	public Integer getTotalSubjectCount(Study study);
+	public long getTotalSubjectCount(Study study);
 
-	public Map<String, Integer> getSubjectStatusCounts(Study study);
+	public Map<String, Long> getSubjectStatusCounts(Study study);
 
-	public Map<String, Integer> getStudyConsentCounts(Study study);
+	public Map<String, Long> getStudyConsentCounts(Study study);
 
-	public Map<String, Integer> getStudyCompConsentCounts(Study study, StudyComp studyComp);
+	public Map<String, Long> getStudyCompConsentCounts(Study study, StudyComp studyComp);
 
 	public Long getWithoutStudyCompCount(Study study);
 

@@ -35,11 +35,11 @@ import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
@@ -67,6 +67,8 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>		iArkCommonService;
 
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
 	/**
 	 * Construct.
 	 */
@@ -166,7 +168,7 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 		phenoUploadReport.appendDetails(containerForm.getModelObject().getUpload());
 		phenoUploadReport.append(importReport);
 		byte[] bytes = phenoUploadReport.getReport().toString().getBytes();
-		Blob uploadReportBlob = Hibernate.createBlob(bytes);
+		Blob uploadReportBlob = util.createBlob(bytes);
 		containerForm.getModelObject().getUpload().setUploadReport(uploadReportBlob);
 	}
 
@@ -176,7 +178,7 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 		try {
 			inputStream = new BufferedInputStream(new FileInputStream(temp));
 			// Copy file to BLOB object
-			Blob payload = Hibernate.createBlob(inputStream);
+			Blob payload = util.createBlob(inputStream, temp.length());
 			containerForm.getModelObject().getUpload().setPayload(payload);
 
 			containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));

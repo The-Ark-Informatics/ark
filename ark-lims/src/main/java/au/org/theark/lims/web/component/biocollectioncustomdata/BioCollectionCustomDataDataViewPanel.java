@@ -89,7 +89,7 @@ public class BioCollectionCustomDataDataViewPanel extends Panel {
 					BioCollection bc = criteriaModel.getObject().getBioCollection();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 	
-					return iLimsService.getBioCollectionCustomFieldDataCount(bc, arkFunction);
+					return (int)iLimsService.getBioCollectionCustomFieldDataCount(bc, arkFunction);
 				}
 	
 				public Iterator<BioCollectionCustomFieldData> iterator(int first, int count) {

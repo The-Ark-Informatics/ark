@@ -111,7 +111,7 @@ public class ModuleContainerPanel extends AbstractContainerPanel<AdminVO> {
 		// Data provider to paginate resultList
 		dataProvider = new ArkDataProvider<ArkModule, IAdminService>(iAdminService) {
 			public int size() {
-				return service.getArkModuleCount(model.getObject());
+				return (int)service.getArkModuleCount(model.getObject());
 			}
 
 			public Iterator<ArkModule> iterator(int first, int count) {

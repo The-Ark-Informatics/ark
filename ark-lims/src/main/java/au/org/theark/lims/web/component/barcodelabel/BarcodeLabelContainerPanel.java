@@ -133,13 +133,11 @@ public class BarcodeLabelContainerPanel extends AbstractContainerPanel<BarcodeLa
 	private void initialiseDataView() {
 		// Data provider to paginate resultList
 		dataProvider = new ArkDataProvider<BarcodeLabel, ILimsAdminService>(iLimsAdminService) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return service.getBarcodeLabelCount(model.getObject());
+				return (int)service.getBarcodeLabelCount(model.getObject());
 			}
 
 			public Iterator<BarcodeLabel> iterator(int first, int count) {

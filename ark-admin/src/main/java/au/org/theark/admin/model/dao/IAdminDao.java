@@ -90,15 +90,15 @@ public interface IAdminDao {
 
 	public List<ArkModule> searchArkModule(ArkModule arkModule);
 
-	public int getArkModuleCount(ArkModule arkModuleCriteria);
+	public long getArkModuleCount(ArkModule arkModuleCriteria);
 
 	public List<ArkModule> searchPageableArkModules(ArkModule arkModuleCriteria, int first, int count);
 
-	public int getArkFunctionCount(ArkFunction arkFunctionCriteria);
+	public long getArkFunctionCount(ArkFunction arkFunctionCriteria);
 
 	public List<ArkFunction> searchPageableArkFunctions(ArkFunction arkFunctionCriteria, int first, int count);
 
-	public int getArkRoleModuleFunctionVOCount(ArkRoleModuleFunctionVO arkRoleModuleFunctionVoCriteria);
+	public long getArkRoleModuleFunctionVOCount(ArkRoleModuleFunctionVO arkRoleModuleFunctionVoCriteria);
 
 	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, int first, int count);
 	
@@ -110,7 +110,7 @@ public interface IAdminDao {
 
 	public List<ArkModule> getArkModuleList(ArkRole arkRole);
 
-	public int getArkModuleFunctionCount(ArkModuleFunction arkModuleFunctionCriteria);
+	public long getArkModuleFunctionCount(ArkModuleFunction arkModuleFunctionCriteria);
 	
 	public List<ArkModuleFunction> searchPageableArkModuleFunctions(ArkModuleFunction arkModuleFunctionCriteria, int first, int count);
 
@@ -122,7 +122,7 @@ public interface IAdminDao {
 	
 	public ArkRole getArkRole(Long id);
 	
-	public int getArkRoleCount(ArkRole arkRoleCriteria);
+	public long getArkRoleCount(ArkRole arkRoleCriteria);
 
 	public List<ArkRole> searchPageableArkRoles(ArkRole arkRoleCriteria, int first, int count);
 	
@@ -132,7 +132,7 @@ public interface IAdminDao {
 
 	public List<ArkRole> getArkRoleListByArkModule(ArkModule arkModule);
 	
-	public int getArkModuleRoleCount(ArkModuleRole arkModuleRoleCriteria);
+	public long getArkModuleRoleCount(ArkModuleRole arkModuleRoleCriteria);
 	
 	public List<ArkModuleRole> searchPageableArkModuleRoles(ArkModuleRole arkModulRoleCriteria, int first, int count);
 

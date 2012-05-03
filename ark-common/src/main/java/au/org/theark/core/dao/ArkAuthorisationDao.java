@@ -1065,7 +1065,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		criteria.add(Restrictions.eq("arkUser", arkUser));
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		if (totalCount > 0) {
 			flag = true;
 		}

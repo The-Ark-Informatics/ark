@@ -207,18 +207,18 @@ public interface IPhenotypicDao {
 	// Delimiter Types
 	public java.util.Collection<DelimiterType> getDelimiterTypes();
 
-	public int getCountOfFieldsInStudy(Study study);
+	public long getCountOfFieldsInStudy(Study study);
 
-	public int getCountOfFieldsWithDataInStudy(Study study);
+	public long getCountOfFieldsWithDataInStudy(Study study);
 
 	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected);
 
 	// Field Upload
 	public Collection<PhenoUpload> searchFieldUpload(PhenoUpload phenoUpload);
 
-	public int getCountOfCollectionsInStudy(Study study);
+	public long getCountOfCollectionsInStudy(Study study);
 
-	public int getCountOfCollectionsWithDataInStudy(Study study);
+	public long getCountOfCollectionsWithDataInStudy(Study study);
 
 	/**
 	 * A generic interface that will return a list PhenoCollectionVO specified by a particular criteria, and a paginated reference point
@@ -232,7 +232,7 @@ public interface IPhenotypicDao {
 	 * 
 	 * @return int
 	 */
-	public int getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria);
+	public long getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria);
 
 	public DelimiterType getDelimiterType(Long id);
 
@@ -252,7 +252,7 @@ public interface IPhenotypicDao {
 
 	public PhenotypicCollection getPhenotypicCollection(Long id);
 
-	public int getPhenoDataCount(PhenotypicCollection phenoCollection);
+	public long getPhenoDataCount(PhenotypicCollection phenoCollection);
 
 	public List<PhenoData> getPhenoDataList(PhenotypicCollection phenoCollection, int first, int count);
 	
@@ -262,7 +262,7 @@ public interface IPhenotypicDao {
 	
 	public void deleteCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO);
 
-	public int getPhenotypicCollectionCount(PhenoDataCollectionVO criteria);
+	public long getPhenotypicCollectionCount(PhenoDataCollectionVO criteria);
 	
 	public List<PhenotypicCollection> searchPageablePhenotypicCollection(PhenoDataCollectionVO collectionCriteria, int first, int count);
 	
@@ -274,7 +274,7 @@ public interface IPhenotypicDao {
 	
 	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup, int first, int count);
 	
-	public int getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup);
+	public long getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup);
 
 	public void createPhenotypicCollection(PhenotypicCollection phenotypicCollection);
 

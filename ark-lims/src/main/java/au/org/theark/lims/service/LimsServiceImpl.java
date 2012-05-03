@@ -293,7 +293,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#getBioTransactionCount(Long)
 	 */
-	public int getBioTransactionCount(BioTransaction bioTransaction) {
+	public long getBioTransactionCount(BioTransaction bioTransaction) {
 		return iBioTransactionDao.getBioTransactionCount(bioTransaction);
 	}
 
@@ -365,7 +365,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#getBioCollectionCount(BioCollection bioCollection)
 	 */
-	public int getBioCollectionCount(BioCollection bioCollectionCriteria) {
+	public long getBioCollectionCount(BioCollection bioCollectionCriteria) {
 		return iBioCollectionDao.getBioCollectionCount(bioCollectionCriteria);
 	}
 
@@ -383,7 +383,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#getBiospecimenCount()
 	 */
-	public int getBiospecimenCount(Biospecimen biospecimenCriteria) {
+	public long getBiospecimenCount(Biospecimen biospecimenCriteria) {
 		return iBiospecimenDao.getBiospecimenCount(biospecimenCriteria);
 	}
 
@@ -405,7 +405,7 @@ public class LimsServiceImpl implements ILimsService {
 		return iBiospecimenDao.getBiospecimenByUid(biospecimenUid);
 	}
 	
-	public int getBioCollectionCustomFieldDataCount(BioCollection criteria, ArkFunction arkFunction) {
+	public long getBioCollectionCustomFieldDataCount(BioCollection criteria, ArkFunction arkFunction) {
 		return iBioCollectionDao.getBioCollectionCustomFieldDataCount(criteria, arkFunction);
 	}
 
@@ -558,7 +558,7 @@ public class LimsServiceImpl implements ILimsService {
 		return flag;
 	}
 
-	public int getBiospecimenCount(LimsVO limsVo) {
+	public long getBiospecimenCount(LimsVO limsVo) {
 		return iBiospecimenDao.getBiospecimenCount(limsVo);
 	}
 
@@ -566,7 +566,7 @@ public class LimsServiceImpl implements ILimsService {
 		return iBiospecimenDao.searchPageableBiospecimens(limsVo, first, count);
 	}
 
-	public int getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction) {
+	public long getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction) {
 		return iBiospecimenDao.getBiospecimenCustomFieldDataCount(biospecimenCriteria, arkFunction);
 	}
 

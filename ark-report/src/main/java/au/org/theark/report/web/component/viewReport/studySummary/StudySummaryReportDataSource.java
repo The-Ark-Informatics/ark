@@ -55,7 +55,7 @@ public class StudySummaryReportDataSource implements Serializable, JRDataSource 
 	public StudySummaryReportDataSource(IReportService reportService, Study study) {
 		data = new ArrayList<StudySummaryDataRow>();
 		data.add(new StudySummaryDataRow("Total Subjects", "", reportService.getTotalSubjectCount(study)));
-		Map<String, Integer> tmpStatusCounts = reportService.getSubjectStatusCounts(study);
+		Map<String, Long> tmpStatusCounts = reportService.getSubjectStatusCounts(study);
 		for (String statusKey : tmpStatusCounts.keySet()) {
 			data.add(new StudySummaryDataRow("Subject Status", statusKey, tmpStatusCounts.get(statusKey)));
 		}

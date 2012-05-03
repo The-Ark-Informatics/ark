@@ -508,8 +508,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	@Override
-	public void createAuditHistory(AuditHistory auditHistory, String userId) {
+	public void createAuditHistory(AuditHistory auditHistory, String userId, Study study) {
 		Date date = new Date(System.currentTimeMillis());
+
 		if(userId == null){//if not forcing a userID manually, get currentuser
 			Subject currentUser = SecurityUtils.getSubject();
 			auditHistory.setArkUserId((String) currentUser.getPrincipal());			
@@ -517,28 +518,30 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		else{
 			auditHistory.setArkUserId(userId);		
 		}
-		Subject currentUser = SecurityUtils.getSubject();
-		auditHistory.setArkUserId((String) currentUser.getPrincipal());
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		if (sessionStudyId != null && auditHistory.getStudyStatus() == null) {
-			auditHistory.setStudyStatus(getStudy(sessionStudyId).getStudyStatus());
-		}
-		else {
+		if(study==null){
+			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			if (sessionStudyId != null && auditHistory.getStudyStatus() == null) {
+				auditHistory.setStudyStatus(getStudy(sessionStudyId).getStudyStatus());
+			}
+			else {
 
-			if (auditHistory.getEntityType().equalsIgnoreCase(au.org.theark.core.Constants.ENTITY_TYPE_STUDY)) {
-				Study study = getStudy(auditHistory.getEntityId());
-				if (study != null) {
-					auditHistory.setStudyStatus(study.getStudyStatus());
+				if (auditHistory.getEntityType().equalsIgnoreCase(au.org.theark.core.Constants.ENTITY_TYPE_STUDY)) {
+					Study studyFromDB = getStudy(auditHistory.getEntityId());
+					if (studyFromDB != null) {
+						auditHistory.setStudyStatus(studyFromDB.getStudyStatus());
+					}
 				}
 			}
 		}
-
+		else{
+			auditHistory.setStudyStatus(study.getStudyStatus());			
+		}
 		auditHistory.setDateTime(date);
 		getSession().save(auditHistory);
 		//getSession().flush();		
 	}
 	public void createAuditHistory(AuditHistory auditHistory) {
-		createAuditHistory(auditHistory, null);
+		createAuditHistory(auditHistory, null, null);
 	}
 
 	public List<PersonContactMethod> getPersonContactMethodList() {
@@ -741,7 +744,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return personContactMethod;
 	}
 
-	public int getStudySubjectCount(SubjectVO subjectVO) {
+	public long getStudySubjectCount(SubjectVO subjectVO) {
 		// Handle for study not in context
 		if (subjectVO.getLinkSubjectStudy().getStudy() == null) {
 			return 0;
@@ -749,7 +752,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		Criteria criteria = buildGeneralSubjectCriteria(subjectVO);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount.intValue();
 	}
 
@@ -899,7 +902,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = session.createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		session.close();
 		return totalCount.intValue() > 0;
 	}
@@ -923,7 +926,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	}
 
-	public int getCountOfStudies() {
+	public long getCountOfStudies() {
 		int total = 0;
 		Long longTotal = ((Long) getSession().createQuery("select count(*) from Study").iterate().next());
 		total = longTotal.intValue();
@@ -1060,7 +1063,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = session.createCriteria(Biospecimen.class);
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		session.close();
 		return totalCount.intValue() > 0;
 	}
@@ -1070,7 +1073,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = session.createCriteria(BioCollection.class);
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		session.close();
 		return totalCount.intValue() > 0;
 	}
@@ -1095,7 +1098,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		getSession().saveOrUpdate(bioCollectionUidTemplate);
 	}
 
-	public int getCountOfSubjects(Study study) {
+	public long getCountOfSubjects(Study study) {
 		int total = 0;
 		total = ((Long) getSession().createQuery("select count(*) from LinkSubjectStudy where study = :study").setParameter("study", study).iterate().next()).intValue();
 		return total;
@@ -1181,8 +1184,21 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	@Override
-	public List<String> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids) {
+	public List<String> getSubjectUIDsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids) {
 		String queryString = "select subject.subjectUID " +
+		"from LinkSubjectStudy subject " +
+		"where study =:study " +
+		"and subjectUID in  (:subjects) ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("study", study);
+		query.setParameterList("subjects", subjectUids);
+
+		return query.list();
+	}
+
+	@Override
+	public List<LinkSubjectStudy> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids) {
+		String queryString = "select subject " +
 		"from LinkSubjectStudy subject " +
 		"where study =:study " +
 		"and subjectUID in  (:subjects) ";
@@ -1203,7 +1219,5 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		return query.list();
 	}
-
-
 	
 }

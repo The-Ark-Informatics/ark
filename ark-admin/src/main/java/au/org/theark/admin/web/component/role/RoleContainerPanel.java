@@ -111,7 +111,7 @@ public class RoleContainerPanel extends AbstractContainerPanel<AdminVO> {
 		// Data provider to paginate resultList
 		dataProvider = new ArkDataProvider<ArkRole, IAdminService>(iAdminService) {
 			public int size() {
-				return service.getArkRoleCount(model.getObject());
+				return (int)service.getArkRoleCount(model.getObject());
 			}
 
 			public Iterator<ArkRole> iterator(int first, int count) {

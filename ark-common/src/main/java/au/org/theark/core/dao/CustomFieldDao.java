@@ -155,14 +155,14 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return (CustomField)criteria.uniqueResult();
 	}
 
-	public int getCustomFieldCount(CustomField customFieldCriteria) {
+	public long getCustomFieldCount(CustomField customFieldCriteria) {
 		// Handle for study or function not in context
 		if (customFieldCriteria.getStudy() == null || customFieldCriteria.getArkFunction() == null) {
 			return 0;
 		}
 		Criteria criteria = buildGeneralCustomFieldCritera(customFieldCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
 
@@ -180,14 +180,14 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return (CustomFieldDisplay)criteria.uniqueResult();
 	}
 
-	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup) {
+	public long getCustomFieldGroupCount(CustomFieldGroup customFieldGroup) {
 		// Handle for study or function not in context
 		if (customFieldGroup.getStudy() == null || customFieldGroup.getArkFunction() == null) {
-			return 0;
+			return 0L;
 		}
 		Criteria criteria = buildGenericCustomFieldGroupCriteria(customFieldGroup);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
+		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
 

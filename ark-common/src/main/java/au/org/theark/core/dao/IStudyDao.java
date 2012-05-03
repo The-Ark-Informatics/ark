@@ -276,7 +276,7 @@ public interface IStudyDao {
 	 * Create an AuditHistory
 	 * @param auditHistory
 	 */
-	public void createAuditHistory(AuditHistory auditHistory, String userId);
+	public void createAuditHistory(AuditHistory auditHistory, String userId, Study study);
 
 	/**
 	 * Get a List of PersonContactMethod(s)
@@ -406,7 +406,7 @@ public interface IStudyDao {
 	 * 
 	 * @return int
 	 */
-	public int getStudySubjectCount(SubjectVO subjectVoCriteria);
+	public long getStudySubjectCount(SubjectVO subjectVoCriteria);
 
 	/**
 	 * Returns a list of consent status options permissible for creating/updating a record in the system. At the moment this means it is a list without
@@ -460,7 +460,7 @@ public interface IStudyDao {
 	 * Get the total count of Studies 
 	 * @return the total count of Studies 
 	 */
-	public int getCountOfStudies();
+	public long getCountOfStudies();
 
 	/**
 	 * Get a FileFormat based on the name
@@ -554,7 +554,7 @@ public interface IStudyDao {
 	 */
 	public LinkSubjectStudy getSubjectByUIDAndStudy(String subjectUID, Study study);
 	
-	public int getCountOfSubjects(Study study);
+	public long getCountOfSubjects(Study study);
 	
 	/**
 	 * Match a file containing a list of SubjectUid's for a given study, and return the matched list
@@ -574,6 +574,8 @@ public interface IStudyDao {
 
 	//TODO evaluate performance vs return list of strings as needed for large comparisons
 	public List<String> getAllSubjectUIDs(Study study);
+
+	public List<String> getSubjectUIDsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids);
 	
-	public List<String> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids);
+	public List<LinkSubjectStudy> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids);
 }

@@ -177,8 +177,8 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		// Refresh the FB panel if there was an old message from previous search result
 		target.add(feedbackPanel);
 		
-		int count = iLimsService.getBiospecimenCount(cpmModel.getObject());
-		if (count == 0) {
+		long count = iLimsService.getBiospecimenCount(cpmModel.getObject());
+		if (count == 0L) {
 			this.info("There are no Biospecimens with the specified criteria.");
 			target.add(feedbackPanel);
 		}

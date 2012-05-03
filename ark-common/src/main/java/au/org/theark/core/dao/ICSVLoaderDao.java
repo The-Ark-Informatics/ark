@@ -19,6 +19,7 @@
 package au.org.theark.core.dao;
 
 import java.io.File;
+import java.sql.Blob;
 import java.util.List;
 import au.org.theark.core.model.study.entity.CsvBlob;
 
@@ -27,6 +28,9 @@ import au.org.theark.core.model.study.entity.CsvBlob;
  *
  */
 public interface ICSVLoaderDao {
+	
+
+	
 	/**
 	 * Loads a CSV file in to the specified database vi SQL insert statements for each row
 	 * 
@@ -81,5 +85,7 @@ public interface ICSVLoaderDao {
 	 * @return
 	 */
 	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr);
+
+	public Blob createBlob(byte[] bytes);
 
 }

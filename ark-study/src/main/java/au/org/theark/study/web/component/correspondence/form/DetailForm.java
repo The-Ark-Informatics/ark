@@ -40,8 +40,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.validation.validator.DateValidator;
-import org.hibernate.Hibernate;
 
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -62,11 +62,11 @@ import au.org.theark.study.web.Constants;
 
 public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
-	/**
-	 * 
-	 */
 	private static final long										serialVersionUID	= 2900999695563378447L;
 
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
+	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	protected IArkCommonService<Void>							iArkCommonService;
 
@@ -220,7 +220,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 					// retrieve file and store as Blob in database
 					FileUpload fileUpload = fileUploadField.getFileUpload();
 					// copy file to Blob object
-					Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+					Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
 					containerForm.getModelObject().getCorrespondence().setAttachmentPayload(payload);
 					containerForm.getModelObject().getCorrespondence().setAttachmentFilename(fileUpload.getClientFileName());
 				}
@@ -236,7 +236,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 					// retrieve file and store as Blob in database
 					FileUpload fileUpload = fileUploadField.getFileUpload();
 					// copy file to Blob object
-					Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+					Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
 					containerForm.getModelObject().getCorrespondence().setAttachmentPayload(payload);
 					containerForm.getModelObject().getCorrespondence().setAttachmentFilename(fileUpload.getClientFileName());
 				}

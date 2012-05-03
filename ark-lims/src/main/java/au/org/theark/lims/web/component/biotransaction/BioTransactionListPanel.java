@@ -128,7 +128,7 @@ public class BioTransactionListPanel extends Panel {
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return iLimsService.getBioTransactionCount(criteriaModel.getObject().getBioTransaction());
+				return (int)iLimsService.getBioTransactionCount(criteriaModel.getObject().getBioTransaction());
 			}
 
 			public Iterator<BioTransaction> iterator(int first, int count) {

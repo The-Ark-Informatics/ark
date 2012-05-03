@@ -18,15 +18,15 @@
  ******************************************************************************/
 package au.org.theark.core;
 
-import junit.framework.TestCase;
+//import junit.framework.TestCase;
 
 /**
  * Simple test using the WicketTester
  */
-public class TestHomePage extends TestCase {
+public class TestHomePage {//extends TestCase {
 	// private WicketTester tester;
 
-	@Override
+//	@Override
 	public void setUp() {
 		// tester = new WicketTester(new WicketApplication());
 	}

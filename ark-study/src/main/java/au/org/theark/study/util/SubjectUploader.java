@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,30 +56,18 @@ import au.org.theark.study.service.IStudyService;
 import com.csvreader.CsvReader;
 
 /**
- * SubjectUploader provides support for uploading subject matrix-formatted files. It features state-machine behaviour to allow an external class to
- * deal with how to store the data pulled out of the files.
+ * SubjectUploader provides support for uploading subject matrix-formatted files.
  * 
  * @author cellis
  */
 public class SubjectUploader {
-	private long						subjectCount;
-	private long						insertCount;
-	private long						updateCount;
-	private long						curPos;
-	private long						srcLength				= -1;																				// -1 means nothing being
-	// processed
-	private StopWatch					timer						= null;
-	private char						delimiterCharacter	= Constants.DEFAULT_DELIMITER_CHARACTER;									// default
-	// delimiter:
-	// COMMA
+	private char						delimiterCharacter	= Constants.DEFAULT_DELIMITER_CHARACTER;
 	private Study						study;
-	static Logger						log						= LoggerFactory.getLogger(SubjectUploader.class);
+	static  Logger						log						= LoggerFactory.getLogger(SubjectUploader.class);
 	private IArkCommonService		iArkCommonService		= null;
 	private IStudyService			iStudyService			= null;
 	private StringBuffer				uploadReport			= null;
 	private SimpleDateFormat		simpleDateFormat		= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-	private List<LinkSubjectStudy>	insertSubjects			= new ArrayList<LinkSubjectStudy>();
-	private List<LinkSubjectStudy>	updateSubjects			= new ArrayList<LinkSubjectStudy>();
 
 	/**
 	 * SubjectUploader constructor
@@ -99,6 +86,17 @@ public class SubjectUploader {
 		simpleDateFormat.setLenient(false);
 	}
 	
+	/**
+	 * Assumes a UID must be unique as this is only looking for a listOfSubjects PRE FILTERED based on a studies list of subjects to be changed
+	 */
+	public LinkSubjectStudy getSubjectByUIDFromExistList(List<LinkSubjectStudy> listOfSubjects, String subjectUID){
+		for(LinkSubjectStudy potentialSubject : listOfSubjects){
+			if(potentialSubject.getSubjectUID().equals(subjectUID)){
+				return potentialSubject;
+			}
+		}
+		return null;
+	}
 	
 	 /* Imports the subject data file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file format:
 		 * SUBJECTUID,FIELD1,FIELD2,FIELDN... 1,01/01/1900,99.99,99.99,, ...
@@ -115,11 +113,18 @@ public class SubjectUploader {
 		 *            general ARK Exception
 		 * @return the upload report detailing the upload process
 		 */
-		public StringBuffer uploadAndReportMatrixSubjectFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
+		public StringBuffer uploadAndReportMatrixSubjectFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, List<String> uidsWhichNeedUpdating) throws FileFormatException, ArkSystemException {
+//			StopWatch					timer						= new StopWatch();
+//			timer.start();
+			List<LinkSubjectStudy>	insertSubjects			= new ArrayList<LinkSubjectStudy>();
+			List<LinkSubjectStudy>	updateSubjects			= new ArrayList<LinkSubjectStudy>();
+			long						subjectCount = 0;
+			long						insertCount = 0;
+			long						updateCount = 0;
+			long						srcLength = -1;	// -1 means nothing being processed
 			
 			delimiterCharacter = inDelimChr;
 			uploadReport = new StringBuffer();
-			curPos = 0;
 
 			InputStreamReader inputStreamReader = null;
 			CsvReader csvReader = null;
@@ -131,8 +136,8 @@ public class SubjectUploader {
 				String[] stringLineArray;
 
 				//this is a list of all our somewhat enum like ref tables...
-				//much better to call this once than each one n times in the for loop
-				//should save 100,000-150,000 selects for a 17K insert.  may still wish to evaluate whats best here
+				//much better to call this once than each one n times in the for loop...plus each ones default is n times
+				//should save 200,000-250,000 selects for a 17K insert.  may still wish to evaluate whats best here
 				Collection<MaritalStatus> maritalStatiiPossible = iArkCommonService.getMaritalStatus();
 				Collection<SubjectStatus> subjectStatiiPossible = iArkCommonService.getSubjectStatus();
 				Collection<GenderType> genderTypesPossible = iArkCommonService.getGenderTypes();
@@ -141,6 +146,7 @@ public class SubjectUploader {
 				Collection<PersonContactMethod> personContactMethodPossible = iArkCommonService.getPersonContactMethodList();
 				//Collection<MaritalStatus> yesNoList = iArkCommonService.getYesNoList();
 
+				boolean autoConsent = study.getAutoConsent();
 				SubjectStatus defaultSubjectStatus = iStudyService.getDefaultSubjectStatus();
 				TitleType defaultTitleType = iStudyService.getDefaultTitleType();
 				GenderType defaultGenderType = iStudyService.getDefaultGenderType();
@@ -149,10 +155,20 @@ public class SubjectUploader {
 				ConsentOption concentOptionOfYes = iStudyService.getConsentOptionForBoolean(true);//sounds a lot like boolean blah = true????
 				ConsentStatus consentStatusOfConsented = iStudyService.getConsentStatusByName("Consented");
 				ConsentType consentTypeOfElectronic = iStudyService.getConsentTypeByName("Electronic");
-				
-				List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
-				
-				boolean autoConsent = study.getAutoConsent();
+
+//				List<String> subjectUIDsAlreadyExisting = null;	
+				List<LinkSubjectStudy> allSubjectWhichWillBeUpdated = null;
+				if(uidsWhichNeedUpdating.size()>0){
+					//TODO analyse performance of bringing all back and having to iterate everytime, vs conditional query + looping through less
+					// TODO analyze performance of getting that big list of UIDs and doing a .contains(subjectuid)   VS    getting all the entities and doing a .getSubjectUID.equals(subjectUID)
+					//List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	
+					allSubjectWhichWillBeUpdated = iArkCommonService.getUniqueSubjectsWithTheseUIDs(study, uidsWhichNeedUpdating);
+//					subjectUIDsAlreadyExisting = iArkCommonService.getUniqueSubjectUIDsWithTheseUIDs(study, uidsWhichNeedUpdating);
+				}
+				else{
+					allSubjectWhichWillBeUpdated 	= new ArrayList();
+//					subjectUIDsAlreadyExisting 	= new ArrayList();
+				}
 				
 				srcLength = inLength;
 				if (srcLength <= 0) {
@@ -162,12 +178,9 @@ public class SubjectUploader {
 					throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + srcLength);
 				}
 
-				timer = new StopWatch();
-				timer.start();
 				// Set field list (note 2th column to Nth column)		// SUBJECTUID DATE_COLLECTED F1 F2 FN
 																						// 0 1 2 3 N      this must be done
 				csvReader.readHeaders();
-
 				srcLength = inLength - csvReader.getHeaders().toString().length();
 
 				int firstNameIndex 		= csvReader.getIndex("FIRST_NAME");
@@ -181,7 +194,6 @@ public class SubjectUploader {
 				int maritalStatusIndex 	= csvReader.getIndex("MARITAL_STATUS");
 				int statusIndex 			= csvReader.getIndex("STATUS");
 				
-				
 				//if(PERSON_CONTACT_METHOD is in headers, use it, 
 									//else, if CONTACT_METHOD, us IT, else, just set to -1 
 				int personContactIndex 	= ((csvReader.getIndex("PERSON_CONTACT_METHOD")>0)?csvReader.getIndex("PERSON_CONTACT_METHOD"):
@@ -191,31 +203,29 @@ public class SubjectUploader {
 				int dateOfDeathIndex 				= ((csvReader.getIndex("DATE_OF_DEATH")>0)?csvReader.getIndex("DATE_OF_DEATH"):
 					((csvReader.getIndex("DODEATH") > 0)?csvReader.getIndex("DODEATH"):-1));
 				int causeOfDeathIndex 				= ((csvReader.getIndex("CAUSE_OF_DEATH")>0)?csvReader.getIndex("CAUSE_OF_DEATH"):
-					((csvReader.getIndex("CODEATH") > 0)?csvReader.getIndex("CODEATH"):-1));
-				
+					((csvReader.getIndex("CODEATH") > 0)?csvReader.getIndex("CODEATH"):-1));			
 				//in reality, validation doesnt permit this yet anyway...but probably not bad to align it over in validation
 				int genderIndex 			= ( (csvReader.getIndex("GENDER_TYPE") > 0) ? csvReader.getIndex("GENDER_TYPE") :
 													((csvReader.getIndex("GENDER") > 0) ? csvReader.getIndex("GENDER"): 
 													((csvReader.getIndex("SEX") > 0) ? csvReader.getIndex("SEX"):-1)));   
-				
-				//log.warn("    genderIndex   "+genderIndex);
-		
+
 				// Loop through all rows in file
 				while (csvReader.readRecord()) {
-					//log.warn("reading msg " + subjectCount);
+
+					LinkSubjectStudy subject = null;
 					stringLineArray = csvReader.getValues();
 					String subjectUID = stringLineArray[0];
-
-					boolean thisSubjectAlreadyExists = subjectUIDsAlreadyExisting.contains(subjectUID);
+					
+					subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
+					boolean thisSubjectAlreadyExists = (subject!=null);
 
 					//TODO ASAP maybe this can be replaced with a getAllSubjectUIDsForThisStudy up top...then just search throw all uids for a match?
 					//can even pre-getAllSubjects in the already exists group
-					LinkSubjectStudy subject = null;
 					Person person = null;
 					if(thisSubjectAlreadyExists){
-						log.warn("about to ask service right now");
-						subject = iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study);
-						log.warn("got the hibernate result back now");
+						//formerly subject = iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study);
+						//This is now going through a list of prefetched entities  that we know need to be changed and exist
+						//subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
 						//subject should always have a person
 						person = subject.getPerson();
 					}
@@ -225,8 +235,7 @@ public class SubjectUploader {
 						subject.setStudy(study);
 						person = new Person();
 					}
-					log.warn("got the person");
-
+					
 					if (firstNameIndex > 0)
 						person.setFirstName(stringLineArray[firstNameIndex]);
 
@@ -253,7 +262,7 @@ public class SubjectUploader {
 							for(GenderType boygirl : genderTypesPossible){
 								if(boygirl.getName().equalsIgnoreCase(stringLineArray[genderIndex])){
 									person.setGenderType(boygirl);		
-								}	//TODO else might belonog here really...but its already written in the batch insert anyway
+								}
 							}
 							if (person.getGenderType() == null || 
 									StringUtils.isBlank(person.getGenderType().getName())) {
@@ -330,23 +339,7 @@ public class SubjectUploader {
 							person.setMaritalStatus(defaultMaritalStatus);
 						}
 					}
-					/*cleaned this up...replaced it with code below
-					if (csvReader.getIndex("PERSON_CONTACT_METHOD") > 0 || csvReader.getIndex("CONTACT_METHOD") > 0) {
-						String personContactMethodStr = null;
-						if (csvReader.getIndex("PERSON_CONTACT_METHOD") > 0) {
-							personContactMethodStr = (stringLineArray[csvReader.getIndex("PERSON_CONTACT_METHOD")]);
-						}
-						else {
-							personContactMethodStr = (stringLineArray[csvReader.getIndex("CONTACT_METHOD")]);
-						}
-						for(PersonContactMethod possibleMethod : personContactMethodPossible){
-							if(possibleMethod.getName().equalsIgnoreCase(personContactMethodStr)){
-								person.setPersonContactMethod(possibleMethod);		
-							}	
-						}
-						//TODO if we get to the end and personcontactmethod doesnt exist...what do we do?  do we want a default or does it get ignored
-						
-					}*/
+
 					if (personContactIndex > 0) {
 						String personContactMethodStr = null;
 						personContactMethodStr = (stringLineArray[personContactIndex]);				
@@ -380,7 +373,6 @@ public class SubjectUploader {
 						}
 					}
 
-					log.warn("did all the statii junk..now about to set person and add to the insert or update list");
 					subject.setPerson(person);
 
 					if (subject.getId() == null || subject.getPerson().getId() == 0) {
@@ -408,8 +400,7 @@ public class SubjectUploader {
 					}
 
 					subjectCount++;
-					log.warn("finished message for " + subjectCount + "         updates= " + updateCount + "     inserts = " + insertCount + "   " );//+
-							//" travsguessatupdatestotal= " +  travsguessatupdatestotal + " " +	"   size of uploadReport= " + uploadReport.length());
+					log.warn("finished message for " + subjectCount + "         updates= " + updateCount + "     inserts = " + insertCount + "   " );
 				}
 			}
 			catch (IOException ioe) {
@@ -424,24 +415,20 @@ public class SubjectUploader {
 			}
 			finally {
 				// Clean up the IO objects
-				timer.stop();
-				uploadReport.append("\n");
-				uploadReport.append("Total elapsed time: ");
-//				uploadReport.append(timer.getTime());
-//				uploadReport.append(" ms or ");
-				uploadReport.append(decimalFormat.format(timer.getTime() / 1000.0));
-				uploadReport.append(" s");
-				uploadReport.append("\n");
+//				timer.stop();
+//				uploadReport.append("\n");
+//				uploadReport.append("Total elapsed time: ");
+//				uploadReport.append(decimalFormat.format(timer.getTime() / 1000.0));
+//				uploadReport.append(" s");
+//				uploadReport.append("\n");
 				uploadReport.append("Total file size: ");
-//				uploadReport.append(inLength);
-//				uploadReport.append(" B or ");
 				uploadReport.append(decimalFormat.format(inLength / 1024.0 / 1024.0));
 				uploadReport.append(" MB");
 				uploadReport.append("\n");
-
-				if (timer != null)
-					timer = null;
-
+//
+//				if (timer != null)
+//					timer = null;
+//
 				if (csvReader != null) {
 					try {
 						csvReader.close();
@@ -474,7 +461,7 @@ public class SubjectUploader {
 			uploadReport.append(" subjects.");
 			uploadReport.append("\n");
 
-			// Batch insert/update
+/*			// Batch insert/update
 			try {
 				iStudyService.batchInsertSubjects(insertSubjects);
 			}
@@ -493,7 +480,10 @@ public class SubjectUploader {
 			catch (ArkSubjectInsertException e) {
 				e.printStackTrace();
 			}
-
+*/
+			//TODO exceptionhandling
+			iStudyService.processBatch(insertSubjects, study, updateSubjects);
+			
 			return uploadReport;
 		}
 
@@ -828,11 +818,10 @@ public class SubjectUploader {
 	 *           is the input stream of a file
 	 * @param inLength
 	 *           is the length of a file
-	 */
+	 *
 	public List getListOfUidsFromInputStream(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
 		List uids = new ArrayList<String>();
 		delimiterCharacter = inDelimChr;
-		curPos = 0;
 
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
@@ -892,34 +881,5 @@ public class SubjectUploader {
 
 		return uids;
 	}
-
-	
-	
-	/**
-	 * Return the progress of the current process in %
-	 * 
-	 * @return if a process is actively running, then progress in %; or if no process running, then returns -1
-	 */
-	public double getProgress() {
-		double progress = -1;
-
-		if (srcLength > 0)
-			progress = curPos * 100.0 / srcLength; // %
-
-		return progress;
-	}
-
-	/**
-	 * Return the speed of the current process in KB/s
-	 * 
-	 * @return if a process is actively running, then speed in KB/s; or if no process running, then returns -1
-	 */
-	public double getSpeed() {
-		double speed = -1;
-
-		if (srcLength > 0)
-			speed = curPos / 1024 / (timer.getTime() / 1000.0); // KB/s
-
-		return speed;
-	}
+*/
 }

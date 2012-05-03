@@ -32,8 +32,8 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
 
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.FileFormat;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
@@ -51,9 +51,11 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.form.WizardForm;
  * The first step of this wizard.
  */
 public class FieldDataUploadStep1 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
+
+	@SpringBean(name = "lobUtil")
+	private LobUtil			util;
+	
 	private static final long						serialVersionUID		= 4272918747277155957L;
 
 	public java.util.Collection<String>			validationMessages	= null;
@@ -184,7 +186,7 @@ public class FieldDataUploadStep1 extends AbstractWizardStepPanel {
 
 		try {
 			// Copy file to BLOB object
-			Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+			Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
 			containerForm.getModelObject().getUpload().setPayload(payload);
 		}
 		catch (IOException ioe) {
