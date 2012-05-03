@@ -183,6 +183,7 @@ public class SearchForm extends AbstractSearchForm<BarcodePrinter> {
 
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
+		getModelObject().setId(null);
 		preProcessDetailPanel(target);
 	}
 }

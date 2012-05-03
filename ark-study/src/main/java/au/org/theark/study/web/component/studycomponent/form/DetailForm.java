@@ -90,7 +90,6 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 		if (component != null && component.getId() != null && iStudyService.isStudyComponentHasAttachments(component)) {
 			deleteButton.setEnabled(false);
 		}
-
 		// If the given component is attached to a file/consents then disable the delete button
 
 	}

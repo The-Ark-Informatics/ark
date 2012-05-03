@@ -181,6 +181,7 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
+		getModelObject().setId(null);
 		preProcessDetailPanel(target);
 	}
 }
