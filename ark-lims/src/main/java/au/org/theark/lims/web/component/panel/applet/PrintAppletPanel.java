@@ -34,18 +34,13 @@ public class PrintAppletPanel extends Panel {
 	 * 
 	 */
 	private static final long	serialVersionUID	= 3901317600541352403L;
+	private WebMarkupContainer applet;
 
 	public PrintAppletPanel(String id, String printerName) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 
-		WebMarkupContainer applet = new WebMarkupContainer("applet") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-		};
+		applet = new WebMarkupContainer("applet");
 		applet.setOutputMarkupPlaceholderTag(true);
 		
 		PackageResourceReference jarResourceReference = new PackageResourceReference(PrintAppletPanel.class, "jzebra.jar");
@@ -60,5 +55,19 @@ public class PrintAppletPanel extends Panel {
 		final WebMarkupContainer appletParam1 = new WebMarkupContainer("appletParam1");
 		appletParam1.add(valueParam1);
 		applet.add(appletParam1);
+	}
+
+	/**
+	 * @return The Applet component reference
+	 */
+	public WebMarkupContainer getApplet() {
+		return this.applet;
+	}
+
+	/**
+	 * @param applet the applet to set
+	 */
+	public void setApplet(WebMarkupContainer applet) {
+		this.applet = applet;
 	}
 }
