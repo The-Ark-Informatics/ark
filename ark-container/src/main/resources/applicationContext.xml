@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
+	<!--
+		~ Licensed to the Apache Software Foundation (ASF) under one ~ or more
+		contributor license agreements. See the NOTICE file ~ distributed with
+		this work for additional information ~ regarding copyright ownership.
+		The ASF licenses this file ~ to you under the Apache License, Version
+		2.0 (the ~ "License"); you may not use this file except in compliance
+		~ with the License. You may obtain a copy of the License at ~ ~
+		http://www.apache.org/licenses/LICENSE-2.0 ~ ~ Unless required by
+		applicable law or agreed to in writing, ~ software distributed under
+		the License is distributed on an ~ "AS IS" BASIS, WITHOUT WARRANTIES
+		OR CONDITIONS OF ANY ~ KIND, either express or implied. See the
+		License for the ~ specific language governing permissions and
+		limitations ~ under the License.
+	-->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
@@ -41,31 +37,35 @@
 	<!--
 		Spring AOP auto-proxy creation (required to support Shiro annotations)
 	-->
-	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
-	
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+
 	<!--  reCAPTCHA configuration -->
 	<!--
 		NOTE: reCaptcha configurations require a public key and private key
-		These keys are different depending on the domain where your application is deployed 
-		(by default works for any key when using localhost domain).
-		You can generate keys here: https://www.google.com/recaptcha/admin/create
-		THe following keys are for the domain: http://the-ark.org.au
+		These keys are different depending on the domain where your
+		application is deployed (by default works for any key when using
+		localhost domain). You can generate keys here:
+		https://www.google.com/recaptcha/admin/create THe following keys are
+		for the domain: http://the-ark.org.au
 	-->
 	<bean id="reCaptchaContextSource" class="au.org.theark.core.dao.ReCaptchaContextSource">
 		<property name="reCaptchaPublicKey" value="6LeH1soSAAAAAFJDIJlP3sjPiHu7QMTxVmYuxX_M" />
 		<property name="reCaptchaPrivateKey" value="6LeH1soSAAAAAHo5FTWfUzS5AQZ6Jea-9dBVtuyL" />
 	</bean>
-	
+
 	<!-- SMTP Configuration -->
 	<!--
-		NOTE: host will now use "ark-smtp" mapping as defined in the host file.
+		NOTE: host will now use "ark-smtp" mapping as defined in the host
+		file.
 	-->
 	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="ark-smtp"  />
+		<property name="host" value="ark-smtp" />
 	</bean>
-	
+
 	<!--   velocity allows us to use a template for the email-->
-	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+	<bean id="velocityEngine"
+		class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
 		<property name="velocityProperties">
 			<value>
 				resource.loader=class
@@ -76,7 +76,8 @@
 
 	<!--  MySql Data Source -->
 	<!--
-		NOTE: URL will now use "ark-database" mapping as defined in the host file.
+		NOTE: URL will now use "ark-database" mapping as defined in the host
+		file.
 	-->
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -90,7 +91,8 @@
 	<!--
 		NOTE: URL will now use "ark-ldap" mapping as defined in the host file.
 		NOTE: No longer required to update LDAP details in sub-module.ctx.xml,
-		it has been centralised to the follow au.org.theark.core.dao.ArkLdapContextSource
+		it has been centralised to the follow
+		au.org.theark.core.dao.ArkLdapContextSource
 	-->
 	<bean id="ldapDataContextSource" class="au.org.theark.core.dao.ArkLdapContextSource">
 		<property name="url" value="ldap://ark-ldap:389" />
@@ -99,10 +101,9 @@
 		<property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" />
 		<property name="password" value="insert-password-here" />
 	</bean>
-	
+
 	<!--  Hibernate Session Factory -->
-	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 
 		<property name="dataSource" ref="dataSource" />
 		<property name="packagesToScan">
@@ -124,29 +125,66 @@
 				<prop key="cache.use_second_level_cache">false</prop>
 				<prop key="hibernate.order_updates">true</prop>
 				<prop key="hibernate.order_inserts">true</prop>
-				<prop key="hibernate.jdbc.batch_size">50</prop>
+				<prop key="hibernate.jdbc.batch_size">100</prop>
 				<prop key="hibernate.jdbc.batch_versioned_data">true</prop>
-				<prop key="hibernate.current_session_context_class">org.hibernate.context.ThreadLocalSessionContext
-				</prop>
 			</props>
 		</property>
-		<property name="eventListeners">
-			<map>
-				<entry key="merge">
-					<bean
-						class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener" />
-				</entry>
-			</map>
-		</property>
-
 	</bean>
-
-	<bean id="transactionManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	
+	 <bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-
+	
 	<tx:annotation-driven />
+
+	<!--
+		=====================Asynch Processing==============================
+		-> <bean name="asynchSubjectUploadProcessor"
+		class="au.org.theark.study.web.component.subjectUpload.AsynchSubjectUploadProcessor">
+		<constructor-arg type="org.springframework.core.task.TaskExecutor"
+		ref="taskExecutor" /> <constructor-arg
+		type="au.org.theark.study.web.component.subjectUpload.UploadUtilities"
+		ref="uploadUtilities"/> </bean> <!- TODO change to asynch processing
+		-> <bean id="taskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="2" /> <property
+		name="maxPoolSize" value="4" /> <property name="queueCapacity"
+		value="25" /> </bean>
+	-->
+	<!-- quartz scheduler related -->
+
+	<!-- jobs definitions 
+	<bean id="export2StatisticsJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="scheduledexportservice" />
+		</property>
+		<property name="targetMethod">
+			<value>executeScheduledExportsIfAny</value>
+		</property>
+	</bean>
+
+
+	<!- - cron trigger definitions  example TODO delete
+	<bean id="export2StatisticsTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="export2StatisticsJob" />
+		<!- - run every day 5 minutes - ->
+		<property name="cronExpression" value="0 0/5 * * * ?" />
+	</bean>
+
+	<!- - scheduler - ->
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="export2StatisticsTriggerBean" />
+			</list>
+		</property>
+	</bean>-->
+
+
+
+
 
 	<!--
 		========================================================= Shiro
@@ -213,7 +251,7 @@
 		-->
 		<property name="cacheManager" ref="cacheManager" />
 	</bean>
-	
+
 	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
 		<property name="cacheManager" ref="ehCacheManager" />
 	</bean>
