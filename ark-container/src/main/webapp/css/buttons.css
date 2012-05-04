@@ -12,3 +12,8 @@ float:right;
 padding-bottom:10px;
 width:50%;
 }
+.printButtons {
+float:left;
+margin:10px auto auto 10%;
+width:100%;
+}
