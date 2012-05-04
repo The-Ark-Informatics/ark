@@ -35,9 +35,7 @@ import au.org.theark.web.pages.Constants;
  * @author cellis
  */
 public class ResetPage<T> extends WebPage {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -8767984428141993995L;
 	private FeedbackPanel		feedbackPanel;
 	private ContextImage			hostedByImage;

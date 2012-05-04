@@ -57,9 +57,7 @@ import au.org.theark.web.pages.mydetails.MyDetailModalWindow;
  * 
  */
 public abstract class BasePage extends WebPage {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 4173121872289013698L;
 	private transient Subject		currentUser;
 	private String						principal;

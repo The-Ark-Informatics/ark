@@ -42,9 +42,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
  * @author cellis
  */
 public class LogoutPage<T> extends WebPage {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 2460094866903978128L;
 	public static final String	REDIRECT_PAGE		= "redirectPage";
 

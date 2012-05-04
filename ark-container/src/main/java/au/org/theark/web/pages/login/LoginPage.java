@@ -36,9 +36,7 @@ import au.org.theark.web.pages.Constants;
  * @param <T>
  */
 public class LoginPage<T> extends WebPage {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= -985615571643703296L;
 	
 	

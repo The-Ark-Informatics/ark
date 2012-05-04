@@ -35,9 +35,7 @@ import au.org.theark.web.pages.login.LoginPage;
  * @author cellis
  */
 public class ResetForm extends Form<ArkUserVO> implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= 5759125957232986063L;
 	private transient static Logger	log					= LoggerFactory.getLogger(ResetForm.class);
 	private FeedbackPanel				feedbackPanel;
@@ -70,9 +68,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 		reCaptchaPanel.setOutputMarkupId(true);
 
 		resetButton = new AjaxButton("resetButton") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -89,9 +85,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 		resetButton.setOutputMarkupId(true);
 
 		cancelButton = new AjaxButton("cancelButton") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -110,9 +104,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 		cancelButton.setOutputMarkupId(true);
 
 		signInButton = new AjaxButton("signInButton") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

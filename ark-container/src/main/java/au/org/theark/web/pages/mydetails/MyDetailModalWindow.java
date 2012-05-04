@@ -29,9 +29,7 @@ import au.org.theark.core.web.component.AbstractDetailModalWindow;
  *
  */
 public class MyDetailModalWindow extends AbstractDetailModalWindow {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 4739679880093551297L;
 	private Panel					panel;
 	private Form<?>				form;

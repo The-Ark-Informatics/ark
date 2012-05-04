@@ -40,9 +40,7 @@ import au.org.theark.web.pages.reset.ResetPage;
  * @author cellis
  */
 public class LoginForm extends StatelessForm<ArkUserVO> {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= -7482996457044513022L;
 	private transient static Logger	log					= LoggerFactory.getLogger(LoginForm.class);
 	
@@ -68,9 +66,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 		feedbackPanel.setOutputMarkupId(true);
 		add(feedbackPanel);
 		signInButton = new AjaxButton("signInButton") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 			
 			@Override
@@ -105,9 +101,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 		};
 
 		forgotPasswordButton = new Button("forgotPasswordButton") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
