@@ -494,4 +494,12 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	public List<BarcodePrinter> getBarcodePrintersByStudyList(List<Study> studyListForUser) {
 		return iLimsAdminDao.getBarcodePrintersByStudyList(studyListForUser);
 	}
+	
+	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count, List<Study> studyListForUser) {
+		return iLimsAdminDao.searchPageableBarcodePrinters(object, first, count, studyListForUser);
+	}
+
+	public Long getBarcodePrinterCount(BarcodePrinter object, List<Study> studyListForUser) {
+		return iLimsAdminDao.getBarcodePrinterCount(object, studyListForUser);
+	}
 }

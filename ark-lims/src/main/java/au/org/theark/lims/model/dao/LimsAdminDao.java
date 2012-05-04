@@ -400,4 +400,21 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		maxVersion = (Long) criteria.uniqueResult();
 		return maxVersion;
 	}
+
+	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count, List<Study> studyListForUser) {
+		Criteria criteria = buildBarcodePrinterCriteria(object);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		criteria.add(Restrictions.in("study", studyListForUser));
+		List<BarcodePrinter> list = criteria.list();
+		return list;
+	}
+
+	public Long getBarcodePrinterCount(BarcodePrinter object, List<Study> studyListForUser) {
+		Criteria criteria = buildBarcodePrinterCriteria(object);
+		criteria.add(Restrictions.in("study", studyListForUser));
+		criteria.setProjection(Projections.rowCount());
+		Long totalCount = (Long) criteria.uniqueResult();
+		return totalCount;
+	}
 }

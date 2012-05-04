@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -33,11 +34,15 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BarcodePrinter;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.lims.service.ILimsAdminService;
@@ -128,19 +133,23 @@ public class BarcodePrinterContainerPanel extends AbstractContainerPanel<Barcode
 	}
 
 	private void initialiseDataView() {
+		
+		
+		
 		// Data provider to paginate resultList
 		dataProvider = new ArkDataProvider<BarcodePrinter, ILimsAdminService>(iLimsAdminService) {
 
 			private static final long	serialVersionUID	= 1L;
+			List<Study> studyListForUser =  getStudyListForUser();
 
 			public int size() {
-				return (int)service.getBarcodePrinterCount(model.getObject());
+				return (int)service.getBarcodePrinterCount(model.getObject(), studyListForUser).intValue();
 			}
 
 			public Iterator<BarcodePrinter> iterator(int first, int count) {
 				List<BarcodePrinter> listCollection = new ArrayList<BarcodePrinter>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
-					listCollection = service.searchPageableBarcodePrinters(model.getObject(), first, count);
+					listCollection = service.searchPageableBarcodePrinters(model.getObject(), first, count, studyListForUser);
 				}
 				return listCollection.iterator();
 			}
@@ -155,6 +164,30 @@ public class BarcodePrinterContainerPanel extends AbstractContainerPanel<Barcode
 				return cpModel.getObject();
 			}
 		});
+	}
+	
+	/**
+	 * Returns a list of Studies the user is permitted to access
+	 * 
+	 * @return
+	 */
+	private List<Study> getStudyListForUser() {
+		List<Study> studyListForUser = new ArrayList<Study>(0);
+		try {
+			Subject currentUser = SecurityUtils.getSubject();
+			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+
+			Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+			ArkModule arkModule = null;
+			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
+			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		return studyListForUser;
 	}
 
 	/**

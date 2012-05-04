@@ -236,4 +236,16 @@ public interface ILimsAdminDao {
 	 * @return
 	 */
 	public List<BarcodePrinter> getBarcodePrintersByStudyList(List<Study> studyListForUser);
+
+	/**
+	 * List of BarcodePrinter, for the specified list of studies
+	 * @param object
+	 * @param first
+	 * @param count
+	 * @param studyListForUser
+	 * @return
+	 */
+	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count, List<Study> studyListForUser);
+	
+	public Long getBarcodePrinterCount(BarcodePrinter object, List<Study> studyListForUser);
 }
