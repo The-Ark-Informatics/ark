@@ -13,6 +13,7 @@ import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 
@@ -37,6 +38,15 @@ public interface IInventoryService {
 	 * @throws ArkSystemException
 	 */
 	public List<InvSite> searchInvSite(InvSite invSite) throws ArkSystemException;
+	
+	/**
+	 * Search on a particular site, for a list of studies
+	 * @param invSite Search criteria of site
+	 * @param studyList A list of Studies
+	 * @return a List of InvSite(s)
+	 * @throws ArkSystemException
+	 */
+	public List<InvSite> searchInvSite(InvSite invSite, List<Study> studyList) throws ArkSystemException;
 	
 	/**
 	 * Create a Site based on the supplied LimsVO

@@ -16,6 +16,7 @@ import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.lims.model.dao.IInventoryDao;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
@@ -384,5 +385,9 @@ public class InventoryServiceImpl implements IInventoryService {
 
 	public InvCell getNextAvailableInvCell(InvBox invBox) {
 		return iInventoryDao.getNextAvailableInvCell(invBox);
+	}
+
+	public List<InvSite> searchInvSite(InvSite invSite, List<Study> studyList) throws ArkSystemException {
+		return iInventoryDao.searchInvSite(invSite, studyList);
 	}
 }

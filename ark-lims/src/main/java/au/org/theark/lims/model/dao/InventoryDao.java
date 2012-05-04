@@ -41,6 +41,7 @@ import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 
 @SuppressWarnings("unchecked")
@@ -106,6 +107,39 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		if (invSite.getStudy() != null) {
 			criteria.add(Restrictions.eq("study", invSite.getStudy()));
 		}
+
+		List<InvSite> list = criteria.list();
+		return list;
+	}
+	
+	public List<InvSite> searchInvSite(InvSite invSite, List<Study> studyList) throws ArkSystemException {
+		Criteria criteria = getSession().createCriteria(InvSite.class);
+
+		if (invSite.getId() != null) {
+			criteria.add(Restrictions.eq("id", invSite.getId()));
+		}
+
+		if (invSite.getName() != null) {
+			criteria.add(Restrictions.eq("name", invSite.getName()));
+		}
+
+		if (invSite.getContact() != null) {
+			criteria.add(Restrictions.eq("contact", invSite.getContact()));
+		}
+
+		if (invSite.getAddress() != null) {
+			criteria.add(Restrictions.eq("address", invSite.getAddress()));
+		}
+
+		if (invSite.getPhone() != null) {
+			criteria.add(Restrictions.eq("phone", invSite.getPhone()));
+		}
+
+		if (invSite.getStudy() != null) {
+			criteria.add(Restrictions.eq("study", invSite.getStudy()));
+		}
+		
+		criteria.add(Restrictions.in("study", studyList));
 
 		List<InvSite> list = criteria.list();
 		return list;

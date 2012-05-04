@@ -19,25 +19,36 @@
 package au.org.theark.lims.web.component.inventory.form;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -68,6 +79,7 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private TextField<String>			contactTxtFld;
 	private TextArea<String>			addressTxtAreaFld;
 	private TextField<String>			phoneTxtFld;
+	private DropDownChoice<Study>		studyDdc;
 
 	/**
 	 * 
@@ -85,6 +97,7 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("invSite.id");
+		initStudyDdc();
 		nameTxtFld = new TextField<String>("invSite.name");
 		contactTxtFld = new TextField<String>("invSite.contact");
 		addressTxtAreaFld = new TextArea<String>("invSite.address");
@@ -96,13 +109,37 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		// Focus on Name
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
 	}
+	
+	private void initStudyDdc() {
+		PropertyModel<Study> studyPm = new PropertyModel<Study>(containerForm.getModel(), "invSite.study");
+		List<Study> studyListForUser = new ArrayList<Study>(0);
+		try {
+			Subject currentUser = SecurityUtils.getSubject();
+			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+			
+			Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+			ArkModule arkModule = null;
+			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
+			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
+		studyDdc = new DropDownChoice<Study>("invSite.study", studyPm, (List<Study>) studyListForUser, studyRenderer);
+		studyDdc.setEnabled(isNew());
+	}
 
 	protected void attachValidators() {
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.invSite.name.required", this, new Model<String>("Name")));
+		studyDdc.setRequired(true).setLabel(new StringResourceModel("error.invSite.study.required", this, new Model<String>("Study")));
 	}
 
 	private void addComponents() {
 		detailFormContainer.add(idTxtFld.setEnabled(false));
+		detailFormContainer.add(studyDdc);
 		detailFormContainer.add(nameTxtFld);
 		detailFormContainer.add(contactTxtFld);
 		detailFormContainer.add(addressTxtAreaFld);
