@@ -274,4 +274,8 @@ public interface ILimsAdminService {
 	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count, List<Study> studyListForUser);
 
 	public Long getBarcodePrinterCount(BarcodePrinter object, List<Study> studyListForUser);
+	
+	public Long getBarcodeLabelCount(BarcodeLabel object, List<Study> studyListForUser);
+
+	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, int first, int count, List<Study> studyListForUser);
 }

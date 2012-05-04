@@ -417,4 +417,21 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		Long totalCount = (Long) criteria.uniqueResult();
 		return totalCount;
 	}
+
+	public Long getBarcodeLabelCount(BarcodeLabel object, List<Study> studyListForUser) {
+		Criteria criteria = buildBarcodeLabelCriteria(object);
+		criteria.add(Restrictions.in("study", studyListForUser));
+		criteria.setProjection(Projections.rowCount());
+		Long totalCount = (Long) criteria.uniqueResult();
+		return totalCount;
+	}
+
+	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, int first, int count, List<Study> studyListForUser) {
+		Criteria criteria = buildBarcodeLabelCriteria(object);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		criteria.add(Restrictions.in("study", studyListForUser));
+		List<BarcodeLabel> list = criteria.list();
+		return list;
+	}
 }
