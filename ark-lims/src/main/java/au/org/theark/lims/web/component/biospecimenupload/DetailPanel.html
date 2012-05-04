@@ -2,7 +2,7 @@
 	<form wicket:id="detailForm">
 		<div class="detailsPanelBorder">
 			<div wicket:id="detailFormContainer">
-				<div class="searchPanelBreaker">&nbsp;</div>
+				<div class="detailPanelBreaker">&nbsp;</div>
 				
 				<!-- Row 1 ID and Name-->
 				
@@ -36,7 +36,7 @@
 				
 				
 			
-				<div class="searchPanelBreaker">&nbsp;</div>
+				<div class="detailPanelBreaker">&nbsp;</div>
 				
 				<div class="panelContentLeft">&nbsp;</div>
 				
@@ -68,66 +68,23 @@
 			       	</div>
 				</div>
 				
-				<div class="searchPanelBreaker">&nbsp;</div>
-		       	
-		       	<div class="panelContentLeft">&nbsp;</div>
-				
-				<div class="fldLabel">
-		 			<div class="label">
-						&nbsp;
-		 			</div> 
-		 		</div> 			       			
-				
-				<div class="fldControl">
-					<div class="label">
-						&nbsp;
-					</div>
-				</div>
-		       	   		       			
-		       	<div class="panelMargin">&nbsp;</div>
-						
-				<div class="fldLabel">
-		 			<div class="label">
-						&nbsp;
-		 			</div> 
-		 		</div> 			       			
-				
-				<div class="fldControl">
-					<div class="label">
-						&nbsp;
-					</div>
-				</div>
-				
-				
+				<div class="detailPanelBreaker">&nbsp;</div>
 			</div>
 			<!-- Detail container end-->
 			
 			<!--  Buttons -->
 			<div wicket:id="viewButtonContainer">
-				<div class="fldLabel">&nbsp;</div>
-				<div class="fldControl">&nbsp;</div>
-				<div class="panelMargin">&nbsp;</div>
-				<div class="actionButtons">&nbsp;
-					<div class="label">
-						<input wicket:id="edit" type="submit" wicket:message="value:button.edit" />&nbsp;
-						<div class="panelMargin">&nbsp;</div>
-						<input wicket:id="editCancel" type="submit"	wicket:message="value:page.newSearch" />
-				  	</div>
+				<div class="actionButtons">
+					<input wicket:id="edit" type="submit" wicket:message="value:button.edit" />
+					<input wicket:id="editCancel" type="submit"	wicket:message="value:page.newSearch" />
 				</div>
 			</div>
 			
 			<div wicket:id="editButtonContainer">
-				<div class="fldLabel">&nbsp;</div>
-				<div class="fldControl">&nbsp;</div>
-				<div class="panelMargin">&nbsp;</div>
-				<div class="actionButtons">&nbsp;
-					<div class="label">
-						<input wicket:id="save" type="submit" wicket:message="value:button.save" />&nbsp;
-						<div class="panelMargin">&nbsp;</div>
-						<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />&nbsp;
-						<div class="panelMargin">&nbsp;</div>
-						<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
-				  	</div>
+				<div class="actionButtons">
+					<input wicket:id="save" type="submit" wicket:message="value:button.save" />
+					<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
 				</div>
 			</div>
 		</div>
