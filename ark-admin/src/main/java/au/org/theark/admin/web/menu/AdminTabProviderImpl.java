@@ -52,9 +52,7 @@ public class AdminTabProviderImpl extends Panel implements IMainTabProvider {
 
 	public ITab createTab(String tabName) {
 		return new ArkMainTab(new Model<String>(tabName)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -5063032622932238615L;
 
 			@Override

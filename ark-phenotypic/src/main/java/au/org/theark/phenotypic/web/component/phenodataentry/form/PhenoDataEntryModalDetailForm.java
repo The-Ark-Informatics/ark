@@ -59,9 +59,7 @@ import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataDataViewPa
  * @author elam
  */
 public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<PhenoDataCollectionVO> {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= 2727419197330261916L;
 	@SuppressWarnings("unused")
 	private static final Logger				log					= LoggerFactory.getLogger(PhenoDataEntryModalDetailForm.class);

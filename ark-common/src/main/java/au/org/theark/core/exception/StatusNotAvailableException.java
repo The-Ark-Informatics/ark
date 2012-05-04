@@ -20,9 +20,7 @@ package au.org.theark.core.exception;
 
 public class StatusNotAvailableException extends ArkBaseException {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -5080928912193543752L;
 
 	public StatusNotAvailableException() {

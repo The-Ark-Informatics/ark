@@ -54,9 +54,7 @@ import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 
 public class InventoryLinkTree extends LinkTree {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= -3736908668279170191L;
 	private static final Logger	log					= LoggerFactory.getLogger(InventoryLinkTree.class);
 	

@@ -30,9 +30,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 public class PdfExportLink<T> extends Link<Void> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	private transient Logger	log					= LoggerFactory.getLogger(PdfExportLink.class);
 	private final DataTable<T>	table;

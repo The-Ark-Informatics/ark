@@ -34,9 +34,7 @@ import org.apache.wicket.request.resource.ResourceReference;
  */
 public class ArkPalette<T> extends Palette<T> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -2955612388183249517L;
 
 	/**

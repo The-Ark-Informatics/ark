@@ -57,9 +57,7 @@ import au.org.theark.lims.web.Constants;
  * 
  */
 public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -5626119640178642204L;
 
 	protected static final Logger							log					= LoggerFactory.getLogger(DetailForm.class);
@@ -106,9 +104,7 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 		initStudyDdc();		
 		biospecimenUidPrefixTxtFld = new TextField<String>("biospecimenUidPrefix");
 		biospecimenUidPrefixTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -164,9 +160,7 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 		studyListForUser = getStudyListForUser();
 		ChoiceRenderer<Study> choiceRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
 		studyDdc = new DropDownChoice<Study>("study", studyListForUser, choiceRenderer) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -196,9 +190,7 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 		ChoiceRenderer<BiospecimenUidToken> choiceRenderer = new ChoiceRenderer<BiospecimenUidToken>(Constants.NAME, Constants.ID);
 		biospecimenUidTokenDdc = new DropDownChoice<BiospecimenUidToken>("biospecimenUidToken", biospecimenUidTokens, choiceRenderer);
 		biospecimenUidTokenDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -215,9 +207,7 @@ public class DetailForm extends AbstractDetailForm<BiospecimenUidTemplate> {
 		ChoiceRenderer<BiospecimenUidPadChar> choiceRenderer = new ChoiceRenderer<BiospecimenUidPadChar>(Constants.NAME, Constants.ID);
 		biospecimenUidPadCharDdc = new DropDownChoice<BiospecimenUidPadChar>("biospecimenUidPadChar", biospecimenUidPadChars, choiceRenderer);
 		biospecimenUidPadCharDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

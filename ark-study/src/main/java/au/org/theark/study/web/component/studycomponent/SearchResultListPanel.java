@@ -38,9 +38,7 @@ import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
 
 public class SearchResultListPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	private ContainerForm		containerForm;
@@ -67,9 +65,7 @@ public class SearchResultListPanel extends Panel {
 	public PageableListView<StudyComp> buildPageableListView(IModel iModel) {
 
 		PageableListView<StudyComp> sitePageableListView = new PageableListView<StudyComp>("studyCompList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -108,9 +104,6 @@ public class SearchResultListPanel extends Panel {
 
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override

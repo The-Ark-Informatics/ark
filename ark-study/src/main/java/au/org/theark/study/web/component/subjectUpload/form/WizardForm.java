@@ -37,9 +37,7 @@ import au.org.theark.study.web.component.subjectUpload.SubjectUploadStep5;
  * 
  */
 public class WizardForm extends AbstractWizardForm<UploadVO> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	private File					file;

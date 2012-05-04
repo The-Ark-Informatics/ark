@@ -34,9 +34,7 @@ import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
 
 public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= -2064073261192985087L;
 	private transient static Logger	log					= LoggerFactory.getLogger(LimsTabProviderImpl.class);
 	private WebMarkupContainer			arkContextPanelMarkup;
@@ -73,9 +71,7 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 
 	public ITab createTab(final String tabName) {
 		return new ArkMainTab(new Model<String>(tabName)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 4461043265879777714L;
 
 			@Override

@@ -27,9 +27,7 @@ import au.org.theark.lims.web.component.biospecimenupload.form.ContainerForm;
 import au.org.theark.lims.web.component.biospecimenupload.form.WizardForm;
 
 public class WizardPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -3052058152472704291L;
 	private ArkCrudContainerVO			arkCrudContainerVO;
 	private WizardForm					wizardForm;

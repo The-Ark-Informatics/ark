@@ -21,9 +21,7 @@ package au.org.theark.core.web.component.customfield.dataentry;
 import java.io.Serializable;
 
 public class EncodedValueVO implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	String key;
 	String value;

@@ -37,9 +37,7 @@ import au.org.theark.core.web.component.listeditor.AbstractListEditor;
  * 
  */
 public abstract class AbstractListDetailForm<T> extends Form<T> {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= -4025065993634203645L;
 
 	protected transient Logger			log					= LoggerFactory.getLogger(AbstractListDetailForm.class);
@@ -80,9 +78,7 @@ public abstract class AbstractListDetailForm<T> extends Form<T> {
 
 	protected void addComponentsToForm() {
 		newButton = new AjaxButton("listNewButton", new StringResourceModel("listNewKey", this, null)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -8505652280527122102L;
 
 			@Override

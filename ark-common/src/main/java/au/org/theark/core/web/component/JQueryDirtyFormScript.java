@@ -31,9 +31,7 @@ import org.apache.wicket.markup.html.basic.Label;
  */
 public class JQueryDirtyFormScript extends Label {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	/**

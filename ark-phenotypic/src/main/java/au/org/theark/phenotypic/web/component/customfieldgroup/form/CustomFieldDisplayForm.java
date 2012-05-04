@@ -27,9 +27,7 @@ import au.org.theark.core.vo.CustomFieldGroupVO;
  */
 public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long										serialVersionUID	= 1L;
 //	private TextField<String>										requiredMessageTxtFld;
 	private TextField<String>										customFieldNameTxtFld;
@@ -87,9 +85,7 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 		requiredFieldCb = new CheckBox("customFieldDisplay.required");
 		
 		saveButton = new AjaxButton(Constants.SAVE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -113,9 +109,7 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 		};
 
 		cancelButton = new AjaxButton(Constants.CANCEL) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

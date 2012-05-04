@@ -46,9 +46,7 @@ import au.org.theark.lims.service.ILimsService;
  * 
  */
 public class BiospecimenCustomDataContainerPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long											serialVersionUID	= 8026325227533917979L;
 
 	private static final Logger										log					= LoggerFactory.getLogger(BiospecimenCustomDataContainerPanel.class);

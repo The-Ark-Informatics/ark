@@ -375,9 +375,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		target.add(feedBackPanel);
 	}
 
-	/**
-	 * 
-	 */
+
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			iArkCommonService.deleteCustomField(getModelObject());

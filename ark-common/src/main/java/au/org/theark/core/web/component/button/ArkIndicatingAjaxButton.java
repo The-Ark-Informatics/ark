@@ -29,9 +29,7 @@ import org.apache.wicket.model.IModel;
  */
 public abstract class ArkIndicatingAjaxButton extends IndicatingAjaxButton {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 5799668393803636626L;
 
 	public ArkIndicatingAjaxButton(String id) {

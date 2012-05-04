@@ -53,9 +53,7 @@ import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataCont
  * 
  */
 public class SubjectSubMenuTab extends AbstractArkTabPanel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -467105983288558903L;
 
 	@SuppressWarnings("unchecked")

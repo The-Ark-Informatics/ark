@@ -26,9 +26,7 @@ import au.org.theark.admin.web.component.module.form.DetailForm;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
 public class DetailPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -4102920895345707174L;
 	private FeedbackPanel		feedbackPanel;
 	private ContainerForm		containerForm;

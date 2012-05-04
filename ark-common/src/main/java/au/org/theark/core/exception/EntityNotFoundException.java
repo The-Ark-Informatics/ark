@@ -24,9 +24,7 @@ package au.org.theark.core.exception;
  */
 public class EntityNotFoundException extends ArkBaseException {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -8823250950565676378L;
 
 	public EntityNotFoundException() {

@@ -17,9 +17,7 @@ import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 
 public class GridCellContentPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long								serialVersionUID				= 435929363844198235L;
 
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)

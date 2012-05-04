@@ -29,9 +29,7 @@ import au.org.theark.core.web.form.AbstractContainerForm;
  */
 public class ContainerForm extends AbstractContainerForm<BarcodeLabel> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -6773446229285764994L;
 
 	/**

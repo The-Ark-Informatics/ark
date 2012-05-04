@@ -37,9 +37,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "bio_sampletype", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BioSampletype implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -6857329961855700249L;
 	private Long					id;
 	private String					name;

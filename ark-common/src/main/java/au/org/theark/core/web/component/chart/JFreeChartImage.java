@@ -28,9 +28,7 @@ import org.jfree.chart.JFreeChart;
 
 public class JFreeChartImage extends Image {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1383706328089971627L;
 	private int						width;
 	private int						height;
@@ -44,9 +42,7 @@ public class JFreeChartImage extends Image {
 	@Override
 	protected IResource getImageResource() {
 		DynamicImageResource resource = new DynamicImageResource() {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

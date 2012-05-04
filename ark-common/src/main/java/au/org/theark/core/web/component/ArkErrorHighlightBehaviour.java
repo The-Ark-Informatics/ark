@@ -24,9 +24,7 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.form.FormComponent;
 
 public class ArkErrorHighlightBehaviour extends Behavior {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -5544350240467988658L;
 
 	public void onComponentTag(Component c, ComponentTag tag) {

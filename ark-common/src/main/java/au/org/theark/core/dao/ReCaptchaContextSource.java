@@ -9,9 +9,7 @@ import java.io.Serializable;
  * 
  */
 public class ReCaptchaContextSource implements Serializable{
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -4403517218839438932L;
 	private String	reCaptchaPublicKey;
 	private String	reCaptchaPrivateKey;

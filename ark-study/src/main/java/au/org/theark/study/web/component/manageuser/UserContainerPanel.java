@@ -36,9 +36,7 @@ import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.manageuser.form.ContainerForm;
 
 public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= 8852394393025448913L;
 	private ContainerForm					containerForm;
 	private DetailPanel						detailsPanel;

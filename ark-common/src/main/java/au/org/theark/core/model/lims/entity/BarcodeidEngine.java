@@ -37,9 +37,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "barcodeid_engine", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BarcodeidEngine implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private int		studyId;

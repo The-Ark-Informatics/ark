@@ -219,9 +219,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		this.deleteButton = deleteButton;
 	}
 
-	/**
-	 * 
-	 */
+
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		setMultiPart(true); // multipart required for file uploads
 

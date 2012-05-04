@@ -33,9 +33,7 @@ import java.util.List;
  */
 public class AjaxDynamicTabbedPanel extends DynamicTabbedPanel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -553938295672538628L;
 
 	public AjaxDynamicTabbedPanel(final String id, final IModel<List<ITab>> tabModel) {

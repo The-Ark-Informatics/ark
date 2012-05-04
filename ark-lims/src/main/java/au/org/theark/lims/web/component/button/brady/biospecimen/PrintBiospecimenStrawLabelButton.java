@@ -37,9 +37,7 @@ import au.org.theark.lims.service.ILimsAdminService;
  * @author cellis
  */
 public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= -8280115613440342737L;
 
 	private static final Logger	log					= LoggerFactory.getLogger(PrintBiospecimenStrawLabelButton.class);

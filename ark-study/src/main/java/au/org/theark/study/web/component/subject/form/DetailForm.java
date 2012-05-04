@@ -75,9 +75,7 @@ import au.org.theark.study.web.component.subject.ChildStudyPalettePanel;
  */
 public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long								serialVersionUID	= -9196914684971413116L;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
@@ -152,9 +150,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm() {
 		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -176,9 +172,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
 		previousLastNameTxtFld = new TextField<String>(Constants.SUBJECT_PREVIOUS_LAST_NAME) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -232,9 +226,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.NAME, Constants.ID);
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS, (List<VitalStatus>) vitalStatusList, vitalStatusRenderer);
 		vitalStatusDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -270,9 +262,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		ChoiceRenderer<PersonContactMethod> contactMethodRender = new ChoiceRenderer<PersonContactMethod>(Constants.NAME, Constants.ID);
 		personContactMethodDdc = new DropDownChoice<PersonContactMethod>(Constants.PERSON_CONTACT_METHOD, (List<PersonContactMethod>) contactMethodList, contactMethodRender);
 		personContactMethodDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -366,9 +356,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 		consentHistoryPanel = new CollapsiblePanel("consentHistoryPanel", new Model<String>("Consent History"), false) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

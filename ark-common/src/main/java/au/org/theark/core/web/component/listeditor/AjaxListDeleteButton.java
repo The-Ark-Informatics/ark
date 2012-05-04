@@ -26,9 +26,7 @@ import org.apache.wicket.model.IModel;
 
 public abstract class AjaxListDeleteButton extends AjaxEditorButton {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 8812772472624903905L;
 	private final IModel				confirm;
 

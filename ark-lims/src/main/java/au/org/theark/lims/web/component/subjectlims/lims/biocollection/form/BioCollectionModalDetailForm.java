@@ -56,9 +56,7 @@ import au.org.theark.lims.web.component.button.zebra.biocollection.PrintBiospeci
  * 
  */
 public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO> {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= 2926069852602563767L;
 	private static final Logger		log					= LoggerFactory.getLogger(BioCollectionModalDetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -148,9 +146,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		numberOfLabels = new NumberOfLabelsPanel("numberOfLabels");
 		
 		printBioCollectionLabelButton = new PrintBioCollectionLabelButton("printBioCollectionLabel", bioCollection, (IModel<Number>) numberOfLabels.getDefaultModel()) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -160,9 +156,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		printBioCollectionLabelButton.setDefaultFormProcessing(false);
 		
 		printBiospecimensForBioCollectionButton = new PrintBiospecimensForBioCollectionButton("printBiospecimensForBioCollectionButton", bioCollection) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

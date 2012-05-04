@@ -29,9 +29,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
  * @author Eelco Hillenius
  */
 public class ArkWizardIndex extends WebMarkupContainer {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -7747910094233928517L;
 
 	/**

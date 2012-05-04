@@ -83,9 +83,7 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 		initialiseForm();
 	}
 	
-	/**
-	 * 
-	 */
+
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);
@@ -124,9 +122,7 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 
 		cancelButton = new AjaxButton(Constants.CANCEL) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -151,9 +147,7 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 
 		saveButton = new AjaxButton(Constants.SAVE) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

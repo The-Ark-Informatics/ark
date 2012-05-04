@@ -31,9 +31,7 @@ import au.org.theark.core.security.ArkPermissionHelper;
 
 public class EditModeButtonsPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	private static final Logger log = LoggerFactory.getLogger(EditModeButtonsPanel.class);
@@ -54,9 +52,7 @@ public class EditModeButtonsPanel extends Panel {
 	protected void initialisePanel() {
 		saveButton = new ArkAjaxButton("save") {
 			
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -88,9 +84,7 @@ public class EditModeButtonsPanel extends Panel {
 		
 		cancelButton = new ArkAjaxButton("cancel") {
 			
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -116,9 +110,7 @@ public class EditModeButtonsPanel extends Panel {
 		this.add(cancelButton);
 		
 		deleteButton = new AjaxDeleteButton(Constants.DELETE, new StringResourceModel("confirmDelete", this, null), new StringResourceModel(Constants.DELETE, this, null)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

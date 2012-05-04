@@ -36,9 +36,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "access_request", schema = Constants.LIMS_TABLE_SCHEMA)
 public class AccessRequest implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	private Long		id;

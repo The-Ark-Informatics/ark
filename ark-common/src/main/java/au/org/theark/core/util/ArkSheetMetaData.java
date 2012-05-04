@@ -21,9 +21,7 @@ package au.org.theark.core.util;
 import java.io.Serializable;
 
 public class ArkSheetMetaData implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -1565166236265658458L;
 	private int						cols					= 0;
 	private int						rows					= 0;

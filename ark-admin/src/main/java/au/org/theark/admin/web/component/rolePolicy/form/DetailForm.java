@@ -43,9 +43,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 
 public class DetailForm extends AbstractDetailForm<AdminVO> {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= 5096967681735723818L;
 	protected transient Logger				log					= LoggerFactory.getLogger(DetailForm.class);
 
@@ -99,9 +97,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>("name", "id");
 		arkRoleDropDown = new DropDownChoice<ArkRole>("arkRolePolicyTemplate.arkRole", arkRoleList, defaultChoiceRenderer);
 		arkRoleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 5591846326218931210L;
 
 			@Override
@@ -120,9 +116,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		ChoiceRenderer<ArkModule> defaultChoiceRenderer = new ChoiceRenderer<ArkModule>("name", "id");
 		arkModuleDropDown = new DropDownChoice<ArkModule>("arkRolePolicyTemplate.arkModule", arkModuleList, defaultChoiceRenderer);
 		arkModuleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -1917750577626157879L;
 
 			@Override

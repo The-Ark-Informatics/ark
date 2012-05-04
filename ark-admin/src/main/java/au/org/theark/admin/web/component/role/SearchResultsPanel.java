@@ -39,9 +39,7 @@ import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 
 public class SearchResultsPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 5237384531161620862L;
 	protected transient Logger		log					= LoggerFactory.getLogger(SearchResultsPanel.class);
 
@@ -61,9 +59,7 @@ public class SearchResultsPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public DataView<ArkRole> buildDataView(ArkDataProvider<ArkRole, IAdminService> dataProvider) {
 		DataView<ArkRole> dataView = new DataView<ArkRole>("arkRoleList", dataProvider) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 2981419595326128410L;
 
 			@Override
@@ -83,9 +79,6 @@ public class SearchResultsPanel extends Panel {
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 5761909841047153853L;
 
 					@Override
@@ -100,9 +93,7 @@ public class SearchResultsPanel extends Panel {
 
 	private AjaxLink<ArkRole> buildLink(final ArkRole arkRole) {
 		ArkBusyAjaxLink<ArkRole> link = new ArkBusyAjaxLink<ArkRole>("link") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

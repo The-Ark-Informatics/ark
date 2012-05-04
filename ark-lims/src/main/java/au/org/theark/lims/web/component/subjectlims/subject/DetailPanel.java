@@ -32,9 +32,7 @@ import au.org.theark.lims.web.component.subjectlims.subject.form.DetailForm;
  * 
  */
 public class DetailPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 858762052753650329L;
 	private DetailForm			detailsForm;
 	private FeedbackPanel		feedBackPanel;

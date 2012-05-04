@@ -8,9 +8,7 @@ import java.io.Serializable;
  * @author cellis
  */
 public class TreeNodeModel implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 7055619474572570930L;
 	private String					propertyName;
 

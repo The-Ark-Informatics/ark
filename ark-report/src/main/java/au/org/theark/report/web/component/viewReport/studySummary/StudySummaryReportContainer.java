@@ -28,9 +28,7 @@ import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
 
 public class StudySummaryReportContainer extends AbstractSelectedReportContainer<GenericReportViewVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	public StudySummaryReportContainer(String id) {

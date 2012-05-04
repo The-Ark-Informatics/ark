@@ -33,9 +33,7 @@ import au.org.theark.phenotypic.web.component.customfieldgroup.form.ContainerFor
 public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<CustomFieldGroupVO>{
 
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 
@@ -140,9 +138,7 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
-			/**
-			 * 
-			 */
+
 			private static final long serialVersionUID = 1L;
 
 			@Override

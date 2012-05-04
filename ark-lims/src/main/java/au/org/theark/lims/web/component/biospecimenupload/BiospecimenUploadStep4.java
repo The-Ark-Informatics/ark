@@ -115,8 +115,8 @@ public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 		biospecimenUploadReport.appendDetails(containerForm.getModelObject().getUpload());
 		biospecimenUploadReport.append(importReport);
 		byte[] bytes = biospecimenUploadReport.getReport().toString().getBytes();
-		Blob uploadReportBlob = util.createBlob(bytes);
-		containerForm.getModelObject().getUpload().setUploadReport(uploadReportBlob);
+		//Blob uploadReportBlob = util.createBlob(bytes);
+		containerForm.getModelObject().getUpload().setUploadReport(bytes);
 	}
 
 	private void save() {

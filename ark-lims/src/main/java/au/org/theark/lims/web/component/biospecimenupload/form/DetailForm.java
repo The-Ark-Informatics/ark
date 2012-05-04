@@ -52,9 +52,7 @@ import au.org.theark.core.web.form.AbstractDetailForm;
  * 
  */
 public class DetailForm extends AbstractDetailForm<UploadVO> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	@SpringBean(name = "lobUtil")
@@ -142,14 +140,14 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 			// TODO: AJAX-ified and asynchronous and hit database
 			FileUpload fileUpload = fileUploadField.getFileUpload();
 
-			try {
+			//try {
 				// Copy file to BLOB object
-				Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
-				containerForm.getModelObject().getUpload().setPayload(payload);
-			}
-			catch (IOException ioe) {
-				System.out.println("Failed to save the uploaded file: " + ioe);
-			}
+			//	Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
+				containerForm.getModelObject().getUpload().setPayload(fileUpload.getBytes());
+			//}
+			//catch (IOException ioe) {
+			//	System.out.println("Failed to save the uploaded file: " + ioe);
+			//}
 
 			// Set details of Upload object
 			containerForm.getModelObject().getUpload().setStudy(study);
@@ -220,9 +218,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		this.deleteButton = deleteButton;
 	}
 
-	/**
-	 * 
-	 */
+
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 	/* TODO: DELETE of uploaded file is not supported till we can verify whether all subjects 
 		within the upload have also been deleted. At present, there is no linking table clearly 

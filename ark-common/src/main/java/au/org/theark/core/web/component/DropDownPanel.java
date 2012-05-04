@@ -33,9 +33,7 @@ import au.org.theark.core.model.study.entity.ConsentAnswer;
  */
 public class DropDownPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private DropDownChoice<ConsentAnswer>	consentAnswerChoice;
 

@@ -50,9 +50,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "inv_freezer", schema = Constants.LIMS_TABLE_SCHEMA)
 public class InvFreezer implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 6323844284982753499L;
 	private Long			id;
 	private String			timestamp;

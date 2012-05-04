@@ -57,9 +57,7 @@ import au.org.theark.lims.web.component.subjectlims.subject.SubjectContainerPane
  *
  */
 public class LimsSubMenuTab extends AbstractArkTabPanel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -2495883342790152951L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)

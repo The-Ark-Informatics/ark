@@ -26,9 +26,7 @@ import org.apache.wicket.request.resource.ResourceReference;
 
 public abstract class DownloadIconLinkPanel<T> extends IconLabelPanel<T> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	protected Link<T> link;

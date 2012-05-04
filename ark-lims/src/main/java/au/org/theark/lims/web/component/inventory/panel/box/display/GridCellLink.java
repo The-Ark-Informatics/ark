@@ -28,9 +28,7 @@ import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.Biospecimen
  */
 public class GridCellLink extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID				= -7296587386654258036L;
 	private static final Logger				log						= LoggerFactory.getLogger(GridCellLink.class);
 	private AbstractDetailModalWindow		modalWindow;
@@ -56,9 +54,7 @@ public class GridCellLink extends Panel {
 		this.limsVo = limsVo;
 		
 		ArkBusyAjaxLink<String> link = new ArkBusyAjaxLink<String>("link"){
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

@@ -33,9 +33,7 @@ import au.org.theark.core.web.component.ArkMainTab;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 
 public class ArkAjaxTabbedPanel extends AjaxTabbedPanel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID		= -3340777937373315256L;
 	private transient Logger	log						= LoggerFactory.getLogger(ArkAjaxTabbedPanel.class);
 	protected List<ArkMainTab>	mainTabs;
@@ -58,9 +56,7 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel {
 	protected WebMarkupContainer newLink(final String linkId, final int index) {
 		ArkBusyAjaxLink<String> tabLink = new ArkBusyAjaxLink<String>(linkId) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

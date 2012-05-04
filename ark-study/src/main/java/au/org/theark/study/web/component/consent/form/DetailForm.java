@@ -69,9 +69,7 @@ import au.org.theark.study.web.component.consenthistory.ConsentHistoryPanel;
  */
 public class DetailForm extends AbstractDetailForm<ConsentVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= 1L;
 
 	@SuppressWarnings("unchecked")
@@ -171,9 +169,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(study);
 		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
 		studyComponentChoice = new DropDownChoice<StudyComp>(Constants.CONSENT_STUDY_COMP, studyCompList, defaultChoiceRenderer){
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -185,9 +181,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		studyComponentChoice.add(new ArkDefaultFormFocusBehavior());
 		studyComponentChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -226,9 +220,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		studyComponentStatusChoice = new DropDownChoice<StudyCompStatus>(Constants.CONSENT_STUDY_COMP_STATUS, studyCompList, defaultChoiceRenderer);
 		studyComponentStatusChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -273,9 +265,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	private void initConsentHistoryPanel() {
 		consentHistoryPanel = new CollapsiblePanel("consentHistoryPanel", new Model<String>("Consent History"), false) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

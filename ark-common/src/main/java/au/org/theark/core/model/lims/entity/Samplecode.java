@@ -37,9 +37,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "samplecode", schema = Constants.LIMS_TABLE_SCHEMA)
 public class Samplecode implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long		id;
 	private int			studyId;

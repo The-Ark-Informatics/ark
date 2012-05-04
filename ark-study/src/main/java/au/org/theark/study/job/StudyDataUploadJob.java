@@ -103,8 +103,8 @@ public class StudyDataUploadJob implements Job {
 	private void save(StudyUpload upload, String report, String originalReport, Date startTime) {
 		iStudyService.refreshUpload(upload);
 		byte[] bytes = (originalReport + report).getBytes();
-		Blob uploadReportBlob = iArkCommonService.createBlob(bytes);
-		upload.setUploadReport(uploadReportBlob);
+		//Blob uploadReportBlob = iArkCommonService.createBlob(bytes);
+		upload.setUploadReport(bytes);
 		upload.setStartTime(startTime);
 		upload.setFinishTime(new Date(System.currentTimeMillis()));
 		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));

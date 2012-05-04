@@ -34,9 +34,7 @@ import au.org.theark.core.Constants;
 @Table(name = "SUBJECTUID_SEQUENCE", schema = Constants.STUDY_SCHEMA)
 public class SubjectUidSequence implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	// Fields

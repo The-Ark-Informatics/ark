@@ -76,9 +76,7 @@ import au.org.theark.study.web.component.attachments.form.ContainerForm;
  * 
  */
 public class SearchResultListPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 8147089460348057381L;
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
 	private IStudyService		studyService;
@@ -100,9 +98,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<SubjectFile> buildPageableListView(IModel iModel) {
 		PageableListView<SubjectFile> sitePageableListView = new PageableListView<SubjectFile>(Constants.RESULT_LIST, iModel, Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -161,9 +157,6 @@ public class SearchResultListPanel extends Panel {
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -180,9 +173,7 @@ public class SearchResultListPanel extends Panel {
 	protected Component buildDeleteLinkPanel(final IModel<SubjectFile> subjectFileModel, final Panel downloadLinkPanel) {
 		DeleteIconAjaxLinkPanel<SubjectFile> deleteLinkPanel = new DeleteIconAjaxLinkPanel<SubjectFile>(au.org.theark.study.web.Constants.DELETE_FILE, subjectFileModel) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -227,9 +218,7 @@ public class SearchResultListPanel extends Panel {
 	private Panel buildDownloadLinkPanel(final IModel<SubjectFile> subjectFileModel) {
 		DownloadIconLinkPanel<SubjectFile> downloadLinkPanel = new DownloadIconLinkPanel<SubjectFile>(au.org.theark.study.web.Constants.DOWNLOAD_FILE, subjectFileModel) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -250,10 +239,8 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private AjaxButton buildDownloadButton(final SubjectFile subjectFile) {
-		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
-			/**
-			 * 
-			 */
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE) {
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -313,9 +300,7 @@ public class SearchResultListPanel extends Panel {
 	private AjaxDeleteButton buildDeleteButton(final SubjectFile subjectFile, final AjaxButton downloadButton) {
 
 		DeleteButton ajaxButton = new DeleteButton(subjectFile, SearchResultListPanel.this) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

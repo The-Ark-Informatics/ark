@@ -37,9 +37,7 @@ import au.org.theark.core.Constants;
 @Table(name = "ARK_ROLE_PERMISSION", schema = Constants.STUDY_SCHEMA)
 public class ArkRolePermission implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long				id;
 	private ArkRole			arkRole;

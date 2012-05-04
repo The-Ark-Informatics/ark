@@ -23,9 +23,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 
 public class AbstractWizardHeaderPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -626989967032928525L;
 
 	/**

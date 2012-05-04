@@ -64,9 +64,7 @@ import au.org.theark.lims.web.component.barcodelabeldata.BarcodeLabelDataPanel;
  */
 public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= 6808980290575067265L;
 
 	protected static final Logger				log					= LoggerFactory.getLogger(DetailForm.class);
@@ -109,9 +107,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 		versionTxtFld = new TextField<Number>("version");
 		
 		barcodeLabelTemplateLbl = new Label("barcodeLabelTemplateLbl", "Clone from Barcode Label Template:"){
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -150,9 +146,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 		studyListForUser = getStudyListForUser();
 		ChoiceRenderer<Study> choiceRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
 		studyDdc = new DropDownChoice<Study>("study", studyListForUser, choiceRenderer) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -164,9 +158,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 		};
 
 		studyDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -180,9 +172,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	private void initBarcodePrinterDdc() {
 		ChoiceRenderer<BarcodePrinter> choiceRenderer = new ChoiceRenderer<BarcodePrinter>("uniqueName", Constants.ID);
 		barcodePrinterDdc = new DropDownChoice<BarcodePrinter>("barcodePrinter") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -194,9 +184,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 		};
 		barcodePrinterDdc.setChoiceRenderer(choiceRenderer);
 		barcodePrinterDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -209,9 +197,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	private void initBarcodeLabelTemplateDdc() {
 		ChoiceRenderer<BarcodeLabel> choiceRenderer = new ChoiceRenderer<BarcodeLabel>(Constants.NAME, Constants.ID);
 		barcodeLabelTemplateDdc = new DropDownChoice<BarcodeLabel>("barcodeLabelTemplate") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -226,9 +212,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 		barcodeLabelTemplateDdc.setChoiceRenderer(choiceRenderer);
 		
 		barcodeLabelTemplateDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

@@ -50,9 +50,7 @@ import au.org.theark.phenotypic.service.IPhenotypicService;
 
 
 public class SearchResultListPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 5162032563985446903L;
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService	iPhenotypicService;
@@ -126,9 +124,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<StudyUpload> buildPageableListView(IModel iModel) {
 		PageableListView<StudyUpload> sitePageableListView = new PageableListView<StudyUpload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -206,9 +202,6 @@ public class SearchResultListPanel extends Panel {
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -223,9 +216,7 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxButton buildDownloadButton(final StudyUpload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -233,13 +224,13 @@ public class SearchResultListPanel extends Panel {
 				StudyUpload studyUpload = null;
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
-				try {
+				//try {
 					studyUpload  =iPhenotypicService.getStudyUpload(upload.getId());
-					data = studyUpload.getPayload().getBytes(1, (int) studyUpload.getPayload().length());
-				}
-				catch (SQLException e) {
-					log.error(e.getMessage());
-				}
+					data = studyUpload.getPayload();//.getBytes(1, (int) studyUpload.getPayload().length());
+				//}
+				//catch (SQLException e) {
+				//	log.error(e.getMessage());
+				//}
 				
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, studyUpload.getFilename()));
 			}
@@ -263,9 +254,7 @@ public class SearchResultListPanel extends Panel {
 		
 		
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, new StringResourceModel("downloadReportKey", this, null)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -273,13 +262,13 @@ public class SearchResultListPanel extends Panel {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
 				StudyUpload studyUpload = null;
-				try {
+				//try {
 					studyUpload  =iPhenotypicService.getStudyUpload(upload.getId());
-					data = studyUpload.getUploadReport().getBytes(1, (int) studyUpload.getUploadReport().length());
-				}
-				catch (SQLException e) {
-					log.error(e.getMessage());
-				}
+					data = studyUpload.getUploadReport();//.getBytes(1, (int) studyUpload.getUploadReport().length());
+				//}
+				//catch (SQLException e) {
+				//	log.error(e.getMessage());
+				//}
 				
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + studyUpload.getId()));
 			}
@@ -301,9 +290,7 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxDeleteButton buildDeleteButton(final StudyUpload upload) {
 		DeleteButton ajaxButton = new DeleteButton(upload, SearchResultListPanel.this) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

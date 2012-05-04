@@ -30,9 +30,7 @@ import au.org.theark.core.security.ArkPermissionHelper;
 
 public class ViewModeButtonsPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	private static final Logger log = LoggerFactory.getLogger(ViewModeButtonsPanel.class);
@@ -52,9 +50,7 @@ public class ViewModeButtonsPanel extends Panel {
 	protected void initialisePanel() {
 		editButton = new ArkAjaxButton("edit") {
 			
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -86,9 +82,7 @@ public class ViewModeButtonsPanel extends Panel {
 		
 		cancelButton = new ArkAjaxButton("cancel") {
 			
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

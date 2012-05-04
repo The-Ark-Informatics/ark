@@ -7,9 +7,7 @@ package au.org.theark.core.exception;
  */
 public class PhenotypicStorageIOException extends PhenotypicSystemException {
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 5020816170190578267L;
 
 	public PhenotypicStorageIOException() {

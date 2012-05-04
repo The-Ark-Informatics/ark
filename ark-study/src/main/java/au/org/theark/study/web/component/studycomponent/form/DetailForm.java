@@ -49,9 +49,7 @@ import au.org.theark.study.web.Constants;
  */
 public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -8267651986631341353L;
 
 	@SuppressWarnings("unchecked")

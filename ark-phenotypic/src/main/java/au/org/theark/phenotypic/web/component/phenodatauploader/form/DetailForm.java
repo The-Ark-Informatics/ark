@@ -120,9 +120,7 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 		containerForm.getModelObject().setOverrideDataValidationChkBox(false);
 		
 		overrideDataValidationChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -215,12 +213,12 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 				strBuf.append(message +"\n");
 			}
 			byte[] bytes = strBuf.toString().getBytes();
+			newUpload.setUploadReport(bytes);
 
-			Blob uploadReportBlob = util.createBlob(bytes);
+			//Blob uploadReportBlob = util.createBlob(bytes);
 			inputStream = new BufferedInputStream(new FileInputStream(temp));
-			Blob payload = util.createBlob(inputStream, temp.length());
-			newUpload.setPayload(payload);
-			newUpload.setUploadReport(uploadReportBlob);
+			//Blob payload = util.createBlob(inputStream, temp.length());
+			newUpload.setPayload(IOUtils.toByteArray(inputStream));
 			newUpload.setFinishTime(new Date(System.currentTimeMillis()));
 			iArkCommonService.createUpload(newUpload);	// TODO: save the upload to database
 			inputStream.close();
@@ -292,9 +290,7 @@ public class DetailForm extends AbstractDetailForm<PhenoFieldDataUploadVO> {
 		this.deleteButton = deleteButton;
 	}
 
-	/**
-	 * 
-	 */
+
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 
 	}

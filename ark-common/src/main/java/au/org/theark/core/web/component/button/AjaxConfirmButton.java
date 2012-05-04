@@ -32,9 +32,7 @@ import org.apache.wicket.model.StringResourceModel;
  *
  */
 public abstract class AjaxConfirmButton extends AjaxButton {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 8138160131842627124L;
 	private IModel					confirm				= new StringResourceModel("confirm", this, null);
 

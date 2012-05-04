@@ -28,9 +28,7 @@ import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
 
 public class PhenoFieldDetailsReportContainer extends AbstractSelectedReportContainer<CustomFieldDetailsReportVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	public PhenoFieldDetailsReportContainer(String id) {

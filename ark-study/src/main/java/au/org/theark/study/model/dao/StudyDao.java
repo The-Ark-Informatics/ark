@@ -1121,14 +1121,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 
 		List<Correspondences> personCorrespondenceList = criteria.list();
-		log.info("Number of correspondences fetched " + personCorrespondenceList.size() + "  Person Id" + personId);
-
-		if (personCorrespondenceList.isEmpty()) {
-			// throw new EntityNotFoundException("The entity with id " + personId.toString() + " cannot be found.");
-			// TODO: does this need handling?
-			log.error("this person" + personId + " has no correspondance");
-		}
-
 		return personCorrespondenceList;
 	}
 

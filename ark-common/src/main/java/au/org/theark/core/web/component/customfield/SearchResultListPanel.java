@@ -43,9 +43,7 @@ import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 @SuppressWarnings( { "unchecked", "serial" })
 public class SearchResultListPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long							serialVersionUID	= -1L;
 	private CompoundPropertyModel<CustomFieldVO>	cpModel;
 

@@ -34,9 +34,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "BIOSPECIMENUID_SEQUENCE", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BiospecimenUidSequence implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	// Fields

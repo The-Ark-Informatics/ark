@@ -20,9 +20,7 @@ package au.org.theark.core.web.component.listeditor;
 
 public class RemoveButton extends EditorButton {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 3908287885911044925L;
 
 	public RemoveButton(String id) {

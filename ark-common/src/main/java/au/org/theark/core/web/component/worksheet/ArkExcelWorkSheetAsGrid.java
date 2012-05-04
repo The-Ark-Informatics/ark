@@ -58,9 +58,7 @@ import au.org.theark.core.util.ArkSheetMetaData;
 import com.csvreader.CsvReader;
 
 public class ArkExcelWorkSheetAsGrid extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID				= 2950851261474110946L;
 	private transient Sheet					sheet;																										// an instance of an Excel
 	// WorkSheet
@@ -241,9 +239,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	private Loop createHeadings() {
 		return new Loop("heading", new PropertyModel(sheetMetaData, "cols")) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -7027878243061138904L;
 
 			public void populateItem(LoopItem item) {
@@ -254,9 +250,6 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 				 * updated each time we upload a new Excel File, the value for each cell is automatically updated
 				 */
 				IModel<Object> model = new Model() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1144128566137457199L;
 
 					@Override
@@ -471,9 +464,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 
 	private AjaxButton buildDownloadButton(final FileUpload fileUpload) {
 		AjaxButton ajaxButton = new AjaxButton("downloadGridData") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 2409955824467683966L;
 
 			@Override

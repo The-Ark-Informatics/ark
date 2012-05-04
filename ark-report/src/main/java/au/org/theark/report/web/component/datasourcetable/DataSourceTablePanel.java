@@ -14,9 +14,7 @@ import au.org.theark.core.web.component.export.MetaDataColumn;
 import au.org.theark.core.web.component.export.ResultSetDataProvider;
 
 public class DataSourceTablePanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	private String					dbName;
 	private String					query;

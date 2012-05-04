@@ -68,9 +68,7 @@ import au.org.theark.lims.web.Constants;
  */
 public class DetailForm extends AbstractDetailForm<LimsVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long								serialVersionUID	= 6510243238571556231L;
 	protected static final Logger							log					= LoggerFactory.getLogger(DetailForm.class);
 
@@ -128,9 +126,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		// Disable editing of Subject details in LIMS
 		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

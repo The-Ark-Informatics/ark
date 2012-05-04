@@ -52,9 +52,7 @@ import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm;
 
 public class SearchResultListPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 5162032563985446903L;
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService	iPhenotypicService;
@@ -128,9 +126,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<PhenoUpload> buildPageableListView(IModel iModel) {
 		PageableListView<PhenoUpload> sitePageableListView = new PageableListView<PhenoUpload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -205,9 +201,6 @@ public class SearchResultListPanel extends Panel {
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -222,9 +215,7 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxButton buildDownloadButton(final PhenoUpload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -258,9 +249,7 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxButton buildDownloadReportButton(final PhenoUpload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, new StringResourceModel("downloadReportKey", this, null)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -294,9 +283,7 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxDeleteButton buildDeleteButton(final PhenoUpload upload) {
 		DeleteButton ajaxButton = new DeleteButton(upload, SearchResultListPanel.this) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

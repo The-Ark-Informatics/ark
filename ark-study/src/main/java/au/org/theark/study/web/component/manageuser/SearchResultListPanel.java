@@ -54,9 +54,7 @@ import au.org.theark.study.web.component.manageuser.form.ContainerForm;
 
 @SuppressWarnings("unchecked")
 public class SearchResultListPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -8708032624256041305L;
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private ContainerForm		containerForm;
@@ -89,9 +87,7 @@ public class SearchResultListPanel extends Panel {
 		// This has to be populated earlier
 
 		PageableListView<ArkUserVO> pageableListView = new PageableListView<ArkUserVO>("userList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -104,9 +100,6 @@ public class SearchResultListPanel extends Panel {
 				item.add(new Label("email", arkUserVO.getEmail()));
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -123,9 +116,7 @@ public class SearchResultListPanel extends Panel {
 	private AjaxLink buildLink(final ArkUserVO arkUserVo, final WebMarkupContainer searchResultsContainer) {
 
 		AjaxLink link = new AjaxLink("userName") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

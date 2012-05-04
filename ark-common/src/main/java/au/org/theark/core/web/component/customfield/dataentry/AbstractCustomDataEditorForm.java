@@ -47,9 +47,7 @@ import au.org.theark.core.web.form.ArkFormVisitor;
 public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? extends ICustomFieldData>> 
 							extends Form<T> implements  IEditModeEventHandler {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	private static final Logger log = LoggerFactory.getLogger(AbstractCustomDataEditorForm.class);
@@ -75,9 +73,7 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 
 	public AbstractCustomDataEditorForm<T> initialiseForm() {
 		dataViewWMC = new WebMarkupContainer("dataViewWMC") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			// this WMC must have the visitor since the form itself isn't always repainted

@@ -46,9 +46,7 @@ import au.org.theark.lims.service.ILimsService;
  * 
  */
 public class BioCollectionCustomDataContainerPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long												serialVersionUID	= -5021942095262383803L;
 	private static final Logger											log					= LoggerFactory.getLogger(BioCollectionCustomDataContainerPanel.class);
 	@SuppressWarnings("unchecked")

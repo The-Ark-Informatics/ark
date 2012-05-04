@@ -55,9 +55,7 @@ import au.org.theark.core.web.component.button.AjaxDeleteButton;
  * 
  */
 public abstract class AbstractDetailForm<T> extends Form<T> {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= -1818001425244673832L;
 	protected FeedbackPanel			feedBackPanel;
 	protected Form<T>					containerForm;
@@ -117,9 +115,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 */
 	protected void initialiseForm() {
 		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("page.cancel", this, null)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1684005199059571017L;
 
 			@Override
@@ -139,9 +135,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		};
 
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("page.save", this, null)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -423605230448635419L;
 
 			@Override
@@ -163,9 +157,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		};
 
 		deleteButton = new AjaxDeleteButton(Constants.DELETE, new StringResourceModel("confirmDelete", this, null), new StringResourceModel(Constants.DELETE, this, null)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 4005032637149080009L;
 
 			@Override

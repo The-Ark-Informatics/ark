@@ -36,9 +36,7 @@ import org.apache.wicket.model.PropertyModel;
  */
 public class NumberOfLabelsPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= 2578315620375936043L;
 	protected Integer							selected				= new Integer(1);
 	protected Label							labelsToPrint;
@@ -60,9 +58,7 @@ public class NumberOfLabelsPanel extends Panel {
 
 		numberOfLabelsToPrint = new DropDownChoice<Integer>("numberOfLabelsToPrint", new PropertyModel<Integer>(this, "selected"), INTEGERS);
 		numberOfLabelsToPrint.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			protected void onUpdate(AjaxRequestTarget target) {

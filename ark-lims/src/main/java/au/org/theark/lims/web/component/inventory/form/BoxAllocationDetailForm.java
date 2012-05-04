@@ -50,9 +50,7 @@ import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
  */
 public class BoxAllocationDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= -2954575722360792047L;
 
 	private static Logger					log					= LoggerFactory.getLogger(BoxAllocationDetailForm.class);

@@ -52,9 +52,7 @@ public class InventoryNodePanel extends LinkIconPanel {
 	private IInventoryService								iInventoryService;
 	private InventoryLinkTree tree;
 
-	/**
-	 * 
-	 */
+
 	private static final long								serialVersionUID		= 1L;
 
 	public InventoryNodePanel(String id, IModel<Object> model, InventoryLinkTree tree, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm) {
@@ -159,9 +157,7 @@ public class InventoryNodePanel extends LinkIconPanel {
 	@Override
 	protected void addComponents(final IModel model, final BaseTree tree) {
 		MarkupContainer link = new ArkBusyAjaxLink("iconLink") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1857552996891982138L;
 
 			@Override
@@ -174,9 +170,7 @@ public class InventoryNodePanel extends LinkIconPanel {
 		link.add(newImageComponent("icon", tree, model));
 
 		link = new ArkBusyAjaxLink<String>("contentLink") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1857552996891982138L;
 
 			@Override

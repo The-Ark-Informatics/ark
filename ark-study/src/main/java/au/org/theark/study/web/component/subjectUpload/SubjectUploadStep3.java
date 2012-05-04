@@ -84,9 +84,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 		updateChkBox.setVisible(true);
 
 		updateChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -4514605801401294450L;
 
 			@Override

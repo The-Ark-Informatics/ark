@@ -49,9 +49,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.util.ArkSheetMetaData;
 
 public abstract class ArkDownloadTemplateButton extends AjaxButton {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= -838971531745438763L;
 	private static final Logger			log					= LoggerFactory.getLogger(ArkDownloadTemplateButton.class);
 	private String								templateFilename	= null;

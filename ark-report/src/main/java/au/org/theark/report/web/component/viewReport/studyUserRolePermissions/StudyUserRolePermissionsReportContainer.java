@@ -28,9 +28,7 @@ import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
 
 public class StudyUserRolePermissionsReportContainer extends AbstractSelectedReportContainer<GenericReportViewVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	public StudyUserRolePermissionsReportContainer(String id) {

@@ -32,9 +32,7 @@ import au.org.theark.core.util.ByteDataResourceRequestHandler;
 
 public class ArkDownloadTemplateLinkPanel extends DownloadIconLinkPanel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	private String								templateFilename	= null;

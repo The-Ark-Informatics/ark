@@ -32,9 +32,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "bio_transaction_status", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BioTransactionStatus implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	private Long		id;

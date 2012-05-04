@@ -103,9 +103,7 @@ import au.org.theark.study.web.component.managestudy.StudyLogoValidator;
 
 public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long								serialVersionUID				= -9102470673205363789L;
 	private static final Logger							log								= LoggerFactory.getLogger(DetailForm.class);
 
@@ -237,9 +235,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		autoGenSubIdChkBox.setVisible(true);
 
 		autoGenSubIdChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -278,9 +274,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		initSubjectFileUpload();
 		
 		newChildStudyButton = new ArkBusyAjaxButton("newChildStudy") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1666656098281624401L;
 
 			@Override
@@ -428,9 +422,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		// Subject UID prefix (e.g. three char representation of the Study name
 		subjectUidPrefixTxtFld = new TextField<String>(au.org.theark.study.web.Constants.SUBJECT_UID_PREFIX);
 		subjectUidPrefixTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -443,9 +435,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		// Token to separate the string (e.g. "-")
 		subjectUidTokenTxtFld = new TextField<String>("subjectUidToken");
 		subjectUidTokenTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -465,9 +455,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		// If the Study wishes to start the incrementor at a particular value
 		subjectUidStartTxtFld = new TextField<Integer>(au.org.theark.study.web.Constants.SUBJECT_UID_START, Integer.class);
 		subjectUidStartTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -491,9 +479,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 		bioCollectionUidPrefixTxtFld = new TextField<String>("bioCollectionUidTemplate.bioCollectionUidPrefix");
 		bioCollectionUidPrefixTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -536,9 +522,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		bioCollectionUidPadCharDdc = new DropDownChoice<BioCollectionUidPadChar>("bioCollectionUidTemplate.bioCollectionUidPadChar", bioCollectionUidPadChar, choiceRenderer);
 
 		bioCollectionUidPadCharDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -562,9 +546,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 		biospecimenUidPrefixTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			protected void onUpdate(AjaxRequestTarget target) {
@@ -576,9 +558,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		// Token to separate the string (e.g. "-")
 		biospecimentUidTokenTxtFld = new TextField<String>("biospecimenUidTemplate.biospecimenUidToken");
 		biospecimentUidTokenTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -602,9 +582,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		ChoiceRenderer<BiospecimenUidToken> choiceRenderer = new ChoiceRenderer<BiospecimenUidToken>(Constants.NAME, Constants.ID);
 		biospecimenUidTokenDdc = new DropDownChoice<BiospecimenUidToken>("biospecimenUidTemplate.biospecimenUidToken", biospecimenUidTokens, choiceRenderer);
 		biospecimenUidTokenDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -621,9 +599,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		ChoiceRenderer<BiospecimenUidPadChar> choiceRenderer = new ChoiceRenderer<BiospecimenUidPadChar>(Constants.NAME, Constants.ID);
 		biospecimenUidPadCharDdc = new DropDownChoice<BiospecimenUidPadChar>("biospecimenUidTemplate.biospecimenUidPadChar", biospecimenUidPadChars, choiceRenderer);
 		biospecimenUidPadCharDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -638,9 +614,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		List<Study> parentStudyListForUser = new ArrayList<Study>(0);
 		ChoiceRenderer<Study> choiceRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
 		parentStudyDdc = new DropDownChoice<Study>("study.parentStudy", parentStudyListForUser, choiceRenderer) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -780,9 +754,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 			if (studyLogoBlob != null) {
 				BlobImageResource blobImageResource = new BlobImageResource() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -904,9 +875,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		ChoiceRenderer<SubjectUidToken> defaultChoiceRenderer = new ChoiceRenderer<SubjectUidToken>(Constants.NAME, Constants.STUDY_STATUS_KEY);
 		subjectUidTokenDpChoices = new DropDownChoice<SubjectUidToken>(au.org.theark.study.web.Constants.SUBJECT_UID_TOKEN, subjectUidTokenList, defaultChoiceRenderer);
 		subjectUidTokenDpChoices.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -922,9 +891,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		ChoiceRenderer<SubjectUidPadChar> defaultChoiceRenderer = new ChoiceRenderer<SubjectUidPadChar>(Constants.NAME, Constants.STUDY_STATUS_KEY);
 		subjectUidPadCharsDpChoices = new DropDownChoice<SubjectUidPadChar>(au.org.theark.study.web.Constants.SUBJECT_UID_PADCHAR, subjectUidPadCharList, defaultChoiceRenderer);
 		subjectUidPadCharsDpChoices.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

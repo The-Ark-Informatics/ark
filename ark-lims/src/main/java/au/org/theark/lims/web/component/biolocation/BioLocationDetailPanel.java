@@ -15,9 +15,7 @@ import au.org.theark.lims.model.vo.LimsVO;
  * 
  */
 public class BioLocationDetailPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= 1L;
 	protected CompoundPropertyModel<LimsVO>	cpModel;
 	private Panel										locationPanel;

@@ -27,9 +27,7 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 
 public abstract class AbstractListEditor<T> extends RepeatingView implements IFormModelUpdateListener {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -5555167696920984309L;
 	List<T>							items;
 

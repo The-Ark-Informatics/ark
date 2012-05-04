@@ -27,9 +27,7 @@ import au.org.theark.core.model.study.entity.Correspondences;
 
 public class CorrespondenceVO implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Correspondences								correspondence;
 	private Collection<Correspondences>				correspondenceList;

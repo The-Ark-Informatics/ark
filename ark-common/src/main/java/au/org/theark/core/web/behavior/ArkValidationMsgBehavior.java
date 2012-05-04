@@ -23,9 +23,7 @@ import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.html.form.FormComponent;
 
 public class ArkValidationMsgBehavior extends Behavior {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 2591693136424670884L;
 
 	public void onRendered(Component c) {

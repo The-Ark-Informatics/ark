@@ -39,9 +39,7 @@ import au.org.theark.core.Constants;
 @Table(name = "COUNTRY_STATE", schema = Constants.STUDY_SCHEMA)
 public class CountryState implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long		id;
 	private Country	country;

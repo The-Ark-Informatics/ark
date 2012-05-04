@@ -8,9 +8,7 @@ import org.apache.wicket.model.IModel;
 
 public class InventoryLinkIconPanel extends LabelIconPanel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -6175278892194404598L;
 
 	/**

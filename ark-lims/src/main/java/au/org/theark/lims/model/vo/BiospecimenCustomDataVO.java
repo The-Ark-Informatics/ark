@@ -26,9 +26,7 @@ import au.org.theark.core.web.component.customfield.dataentry.CustomDataVO;
 
 public class BiospecimenCustomDataVO extends CustomDataVO<BiospecimenCustomFieldData> implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	protected Biospecimen biospecimen;

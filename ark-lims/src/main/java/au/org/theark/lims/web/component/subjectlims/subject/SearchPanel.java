@@ -36,9 +36,7 @@ import au.org.theark.lims.web.component.subjectlims.subject.form.SearchForm;
  */
 public class SearchPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 5699910763818733372L;
 	private FeedbackPanel					feedBackPanel;
 	private PageableListView<LimsVO>		listView;

@@ -44,9 +44,7 @@ import au.org.theark.lims.web.Constants;
  * @author cellis
  */
 public abstract class PrintBioCollectionLabelButton extends AjaxButton {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= 5772993543283783679L;
 	private static final Logger		log					= LoggerFactory.getLogger(PrintBioCollectionLabelButton.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)

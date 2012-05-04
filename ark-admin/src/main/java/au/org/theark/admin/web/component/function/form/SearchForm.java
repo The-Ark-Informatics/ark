@@ -37,9 +37,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 
 public class SearchForm extends AbstractSearchForm<AdminVO> {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= -204010204180506704L;
 
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
@@ -89,9 +87,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 		ChoiceRenderer<ArkFunctionType> defaultChoiceRenderer = new ChoiceRenderer<ArkFunctionType>("name", "id");
 		arkFunctionTypeDropDown = new DropDownChoice("arkFunction.arkFunctionType", arkFunctionTypeList, defaultChoiceRenderer);
 		arkFunctionTypeDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 5591846326218931210L;
 
 			@Override

@@ -25,9 +25,7 @@ import org.apache.wicket.validation.IValidator;
 
 public class SubjectValidator implements IValidator<Long> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -5915383351087650967L;
 
 	/*

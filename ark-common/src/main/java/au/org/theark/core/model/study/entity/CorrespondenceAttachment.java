@@ -38,9 +38,7 @@ import au.org.theark.core.Constants;
 @Table(name = "correspondence_attachment", schema = Constants.STUDY_SCHEMA)
 public class CorrespondenceAttachment implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long				id;
 	private Correspondences	correspondence;

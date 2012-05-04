@@ -43,9 +43,7 @@ import au.org.theark.core.vo.ArkSubjectVO;
  * 
  */
 public class ActivityMonitorContainerPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= -7123740564278141980L;
 	protected transient Logger					log					= LoggerFactory.getLogger(ActivityMonitorContainerPanel.class);
 	protected FeedbackPanel						feedBackPanel;
@@ -64,9 +62,7 @@ public class ActivityMonitorContainerPanel extends Panel {
 		form.add(initialiseSearchResults());
 
 		refresh = new AjaxButton("refresh") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

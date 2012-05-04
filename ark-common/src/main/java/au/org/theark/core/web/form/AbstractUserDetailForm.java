@@ -37,9 +37,7 @@ import au.org.theark.core.web.component.button.AjaxDeleteButton;
  * 
  */
 public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -1768344112045735740L;
 
 	/**
@@ -58,9 +56,7 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 
 
 		deleteButton = new AjaxDeleteButton(Constants.REMOVE, new StringResourceModel("confirmRemove", this, null), new StringResourceModel("removeUserKey", this, null)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -2430231894703055744L;
 
 			@Override

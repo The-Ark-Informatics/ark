@@ -32,9 +32,7 @@ import au.org.theark.lims.web.component.biospecimenuidtemplate.form.SearchForm;
  * 
  */
 public class SearchPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= 641659658295189720L;
 	
 	private ArkCrudContainerVO					arkCrudContainerVO;

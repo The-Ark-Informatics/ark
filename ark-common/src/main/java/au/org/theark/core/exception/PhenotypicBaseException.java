@@ -6,9 +6,7 @@ package au.org.theark.core.exception;
  */
 public class PhenotypicBaseException  extends ArkBaseException {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 3602149189859488696L;
 
 	public PhenotypicBaseException() {

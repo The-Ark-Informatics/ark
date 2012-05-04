@@ -40,9 +40,7 @@ import au.org.theark.core.Constants;
 @Table(name = "PERSON_LASTNAME_HISTORY", schema = Constants.STUDY_SCHEMA)
 public class PersonLastnameHistory implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -568162910323332654L;
 	// Fields
 	private Long					id;

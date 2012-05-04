@@ -41,9 +41,7 @@ import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
  * The 4th step of this wizard.
  */
 public class SubjectUploadStep4 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 2971945948091031160L;
 	private Form<UploadVO>		containerForm;
 	private WizardForm			wizardForm;

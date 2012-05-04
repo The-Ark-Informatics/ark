@@ -29,9 +29,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.biolocation.form.BioModalAllocateDetailForm;
 
 public class BioModalAllocateDetailPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= 1755709689461138709L;
 
 	private FeedbackPanel							detailFeedbackPanel;

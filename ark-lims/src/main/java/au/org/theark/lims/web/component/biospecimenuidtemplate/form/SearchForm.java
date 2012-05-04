@@ -51,9 +51,7 @@ import au.org.theark.lims.web.Constants;
  * 
  */
 public class SearchForm extends AbstractSearchForm<BiospecimenUidTemplate> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 6994544999178850052L;
 
 	protected static final Logger				log					= LoggerFactory.getLogger(SearchForm.class);
@@ -84,9 +82,7 @@ public class SearchForm extends AbstractSearchForm<BiospecimenUidTemplate> {
 		studyListForUser = getStudyListForUser();
 		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
 		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

@@ -3,9 +3,7 @@ package au.org.theark.lims.web.component.panel.applet;
 import org.apache.wicket.markup.html.panel.Panel;
 
 public class AppletPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 2488908016769287046L;
 
 	/**

@@ -39,9 +39,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 
 public class DetailForm extends AbstractDetailForm<AdminVO> {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= -4764831185215105696L;
 
 	protected transient Logger				log					= LoggerFactory.getLogger(DetailForm.class);
@@ -81,9 +79,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		idTxtFld.setEnabled(false);
 
 		nameTxtFld = new TextField<String>("arkFunction.name") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -99,9 +95,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		initArkFunctionTypeDropDown();
 		
 		resourceKeyTxtFld = new TextField<String>("arkFunction.resourceKey") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

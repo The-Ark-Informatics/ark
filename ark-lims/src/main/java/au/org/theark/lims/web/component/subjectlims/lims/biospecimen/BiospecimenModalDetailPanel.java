@@ -31,9 +31,7 @@ import au.org.theark.lims.web.component.panel.subject.SubjectDetailPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form.BiospecimenModalDetailForm;
 
 public class BiospecimenModalDetailPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= 1755709689461138709L;
 
 	private FeedbackPanel							detailFeedbackPanel;

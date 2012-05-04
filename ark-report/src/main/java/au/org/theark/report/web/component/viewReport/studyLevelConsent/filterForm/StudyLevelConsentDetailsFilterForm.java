@@ -61,9 +61,7 @@ import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLeve
  * 
  */
 public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDetailsReportVO> {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= 3402740307146826684L;
 	protected TextField<String>					tfSubjectUID;
 	protected DropDownChoice<SubjectStatus>	ddcSubjectStatus;

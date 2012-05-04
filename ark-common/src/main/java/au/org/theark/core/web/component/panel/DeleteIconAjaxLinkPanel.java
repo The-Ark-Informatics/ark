@@ -29,9 +29,7 @@ import au.org.theark.core.web.component.link.AjaxConfirmLink;
 
 public abstract class DeleteIconAjaxLinkPanel<T> extends IconLabelPanel<T> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	protected AjaxLink<String> link;
@@ -67,9 +65,7 @@ public abstract class DeleteIconAjaxLinkPanel<T> extends IconLabelPanel<T> {
 	protected AjaxLink<String> buildLink(IModel<T> innerModel)  {
 		
 		return new AjaxConfirmLink<String>("arkLink", new StringResourceModel("deleteIconLinkPanel.confirm", this, null), null) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 	
 			@Override

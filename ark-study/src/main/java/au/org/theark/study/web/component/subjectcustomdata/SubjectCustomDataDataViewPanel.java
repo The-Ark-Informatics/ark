@@ -48,9 +48,7 @@ import au.org.theark.study.web.Constants;
 @SuppressWarnings( { "serial" })
 public class SubjectCustomDataDataViewPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long																serialVersionUID	= -1L;
 	private static final Logger															log					= LoggerFactory.getLogger(SubjectCustomDataDataViewPanel.class);
 

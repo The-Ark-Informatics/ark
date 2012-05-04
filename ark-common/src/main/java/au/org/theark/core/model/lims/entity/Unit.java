@@ -34,9 +34,7 @@ import au.org.theark.core.model.Constants;
 @Entity
 @Table(name = "unit", schema = Constants.LIMS_TABLE_SCHEMA)
 public class Unit implements java.io.Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 8076302336716748287L;
 	private Long					id;
 	private String					name;

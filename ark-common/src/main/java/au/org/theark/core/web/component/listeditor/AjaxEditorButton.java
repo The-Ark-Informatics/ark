@@ -23,9 +23,7 @@ import java.util.List;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 
 public abstract class AjaxEditorButton extends AjaxButton {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 2239994447099355647L;
 
 	private transient ListItem<?>	parent;

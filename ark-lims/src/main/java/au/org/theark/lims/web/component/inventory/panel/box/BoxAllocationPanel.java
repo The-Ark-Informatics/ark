@@ -39,9 +39,7 @@ import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
  * 
  */
 public class BoxAllocationPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= -1L;
 	private static final Logger					log					= LoggerFactory.getLogger(BoxAllocationPanel.class);
 
@@ -67,9 +65,7 @@ public class BoxAllocationPanel extends Panel {
 	public void initialisePanel() {
 		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

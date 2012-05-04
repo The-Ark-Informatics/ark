@@ -49,9 +49,7 @@ import au.org.theark.core.model.study.entity.YesNo;
 @Entity
 @Table(name = "CONSENT_HISTORY", schema = Constants.AUDIT_SCHEMA)
 public class ConsentHistory implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	private Long					id;
 	private Date					timestamp;

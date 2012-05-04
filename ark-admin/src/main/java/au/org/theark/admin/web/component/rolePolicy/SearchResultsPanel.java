@@ -52,9 +52,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkDataProvider;
 
 public class SearchResultsPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 5237384531161620862L;
 	protected transient Logger		log					= LoggerFactory.getLogger(SearchResultsPanel.class);
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
@@ -71,9 +69,7 @@ public class SearchResultsPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public DataView<ArkRoleModuleFunctionVO> buildDataView(ArkDataProvider<ArkRoleModuleFunctionVO, IAdminService> dataProvider) {
 		DataView<ArkRoleModuleFunctionVO> dataView = new DataView<ArkRoleModuleFunctionVO>("arkRoleModuleFunctionVoList", dataProvider) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -7977497161071264676L;
 
 			@Override
@@ -85,9 +81,6 @@ public class SearchResultsPanel extends Panel {
 
 				WebMarkupContainer rowEditWMC = new WebMarkupContainer("rowEditWMC", item.getModel());
 				AjaxButton listEditButton = new AjaxButton("listEditButton", new StringResourceModel(au.org.theark.core.Constants.EDIT, this, null)) {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 197521505680635043L;
 
 					@Override
@@ -170,9 +163,6 @@ public class SearchResultsPanel extends Panel {
 
 				WebMarkupContainer rowSaveWMC = new WebMarkupContainer("rowSaveWMC", item.getModel());
 				AjaxButton listSaveButton = new AjaxButton("listSaveButton", new StringResourceModel(au.org.theark.core.Constants.SAVE, this, null)) {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= -7382768898426488999L;
 
 					@Override
@@ -192,9 +182,6 @@ public class SearchResultsPanel extends Panel {
 				item.add(rowSaveWMC);
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1938679383897533820L;
 
 					@Override

@@ -35,9 +35,7 @@ import au.org.theark.lims.web.component.inventory.panel.box.display.GridBoxPanel
 import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
 
 public class BoxDetailPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= 7132411215567811297L;
 	private static final Logger			log					= LoggerFactory.getLogger(BoxDetailPanel.class);
 	private FeedbackPanel					feedbackPanel;
@@ -65,9 +63,7 @@ public class BoxDetailPanel extends Panel {
 
 		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

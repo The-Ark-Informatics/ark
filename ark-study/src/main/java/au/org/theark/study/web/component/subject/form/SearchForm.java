@@ -54,9 +54,7 @@ import au.org.theark.study.web.Constants;
  */
 public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)

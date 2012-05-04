@@ -51,9 +51,7 @@ import au.org.theark.core.model.study.entity.Study;
 @Table(name = "biospecimen", schema = Constants.LIMS_TABLE_SCHEMA)
 public class Biospecimen implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= -6811160809915149538L;
 	private Long							id;
 	private String							biospecimenUid;

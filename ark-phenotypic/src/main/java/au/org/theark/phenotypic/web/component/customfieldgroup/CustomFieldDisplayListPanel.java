@@ -28,9 +28,7 @@ import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
  */
 public class CustomFieldDisplayListPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= 1L;
 	protected AbstractDetailModalWindow	modalWindow;
 	private Panel								modalContentPanel;
@@ -53,9 +51,7 @@ public class CustomFieldDisplayListPanel extends Panel {
 	public void initialisePanel() {
 
 		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -73,9 +69,7 @@ public class CustomFieldDisplayListPanel extends Panel {
 
 		DataView<CustomFieldDisplay> dataView = new DataView<CustomFieldDisplay>("customFieldDisplayList", provider) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -120,9 +114,7 @@ public class CustomFieldDisplayListPanel extends Panel {
 
 	public AjaxLink<String> buildLink(final Item<CustomFieldDisplay> item) {
 		ArkBusyAjaxLink<String> link = new ArkBusyAjaxLink<String>("link") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

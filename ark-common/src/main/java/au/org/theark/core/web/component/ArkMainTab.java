@@ -30,9 +30,7 @@ import org.apache.wicket.model.IModel;
  * 
  */
 public abstract class ArkMainTab extends AbstractTab {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 3346358837428172502L;
 	private Panel					panel;
 

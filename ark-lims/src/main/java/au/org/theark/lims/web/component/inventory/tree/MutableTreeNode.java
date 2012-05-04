@@ -27,9 +27,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class MutableTreeNode extends DefaultMutableTreeNode {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	/**

@@ -35,9 +35,7 @@ import au.org.theark.core.model.study.entity.Study;
  * 
  */
 public class AdminVO implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= -3939245546324873647L;
 
 	private ArkRole								arkRole;

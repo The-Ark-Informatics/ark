@@ -42,9 +42,7 @@ import au.org.theark.core.model.study.entity.Study;
 @Table(name = "barcode_printer", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BarcodePrinter implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long		id;
 	private Study		study;

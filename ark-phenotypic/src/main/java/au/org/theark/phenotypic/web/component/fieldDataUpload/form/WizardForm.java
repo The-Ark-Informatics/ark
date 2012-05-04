@@ -45,9 +45,7 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm
  * 
  */
 public class WizardForm extends AbstractWizardForm<UploadVO> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -4208718275072143464L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)

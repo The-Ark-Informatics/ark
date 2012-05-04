@@ -26,9 +26,7 @@ import au.org.theark.core.vo.StudyModelVO;
 
 public class Summary extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long							serialVersionUID	= 1829943256396848345L;
 	/* A reference of the Model from the Container in this case Search Panel */
 	private CompoundPropertyModel<StudyModelVO>	cpm;

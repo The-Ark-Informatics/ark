@@ -11,9 +11,7 @@ import au.org.theark.core.web.form.AbstractContainerForm;
  */
 public class ContainerForm   extends AbstractContainerForm<CustomFieldGroupVO>{
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	/**

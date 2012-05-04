@@ -36,9 +36,7 @@ import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupD
  */
 public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)

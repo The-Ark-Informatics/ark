@@ -44,9 +44,7 @@ import au.org.theark.core.vo.PhenoDataCollectionVO;
  */
 public class PhenoCollectionDataEntryContainerPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)

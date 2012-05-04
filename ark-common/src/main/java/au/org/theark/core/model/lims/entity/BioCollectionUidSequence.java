@@ -18,9 +18,7 @@ import au.org.theark.core.model.Constants;
 public class BioCollectionUidSequence implements Serializable{
 	
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	// Fields
 	private String				studyNameId;

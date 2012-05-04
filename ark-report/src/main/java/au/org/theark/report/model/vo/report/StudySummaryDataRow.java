@@ -21,9 +21,7 @@ package au.org.theark.report.model.vo.report;
 import java.io.Serializable;
 
 public class StudySummaryDataRow implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	protected String				section;

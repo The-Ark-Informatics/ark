@@ -48,9 +48,7 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.form.WizardForm;
  * The first step of this wizard.
  */
 public class FieldDataUploadStep3 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID		= 5099768179441679542L;
 	static Logger								log						= LoggerFactory.getLogger(FieldDataUploadStep3.class);
 	private Form<UploadVO>					containerForm;
@@ -110,9 +108,7 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().setUpdateChkBox(false);
 
 		updateChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -4514605801401294450L;
 
 			@Override
@@ -253,9 +249,6 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel {
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
 				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt"){
-					/**
-					 * 
-					 */
 					private static final long serialVersionUID = 1L;
 
 					@Override

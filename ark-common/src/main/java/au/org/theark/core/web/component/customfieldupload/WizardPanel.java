@@ -26,9 +26,7 @@ import au.org.theark.core.web.component.customfieldupload.form.ContainerForm;
 import au.org.theark.core.web.component.customfieldupload.form.WizardForm;
 
 public class WizardPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -4110431686558145782L;
 	private WizardForm			wizardForm;
 	private FeedbackPanel		feedBackPanel;

@@ -6,9 +6,7 @@ package au.org.theark.core.exception;
  */
 public class CustomFieldSystemException  extends ArkSystemException {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 8636172768000327003L;
 
 	public CustomFieldSystemException() {

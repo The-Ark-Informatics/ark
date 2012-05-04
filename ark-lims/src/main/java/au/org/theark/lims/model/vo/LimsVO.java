@@ -34,9 +34,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 
 public class LimsVO implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= 3823264588506863044L;
 	protected Study									study;
 	protected LinkSubjectStudy						linkSubjectStudy;

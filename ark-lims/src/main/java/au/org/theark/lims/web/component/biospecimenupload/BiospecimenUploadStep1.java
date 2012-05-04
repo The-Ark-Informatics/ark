@@ -53,9 +53,7 @@ import au.org.theark.lims.web.component.biospecimenupload.form.WizardForm;
  */
 public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID		= -3267334731280446472L;
 
 	public java.util.Collection<String>		validationMessages	= null;
@@ -165,15 +163,15 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		FileUpload fileUpload = fileUploadField.getFileUpload();
 		containerForm.getModelObject().setFileUpload(fileUpload);
 
-		try {
+//		try {
 			// Copy file to BLOB object
-			LobUtil util = new LobUtil();
-			Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
-			containerForm.getModelObject().getUpload().setPayload(payload);
-		}
-		catch (IOException ioe) {
-			System.out.println("Failed to save the uploaded file: " + ioe);
-		}
+//			LobUtil util = new LobUtil();
+//			Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
+			containerForm.getModelObject().getUpload().setPayload(fileUpload.getBytes());
+//		}
+//		catch (IOException ioe) {
+//			System.out.println("Failed to save the uploaded file: " + ioe);
+//		}
 
 		// Set details of Upload object
 		containerForm.getModelObject().getUpload().setStudy(studyDdc.getModelObject());

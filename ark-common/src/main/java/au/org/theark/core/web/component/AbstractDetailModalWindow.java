@@ -27,9 +27,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
 public abstract class AbstractDetailModalWindow extends ModalWindow {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -794586150493541168L;
 	protected String				title;
 	protected FeedbackPanel		feedbackPanel;

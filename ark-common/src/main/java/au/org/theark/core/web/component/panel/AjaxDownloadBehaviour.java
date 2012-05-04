@@ -11,9 +11,7 @@ import org.apache.wicket.behavior.AbstractAjaxBehavior;
  */
 public class AjaxDownloadBehaviour extends AbstractAjaxBehavior
 {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	private IDownloadRequestHandlerProvider downloadProvider;

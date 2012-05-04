@@ -26,9 +26,7 @@ import au.org.theark.core.web.component.customfield.dataentry.CustomDataVO;
 
 public class SubjectCustomDataVO extends CustomDataVO<SubjectCustomFieldData> implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	protected LinkSubjectStudy	linkSubjectStudy;

@@ -31,9 +31,7 @@ import au.org.theark.core.model.study.entity.Study;
  */
 public class ReportSelectVO implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 1L;
 
 	private Study						study;

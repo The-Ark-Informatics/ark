@@ -29,9 +29,7 @@ import au.org.theark.report.web.component.viewReport.studySummary.filterForm.Stu
 
 public class ReportFilterPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	AjaxButton						generateButton;

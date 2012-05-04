@@ -28,9 +28,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.subjectlims.lims.biocollection.form.BioCollectionListForm;
 
 public class BioCollectionListPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= -2329695170775963267L;
 
 	protected CompoundPropertyModel<LimsVO>	cpModel;
@@ -51,9 +49,7 @@ public class BioCollectionListPanel extends Panel {
 		final BioCollectionListPanel panelToRepaint = this;
 		AbstractDetailModalWindow modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

@@ -35,9 +35,7 @@ import au.org.theark.core.Constants;
 @Table(name = "GENDER_TYPE", schema = Constants.STUDY_SCHEMA)
 public class GenderType implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private String	name;

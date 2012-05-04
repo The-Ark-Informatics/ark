@@ -55,9 +55,7 @@ import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biotransaction.form.BioTransactionListForm;
 
 public class BioTransactionListPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long									serialVersionUID	= 7224168117680252835L;
 
 	private static Logger										log					= LoggerFactory.getLogger(BioTransactionListPanel.class);
@@ -95,9 +93,7 @@ public class BioTransactionListPanel extends Panel {
 		final BioTransactionListPanel panelToRepaint = this;
 		AbstractDetailModalWindow modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -122,9 +118,7 @@ public class BioTransactionListPanel extends Panel {
 		// Data provider to paginate resultList
 		bioTransactionProvider = new ArkDataProvider2<LimsVO, BioTransaction>() {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
@@ -146,9 +140,7 @@ public class BioTransactionListPanel extends Panel {
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -172,9 +164,7 @@ public class BioTransactionListPanel extends Panel {
 		final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 
 		DataView<BioTransaction> bioTransactionDataView = new DataView<BioTransaction>("bioTransactionList", bioTransactionProvider) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -187,9 +177,6 @@ public class BioTransactionListPanel extends Panel {
 				AjaxConfirmLink<BioTransaction> rowDeleteLink = new AjaxConfirmLink<BioTransaction>("rowDeleteLink", new StringResourceModel("bioTransaction.confirmDelete", this, item.getModel()), item
 						.getModel()) {
 
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -262,9 +249,6 @@ public class BioTransactionListPanel extends Panel {
 				item.add(rowDetailsWMC);
 
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override

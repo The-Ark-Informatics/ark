@@ -64,9 +64,7 @@ import au.org.theark.study.web.Constants;
  */
 public class DetailForm extends AbstractDetailForm<AddressVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= 1423759632793367263L;
 
 	@SuppressWarnings("unchecked")
@@ -189,9 +187,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 
 		// Attach a behavior, so when it changes it does something
 		countryChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

@@ -29,9 +29,7 @@ import au.org.theark.core.web.form.AbstractWizardStepPanel;
  * The final step of this wizard.
  */
 public class BiospecimenUploadStep5 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -6803600838428204753L;
 	private Form<UploadVO>		containerForm;
 

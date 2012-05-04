@@ -97,9 +97,7 @@ public class LdapUserDao implements ILdapUserDao {
 		this.arkAuthorisationService = arkAuthorisationService;
 	}
 
-	/**
-	 * 
-	 */
+
 	public void createArkUser(ArkUserVO arkUserVO) throws UserNameExistsException, ArkSystemException {
 
 		log.debug("Inside createArkUser");

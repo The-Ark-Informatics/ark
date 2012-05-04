@@ -31,9 +31,7 @@ import au.org.theark.core.web.behavior.ArkRequiredFieldHintBehavior;
 
 @SuppressWarnings("unchecked")
 public class ArkFormVisitor implements IVisitor<Component,Void>, Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -1613309540699904032L;
 	
 	Set<Component>					visited				= new HashSet<Component>();

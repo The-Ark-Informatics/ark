@@ -102,9 +102,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		addSearchComponentsToForm();
 		
 		newButton.replaceWith(new ArkBusyAjaxButton(Constants.NEW) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1666656098281624401L;
 
 			@Override

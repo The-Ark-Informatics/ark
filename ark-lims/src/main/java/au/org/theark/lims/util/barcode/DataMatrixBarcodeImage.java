@@ -37,9 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author cellis
  */
 public class DataMatrixBarcodeImage extends NonCachingImage {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 3235603243807828600L;
 	private static final Logger	log					= LoggerFactory.getLogger(DataMatrixBarcodeImage.class);
 	private static int				dpi					= 200;

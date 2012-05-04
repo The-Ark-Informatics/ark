@@ -63,9 +63,7 @@ import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 
 public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID			= -2380685360085526939L;
 
 	@SpringBean(name = "userService")

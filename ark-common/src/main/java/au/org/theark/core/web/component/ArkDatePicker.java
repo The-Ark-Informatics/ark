@@ -26,9 +26,7 @@ import org.apache.wicket.extensions.yui.calendar.DatePicker;
  */
 public class ArkDatePicker extends DatePicker {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	public ArkDatePicker() {

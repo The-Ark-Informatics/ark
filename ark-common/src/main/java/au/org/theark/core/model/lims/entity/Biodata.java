@@ -44,9 +44,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "biodata", schema = Constants.LIMS_TABLE_SCHEMA)
 public class Biodata implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long			id;
 	private BiodataField	biodataField;

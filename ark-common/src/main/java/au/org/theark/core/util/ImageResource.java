@@ -24,9 +24,7 @@ import org.apache.wicket.request.resource.DynamicImageResource;
 
 public class ImageResource extends DynamicImageResource {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	// has to save this or get the image another way!

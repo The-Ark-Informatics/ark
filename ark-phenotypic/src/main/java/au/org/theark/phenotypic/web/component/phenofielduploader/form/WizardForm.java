@@ -37,9 +37,7 @@ import au.org.theark.phenotypic.web.component.phenofielduploader.FieldUploadStep
  * @author elam
  */
 public class WizardForm extends AbstractWizardForm<PhenoFieldUploadVO> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 5494062431372163197L;
 
 	private File						file;

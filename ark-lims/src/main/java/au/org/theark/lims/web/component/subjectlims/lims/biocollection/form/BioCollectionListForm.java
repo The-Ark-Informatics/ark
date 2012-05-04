@@ -64,9 +64,7 @@ import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollec
  */
 @SuppressWarnings({ "unchecked"})
 public class BioCollectionListForm extends Form<LimsVO> {
-	/**
-	 * 
-	 */
+
 	private static final long										serialVersionUID	= 1L;
 	private static final Logger									log					= LoggerFactory.getLogger(BioCollectionListForm.class);
 
@@ -163,9 +161,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		};
 		// Set the criteria into the data provider's model
 		bioColectionProvider.setModel(new LoadableDetachableModel<BioCollection>() {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -178,9 +174,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -232,9 +226,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 	public DataView<BioCollection> buildDataView(ArkDataProvider<BioCollection, ILimsService> bioCollectionProvider) {
 
 		DataView<BioCollection> bioCollectionDataView = new DataView<BioCollection>("collectionList", bioCollectionProvider) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -246,9 +238,6 @@ public class BioCollectionListForm extends Form<LimsVO> {
 				WebMarkupContainer rowDetailsWMC = new WebMarkupContainer("rowDetailsWMC", item.getModel());
 				ArkBusyAjaxLink listDetailsLink = new ArkBusyAjaxLink("listDetailsLink") {
 
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -293,9 +282,6 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override

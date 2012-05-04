@@ -32,9 +32,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
  */
 public abstract class ArkDataProvider<T, U> implements IDataProvider<T> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	protected IModel<T>			model;
@@ -57,9 +55,7 @@ public abstract class ArkDataProvider<T, U> implements IDataProvider<T> {
 	// LoadableDetachableModel of the object and relies on Hibernate's lazy loading
 	public IModel<T> model(final T object) {
 		return new LoadableDetachableModel<T>() {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -4738032546393837333L;
 
 			@Override

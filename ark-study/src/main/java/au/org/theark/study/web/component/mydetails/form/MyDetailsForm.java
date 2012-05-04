@@ -60,9 +60,7 @@ import au.org.theark.study.web.Constants;
 
 public class MyDetailsForm extends Form<ArkUserVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID			= 2381693804874240001L;
 	private transient static Logger	log							= LoggerFactory.getLogger(MyDetailsForm.class);
 
@@ -107,9 +105,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		}
 
 		saveButton = new AjaxButton(Constants.SAVE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -8737230044711628981L;
 
 			@Override
@@ -123,9 +119,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		};
 
 		closeButton = new AjaxButton(Constants.CLOSE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 5457464178392550628L;
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -152,9 +146,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		// TODO: Amend hard-coded 50 row limit, pageableListView didn't work within a ModalWindow
 		pageableListView = new PageableListView("arkUserRoleList", iModel, 50) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 3557668722549243826L;
 
 			@Override
@@ -211,9 +203,6 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 				item.setEnabled(false);
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= -8887455455175404701L;
 
 					@Override

@@ -47,9 +47,7 @@ import au.org.theark.core.web.component.ArkDataProvider;
  * 
  */
 public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> {
-	/**
-	 * 
-	 */
+
 	private static final long														serialVersionUID	= 442185554812824590L;
 	protected transient Logger														log					= LoggerFactory.getLogger(RolePolicyContainerPanel.class);
 	private ContainerForm															containerForm;

@@ -30,9 +30,7 @@ import org.apache.wicket.util.string.Strings;
  * 
  */
 public class PrintAppletPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 3901317600541352403L;
 	private WebMarkupContainer applet;
 

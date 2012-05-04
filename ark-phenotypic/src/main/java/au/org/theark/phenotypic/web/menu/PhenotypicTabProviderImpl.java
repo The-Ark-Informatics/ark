@@ -42,9 +42,7 @@ import au.org.theark.core.web.component.ArkMainTab;
  * @author cellis
  */
 public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= -4820350102328281626L;
 	private transient static Logger	log					= LoggerFactory.getLogger(PhenotypicTabProviderImpl.class);
 	private WebMarkupContainer			arkContextPanelMarkup;
@@ -92,9 +90,7 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 
 	public ITab createTab(final String tabName) {
 		return new ArkMainTab(new Model<String>(tabName)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -9077903025658028710L;
 
 			@Override

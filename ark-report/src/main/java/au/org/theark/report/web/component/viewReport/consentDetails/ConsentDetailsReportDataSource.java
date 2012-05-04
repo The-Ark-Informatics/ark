@@ -38,9 +38,7 @@ import au.org.theark.report.service.IReportService;
  */
 public class ConsentDetailsReportDataSource implements Serializable, JRDataSource {
 
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= 6160868706063977404L;
 	private List<ConsentDetailsDataRow>	data					= null;
 	private int									index					= -1;

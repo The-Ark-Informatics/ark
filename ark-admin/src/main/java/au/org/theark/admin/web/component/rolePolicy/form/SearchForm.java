@@ -40,9 +40,7 @@ import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 
 public class SearchForm extends AbstractSearchForm<AdminVO> {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= -204010204180506704L;
 
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
@@ -72,9 +70,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 		setMultiPart(true);
 		
 		newButton = new ArkBusyAjaxButton(Constants.NEW) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -110,9 +106,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 		ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>("name", "id");
 		arkRoleDropDown = new DropDownChoice<ArkRole>("arkRoleModuleFunctionVo.arkRole", arkRoleList, defaultChoiceRenderer);
 		arkRoleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 5591846326218931210L;
 
 			@Override

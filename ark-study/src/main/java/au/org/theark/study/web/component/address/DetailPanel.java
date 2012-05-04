@@ -30,9 +30,7 @@ import au.org.theark.study.web.component.address.form.DetailForm;
  * 
  */
 public class DetailPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -6903681043337009908L;
 	private FeedbackPanel		feedBackPanel;
 	private ArkCrudContainerVO	arkCrudContainerVO;

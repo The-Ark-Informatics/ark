@@ -20,9 +20,7 @@ import au.org.theark.core.vo.ArkSubjectVO;
  *
  */
 public class SessionAttributeListener implements HttpSessionAttributeListener, Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 9115645497579631900L;
 	//TODO: Further implement to maintain detailed session information 
 	private static List<ArkSubjectVO>	activeUsers	= Collections.synchronizedList(new ArrayList<ArkSubjectVO>()); // listener is being called from multiple

@@ -63,9 +63,7 @@ import au.org.theark.lims.web.Constants;
  */
 public class SearchForm extends AbstractSearchForm<LimsVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= 5853988156214275754L;
 	protected static final Logger				log					= LoggerFactory.getLogger(SearchForm.class);
 
@@ -102,9 +100,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 
 		// hide New button for Subject in LIMS
 		newButton = new AjaxButton(au.org.theark.core.Constants.NEW) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 6539600487179555764L;
 
 			@Override
@@ -163,9 +159,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		studyListForUser = getStudyListForUser();
 		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
 		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer){
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

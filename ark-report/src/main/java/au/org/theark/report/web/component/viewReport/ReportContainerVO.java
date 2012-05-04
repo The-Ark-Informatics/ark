@@ -24,9 +24,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 public class ReportContainerVO implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 6807181645927832209L;
 	private FeedbackPanel							feedbackPanel;
 	private ReportSelectPanel						reportSelectPanel;

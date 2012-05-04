@@ -39,9 +39,7 @@ import au.org.theark.lims.service.ILimsAdminService;
 import au.org.theark.lims.web.component.barcodelabel.form.ContainerForm;
 
 public class SearchResultsPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -5165716102918554398L;
 
 	protected transient Logger	log					= LoggerFactory.getLogger(SearchResultsPanel.class);
@@ -60,9 +58,7 @@ public class SearchResultsPanel extends Panel {
 
 	public DataView<BarcodeLabel> buildDataView(ArkDataProvider<BarcodeLabel, ILimsAdminService> dataProvider) {
 		DataView<BarcodeLabel> dataView = new DataView<BarcodeLabel>("resultList", dataProvider) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 2981419595326128410L;
 
 			@Override
@@ -111,9 +107,6 @@ public class SearchResultsPanel extends Panel {
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -129,9 +122,7 @@ public class SearchResultsPanel extends Panel {
 	@SuppressWarnings( { "unchecked" })
 	private AjaxLink buildLink(final BarcodeLabel barcodeLabel) {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

@@ -48,9 +48,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "inv_box", schema = Constants.LIMS_TABLE_SCHEMA)
 public class InvBox implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -5601478209903573407L;
 	private Long				id;
 	private String				timestamp;

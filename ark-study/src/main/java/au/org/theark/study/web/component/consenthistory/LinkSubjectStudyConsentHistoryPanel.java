@@ -43,9 +43,7 @@ import au.org.theark.study.web.Constants;
 
 public class LinkSubjectStudyConsentHistoryPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long							serialVersionUID	= 1L;
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -99,9 +97,7 @@ public class LinkSubjectStudyConsentHistoryPanel extends Panel {
 	public PageableListView<LssConsentHistory> buildListView(IModel iModel) {
 		PageableListView<LssConsentHistory> listView = new PageableListView<LssConsentHistory>("resultList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -165,9 +161,6 @@ public class LinkSubjectStudyConsentHistoryPanel extends Panel {
 				}
 
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override

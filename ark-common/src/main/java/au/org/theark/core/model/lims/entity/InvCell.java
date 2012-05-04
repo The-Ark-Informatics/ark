@@ -41,9 +41,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "inv_cell", schema = Constants.LIMS_TABLE_SCHEMA)
 public class InvCell implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private String	timestamp;

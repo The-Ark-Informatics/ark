@@ -37,9 +37,7 @@ import au.org.theark.report.web.component.datasourcetable.DataSourceTablePanel;
  * 
  */
 public class CustomReportContainerPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID		= 8174158471514357770L;
 	private Form							form						= new Form("form");
 	private FeedbackPanel				feedbackPanel;
@@ -59,9 +57,7 @@ public class CustomReportContainerPanel extends Panel {
 		form.add(initDbNameSelect());
 		form.add(query);
 		AjaxButton runQuery = new AjaxButton("runQuery") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

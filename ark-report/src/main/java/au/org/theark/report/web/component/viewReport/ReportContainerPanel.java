@@ -30,9 +30,7 @@ import au.org.theark.report.model.vo.ReportSelectVO;
  * 
  */
 public class ReportContainerPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long								serialVersionUID	= 8174158471514357770L;
 
 	private ReportSelectPanel								reportSelectPanel;

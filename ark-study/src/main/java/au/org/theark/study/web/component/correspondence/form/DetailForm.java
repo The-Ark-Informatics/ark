@@ -220,8 +220,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 					// retrieve file and store as Blob in database
 					FileUpload fileUpload = fileUploadField.getFileUpload();
 					// copy file to Blob object
-					Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
-					containerForm.getModelObject().getCorrespondence().setAttachmentPayload(payload);
+					//Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
+					containerForm.getModelObject().getCorrespondence().setAttachmentPayload(fileUpload.getBytes());
 					containerForm.getModelObject().getCorrespondence().setAttachmentFilename(fileUpload.getClientFileName());
 				}
 
@@ -236,8 +236,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 					// retrieve file and store as Blob in database
 					FileUpload fileUpload = fileUploadField.getFileUpload();
 					// copy file to Blob object
-					Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
-					containerForm.getModelObject().getCorrespondence().setAttachmentPayload(payload);
+//					Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
+					containerForm.getModelObject().getCorrespondence().setAttachmentPayload(fileUpload.getBytes());
 					containerForm.getModelObject().getCorrespondence().setAttachmentFilename(fileUpload.getClientFileName());
 				}
 
@@ -254,10 +254,10 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		catch (ArkSystemException ex) {
 			ex.printStackTrace();
 		}
-		catch (IOException ex) {
+	/*	catch (IOException ex) {
 			this.error("There was an error transferring the specified correspondence attachment.");
 			ex.printStackTrace();
-		}
+		}*/
 	}
 
 	@Override

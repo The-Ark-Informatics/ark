@@ -38,9 +38,7 @@ import au.org.theark.phenotypic.service.IPhenotypicService;
  */
 public class SearchResultListPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private CompoundPropertyModel<CustomFieldGroupVO>						cpmModel;
 	private FeedbackPanel															feedbackPanel;
@@ -77,9 +75,7 @@ public class SearchResultListPanel extends Panel {
 
 		DataView<CustomFieldGroup> dataView = new DataView<CustomFieldGroup>("customFieldGroupList", provider) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -108,9 +104,6 @@ public class SearchResultListPanel extends Panel {
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -130,9 +123,7 @@ public class SearchResultListPanel extends Panel {
 
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("name") {
 
-			/**
-			 * 
-			 */
+
 			private static final long serialVersionUID = 1L;
 
 			@Override

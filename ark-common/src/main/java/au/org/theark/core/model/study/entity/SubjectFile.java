@@ -44,9 +44,7 @@ public class SubjectFile implements java.io.Serializable {
 
 	// Fields
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -3611814204230766317L;
 	private Long					id;
 	private LinkSubjectStudy	linkSubjectStudy;

@@ -52,9 +52,7 @@ import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryRe
  * 
  */
 public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericReportViewVO> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -6917137603826043554L;
 
 	public StudySummaryFilterForm(String id, CompoundPropertyModel<GenericReportViewVO> model) {

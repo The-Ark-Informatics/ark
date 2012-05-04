@@ -51,9 +51,7 @@ import au.org.theark.study.web.component.subject.form.ContainerForm;
  */
 public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long										serialVersionUID	= 2166285054533611912L;
 	private static final Logger									log					= LoggerFactory.getLogger(SubjectContainerPanel.class);
 	private SearchPanel												searchPanel;

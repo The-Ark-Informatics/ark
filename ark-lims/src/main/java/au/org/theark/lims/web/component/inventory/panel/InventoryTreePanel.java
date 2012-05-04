@@ -23,9 +23,7 @@ import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
 
 public class InventoryTreePanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= -6281929692337423853L;
 	private static final Logger	log					= LoggerFactory.getLogger(InventoryTreePanel.class);
 	private Form<Void>				treeForm				= new Form<Void>("treeForm");
@@ -57,9 +55,7 @@ public class InventoryTreePanel extends Panel {
 	private void initialiseButtons() {
 		addSite = new ArkBusyAjaxButton("addSite") {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -81,9 +77,7 @@ public class InventoryTreePanel extends Panel {
 
 		addFreezer = new ArkBusyAjaxButton("addFreezer") {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -105,9 +99,7 @@ public class InventoryTreePanel extends Panel {
 
 		addRack = new ArkBusyAjaxButton("addRack") {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -129,9 +121,7 @@ public class InventoryTreePanel extends Panel {
 
 		addBox = new ArkBusyAjaxButton("addBox") {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

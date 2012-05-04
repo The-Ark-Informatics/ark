@@ -45,9 +45,7 @@ import au.org.theark.study.model.vo.SubjectCustomDataVO;
  */
 public class SubjectCustomDataContainerPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long										serialVersionUID		= 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)

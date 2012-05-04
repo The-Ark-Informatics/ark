@@ -46,9 +46,7 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 
 public class DetailForm extends AbstractDetailForm<AdminVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= -770595464410732350L;
 
 	protected transient Logger				log					= LoggerFactory.getLogger(DetailForm.class);

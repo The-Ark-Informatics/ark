@@ -51,9 +51,7 @@ import au.org.theark.core.web.component.customfield.form.ContainerForm;
  */
 @SuppressWarnings("unchecked")
 public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFieldVO> {
-	/**
-	 * 
-	 */
+
 	private static final long									serialVersionUID	= -1L;
 	private static final Logger								log					= LoggerFactory.getLogger(CustomFieldContainerPanel.class);
 
@@ -160,9 +158,7 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

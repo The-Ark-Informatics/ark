@@ -68,9 +68,7 @@ import au.org.theark.lims.web.Constants;
  *
  */
 public class GridBoxPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID		= -4769477913855966069L;
 	private static final Logger				log						= LoggerFactory.getLogger(GridBoxPanel.class);
 	
@@ -171,9 +169,7 @@ public class GridBoxPanel extends Panel {
 		
 		// Outer Loop instance, using a PropertyModel to bind the Loop iteration to invBox "noofcol" value
 		return new Loop("heading", new PropertyModel(invBox, "noofcol")) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -7027878243061138904L;
 
 			public void populateItem(LoopItem item) {
@@ -181,9 +177,6 @@ public class GridBoxPanel extends Panel {
 				
 
 				IModel<String> colModel = new Model() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1144128566137457199L;
 
 					@Override
@@ -225,9 +218,7 @@ public class GridBoxPanel extends Panel {
 		
 		// Outer Loop instance, using a PropertyModel to bind the Loop iteration to invBox "noofrow" value
 		Loop loop = new Loop("rows", new PropertyModel(invBox, "noofrow")) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			public void populateItem(LoopItem item) {
@@ -246,9 +237,6 @@ public class GridBoxPanel extends Panel {
 
 				Label rowLabel = new Label("rowNo", new Model(label));
 				rowLabel.add(new Behavior() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -262,9 +250,6 @@ public class GridBoxPanel extends Panel {
 				
 				// We create an inner Loop instance and uses PropertyModel to bind the Loop iteration to invBox "noofcol" value
 				item.add(new Loop("cols", new PropertyModel(invBox, "noofcol")) {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					public void populateItem(LoopItem item) {

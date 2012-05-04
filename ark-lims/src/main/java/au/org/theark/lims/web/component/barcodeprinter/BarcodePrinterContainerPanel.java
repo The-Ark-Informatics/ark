@@ -49,9 +49,7 @@ import au.org.theark.lims.web.component.barcodeprinter.form.ContainerForm;
  * 
  */
 public class BarcodePrinterContainerPanel extends AbstractContainerPanel<BarcodePrinter> {
-	/**
-	 * 
-	 */
+
 	private static final long											serialVersionUID	= 2114933695455527870L;
 
 	private static final Logger										log					= LoggerFactory.getLogger(BarcodePrinterContainerPanel.class);
@@ -132,9 +130,7 @@ public class BarcodePrinterContainerPanel extends AbstractContainerPanel<Barcode
 	private void initialiseDataView() {
 		// Data provider to paginate resultList
 		dataProvider = new ArkDataProvider<BarcodePrinter, ILimsAdminService>(iLimsAdminService) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
@@ -151,9 +147,7 @@ public class BarcodePrinterContainerPanel extends AbstractContainerPanel<Barcode
 		};
 		// Set the criteria into the data provider's model
 		dataProvider.setModel(new LoadableDetachableModel<BarcodePrinter>() {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

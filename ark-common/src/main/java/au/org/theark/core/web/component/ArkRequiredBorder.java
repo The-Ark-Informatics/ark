@@ -23,9 +23,7 @@ import org.apache.wicket.markup.html.border.BorderBehavior;
 import org.apache.wicket.markup.html.form.FormComponent;
 
 public class ArkRequiredBorder extends BorderBehavior {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -1568367562733328792L;
 
 	@Override

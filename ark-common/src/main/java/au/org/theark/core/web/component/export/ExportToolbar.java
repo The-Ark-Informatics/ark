@@ -14,17 +14,13 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
  * @param <T>
  */
 public class ExportToolbar<T> extends AbstractToolbar {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	public ExportToolbar(final DataTable<T> table, List<String> headers) {
 		super(table);
 		WebMarkupContainer span = new WebMarkupContainer("span") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

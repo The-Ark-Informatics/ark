@@ -46,9 +46,7 @@ import au.org.theark.core.web.form.AbstractDetailForm;
  * 
  */
 public class DetailForm extends AbstractDetailForm<UploadVO> {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -193,9 +191,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		this.deleteButton = deleteButton;
 	}
 
-	/**
-	 * 
-	 */
+
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		/*
 		 * TO DO: DELETE of uploaded file is not supported till we can verify whether all subjects within the upload have also been deleted. At present,

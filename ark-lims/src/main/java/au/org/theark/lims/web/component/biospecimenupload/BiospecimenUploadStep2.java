@@ -44,9 +44,7 @@ import au.org.theark.lims.web.component.biospecimenupload.form.WizardForm;
  * The first step of this wizard.
  */
 public class BiospecimenUploadStep2 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID		= -4070515786803720370L;
 	private Form<UploadVO>					containerForm;
 	private String								validationMessage;
@@ -155,9 +153,6 @@ public class BiospecimenUploadStep2 extends AbstractWizardStepPanel {
 				target.add(form.getWizardButtonContainer());
 				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
 
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override

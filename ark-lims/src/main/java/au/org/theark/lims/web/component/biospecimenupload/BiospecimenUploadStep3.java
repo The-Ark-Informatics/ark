@@ -46,9 +46,7 @@ import au.org.theark.lims.web.component.biospecimenupload.form.WizardForm;
  * The first step of this wizard.
  */
 public class BiospecimenUploadStep3 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID		= 2987959815074138750L;
 	private Form<UploadVO>					containerForm;
 	private String								validationMessage;
@@ -102,9 +100,7 @@ public class BiospecimenUploadStep3 extends AbstractWizardStepPanel {
 		updateChkBox.setVisible(true);
 
 		updateChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -4514605801401294450L;
 
 			@Override

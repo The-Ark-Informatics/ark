@@ -28,9 +28,7 @@ import javax.imageio.ImageIO;
 
 public class SerializableBufferedImage implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1990200903054294230L;
 	private byte[]					byteImage			= null;
 	private int						width;

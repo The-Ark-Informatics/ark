@@ -41,9 +41,7 @@ import org.apache.wicket.model.StringResourceModel;
  */
 public class ArkAjaxPagingNavigator extends AjaxPagingNavigator {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 9222529241791387063L;
 	protected Component			component;
 	protected Label				label;
@@ -94,9 +92,7 @@ public class ArkAjaxPagingNavigator extends AjaxPagingNavigator {
 	@Override
 	protected Link<?> newPagingNavigationIncrementLink(String id, IPageable pageable, int increment) {
 		AjaxPagingNavigationIncrementLink link = new AjaxPagingNavigationIncrementLink(id, pageable, increment) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -125,18 +121,13 @@ public class ArkAjaxPagingNavigator extends AjaxPagingNavigator {
 	@Override
 	protected Link<?> newPagingNavigationLink(String id, IPageable pageable, int pageNumber) {
 		AjaxPagingNavigationLink link = new AjaxPagingNavigationLink(id, pageable, pageNumber) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void onInitialize() {
 				super.onInitialize();
 				add(new AjaxPagingNavigationBehavior(this, pageable, "onclick") {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -160,9 +151,6 @@ public class ArkAjaxPagingNavigator extends AjaxPagingNavigator {
 
 			protected PagingNavigationLink<?> newPagingNavigationLink(String id, IPageable pageable, int pageIndex) {
 				AjaxPagingNavigationLink link = new AjaxPagingNavigationLink(id, pageable, pageIndex) {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override

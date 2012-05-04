@@ -30,9 +30,7 @@ import au.org.theark.core.model.study.entity.ConsentFile;
  * 
  */
 public class ConsentVO implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= -3717906790802004376L;
 	protected Consent							consent;
 	protected Date								consentDateEnd;

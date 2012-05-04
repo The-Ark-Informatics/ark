@@ -42,9 +42,7 @@ import au.org.theark.lims.web.component.barcodeprinter.form.ContainerForm;
 import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 
 public class SearchResultsPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -5165716102918554398L;
 
 	protected transient Logger	log					= LoggerFactory.getLogger(SearchResultsPanel.class);
@@ -67,9 +65,7 @@ public class SearchResultsPanel extends Panel {
 
 	public DataView<BarcodePrinter> buildDataView(ArkDataProvider<BarcodePrinter, ILimsAdminService> dataProvider) {
 		DataView<BarcodePrinter> dataView = new DataView<BarcodePrinter>("resultList", dataProvider) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -103,9 +99,6 @@ public class SearchResultsPanel extends Panel {
 				}
 				
 				AjaxButton checkPrinter = new AjaxButton("checkPrinter") {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -121,9 +114,6 @@ public class SearchResultsPanel extends Panel {
 				item.add(checkPrinter);
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -139,9 +129,7 @@ public class SearchResultsPanel extends Panel {
 	@SuppressWarnings( { "unchecked" })
 	private AjaxLink buildLink(final BarcodePrinter barcodePrinter) {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

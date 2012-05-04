@@ -132,13 +132,13 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		FileUpload fileUpload = fileUploadField.getFileUpload();
 		containerForm.getModelObject().setFileUpload(fileUpload);	//TODO analyze why VO pattern throughout code, is it always necessary in attion to entity/detached-entity concepts
 
-		try {
-			Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
-			containerForm.getModelObject().getUpload().setPayload(payload);
-		}
-		catch (IOException ioe) {
-			log.error("Failed to save the uploaded file: " + ioe);
-		}
+		//try {
+		//	Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
+		containerForm.getModelObject().getUpload().setPayload(fileUpload.getBytes());
+		//}
+		//catch (IOException ioe) {
+		//	log.error("Failed to save the uploaded file: " + ioe);
+		//}
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 		String fileFormatName = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 		au.org.theark.core.model.study.entity.FileFormat fileFormat = new au.org.theark.core.model.study.entity.FileFormat();

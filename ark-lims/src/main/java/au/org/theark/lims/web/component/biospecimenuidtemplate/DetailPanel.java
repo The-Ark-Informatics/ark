@@ -30,9 +30,7 @@ import au.org.theark.lims.web.component.biospecimenuidtemplate.form.DetailForm;
  * 
  */
 public class DetailPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 4098221801302701667L;
 	private DetailForm			detailForm;
 	private FeedbackPanel		feedBackPanel;

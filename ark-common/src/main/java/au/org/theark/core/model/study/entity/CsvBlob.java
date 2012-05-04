@@ -38,9 +38,7 @@ import au.org.theark.core.Constants;
 @Entity
 @Table(name = "CSV_BLOB", schema = Constants.STUDY_SCHEMA)
 public class CsvBlob implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long		id;
 	private Blob		csvBlob;

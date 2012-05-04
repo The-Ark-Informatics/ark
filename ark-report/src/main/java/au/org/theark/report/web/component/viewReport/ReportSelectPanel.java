@@ -56,9 +56,7 @@ import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryRe
 import au.org.theark.report.web.component.viewReport.studyUserRolePermissions.StudyUserRolePermissionsReportContainer;
 
 public class ReportSelectPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1685981337753191247L;
 
 	private static Logger							log	= LoggerFactory.getLogger(ReportSelectPanel.class);
@@ -136,9 +134,7 @@ public class ReportSelectPanel extends Panel {
 	public PageableListView<ReportTemplate> buildPageableListView(IModel iModel) {
 
 		PageableListView<ReportTemplate> sitePageableListView = new PageableListView<ReportTemplate>("reportList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -200,9 +196,6 @@ public class ReportSelectPanel extends Panel {
 
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long serialVersionUID = 1L;
 
 					@Override
@@ -221,9 +214,7 @@ public class ReportSelectPanel extends Panel {
 
 		AjaxLink link = new AjaxLink("reportTemplate.link") {
 
-			/**
-			 * 
-			 */
+
 			private static final long serialVersionUID = 1L;
 
 			@Override

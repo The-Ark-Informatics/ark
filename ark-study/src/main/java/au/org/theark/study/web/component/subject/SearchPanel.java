@@ -35,9 +35,7 @@ import au.org.theark.study.web.component.subject.form.SearchForm;
  */
 public class SearchPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= 8622291403026645858L;
 	private FeedbackPanel					feedBackPanel;
 	private PageableListView<SubjectVO>	listView;

@@ -40,9 +40,7 @@ import au.org.theark.study.web.component.correspondence.form.ContainerForm;
 
 public class CorrespondenceContainerPanel extends AbstractContainerPanel<CorrespondenceVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= 1L;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)

@@ -25,9 +25,7 @@ import au.org.theark.registry.web.component.invoice.InvoiceContainerPanel;
  */
 public class RegistrySubMenuTab extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -6288675838595510273L;
 	List<ITab>						moduleSubTabsList	= new ArrayList<ITab>();
 	List<MenuModule>				moduleTabs			= new ArrayList<MenuModule>();

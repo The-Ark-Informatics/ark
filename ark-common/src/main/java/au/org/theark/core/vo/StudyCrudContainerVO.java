@@ -25,9 +25,7 @@ import au.org.theark.core.model.study.entity.Study;
 
 public class StudyCrudContainerVO extends ArkCrudContainerVO {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 5621790087367563920L;
 	protected PageableListView<Study>	pageableListView;
 	protected WebMarkupContainer			summaryContainer;

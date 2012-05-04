@@ -28,9 +28,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.util.Pager;
 
 public class XlsExportLink<T> extends Link<Void> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	private transient Logger	log					= LoggerFactory.getLogger(XlsExportLink.class);
 	private final DataTable<T>	table;

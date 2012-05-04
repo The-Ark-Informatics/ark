@@ -36,9 +36,7 @@ import au.org.theark.core.model.study.entity.Study;
  * 
  */
 public class SubjectDetailForm extends Form<LinkSubjectStudy> {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 1L;
 	protected static final Logger	log					= LoggerFactory.getLogger(SubjectDetailForm.class);
 	protected TextField<String>	subjectUIDTxtFld;

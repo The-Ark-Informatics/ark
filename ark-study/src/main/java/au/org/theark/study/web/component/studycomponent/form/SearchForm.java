@@ -43,9 +43,7 @@ import au.org.theark.study.web.Constants;
  */
 public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= 1L;
 	private ArkCrudContainerVO				arkCrudContainerVO;
 	private TextField<String>				studyCompIdTxtFld;

@@ -61,9 +61,7 @@ import au.org.theark.study.web.Constants;
  */
 public class DetailForm extends AbstractDetailForm<PhoneVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= -5784184438113767249L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)

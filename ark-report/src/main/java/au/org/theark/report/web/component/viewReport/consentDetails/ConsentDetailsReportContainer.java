@@ -32,9 +32,7 @@ import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
  *
  */
 public class ConsentDetailsReportContainer extends AbstractSelectedReportContainer<ConsentDetailsReportVO> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -6101080529839072207L;
 
 	public ConsentDetailsReportContainer(String id) {

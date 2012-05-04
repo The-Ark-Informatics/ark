@@ -43,9 +43,7 @@ import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 
 public class SearchResultsPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 5237384531161620862L;
 	protected transient Logger		log					= LoggerFactory.getLogger(SearchResultsPanel.class);
 
@@ -63,9 +61,7 @@ public class SearchResultsPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public DataView<ArkFunction> buildDataView(ArkDataProvider<ArkFunction, IAdminService> dataProvider) {
 		DataView<ArkFunction> dataView = new DataView<ArkFunction>("arkFunctionList", dataProvider) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 2981419595326128410L;
 
 			@Override
@@ -92,9 +88,6 @@ public class SearchResultsPanel extends Panel {
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 5761909841047153853L;
 
 					@Override
@@ -110,9 +103,7 @@ public class SearchResultsPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<ArkFunction> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
 		PageableListView<ArkFunction> pageableListView = new PageableListView<ArkFunction>("arkFunctionList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 3350183112731574263L;
 
 			@Override
@@ -147,9 +138,6 @@ public class SearchResultsPanel extends Panel {
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1938679383897533820L;
 
 					@Override
@@ -165,9 +153,7 @@ public class SearchResultsPanel extends Panel {
 
 	private AjaxLink<ArkFunction> buildLink(final ArkFunction arkFunction) {
 		ArkBusyAjaxLink<ArkFunction> link = new ArkBusyAjaxLink<ArkFunction>("link") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

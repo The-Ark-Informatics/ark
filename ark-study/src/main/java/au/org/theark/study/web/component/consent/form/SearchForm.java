@@ -59,9 +59,7 @@ import au.org.theark.study.web.Constants;
 @SuppressWarnings("unchecked")
 public class SearchForm extends AbstractSearchForm<ConsentVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long							serialVersionUID	= 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)

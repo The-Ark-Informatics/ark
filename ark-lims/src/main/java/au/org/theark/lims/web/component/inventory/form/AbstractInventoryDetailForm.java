@@ -60,9 +60,7 @@ import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
  * 
  */
 public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -4043985976208735564L;
 	
 	protected Form<T>					containerForm;
@@ -111,9 +109,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 	 */
 	protected void initialiseForm() {
 		cancelButton = new AjaxButton(Constants.CANCEL) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1684005199059571017L;
 
 			@Override
@@ -130,9 +126,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		};
 
 		saveButton = new ArkBusyAjaxButton(Constants.SAVE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -423605230448635419L;
 
 			@Override
@@ -169,9 +163,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		};
 
 		deleteButton = new AjaxDeleteButton(Constants.DELETE, new StringResourceModel("confirmDelete", this, null), new StringResourceModel(Constants.DELETE, this, null)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 4005032637149080009L;
 
 			@Override

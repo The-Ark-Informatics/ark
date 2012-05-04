@@ -36,9 +36,7 @@ import au.org.theark.lims.web.component.biocollectioncustomdata.form.CustomDataE
 @SuppressWarnings({ "serial" })
 public class BioCollectionCustomDataEditorPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= -1L;
 	
 	private CompoundPropertyModel<BioCollectionCustomDataVO>			cpModel;

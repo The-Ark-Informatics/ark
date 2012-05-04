@@ -38,9 +38,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "UNIT_TYPE", schema = Constants.STUDY_SCHEMA)
 public class UnitType implements Serializable{
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long		id;
 	private ArkFunction	arkFunction;

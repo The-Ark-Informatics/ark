@@ -52,9 +52,7 @@ import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
  */
 @SuppressWarnings("unchecked")
 public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
-	/**
-	 * 
-	 */
+
 	private static final long									serialVersionUID	= -2956968644138345497L;
 	private static final Logger								log					= LoggerFactory.getLogger(SubjectContainerPanel.class);
 	private SearchPanel											searchPanel;
@@ -173,9 +171,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	protected WebMarkupContainer initialiseSearchResults() {
 		searchResultListPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup);
 		subjectProvider = new ArkDataProvider2<LimsVO, LinkSubjectStudy>() {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
@@ -220,9 +216,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

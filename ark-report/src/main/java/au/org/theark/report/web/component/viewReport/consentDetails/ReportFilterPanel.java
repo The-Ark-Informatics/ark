@@ -31,9 +31,7 @@ import au.org.theark.report.web.component.viewReport.consentDetails.filterForm.C
  *
  */
 public class ReportFilterPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 3615896498822855545L;
 
 	public ReportFilterPanel(String id) {

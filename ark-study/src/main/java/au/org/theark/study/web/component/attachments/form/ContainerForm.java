@@ -29,9 +29,7 @@ import au.org.theark.core.web.form.AbstractContainerForm;
  */
 public class ContainerForm extends AbstractContainerForm<SubjectVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -5497609816761774384L;
 
 	/**

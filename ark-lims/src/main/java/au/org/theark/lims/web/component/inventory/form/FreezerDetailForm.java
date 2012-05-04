@@ -60,9 +60,7 @@ import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
  */
 @SuppressWarnings( { "unused" })
 public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -6404585686220567379L;
 	private static Logger				log	= LoggerFactory.getLogger(FreezerDetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -104,9 +102,7 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		idTxtFld = new TextField<String>("invFreezer.id");
 		nameTxtFld = new TextField<String>("invFreezer.name");
 		capacityTxtFld = new TextField<Integer>("invFreezer.capacity"){
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@SuppressWarnings("unchecked")
@@ -118,9 +114,7 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		};
 		capacityTxtFld.setEnabled(isNew());
 		capacityTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

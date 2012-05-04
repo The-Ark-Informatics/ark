@@ -49,9 +49,7 @@ import au.org.theark.phenotypic.web.component.phenofielduploader.form.WizardForm
  */
 public class FieldUploadStep2 extends AbstractWizardStepPanel {
 
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID		= -6923277221441497110L;
 	static Logger								log						= LoggerFactory.getLogger(FieldUploadStep2.class);
 	private Form<PhenoFieldUploadVO>					containerForm;

@@ -41,9 +41,7 @@ import au.org.theark.study.web.component.mydetails.form.MyDetailsForm;
  */
 public class MyDetails extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= 8278822398202036799L;
 	private transient Logger						log					= LoggerFactory.getLogger(MyDetails.class);
 	@SpringBean(name = "userService")
@@ -56,9 +54,7 @@ public class MyDetails extends Panel {
 		arkUserModelCpm = new CompoundPropertyModel<ArkUserVO>(arkUserVO);
 		MyDetailsForm myDetailForm = new MyDetailsForm(Constants.USER_DETAILS_FORM, arkUserModelCpm, feedBackPanel, modalWindow) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -8858977824290273852L;
 
 			protected void onSave(AjaxRequestTarget target) {

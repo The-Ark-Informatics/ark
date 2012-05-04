@@ -26,9 +26,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractWizardStepPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= 2982993968381162494L;
 
 	protected AbstractWizardHeaderPanel	header;

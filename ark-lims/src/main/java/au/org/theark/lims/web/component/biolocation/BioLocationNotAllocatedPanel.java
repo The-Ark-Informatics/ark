@@ -20,9 +20,7 @@ import au.org.theark.lims.service.IInventoryService;
  * 
  */
 public class BioLocationNotAllocatedPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= 1L;
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService						iInventoryService;
@@ -46,9 +44,7 @@ public class BioLocationNotAllocatedPanel extends Panel {
 		notAllocatedLbl.setEscapeModelStrings(false);
 		
 		allocateButton = new ArkBusyAjaxButton("allocate") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -72,9 +68,7 @@ public class BioLocationNotAllocatedPanel extends Panel {
 		allocateButton.setEnabled(iInventoryService.boxesExist());
 		
 		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

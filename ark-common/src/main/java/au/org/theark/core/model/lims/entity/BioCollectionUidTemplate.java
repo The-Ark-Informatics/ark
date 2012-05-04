@@ -24,9 +24,7 @@ import au.org.theark.core.model.study.entity.Study;
 @Table(name = "BIOCOLLECTIONUID_TEMPLATE", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BioCollectionUidTemplate implements Serializable{
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long						id;
 	private Study						study;

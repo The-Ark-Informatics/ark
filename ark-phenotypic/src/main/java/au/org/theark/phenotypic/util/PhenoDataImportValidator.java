@@ -404,9 +404,6 @@ public class PhenoDataImportValidator {
 						errorCells.add(new ArkGridCell(col, row));
 					}
 					
-					/* 
-					 * Always Insert records - never update (thus never have to look up existing PhenotypicCollection based on dateCollected) 
-					 */
 
 					// Loop through columns in current row in file, starting from array index 3
 					for (col = 3; col < totalCols; col++) {

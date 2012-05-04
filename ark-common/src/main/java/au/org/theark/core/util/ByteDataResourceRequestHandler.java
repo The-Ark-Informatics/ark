@@ -31,9 +31,7 @@ import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 
 public class ByteDataResourceRequestHandler extends ByteArrayResource implements IRequestHandler {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	/**

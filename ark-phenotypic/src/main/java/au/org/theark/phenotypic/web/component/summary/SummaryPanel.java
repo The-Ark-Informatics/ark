@@ -44,9 +44,7 @@ import au.org.theark.phenotypic.service.IPhenotypicService;
  * 
  */
 public class SummaryPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 4201333378260325156L;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;

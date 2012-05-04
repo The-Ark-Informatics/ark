@@ -35,9 +35,7 @@ import au.org.theark.lims.web.component.subjectlims.lims.form.ContainerForm;
  * 
  */
 public class LimsContainerPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= -1L;
 
 	protected LimsVO									limsVO				= new LimsVO();

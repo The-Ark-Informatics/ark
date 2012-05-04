@@ -39,9 +39,7 @@ public class MetaDataColumn<T> extends AbstractColumn<List<String>> {
 	public void exportCsv(final T object, CsvWriter writer) {
 		IModel<?> model = new AbstractReadOnlyModel<T>(){
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

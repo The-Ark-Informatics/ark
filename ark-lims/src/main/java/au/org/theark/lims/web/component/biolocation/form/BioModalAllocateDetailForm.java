@@ -38,9 +38,7 @@ import au.org.theark.lims.web.component.inventory.tree.AllocationLinkTree;
  * @author cellis
  */
 public class BioModalAllocateDetailForm extends Form<LimsVO> {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= 9211020895417833151L;
 	private CompoundPropertyModel<LimsVO>	cpModel;
 	private AbstractDetailModalWindow		modalWindow;
@@ -63,9 +61,7 @@ public class BioModalAllocateDetailForm extends Form<LimsVO> {
 		this.modalWindow = modalWindow;
 
 		tree = new AllocationLinkTree("tree") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

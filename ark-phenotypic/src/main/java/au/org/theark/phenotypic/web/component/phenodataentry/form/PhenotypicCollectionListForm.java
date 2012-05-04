@@ -63,9 +63,7 @@ import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataEntryModal
  */
 @SuppressWarnings( { "unchecked" })
 public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
-	/**
-	 * 
-	 */
+
 	private static final long								serialVersionUID	= 1L;
 	private static final Logger							log					= LoggerFactory.getLogger(PhenotypicCollectionListForm.class);
 
@@ -172,9 +170,7 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -190,9 +186,7 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 	private void initialiseNewButton() {
 		newButton = new ArkBusyAjaxButton(Constants.NEW) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -228,9 +222,7 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 	public DataView<PhenotypicCollection> buildDataView(ArkDataProvider2<PhenoDataCollectionVO, PhenotypicCollection> phenotypicCollectionProvider) {
 
 		DataView<PhenotypicCollection> phenotypicCollectionDataView = new DataView<PhenotypicCollection>("phenotypicCollectionList", phenotypicCollectionProvider) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -243,9 +235,6 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 				questionnaireLbl = new Label("phenotypicCollection.questionnaire", phenotypicCollection.getQuestionnaire().getName());
 				ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
 
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -283,9 +272,6 @@ public class PhenotypicCollectionListForm extends Form<PhenoDataCollectionVO> {
 				item.add(reviewedDateLbl);
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override

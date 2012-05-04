@@ -43,9 +43,7 @@ import au.org.theark.core.web.component.button.IEditModeEventHandler;
  * 
  */
 public abstract class AbstractModalDetailForm<T> extends Form<T> implements  IEditModeEventHandler {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= -4135522738458228329L;
 
 	protected FeedbackPanel					feedbackPanel;

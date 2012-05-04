@@ -30,9 +30,7 @@ import au.org.theark.study.web.component.managestudy.form.SearchForm;
 
 public class SearchPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= -4770548021154298531L;
 	private Container					containerForm;
 	private FeedbackPanel			feedBackPanel;

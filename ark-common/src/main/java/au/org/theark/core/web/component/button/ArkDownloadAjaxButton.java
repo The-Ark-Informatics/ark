@@ -31,9 +31,7 @@ import au.org.theark.core.util.ArkSheetMetaData;
 
 public abstract class ArkDownloadAjaxButton extends AjaxButton {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -6203972937232570604L;
 	private String					filename;
 	private String					body;

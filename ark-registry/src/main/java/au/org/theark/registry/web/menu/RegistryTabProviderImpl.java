@@ -22,9 +22,7 @@ import au.org.theark.core.web.component.ArkMainTab;
  * 
  */
 public class RegistryTabProviderImpl extends Panel implements IMainTabProvider {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -5905065151035360540L;
 	List<ITab>						moduleTabsList;
 
@@ -45,9 +43,7 @@ public class RegistryTabProviderImpl extends Panel implements IMainTabProvider {
 	public ITab createTab(final String tabName) {
 
 		return new ArkMainTab(new Model<String>(tabName)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -4616700064526881402L;
 
 			@Override

@@ -30,16 +30,12 @@ import au.org.theark.core.model.study.entity.Address;
  */
 public class AddressVO implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	protected Address					address;
 	protected Collection<Address>	addresses;
 
-	/**
-	 * 
-	 */
+
 	public AddressVO() {
 		address = new Address();
 		addresses = new ArrayList<Address>();

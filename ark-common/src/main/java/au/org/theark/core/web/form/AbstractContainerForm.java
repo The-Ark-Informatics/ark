@@ -30,9 +30,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
  * 
  */
 public abstract class AbstractContainerForm<T> extends Form<T> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 8511781901281993808L;
 
 	/**

@@ -49,9 +49,7 @@ import au.org.theark.lims.web.component.barcodelabel.form.ContainerForm;
  * 
  */
 public class BarcodeLabelContainerPanel extends AbstractContainerPanel<BarcodeLabel> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 2114933695455527870L;
 
 	private static final Logger										log					= LoggerFactory.getLogger(BarcodeLabelContainerPanel.class);
@@ -150,9 +148,7 @@ public class BarcodeLabelContainerPanel extends AbstractContainerPanel<BarcodeLa
 		};
 		// Set the criteria into the data provider's model
 		dataProvider.setModel(new LoadableDetachableModel<BarcodeLabel>() {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

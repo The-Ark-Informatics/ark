@@ -55,9 +55,7 @@ import au.org.theark.lims.web.Constants;
  * 
  */
 public class SearchForm extends AbstractSearchForm<BarcodePrinter> {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= -109811767116701473L;
 	protected static final Logger		log					= LoggerFactory.getLogger(SearchForm.class);
 
@@ -77,9 +75,7 @@ public class SearchForm extends AbstractSearchForm<BarcodePrinter> {
 		initialiseSearchForm();
 		
 		newButton = new ArkBusyAjaxButton(Constants.NEW) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1666656098281624401L;
 
 			@Override
@@ -125,9 +121,7 @@ public class SearchForm extends AbstractSearchForm<BarcodePrinter> {
 		studyListForUser = getStudyListForUser();
 		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
 		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

@@ -26,9 +26,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 
 public abstract class AbstractModalWindowContentPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= -4604115589812210436L;
 	protected Label								label;
 	protected AbstractModalDetailForm<?>	form;

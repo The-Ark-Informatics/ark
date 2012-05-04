@@ -58,9 +58,7 @@ import au.org.theark.study.web.Constants;
  * 
  */
 public class DetailForm extends AbstractDetailForm<SubjectVO> {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= 8560698088787915274L;
 	private transient Logger				log					= LoggerFactory.getLogger(DetailForm.class);
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
@@ -223,9 +221,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		this.deleteButton = deleteButton;
 	}
 
-	/**
-	 * 
-	 */
+
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		// Display delete confirmation message
 		target.add(feedBackPanel);

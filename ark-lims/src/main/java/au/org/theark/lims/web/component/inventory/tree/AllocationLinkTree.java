@@ -37,9 +37,7 @@ import au.org.theark.lims.web.Constants;
  */
 public abstract class AllocationLinkTree extends InventoryLinkTree {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -6241958621459969476L;
 	
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
@@ -53,9 +51,7 @@ public abstract class AllocationLinkTree extends InventoryLinkTree {
 	@Override
 	protected Component newNodeComponent(String id, IModel model) {
 		InventoryNodePanel panel = new InventoryNodePanel(id, model, AllocationLinkTree.this, null, null, null){
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

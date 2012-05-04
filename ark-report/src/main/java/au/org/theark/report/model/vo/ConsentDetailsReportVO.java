@@ -26,9 +26,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 
 public class ConsentDetailsReportVO extends GenericReportViewVO {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	protected LinkSubjectStudy	linkSubjectStudy;

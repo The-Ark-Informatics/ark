@@ -43,9 +43,7 @@ import au.org.theark.lims.model.vo.LimsVO;
  * 
  */
 public class BioTransactionListForm extends Form<LimsVO> {
-	/**
-	 * 
-	 */
+
 	private static final long								serialVersionUID	= 1L;
 	private static final Logger							log					= LoggerFactory.getLogger(BioTransactionListForm.class);
 
@@ -109,9 +107,7 @@ public class BioTransactionListForm extends Form<LimsVO> {
 
 	private void initialiseNewButton() {
 		newButton = new ArkBusyAjaxButton("newButton", new StringResourceModel("listNewKey", this, null)) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

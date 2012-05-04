@@ -24,9 +24,7 @@ import au.org.theark.core.service.IArkCommonService;
  * @author cellis
  */
 public class ReCaptchaPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= -6440830868624897070L;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
@@ -36,9 +34,7 @@ public class ReCaptchaPanel extends Panel {
 		final ReCaptcha recaptcha = ReCaptchaFactory.newReCaptcha(iArkCommonService.getRecaptchaContextSource().getReCaptchaPublicKey(), iArkCommonService.getRecaptchaContextSource().getReCaptchaPrivateKey(), false);
 
 		FormComponent<Void> formComponent = new FormComponent<Void>("captcha") {
-			/**
-	 		 * 
-	 		 */
+		
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

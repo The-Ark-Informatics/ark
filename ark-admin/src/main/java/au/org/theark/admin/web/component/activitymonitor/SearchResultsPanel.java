@@ -32,9 +32,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.vo.ArkSubjectVO;
 
 public class SearchResultsPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -2656326926648860189L;
 	protected transient Logger		log					= LoggerFactory.getLogger(SearchResultsPanel.class);
 	private FeedbackPanel feedbackPanel;
@@ -49,9 +47,7 @@ public class SearchResultsPanel extends Panel {
 	public PageableListView<ArkSubjectVO> buildPageableListView(IModel iModel) {
 		PageableListView<ArkSubjectVO> pageableListView = new PageableListView<ArkSubjectVO>("list", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -66,9 +62,6 @@ public class SearchResultsPanel extends Panel {
 				item.add(new Label(au.org.theark.core.Constants.ARK_HOST, host));
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1938679383897533820L;
 
 					@Override

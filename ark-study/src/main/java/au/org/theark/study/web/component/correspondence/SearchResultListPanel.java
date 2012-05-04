@@ -34,7 +34,6 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -44,9 +43,7 @@ import au.org.theark.study.web.component.correspondence.form.ContainerForm;
 
 public class SearchResultListPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 6424424894090501973L;
 
 	private ArkCrudContainerVO	arkCrudContainerVO;
@@ -62,9 +59,7 @@ public class SearchResultListPanel extends Panel {
 	public PageableListView<Correspondences> buildPageableListView(IModel iModel) {
 
 		PageableListView<Correspondences> pageableListView = new PageableListView<Correspondences>("correspondenceList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 9076367524574951367L;
 
 			@Override
@@ -120,9 +115,6 @@ public class SearchResultListPanel extends Panel {
 				item.add(buildDownloadButton(correspondence));
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= -1588380616547616236L;
 
 					@Override
@@ -139,9 +131,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings( { "unchecked" })
 	private AjaxLink buildLink(final Correspondences correspondence) {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("correspondence") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 826367436671619720L;
 
 			@Override
@@ -164,32 +154,13 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private AjaxButton buildDownloadButton(final Correspondences correspondences) {
-		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
-			/**
-			 * 
-			 */
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE) {
+
 			private static final long	serialVersionUID	= 4494157023173040075L;
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				try {
-					Blob payload = correspondences.getAttachmentPayload();
-					if (payload == null) {
-						System.out.println(" payload null ");
-					}
-					else {
-						data = payload.getBytes(1, (int) payload.length());
-
-					}
-				}
-				catch (SQLException e) {
-					// TODO Auto-generated catch block
-					// Really TODO : Handle this exception rather than logging something nobody will see
-					e.printStackTrace();
-				}
-
+				byte[] data = correspondences.getAttachmentPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("", data, correspondences.getAttachmentFilename()));
 			}
 

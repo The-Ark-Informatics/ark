@@ -28,9 +28,7 @@ import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
 
 public class StudyLevelConsentReportContainer extends AbstractSelectedReportContainer<ConsentDetailsReportVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	public StudyLevelConsentReportContainer(String id) {

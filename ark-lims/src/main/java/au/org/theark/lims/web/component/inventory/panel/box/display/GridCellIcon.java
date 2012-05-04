@@ -7,9 +7,7 @@ import au.org.theark.core.web.component.image.MouseOverImage;
 
 public class GridCellIcon extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -7296587386654258036L;
 
 	public GridCellIcon(String id, ResourceReference image, ResourceReference mouseoverImage, String imageAltText) {

@@ -23,9 +23,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 public abstract class AbstractSelectedReportContainer<T> extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= 1L;
 
 	protected CompoundPropertyModel<T>	cpModel;

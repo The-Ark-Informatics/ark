@@ -57,9 +57,7 @@ import au.org.theark.study.web.component.attachments.DetailPanel;
  * 
  */
 public class SearchForm extends AbstractSearchForm<SubjectVO> {
-	/**
-	 * 
-	 */
+
 	private static final long							serialVersionUID	= 716294824375744799L;
 	private transient Logger							log					= LoggerFactory.getLogger(SearchForm.class);
 	@SuppressWarnings("unchecked")

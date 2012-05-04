@@ -23,9 +23,7 @@ import au.org.theark.core.util.CsvWriter;
 import au.org.theark.core.util.Pager;
 
 public class CsvExportLink<T> extends Link<Void> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	private transient Logger	log					= LoggerFactory.getLogger(CsvExportLink.class);
 	private final DataTable<T>	table;

@@ -44,9 +44,7 @@ import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.web.component.managestudy.form.Container;
 
 public class StudyContainerPanel extends AbstractContainerPanel<StudyModelVO> {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= 6705316114204293307L;
 	private static final Logger		log					= LoggerFactory.getLogger(StudyContainerPanel.class);
 	private Container						containerForm;

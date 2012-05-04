@@ -43,9 +43,7 @@ import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 
 public class SearchResultsPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 5237384531161620862L;
 	protected transient Logger		log					= LoggerFactory.getLogger(SearchResultsPanel.class);
 
@@ -65,9 +63,7 @@ public class SearchResultsPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public DataView<ArkModule> buildDataView(ArkDataProvider<ArkModule, IAdminService> dataProvider) {
 		DataView<ArkModule> dataView = new DataView<ArkModule>("arkModuleList", dataProvider) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 2981419595326128410L;
 
 			@Override
@@ -87,9 +83,6 @@ public class SearchResultsPanel extends Panel {
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 5761909841047153853L;
 
 					@Override
@@ -105,9 +98,7 @@ public class SearchResultsPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<ArkModule> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
 		PageableListView<ArkModule> pageableListView = new PageableListView<ArkModule>("arkModuleList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 3350183112731574263L;
 
 			@Override
@@ -133,9 +124,6 @@ public class SearchResultsPanel extends Panel {
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1938679383897533820L;
 
 					@Override

@@ -28,9 +28,7 @@ import org.apache.wicket.model.IModel;
  *
  */
 public abstract class AjaxConfirmLink<T> extends AjaxLink<T> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 8138160131842627124L;
 	private IModel<String>					confirm;
 	

@@ -39,9 +39,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "inv_col_row_type", schema = Constants.LIMS_TABLE_SCHEMA)
 public class InvColRowType implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private String	name;

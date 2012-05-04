@@ -55,9 +55,7 @@ import au.org.theark.core.model.study.entity.ICustomFieldData;
  */
 public abstract class CustomDataEditorDataView<T extends ICustomFieldData> extends DataView<T> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	protected CustomDataEditorDataView(String id, IDataProvider<T> dataProvider) {

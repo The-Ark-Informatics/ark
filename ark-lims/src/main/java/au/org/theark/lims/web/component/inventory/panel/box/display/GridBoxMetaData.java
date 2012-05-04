@@ -21,9 +21,7 @@ package au.org.theark.lims.web.component.inventory.panel.box.display;
 import java.io.Serializable;
 
 public class GridBoxMetaData implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 7344794646060427253L;
 	private int						cols					= 0;
 	private int						rows					= 0;

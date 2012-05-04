@@ -26,9 +26,7 @@ import org.wicketstuff.jasperreports.JRResource;
 
 public class ReportOutputPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 1L;
 
 	public AbstractLink				downloadReportLink;

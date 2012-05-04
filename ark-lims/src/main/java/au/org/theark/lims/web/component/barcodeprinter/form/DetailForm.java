@@ -55,9 +55,7 @@ import au.org.theark.lims.web.Constants;
  * 
  */
 public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID		= -9040147188276890390L;
 	protected static final Logger		log						= LoggerFactory.getLogger(DetailForm.class);
 	private static final String		IP_V4_DOMAIN_PATTERN	= "^(\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})[.](\\d{1,3})$";
@@ -106,9 +104,7 @@ public class DetailForm extends AbstractDetailForm<BarcodePrinter> {
 		studyListForUser = getStudyListForUser();
 		ChoiceRenderer<Study> choiceRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
 		studyDdc = new DropDownChoice<Study>("study", studyListForUser, choiceRenderer) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

@@ -40,9 +40,7 @@ import au.org.theark.lims.service.ILimsAdminService;
 import au.org.theark.lims.web.component.biospecimenuidtemplate.form.ContainerForm;
 
 public class SearchResultsPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -5165716102918554398L;
 
 	protected transient Logger	log					= LoggerFactory.getLogger(SearchResultsPanel.class);
@@ -61,9 +59,7 @@ public class SearchResultsPanel extends Panel {
 
 	public DataView<BiospecimenUidTemplate> buildDataView(ArkDataProvider<BiospecimenUidTemplate, ILimsAdminService> dataProvider) {
 		DataView<BiospecimenUidTemplate> dataView = new DataView<BiospecimenUidTemplate>("resultList", dataProvider) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 2981419595326128410L;
 
 			@Override
@@ -74,9 +70,6 @@ public class SearchResultsPanel extends Panel {
 				item.add(new Label("study", biospecimenUidTemplate.getStudy().getName()));
 				item.add(new Label("biospecimenUid.template", getBiospecimenUidExample(biospecimenUidTemplate)));
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -91,9 +84,7 @@ public class SearchResultsPanel extends Panel {
 
 	private AjaxLink<String> buildLink(final BiospecimenUidTemplate BiospecimenUidTemplate) {
 		ArkBusyAjaxLink<String> link = new ArkBusyAjaxLink<String>("link") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

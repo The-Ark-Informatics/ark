@@ -47,9 +47,7 @@ import au.org.theark.core.model.study.entity.ICustomFieldData;
 @Table(name = "biocollection_custom_field_data", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BioCollectionCustomFieldData implements Serializable,  ICustomFieldData {
 	
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	private Long id;

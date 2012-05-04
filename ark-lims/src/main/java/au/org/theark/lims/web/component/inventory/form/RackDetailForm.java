@@ -93,9 +93,7 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		idTxtFld = new TextField<String>("invRack.id");
 		nameTxtFld = new TextField<String>("invRack.name");
 		capacityTxtFld = new TextField<Integer>("invRack.capacity"){
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@SuppressWarnings("unchecked")
@@ -107,9 +105,7 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		};
 		capacityTxtFld.setEnabled(isNew());
 		capacityTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

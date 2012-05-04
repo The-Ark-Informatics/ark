@@ -42,9 +42,7 @@ import au.org.theark.lims.model.vo.LimsVO;
  * 
  */
 public class ContainerForm extends AbstractContainerForm<LimsVO> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 2374830042908920298L;
 	private static final Logger	log						= LoggerFactory.getLogger(ContainerForm.class);
 	

@@ -25,9 +25,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkRole;
 
 public class ArkRoleModuleFunctionVO implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 3593036411764379918L;
 	private ArkRole				arkRole;
 	private ArkModule				arkModule;

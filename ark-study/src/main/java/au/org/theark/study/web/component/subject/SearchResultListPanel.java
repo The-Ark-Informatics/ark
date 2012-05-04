@@ -58,9 +58,7 @@ import au.org.theark.study.web.component.subject.form.ContainerForm;
 @SuppressWarnings( { "unchecked", "serial" })
 public class SearchResultListPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -8517602411833622907L;
 	private WebMarkupContainer	arkContextMarkup;
 	private ContainerForm		subjectContainerForm;

@@ -32,9 +32,7 @@ import au.org.theark.core.web.component.palette.ArkPalette;
 
 public class ChildStudyPalettePanel<SubjectVO> extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 1L;
 	protected Label					assignedChildStudiesLabel;
 	protected ArkPalette<Study>	assignedChildStudiesPalette;

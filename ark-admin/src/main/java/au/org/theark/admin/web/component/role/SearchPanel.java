@@ -29,9 +29,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
 public class SearchPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 7860082215947666367L;
 	private ContainerForm						containerForm;
 	private FeedbackPanel						feedBackPanel;

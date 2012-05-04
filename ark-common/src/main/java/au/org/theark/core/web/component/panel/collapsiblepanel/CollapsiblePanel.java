@@ -34,9 +34,7 @@ import org.apache.wicket.request.resource.ResourceReference;
  */
 public abstract class CollapsiblePanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long								serialVersionUID	= -7323878216936160622L;
 	private static final PackageResourceReference	closed				= new PackageResourceReference(CollapsiblePanel.class, "bullet_toggle_plus.png");
 	private static final PackageResourceReference	open					= new PackageResourceReference(CollapsiblePanel.class, "bullet_toggle_minus.png");

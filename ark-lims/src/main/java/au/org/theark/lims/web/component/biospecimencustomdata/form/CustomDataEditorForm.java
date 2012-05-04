@@ -37,9 +37,7 @@ import au.org.theark.lims.service.ILimsService;
  * 
  */
 public class CustomDataEditorForm extends AbstractCustomDataEditorForm<BiospecimenCustomDataVO> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 6243088121937721984L;
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
 	private ILimsService	iLimsService;

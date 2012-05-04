@@ -14,9 +14,7 @@ import au.org.theark.phenotypic.web.component.customfieldgroup.form.CustomFieldD
  */
 public class CustomFieldDisplayModalPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long									serialVersionUID	= 1L;
 	private ModalWindow											modalWindow;
 	private CompoundPropertyModel<CustomFieldGroupVO>	cpmModel;

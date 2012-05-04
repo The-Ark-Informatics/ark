@@ -39,9 +39,7 @@ import au.org.theark.core.web.component.ArkMainTab;
  * 
  */
 public class MainTabProviderImpl extends Panel implements IMainTabProvider {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1507516631450757896L;
 	private List<ITab>			moduleTabsList;
 	private WebMarkupContainer	studyNameMarkup;

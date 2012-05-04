@@ -19,7 +19,6 @@
 package au.org.theark.core.model.study.entity;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -29,6 +28,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -41,9 +41,7 @@ import au.org.theark.core.Constants;
 @Table(name = "correspondences", schema = Constants.STUDY_SCHEMA)
 public class Correspondences implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long								id;
 	private Person								person;
@@ -59,7 +57,7 @@ public class Correspondences implements Serializable {
 	private String								details;
 	private String								comments;
 	private String								attachmentFilename;
-	private Blob								attachmentPayload;
+	private byte[]								attachmentPayload;
 
 	@Id
 	@SequenceGenerator(name = "correspondences_generator", sequenceName = "CORRESPONDENCES_SEQUENCE")
@@ -198,12 +196,13 @@ public class Correspondences implements Serializable {
 		this.attachmentFilename = attachmentFilename;
 	}
 
+	@Lob
 	@Column(name = "ATTACHMENT_PAYLOAD")
-	public Blob getAttachmentPayload() {
+	public byte[] getAttachmentPayload() {
 		return attachmentPayload;
 	}
 
-	public void setAttachmentPayload(Blob attachmentPayload) {
+	public void setAttachmentPayload(byte[] attachmentPayload) {
 		this.attachmentPayload = attachmentPayload;
 	}
 

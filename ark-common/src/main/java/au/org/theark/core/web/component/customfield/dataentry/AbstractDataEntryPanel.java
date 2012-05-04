@@ -37,9 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractDataEntryPanel<T> extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID							= 1L;
 
 	private static final Logger	log											= LoggerFactory.getLogger(AbstractDataEntryPanel.class);

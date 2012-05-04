@@ -23,9 +23,7 @@ import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.html.form.FormComponent;
 
 public class ArkRequiredFieldHintBehavior extends Behavior {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 2695428312191631705L;
 
 	

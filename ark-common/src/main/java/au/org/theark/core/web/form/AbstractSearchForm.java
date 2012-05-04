@@ -42,9 +42,7 @@ import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
  */
 public abstract class AbstractSearchForm<T> extends Form<T> {
 
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= -408051334961302312L;
 	protected AjaxButton				searchButton;
 	protected AjaxButton				newButton;
@@ -77,9 +75,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 	 */
 	protected void initialiseForm() {
 		searchButton = new ArkBusyAjaxButton(Constants.SEARCH) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -8096410123770458109L;
 
 			@Override
@@ -95,9 +91,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 		};
 
 		resetButton = new AjaxButton(Constants.RESET) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 5818909400695185935L;
 
 			@Override
@@ -112,9 +106,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 		};
 
 		newButton = new ArkBusyAjaxButton(Constants.NEW) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1666656098281624401L;
 
 			@Override

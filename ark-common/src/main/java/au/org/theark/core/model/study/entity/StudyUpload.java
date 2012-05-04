@@ -28,11 +28,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import au.org.theark.core.Constants;
 
@@ -50,11 +54,11 @@ public class StudyUpload implements java.io.Serializable {
 	private FileFormat		fileFormat;
 	private DelimiterType	delimiterType;
 	private String				filename;
-	private Blob				payload;
+	private byte[]				payload;
 	private String				checksum;
 	private Date				startTime;
 	private Date				finishTime;
-	private Blob				uploadReport;
+	private byte[]				uploadReport;
 	private String				userId;
 	private ArkFunction	arkFunction;
 
@@ -64,7 +68,7 @@ public class StudyUpload implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public StudyUpload(Long id, FileFormat fileFormat, DelimiterType delimiterType, String filename, Blob uploadReport, ArkFunction arkFunction) {
+	public StudyUpload(Long id, FileFormat fileFormat, DelimiterType delimiterType, String filename, byte[] uploadReport, ArkFunction arkFunction) {
 		this.id = id;
 		this.fileFormat = fileFormat;
 		this.delimiterType = delimiterType;
@@ -152,8 +156,10 @@ public class StudyUpload implements java.io.Serializable {
 	/**
 	 * @return the payload
 	 */
+	//	@Fetch(FetchMode.SELECT)
+	@Lob
 	@Column(name = "PAYLOAD")
-	public Blob getPayload() {
+	public byte[] getPayload() {
 		return this.payload;
 	}
 
@@ -161,7 +167,7 @@ public class StudyUpload implements java.io.Serializable {
 	 * @param payload
 	 *           the payload to set
 	 */
-	public void setPayload(Blob payload) {
+	public void setPayload(byte[] payload) {
 		this.payload = payload;
 	}
 
@@ -219,15 +225,16 @@ public class StudyUpload implements java.io.Serializable {
 	 * @param uploadReport
 	 *           the uploadReport to set
 	 */
-	public void setUploadReport(Blob uploadReport) {
+	public void setUploadReport(byte[] uploadReport) {
 		this.uploadReport = uploadReport;
 	}
 
 	/**
 	 * @return the uploadReport
 	 */
+	@Lob
 	@Column(name = "UPLOAD_REPORT")
-	public Blob getUploadReport() {
+	public byte[] getUploadReport() {
 		return uploadReport;
 	}
 

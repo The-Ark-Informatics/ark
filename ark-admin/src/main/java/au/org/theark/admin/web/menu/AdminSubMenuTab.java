@@ -42,9 +42,7 @@ import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 
 public class AdminSubMenuTab extends AbstractArkTabPanel {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= 2808674930679468072L;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
@@ -77,9 +75,7 @@ public class AdminSubMenuTab extends AbstractArkTabPanel {
 		
 		// Add a new tab for activity monitoring
 		AbstractTab tab = new AbstractTab(new Model<String>("Activity Monitoring")){
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

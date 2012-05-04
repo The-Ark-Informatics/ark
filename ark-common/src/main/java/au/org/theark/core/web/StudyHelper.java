@@ -33,9 +33,7 @@ import org.apache.wicket.model.Model;
 import au.org.theark.core.model.study.entity.Study;
 
 public class StudyHelper implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 8485137084667518625L;
 //	private Image						studyLogoImage;
 	private ContextImage				noStudyLogoImage;
@@ -69,9 +67,6 @@ public class StudyHelper implements Serializable {
 
 			if (studyLogoBlob != null) {
 				BlobImageResource blobImageResource = new BlobImageResource() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override

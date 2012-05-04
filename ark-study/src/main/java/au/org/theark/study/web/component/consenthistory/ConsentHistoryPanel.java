@@ -42,9 +42,7 @@ import au.org.theark.study.web.Constants;
 
 public class ConsentHistoryPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID		= 1L;
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService							iStudyService;
@@ -97,9 +95,7 @@ public class ConsentHistoryPanel extends Panel {
 	public PageableListView<ConsentHistory> buildListView(IModel iModel) {
 		PageableListView<ConsentHistory> listView = new PageableListView<ConsentHistory>("resultList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -163,9 +159,6 @@ public class ConsentHistoryPanel extends Panel {
 				}
 
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override

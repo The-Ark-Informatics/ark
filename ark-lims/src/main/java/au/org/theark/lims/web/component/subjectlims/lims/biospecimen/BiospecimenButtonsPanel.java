@@ -43,9 +43,7 @@ import au.org.theark.lims.web.component.button.zebra.biospecimen.PrintBiospecime
  */
 public abstract class BiospecimenButtonsPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 1L;
 	private static final Logger	log					= LoggerFactory.getLogger(BiospecimenButtonsPanel.class);
 
@@ -67,9 +65,7 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 	@SuppressWarnings( { })
 	protected void initialisePanel() {
 		cloneButton = new ArkAjaxButton("clone") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -100,9 +96,7 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 		this.add(cloneButton);
 
 		processButton = new ArkAjaxButton("process") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -134,9 +128,7 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 		this.add(processButton);
 
 		aliquotButton = new ArkAjaxButton("aliquot") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -172,9 +164,7 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 		this.add(numberOfLabels);
 
 		printBarcodeButton = new PrintBiospecimenLabelButton("printBarcode", BiospecimenButtonsPanel.this.getDefaultModel(), numberOfLabels.getDefaultModel()) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -185,9 +175,7 @@ public abstract class BiospecimenButtonsPanel extends Panel {
 		this.add(printBarcodeButton);
 
 		printStrawBarcodeButton = new PrintBiospecimenStrawLabelButton("printStrawBarcode", BiospecimenButtonsPanel.this.getDefaultModel(), numberOfLabels.getDefaultModel()) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

@@ -32,9 +32,7 @@ import au.org.theark.core.web.form.AbstractSearchForm;
 
 public class SearchForm extends AbstractSearchForm<AdminVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 8009286033696459459L;
 
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)

@@ -22,9 +22,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 
 public class ListItem<T> extends Item<T> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 2012719539470105336L;
 
 	public ListItem(String id, int index) {

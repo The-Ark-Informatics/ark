@@ -14,9 +14,7 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
  */
 public class CustomFieldGroupVO implements Serializable{
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private CustomFieldGroup customFieldGroup;
 	private ArrayList<CustomField> selectedCustomFields;

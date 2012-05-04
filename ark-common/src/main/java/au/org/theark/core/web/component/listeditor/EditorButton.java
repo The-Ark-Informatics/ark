@@ -23,9 +23,7 @@ import java.util.List;
 import org.apache.wicket.markup.html.form.Button;
 
 public abstract class EditorButton extends Button {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 2239994447099355647L;
 	private transient ListItem<?>	parent;
 

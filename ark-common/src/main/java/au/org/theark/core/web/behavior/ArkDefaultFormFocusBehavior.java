@@ -23,9 +23,7 @@ import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.html.IHeaderResponse;
 
 public class ArkDefaultFormFocusBehavior extends Behavior {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 8530926132995921828L;
 	private Component				component;
 

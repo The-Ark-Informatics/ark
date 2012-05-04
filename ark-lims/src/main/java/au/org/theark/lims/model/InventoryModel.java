@@ -29,9 +29,7 @@ import au.org.theark.core.model.lims.entity.InvTreeNode;
  * @param <T>
  */
 public class InventoryModel<T> implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 485859504346024007L;
 	protected T inventoryObject;
 	protected String nodeType;

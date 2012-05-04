@@ -50,9 +50,7 @@ import au.org.theark.core.web.form.AbstractWizardStepPanel;
  * The first step of this wizard.
  */
 public class CustomFieldUploadStep1 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID		= 4272918747277155957L;
 
 	public java.util.Collection<String>		validationMessages	= null;

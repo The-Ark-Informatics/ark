@@ -57,9 +57,7 @@ import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
  * 
  */
 public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= 3950256468509804325L;
 
 	private static Logger						log					= LoggerFactory.getLogger(BoxDetailForm.class);
@@ -101,9 +99,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		availableTxtFld = new TextField<Integer>("invBox.available");
 		availableTxtFld.setEnabled(false);
 		noOfColTxtFld = new TextField<Integer>("invBox.noofcol"){
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@SuppressWarnings("unchecked")
@@ -115,9 +111,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		};
 		
 		noOfColTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -127,9 +121,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		});
 		
 		noOfRowTxtFld = new TextField<Integer>("invBox.noofrow"){
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@SuppressWarnings("unchecked")
@@ -141,9 +133,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		};
 		
 		noOfRowTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -160,9 +150,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		initRowNoTypeDdc();
 		
 		batchAllocate = new ArkBusyAjaxButton("batchAllocate") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

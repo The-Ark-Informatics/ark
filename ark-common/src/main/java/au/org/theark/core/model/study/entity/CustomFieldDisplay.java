@@ -49,9 +49,7 @@ import au.org.theark.core.model.pheno.entity.PhenoData;
 @Table(name = "CUSTOM_FIELD_DISPLAY", schema = Constants.STUDY_SCHEMA)
 public class CustomFieldDisplay implements Serializable{
 	
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	private Long id;

@@ -30,9 +30,7 @@ import au.org.theark.core.web.component.JQueryDirtyFormScript;
 import au.org.theark.phenotypic.web.component.phenodataentry.form.PhenoDataEntryModalDetailForm;
 
 public class PhenoDataEntryModalDetailPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long											serialVersionUID	= 1755709689461138709L;
 
 	private FeedbackPanel												detailFeedbackPanel;

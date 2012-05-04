@@ -32,9 +32,7 @@ import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.ReportContainerPanel;
 
 public class ReportSubMenuTab extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -3695404298701886701L;
 	private List<ITab>			moduleSubTabsList;
 

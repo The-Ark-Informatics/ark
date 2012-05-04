@@ -32,9 +32,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
  *            type of model object
  */
 public abstract class ArkBusyAjaxLink<T> extends AjaxLink<T> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID		= 4139168862106185766L;
 
 	private String					setBusyIndicatorOn	= "overlay = document.getElementById('busyOverlay'); "

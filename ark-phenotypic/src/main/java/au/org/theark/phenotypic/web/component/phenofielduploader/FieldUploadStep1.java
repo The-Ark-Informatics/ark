@@ -50,9 +50,7 @@ import au.org.theark.phenotypic.web.component.phenofielduploader.form.WizardForm
  * The first step of this wizard.
  */
 public class FieldUploadStep1 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID		= 4272918747277155957L;
 
 	public java.util.Collection<String>		validationMessages	= null;

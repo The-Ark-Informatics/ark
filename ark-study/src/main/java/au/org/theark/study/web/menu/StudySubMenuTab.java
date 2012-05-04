@@ -50,9 +50,7 @@ import au.org.theark.study.web.component.studycomponent.StudyComponentContainerP
  * @author cellis
  */
 public class StudySubMenuTab extends AbstractArkTabPanel {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= -2725142200726870636L;
 	private transient static Logger	log					= LoggerFactory.getLogger(StudySubMenuTab.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)

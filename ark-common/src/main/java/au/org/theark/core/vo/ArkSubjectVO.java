@@ -3,9 +3,7 @@ package au.org.theark.core.vo;
 import java.io.Serializable;
 
 public class ArkSubjectVO implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 402893651068142890L;
 	private String					sessionId;
 	private String					userId;

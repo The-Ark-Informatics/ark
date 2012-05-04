@@ -23,9 +23,7 @@ import au.org.theark.core.model.study.entity.Study;
 
 public class FieldDetailsReportVO extends GenericReportViewVO {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	protected Study				study;

@@ -35,6 +35,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,9 +59,7 @@ import au.org.theark.phenotypic.web.component.phenofielduploader.form.WizardForm
  * The 4th step of this wizard.
  */
 public class FieldUploadStep4 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= -2788948560672351760L;
 	static Logger							log					= LoggerFactory.getLogger(FieldUploadStep4.class);
 	private Form<PhenoFieldUploadVO>				containerForm;
@@ -69,9 +68,6 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
-	@SpringBean(name = "lobUtil")
-	private LobUtil			util;
-	
 	/**
 	 * Construct.
 	 */
@@ -172,8 +168,8 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 		phenoUploadReport.appendDetails(containerForm.getModelObject().getUpload());
 		phenoUploadReport.append(importReport);
 		byte[] bytes = phenoUploadReport.getReport().toString().getBytes();
-		Blob uploadReportBlob = util.createBlob(bytes);
-		containerForm.getModelObject().getUpload().setUploadReport(uploadReportBlob);
+		//Blob uploadReportBlob = util.createBlob(bytes);
+		containerForm.getModelObject().getUpload().setUploadReport(bytes);
 	}
 
 	private void save() {
@@ -182,8 +178,8 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 		try {
 			inputStream = new BufferedInputStream(new FileInputStream(temp));
 			// Copy file to BLOB object
-			Blob payload = util.createBlob(inputStream, temp.length());
-			containerForm.getModelObject().getUpload().setPayload(payload);
+			//Blob payload = util.createBlob(inputStream, temp.length());
+			containerForm.getModelObject().getUpload().setPayload(IOUtils.toByteArray(inputStream));
 
 			containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
 			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);

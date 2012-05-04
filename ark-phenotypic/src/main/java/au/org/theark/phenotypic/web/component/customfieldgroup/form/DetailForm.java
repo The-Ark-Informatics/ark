@@ -48,9 +48,7 @@ import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldDispla
  */
 public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long														serialVersionUID	= 1L;
 //	private static final Logger													log = LoggerFactory.getLogger(DetailForm.class);
 
@@ -114,9 +112,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("cfDisplayNavigator", dataView) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -134,9 +130,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 		description = new TextArea<String>("customFieldGroup.description");
 		publishedStatusCb = new CheckBox("customFieldGroup.published");
 		publishedStatusCb.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

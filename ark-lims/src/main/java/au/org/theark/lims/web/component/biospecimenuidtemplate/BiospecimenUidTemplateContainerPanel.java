@@ -49,9 +49,7 @@ import au.org.theark.lims.web.component.biospecimenuidtemplate.form.ContainerFor
  * 
  */
 public class BiospecimenUidTemplateContainerPanel extends AbstractContainerPanel<BiospecimenUidTemplate> {
-	/**
-	 * 
-	 */
+
 	private static final long															serialVersionUID	= 2114933695455527870L;
 
 	private static final Logger														log					= LoggerFactory.getLogger(BiospecimenUidTemplateContainerPanel.class);
@@ -133,9 +131,7 @@ public class BiospecimenUidTemplateContainerPanel extends AbstractContainerPanel
 	private void initialiseDataView() {
 		// Data provider to paginate resultList
 		dataProvider = new ArkDataProvider<BiospecimenUidTemplate, ILimsAdminService>(iLimsAdminService) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
@@ -152,9 +148,7 @@ public class BiospecimenUidTemplateContainerPanel extends AbstractContainerPanel
 		};
 		// Set the criteria into the data provider's model
 		dataProvider.setModel(new LoadableDetachableModel<BiospecimenUidTemplate>() {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

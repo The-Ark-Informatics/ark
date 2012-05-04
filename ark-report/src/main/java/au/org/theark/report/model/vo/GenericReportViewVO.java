@@ -29,9 +29,7 @@ import au.org.theark.core.model.report.entity.ReportTemplate;
  */
 public class GenericReportViewVO implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= 1L;
 
 	private ReportTemplate				selectedReportTemplate;

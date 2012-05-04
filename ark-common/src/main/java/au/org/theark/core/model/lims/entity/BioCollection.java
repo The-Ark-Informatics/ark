@@ -47,9 +47,7 @@ import au.org.theark.core.model.study.entity.Study;
 @Table(name = "biocollection", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BioCollection implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -7384213608019152409L;
 	private Long					id;
 	private String					timestamp;

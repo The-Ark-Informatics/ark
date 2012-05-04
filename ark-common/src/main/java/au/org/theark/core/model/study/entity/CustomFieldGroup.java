@@ -48,9 +48,7 @@ import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 @Table(name = "CUSTOM_FIELD_GROUP", schema = Constants.STUDY_SCHEMA)
 public class CustomFieldGroup implements Serializable{
 	
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	
 	private Long	id;
@@ -61,9 +59,7 @@ public class CustomFieldGroup implements Serializable{
 	private ArkFunction arkFunction;
 	private Set<PhenotypicCollection> phenotypicCollection = new HashSet<PhenotypicCollection>();
 	
-	/**
-	 * 
-	 */
+
 	public CustomFieldGroup(){
 	}
 

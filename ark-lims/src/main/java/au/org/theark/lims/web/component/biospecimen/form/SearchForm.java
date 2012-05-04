@@ -59,9 +59,7 @@ import au.org.theark.lims.web.Constants;
  * 
  */
 public class SearchForm extends AbstractSearchForm<LimsVO> {
-	/**
-	 * 
-	 */
+
 	private static final long					serialVersionUID	= 3103311665813442088L;
 	protected static final Logger				log					= LoggerFactory.getLogger(SearchForm.class);
 
@@ -88,9 +86,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		// Override New button, disabling
 		newButton = new ArkBusyAjaxButton(Constants.NEW) {
 
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 4695227309689500914L;
 
 			@Override

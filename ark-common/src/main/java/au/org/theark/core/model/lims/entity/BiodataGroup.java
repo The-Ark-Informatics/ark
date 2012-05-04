@@ -37,9 +37,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "biodata_group", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BiodataGroup implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Long								id;
 	private String								groupName;

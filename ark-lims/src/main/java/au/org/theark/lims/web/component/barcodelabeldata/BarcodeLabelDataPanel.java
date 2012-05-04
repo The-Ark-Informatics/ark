@@ -40,9 +40,7 @@ import au.org.theark.lims.service.ILimsAdminService;
  */
 public class BarcodeLabelDataPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 	protected FeedbackPanel			feedBackPanel;
 	private BarcodeLabel barcodeLabel= new BarcodeLabel();
@@ -76,9 +74,7 @@ public class BarcodeLabelDataPanel extends Panel {
 		
 		final AbstractListEditor<BarcodeLabelData> listEditor = new AbstractListEditor<BarcodeLabelData>("barcodeLabelData", new PropertyModel(this, "barcodeLabel.barcodeLabelData")) {
 			
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

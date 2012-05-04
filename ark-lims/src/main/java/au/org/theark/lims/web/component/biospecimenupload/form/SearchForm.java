@@ -45,9 +45,7 @@ import au.org.theark.core.web.form.AbstractSearchForm;
  * 
  */
 public class SearchForm extends AbstractSearchForm<UploadVO> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)

@@ -49,9 +49,7 @@ import au.org.theark.study.web.Constants;
 
 public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID	= 1L;
 	// private CompoundPropertyModel<ArkUserVO> cpmModel;
 	private ContainerForm					containerForm;
@@ -144,9 +142,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 	protected void initialiseSearchForm() {
 
 		newButton = new ArkBusyAjaxButton(Constants.NEW) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1666656098281624401L;
 
 			@Override

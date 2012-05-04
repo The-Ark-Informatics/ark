@@ -180,12 +180,12 @@ public class SearchResultListPanel extends Panel {
 			public void onClick() {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
-				try {
-					data = upload.getPayload().getBytes(1, (int) upload.getPayload().length());
-				}
-				catch (SQLException e) {
-					log.error(e.getMessage());
-				}
+				//try {
+					data = upload.getPayload();//.getBytes(1, (int) upload.getPayload().length());
+				//}
+				//catch (SQLException e) {
+				//	log.error(e.getMessage());
+				//}
 				
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/csv", data, upload.getFilename()));
 
@@ -204,13 +204,13 @@ public class SearchResultListPanel extends Panel {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
-				try {
-					data = upload.getPayload().getBytes(1, (int) upload.getPayload().length());
-				}
-				catch (SQLException e) {
-					log.error(e.getMessage());
-				}
-				
+				//try {
+					data = upload.getPayload();//.getBytes(1, (int) upload.getPayload().length());
+				//}
+				//catch (SQLException e) {
+				//	log.error(e.getMessage());
+				//}
+				//
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/csv", data, upload.getFilename()));
 			}
 
@@ -257,12 +257,12 @@ public class SearchResultListPanel extends Panel {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
-				try {
-					data = upload.getUploadReport().getBytes(1, (int) upload.getUploadReport().length());
-				}
-				catch (SQLException e) {
-					log.error(e.getMessage());
-				}
+				//try {
+					data = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length());
+				//}
+				//catch (SQLException e) {
+				//	log.error(e.getMessage());
+				//}
 				
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			}

@@ -28,9 +28,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.subjectlims.lims.biocollection.form.BioCollectionModalDetailForm;
 
 public class BioCollectionModalDetailPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= -8745753185256494362L;
 
 	private FeedbackPanel							detailFeedbackPanel;

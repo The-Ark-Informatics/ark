@@ -93,9 +93,7 @@ import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.Biospecimen
  * @author cellis
  */
 public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> {
-	/**
-	 * 
-	 */
+
 	private static final long									serialVersionUID	= 2727419197330261916L;
 	private static final Logger								log					= LoggerFactory.getLogger(BiospecimenModalDetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -164,9 +162,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioTransactionDetailWmc.setEnabled(cpModel.getObject().getBiospecimen().getId() == null);
 
 		biospecimenbuttonsPanel = new BiospecimenButtonsPanel("biospecimenButtonPanel", new PropertyModel<Biospecimen>(cpModel.getObject(), "biospecimen")) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -308,9 +304,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
 		sampleTimeTxtFld = new DateTimeField("biospecimen.sampleTime") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -330,9 +324,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		processedDateTxtFld = new DateTextField("biospecimen.processedDate", au.org.theark.core.Constants.DD_MM_YYYY);
 		processedTimeTxtFld = new DateTimeField("biospecimen.processedTime") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -359,9 +351,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		processedDateTxtFld.add(processedDatePicker);
 
 		quantityTxtFld = new TextField<Double>("biospecimen.quantity") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@SuppressWarnings("unchecked")
@@ -377,9 +367,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		quantityTxtFld.setEnabled(false);
 		bioTransactionQuantityTxtFld = new TextField<Double>("bioTransaction.quantity") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@SuppressWarnings("unchecked")

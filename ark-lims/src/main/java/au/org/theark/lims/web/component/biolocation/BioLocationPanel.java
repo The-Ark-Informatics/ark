@@ -21,9 +21,7 @@ import au.org.theark.lims.service.IInventoryService;
  * 
  */
 public abstract class BioLocationPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long						serialVersionUID	= 1L;
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService									iInventoryService;
@@ -55,9 +53,7 @@ public abstract class BioLocationPanel extends Panel {
 		rowLbl = new Label("biospecimenLocationVO.row", cpModel.getObject().getBiospecimenLocationVO().getRowLabel());
 		cellLbl = new Label("biospecimenLocationVO.column", cpModel.getObject().getBiospecimenLocationVO().getColLabel());
 		unallocateButton = new ArkBusyAjaxButton("unallocate") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

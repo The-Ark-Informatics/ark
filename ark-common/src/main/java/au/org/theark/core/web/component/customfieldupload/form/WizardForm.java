@@ -37,9 +37,7 @@ import au.org.theark.core.web.form.AbstractWizardForm;
  * @author elam
  */
 public class WizardForm extends AbstractWizardForm<CustomFieldUploadVO> {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 5494062431372163197L;
 
 	private File						file;

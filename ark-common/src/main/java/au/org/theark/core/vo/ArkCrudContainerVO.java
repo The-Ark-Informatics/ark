@@ -31,9 +31,7 @@ import org.apache.wicket.markup.html.list.PageableListView;
  * 
  */
 public class ArkCrudContainerVO implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= -4796975897895746053L;
 	protected WebMarkupContainer	searchPanelContainer;
 	protected WebMarkupContainer	searchResultPanelContainer;

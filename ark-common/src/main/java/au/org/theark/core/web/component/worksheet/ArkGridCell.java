@@ -21,9 +21,7 @@ package au.org.theark.core.web.component.worksheet;
 import java.io.Serializable;
 
 public class ArkGridCell implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -2945343327357120514L;
 	int								col;
 	int								row;

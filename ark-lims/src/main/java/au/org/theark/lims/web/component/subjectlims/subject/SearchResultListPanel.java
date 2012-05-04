@@ -58,9 +58,7 @@ import au.org.theark.lims.web.component.subjectlims.subject.form.DetailForm;
 @SuppressWarnings( { "unchecked", "serial" })
 public class SearchResultListPanel extends Panel {
 
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= -8517602411833622907L;
 	private static final Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
 	private ArkCrudContainerVO		arkCrudContainerVO;

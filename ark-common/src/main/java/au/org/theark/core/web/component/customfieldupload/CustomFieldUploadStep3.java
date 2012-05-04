@@ -49,9 +49,7 @@ import au.org.theark.core.web.form.AbstractWizardStepPanel;
  * The first step of this wizard.
  */
 public class CustomFieldUploadStep3 extends AbstractWizardStepPanel {
-	/**
-	 * 
-	 */
+
 	private static final long				serialVersionUID		= 5099768179441679542L;
 	static Logger								log						= LoggerFactory.getLogger(CustomFieldUploadStep3.class);
 
@@ -101,9 +99,7 @@ public class CustomFieldUploadStep3 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().setUpdateChkBox(false);
 
 		updateChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= -4514605801401294450L;
 
 			@Override
@@ -235,9 +231,6 @@ public class CustomFieldUploadStep3 extends AbstractWizardStepPanel {
 				target.add(form.getWizardButtonContainer());
 				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
 
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override

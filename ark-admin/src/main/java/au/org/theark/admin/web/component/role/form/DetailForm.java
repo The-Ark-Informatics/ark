@@ -35,9 +35,7 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 
 public class DetailForm extends AbstractDetailForm<AdminVO> {
 
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= -4117355038874906668L;
 
 	protected transient Logger		log					= LoggerFactory.getLogger(DetailForm.class);
@@ -75,9 +73,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		idTxtFld.setEnabled(false);
 		
 		nameTxtFld = new TextField<String>("arkRole.name") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

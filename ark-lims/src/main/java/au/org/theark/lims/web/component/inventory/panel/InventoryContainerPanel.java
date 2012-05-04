@@ -8,9 +8,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 
 public class InventoryContainerPanel extends AbstractInventoryPanel<LimsVO> {
-	/**
-	 * 
-	 */
+
 	private static final long			serialVersionUID	= -8575670114976786294L;
 
 	private ContainerForm				containerForm;

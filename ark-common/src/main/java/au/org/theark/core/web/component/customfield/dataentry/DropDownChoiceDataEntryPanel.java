@@ -62,9 +62,7 @@ public class DropDownChoiceDataEntryPanel extends AbstractDataEntryPanel<Encoded
 		// Slightly tricky mapping from the EncodedVO's key to the underlying dataValue (i.e. a String) 
 		dataValueModel = new IModel<EncodedValueVO>() {
 
-			/**
-			 * 
-			 */
+
 			private static final long serialVersionUID = 1L;
 
 			public EncodedValueVO getObject() {

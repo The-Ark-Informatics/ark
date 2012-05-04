@@ -63,9 +63,7 @@ public class SearchResultListPanel extends Panel {
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService			studyService;
 
-	/**
-	 * 
-	 */
+
 	private static final long		serialVersionUID	= 1L;
 	private NonCachingImage			studyLogoImage;
 	private transient StudyHelper	studyHelper;
@@ -99,9 +97,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
 		PageableListView<Study> studyPageableListView = new PageableListView<Study>("studyList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -143,9 +139,6 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -161,9 +154,7 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxLink<Study> buildLink(final Study study, final WebMarkupContainer searchResultsContainer) {
 		ArkBusyAjaxLink<Study> link = new ArkBusyAjaxLink<Study>("studyName") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@SuppressWarnings("unchecked")

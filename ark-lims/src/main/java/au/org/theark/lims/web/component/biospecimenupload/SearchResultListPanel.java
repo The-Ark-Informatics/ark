@@ -49,9 +49,7 @@ import au.org.theark.lims.web.component.biospecimenupload.form.ContainerForm;
  *
  */
 public class SearchResultListPanel extends Panel {
-	/**
-	 * 
-	 */
+
 	private static final long	serialVersionUID	= 6150100976180421479L;
 
 	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
@@ -59,9 +57,7 @@ public class SearchResultListPanel extends Panel {
 	public SearchResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
 		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "BiospecimenUpload", Constants.BIOSPECIMEN_TEMPLATE_CELLS) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -81,9 +77,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<StudyUpload> buildPageableListView(IModel iModel) {
 		PageableListView<StudyUpload> sitePageableListView = new PageableListView<StudyUpload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -151,9 +145,6 @@ public class SearchResultListPanel extends Panel {
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -168,21 +159,19 @@ public class SearchResultListPanel extends Panel {
 
 	protected Link<StudyUpload> buildDownloadLink(final StudyUpload upload) {
 		Link<StudyUpload> link = new Link<StudyUpload>(Constants.DOWNLOAD_FILE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public void onClick() {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
-				try {
-					data = upload.getPayload().getBytes(1, (int) upload.getPayload().length());
-				}
-				catch (SQLException e) {
-					log.error(e.getMessage());
-				}
+				//try {
+					data = upload.getPayload();//.getBytes(1, (int) upload.getPayload().length());
+				//}
+				//catch (SQLException e) {
+				//	log.error(e.getMessage());
+				//}
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 
 			};
@@ -195,21 +184,19 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxButton buildDownloadButton(final StudyUpload upload) {
 		AjaxButton ajaxButton = new AjaxButton(Constants.DOWNLOAD_FILE) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
-				try {
-					data = upload.getPayload().getBytes(1, (int) upload.getPayload().length());
-				}
-				catch (SQLException e) {
-					log.error(e.getMessage());
-				}
+				//try {
+					data = upload.getPayload();//.getBytes(1, (int) upload.getPayload().length());
+				//}
+				//catch (SQLException e) {
+				//	log.error(e.getMessage());
+				//}
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 			}
 
@@ -230,21 +217,19 @@ public class SearchResultListPanel extends Panel {
 
 	protected Link<StudyUpload> buildDownloadReportLink(final StudyUpload upload) {
 		Link<StudyUpload> link = new Link<StudyUpload>(Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public void onClick() {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
-				try {
-					data = upload.getUploadReport().getBytes(1, (int) upload.getUploadReport().length());
-				}
-				catch (SQLException e) {
-					log.error(e.getMessage());
-				}
+				//try {
+					data = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length());
+				//}
+				//catch (SQLException e) {
+				//	log.error(e.getMessage());
+				//}
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			};
 		};
@@ -256,21 +241,19 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxButton buildDownloadReportButton(final StudyUpload upload) {
 		AjaxButton ajaxButton = new AjaxButton(Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
-				try {
-					data = upload.getUploadReport().getBytes(1, (int) upload.getUploadReport().length());
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+				//try {
+					data = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length());
+				//}
+				//catch (SQLException e) {
+				//	e.printStackTrace();
+				//}
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			}
 

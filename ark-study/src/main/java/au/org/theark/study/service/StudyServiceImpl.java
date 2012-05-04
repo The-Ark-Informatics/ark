@@ -987,9 +987,7 @@ public class StudyServiceImpl implements IStudyService {
 		return customfieldDataList;
 	}
 
-	/**
-	 * 
-	 */
+
 	public long getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction) {
 		return iStudyDao.getSubjectCustomFieldDataCount(linkSubjectStudyCriteria, arkFunction);
 	}

@@ -42,9 +42,7 @@ import au.org.theark.core.web.component.ArkDataProvider;
  * 
  */
 public class ModuleContainerPanel extends AbstractContainerPanel<AdminVO> {
-	/**
-	 * 
-	 */
+
 	private static final long									serialVersionUID	= 442185554812824590L;
 	private ContainerForm										containerForm;
 	private SearchPanel											searchPanel;
