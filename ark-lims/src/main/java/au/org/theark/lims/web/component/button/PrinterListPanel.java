@@ -23,13 +23,16 @@ import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.HiddenField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.util.string.StringValue;
 
 /**
  * Embedded PrintApplet and dynamic drop-down list that populatesd with the printers connected to the client machine
@@ -67,6 +70,15 @@ public class PrinterListPanel extends Panel {
 		selectedPrinter = new HiddenField<String>("selectedPrinter", new PropertyModel<String>(this, "selected"));
 		selectedPrinter.setOutputMarkupPlaceholderTag(true);
 		selectedPrinter.add(new AttributeModifier("name", "selectedPrinter"));
+		selectedPrinter.add(new AbstractDefaultAjaxBehavior() {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void respond(AjaxRequestTarget arg0) {
+				StringValue selectedPrinter = RequestCycle.get().getRequest().getQueryParameters().getParameterValue("selectedPrinter");
+				selected = selectedPrinter.toString();
+			}
+		});
 		this.add(selectedPrinter);
 		
 		StringBuilder javaScript = new StringBuilder();
@@ -115,6 +127,7 @@ public class PrinterListPanel extends Panel {
 		javaScript.append("\n");
 		javaScript.append("	objHidden.value = objDropDown.value;");
 		javaScript.append("\n");
+		javaScript.append("	callWicket(objDropDown.value);");
 		javaScript.append("}");
 		
 		final Label script = new Label("script", javaScript.toString());
@@ -123,17 +136,22 @@ public class PrinterListPanel extends Panel {
 		script.setEscapeModelStrings(false); // do not HTML escape JavaScript code
 		this.add(script);
 		
-		add(new Behavior() {
-			/**
-			 * 
-			 */
+		add(new AbstractDefaultAjaxBehavior() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public void renderHead(Component component, IHeaderResponse response) {
-				// TODO Auto-generated method stub
 				super.renderHead(component, response);
 				response.renderOnLoadJavaScript("findPrinters()");
+				String js = "function callWicket(selectedPrinter) { var wcall = wicketAjaxGet ('"
+				    + getCallbackUrl() + "&selectedPrinter='+selectedPrinter, function() { }, function() { } ) }";
+				response.renderJavaScript(js, "selectPrinter");
+			}
+
+			@Override
+			protected void respond(AjaxRequestTarget arg0) {
+				StringValue selectedPrinter = RequestCycle.get().getRequest().getQueryParameters().getParameterValue("selectedPrinter");
+				selected = selectedPrinter.toString();
 			}
 		});
 	}
