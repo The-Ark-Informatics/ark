@@ -35,7 +35,7 @@ height:40px;
 div.tabpanel div.tab-row {
 float:left;
 width:100%;
-background:#DAE0D2 url("../images/bg.gif") repeat-x bottom;
+background: url("../images/bg.gif") repeat-x bottom;
 line-height:normal;
 }
 
