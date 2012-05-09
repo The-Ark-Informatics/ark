@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="iso_3166_entries">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="iso_3166_entry"/>
+        <xs:element maxOccurs="unbounded" ref="iso_3166_3_entry"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="iso_3166_entry">
+    <xs:complexType>
+      <xs:attribute name="alpha_2_code" use="required" type="xs:NCName"/>
+      <xs:attribute name="alpha_3_code" use="required" type="xs:NCName"/>
+      <xs:attribute name="common_name" type="xs:NCName"/>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="numeric_code" use="required" type="xs:integer"/>
+      <xs:attribute name="official_name"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="iso_3166_3_entry">
+    <xs:complexType>
+      <xs:attribute name="alpha_3_code" use="required" type="xs:NCName"/>
+      <xs:attribute name="alpha_4_code" use="required" type="xs:NCName"/>
+      <xs:attribute name="comment"/>
+      <xs:attribute name="date_withdrawn" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="names" use="required"/>
+      <xs:attribute name="numeric_code" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
