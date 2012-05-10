@@ -213,7 +213,7 @@ public class Constants {
 	public static final String			ADDRESS_CITY													= "address.city";
 	public static final String			ADDRESS_POST_CODE												= "address.postCode";
 	public static final String			ADDRESS_COUNTRY												= "address.country";
-	public static final String			ADDRESS_COUNTRYSTATE_STATE									= "address.countryState";
+	public static final String			ADDRESS_STATE													= "address.state";
 	public static final String			ADDRESS_ADDRESSTYPE											= "address.addressType";
 	public static final String			ADDRESS_ADDRESSSTATUS										= "address.addressStatus";
 	public static final String			ADDRESS_DATE_RECEIVED										= "address.dateReceived";
@@ -262,7 +262,7 @@ public class Constants {
 	public static final String			SUBJECT_FILE_USER_ID											= "subjectFile.userId";
 	public static final String			SUBJECT_FILE_COMMENTS										= "subjectFile.comments";
 
-	public static final String			COUNTRY_STATE_SELECTOR_WMC									= "countryStateSelector";																								// WebMarkupContainer
+	public static final String			STATE_SELECTOR_WMC									= "stateSelector";																								// WebMarkupContainer
 	// that
 	// will
 	// house

@@ -78,11 +78,11 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("city", ""));
 				}
 
-				if (address.getCountryState() != null && address.getCountryState().getState() != null) {
-					item.add(new Label("countryState.state", address.getCountryState().getState()));
+				if (address.getState() != null && address.getState().getName() != null) {
+					item.add(new Label("state.name", address.getState().getName()));//TODO things like this might almost need to be constants
 				}
 				else {
-					item.add(new Label("countryState.state", ""));
+					item.add(new Label("state.name", ""));
 				}
 
 				if (address.getPostCode() != null) {

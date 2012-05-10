@@ -55,7 +55,7 @@ import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
-import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
@@ -131,7 +131,7 @@ public interface IArkCommonService<T> {
 
 	public Country getCountry(String countryCode);
 
-	public List<CountryState> getStates(Country country);
+	public List<State> getStates(Country country);
 
 	/**
 	 * Looks up all address types

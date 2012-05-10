@@ -30,22 +30,21 @@ import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
 
-/**
- * @author nivedann
- * 
- */
-
+// TODO ASAP : change underlying table name
 @Entity
-@Table(name = "COUNTRY_STATE", schema = Constants.STUDY_SCHEMA)
-public class CountryState implements Serializable {
+@Table(name = "STATE", schema = Constants.STUDY_SCHEMA)
+public class State implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
 	private Long		id;
 	private Country	country;
-	private String		state;
-
-	public CountryState() {
+	private String		name;
+	private String		code;
+	private String		type; //ie; is it a state, territory, county, etc
+	//TODO the field state that is in db now, will be exchanged for alias / aka / alternative_name, etc.  Long term we may want a table for many alternatives/i18n, etc
+	private String		shortName;
+	public State() {
 
 	}
 
@@ -69,13 +68,39 @@ public class CountryState implements Serializable {
 		this.country = country;
 	}
 
-	@Column(name = "STATE", length = 100)
-	public String getState() {
-		return this.state;
+	@Column(name = "NAME", length = 100)
+	public String getName() {
+		return this.name;
 	}
 
-	public void setState(String state) {
-		this.state = state;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Column(name = "CODE" )
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+	
+	@Column(name = "TYPE" )
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	@Column(name = "SHORT_NAME" )
+	public String getShortName() {
+		return shortName;
+	}
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
 	}
 
 }

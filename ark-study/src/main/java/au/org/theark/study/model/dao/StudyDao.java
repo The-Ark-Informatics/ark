@@ -884,8 +884,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 				criteria.add(Restrictions.ilike(Constants.CITY, address.getCity()));
 			}
 
-			if (address.getCountryState() != null) {
-				criteria.add(Restrictions.eq(Constants.COUNTRY_STATE_NAME, address.getCountryState()));
+			if (address.getState() != null) {
+				criteria.add(Restrictions.eq(Constants.STATE_NAME, address.getState()));
 			}
 
 			if (address.getAddressType() != null) {

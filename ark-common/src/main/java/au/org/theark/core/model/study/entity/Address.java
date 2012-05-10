@@ -53,7 +53,7 @@ public class Address implements java.io.Serializable {
 	private String				postCode;
 	private String				city;
 	private Country			country;
-	private CountryState		countryState;
+	private State				state;
 	private String				otherState;
 	private AddressStatus	addressStatus;
 	private AddressType		addressType;
@@ -170,13 +170,13 @@ public class Address implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "COUNTRY_STATE_ID")
-	public CountryState getCountryState() {
-		return countryState;
+	@JoinColumn(name = "STATE_ID")
+	public State getState() {
+		return state;
 	}
 
-	public void setCountryState(CountryState countryState) {
-		this.countryState = countryState;
+	public void setState(State state) {
+		this.state = state;
 	}
 
 	@Column(name = "OTHER_STATE", length = 45)

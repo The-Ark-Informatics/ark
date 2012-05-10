@@ -54,7 +54,7 @@ public class Constants {
 	public static final String	COUNTRY_NAME					= "country";
 	public static final String	POST_CODE						= "postCode";
 	public static final String	CITY								= "city";
-	public static final String	COUNTRY_STATE_NAME			= "countryState";
+	public static final String	STATE_NAME			= "state";
 	public static final String	ADDRESS_TYPE					= "addressType";
 
 	public static final String	SUBJECTUIDSEQ_STUDYNAMEID	= "studyNameId";

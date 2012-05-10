@@ -119,7 +119,7 @@ public class Constants {
 	public static final String	CONSENT_LIST									= "consentList";
 	public static final String	CONSENT_COMPONENT_LABEL						= "consentComponentLabel";
 
-	public static final String	COUNTRY_STATE_SELECTOR_WMC					= "countryStateSelector";										// WebMarkupContainer that
+	public static final String	STATE_SELECTOR_WMC					= "stateSelector";										// WebMarkupContainer that
 	// will house the DropDowns
 	// for States
 	public static final String	SUBJECT_STATE									= "linkSubjectStudy.state";

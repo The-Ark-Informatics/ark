@@ -42,7 +42,7 @@ import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
-import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -145,7 +145,7 @@ public class SubjectUploader {
 				List<AddressType> addressTypesPossible = iArkCommonService.getAddressTypes();
 				List<AddressStatus> addressStatiiPossible = iArkCommonService.getAddressStatuses();
 				List<Country> countriesPossible = iArkCommonService.getCountries();
-				//List<CountryState> statesPossible = iArkCommonService.getStates(country);
+				//List<State> statesPossible = iArkCommonService.getStates(country);
 				
 				Collection<VitalStatus> vitalStatiiPossible = iArkCommonService.getVitalStatus();
 				Collection<PersonContactMethod> personContactMethodPossible = iArkCommonService.getPersonContactMethodList();
@@ -420,17 +420,18 @@ public class SubjectUploader {
 								addressToAttachToPerson.setCountry(country);
 								String stateString = stringLineArray[stateIndex];
 								//TODO one option: all possible states locally and test where it matches might work...or lets see how the entity goes first, and if it hits db again! 
-								//CountryState state = findState(statesPossible, stateString, country);
-								CountryState state = findStateWithinThisCountry(stateString, country);
+								//State state = findState(statesPossible, stateString, country);
+								State state = findStateWithinThisCountry(stateString, country);
 								if(state==null){
-									uploadReport.append("could not find a state named '" + stateString + "' in " + country.getName());
+									uploadReport.append("could not find a state named '" + stateString + "' in " + country.getName() + "\n");
+									addressToAttachToPerson.setOtherState(stateString);
 								}
 								else{
-									addressToAttachToPerson.setCountryState(state);
+									addressToAttachToPerson.setState(state);
 								}
 							}
 							else{
-								uploadReport.append("Could not find country '" + countryString + "'");
+								uploadReport.append("Could not find country '" + countryString + "'\n");
 							}
 							
 							String postCode = stringLineArray[postCodeIndex];
@@ -552,10 +553,10 @@ public class SubjectUploader {
 			return uploadReport;
 		}
 
-	private CountryState findStateWithinThisCountry(String stateString, Country country) {
+	private State findStateWithinThisCountry(String stateString, Country country) {
 		if(stateString!=null && !StringUtils.isBlank(stateString)){
-			for(CountryState state : country.getStates()){
-				if(state.getState().equalsIgnoreCase(stateString)){
+			for(State state : country.getStates()){
+				if(state.getName().equalsIgnoreCase(stateString)){
 					return state;
 				}
 			}

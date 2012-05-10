@@ -44,9 +44,11 @@ public class Country implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private String	name;
-	private String	description;
+	private String	officialName;
 	private String	countryCode;
-	private Set<CountryState> states = new HashSet<CountryState>(0);
+	private String	alpha3Code;	//official 3 letter code
+	private String	numericCode;	//official numeric code
+	private Set<State> states = new HashSet<State>(0);
 
 	public Country() {
 	}
@@ -74,13 +76,13 @@ public class Country implements Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "DESCRIPTION")
-	public String getDescription() {
-		return this.description;
+	@Column(name = "OFFICIAL_NAME")
+	public String getOfficialName() {
+		return this.officialName;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setOfficialName(String officialName) {
+		this.officialName = officialName;
 	}
 
 	@Column(name = "COUNTRY_CODE", length = 2)
@@ -127,12 +129,32 @@ public class Country implements Serializable {
 
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "country")
-	public Set<CountryState> getStates() {
+	public Set<State> getStates() {
 		return states;
 	}
 
-	public void setStates(Set<CountryState> states) {
+	public void setStates(Set<State> states) {
 		this.states = states;
 	}
+
+	@Column(name = "NUMERIC_CODE", length = 45)
+	public String getNumericCode() {
+		return numericCode;
+	}
+	
+	public void setNumericCode(String numericCode) {
+		this.numericCode = numericCode;
+	}
+	
+	@Column(name = "ALPHA_3_CODE", length = 3)
+	public String getAlpha3Code() {
+		return alpha3Code;
+	}
+	
+	public void setAlpha3Code(String alpha3Code) {
+		this.alpha3Code = alpha3Code;
+	}
+
+
 	
 }
