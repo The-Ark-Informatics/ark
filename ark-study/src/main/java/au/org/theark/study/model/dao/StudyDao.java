@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -55,6 +56,8 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.AddressStatus;
+import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -1481,13 +1484,24 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			batchInsertSubjects(subjectsToInsert, study);
 			for (LinkSubjectStudy subject : subjectsToInsert) {
 				Person person = subject.getPerson();
-				getSession().save(person);// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
+				Set<Address> addresses = person.getAddresses();
+				person.setAddresses(new HashSet<Address>(0));//this line seems like a hack to get around something that should be set up in our relationships TODO: fix
+				getSession().save(person);
+				for(Address address : addresses){
+					address.setPerson(person);
+					getSession().save(address);
+				}
+				
+				Set<Phone> phones = person.getPhones();
+				for(Phone phone : phones){
+					getSession().save(phone);
+				}// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
 				getSession().save(subject);
 			}
-			//batchUpdateSubjects(subjectsToUpdate);
+
 			for (LinkSubjectStudy subject : subjectsToUpdate) {
 				Person person = subject.getPerson();
-				getSession().update(person);// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
+				getSession().update(person);// Update Person and associated Phones  and addresses - TODO test personlastnamehistory nonsense
 				getSession().update(subject);
 			}
 			//tx.commit();
@@ -1530,9 +1544,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	//TODO ASAP we need to handle excepions and ROLLBACK if something hits the fan.
 	//We also need to discuss uid create and external references and user training
 	public List<LinkSubjectStudy> batchInsertSubjects(List<LinkSubjectStudy> subjectsToInsert, Study study) throws ArkUniqueException, ArkSubjectInsertException {
-		boolean rollback = false;
-//		StatelessSession session = getStatelessSession();
-//		Transaction tx = session.beginTransaction();
 																			
 		Integer nextSequenceNumber = null;
 		long start =1L;
@@ -1545,45 +1556,29 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			start = study.getSubjectUidStart()==null ? 1L : study.getSubjectUidStart();
 			prefix = study.getSubjectUidPrefix()==null ? "" : study.getSubjectUidPrefix();
 			token = study.getSubjectUidToken()==null?"":study.getSubjectUidToken().getName();
-			howManyCharsToPad = study.getSubjectUidPadChar()==null?0:study.getSubjectUidToken().getId().intValue();
+			howManyCharsToPad = study.getSubjectUidPadChar()==null?0:study.getSubjectUidPadChar().getId().intValue();
 			log.warn("\n\nnextSequenceNumber = '" + nextSequenceNumber + "'" +
-			"\nstart = '" + start +"'" +
-			"\nprefix = '" + prefix +"'" +
-			"\ntoken = '" + token +"'" +
-			"\nhowManyCharsToPad = '" + howManyCharsToPad + "'" );
+			"\tstart = '" + start + "'" + "\tprefix = '" + prefix +"'" +
+			"\ttoken = '" + token + "'" + "\thowManyCharsToPad = '" + howManyCharsToPad + "'" );
 		}
-																																	//actually num chars to pad
+		
 		try{
 			for(LinkSubjectStudy subject : subjectsToInsert){
-				// Auto-generate SubjectUID
 				if (study.getAutoGenerateSubjectUid()) {
-					//String subjectUID = getNextGeneratedSubjectUID(study);//TODO ASAP generate without DB hit and PRE-lock it for all of our inserts
 					String nextsubjectUID = getUIDGiven(start, nextSequenceNumber++, prefix, token, howManyCharsToPad);
 					log.warn("setting uid to " + nextsubjectUID);
 					subject.setSubjectUID(nextsubjectUID);			
 				}
-				//getSession().save(subject.getPerson());
-				//getSession().save(subject);
 			}
 		}
 		catch(HibernateException e){//TODO ASAP exception handling
-			log.error("SQL Exception which we must intelligently handle asap" + e);
-			rollback = true;
-			
+			log.error("SQL Exception which we must intelligently handle/throw asap" + e);
 		}
 		catch(Exception e){
 			log.error("Generic Exception which we must intelligently handle asap" + e);
-			rollback = true;
 		}
-		finally {/*
-			log.warn("in the finally");
-			//TODO ASAP handle success failure	
-			if(rollback){
-				return false;
-			}
-			else{
-				return true;
-			}*/
+		finally {
+			//TODO ASAP handle and test success &  failure, both expected and runtime	
 		}
 		return subjectsToInsert;
 	}
@@ -1619,18 +1614,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		//tx.commit();
 		session.close();
 	}
-*/
+
 	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) {
-		//StatelessSession session = getStatelessSession();
-		//Transaction tx = session.beginTransaction();
 		for (LinkSubjectStudy subject : subjectList) {
 			Person person = subject.getPerson();
 			getSession().update(person);// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
 			getSession().update(subject);	
 		}
-		//tx.commit();
-		//session.close();
-	}
+	}*/
 	public Collection<ArkUser> lookupArkUser(Study study) {
 		StringBuffer hqlQuery = new StringBuffer();
 		hqlQuery.append("  select distinct arkUserObj from ArkUserRole as arkuserRole,ArkUser as arkUserObj ");
@@ -1882,10 +1873,12 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public GenderType getDefaultGenderType() {
+		// TODO ASAP somethig liek this but not hardcoded getGenderType(0L);
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	//TODO ASAP - I see hardcoding everywhere, fix
 	public MaritalStatus getDefaultMaritalStatus() {
 		return getMaritalStatusNyName("Unknown");
 	}
@@ -1902,6 +1895,19 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return getVitalStatus(new Long(0));
 	}
 
+
+	public AddressType getDefaultAddressType() {
+	//	return getAddressType(new Long(0)); TODO replace the logic in these methods with there list criteria with .get[0] to simple session gets with the id
+		return (AddressType) (getSession().get(AddressType.class, 1L));
+	}
+
+	//TODO fix hardcoding
+	public AddressStatus getDefaultAddressStatus() {
+		return (AddressStatus) (getSession().get(AddressStatus.class, 1L));
+	}
+
+	
+	
 	public ConsentOption getConsentOptionForBoolean(boolean trueForYesFalseForNo) {
 		if(trueForYesFalseForNo){
 			return getConsentOption("YES");

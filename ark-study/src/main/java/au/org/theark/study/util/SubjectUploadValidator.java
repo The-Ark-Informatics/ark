@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
@@ -73,13 +71,10 @@ public class SubjectUploadValidator {
 	private HashSet<Integer>		insertRows;
 	private HashSet<Integer>		updateRows;
 	private HashSet<ArkGridCell>	errorCells;
+	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	private long						subjectCount;
-	private long						curPos;
-	private long						srcLength					= -1;
-	private StopWatch					timer							= null;
 	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
 	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
-	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	private int							row							= 1;
 
 	public SubjectUploadValidator() {
@@ -307,27 +302,22 @@ public class SubjectUploadValidator {
 	public java.util.Collection<String> validateSubjectMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkBaseException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
-		curPos = 0;
 		row = 0;
+		long						srcLength					= -1;
 
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
-			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
-
 			srcLength = inLength;
 			if (srcLength <= 0) {
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
 
-			timer = new StopWatch();
-			timer.start();
-
+			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			// Set field list (note 2th column to Nth column)	// SUBJECTUID DATE_COLLECTED F1 F2 FN
 																				// 0 1 2 3 N
 			csvReader.readHeaders();
-
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 			String[] headerColumnArray = csvReader.getHeaders();
 
@@ -388,6 +378,15 @@ public class SubjectUploadValidator {
 				stringBuffer.append("PREFERRED_CONTACT");
 				stringBuffer.append(delimiterCharacter);
 				stringBuffer.append("EMAIL\n");
+/*
+ * 
+ * ADDRESS_LINE_1	ADDRESS_LINE_2	SUBURB	STATE	COUNTRY	POST_CODE	ADDRESS_SOURCE	ADDRESS_STATUS	 ADDRESS_TYPE	 DATE_RECEIVED	ADDRESS_COMMENTS	IS_PREFERRED_MAILING_ADDRESS	PHONE_AREA_CODE	PHONE_NUMBER	PHONE_TYPE	PHONE_STATUS	PHONE_SOURCE	PHONE_COMMENTS	SILENT
+ *
+ *this is the newest fields and will be such a mess no point displaying???
+ */
+
+
+
 
 				// Column values
 				stringBuffer.append("[ABC000001]");
@@ -458,8 +457,6 @@ public class SubjectUploadValidator {
 					log.error("Cleanup operation failed: isr.close()", ex);
 				}
 			}
-			// Restore the state of variables
-			srcLength = -1;
 		}
 
 		return fileValidationMessages;
@@ -467,6 +464,8 @@ public class SubjectUploadValidator {
 
 	/**
 	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN...
+	 * 
+	 * TODO:  remove globals unless their is a legit reason
 	 * 
 	 * Where N is any number of columns
 	 * 
@@ -486,17 +485,14 @@ public class SubjectUploadValidator {
 			ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
-		curPos = 0;
 		row = 1;
-//		List<String> uidsToUpdate = new ArrayList<String>();
-
+		long srcLength	= -1L;
+		
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
-		DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
-			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			String[] stringLineArray;
 
 			srcLength = inLength;
@@ -504,34 +500,21 @@ public class SubjectUploadValidator {
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
 
-			timer = new StopWatch();
-			timer.start();
-
-			// Set field list (note 1th column to Nth column)
-			// SUBJECTUID F1 F2 FN
-			// 0 1 2 N
+			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			csvReader.readHeaders();
-
 			srcLength = inLength - csvReader.getHeaders().toString().length();
-
 			String[] fieldNameArray = csvReader.getHeaders();
 
 			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
-				// do something with the newline to put the data into
-				// the variables defined above
+				// do something with the newline to put the data into the variables defined above
 				stringLineArray = csvReader.getValues();
 
 				// First/0th column should be the SubjectUID
 				String subjectUID = stringLineArray[0];
 				boolean isUpdate = subjectUIDsAlreadyExisting.contains(subjectUID);
-/*				for(String subjectFromDB : subjectUIDsAlreadyExisting){
-					if(subjectFromDB.equals(subjectUID)){
-						isUpdate = true;
-					}
-				}*/
 
 				if(isUpdate){
 					updateRows.add(row);
@@ -545,14 +528,12 @@ public class SubjectUploadValidator {
 				String dateStr = new String();
 
 				if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0) {
-
 					if (csvReader.getIndex("DATE_OF_BIRTH") > 0) {
 						col = csvReader.getIndex("DATE_OF_BIRTH");
 					}
 					else {
 						col = csvReader.getIndex("DOB");
 					}
-
 					try {
 						dateStr = stringLineArray[col];
 						if (dateStr != null && dateStr.length() > 0)
@@ -564,9 +545,8 @@ public class SubjectUploadValidator {
 						errorCells.add(new ArkGridCell(col, row));
 					}
 				}
-				
-				if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0) {
 
+				if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0) {
 					if (csvReader.getIndex("DATE_OF_DEATH") > 0) {
 						col = csvReader.getIndex("DATE_OF_DEATH");
 					}
@@ -585,17 +565,24 @@ public class SubjectUploadValidator {
 					}
 				}
 
+				
+				if (csvReader.getIndex("ADDRESS_DATE_RECEIVED") > 0 ) {
+					col = csvReader.getIndex("ADDRESS_DATE_RECEIVED");
+					try {
+						dateStr = stringLineArray[col];
+						if (dateStr != null && dateStr.length() > 0)
+							simpleDateFormat.parse(dateStr);
+					}
+					catch (ParseException pex) {
+						dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
+								+ Constants.DD_MM_YYYY.toLowerCase());
+						errorCells.add(new ArkGridCell(col, row));
+					}
+				}
+
 				subjectCount++;
 				row++;
 			}
-
-/*			if (dataValidationMessages.size() > 0) {
-				//log.warn("Validation messages: " + dataValidationMessages.size());
-				for (Iterator<String> iterator = dataValidationMessages.iterator(); iterator.hasNext();) {
-					String errorMessage = iterator.next();
-					log.warn(errorMessage);
-				}
-			}*/
 
 		}
 		catch (IOException ioe) {
@@ -607,14 +594,6 @@ public class SubjectUploadValidator {
 			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
 		}
 		finally {
-	//		 uidsToUpdateReferenceToBeUpdated;
-			// Clean up the IO objects
-			timer.stop();
-			log.warn("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
-			log.warn("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
-			log.warn("updates = " + updateRows.size() + "     inserts = " + insertRows.size());
-			if (timer != null)
-				timer = null;
 			if (csvReader != null) {
 				try {
 					csvReader.close();
@@ -631,8 +610,6 @@ public class SubjectUploadValidator {
 					log.error("Cleanup operation failed: isr.close()", ex);
 				}
 			}
-			// Restore the state of variables
-			srcLength = -1;
 		}
 
 		for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
@@ -652,10 +629,8 @@ public class SubjectUploadValidator {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
 			OutputStreamWriter osw = new OutputStreamWriter(out);
-
 			// Gets first sheet from workbook
 			Sheet s = w.getSheet(0);
-
 			Cell[] row = null;
 
 			// Gets the cells from sheet
@@ -691,10 +666,9 @@ public class SubjectUploadValidator {
 	 * Return the progress of the current process in %
 	 * 
 	 * @return if a process is actively running, then progress in %; or if no process running, then returns -1
-	 */
+	 *
 	public double getProgress() {
 		double progress = -1;
-
 		if (srcLength > 0)
 			progress = curPos * 100.0 / srcLength; // %
 
@@ -705,13 +679,11 @@ public class SubjectUploadValidator {
 	 * Return the speed of the current process in KB/s
 	 * 
 	 * @return if a process is actively running, then speed in KB/s; or if no process running, then returns -1
-	 */
+	 *
 	public double getSpeed() {
 		double speed = -1;
-
 		if (srcLength > 0)
 			speed = curPos / 1024 / (timer.getTime() / 1000.0); // KB/s
-
 		return speed;
-	}
+	}*/
 }

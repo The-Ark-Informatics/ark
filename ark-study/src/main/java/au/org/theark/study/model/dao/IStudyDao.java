@@ -30,6 +30,8 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.AddressStatus;
+import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -324,7 +326,7 @@ public interface IStudyDao {
 
 // TODO trav might make this deprecated	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
 
-	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException;
+//	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException;
 
 	/**
 	 * Returns a Collection of ArkUser entities who are linked to a particular study.
@@ -395,4 +397,7 @@ public interface IStudyDao {
 	public ConsentStatus getConsentStatusByName(String name);
 
 	public void setPreferredMailingAdressToFalse(Person person);
+	
+	public AddressType getDefaultAddressType();
+	public AddressStatus getDefaultAddressStatus();
 }

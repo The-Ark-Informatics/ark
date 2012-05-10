@@ -327,20 +327,44 @@ public class Constants {
 	public static final String			ARK_BASE_EXCEPTION											= "Base ARK System Exception: ";
 
 	public static final String[]		SUBJECT_TEMPLATE_HEADER										= { "SUBJECTUID", "TITLE", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "PREFERRED_NAME", "DATE_OF_BIRTH",
-			"VITAL_STATUS", "GENDER", "STATUS", "DATE_OF_DEATH", "CAUSE_OF_DEATH", "MARITAL_STATUS", "PREFERRED_CONTACT", "EMAIL" };
+			"VITAL_STATUS", "GENDER", "STATUS", "DATE_OF_DEATH", "CAUSE_OF_DEATH", "MARITAL_STATUS", "PREFERRED_CONTACT", "EMAIL",
+			"ADDRESS_LINE_1", "ADDRESS_LINE_2", "SUBURB", "STATE", "COUNTRY", "POST_CODE", "ADDRESS_SOURCE", "ADDRESS_STATUS",
+			"ADDRESS_TYPE", "DATE_RECEIVED", "ADDRESS_COMMENTS", "IS_PREFERRED_MAILING_ADDRESS", "PHONE_AREA_CODE",
+			"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","SILENT"};
+
+	
+	//TODO this is all for validation.  maybe we need some form of validation mapping to db, entities or something like that as this will not be maintainable for long
 	public static final String[][]	SUBJECT_TEMPLATE_CELLS										= {
 			{ "", "SUBJECTUID", "TITLE", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME", "PREFERRED_NAME", "DATE_OF_BIRTH", "VITAL_STATUS", "GENDER", "STATUS", "DATE_OF_DEATH", "CAUSE_OF_DEATH",
-			"MARITAL_STATUS", "PREFERRED_CONTACT", "EMAIL" },
+			"MARITAL_STATUS", "PREFERRED_CONTACT", "EMAIL", 
+			"ADDRESS_LINE_1", "ADDRESS_LINE_2", "SUBURB", "STATE", "COUNTRY", "POST_CODE", "ADDRESS_SOURCE", "ADDRESS_STATUS",
+			"ADDRESS_TYPE", "DATE_RECEIVED", "ADDRESS_COMMENTS", "IS_PREFERRED_MAILING_ADDRESS", "PHONE_AREA_CODE",
+			"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","SILENT"},
 			{ "DESCRIPTION", "The unique identifier assigned for this subject.  This may be automatically generated on upload into The Ark", "The title by which the subject prefers to be addressed",
 			"The subjects first name", "The subjects middle name", "The subjects last or family name", "The name by which the subject prefers to be addressed", "The date the subject was born",
 			"The subject's vital status", "The subject's gender", "The status of the subject as it pertains to the study", "The date the subject died, if known", "The cause of death",
-			"The marital status of the subject", "The preferred method for contacting the subject", "The subject's primary email address" },
+			"The marital status of the subject", "The preferred method for contacting the subject", "The subject's primary email address", 
+			"ADDRESS_LINE_1", "ADDRESS_LINE_2", "SUBURB", "STATE", "COUNTRY", "POST_CODE", "ADDRESS_SOURCE", "ADDRESS_STATUS",
+			"ADDRESS_TYPE", "ADDRESS_DATE_RECEIVED", "ADDRESS_COMMENTS", "IS_PREFERRED_MAILING_ADDRESS", "PHONE_AREA_CODE",
+			"PHONE_NUMBER", "PHONE_TYPE", "PHONE_STATUS", "PHONE_SOURCE", "PHONE_COMMENTS","SILENT" },
 			{ "FORMAT", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "CHARACTER", "DD/MM/YYYY", "ALPHANUMERIC", "CHARACTER",
-			"CHARACTER", "ALPHANUMERIC" },
-			{ "MANDATORY", "Yes - unless assigned on upload", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No" },
+			"CHARACTER", "ALPHANUMERIC" , 
+			"CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER",
+			"CHARACTER", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "ALPHANUMERIC",
+			"ALPHANUMERIC", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER","SILENT"},
+			{ "MANDATORY", "Yes - unless assigned on upload", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", 
+				"No", "No", "No", "No", "No", "No", "No", "No",
+				"No", "No", "No", "No", "No",
+				"No", "No", "No", "No", "No","No" },
 			{ "VALID VALUES", "", "Unknown, Br, Capt, Col, Cpl, Dean, Dr, Fr, Lac, Major, Miss, Mr, Mrs, Ms, Past, Prof, Pstr, Rev, Sir, Sr", "", "", "", "", "", "Alive, Deceased, Unknown",
-			"Male, Female, Unknown", "Subject, Prospect, Withdrawn Subject, Archive", "", "", "Married, Single, Divorced, Unknown", "Email, Home telephone, Mobile telephone, Post", "" },
-			{ "NOTE: Removed this first column, and replace rows 2 to 6", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" } };
+			"Male, Female, Unknown", "Subject, Prospect, Withdrawn Subject, Archive", "", "", "Married, Single, Divorced, Unknown", "Email, Home telephone, Mobile telephone, Post", "", 
+			"", "", "", "", "", "",  //last three on this line are state country and postcode - i really could enforce something 
+			"", "", "", "", "", "", "",
+			"", "", "", "", "","" },
+			{ "NOTE: Removed this first column, and replace rows 2 to 6", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
+				"", "", "", "", "", "", "", "",
+				"", "", "", "", "",
+				"", "", "", "", "","" } };
 
 	// 1 digit, 1 lower, 1 upper, 1 symbol "~!@#$%^&*()_-+={}[]:;\"<>|", from 6 to 20
 	public static final String			PASSWORD_PATTERN												= "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_\\-\\+\\=\\{\\}\\[\\]:;\\\"<>|]).{6,20})";

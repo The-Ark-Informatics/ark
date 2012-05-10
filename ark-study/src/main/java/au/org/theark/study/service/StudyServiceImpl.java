@@ -53,6 +53,8 @@ import au.org.theark.core.model.audit.entity.LssConsentHistory;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.AddressStatus;
+import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
@@ -969,9 +971,9 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 
-	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException {
-		iStudyDao.batchUpdateSubjects(subjectList);
-	}
+	//public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException {
+	//	iStudyDao.batchUpdateSubjects(subjectList);
+	//}
 
 	public Collection<ArkUser> lookupArkUser(Study study) {
 		return iStudyDao.lookupArkUser(study);
@@ -1191,5 +1193,13 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 
+
+	public AddressType getDefaultAddressType() {
+		return iStudyDao.getDefaultAddressType();
+	}
+
+	public AddressStatus getDefaultAddressStatus() {
+		return iStudyDao.getDefaultAddressStatus();
+	}
 
 }

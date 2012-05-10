@@ -33,13 +33,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.AddressStatus;
+import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
+import au.org.theark.core.model.study.entity.Country;
+import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -98,7 +101,7 @@ public class SubjectUploader {
 		return null;
 	}
 	
-	 /* Imports the subject data file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file format:
+	 /** Imports the subject data file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file format:
 		 * SUBJECTUID,FIELD1,FIELD2,FIELDN... 1,01/01/1900,99.99,99.99,, ...
 		 * 
 		 * Where N is any number of columns
@@ -112,17 +115,14 @@ public class SubjectUploader {
 		 * @throws ArkBaseException
 		 *            general ARK Exception
 		 * @return the upload report detailing the upload process
-		 */
+		 **/
 		public StringBuffer uploadAndReportMatrixSubjectFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, List<String> uidsWhichNeedUpdating) throws FileFormatException, ArkSystemException {
-//			StopWatch					timer						= new StopWatch();
-//			timer.start();
 			List<LinkSubjectStudy>	insertSubjects			= new ArrayList<LinkSubjectStudy>();
 			List<LinkSubjectStudy>	updateSubjects			= new ArrayList<LinkSubjectStudy>();
 			long						subjectCount = 0;
 			long						insertCount = 0;
 			long						updateCount = 0;
 			long						srcLength = -1;	// -1 means nothing being processed
-			
 			delimiterCharacter = inDelimChr;
 			uploadReport = new StringBuffer();
 
@@ -142,13 +142,20 @@ public class SubjectUploader {
 				Collection<SubjectStatus> subjectStatiiPossible = iArkCommonService.getSubjectStatus();
 				Collection<GenderType> genderTypesPossible = iArkCommonService.getGenderTypes();
 				Collection<TitleType> titleTypesPossible = iArkCommonService.getTitleType();
+				List<AddressType> addressTypesPossible = iArkCommonService.getAddressTypes();
+				List<AddressStatus> addressStatiiPossible = iArkCommonService.getAddressStatuses();
+				List<Country> countriesPossible = iArkCommonService.getCountries();
+				//List<CountryState> statesPossible = iArkCommonService.getStates(country);
+				
 				Collection<VitalStatus> vitalStatiiPossible = iArkCommonService.getVitalStatus();
 				Collection<PersonContactMethod> personContactMethodPossible = iArkCommonService.getPersonContactMethodList();
-				//Collection<MaritalStatus> yesNoList = iArkCommonService.getYesNoList();
+				//Collection<MaritalStatus> yesNoList = iArkCommonService.getYesNoList(); //TODO would boolean not be better?
 
 				boolean autoConsent = study.getAutoConsent();
 				SubjectStatus defaultSubjectStatus = iStudyService.getDefaultSubjectStatus();
 				TitleType defaultTitleType = iStudyService.getDefaultTitleType();
+				AddressType defaultAddressType = iStudyService.getDefaultAddressType();
+				AddressStatus defaultAddressStatus = iStudyService.getDefaultAddressStatus();
 				GenderType defaultGenderType = iStudyService.getDefaultGenderType();
 				VitalStatus defaultVitalStatus = iStudyService.getDefaultVitalStatus();
 				MaritalStatus defaultMaritalStatus = iStudyService.getDefaultMaritalStatus();
@@ -156,18 +163,14 @@ public class SubjectUploader {
 				ConsentStatus consentStatusOfConsented = iStudyService.getConsentStatusByName("Consented");
 				ConsentType consentTypeOfElectronic = iStudyService.getConsentTypeByName("Electronic");
 
-//				List<String> subjectUIDsAlreadyExisting = null;	
 				List<LinkSubjectStudy> allSubjectWhichWillBeUpdated = null;
 				if(uidsWhichNeedUpdating.size()>0){
 					//TODO analyse performance of bringing all back and having to iterate everytime, vs conditional query + looping through less
 					// TODO analyze performance of getting that big list of UIDs and doing a .contains(subjectuid)   VS    getting all the entities and doing a .getSubjectUID.equals(subjectUID)
-					//List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	
 					allSubjectWhichWillBeUpdated = iArkCommonService.getUniqueSubjectsWithTheseUIDs(study, uidsWhichNeedUpdating);
-//					subjectUIDsAlreadyExisting = iArkCommonService.getUniqueSubjectUIDsWithTheseUIDs(study, uidsWhichNeedUpdating);
 				}
 				else{
 					allSubjectWhichWillBeUpdated 	= new ArrayList();
-//					subjectUIDsAlreadyExisting 	= new ArrayList();
 				}
 				
 				srcLength = inLength;
@@ -178,11 +181,8 @@ public class SubjectUploader {
 					throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + srcLength);
 				}
 
-				// Set field list (note 2th column to Nth column)		// SUBJECTUID DATE_COLLECTED F1 F2 FN
-																						// 0 1 2 3 N      this must be done
 				csvReader.readHeaders();
 				srcLength = inLength - csvReader.getHeaders().toString().length();
-
 				int firstNameIndex 		= csvReader.getIndex("FIRST_NAME");
 				int middleNameIndex 		= csvReader.getIndex("MIDDLE_NAME");
 				int lastNameIndex 		= csvReader.getIndex("LAST_NAME");
@@ -193,6 +193,19 @@ public class SubjectUploader {
 				int vitalStatusIndex		= csvReader.getIndex("VITAL_STATUS");
 				int maritalStatusIndex 	= csvReader.getIndex("MARITAL_STATUS");
 				int statusIndex 			= csvReader.getIndex("STATUS");
+ 
+				int addressLine1Index			= csvReader.getIndex("ADDRESS_LINE_1");
+				int addressLine2Index			= csvReader.getIndex("ADDRESS_LINE_2");
+				int suburbIndex					= csvReader.getIndex("SUBURB");
+				int stateIndex						= csvReader.getIndex("STATE");
+				int countryIndex					= csvReader.getIndex("COUNTRY");
+				int postCodeIndex					= csvReader.getIndex("POST_CODE");
+				int addressSourceIndex			= csvReader.getIndex("ADDRESS_SOURCE");
+				int addressStatusIndex			= csvReader.getIndex("ADDRESS_STATUS");
+				int addressTypeIndex				= csvReader.getIndex("ADDRESS_TYPE");
+				int dateReceivedIndex			= csvReader.getIndex("DATE_RECEIVED");
+				int addressCommentsIndex		= csvReader.getIndex("ADDRESS_COMMENTS");
+				int isPreferredMailingIndex	= csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS");
 				
 				//if(PERSON_CONTACT_METHOD is in headers, use it, 
 									//else, if CONTACT_METHOD, us IT, else, just set to -1 
@@ -209,29 +222,20 @@ public class SubjectUploader {
 													((csvReader.getIndex("GENDER") > 0) ? csvReader.getIndex("GENDER"): 
 													((csvReader.getIndex("SEX") > 0) ? csvReader.getIndex("SEX"):-1)));   
 
-				// Loop through all rows in file
 				while (csvReader.readRecord()) {
-
 					LinkSubjectStudy subject = null;
 					stringLineArray = csvReader.getValues();
 					String subjectUID = stringLineArray[0];
-					
 					subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
 					boolean thisSubjectAlreadyExists = (subject!=null);
 
-					//TODO ASAP maybe this can be replaced with a getAllSubjectUIDsForThisStudy up top...then just search throw all uids for a match?
-					//can even pre-getAllSubjects in the already exists group
 					Person person = null;
 					if(thisSubjectAlreadyExists){
-						//formerly subject = iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study);
-						//This is now going through a list of prefetched entities  that we know need to be changed and exist
-						//subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
-						//subject should always have a person
 						person = subject.getPerson();
 					}
 					else{
 						subject = new LinkSubjectStudy();
-						subject.setSubjectUID(subjectUID);//TODO ASAP: this seems wrong...if it's supposed to be autogenerated...we're maybe screwing next method 
+						subject.setSubjectUID(subjectUID);//note: this will be overwritten IF study.isautogenerate
 						subject.setStudy(study);
 						person = new Person();
 					}
@@ -294,7 +298,6 @@ public class SubjectUploader {
 						}
 					}
 
-					//TODO make this smarter about making a db call every time for just getting an emum
 					if (vitalStatusIndex > 0) {
 						String vitalStatusStr = (stringLineArray[vitalStatusIndex]);
 						for(VitalStatus vitalStat : vitalStatiiPossible){
@@ -372,6 +375,98 @@ public class SubjectUploader {
 							subject.setConsentToUseData(defaultConsentOption);
 						}
 					}
+					
+					//if no address info - ignore
+					if(addressLine1Index>0 || addressLine1Index>0){
+						boolean updateAddress = false;
+						String address1String = stringLineArray[addressLine1Index];
+						String address2String = stringLineArray[addressLine2Index];
+						
+						if(	(address1String == null || StringUtils.isBlank(address1String)) &&
+								(address2String == null || StringUtils.isBlank(address2String)) ){
+							//then lets just jump out as there is no address to validate.  lay down to user that they must have data if they want an update
+						}
+						else{
+							Address addressToAttachToPerson = null;
+							if(thisSubjectAlreadyExists){
+								String typeString = null;
+								String statusString = null;
+
+								if (addressTypeIndex > 0)
+									typeString = stringLineArray[addressTypeIndex];
+								if (addressStatusIndex > 0)
+									statusString = stringLineArray[addressTypeIndex];							
+								
+								for(Address a : person.getAddresses()){
+									if(a.getAddressStatus().getName().equalsIgnoreCase(statusString) &&
+										a.getAddressType().getName().equalsIgnoreCase(typeString)){
+										addressToAttachToPerson = a;
+										updateAddress = true;
+									}
+								}
+							}
+							else{
+								addressToAttachToPerson = new Address();
+							}
+							
+							AddressType type = findAddressTypeOrSetDefault(addressTypesPossible, defaultAddressType, stringLineArray[addressTypeIndex]);
+							AddressStatus status = findAddressStatusOrSetDefault(addressStatiiPossible, defaultAddressStatus, stringLineArray[addressTypeIndex]);
+							String addressComments = stringLineArray[addressCommentsIndex];
+							String suburb = stringLineArray[suburbIndex];
+							
+							String countryString = stringLineArray[countryIndex];
+							Country country = findCountry(countriesPossible, countryString);
+							if(country!=null){
+								addressToAttachToPerson.setCountry(country);
+								String stateString = stringLineArray[stateIndex];
+								//TODO one option: all possible states locally and test where it matches might work...or lets see how the entity goes first, and if it hits db again! 
+								//CountryState state = findState(statesPossible, stateString, country);
+								CountryState state = findStateWithinThisCountry(stateString, country);
+								if(state==null){
+									uploadReport.append("could not find a state named '" + stateString + "' in " + country.getName());
+								}
+								else{
+									addressToAttachToPerson.setCountryState(state);
+								}
+							}
+							else{
+								uploadReport.append("Could not find country '" + countryString + "'");
+							}
+							
+							String postCode = stringLineArray[postCodeIndex];
+							String addressSource = stringLineArray[addressSourceIndex];
+							String dateReceivedString = stringLineArray[dateReceivedIndex];
+							String isPreferredMailingString = stringLineArray[isPreferredMailingIndex];
+
+							addressToAttachToPerson.setAddressType(type);
+							addressToAttachToPerson.setAddressStatus(status);
+							if(postCode!=null && !postCode.isEmpty())
+								addressToAttachToPerson.setPostCode(postCode);
+							if(address1String!=null && !address1String.isEmpty())
+								addressToAttachToPerson.setAddressLineOne(address1String);
+							if(address2String!=null && !address2String.isEmpty())
+								addressToAttachToPerson.setStreetAddress(address2String);//yeah..
+							if(dateReceivedString!=null && !dateReceivedString.isEmpty()){
+								// TODO dateconvert and set
+								Date dateReceived = new Date();
+								dateReceived = simpleDateFormat.parse(dateReceivedString);
+								person.setDateOfBirth(dateReceived);
+							}
+							if(suburb!=null && !suburb.isEmpty())
+								addressToAttachToPerson.setCity(suburb);
+							if(addressComments!=null && !addressComments.isEmpty())
+								addressToAttachToPerson.setComments(addressComments);
+							if(isPreferredMailingString!=null && !isPreferredMailingString.isEmpty())
+								addressToAttachToPerson.setPreferredMailingAddress(Boolean.valueOf(isPreferredMailingString));
+							if(addressSource!=null && !addressSource.isEmpty())
+								addressToAttachToPerson.setSource(addressSource);
+							if(!updateAddress){
+								//TODO check this works in all cases
+								person.getAddresses().add(addressToAttachToPerson);
+							}
+						}							
+						
+					}
 
 					subject.setPerson(person);
 
@@ -400,7 +495,7 @@ public class SubjectUploader {
 					}
 
 					subjectCount++;
-					log.warn("finished message for " + subjectCount + "         updates= " + updateCount + "     inserts = " + insertCount + "   " );
+					//log.warn("finished message for " + subjectCount + "         updates= " + updateCount + "     inserts = " + insertCount + "   " );
 				}
 			}
 			catch (IOException ioe) {
@@ -414,21 +509,11 @@ public class SubjectUploader {
 				throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
 			}
 			finally {
-				// Clean up the IO objects
-//				timer.stop();
-//				uploadReport.append("\n");
-//				uploadReport.append("Total elapsed time: ");
-//				uploadReport.append(decimalFormat.format(timer.getTime() / 1000.0));
-//				uploadReport.append(" s");
-//				uploadReport.append("\n");
 				uploadReport.append("Total file size: ");
 				uploadReport.append(decimalFormat.format(inLength / 1024.0 / 1024.0));
 				uploadReport.append(" MB");
 				uploadReport.append("\n");
-//
-//				if (timer != null)
-//					timer = null;
-//
+				
 				if (csvReader != null) {
 					try {
 						csvReader.close();
@@ -461,425 +546,55 @@ public class SubjectUploader {
 			uploadReport.append(" subjects.");
 			uploadReport.append("\n");
 
-/*			// Batch insert/update
-			try {
-				iStudyService.batchInsertSubjects(insertSubjects);
-			}
-			catch (ArkUniqueException e) {
-				e.printStackTrace();
-			}
-			catch (ArkSubjectInsertException e) {
-				e.printStackTrace();
-			}
-			try {
-				iStudyService.batchUpdateSubjects(updateSubjects);
-			}
-			catch (ArkUniqueException e) {
-				e.printStackTrace();
-			}
-			catch (ArkSubjectInsertException e) {
-				e.printStackTrace();
-			}
-*/
-			//TODO exceptionhandling
+			//TODO better exceptionhandling
 			iStudyService.processBatch(insertSubjects, study, updateSubjects);
 			
 			return uploadReport;
 		}
 
-	/**
-	 * getallexistingsubjectuids
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * Imports the subject data file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file format:
-	 * SUBJECTUID,FIELD1,FIELD2,FIELDN... 1,01/01/1900,99.99,99.99,, ...
-	 * 
-	 * Where N is any number of columns
-	 * 
-	 * @param fileInputStream
-	 *           is the input stream of a file
-	 * @param inLength
-	 *           is the length of a file
-	 * @throws FileFormatException
-	 *            file format Exception
-	 * @throws ArkBaseException
-	 *            general ARK Exception
-	 * @return the upload report detailing the upload process
-	 *
-	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
-		delimiterCharacter = inDelimChr;
-		uploadReport = new StringBuffer();
-		curPos = 0;
-
-		InputStreamReader inputStreamReader = null;
-		CsvReader csvReader = null;
-		DecimalFormat decimalFormat = new DecimalFormat("0.00");
-
-		try {
-			inputStreamReader = new InputStreamReader(fileInputStream);
-			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
-			String[] stringLineArray;
-
-			srcLength = inLength;
-			if (srcLength <= 0) {
-				uploadReport.append("The input size was not greater than 0. Actual length reported: ");
-				uploadReport.append(srcLength);
-				uploadReport.append("\n");
-				throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + srcLength);
-			}
-
-			timer = new StopWatch();
-			timer.start();
-
-			// Set field list (note 2th column to Nth column)
-			// SUBJECTUID DATE_COLLECTED F1 F2 FN
-			// 0 1 2 3 N
-			csvReader.readHeaders();
-
-			srcLength = inLength - csvReader.getHeaders().toString().length();
-			//log.debug("Header length: " + csvReader.getHeaders().toString().length());
-
-			int index = 0;
-
-			// Loop through all rows in file
-			while (csvReader.readRecord()) {
-				log.warn("reading msg " + subjectCount);
-				// do something with the newline to put the data into
-				// the variables defined above
-				stringLineArray = csvReader.getValues();
-				String subjectUID = stringLineArray[0];
-
-				SubjectVO subjectVo = new SubjectVO();
-				LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-				linkSubjectStudy.setStudy(study);
-
-				try {
-					linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID, study);
-				}
-				catch (EntityNotFoundException enf) {
-					// New subject
-					linkSubjectStudy.setSubjectUID(subjectUID);
-					linkSubjectStudy.setStudy(study);
-				}
-				Person person = linkSubjectStudy.getPerson();
-				subjectVo.setLinkSubjectStudy(linkSubjectStudy);
-
-				if (linkSubjectStudy.getId() == null && linkSubjectStudy.getPerson().getId() == null) {
-					person = new Person();
-				}
-				else {
-					person = linkSubjectStudy.getPerson();
-				}
-
-				if (csvReader.getIndex("FIRST_NAME") > 0)
-					person.setFirstName(stringLineArray[csvReader.getIndex("FIRST_NAME")]);
-
-				if (csvReader.getIndex("MIDDLE_NAME") > 0)
-					person.setMiddleName(stringLineArray[csvReader.getIndex("MIDDLE_NAME")]);
-
-				if (csvReader.getIndex("LAST_NAME") > 0)
-					person.setLastName(stringLineArray[csvReader.getIndex("LAST_NAME")]);
-
-				if (csvReader.getIndex("PREFERRED_NAME") > 0)
-					person.setPreferredName(stringLineArray[csvReader.getIndex("PREFERRED_NAME")]);
-
-				if (csvReader.getIndex("GENDER_TYPE") > 0 || csvReader.getIndex("GENDER") > 0 || csvReader.getIndex("SEX") > 0) {
-					GenderType genderType;
-					if (csvReader.getIndex("GENDER_TYPE") > 0) {
-						index = csvReader.getIndex("GENDER_TYPE");
-					}
-					else if (csvReader.getIndex("GENDER") > 0) {
-						index = csvReader.getIndex("GENDER");
-					}
-					else {
-						index = csvReader.getIndex("SEX");
-					}
-
-					if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
-						genderType = iArkCommonService.getGenderType(stringLineArray[index]);
-						person.setGenderType(genderType);
-					}
-				}
-
-				if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0) {
-					Date dateOfBirth = new Date();
-
-					if (csvReader.getIndex("DATE_OF_BIRTH") > 0) {
-						index = csvReader.getIndex("DATE_OF_BIRTH");
-					}
-					else {
-						index = csvReader.getIndex("DOB");
-					}
-
-					if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
-						dateOfBirth = simpleDateFormat.parse(stringLineArray[index]);
-						person.setDateOfBirth(dateOfBirth);
-					}
-				}
-
-				if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0) {
-					Date dateOfDeath = new Date();
-					if (csvReader.getIndex("DATE_OF_DEATH") > 0) {
-						index = csvReader.getIndex("DATE_OF_DEATH");
-					}
-					else {
-						index = csvReader.getIndex("DODEATH");
-					}
-
-					if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
-						dateOfDeath = simpleDateFormat.parse(stringLineArray[index]);
-						person.setDateOfDeath(dateOfDeath);
-					}
-				}
-
-				if (csvReader.getIndex("CAUSE_OF_DEATH") > 0 || csvReader.getIndex("CODEATH") > 0) {
-					if (csvReader.getIndex("CAUSE_OF_DEATH") > 0) {
-						index = csvReader.getIndex("CAUSE_OF_DEATH");
-					}
-					else {
-						index = csvReader.getIndex("CODEATH");
-					}
-
-					if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
-						person.setCauseOfDeath(stringLineArray[index]);
-					}
-				}
-
-				if (csvReader.getIndex("VITAL_STATUS") > 0) {
-					String vitalStatusStr = (stringLineArray[csvReader.getIndex("VITAL_STATUS")]);
-					VitalStatus vitalStatus = iArkCommonService.getVitalStatus(vitalStatusStr);
-					person.setVitalStatus(vitalStatus);
-				}
-
-				if (csvReader.getIndex("PREFERRED_EMAIL") > 0) {
-					person.setPreferredEmail(stringLineArray[csvReader.getIndex("PREFERRED_EMAIL")]);
-				}
-
-				if (csvReader.getIndex("OTHER_EMAIL") > 0) {
-					person.setPreferredEmail(stringLineArray[csvReader.getIndex("OTHER_EMAIL")]);
-				}
-
-				if (csvReader.getIndex("TITLE") > 0) {
-					String titleStr = (stringLineArray[csvReader.getIndex("TITLE")]);
-					TitleType titleType = iArkCommonService.getTitleType(titleStr);
-					person.setTitleType(titleType);
-				}
-
-				if (csvReader.getIndex("MARITAL_STATUS") > 0) {
-					String maritalStatusStr = (stringLineArray[csvReader.getIndex("MARITAL_STATUS")]);
-					MaritalStatus maritalStatus = iArkCommonService.getMaritalStatus(maritalStatusStr);
-					person.setMaritalStatus(maritalStatus);
-				}
-
-				if (csvReader.getIndex("PERSON_CONTACT_METHOD") > 0 || csvReader.getIndex("CONTACT_METHOD") > 0) {
-					String personContactMethodStr = null;
-					if (csvReader.getIndex("PERSON_CONTACT_METHOD") > 0) {
-						personContactMethodStr = (stringLineArray[csvReader.getIndex("PERSON_CONTACT_METHOD")]);
-					}
-					else {
-						personContactMethodStr = (stringLineArray[csvReader.getIndex("CONTACT_METHOD")]);
-					}
-					PersonContactMethod personContactMethod = iArkCommonService.getPersonContactMethod(personContactMethodStr);
-					person.setPersonContactMethod(personContactMethod);
-				}
-
-				if (csvReader.getIndex("STATUS") > 0) {
-					String statusStr = (stringLineArray[csvReader.getIndex("STATUS")]);
-					SubjectStatus subjectStatus = iArkCommonService.getSubjectStatus(statusStr);
-					linkSubjectStudy.setSubjectStatus(subjectStatus);
-				}
-
-				linkSubjectStudy.setPerson(person);
-				subjectVo.setLinkSubjectStudy(linkSubjectStudy);
-
-				if (subjectVo.getLinkSubjectStudy().getId() == null || subjectVo.getLinkSubjectStudy().getPerson().getId() == 0) {
-					// iStudyService.createSubject(subjectVo);
-					insertSubjects.add(subjectVo);
-					StringBuffer sb = new StringBuffer();
-					sb.append("Subject UID: ");
-					sb.append(subjectVo.getLinkSubjectStudy().getSubjectUID());
-					sb.append(" has been created successfully and linked to the study: ");
-					sb.append(study.getName());
-					sb.append("\n");
-					uploadReport.append(sb);
-					insertCount++;
-				}
-				else {
-					// iStudyService.updateSubject(subjectVo);
-					updateSubjects.add(subjectVo);
-					StringBuffer sb = new StringBuffer();
-					sb.append("Subject UID: ");
-					sb.append(subjectVo.getLinkSubjectStudy().getSubjectUID());
-					sb.append(" has been updated successfully and linked to the study: ");
-					sb.append(study.getName());
-					sb.append("\n");
-					uploadReport.append(sb);
-					updateCount++;
-				}
-
-				//log.debug("\n");
-				subjectCount++;
-				log.warn("finished message for " + subjectCount);
-			}
-		}
-		catch (IOException ioe) {
-			uploadReport.append("Unexpected I/O exception whilst reading the subject data file\n");
-			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
-		}
-		catch (Exception ex) {
-			uploadReport.append("Unexpected exception whilst reading the subject data file\n");
-			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
-		}
-		finally {
-			// Clean up the IO objects
-			timer.stop();
-			uploadReport.append("\n");
-			uploadReport.append("Total elapsed time: ");
-			uploadReport.append(timer.getTime());
-			uploadReport.append(" ms or ");
-			uploadReport.append(decimalFormat.format(timer.getTime() / 1000.0));
-			uploadReport.append(" s");
-			uploadReport.append("\n");
-			uploadReport.append("Total file size: ");
-			uploadReport.append(inLength);
-			uploadReport.append(" B or ");
-			uploadReport.append(decimalFormat.format(inLength / 1024.0 / 1024.0));
-			uploadReport.append(" MB");
-			uploadReport.append("\n");
-
-			if (timer != null)
-				timer = null;
-
-			if (csvReader != null) {
-				try {
-					csvReader.close();
-				}
-				catch (Exception ex) {
-					log.error("Cleanup operation failed: csvRdr.close()", ex);
+	private CountryState findStateWithinThisCountry(String stateString, Country country) {
+		if(stateString!=null && !StringUtils.isBlank(stateString)){
+			for(CountryState state : country.getStates()){
+				if(state.getState().equalsIgnoreCase(stateString)){
+					return state;
 				}
 			}
-			if (inputStreamReader != null) {
-				try {
-					inputStreamReader.close();
-				}
-				catch (Exception ex) {
-					log.error("Cleanup operation failed: isr.close()", ex);
-				}
-			}
-			// Restore the state of variables
-			srcLength = -1;
 		}
-		uploadReport.append("Processed ");
-		uploadReport.append(subjectCount);
-		uploadReport.append(" subjects.");
-		uploadReport.append("\n");
-		uploadReport.append("Inserted ");
-		uploadReport.append(insertCount);
-		uploadReport.append(" subjects.");
-		uploadReport.append("\n");
-		uploadReport.append("Updated ");
-		uploadReport.append(updateCount);
-		uploadReport.append(" subjects.");
-		uploadReport.append("\n");
-
-		// Batch insert/update
-		try {
-			iStudyService.batchInsertSubjects(insertSubjects);
-		}
-		catch (ArkUniqueException e) {
-			e.printStackTrace();
-		}
-		catch (ArkSubjectInsertException e) {
-			e.printStackTrace();
-		}
-		try {
-			iStudyService.batchUpdateSubjects(updateSubjects);
-		}
-		catch (ArkUniqueException e) {
-			e.printStackTrace();
-		}
-		catch (ArkSubjectInsertException e) {
-			e.printStackTrace();
-		}
-
-		return uploadReport;
+		return null;
 	}
-*/
 
-	/**
-	 * 
-	 * @param fileInputStream
-	 *           is the input stream of a file
-	 * @param inLength
-	 *           is the length of a file
-	 *
-	public List getListOfUidsFromInputStream(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
-		List uids = new ArrayList<String>();
-		delimiterCharacter = inDelimChr;
-
-		InputStreamReader inputStreamReader = null;
-		CsvReader csvReader = null;
-
-		try {
-			inputStreamReader = new InputStreamReader(fileInputStream);
-			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
-			String[] stringLineArray;
-
-			srcLength = inLength;
-			if (srcLength <= 0) {
-				uploadReport.append("The input size was not greater than 0. Actual length reported: ");
-				uploadReport.append(srcLength);
-				uploadReport.append("\n");
-				throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + srcLength);
-			}
-			csvReader.readHeaders();
-			
-			// Loop through all rows in file
-			while (csvReader.readRecord()) {
-				log.warn("reading row # " + subjectCount);
-				stringLineArray = csvReader.getValues();
-				String subjectUID = stringLineArray[0];
-				uids.add(subjectUID);
-				subjectCount++;
-				//log.warn("finished message for " + subjectCount);
-			}
-		}
-		catch (IOException ioe) {
-			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
-		}
-		catch (Exception ex) {
-			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
-		}
-		finally {
-			if (csvReader != null) {
-				try {
-					csvReader.close();
-				}
-				catch (Exception ex) {
-					log.error("Cleanup operation failed: csvRdr.close()", ex);
+	private Country findCountry(List<Country> countriesPossible, String countryString) {
+		if(countryString!=null && !StringUtils.isBlank(countryString)){
+			for(Country country : countriesPossible){
+				if(country.getName().equalsIgnoreCase(countryString)){
+					return country;
 				}
 			}
-			if (inputStreamReader != null) {
-				try {
-					inputStreamReader.close();
-				}
-				catch (Exception ex) {
-					log.error("Cleanup operation failed: isr.close()", ex);
-				}
-			}
-			// Restore the state of variables
-			srcLength = -1;
 		}
-
-		return uids;
+		return null;
 	}
-*/
+
+	private AddressStatus findAddressStatusOrSetDefault(List<AddressStatus> StatiiAlreadyExisting, AddressStatus defaultAddressStatus, String stringRepresentingTheStatusWeWant) {
+		if(stringRepresentingTheStatusWeWant!=null && !StringUtils.isBlank(stringRepresentingTheStatusWeWant)){
+			for(AddressStatus nextStatus : StatiiAlreadyExisting){
+				if(nextStatus.getName().equalsIgnoreCase(stringRepresentingTheStatusWeWant)){
+					return nextStatus;
+				}
+			}
+		}
+		return defaultAddressStatus;
+	}
+
+
+	private AddressType findAddressTypeOrSetDefault(List<AddressType> typesAlreadyExisting, AddressType defaultAddressType, String stringRepresentingTheTypeWeWant) {
+		if(stringRepresentingTheTypeWeWant!=null && !StringUtils.isBlank(stringRepresentingTheTypeWeWant)){
+			for(AddressType nextType : typesAlreadyExisting){
+				if(nextType.getName().equalsIgnoreCase(stringRepresentingTheTypeWeWant)){
+					return nextType;
+				}
+			}
+		}
+		return defaultAddressType;
+	}
+
 }

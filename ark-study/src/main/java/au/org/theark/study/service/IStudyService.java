@@ -36,6 +36,8 @@ import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.audit.entity.ConsentHistory;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.AddressStatus;
+import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
@@ -281,7 +283,7 @@ public interface IStudyService {
 //TODO Trav Deprecated	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
 	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList, Study study) throws ArkUniqueException, ArkSubjectInsertException;
 
-	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException;
+	//public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException;
 
 	/**
 	 * Returns a Collection of ArkUser entities from the backend for users who are linked to the passed in study.
@@ -376,4 +378,8 @@ public interface IStudyService {
 	public void setPreferredMailingAdressToFalse(Person person);
 	
 	public void processBatch(List<LinkSubjectStudy> subjectList, Study study, List<LinkSubjectStudy> subjectsToInsert);
+
+	public AddressType getDefaultAddressType();
+
+	public AddressStatus getDefaultAddressStatus();
 }
