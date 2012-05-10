@@ -152,8 +152,8 @@ public class ReportServiceImpl implements IReportService {
 				if (a.getOtherState() != null) {
 					state = a.getOtherState();
 				}
-				else if (a.getCountryState() != null) {
-					state = a.getCountryState().getState();
+				else if (a.getState() != null) {
+					state = a.getState().getName();
 				}
 				postcode = a.getPostCode();
 				country = a.getCountry().getCountryCode();
@@ -300,7 +300,7 @@ public class ReportServiceImpl implements IReportService {
 				email = p.getPreferredEmail();
 			}
 			String sex = p.getGenderType().getName().substring(0, 1);
-			consentRow.setSex(sex); // set Sex
+			consentRow.setSex(sex); 
 
 			if (a != null) {
 				streetAddress = a.getStreetAddress();
@@ -308,8 +308,8 @@ public class ReportServiceImpl implements IReportService {
 				if (a.getOtherState() != null) {
 					state = a.getOtherState();
 				}
-				else if (a.getCountryState() != null) {
-					state = a.getCountryState().getState();
+				else if (a.getState() != null) {
+					state = a.getState().getName();
 				}
 				postcode = a.getPostCode();
 				country = a.getCountry().getCountryCode();

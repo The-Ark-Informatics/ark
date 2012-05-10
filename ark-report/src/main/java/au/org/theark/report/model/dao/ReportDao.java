@@ -275,7 +275,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		addressCriteria.add(Restrictions.or(Restrictions.eq("a.preferredMailingAddress", true), Restrictions.isNull("a.preferredMailingAddress")));
 		
 		criteria.createAlias("lss.person.addresses.country", "c", Criteria.LEFT_JOIN);
-		criteria.createAlias("lss.person.addresses.countryState", "countryState", Criteria.LEFT_JOIN);
+		criteria.createAlias("lss.person.addresses.state", "state", Criteria.LEFT_JOIN);
 		criteria.createAlias("lss.person.phones", "phone", Criteria.LEFT_JOIN);
 		
 		//TODO: Get work phone returned as well
@@ -292,7 +292,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		projectionList.add(Projections.property("a.streetAddress"), "streetAddress");
 		projectionList.add(Projections.property("a.city"), "suburb");
 		projectionList.add(Projections.property("a.postCode"), "postcode");
-		projectionList.add(Projections.property("countryState.state"), "state");
+		projectionList.add(Projections.property("state.name"), "state");
 		projectionList.add(Projections.property("c.name"), "country");
 		projectionList.add(Projections.property("phone.phoneNumber"), "homePhone");
 		projectionList.add(Projections.property("p.preferredEmail"), "email");
@@ -403,7 +403,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		projectionList.add(Projections.property("streetAddress"), "streetAddress");
 		projectionList.add(Projections.property("city"), "city");
 		projectionList.add(Projections.property("country"), "country");
-		projectionList.add(Projections.property("countryState"), "countryState");
+		projectionList.add(Projections.property("state"), "state");
 		projectionList.add(Projections.property("otherState"), "otherState");
 		projectionList.add(Projections.property("postCode"), "postCode");
 		criteria.setProjection(projectionList); // only return fields required for report
