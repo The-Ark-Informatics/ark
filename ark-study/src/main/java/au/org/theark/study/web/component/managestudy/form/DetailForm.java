@@ -194,7 +194,16 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	@Override
 	public void onBeforeRender() {
 		initStudyLogo();
+		Study study = null;
+		Study parentStudy = null;
+		
+		if(containerForm.getModelObject().getStudy() != null) {
+			study = containerForm.getModelObject().getStudy();
+			parentStudy= containerForm.getModelObject().getStudy().getParentStudy();
+		}
+		
 		parentStudyContainer.setEnabled(isNew());
+		parentStudyContainer.setVisible(study != parentStudy && parentStudy != null);
 		super.onBeforeRender();
 	}
 

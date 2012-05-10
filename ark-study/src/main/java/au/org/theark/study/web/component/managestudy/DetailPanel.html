@@ -358,26 +358,28 @@
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
-				<div class="fldLabel">
-					<wicket:message key="study.parentStudy">
-						Parent Study:
-					</wicket:message>
-					<div class="note">
-						<wicket:message	key="study.parentStudy.note">
-							[Note replaced from properties]
+				
+				<div wicket:id="parentStudyContainer">
+					<div class="fldLabel">
+						<wicket:message key="study.parentStudy">
+							Parent Study:
 						</wicket:message>
+						<div class="note">
+							<wicket:message	key="study.parentStudy.note">
+								[Note replaced from properties]
+							</wicket:message>
+						</div>
+					</div>
+	
+					<div class="fldControl">
+							<select wicket:id="study.parentStudy">
+								<option>
+									Study selection
+								</option>
+							</select>
 					</div>
 				</div>
-
-				<div class="fldControl">
-					<div wicket:id="parentStudyContainer">
-						<select wicket:id="study.parentStudy">
-							<option>
-								Study selection
-							</option>
-						</select>
-					</div>
-				</div>
+				
 				<div class="panelMargin">
 					&nbsp;
 				</div>
