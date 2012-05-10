@@ -67,14 +67,13 @@ public class Person implements java.io.Serializable {
 	private Date								dateLastKnownAlive;
 
 	private Set<LinkSubjectStudy>			linkSubjectStudies					= new HashSet<LinkSubjectStudy>(0);
+	private Set<Address>						addresses								= new HashSet<Address>(0);
 	private Set<Phone>						phones									= new HashSet<Phone>(0);
 	private Set<LinkSubjectStudycomp>	linkSubjectStudycomps				= new HashSet<LinkSubjectStudycomp>(0);
 	private Set<LinkSubjectContact>		linkSubjectContactsForContactKey	= new HashSet<LinkSubjectContact>(0);
 	private Set<LinkSiteContact>			linkSiteContacts						= new HashSet<LinkSiteContact>(0);
-	private Set<PersonAddress>				personAddresses						= new HashSet<PersonAddress>(0);
 	private Set<LinkSubjectContact>		linkSubjectContactsForSubjectKey	= new HashSet<LinkSubjectContact>(0);
 	private Set<PersonLastnameHistory>	personLastnameHistory				= new HashSet<PersonLastnameHistory>(0);
-	private Set<Address>						addresses								= new HashSet<Address>(0);
 
 	// Constructors
 
@@ -90,7 +89,7 @@ public class Person implements java.io.Serializable {
 	/** full constructor */
 	public Person(Long id, String firstName, String middleName, String lastName, String preferredName, Date dateOfBirth, VitalStatus vitalStatus, TitleType titleType, GenderType genderType,
 			Set<LinkSubjectStudy> linkSubjectStudies, Set<Phone> phones, Set<LinkSubjectStudycomp> linkSubjectStudycomps, Set<LinkSubjectContact> linkSubjectContactsForContactKey,
-			Set<LinkSiteContact> linkSiteContacts, Set<PersonAddress> personAddresses, Set<LinkSubjectContact> linkSubjectContactsForSubjectKey) {
+			Set<LinkSiteContact> linkSiteContacts, Set<LinkSubjectContact> linkSubjectContactsForSubjectKey) {
 		this.id = id;
 		this.firstName = firstName;
 		this.middleName = middleName;
@@ -105,7 +104,6 @@ public class Person implements java.io.Serializable {
 		this.linkSubjectStudycomps = linkSubjectStudycomps;
 		this.linkSubjectContactsForContactKey = linkSubjectContactsForContactKey;
 		this.linkSiteContacts = linkSiteContacts;
-		this.personAddresses = personAddresses;
 		this.linkSubjectContactsForSubjectKey = linkSubjectContactsForSubjectKey;
 	}
 
@@ -218,6 +216,15 @@ public class Person implements java.io.Serializable {
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
+	public Set<Address> getAddresses() {
+		return addresses;
+	}
+	
+	public void setAddresses(Set<Address> addresses) {
+		this.addresses = addresses;
+	}
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
 	public Set<Phone> getPhones() {
 		return this.phones;
 	}
@@ -260,16 +267,6 @@ public class Person implements java.io.Serializable {
 
 	public void setLinkSubjectContactsForSubjectKey(Set<LinkSubjectContact> linkSubjectContactsForSubjectKey) {
 		this.linkSubjectContactsForSubjectKey = linkSubjectContactsForSubjectKey;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
-	public Set<PersonAddress> getPersonAddresses() {
-		return personAddresses;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
-	public void setPersonAddresses(Set<PersonAddress> personAddresses) {
-		this.personAddresses = personAddresses;
 	}
 
 	/**
@@ -380,18 +377,4 @@ public class Person implements java.io.Serializable {
 		this.dateLastKnownAlive = dateLastKnownAlive;
 	}
 
-	/**
-	 * @param addresses the addresses to set
-	 */
-	public void setAddresses(Set<Address> addresses) {
-		this.addresses = addresses;
-	}
-
-	/**
-	 * @return the addresses
-	 */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
-	public Set<Address> getAddresses() {
-		return addresses;
-	}
 }

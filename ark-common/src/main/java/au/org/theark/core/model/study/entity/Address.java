@@ -39,9 +39,6 @@ import javax.persistence.TemporalType;
 
 import au.org.theark.core.Constants;
 
-/**
- * Address entity. @author MyEclipse Persistence Tools
- */
 @Entity
 @Table(name = "ADDRESS", schema = Constants.STUDY_SCHEMA)
 public class Address implements java.io.Serializable {
@@ -51,7 +48,7 @@ public class Address implements java.io.Serializable {
 	// Fields
 	private Long				id;
 	private Person				person;
-	private String				addressLineOne;									// Building address or something of the type
+	private String				addressLineOne;
 	private String				streetAddress;
 	private String				postCode;
 	private String				city;
@@ -67,18 +64,12 @@ public class Address implements java.io.Serializable {
 
 	private Set<StudySite>	studySites	= new HashSet<StudySite>(0);
 
-	// Constructors
-
-	/** default constructor */
 	public Address() {
 	}
 
-	/** minimal constructor */
 	public Address(Long id) {
 		this.id = id;
 	}
-
-	// Property accessors
 
 	@Id
 	@SequenceGenerator(name = "address_generator", sequenceName = "ADDRESS_SEQ")
@@ -92,6 +83,7 @@ public class Address implements java.io.Serializable {
 		this.id = id;
 	}
 
+	//TODO Lets keep naming consistant 
 	@Column(name = "STREET_ADDRESS")
 	public String getStreetAddress() {
 		return this.streetAddress;
@@ -196,7 +188,7 @@ public class Address implements java.io.Serializable {
 		this.otherState = otherState;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PERSON_ID")
 	public Person getPerson() {
 		return person;

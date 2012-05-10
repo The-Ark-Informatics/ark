@@ -43,9 +43,6 @@ import au.org.theark.core.Constants;
 @Table(name = "PHONE", schema = Constants.STUDY_SCHEMA, uniqueConstraints = { @UniqueConstraint(columnNames = { "AREA_CODE", "PHONE_NUMBER", "PERSON_ID" }) })
 public class Phone implements java.io.Serializable {
 
-	// Fields
-
-
 	private static final long serialVersionUID = 1L;
 	private Long			id;
 	private PhoneType		phoneType;
@@ -57,8 +54,6 @@ public class Phone implements java.io.Serializable {
 	private Date			dateReceived;
 	private YesNo			silentMode;
 	private String			comment;
-
-	// Constructors
 
 	/** default constructor */
 	public Phone() {
@@ -78,7 +73,6 @@ public class Phone implements java.io.Serializable {
 		this.areaCode = areaCode;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "phone_generator", sequenceName = "PHONE_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "phone_generator")
@@ -158,6 +152,7 @@ public class Phone implements java.io.Serializable {
 		this.dateReceived = dateReceived;
 	}
 
+	/* TODO :  Java does already have a concept like this ... boolean ... does this code have a legacy reason? */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SILENT")
 	public YesNo getSilentMode() {

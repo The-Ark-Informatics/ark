@@ -19,10 +19,15 @@
 package au.org.theark.core.model.study.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
@@ -41,6 +46,7 @@ public class Country implements Serializable {
 	private String	name;
 	private String	description;
 	private String	countryCode;
+	private Set<CountryState> states = new HashSet<CountryState>(0);
 
 	public Country() {
 	}
@@ -119,4 +125,14 @@ public class Country implements Serializable {
 		return true;
 	}
 
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "country")
+	public Set<CountryState> getStates() {
+		return states;
+	}
+
+	public void setStates(Set<CountryState> states) {
+		this.states = states;
+	}
+	
 }
