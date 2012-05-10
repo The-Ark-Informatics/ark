@@ -16,6 +16,14 @@ official_name = ''
 where name =  upper('Åland Islands');            
 
 update country  
+set country_code = 'AX',
+alpha_3_code = 'ALA',
+numeric_code = '248',
+official_name = 'Åland Islands',
+name = 'Aland Islands'
+where name =  upper('ALAND Islands');            
+
+update country  
 set country_code = 'AL',
 alpha_3_code = 'ALB',
 numeric_code = '008',
@@ -213,7 +221,15 @@ alpha_3_code = 'BOL',
 numeric_code = '068',
 name = 'Bolivia',
 official_name = 'Republic of Bolivia'
-where name =  upper('Bolivia');            
+where name =  upper('Bolivia');
+
+update country  
+set country_code = 'BO',
+alpha_3_code = 'BOL',	
+numeric_code = '068',
+name = 'Bolivia',
+official_name = 'Republic of Bolivia'
+where name =  upper('BOLIVIA, PLURINATIONAL STATE OF');            
 
 update country  
 set country_code = 'BA',
@@ -1047,6 +1063,16 @@ name = 'Macedonia, Republic of',
 official_name = 'The Former Yugoslav Republic of Macedonia'
 where name =  upper('Macedonia, Republic of');            
 
+
+update country  
+set country_code = 'MK',
+alpha_3_code = 'MKD',
+numeric_code = '807',
+name = 'Macedonia, Republic of',
+official_name = 'The Former Yugoslav Republic of Macedonia'
+where name = upper('MACEDONIA, THE FORMER YUGOSLAV REPUBLIC OF');      
+
+
 update country  
 set country_code = 'MG',
 alpha_3_code = 'MDG',
@@ -1158,6 +1184,14 @@ numeric_code = '498',
 name = 'Moldova',
 official_name = 'Republic of Moldova'
 where name =  upper('Moldova');            
+
+update country  
+set country_code = 'MD',
+alpha_3_code = 'MDA',
+numeric_code = '498',
+name = 'Moldova',
+official_name = 'Republic of Moldova'
+where name =  upper('MOLDOVA, REPUBLIC OF');            
 
 update country  
 set country_code = 'MC',
@@ -1484,8 +1518,18 @@ set country_code = 'SH',
 alpha_3_code = 'SHN',
 numeric_code = '654',
 name = 'Saint Helena',
-official_name = ''
+official_name = 'SAINT HELENA, ASCENSION AND TRISTAN DA CUNHA'
 where name =  upper('Saint Helena');            
+
+update country  
+set country_code = 'SH',
+alpha_3_code = 'SHN',
+numeric_code = '654',
+name = 'Saint Helena',
+official_name = 'SAINT HELENA, ASCENSION AND TRISTAN DA CUNHA'
+where name =  upper('SAINT HELENA, ASCENSION AND TRISTAN DA CUNHA');            
+
+
 
 update country  
 set country_code = 'KN',
@@ -1910,6 +1954,16 @@ numeric_code = '862',
 name = 'Venezuela',
 official_name = 'Bolivarian Republic of Venezuela'
 where name =  upper('Venezuela');            
+
+
+update country  
+set country_code = 'VE',
+alpha_3_code = 'VEN',
+numeric_code = '862',
+name = 'Venezuela',
+official_name = 'Bolivarian Republic of Venezuela'
+where name =  upper('VENEZUELA, BOLIVARIAN REPUBLIC OF');            
+
 
 update country  
 set country_code = 'VN',
