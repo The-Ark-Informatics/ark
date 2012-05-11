@@ -27,7 +27,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -52,9 +51,6 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService		iStudyService;
 
-	@SpringBean(name = "lobUtil")
-	private LobUtil			util;
-	
 	/**
 	 * Construct.
 	 */
@@ -96,8 +92,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 			
 			List<String> uidsToUpload = containerForm.getModelObject().getUidsToUpload();
 
-			log.warn("________________________________________________________" +
-					"about to try passing list of uids is of size " + uidsToUpload.size() + "________________________________________________________");
+			log.info("________________________________________________________" + "about to try passing list of uids is of size " + uidsToUpload.size() );
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			long size = containerForm.getModelObject().getFileUpload().getSize();
 			Long uploadId = containerForm.getModelObject().getUpload().getId();
@@ -109,7 +104,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 			StudyDataUploadExecutor task = new StudyDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
 						studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
 			task.run();
-			log.warn("finished a batch?");
+			//log.warn("finished a batch?");
 			
 		}
 		/*catch (IOException e) {

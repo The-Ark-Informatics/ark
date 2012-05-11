@@ -35,7 +35,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.Constants;
-import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -162,16 +161,7 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		// TODO: AJAX-ified and asynchronous and hit database
 		FileUpload fileUpload = fileUploadField.getFileUpload();
 		containerForm.getModelObject().setFileUpload(fileUpload);
-
-//		try {
-			// Copy file to BLOB object
-//			LobUtil util = new LobUtil();
-//			Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
-			containerForm.getModelObject().getUpload().setPayload(fileUpload.getBytes());
-//		}
-//		catch (IOException ioe) {
-//			System.out.println("Failed to save the uploaded file: " + ioe);
-//		}
+		containerForm.getModelObject().getUpload().setPayload(fileUpload.getBytes());
 
 		// Set details of Upload object
 		containerForm.getModelObject().getUpload().setStudy(studyDdc.getModelObject());

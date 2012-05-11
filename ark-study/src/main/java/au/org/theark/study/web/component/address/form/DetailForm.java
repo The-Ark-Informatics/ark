@@ -25,7 +25,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.behavior.AbstractBehavior;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.ComponentTag;
@@ -68,7 +67,6 @@ import au.org.theark.study.web.Constants;
  * 
  */
 public class DetailForm extends AbstractDetailForm<AddressVO> {
-
 
 	private static final long					serialVersionUID	= 1423759632793367263L;
 
@@ -334,7 +332,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 			else{
 				containerForm.getModelObject().getAddress().setOtherState(null);
 			}
-			
+			otherStateInvalidError.setVisible(false);
 			
 			containerForm.getModelObject().getAddress().setPerson(person);
 			if (containerForm.getModelObject().getAddress().getId() == null) {

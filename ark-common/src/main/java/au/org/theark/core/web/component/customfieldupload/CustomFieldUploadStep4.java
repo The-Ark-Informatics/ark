@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.util.Collection;
 import java.util.Date;
 
@@ -40,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
@@ -66,11 +64,6 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>		iArkCommonService;
 
-	@SpringBean(name = "lobUtil")
-	private LobUtil			util;
-	/**
-	 * Construct.
-	 */
 	public CustomFieldUploadStep4(String id, Form<CustomFieldUploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 4/5: Confirm Upload", "Data will now be written to the database, click Next to continue, otherwise click Cancel.");
 		this.containerForm = containerForm;

@@ -18,8 +18,6 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.correspondence.form;
 
-import java.io.IOException;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -41,7 +39,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.validation.validator.DateValidator;
 
-import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -63,9 +60,6 @@ import au.org.theark.study.web.Constants;
 public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 	private static final long										serialVersionUID	= 2900999695563378447L;
-
-	@SpringBean(name = "lobUtil")
-	private LobUtil			util;
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	protected IArkCommonService<Void>							iArkCommonService;

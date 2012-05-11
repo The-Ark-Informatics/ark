@@ -35,7 +35,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -55,9 +54,6 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
-
-	@SpringBean(name = "lobUtil")
-	private LobUtil			util;
 
 	private Form<UploadVO>						containerForm;
 	private FileUploadField						fileUploadField;

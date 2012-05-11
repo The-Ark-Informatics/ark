@@ -52,7 +52,6 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.form.WizardForm;
  */
 public class FieldDataUploadStep1 extends AbstractWizardStepPanel {
 
-
 	@SpringBean(name = "lobUtil")
 	private LobUtil			util;
 	
