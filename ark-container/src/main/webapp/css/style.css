@@ -289,6 +289,11 @@ list-style: circle;
 font-family: 'Lucida Sans', 'Helvetica', 'Sans-serif', 'sans';
 font-weight: 700;
 }
+.fieldErrorMessage {
+color: red;
+font-family: 'Lucida Sans', 'Helvetica', 'Sans-serif', 'sans';
+font-weight: 700;
+}
 .feedbackPanelINFO {
 color: green;
 list-style: circle;
