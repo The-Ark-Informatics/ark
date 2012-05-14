@@ -51,9 +51,6 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService		iStudyService;
 
-	/**
-	 * Construct.
-	 */
 	public SubjectUploadStep4(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 4/5: Confirm Upload", "Data will now be written to the database, click Next to continue, otherwise click Cancel.");
 		this.containerForm = containerForm;
@@ -91,8 +88,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 		try {
 			
 			List<String> uidsToUpload = containerForm.getModelObject().getUidsToUpload();
-
-			log.info("________________________________________________________" + "about to try passing list of uids is of size " + uidsToUpload.size() );
+//log.info("________________________________________________________" + "about to try passing list of uids is of size " + uidsToUpload.size() );
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			long size = containerForm.getModelObject().getFileUpload().getSize();
 			Long uploadId = containerForm.getModelObject().getUpload().getId();
