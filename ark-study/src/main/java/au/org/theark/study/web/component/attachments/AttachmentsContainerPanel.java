@@ -89,10 +89,8 @@ public class AttachmentsContainerPanel extends AbstractContainerPanel<SubjectVO>
 	 */
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-
 		detailPanel = new DetailPanel("detailPanel", feedBackPanel, arkCrudContainerVO, containerForm);
 		detailPanel.initialisePanel();
-		;
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
 	}
