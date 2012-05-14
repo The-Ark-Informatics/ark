@@ -30,7 +30,6 @@ public class SubjectValidator implements IValidator<Long> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see org.apache.wicket.validation.IValidator#validate(org.apache.wicket.validation.IValidatable)
 	 */
 	public void validate(IValidatable<Long> arg0) {
@@ -38,7 +37,7 @@ public class SubjectValidator implements IValidator<Long> {
 			Calendar calendar = Calendar.getInstance();
 			int calYear = calendar.get(Calendar.YEAR);
 			if (arg0.getValue() > calYear) {
-
+				//TODO : this is doing nothing
 				//ValidationError ve = new ValidationError().addMessageKey("error.found");
 				// ve.setVariables(vars);
 			}
