@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.study.model.dao;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -33,7 +32,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -83,6 +81,7 @@ import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -1484,18 +1483,23 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			batchInsertSubjects(subjectsToInsert, study);
 			for (LinkSubjectStudy subject : subjectsToInsert) {
 				Person person = subject.getPerson();
+				
 				Set<Address> addresses = person.getAddresses();
 				person.setAddresses(new HashSet<Address>(0));//this line seems like a hack to get around something that should be set up in our relationships TODO: fix
+				Set<Phone> phones = person.getPhones();
+				person.setPhones(new HashSet<Phone>(0));//this line seems like a hack to get around something that should be set up in our relationships TODO: fix
 				getSession().save(person);
+				
 				for(Address address : addresses){
 					address.setPerson(person);
 					getSession().save(address);
 				}
-				
-				Set<Phone> phones = person.getPhones();
 				for(Phone phone : phones){
+					phone.setPerson(person);
 					getSession().save(phone);
-				}// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
+				}
+				
+				// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
 				getSession().save(subject);
 			}
 
@@ -1906,8 +1910,17 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return (AddressStatus) (getSession().get(AddressStatus.class, 1L));
 	}
 
-	
-	
+
+	public PhoneType getDefaultPhoneType() {
+	//	return getPhoneType(new Long(0)); TODO replace the logic in these methods with there list criteria with .get[0] to simple session gets with the id
+		return (PhoneType) (getSession().get(PhoneType.class, 1L));
+	}
+
+	//TODO fix hardcoding
+	public PhoneStatus getDefaultPhoneStatus() {
+		return (PhoneStatus) (getSession().get(PhoneStatus.class, 1L));
+	}
+
 	public ConsentOption getConsentOptionForBoolean(boolean trueForYesFalseForNo) {
 		if(trueForYesFalseForNo){
 			return getConsentOption("YES");

@@ -146,6 +146,19 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public List<AddressStatus> getAddressStatuses();
+	/**
+	 * Looks up all address types
+	 * 
+	 * @return
+	 */
+	public List<PhoneType> getPhoneTypes();
+
+	/**
+	 * Looks up all address statuses
+	 * 
+	 * @return
+	 */
+	public List<PhoneStatus> getPhoneStatuses();
 
 	/**
 	 * 

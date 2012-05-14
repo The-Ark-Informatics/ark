@@ -228,6 +228,21 @@ public interface IStudyDao {
 	public List<AddressStatus> getAddressStatuses();
 
 	/**
+	 * Returns a list of Phone Types
+	 * 
+	 * @return
+	 */
+	public List<PhoneType> getPhoneTypes();
+
+	/**
+	 * Returns a list of Phone Statuses
+	 * 
+	 * @return
+	 */
+	public List<PhoneStatus> getPhoneStatuses();
+
+
+	/**
 	 * Returns a Collection of Consent Status
 	 * 
 	 * @return

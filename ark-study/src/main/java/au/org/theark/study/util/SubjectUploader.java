@@ -42,6 +42,9 @@ import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
+import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.PhoneStatus;
+import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -144,6 +147,8 @@ public class SubjectUploader {
 				Collection<TitleType> titleTypesPossible = iArkCommonService.getTitleType();
 				List<AddressType> addressTypesPossible = iArkCommonService.getAddressTypes();
 				List<AddressStatus> addressStatiiPossible = iArkCommonService.getAddressStatuses();
+				List<PhoneType> phoneTypesPossible = iArkCommonService.getPhoneTypes();
+				List<PhoneStatus> phoneStatiiPossible = iArkCommonService.getPhoneStatuses();
 				List<Country> countriesPossible = iArkCommonService.getCountries();
 				//List<State> statesPossible = iArkCommonService.getStates(country);
 				
@@ -156,6 +161,8 @@ public class SubjectUploader {
 				TitleType defaultTitleType = iStudyService.getDefaultTitleType();
 				AddressType defaultAddressType = iStudyService.getDefaultAddressType();
 				AddressStatus defaultAddressStatus = iStudyService.getDefaultAddressStatus();
+				PhoneType defaultPhoneType = iStudyService.getDefaultPhoneType();
+				PhoneStatus defaultPhoneStatus = iStudyService.getDefaultPhoneStatus();
 				GenderType defaultGenderType = iStudyService.getDefaultGenderType();
 				VitalStatus defaultVitalStatus = iStudyService.getDefaultVitalStatus();
 				MaritalStatus defaultMaritalStatus = iStudyService.getDefaultMaritalStatus();
@@ -203,9 +210,18 @@ public class SubjectUploader {
 				int addressSourceIndex			= csvReader.getIndex("ADDRESS_SOURCE");
 				int addressStatusIndex			= csvReader.getIndex("ADDRESS_STATUS");
 				int addressTypeIndex				= csvReader.getIndex("ADDRESS_TYPE");
-				int dateReceivedIndex			= csvReader.getIndex("DATE_RECEIVED");
+				int addressReceivedIndex		= csvReader.getIndex("ADDRESS_DATE_RECEIVED");
 				int addressCommentsIndex		= csvReader.getIndex("ADDRESS_COMMENTS");
 				int isPreferredMailingIndex	= csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS");
+				
+
+				int phoneNumberIndex				= csvReader.getIndex("PHONE_NUMBER");
+				int areaCodeIndex					= csvReader.getIndex("PHONE_AREA_CODE");
+				int phoneStatusIndex				= csvReader.getIndex("PHONE_STATUS");
+				int phoneTypeIndex				= csvReader.getIndex("PHONE_TYPE");
+				int phoneSourceIndex				= csvReader.getIndex("PHONE_SOURCE");
+				int phoneCommentsIndex			= csvReader.getIndex("PHONE_COMMENTS");
+				int phoneDateReceivedIndex		= csvReader.getIndex("PHONE_DATE_RECEIVED");
 				
 				//if(PERSON_CONTACT_METHOD is in headers, use it, 
 									//else, if CONTACT_METHOD, us IT, else, just set to -1 
@@ -395,7 +411,7 @@ public class SubjectUploader {
 								if (addressTypeIndex > 0)
 									typeString = stringLineArray[addressTypeIndex];
 								if (addressStatusIndex > 0)
-									statusString = stringLineArray[addressTypeIndex];							
+									statusString = stringLineArray[addressStatusIndex];							
 								
 								for(Address a : person.getAddresses()){
 									if(a.getAddressStatus().getName().equalsIgnoreCase(statusString) &&
@@ -436,7 +452,7 @@ public class SubjectUploader {
 							
 							String postCode = stringLineArray[postCodeIndex];
 							String addressSource = stringLineArray[addressSourceIndex];
-							String dateReceivedString = stringLineArray[dateReceivedIndex];
+							String dateReceivedString = stringLineArray[addressReceivedIndex];
 							String isPreferredMailingString = stringLineArray[isPreferredMailingIndex];
 
 							addressToAttachToPerson.setAddressType(type);
@@ -451,7 +467,7 @@ public class SubjectUploader {
 								// TODO dateconvert and set
 								Date dateReceived = new Date();
 								dateReceived = simpleDateFormat.parse(dateReceivedString);
-								person.setDateOfBirth(dateReceived);
+								addressToAttachToPerson.setDateReceived(dateReceived);
 							}
 							if(suburb!=null && !suburb.isEmpty())
 								addressToAttachToPerson.setCity(suburb);
@@ -469,6 +485,72 @@ public class SubjectUploader {
 						
 					}
 
+					
+					
+					//if no address info - ignore
+					if(phoneNumberIndex  >0){
+						boolean updatePhones= false;
+						String phoneNumberString = stringLineArray[phoneNumberIndex];
+						
+						if(phoneNumberString == null || StringUtils.isBlank(phoneNumberString)){
+							//then lets just jump out as there is no phone to validate.  lay down to user that they must have data if they want an update
+						}
+						else{
+							Phone phoneToAttachToPerson = null;
+							if(thisSubjectAlreadyExists){
+								String typeString = null;
+								String statusString = null;
+
+								if (phoneTypeIndex > 0)
+									typeString = stringLineArray[phoneTypeIndex];
+								if (phoneStatusIndex > 0)
+									statusString = stringLineArray[phoneStatusIndex];							
+								
+								for(Phone phone : person.getPhones()){
+									if(phone.getPhoneStatus().getName().equalsIgnoreCase(statusString) &&
+										phone.getPhoneType().getName().equalsIgnoreCase(typeString)){
+										phoneToAttachToPerson = phone;
+										updatePhones = true;
+									}
+								}
+							}
+							else{
+								phoneToAttachToPerson = new Phone();
+							}
+							
+							PhoneType type = findPhoneTypeOrSetDefault(phoneTypesPossible, defaultPhoneType, stringLineArray[phoneTypeIndex]);
+							PhoneStatus status = findPhoneStatusOrSetDefault(phoneStatiiPossible, defaultPhoneStatus, stringLineArray[phoneTypeIndex]);
+							String phoneComments = stringLineArray[phoneCommentsIndex];
+														
+							String areaCode = stringLineArray[areaCodeIndex];
+							String phoneSource = stringLineArray[phoneSourceIndex];
+							String phoneDateReceivedString = stringLineArray[phoneDateReceivedIndex];
+							log.warn("phone Date Reveived = " + phoneDateReceivedString + " for index = " +  phoneDateReceivedIndex);
+
+							phoneToAttachToPerson.setPhoneType(type);
+							phoneToAttachToPerson.setPhoneStatus(status);
+							if(areaCode!=null && !areaCode.isEmpty())
+								phoneToAttachToPerson.setAreaCode(areaCode);
+							if(phoneNumberString !=null && !phoneNumberString.isEmpty())
+								phoneToAttachToPerson.setPhoneNumber(phoneNumberString);
+							if(phoneDateReceivedString!=null && !phoneDateReceivedString.isEmpty()){
+								// TODO dateconvert and set
+								Date dateReceived = new Date();
+								dateReceived = simpleDateFormat.parse(phoneDateReceivedString);
+								phoneToAttachToPerson.setDateReceived(dateReceived);
+							}
+							if(phoneComments!=null && !phoneComments.isEmpty())
+								phoneToAttachToPerson.setComment(phoneComments);
+							if(phoneSource!=null && !phoneSource.isEmpty())
+								phoneToAttachToPerson.setSource(phoneSource);
+							if(!updatePhones){
+								//TODO check this works in all cases
+								person.getPhones().add(phoneToAttachToPerson);
+							}
+						}
+					}
+					
+					
 					subject.setPerson(person);
 
 					if (subject.getId() == null || subject.getPerson().getId() == 0) {
@@ -596,6 +678,30 @@ public class SubjectUploader {
 			}
 		}
 		return defaultAddressType;
+	}
+
+
+	private PhoneStatus findPhoneStatusOrSetDefault(List<PhoneStatus> StatiiAlreadyExisting, PhoneStatus defaultPhoneStatus, String stringRepresentingTheStatusWeWant) {
+		if(stringRepresentingTheStatusWeWant!=null && !StringUtils.isBlank(stringRepresentingTheStatusWeWant)){
+			for(PhoneStatus nextStatus : StatiiAlreadyExisting){
+				if(nextStatus.getName().equalsIgnoreCase(stringRepresentingTheStatusWeWant)){
+					return nextStatus;
+				}
+			}
+		}
+		return defaultPhoneStatus;
+	}
+
+
+	private PhoneType findPhoneTypeOrSetDefault(List<PhoneType> typesAlreadyExisting, PhoneType defaultPhoneType, String stringRepresentingTheTypeWeWant) {
+		if(stringRepresentingTheTypeWeWant!=null && !StringUtils.isBlank(stringRepresentingTheTypeWeWant)){
+			for(PhoneType nextType : typesAlreadyExisting){
+				if(nextType.getName().equalsIgnoreCase(stringRepresentingTheTypeWeWant)){
+					return nextType;
+				}
+			}
+		}
+		return defaultPhoneType;
 	}
 
 }

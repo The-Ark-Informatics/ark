@@ -448,6 +448,28 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	/**
+	 * Gets a list of all Phone Statuses
+	 * 
+	 * @return
+	 */
+	public List<PhoneStatus> getPhoneStatuses() {
+		Criteria criteria = getSession().createCriteria(PhoneStatus.class);
+		return criteria.list();
+	}
+
+
+	/**
+	 * Gets a list of all Phone Types
+	 * 
+	 * @return
+	 */
+	public List<PhoneType> getPhoneTypes() {
+		Criteria criteria = getSession().createCriteria(PhoneType.class);
+		criteria.addOrder(Order.asc("name"));
+		return criteria.list();
+	}
+
+	/**
 	 * Gets a list of all Address Statuses
 	 * 
 	 * @return

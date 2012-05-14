@@ -58,6 +58,8 @@ import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.PhoneStatus;
+import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyUpload;
@@ -382,4 +384,8 @@ public interface IStudyService {
 	public AddressType getDefaultAddressType();
 
 	public AddressStatus getDefaultAddressStatus();
+	
+	public PhoneType getDefaultPhoneType();
+
+	public PhoneStatus getDefaultPhoneStatus();
 }

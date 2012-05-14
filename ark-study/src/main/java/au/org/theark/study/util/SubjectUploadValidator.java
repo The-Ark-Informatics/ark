@@ -271,8 +271,8 @@ public class SubjectUploadValidator {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
-			//TODO performance of valdation now approx 60-90K records per minute, file creation of validation doubles that
-			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though
+			//TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
+			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though, and if it bloats with more fields could be part of batch too
 			validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateRefence);
 		}
 		catch (FileFormatException ffe) {
@@ -315,8 +315,7 @@ public class SubjectUploadValidator {
 			}
 
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
-			// Set field list (note 2th column to Nth column)	// SUBJECTUID DATE_COLLECTED F1 F2 FN
-																				// 0 1 2 3 N
+			// Set field list (note 2th column to Nth column)	// SUBJECTUID DATE_COLLECTED F1 F2 FN // 0 1 2 3 N
 			csvReader.readHeaders();
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 			String[] headerColumnArray = csvReader.getHeaders();
@@ -339,6 +338,8 @@ public class SubjectUploadValidator {
 
 			if (headerError) {
 				// Invalid file format
+				//TODO:  maybe in this case just tell them issue with headers and point them back to the template rather than trying 
+							//to recreate this in an error message that is too big to utilise anyway
 				StringBuffer stringBuffer = new StringBuffer();
 				stringBuffer.append("Error: The specified file does not appear to conform to the expected file format.\n");
 				stringBuffer.append("The specified fileformat was: " + fileFormat + ".\n");
@@ -380,7 +381,7 @@ public class SubjectUploadValidator {
 				stringBuffer.append("EMAIL\n");
 /*
  * 
- * ADDRESS_LINE_1	ADDRESS_LINE_2	SUBURB	STATE	COUNTRY	POST_CODE	ADDRESS_SOURCE	ADDRESS_STATUS	 ADDRESS_TYPE	 DATE_RECEIVED	ADDRESS_COMMENTS	IS_PREFERRED_MAILING_ADDRESS	PHONE_AREA_CODE	PHONE_NUMBER	PHONE_TYPE	PHONE_STATUS	PHONE_SOURCE	PHONE_COMMENTS	SILENT
+ * ADDRESS_LINE_1	ADDRESS_LINE_2	SUBURB	STATE	COUNTRY	POST_CODE	ADDRESS_SOURCE	ADDRESS_STATUS	 ADDRESS_TYPE	 ADDRESS_DATE_RECEIVED	ADDRESS_COMMENTS	IS_PREFERRED_MAILING_ADDRESS	PHONE_AREA_CODE	PHONE_NUMBER	PHONE_TYPE	PHONE_STATUS	PHONE_SOURCE	PHONE_COMMENTS	SILENT
  *
  *this is the newest fields and will be such a mess no point displaying???
  */
@@ -568,6 +569,20 @@ public class SubjectUploadValidator {
 				
 				if (csvReader.getIndex("ADDRESS_DATE_RECEIVED") > 0 ) {
 					col = csvReader.getIndex("ADDRESS_DATE_RECEIVED");
+					try {
+						dateStr = stringLineArray[col];
+						if (dateStr != null && dateStr.length() > 0)
+							simpleDateFormat.parse(dateStr);
+					}
+					catch (ParseException pex) {
+						dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
+								+ Constants.DD_MM_YYYY.toLowerCase());
+						errorCells.add(new ArkGridCell(col, row));
+					}
+				}
+
+				if (csvReader.getIndex("PHONE_DATE_RECEIVED") > 0 ) {
+					col = csvReader.getIndex("PHONE_DATE_RECEIVED");
 					try {
 						dateStr = stringLineArray[col];
 						if (dateStr != null && dateStr.length() > 0)

@@ -77,6 +77,8 @@ import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.PhoneStatus;
+import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
@@ -1200,6 +1202,15 @@ public class StudyServiceImpl implements IStudyService {
 
 	public AddressStatus getDefaultAddressStatus() {
 		return iStudyDao.getDefaultAddressStatus();
+	}
+
+
+	public PhoneType getDefaultPhoneType() {
+		return iStudyDao.getDefaultPhoneType();
+	}
+
+	public PhoneStatus getDefaultPhoneStatus() {
+		return iStudyDao.getDefaultPhoneStatus();
 	}
 
 }

@@ -394,6 +394,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getAddressStatuses();
 	}
 
+	public List<PhoneType> getPhoneTypes() {
+		return studyDao.getPhoneTypes();
+	}
+
+	public List<PhoneStatus> getPhoneStatuses() {
+		return studyDao.getPhoneStatuses();
+	}
+
 	public List<ConsentStatus> getConsentStatus() {
 		return studyDao.getConsentStatus();
 	}
