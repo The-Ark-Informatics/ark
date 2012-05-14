@@ -24,6 +24,7 @@ import java.util.Date;
 
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.SubjectFile;
 
 /**
  * @author nivedann
@@ -37,6 +38,7 @@ public class ConsentVO implements Serializable {
 	protected ConsentFile					consentFile;
 	protected Collection<Consent>			consentList;
 	protected Collection<ConsentFile>	consentFileList;
+	protected SubjectFile					subjectFile;
 
 	/**
 	 * We will need upload information here
@@ -44,6 +46,7 @@ public class ConsentVO implements Serializable {
 
 	public ConsentVO() {
 		consent = new Consent();
+		subjectFile = new SubjectFile();
 	}
 
 	public Consent getConsent() {
@@ -85,5 +88,12 @@ public class ConsentVO implements Serializable {
 	public void setConsentFileList(Collection<ConsentFile> consentFileList) {
 		this.consentFileList = consentFileList;
 	}
+	
+	public SubjectFile getSubjectFile() {
+		return subjectFile;
+	}
 
+	public void setSubjectFile(SubjectFile subjectFile) {
+		this.subjectFile = subjectFile;
+	}
 }
