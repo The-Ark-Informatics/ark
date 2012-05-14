@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.consent.form;
 
+import java.io.IOException;
+import java.sql.Blob;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +34,8 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -40,12 +44,15 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.audit.entity.ConsentHistory;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -68,9 +75,8 @@ import au.org.theark.study.web.component.consenthistory.ConsentHistoryPanel;
  * 
  */
 public class DetailForm extends AbstractDetailForm<ConsentVO> {
-
-
 	private static final long						serialVersionUID	= 1L;
+	private transient Logger				log					= LoggerFactory.getLogger(DetailForm.class);
 
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -99,6 +105,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	protected WebMarkupContainer					wmcCompleted;
 	protected DropDownChoice<YesNo>				consentDownloadedDdc;
 	protected CollapsiblePanel						consentHistoryPanel;
+	protected FileUploadField						fileSubjectFileField;
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
@@ -147,6 +154,9 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		wmcCompleted.add(consentCompletedDtf);
 
 		commentTxtArea = new TextArea<String>(Constants.CONSENT_CONSENT_COMMENT);
+		
+		// fileSubjectFile for consent file payload (attached to filename key)
+		fileSubjectFileField = new FileUploadField(au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME);
 		
 		initStudyComponentChoice();
 		initConsentTypeChoice();
@@ -311,6 +321,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDownloadedDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentHistoryPanel);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileSubjectFileField);
 	}
 
 	/*
@@ -387,6 +398,9 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 				if (containerForm.getModelObject().getConsent().getId() == null) {
 					iStudyService.create(containerForm.getModelObject().getConsent());
 					this.info("Consent was successfuly created for the Subject ");
+					
+					createConsentFile();
+					
 					processErrors(target);
 					// Store session object (used for history)
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID, containerForm.getModelObject().getConsent().getId());
@@ -394,6 +408,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 				else {
 					iStudyService.update(containerForm.getModelObject().getConsent());
 
+					createConsentFile();
+					
 					this.info("Consent was successfuly updated for the Subject ");
 					processErrors(target);
 				}
@@ -412,6 +428,47 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		}
 		else {
 			processErrors(target);
+		}
+	}
+
+	private void createConsentFile() throws ArkSystemException {
+		// Retrieve file and store as Blob in database
+		FileUpload fileSubjectFile = fileSubjectFileField.getFileUpload();
+
+		if(fileSubjectFile != null) {
+			LinkSubjectStudy linkSubjectStudy = null;
+			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study = iArkCommonService.getStudy(studyId);
+			Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+
+			try {
+				linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId, study);
+				containerForm.getModelObject().getSubjectFile().setLinkSubjectStudy(linkSubjectStudy);
+			
+				// Copy file to BLOB object
+				Blob payload = lobUtil.createBlob(fileSubjectFile.getInputStream(), fileSubjectFile.getSize());
+				containerForm.getModelObject().getSubjectFile().setPayload(payload);
+				
+				byte[] byteArray = fileSubjectFile.getMD5();
+				String checksum = getHex(byteArray);
+		
+				// Set details of Consent File object
+				containerForm.getModelObject().getSubjectFile().setStudyComp(containerForm.getModelObject().getConsent().getStudyComp());
+				containerForm.getModelObject().getSubjectFile().setComments(containerForm.getModelObject().getConsent().getComments());
+				containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
+				containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
+				containerForm.getModelObject().getSubjectFile().setUserId(SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString());
+		
+				// Save
+				iStudyService.create(containerForm.getModelObject().getSubjectFile());
+				this.info("Consent file: " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
+			}
+			catch (IOException ioe) {
+				log.error("Failed to save the uploaded file: " + ioe);
+			}
+			catch (EntityNotFoundException e) {
+				log.error(e.getMessage());
+			}
 		}
 	}
 

@@ -143,10 +143,7 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 
 			@Override
 			protected Object load() {
-
-				// Get the PersonId from session and get the phoneList from back end
 				Collection<Consent> consentList = new ArrayList<Consent>();
-
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 
