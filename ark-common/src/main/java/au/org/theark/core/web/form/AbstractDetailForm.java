@@ -36,6 +36,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
@@ -75,6 +76,9 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
+	
+	@SpringBean(name = "lobUtil")
+	protected LobUtil							lobUtil;
 
 	/**
 	 * 
@@ -434,4 +438,17 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * Delegates this to the subclass to add the Form components defined in it.This enforces this method across all sub-classes and keeps it consistent.
 	 */
 	abstract protected void addDetailFormComponents();
+	
+	static final String	HEXES	= "0123456789ABCDEF";
+
+	public static String getHex(byte[] raw) {
+		if (raw == null) {
+			return null;
+		}
+		final StringBuilder hex = new StringBuilder(2 * raw.length);
+		for (final byte b : raw) {
+			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+		}
+		return hex.toString();
+	}
 }
