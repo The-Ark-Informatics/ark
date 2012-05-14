@@ -614,7 +614,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 //		String subjectUid = new String("");							//ABC-0000124
 		String theCompletedUID = "";
 		long incrementedValue = startingAtNumber + nextSequenceNumber;
-		log.warn("after convoluted analysis...sequenceuid = " + incrementedValue);
+		//log.warn("after convoluted analysis...sequenceuid = " + incrementedValue);
 		String numberAsString ="" + incrementedValue;
 		String subjectUidPaddedIncrementor = StringUtils.leftPad(numberAsString, (int)padThisManyChars, "0");
 		theCompletedUID = subjectUidPrefix + subjectUidToken + subjectUidPaddedIncrementor;
