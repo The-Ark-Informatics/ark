@@ -58,6 +58,7 @@ public class BarcodeLabel implements java.io.Serializable {
 	private List<BarcodeLabelData>	barcodeLabelData	= new ArrayList<BarcodeLabelData>(0);
 	private BarcodeLabel					barcodeLabelTemplate;
 	private Long							version;
+	private String							nameAndVersion;
 
 	public BarcodeLabel() {
 	}
@@ -184,5 +185,26 @@ public class BarcodeLabel implements java.io.Serializable {
 	 */
 	public void setVersion(Long version) {
 		this.version = version;
+	}
+
+	/**
+	 * @return the nameAndVersion
+	 */
+	@Transient
+	public String getNameAndVersion() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getName());
+		sb.append(" (");
+		sb.append("v");
+		sb.append(getVersion().toString());
+		sb.append(")");
+		return sb.toString();
+	}
+
+	/**
+	 * @param nameAndVersion the nameAndVersion to set
+	 */
+	public void setNameAndVersion(String nameAndVersion) {
+		this.nameAndVersion = nameAndVersion;
 	}
 }
