@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.core.model.study.entity;
 
-import java.sql.Blob;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -35,9 +34,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import au.org.theark.core.Constants;
 
 /**
@@ -53,6 +49,7 @@ public class StudyUpload implements java.io.Serializable {
 	private Study				study;
 	private FileFormat		fileFormat;
 	private DelimiterType	delimiterType;
+	private UploadType		uploadType;
 	private String				filename;
 	private byte[]				payload;
 	private String				checksum;
@@ -263,5 +260,16 @@ public class StudyUpload implements java.io.Serializable {
 	public void setArkFunction(ArkFunction arkFunction) {
 		this.arkFunction = arkFunction;
 	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "UPLOAD_TYPE_ID", nullable = false)
+	public UploadType getUploadType() {
+		return uploadType;
+	}
+	
+	public void setUploadType(UploadType uploadType) {
+		this.uploadType = uploadType;
+	}
+
 	
 }

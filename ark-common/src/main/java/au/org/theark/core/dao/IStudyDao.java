@@ -65,6 +65,7 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.SubjectVO;
@@ -503,6 +504,17 @@ public interface IStudyDao {
 	 */
 	public Collection<DelimiterType> getDelimiterTypes();
 
+
+	/**
+	 * Get a List of UploadTypes
+	 * @return
+	 */
+	public Collection<UploadType> getUploadTypes();
+
+
+	public UploadType getDefaultUploadType();
+	
+	
 	/**
 	 * Retrieves a list of StudyUpload for the given criteria
 	 * @param uploadCriteria

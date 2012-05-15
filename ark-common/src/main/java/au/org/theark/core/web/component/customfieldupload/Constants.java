@@ -26,6 +26,7 @@ public class Constants {
 	public static final String	UPLOADVO_UPLOAD_FILE_FORMAT_NAME							= "upload.fileFormat.name";
 	public static final String	UPLOADVO_UPLOAD_PAYLOAD										= "upload.payload";
 	public static final String	UPLOADVO_UPLOAD_DELIMITER_TYPE							= "upload.delimiterType";
+	public static final String	UPLOADVO_UPLOAD_UPLOAD_TYPE								= "upload.uploadType";
 	public static final String	UPLOADVO_UPLOAD_USER											= "upload.user";
 	public static final String	UPLOADVO_UPLOAD_INSERT_TIME								= "upload.insertTime";
 	public static final String	UPLOADVO_UPLOAD_CHECKSUM									= "upload.checksum";

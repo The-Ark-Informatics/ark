@@ -38,6 +38,7 @@ public class UploadVO implements Serializable {
 	private StudyUpload								upload;
 	private List<String>								uidsToUpload;
 	private FileFormat								fileFormat;
+	private String										uploadType;//TODO could create type/enum/ref table
 	private FileUpload								fileUpload;
 	private Study										study;
 	private java.util.Collection<StudyUpload>	uploadCollection;
@@ -198,5 +199,13 @@ public class UploadVO implements Serializable {
 
 	public List<String> getUidsToUpload() {
 		return uidsToUpload;
+	}
+
+	public void setUploadType(String uploadType) {
+		this.uploadType = uploadType;
+	}
+
+	public String getUploadType() {
+		return uploadType;
 	}
 }

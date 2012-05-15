@@ -92,6 +92,7 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.util.CsvListReader;
@@ -984,6 +985,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return delimiterTypeCollection;
 	}
 
+	public Collection<UploadType> getUploadTypes() {
+		Criteria criteria = getSession().createCriteria(UploadType.class);
+		java.util.Collection<UploadType> delimiterTypeCollection = criteria.list();
+		return delimiterTypeCollection;
+	}
+
+	public UploadType getDefaultUploadType(){
+		return (UploadType)(getSession().get(UploadType.class, 1L));//TODO:  maybe fix ALL such entities by adding isDefault boolean to table?
+	}
+	
+	
 	public List<StudyUpload> searchUploads(StudyUpload uploadCriteria) {
 		Criteria criteria = getSession().createCriteria(StudyUpload.class);
 		// Must be constrained on the arkFunction

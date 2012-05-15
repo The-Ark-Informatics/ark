@@ -81,6 +81,7 @@ import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.UnitType;
+import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.ArkModuleVO;
@@ -568,7 +569,10 @@ public interface IArkCommonService<T> {
 
 	public DelimiterType getDelimiterType(Long id);
 
+	public UploadType getDefaultUploadType();
+	
 	public Collection<DelimiterType> getDelimiterTypes();
+	public Collection<UploadType> getUploadTypes();
 
 	public List<StudyUpload> searchUploads(StudyUpload uploadCriteria);
 

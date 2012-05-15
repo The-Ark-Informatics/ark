@@ -112,6 +112,7 @@ import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.UnitType;
+import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.security.RoleConstants;
@@ -934,9 +935,19 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public DelimiterType getDelimiterType(Long id) {
 		return studyDao.getDelimiterType(id);
 	}
+	
+
+	public UploadType getDefaultUploadType(){
+		return studyDao.getDefaultUploadType();
+	}
+	
 
 	public Collection<DelimiterType> getDelimiterTypes() {
 		return studyDao.getDelimiterTypes();
+	}
+
+	public Collection<UploadType> getUploadTypes() {
+		return studyDao.getUploadTypes();
 	}
 
 	public CustomField getCustomFieldByNameStudyArkFunction(String customFieldName, Study study, ArkFunction arkFunction) {
