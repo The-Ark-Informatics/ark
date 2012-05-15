@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
@@ -65,41 +66,42 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		if (barcodeLabel.getId() != null) {
 			criteria.add(Restrictions.eq("id", barcodeLabel.getId()));
 		}
-		
-		if (barcodeLabel.getStudy() != null) {
-			if(barcodeLabel.getStudy().getParentStudy() != null && barcodeLabel.getStudy().getParentStudy().getId() != null) {
-				// Use parent study
-				criteria.add(Restrictions.eq("study", barcodeLabel.getStudy().getParentStudy()));
+		else {
+			if (barcodeLabel.getStudy() != null) {
+				if(barcodeLabel.getStudy().getParentStudy() != null && barcodeLabel.getStudy().getParentStudy().getId() != null) {
+					// Use parent study
+					criteria.add(Restrictions.eq("study", barcodeLabel.getStudy().getParentStudy()));
+				}
+				else {	
+					criteria.add(Restrictions.eq("study", barcodeLabel.getStudy()));
+				}
 			}
-			else {	
-				criteria.add(Restrictions.eq("study", barcodeLabel.getStudy()));
+			
+			if (barcodeLabel.getBarcodePrinter() != null && barcodeLabel.getBarcodePrinter().getId() != null) {
+				criteria.add(Restrictions.eq("barcodePrinter", barcodeLabel.getBarcodePrinter()));
 			}
-		}
-		
-		if (barcodeLabel.getBarcodePrinter() != null && barcodeLabel.getBarcodePrinter().getId() != null) {
-			criteria.add(Restrictions.eq("barcodePrinter", barcodeLabel.getBarcodePrinter()));
-		}
-		
-		if (barcodeLabel.getName() != null) {
-			criteria.add(Restrictions.eq("name", barcodeLabel.getName()));
-		}
-		
-		// Restrict to latest version of label
-		DetachedCriteria versionCriteria = DetachedCriteria.forClass(BarcodeLabel.class);
-		versionCriteria.add(Restrictions.eq("name", barcodeLabel.getName()));
-		versionCriteria.add(Restrictions.eq("barcodePrinter", barcodeLabel.getBarcodePrinter()));
-		if (barcodeLabel.getStudy() != null) {
-			if(barcodeLabel.getStudy().getParentStudy() != null && barcodeLabel.getStudy().getParentStudy().getId() != null) {
-				// Use parent study
-				versionCriteria.add(Restrictions.eq("study", barcodeLabel.getStudy().getParentStudy()));
+			
+			if (barcodeLabel.getName() != null) {
+				criteria.add(Restrictions.eq("name", barcodeLabel.getName()));
 			}
-			else {	
-				versionCriteria.add(Restrictions.eq("study", barcodeLabel.getStudy()));
+			
+			// Restrict to latest version of label
+			DetachedCriteria versionCriteria = DetachedCriteria.forClass(BarcodeLabel.class);
+			versionCriteria.add(Restrictions.eq("name", barcodeLabel.getName()));
+			versionCriteria.add(Restrictions.eq("barcodePrinter", barcodeLabel.getBarcodePrinter()));
+			if (barcodeLabel.getStudy() != null) {
+				if(barcodeLabel.getStudy().getParentStudy() != null && barcodeLabel.getStudy().getParentStudy().getId() != null) {
+					// Use parent study
+					versionCriteria.add(Restrictions.eq("study", barcodeLabel.getStudy().getParentStudy()));
+				}
+				else {	
+					versionCriteria.add(Restrictions.eq("study", barcodeLabel.getStudy()));
+				}
 			}
+			versionCriteria.setProjection(Projections.max("version"));
+			
+			criteria.add(Property.forName("version").eq(versionCriteria));
 		}
-		versionCriteria.setProjection(Projections.max("version"));
-		
-		criteria.add(Property.forName("version").eq(versionCriteria));
 		
 		BarcodeLabel result = (BarcodeLabel) criteria.uniqueResult();
 		return result;
@@ -406,6 +408,8 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		
 		Criteria criteria = getSession().createCriteria(BarcodeLabel.class);
 		criteria.add(Restrictions.isNull("study"));
+		criteria.addOrder(Order.asc("name"));
+		criteria.addOrder(Order.asc("version"));
 		list = criteria.list();
 		
 		return list;
