@@ -129,14 +129,15 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 
 					// Clear authorisation cache
 					processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY, menuArkFunction);
-					if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_USER)) {
-						panelToReturn = new UserContainerPanel(panelId);
-					}
-					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY)) {
+					
+					if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY)) {
 						panelToReturn = new StudyContainerPanel(panelId, studyNameMarkup, studyLogoMarkup, arkContextMarkup, mainTabProvider.getModuleTabbedPanel());
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY_COMPONENT)) {
 						panelToReturn = new StudyComponentContainerPanel(panelId);
+					}
+					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_USER)) {
+						panelToReturn = new UserContainerPanel(panelId);
 					}
 					return panelToReturn;
 				}
