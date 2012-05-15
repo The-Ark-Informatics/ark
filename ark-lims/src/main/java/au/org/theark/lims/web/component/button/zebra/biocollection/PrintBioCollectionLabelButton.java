@@ -94,7 +94,7 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 		barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(bioCollection.getStudy());
-		barcodeLabel.setName("zebra bioCollection");
+		barcodeLabel.setName("zebra biocollection");
 		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 	}
 
