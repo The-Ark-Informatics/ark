@@ -9,13 +9,6 @@
 					<wicket:message	key="upload.id">Upload ID</wicket:message>
 				</label>
 			</th>
-			<!-- 
-			<th width="20%">
-				<label for="col1">
-					<wicket:message	key="questionnaire">Questionnaire</wicket:message>
-				</label>
-			</th>
-			 -->
 			<th width="20%">
 				<label for="col2">
 					<wicket:message	key="upload.filename">Name</wicket:message>
@@ -52,11 +45,6 @@
 			<td width="5%">
 				<span wicket:id="upload.id">ID</span>&nbsp;
 			</td>
-			<!-- 
-			<td width="15%">
-			  	<span wicket:id="phenoCollection">Questionnaire Name</span>
-			</td>
-			-->
 			<td width="15%">
 			  	<span wicket:id="upload.filename">Filename</span>
 			</td>
@@ -84,11 +72,13 @@
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<!--  The navigation bar -->
-		<tr>
-			<td width="2%">&nbsp;</td>
-			<td width="96%" align="left" colspan="10"><span wicket:id="navigator" class="a"></span></td>
-			<td width="2%">&nbsp;</td>
-		</tr>
+		<tfoot>
+			<tr>
+				<td width="2%">&nbsp;</td>
+				<td width="96%" align="left" colspan="9"><span wicket:id="navigator" class="a"></span></td>
+				<td width="2%">&nbsp;</td>
+			</tr>
+		</tfoot>
 	</table>
 	<table width="0%" cellspacing="0"></table>
 </wicket:panel>

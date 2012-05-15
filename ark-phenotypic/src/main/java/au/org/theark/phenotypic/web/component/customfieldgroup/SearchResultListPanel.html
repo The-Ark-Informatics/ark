@@ -9,34 +9,19 @@
 					<wicket:message	key="customFieldGroup.id">Custom Field Group ID:</wicket:message>
 				</label>
 			</th>
-			<th width="15%">
+			<th width="35%">
 				<label for="fieldGroupName">
 					<wicket:message	key="customFieldGroup.name">Field Group Name:</wicket:message>
 				</label>
 			</th>
-			<th width="35%">
+			<th width="50%">
 				<label for="fieldDescription">
 					<wicket:message	key="customFieldGroup.description">Description:</wicket:message>
 				</label>
 			</th>
-			<th width="10%">
+			<th width="6%">
 				<label for="published">
 					<wicket:message	key="customFieldGroup.published">Published:</wicket:message>
-				</label>
-			</th>
-			<th width="15%">
-				<label for="fieldMaxValue">
-					&nbsp;
-				</label>
-			</th>
-			<th width="10%">
-				<label for="fieldMinValue">
-					&nbsp;
-				</label>
-			</th>
-			<th width="10%">
-				<label for="fieldMaxValue">
-					&nbsp;
 				</label>
 			</th>
 			<th width="2%">&nbsp;</th>
@@ -47,32 +32,28 @@
 			<td width="5%">
 				<span wicket:id="id">100</span>
 			</td>
-			<td width="15%">
+			<td width="35%">
 			  <div wicket:id="customfieldGroupLinkWMC">
 			    <a href="#"wicket:id="name">
 			    	<span wicket:id="nameLbl">Name</span>
 			    </a>
 			  </div>
 			</td>
-			<td width="35%">
+			<td width="50%">
 				<span wicket:id="description">Description</span>
 			</td>
-			<td width="10%">
+			<td width="6%">
 				<img wicket:id="published"/>
 			</td>
-			<td width="10%">
-				&nbsp;
-			</td>
-			<td width="10%">
-				&nbsp;
-			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
-		<tr>
-			<td width="2%">&nbsp;</td>
-			<td width="60%" colspan="7"><span wicket:id="navigator" class="a"></span></td>
-			<td width="2%">&nbsp;</td>
-		</tr>
+		<tfoot>
+			<tr>
+				<td width="2%">&nbsp;</td>
+				<td width="96%" colspan="4"><span wicket:id="navigator" class="a"></span></td>
+				<td width="2%">&nbsp;</td>
+			</tr>
+		</tfoot>
 	</table>
 	<table width="0%" cellspacing="0"></table>
 </wicket:panel>
