@@ -186,6 +186,10 @@ public class UserServiceImpl implements IUserService {
 			arkUserRoleList = iArkAuthorisationService.getArkUserLinkedModuleAndRoles(arkUserVO);
 			arkUserVO.setArkUserPresentInDatabase(true);
 			arkUserVO.setArkUserRoleList(arkUserRoleList);
+			if(arkUserRoleList.isEmpty()) {
+				arkUserVO.setStudy(null);
+				arkUserVO.setArkUserPresentInDatabase(false);
+			}
 		}
 		catch (EntityNotFoundException e) {
 			log.debug("The specified User is not in the Ark Database");
