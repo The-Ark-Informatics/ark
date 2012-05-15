@@ -33,10 +33,11 @@ height:40px;
 }
 
 div.tabpanel div.tab-row {
-float:left;
-width:100%;
-background: url("../images/bg.gif") repeat-x bottom;
-line-height:normal;
+background: url("../images/bg.gif") repeat-x scroll center bottom transparent;
+float: left;
+font-size: 8pt;
+line-height: normal;
+width: 100%;
 }
 
 div.tabpanel div.tab-row ul {
