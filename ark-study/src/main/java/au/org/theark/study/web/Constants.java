@@ -293,6 +293,7 @@ public class Constants {
 	public static final String			UPLOADVO_UPLOAD_FILE_FORMAT_NAME							= "upload.fileFormat.name";
 	public static final String			UPLOADVO_UPLOAD_PAYLOAD										= "upload.payload";
 	public static final String			UPLOADVO_UPLOAD_DELIMITER_TYPE							= "upload.delimiterType";
+	public static final String			UPLOADVO_UPLOAD_UPLOAD_TYPE								= "upload.uploadType";
 	public static final String			UPLOADVO_UPLOAD_USER											= "upload.user";
 	public static final String			UPLOADVO_UPLOAD_USER_ID										= "upload.userId";
 	public static final String			UPLOADVO_UPLOAD_INSERT_TIME								= "upload.insertTime";
@@ -318,7 +319,9 @@ public class Constants {
 	public static final String			UPLOAD_USER														= "user";
 	public static final String			UPLOAD_CHECKSUM												= "checksum";
 	public static final String			DELIMITER_TYPE_ID												= "id";
+	public static final String			UPLOAD_TYPE_ID												= "id";
 	public static final String			DELIMITER_TYPE_NAME											= "name";
+	public static final String			UPLOAD_TYPE_NAME												= "name";
 
 	// Exception messages
 	public static final String			IO_EXCEPTION													= "IOException: Input error. ";
@@ -352,7 +355,7 @@ public class Constants {
 			"CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER",
 			"CHARACTER", "DD/MM/YYYY", "CHARACTER", "CHARACTER", "ALPHANUMERIC",
 			"ALPHANUMERIC", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER","SILENT", "DD/MM/YYYY"},
-			{ "MANDATORY", "Yes - unless assigned on upload", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", "No", 
+			{ "MANDATORY", "Yes - unless assigned on upload", "No", "No", "No", "No", "No", "No", "No", "No", "Yes", "No", "No", "No", "No", "No", 
 				"No", "No", "No", "No", "No", "No", "No", "No",
 				"No", "No", "No", "No", "No",
 				"No", "No", "No", "No", "No","No", "No" },

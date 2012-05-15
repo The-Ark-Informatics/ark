@@ -18,8 +18,6 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subjectUpload;
 
-import java.io.IOException;
-import java.sql.Blob;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +35,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -59,6 +58,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	private FileUploadField						fileUploadField;
 	// private UploadProgressBar uploadProgressBar;
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
+	private DropDownChoice<UploadType>		uploadTypeDdc;
 	private WizardForm							wizardForm;
 
 	public SubjectUploadStep1(String id) {
@@ -81,6 +81,11 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.study.web.Constants.DELIMITER_TYPE_ID);
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
 		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
+		
+		java.util.Collection<UploadType> uploadTypeCollection = iArkCommonService.getUploadTypes();
+		ChoiceRenderer uploadTypeRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.UPLOAD_TYPE_NAME, au.org.theark.study.web.Constants.UPLOAD_TYPE_ID);
+		uploadTypeDdc = new DropDownChoice<UploadType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_UPLOAD_TYPE, (List) uploadTypeCollection, uploadTypeRenderer);
+		containerForm.getModelObject().getUpload().setUploadType(iArkCommonService.getDefaultUploadType());
 	}
 
 	public void initialiseDetailForm() {
@@ -96,12 +101,14 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		// Field validation here
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
+		//TODO uplaod
 	}
 
 	private void addComponents() {
 		// Add components here
 		add(fileUploadField);
 		add(delimiterTypeDdc);
+		add(uploadTypeDdc);
 	}
 
 	@Override
@@ -128,13 +135,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		FileUpload fileUpload = fileUploadField.getFileUpload();
 		containerForm.getModelObject().setFileUpload(fileUpload);	//TODO analyze why VO pattern throughout code, is it always necessary in attion to entity/detached-entity concepts
 
-		//try {
-		//	Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
 		containerForm.getModelObject().getUpload().setPayload(fileUpload.getBytes());
-		//}
-		//catch (IOException ioe) {
-		//	log.error("Failed to save the uploaded file: " + ioe);
-		//}
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 		String fileFormatName = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 		au.org.theark.core.model.study.entity.FileFormat fileFormat = new au.org.theark.core.model.study.entity.FileFormat();
