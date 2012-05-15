@@ -195,7 +195,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	}
 	
 	private void initBarcodeLabelTemplateDdc() {
-		ChoiceRenderer<BarcodeLabel> choiceRenderer = new ChoiceRenderer<BarcodeLabel>(Constants.NAME, Constants.ID);
+		ChoiceRenderer<BarcodeLabel> choiceRenderer = new ChoiceRenderer<BarcodeLabel>("nameAndVersion", Constants.ID);
 		barcodeLabelTemplateDdc = new DropDownChoice<BarcodeLabel>("barcodeLabelTemplate") {
 
 			private static final long	serialVersionUID	= 1L;
@@ -234,6 +234,9 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 					
 					nameTxtFld.setModelObject(barcodeLabelTemplateDdc.getModelObject().getName());
 					target.add(nameTxtFld);
+
+					versionTxtFld.setModelObject(version);
+					target.add(versionTxtFld);
 				}
 			}
 		});
