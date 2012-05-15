@@ -176,6 +176,15 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		else {
 			userNameTxtField.setEnabled(true);
 		}
+		
+		boolean visible = false;
+		try {
+			visible = iArkCommonService.isSuperAdministrator(SecurityUtils.getSubject().getPrincipal().toString());
+		}
+		catch (EntityNotFoundException e) {
+			//
+		}
+		groupPasswordContainer.setVisible(visible);
 		super.onBeforeRender();
 	}
 
