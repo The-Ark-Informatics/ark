@@ -35,7 +35,7 @@ import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.util.string.StringValue;
 
 /**
- * Embedded PrintApplet and dynamic drop-down list that populatesd with the printers connected to the client machine
+ * Embedded PrintApplet and dynamic drop-down list that populates with the printers connected to the client machine
  * 
  * @author cellis
  * 
