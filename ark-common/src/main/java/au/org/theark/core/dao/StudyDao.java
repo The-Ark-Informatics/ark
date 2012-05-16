@@ -1036,12 +1036,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public void updateUpload(StudyUpload studyUpload) {
-		//getSession().flush();
 		Subject currentUser = SecurityUtils.getSubject();
 		String userId = (String) currentUser.getPrincipal();
 		studyUpload.setUserId(userId);
 		getSession().update(studyUpload);
-		//getSession().flush();
 	}
 
 	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter) {

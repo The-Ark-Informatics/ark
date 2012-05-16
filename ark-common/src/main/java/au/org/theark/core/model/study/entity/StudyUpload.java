@@ -235,18 +235,11 @@ public class StudyUpload implements java.io.Serializable {
 		return uploadReport;
 	}
 
-	/**
-	 * @return the userId
-	 */
 	@Column(name = "USER_ID", nullable = false, length = 100)
 	public String getUserId() {
 		return this.userId;
 	}
 
-	/**
-	 * @param userId
-	 *           the userId to set
-	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}

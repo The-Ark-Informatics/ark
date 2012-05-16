@@ -133,7 +133,7 @@ public class UploadVO implements Serializable {
 		StringBuffer stringBuffer = new StringBuffer("");
 		java.util.Collection<String> msgs = getValidationMessages();
 
-		if (getValidationMessages() != null) {
+		if (msgs != null) {
 			for (Iterator<String> iterator = msgs.iterator(); iterator.hasNext();) {
 				String string = (String) iterator.next();
 				stringBuffer.append(string);

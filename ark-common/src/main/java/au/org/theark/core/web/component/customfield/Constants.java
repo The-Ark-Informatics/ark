@@ -29,7 +29,7 @@ public class Constants {
 	public static final String		CUSTOMFIELD_STUDY												= "study";
 	public static final String		CUSTOMFIELD_FIELD_TYPE										= "fieldType";
 	public static final String		CUSTOMFIELD_NAME												= "name";
-	public static final String		CUSTOMFIELD_DESCRIPTION										= "officialName";
+	public static final String		CUSTOMFIELD_DESCRIPTION										= "description";
 	public static final String		CUSTOMFIELD_FIELD_LABEL										= "fieldLabel";
 	public static final String		CUSTOMFIELD_UNIT_TYPE										= "unitType";
 	public static final String		CUSTOMFIELD_MIN_VALUE										= "minValue";
@@ -43,7 +43,7 @@ public class Constants {
 	public static final String		UNITTYPE 														= "unitType";
 	public static final String		UNITTYPE_ID 													= "id";
 	public static final String		UNITTYPE_NAME 													= "name";
-	public static final String		UNITTYPE_DESCRIPTION											= "officialName";
+	public static final String		UNITTYPE_DESCRIPTION											= "description";
 	public static final String		UNITTYPE_ARK_MODULE 											= "arkModule";
 	
  	public static final String		CUSTOMFIELDDISPLAY											= "customFieldDisplay";
@@ -57,7 +57,7 @@ public class Constants {
  	public static final String		CUSTOMFIELDGROUP												= "customFieldGroup";
  	public static final String		CUSTOMFIELDGROUP_ID											= "id";
  	public static final String		CUSTOMFIELDGROUP_NAME										= "name";
- 	public static final String		CUSTOMFIELDGROUP_DESCRIPTION								= "officialName";
+ 	public static final String		CUSTOMFIELDGROUP_DESCRIPTION								= "description";
 
 	public static final String		FIELDVO_CUSTOMFIELD_ID										= "customField.id";
 	public static final String		FIELDVO_CUSTOMFIELD_STUDY									= "customField.study";
