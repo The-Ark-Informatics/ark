@@ -18,8 +18,6 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biospecimenupload.form;
 
-import java.io.IOException;
-import java.sql.Blob;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -35,6 +33,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.model.study.entity.ArkFunction;

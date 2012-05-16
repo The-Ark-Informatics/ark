@@ -20,12 +20,12 @@ package au.org.theark.lims.web.component.biospecimenupload;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.util.Date;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.service.IArkCommonService;

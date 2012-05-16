@@ -18,8 +18,6 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biospecimenupload;
 
-import java.io.IOException;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +32,7 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
