@@ -21,12 +21,9 @@ package au.org.theark.phenotypic.util;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -40,22 +37,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.SystemDataMismatchException;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.model.pheno.entity.FieldUpload;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
-import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.CustomFieldVO;
-
-import com.csvreader.CsvReader;
 
 /**
  * CustomFieldImporter provides support for importing matrix-formatted files for defining custom fields. 

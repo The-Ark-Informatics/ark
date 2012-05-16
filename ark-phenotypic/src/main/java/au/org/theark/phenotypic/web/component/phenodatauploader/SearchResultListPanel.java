@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.phenodatauploader;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
 

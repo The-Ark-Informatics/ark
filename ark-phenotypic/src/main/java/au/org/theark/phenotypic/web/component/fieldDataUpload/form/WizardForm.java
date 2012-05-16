@@ -38,7 +38,6 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadSte
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadStep3;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadStep4;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadStep5;
-import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm;
 
 /**
  * @author cellis
