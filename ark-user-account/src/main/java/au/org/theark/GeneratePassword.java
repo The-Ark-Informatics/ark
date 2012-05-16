@@ -1,13 +1,14 @@
 package au.org.theark;
 
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+
 import javax.naming.InvalidNameException;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import au.org.theark.dao.ArkUserDao;
 import au.org.theark.vo.ArkUserVO;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 
 /**
  * A Stand alone java application that can be used for the purpose of creating an Ark User in LDAP . It does not create the user in the
