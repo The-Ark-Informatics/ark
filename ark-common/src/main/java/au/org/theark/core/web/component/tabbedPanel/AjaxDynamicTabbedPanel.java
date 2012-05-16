@@ -18,13 +18,13 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.tabbedPanel;
 
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
-
-import java.util.List;
 
 /**
  * Ajax based extension of the dynamic tabbed panel

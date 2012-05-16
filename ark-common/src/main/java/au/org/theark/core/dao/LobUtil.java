@@ -19,9 +19,8 @@
 package au.org.theark.core.dao;
 
 
-import java.sql.Blob;
-
 import java.io.InputStream;
+import java.sql.Blob;
 
 import org.springframework.stereotype.Repository;
 

@@ -24,7 +24,6 @@ import org.apache.wicket.extensions.wizard.NextButton;
 import org.apache.wicket.extensions.wizard.PreviousButton;
 import org.apache.wicket.extensions.wizard.Wizard;
 import org.apache.wicket.markup.html.panel.Panel;
-import au.org.theark.core.web.component.wizard.ArkWizardLastButton;
 
 import au.org.theark.core.Constants;
 

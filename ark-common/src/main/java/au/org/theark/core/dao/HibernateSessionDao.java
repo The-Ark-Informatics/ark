@@ -21,14 +21,9 @@ package au.org.theark.core.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
-import org.hibernate.SessionFactory.SessionFactoryOptions;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.internal.SessionFactoryImpl;//TODO: this has been moved in hib 4...may be deprecated hib 5.  evaluate best use.
-import org.jfree.util.Log;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.orm.hibernate3.SessionFactoryUtils;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
-import org.springframework.orm.hibernate4.SessionFactoryUtils;
 
 /**
  * A class to get a handle on the hibernate session object. This class must be extended by classes that require access to a hibernate session.

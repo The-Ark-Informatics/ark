@@ -18,8 +18,6 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfieldupload;
 
-import java.sql.SQLException;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;

@@ -28,8 +28,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.Constants;
+import au.org.theark.core.model.study.entity.Study;
 
 /**
  * fieldField entity. @author MyEclipse Persistence Tools

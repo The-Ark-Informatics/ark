@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
-import au.org.theark.core.vo.UploadVO;
 
 public class CustomFieldUploadVO extends UploadVO {
 
