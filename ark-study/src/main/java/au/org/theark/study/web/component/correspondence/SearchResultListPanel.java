@@ -18,10 +18,7 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.correspondence;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-
-import java.sql.Blob;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
