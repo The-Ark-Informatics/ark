@@ -101,6 +101,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		// Field validation here
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
+		uploadTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.uploadType.required", this, new Model<String>("Upload")));
 		//TODO uplaod
 	}
 
