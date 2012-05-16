@@ -17,6 +17,8 @@
 			</div>
 		</div>
 		
+		<div class="wizardPanelMargin">&nbsp;</div>
+		
 		<div class="fldLabel">
 			<div class="label">
 				<label for="uploadType"><wicket:message	key="upload.uploadType">Upload Type:</wicket:message></label> 
@@ -27,8 +29,7 @@
 			<div class="label">
 				<select wicket:id="upload.uploadType">
        				<option>Demographic</option>
-       				<option>Study-specific</option>
-       				<option>Other?</option>
+       				<option>Study-specific</option>	
        			</select>
 	       	</div>
 		</div>
@@ -36,8 +37,7 @@
 		
 		<div class="wizardPanelBreaker">&nbsp;</div>
 		
-		
-		<div class="wizardPanelMargin">&nbsp;</div>
+		<div class="wizardPanelContentLeft">&nbsp;</div>
 		
 		<div class="fldLabel">
 			<div class="label">
@@ -58,8 +58,10 @@
 		
 		<div class="wizardPanelContentLeft">&nbsp;</div>
 		
-		<div class="note">
-			<wicket:message key="upload.note">NOTE: Click "Download Template" for an example file. Header columns are required.</wicket:message>
+		<div class="floatLeft">
+			<div class="note">
+				<wicket:message key="upload.note">NOTE: Click "Download Template" for an example file. Header columns are required.</wicket:message>
+			</div>
 		</div>
 	</div>
 </wicket:panel>
