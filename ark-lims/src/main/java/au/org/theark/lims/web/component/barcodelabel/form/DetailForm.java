@@ -26,8 +26,11 @@ import java.util.List;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -39,7 +42,9 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.string.StringValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +62,7 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.lims.service.ILimsAdminService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.barcodelabeldata.BarcodeLabelDataPanel;
+import au.org.theark.lims.web.component.button.PrinterListPanel;
 
 /**
  * @author cellis
@@ -86,6 +92,9 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	private Label									barcodeLabelTemplateLbl;
 	private DropDownChoice<BarcodeLabel>	barcodeLabelTemplateDdc;
 	private TextArea<String> 					exampleBarcodeDataFile;
+	StringValue barcodePrinterName;
+	
+	private PrinterListPanel printerList;
 
 	/**
 	 * 
@@ -138,6 +147,30 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 			arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(barcodeLabelDataPanel);
 			exampleBarcodeDataFile.setModelObject(iLimsAdminService.getBarcodeLabelTemplate(containerForm.getModelObject()));
 		}
+		
+		String selected = new String();
+		if(containerForm.getModelObject().getBarcodePrinterName() != null) {
+			selected = containerForm.getModelObject().getBarcodePrinterName();
+		}
+		printerList = new PrinterListPanel("printerList", selected, isNew());
+		printerList.add(new AbstractDefaultAjaxBehavior() {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public void renderHead(Component component, IHeaderResponse response) {
+				super.renderHead(component, response);
+				response.renderOnLoadJavaScript("findPrinters()");
+				String js = "function callWicket(selectedPrinter) { var wcall = wicketAjaxGet ('"
+				    + getCallbackUrl() + "&selectedPrinter='+selectedPrinter, function() { }, function() { } ) }";
+				response.renderJavaScript(js, "selectPrinter");
+			}
+
+			@Override
+			protected void respond(AjaxRequestTarget arg0) {
+				barcodePrinterName = RequestCycle.get().getRequest().getQueryParameters().getParameterValue("selectedPrinter");
+			}
+		});
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(printerList);
 		super.onBeforeRender();
 	}
 
@@ -245,7 +278,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld.setEnabled(false));
 		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(barcodePrinterDdc);
+		//arkCrudContainerVO.getDetailPanelFormContainer().add(barcodePrinterDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(descriptionTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(versionTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(barcodeLabelDataPanel);
@@ -304,38 +337,45 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 
 	@Override
 	protected void onSave(Form<BarcodeLabel> containerForm, AjaxRequestTarget target) {
-		if (isNew()) {
-			if (barcodeLabelTemplateDdc.getModelObject() != null) {
-				List<BarcodeLabelData> cloneBarcodeLabelDataList = iLimsAdminService.getBarcodeLabelDataByBarcodeLabel(barcodeLabelTemplateDdc.getModelObject());
-				List<BarcodeLabelData> barcodeLabelDataList = new ArrayList<BarcodeLabelData>(0);
-				for (Iterator<BarcodeLabelData> iterator = cloneBarcodeLabelDataList.iterator(); iterator.hasNext();) {
-					BarcodeLabelData clonebarcodeLabelData = (BarcodeLabelData) iterator.next();
-					BarcodeLabelData barcodeLabelData = new BarcodeLabelData();
-					// Copy parent details to new barcodeLabelData
-					try {
-						PropertyUtils.copyProperties(barcodeLabelData, clonebarcodeLabelData);
-					}
-					catch (IllegalAccessException e) {
-						log.error(e.getMessage());
-					}
-					catch (InvocationTargetException e) {
-						log.error(e.getMessage());
-					}
-					catch (NoSuchMethodException e) {
-						log.error(e.getMessage());
-					}
-					barcodeLabelData.setId(null);
-					barcodeLabelDataList.add(barcodeLabelData);
-				}
-				containerForm.getModelObject().setBarcodeLabelData(barcodeLabelDataList);
-			}
-			
-			iLimsAdminService.createBarcodeLabel(containerForm.getModelObject());
+		if(barcodePrinterName == null) {
+			this.error("Barcode Printer is required");
 		}
 		else {
-			iLimsAdminService.updateBarcodeLabel(containerForm.getModelObject());
+			containerForm.getModelObject().setBarcodePrinterName(barcodePrinterName.toString());
+		
+			if (isNew()) {
+				if (barcodeLabelTemplateDdc.getModelObject() != null) {
+					List<BarcodeLabelData> cloneBarcodeLabelDataList = iLimsAdminService.getBarcodeLabelDataByBarcodeLabel(barcodeLabelTemplateDdc.getModelObject());
+					List<BarcodeLabelData> barcodeLabelDataList = new ArrayList<BarcodeLabelData>(0);
+					for (Iterator<BarcodeLabelData> iterator = cloneBarcodeLabelDataList.iterator(); iterator.hasNext();) {
+						BarcodeLabelData clonebarcodeLabelData = (BarcodeLabelData) iterator.next();
+						BarcodeLabelData barcodeLabelData = new BarcodeLabelData();
+						// Copy parent details to new barcodeLabelData
+						try {
+							PropertyUtils.copyProperties(barcodeLabelData, clonebarcodeLabelData);
+						}
+						catch (IllegalAccessException e) {
+							log.error(e.getMessage());
+						}
+						catch (InvocationTargetException e) {
+							log.error(e.getMessage());
+						}
+						catch (NoSuchMethodException e) {
+							log.error(e.getMessage());
+						}
+						barcodeLabelData.setId(null);
+						barcodeLabelDataList.add(barcodeLabelData);
+					}
+					containerForm.getModelObject().setBarcodeLabelData(barcodeLabelDataList);
+				}
+				
+				iLimsAdminService.createBarcodeLabel(containerForm.getModelObject());
+			}
+			else {
+				iLimsAdminService.updateBarcodeLabel(containerForm.getModelObject());
+			}
+			this.info("Barcode label: " + containerForm.getModelObject().getName() + " was created/updated successfully.");
 		}
-		this.info("Barcode label: " + containerForm.getModelObject().getName() + " was created/updated successfully.");
 		target.add(feedBackPanel);
 		onSavePostProcess(target);
 	}

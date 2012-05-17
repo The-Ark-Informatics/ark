@@ -83,9 +83,9 @@ public class SearchResultsPanel extends Panel {
 					item.add(new Label("name", ""));
 				}
 				
-				if (barcodeLabel.getBarcodePrinter() != null) {
+				if (barcodeLabel.getBarcodePrinterName() != null) {
 					// the ID here must match the ones in mark-up
-					item.add(new Label("barcodePrinter", barcodeLabel.getBarcodePrinter().getName()));
+					item.add(new Label("barcodePrinter", barcodeLabel.getBarcodePrinterName()));
 				}
 				else {
 					item.add(new Label("barcodePrinter", ""));
