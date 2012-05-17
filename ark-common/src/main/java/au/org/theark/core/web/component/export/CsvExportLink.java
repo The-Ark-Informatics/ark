@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
@@ -62,9 +63,9 @@ public class CsvExportLink<T> extends Link<Void> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void writeTableToCsv(OutputStream outputStream) {
 		CsvWriter writer = new CsvWriter(outputStream);
+		List<ExportableColumn<T>> exportable = getExportableColumns();
 
 		// Column headers
 		for (String col : headers) {
@@ -76,13 +77,25 @@ public class CsvExportLink<T> extends Link<Void> {
 		for (int i = 0; i < pager.pages(); i++) {
 			Iterator<? extends T> it = table.getDataProvider().iterator(pager.offset(i), pager.count(i));
 			while (it.hasNext()) {
-				ArrayList<T> row = (ArrayList<T>) it.next();
-				for (T cell : row) {
-					writer.write(cell);
+				T object = it.next();
+				for (ExportableColumn<T> col : exportable) {
+					col.exportCsv(object, writer);
 				}
 				writer.endLine();
 			}
 		}
 		writer.close();
+
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<ExportableColumn<T>> getExportableColumns() {
+		List<ExportableColumn<T>> exportable = new ArrayList<ExportableColumn<T>>(table.getColumns().size());
+		for (IColumn<T> column : table.getColumns()) {
+			if (column instanceof ExportableColumn<?>) {
+				exportable.add((ExportableColumn<T>) column);
+			}
+		}
+		return exportable;
 	}
 }
