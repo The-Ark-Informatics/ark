@@ -87,7 +87,7 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 			barcodePrinterAvailable = false;
 		}
 
-		if (barcodeLabel == null) {
+		if (barcodeLabel == null || barcodeLabel.getBarcodePrinterName() == null || barcodeLabel.getBarcodePrinterName().isEmpty()) {
 			log.error("A Zebra barcode label is currently not available. Please define the label and try again");
 			barcodePrinterAvailable = false;
 		}
@@ -125,7 +125,7 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 			}
 			else {
 				log.debug(zplString);
-				target.appendJavaScript("printBarcode(\"" + barcodePrinter.getName() + "\",\"" + zplString + "\");");
+				target.appendJavaScript("printBarcode(\"" + barcodeLabel.getBarcodePrinterName() + "\",\"" + zplString + "\");");
 				onPostSubmit(target, form);
 			}
 		}

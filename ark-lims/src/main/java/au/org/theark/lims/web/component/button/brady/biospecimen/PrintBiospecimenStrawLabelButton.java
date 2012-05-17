@@ -89,7 +89,7 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 			barcodePrinterAvailable = false;
 		}
 
-		if (barcodeLabel == null) {
+		if (barcodeLabel == null || barcodeLabel.getBarcodePrinterName() == null || barcodeLabel.getBarcodePrinterName().isEmpty()) {
 			log.error("A Brady barcode label is currently not available. Please define the label and try again");
 			barcodePrinterAvailable = false;
 		}
@@ -127,7 +127,7 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 			}
 			else {
 				log.debug(tsplString);
-				target.appendJavaScript("printBarcode(\"" + barcodePrinter.getName() + "\",\"" + tsplString + "\");");
+				target.appendJavaScript("printBarcode(\"" + barcodeLabel.getBarcodePrinterName() + "\",\"" + tsplString + "\");");
 				onPostSubmit(target, form);
 			}
 		}
