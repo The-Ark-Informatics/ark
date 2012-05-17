@@ -59,6 +59,7 @@ public class BarcodeLabel implements java.io.Serializable {
 	private BarcodeLabel					barcodeLabelTemplate;
 	private Long							version;
 	private String							nameAndVersion;
+	private String							barcodePrinterName;
 
 	public BarcodeLabel() {
 	}
@@ -206,5 +207,20 @@ public class BarcodeLabel implements java.io.Serializable {
 	 */
 	public void setNameAndVersion(String nameAndVersion) {
 		this.nameAndVersion = nameAndVersion;
+	}
+
+	/**
+	 * @param barcodePrinterName the barcodePrinterName to set
+	 */
+	public void setBarcodePrinterName(String barcodePrinterName) {
+		this.barcodePrinterName = barcodePrinterName;
+	}
+
+	/**
+	 * @return the barcodePrinterName
+	 */
+	@Column(name = "BARCODE_PRINTER_NAME")
+	public String getBarcodePrinterName() {
+		return barcodePrinterName;
 	}
 }
