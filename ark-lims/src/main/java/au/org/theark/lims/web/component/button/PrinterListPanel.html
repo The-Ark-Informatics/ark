@@ -1,7 +1,4 @@
 <wicket:panel>
-	<label wicket:id="printerLabel">
-		[Printer:]
-	</label>
 	<select wicket:id="printerList">
 		<option>
 			zebra
@@ -9,7 +6,7 @@
 		<option>
 			brady_bbp_11
 		</option>
-	</select>
+	</select><span class="requiredHint">*</span>
 	<input wicket:id="selectedPrinter" type="hidden" name="selectedPrinter" value="" />
 	<script type="text/javascript" wicket:id="script">
 		[script replaced by wicket]

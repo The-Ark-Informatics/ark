@@ -22,10 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.HiddenField;
@@ -34,6 +32,8 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.util.string.StringValue;
 
+import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
+
 /**
  * Embedded PrintApplet and dynamic drop-down list that populates with the printers connected to the client machine
  * 
@@ -41,26 +41,23 @@ import org.apache.wicket.util.string.StringValue;
  * 
  */
 public class PrinterListPanel extends Panel {
-	/**
-	 * 
-	 */
 	private static final long		serialVersionUID	= -3613468944612447644L;
 	protected String					selected				= new String();
 	protected HiddenField<String>	selectedPrinter;
 	protected static List<String>	PRINTERLIST			= Arrays.asList("zebra", "brady_bbp_11");
 	
-	public PrinterListPanel(String id) {
+	protected boolean isNew;
+	
+	public PrinterListPanel(String id, String selected, boolean isNew) {
 		super(id);
 		setOutputMarkupId(true);
+		this.isNew = isNew;
+		setSelected(selected);
 		setDefaultModel(new PropertyModel<String>(this, "selected"));
 		initPanel();
-		add(new AttributeModifier("class", "floatLeft"));
 	}
 
 	private void initPanel() {
-		Label printerLabel = new Label("printerLabel", "Printer:");
-		this.add(printerLabel);
-
 		DropDownChoice<String> printerListDdc = new DropDownChoice<String>("printerList", new PropertyModel<String>(this, "selected"), PRINTERLIST);
 		printerListDdc.add(new AttributeModifier("name", "printerList"));
 		printerListDdc.add(new AttributeModifier("onchange", "changeHiddenInput(this)"));
@@ -94,14 +91,22 @@ public class PrinterListPanel extends Panel {
 		javaScript.append("\n");
 		javaScript.append("		var listing = applet.getPrinters();");
 		javaScript.append("\n");
-		javaScript.append("		var printers = listing.split(',');");
+		javaScript.append("		var printers = listing.split(',');\n");
+		javaScript.append("		var objHidden = document.getElementById('");
+		javaScript.append(selectedPrinter.getMarkupId());
+		javaScript.append("');\n");
 		javaScript.append("\n");
 		javaScript.append("		for ( var i in printers) {");
 		javaScript.append("\n");
-		javaScript.append("			document.getElementById('");
+		javaScript.append("			if(objHidden.value == printers[i]) {\n");
+		javaScript.append("				document.getElementById('");
 		javaScript.append(printerListDdc.getMarkupId());
-		javaScript.append("').options[i] = new Option(printers[i]);");
-		javaScript.append("\n");
+		javaScript.append("').options[i] = new Option(printers[i], printers[i], true, true);\n");
+		javaScript.append("			} else {\n");
+		javaScript.append("				document.getElementById('");
+		javaScript.append(printerListDdc.getMarkupId());
+		javaScript.append("').options[i] = new Option(printers[i], printers[i], false, false);\n");
+		javaScript.append("			}\n");
 		javaScript.append("		}");
 		javaScript.append("\n");
 		javaScript.append("	} else {");
@@ -123,8 +128,7 @@ public class PrinterListPanel extends Panel {
 		javaScript.append("\n");
 		javaScript.append("	var objHidden = document.getElementById('");
 		javaScript.append(selectedPrinter.getMarkupId());
-		javaScript.append("');");
-		javaScript.append("\n");
+		javaScript.append("');\n");
 		javaScript.append("	objHidden.value = objDropDown.value;");
 		javaScript.append("\n");
 		javaScript.append("	callWicket(objDropDown.value);");
@@ -135,25 +139,6 @@ public class PrinterListPanel extends Panel {
 		script.add(new AttributeModifier("onload", "findPrinters()"));
 		script.setEscapeModelStrings(false); // do not HTML escape JavaScript code
 		this.add(script);
-		
-		add(new AbstractDefaultAjaxBehavior() {
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			public void renderHead(Component component, IHeaderResponse response) {
-				super.renderHead(component, response);
-				response.renderOnLoadJavaScript("findPrinters()");
-				String js = "function callWicket(selectedPrinter) { var wcall = wicketAjaxGet ('"
-				    + getCallbackUrl() + "&selectedPrinter='+selectedPrinter, function() { }, function() { } ) }";
-				response.renderJavaScript(js, "selectPrinter");
-			}
-
-			@Override
-			protected void respond(AjaxRequestTarget arg0) {
-				StringValue selectedPrinter = RequestCycle.get().getRequest().getQueryParameters().getParameterValue("selectedPrinter");
-				selected = selectedPrinter.toString();
-			}
-		});
 	}
 	
 	/**
