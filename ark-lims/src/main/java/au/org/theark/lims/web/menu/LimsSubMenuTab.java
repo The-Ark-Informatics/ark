@@ -25,6 +25,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -49,6 +50,7 @@ import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomD
 import au.org.theark.lims.web.component.biospecimenuidtemplate.BiospecimenUidTemplateContainerPanel;
 import au.org.theark.lims.web.component.biospecimenupload.BiospecimenUploadContainerPanel;
 import au.org.theark.lims.web.component.inventory.panel.InventoryContainerPanel;
+import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.SubjectContainerPanel;
 
 /**
@@ -73,6 +75,11 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
 		buildTabs();
+		
+		// Applet used for barcode printing
+		PrintAppletPanel printAppletPanel = new PrintAppletPanel("printAppletPanel", "zebra");
+		printAppletPanel.add(new AttributeModifier("class", "floatLeft"));
+		this.add(printAppletPanel);
 	}
 
 	public void buildTabs() {

@@ -39,7 +39,6 @@ import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.service.ILimsAdminService;
 import au.org.theark.lims.web.component.barcodeprinter.form.ContainerForm;
-import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 
 public class SearchResultsPanel extends Panel {
 
@@ -57,10 +56,6 @@ public class SearchResultsPanel extends Panel {
 		super(id);
 		this.containerForm = containerForm;
 		this.arkCrudContainerVo = arkCrudContainerVo;
-		
-		// Applet for printing barcodes/checking printers
-		PrintAppletPanel printAppletPanel = new PrintAppletPanel("printAppletPanel", "zebra");
-		add(printAppletPanel);
 	}
 
 	public DataView<BarcodePrinter> buildDataView(ArkDataProvider<BarcodePrinter, ILimsAdminService> dataProvider) {

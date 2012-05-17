@@ -66,11 +66,6 @@ public class BiospecimenContainerPanel extends Panel {
 		containerForm.setMultiPart(true);
 		
 		containerForm.add(initialiseFeedBackPanel());
-		
-		// Applet for printing barcodess
-		PrintAppletPanel printAppletPanel = new PrintAppletPanel("printAppletPanel", "zebra");
-		containerForm.add(printAppletPanel);
-		
 		containerForm.add(initialiseSearchPanel());
 		containerForm.add(initialiseSearchResultPanel());
 		this.add(containerForm);
