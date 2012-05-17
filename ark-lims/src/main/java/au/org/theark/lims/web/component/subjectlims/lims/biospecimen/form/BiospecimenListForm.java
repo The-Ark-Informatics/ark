@@ -26,6 +26,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -52,6 +54,8 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
+import au.org.theark.core.web.component.export.CsvExportLink;
+import au.org.theark.core.web.component.export.ExportablePropertyColumn;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -76,7 +80,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService										iLimsService;
-	
+
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService								iInventoryService;
 
@@ -117,7 +121,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 		add(modalWindow);
 	}
-	
+
 	@Override
 	public void onBeforeRender() {
 		// Get session data (used for subject search)
@@ -159,7 +163,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return (int)iLimsService.getBiospecimenCount(criteriaModel.getObject());
+				return (int) iLimsService.getBiospecimenCount(criteriaModel.getObject());
 			}
 
 			public Iterator<Biospecimen> iterator(int first, int count) {
@@ -185,10 +189,32 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				target.add(dataViewListWMC);
 			}
 		};
+
 		dataViewListWMC.add(pageNavigator);
 		dataViewListWMC.add(dataView);
-		add(dataViewListWMC);
 
+		List<IColumn<Biospecimen>> columns = new ArrayList<IColumn<Biospecimen>>();
+		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("BiospecimenUID"), "biospecimenUid"));
+		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("Study"), "study.name"));
+		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("SubjectUID"), "linkSubjectStudy.subjectUID"));
+		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("Collection"), "bioCollection.name"));
+		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("Sample Type"), "sampleType.name"));
+		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("Quantity"), "quantity"));
+		
+		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), au.org.theark.core.Constants.ROWS_PER_PAGE);
+		List<String> headers = new ArrayList<String>(0);
+		headers.add("BiospecimenUID");
+		headers.add("Study");
+		headers.add("SubjectUID");
+		headers.add("Collection");
+		headers.add("Sample Type");
+		headers.add("Quantity");
+		
+		CsvExportLink<String> link = new CsvExportLink<String>("export", table, headers);
+		link.add(new Label("exportLabel", "Export to CSV"));
+		dataViewListWMC.add(link);
+		
+		add(dataViewListWMC);
 	}
 
 	private void initialiseNewButton() {
@@ -267,7 +293,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				sampleTypeLblFld = new Label("biospecimen.sampleType.name", biospecimen.getSampleType().getName());
 				collectionLblFld = new Label("biospecimen.bioCollection.name", biospecimen.getBioCollection().getName());
 				commentsLblFld = new Label("biospecimen.comments", biospecimen.getComments());
-				
+
 				biospecimen.setQuantity(iLimsService.getQuantityAvailable(biospecimen));
 				if (biospecimen.getQuantity() == null) {
 					quantityLblFld = new Label("biospecimen.quantity", "0");
@@ -275,16 +301,16 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				else {
 					quantityLblFld = new Label("biospecimen.quantity", biospecimen.getQuantity().toString());
 				}
-				if (biospecimen.getUnit() == null){
+				if (biospecimen.getUnit() == null) {
 					unitsLblFld = new Label("biospecimen.unit", "");
 				}
 				else {
-					unitsLblFld = new Label("biospecimen.unit", biospecimen.getUnit().getName());	
+					unitsLblFld = new Label("biospecimen.unit", biospecimen.getUnit().getName());
 				}
-				
+
 				try {
 					locationLbl = new Label("biospecimen.location", "view");
-					locationLink = new ArkBusyAjaxLink("biospecimen.location.link"){
+					locationLink = new ArkBusyAjaxLink("biospecimen.location.link") {
 
 						/**
 						 * 
@@ -299,7 +325,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 							try {
 								biospecimenLocationVo = iInventoryService.getBiospecimenLocation(biospecimen);
 								newModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
-								BioLocationPanel bioLocationPanel = new BioLocationPanel("content", newModel){
+								BioLocationPanel bioLocationPanel = new BioLocationPanel("content", newModel) {
 									/**
 									 * 
 									 */
@@ -321,11 +347,11 @@ public class BiospecimenListForm extends Form<LimsVO> {
 							}
 						}
 					};
-					
+
 					locationLink.add(locationLbl);
-					
+
 					BiospecimenLocationVO biospecimenLocationVo = iInventoryService.getBiospecimenLocation(biospecimen);
-					if(!biospecimenLocationVo.getIsAllocated()) {
+					if (!biospecimenLocationVo.getIsAllocated()) {
 						locationLink.setVisible(false);
 					}
 				}
@@ -342,7 +368,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				item.add(quantityLblFld);
 				item.add(unitsLblFld);
 				item.add(locationLink);
-				
+
 				if (biospecimen.getBarcoded()) {
 					item.addOrReplace(new ContextImage("biospecimen.barcoded", new Model<String>("images/icons/tick.png")));
 				}
@@ -369,7 +395,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	protected void onNew(AjaxRequestTarget target) {
 		// Needs CREATE permission AND a BioCollection to select from
 		boolean hasBioCollections = false;
-		
+
 		// Get session data (used for subject search)
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
@@ -434,7 +460,8 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	}
 
 	/**
-	 * @param newButton the newButton to set
+	 * @param newButton
+	 *           the newButton to set
 	 */
 	public void setNewButton(ArkBusyAjaxButton newButton) {
 		this.newButton = newButton;
