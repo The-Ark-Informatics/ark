@@ -25,13 +25,18 @@ import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
 
+/**
+ * 
+ * @author travis
+ *
+ */
 @Entity(name = "au.org.theark.common.model.study.entity.UploadType")
 @Table(name = "UPLOAD_TYPE", schema = Constants.STUDY_SCHEMA)
 public class UploadType implements java.io.Serializable {
-
-	private Long	id;
-	private String	name;
-	private String	description;
+	private static final long	serialVersionUID	= -575828532949091593L;
+	private Long					id;
+	private String					name;
+	private String					description;
 
 	public UploadType() {
 	}
