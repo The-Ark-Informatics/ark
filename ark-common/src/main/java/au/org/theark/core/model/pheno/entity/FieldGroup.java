@@ -36,7 +36,6 @@ import au.org.theark.core.model.Constants;
  * @author cellis
  * 
  */
-@SuppressWarnings("unused")
 @Entity
 @Table(name = "FIELD_GROUP", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FieldGroup {
