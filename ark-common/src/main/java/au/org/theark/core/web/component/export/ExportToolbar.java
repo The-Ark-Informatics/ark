@@ -17,7 +17,14 @@ public class ExportToolbar<T> extends AbstractToolbar {
 
 	private static final long	serialVersionUID	= 1L;
 
-	public ExportToolbar(final DataTable<T> table, List<String> headers) {
+	/**
+	 * 
+	 * @param id
+	 * @param table
+	 * @param headers
+	 * @param filename
+	 */
+	public ExportToolbar(final DataTable<T> table, List<String> headers, String filename) {
 		super(table);
 		WebMarkupContainer span = new WebMarkupContainer("span") {
 
@@ -29,8 +36,8 @@ public class ExportToolbar<T> extends AbstractToolbar {
 			}
 		};
 		add(span);
-		span.add(new CsvExportLink<T>("csv", table, headers));
-		span.add(new XlsExportLink<T>("xls", table, headers));
-		span.add(new PdfExportLink<T>("pdf", table, headers));
+		span.add(new CsvExportLink<T>("csv", table, headers, filename + ".csv"));
+		span.add(new XlsExportLink<T>("xls", table, headers, filename + ".xls"));
+		span.add(new PdfExportLink<T>("pdf", table, headers, filename + ".pdf"));
 	}
 }

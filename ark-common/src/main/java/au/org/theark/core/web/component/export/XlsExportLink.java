@@ -13,8 +13,14 @@ import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
@@ -33,18 +39,39 @@ public class XlsExportLink<T> extends Link<Void> {
 	private transient Logger	log					= LoggerFactory.getLogger(XlsExportLink.class);
 	private final DataTable<T>	table;
 	private List<String>			headers				= new ArrayList<String>(0);
+	private String filename = "export.xls";
 
-	public XlsExportLink(String id, DataTable<T> table, List<String> headers) {
+	/**
+	 * 
+	 * @param id
+	 * @param table
+	 * @param headers
+	 * @param filename
+	 */
+	public XlsExportLink(String id, DataTable<T> table, List<String> headers, String filename) {
 		super(id);
 		this.table = table;
 		this.headers = headers;
+		this.filename = filename;
+		
+		add(new ContextImage("xlsimage", new Model<String>("images/icons/page_white_excel.png")));
+		add(new Behavior(){
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public void onComponentTag(Component component, ComponentTag tag) {
+				tag.put("title", "Export to XLS");
+			}
+		});
 	}
 
 	@Override
 	public void onClick() {
 		final String tempDir = System.getProperty("java.io.tmpdir");
-		final String fileName = "exportxls.xls";
-		final java.io.File file = new File(tempDir, fileName);
+		if(filename == null || filename.isEmpty()) {
+			filename = "export.xls";
+		}
+		final java.io.File file = new File(tempDir, filename);
 
 		OutputStream outputStream;
 		try {
@@ -60,18 +87,18 @@ public class XlsExportLink<T> extends Link<Void> {
 					super.respond(requestCycle);
 					Files.remove(file);
 				}
-			}.setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT));
+			}.setFileName(filename).setContentDisposition(ContentDisposition.ATTACHMENT));
 		}
 		catch (FileNotFoundException e) {
 			log.error(e.getMessage());
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void writeTableToXls(OutputStream outputStream) {
 		try {
 			WritableWorkbook writableWorkBook = Workbook.createWorkbook(outputStream);
 			jxl.write.WritableSheet wsheet = writableWorkBook.createSheet("Sheet", 0);
+			List<ExportableColumn<T>> exportable = getExportableColumns();
 
 			int row = 0;
 			int col = 0;
@@ -87,15 +114,10 @@ public class XlsExportLink<T> extends Link<Void> {
 			for (int i = 0; i < pager.pages(); i++) {
 				Iterator<? extends T> it = table.getDataProvider().iterator(pager.offset(i), pager.count(i));
 				while (it.hasNext()) {
-					ArrayList<T> rowOfValues = (ArrayList<T>) it.next();
 					col = 0;
-					for (T cell : rowOfValues) {
-						String value = new String();
-						if(cell != null) {
-							value = cell.toString();
-						}
-						jxl.write.Label label = new jxl.write.Label(col++, row, value);
-						wsheet.addCell(label);
+					T object = it.next();
+					for (ExportableColumn<T> column : exportable) {
+						column.exportXls(object, wsheet, col++, row);
 					}
 					row++;
 				}
@@ -116,5 +138,16 @@ public class XlsExportLink<T> extends Link<Void> {
 		catch (WriteException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<ExportableColumn<T>> getExportableColumns() {
+		List<ExportableColumn<T>> exportable = new ArrayList<ExportableColumn<T>>(table.getColumns().size());
+		for (IColumn<T> column : table.getColumns()) {
+			if (column instanceof ExportableColumn<?>) {
+				exportable.add((ExportableColumn<T>) column);
+			}
+		}
+		return exportable;
 	}
 }

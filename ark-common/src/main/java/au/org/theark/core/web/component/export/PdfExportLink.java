@@ -8,8 +8,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
@@ -35,18 +41,39 @@ public class PdfExportLink<T> extends Link<Void> {
 	private transient Logger	log					= LoggerFactory.getLogger(PdfExportLink.class);
 	private final DataTable<T>	table;
 	private List<String>			headers				= new ArrayList<String>(0);
+	private String filename = "export.pdf";
 
-	public PdfExportLink(String id, DataTable<T> table, List<String> headers) {
+	/**
+	 * 
+	 * @param id
+	 * @param table
+	 * @param headers
+	 * @param filename
+	 */
+	public PdfExportLink(String id, DataTable<T> table, List<String> headers, String filename) {
 		super(id);
 		this.table = table;
 		this.headers = headers;
+		this.filename = filename;
+		
+		add(new ContextImage("pdfimage", new Model<String>("images/icons/page_white_acrobat.png")));
+		add(new Behavior(){
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public void onComponentTag(Component component, ComponentTag tag) {
+				tag.put("title", "Export to PDF");
+			}
+		});
 	}
 
 	@Override
 	public void onClick() {
 		final String tempDir = System.getProperty("java.io.tmpdir");
-		final String fileName = "exportpdf.pdf";
-		final java.io.File file = new File(tempDir, fileName);
+		if(filename == null || filename.isEmpty()) {
+			filename = "export.pdf";
+		}
+		final java.io.File file = new File(tempDir, filename);
 
 		OutputStream outputStream;
 		try {
@@ -62,18 +89,18 @@ public class PdfExportLink<T> extends Link<Void> {
 					super.respond(requestCycle);
 					Files.remove(file);
 				}
-			}.setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT));
+			}.setFileName(filename).setContentDisposition(ContentDisposition.ATTACHMENT));
 		}
 		catch (FileNotFoundException e) {
 			log.error(e.getMessage());
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void writeTableToPdf(OutputStream outputStream) {
 
 		// step 1 open pdf document
 		Document document = new Document(PageSize.A4.rotate());
+		List<ExportableColumn<T>> exportable = getExportableColumns();
 		
 		// Create a pdf table
       PdfPTable pdfTable = new PdfPTable(table.getColumns().size());
@@ -100,13 +127,9 @@ public class PdfExportLink<T> extends Link<Void> {
 			for (int i = 0; i < pager.pages(); i++) {
 				Iterator<? extends T> it = table.getDataProvider().iterator(pager.offset(i), pager.count(i));
 				while (it.hasNext()) {
-					ArrayList<T> row = (ArrayList<T>) it.next();
-					for (T cell : row) {
-						String value = new String();
-						if(cell != null) {
-							value = cell.toString();
-						}
-						pdfTable.addCell(value);
+					T object = it.next();
+					for (ExportableColumn<T> column : exportable) {
+						column.exportPdf(object, pdfTable);
 					}
 				}
 			}
@@ -124,5 +147,16 @@ public class PdfExportLink<T> extends Link<Void> {
 		catch (IOException e) {
 			log.error(e.getMessage());
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<ExportableColumn<T>> getExportableColumns() {
+		List<ExportableColumn<T>> exportable = new ArrayList<ExportableColumn<T>>(table.getColumns().size());
+		for (IColumn<T> column : table.getColumns()) {
+			if (column instanceof ExportableColumn<?>) {
+				exportable.add((ExportableColumn<T>) column);
+			}
+		}
+		return exportable;
 	}
 }
