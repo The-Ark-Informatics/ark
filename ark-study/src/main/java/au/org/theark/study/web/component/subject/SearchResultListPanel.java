@@ -124,7 +124,7 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("linkSubjectStudy.person.dateOfBirth", ""));
 				}
 
-				item.add(new Label("linkSubjectStudy.person.vitalStatus.statusName", subject.getPerson().getVitalStatus().getName()));
+				item.add(new Label("linkSubjectStudy.person.vitalStatus.name", subject.getPerson().getVitalStatus().getName()));
 
 				item.add(new Label("linkSubjectStudy.subjectStatus.name", subject.getSubjectStatus().getName()));
 

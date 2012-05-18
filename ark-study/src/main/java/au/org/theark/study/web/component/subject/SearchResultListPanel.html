@@ -95,7 +95,7 @@
 				</span>
 			</td>
 			<td width="10%">
-				<span wicket:id="linkSubjectStudy.person.vitalStatus.statusName">
+				<span wicket:id="linkSubjectStudy.person.vitalStatus.name">
 					Vital Status
 				</span>
 			</td>
@@ -118,14 +118,15 @@
 				&nbsp;
 			</td>
 		</tr>
+		
 		<tfoot>
 			<tr>
 				<td width="2%">
 					&nbsp;
 				</td>
-				<td width="96%" colspan="7">
+				<td width="96%" colspan="8">
 					<span wicket:id="navigator" class="a">
-					</span>
+					</span>			
 				</td>
 				<td width="2%">
 					&nbsp;
@@ -134,5 +135,6 @@
 		</tfoot>
 	</table>
 	<table width="0%" cellspacing="0">
+		<wicket:container wicket:id="toolbars"></wicket:container>
 	</table>
 </wicket:panel>
