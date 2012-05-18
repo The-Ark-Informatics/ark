@@ -80,12 +80,11 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		initialiseDetailForm();
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
 		java.util.Collection<DelimiterType> delimiterTypeCollection = iArkCommonService.getDelimiterTypes();
-		ChoiceRenderer choiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		delimiterTypeDdc = new DropDownChoice<DelimiterType>(Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, choiceRenderer);
+		ChoiceRenderer<DelimiterType> choiceRenderer = new ChoiceRenderer<DelimiterType>(Constants.NAME, Constants.ID);
+		delimiterTypeDdc = new DropDownChoice<DelimiterType>(Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List<DelimiterType>) delimiterTypeCollection, choiceRenderer);
 		// Set to default delimiterType
 		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
 		
@@ -104,7 +103,8 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
 		}
-		studyDdc = new DropDownChoice<Study>(Constants.UPLOADVO_UPLOAD_STUDY, (List<Study>) studyListForUser, choiceRenderer);
+		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
+		studyDdc = new DropDownChoice<Study>(Constants.UPLOADVO_UPLOAD_STUDY, (List<Study>) studyListForUser, studyRenderer);
 	}
 
 	public void initialiseDetailForm() {
