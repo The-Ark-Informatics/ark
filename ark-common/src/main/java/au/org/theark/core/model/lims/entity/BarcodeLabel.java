@@ -199,7 +199,8 @@ public class BarcodeLabel implements java.io.Serializable {
 		sb.append("v");
 		sb.append(getVersion().toString());
 		sb.append(")");
-		return sb.toString();
+		nameAndVersion = sb.toString();
+		return nameAndVersion;
 	}
 
 	/**
