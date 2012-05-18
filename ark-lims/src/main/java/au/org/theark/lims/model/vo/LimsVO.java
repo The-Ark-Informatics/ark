@@ -35,23 +35,23 @@ import au.org.theark.core.model.study.entity.Study;
 
 public class LimsVO implements Serializable {
 
-	private static final long						serialVersionUID	= 3823264588506863044L;
-	protected Study									study;
-	protected LinkSubjectStudy						linkSubjectStudy;
-	protected BioCollection							bioCollection;
-	protected Biospecimen							biospecimen;
-	protected BioTransaction						bioTransaction;
-	protected InvSite									invSite;
-	protected InvFreezer								invFreezer;
-	protected InvRack									invRack;
-	protected InvBox									invBox;
-	protected InvCell									invCell;
-	
+	private static final long		serialVersionUID	= 3823264588506863044L;
+	protected Study						study;
+	protected LinkSubjectStudy		linkSubjectStudy;
+	protected BioCollection			bioCollection;
+	protected Biospecimen				biospecimen;
+	protected BioTransaction			bioTransaction;
+	protected InvSite					invSite;
+	protected InvFreezer				invFreezer;
+	protected InvRack					invRack;
+	protected InvBox						invBox;
+	protected InvCell					invCell;
+
 	/* A light weight VO that will represent a read only view of the location details of a Biospecimen */
-	protected BiospecimenLocationVO				biospecimenLocationVO;
+	protected BiospecimenLocationVO	biospecimenLocationVO;
 
 	/** A List of bioCollection(s) for the linkSubjectStudy in context */
-	protected List<BioCollection>	bioCollectionList;
+	protected List<BioCollection>		bioCollectionList;
 
 	/** A List of biospecimen(s) for the linkSubjectStudy in context */
 	protected List<Biospecimen>		biospecimenList;
@@ -60,12 +60,12 @@ public class LimsVO implements Serializable {
 	protected List<BioTransaction>	bioTransactionList;
 
 	/** A List of invSite(s) for the study in context */
-	protected List<InvSite>			invSiteList;
+	protected List<InvSite>				invSiteList;
 
 	/** A List of Study(s) for the user in context */
-	protected List<Study>			studyList;
-	
-	protected String biospecimenProcessing;
+	protected List<Study>				studyList;
+
+	protected String						biospecimenProcessing;
 
 	public LimsVO() {
 		this.study = new Study();
@@ -83,7 +83,7 @@ public class LimsVO implements Serializable {
 		this.invSiteList = new ArrayList<InvSite>(0);
 		this.studyList = new ArrayList<Study>(0);
 		this.biospecimenProcessing = new String();
-		this.biospecimenLocationVO = new BiospecimenLocationVO(); 
+		this.biospecimenLocationVO = new BiospecimenLocationVO();
 	}
 
 	/**
@@ -94,7 +94,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param study the study to set
+	 * @param study
+	 *           the study to set
 	 */
 	public void setStudy(Study study) {
 		this.study = study;
@@ -108,7 +109,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param linkSubjectStudy the linkSubjectStudy to set
+	 * @param linkSubjectStudy
+	 *           the linkSubjectStudy to set
 	 */
 	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
 		this.linkSubjectStudy = linkSubjectStudy;
@@ -122,7 +124,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param bioCollection the bioCollection to set
+	 * @param bioCollection
+	 *           the bioCollection to set
 	 */
 	public void setBioCollection(BioCollection bioCollection) {
 		this.bioCollection = bioCollection;
@@ -136,7 +139,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param biospecimen the biospecimen to set
+	 * @param biospecimen
+	 *           the biospecimen to set
 	 */
 	public void setBiospecimen(Biospecimen biospecimen) {
 		this.biospecimen = biospecimen;
@@ -150,7 +154,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param bioTransaction the bioTransaction to set
+	 * @param bioTransaction
+	 *           the bioTransaction to set
 	 */
 	public void setBioTransaction(BioTransaction bioTransaction) {
 		this.bioTransaction = bioTransaction;
@@ -164,7 +169,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param invSite the invSite to set
+	 * @param invSite
+	 *           the invSite to set
 	 */
 	public void setInvSite(InvSite invSite) {
 		this.invSite = invSite;
@@ -178,7 +184,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param invFreezer the invFreezer to set
+	 * @param invFreezer
+	 *           the invFreezer to set
 	 */
 	public void setInvFreezer(InvFreezer invFreezer) {
 		this.invFreezer = invFreezer;
@@ -192,7 +199,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param invRack the invRack to set
+	 * @param invRack
+	 *           the invRack to set
 	 */
 	public void setInvRack(InvRack invRack) {
 		this.invRack = invRack;
@@ -206,12 +214,13 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param invBox the invBox to set
+	 * @param invBox
+	 *           the invBox to set
 	 */
 	public void setInvBox(InvBox invBox) {
 		this.invBox = invBox;
 	}
-	
+
 	/**
 	 * @return the invCell
 	 */
@@ -220,7 +229,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param invCell the invCell to set
+	 * @param invCell
+	 *           the invCell to set
 	 */
 	public void setInvCell(InvCell invCell) {
 		this.invCell = invCell;
@@ -234,7 +244,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param bioCollectionList the bioCollectionList to set
+	 * @param bioCollectionList
+	 *           the bioCollectionList to set
 	 */
 	public void setBioCollectionList(List<BioCollection> bioCollectionList) {
 		this.bioCollectionList = bioCollectionList;
@@ -248,7 +259,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param biospecimenList the biospecimenList to set
+	 * @param biospecimenList
+	 *           the biospecimenList to set
 	 */
 	public void setBiospecimenList(List<Biospecimen> biospecimenList) {
 		this.biospecimenList = biospecimenList;
@@ -262,7 +274,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param bioTransactionList the bioTransactionList to set
+	 * @param bioTransactionList
+	 *           the bioTransactionList to set
 	 */
 	public void setBioTransactionList(List<BioTransaction> bioTransactionList) {
 		this.bioTransactionList = bioTransactionList;
@@ -276,7 +289,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param invSiteList the invSiteList to set
+	 * @param invSiteList
+	 *           the invSiteList to set
 	 */
 	public void setInvSiteList(List<InvSite> invSiteList) {
 		this.invSiteList = invSiteList;
@@ -290,7 +304,8 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param studyList the studyList to set
+	 * @param studyList
+	 *           the studyList to set
 	 */
 	public void setStudyList(List<Study> studyList) {
 		this.studyList = studyList;
