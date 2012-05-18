@@ -26,6 +26,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -52,6 +54,8 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
+import au.org.theark.core.web.component.export.CsvExportLink;
+import au.org.theark.core.web.component.export.ExportablePropertyColumn;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -155,8 +159,28 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		};
 		dataViewListWMC.add(pageNavigator);
 		dataViewListWMC.add(dataView);
+		
+		List<IColumn<Biospecimen>> columns = new ArrayList<IColumn<Biospecimen>>();
+		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("BiospecimenUID"), "biospecimenUid"));
+		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("Study"), "study.name"));
+		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("SubjectUID"), "linkSubjectStudy.subjectUID"));
+		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("Collection"), "bioCollection.name"));
+		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("Sample Type"), "sampleType.name"));
+		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("Quantity"), "quantity"));
+		
+		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), au.org.theark.core.Constants.ROWS_PER_PAGE);
+		List<String> headers = new ArrayList<String>(0);
+		headers.add("BiospecimenUID");
+		headers.add("Study");
+		headers.add("SubjectUID");
+		headers.add("Collection");
+		headers.add("Sample Type");
+		headers.add("Quantity");
+		
+		CsvExportLink<String> link = new CsvExportLink<String>("export", table, headers);
+		link.add(new Label("exportLabel", "Export to CSV"));
+		dataViewListWMC.add(link);
 		add(dataViewListWMC);
-
 	}
 
 	private void initialiseNewButton() {
