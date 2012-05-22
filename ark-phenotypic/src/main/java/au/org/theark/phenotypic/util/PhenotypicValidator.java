@@ -341,7 +341,7 @@ public class PhenotypicValidator {
 	public static boolean validateFieldData(FieldData fieldData, java.util.Collection<String> errorMessages) {
 		boolean isValid = true;
 		boolean isValidFieldData = true;
-		boolean isValidEncodedValues = true;
+		boolean isValidEncodedValues = true; 
 		boolean isValidRange = true;
 
 		isValidFieldData = isValidFieldData(fieldData, errorMessages);
