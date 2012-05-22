@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
@@ -36,6 +37,7 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -55,6 +57,7 @@ import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.export.CsvExportLink;
+import au.org.theark.core.web.component.export.ExportToolbar;
 import au.org.theark.core.web.component.export.ExportablePropertyColumn;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
@@ -210,9 +213,11 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		headers.add("Sample Type");
 		headers.add("Quantity");
 		
-		CsvExportLink<String> link = new CsvExportLink<String>("export", table, headers);
-		link.add(new Label("exportLabel", "Export to CSV"));
-		dataViewListWMC.add(link);
+		String filename = "biospecimens";
+		RepeatingView toolbars = new RepeatingView("toolbars");
+		ExportToolbar<String> exportToolBar = new ExportToolbar<String>(table, headers, filename);
+		toolbars.add(new Component[] { exportToolBar });
+		dataViewListWMC.add(toolbars);
 		
 		add(dataViewListWMC);
 	}
