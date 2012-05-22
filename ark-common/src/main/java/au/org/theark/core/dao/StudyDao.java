@@ -854,7 +854,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			SubjectVO subject = new SubjectVO();
 			subject.setLinkSubjectStudy(linkSubjectStudy);
 			Person person = subject.getLinkSubjectStudy().getPerson();
-			subject.setSubjectPreviousLastname(getPreviousLastname(person));
 			subject.setSubjectUID(linkSubjectStudy.getSubjectUID());
 			subjectVOList.add(subject);
 		}
