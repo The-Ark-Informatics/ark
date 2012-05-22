@@ -87,7 +87,6 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 
 	@Override
 	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) {
-
 	}
 
 	@Override
@@ -95,7 +94,6 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 		try {
 			FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
 			InputStream inputStream = fileUpload.getInputStream();//TODO : should something this big be thrown around model object in wicket?
-
 			String filename = fileUpload.getClientFileName();
 			String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
@@ -104,8 +102,7 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
 				throw new FileFormatException();
 			}
-
-																																//TODO: remove hardcode
+																									//TODO: remove hardcode
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")){
 				SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 				validationMessages = subjectUploadValidator.validateSubjectFileFormat(containerForm.getModelObject());				

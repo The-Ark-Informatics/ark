@@ -46,14 +46,10 @@ import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
  * The first step of this wizard.
  */
 public class SubjectUploadStep1 extends AbstractWizardStepPanel {
-
 	private static final long					serialVersionUID		= -3267334731280446472L;
-
 	public java.util.Collection<String>		validationMessages	= null;
-
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
-
 	private Form<UploadVO>						containerForm;
 	private FileUploadField						fileUploadField;
 	// private UploadProgressBar uploadProgressBar;
@@ -133,10 +129,8 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	private void saveFileInMemory() {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
-
 		FileUpload fileUpload = fileUploadField.getFileUpload();
-		containerForm.getModelObject().setFileUpload(fileUpload);	//TODO analyze why VO pattern throughout code, is it always necessary in attion to entity/detached-entity concepts
-
+		containerForm.getModelObject().setFileUpload(fileUpload);
 		containerForm.getModelObject().getUpload().setPayload(fileUpload.getBytes());
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 		String fileFormatName = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
@@ -148,11 +142,9 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setStudy(study);//TODO: analyze costs of repeated containerForm.getModelObject().getUpload()
 		containerForm.getModelObject().getUpload().setFileFormat(fileFormat);
 		containerForm.getModelObject().getUpload().setChecksum(checksum);
-		//containerForm.getModelObject().getUpload().;
 		containerForm.getModelObject().getUpload().setFilename(filename);
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
 		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
-
 		wizardForm.setFileName(filename);
 
 		//TODO analyse how many times this is saved and where it should be saved

@@ -171,8 +171,8 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			// Repaint
 			target.add(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
 			target.add(form.getWizardPanelFormContainer());
-
-			if (updateRows.isEmpty() || containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")) {
+																															//TODO remove hardcoding
+			if (updateRows.isEmpty() || containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")) {
 				updateExistingDataContainer.setVisible(false);
 				target.add(updateExistingDataContainer);
 			}

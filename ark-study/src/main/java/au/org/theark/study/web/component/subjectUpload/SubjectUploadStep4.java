@@ -36,11 +36,7 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.util.SubjectUploadReport;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
-/**
- * The 4th step of this wizard.
- */
 public class SubjectUploadStep4 extends AbstractWizardStepPanel {
-
 	private static final long	serialVersionUID	= 2971945948091031160L;
 	private Form<UploadVO>		containerForm;
 	private WizardForm			wizardForm;
@@ -78,15 +74,12 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		form.getNextButton().setEnabled(false);
 		target.add(form.getNextButton());
-
 		// Filename seems to be lost from model when moving between steps in wizard?  is this a symptom of something greater?
 		containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
 
 		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
 		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
-
-		try {
-			
+		try {			
 			List<String> uidsToUpload = containerForm.getModelObject().getUidsToUpload();
 //log.info("________________________________________________________" + "about to try passing list of uids is of size " + uidsToUpload.size() );
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
@@ -100,12 +93,8 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 			StudyDataUploadExecutor task = new StudyDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
 						studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
 			task.run();
-			//log.warn("finished a batch?");
 			
 		}
-		/*catch (IOException e) {
-			e.printStackTrace();
-		}*/
 		catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
