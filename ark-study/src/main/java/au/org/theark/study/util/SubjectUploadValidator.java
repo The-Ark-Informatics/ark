@@ -386,9 +386,6 @@ public class SubjectUploadValidator {
  *this is the newest fields and will be such a mess no point displaying???
  */
 
-
-
-
 				// Column values
 				stringBuffer.append("[ABC000001]");
 				stringBuffer.append(delimiterCharacter);
@@ -510,7 +507,6 @@ public class SubjectUploadValidator {
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
-				// do something with the newline to put the data into the variables defined above
 				stringLineArray = csvReader.getValues();
 
 				// First/0th column should be the SubjectUID
@@ -648,7 +644,6 @@ public class SubjectUploadValidator {
 			Sheet s = w.getSheet(0);
 			Cell[] row = null;
 
-			// Gets the cells from sheet
 			for (int i = 0; i < s.getRows(); i++) {
 				row = s.getRow(i);
 
@@ -677,28 +672,4 @@ public class SubjectUploadValidator {
 		return new ByteArrayInputStream(out.toByteArray());
 	}
 
-	/**
-	 * Return the progress of the current process in %
-	 * 
-	 * @return if a process is actively running, then progress in %; or if no process running, then returns -1
-	 *
-	public double getProgress() {
-		double progress = -1;
-		if (srcLength > 0)
-			progress = curPos * 100.0 / srcLength; // %
-
-		return progress;
-	}
-
-	/**
-	 * Return the speed of the current process in KB/s
-	 * 
-	 * @return if a process is actively running, then speed in KB/s; or if no process running, then returns -1
-	 *
-	public double getSpeed() {
-		double speed = -1;
-		if (srcLength > 0)
-			speed = curPos / 1024 / (timer.getTime() / 1000.0); // KB/s
-		return speed;
-	}*/
 }

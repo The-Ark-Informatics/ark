@@ -540,7 +540,7 @@ public class CustomFieldUploadValidator {
 	 */
 	public static boolean isValidFieldData(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages) {
 		boolean isValidFieldData = true;
-//TODO ASAP is null acceptable? or do we just just check before call... if value null return false?
+		//TODO ASAP is null acceptable? or do we just just check before call... if value null return false?
 		
 		// Number field type
 		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
@@ -560,8 +560,7 @@ public class CustomFieldUploadValidator {
 
 		// Character field type
 		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-			//TODO previously had simple null check by way of making an exception here.... what do we need to validation?
-			
+			//TODO previously had simple null check by way of making an exception here.... what do we need to validation?	
 		}
 
 		// Date field type
@@ -669,10 +668,6 @@ public class CustomFieldUploadValidator {
 	 */
 	public static boolean isInEncodedValues(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages) {
 		boolean inEncodedValues = true;
-	
-		// If matched MISSING_VALUE, then ok
-		;
-		
 		
 		if(customField.getMissingValue()!=null && value!=null && value.trim().equalsIgnoreCase(customField.getMissingValue().trim())) {
 			return inEncodedValues;
