@@ -31,8 +31,6 @@ import org.apache.wicket.util.resource.IResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.util.Pager;
-
 public class XlsExportLink<T> extends Link<Void> {
 
 	private static final long	serialVersionUID	= 1L;
@@ -110,17 +108,14 @@ public class XlsExportLink<T> extends Link<Void> {
 			}
 			row++;
 
-			Pager pager = new Pager(100, table.getDataProvider().size());
-			for (int i = 0; i < pager.pages(); i++) {
-				Iterator<? extends T> it = table.getDataProvider().iterator(pager.offset(i), pager.count(i));
-				while (it.hasNext()) {
-					col = 0;
-					T object = it.next();
-					for (ExportableColumn<T> column : exportable) {
-						column.exportXls(object, wsheet, col++, row);
-					}
-					row++;
+			Iterator<? extends T> it = table.getDataProvider().iterator(0, table.getDataProvider().size());
+			while (it.hasNext()) {
+				col = 0;
+				T object = it.next();
+				for (ExportableColumn<T> column : exportable) {
+					column.exportXls(object, wsheet, col++, row);
 				}
+				row++;
 			}
 
 			// All sheets and cells added. Now write out the workbook

@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.util.CsvWriter;
-import au.org.theark.core.util.Pager;
 
 public class CsvExportLink<T> extends Link<Void> {
 
@@ -97,16 +96,13 @@ public class CsvExportLink<T> extends Link<Void> {
 		}
 		writer.endLine();
 
-		Pager pager = new Pager(100, table.getDataProvider().size());
-		for (int i = 0; i < pager.pages(); i++) {
-			Iterator<? extends T> it = table.getDataProvider().iterator(pager.offset(i), pager.count(i));
-			while (it.hasNext()) {
-				T object = it.next();
-				for (ExportableColumn<T> col : exportable) {
-					col.exportCsv(object, writer);
-				}
-				writer.endLine();
+		Iterator<? extends T> it = table.getDataProvider().iterator(0, table.getDataProvider().size()); //(pager.offset(i), pager.count(i));
+		while (it.hasNext()) {
+			T object = it.next();
+			for (ExportableColumn<T> col : exportable) {
+				col.exportCsv(object, writer);
 			}
+			writer.endLine();
 		}
 		writer.close();
 
