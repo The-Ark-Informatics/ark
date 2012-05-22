@@ -119,6 +119,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	@Override
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		saveFileInMemory();
+		//TODO perhaps we can branch here for different file
 	}
 
 	public void setWizardForm(WizardForm wizardForm) {

@@ -972,11 +972,6 @@ public class StudyServiceImpl implements IStudyService {
 		iStudyDao.batchInsertSubjects(subjectList, study);
 	}
 
-
-	//public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException {
-	//	iStudyDao.batchUpdateSubjects(subjectList);
-	//}
-
 	public Collection<ArkUser> lookupArkUser(Study study) {
 		return iStudyDao.lookupArkUser(study);
 	}

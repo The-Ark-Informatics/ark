@@ -39,6 +39,7 @@ import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.study.util.CustomFieldUploadValidator;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
@@ -127,30 +128,41 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-
-			SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
-			
-			//this is not the best way to do this fix TODO
-			List<String> listOfUidsToUpdate = new ArrayList<String>();
-			validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject(), listOfUidsToUpdate);
-			log.warn("________________________________________________________" +
-					"-list of uids is of size " + listOfUidsToUpdate.size() + "________________________________________________________");
-			containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
-			this.containerForm.getModelObject().setValidationMessages(validationMessages);
-			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-
 			HashSet<Integer> insertRows = new HashSet<Integer>();
 			HashSet<Integer> updateRows = new HashSet<Integer>();
 			HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
 
-			insertRows = subjectUploadValidator.getInsertRows();
-			updateRows = subjectUploadValidator.getUpdateRows();
-			errorCells = subjectUploadValidator.getErrorCells();
+			//this is not the best way to do this fix TODO
+			List<String> listOfUidsToUpdate = new ArrayList<String>();				//TODO remove hardcoding
+			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")){
+				SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
+				validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject(), listOfUidsToUpdate);
+				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
+				insertRows = subjectUploadValidator.getInsertRows();
+				updateRows = subjectUploadValidator.getUpdateRows();
+				errorCells = subjectUploadValidator.getErrorCells();
+			}																												//TODO remove hardcoding
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")){
+				CustomFieldUploadValidator customFieldUploadValidator = new CustomFieldUploadValidator(iArkCommonService);
+				validationMessages = customFieldUploadValidator.validateSubjectFileData(containerForm.getModelObject());
+				//TODO consider if we want alternative way to do this - and maybe a superclass of uploadvalidator which draws out commonalities
+				insertRows = customFieldUploadValidator.getInsertRows();
+				updateRows = customFieldUploadValidator.getUpdateRows();
+				errorCells = customFieldUploadValidator.getErrorCells();
+
+			}
+			else{
+				//TODO : Throw error back to user
+			}
+			
+			this.containerForm.getModelObject().setValidationMessages(validationMessages);
+			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+
 
 			// Show file data (and key reference)
-			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, containerForm.getModelObject().getFileUpload(), insertRows,
-					updateRows, errorCells);
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
+																		containerForm.getModelObject().getFileUpload(), insertRows, updateRows, errorCells);
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
@@ -160,7 +172,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			target.add(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
 			target.add(form.getWizardPanelFormContainer());
 
-			if (updateRows.isEmpty()) {
+			if (updateRows.isEmpty() || containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")) {
 				updateExistingDataContainer.setVisible(false);
 				target.add(updateExistingDataContainer);
 			}

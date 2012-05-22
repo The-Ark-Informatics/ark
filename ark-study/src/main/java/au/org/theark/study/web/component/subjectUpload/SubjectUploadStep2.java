@@ -35,6 +35,7 @@ import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.study.util.CustomFieldUploadValidator;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
@@ -104,11 +105,19 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 				throw new FileFormatException();
 			}
 
-			SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
-			validationMessages = subjectUploadValidator.validateSubjectFileFormat(containerForm.getModelObject());
-			containerForm.getModelObject().setValidationMessages(validationMessages);
-			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+																																//TODO: remove hardcode
+			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")){
+				SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
+				validationMessages = subjectUploadValidator.validateSubjectFileFormat(containerForm.getModelObject());				
+			}
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")){
+				//TODO : custom field validation
+				CustomFieldUploadValidator customFieldUploadValidator = new CustomFieldUploadValidator(iArkCommonService);
+				validationMessages = customFieldUploadValidator.validateCustomFieldFileFormat(containerForm.getModelObject());			
+			}
+			else{
+				//TODO : Throw error back to user
+			}
 
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE);
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
