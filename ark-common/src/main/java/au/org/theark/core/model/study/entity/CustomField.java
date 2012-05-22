@@ -37,9 +37,6 @@ import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
 
-
-
-
 /**
  * @author nivedann
  *
@@ -68,9 +65,6 @@ public class CustomField implements Serializable {
 
 	private Set<CustomFieldDisplay> customFieldDisplay = new HashSet<CustomFieldDisplay>();
 
-	/**
-	 * Constructor
-	 */
 	public CustomField(){
 		
 	}

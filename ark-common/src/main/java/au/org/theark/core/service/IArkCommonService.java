@@ -670,4 +670,6 @@ public interface IArkCommonService<T> {
 	public List<LinkSubjectStudy> getUniqueSubjectsWithTheseUIDs(Study study, Collection subjectUIDs);
 	
 	public List<String> getAllSubjectUIDs(Study study);
+
+	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction);
 }

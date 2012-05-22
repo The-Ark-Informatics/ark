@@ -70,6 +70,7 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -1226,6 +1227,38 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		query.setParameterList("subjects", subjectUids);
 
 		return query.list();
+	}
+	
+	/**
+	 * based on sql concept of;
+	 * select id from custom_field_display 
+		where custom_field_id in 
+		(SELECT id FROM custom_field 
+		where name='AGE'
+		and study_id = 1
+		and ark_function_id = 5)
+	 * @param fieldNameCollection
+	 * @param study
+	 * @return
+	 */
+	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction){
+		if(fieldNameCollection == null || fieldNameCollection.isEmpty()){
+			return new ArrayList<CustomFieldDisplay>();
+		}
+		else{
+			String queryString = "select cfd " +
+			"from CustomFieldDisplay cfd " +
+			"where customField.id in ( " +
+				" SELECT id from CustomField cf " +
+				" where cf.study =:study " +
+				" and cf.name in (:names) " +
+				" and cf.arkFunction =:arkFunction )";
+			Query query =  getSession().createQuery(queryString);
+			query.setParameter("study", study);
+			query.setParameterList("names", fieldNameCollection);
+			query.setParameter("arkFunction", arkFunction);
+			return query.list();
+		}
 	}
 
 	@Override
