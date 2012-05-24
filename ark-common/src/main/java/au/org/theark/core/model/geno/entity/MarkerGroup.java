@@ -47,7 +47,7 @@ import au.org.theark.core.model.study.entity.Study;
 @Table(name = "MARKER_GROUP", schema = Constants.GENO_TABLE_SCHEMA)
 public class MarkerGroup implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -65,13 +65,10 @@ public class MarkerGroup implements java.io.Serializable {
 	private Set<UploadMarkerGroup>	uploadMarkerGroups	= new HashSet<UploadMarkerGroup>(0);
 	private Set<Marker>					markers					= new HashSet<Marker>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public MarkerGroup() {
 	}
 
-	/** minimal constructor */
 	public MarkerGroup(Long id, MarkerType markerType, Study study, String userId, Date insertTime) {
 		this.id = id;
 		this.markerType = markerType;
@@ -80,7 +77,6 @@ public class MarkerGroup implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor */
 	public MarkerGroup(Long id, MarkerType markerType, Study study, String name, String description, Long visible, String userId, Date insertTime, String updateUserId, Date updateTime,
 			Set<CollectionImport> collectionImports, Set<UploadMarkerGroup> uploadMarkerGroups, Set<Marker> markers) {
 		this.id = id;

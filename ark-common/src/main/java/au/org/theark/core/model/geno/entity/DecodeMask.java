@@ -35,7 +35,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "DECODE_MASK", schema = Constants.GENO_TABLE_SCHEMA)
 public class DecodeMask implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -44,13 +44,10 @@ public class DecodeMask implements java.io.Serializable {
 	private Marker				marker;
 	private Long				bitPosition;
 
-	// Constructors
 
-	/** default constructor */
 	public DecodeMask() {
 	}
 
-	/** minimal constructor */
 	public DecodeMask(Long id, Marker marker, Long bitPosition) {
 		this.id = id;
 		this.marker = marker;

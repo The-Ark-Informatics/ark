@@ -41,7 +41,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "META_DATA_TYPE", schema = Constants.GENO_TABLE_SCHEMA)
 public class MetaDataType implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -49,18 +49,14 @@ public class MetaDataType implements java.io.Serializable {
 	private String					name;
 	private Set<MetaDataField>	metaDataFields	= new HashSet<MetaDataField>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public MetaDataType() {
 	}
 
-	/** minimal constructor */
 	public MetaDataType(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public MetaDataType(Long id, String name, Set<MetaDataField> metaDataFields) {
 		this.id = id;
 		this.name = name;

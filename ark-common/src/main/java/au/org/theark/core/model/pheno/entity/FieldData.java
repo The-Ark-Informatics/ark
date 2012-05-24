@@ -47,7 +47,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 @Entity
 @Table(name = "FIELD_DATA", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FieldData implements java.io.Serializable {
-	// Fields
+
 	private Long					id;
 	private PhenoCollection		collection;
 	private LinkSubjectStudy	linkSubjectStudy;
@@ -66,7 +66,6 @@ public class FieldData implements java.io.Serializable {
 	public FieldData() {
 	}
 
-	/** minimal constructor */
 	public FieldData(Long id, Field field, PhenoCollection collection, Date dateCollected, LinkSubjectStudy linkSubjectStudy, String userId, Date insertTime) {
 		this.id = id;
 		this.field = field;
@@ -77,7 +76,6 @@ public class FieldData implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor */
 	public FieldData(Long id, Field field, PhenoCollection collection, Date dateCollected, LinkSubjectStudy linkSubjectStudy, String value, String userId, Date insertTime, String updateUserId,
 			Date updateTime) {
 		this.id = id;

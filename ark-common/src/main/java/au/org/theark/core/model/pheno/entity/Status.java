@@ -39,24 +39,20 @@ import au.org.theark.core.model.Constants;
 @Table(name = "STATUS", schema = Constants.PHENO_TABLE_SCHEMA)
 public class Status implements java.io.Serializable {
 
-	// Fields
+
 
 	private Long						id;
 	private String						name;
 	private Set<PhenoCollection>	collections	= new HashSet<PhenoCollection>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public Status() {
 	}
 
-	/** minimal constructor */
 	public Status(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public Status(Long id, String name, Set<PhenoCollection> collections) {
 		this.id = id;
 		this.name = name;

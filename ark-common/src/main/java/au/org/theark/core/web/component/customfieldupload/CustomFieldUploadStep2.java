@@ -58,17 +58,11 @@ public class CustomFieldUploadStep2 extends AbstractWizardStepPanel {
 	private IArkCommonService<Void>		iArkCommonService;
 
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
-
-																					/**
-		 * 
-		 */
 																					private static final long	serialVersionUID	= 1L;
-
 																					@Override
 																					protected void onError(AjaxRequestTarget target, Form<?> form) {
 																						this.error("Unexpected Error: Download request could not be processed");
 																					}
-
 																				};
 
 	public CustomFieldUploadStep2(String id) {
@@ -158,7 +152,7 @@ public class CustomFieldUploadStep2 extends AbstractWizardStepPanel {
 				// Show file data
 				FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
-				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE);
+				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE,containerForm.getModelObject().getUpload().getUploadType());
 				inputStream.close();
 				inputStream = null;
 				arkExcelWorkSheetAsGrid.setOutputMarkupId(true);

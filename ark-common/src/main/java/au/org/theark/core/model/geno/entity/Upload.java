@@ -51,7 +51,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "UPLOAD", schema = Constants.GENO_TABLE_SCHEMA)
 public class Upload implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -67,13 +67,10 @@ public class Upload implements java.io.Serializable {
 	private String							updateUserId;
 	private Date							updateTime;
 
-	// Constructors
 
-	/** default constructor */
 	public Upload() {
 	}
 
-	/** minimal constructor */
 	public Upload(Long id, DelimiterType delimiterType, FileFormat fileFormat, String filename, String userId, Date insertTime) {
 		this.id = id;
 		this.delimiterType = delimiterType;
@@ -83,7 +80,6 @@ public class Upload implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor */
 	public Upload(Long id, DelimiterType delimiterType, FileFormat fileFormat, String filename, String userId, Date insertTime, Set<UploadMarkerGroup> uploadMarkerGroups,
 			Set<UploadCollection> uploadCollections) {
 		this.id = id;

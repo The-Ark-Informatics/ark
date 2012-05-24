@@ -89,6 +89,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
@@ -1241,6 +1242,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return
 	 */
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction){
+		log.warn("fieldnamecollection size=" + fieldNameCollection.size() +
+						"\nstudy=" + study.getName() + " with id=" + study.getId() + 
+						"\narkFunctionid=" + arkFunction.getId());
 		if(fieldNameCollection == null || fieldNameCollection.isEmpty()){
 			return new ArrayList<CustomFieldDisplay>();
 		}
@@ -1282,6 +1286,23 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		query.setParameter("study", study);
 
 		return query.list();
+	}
+
+	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded) {
+		if(customFieldDisplaysThatWeNeed == null || customFieldDisplaysThatWeNeed.isEmpty() ||
+				subjectUIDsToBeIncluded == null || subjectUIDsToBeIncluded.isEmpty() ){
+			return new ArrayList<SubjectCustomFieldData>();
+		}
+		else{
+			String queryString = "select scfd " +
+			" from SubjectCustomFieldData scfd " +
+			" where scfd.linkSubjectStudy in (:subjectUIDsToBeIncluded) " +
+			" and scfd.customFieldDisplay in (:customFieldDisplaysThatWeNeed) ";
+			Query query =  getSession().createQuery(queryString);
+			query.setParameterList("subjectUIDsToBeIncluded", subjectUIDsToBeIncluded);
+			query.setParameterList("customFieldDisplaysThatWeNeed", customFieldDisplaysThatWeNeed);
+			return query.list();
+		}
 	}
 	
 }

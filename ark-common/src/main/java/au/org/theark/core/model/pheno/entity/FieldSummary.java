@@ -36,7 +36,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "FIELD_SUMMARY", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FieldSummary implements java.io.Serializable {
 
-	// Fields
+
 	private Long	id;
 	private int		fields;
 	private int		fieldsWithData;

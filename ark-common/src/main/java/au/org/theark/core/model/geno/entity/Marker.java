@@ -48,7 +48,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "MARKER", schema = Constants.GENO_TABLE_SCHEMA)
 public class Marker implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -69,13 +69,10 @@ public class Marker implements java.io.Serializable {
 	private Set<MarkerMetaData>			markerMetaDatas			= new HashSet<MarkerMetaData>(0);
 	private Set<DecodeMask>					decodeMasks					= new HashSet<DecodeMask>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public Marker() {
 	}
 
-	/** minimal constructor */
 	public Marker(Long id, MarkerGroup markerGroup, String chromosome, String userId, Date insertTime) {
 		this.id = id;
 		this.markerGroup = markerGroup;
@@ -84,7 +81,6 @@ public class Marker implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor */
 	public Marker(Long id, MarkerGroup markerGroup, String name, String description, String chromosome, Long position, String gene, String majorAllele, String minorAllele, String userId,
 			Date insertTime, String updateUserId, Date updateTime, Set<SubjectMarkerMetaData> subjectMarkerMetaDatas, Set<MarkerMetaData> markerMetaDatas, Set<DecodeMask> decodeMasks) {
 		this.id = id;

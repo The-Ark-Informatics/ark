@@ -42,7 +42,7 @@ import au.org.theark.core.Constants;
 @Table(name = "SUBJECT_FILE", schema = Constants.STUDY_SCHEMA)
 public class SubjectFile implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long	serialVersionUID	= -3611814204230766317L;
@@ -55,13 +55,10 @@ public class SubjectFile implements java.io.Serializable {
 	private String					userId;
 	private String					comments;
 
-	// Constructors
 
-	/** default constructor */
 	public SubjectFile() {
 	}
 
-	/** minimal constructor */
 	public SubjectFile(Long id, LinkSubjectStudy linkSubjectStudy, StudyComp studyComp, String filename, String userId) {
 		this.id = id;
 		this.linkSubjectStudy = linkSubjectStudy;

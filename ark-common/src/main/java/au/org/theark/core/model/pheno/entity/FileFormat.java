@@ -39,24 +39,20 @@ import au.org.theark.core.model.Constants;
 @Table(name = "FILE_FORMAT", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FileFormat implements java.io.Serializable {
 
-	// Fields
+
 
 	private Long					id;
 	private String					name;
 	private Set<PhenoUpload>	uploads	= new HashSet<PhenoUpload>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public FileFormat() {
 	}
 
-	/** minimal constructor */
 	public FileFormat(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public FileFormat(Long id, String name, Set<PhenoUpload> uploads) {
 		this.id = id;
 		this.name = name;

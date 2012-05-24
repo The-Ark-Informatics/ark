@@ -31,6 +31,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.study.job.CustomDataUploadExecutor;
 import au.org.theark.study.job.StudyDataUploadExecutor;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.util.SubjectUploadReport;
@@ -81,7 +82,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 		try {			
 			List<String> uidsToUpload = containerForm.getModelObject().getUidsToUpload();
-//log.info("________________________________________________________" + "about to try passing list of uids is of size " + uidsToUpload.size() );
+log.info("________________________________________________________" + "about to try passing list of uids is of size " + uidsToUpload.size() );
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			long size = containerForm.getModelObject().getFileUpload().getSize();
 			Long uploadId = containerForm.getModelObject().getUpload().getId();
@@ -89,10 +90,17 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 
 			Subject currentUser = SecurityUtils.getSubject();
 			Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-			
-			StudyDataUploadExecutor task = new StudyDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
-						studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
-			task.run();
+
+			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")){
+				StudyDataUploadExecutor task = new StudyDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
+							studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
+				task.run();
+			}
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")){
+				CustomDataUploadExecutor task = new CustomDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
+							studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
+				task.run();
+			}
 			
 		}
 		catch (Exception e1) {

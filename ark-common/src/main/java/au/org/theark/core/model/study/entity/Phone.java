@@ -59,12 +59,10 @@ public class Phone implements java.io.Serializable {
 	public Phone() {
 	}
 
-	/** minimal constructor */
 	public Phone(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public Phone(Long id, PhoneType phoneType, Person person, String phoneNumber, String areaCode) {
 		this.id = id;
 		this.phoneType = phoneType;

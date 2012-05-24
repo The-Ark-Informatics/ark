@@ -33,22 +33,18 @@ import au.org.theark.core.Constants;
 @Table(name = "FILE_FORMAT", schema = Constants.STUDY_SCHEMA)
 public class FileFormat implements java.io.Serializable {
 
-	// Fields
+
 	private Long	id;
 	private String	name;
 
-	// Constructors
 
-	/** default constructor */
 	public FileFormat() {
 	}
 
-	/** minimal constructor */
 	public FileFormat(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public FileFormat(Long id, String name) {
 		this.id = id;
 		this.name = name;

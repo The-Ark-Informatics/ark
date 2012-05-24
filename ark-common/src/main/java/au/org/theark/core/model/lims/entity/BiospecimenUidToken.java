@@ -34,20 +34,17 @@ import au.org.theark.core.model.Constants;
 @Table(name = "BIOSPECIMENUID_TOKEN", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BiospecimenUidToken implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private String	name;
 
-	// Constructors
 
-	/** default constructor */
 	public BiospecimenUidToken() {
 	}
 
-	/** minimal constructor */
 	public BiospecimenUidToken(Long id) {
 		this.id = id;
 	}

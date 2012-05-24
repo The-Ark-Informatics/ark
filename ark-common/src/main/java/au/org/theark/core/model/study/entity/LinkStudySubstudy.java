@@ -38,7 +38,7 @@ import au.org.theark.core.Constants;
 @Table(name = "LINK_STUDY_SUBSTUDY", schema = Constants.STUDY_SCHEMA)
 public class LinkStudySubstudy implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -46,18 +46,14 @@ public class LinkStudySubstudy implements java.io.Serializable {
 	private Study	mainStudy;
 	private Study	subStudy;
 
-	// Constructors
 
-	/** default constructor */
 	public LinkStudySubstudy() {
 	}
 
-	/** minimal constructor */
 	public LinkStudySubstudy(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public LinkStudySubstudy(Long id, Study mainStudy, Study subStudy) {
 		this.id = id;
 		this.mainStudy = mainStudy;

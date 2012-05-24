@@ -43,7 +43,7 @@ public class BiospecimenUidTemplate implements java.io.Serializable {
 
 
 	private static final long		serialVersionUID	= -8619498549995379154L;
-	// Fields
+
 	private Long						id;
 	private Study						study;
 	private BiospecimenUidToken	biospecimenUidToken;

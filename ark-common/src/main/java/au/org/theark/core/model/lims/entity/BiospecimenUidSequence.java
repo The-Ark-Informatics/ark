@@ -37,7 +37,7 @@ public class BiospecimenUidSequence implements java.io.Serializable {
 
 	private static final long	serialVersionUID	= 1L;
 
-	// Fields
+
 	private String					studyNameId;
 	private Integer				uidSequence;
 	private Boolean				insertLock;
@@ -47,7 +47,6 @@ public class BiospecimenUidSequence implements java.io.Serializable {
 	public BiospecimenUidSequence() {
 	}
 
-	/** minimal constructor */
 	public BiospecimenUidSequence(String studyNameId, Integer uidSequence, Boolean insertLock) {
 		this.studyNameId = studyNameId;
 		this.uidSequence = uidSequence;

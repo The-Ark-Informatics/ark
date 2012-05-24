@@ -50,7 +50,7 @@ public class Study implements java.io.Serializable {
 
 
 	private static final long serialVersionUID = 1L;
-	// Fields
+
 	private Long								id;
 	private StudyStatus						studyStatus;
 	private String								name;
@@ -87,18 +87,14 @@ public class Study implements java.io.Serializable {
 	private Set<LinkStudyStudycomp>		linkStudyStudycomps				= new HashSet<LinkStudyStudycomp>(0);
 	private Set<LinkStudySubstudy>		linkStudySubstudiesForSubid	= new HashSet<LinkStudySubstudy>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public Study() {
 	}
 
-	/** minimal constructor */
 	public Study(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public Study(Long id, StudyStatus studyStatus, String name, String description, Date dateOfApplication, Long estimatedYearOfCompletion, String chiefInvestigator, String coInvestigator,
 			Boolean autoGenerateSubjectUid, Long subjectUIdStart, String subjectIdPrefix, String contactPerson, String contactPersonPhone, String ldapGroupName, Boolean autoConsent,
 			String subStudyBiospecimenPrefix, String filename, SubjectUidToken subjectIdToken, SubjectUidPadChar subjectUIdPadChar, Set<LinkStudySubstudy> linkStudySubstudiesForid,

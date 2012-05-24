@@ -53,6 +53,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
 
+import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.util.ArkSheetMetaData;
 
 import com.csvreader.CsvReader;
@@ -62,6 +63,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	private static final long				serialVersionUID				= 2950851261474110946L;
 	private transient Sheet					sheet;																										// an instance of an Excel
 	// WorkSheet
+	private UploadType 						uploadType;
 	private transient ArkSheetMetaData	sheetMetaData;
 	private byte[]								workBookAsBytes;
 	private char								delimiterType;
@@ -73,54 +75,43 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	private HashSet<ArkGridCell>			errorCells;
 	private String								fileFormat;
 	private WebMarkupContainer				wizardDataGridKeyContainer	= new WebMarkupContainer("wizardDataGridKeyContainer");
+	private WebMarkupContainer				wizardDataGridKeyContainerForCustom	= new WebMarkupContainer("wizardDataGridKeyContainerForCustom");
 	private int									rowsToDisplay					= au.org.theark.core.Constants.ROWS_PER_PAGE;
-	private Behavior				errorCellBehavior				= new Behavior() {
-																							/**
-		 * 
-		 */
-																							private static final long	serialVersionUID	= 7204106018358344579L;
-																							@Override
-																							public void onComponentTag(Component component, ComponentTag tag) {
-																								super.onComponentTag(component, tag);
-																								tag.put("style", "background: red;");
-																							};
-																						};
+	private Behavior		errorCellBehavior				= new Behavior() {
+																			private static final long	serialVersionUID	= 7204106018358344579L;
+																			@Override
+																			public void onComponentTag(Component component, ComponentTag tag) {
+																				super.onComponentTag(component, tag);
+																				tag.put("style", "background: red;");
+																			};
+																		};
 
-	private Behavior				warningCellBehavior			= new Behavior() {
-																							/**
-		 * 
-		 */
-																							private static final long	serialVersionUID	= 6075625860319512723L;
-																							@Override
-																							public void onComponentTag(Component component, ComponentTag tag) {
-																								super.onComponentTag(component, tag);
-																								tag.put("style", "background: orange;");
-																							};
-																						};
+	private Behavior		warningCellBehavior			= new Behavior() {
+																			private static final long	serialVersionUID	= 6075625860319512723L;
+																			@Override
+																			public void onComponentTag(Component component, ComponentTag tag) {
+																				super.onComponentTag(component, tag);
+																				tag.put("style", "background: orange;");
+																			};
+																		};
 
-	private Behavior				updateCellBehavior			= new Behavior() {
-																							/**
-		 * 
-		 */
-																							private static final long	serialVersionUID	= -8113218633824905372L;
-																							@Override
-																							public void onComponentTag(Component component, ComponentTag tag) {
-																								super.onComponentTag(component, tag);
-																								tag.put("style", "background: lightblue;");
-																							};
-																						};
+	private Behavior		updateCellBehavior			= new Behavior() {
+																			private static final long	serialVersionUID	= -8113218633824905372L;
+																			@Override
+																			public void onComponentTag(Component component, ComponentTag tag) {
+																				super.onComponentTag(component, tag);
+																				tag.put("style", "background: lightblue;");
+																			};
+																		};
 
-	private Behavior				insertCellBehavior			= new Behavior() {
-																							/**
-		 * 
-		 */
-																							private static final long	serialVersionUID	= 7204106018358344579L;
-																							@Override
-																							public void onComponentTag(Component component, ComponentTag tag) {
-																								super.onComponentTag(component, tag);
-																								tag.put("style", "background: lightgreen;");
-																							};
-																						};
+	private Behavior		insertCellBehavior			= new Behavior() {
+																			private static final long	serialVersionUID	= 7204106018358344579L;
+																			@Override
+																			public void onComponentTag(Component component, ComponentTag tag) {
+																				super.onComponentTag(component, tag);
+																				tag.put("style", "background: lightgreen;");
+																			};
+																		};
 
 	public ArkExcelWorkSheetAsGrid(String id) {
 		super(id);
@@ -133,6 +124,39 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.errorCells = new HashSet<ArkGridCell>();
 		initialiseGrid();
 	}
+
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, int rowsToDisplay, UploadType uploadType) {
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.updateRows = new HashSet<Integer>();
+		this.insertRows = new HashSet<Integer>();
+		this.insertCells = new HashSet<ArkGridCell>();
+		this.updateCells = new HashSet<ArkGridCell>();
+		this.warningCells = new HashSet<ArkGridCell>();
+		this.errorCells = new HashSet<ArkGridCell>();
+		this.fileFormat = fileFormat;
+		this.rowsToDisplay = rowsToDisplay;
+		this.uploadType = uploadType;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid();
+		initialiseGridKey(fileUpload, uploadType);
+	}
+
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> updateRows, HashSet<ArkGridCell> errorCells, UploadType uploadType) {
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.updateRows = updateRows;
+		this.insertCells = new HashSet<ArkGridCell>();
+		this.updateCells = new HashSet<ArkGridCell>();
+		this.warningCells = new HashSet<ArkGridCell>();
+		this.errorCells = errorCells;
+		this.fileFormat = fileFormat;
+		this.uploadType = uploadType;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid();
+		initialiseGridKey(fileUpload, uploadType);
+	}
+
 
 	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, int rowsToDisplay) {
 		super(id);
@@ -147,7 +171,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.rowsToDisplay = rowsToDisplay;
 		initialiseWorkbook(inputStream, delimChar);
 		initialiseGrid();
-		initialiseGridKey(fileUpload);
+		initialiseGridKey(fileUpload, uploadType);
 	}
 
 	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> updateRows, HashSet<ArkGridCell> errorCells) {
@@ -161,7 +185,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.fileFormat = fileFormat;
 		initialiseWorkbook(inputStream, delimChar);
 		initialiseGrid();
-		initialiseGridKey(fileUpload);
+		initialiseGridKey(fileUpload, uploadType);
 	}
 
 	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> insertRows, HashSet<Integer> updateRows,
@@ -177,7 +201,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.fileFormat = fileFormat;
 		initialiseWorkbook(inputStream, delimChar);
 		initialiseGrid();
-		initialiseGridKey(fileUpload);
+		initialiseGridKey(fileUpload, uploadType);
 	}
 
 	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> insertRows, HashSet<Integer> updateRows,
@@ -193,7 +217,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.fileFormat = fileFormat;
 		initialiseWorkbook(inputStream, delimChar);
 		initialiseGrid();
-		initialiseGridKey(fileUpload);
+		initialiseGridKey(fileUpload, uploadType);
 	}
 
 	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> insertRows, HashSet<Integer> updateRows,
@@ -209,7 +233,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.fileFormat = fileFormat;
 		initialiseWorkbook(inputStream, delimChar);
 		initialiseGrid();
-		initialiseGridKey(fileUpload);
+		initialiseGridKey(fileUpload, uploadType);
 	}
 
 	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> insertRows, HashSet<Integer> updateRows,
@@ -226,7 +250,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.rowsToDisplay = rowsToDisplay;
 		initialiseWorkbook(inputStream, delimChar);
 		initialiseGrid();
-		initialiseGridKey(fileUpload);
+		initialiseGridKey(fileUpload, uploadType);
 	}
 
 	private void initialiseGrid() {
@@ -454,12 +478,26 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		sheetMetaData.setCols(sheet.getColumns());
 	}
 
-	private void initialiseGridKey(FileUpload fileUpload) {
+	private void initialiseGridKey(FileUpload fileUpload, UploadType uploadType) {
+		if(uploadType !=null && uploadType.getName().equalsIgnoreCase("Study-specific (custom) Data")){
+			/******* TODO ASAP this is not right....review with Chris
+			wizardDataGridKeyContainerForCustom.setVisible((!insertRows.isEmpty() || !updateRows.isEmpty()));
+			wizardDataGridKeyContainerForCustom.setOutputMarkupId(true);
+			// Download file link button
+			wizardDataGridKeyContainerForCustom.add(buildDownloadButton(fileUpload));
+			add(wizardDataGridKeyContainerForCustom);
+			
+			wizardDataGridKeyContainer.setVisible(false);
+			return;*************/
+		}
+
+		wizardDataGridKeyContainerForCustom.setVisible(false);
 		wizardDataGridKeyContainer.setVisible((!insertRows.isEmpty() || !updateRows.isEmpty()));
 		wizardDataGridKeyContainer.setOutputMarkupId(true);
 		// Download file link button
 		wizardDataGridKeyContainer.add(buildDownloadButton(fileUpload));
 		add(wizardDataGridKeyContainer);
+
 	}
 
 	private AjaxButton buildDownloadButton(final FileUpload fileUpload) {
@@ -606,6 +644,22 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	}
 
 	/**
+	 * @param wizardDataGridKeyContainer
+	 *           the wizardDataGridKeyContainer to set
+	 */
+	public void setWizardDataGridKeyContainerForCustom(WebMarkupContainer wizardDataGridKeyContainerForCustom) {
+		this.wizardDataGridKeyContainerForCustom = wizardDataGridKeyContainerForCustom;
+	}
+
+	/**
+	 * @return the wizardDataGridKeyContainer
+	 */
+	public WebMarkupContainer getWizardDataGridKeyContainerForCustom() {
+		return wizardDataGridKeyContainerForCustom;
+	}
+
+	
+	/**
 	 * @param errorCells
 	 *           the errorCells to set
 	 */
@@ -686,5 +740,13 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	 */
 	public HashSet<ArkGridCell> getWarningCells() {
 		return warningCells;
+	}
+
+	public void setUploadType(UploadType uploadType) {
+		this.uploadType = uploadType;
+	}
+
+	public UploadType getUploadType() {
+		return uploadType;
 	}
 }

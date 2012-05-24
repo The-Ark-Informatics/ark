@@ -38,7 +38,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "FILE_FORMAT", schema = Constants.GENO_TABLE_SCHEMA)
 public class FileFormat implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -46,18 +46,14 @@ public class FileFormat implements java.io.Serializable {
 	private String			name;
 	private Set<Upload>	uploads	= new HashSet<Upload>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public FileFormat() {
 	}
 
-	/** minimal constructor */
 	public FileFormat(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public FileFormat(Long id, String name, Set<Upload> uploads) {
 		this.id = id;
 		this.name = name;

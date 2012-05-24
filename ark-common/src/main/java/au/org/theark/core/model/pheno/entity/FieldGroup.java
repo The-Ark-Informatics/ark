@@ -39,7 +39,7 @@ import au.org.theark.core.model.Constants;
 @Entity
 @Table(name = "FIELD_GROUP", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FieldGroup {
-	// Fields
+
 	private Long	id;
 	private String	name;
 	private String	description;
@@ -53,7 +53,6 @@ public class FieldGroup {
 	public FieldGroup() {
 	}
 
-	/** minimal constructor */
 	public FieldGroup(Long id, String name, String userId, Date insertTime) {
 		this.id = id;
 		this.name = name;
@@ -61,7 +60,6 @@ public class FieldGroup {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor */
 	public FieldGroup(Long id, String name, String description, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.name = name;

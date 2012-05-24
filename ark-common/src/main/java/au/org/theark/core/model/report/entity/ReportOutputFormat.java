@@ -36,18 +36,15 @@ import au.org.theark.core.model.Constants;
 @Table(name = "REPORT_OUTPUT_FORMAT", schema = Constants.REPORT_TABLE_SCHEMA)
 public class ReportOutputFormat implements java.io.Serializable {
 
-	// Fields
+
 	private Long	id;
 	private String	name;
 	private String	description;
 
-	// Constructors
 
-	/** default constructor */
 	public ReportOutputFormat() {
 	}
 
-	/** minimal constructor */
 	public ReportOutputFormat(Long id, String name) {
 		this.id = id;
 		this.name = name;

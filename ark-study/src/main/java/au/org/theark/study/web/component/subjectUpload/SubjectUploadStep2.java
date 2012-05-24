@@ -116,7 +116,8 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 				//TODO : Throw error back to user
 			}
 
-			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE);
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, 
+					fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE, containerForm.getModelObject().getUpload().getUploadType());
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			WebMarkupContainer wizardDataGridKeyContainer = new WebMarkupContainer("wizardDataGridKeyContainer");
 			wizardDataGridKeyContainer.setVisible(false);

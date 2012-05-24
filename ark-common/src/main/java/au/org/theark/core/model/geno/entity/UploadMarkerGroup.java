@@ -38,7 +38,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "UPLOAD_MARKER_GROUP", schema = Constants.GENO_TABLE_SCHEMA)
 public class UploadMarkerGroup implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -50,20 +50,16 @@ public class UploadMarkerGroup implements java.io.Serializable {
 	private String			updateUserId;
 	private String			updateTime;
 
-	// Constructors
 
-	/** default constructor */
 	public UploadMarkerGroup() {
 	}
 
-	/** minimal constructor */
 	public UploadMarkerGroup(Long id, Upload upload, MarkerGroup markerGroup) {
 		this.id = id;
 		this.upload = upload;
 		this.markerGroup = markerGroup;
 	}
 
-	/** full constructor */
 	public UploadMarkerGroup(Long id, Upload upload, MarkerGroup markerGroup, String userId, String insertTime, String updateUserId, String updateTime) {
 		this.id = id;
 		this.upload = upload;

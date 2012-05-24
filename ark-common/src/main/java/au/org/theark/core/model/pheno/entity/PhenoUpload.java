@@ -49,7 +49,7 @@ import au.org.theark.core.model.study.entity.Study;
 @Table(name = "UPLOAD", schema = Constants.PHENO_TABLE_SCHEMA)
 public class PhenoUpload implements java.io.Serializable {
 
-	// Fields
+
 	private Long								id;
 	private Study								study;
 	private FileFormat						fileFormat;
@@ -73,7 +73,6 @@ public class PhenoUpload implements java.io.Serializable {
 	public PhenoUpload() {
 	}
 
-	/** minimal constructor */
 	public PhenoUpload(Long id, FileFormat fileFormat, DelimiterType delimiterType, String filename, Blob uploadReport) {
 		this.id = id;
 		this.fileFormat = fileFormat;

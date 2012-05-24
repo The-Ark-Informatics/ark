@@ -32,7 +32,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "DELIMITER_TYPE", schema = Constants.GENO_TABLE_SCHEMA)
 public class DelimiterType implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -41,18 +41,14 @@ public class DelimiterType implements java.io.Serializable {
 
 	// private Set<Upload> uploads = new HashSet<Upload>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public DelimiterType() {
 	}
 
-	/** minimal constructor */
 	public DelimiterType(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public DelimiterType(Long id, String name/*
 															 * , Set<Upload> uploads
 															 */) {

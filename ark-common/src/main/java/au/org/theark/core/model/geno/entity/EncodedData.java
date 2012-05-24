@@ -41,7 +41,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 @Table(name = "ENCODED_DATA", schema = Constants.GENO_TABLE_SCHEMA)
 public class EncodedData implements java.io.Serializable {
 
-	// Fields
+
 
 	private static final long serialVersionUID = 1L;
 	private Long					id;
@@ -50,13 +50,10 @@ public class EncodedData implements java.io.Serializable {
 	private Blob					encodedBit1;
 	private Blob					encodedBit2;
 
-	// Constructors
 
-	/** default constructor */
 	public EncodedData() {
 	}
 
-	/** minimal constructor */
 	public EncodedData(Long id, GenoCollection collection, LinkSubjectStudy subject) {
 		this.id = id;
 		this.collection = collection;

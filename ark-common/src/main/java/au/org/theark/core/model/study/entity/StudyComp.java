@@ -44,7 +44,7 @@ import au.org.theark.core.Constants;
 @Table(name = "STUDY_COMP", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class StudyComp implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -57,18 +57,14 @@ public class StudyComp implements java.io.Serializable {
 	private Set<LinkSubjectStudycomp>	linkSubjectStudycomps	= new HashSet<LinkSubjectStudycomp>(0);
 	private Set<LinkStudyStudycomp>		linkStudyStudycomps		= new HashSet<LinkStudyStudycomp>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public StudyComp() {
 	}
 
-	/** minimal constructor */
 	public StudyComp(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public StudyComp(Long id, Study study, String name, String description, String keyword, Set<LinkSubjectStudycomp> linkSubjectStudycomps, Set<LinkStudyStudycomp> linkStudyStudycomps) {
 		this.id = id;
 		this.study = study;

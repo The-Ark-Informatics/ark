@@ -44,7 +44,7 @@ import au.org.theark.core.model.study.entity.Study;
 @Table(name = "FIELD", schema = Constants.PHENO_TABLE_SCHEMA)
 public class Field implements java.io.Serializable {
 
-	// Fields
+
 	private Long		id;
 	private Study		study;
 	private FieldType	fieldType;
@@ -62,13 +62,10 @@ public class Field implements java.io.Serializable {
 	private Boolean	qualityControlStatus;
 	private String		missingValue;
 
-	// Constructors
 
-	/** default constructor */
 	public Field() {
 	}
 
-	/** minimal constructor */
 	public Field(Long id, FieldType fieldType, Long studyId, String name, String userId, Date insertTime) {
 		this.id = id;
 		this.fieldType = fieldType;
@@ -77,7 +74,6 @@ public class Field implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor */
 	public Field(Long id, FieldType fieldType, String name, String description, String units, Long seqNum, String minValue, String maxValue, String encodedValues, String userId, Date insertTime,
 			String updateUserId, Date updateTime) {
 		this.id = id;

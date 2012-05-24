@@ -36,7 +36,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 @Table(name = "SUBJECT_MARKER_META_DATA", schema = Constants.GENO_TABLE_SCHEMA)
 public class SubjectMarkerMetaData implements java.io.Serializable {
 
-	// Fields
+
 
 	
 	private static final long serialVersionUID = 1L;
@@ -49,13 +49,10 @@ public class SubjectMarkerMetaData implements java.io.Serializable {
 	private String					updateUserId;
 	private String					updateTime;
 
-	// Constructors
 
-	/** default constructor */
 	public SubjectMarkerMetaData() {
 	}
 
-	/** minimal constructor */
 	public SubjectMarkerMetaData(Long id, MetaData metaData, Marker marker, LinkSubjectStudy subject, String userId, String insertTime) {
 		this.id = id;
 		this.metaData = metaData;
@@ -65,7 +62,6 @@ public class SubjectMarkerMetaData implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor */
 	public SubjectMarkerMetaData(Long id, MetaData metaData, Marker marker, LinkSubjectStudy subject, String userId, String insertTime, String updateUserId, String updateTime) {
 		this.id = id;
 		this.metaData = metaData;

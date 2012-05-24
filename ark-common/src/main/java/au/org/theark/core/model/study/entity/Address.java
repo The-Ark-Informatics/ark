@@ -45,7 +45,7 @@ public class Address implements java.io.Serializable {
 
 
 	private static final long serialVersionUID = 1L;
-	// Fields
+
 	private Long				id;
 	private Person				person;
 	private String				addressLineOne;

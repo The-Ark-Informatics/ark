@@ -245,7 +245,7 @@ public class CustomFieldUploadValidator {
 	 *           is the UploadVO of the file
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateSubjectFileData(UploadVO uploadVo) {
+	public Collection<String> validateCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
 		java.util.Collection<String> validationMessages = null;
 		try {
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
@@ -267,7 +267,7 @@ public class CustomFieldUploadValidator {
 				}
 			}
 
-			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter);
+			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -275,13 +275,13 @@ public class CustomFieldUploadValidator {
 		return validationMessages;
 	}
 
-	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar) {
+	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
 			//TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
 			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though, and if it bloats with more fields could be part of batch too
-			validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE);
+			validationMessages = validateMatrixCustomFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateReference);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -327,7 +327,7 @@ public class CustomFieldUploadValidator {
 			boolean headerError = false;
 			boolean hasSubjectUIDHeader = false;
 																													//TODO ASAP remove hardcode and get it right
-			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName("SUBJECT");
+			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName("SUBJECT_CUSTOM_FIELD");
 			List<String> badHeaders = new ArrayList<String>();
 			
 			for(String header : headerColumnArray){																						
@@ -411,7 +411,7 @@ public class CustomFieldUploadValidator {
 	 *            general ARK Exception
 	 * @return a collection of data validation messages
 	 */
-	public java.util.Collection<String> validateMatrixSubjectFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate) throws FileFormatException, ArkSystemException {
+	public java.util.Collection<String> validateMatrixCustomFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate, List<String> uidsToUpdateReference) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		row = 1;
@@ -428,9 +428,10 @@ public class CustomFieldUploadValidator {
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			csvReader.readHeaders();
 			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
+			//uidsToUpdateReference = subjectUIDsAlreadyExisting;
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
 																											//TODO ASAP REMOVE HARDCODE (and all other asaps)
-			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName("SUBJECT");//_CUSTOM_FIELD");
+			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName("SUBJECT_CUSTOM_FIELD");//_CUSTOM_FIELD");
 																							//remove if not subjectuid, enforce fetch of customField to save another query each
 			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
 			
@@ -441,6 +442,7 @@ public class CustomFieldUploadValidator {
 					nonExistantUIDs.add(row);
 				}
 				else{
+					uidsToUpdateReference.add(subjectUID);
 					CustomField customField = null;		
 					for(CustomFieldDisplay cfd : cfdsThatWeNeed){
 						customField = cfd.getCustomField();

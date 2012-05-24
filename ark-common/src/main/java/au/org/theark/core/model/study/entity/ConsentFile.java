@@ -45,7 +45,7 @@ import au.org.theark.core.Constants;
 @Table(name = "CONSENT_FILE", schema = Constants.STUDY_SCHEMA)
 public class ConsentFile implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long	serialVersionUID	= -3611814204230766317L;
@@ -59,13 +59,10 @@ public class ConsentFile implements java.io.Serializable {
 	private String					updateUserId;
 	private Date					updateTime;
 
-	// Constructors
 
-	/** default constructor */
 	public ConsentFile() {
 	}
 
-	/** minimal constructor */
 	public ConsentFile(Long id, Consent consent, String filename, String userId, Date insertTime) {
 		this.id = id;
 		this.consent = consent;

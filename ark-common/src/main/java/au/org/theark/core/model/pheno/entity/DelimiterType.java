@@ -39,25 +39,21 @@ import au.org.theark.core.model.Constants;
 @Table(name = "DELIMITER_TYPE", schema = Constants.PHENO_TABLE_SCHEMA)
 public class DelimiterType implements java.io.Serializable {
 
-	// Fields
+
 
 	private Long					id;
 	private String					name;
 	private char					delimiterCharacter;
 	private Set<PhenoUpload>	collectionUploads	= new HashSet<PhenoUpload>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public DelimiterType() {
 	}
 
-	/** minimal constructor */
 	public DelimiterType(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public DelimiterType(Long id, String name, Set<PhenoUpload> collectionUploads) {
 		this.id = id;
 		this.name = name;

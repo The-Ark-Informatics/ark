@@ -42,7 +42,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "UPLOAD_COLLECTION", schema = Constants.GENO_TABLE_SCHEMA)
 public class UploadCollection implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -54,20 +54,16 @@ public class UploadCollection implements java.io.Serializable {
 	private String				updateUserId;
 	private Date				updateTime;
 
-	// Constructors
 
-	/** default constructor */
 	public UploadCollection() {
 	}
 
-	/** minimal constructor */
 	public UploadCollection(Long id, GenoCollection collection, Upload upload) {
 		this.id = id;
 		this.collection = collection;
 		this.upload = upload;
 	}
 
-	/** full constructor */
 	public UploadCollection(Long id, GenoCollection collection, Upload upload, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.collection = collection;

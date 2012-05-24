@@ -42,7 +42,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "COLLECTION_IMPORT", schema = Constants.GENO_TABLE_SCHEMA)
 public class CollectionImport implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -58,13 +58,10 @@ public class CollectionImport implements java.io.Serializable {
 	private String				updateUserId;
 	private Date				updateTime;
 
-	// Constructors
 
-	/** default constructor */
 	public CollectionImport() {
 	}
 
-	/** minimal constructor */
 	public CollectionImport(Long id, ImportType importType,
 	/* DelimiterType delimiterType, */MarkerGroup markerGroup, GenoCollection collection, String userId, Date insertTime) {
 		this.id = id;
@@ -77,7 +74,6 @@ public class CollectionImport implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor */
 	public CollectionImport(Long id, ImportType importType,
 	/* DelimiterType delimiterType, */MarkerGroup markerGroup, GenoCollection collection, Date startTime, Date finishTime, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;

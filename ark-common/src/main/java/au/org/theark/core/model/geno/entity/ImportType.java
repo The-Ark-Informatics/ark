@@ -38,7 +38,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "IMPORT_TYPE", schema = Constants.GENO_TABLE_SCHEMA)
 public class ImportType implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -46,18 +46,14 @@ public class ImportType implements java.io.Serializable {
 	private String						name;
 	private Set<CollectionImport>	collectionImports	= new HashSet<CollectionImport>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public ImportType() {
 	}
 
-	/** minimal constructor */
 	public ImportType(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public ImportType(Long id, String name, Set<CollectionImport> collectionImports) {
 		this.id = id;
 		this.name = name;

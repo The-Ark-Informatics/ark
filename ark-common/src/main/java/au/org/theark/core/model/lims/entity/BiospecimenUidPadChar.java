@@ -34,20 +34,17 @@ import au.org.theark.core.model.Constants;
 @Table(name = "BIOSPECIMENUID_PADCHAR", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BiospecimenUidPadChar implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private String	name;
 
-	// Constructors
 
-	/** default constructor */
 	public BiospecimenUidPadChar() {
 	}
 
-	/** minimal constructor */
 	public BiospecimenUidPadChar(Long id) {
 		this.id = id;
 	}

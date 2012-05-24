@@ -42,23 +42,19 @@ public class PersonLastnameHistory implements java.io.Serializable {
 
 
 	private static final long	serialVersionUID	= -568162910323332654L;
-	// Fields
+
 	private Long					id;
 	private Person					person;
 	private String					lastName;
 
-	// Constructors
 
-	/** default constructor */
 	public PersonLastnameHistory() {
 	}
 
-	/** minimal constructor */
 	public PersonLastnameHistory(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public PersonLastnameHistory(Long id, Person person, String lastName) {
 		this.id = id;
 		this.person = person;

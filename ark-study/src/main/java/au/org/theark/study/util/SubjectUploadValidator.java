@@ -380,7 +380,6 @@ public class SubjectUploadValidator {
 				stringBuffer.append(delimiterCharacter);
 				stringBuffer.append("EMAIL\n");
 /*
- * 
  * ADDRESS_LINE_1	ADDRESS_LINE_2	SUBURB	STATE	COUNTRY	POST_CODE	ADDRESS_SOURCE	ADDRESS_STATUS	 ADDRESS_TYPE	 ADDRESS_DATE_RECEIVED	ADDRESS_COMMENTS	IS_PREFERRED_MAILING_ADDRESS	PHONE_AREA_CODE	PHONE_NUMBER	PHONE_TYPE	PHONE_STATUS	PHONE_SOURCE	PHONE_COMMENTS	SILENT
  *
  *this is the newest fields and will be such a mess no point displaying???

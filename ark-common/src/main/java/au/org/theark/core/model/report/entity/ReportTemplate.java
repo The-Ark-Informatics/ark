@@ -41,7 +41,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 @Table(name = "REPORT_TEMPLATE", schema = Constants.REPORT_TABLE_SCHEMA)
 public class ReportTemplate implements java.io.Serializable {
 
-	// Fields
+
 	private Long			id;
 	private String			name;
 	private String			description;
@@ -49,13 +49,10 @@ public class ReportTemplate implements java.io.Serializable {
 	private ArkModule		module;
 	private ArkFunction	function;
 
-	// Constructors
 
-	/** default constructor */
 	public ReportTemplate() {
 	}
 
-	/** minimal constructor */
 	public ReportTemplate(Long id, String name, String templatePath) {
 		this.id = id;
 		this.name = name;

@@ -286,6 +286,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	}
 
 	public CustomField getCustomFieldByNameStudyArkFunction(String customFieldName, Study study, ArkFunction arkFunction) {
+		log.info("name" +  "\nstudy" + study.getId() + "\narkFunc="+ arkFunction.getId());
 		Criteria criteria = getSession().createCriteria(CustomField.class);
 		criteria.add(Restrictions.eq("name", customFieldName));
 		criteria.add(Restrictions.eq("study", study));

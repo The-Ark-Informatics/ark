@@ -39,7 +39,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "MARKER_META_DATA", schema = Constants.GENO_TABLE_SCHEMA)
 public class MarkerMetaData implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -51,13 +51,10 @@ public class MarkerMetaData implements java.io.Serializable {
 	private String		updateUserId;
 	private Date		updateTime;
 
-	// Constructors
 
-	/** default constructor */
 	public MarkerMetaData() {
 	}
 
-	/** minimal constructor */
 	public MarkerMetaData(Long id, MetaData metaData, Marker marker, String userId, Date insertTime) {
 		this.id = id;
 		this.metaData = metaData;
@@ -66,7 +63,6 @@ public class MarkerMetaData implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor */
 	public MarkerMetaData(Long id, MetaData metaData, Marker marker, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.metaData = metaData;

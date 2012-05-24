@@ -47,7 +47,7 @@ import au.org.theark.core.model.study.entity.Study;
 @Table(name = "COLLECTION", schema = Constants.GENO_TABLE_SCHEMA)
 public class GenoCollection implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -68,13 +68,10 @@ public class GenoCollection implements java.io.Serializable {
 	private Set<DecodeMask>			decodeMasks			= new HashSet<DecodeMask>(0);
 	private Set<UploadCollection>	uploadCollections	= new HashSet<UploadCollection>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public GenoCollection() {
 	}
 
-	/** minimal constructor */
 	public GenoCollection(Long id, Status status, Study study, String userId, Date insertTime) {
 		this.id = id;
 		this.status = status;

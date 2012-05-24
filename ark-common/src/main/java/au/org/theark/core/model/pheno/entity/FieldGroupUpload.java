@@ -37,7 +37,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "FIELD_GROUP_UPLOAD", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FieldGroupUpload implements java.io.Serializable {
 
-	// Fields
+
 
 	private Long			id;
 	private PhenoUpload	upload;
@@ -47,19 +47,15 @@ public class FieldGroupUpload implements java.io.Serializable {
 	private String			updateUserId;
 	private String			updateTime;
 
-	// Constructors
 
-	/** default constructor */
 	public FieldGroupUpload() {
 	}
 
-	/** minimal constructor */
 	public FieldGroupUpload(Long id, PhenoUpload upload) {
 		this.id = id;
 		this.upload = upload;
 	}
 
-	/** full constructor */
 	public FieldGroupUpload(Long id, PhenoUpload upload, String userId, String insertTime, String updateUserId, String updateTime) {
 		this.id = id;
 		this.upload = upload;

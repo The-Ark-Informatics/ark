@@ -144,8 +144,7 @@ public class SubjectCustomDataContainerPanel extends Panel {
 				// cpModel.getObject().setArkModule(arkModule);
 				if (study != null && linkSubjectStudy != null && arkModule != null) {
 					contextLoaded = true;
-					cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT));
-
+					cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
 					customFieldCriteria.setStudy(study);
 					customFieldCriteria.setArkFunction(cpModel.getObject().getArkFunction());
 				}

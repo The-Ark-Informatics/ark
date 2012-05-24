@@ -32,20 +32,17 @@ import au.org.theark.core.Constants;
 @Table(name = "SUBJECTUID_TOKEN", schema = Constants.STUDY_SCHEMA)
 public class SubjectUidToken implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
 	private Long	id;
 	private String	name;
 
-	// Constructors
 
-	/** default constructor */
 	public SubjectUidToken() {
 	}
 
-	/** minimal constructor */
 	public SubjectUidToken(Long id) {
 		this.id = id;
 	}

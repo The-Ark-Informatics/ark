@@ -144,7 +144,8 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			}																												//TODO remove hardcoding
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")){
 				CustomFieldUploadValidator customFieldUploadValidator = new CustomFieldUploadValidator(iArkCommonService);
-				validationMessages = customFieldUploadValidator.validateSubjectFileData(containerForm.getModelObject());
+				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);
+				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				//TODO consider if we want alternative way to do this - and maybe a superclass of uploadvalidator which draws out commonalities
 				insertRows = customFieldUploadValidator.getInsertRows();
 				updateRows = customFieldUploadValidator.getUpdateRows();

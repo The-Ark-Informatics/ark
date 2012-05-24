@@ -43,7 +43,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "FIELD_DATA_LOG", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FieldDataLog implements java.io.Serializable {
 
-	// Fields
+
 	private Long		id;
 	private FieldData	fieldData;
 	private String		comment;
@@ -53,13 +53,10 @@ public class FieldDataLog implements java.io.Serializable {
 	private String		updateUserId;
 	private Date		updateTime;
 
-	// Constructors
 
-	/** default constructor */
 	public FieldDataLog() {
 	}
 
-	/** minimal constructor */
 	public FieldDataLog(Long id, FieldData fieldData, String comment, String userId, Date insertTime) {
 		this.id = id;
 		this.fieldData = fieldData;
@@ -68,7 +65,6 @@ public class FieldDataLog implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor */
 	public FieldDataLog(Long id, FieldData fieldData, String comment, String value, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.fieldData = fieldData;

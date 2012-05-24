@@ -37,22 +37,18 @@ public class PersonContactMethod implements java.io.Serializable {
 
 
 	private static final long	serialVersionUID	= -5632425806775287317L;
-	// Fields
+
 	private Long					id;
 	private String					name;
 
-	// Constructors
 
-	/** default constructor */
 	public PersonContactMethod() {
 	}
 
-	/** minimal constructor */
 	public PersonContactMethod(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public PersonContactMethod(Long id, String name) {
 		this.id = id;
 		this.name = name;

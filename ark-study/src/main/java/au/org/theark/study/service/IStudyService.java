@@ -282,8 +282,11 @@ public interface IStudyService {
 
 	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId,  List<String> listOfUIDsToUpdate);
 
+	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId,  List<String> listOfUIDsToUpdate);
+	
+
 //TODO Trav Deprecated	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
-	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList, Study study) throws ArkUniqueException, ArkSubjectInsertException;
+//	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList, Study study) throws ArkUniqueException, ArkSubjectInsertException;
 
 	//public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) throws ArkUniqueException, ArkSubjectInsertException;
 
@@ -379,7 +382,9 @@ public interface IStudyService {
 
 	public void setPreferredMailingAdressToFalse(Person person);
 	
-	public void processBatch(List<LinkSubjectStudy> subjectList, Study study, List<LinkSubjectStudy> subjectsToInsert);
+	public void processBatch(List<LinkSubjectStudy> subjectsToUpdate, Study study, List<LinkSubjectStudy> subjectsToInsert);
+
+	public void processFieldsBatch(List<SubjectCustomFieldData> fieldDataList, Study study, List<SubjectCustomFieldData> fieldDataToInsert);
 
 	public AddressType getDefaultAddressType();
 

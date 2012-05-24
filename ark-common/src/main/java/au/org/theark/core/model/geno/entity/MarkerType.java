@@ -38,7 +38,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "MARKER_TYPE", schema = Constants.GENO_TABLE_SCHEMA)
 public class MarkerType implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -46,18 +46,14 @@ public class MarkerType implements java.io.Serializable {
 	private String					name;
 	private Set<MarkerGroup>	markerGroups	= new HashSet<MarkerGroup>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public MarkerType() {
 	}
 
-	/** minimal constructor */
 	public MarkerType(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public MarkerType(Long id, String name, Set<MarkerGroup> markerGroups) {
 		this.id = id;
 		this.name = name;

@@ -78,6 +78,15 @@ public interface IStudyDao {
 	 */
 	public void processBatch(List<LinkSubjectStudy> subjectsToInsert, Study study, List<LinkSubjectStudy> subjectsToUpdate);
 
+	
+	/**
+	 * Perform all inserts and updates as an atomic unit
+	 * @param subjectsToInsert
+	 * @param study
+	 * @param subjectsToUpdate
+	 */
+	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert);
+
 	/**
 	 * This will take a list of detached LinkSubjectStudies (whcih will contain associated Persons, etc and insert them.
 	 * @param subjectsToInsert

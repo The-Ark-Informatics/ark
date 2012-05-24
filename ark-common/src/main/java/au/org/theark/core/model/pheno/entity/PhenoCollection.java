@@ -47,7 +47,7 @@ import au.org.theark.core.model.study.entity.Study;
 @Entity(name = "au.org.theark.core.model.pheno.entity.Collection")
 @Table(name = "COLLECTION", schema = Constants.PHENO_TABLE_SCHEMA)
 public class PhenoCollection implements java.io.Serializable {
-	// Fields
+
 	private Long								id;
 	private Status								status;
 	private Study								study;
@@ -62,13 +62,10 @@ public class PhenoCollection implements java.io.Serializable {
 
 	private Set<PhenoCollectionUpload>	phenoCollectionUploads	= new HashSet<PhenoCollectionUpload>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public PhenoCollection() {
 	}
 
-	/** minimal constructor */
 	public PhenoCollection(Long id, Status status, Study study, String userId, Date insertTime) {
 		this.id = id;
 		this.status = status;

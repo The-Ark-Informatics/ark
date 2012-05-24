@@ -32,7 +32,7 @@ import au.org.theark.core.Constants;
 @Table(name = "ADDRESS_TYPE", schema = Constants.STUDY_SCHEMA)
 public class AddressType implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -40,18 +40,14 @@ public class AddressType implements java.io.Serializable {
 	private String	name;
 	private String	description;
 
-	// Constructors
 
-	/** default constructor */
 	public AddressType() {
 	}
 
-	/** minimal constructor */
 	public AddressType(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public AddressType(Long id, String name, String description) {
 		this.id = id;
 		this.name = name;

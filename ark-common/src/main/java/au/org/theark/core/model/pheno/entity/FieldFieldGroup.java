@@ -39,7 +39,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "FIELD_FIELD_GROUP", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FieldFieldGroup implements java.io.Serializable {
 
-	// Fields
+
 
 	private Long			id;
 	private FieldGroup	fieldGroup;
@@ -49,20 +49,16 @@ public class FieldFieldGroup implements java.io.Serializable {
 	private String			updateUserId;
 	private String			updateTime;
 
-	// Constructors
 
-	/** default constructor */
 	public FieldFieldGroup() {
 	}
 
-	/** minimal constructor */
 	public FieldFieldGroup(Long id, FieldGroup fieldGroup, Field field) {
 		this.id = id;
 		this.fieldGroup = fieldGroup;
 		this.field = field;
 	}
 
-	/** full constructor */
 	public FieldFieldGroup(Long id, FieldGroup fieldGroup, Field field, String userId, String insertTime, String updateUserId, String updateTime) {
 		this.id = id;
 		this.fieldGroup = fieldGroup;

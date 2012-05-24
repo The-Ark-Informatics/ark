@@ -48,7 +48,7 @@ import au.org.theark.core.model.study.entity.YesNo;
 public class LssConsentHistory implements java.io.Serializable {
 
 	private static final long	serialVersionUID	= 1L;
-	// Fields
+
 	private Long							id;
 	private Date							timestamp;
 	private LinkSubjectStudy			linkSubjectStudy;

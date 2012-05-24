@@ -33,7 +33,7 @@ import au.org.theark.core.Constants;
 @Table(name = "DELIMITER_TYPE", schema = Constants.STUDY_SCHEMA)
 public class DelimiterType implements java.io.Serializable {
 
-	// Fields
+
 	private Long	id;
 	private String	name;
 	private char	delimiterCharacter;
@@ -43,12 +43,10 @@ public class DelimiterType implements java.io.Serializable {
 	public DelimiterType() {
 	}
 
-	/** minimal constructor */
 	public DelimiterType(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public DelimiterType(Long id, String name) {
 		this.id = id;
 		this.name = name;

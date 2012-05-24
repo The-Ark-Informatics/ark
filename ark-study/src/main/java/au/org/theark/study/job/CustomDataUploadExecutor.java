@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
+import org.jfree.util.Log;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
@@ -37,7 +38,8 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.study.service.IStudyService;
 
-public class StudyDataUploadExecutor {
+public class CustomDataUploadExecutor {
+	//private static final Logger	log	= LoggerFactory.getLogger(CustomDataUploadExecutor.class);
 	
 	private IArkCommonService<Void>	iArkCommonService			= null;
 	private IStudyService				iStudyService				= null;
@@ -64,7 +66,7 @@ public class StudyDataUploadExecutor {
 	 * @param report 
 	 * @param uidsToUpload 
 	 */
-	public StudyDataUploadExecutor(IArkCommonService iArkCommonService,
+	public CustomDataUploadExecutor(IArkCommonService iArkCommonService,
 											IStudyService iStudyService,
 											InputStream inputStream,
 											Long uploadId,
@@ -85,23 +87,30 @@ public class StudyDataUploadExecutor {
 	}
 
 	public void run() throws Exception {
+
 		SchedulerFactory sf = new StdSchedulerFactory();
 		Scheduler sched = sf.getScheduler();
-		JobDetail studyUploadJob = newJob(StudyDataUploadJob.class).withIdentity("StudyDataUploadJob", "group1").build();
+
+		Log.warn("executor " + uidsToUpload.size());
+		
+		JobDetail customDataUploadJob = newJob(CustomDataUploadJob.class).withIdentity("CustomDataUploadJob", "group2").build();
 		// pass initialization parameters into the job
-		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.IARKCOMMONSERVICE, iArkCommonService);
-		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.ISTUDYSERVICE, iStudyService);
-		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.UPLOADID, uploadId);
-		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.STUDY_ID, studyId);
-		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.REPORT, report);
-		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.FILE_FORMAT, fileFormat);
-		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.INPUT_STREAM, inputStream);
-		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.DELIMITER, delimiter);
-		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.SIZE, size);
-		studyUploadJob.getJobDataMap().put(StudyDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
+		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.IARKCOMMONSERVICE, iArkCommonService);
+		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.ISTUDYSERVICE, iStudyService);
+		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.UPLOADID, uploadId);
+		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.STUDY_ID, studyId);
+		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.REPORT, report);
+		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.FILE_FORMAT, fileFormat);
+		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.INPUT_STREAM, inputStream);
+		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.DELIMITER, delimiter);
+		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.SIZE, size);
+		customDataUploadJob.getJobDataMap().put(StudyDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
+
 		Date startTime = nextGivenSecondDate(null, 1);
-		SimpleTrigger trigger1 = newTrigger().withIdentity("StudyDataUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
-		sched.scheduleJob(studyUploadJob, trigger1);
+		
+		SimpleTrigger trigger1 = newTrigger().withIdentity("CustomDataUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
+		
+		sched.scheduleJob(customDataUploadJob, trigger1);
 		//		log.warn(studyUploadJob.getKey() + " will run at: " + scheduleTime1 + " and repeat: " + trigger1.getRepeatCount() + " times, every " + trigger1.getRepeatInterval() / 1000 + " seconds");
 		// All of the jobs have been added to the scheduler, but none of the jobs will run until the scheduler has been started
 		sched.start();

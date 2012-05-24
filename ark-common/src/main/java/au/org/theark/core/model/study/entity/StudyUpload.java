@@ -44,7 +44,7 @@ import au.org.theark.core.Constants;
 @Table(name = "UPLOAD", schema = Constants.STUDY_SCHEMA)
 public class StudyUpload implements java.io.Serializable {
 
-	// Fields
+
 	private Long				id;
 	private Study				study;
 	private FileFormat		fileFormat;
@@ -64,7 +64,6 @@ public class StudyUpload implements java.io.Serializable {
 	public StudyUpload() {
 	}
 
-	/** minimal constructor */
 	public StudyUpload(Long id, FileFormat fileFormat, DelimiterType delimiterType, String filename, byte[] uploadReport, ArkFunction arkFunction) {
 		this.id = id;
 		this.fileFormat = fileFormat;

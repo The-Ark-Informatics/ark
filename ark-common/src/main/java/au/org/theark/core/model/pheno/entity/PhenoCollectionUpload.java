@@ -43,7 +43,7 @@ import au.org.theark.core.model.Constants;
 @Table(name = "COLLECTION_UPLOAD", schema = Constants.PHENO_TABLE_SCHEMA)
 public class PhenoCollectionUpload implements java.io.Serializable {
 
-	// Fields
+
 	private Long				id;
 	private PhenoUpload		upload;
 	private PhenoCollection	phenoCollection;
@@ -52,13 +52,10 @@ public class PhenoCollectionUpload implements java.io.Serializable {
 	private String				updateUserId;
 	private Date				updateTime;
 
-	// Constructors
 
-	/** default constructor */
 	public PhenoCollectionUpload() {
 	}
 
-	/** minimal constructor */
 	public PhenoCollectionUpload(Long id, PhenoUpload upload, PhenoCollection phenoCollection, String userId, Date insertTime) {
 		this.id = id;
 		this.upload = upload;
@@ -67,7 +64,6 @@ public class PhenoCollectionUpload implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor */
 	public PhenoCollectionUpload(Long id, PhenoUpload upload, PhenoCollection phenoCollection, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.upload = upload;

@@ -39,7 +39,7 @@ import au.org.theark.core.model.study.entity.Study;
 @Table(name = "FIELD_COLLECTION", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FieldPhenoCollection implements java.io.Serializable {
 
-	// Fields
+
 	private Long				id;
 	private Study				study;
 	private Field				field;
@@ -49,13 +49,10 @@ public class FieldPhenoCollection implements java.io.Serializable {
 	 * private String userId; private Date insertTime; private String updateUserId; private Date updateTime;
 	 */
 
-	// Constructors
 
-	/** default constructor */
 	public FieldPhenoCollection() {
 	}
 
-	/** minimal constructor */
 	public FieldPhenoCollection(Long id, Study study, Field field, PhenoCollection phenoCollection) {
 		this.id = id;
 		this.study = study;

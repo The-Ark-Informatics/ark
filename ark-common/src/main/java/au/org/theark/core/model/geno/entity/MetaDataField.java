@@ -47,7 +47,7 @@ import au.org.theark.core.model.study.entity.Study;
 @Table(name = "META_DATA_FIELD", schema = Constants.GENO_TABLE_SCHEMA)
 public class MetaDataField implements java.io.Serializable {
 
-	// Fields
+
 
 
 	private static final long serialVersionUID = 1L;
@@ -67,13 +67,10 @@ public class MetaDataField implements java.io.Serializable {
 	private Date				updateTime;
 	private Set<MetaData>	metaDatas	= new HashSet<MetaData>(0);
 
-	// Constructors
 
-	/** default constructor */
 	public MetaDataField() {
 	}
 
-	/** minimal constructor */
 	public MetaDataField(Long id, MetaDataType metaDataType, Study study, String name, String userId, Date insertTime) {
 		this.id = id;
 		this.metaDataType = metaDataType;
@@ -83,7 +80,6 @@ public class MetaDataField implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor */
 	public MetaDataField(Long id, MetaDataType metaDataType, Study study, String name, String description, String units, Long seqNum, String minValue, String maxValue, String discreteValues,
 			String userId, Date insertTime, String updateUserId, Date updateTime, Set<MetaData> metaDatas) {
 		this.id = id;

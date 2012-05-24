@@ -35,23 +35,19 @@ public class ActionType implements java.io.Serializable {
 
 
 	private static final long serialVersionUID = 1L;
-	// Fields
+
 	private Long	id;
 	private String	name;
 	private String	description;
 
-	// Constructors
 
-	/** default constructor */
 	public ActionType() {
 	}
 
-	/** minimal constructor */
 	public ActionType(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public ActionType(Long id, String name, String description) {
 		this.id = id;
 		this.name = name;

@@ -48,7 +48,7 @@ public class Person implements java.io.Serializable {
 
 
 	private static final long serialVersionUID = 1L;
-	// Fields
+
 	private Long								id;
 	private String								firstName;
 	private String								middleName;
@@ -75,18 +75,13 @@ public class Person implements java.io.Serializable {
 	private Set<LinkSubjectContact>		linkSubjectContactsForSubjectKey	= new HashSet<LinkSubjectContact>(0);
 	private Set<PersonLastnameHistory>	personLastnameHistory				= new HashSet<PersonLastnameHistory>(0);
 
-	// Constructors
-
-	/** default constructor */
 	public Person() {
 	}
 
-	/** minimal constructor */
 	public Person(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public Person(Long id, String firstName, String middleName, String lastName, String preferredName, Date dateOfBirth, VitalStatus vitalStatus, TitleType titleType, GenderType genderType,
 			Set<LinkSubjectStudy> linkSubjectStudies, Set<Phone> phones, Set<LinkSubjectStudycomp> linkSubjectStudycomps, Set<LinkSubjectContact> linkSubjectContactsForContactKey,
 			Set<LinkSiteContact> linkSiteContacts, Set<LinkSubjectContact> linkSubjectContactsForSubjectKey) {
@@ -107,7 +102,6 @@ public class Person implements java.io.Serializable {
 		this.linkSubjectContactsForSubjectKey = linkSubjectContactsForSubjectKey;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "person_generator", sequenceName = "PERSON_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "person_generator")

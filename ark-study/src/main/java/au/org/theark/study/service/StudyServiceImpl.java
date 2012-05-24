@@ -97,7 +97,7 @@ import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.util.SubjectUploadValidator;
-import au.org.theark.study.util.SubjectUploader;
+import au.org.theark.study.util.DataUploader;
 import au.org.theark.study.web.Constants;
 
 @Transactional
@@ -860,7 +860,7 @@ public class StudyServiceImpl implements IStudyService {
 		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
 
-		SubjectUploader subjectUploader = new SubjectUploader(study, iArkCommonService, this);
+		DataUploader subjectUploader = new DataUploader(study, iArkCommonService, this);
 
 		try {
 			InputStream is = new FileInputStream(file);
@@ -919,6 +919,23 @@ public class StudyServiceImpl implements IStudyService {
 		return subjectUploadValidator;
 	}
 
+	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId,  List<String> listOfUIDsToUpdate){
+		StringBuffer uploadReport = null;
+		Study study = iArkCommonService.getStudy(studyId);
+		DataUploader dataUploader = new DataUploader(study, iArkCommonService, this);
+		try {
+			log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
+			uploadReport = dataUploader.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate);
+		}
+		catch (FileFormatException ffe) {
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe) {
+			log.error(Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return uploadReport;
+	}
+	
 	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 		try {
@@ -935,11 +952,9 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId, List<String> listOfUIDsToUpdate) {
-		//log.warn("do i still have a list of uids?    this many: " + listOfUIDsToUpdate);
 		StringBuffer uploadReport = null;
 		Study study = iArkCommonService.getStudy(studyId);
-		SubjectUploader subjectUploader = new SubjectUploader(study, iArkCommonService, this);
-
+		DataUploader subjectUploader = new DataUploader(study, iArkCommonService, this);
 		try {
 			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate);
 		}
@@ -968,9 +983,13 @@ public class StudyServiceImpl implements IStudyService {
 		iStudyDao.processBatch(subjectList, study, subjectsToInsert);
 	}
 
+	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert){
+		iStudyDao.processFieldsBatch(fieldsToUpdate, study, fieldsToInsert);
+	}
+	/*
 	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList, Study study) throws ArkUniqueException, ArkSubjectInsertException {
 		iStudyDao.batchInsertSubjects(subjectList, study);
-	}
+	}*/
 
 	public Collection<ArkUser> lookupArkUser(Study study) {
 		return iStudyDao.lookupArkUser(study);

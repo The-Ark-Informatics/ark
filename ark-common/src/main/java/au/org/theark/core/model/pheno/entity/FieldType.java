@@ -33,22 +33,18 @@ import au.org.theark.core.model.Constants;
 @Table(name = "FIELD_TYPE", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FieldType implements java.io.Serializable {
 
-	// Fields
+
 	private Long	id;
 	private String	name;
 
-	// Constructors
 
-	/** default constructor */
 	public FieldType() {
 	}
 
-	/** minimal constructor */
 	public FieldType(Long id) {
 		this.id = id;
 	}
 
-	/** full constructor */
 	public FieldType(Long id, String name) {
 		this.id = id;
 		this.name = name;

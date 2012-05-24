@@ -143,6 +143,21 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
+	/**
+	 * Perform all inserts and updates as an atomic unit
+	 * @param subjectsToInsert
+	 * @param study
+	 * @param subjectsToUpdate
+	 */
+	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert){
+		for(SubjectCustomFieldData dataToUpdate : fieldsToUpdate){
+			getSession().update(dataToUpdate);
+		}
+		for(SubjectCustomFieldData dataToInsert : fieldsToInsert){
+			getSession().save(dataToInsert);
+		}
+	}
+
 	public void create(Study study, ArkUserVO arkUserVo, Collection<ArkModule> selectedModules) {
 		Session session = getSession();
 		session.save(study);
