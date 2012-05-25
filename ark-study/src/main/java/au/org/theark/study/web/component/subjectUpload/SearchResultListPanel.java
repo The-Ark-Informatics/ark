@@ -189,15 +189,7 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				//try {
-					//TODO ASAP - make this be lazy about getting the payload
-					data = upload.getPayload();//.getBytes(1, (int) upload.getPayload().length());
-				//	log.warn("buildDownloadButton - on submit     how many times are we building a blob?");
-				//}
-				//catch (SQLException e) {
-				//	log.error(e.getMessage());
-				//}
+				byte[] data = upload.getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 			}
 
@@ -223,15 +215,8 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			public void onClick() {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				//try {
-					data = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length());
-					log.warn("buildDownloadReportLink onclick get blob");
-				//}
-				//catch (SQLException e) {
-				//	log.error(e.getMessage());
-				//}
+				byte[] data = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length());
+				log.warn("buildDownloadReportLink onclick get blob");
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			};
 		};
@@ -248,15 +233,8 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				//try {
-					data = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length());
-
-					log.warn("buildDownloadReportButton onsubmit get blob");
-				//}
-				//catch (SQLException e) {
-				//	e.printStackTrace();
-				//}
+				byte[] data = upload.getUploadReport();
+				log.warn("buildDownloadReportButton onsubmit get blob");
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			}
 

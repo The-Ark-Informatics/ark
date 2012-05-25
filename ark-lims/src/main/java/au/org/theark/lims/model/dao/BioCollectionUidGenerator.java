@@ -73,56 +73,7 @@ public class BioCollectionUidGenerator extends HibernateSessionDao {
 			seqData.setUidSequence((currentSeqNumber + numToInsert));
 			getSession().update(seqData);
 			getSession().flush();
-			return currentSeqNumber;//TODO asap...this should be handled transactionally in one class, and probably with generators...although this isnt really even a key
+			return currentSeqNumber;//TODO ...perhaps this should be handled transactionally in one class, and probably with generators...although this isnt really even a key
 		}
 	}
-/*
-	private IdentifierGenerator	generator;
-	private Properties				configuration;
-	private String						studyNameKey;
-
-	// No-Arg constructor
-	public BioCollectionUidGenerator() {
-		initProperties();
-	}
-
-	private void initProperties() {
-		configuration = new Properties();
-		configuration.setProperty(TableGenerator.TABLE_PARAM, "lims.biocollectionuid_sequence");
-		configuration.setProperty(TableGenerator.SEGMENT_COLUMN_PARAM, "STUDY_NAME_ID");
-		configuration.setProperty(TableGenerator.VALUE_COLUMN_PARAM, "UID_SEQUENCE");
-		configuration.setProperty(TableGenerator.INCREMENT_PARAM, "1");
-	}
-
-	public Serializable getId(String studyNameKey) {
-		if (!studyNameKey.equals(this.studyNameKey)) {
-			this.studyNameKey = studyNameKey;
-			configuration.setProperty(TableGenerator.SEGMENT_VALUE_PARAM, studyNameKey);
-//			generator = IdentifierGeneratorFactory.create("org.hibernate.id.enhanced.TableGenerator", new IntegerType(), configuration, getDialect());
-			DefaultIdentifierGeneratorFactory factory = new DefaultIdentifierGeneratorFactory();			
-			factory.createIdentifierGenerator("org.hibernate.id.enhanced.TableGenerator", new IntegerType(), configuration);//TODO analyze where dialect comes in
-			factory.setDialect(getDialect());
-			generator = factory.createIdentifierGenerator("org.hibernate.id.enhanced.TableGenerator", new IntegerType(), configuration);
-		}
-		StatelessSession session = getStatelessSession();
-		Serializable id = generator.generate((StatelessSessionImpl) session, new Id());
-		session.close();
-		return id;
-	}
-
-	/**
-	 * Target object for ID generation
-	 *
-	private static class Id {
-		private Integer	id;
-
-		@javax.persistence.Id
-		public Integer getId() {
-			return id;
-		}
-
-		public void setId(Integer id) {
-			this.id = id;
-		}
-	}*/
 }

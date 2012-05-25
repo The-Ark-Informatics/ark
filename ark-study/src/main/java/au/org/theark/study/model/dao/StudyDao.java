@@ -1892,9 +1892,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public GenderType getDefaultGenderType() {
-		// TODO ASAP somethig liek this but not hardcoded getGenderType(0L);
-		// TODO Auto-generated method stub
-		return null;
+		return getGenderType(0L);//TODO meaningful use of constants perhaps or a default bool in db
 	}
 
 	//TODO ASAP - I see hardcoding everywhere, fix

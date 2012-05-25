@@ -30,7 +30,6 @@ import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
 
-// TODO ASAP : change underlying table name
 @Entity
 @Table(name = "STATE", schema = Constants.STUDY_SCHEMA)
 public class State implements Serializable {

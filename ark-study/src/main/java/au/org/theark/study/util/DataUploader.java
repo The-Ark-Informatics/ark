@@ -65,7 +65,6 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.study.service.IStudyService;
 
 import com.csvreader.CsvReader;
@@ -278,7 +277,7 @@ public class DataUploader {
 						PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
 						personLastNameHistory.setPerson(person);
 						personLastNameHistory.setLastName(person.getLastName());
-						person.getPersonLastnameHistory().add(personLastNameHistory);//TODO ASAP analyze this
+						person.getPersonLastnameHistory().add(personLastNameHistory);//TODO analyze this
 					}
 					person.setLastName(lastnameFromFile);
 				}
@@ -752,8 +751,7 @@ public class DataUploader {
 				String subjectUID = stringLineArray[0];
 				LinkSubjectStudy subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
 				List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
-																								//TODO ASAP REMOVE HARDCODE (and all other asaps)
-				ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName("SUBJECT_CUSTOM_FIELD");//");
+				ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);//");
 				//remove if not subjectuid, enforce fetch of customField to save another query each
 				List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
 				List<SubjectCustomFieldData> dataThatWeHave = iArkCommonService.getCustomFieldDataFor(cfdsThatWeNeed, allSubjectWhichWillBeUpdated);

@@ -66,7 +66,7 @@ public class ArkUidGenerator extends HibernateSessionDao {
 			seqData.setUidSequence((currentSeqNumber + numToInsert));
 			getSession().update(seqData);
 			getSession().flush();
-			return currentSeqNumber;//TODO asap...this should be handled transactionally in one class, and probably with generators...although this isnt really even a key
+			return currentSeqNumber;//TODO ...perhaps this should be handled transactionally in one class, and probably with generators...although this isnt really even a key
 		}
 	}
 

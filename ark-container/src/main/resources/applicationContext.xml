@@ -84,7 +84,7 @@
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://ark-database:3306" />
 		<property name="username" value="arkadmin" />
-		<property name="password" value="insert-password-here" />
+		<property name="password" value="v@Tym4np[]" />
 	</bean>
 
 	<!--  Ark LDAP configuration (includes the LDAP data source) -->
@@ -99,7 +99,7 @@
 		<property name="basePeopleDn" value="ou=arkUsers" />
 		<property name="base" value="dc=the-ark,dc=org,dc=au" />
 		<property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" />
-		<property name="password" value="insert-password-here" />
+		<property name="password" value="v@Tym4np[]" />
 	</bean>
 
 	<!--  Hibernate Session Factory -->

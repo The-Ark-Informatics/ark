@@ -326,8 +326,7 @@ public class CustomFieldUploadValidator {
 			String[] headerColumnArray = csvReader.getHeaders();
 			boolean headerError = false;
 			boolean hasSubjectUIDHeader = false;
-																													//TODO ASAP remove hardcode and get it right
-			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName("SUBJECT_CUSTOM_FIELD");
+			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 			List<String> badHeaders = new ArrayList<String>();
 			
 			for(String header : headerColumnArray){																						
@@ -430,8 +429,7 @@ public class CustomFieldUploadValidator {
 			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
 			//uidsToUpdateReference = subjectUIDsAlreadyExisting;
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
-																											//TODO ASAP REMOVE HARDCODE (and all other asaps)
-			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName("SUBJECT_CUSTOM_FIELD");//_CUSTOM_FIELD");
+			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 																							//remove if not subjectuid, enforce fetch of customField to save another query each
 			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
 			
@@ -542,7 +540,7 @@ public class CustomFieldUploadValidator {
 	 */
 	public static boolean isValidFieldData(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages) {
 		boolean isValidFieldData = true;
-		//TODO ASAP is null acceptable? or do we just just check before call... if value null return false?
+		//TODO ASAP is null coming in acceptable? or do we just just check before call... if value null return false?
 		
 		// Number field type
 		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {

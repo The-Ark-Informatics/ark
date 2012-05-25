@@ -48,14 +48,12 @@ public abstract class HibernateSessionDao {
 	 * @return
 	 */
 	public Session getSession() {
-//		sessionFactory.get
 		if(sessionFactory!=null)
 			return sessionFactory.getCurrentSession();
 		else{
 			System.err.println("SESSION FACTORY NULL");
-			return null;//TODO ASAP REMOVE THIS 
+			return null;
 		}
-		//return SessionFactoryUtils.getSession(this.sessionFactory, true);
 	}
 	
 	/**
@@ -68,7 +66,7 @@ public abstract class HibernateSessionDao {
 			return sessionFactory.openSession();
 		else{
 			System.err.println("SESSION FACTORY NULL on Attempt to open session");
-			return null;//TODO ASAP REMOVE THIS 
+			return null;
 		}
 	}
 	
