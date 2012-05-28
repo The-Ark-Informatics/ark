@@ -448,8 +448,14 @@ public class CustomFieldUploadValidator {
 					for(CustomFieldDisplay cfd : cfdsThatWeNeed){
 						customField = cfd.getCustomField();
 						String theDataAsString = csvReader.get(cfd.getCustomField().getName());
-						if(!validateFieldData(customField, theDataAsString, subjectUID, dataValidationMessages)){
-							errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+						if(theDataAsString!=null && !theDataAsString.isEmpty()){
+							
+							//TODO : also check if the value == "missingvalueThingy" , then replace with 
+
+							log.info("customField = " + customField==null?"null":customField.getName());
+							if(!validateFieldData(customField, theDataAsString, subjectUID, dataValidationMessages)){
+								errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+							}
 						}
 					}
 					existantSubjectUIDRows.add(row);
@@ -725,9 +731,13 @@ public class CustomFieldUploadValidator {
 		boolean isValidRange = true;
 
 		isValidFieldData = isValidFieldData(customField, value, subjectUID, errorMessages);
+		log.info("isValidFieldData " + isValidFieldData );
 		isValidEncodedValues = isInEncodedValues(customField,value, subjectUID, errorMessages);
+		log.info("isValidEncodedValues " + isValidEncodedValues );
 		isValidRange = isInValidRange(customField, value, subjectUID, errorMessages);
+		log.info("isInValidRange " + isValidRange );
 		isValid = (isValidFieldData && isValidEncodedValues && isValidRange);
+		log.info("isvalidoverall " + isValid );
 		return (isValid);
 	}
 
