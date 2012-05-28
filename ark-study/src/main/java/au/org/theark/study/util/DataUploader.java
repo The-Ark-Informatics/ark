@@ -742,20 +742,19 @@ public class DataUploader {
 			}
 
 			csvReader.readHeaders();
-			//srcLength = inLength - csvReader.getHeaders().toString().length();
 
+			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
+			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);//");
+
+			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
+			List<SubjectCustomFieldData> dataThatWeHave = iArkCommonService.getCustomFieldDataFor(cfdsThatWeNeed, allSubjectWhichWillBeUpdated);
 			//read one line which contains potentially many custom fields
 			while (csvReader.readRecord()) {
 
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[0];
 				LinkSubjectStudy subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
-				List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
-				ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);//");
-				//remove if not subjectuid, enforce fetch of customField to save another query each
-				List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
-				List<SubjectCustomFieldData> dataThatWeHave = iArkCommonService.getCustomFieldDataFor(cfdsThatWeNeed, allSubjectWhichWillBeUpdated);
-
+				
 				CustomField customField = null;		
 				for(CustomFieldDisplay cfd : cfdsThatWeNeed){
 					customField = cfd.getCustomField();
