@@ -449,12 +449,16 @@ public class CustomFieldUploadValidator {
 						customField = cfd.getCustomField();
 						String theDataAsString = csvReader.get(cfd.getCustomField().getName());
 						if(theDataAsString!=null && !theDataAsString.isEmpty()){
-							
-							//TODO : also check if the value == "missingvalueThingy" , then replace with 
-
-							log.info("customField = " + customField==null?"null":customField.getName());
-							if(!validateFieldData(customField, theDataAsString, subjectUID, dataValidationMessages)){
-								errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+							//TODO : also check if the value == "missingvaluePatternThingy" , then dont validate
+							if(customField.getMissingValue()!=null && customField.getMissingValue().toString().equalsIgnoreCase(theDataAsString)){
+								//then move on and don't validate it...it goes straight in
+							}
+							else
+							{
+								//log.info("customField = " + customField==null?"null":customField.getName());
+								if(!validateFieldData(customField, theDataAsString, subjectUID, dataValidationMessages)){
+									errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+								}								
 							}
 						}
 					}
