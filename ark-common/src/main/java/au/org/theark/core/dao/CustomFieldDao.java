@@ -21,6 +21,7 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
+import au.org.theark.core.web.component.customfield.Constants;
 
 @Repository("customFieldDao")
 public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldDao {
@@ -133,7 +134,15 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	}
 
 	public void createCustomField(CustomField customField) throws  ArkSystemException{
-			getSession().save(customField);
+		if(customField.getFieldType().getName().equals(Constants.NUMBER_FIELD_TYPE_NAME)) {
+			if(customField.getMinValue()!=null){
+				customField.setMinValue(customField.getMinValue().replace(",",""));				
+			}
+			if(customField.getMaxValue()!=null){
+				customField.setMaxValue(customField.getMaxValue().replace(",",""));
+			}
+		}
+		getSession().save(customField);
 	}
 
 	public void createCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException{
@@ -275,7 +284,15 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	}
 
 	public void updateCustomField(CustomField customField) throws  ArkSystemException{
-		 getSession().update(customField);
+		if(customField.getFieldType().getName().equals(Constants.NUMBER_FIELD_TYPE_NAME)) {
+			if(customField.getMinValue()!=null){
+				customField.setMinValue(customField.getMinValue().replace(",",""));				
+			}
+			if(customField.getMaxValue()!=null){
+				customField.setMaxValue(customField.getMaxValue().replace(",",""));
+			}
+		}
+		getSession().update(customField);
 	}
 
 	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException{
