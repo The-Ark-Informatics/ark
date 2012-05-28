@@ -80,7 +80,6 @@ public class CustomFieldUploadValidator {
 	private HashSet<Integer>		nonExistantUIDs;
 	private HashSet<ArkGridCell>	errorCells;
 	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-	private long						subjectCount;
 	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
 	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
 	private int							row							= 1;
@@ -437,7 +436,11 @@ public class CustomFieldUploadValidator {
 				stringLineArray = csvReader.getValues();//i might still need this or might not now that i am evaluating by name ... TODO evaluate
 				String subjectUID = stringLineArray[0];	// First/0th column should be the SubjectUID
 				if(!subjectUIDsAlreadyExisting.contains(subjectUID)){
-					nonExistantUIDs.add(row);
+					nonExistantUIDs.add(row);//TODO test and compare array.
+					for(CustomFieldDisplay cfd : cfdsThatWeNeed){
+						errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+					}
+					errorCells.add(new ArkGridCell(0, row));
 				}
 				else{
 					uidsToUpdateReference.add(subjectUID);
@@ -451,7 +454,6 @@ public class CustomFieldUploadValidator {
 					}
 					existantSubjectUIDRows.add(row);
 				}
-				subjectCount++;
 				row++;
 			}
 		}
@@ -613,7 +615,6 @@ public class CustomFieldUploadValidator {
 
 				if ((doubleFieldValue > doubleMaxValue) || (doubleFieldValue < doubleMinValue)) {
 					if ((doubleFieldValue > doubleMaxValue)) {
-						
 						errorMessages.add("Subject " + subjectUID + " has a value: " + valueToValidate + " which is greater than the maximum allowed value of " + doubleMaxValue);
 					}
 					if ((doubleFieldValue < doubleMinValue)) {

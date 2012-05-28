@@ -163,7 +163,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 
 			// Show file data (and key reference)
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
-																		containerForm.getModelObject().getFileUpload(), insertRows, updateRows, errorCells);
+																		containerForm.getModelObject().getFileUpload(), insertRows, updateRows, errorCells, containerForm.getModelObject().getUpload().getUploadType());
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);

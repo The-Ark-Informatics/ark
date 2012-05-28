@@ -61,6 +61,7 @@ import com.csvreader.CsvReader;
 public class ArkExcelWorkSheetAsGrid extends Panel {
 
 	private static final long				serialVersionUID				= 2950851261474110946L;
+	private Label								updateLegendLabel = new Label("updateLegendLabel", "Indicates data to update");
 	private transient Sheet					sheet;																										// an instance of an Excel
 	// WorkSheet
 	private UploadType 						uploadType;
@@ -188,11 +189,29 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		initialiseGridKey(fileUpload, uploadType);
 	}
 
+
 	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> insertRows, HashSet<Integer> updateRows,
 			HashSet<ArkGridCell> errorCells) {
 		super(id);
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.insertRows = insertRows;
+		this.updateRows = updateRows;
+		this.insertCells = new HashSet<ArkGridCell>();
+		this.updateCells = new HashSet<ArkGridCell>();
+		this.warningCells = new HashSet<ArkGridCell>();
+		this.errorCells = errorCells;
+		this.fileFormat = fileFormat;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid();
+		initialiseGridKey(fileUpload, uploadType);
+	}
+
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> insertRows, HashSet<Integer> updateRows,
+			HashSet<ArkGridCell> errorCells, UploadType uploadType) {
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.insertRows = insertRows;
+		this.uploadType = uploadType;
 		this.updateRows = updateRows;
 		this.insertCells = new HashSet<ArkGridCell>();
 		this.updateCells = new HashSet<ArkGridCell>();
@@ -479,21 +498,16 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	}
 
 	private void initialiseGridKey(FileUpload fileUpload, UploadType uploadType) {
+																							//TODO ASAP FIX HARDCODING
 		if(uploadType !=null && uploadType.getName().equalsIgnoreCase("Study-specific (custom) Data")){
-			/******* TODO ASAP this is not right....review with Chris
-			wizardDataGridKeyContainerForCustom.setVisible((!insertRows.isEmpty() || !updateRows.isEmpty()));
-			wizardDataGridKeyContainerForCustom.setOutputMarkupId(true);
-			// Download file link button
-			wizardDataGridKeyContainerForCustom.add(buildDownloadButton(fileUpload));
-			add(wizardDataGridKeyContainerForCustom);
-			
-			wizardDataGridKeyContainer.setVisible(false);
-			return;*************/
+			updateLegendLabel.setDefaultModelObject("Indicates subject does not exist");
+			updateLegendLabel.setOutputMarkupId(true);
 		}
 
 		wizardDataGridKeyContainerForCustom.setVisible(false);
 		wizardDataGridKeyContainer.setVisible((!insertRows.isEmpty() || !updateRows.isEmpty()));
 		wizardDataGridKeyContainer.setOutputMarkupId(true);
+		wizardDataGridKeyContainer.add(updateLegendLabel);
 		// Download file link button
 		wizardDataGridKeyContainer.add(buildDownloadButton(fileUpload));
 		add(wizardDataGridKeyContainer);

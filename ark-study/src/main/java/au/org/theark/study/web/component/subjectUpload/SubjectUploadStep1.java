@@ -72,7 +72,6 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 
 	@SuppressWarnings( { "unchecked" })
 	private void initialiseDropDownChoices() {
-		// Initialise Drop Down Choices
 		java.util.Collection<DelimiterType> delimiterTypeCollection = iArkCommonService.getDelimiterTypes();
 		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.study.web.Constants.DELIMITER_TYPE_ID);
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
@@ -85,7 +84,6 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	}
 
 	public void initialiseDetailForm() {
-		// Set up field on form here   
 		// uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleUploadForm);
 		fileUploadField = new FileUploadField(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILENAME);
 		initialiseDropDownChoices();
@@ -94,7 +92,6 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	}
 
 	protected void attachValidators() {
-		// Field validation here
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 		uploadTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.uploadType.required", this, new Model<String>("Upload")));
@@ -102,7 +99,6 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	}
 
 	private void addComponents() {
-		// Add components here
 		add(fileUploadField);
 		add(delimiterTypeDdc);
 		add(uploadTypeDdc);
