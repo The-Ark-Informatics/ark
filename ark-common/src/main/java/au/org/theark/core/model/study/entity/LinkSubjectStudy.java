@@ -155,7 +155,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.subjectStatus = subjectStatus;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PERSON_ID")
 	public Person getPerson() {
 		return this.person;
