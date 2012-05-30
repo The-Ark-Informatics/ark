@@ -48,8 +48,7 @@ public class FieldGroup {
 	private String	updateUserId;
 	private Date	updateTime;
 
-	// Constructors
-	/** default constructor */
+
 	public FieldGroup() {
 	}
 

@@ -38,8 +38,7 @@ public class DelimiterType implements java.io.Serializable {
 	private String	name;
 	private char	delimiterCharacter;
 
-	// Constructors
-	/** default constructor */
+
 	public DelimiterType() {
 	}
 

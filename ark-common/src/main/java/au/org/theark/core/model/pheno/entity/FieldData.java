@@ -61,8 +61,7 @@ public class FieldData implements java.io.Serializable {
 	private Boolean				passedQualityControl;
 	private Set<FieldDataLog>	fieldDataLogs	= new HashSet<FieldDataLog>(0);
 
-	// Constructors
-	/** default constructor */
+
 	public FieldData() {
 	}
 

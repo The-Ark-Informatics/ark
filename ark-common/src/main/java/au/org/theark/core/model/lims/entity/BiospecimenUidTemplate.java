@@ -50,8 +50,7 @@ public class BiospecimenUidTemplate implements java.io.Serializable {
 	private String						biospecimenUidPrefix;
 	private BiospecimenUidPadChar	biospecimenUidPadChar;
 
-	// Constructors
-	/** default constructor */
+
 	public BiospecimenUidTemplate() {
 	}
 

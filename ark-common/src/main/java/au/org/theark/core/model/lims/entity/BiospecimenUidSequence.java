@@ -42,8 +42,7 @@ public class BiospecimenUidSequence implements java.io.Serializable {
 	private Integer				uidSequence;
 	private Boolean				insertLock;
 
-	// Constructors
-	/** default constructor */
+
 	public BiospecimenUidSequence() {
 	}
 

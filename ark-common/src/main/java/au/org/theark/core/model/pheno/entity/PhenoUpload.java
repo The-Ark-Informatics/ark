@@ -68,8 +68,7 @@ public class PhenoUpload implements java.io.Serializable {
 
 	private Set<PhenoCollectionUpload>	phenoCollectionUploads	= new HashSet<PhenoCollectionUpload>(0);
 
-	// Constructors
-	/** default constructor */
+
 	public PhenoUpload() {
 	}
 

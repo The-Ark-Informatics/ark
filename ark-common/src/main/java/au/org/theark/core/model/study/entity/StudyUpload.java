@@ -59,8 +59,7 @@ public class StudyUpload implements java.io.Serializable {
 	private String				userId;
 	private ArkFunction	arkFunction;
 
-	// Constructors
-	/** default constructor */
+
 	public StudyUpload() {
 	}
 
