@@ -57,7 +57,6 @@ public class LinkSiteContact implements java.io.Serializable {
 		this.person = person;
 	}
 
-	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getid() {

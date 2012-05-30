@@ -122,7 +122,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.consentToActiveContact = consentToActiveContact;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "link_subject_study_generator", sequenceName = "LINK_SUBJECT_STUDY_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "link_subject_study_generator")

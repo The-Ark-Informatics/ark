@@ -61,7 +61,6 @@ public class PersonLastnameHistory implements java.io.Serializable {
 		this.lastName = lastName;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "person_lastname_history_generator", sequenceName = "PERSON_LASTNAME_HISTORY_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "person_lastname_history_generator")

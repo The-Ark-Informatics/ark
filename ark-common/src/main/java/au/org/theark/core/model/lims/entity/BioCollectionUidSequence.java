@@ -30,7 +30,6 @@ public class BioCollectionUidSequence implements Serializable{
 	}
 	
 	
-	// Property accessors
 	@Id
 	@Column(name = "STUDY_NAME_ID", unique = true, nullable = false)
 	public String getStudyNameId() {

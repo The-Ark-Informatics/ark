@@ -94,7 +94,6 @@ public class MarkerGroup implements java.io.Serializable {
 		this.markers = markers;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Marker_Group_PK_Seq", sequenceName = Constants.MARKER_GROUP_PK_SEQ)
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Marker_Group_PK_Seq")

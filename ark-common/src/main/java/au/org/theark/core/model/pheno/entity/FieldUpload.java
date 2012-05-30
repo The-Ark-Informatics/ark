@@ -74,7 +74,6 @@ public class FieldUpload implements java.io.Serializable {
 		this.updateTime = updateTime;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Collection_Import_PK_Seq", sequenceName = "PHENOTYPIC.COLLECTION_IMPORT_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Collection_Import_PK_Seq")

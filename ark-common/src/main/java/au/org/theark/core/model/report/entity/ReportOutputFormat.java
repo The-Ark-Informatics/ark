@@ -61,7 +61,6 @@ public class ReportOutputFormat implements java.io.Serializable {
 		this.description = description;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "ReportOutputFormat_PK_Seq", sequenceName = "REPORTING.REPORT_OUTPUT_FORMAT_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ReportOutputFormat_PK_Seq")

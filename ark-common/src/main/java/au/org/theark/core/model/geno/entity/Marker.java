@@ -101,7 +101,6 @@ public class Marker implements java.io.Serializable {
 		this.decodeMasks = decodeMasks;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Marker_PK_Seq", sequenceName = Constants.MARKER_PK_SEQ)
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Marker_PK_Seq")

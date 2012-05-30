@@ -63,7 +63,6 @@ public class StudyCompStatus implements java.io.Serializable {
 		this.linkStudyStudycomps = linkStudyStudycomps;
 	}
 
-	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getid() {

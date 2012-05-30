@@ -60,7 +60,6 @@ public class FieldPhenoCollection implements java.io.Serializable {
 		this.phenoCollection = phenoCollection;
 	}
 
-	// Property accessors
 	@Id
 	// @SequenceGenerator(name="FieldCollection_PK_Seq",sequenceName="PHENOTYPIC.FIELD_COLLECTION_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO)

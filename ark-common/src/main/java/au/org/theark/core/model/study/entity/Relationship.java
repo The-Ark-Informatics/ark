@@ -63,7 +63,6 @@ public class Relationship implements java.io.Serializable {
 		this.linkSubjectContacts = linkSubjectContacts;
 	}
 
-	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {

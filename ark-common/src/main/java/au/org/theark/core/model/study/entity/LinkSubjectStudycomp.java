@@ -64,7 +64,6 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 		this.studyComponentStatus = studyComponentStatus;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "subject_component_generator", sequenceName = "SUBJECT_COMPONENT_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "subject_component_generator")

@@ -71,7 +71,6 @@ public class ConsentFile implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "ConsentFile_PK_Seq", sequenceName = "CONSENTFILE_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ConsentFile_PK_Seq")

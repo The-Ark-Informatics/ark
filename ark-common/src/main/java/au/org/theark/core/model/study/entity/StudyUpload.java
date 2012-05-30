@@ -72,7 +72,6 @@ public class StudyUpload implements java.io.Serializable {
 		this.arkFunction = arkFunction;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "SubjectUpload_PK_Seq", sequenceName = "STUDY.UPLOAD_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "SubjectUpload_PK_Seq")

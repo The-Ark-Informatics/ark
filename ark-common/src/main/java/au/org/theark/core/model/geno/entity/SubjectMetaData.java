@@ -70,7 +70,6 @@ public class SubjectMetaData implements java.io.Serializable {
 		this.updateTime = updateTime;
 	}
 
-	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {

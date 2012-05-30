@@ -60,7 +60,6 @@ public class LssConsentHistory implements java.io.Serializable {
 	private Date							consentDate;
 	private YesNo							consentDownloaded;
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "LSS_CONSENT_HISTORY_SEQ", sequenceName = "LSS_CONSENT_HISTORY_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "LSS_CONSENT_HISTORY_SEQ")

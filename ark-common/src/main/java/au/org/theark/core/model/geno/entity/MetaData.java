@@ -89,7 +89,6 @@ public class MetaData implements java.io.Serializable {
 		this.subjectMetaDatas = subjectMetaDatas;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "MetaData_PK_Seq", sequenceName = Constants.META_DATA_PK_SEQ)
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "MetaData_PK_Seq")

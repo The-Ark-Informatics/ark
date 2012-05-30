@@ -62,7 +62,6 @@ public class EmailAccount implements java.io.Serializable {
 		this.personId = personId;
 	}
 
-	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getid() {

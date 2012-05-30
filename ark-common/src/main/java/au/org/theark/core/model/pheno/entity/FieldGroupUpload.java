@@ -65,7 +65,6 @@ public class FieldGroupUpload implements java.io.Serializable {
 		this.updateTime = updateTime;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Field_Group_Upload_PK_Seq", sequenceName = "PHENOTYPIC.FIELD_GROUP_UPLOAD_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Field_Group_Upload_PK_Seq")

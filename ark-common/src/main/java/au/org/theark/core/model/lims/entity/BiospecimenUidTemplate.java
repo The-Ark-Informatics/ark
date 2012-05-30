@@ -54,7 +54,6 @@ public class BiospecimenUidTemplate implements java.io.Serializable {
 	public BiospecimenUidTemplate() {
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "biospecimenUid_template", sequenceName = "biospecimenUid_template_sequence")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biospecimenUid_template")

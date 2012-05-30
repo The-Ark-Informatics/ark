@@ -74,7 +74,6 @@ public class PhenoCollectionUpload implements java.io.Serializable {
 		this.updateTime = updateTime;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Collection_Upload_PK_Seq", sequenceName = "PHENOTYPIC.COLLECTION_UPLOAD_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Collection_Upload_PK_Seq")

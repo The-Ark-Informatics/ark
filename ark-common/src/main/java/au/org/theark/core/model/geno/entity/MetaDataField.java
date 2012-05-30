@@ -99,7 +99,6 @@ public class MetaDataField implements java.io.Serializable {
 		this.metaDatas = metaDatas;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "MetaDataField_PK_Seq", sequenceName = Constants.META_DATA_FIELD_PK_SEQ)
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "MetaDataField_PK_Seq")

@@ -60,7 +60,6 @@ public class LinkStudySubstudy implements java.io.Serializable {
 		this.subStudy = subStudy;
 	}
 
-	// Property accessors
 	
 	@Id
 	@SequenceGenerator(name = "link_study_substudy_generator", sequenceName = "LSS_STUDY_SEQUENCE")

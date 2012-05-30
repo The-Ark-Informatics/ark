@@ -37,7 +37,6 @@ public class BioCollectionUidTemplate implements Serializable{
 	}
 
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "biocollectionUid_template", sequenceName = "biocollectionUid_template_sequence")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biocollectionUid_template")

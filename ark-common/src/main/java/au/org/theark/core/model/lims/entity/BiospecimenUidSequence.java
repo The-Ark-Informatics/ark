@@ -52,7 +52,6 @@ public class BiospecimenUidSequence implements java.io.Serializable {
 		this.insertLock = insertLock;
 	}
 
-	// Property accessors
 	@Id
 	@Column(name = "STUDY_NAME_ID", unique = true, nullable = false)
 	public String getStudyNameId() {

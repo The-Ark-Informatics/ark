@@ -105,7 +105,6 @@ public class GenoCollection implements java.io.Serializable {
 		this.uploadCollections = uploadCollections;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Collection_PK_Seq", sequenceName = Constants.COLLECTION_PK_SEQ)
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Collection_PK_Seq")

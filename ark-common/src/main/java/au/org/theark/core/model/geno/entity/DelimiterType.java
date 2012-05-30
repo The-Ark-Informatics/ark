@@ -57,7 +57,6 @@ public class DelimiterType implements java.io.Serializable {
 		// this.uploads = uploads;
 	}
 
-	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {

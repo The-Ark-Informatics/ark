@@ -60,7 +60,6 @@ public class ImportType implements java.io.Serializable {
 		this.collectionImports = collectionImports;
 	}
 
-	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {

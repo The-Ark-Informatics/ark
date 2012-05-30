@@ -74,7 +74,6 @@ public class UploadCollection implements java.io.Serializable {
 		this.updateTime = updateTime;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Upload_Collection_PK_Seq", sequenceName = Constants.UPLOAD_COLLECTION_PK_SEQ)
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Upload_Collection_PK_Seq")

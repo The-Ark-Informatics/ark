@@ -59,7 +59,6 @@ public class TestPhone implements java.io.Serializable {
 		this.joinDate = joinDate;
 	}
 
-	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 38, scale = 0)
 	public BigDecimal getId() {

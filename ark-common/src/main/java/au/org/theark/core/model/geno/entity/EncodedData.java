@@ -71,7 +71,6 @@ public class EncodedData implements java.io.Serializable {
 		this.encodedBit2 = encodedBit2;
 	}*/
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Encoded_Data_PK_Seq", sequenceName = Constants.ENCODED_DATA_PK_SEQ)
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Encoded_Data_PK_Seq")

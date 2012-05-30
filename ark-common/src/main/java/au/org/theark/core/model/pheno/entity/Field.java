@@ -91,7 +91,6 @@ public class Field implements java.io.Serializable {
 		this.updateTime = updateTime;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Field_PK_Seq", sequenceName = "PHENOTYPIC.FIELD_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Field_PK_Seq")

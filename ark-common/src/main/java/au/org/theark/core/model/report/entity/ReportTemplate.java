@@ -71,7 +71,6 @@ public class ReportTemplate implements java.io.Serializable {
 		this.templatePath = templatePath;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "ReportTemplate_PK_Seq", sequenceName = "REPORTING.REPORT_TEMPLATE_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ReportTemplate_PK_Seq")

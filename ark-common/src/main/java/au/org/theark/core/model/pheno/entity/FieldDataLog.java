@@ -76,7 +76,6 @@ public class FieldDataLog implements java.io.Serializable {
 		this.updateTime = updateTime;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "FieldDataLog_PK_Seq", sequenceName = "PHENOTYPIC.FIELD_DATA_LOG_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "FieldDataLog_PK_Seq")

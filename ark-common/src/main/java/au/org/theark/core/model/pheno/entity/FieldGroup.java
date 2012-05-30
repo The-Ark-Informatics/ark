@@ -69,7 +69,6 @@ public class FieldGroup {
 		this.updateTime = updateTime;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Field_Group_PK_Seq", sequenceName = "PHENOTYPIC.FIELD_GROUP_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Field_Group_PK_Seq")

@@ -67,7 +67,6 @@ public class SubjectFile implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "SubjectFile_PK_Seq", sequenceName = "SUBJECTFILE_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "SubjectFile_PK_Seq")

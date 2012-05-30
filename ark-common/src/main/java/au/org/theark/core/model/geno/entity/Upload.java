@@ -92,7 +92,6 @@ public class Upload implements java.io.Serializable {
 		this.uploadCollections = uploadCollections;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Upload_PK_Seq", sequenceName = Constants.UPLOAD_PK_SEQ)
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Upload_PK_Seq")

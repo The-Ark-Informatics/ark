@@ -80,7 +80,6 @@ public class PhenoUpload implements java.io.Serializable {
 		this.uploadReport = uploadReport;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Upload_PK_Seq", sequenceName = "PHENOTYPIC.UPLOAD_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Upload_PK_Seq")

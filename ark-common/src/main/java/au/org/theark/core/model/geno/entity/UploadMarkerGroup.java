@@ -70,7 +70,6 @@ public class UploadMarkerGroup implements java.io.Serializable {
 		this.updateTime = updateTime;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "Upload_Marker_PK_Seq", sequenceName = Constants.UPLOAD_MARKER_PK_SEQ)
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Upload_Marker_PK_Seq")

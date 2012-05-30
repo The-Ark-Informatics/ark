@@ -129,7 +129,6 @@ public class Study implements java.io.Serializable {
 		this.linkStudySubstudiesForSubid = linkStudySubstudiesForSubid;
 	}
 
-	// Property accessors
 
 	@Id
 	@SequenceGenerator(name = "study_generator", sequenceName = "STUDY_SEQUENCE")

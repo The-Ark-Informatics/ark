@@ -74,7 +74,6 @@ public class AuditHistory implements java.io.Serializable {
 		this.entityType = entityType;
 	}
 
-	// Property accessors
 	@Id
 	@SequenceGenerator(name = "ah_generator", sequenceName = "AUDIT_HISTORY_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ah_generator")

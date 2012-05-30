@@ -54,7 +54,6 @@ public class ActionType implements java.io.Serializable {
 		this.description = description;
 	}
 
-	// Property accessors
 	@Column(name = "NAME", unique = true, nullable = false, length = 20)
 	public String getName() {
 		return this.name;
