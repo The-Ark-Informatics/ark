@@ -924,7 +924,7 @@ public class StudyServiceImpl implements IStudyService {
 		Study study = iArkCommonService.getStudy(studyId);
 		DataUploader dataUploader = new DataUploader(study, iArkCommonService, this);
 		try {
-			log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
+			//log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
 			uploadReport = dataUploader.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate);
 		}
 		catch (FileFormatException ffe) {

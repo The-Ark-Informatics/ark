@@ -1585,7 +1585,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			for(LinkSubjectStudy subject : subjectsToInsert){
 				if (study.getAutoGenerateSubjectUid()) {
 					String nextsubjectUID = getUIDGiven(start, nextSequenceNumber++, prefix, token, howManyCharsToPad);
-					log.warn("setting uid to " + nextsubjectUID);
+					//log.warn("setting uid to " + nextsubjectUID);
 					subject.setSubjectUID(nextsubjectUID);			
 				}
 			}

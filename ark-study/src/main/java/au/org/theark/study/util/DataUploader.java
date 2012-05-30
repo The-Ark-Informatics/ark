@@ -531,7 +531,7 @@ public class DataUploader {
 						String areaCode = stringLineArray[areaCodeIndex];
 						String phoneSource = stringLineArray[phoneSourceIndex];
 						String phoneDateReceivedString = stringLineArray[phoneDateReceivedIndex];
-						log.warn("phone Date Reveived = " + phoneDateReceivedString + " for index = " +  phoneDateReceivedIndex);
+						//log.warn("phone Date Reveived = " + phoneDateReceivedString + " for index = " +  phoneDateReceivedIndex);
 
 						phoneToAttachToPerson.setPhoneType(type);
 						phoneToAttachToPerson.setPhoneStatus(status);
@@ -722,6 +722,7 @@ public class DataUploader {
 		int subjectCount = 0;
 		long updateFieldsCount = 0L;
 		long insertFieldsCount = 0L;
+		long emptyDataCount = 0L;
 		try {
 			inputStreamReader = new InputStreamReader(inputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
@@ -750,35 +751,48 @@ public class DataUploader {
 			List<SubjectCustomFieldData> dataThatWeHave = iArkCommonService.getCustomFieldDataFor(cfdsThatWeNeed, allSubjectWhichWillBeUpdated);
 			//read one line which contains potentially many custom fields
 			while (csvReader.readRecord()) {
-
+				log.info("reading record " + subjectCount);
+				
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[0];
 				LinkSubjectStudy subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
-				
+				//log.info("get subject from list");
 				CustomField customField = null;		
-				for(CustomFieldDisplay cfd : cfdsThatWeNeed){
+				for(CustomFieldDisplay cfd : cfdsThatWeNeed){					
 					customField = cfd.getCustomField();
+					//log.info("got customfield from cfd");
 					SubjectCustomFieldData dataInDB = getCustomFieldFromList(dataThatWeHave, subjectUID, cfd);
+					//log.info("got 'data in db' from cfd, subject and ALL data");
 					String theDataAsString = csvReader.get(cfd.getCustomField().getName());
+					//log.info("read data from file");
 					
-					if(dataInDB != null){
-						dataInDB = setValue(customField, dataInDB, theDataAsString);	
-						customFieldsToUpdate.add(dataInDB);
+					if(theDataAsString!=null && !theDataAsString.isEmpty()){
+						if(dataInDB != null){
+							dataInDB = setValue(customField, dataInDB, theDataAsString);	
+							//log.info("have set value to entity");
+							customFieldsToUpdate.add(dataInDB);
+							//log.info("added entity to list");
+							updateFieldsCount++;
+						}
+						else{
+							SubjectCustomFieldData dataToInsert = new SubjectCustomFieldData();
+							dataToInsert.setCustomFieldDisplay(cfd);
+							dataToInsert.setLinkSubjectStudy(subject);
+							setValue(customField, dataToInsert, theDataAsString);	
+							customFieldsToInsert.add(dataToInsert);
+							insertFieldsCount++;
+						}
 					}
-					else{
-						SubjectCustomFieldData dataToInsert = new SubjectCustomFieldData();
-						dataToInsert.setCustomFieldDisplay(cfd);
-						dataToInsert.setLinkSubjectStudy(subject);
-						setValue(customField, dataToInsert, theDataAsString);	
-						customFieldsToInsert.add(dataToInsert);
+					else
+					{
+						emptyDataCount++;
 					}
 				}
 				
-				insertFieldsCount++;
-				updateFieldsCount++;
 				subjectCount ++;
-				//log.warn("finished message for " + subjectCount + "         updates= " + updateCount + "     inserts = " + insertCount + "   " );
 			}
+			log.info("finished message for " + subjectCount + "         updates= " + updateFieldsCount + " or \ncustomFieldsToupdate.size=" + customFieldsToUpdate.size() +
+					"\n             inserts = " + insertFieldsCount + "  or  \ncustomFieldsToInsert.size = " + customFieldsToInsert.size() + "   amount of empty scells =" + emptyDataCount );
 		}
 		catch (IOException ioe) {
 			uploadReport.append("Unexpected I/O exception whilst reading the subject data file\n");
@@ -833,7 +847,7 @@ public class DataUploader {
 	}
 
 	private SubjectCustomFieldData setValue(CustomField customField, SubjectCustomFieldData data, String theDataAsString){
-		log.warn("cf=" + customField + "\ndata=" + data+ "dataAsString=" + theDataAsString);
+//		log.warn("cf=" + customField + "\ndata=" + data+ "dataAsString=" + theDataAsString);
 		
 		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 			data.setNumberDataValue(new Double(theDataAsString));
@@ -857,8 +871,10 @@ public class DataUploader {
 	
 	private SubjectCustomFieldData getCustomFieldFromList(List<SubjectCustomFieldData> dataThatWeHave, String subjectUID, CustomFieldDisplay cfd) {
 		for(SubjectCustomFieldData data : dataThatWeHave){
-			if(data.getLinkSubjectStudy().getSubjectUID().equalsIgnoreCase(subjectUID) &&
+																//TODO ASAP return to ignores case?
+			if(data.getLinkSubjectStudy().getSubjectUID().equals(subjectUID) &&
 					data.getCustomFieldDisplay().getId().equals(cfd.getId())){
+				dataThatWeHave.remove(data); //TODO test this:  but it seems to have drastically reduced the exponential nature of our upload by the final lookups becoming faster rather than exponentially slower
 				return data;
 			}
 		}

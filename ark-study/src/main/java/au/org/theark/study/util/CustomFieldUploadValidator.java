@@ -608,7 +608,7 @@ public class CustomFieldUploadValidator {
 		//Field field = fieldData.getField();
 		String minValue = customField.getMinValue();
 		String maxValue = customField.getMaxValue();
-		log.warn("about to validate customField " + customField.getName() + " against value = " + valueToValidate);
+		//log.warn("about to validate customField " + customField.getName() + " against value = " + valueToValidate);
 		if(valueToValidate!=null && customField.getMissingValue()!=null && valueToValidate.trim().equalsIgnoreCase(customField.getMissingValue().trim())) {
 			return isInValidRange;//TODO investigate 
 		}
@@ -667,7 +667,7 @@ public class CustomFieldUploadValidator {
 				}
 			}
 		}
-		log.warn("about to return " + isInValidRange);
+		//log.warn("about to return " + isInValidRange);
 		return isInValidRange;
 	}
 
@@ -735,13 +735,13 @@ public class CustomFieldUploadValidator {
 		boolean isValidRange = true;
 
 		isValidFieldData = isValidFieldData(customField, value, subjectUID, errorMessages);
-		log.info("isValidFieldData " + isValidFieldData );
+		//log.info("isValidFieldData " + isValidFieldData );
 		isValidEncodedValues = isInEncodedValues(customField,value, subjectUID, errorMessages);
-		log.info("isValidEncodedValues " + isValidEncodedValues );
+		//log.info("isValidEncodedValues " + isValidEncodedValues );
 		isValidRange = isInValidRange(customField, value, subjectUID, errorMessages);
-		log.info("isInValidRange " + isValidRange );
+		//log.info("isInValidRange " + isValidRange );
 		isValid = (isValidFieldData && isValidEncodedValues && isValidRange);
-		log.info("isvalidoverall " + isValid );
+		//log.info("isvalidoverall " + isValid );
 		return (isValid);
 	}
 

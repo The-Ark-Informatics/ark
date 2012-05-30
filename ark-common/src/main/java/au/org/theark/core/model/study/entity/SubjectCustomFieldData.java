@@ -45,21 +45,15 @@ import au.org.theark.core.Constants;
 @Table(name = "SUBJECT_CUSTOM_FIELD_DATA", schema = Constants.STUDY_SCHEMA)
 public class SubjectCustomFieldData implements Serializable, ICustomFieldData {
 	
-
 	private static final long	serialVersionUID	= 1L;
-	
 	private Long id;
 	private LinkSubjectStudy linkSubjectStudy;
 	private CustomFieldDisplay customFieldDisplay;
 	private String textDataValue;
-	
 	private Date dateDataValue;
 	private String errorDataValue;
 	private Double numberDataValue;
 	
-	/**
-	 * Default Constructor
-	 */
 	public SubjectCustomFieldData(){
 		
 	}

@@ -1242,9 +1242,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return
 	 */
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction){
-		log.warn("fieldnamecollection size=" + fieldNameCollection.size() +
+		/*log.warn("fieldnamecollection size=" + fieldNameCollection.size() +
 						"\nstudy=" + study.getName() + " with id=" + study.getId() + 
-						"\narkFunctionid=" + arkFunction.getId());
+						"\narkFunctionid=" + arkFunction.getId());*/
 		if(fieldNameCollection == null || fieldNameCollection.isEmpty()){
 			return new ArrayList<CustomFieldDisplay>();
 		}
