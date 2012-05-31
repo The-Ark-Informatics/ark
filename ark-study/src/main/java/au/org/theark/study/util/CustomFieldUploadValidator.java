@@ -415,7 +415,8 @@ public class CustomFieldUploadValidator {
 		row = 1;
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
-
+		int duplicateRowCount =0;
+		
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			String[] stringLineArray;
@@ -443,26 +444,36 @@ public class CustomFieldUploadValidator {
 					errorCells.add(new ArkGridCell(0, row));
 				}
 				else{
-					uidsToUpdateReference.add(subjectUID);
-					CustomField customField = null;		
-					for(CustomFieldDisplay cfd : cfdsThatWeNeed){
-						customField = cfd.getCustomField();
-						String theDataAsString = csvReader.get(cfd.getCustomField().getName());
-						if(theDataAsString!=null && !theDataAsString.isEmpty()){
-							//TODO : also check if the value == "missingvaluePatternThingy" , then dont validate
-							if(customField.getMissingValue()!=null && customField.getMissingValue().toString().equalsIgnoreCase(theDataAsString)){
-								//then move on and don't validate it...it goes straight in
-							}
-							else
-							{
-								//log.info("customField = " + customField==null?"null":customField.getName());
-								if(!validateFieldData(customField, theDataAsString, subjectUID, dataValidationMessages)){
-									errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
-								}								
+					if(uidsToUpdateReference.contains(subjectUID)){
+						for(CustomFieldDisplay cfd : cfdsThatWeNeed){
+							errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+						}
+						errorCells.add(new ArkGridCell(0, row));
+						dataValidationMessages.add("Subject " + subjectUID + " on row " + row + " is listed multiple times in this file.  " +
+								"Please remove this row and retry.");
+					}
+					else{
+						uidsToUpdateReference.add(subjectUID);
+						CustomField customField = null;		
+						for(CustomFieldDisplay cfd : cfdsThatWeNeed){
+							customField = cfd.getCustomField();
+							String theDataAsString = csvReader.get(cfd.getCustomField().getName());
+							if(theDataAsString!=null && !theDataAsString.isEmpty()){
+								//TODO : also check if the value == "missingvaluePatternThingy" , then dont validate
+								if(customField.getMissingValue()!=null && customField.getMissingValue().toString().equalsIgnoreCase(theDataAsString)){
+									//then move on and don't validate it...it goes straight in
+								}
+								else
+								{
+									//log.info("customField = " + customField==null?"null":customField.getName());
+									if(!validateFieldData(customField, theDataAsString, subjectUID, dataValidationMessages)){
+										errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
+									}								
+								}
 							}
 						}
+						existantSubjectUIDRows.add(row);
 					}
-					existantSubjectUIDRows.add(row);
 				}
 				row++;
 			}

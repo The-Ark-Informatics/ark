@@ -153,9 +153,19 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		for(SubjectCustomFieldData dataToUpdate : fieldsToUpdate){
 			getSession().update(dataToUpdate);
 		}
+		int count = 0;
 		for(SubjectCustomFieldData dataToInsert : fieldsToInsert){
 			getSession().save(dataToInsert);
+			count++;
+			//based on recommended hibernate practice of	<prop key="hibernate.jdbc.batch_size">50</prop>
+			if(count%50==0){
+				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
+				getSession().flush();
+				getSession().clear();
+			}
 		}
+		getSession().flush();
+		getSession().clear();
 	}
 
 	public void create(Study study, ArkUserVO arkUserVo, Collection<ArkModule> selectedModules) {
