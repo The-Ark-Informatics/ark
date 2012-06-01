@@ -24,6 +24,8 @@ import org.apache.wicket.settings.IApplicationSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.web.pages.home.HomePage;
+import au.org.theark.web.pages.login.AAFLoginPage;
 import au.org.theark.web.pages.login.LoginPage;
 
 public abstract class BaseApplication extends WebApplication {
@@ -34,6 +36,12 @@ public abstract class BaseApplication extends WebApplication {
 		super.init();
 		getMarkupSettings().setStripWicketTags(true);
 		IApplicationSettings settings = getApplicationSettings();
+		
+		// Mount the pages for nikcer looking URL's
+		mountPage("login",LoginPage.class);
+		mountPage("aaf-login",AAFLoginPage.class);
+		mountPage("home", HomePage.class);
+		
 		settings.setPageExpiredErrorPage(LoginPage.class);
 	}
 
