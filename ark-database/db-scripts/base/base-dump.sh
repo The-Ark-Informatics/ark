@@ -78,7 +78,7 @@ correspondence_mode_type correspondence_outcome_type correspondence_status_type 
 state delimiter_type domain_type email_account_type entity_type field_type file_format \
 gender_type marital_status person_contact_method phone_status phone_type \
 registration_status relationship study_comp_status study_status subject_status subjectuid_padchar \
-subjectuid_token title_type unit_type vital_status yes_no consent_option measurement_type \
+subjectuid_token title_type upload_type unit_type vital_status yes_no consent_option measurement_type \
 >> $VERSION/ark-$VERSION.sql
 
 echo "Pheno reference data"
