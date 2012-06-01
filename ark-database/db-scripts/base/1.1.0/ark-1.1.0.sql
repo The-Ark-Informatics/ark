@@ -85,7 +85,7 @@ CREATE TABLE `lss_consent_history` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-06-01 12:06:47
+-- Dump completed on 2012-06-01 12:25:55
 
 USE study;
 -- MySQL dump 10.13  Distrib 5.1.62, for debian-linux-gnu (i686)
@@ -1923,7 +1923,7 @@ CREATE TABLE `yes_no` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-06-01 12:06:48
+-- Dump completed on 2012-06-01 12:25:56
 
 USE pheno;
 -- MySQL dump 10.13  Distrib 5.1.62, for debian-linux-gnu (i686)
@@ -2432,7 +2432,7 @@ CREATE TABLE `upload` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-06-01 12:06:48
+-- Dump completed on 2012-06-01 12:25:56
 
 USE geno;
 -- MySQL dump 10.13  Distrib 5.1.62, for debian-linux-gnu (i686)
@@ -2879,7 +2879,7 @@ CREATE TABLE `upload_marker_group` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-06-01 12:06:48
+-- Dump completed on 2012-06-01 12:25:56
 
 USE lims;
 -- MySQL dump 10.13  Distrib 5.1.62, for debian-linux-gnu (i686)
@@ -4072,7 +4072,7 @@ CREATE TABLE `unit` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-06-01 12:06:48
+-- Dump completed on 2012-06-01 12:25:56
 
 USE reporting;
 -- MySQL dump 10.13  Distrib 5.1.62, for debian-linux-gnu (i686)
@@ -4140,7 +4140,7 @@ CREATE TABLE `report_template` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-06-01 12:06:48
+-- Dump completed on 2012-06-01 12:25:56
 /* Reference/lookup data */
 
 USE study;
@@ -4548,6 +4548,16 @@ INSERT INTO `title_type` (`ID`, `NAME`, `DESCRIPTION`) VALUES (0,'Unknown',NULL)
 UNLOCK TABLES;
 
 --
+-- Dumping data for table `upload_type`
+--
+
+LOCK TABLES `upload_type` WRITE;
+/*!40000 ALTER TABLE `upload_type` DISABLE KEYS */;
+INSERT INTO `upload_type` (`id`, `name`, `description`) VALUES (1,'Subject Demographic Data',NULL),(2,'Study-specific (custom) Data',NULL);
+/*!40000 ALTER TABLE `upload_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping data for table `unit_type`
 --
 
@@ -4606,7 +4616,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-06-01 12:06:48
+-- Dump completed on 2012-06-01 12:25:56
 
 USE pheno;
 -- MySQL dump 10.13  Distrib 5.1.62, for debian-linux-gnu (i686)
@@ -4685,7 +4695,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-06-01 12:06:48
+-- Dump completed on 2012-06-01 12:25:56
 
 USE geno;
 -- MySQL dump 10.13  Distrib 5.1.62, for debian-linux-gnu (i686)
@@ -4772,7 +4782,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-06-01 12:06:49
+-- Dump completed on 2012-06-01 12:25:56
 
 USE lims;
 -- MySQL dump 10.13  Distrib 5.1.62, for debian-linux-gnu (i686)
@@ -4981,7 +4991,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-06-01 12:06:49
+-- Dump completed on 2012-06-01 12:25:57
 
 USE reporting;
 -- MySQL dump 10.13  Distrib 5.1.62, for debian-linux-gnu (i686)
@@ -5030,7 +5040,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-06-01 12:06:49
+-- Dump completed on 2012-06-01 12:25:57
 /* Initialise the super user in the database */
 
 USE study;
