@@ -51,6 +51,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 	private TextField<String>			userNameTxtFld		= new TextField<String>("userName");
 	private PasswordTextField			passwordTxtFld		= new PasswordTextField("password");
 
+	private Button							aafLogInButton;
 	private Button							signInButton;
 	private Button							forgotPasswordButton;
 
@@ -63,8 +64,25 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 	public LoginForm(String id) {
 		// Pass in the Model to the Form so the IFormSubmitListener can set the Model Object with values that were submitted.
 		super(id, new CompoundPropertyModel<ArkUserVO>(new ArkUserVO()));
+		
 		feedbackPanel.setOutputMarkupId(true);
 		add(feedbackPanel);
+		
+		aafLogInButton = new AjaxButton("aafLogInButton"){
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				log.error("Error on aafLoginButton click");
+			}
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				setResponsePage(AAFLoginPage.class);
+			}
+		};
+		aafLogInButton.setDefaultFormProcessing(false);
+		
 		signInButton = new AjaxButton("signInButton") {
 
 			private static final long	serialVersionUID	= 1L;
@@ -99,7 +117,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 				target.add(feedbackPanel);
 			}
 		};
-
+		
 		forgotPasswordButton = new Button("forgotPasswordButton") {
 
 			private static final long	serialVersionUID	= 1L;
@@ -118,10 +136,11 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 
 		addComponentsToForm();
 	}
-
+			
 	private void addComponentsToForm() {
 		add(userNameTxtFld.setRequired(true));
 		add(passwordTxtFld.setRequired(true));
+		add(aafLogInButton);
 		add(signInButton);
 		add(forgotPasswordButton);
 	}
