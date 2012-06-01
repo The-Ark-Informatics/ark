@@ -73,7 +73,7 @@ public class ArkLdapRealm extends AuthorizingRealm {
 		SimpleAuthorizationInfo simpleAuthInfo = new SimpleAuthorizationInfo();
 
 		// Get the logged in user name from Shiro Session
-		String ldapUserName = (String) principals.fromRealm(getName()).iterator().next();
+		String ldapUserName = (String) principals.getPrimaryPrincipal();
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionFunctionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
@@ -132,8 +132,6 @@ public class ArkLdapRealm extends AuthorizingRealm {
 
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
-		log.info("Authenticating: " + authcToken.getPrincipal() + " against LDAP");
-		
 		SimpleAuthenticationInfo sai = null;
 		ArkUserVO userVO = null;
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;

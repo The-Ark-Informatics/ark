@@ -25,10 +25,8 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
@@ -46,7 +44,8 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 
 /**
- * Realm to allow authorisation through the Australian Access Federation (AAF)
+ * Realm to allow authorisation through the Australian Access Federation (AAF).<br>
+ * The main difference to the ArkLdapRealm, is that there is no CredentialMatcher (handled by AAF login redirects)
  * 
  * @author cellis
  * 
@@ -66,9 +65,6 @@ public class AAFRealm extends AuthorizingRealm {
 	
 	public AAFRealm() {
 		setName("aafRealm"); // This name must match the name in the User class's getPrincipals() method
-		HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-		hashedCredentialsMatcher.setHashAlgorithmName(Sha256Hash.ALGORITHM_NAME);
-		setCredentialsMatcher(hashedCredentialsMatcher);
 	}
 
 	@Override
@@ -77,7 +73,7 @@ public class AAFRealm extends AuthorizingRealm {
 		SimpleAuthorizationInfo simpleAuthInfo = new SimpleAuthorizationInfo();
 
 		// Get the logged in user name from Shiro Session
-		String ldapUserName = (String) principals.fromRealm(getName()).iterator().next();
+		String ldapUserName = (String) principals.getPrimaryPrincipal();
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionFunctionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
@@ -135,25 +131,22 @@ public class AAFRealm extends AuthorizingRealm {
 
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
-		// TODO implement method to return authenticated token from AAF
-		log.info("Authenticating: " + authcToken.getPrincipal() + " against AAF");
-		
 		SimpleAuthenticationInfo sai = null;
 		ArkUserVO userVO = null;
-		UsernamePasswordToken userPasswordToken = (UsernamePasswordToken) authcToken;
+		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
 		
 		try {
-			userVO = iArkCommonService.getUser(userPasswordToken.getUsername().trim());
+			userVO = iArkCommonService.getUser(token.getUsername().trim());
 			if (userVO != null) {
 				// Check if the user is in the Ark Database
-				ArkUser arkUser = iArkCommonService.getArkUser(userPasswordToken.getUsername().trim());
+				ArkUser arkUser = iArkCommonService.getArkUser(token.getUsername().trim());
 				// Also check if the Ark User is linked with any study and has roles.
 				// If no roles found, stop the user from logging in until an administrator has set it up
 				if (!iArkCommonService.isArkUserLinkedToStudies(arkUser)) {
 					throw new UnknownAccountException(UNKNOWN_ACCOUNT);
 				}
 
-				sai = new SimpleAuthenticationInfo(userVO.getUserName(), userVO.getPassword(), getName());
+				sai = new SimpleAuthenticationInfo(token.getPrincipal(), token.getCredentials(), getName());
 			}
 		}
 		catch (ArkSystemException e) {
