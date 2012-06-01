@@ -101,6 +101,19 @@
 		<property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" />
 		<property name="password" value="v@Tym4np[]" />
 	</bean>
+	
+	<!-- Shibboleth service provider -->
+	<bean id="shibbolethServiceProvider" class="au.org.theark.core.dao.ArkShibbolethServiceProviderContextSource">
+		<property name="handlerUrl" value="https://dev1.the-ark.org.au/Shibboleth.sso" />
+		<!-- Extension service that generates "approximate" metadata based on SP configuration. -->
+        <property name="metadataGenerator" value="/Metadata"/>
+        <!-- Status reporting service. -->
+        <property name="status" value="/Status"/>
+       <!-- Session diagnostic service. -->
+       <property name="session" value="/Session"/>
+       <!-- JSON feed of discovery information. -->
+       <property name="discoveryFeed" value="/DiscoFeed"/>
+	</bean>
 
 	<!--  Hibernate Session Factory -->
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
@@ -238,8 +251,8 @@
 			
 		<property name="realms">
 	      <list>
-	        <ref bean="arkLdapRealm" />
 	        <ref bean="aafRealm" />
+	        <ref bean="arkLdapRealm" />
 	      </list>
 	    </property>
 		
@@ -276,6 +289,5 @@
 		factory. =========================================================
 	-->
 	<bean id="wicketApplication" class="au.org.theark.web.application.ArkWebApplication" />
-
 </beans>
 
