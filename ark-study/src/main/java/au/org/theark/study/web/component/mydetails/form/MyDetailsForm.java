@@ -54,6 +54,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.dao.ArkShibbolethServiceProviderContextSource;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkUserRole;
@@ -155,22 +156,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		boolean loggedInViaAAF = ((String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SHIB_SESSION_ID) != null);
 		groupPasswordContainer.setVisible(!loggedInViaAAF);
 
-		final WebRequest webRequest = (WebRequest) RequestCycle.get().getRequest();
-	   final HttpServletRequest httpReq = (HttpServletRequest) webRequest.getContainerRequest();
-	   
-	   String protocol = httpReq.isSecure() ? "https://" : "http://";
-      String hostname = httpReq.getServerName();
-      int port = httpReq.getServerPort();
-      StringBuffer url = new StringBuffer(128);
-      url.append(protocol);
-      url.append(hostname);
-      if ((port != 80) && (port != 443))
-      {
-          url.append(":");
-          url.append(port);
-      } 
-	   url.append("/Shibboleth.sso/Session");
-		shibbolethSessionDetails.add(new AttributeModifier("src", url.toString()));
+		shibbolethSessionDetails.add(new AttributeModifier("src", ArkShibbolethServiceProviderContextSource.handlerUrl + ArkShibbolethServiceProviderContextSource.session));
 		shibbolethSession.add(new AttributeModifier("class", "paddedDetailPanel"));
 		
 		shibbolethSession.setVisible(loggedInViaAAF);
@@ -178,8 +164,6 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 
 		// TODO: Amend hard-coded 50 row limit, pageableListView didn't work within a ModalWindow
 		pageableListView = new PageableListView("arkUserRoleList", iModel, 50) {
-
-
 			private static final long	serialVersionUID	= 3557668722549243826L;
 
 			@Override
