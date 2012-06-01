@@ -129,44 +129,36 @@ width: 50%;
 }
 #panelContentLeft {
 float: left;
-width: 5%;
-height: 3%;
+width: 3%;
 }
 #panelContentRight {
 float: right;
-width: 10%;
-height: 5%;
+width: 3%;
 }
 #panelContentCentre {
 margin-left: auto;
 margin-right: auto;
 width: 80%;
-height: 5%;
 }
 #panelMargin {
 float: left;
-height: 5%;
 width: 5%;
 }
 .panelContentLeft {
 float: left;
-width: 5%;
-height: 3%;
+width: 3%;
 }
 .panelContentRight {
 float: right;
-width: 10%;
-height: 5%;
+width: 3%;
 }
 .panelContentCentre {
 margin-left: auto;
 margin-right: auto;
 width: 80%;
-height: 5%;
 }
 .panelMargin {
 float: left;
-height: 5%;
 width: 5%;
 }
 #imgCenter {

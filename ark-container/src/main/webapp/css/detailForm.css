@@ -29,6 +29,12 @@ width:100%;
 height:90%;
 }
 
+.paddedDetailPanel {
+float:left;
+padding-left:3%;
+width:100%;
+}
+
 #detailFormContainer {
 background-color:#EEE;
 border-color:#6F6F6F;
