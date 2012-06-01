@@ -21,6 +21,9 @@ package au.org.theark.study.web.component.mydetails.form;
 import java.util.Collection;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -42,6 +45,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.WebRequest;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -76,6 +81,10 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	protected PasswordTextField		userPasswordField			= new PasswordTextField(Constants.PASSWORD);
 	protected PasswordTextField		confirmPasswordField		= new PasswordTextField(Constants.CONFIRM_PASSWORD);
 	protected WebMarkupContainer		groupPasswordContainer	= new WebMarkupContainer("groupPasswordContainer");
+	
+	protected WebMarkupContainer		shibbolethSession = new WebMarkupContainer("shibbolethSession");
+	protected WebMarkupContainer		shibbolethSessionDetails = new WebMarkupContainer("shibbolethSessionDetails");
+   
 	private AjaxButton					saveButton;
 	private AjaxButton					closeButton;
 	private FeedbackPanel				feedbackPanel;
@@ -142,6 +151,30 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 				return getModelObject().getArkUserRoleList();
 			}
 		};
+		
+		boolean loggedInViaAAF = ((String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SHIB_SESSION_ID) != null);
+		groupPasswordContainer.setVisible(!loggedInViaAAF);
+
+		final WebRequest webRequest = (WebRequest) RequestCycle.get().getRequest();
+	   final HttpServletRequest httpReq = (HttpServletRequest) webRequest.getContainerRequest();
+	   
+	   String protocol = httpReq.isSecure() ? "https://" : "http://";
+      String hostname = httpReq.getServerName();
+      int port = httpReq.getServerPort();
+      StringBuffer url = new StringBuffer(128);
+      url.append(protocol);
+      url.append(hostname);
+      if ((port != 80) && (port != 443))
+      {
+          url.append(":");
+          url.append(port);
+      } 
+	   url.append("/Shibboleth.sso/Session");
+		shibbolethSessionDetails.add(new AttributeModifier("src", url.toString()));
+		shibbolethSession.add(new AttributeModifier("class", "paddedDetailPanel"));
+		
+		shibbolethSession.setVisible(loggedInViaAAF);
+		shibbolethSession.add(shibbolethSessionDetails);
 
 		// TODO: Amend hard-coded 50 row limit, pageableListView didn't work within a ModalWindow
 		pageableListView = new PageableListView("arkUserRoleList", iModel, 50) {
@@ -252,6 +285,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		groupPasswordContainer.add(userPasswordField);
 		groupPasswordContainer.add(confirmPasswordField);
 		add(groupPasswordContainer);
+		add(shibbolethSession);
 		add(new EqualPasswordInputValidator(userPasswordField, confirmPasswordField));
 		add(saveButton);
 		add(closeButton);
