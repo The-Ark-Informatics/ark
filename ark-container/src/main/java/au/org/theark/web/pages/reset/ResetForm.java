@@ -7,7 +7,9 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -21,7 +23,6 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ArkUserPasswordGenerator;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.web.component.panel.recaptcha.ReCaptchaPanel;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.web.pages.login.LoginPage;
 
@@ -40,7 +41,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 	private transient static Logger	log					= LoggerFactory.getLogger(ResetForm.class);
 	private FeedbackPanel				feedbackPanel;
 	private TextField<String>			userName;
-	private ReCaptchaPanel				reCaptchaPanel;
+	private Panel							reCaptchaPanel;
 	private AjaxButton					resetButton;
 	private AjaxButton					cancelButton;
 	private AjaxButton					signInButton;
@@ -64,7 +65,9 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 		userName.setRequired(true);
 		userName.setOutputMarkupId(true);
 
-		reCaptchaPanel = new ReCaptchaPanel("reCaptchaPanel");
+		// TODO: Possibly reimplement reCAPTCHA
+		//reCaptchaPanel = new ReCaptchaPanel("reCaptchaPanel");
+		reCaptchaPanel = new EmptyPanel("reCaptchaPanel");
 		reCaptchaPanel.setOutputMarkupId(true);
 
 		resetButton = new AjaxButton("resetButton") {
