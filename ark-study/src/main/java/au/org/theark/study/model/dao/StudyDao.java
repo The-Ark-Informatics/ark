@@ -150,22 +150,31 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * @param subjectsToUpdate
 	 */
 	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert){
-		for(SubjectCustomFieldData dataToUpdate : fieldsToUpdate){
-			getSession().update(dataToUpdate);
-		}
+		Session session = getSession();
 		int count = 0;
-		for(SubjectCustomFieldData dataToInsert : fieldsToInsert){
-			getSession().save(dataToInsert);
+		for(SubjectCustomFieldData dataToUpdate : fieldsToUpdate){
+			session.update(dataToUpdate);
 			count++;
 			//based on recommended hibernate practice of	<prop key="hibernate.jdbc.batch_size">50</prop>
 			if(count%50==0){
-				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
-				getSession().flush();
-				getSession().clear();
+				//log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");  TODO Evaluate why batch not working.  hints: may be identity/id generation related.  Will revisit after all batch work done
+				session.flush();
+				session.clear();
 			}
 		}
-		getSession().flush();
-		getSession().clear();
+		count = 0;
+		for(SubjectCustomFieldData dataToInsert : fieldsToInsert){
+			session.save(dataToInsert);
+			count++;
+			//based on recommended hibernate practice of	<prop key="hibernate.jdbc.batch_size">50</prop>
+			if(count%50==0){
+				//log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
+				session.flush();
+				session.clear();
+			}
+		}
+		session.flush();
+		session.clear();
 	}
 
 	public void create(Study study, ArkUserVO arkUserVo, Collection<ArkModule> selectedModules) {
