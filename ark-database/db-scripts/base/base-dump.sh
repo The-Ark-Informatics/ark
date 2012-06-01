@@ -75,7 +75,7 @@ address_status address_type ark_function ark_function_type ark_module ark_module
 ark_module_role ark_permission ark_role ark_role_policy_template \
 consent_answer consent_status consent_type correspondence_direction_type \
 correspondence_mode_type correspondence_outcome_type correspondence_status_type country \
-country_state delimiter_type domain_type email_account_type entity_type field_type file_format \
+state delimiter_type domain_type email_account_type entity_type field_type file_format \
 gender_type marital_status person_contact_method phone_status phone_type \
 registration_status relationship study_comp_status study_status subject_status subjectuid_padchar \
 subjectuid_token title_type unit_type vital_status yes_no consent_option measurement_type \
