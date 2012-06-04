@@ -117,22 +117,22 @@
 								</tr>
 								<tr align="center">
 									<td align="center" colspan="2">
-										<input id="aafLogInButton" wicket:id="aafLogInButton" type="submit" wicket:message="value:page.aafLogInButton" disabled="disabled"/>
 										<input id="signInButton" wicket:id="signInButton" type="submit" wicket:message="value:page.signInButton" disabled="disabled"/>
+										<input id="aafLogInButton" wicket:id="aafLogInButton" type="submit" wicket:message="value:page.aafLogInButton" disabled="disabled"/>
 										<!-- Enable/disable submit button depending if JavaScript enabled -->
 										<script type="text/javascript">
 											var _onload = window.onload || function()
 											{
-												var aafLogInButton = document.getElementsByName('aafLogInButton')[0];
-												if (aafLogInButton.disabled==true)
-												{
-													aafLogInButton.disabled=false
-												}
-												
 												var signInButton = document.getElementsByName('signInButton')[0];
 												if (signInButton.disabled==true)
 												{
 													signInButton.disabled=false
+												}
+												
+												var aafLogInButton = document.getElementsByName('aafLogInButton')[0];
+												if (aafLogInButton.disabled==true)
+												{
+													aafLogInButton.disabled=false
 												}
 											}
 
