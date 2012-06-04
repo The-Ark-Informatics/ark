@@ -57,8 +57,8 @@ import au.org.theark.web.pages.mydetails.MyDetailModalWindow;
  * 
  */
 public abstract class BasePage extends WebPage {
-
 	private static final long		serialVersionUID	= 4173121872289013698L;
+	private transient static Logger	log =  LoggerFactory.getLogger(BasePage.class);
 	private transient Subject		currentUser;
 	private String						principal;
 	private Label						userNameLbl;
@@ -68,14 +68,13 @@ public abstract class BasePage extends WebPage {
 	protected WebMarkupContainer	studyLogoMarkup;
 
 	private MyDetailModalWindow	modalWindow;
-	private transient static Logger	log =  LoggerFactory.getLogger(BasePage.class);
+	private ArkBusyAjaxLink<Void> ajaxLogoutLink;
+	
 	/**
 	 * Default constructor
 	 */
 	@SuppressWarnings("unchecked")
 	public BasePage() {
-		
-
 		currentUser = SecurityUtils.getSubject();
 
 		if (currentUser.getPrincipal() != null) {
@@ -130,7 +129,7 @@ public abstract class BasePage extends WebPage {
 			};
 			add(modalWindow);
 
-			ArkBusyAjaxLink link = new ArkBusyAjaxLink("ajaxLogoutLink") {
+			ajaxLogoutLink = new ArkBusyAjaxLink("ajaxLogoutLink") {
 				/**
 				 * 
 				 */
@@ -147,7 +146,7 @@ public abstract class BasePage extends WebPage {
 					setResponsePage(LoginPage.class);
 				}
 			};
-			add(link);
+			add(ajaxLogoutLink);
 		}
 		else {
 			setResponsePage(LoginPage.class);
