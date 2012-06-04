@@ -6,14 +6,20 @@
 			<th width="2%">
 				&nbsp;
 			</th>
-			<th width="30%">
+			<th width="20%">
 				<wicket:message key="ARK_SESSION_ID">SessionID</wicket:message>
 			</th>
-			<th width="56%">
+			<th width="36%">
 				<wicket:message key="ARK_USERID">UserId</wicket:message>
 			</th>
 			<th width="10%">
 				<wicket:message key="ARK_HOST">Host:</wicket:message>
+			</th>
+			<th width="10%">
+				<wicket:message key="ARK_SESSION_START_TIMESTAMP">Started:</wicket:message>
+			</th>
+			<th width="10%">
+				<wicket:message key="ARK_SESSION_LAST_ACCESS_TIME">Last Accessed:</wicket:message>
 			</th>
 			<th width="2%">
 				&nbsp;
@@ -23,14 +29,20 @@
 			<td width="2%">
 				&nbsp;
 			</td>
-			<td width="30%">
+			<td width="20%">
 				<span wicket:id="ARK_SESSION_ID">SessionID</span>
 			</td>
-			<td width="56%">
+			<td width="36%">
 				<span wicket:id="ARK_USERID">UserID</span>
 			</td>
 			<td width="10%">
 				<span wicket:id="ARK_HOST">Host</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="ARK_SESSION_START_TIMESTAMP">Started</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="ARK_SESSION_LAST_ACCESS_TIME">Last accessed</span>
 			</td>
 			<td width="2%">
 				&nbsp;
@@ -41,7 +53,7 @@
 				<td width="2%">
 					&nbsp;
 				</td>
-				<td width="96%" colspan="3">
+				<td width="96%" colspan="5">
 					<span wicket:id="navigator" class="a">
 					</span>
 				</td>

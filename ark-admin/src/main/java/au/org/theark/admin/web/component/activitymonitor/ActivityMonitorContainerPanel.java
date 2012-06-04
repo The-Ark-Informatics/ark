@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.model.vo.ActivityMonitorVO;
 import au.org.theark.core.session.SessionAttributeListener;
-import au.org.theark.core.vo.ArkSubjectVO;
+import au.org.theark.core.vo.ArkSubjectSessionVO;
 
 /**
  * @author cellis
@@ -49,7 +49,7 @@ public class ActivityMonitorContainerPanel extends Panel {
 	protected FeedbackPanel						feedBackPanel;
 	private Form<ActivityMonitorVO>			form;
 	private SearchResultsPanel					searchResultsPanel;
-	private PageableListView<ArkSubjectVO>	listView;
+	private PageableListView<ArkSubjectSessionVO>	listView;
 	private Button									refresh;
 
 	/**
@@ -89,7 +89,10 @@ public class ActivityMonitorContainerPanel extends Panel {
 
 	@SuppressWarnings("unchecked")
 	protected WebMarkupContainer initialiseSearchResults() {
-		List<ArkSubjectVO> activeUsers = SessionAttributeListener.getActiveUsers();
+		List<ArkSubjectSessionVO> activeUsers = SessionAttributeListener.getActiveUsers();
+		for (ArkSubjectSessionVO arkSubjectVo : activeUsers) {
+			log.info("Active user: " + arkSubjectVo.getUserId());
+		}
 		form.getModelObject().setActiveUsers(activeUsers);
 		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", feedBackPanel);
 		listView = searchResultsPanel.buildPageableListView(new PropertyModel(form.getModelObject(), "activeUsers"));
