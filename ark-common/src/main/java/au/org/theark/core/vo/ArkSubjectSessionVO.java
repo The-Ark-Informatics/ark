@@ -13,6 +13,11 @@ public class ArkSubjectSessionVO implements Serializable {
 	private Date					lastAccessTime;
 	private String					action;
 	
+	public ArkSubjectSessionVO(String sessionId) {
+		super();
+		this.sessionId = sessionId;
+	}
+	
 	public ArkSubjectSessionVO(String sessionId, String userId, String host, Date startTimestamp, Date lastAccessTime, String action) {
 		super();
 		this.sessionId = sessionId;
@@ -105,5 +110,37 @@ public class ArkSubjectSessionVO implements Serializable {
 	 */
 	public void setAction(String action) {
 		this.action = action;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((sessionId == null) ? 0 : sessionId.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ArkSubjectSessionVO other = (ArkSubjectSessionVO) obj;
+		if (sessionId == null) {
+			if (other.sessionId != null)
+				return false;
+		}
+		else if (!sessionId.equals(other.sessionId))
+			return false;
+		return true;
 	}
 }
