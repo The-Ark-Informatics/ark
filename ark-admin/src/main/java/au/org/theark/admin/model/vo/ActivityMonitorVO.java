@@ -4,22 +4,22 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import au.org.theark.core.vo.ArkSubjectVO;
+import au.org.theark.core.vo.ArkSubjectSessionVO;
 
 public class ActivityMonitorVO implements Serializable {
 
 	private static final long	serialVersionUID	= 3901839049428295010L;
-	private List<ArkSubjectVO>	activeUsers;
+	private List<ArkSubjectSessionVO>	activeUsers;
 
 	public ActivityMonitorVO() {
-		activeUsers = new ArrayList<ArkSubjectVO>();
+		activeUsers = new ArrayList<ArkSubjectSessionVO>();
 	}
 	
-	public List<ArkSubjectVO> getActiveUsers() {
+	public List<ArkSubjectSessionVO> getActiveUsers() {
 		return activeUsers;
 	}
 
-	public void setActiveUsers(List<ArkSubjectVO> activeUsers) {
+	public void setActiveUsers(List<ArkSubjectSessionVO> activeUsers) {
 		this.activeUsers = activeUsers;
 	}
 }
