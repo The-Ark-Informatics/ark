@@ -119,6 +119,7 @@
 									<td align="center" colspan="2">
 										<input id="signInButton" wicket:id="signInButton" type="submit" wicket:message="value:page.signInButton" disabled="disabled"/>
 										<input id="aafLogInButton" wicket:id="aafLogInButton" type="submit" wicket:message="value:page.aafLogInButton" disabled="disabled"/>
+										<input id="forgotPasswordButton" wicket:id="forgotPasswordButton" type="submit" wicket:message="value:page.forgotPasswordButton"/>
 										<!-- Enable/disable submit button depending if JavaScript enabled -->
 										<script type="text/javascript">
 											var _onload = window.onload || function()
@@ -134,11 +135,16 @@
 												{
 													aafLogInButton.disabled=false
 												}
+												
+												var forgotPasswordButton = document.getElementsByName('forgotPasswordButton')[0];
+												if (forgotPasswordButton.disabled==true)
+												{
+													forgotPasswordButton.disabled=false
+												}
 											}
 
 											_onload();
 										</script>
-										<input id="forgotPasswordButton" wicket:id="forgotPasswordButton" type="submit" wicket:message="value:page.forgotPasswordButton"/>
 										<noscript>
 											<div class="note">
 												This site will not run properly without JavaScript enabled.
