@@ -35,11 +35,15 @@ public abstract class ArkBusyAjaxButton extends AjaxButton {
 
 	private static final long	serialVersionUID		= 6243098370244180405L;
 
-	private String					setBusyIndicatorOn	= "overlay = document.getElementById('busyOverlay'); "
-																	+ "overlay.style.visibility = 'visible';";
+	private String					setBusyIndicatorOn	= "";
+																	//"var overlayDiv = document.getElementById('busyOverlay'); ";
+																	//+ "overlayDiv.style.visibility = 'visible'; "
+																	//+ "overlayDiv.style.display = ''; ";
 
-	private String					setBusyIndicatorOff	= "overlay = document.getElementById('busyOverlay'); "
-																	+ "overlay.style.visibility = 'hidden';";
+	private String					setBusyIndicatorOff	= ""; 
+																	//"var overlayDiv = document.getElementById('busyOverlay'); ";
+																	//+ "overlayDiv.style.visibility = 'hidden'; " 
+																	//+ "overlayDiv.style.display = 'none'; ";
 	
 
 	/**
