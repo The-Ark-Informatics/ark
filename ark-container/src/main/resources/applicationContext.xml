@@ -82,7 +82,7 @@
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://ark-database:3306" />
+		<property name="url" value="jdbc:mysql://ark-database:3306?rewriteBatchedStatements=true" />
 		<property name="username" value="arkadmin" />
 		<property name="password" value="v@Tym4np[]" />
 	</bean>
@@ -134,12 +134,13 @@
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
+				<!-- prop key="hibernate.">true</prop>
 				<prop key="cache.use_query_cache">false</prop>
-				<prop key="cache.use_second_level_cache">true</prop>
+				<prop key="cache.use_second_level_cache">false</prop-->
 				<prop key="hibernate.order_updates">true</prop>
 				<prop key="hibernate.order_inserts">true</prop>
 				<prop key="hibernate.jdbc.batch_size">50</prop>
-				<prop key="hibernate.jdbc.batch_versioned_data">true</prop>
+				<!-- prop key="hibernate.jdbc.batch_versioned_data">true</prop -->
 			</props>
 		</property>
 	</bean>
