@@ -30,7 +30,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.phenotypic.model.vo.PhenoFieldUploadVO;
@@ -44,7 +44,7 @@ public class FieldUploadContainerPanel extends AbstractContainerPanel<PhenoField
 	private SearchResultListPanel				searchResultListPanel;
 	private Panel									detailPanel;
 	private WizardPanel							wizardPanel;
-	private PageableListView<StudyUpload>	listView;
+	private PageableListView<Upload>	listView;
 	private ContainerForm						containerForm;
 
 	@SpringBean(name = "phenotypicService")
@@ -91,12 +91,12 @@ public class FieldUploadContainerPanel extends AbstractContainerPanel<PhenoField
 				listView.removeAll();
 
 				if (sessionStudyId != null) {
-					StudyUpload searchPhenoUpload = new StudyUpload();
+					Upload searchPhenoUpload = new Upload();
 					Study study = iArkCommonService.getStudy(sessionStudyId);
 					searchPhenoUpload.setStudy(study);
 					searchPhenoUpload.setArkFunction(containerForm.getModelObject().getUpload().getArkFunction());
 
-					java.util.Collection<StudyUpload> phenoUploads = iArkCommonService.searchUploads(searchPhenoUpload);
+					java.util.Collection<Upload> phenoUploads = iArkCommonService.searchUploads(searchPhenoUpload);
 					return phenoUploads;
 				}
 				else {

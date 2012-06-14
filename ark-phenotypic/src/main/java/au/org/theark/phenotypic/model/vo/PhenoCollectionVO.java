@@ -22,11 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import au.org.theark.core.model.pheno.entity.Field;
-import au.org.theark.core.model.pheno.entity.FieldData;
-import au.org.theark.core.model.pheno.entity.FieldType;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 
@@ -36,7 +32,7 @@ import au.org.theark.core.model.study.entity.Study;
  */
 @SuppressWarnings("serial")
 public class PhenoCollectionVO implements Serializable {
-	protected PhenoCollection								phenoCollection;
+/*	protected PhenoCollection								phenoCollection;
 	protected Field											field;
 	protected FieldType										fieldType;
 	protected FieldData										fieldData;
@@ -49,16 +45,16 @@ public class PhenoCollectionVO implements Serializable {
 
 	protected int												mode;
 
-	/** A Collection of collections for the study in context */
+	/** A Collection of collections for the study in context *
 	protected java.util.Collection<PhenoCollection>	phenoCollectionCollection;
 
-	/** A Collection of fields linked to this phenotypic collection */
+	/** A Collection of fields linked to this phenotypic collection *
 	protected java.util.Collection<Field>				fieldCollection;
 
-	/** A Colleciton of persons linked to this phenotypic collection */
+	/** A Colleciton of persons linked to this phenotypic collection *
 	protected java.util.Collection<Person>				personCollection;
 
-	/** A Collection of fieldData linked to this phenotypic collection */
+	/** A Collection of fieldData linked to this phenotypic collection *
 	protected java.util.Collection<FieldData>			fieldDataCollection;
 
 	public PhenoCollectionVO() {
@@ -165,14 +161,14 @@ public class PhenoCollectionVO implements Serializable {
 	/**
 	 * @param fieldsAvailable
 	 *           the fieldsAvailable to set
-	 */
+	 *
 	public void setFieldsAvailable(Collection<Field> fieldsAvailable) {
 		this.fieldsAvailable = fieldsAvailable;
 	}
 
 	/**
 	 * @return the fieldsAvailable
-	 */
+	 *
 	public Collection<Field> getFieldsAvailable() {
 		return fieldsAvailable;
 	}
@@ -180,14 +176,14 @@ public class PhenoCollectionVO implements Serializable {
 	/**
 	 * @param fieldsSelected
 	 *           the fieldsSelected to set
-	 */
+	 *
 	public void setFieldsSelected(Collection<Field> fieldsSelected) {
 		this.fieldsSelected = fieldsSelected;
 	}
 
 	/**
 	 * @return the fieldsSelected
-	 */
+	 *
 	public Collection<Field> getFieldsSelected() {
 		return fieldsSelected;
 	}
@@ -195,21 +191,21 @@ public class PhenoCollectionVO implements Serializable {
 	/**
 	 * @param uploadCol
 	 *           the upload collection to set
-	 */
+	 *
 	public void setUploadCollection(Collection<PhenoUpload> uploadCollection) {
 		this.uploadCollection = uploadCollection;
 	}
 
 	/**
 	 * @return the upload collection
-	 */
+	 *
 	public Collection<PhenoUpload> getUploadCollection() {
 		return uploadCollection;
 	}
 
 	/**
 	 * @return the upload
-	 */
+	 *
 	public PhenoUpload getUpload() {
 		return upload;
 	}
@@ -217,8 +213,9 @@ public class PhenoCollectionVO implements Serializable {
 	/**
 	 * @param upload
 	 *           the upload to set
-	 */
+	 *
 	public void setUpload(PhenoUpload upload) {
 		this.upload = upload;
 	}
+	*/
 }

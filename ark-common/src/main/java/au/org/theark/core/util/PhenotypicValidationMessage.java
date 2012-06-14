@@ -1,23 +1,24 @@
 package au.org.theark.core.util;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.pheno.entity.Field;
-import au.org.theark.core.model.pheno.entity.FieldData;
+//import au.org.theark.core.model.pheno.entity.Field;
+//import au.org.theark.core.model.pheno.entity.FieldData;
 
 /**
  * @author nivedann
  *
  */
+
 public class PhenotypicValidationMessage {
 	private static StringBuffer	stringBuffer	= null;
 
-	/**
+	/*
 	 * Returns field not of the defined type error message
 	 * 
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataSubjectUidNotFound(String subjectUid) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -33,7 +34,7 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataNotDefinedType(Field field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -54,7 +55,7 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataGreaterThanMaxValue(Field field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -74,8 +75,8 @@ public class PhenotypicValidationMessage {
 	 * 
 	 * @param field
 	 * @param fieldData
-	 * @return String
-	 */
+	 * @reurn String
+	 *
 	public static String fieldDataLessThanMinValue(Field field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -96,7 +97,7 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataNotInEncodedValues(Field field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -117,7 +118,7 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataNotValidDate(Field field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
@@ -139,7 +140,7 @@ public class PhenotypicValidationMessage {
 	 * @param subkjecUid
 	 * @param dateCollectedStr
 	 * @return String
-	 */
+	 *
 	public static String dateCollectedNotValidDate(String subjectUid, String dateCollectedStr) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
@@ -260,5 +261,5 @@ public class PhenotypicValidationMessage {
 		stringBuffer.append(" was not found in the database. Please check the name and try again, or add the field to the Data Dictionary.");
 		return (stringBuffer.toString());
 	}
-
+*/
 }

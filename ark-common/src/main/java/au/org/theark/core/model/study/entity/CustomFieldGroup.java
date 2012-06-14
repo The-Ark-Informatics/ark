@@ -36,7 +36,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
-import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 
 /**
  * @author nivedann
@@ -57,7 +57,7 @@ public class CustomFieldGroup implements Serializable{
 	private Study study;
 	private Boolean published;
 	private ArkFunction arkFunction;
-	private Set<PhenotypicCollection> phenotypicCollection = new HashSet<PhenotypicCollection>();
+	private Set<PhenoCollection> phenoCollection = new HashSet<PhenoCollection>();
 	
 
 	public CustomFieldGroup(){
@@ -113,13 +113,13 @@ public class CustomFieldGroup implements Serializable{
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "questionnaire")
-	public Set<PhenotypicCollection> getPhenotypicCollection() {
-		return phenotypicCollection;
+	public Set<PhenoCollection> getPhenoCollection() {
+		return phenoCollection;
 	}
 
-	public void setPhenotypicCollection(
-			Set<PhenotypicCollection> phenotypicCollection) {
-		this.phenotypicCollection = phenotypicCollection;
+	public void setPhenoCollection(
+			Set<PhenoCollection> phenoCollection) {
+		this.phenoCollection = phenoCollection;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

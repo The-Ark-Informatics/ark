@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
@@ -73,14 +73,14 @@ public class SearchResultListPanel extends Panel {
 	 * @return the pageableListView of Upload
 	 */
 	@SuppressWarnings("unchecked")
-	public PageableListView<StudyUpload> buildPageableListView(IModel iModel) {
-		PageableListView<StudyUpload> sitePageableListView = new PageableListView<StudyUpload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+	public PageableListView<Upload> buildPageableListView(IModel iModel) {
+		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void populateItem(final ListItem<StudyUpload> item) {
-				StudyUpload upload = item.getModelObject();
+			protected void populateItem(final ListItem<Upload> item) {
+				Upload upload = item.getModelObject();
 
 				// The ID
 				if (upload.getId() != null) {
@@ -155,8 +155,8 @@ public class SearchResultListPanel extends Panel {
 		return sitePageableListView;
 	}
 
-	protected Link<StudyUpload> buildDownloadLink(final StudyUpload upload) {
-		Link<StudyUpload> link = new Link<StudyUpload>(Constants.DOWNLOAD_FILE) {
+	protected Link<Upload> buildDownloadLink(final Upload upload) {
+		Link<Upload> link = new Link<Upload>(Constants.DOWNLOAD_FILE) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -180,7 +180,7 @@ public class SearchResultListPanel extends Panel {
 		return link;
 	}
 
-	private AjaxButton buildDownloadButton(final StudyUpload upload) {
+	private AjaxButton buildDownloadButton(final Upload upload) {
 		AjaxButton ajaxButton = new AjaxButton(Constants.DOWNLOAD_FILE) {
 
 			private static final long	serialVersionUID	= 1L;
@@ -213,8 +213,8 @@ public class SearchResultListPanel extends Panel {
 		return ajaxButton;
 	}
 
-	protected Link<StudyUpload> buildDownloadReportLink(final StudyUpload upload) {
-		Link<StudyUpload> link = new Link<StudyUpload>(Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT) {
+	protected Link<Upload> buildDownloadReportLink(final Upload upload) {
+		Link<Upload> link = new Link<Upload>(Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -237,7 +237,7 @@ public class SearchResultListPanel extends Panel {
 		return link;
 	}
 
-	private AjaxButton buildDownloadReportButton(final StudyUpload upload) {
+	private AjaxButton buildDownloadReportButton(final Upload upload) {
 		AjaxButton ajaxButton = new AjaxButton(Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT) {
 
 			private static final long	serialVersionUID	= 1L;
@@ -274,7 +274,7 @@ public class SearchResultListPanel extends Panel {
 	within the upload have also been deleted. At present, there is no linking table clearly 
 	indicating which subjects came from which upload (i.e. will need to be looked at 1st). 
 */
-//	private AjaxDeleteButton buildDeleteButton(final StudyUpload upload) {
+//	private AjaxDeleteButton buildDeleteButton(final Upload upload) {
 //		DeleteButton ajaxButton = new DeleteButton(upload, SearchResultListPanel.this) {
 //			/**
 //			 * 

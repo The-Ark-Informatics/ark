@@ -30,7 +30,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldUploadVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
@@ -43,7 +43,7 @@ public class CustomFieldUploadContainerPanel extends AbstractContainerPanel<Cust
 	private SearchResultListPanel				searchResultListPanel;
 	private Panel									detailPanel;
 	private WizardPanel							wizardPanel;
-	private PageableListView<StudyUpload>	listView;
+	private PageableListView<Upload>	listView;
 	private ContainerForm						containerForm;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -87,12 +87,12 @@ public class CustomFieldUploadContainerPanel extends AbstractContainerPanel<Cust
 				listView.removeAll();
 
 				if (sessionStudyId != null) {
-					StudyUpload searchStudyUpload = new StudyUpload();
+					Upload searchUpload = new Upload();
 					Study study = iArkCommonService.getStudy(sessionStudyId);
-					searchStudyUpload.setStudy(study);
-					searchStudyUpload.setArkFunction(containerForm.getModelObject().getUpload().getArkFunction());
+					searchUpload.setStudy(study);
+					searchUpload.setArkFunction(containerForm.getModelObject().getUpload().getArkFunction());
 
-					java.util.Collection<StudyUpload> studyUploads = iArkCommonService.searchUploads(searchStudyUpload);
+					java.util.Collection<Upload> studyUploads = iArkCommonService.searchUploads(searchUpload);
 					return studyUploads;
 				}
 				else {

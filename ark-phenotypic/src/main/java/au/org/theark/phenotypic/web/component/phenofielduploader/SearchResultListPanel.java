@@ -36,8 +36,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.model.pheno.entity.PhenoUpload;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -54,7 +53,7 @@ public class SearchResultListPanel extends Panel {
 
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private ContainerForm		containerForm;
-	private PageableListView<StudyUpload>	listView;
+	private PageableListView<Upload>	listView;
 
 	/**
 	 * 
@@ -62,7 +61,7 @@ public class SearchResultListPanel extends Panel {
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, PageableListView<StudyUpload> listView,ContainerForm containerForm) {
+	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, PageableListView<Upload> listView,ContainerForm containerForm) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
@@ -84,11 +83,11 @@ public class SearchResultListPanel extends Panel {
 	 * @param iModel
 	 * @return the pageableListView of Upload
 	 */
-	public PageableListView<StudyUpload> buildPageableListView(IModel iModel) {
-		PageableListView<StudyUpload> sitePageableListView = new PageableListView<StudyUpload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+	public PageableListView<Upload> buildPageableListView(IModel iModel) {
+		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			@Override
-			protected void populateItem(final ListItem<StudyUpload> item) {
-				StudyUpload upload = item.getModelObject();
+			protected void populateItem(final ListItem<Upload> item) {
+				Upload upload = item.getModelObject();
 
 				// The ID
 				if (upload.getId() != null) {
@@ -172,7 +171,7 @@ public class SearchResultListPanel extends Panel {
 		return sitePageableListView;
 	}
 
-	private Link buildDownloadLink(final StudyUpload upload) {
+	private Link buildDownloadLink(final Upload upload) {
 		Link link = new Link(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE) {
 			@Override
 			public void onClick() {
@@ -196,7 +195,7 @@ public class SearchResultListPanel extends Panel {
 		return link;
 	}
 
-	private AjaxButton buildDownloadButton(final StudyUpload upload) {
+	private AjaxButton buildDownloadButton(final Upload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -226,19 +225,12 @@ public class SearchResultListPanel extends Panel {
 		return ajaxButton;
 	}
 
-	private Link buildDownloadReportLink(final PhenoUpload upload) {
+	private Link buildDownloadReportLink(final Upload upload) {
 		Link link = new Link(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT) {
 			@Override
 			public void onClick() {
 				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				try {
-					data = upload.getUploadReport().getBytes(1, (int) upload.getUploadReport().length());
-				}
-				catch (SQLException e) {
-					log.error(e.getMessage());
-				}
-				
+				byte[] data  = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length())
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			};
 		};
@@ -249,19 +241,12 @@ public class SearchResultListPanel extends Panel {
 		return link;
 	}
 
-	private AjaxButton buildDownloadReportButton(final StudyUpload upload) {
+	private AjaxButton buildDownloadReportButton(final Upload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, new StringResourceModel("downloadReportKey", this, null)) {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				//try {
-					data = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length());
-				//}
-				//catch (SQLException e) {
-				//	log.error(e.getMessage());
-				//}
-				
+				byte[] data = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length());
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			}
 

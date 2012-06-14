@@ -82,7 +82,7 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -1168,11 +1168,11 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 
-	public StudyUpload getUpload(Long id) {
+	public Upload getUpload(Long id) {
 		return iStudyDao.getUpload(id);
 	}
 
-	public StudyUpload refreshUpload(StudyUpload upload) {
+	public Upload refreshUpload(Upload upload) {
 		return iStudyDao.refreshUpload(upload);
 	}
 

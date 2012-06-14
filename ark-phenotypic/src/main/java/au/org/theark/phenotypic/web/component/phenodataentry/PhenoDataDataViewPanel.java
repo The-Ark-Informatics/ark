@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.pheno.entity.PhenoData;
-import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
@@ -82,14 +82,14 @@ public class PhenoDataDataViewPanel extends Panel {
 			scdDataProvider = new ArkDataProvider2<PhenoDataCollectionVO, PhenoData>() {
 				
 				public int size() {
-					PhenotypicCollection phenoCollection = criteriaModel.getObject().getPhenotypicCollection();
+					PhenoCollection phenoCollection = criteriaModel.getObject().getPhenoCollection();
 //					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 	
 					return (int)iPhenotypicService.getPhenoDataCount(phenoCollection);
 				}
 	
 				public Iterator<PhenoData> iterator(int first, int count) {
-					PhenotypicCollection phenoCollection = criteriaModel.getObject().getPhenotypicCollection();
+					PhenoCollection phenoCollection = criteriaModel.getObject().getPhenoCollection();
 //					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 	
 					List<PhenoData> phenoDataList = iPhenotypicService.getPhenoDataList(phenoCollection, first, count);
@@ -125,8 +125,8 @@ public class PhenoDataDataViewPanel extends Panel {
 			protected void populateItem(final Item<PhenoData> item) {
 				PhenoData phenoData = item.getModelObject();
 				// Ensure we tie Subject in context to the item if that link isn't there already
-				if (phenoData.getPhenotypicCollection() == null) {
-					phenoData.setPhenotypicCollection(cpModel.getObject().getPhenotypicCollection());
+				if (phenoData.getPhenoCollection() == null) {
+					phenoData.setPhenoCollection(cpModel.getObject().getPhenoCollection());
 				}
 				super.populateItem(item);
 			}

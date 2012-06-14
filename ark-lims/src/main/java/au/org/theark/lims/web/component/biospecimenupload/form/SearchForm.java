@@ -34,7 +34,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.UploadVO;
@@ -51,14 +51,14 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
 
-	private PageableListView<StudyUpload>		listView;
+	private PageableListView<Upload>		listView;
 	private CompoundPropertyModel<UploadVO>	cpmModel;
 	
 	private TextField<String>						uploadIdTxtFld;
 	private TextField<String>						uploadFilenameTxtFld;
 	private DropDownChoice<FileFormat>			fileFormatDdc;
 
-	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<StudyUpload> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<Upload> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, model, feedBackPanel, arkCrudContainerVO);
 		this.cpmModel = model;
 		this.listView = listView;
@@ -73,7 +73,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		// Initialise any drop-downs
 		java.util.Collection<FileFormat> fileFormatCollection = iArkCommonService.getFileFormats();
 		CompoundPropertyModel<UploadVO> uploadCpm = cpmModel;
-		PropertyModel<StudyUpload> uploadPm = new PropertyModel<StudyUpload>(uploadCpm, Constants.UPLOAD);
+		PropertyModel<Upload> uploadPm = new PropertyModel<Upload>(uploadCpm, Constants.UPLOAD);
 		PropertyModel<FileFormat> fileFormatPm = new PropertyModel<FileFormat>(uploadPm, Constants.FILE_FORMAT);
 		ChoiceRenderer fileFormatRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		fileFormatDdc = new DropDownChoice<FileFormat>(Constants.UPLOADVO_UPLOAD_FILE_FORMAT, fileFormatPm, (List) fileFormatCollection, fileFormatRenderer);
@@ -106,10 +106,10 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		// Get a list of all Fields for the Study in context
 		Study study = iArkCommonService.getStudy(studyId);
 
-		StudyUpload searchUpload = getModelObject().getUpload();
+		Upload searchUpload = getModelObject().getUpload();
 		searchUpload.setStudy(study);
 
-		java.util.Collection<StudyUpload> uploadCollection = iArkCommonService.searchUploads(searchUpload);
+		java.util.Collection<Upload> uploadCollection = iArkCommonService.searchUploads(searchUpload);
 
 		if (uploadCollection != null && uploadCollection.size() == 0) {
 			this.info("Uploads with the specified criteria does not exist in the system.");

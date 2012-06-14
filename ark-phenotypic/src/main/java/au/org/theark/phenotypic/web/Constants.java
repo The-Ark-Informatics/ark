@@ -25,6 +25,12 @@ public class Constants {
 	// Tabs/menus
 	public static final String		PHENOTYPIC_MAIN_TAB											= "Phenotypic";
 
+	// Exception messages
+	public static final String			IO_EXCEPTION													= "IOException: Input error. ";
+	public static final String			FILE_FORMAT_EXCEPTION										= "File Format Exception: Input error. ";
+	public static final String			ARK_SYSTEM_EXCEPTION											= "General ARK System Exception: ";
+	public static final String			ARK_BASE_EXCEPTION											= "Base ARK System Exception: ";
+	
 	// Sub tabs/menus
 	public static final String		PHENOTYPIC_SUBMENU											= "phenotypicSubMenus";
 	public static final String		PHENOTYPIC_SUMMARY_SUBMENU									= "Summary";
@@ -141,7 +147,11 @@ public class Constants {
 	public static final String		UPLOADVO_UPLOAD_FINISH_TIME								= "upload.finishTime";
 	public static final String		UPLOADVO_UPLOAD_UPLOAD_REPORT								= "upload.uploadReport";
 	public static final String		UPLOADVO_PHENO_COLLECTION									= "phenoCollection";
-
+	public static final String			UPLOADVO_UPLOAD_UPLOAD_TYPE								= "upload.uploadType";
+	public static final String			UPLOAD_TYPE_ID												= "id";
+	public static final String			UPLOAD_TYPE_NAME												= "name";
+	
+	
 	// Entity fields
 	public static final String		PHENO_COLLECTION												= "phenoCollection";
 	public static final String		PHENO_COLLECTION_ID											= "id";
@@ -247,5 +257,9 @@ public class Constants {
 	
 	public static final String		QUESTIONNAIRE_ID											= "id";
 	public static final String		QUESTIONNAIRE_NAME										= "name";
+
+	public static final String[]	PHENO_TEMPLATE_CELLS	= {"SUBJECT_UID","REQUIRED_FIELD_1","ETC"};
+
+	public static final String	PHENOCOLLECTION_STATUS_IN_PROGRESS	= "In Progress";//TODO check
 
 }

@@ -24,23 +24,23 @@ import java.util.Iterator;
 
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
-import au.org.theark.core.model.pheno.entity.FieldUpload;
+//import au.org.theark.core.model.pheno.entity.FieldUpload;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
-import au.org.theark.core.model.pheno.entity.PhenoUpload;
+//import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
+//import au.org.theark.core.model.pheno.entity.Upload;
 
 /**
  * @author cellis
  * 
  */
 @SuppressWarnings("serial")
-public class UploadVO implements Serializable {
-	private PhenoUpload								upload;
+public class UploadVO implements Serializable {/*
+//	private Upload								upload;
 	private FileUpload								fileUpload;
 	private PhenoCollection							phenoCollection;
-	private PhenoCollectionUpload					phenoCollectionUpload;
+//	private PhenoCollectionUpload					phenoCollectionUpload;
 	private java.util.Collection<PhenoUpload>	uploadCollection;
-	private int											mode;
+/	private int											mode;
 	private java.util.Collection<String>		validationMessages;
 	private Boolean									overrideDataValidationChkBox;
 	private Boolean									updateChkBox;
@@ -54,7 +54,7 @@ public class UploadVO implements Serializable {
 
 	/**
 	 * @return the upload
-	 */
+	 *
 	public PhenoUpload getUpload() {
 		return upload;
 	}
@@ -62,7 +62,7 @@ public class UploadVO implements Serializable {
 	/**
 	 * @param field
 	 *           the field to set
-	 */
+	 *
 	public void setUpload(PhenoUpload upload) {
 		this.upload = upload;
 	}
@@ -70,21 +70,21 @@ public class UploadVO implements Serializable {
 	/**
 	 * @param uploadCollection
 	 *           the uploadCollection to set
-	 */
+	 *
 	public void setUploadCollection(java.util.Collection<PhenoUpload> uploadCollection) {
 		this.uploadCollection = uploadCollection;
 	}
 
 	/**
 	 * @return the uploadCollection
-	 */
+	 *
 	public java.util.Collection<PhenoUpload> getUploadCollection() {
 		return uploadCollection;
 	}
 
 	/**
 	 * @return the phenoCollection
-	 */
+	 *
 	public PhenoCollection getPhenoCollection() {
 		return phenoCollection;
 	}
@@ -92,7 +92,7 @@ public class UploadVO implements Serializable {
 	/**
 	 * @param phenoCollection
 	 *           the phenoCollection to set
-	 */
+	 *
 	public void setPhenoCollection(PhenoCollection phenoCollection) {
 		this.phenoCollection = phenoCollection;
 	}
@@ -100,14 +100,14 @@ public class UploadVO implements Serializable {
 	/**
 	 * @param phenoCollectionUpload
 	 *           the phenoCollectionUpload to set
-	 */
+	 *
 	public void setPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload) {
 		this.phenoCollectionUpload = phenoCollectionUpload;
 	}
 
 	/**
 	 * @return the phenoCollectionUpload
-	 */
+	 *
 	public PhenoCollectionUpload getPhenoCollectionUpload() {
 		return phenoCollectionUpload;
 	}
@@ -115,14 +115,14 @@ public class UploadVO implements Serializable {
 	/**
 	 * @param mode
 	 *           the mode to set
-	 */
+	 *
 	public void setMode(int mode) {
 		this.mode = mode;
 	}
 
 	/**
 	 * @return the mode
-	 */
+	 *
 	public int getMode() {
 		return mode;
 	}
@@ -130,21 +130,21 @@ public class UploadVO implements Serializable {
 	/**
 	 * @param validationMessages
 	 *           the validationMessages to set
-	 */
+	 *
 	public void setValidationMessages(java.util.Collection<String> validationMessages) {
 		this.validationMessages = validationMessages;
 	}
 
 	/**
 	 * @return the validationMessages
-	 */
+	 *
 	public java.util.Collection<String> getValidationMessages() {
 		return validationMessages;
 	}
 
 	/**
 	 * @return the validationMessages
-	 */
+	 *
 	public String getValidationMessagesAsString() {
 		StringBuffer stringBuffer = new StringBuffer("");
 		java.util.Collection<String> msgs = getValidationMessages();
@@ -162,14 +162,14 @@ public class UploadVO implements Serializable {
 	/**
 	 * @param overrideDataValidationChkBox
 	 *           the overrideDataValidationChkBox to set
-	 */
+	 *
 	public void setOverrideDataValidationChkBox(Boolean overrideDataValidationChkBox) {
 		this.overrideDataValidationChkBox = overrideDataValidationChkBox;
 	}
 
 	/**
 	 * @return the overrideDataValidationChkBox
-	 */
+	 *
 	public Boolean getOverrideDataValidationChkBox() {
 		return overrideDataValidationChkBox;
 	}
@@ -185,14 +185,14 @@ public class UploadVO implements Serializable {
 	/**
 	 * @param updateChkBox
 	 *           the updateChkBox to set
-	 */
+	 *
 	public void setUpdateChkBox(Boolean updateChkBox) {
 		this.updateChkBox = updateChkBox;
 	}
 
 	/**
 	 * @return the updateChkBox
-	 */
+	 *
 	public Boolean getUpdateChkBox() {
 		return updateChkBox;
 	}
@@ -204,4 +204,5 @@ public class UploadVO implements Serializable {
 	public java.util.Collection<FieldUpload> getFieldUploadCollection() {
 		return fieldUploadCollection;
 	}
+	*/
 }

@@ -29,7 +29,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
@@ -48,7 +48,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 	private SearchResultListPanel				searchResultPanel;
 	private DetailPanel							detailPanel;
 	private WizardPanel							wizardPanel;
-	private PageableListView<StudyUpload>	listView;
+	private PageableListView<Upload>	listView;
 	private ContainerForm						containerForm;
 	private ArkFunction							arkFunction;
 
@@ -84,10 +84,10 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 			@Override
 			protected Object load() {
 				// Return all Uploads for the Study in context
-				java.util.Collection<StudyUpload> studyUploads = new ArrayList<StudyUpload>();
+				java.util.Collection<Upload> studyUploads = new ArrayList<Upload>();
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				if (isActionPermitted() && sessionStudyId != null) {
-					StudyUpload studyUpload = new StudyUpload();
+					Upload studyUpload = new Upload();
 					studyUpload.setStudy(iArkCommonService.getStudy(sessionStudyId));
 					studyUpload.setArkFunction(arkFunction);
 					studyUploads = iArkCommonService.searchUploads(studyUpload);

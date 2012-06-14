@@ -40,10 +40,8 @@ import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupContainerPanel;
 import au.org.theark.phenotypic.web.component.phenodataentry.PhenoCollectionDataEntryContainerPanel;
-import au.org.theark.phenotypic.web.component.phenodatauploader.PhenoDataUploadContainerPanel;
+//import au.org.theark.phenotypic.web.component.phenodatauploader.PhenoDataUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.phenofielduploader.FieldUploadContainerPanel;
-import au.org.theark.phenotypic.web.component.summary.SummaryContainerPanel;
-
 
 @SuppressWarnings({ "serial", "unused" })
 public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
@@ -85,10 +83,7 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 		// Clear cache to determine permissions
 		processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC, arkFunction);
 
-		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_SUMMARY)) {
-			panelToReturn = new SummaryContainerPanel(panelId);
-		}
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
+		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
 			// attach the fields to this "Data Dictionary" function
 			panelToReturn = new CustomFieldContainerPanel(panelId, false, arkFunction);
 		}
@@ -105,11 +100,13 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = new PhenoCollectionDataEntryContainerPanel(panelId).initialisePanel();
 			//panelToReturn = new FieldDataContainerPanel(panelId);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD)) {
+	/*	TODO trav put new uploader here
+	 * 
+	 * else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD)) {
 			//panelToReturn = new FieldDataUploadContainerPanel(panelId); //OLD Code
 			panelToReturn = new PhenoDataUploadContainerPanel(panelId);
 		}
-	
+	*/
 
 		return panelToReturn;
 	}

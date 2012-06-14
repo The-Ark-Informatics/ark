@@ -135,7 +135,7 @@ public class PhenoCollectionDataEntryContainerPanel extends Panel {
 			try {
 				study = iArkCommonService.getStudy(sessionStudyId);
 				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
-				cpModel.getObject().getPhenotypicCollection().setLinkSubjectStudy(linkSubjectStudy);
+				cpModel.getObject().getPhenoCollection().setLinkSubjectStudy(linkSubjectStudy);
 				arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
 				if (study != null && linkSubjectStudy != null && arkModule != null) {
 					contextLoaded = true;

@@ -88,7 +88,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
@@ -997,8 +997,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	
-	public List<StudyUpload> searchUploads(StudyUpload uploadCriteria) {
-		Criteria criteria = getSession().createCriteria(StudyUpload.class);
+	public List<Upload> searchUploads(Upload uploadCriteria) {
+		Criteria criteria = getSession().createCriteria(Upload.class);
 		// Must be constrained on the arkFunction
 		criteria.add(Restrictions.eq("arkFunction", uploadCriteria.getArkFunction()));
 
@@ -1023,12 +1023,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 
 		criteria.addOrder(Order.desc("id"));
-		List<StudyUpload> resultsList = criteria.list();
+		List<Upload> resultsList = criteria.list();
 
 		return resultsList;
 	}
 
-	public void createUpload(StudyUpload studyUpload) {
+	public void createUpload(Upload studyUpload) {
 		Subject currentUser = SecurityUtils.getSubject();
 		String userId = (String) currentUser.getPrincipal();
 		studyUpload.setUserId(userId);
@@ -1036,7 +1036,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		//getSession().flush();
 	}
 
-	public void updateUpload(StudyUpload studyUpload) {
+	public void updateUpload(Upload studyUpload) {
 		Subject currentUser = SecurityUtils.getSubject();
 		String userId = (String) currentUser.getPrincipal();
 		studyUpload.setUserId(userId);

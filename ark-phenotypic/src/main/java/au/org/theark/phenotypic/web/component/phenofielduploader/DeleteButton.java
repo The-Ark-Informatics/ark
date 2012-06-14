@@ -25,14 +25,14 @@ import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 
 public class DeleteButton extends AjaxDeleteButton {
 	private static final long	serialVersionUID	= 4966354164332401574L;
 	private transient Logger	log					= LoggerFactory.getLogger(DeleteButton.class);
 
-	DeleteButton(final StudyUpload upload, Component component) {
+	DeleteButton(final Upload upload, Component component) {
 		// Properties contains:
 		// confirmDelete=Are you sure you want to delete?
 		// delete=Delete

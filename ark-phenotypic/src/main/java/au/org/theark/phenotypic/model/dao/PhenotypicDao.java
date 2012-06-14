@@ -49,29 +49,19 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.pheno.entity.DelimiterType;
-import au.org.theark.core.model.pheno.entity.Field;
-import au.org.theark.core.model.pheno.entity.FieldData;
-import au.org.theark.core.model.pheno.entity.FieldDataLog;
-import au.org.theark.core.model.pheno.entity.FieldPhenoCollection;
-import au.org.theark.core.model.pheno.entity.FieldSummary;
-import au.org.theark.core.model.pheno.entity.FieldType;
-import au.org.theark.core.model.pheno.entity.FieldUpload;
-import au.org.theark.core.model.pheno.entity.FileFormat;
+import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
 import au.org.theark.core.model.pheno.entity.PhenoData;
-import au.org.theark.core.model.pheno.entity.PhenoUpload;
-import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
-import au.org.theark.core.model.pheno.entity.Status;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.vo.CustomFieldGroupVO;
@@ -91,11 +81,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public void setiArkCommonService(IArkCommonService<Void> iArkCommonService) {
 		this.iArkCommonService = iArkCommonService;
 	}
-	
-	public PhenoCollection getPhenoCollection(Long id) {
-		PhenoCollection collection = (PhenoCollection) getSession().get(PhenoCollection.class, id);
-		return collection;
-	}
 
 	public java.util.Collection<PhenoCollection> getPhenoCollectionByStudy(Study study) {
 		Criteria criteria = getSession().createCriteria(PhenoCollection.class);
@@ -108,8 +93,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		java.util.List<PhenoCollection> collectionList = criteria.list();
 		return collectionList;
 	}
-
-	public java.util.Collection<PhenoCollection> searchPhenotypicCollection(PhenoCollection collectionToMatch) {
+/*
+	public java.util.Collection<PhenoCollection> searchPhenoCollection(PhenoCollection collectionToMatch) {
 		Criteria collectionCriteria = getSession().createCriteria(PhenoCollection.class);
 
 		if (collectionToMatch.getId() != null) {
@@ -157,8 +142,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 
 		collectionCriteria.addOrder(Order.asc("name"));
-		java.util.Collection<PhenoCollection> phenotypicCollectionCollection = collectionCriteria.list();
-		return phenotypicCollectionCollection;
+		java.util.Collection<PhenoCollection> phenoCollectionCollection = collectionCriteria.list();
+		return phenoCollectionCollection;
 	}
 
 	public PhenoCollectionVO getPhenoCollectionAndFields(Long id) {
@@ -183,16 +168,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return fieldPhenoCollectionFields;
 	}
 
-	public void createPhenoCollection(PhenoCollection collection) {
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
-
-		collection.setInsertTime(dateNow);
-		collection.setUserId(currentUser.getPrincipal().toString());
-
-		getSession().save(collection);
-	}
-
 	public void createPhenoCollection(PhenoCollectionVO collectionVo) {
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
@@ -215,17 +190,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			fieldPhenoCollection = new FieldPhenoCollection();
 		}
 	}
-
-	public void updatePhenoCollection(PhenoCollection collection) {
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
-
-		collection.setUserId(currentUser.getPrincipal().toString());
-		collection.setUpdateTime(dateNow);
-
-		getSession().update(collection);
-	}
-
 	public void updatePhenoCollection(PhenoCollectionVO collectionVo) {
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
@@ -253,6 +217,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			session.save(fieldPhenoCollection);
 		}
 	}
+
+*/
 
 	/**
 	 * <p>
@@ -305,7 +271,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			throw new EntityCannotBeRemoved("The Collection: " + collection.getName() + " has data associated and cannot be removed.");
 		}
 	}
-
+/*
 	public void deletePhenoCollection(PhenoCollectionVO collectionVo) {
 		Session session = getSession();
 
@@ -445,7 +411,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 		return fieldType;
 	}
-
 	public void createFieldType(FieldType fieldType) {
 		getSession().save(fieldType);
 	}
@@ -635,22 +600,22 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public void updateStatus(Status status) {
 		getSession().update(status);
-	}
+	}*/
 
-	public void createUpload(PhenoUpload phenoUpload) {
+	public void createUpload(Upload phenoUpload) {
 		Session session = getSession();
 
-		currentUser = SecurityUtils.getSubject();
+		//currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
-		phenoUpload.setInsertTime(dateNow);
-		phenoUpload.setUserId(currentUser.getPrincipal().toString());
+		//phenoUpload.setInsertTime(dateNow);
+		//phenoUpload.setUserId(currentUser.getPrincipal().toString());
 
 		if (phenoUpload.getStartTime() == null)
 			phenoUpload.setStartTime(dateNow);
 
 		session.save(phenoUpload);
 	}
-
+/*
 	public void createUpload(UploadVO phenoUploadVo) {
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
@@ -684,17 +649,17 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			session.save(fieldUpload);
 		}
 	}
-
-	public void updateUpload(PhenoUpload upload) {
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
-		upload.setUpdateTime(dateNow);
-		upload.setUpdateUserId(currentUser.getPrincipal().toString());
+*/
+	public void updateUpload(Upload upload) {
+		//currentUser = SecurityUtils.getSubject();
+		//dateNow = new Date(System.currentTimeMillis());
+		//upload.setUpdateTime(dateNow);
+		//upload.setUpdateUserId(currentUser.getPrincipal().toString());
 
 		getSession().update(upload);
 	}
 
-	public void deleteUpload(PhenoUpload upload) throws ArkSystemException, EntityCannotBeRemoved {
+	/*public void deleteUpload(Upload upload) throws ArkSystemException, EntityCannotBeRemoved {
 		if (!uploadHasData(upload)) {
 			getSession().delete(upload);
 		}
@@ -786,7 +751,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		 * TODO Change to FieldFieldGroupUpload if (phenoCollectionUploadToMatch.getCollection() != null) {
 		 * criteria.add(Restrictions.ilike(au.org.theark
 		 * .phenotypic.web.Constants.COLLECTION_IMPORT_COLLECTION,phenoCollectionUploadToMatch.getCollection())); }
-		 */
+		 *
 
 		java.util.Collection<PhenoCollectionUpload> phenoCollectionUploadCollection = criteria.list();
 		return phenoCollectionUploadCollection;
@@ -935,6 +900,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return uploadCollection;
 	}
 
+*/
 	public java.util.Collection<FileFormat> getFileFormats() {
 		Criteria criteria = getSession().createCriteria(FileFormat.class);
 		java.util.Collection<FileFormat> fileFormatCollection = criteria.list();
@@ -946,7 +912,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		java.util.Collection<DelimiterType> delimiterTypeCollection = criteria.list();
 		return delimiterTypeCollection;
 	}
-
+/*
 	public Collection<PhenoUpload> searchUploadByCollection(PhenoCollection phenoCollection) {
 		Criteria criteria = getSession().createCriteria(PhenoCollectionUpload.class);
 
@@ -999,33 +965,18 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public void updatePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload) {
 		getSession().update(phenoCollectionUpload);
 	}
-
+*/
 	public long getCountOfFieldsInStudy(Study study) {
-		int count = 0;
-
-		if (study.getId() != null) {
-			FieldSummary fieldSummary = new FieldSummary();
-			fieldSummary = (FieldSummary) getSession().get(FieldSummary.class, study.getId());
-			if (fieldSummary != null)
-				count = fieldSummary.getFields();
-		}
-
-		return count;
+		//TODO implement
+		return -1L;
 	}
 
 	public long getCountOfFieldsWithDataInStudy(Study study) {
-		int count = 0;
-
-		if (study.getId() != null) {
-			FieldSummary fieldSummary = new FieldSummary();
-			fieldSummary = (FieldSummary) getSession().get(FieldSummary.class, study.getId());
-			if (fieldSummary != null)
-				count = fieldSummary.getFieldsWithData();
-		}
-
-		return count;
+		//TODO implement
+		return -1L;
+		
 	}
-
+/*
 	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected) {
 		Criteria criteria = getSession().createCriteria(FieldData.class);
 //		String dateStr = dateCollected.toString();
@@ -1053,7 +1004,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		java.util.Collection<PhenoUpload> phenoUploadCollection = criteria.list();
 		return phenoUploadCollection;
 	}
-
+*/
 	public long getCountOfCollectionsInStudy(Study study) {
 		int count = 0;
 
@@ -1077,7 +1028,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			for (Iterator iterator = phenoCollectionColn.iterator(); iterator.hasNext();) {
 				PhenoCollection phenoCollection = (PhenoCollection) iterator.next();
 
-				Criteria criteria = getSession().createCriteria(FieldData.class);
+				Criteria criteria = getSession().createCriteria(PhenoData.class);
 				criteria.add(Restrictions.eq("collection", phenoCollection));
 				ProjectionList projList = Projections.projectionList();
 				projList.add(Projections.countDistinct("collection"));
@@ -1089,7 +1040,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		return count;
 	}
-
+/*
 	public FieldPhenoCollection getFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection) {
 		Criteria criteria = getSession().createCriteria(FieldPhenoCollection.class);
 
@@ -1177,12 +1128,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		return criteria;
 	}
-
+*/
 	public DelimiterType getDelimiterType(Long id) {
 		DelimiterType delimiterType = (DelimiterType) getSession().get(DelimiterType.class, id);
 		return delimiterType;
 	}
-
+/*
 	public int clearPhenoCollection(PhenoCollection phenoCollection) {
 		int rowsDeleted = 0;
 		if (phenoCollection != null) {
@@ -1255,9 +1206,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		return criteria.list().size() > 0;
 	}
-
+*/
 	public boolean phenoCollectionHasData(PhenoCollection phenoCollection) {
-		Criteria criteria = getSession().createCriteria(FieldData.class);
+		Criteria criteria = getSession().createCriteria(PhenoData.class);
 
 		if (phenoCollection != null) {
 			criteria.add(Restrictions.eq("collection", phenoCollection));
@@ -1265,7 +1216,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		return criteria.list().size() > 0;
 	}
-
+/*
 	public boolean uploadHasData(PhenoUpload upload) {
 		boolean hasData = false;
 
@@ -1305,7 +1256,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		return phenoCollectionUpload.getCollection();
 	}
-
+*/
 	public String getDelimiterTypeByDelimiterChar(char delimiterCharacter) {
 		String delimiterTypeName = null;
 		Criteria criteria = getSession().createCriteria(DelimiterType.class);
@@ -1376,11 +1327,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		getSession().update(phenoData);
 	}
 
-	public PhenotypicCollection getPhenotypicCollection(Long id) {
-		return (PhenotypicCollection) getSession().get(PhenotypicCollection.class, id);
+	public PhenoCollection getPhenoCollection(Long id) {
+		return (PhenoCollection) getSession().get(PhenoCollection.class, id);
 	}
 
-	public long getPhenoDataCount(PhenotypicCollection phenoCollection) {
+	public long getPhenoDataCount(PhenoCollection phenoCollection) {
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.createAlias("customFieldGroup", "qnaire");
 		criteria.add(Restrictions.eq("qnaire.id", phenoCollection.getQuestionnaire().getId()));
@@ -1389,7 +1340,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return count.intValue();
 	}
 
-	public List<PhenoData> getPhenoDataList(PhenotypicCollection phenoCollection, int first, int count) {
+	public List<PhenoData> getPhenoDataList(PhenoCollection phenoCollection, int first, int count) {
 		
 		List<PhenoData> phenoDataList = new ArrayList<PhenoData>();
 
@@ -1408,15 +1359,15 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 //		 WHERE pc.id = 1;
 
 		/*		
-		 * WARNING: Do no try to do a HQL WITH clause between "pd.phenotypicCollection.id" and another table's column!
+		 * WARNING: Do no try to do a HQL WITH clause between "pd.phenoCollection.id" and another table's column!
 		 * Even though it looks like it should work in SQL (as above), for an unknown reason HQL parsing will fail - like this:
 		 * ----
 		 * Caused by: org.hibernate.hql.ast.QuerySyntaxException: with-clause referenced two different from-clause elements 
 		 * [  FROM au.org.theark.core.model.study.entity.CustomFieldDisplay AS cfd  
 		 * INNER JOIN cfd.customFieldGroup cfg  
-		 * INNER JOIN cfg.phenotypicCollection pc   
+		 * INNER JOIN cfg.phenoCollection pc   
 		 * LEFT JOIN cfd.phenoData AS pd   
-		 * WITH pd.phenotypicCollection.id = pc.id 
+		 * WITH pd.phenoCollection.id = pc.id 
 		 * WHERE pc.id = :pcId ORDER BY cfd.sequence ]
 		 * ----
 		 * Thus the present work-around is to use an argument "pcId" for the WITH criteria.
@@ -1425,9 +1376,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		sb.append("SELECT cfd, pd ");
 		sb.append("  FROM " + CustomFieldDisplay.class.getName() + " AS cfd ");
 		sb.append(" INNER JOIN cfd.customFieldGroup qnaire ");
-		sb.append(" INNER JOIN qnaire.phenotypicCollection pc ");
+		sb.append(" INNER JOIN qnaire.phenoCollection pc ");
 		sb.append("  LEFT JOIN cfd.phenoData AS pd ");
-		sb.append("  WITH pd.phenotypicCollection.id = :pcId ");
+		sb.append("  WITH pd.phenoCollection.id = :pcId ");
 		sb.append(" WHERE pc.id = :pcId ");
 		sb.append(" ORDER BY cfd.sequence ");
 		
@@ -1482,10 +1433,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 	}
 
-	public long getPhenotypicCollectionCount(PhenoDataCollectionVO collectionCriteria) {
-		Criteria criteria = getSession().createCriteria(PhenotypicCollection.class);
+	public long getPhenoCollectionCount(PhenoDataCollectionVO collectionCriteria) {
+		Criteria criteria = getSession().createCriteria(PhenoCollection.class);
 		criteria.createAlias("questionnaire", "qnaire");
-		criteria.add(Restrictions.eq("linkSubjectStudy", collectionCriteria.getPhenotypicCollection().getLinkSubjectStudy()));
+		criteria.add(Restrictions.eq("linkSubjectStudy", collectionCriteria.getPhenoCollection().getLinkSubjectStudy()));
 		// Just a precaution (PhenoCollection to should always map to a CustomFieldGroup where the ArkFunction will correspond to Pheno) 
 		criteria.add(Restrictions.eq("qnaire.arkFunction", collectionCriteria.getArkFunction()));	
 		criteria.setProjection(Projections.rowCount());
@@ -1493,42 +1444,46 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return count;
 	}
 
-	public List<PhenotypicCollection> searchPageablePhenotypicCollection(PhenoDataCollectionVO collectionCriteria, int first, int count) {
+	public List<PhenoCollection> searchPageablePhenoCollection(PhenoDataCollectionVO collectionCriteria, int first, int count) {
 		
-		List<PhenotypicCollection> resultList = new ArrayList<PhenotypicCollection>();
-//		StringBuffer sb = new StringBuffer();
-//		sb.append("SELECT qnaire, pc ");
-//		sb.append("  FROM " + CustomFieldGroup.class.getName() + " AS qnaire ");
-//		sb.append("  LEFT JOIN qnaire.phenotypicCollection as pc ");
-//		sb.append("  WITH pc.linkSubjectStudy.id = :subjectId ");
-//		sb.append(" WHERE qnaire.study.id = :studyId " );
-//		sb.append("   AND qnaire.arkFunction.id = :functionId ");
-//		sb.append("   AND qnaire.published = true ");
-//		
-//		Query query = getSession().createQuery(sb.toString());
-//		query.setParameter("subjectId", collectionCriteria.getPhenotypicCollection().getLinkSubjectStudy().getId());
-//		query.setParameter("studyId", collectionCriteria.getCustomFieldGroup().getStudy().getId());
-//		query.setParameter("functionId", collectionCriteria.getCustomFieldGroup().getArkFunction().getId());
-//		query.setFirstResult(first);
-//		query.setMaxResults(count);
-//		
-//		List<Object[]> listOfObjects = query.list();
-//		for (Object[] objects : listOfObjects) {
-//			CustomFieldGroup questionnaire = new CustomFieldGroup();
-//			PhenotypicCollection pc = new PhenotypicCollection();
-//			if (objects.length > 0 && objects.length >= 1) {
-//				questionnaire = (CustomFieldGroup)objects[0];
-//				if (objects[1] != null){
-//					pc = (PhenotypicCollection)objects[1];
-//				} else {
-//					pc.setQuestionnaire(questionnaire);
-//				}
-//				resultList.add(pc);	
-//			}
-//		}
-		Criteria criteria = getSession().createCriteria(PhenotypicCollection.class);
+		List<PhenoCollection> resultList = new ArrayList<PhenoCollection>();
+		StringBuffer sb = new StringBuffer();
+		sb.append("SELECT qnaire, pc ");
+		sb.append("  FROM " + CustomFieldGroup.class.getName() + " AS qnaire ");
+		sb.append("  LEFT JOIN qnaire.phenoCollection as pc ");
+		sb.append("  WITH pc.linkSubjectStudy.id = :subjectId ");
+		sb.append(" WHERE qnaire.study.id = :studyId " );
+		sb.append("   AND qnaire.arkFunction.id = :functionId ");
+		sb.append("   AND qnaire.published = true ");
+		
+		Query query = getSession().createQuery(sb.toString());
+		query.setParameter("subjectId", collectionCriteria.getPhenoCollection().getLinkSubjectStudy().getId());
+		query.setParameter("studyId", collectionCriteria.getCustomFieldGroup().getStudy().getId());
+		log.info("colcrit ark=" + collectionCriteria.getArkFunction());
+		long id = collectionCriteria.getArkFunction().getId();
+		log.info("id=" + id);
+		query.setParameter("functionId",id);
+		log.info("gday");
+		query.setFirstResult(first);
+		query.setMaxResults(count);
+		
+		List<Object[]> listOfObjects = query.list();
+		for (Object[] objects : listOfObjects) {
+			CustomFieldGroup questionnaire = new CustomFieldGroup();
+			PhenoCollection pc = new PhenoCollection();
+			if (objects.length > 0 && objects.length >= 1) {
+				questionnaire = (CustomFieldGroup)objects[0];
+				if (objects[1] != null){
+					pc = (PhenoCollection)objects[1];
+				} else {
+					pc.setQuestionnaire(questionnaire);
+				}
+				resultList.add(pc);	
+			}
+		}
+		Criteria criteria = getSession().createCriteria(PhenoCollection.class);
 		criteria.createAlias("questionnaire", "qnaire");
-		criteria.add(Restrictions.eq("linkSubjectStudy", collectionCriteria.getPhenotypicCollection().getLinkSubjectStudy()));
+		criteria.add(Restrictions.eq("linkSubjectStudy", collectionCriteria.getPhenoCollection().getLinkSubjectStudy()));
 		// Just a precaution (PhenoCollection to should always map to a CustomFieldGroup where the ArkFunction will correspond to Pheno) 
 		criteria.add(Restrictions.eq("qnaire.arkFunction", collectionCriteria.getArkFunction()));	
 		criteria.setFirstResult(first);
@@ -1549,7 +1504,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		
 	}
 
-	public List<QuestionnaireStatus> getPhenotypicCollectionStatusList() {
+	public List<QuestionnaireStatus> getPhenoCollectionStatusList() {
 		List<QuestionnaireStatus> resultList = new ArrayList<QuestionnaireStatus>(0);
 		Criteria criteria = getSession().createCriteria(QuestionnaireStatus.class);
 		resultList = criteria.list();
@@ -1679,17 +1634,17 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return (Long)criteria.uniqueResult();
 	}
 
-	public void createPhenotypicCollection(PhenotypicCollection phenotypicCollection) {
-		getSession().save(phenotypicCollection);
+	public void createPhenoCollection(PhenoCollection phenoCollection) {
+		getSession().save(phenoCollection);
 	}
 
-	public void updatePhenotypicCollection(PhenotypicCollection phenotypicCollection) {
-		getSession().update(phenotypicCollection);
+	public void updatePhenoCollection(PhenoCollection phenoCollection) {
+		getSession().update(phenoCollection);
 	}
 	
-	public void deletePhenotypicCollection(PhenotypicCollection phenotypicCollection) {
+	public void deletePhenoCollectionRegardlessOfData(PhenoCollection phenoCollection) {
 		// This relies on CASCADE ON DELETE on the database [pheno].[pheno_data] table
-		getSession().delete(phenotypicCollection);
+		getSession().delete(phenoCollection);
 	}
 	
 	public void deleteCustomFieldGroup(CustomFieldGroupVO customFieldGroupVO){
@@ -1731,15 +1686,15 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		
 	}
 
-	public QuestionnaireStatus getPhenotypicCollectionStatusByName(String statusName) {
+	public QuestionnaireStatus getPhenoCollectionStatusByName(String statusName) {
 		Criteria criteria = getSession().createCriteria(QuestionnaireStatus.class);
 		criteria.add(Restrictions.eq("name", statusName).ignoreCase());
 		QuestionnaireStatus result = (QuestionnaireStatus)criteria.uniqueResult();
 		return result;
 	}
 	
-	public java.util.Collection<StudyUpload> searchUpload(StudyUpload upload) {
-		Criteria criteria = getSession().createCriteria(StudyUpload.class);
+	public java.util.Collection<Upload> searchUpload(Upload upload) {
+		Criteria criteria = getSession().createCriteria(Upload.class);
 
 		if (upload.getId() != null) {
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.UPLOAD_ID, upload.getId()));
@@ -1766,18 +1721,18 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 		
 		criteria.addOrder(Order.desc(au.org.theark.phenotypic.web.Constants.UPLOAD_ID));
-		java.util.Collection<StudyUpload> uploadCollection = criteria.list();
+		java.util.Collection<Upload> uploadCollection = criteria.list();
 
 		return uploadCollection;
 	}
 	
-	public void deleteUpload(StudyUpload studyUpload){
+	public void deleteUpload(Upload studyUpload){
 		//TODO if the upload was successful it must stop the user from removing an uploaded file
 		getSession().delete(studyUpload);
 	}
 	
-	public StudyUpload getStudyUpload(Long id){
-		return (StudyUpload)getSession().get(StudyUpload.class, id);
+	public Upload getUpload(Long id){
+		return (Upload)getSession().get(Upload.class, id);
 	}	
 
 }

@@ -58,7 +58,7 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -384,9 +384,9 @@ public interface IStudyDao {
 
 	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException;
 
-	public StudyUpload refreshUpload(StudyUpload upload);
+	public Upload refreshUpload(Upload upload);
 
-	public StudyUpload getUpload(Long id);
+	public Upload getUpload(Long id);
 	
 	public GenderType getGenderType(Long id);
 	

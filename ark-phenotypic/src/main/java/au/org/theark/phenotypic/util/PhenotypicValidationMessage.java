@@ -19,8 +19,6 @@
 package au.org.theark.phenotypic.util;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.pheno.entity.Field;
-import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.study.entity.CustomField;
 
@@ -28,7 +26,7 @@ import au.org.theark.core.model.study.entity.CustomField;
  * @author cellis
  * 
  */
-public class PhenotypicValidationMessage {
+public class PhenotypicValidationMessage {/*
 	private static StringBuffer	stringBuffer	= null;
 
 	/**
@@ -37,7 +35,7 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataSubjectUidNotFound(String subjectUid) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -53,7 +51,7 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataNotDefinedType(Field field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -74,7 +72,7 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataGreaterThanMaxValue(Field field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -95,7 +93,7 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataLessThanMinValue(Field field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -116,7 +114,7 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataNotInEncodedValues(Field field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -137,7 +135,7 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataNotValidDate(Field field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
@@ -159,11 +157,11 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataNotDefinedType(CustomField field, PhenoData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(fieldData.getPhenotypicCollection().getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(fieldData.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
 		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
@@ -180,7 +178,7 @@ public class PhenotypicValidationMessage {
 	 * @param subjectUid
 	 * @param dateCollectedStr
 	 * @return String
-	 */
+	 *
 	public static String dateCollectedNotValidDate(String subjectUid, String dateCollectedStr) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
@@ -308,7 +306,7 @@ public class PhenotypicValidationMessage {
 	 * @param subjectUid
 	 * @param statusStr
 	 * @return String
-	 */
+	 *
 	public static String statusNotValid(String subjectUid, String statusStr) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
@@ -327,12 +325,12 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataNotValidDate(CustomField field, PhenoData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
 		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(fieldData.getPhenotypicCollection().getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(fieldData.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
 		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
@@ -349,11 +347,11 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataNotInEncodedValues(CustomField field, PhenoData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(fieldData.getPhenotypicCollection().getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(fieldData.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
 		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
@@ -370,11 +368,11 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataGreaterThanMaxValue(CustomField field, PhenoData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(fieldData.getPhenotypicCollection().getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(fieldData.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
 		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
@@ -391,11 +389,11 @@ public class PhenotypicValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataLessThanMinValue(CustomField field, PhenoData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(fieldData.getPhenotypicCollection().getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(fieldData.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
 		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
@@ -405,5 +403,5 @@ public class PhenotypicValidationMessage {
 		stringBuffer.append(field.getMinValue());
 		return (stringBuffer.toString());
 	}
-
+*/
 }

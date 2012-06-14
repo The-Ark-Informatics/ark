@@ -61,7 +61,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
@@ -518,23 +518,23 @@ public interface IStudyDao {
 	
 	
 	/**
-	 * Retrieves a list of StudyUpload for the given criteria
+	 * Retrieves a list of Upload for the given criteria
 	 * @param uploadCriteria
 	 * @return
 	 */
-	public List<StudyUpload> searchUploads(StudyUpload uploadCriteria);
+	public List<Upload> searchUploads(Upload uploadCriteria);
 
 	/**
-	 * Create a new StudyUpload 
+	 * Create a new Upload 
 	 * @param studyUpload
 	 */
-	public void createUpload(StudyUpload studyUpload);
+	public void createUpload(Upload studyUpload);
 
 	/**
-	 * Update a new StudyUpload 
+	 * Update a new Upload 
 	 * @param studyUpload
 	 */
-	public void updateUpload(StudyUpload studyUpload);
+	public void updateUpload(Upload studyUpload);
 	
 	/**
 	 * Get the delimiter name by the character

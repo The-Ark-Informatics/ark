@@ -83,7 +83,7 @@ public class PhenoDataUploadExecutor {
 
 	public void run() throws Exception {
 		log.info("------- Initializing SchedulerFactory ---------");
-
+/*
 		// First we must get a reference to a scheduler
 		SchedulerFactory sf = new StdSchedulerFactory();
 		Scheduler sched = sf.getScheduler();
@@ -116,6 +116,6 @@ public class PhenoDataUploadExecutor {
 
 		// All of the jobs have been added to the scheduler, but none of the jobs will run until the scheduler has been started
 		log.info("------- Starting Scheduler ----------------");
-		sched.start();
+		sched.start();*/
 	}
 }

@@ -27,7 +27,7 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 
 /**
  * @author cellis
@@ -35,26 +35,26 @@ import au.org.theark.core.model.study.entity.StudyUpload;
  */
 @SuppressWarnings("serial")
 public class UploadVO implements Serializable {
-	private StudyUpload								upload;
+	private Upload								upload;
 	private List<String>								uidsToUpload;
 	private FileFormat								fileFormat;
 	private String										uploadType;//TODO could create type/enum/ref table
 	private FileUpload								fileUpload;
 	private Study										study;
-	private java.util.Collection<StudyUpload>	uploadCollection;
+	private java.util.Collection<Upload>	uploadCollection;
 	private int											mode;
 	private java.util.Collection<String>		validationMessages;
 	private Boolean									updateChkBox;
 
 	public UploadVO() {
-		upload = new StudyUpload();
-		setUploadCollection(new ArrayList<StudyUpload>());
+		upload = new Upload();
+		setUploadCollection(new ArrayList<Upload>());
 	}
 
 	/**
 	 * @return the upload
 	 */
-	public StudyUpload getUpload() {
+	public Upload getUpload() {
 		return upload;
 	}
 
@@ -62,7 +62,7 @@ public class UploadVO implements Serializable {
 	 * @param field
 	 *           the field to set
 	 */
-	public void setUpload(StudyUpload upload) {
+	public void setUpload(Upload upload) {
 		this.upload = upload;
 	}
 
@@ -70,14 +70,14 @@ public class UploadVO implements Serializable {
 	 * @param uploadCollection
 	 *           the uploadCollection to set
 	 */
-	public void setUploadCollection(java.util.Collection<StudyUpload> uploadCollection) {
+	public void setUploadCollection(java.util.Collection<Upload> uploadCollection) {
 		this.uploadCollection = uploadCollection;
 	}
 
 	/**
 	 * @return the uploadCollection
 	 */
-	public java.util.Collection<StudyUpload> getUploadCollection() {
+	public java.util.Collection<Upload> getUploadCollection() {
 		return uploadCollection;
 	}
 

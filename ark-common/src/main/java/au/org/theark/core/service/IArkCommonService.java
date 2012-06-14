@@ -75,7 +75,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
@@ -575,15 +575,15 @@ public interface IArkCommonService<T> {
 	public Collection<DelimiterType> getDelimiterTypes();
 	public Collection<UploadType> getUploadTypes();
 
-	public List<StudyUpload> searchUploads(StudyUpload uploadCriteria);
+	public List<Upload> searchUploads(Upload uploadCriteria);
 
 	public CustomField getCustomFieldByNameStudyArkFunction(String string, Study study, ArkFunction arkFunction);
 
 	public UnitType getUnitTypeByNameAndArkFunction(String string, ArkFunction arkFunction);
 
-	public void createUpload(StudyUpload studyUpload);
+	public void createUpload(Upload studyUpload);
 
-	public void updateUpload(StudyUpload studyUpload);
+	public void updateUpload(Upload studyUpload);
 	
 	public Blob createBlob(byte[] bytes);
 	

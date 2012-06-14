@@ -26,8 +26,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.dao.LobUtil;
-import au.org.theark.core.model.pheno.entity.PhenoUpload;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 
 public class UploadReport extends HibernateSessionDao{
 	private StringBuffer	report	= new StringBuffer();
@@ -75,20 +74,7 @@ public class UploadReport extends HibernateSessionDao{
 		report.append("\n");
 	}
 
-	public void appendDetails(PhenoUpload phenoUpload) {
-		append("Study: ");
-		appendAndNewLine(phenoUpload.getStudy().getName());
-		append("UserID: ");
-		appendAndNewLine(SecurityUtils.getSubject().getPrincipal().toString());
-		append("Filename: ");
-		appendAndNewLine(phenoUpload.getFilename());
-		append("File Format: ");
-		appendAndNewLine(phenoUpload.getFileFormat().getName());
-		append("Delimiter Type: ");
-		appendAndNewLine(phenoUpload.getDelimiterType().getName());
-	}
-
-	public void appendDetails(StudyUpload upload) {
+	public void appendDetails(Upload upload) {
 		append("Study: ");
 		appendAndNewLine(upload.getStudy().getName());
 		append("UserID: ");

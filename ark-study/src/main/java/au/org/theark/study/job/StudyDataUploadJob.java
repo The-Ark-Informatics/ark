@@ -30,7 +30,7 @@ import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.study.service.IStudyService;
 
@@ -91,7 +91,7 @@ public class StudyDataUploadJob implements Job {
 		try {
 			Date startTime = new Date(System.currentTimeMillis());
 			StringBuffer uploadReport = iStudyService.uploadAndReportMatrixSubjectFile(inputStream, size, fileFormat, delimiter, studyId, uidsToUpdate);
-			StudyUpload upload = iStudyService.getUpload(uploadId);
+			Upload upload = iStudyService.getUpload(uploadId);
 			save(upload, uploadReport.toString(), originalReport, startTime);
 		}
 		/*catch (FileFormatException e) {	}catch (ArkSystemException e) {	}*/
@@ -101,7 +101,7 @@ public class StudyDataUploadJob implements Job {
 		}
 	}
 
-	private void save(StudyUpload upload, String report, String originalReport, Date startTime) {
+	private void save(Upload upload, String report, String originalReport, Date startTime) {
 		iStudyService.refreshUpload(upload);
 		byte[] bytes = (originalReport + report).getBytes();
 		//Blob uploadReportBlob = iArkCommonService.createBlob(bytes);

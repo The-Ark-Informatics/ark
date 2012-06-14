@@ -106,7 +106,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
@@ -959,11 +959,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return customFieldDao.getUnitTypeByNameAndArkFunction(name, arkFunction);
 	}
 
-	public List<StudyUpload> searchUploads(StudyUpload uploadCriteria) {
+	public List<Upload> searchUploads(Upload uploadCriteria) {
 		return studyDao.searchUploads(uploadCriteria);
 	}
 
-	public void createUpload(StudyUpload studyUpload) {
+	public void createUpload(Upload studyUpload) {
 		//log.debug("about to studydao.createupload");
 		studyDao.createUpload(studyUpload);
 
@@ -976,7 +976,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	}
 
-	public void updateUpload(StudyUpload studyUpload) {
+	public void updateUpload(Upload studyUpload) {
 		studyDao.updateUpload(studyUpload);
 		String userId = studyUpload.getUserId();
 		AuditHistory ah = new AuditHistory();

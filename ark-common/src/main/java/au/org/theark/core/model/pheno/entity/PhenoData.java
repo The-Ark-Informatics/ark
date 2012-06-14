@@ -33,7 +33,7 @@ public class PhenoData implements Serializable, ICustomFieldData {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private CustomFieldDisplay customFieldDisplay;
-	private PhenotypicCollection phenotypicCollection;
+	private PhenoCollection PhenoCollection;
 	private String textDataValue;
 	private Date dateDataValue;
 	private Double numberDataValue;
@@ -95,13 +95,13 @@ public class PhenoData implements Serializable, ICustomFieldData {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PHENO_COLLECTION_ID")
-	public PhenotypicCollection getPhenotypicCollection() {
-		return phenotypicCollection;
+	public PhenoCollection getPhenoCollection() {
+		return PhenoCollection;
 	}
 
 
-	public void setPhenotypicCollection(PhenotypicCollection phenotypicCollection) {
-		this.phenotypicCollection = phenotypicCollection;
+	public void setPhenoCollection(PhenoCollection PhenoCollection) {
+		this.PhenoCollection = PhenoCollection;
 	}
 	
 	@Column(name="NUMBER_DATA_VALUE")

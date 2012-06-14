@@ -39,7 +39,9 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
@@ -103,23 +105,23 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 
 	protected void refreshEntityFromBackend() {
 		// Get the Biospecimen entity fresh from backend
-		PhenotypicCollection pc = cpModel.getObject().getPhenotypicCollection();
+		PhenoCollection pc = cpModel.getObject().getPhenoCollection();
 
 		if (pc.getId() != null) {
-			pc = iPhenotypicService.getPhenotypicCollection(pc.getId());
-			cpModel.getObject().setPhenotypicCollection(pc);
+			pc = iPhenotypicService.getPhenoCollection(pc.getId());
+			cpModel.getObject().setPhenoCollection(pc);
 			if (pc == null) {
 				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
 			}
 		}
 	}
 
-	private boolean initialisePhenotypicCollectionDataEntry() {
+	private boolean initialisePhenoCollectionDataEntry() {
 		boolean replacePanel = false;
-		PhenotypicCollection pc = cpModel.getObject().getPhenotypicCollection();
+		PhenoCollection pc = cpModel.getObject().getPhenoCollection();
 		if (!(phenoCollectionDataEntryPanel instanceof PhenoDataDataViewPanel)) {
 			CompoundPropertyModel<PhenoDataCollectionVO> phenoDataCpModel = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
-			phenoDataCpModel.getObject().setPhenotypicCollection(pc);
+			phenoDataCpModel.getObject().setPhenoCollection(pc);
 			phenoDataCpModel.getObject().setArkFunction(cpModel.getObject().getArkFunction());
 			PhenoDataDataViewPanel phenoCFDataEntryPanel = new PhenoDataDataViewPanel("phenoCFDataEntryPanel", phenoDataCpModel).initialisePanel(au.org.theark.core.Constants.ROWS_PER_PAGE);
 			
@@ -144,13 +146,13 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	}
 	
 	public void initialiseDetailForm() {
-		idTxtFld = new TextField<String>("phenotypicCollection.id");
+		idTxtFld = new TextField<String>("PhenoCollection.id");
 		idTxtFld.setEnabled(false);	// automatically generated
 		
-		nameTxtFld = new TextField<String>("phenotypicCollection.name");
-		descriptionTxtAreaFld = new TextArea<String>("phenotypicCollection.description");
-		recordDateTxtFld = new DateTextField("phenotypicCollection.recordDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		reviewedDateTxtFld = new DateTextField("phenotypicCollection.reviewedDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		nameTxtFld = new TextField<String>("PhenoCollection.name");
+		descriptionTxtAreaFld = new TextArea<String>("PhenoCollection.description");
+		recordDateTxtFld = new DateTextField("PhenoCollection.recordDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		reviewedDateTxtFld = new DateTextField("PhenoCollection.reviewedDate", au.org.theark.core.Constants.DD_MM_YYYY);
 
 		ArkDatePicker recordDatePicker = new ArkDatePicker();
 		recordDatePicker.bind(recordDateTxtFld);
@@ -167,7 +169,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		dataEntryWMC = new WebMarkupContainer("dataEntryWMC");
 		dataEntryWMC.setOutputMarkupId(true);
 		
-		initialisePhenotypicCollectionDataEntry();
+		initialisePhenoCollectionDataEntry();
 
 		attachValidators();
 		addComponents();
@@ -185,7 +187,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		
 		List<CustomFieldGroup> questionnaireList = iArkCommonService.getCustomFieldGroups(cfgForStudyCriteria, 0, Integer.MAX_VALUE);
 		ChoiceRenderer<CustomFieldGroup> choiceRenderer = new ChoiceRenderer<CustomFieldGroup>(Constants.PHENO_COLLECTION_NAME, Constants.PHENO_COLLECTION_ID);
-		questionnaireDdc = new DropDownChoice<CustomFieldGroup>("phenotypicCollection.questionnaire", (List<CustomFieldGroup>) questionnaireList, choiceRenderer);
+		questionnaireDdc = new DropDownChoice<CustomFieldGroup>("PhenoCollection.questionnaire", (List<CustomFieldGroup>) questionnaireList, choiceRenderer);
 		questionnaireDdc.setNullValid(false);
 		if (!isNew()) {
 			questionnaireDdc.setEnabled(false);	//can't change questionnaire after creating the phenoCollection
@@ -194,17 +196,17 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 
 	private void initStatusDdc() {
 		// Get a list of status
-		List<QuestionnaireStatus> statusList = iPhenotypicService.getPhenotypicCollectionStatusList();
+		List<QuestionnaireStatus> statusList = iPhenotypicService.getPhenoCollectionStatusList();
 		ChoiceRenderer<QuestionnaireStatus> choiceRenderer = new ChoiceRenderer<QuestionnaireStatus>("name", "id");
-		statusDdc = new DropDownChoice<QuestionnaireStatus>("phenotypicCollection.status", statusList, choiceRenderer);
+		statusDdc = new DropDownChoice<QuestionnaireStatus>("PhenoCollection.status", statusList, choiceRenderer);
 		statusDdc.setNullValid(false);
 	}
 
 	private void initReviewedByDdc() {
 		List<ArkUser> arkUserList = new ArrayList<ArkUser>(0);
-		arkUserList = iArkCommonService.getArkUserListByStudy(cpModel.getObject().getPhenotypicCollection().getLinkSubjectStudy().getStudy());
+		arkUserList = iArkCommonService.getArkUserListByStudy(cpModel.getObject().getPhenoCollection().getLinkSubjectStudy().getStudy());
 		ChoiceRenderer<ArkUser> choiceRenderer = new ChoiceRenderer<ArkUser>("ldapUserName", "id");
-		reviewedByDdc = new DropDownChoice<ArkUser>("phenotypicCollection.reviewedBy", arkUserList, choiceRenderer);
+		reviewedByDdc = new DropDownChoice<ArkUser>("PhenoCollection.reviewedBy", arkUserList, choiceRenderer);
 	}
 
 	protected void attachValidators() {
@@ -232,17 +234,17 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 
 	@Override
 	protected void onSave(AjaxRequestTarget target) {
-		if (cpModel.getObject().getPhenotypicCollection().getId() == null) {
+		if (cpModel.getObject().getPhenoCollection().getId() == null) {
 			// Save
-			iPhenotypicService.createPhenotypicCollection(cpModel.getObject().getPhenotypicCollection());
-			this.info("Phenotypic Collection " + cpModel.getObject().getPhenotypicCollection().getId() + " was created successfully");
+			iPhenotypicService.createCollection(cpModel.getObject().getPhenoCollection());
+			this.info("Phenotypic Collection " + cpModel.getObject().getPhenoCollection().getId() + " was created successfully");
 			processErrors(target);
 
 		}
 		else {
 			// Update
-			iPhenotypicService.updatePhenotypicCollection(cpModel.getObject().getPhenotypicCollection());
-			this.info("Phenotypic Collection " + cpModel.getObject().getPhenotypicCollection().getId() + " was updated successfully");
+			iPhenotypicService.updateCollection(cpModel.getObject().getPhenoCollection());
+			this.info("Phenotypic Collection " + cpModel.getObject().getPhenoCollection().getId() + " was updated successfully");
 			processErrors(target);
 			
 		}
@@ -251,7 +253,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			((PhenoDataDataViewPanel) phenoCollectionDataEntryPanel).saveCustomData();
 		}
 		// refresh the CF data entry panel (if necessary)
-		if (initialisePhenotypicCollectionDataEntry() == true) {
+		if (initialisePhenoCollectionDataEntry() == true) {
 			dataEntryWMC.addOrReplace(phenoCollectionDataEntryPanel);
 			dataEntryWMC.addOrReplace(dataEntryNavigator);
 		}
@@ -267,8 +269,19 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
-		iPhenotypicService.deletePhenotypicCollection(cpModel.getObject().getPhenotypicCollection());
-		this.info("Phenotypic collection " + cpModel.getObject().getPhenotypicCollection().getId() + " was deleted successfully");
+		
+		try {
+			iPhenotypicService.deletePhenoCollection(cpModel.getObject().getPhenoCollection());
+		}
+		catch (ArkSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (EntityCannotBeRemoved e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.info("Phenotypic collection " + cpModel.getObject().getPhenoCollection().getId() + " was deleted successfully");
 		processErrors(target);
 
 		onClose(target);
@@ -286,7 +299,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 	 */
 	@Override
 	protected boolean isNew() {
-		if (cpModel.getObject().getPhenotypicCollection().getId() == null) {
+		if (cpModel.getObject().getPhenoCollection().getId() == null) {
 			return true;
 		}
 		else {

@@ -1,28 +1,8 @@
-/*******************************************************************************
- * Copyright (c) 2011  University of Western Australia. All rights reserved.
- * 
- * This file is part of The Ark.
- * 
- * The Ark is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 3
- * of the License, or (at your option) any later version.
- * 
- * The Ark is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
 package au.org.theark.core.model.pheno.entity;
 
+import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,221 +11,130 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import au.org.theark.core.model.Constants;
-import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 /**
- * Collection entity. @author MyEclipse Persistence Tools
+ * @author nivedann
+ *
  */
-@SuppressWarnings("serial")
-@Entity(name = "au.org.theark.core.model.pheno.entity.Collection")
-@Table(name = "COLLECTION", schema = Constants.PHENO_TABLE_SCHEMA)
-public class PhenoCollection implements java.io.Serializable {
+@Entity
+@Table(name = "PHENO_COLLECTION", schema = Constants.PHENO_TABLE_SCHEMA)
+public class PhenoCollection implements Serializable{
 
-	private Long								id;
-	private Status								status;
-	private Study								study;
-	private String								name;
-	private String								description;
-	private Date								startDate;
-	private Date								endDate;
-	private String								userId;
-	private Date								insertTime;
-	private String								updateUserId;
-	private Date								updateTime;
+	private static final long	serialVersionUID	= 1L;
 
-	private Set<PhenoCollectionUpload>	phenoCollectionUploads	= new HashSet<PhenoCollectionUpload>(0);
-
-
-	public PhenoCollection() {
-	}
-
-	public PhenoCollection(Long id, Status status, Study study, String userId, Date insertTime) {
-		this.id = id;
-		this.status = status;
-		this.study = study;
-		this.userId = userId;
-		this.insertTime = insertTime;
-	}
-
+	private Long id;
+	private String name;
+	private String description;
+	private LinkSubjectStudy linkSubjectStudy;
+	private Date recordDate;
+	private Date reviewedDate;
+	private ArkUser reviewedBy;
+	private CustomFieldGroup questionnaire;
+	private QuestionnaireStatus status;
+	
 	/**
-	 * full constructor
-	 * 
-	 * @param decodeMasks
+	 * Constructor
 	 */
-	public PhenoCollection(Long id, Status status, Study study, String name, String description, Date startDate, Date expiryDate, String userId, Date insertTime, String updateUserId, Date updateTime,
-			Set<PhenoCollectionUpload> phenoCollectionUploads) {
-		this.id = id;
-		this.status = status;
-		this.study = study;
-		this.name = name;
-		this.description = description;
-		this.startDate = startDate;
-		this.endDate = expiryDate;
-		this.userId = userId;
-		this.insertTime = insertTime;
-		this.updateUserId = updateUserId;
-		this.updateTime = updateTime;
-		this.phenoCollectionUploads = phenoCollectionUploads;
+	public  PhenoCollection(){
+		
 	}
-
-	@Id
-	@SequenceGenerator(name = "Collection_PK_Seq", sequenceName = "PHENOTYPIC.COLLECTION_PK_SEQ")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Collection_PK_Seq")
+	
+	@Id																			
+	@SequenceGenerator(name = "phenotypic_collection_generator", sequenceName = "PHENOTYPIC_COLLECTION_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "phenotypic_collection_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
-		return this.id;
+		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STATUS_ID", nullable = false)
-	public Status getStatus() {
-		return this.status;
-	}
-
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-
-	/**
-	 * @return the study
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_ID")
-	public Study getStudy() {
-		return study;
-	}
-
-	public void setStudy(Study study) {
-		this.study = study;
-	}
-
-	@Column(name = "NAME", length = 50)
+	@Column(name = "NAME", length = 255)
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	@Column(name = "DESCRIPTION", length = 1024)
+	@Column(name = "DESCRIPTION", length = 500)
 	public String getDescription() {
-		return this.description;
+		return description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "START_DATE", length = 7)
-	public Date getStartDate() {
-		return this.startDate;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LINK_SUBJECT_STUDY_ID")
+	public LinkSubjectStudy getLinkSubjectStudy() {
+		return linkSubjectStudy;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "END_DATE", length = 7)
-	public Date getEndDate() {
-		return this.endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-
-	@Column(name = "USER_ID", nullable = false, length = 50)
-	public String getUserId() {
-		return this.userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
+		this.linkSubjectStudy = linkSubjectStudy;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "INSERT_TIME", nullable = false)
-	public Date getInsertTime() {
-		return this.insertTime;
+	@Column(name = "RECORD_DATE", nullable = false)
+	public Date getRecordDate() {
+		return recordDate;
 	}
 
-	public void setInsertTime(Date insertTime) {
-		this.insertTime = insertTime;
-	}
-
-	@Column(name = "UPDATE_USER_ID", length = 50)
-	public String getUpdateUserId() {
-		return this.updateUserId;
-	}
-
-	public void setUpdateUserId(String updateUserId) {
-		this.updateUserId = updateUserId;
+	public void setRecordDate(Date recordDate) {
+		this.recordDate = recordDate;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "UPDATE_TIME")
-	public Date getUpdateTime() {
-		return this.updateTime;
+	@Column(name = "REVIEWED_DATE")
+	public Date getReviewedDate() {
+		return reviewedDate;
 	}
 
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
+	public void setReviewedDate(Date reviewedDate) {
+		this.reviewedDate = reviewedDate;
 	}
 
-	/**
-	 * @param phenoCollectionUploads
-	 *           the phenoCollectionUploads to set
-	 */
-	public void setPhenoCollectionUploads(Set<PhenoCollectionUpload> phenoCollectionUploads) {
-		this.phenoCollectionUploads = phenoCollectionUploads;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "REVIEWED_BY_ID")
+	public ArkUser getReviewedBy() {
+		return reviewedBy;
 	}
 
-	/**
-	 * @return the phenoCollectionUploads
-	 */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collection")
-	public Set<PhenoCollectionUpload> getPhenoCollectionUploads() {
-		return phenoCollectionUploads;
+	public void setReviewedBy(ArkUser reviewedBy) {
+		this.reviewedBy = reviewedBy;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CUSTOM_FIELD_GROUP_ID")
+	public CustomFieldGroup getQuestionnaire() {
+		return questionnaire;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		PhenoCollection other = (PhenoCollection) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		}
-		else if (!id.equals(other.id))
-			return false;
-		return true;
+	public void setQuestionnaire(CustomFieldGroup questionnaire) {
+		this.questionnaire = questionnaire;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "QUESTIONNAIRE_STATUS_ID")
+	public QuestionnaireStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(QuestionnaireStatus status) {
+		this.status = status;
+	}
 }

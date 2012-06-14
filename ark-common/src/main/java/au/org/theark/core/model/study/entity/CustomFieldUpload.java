@@ -43,7 +43,7 @@ public class CustomFieldUpload  implements java.io.Serializable {
 	private static final long	serialVersionUID	= 1L;
 
 	private Long id;
-	private StudyUpload studyUpload;
+	private Upload studyUpload;
 	private CustomField customField;
 	
 	
@@ -65,11 +65,11 @@ public class CustomFieldUpload  implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPLOAD_ID")
-	public StudyUpload getStudyUpload() {
+	public Upload getUpload() {
 		return studyUpload;
 	}
 
-	public void setStudyUpload(StudyUpload studyUpload) {
+	public void setUpload(Upload studyUpload) {
 		this.studyUpload = studyUpload;
 	}
 

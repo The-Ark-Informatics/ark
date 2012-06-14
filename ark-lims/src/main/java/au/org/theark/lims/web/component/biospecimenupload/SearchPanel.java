@@ -23,7 +23,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.lims.web.component.biospecimenupload.form.ContainerForm;
@@ -38,12 +38,12 @@ public class SearchPanel extends Panel {
 	
 	private ArkCrudContainerVO					arkCrudContainerVO;
 	private FeedbackPanel						feedBackPanel;
-	private PageableListView<StudyUpload>	listView;
+	private PageableListView<Upload>	listView;
 	private ContainerForm						containerForm;
 
 
 	/* Constructor */
-	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<StudyUpload> listView, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<Upload> listView, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
 		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;

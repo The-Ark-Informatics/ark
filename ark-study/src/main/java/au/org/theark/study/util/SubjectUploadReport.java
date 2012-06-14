@@ -25,7 +25,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.dao.LobUtil;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 
 public class SubjectUploadReport {
 	private StringBuffer	report	= new StringBuffer();
@@ -73,7 +73,7 @@ public class SubjectUploadReport {
 		report.append("\n");
 	}
 
-	public void appendDetails(StudyUpload studyUpload) {
+	public void appendDetails(Upload studyUpload) {
 		append("Study: ");
 		appendAndNewLine(studyUpload.getStudy().getName());
 		append("UserID: ");
@@ -86,7 +86,7 @@ public class SubjectUploadReport {
 		appendAndNewLine(studyUpload.getDelimiterType().getName());
 	}
 
-	public void appendDetails(StudyUpload studyUpload, String studyName) {
+	public void appendDetails(Upload studyUpload, String studyName) {
 		append("Study: ");
 		appendAndNewLine(studyName);
 		append("UserID: ");

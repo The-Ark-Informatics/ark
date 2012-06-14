@@ -1,7 +1,6 @@
 package au.org.theark.core.util;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.study.entity.CustomField;
 
 /**
@@ -27,13 +26,13 @@ public class CustomFieldValidationMessage {
 		return (stringBuffer.toString());
 	}
 
-	/**
+	/*
 	 * Returns field not of the defined type error message
 	 * 
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataNotDefinedType(CustomField field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -54,7 +53,7 @@ public class CustomFieldValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataGreaterThanMaxValue(CustomField field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -75,7 +74,7 @@ public class CustomFieldValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataLessThanMinValue(CustomField field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -96,7 +95,7 @@ public class CustomFieldValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataNotInEncodedValues(CustomField field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
@@ -117,7 +116,7 @@ public class CustomFieldValidationMessage {
 	 * @param field
 	 * @param fieldData
 	 * @return String
-	 */
+	 *
 	public static String fieldDataNotValidDate(CustomField field, FieldData fieldData) {
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
@@ -131,7 +130,7 @@ public class CustomFieldValidationMessage {
 		stringBuffer.append(" is not in the valid date format of: ");
 		stringBuffer.append(Constants.DD_MM_YYYY.toLowerCase());
 		return (stringBuffer.toString());
-	}
+	}*/
 
 	/**
 	 * Returns dateCollected not a valid date format error message

@@ -28,7 +28,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
@@ -46,7 +46,7 @@ public class BiospecimenUploadContainerPanel extends AbstractContainerPanel<Uplo
 	private SearchResultListPanel				searchResultPanel;
 	private DetailPanel							detailPanel;
 	private WizardPanel							wizardPanel;
-	private PageableListView<StudyUpload>	listView;
+	private PageableListView<Upload>	listView;
 	private ContainerForm						containerForm;
 	private ArkFunction arkFunction;
 
@@ -84,9 +84,9 @@ public class BiospecimenUploadContainerPanel extends AbstractContainerPanel<Uplo
 			@Override
 			protected Object load() {
 				// Return all Uploads for the Study in context
-				java.util.Collection<StudyUpload> studyUploads = new ArrayList<StudyUpload>();
+				java.util.Collection<Upload> studyUploads = new ArrayList<Upload>();
 				if (isActionPermitted()) {
-					StudyUpload studyUpload = new StudyUpload();
+					Upload studyUpload = new Upload();
 					
 					studyUpload.setStudy(containerForm.getModelObject().getUpload().getStudy());
 					studyUpload.setArkFunction(arkFunction);

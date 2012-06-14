@@ -51,9 +51,6 @@ import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.PhenotypicSystemException;
-import au.org.theark.core.model.pheno.entity.Field;
-import au.org.theark.core.model.pheno.entity.FieldData;
-import au.org.theark.core.model.pheno.entity.FieldType;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -107,7 +104,7 @@ public class PhenotypicValidator {
 	 */
 	public PhenotypicValidator() {
 	}
-
+/*
 	public PhenotypicValidator(IArkCommonService<Void> iArkCommonService, IPhenotypicService iPhenotypicService, UploadVO uploadVo) {
 		this.iArkCommonService = iArkCommonService;
 		this.iPhenotypicService = iPhenotypicService;
@@ -151,7 +148,7 @@ public class PhenotypicValidator {
 	 * 
 	 * @param fieldData
 	 * @return boolean
-	 */
+	 *
 	public static boolean isValidFieldData(FieldData fieldData, java.util.Collection<String> errorMessages) {
 		boolean isValidFieldData = true;
 		Field field = fieldData.getField();
@@ -211,7 +208,7 @@ public class PhenotypicValidator {
 	 * 
 	 * @param fieldData
 	 * @return boolean
-	 */
+	 *
 	public static boolean isInValidRange(FieldData fieldData, java.util.Collection<String> errorMessages) {
 		boolean isInValidRange = true;
 		Field field = fieldData.getField();
@@ -284,7 +281,7 @@ public class PhenotypicValidator {
 	 * 
 	 * @param fieldData
 	 * @return boolean
-	 */
+	 *
 	public static boolean isInEncodedValues(FieldData fieldData, java.util.Collection<String> errorMessages) {
 		boolean inEncodedValues = true;
 
@@ -337,7 +334,7 @@ public class PhenotypicValidator {
 	 * @param fieldData
 	 * @param errorMessages
 	 * @return boolean
-	 */
+	 *
 	public static boolean validateFieldData(FieldData fieldData, java.util.Collection<String> errorMessages) {
 		boolean isValid = true;
 		boolean isValidFieldData = true;
@@ -374,8 +371,8 @@ public class PhenotypicValidator {
 	 * @throws IOException
 	 *            input/output Exception
 	 * @throws OutOfMemoryError
-	 *            out of memory Exception
-	 */
+	 *           out of memory Exception
+	 *
 	public java.util.Collection<String> validateMatrixPhenoFileFormat(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException {
 		curPos = 0;
 		row = 0;
@@ -386,7 +383,7 @@ public class PhenotypicValidator {
 
 		/*
 		 * FieldData table requires: COLLECTION_ID PERSON_ID DATE_COLLECTED FIELD_ID USER_ID INSERT_TIME
-		 */
+		 *
 
 		Date dateCollected = new Date();
 		Field field = null;
@@ -570,7 +567,7 @@ public class PhenotypicValidator {
 	 *            input/output Exception
 	 * @throws OutOfMemoryError
 	 *            out of memory Exception
-	 */
+	 *
 	public java.util.Collection<String> validateMatrixPhenoFileData(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException {
 		curPos = 0;
 
@@ -580,7 +577,7 @@ public class PhenotypicValidator {
 
 		/*
 		 * FieldData table requires: COLLECTION_ID PERSON_ID DATE_COLLECTED FIELD_ID USER_ID INSERT_TIME
-		 */
+		 *
 
 		Date dateCollected = new Date();
 		Field field = null;
@@ -779,7 +776,7 @@ public class PhenotypicValidator {
 	 *            input/output Exception
 	 * @throws OutOfMemoryError
 	 *            out of memory Exception
-	 */
+	 *
 	public java.util.Collection<String> validateDataDictionaryFileData(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException {
 		curPos = 0;
 		int row = 1;
@@ -790,7 +787,7 @@ public class PhenotypicValidator {
 
 		/*
 		 * Field table requires: ID, STUDY_ID, FIELD_TYPE_ID, NAME, DESCRIPTION, UNITS, MIN_VALUE, MAX_VALUE, ENCODED_VALUES, MISSING_VALUE
-		 */
+		 *
 
 		Field field = new Field();
 		field.setStudy(study);
@@ -975,7 +972,7 @@ public class PhenotypicValidator {
 	 * @param errorMessages
 	 *           is the error messages to add to is any errors
 	 * @return true if field.fieldType is NOT a DATE
-	 */
+	 *
 	private static boolean validateEncodedValues(Field field, Collection<String> errorMessages) {
 		boolean isValid = false;
 		if (!field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
@@ -997,7 +994,7 @@ public class PhenotypicValidator {
 	 * @param delimChar
 	 *           is the delimiter character of the file (eg comma)
 	 * @return a collection of validation messages
-	 */
+	 *
 	public Collection<String> validateMatrixPhenoFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
 		java.util.Collection<String> validationMessages = null;
 
@@ -1039,7 +1036,7 @@ public class PhenotypicValidator {
 	 * @param delimChar
 	 *           is the delimiter character of the file (eg comma)
 	 * @return a collection of validation messages
-	 */
+	 *
 	public Collection<String> validateMatrixPhenoFileData(InputStream inputStream, String fileFormat, char delimChar) {
 		java.util.Collection<String> validationMessages = null;
 
@@ -1082,7 +1079,7 @@ public class PhenotypicValidator {
 	 * @param delimChar
 	 *           is the delimiter character of the file (eg COMMA, TAB, PIPE etc)
 	 * @return a collection of validation messages
-	 */
+	 *
 	public Collection<String> validateDataDictionaryFileData(InputStream inputStream, String fileFormat, char delimChar) {
 		java.util.Collection<String> validationMessages = null;
 
@@ -1118,7 +1115,7 @@ public class PhenotypicValidator {
 	 * Return the inputstream of the converted workbook as csv
 	 * 
 	 * @return inputstream of the converted workbook as csv
-	 */
+	 *
 	public InputStream convertXlsToCsv(Workbook w) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {

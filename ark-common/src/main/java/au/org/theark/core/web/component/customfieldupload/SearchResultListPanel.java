@@ -31,7 +31,7 @@ import org.apache.wicket.model.IModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
 
@@ -67,14 +67,14 @@ public class SearchResultListPanel extends Panel {
 	 * @param iModel
 	 * @return the pageableListView of Upload
 	 */
-	public PageableListView<StudyUpload> buildPageableListView(IModel iModel) {
-		PageableListView<StudyUpload> sitePageableListView = new PageableListView<StudyUpload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+	public PageableListView<Upload> buildPageableListView(IModel iModel) {
+		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void populateItem(final ListItem<StudyUpload> item) {
-				StudyUpload upload = item.getModelObject();
+			protected void populateItem(final ListItem<Upload> item) {
+				Upload upload = item.getModelObject();
 
 				// The ID
 				if (upload.getId() != null) {
@@ -146,7 +146,7 @@ public class SearchResultListPanel extends Panel {
 		return sitePageableListView;
 	}
 
-	private AjaxButton buildDownloadButton(final StudyUpload upload) {
+	private AjaxButton buildDownloadButton(final Upload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.core.Constants.DOWNLOAD_FILE) {
 
 			private static final long	serialVersionUID	= 1L;
@@ -180,7 +180,7 @@ public class SearchResultListPanel extends Panel {
 		return ajaxButton;
 	}
 
-	private AjaxButton buildDownloadReportButton(final StudyUpload upload) {
+	private AjaxButton buildDownloadReportButton(final Upload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.core.Constants.DOWNLOAD_REPORT) {
 
 			private static final long	serialVersionUID	= 1L;

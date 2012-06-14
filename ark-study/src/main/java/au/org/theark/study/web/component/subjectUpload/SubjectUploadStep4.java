@@ -31,7 +31,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
-import au.org.theark.study.job.CustomDataUploadExecutor;
+import au.org.theark.study.job.SubjectCustomDataUploadExecutor;
 import au.org.theark.study.job.StudyDataUploadExecutor;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.util.SubjectUploadReport;
@@ -97,7 +97,7 @@ log.info("________________________________________________________" + "about to 
 				task.run();
 			}
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")){
-				CustomDataUploadExecutor task = new CustomDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
+				SubjectCustomDataUploadExecutor task = new SubjectCustomDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
 							studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
 				task.run();
 			}

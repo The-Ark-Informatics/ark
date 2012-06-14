@@ -23,7 +23,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.StringResourceModel;
 
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 
 public abstract class DeleteButton extends AjaxDeleteButton {
@@ -31,7 +31,7 @@ public abstract class DeleteButton extends AjaxDeleteButton {
 
 	// private transient Logger log = LoggerFactory.getLogger(DeleteButton.class);
 
-	DeleteButton(final StudyUpload upload, Component component) {
+	DeleteButton(final Upload upload, Component component) {
 		// Properties contains:
 		// confirmDelete=Are you sure you want to delete?
 		// delete=Delete

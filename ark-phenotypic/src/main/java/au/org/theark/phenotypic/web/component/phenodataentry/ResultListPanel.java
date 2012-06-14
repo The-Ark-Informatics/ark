@@ -25,7 +25,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
-import au.org.theark.phenotypic.web.component.phenodataentry.form.PhenotypicCollectionListForm;
+import au.org.theark.phenotypic.web.component.phenodataentry.form.PhenoCollectionListForm;
 
 public class ResultListPanel extends Panel {
 
@@ -34,7 +34,7 @@ public class ResultListPanel extends Panel {
 	protected CompoundPropertyModel<PhenoDataCollectionVO>	cpModel;
 
 	protected FeedbackPanel							feedbackPanel;
-	private PhenotypicCollectionListForm		listDetailForm;
+	private PhenoCollectionListForm		listDetailForm;
 
 	public ResultListPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		super(id);
@@ -55,7 +55,7 @@ public class ResultListPanel extends Panel {
 			}
 
 		};
-		listDetailForm = new PhenotypicCollectionListForm("phenotypicCollectionListForm", feedbackPanel, modalWindow, cpModel);
+		listDetailForm = new PhenoCollectionListForm("PhenoCollectionListForm", feedbackPanel, modalWindow, cpModel);
 		listDetailForm.initialiseForm();
 		add(listDetailForm);
 		return this;
@@ -64,14 +64,14 @@ public class ResultListPanel extends Panel {
 	/**
 	 * @return the listDetailForm
 	 */
-	public PhenotypicCollectionListForm getListDetailForm() {
+	public PhenoCollectionListForm getListDetailForm() {
 		return listDetailForm;
 	}
 
 	/**
 	 * @param listDetailForm the listDetailForm to set
 	 */
-	public void setListDetailForm(PhenotypicCollectionListForm listDetailForm) {
+	public void setListDetailForm(PhenoCollectionListForm listDetailForm) {
 		this.listDetailForm = listDetailForm;
 	}
 }

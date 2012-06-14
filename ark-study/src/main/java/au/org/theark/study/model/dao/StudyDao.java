@@ -86,7 +86,7 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -157,7 +157,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			count++;
 			//based on recommended hibernate practice of	<prop key="hibernate.jdbc.batch_size">50</prop>
 			if(count%50==0){
-				//log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");  TODO Evaluate why batch not working.  hints: may be identity/id generation related.  Will revisit after all batch work done
+				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!"); // TODO Evaluate why batch not working.  hints: may be identity/id generation related.  Will revisit after all batch work done
 				session.flush();
 				session.clear();
 			}
@@ -167,8 +167,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			session.save(dataToInsert);
 			count++;
 			//based on recommended hibernate practice of	<prop key="hibernate.jdbc.batch_size">50</prop>
-			if(count%50==0){
-				//log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
+			if(count%50==0){	
+				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
 				session.flush();
 				session.clear();
 			}
@@ -1901,13 +1901,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		getSession().update(linkSubjectStudy);
 	}
 
-	public StudyUpload refreshUpload(StudyUpload upload) {
+	public Upload refreshUpload(Upload upload) {
 		getSession().refresh(upload);
 		return upload;
 	}
 
-	public StudyUpload getUpload(Long id) {
-		return (StudyUpload) getSession().get(StudyUpload.class, id);
+	public Upload getUpload(Long id) {
+		return (Upload) getSession().get(Upload.class, id);
 	}
 
 	public GenderType getDefaultGenderType() {
