@@ -26,11 +26,11 @@ import org.apache.wicket.util.file.File;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
-import au.org.theark.phenotypic.web.component.customdataupload.SubjectUploadStep1;
-import au.org.theark.phenotypic.web.component.customdataupload.SubjectUploadStep2;
-import au.org.theark.phenotypic.web.component.customdataupload.SubjectUploadStep3;
-import au.org.theark.phenotypic.web.component.customdataupload.SubjectUploadStep4;
-import au.org.theark.phenotypic.web.component.customdataupload.SubjectUploadStep5;
+import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadStep1;
+import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadStep2;
+import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadStep3;
+import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadStep4;
+import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadStep5;
 
 /**
  * @author cellis
@@ -55,11 +55,11 @@ public class WizardForm extends AbstractWizardForm<UploadVO> {
 	}
 
 	public void initialiseSteps() {
-		SubjectUploadStep1 step1 = new SubjectUploadStep1("step", containerForm, this);
-		SubjectUploadStep2 step2 = new SubjectUploadStep2("step", containerForm, this);
-		SubjectUploadStep3 step3 = new SubjectUploadStep3("step", containerForm, this);
-		SubjectUploadStep4 step4 = new SubjectUploadStep4("step", containerForm, this);
-		SubjectUploadStep5 step5 = new SubjectUploadStep5("step", containerForm);
+		CustomDataUploadStep1 step1 = new CustomDataUploadStep1("step", containerForm, this);
+		CustomDataUploadStep2 step2 = new CustomDataUploadStep2("step", containerForm, this);
+		CustomDataUploadStep3 step3 = new CustomDataUploadStep3("step", containerForm, this);
+		CustomDataUploadStep4 step4 = new CustomDataUploadStep4("step", containerForm, this);
+		CustomDataUploadStep5 step5 = new CustomDataUploadStep5("step", containerForm);
 
 		step1.setNextStep(step2);
 		step2.setNextStep(step3);

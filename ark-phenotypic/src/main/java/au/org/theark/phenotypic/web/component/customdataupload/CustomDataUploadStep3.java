@@ -43,7 +43,7 @@ import au.org.theark.phenotypic.web.component.customdataupload.form.WizardForm;
 import au.org.theark.phenotypic.util.CustomDataUploadValidator;
 //import au.org.theark.phenotypic.util.SubjectUploadValidator;
 
-public class SubjectUploadStep3 extends AbstractWizardStepPanel {
+public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 
 	private static final long				serialVersionUID		= 2987959815074138750L;
 	private Form<UploadVO>					containerForm;
@@ -67,7 +67,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 
 																				};
 
-	public SubjectUploadStep3(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
+	public CustomDataUploadStep3(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 3/5: Data Validation", "The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.");
 		this.containerForm = containerForm;
 		this.wizardForm = wizardForm;

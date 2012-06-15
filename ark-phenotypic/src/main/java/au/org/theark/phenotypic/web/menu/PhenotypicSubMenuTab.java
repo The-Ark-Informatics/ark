@@ -38,6 +38,7 @@ import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.phenotypic.web.Constants;
+import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupContainerPanel;
 import au.org.theark.phenotypic.web.component.phenodataentry.PhenoCollectionDataEntryContainerPanel;
 //import au.org.theark.phenotypic.web.component.phenodatauploader.PhenoDataUploadContainerPanel;
@@ -99,6 +100,12 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA)) {
 			panelToReturn = new PhenoCollectionDataEntryContainerPanel(panelId).initialisePanel();
 			//panelToReturn = new FieldDataContainerPanel(panelId);
+		}
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD)) {
+			//panelToReturn = new FieldDataUploadContainerPanel(panelId); //OLD Code
+			//panelToReturn = new PhenoDataUploadContainerPanel(panelId);
+			panelToReturn = new CustomDataUploadContainerPanel(panelId, arkFunction);
+			
 		}
 	/*	TODO trav put new uploader here
 	 * 

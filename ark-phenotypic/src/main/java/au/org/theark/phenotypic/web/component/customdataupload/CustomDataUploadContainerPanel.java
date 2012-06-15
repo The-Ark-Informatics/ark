@@ -36,7 +36,7 @@ import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.phenotypic.web.component.customdataupload.form.ContainerForm;
 //import au.org.theark.phenotypic.service.IPhenotypicService;
 
-public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
+public class CustomDataUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
@@ -52,7 +52,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 	private ContainerForm						containerForm;
 	private ArkFunction							arkFunction;
 
-	public SubjectUploadContainerPanel(String id, ArkFunction arkFunction) {
+	public CustomDataUploadContainerPanel(String id, ArkFunction arkFunction) {
 		super(id);
 
 		/* Initialise the CPM */

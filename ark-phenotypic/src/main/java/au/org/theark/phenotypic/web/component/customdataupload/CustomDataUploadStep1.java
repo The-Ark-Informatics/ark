@@ -45,7 +45,7 @@ import au.org.theark.phenotypic.web.component.customdataupload.form.WizardForm;
 /**
  * The first step of this wizard.
  */
-public class SubjectUploadStep1 extends AbstractWizardStepPanel {
+public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 	private static final long					serialVersionUID		= -3267334731280446472L;
 	public java.util.Collection<String>		validationMessages	= null;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -57,12 +57,12 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	private DropDownChoice<UploadType>		uploadTypeDdc;
 	private WizardForm							wizardForm;
 
-	public SubjectUploadStep1(String id) {
+	public CustomDataUploadStep1(String id) {
 		super(id);
 		initialiseDetailForm();
 	}
 
-	public SubjectUploadStep1(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
+	public CustomDataUploadStep1(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 1/5: Select data file to upload", "Select the file containing data, the file type and the specified delimiter, click Next to continue.");
 
 		this.containerForm = containerForm;

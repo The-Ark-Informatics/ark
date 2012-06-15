@@ -39,7 +39,7 @@ import au.org.theark.phenotypic.job.CustomDataUploadExecutor;
 //import au.org.theark.phenotypic.service.IStudyService;
 //import au.org.theark.phenotypic.util.SubjectUploadReport;
 
-public class SubjectUploadStep4 extends AbstractWizardStepPanel {
+public class CustomDataUploadStep4 extends AbstractWizardStepPanel {
 	private static final long	serialVersionUID	= 2971945948091031160L;
 	private Form<UploadVO>		containerForm;
 	private WizardForm			wizardForm;
@@ -50,7 +50,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IPhenotypicService		iPhenoService;
 
-	public SubjectUploadStep4(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
+	public CustomDataUploadStep4(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 4/5: Confirm Upload", "Data will now be written to the database, click Next to continue, otherwise click Cancel.");
 		this.containerForm = containerForm;
 		this.wizardForm = wizardForm;
