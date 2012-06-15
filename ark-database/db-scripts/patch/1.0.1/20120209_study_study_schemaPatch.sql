@@ -1,0 +1,8 @@
+USE study;
+ALTER TABLE `study`.`study` ADD COLUMN `PARENT_ID` INT(11) NULL  AFTER `SUBJECT_KEY_START` , 
+  ADD CONSTRAINT `fk_study_study`
+  FOREIGN KEY (`PARENT_ID` )
+  REFERENCES `study`.`study` (`ID` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `fk_study_study` (`PARENT_ID` ASC) ;
