@@ -1,0 +1,12 @@
+version: 1
+
+dn: cn=noah@ark.org.au,ou=arkUsers,dc=the-ark,dc=org,dc=au
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+cn: noah@ark.org.au
+sn: SonOfFather
+givenName: Nova
+userPassword:: YjAzZGRmM2NhMmU3MTRhNjU0OGU3NDk1ZTJhMDNmNWU4MjRlYWFjOTgzN2NkN
+ 2YxNTljNjdiOTBmYjRiNzM0Mg==
+
