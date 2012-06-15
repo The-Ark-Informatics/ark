@@ -1,0 +1,91 @@
+<wicket:panel>
+	<table width="0%" cellspacing="0">
+	</table>
+	<table width="100%" cellspacing="0" class="dataview">
+		<tr>
+			<th width="2%">
+				&nbsp;
+			</th>
+			<th width="5%">
+				<wicket:message	key="customFieldDisplay.id">
+					ID:
+				</wicket:message>
+			</th>
+			<th width="15%">
+				<wicket:message	key="customField.name">
+					Field Name:
+				</wicket:message>
+			</th>
+			<th width="45%">
+				<wicket:message	key="customField.fieldLabel">
+					Field Label:
+				</wicket:message>
+			</th>
+			<th width="15%">
+				<wicket:message	key="customFieldDisplay.sequence">
+					Sequence Order:
+				</wicket:message>
+			</th>
+			<th width="10%">
+				<wicket:message	key="customFieldDisplay.required">
+					Required:
+				</wicket:message>
+			</th>
+			<th width="2%">
+				&nbsp;
+			</th>
+		</tr>
+		<!--	The Data Result Set -->
+		<tr wicket:id="customFieldDisplayList">
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="5%">
+				<span wicket:id="id">
+					100
+				</span>
+			</td>
+			<td width="15%">
+				<a href="#" wicket:id="link">
+					<span wicket:id="name">
+						Field Name
+					</span>
+				</a>
+			</td>
+			<td width="45%">
+				<span wicket:id="fieldLabel">
+					Field Label
+				</span>
+			</td>
+			<td width="15%">
+				<span wicket:id="sequence">
+					Sequence
+				</span>
+			</td>
+			<td width="10%">
+				<img wicket:id="required"/>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+
+		<tr>
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="96%" colspan="5">
+				<span wicket:id="cfDisplayNavigator" class="a">
+				</span>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+	</table>
+	<!--	The detailModalWindow for detail edit of Custom Field Display -->
+	<div wicket:id="detailModalWindow">
+	</div>
+	<table width="0%" cellspacing="0">
+	</table>
+</wicket:panel>
