@@ -1,0 +1,203 @@
+<wicket:panel>
+	<div class="detailFormLabelBorder">
+		<div class="label">
+			<label for="formLabel">
+				<wicket:message key="formLabel">
+					[Form Label]
+				</wicket:message>
+			</label>
+		</div>
+	</div>
+	<div class="detailsPanelBorder">
+		<form wicket:id="detailForm">
+			<div wicket:id="detailFormContainer">
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!-- Row 1 ID and Name-->
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="id">
+							<wicket:message key="invRack.id">
+								ID:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="invRack.id" type="text" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<!-- Empty -->
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!-- Row 1 ID and Name-->
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="name">
+							<wicket:message	key="invRack.name">
+								Name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="invRack.name" type="text" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+				
+				<!-- Empty -->
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="invFreezer">
+							<wicket:message key="invRack.invFreezer.name">
+								Freezer:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+
+				<div class="label">
+					<select wicket:id="invRack.invFreezer">
+						<option>
+							Option
+						</option>
+					</select>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="invRack.capacity">
+							<wicket:message key="invRack.capacity">
+								Capacity:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="invRack.capacity" type="text" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="available">
+							<wicket:message key="invRack.available">
+								Available:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="invRack.available" type="text" />
+					</div>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<wicket:message key="invRack.description">
+							Description:
+						</wicket:message>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<textarea wicket:id="invRack.description" cols="25">
+						</textarea>
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<!-- empty -->
+			</div>
+			<div class="detailPanelBreaker">
+					&nbsp;
+			</div>
+			<!-- End detailFormContainer" -->
+
+			<!--	Row 2 Action Buttons -->
+			<div class="actionButtons">
+				<div wicket:id="editButtonContainer">
+					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
+				</div>	
+			</div>
+			<!--	End buttons -->
+		</form>
+		<!-- End form -->
+
+		<div class="detailSectionBorder">
+			<div class="actionButtons">
+				<input wicket:id="addBox" type="submit" wicket:message="value:addBox" />
+			</div>
+		</div>
+	</div>
+	<!-- End detailsPanelBorder -->
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+</wicket:panel>
