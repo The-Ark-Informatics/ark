@@ -1,0 +1,122 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailForm">
+		<div class="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!-- Row 1 ID and Name-->
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="id">
+							<wicket:message key="subjectFile.id">
+								ID:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="subjectFile.id" type="text" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="filename">
+							<wicket:message key="subjectFile.filename">
+								Filename:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="subjectFile.filename" id="subjectFile" type="file"/>
+					</div>
+				</div>
+
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="studyComponent">
+							<label for="studyComponent">
+								<wicket:message	key="subjectFile.studyComp">
+									Study Component:
+								</wicket:message>
+							</label>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<select wicket:id="subjectFile.studyComp">
+							<option>
+								Blood
+							</option>
+							<option>
+								Saliva
+							</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="filename">
+							<wicket:message key="subjectFile.comments">
+								Comments:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<textarea wicket:id="subjectFile.comments" id="subjectFile.comments" cols="25" maxLength="500">
+						</textarea>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Detail container end-->
+			<div class="detailPanelBreaker">
+				&nbsp;
+			</div>
+
+			<!--	Action Buttons -->
+			<div wicket:id="editButtonContainer">
+				<div class="actionButtons">
+					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
+				</div>
+			</div>
+		</div>
+	</form>
+</wicket:panel>
