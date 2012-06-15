@@ -1,0 +1,57 @@
+#customPanelBorder {
+background-color:#EEE;
+border:1px solid #6F6F6F;
+float:left;
+height:100%;
+padding-bottom:1.5em;
+padding-left:1.5em;
+padding-top:1.5em;
+width:90%;
+}
+
+#customPanelContentLeft {
+float:left;
+height:5%;
+width:2%;
+}
+
+#customPanelMargin {
+float:left;
+height:5%;
+width:5%;
+}
+
+#customPanelContentRight {
+float:right;
+height:5%;
+width:2%;
+}
+
+.customPanelBorder {
+background-color:#EEE;
+border:1px solid #6F6F6F;
+float:left;
+height:100%;
+padding-bottom:1.5em;
+padding-left:1.5em;
+padding-top:1.5em;
+width:90%;
+}
+
+.customPanelContentLeft {
+float:left;
+height:5%;
+width:2%;
+}
+
+.customPanelMargin {
+float:left;
+height:5%;
+width:5%;
+}
+
+.customPanelContentRight {
+float:right;
+height:5%;
+width:2%;
+}

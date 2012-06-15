@@ -1,0 +1,12 @@
+div.footer {
+background-color: #FFF;
+border-top:1px solid #000;
+bottom:0;
+line-height:normal;
+padding-bottom:.5em;
+padding-top:.5em;
+position:fixed;
+text-align:center;
+width:100%;
+z-index:100000;
+}
