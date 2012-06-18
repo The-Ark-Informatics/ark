@@ -995,7 +995,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public UploadType getDefaultUploadType(){
 		return (UploadType)(getSession().get(UploadType.class, 1L));//TODO:  maybe fix ALL such entities by adding isDefault boolean to table?
 	}
-	
+
+	public UploadType getCustomFieldDataUploadType(){
+		return (UploadType)(getSession().get(UploadType.class, 3L));//TODO:  maybe fix ALL such entities by adding isDefault boolean to table?
+	}
 	
 	public List<Upload> searchUploads(Upload uploadCriteria) {
 		Criteria criteria = getSession().createCriteria(Upload.class);

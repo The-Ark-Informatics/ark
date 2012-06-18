@@ -571,6 +571,8 @@ public interface IArkCommonService<T> {
 	public DelimiterType getDelimiterType(Long id);
 
 	public UploadType getDefaultUploadType();
+
+	public UploadType getCustomFieldDataUploadType();
 	
 	public Collection<DelimiterType> getDelimiterTypes();
 	public Collection<UploadType> getUploadTypes();
@@ -582,7 +584,7 @@ public interface IArkCommonService<T> {
 	public UnitType getUnitTypeByNameAndArkFunction(String string, ArkFunction arkFunction);
 
 	public void createUpload(Upload studyUpload);
-
+	
 	public void updateUpload(Upload studyUpload);
 	
 	public Blob createBlob(byte[] bytes);

@@ -941,7 +941,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public UploadType getDefaultUploadType(){
 		return studyDao.getDefaultUploadType();
 	}
-	
+
+	public UploadType getCustomFieldDataUploadType(){
+		return studyDao.getCustomFieldDataUploadType();
+	}	
 
 	public Collection<DelimiterType> getDelimiterTypes() {
 		return studyDao.getDelimiterTypes();
