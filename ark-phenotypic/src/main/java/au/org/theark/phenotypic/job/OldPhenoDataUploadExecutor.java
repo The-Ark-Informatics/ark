@@ -40,8 +40,8 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
-public class PhenoDataUploadExecutor {
-	private static final Logger	log	= LoggerFactory.getLogger(PhenoDataUploadExecutor.class);
+public class OldPhenoDataUploadExecutor {
+	private static final Logger	log	= LoggerFactory.getLogger(OldPhenoDataUploadExecutor.class);
 	
 	private IArkCommonService<Void>	iArkCommonService			= null;
 	private IPhenotypicService			iPhenoService				= null;
@@ -63,7 +63,7 @@ public class PhenoDataUploadExecutor {
 	 * @param file
 	 * @param delimiter
 	 */
-	public PhenoDataUploadExecutor(IArkCommonService<Void> iArkCommonService, 
+	public OldPhenoDataUploadExecutor(IArkCommonService<Void> iArkCommonService, 
 											IPhenotypicService iPhenoService,
 											Long uploadId,
 											String currentUser, 

@@ -35,23 +35,27 @@ import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdSchedulerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
 public class CustomDataUploadExecutor {
 	//private static final Logger	log	= LoggerFactory.getLogger(CustomDataUploadExecutor.class);
 	
-	private IArkCommonService<Void>	iArkCommonService			= null;
+	private IArkCommonService<Void>		iArkCommonService			= null;
 	private IPhenotypicService			iPhenoService				= null;
-	private Long							uploadId;
-	private Long							studyId;
-	private String							fileFormat;
+	private Long						uploadId;
+	private Long						studyId;
+	private String						fileFormat;
 	private InputStream					inputStream;
-	private char							delimiter		= Constants.IMPORT_DELIM_CHAR_COMMA;
-	private long							size;
+	private char						delimiter		= Constants.IMPORT_DELIM_CHAR_COMMA;
+	private long						size;
 
-	private String							report;
-	private List<String>					uidsToUpload;
+	private String						report;
+	private List<String>				uidsToUpload;
+	private PhenoCollection				phenoCollection;
+	private CustomFieldGroup			customFieldGroup;
 	
 	/**
 	 * StudyDataUploadExecutor constructor
@@ -73,7 +77,9 @@ public class CustomDataUploadExecutor {
 											Long studyId,
 											String fileFormat,
 											char delimiter,
-											long size, String report, List<String> uidsToUpload) {
+											long size, String report, List<String> uidsToUpload,
+											PhenoCollection phenoCollection,
+											CustomFieldGroup customFieldGroup) {
 		this.iArkCommonService = iArkCommonService;
 		this.iPhenoService = iPhenoService;
 		this.inputStream = inputStream;
@@ -84,6 +90,8 @@ public class CustomDataUploadExecutor {
 		this.size = size;
 		this.report = report;
 		this.uidsToUpload = uidsToUpload;
+		this.phenoCollection = phenoCollection;
+		this.customFieldGroup = customFieldGroup;
 	}
 
 	public void run() throws Exception {
@@ -105,7 +113,9 @@ public class CustomDataUploadExecutor {
 		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.DELIMITER, delimiter);
 		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.SIZE, size);
 		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.LIST_OF_UIDS_TO_UPDATE, uidsToUpload);
-
+		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.PHENO_COLLECTION, phenoCollection);
+		customDataUploadJob.getJobDataMap().put(CustomDataUploadJob.CUSTOM_FIELD_GROUP, customFieldGroup);
+		
 		Date startTime = nextGivenSecondDate(null, 1);
 		
 		SimpleTrigger trigger1 = newTrigger().withIdentity("CustomDataUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
