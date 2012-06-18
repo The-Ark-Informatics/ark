@@ -516,6 +516,7 @@ public interface IStudyDao {
 
 	public UploadType getDefaultUploadType();
 	
+	public UploadType getCustomFieldDataUploadType();
 	
 	/**
 	 * Retrieves a list of Upload for the given criteria
