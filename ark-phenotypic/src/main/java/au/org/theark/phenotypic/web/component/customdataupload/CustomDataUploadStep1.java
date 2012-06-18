@@ -33,6 +33,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UploadType;
@@ -40,22 +42,26 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.customdataupload.form.WizardForm;
 
 /**
  * The first step of this wizard.
  */
 public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
-	private static final long					serialVersionUID		= -3267334731280446472L;
+	private static final long				serialVersionUID		= -3267334731280446472L;
 	public java.util.Collection<String>		validationMessages	= null;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
-	private Form<UploadVO>						containerForm;
-	private FileUploadField						fileUploadField;
+	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE) 
+	private IPhenotypicService				iPhenotypicService;
+	private Form<UploadVO>					containerForm;
+	private FileUploadField					fileUploadField;
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
 	private DropDownChoice<UploadType>		uploadTypeDdc;
-	private WizardForm							wizardForm;
-
+	private WizardForm						wizardForm;
+	private DropDownChoice<CustomFieldGroup>	customFieldGroupDdc;
+	
 	public CustomDataUploadStep1(String id) {
 		super(id);
 		initialiseDetailForm();
@@ -80,6 +86,28 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 		ChoiceRenderer uploadTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.UPLOAD_TYPE_NAME, au.org.theark.phenotypic.web.Constants.UPLOAD_TYPE_ID);
 		uploadTypeDdc = new DropDownChoice<UploadType>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_TYPE, (List) uploadTypeCollection, uploadTypeRenderer);
 		containerForm.getModelObject().getUpload().setUploadType(iArkCommonService.getDefaultUploadType());
+
+		initCustomFieldGroup();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void initCustomFieldGroup() {
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		//Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+
+		Study study = new Study();
+		java.util.Collection<CustomFieldGroup> cfgList = null;
+
+		if (sessionStudyId != null && sessionStudyId > 0) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+			cfgList = iPhenotypicService.getCustomFieldGroupList(study);
+		}
+		else {
+			log.error("\n\n\ncan't hve a null study and see pheno!");
+		}
+																					//TODO fix, though will work
+		ChoiceRenderer fieldDataCollRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_NAME, au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_ID);
+		customFieldGroupDdc = new DropDownChoice<CustomFieldGroup>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_CUSTOM_FIELD_GROUP, (List) cfgList, fieldDataCollRenderer);
 	}
 
 	public void initialiseDetailForm() {

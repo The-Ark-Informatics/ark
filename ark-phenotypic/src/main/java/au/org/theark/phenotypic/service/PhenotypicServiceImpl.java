@@ -912,4 +912,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 	/****TODO IMPLEMENT THIS THING AGAIN!****/
 	public void refreshUpload(Upload upload){}
+	
+	public Collection<CustomFieldGroup> getCustomFieldGroupList(Study study){
+		return phenotypicDao.getCustomFieldGroupList(study);
+	}
+	
 }

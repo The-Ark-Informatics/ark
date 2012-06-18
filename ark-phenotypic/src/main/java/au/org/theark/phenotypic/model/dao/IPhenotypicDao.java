@@ -279,4 +279,6 @@ public interface IPhenotypicDao {
 	public void deleteUpload(Upload studyUpload);
 	public Upload getUpload(Long id);
 
+	public Collection<CustomFieldGroup> getCustomFieldGroupList(Study study);
+
 }

@@ -51,9 +51,11 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
@@ -180,14 +182,14 @@ public class CustomDataUploadValidator {
 	 *           is the UploadVO of the file
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileFormat(UploadVO uploadVo) {
+	public Collection<String> validateCustomFieldFileFormat(UploadVO uploadVo, PhenoCollection phenoCollection) {
 		java.util.Collection<String> validationMessages = null;
 		try {
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
 			String filename = uploadVo.getFileUpload().getClientFileName();
 			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-			validationMessages = validateCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter);
+			validationMessages = validateCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter, phenoCollection);
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -206,7 +208,7 @@ public class CustomDataUploadValidator {
 	 *           is the delimiter character of the file (eg comma)
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
+	public Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar, PhenoCollection phenoCollection) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
@@ -226,7 +228,7 @@ public class CustomDataUploadValidator {
 					log.error(e.getMessage());
 				}
 			}
-			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar, phenoCollection);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.phenotypic.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -308,8 +310,11 @@ public class CustomDataUploadValidator {
 	 *            general ARK Exception
 	 * @return a collection of file format validation messages
 	 */
-	public java.util.Collection<String> validateCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkBaseException {
+	public java.util.Collection<String> validateCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, PhenoCollection phenoCollection) throws FileFormatException, ArkBaseException {
 		delimiterCharacter = inDelimChr;
+
+		CustomFieldGroup customFieldGroup = phenoCollection.getQuestionnaire();
+		
 		fileFormat = inFileFormat;
 		row = 0;
 		InputStreamReader inputStreamReader = null;
