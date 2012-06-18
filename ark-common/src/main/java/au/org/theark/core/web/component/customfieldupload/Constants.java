@@ -21,6 +21,7 @@ public class Constants {
 	public static final String	UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION_ID		= "upload.collectionUpload.collection.id";
 	public static final String	UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION_NAME	= "upload.collectionUpload.collection.name";
 	public static final String	UPLOADVO_UPLOAD_FILENAME									= "upload.filename";
+	public static final String	UPLOADVO_UPLOAD_CUSTOM_FIELD_GROUP									= "upload.customFieldGroup";
 	public static final String	UPLOADVO_UPLOAD_FILE_FORMAT								= "upload.fileFormat";
 	public static final String	UPLOADVO_UPLOAD_FILE_FORMAT_ID							= "upload.fileFormat.id";
 	public static final String	UPLOADVO_UPLOAD_FILE_FORMAT_NAME							= "upload.fileFormat.name";
