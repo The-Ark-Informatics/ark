@@ -52,7 +52,6 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 	private IArkCommonService<Void>			iArkCommonService;
 	private Form<UploadVO>						containerForm;
 	private FileUploadField						fileUploadField;
-	// private UploadProgressBar uploadProgressBar;
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
 	private DropDownChoice<UploadType>		uploadTypeDdc;
 	private WizardForm							wizardForm;
@@ -140,7 +139,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setChecksum(checksum);
 		containerForm.getModelObject().getUpload().setFilename(filename);
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
-		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
+		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD));
 		wizardForm.setFileName(filename);
 
 		//TODO analyse how many times this is saved and where it should be saved

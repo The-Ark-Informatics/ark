@@ -27,6 +27,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -98,9 +100,11 @@ public class CustomDataUploadStep4 extends AbstractWizardStepPanel {
 							studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
 				task.run();
 			}			else */
+			PhenoCollection phenoCollectionCriteria = new PhenoCollection();
+			CustomFieldGroup customFieldGroup = new CustomFieldGroup();
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Custom Data Sets")){
 				CustomDataUploadExecutor task = new CustomDataUploadExecutor(iArkCommonService, iPhenoService, inputStream, uploadId, //null user
-							studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
+							studyId, fileFormat, delimiterChar, size, report, uidsToUpload, phenoCollectionCriteria, customFieldGroup);
 				task.run();
 			}
 			

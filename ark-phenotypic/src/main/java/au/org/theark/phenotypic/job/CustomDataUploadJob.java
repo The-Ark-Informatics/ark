@@ -46,25 +46,24 @@ public class CustomDataUploadJob implements Job {
 
 	public static final String		IARKCOMMONSERVICE	= "iArkCommonService";
 	public static final String		IPHENOSERVICE		= "iPhenoService";
-	public static final String		UPLOADID				= "uploadId";
+	public static final String		UPLOADID			= "uploadId";
 	public static final String		CURRENT_USER		= "currentUser";
-	public static final String		STUDY_ID				= "study";
+	public static final String		STUDY_ID			= "study";
 	public static final String		PHENO_COLLECTION	= "phenoCollection";
 	public static final String		DATA_FILE			= "dataFile";
 	public static final String		FILE_FORMAT			= "fileFormat";
 	public static final String		DELIMITER			= "delimiter";
 	public static final String		INPUT_STREAM		= "inputStream";
-	public static final String		SIZE					= "size";
+	public static final String		SIZE				= "size";
 	public static final String		REPORT				= "report";
 	public static final String		LIST_OF_UIDS_TO_UPDATE	= "listOfUidsToUpdate";
-	private static final Object	CUSTOM_FIELD_GROUP = "customFieldGroup";
+	public static final String		CUSTOM_FIELD_GROUP = "customFieldGroup";
 	
 	private 	IPhenotypicService	iPhenoService;
 	private 	IArkCommonService<Void>	iArkCommonService;
 
 	/**
-	 * Empty constructor for job initialization
-	 * Quartz requires a public empty constructor so that the scheduler can instantiate the class whenever it needs.
+	 * Empty constructor for job initialization- Quartz requires a public empty constructor so that the scheduler can instantiate the class whenever it needs.
 	 */
 	public CustomDataUploadJob() {
 	}
@@ -107,12 +106,10 @@ public class CustomDataUploadJob implements Job {
 	private void save(Upload upload, String report, String originalReport, Date startTime) {
 		iPhenoService.refreshUpload(upload);
 		byte[] bytes = (originalReport + report).getBytes();
-		//Blob uploadReportBlob = iArkCommonService.createBlob(bytes);
 		upload.setUploadReport(bytes);
 		upload.setStartTime(startTime);
 		upload.setFinishTime(new Date(System.currentTimeMillis()));
 		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
 		iArkCommonService.updateUpload(upload);
 	}
-
 }
