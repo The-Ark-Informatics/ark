@@ -1333,7 +1333,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public long getPhenoDataCount(PhenoCollection phenoCollection) {
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.createAlias("customFieldGroup", "qnaire");
+		criteria.createAlias("customFieldGroupDdc", "qnaire");
 		criteria.add(Restrictions.eq("qnaire.id", phenoCollection.getQuestionnaire().getId()));
 		criteria.setProjection(Projections.rowCount());
 		Long count = (Long) criteria.uniqueResult();
@@ -1495,7 +1495,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public List<CustomField> getCustomFieldsLinkedToCustomFieldGroup(CustomFieldGroup customFieldCriteria){
 		
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.add(Restrictions.eq("customFieldGroup",customFieldCriteria));
+		criteria.add(Restrictions.eq("customFieldGroupDdc",customFieldCriteria));
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("customField"));
 		criteria.setProjection(projectionList);
@@ -1513,7 +1513,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	
 	private List<CustomFieldDisplay> getCustomFieldDisplayForCustomFieldGroup(CustomFieldGroup customFieldGroup){
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
+		criteria.add(Restrictions.eq("customFieldGroupDdc",customFieldGroup));
 		return criteria.list();
 	}
 	
@@ -1619,7 +1619,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	
 	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup, int first, int count){
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
+		criteria.add(Restrictions.eq("customFieldGroupDdc",customFieldGroup));
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
 		criteria.addOrder(Order.asc("sequence"));
@@ -1629,7 +1629,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	
 	public long getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup){
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
+		criteria.add(Restrictions.eq("customFieldGroupDdc",customFieldGroup));
 		criteria.setProjection(Projections.rowCount());
 		return (Long)criteria.uniqueResult();
 	}
@@ -1735,4 +1735,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return (Upload)getSession().get(Upload.class, id);
 	}	
 
+	public Collection<CustomFieldGroup> getCustomFieldGroupList(Study study){
+		Criteria criteria = getSession().createCriteria(CustomFieldGroup.class);
+		criteria.add(Restrictions.eq("study", study));
+		Collection<CustomFieldGroup>  result = criteria.list();
+		return result;
+	}
 }

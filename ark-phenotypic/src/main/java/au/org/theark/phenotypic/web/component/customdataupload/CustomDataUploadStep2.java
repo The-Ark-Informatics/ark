@@ -29,6 +29,8 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
@@ -103,11 +105,24 @@ public class CustomDataUploadStep2 extends AbstractWizardStepPanel {
 				throw new FileFormatException();
 			}
 			
+			
+			
 																										//TODO kill hardcoding throughout codebase
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Custom Data Sets")){
 				//TODO : custom field validation
 				CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService);
-				validationMessages = customFieldUploadValidator.validateCustomFieldFileFormat(containerForm.getModelObject());			
+				
+				PhenoCollection phenoCollectionCriteria = new PhenoCollection();
+				/*phenoCollectionCriteria.setDescription();
+				phenoCollectionCriteria.setName(name);
+				phenoCollectionCriteria.setQuestionnaire();
+				phenoCollectionCriteria.setStatus(status);
+				phenoCollectionCriteria.setRecordDate(recordDate);
+				phenoCollectionCriteria.setReviewedBy(reviewedBy);
+				phenoCollectionCriteria.setReviewedDate(reviewedDate);
+				*/
+				
+				validationMessages = customFieldUploadValidator.validateCustomFieldFileFormat(containerForm.getModelObject(), phenoCollectionCriteria);			
 			}
 			else{
 				//TODO : Throw error back to user

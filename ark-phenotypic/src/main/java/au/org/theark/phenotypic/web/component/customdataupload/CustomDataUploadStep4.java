@@ -95,11 +95,6 @@ public class CustomDataUploadStep4 extends AbstractWizardStepPanel {
 			Subject currentUser = SecurityUtils.getSubject();
 			Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-		/*	if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")){
-				StudyDataUploadExecutor task = new StudyDataUploadExecutor(iArkCommonService, iPhenoService, inputStream, uploadId, //null user
-							studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
-				task.run();
-			}			else */
 			PhenoCollection phenoCollectionCriteria = new PhenoCollection();
 			CustomFieldGroup customFieldGroup = new CustomFieldGroup();
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Custom Data Sets")){

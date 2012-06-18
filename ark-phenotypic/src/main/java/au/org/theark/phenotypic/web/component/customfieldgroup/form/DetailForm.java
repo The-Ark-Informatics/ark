@@ -94,7 +94,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 	}
 
 	private void initCustomFieldDataListPanel() {
-		cfdProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldGroup"));
+		cfdProvider.setCriteriaModel(new PropertyModel<CustomFieldDisplay>(cpModel, "customFieldGroupDdc"));
 		List<CustomField> selectedList = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(getModelObject().getCustomFieldGroup());
 		Boolean disableEditButton = false;
 		if (getModelObject().getCustomFieldGroup().getPublished()) {
