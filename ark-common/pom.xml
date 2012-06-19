@@ -322,7 +322,11 @@
 		</plugins>
 	</build>
 	<properties>
+<<<<<<< HEAD
 		<wicket.version>1.5.3</wicket.version>
+=======
+		<wicket.version>1.5.7</wicket.version>
+>>>>>>> test commit [ARK-651]
 		<jetty.version>6.1.4</jetty.version>
 		<shiro.version>1.2.0</shiro.version>
 	</properties>
