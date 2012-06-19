@@ -322,7 +322,7 @@
 		</plugins>
 	</build>
 	<properties>
-		<wicket.version>1.5.3</wicket.version>
+		<wicket.version>1.5.7</wicket.version>
 		<jetty.version>6.1.4</jetty.version>
 		<shiro.version>1.2.0</shiro.version>
 	</properties>
