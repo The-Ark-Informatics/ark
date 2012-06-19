@@ -6,7 +6,7 @@
 	<packaging>jar</packaging>
 	<version>1.0.0</version>
 	<name>Ark Common</name>
-	<description>The common ARK module/project that holds all core/common classes that other modules/projects may reference, via a Maven dependency</description>
+	<description>The common ARK module/project that holds all core/common classes that other modules/projects may reference, via a Maven dependency  </description>
 	<organization>
 		<name>Centre for Genetic Epidemiology and Biostatistics (CGEB)</name>
 		<url>http://www.genepi.meddent.uwa.edu.au/</url>
