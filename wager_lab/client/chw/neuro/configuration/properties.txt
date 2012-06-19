@@ -1,6 +1,0 @@
--- Property to specify where the AutoDocs comments.xml file is to reside e.g.
-neuragenix.genix.admin.AutoDocCommentsDir=/home/seena/tools/tomcat/webapps/bio45/files/auto_doc_comments
-
--- Property to specify whether to display the original Biospecimen ID when building the BioAnalysisTable
-neuragenix.genix.smartform.BioAnalysisBioID=true
-

@@ -1,2 +1,0 @@
-currentID cannot be resolvedString currentID = "SH10000";int temp = Integer.parseInt(currentID.substring(currentID.length() - 4));
-System.out.println(Integer.toString(temp).toString());

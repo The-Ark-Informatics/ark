@@ -1,8 +1,0 @@
-</05 - Biogenix Inventory.pdf> <http://purl.org/dc/elements/1.0/date> "2004-10-04" .
-</05 - Biogenix Inventory.pdf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.ais.columbia.edu/sws/xmlns/cufs#File> .
-</05 - Biogenix Inventory.pdf> <http://purl.org/dc/elements/1.0/format> "application/pdf" .
-</05 - Biogenix Inventory.pdf> <http://purl.org/dc/elements/1.0/identifier> "/05 - Biogenix Inventory.pdf" .
-</05 - Biogenix Inventory.pdf> <http://www.ais.columbia.edu/sws/xmlns/cucms#editor> "Neuragenix Demo" .
-</05 - Biogenix Inventory.pdf> <http://purl.org/dc/elements/1.0/description> "Add a box/shelf,\r\nadd box,\r\nAdd a site,\r\nadd site,\r\nAdd a tank,\r\nadd tank,\r\nAdd a tray/box,\r\nadd tray,\r\nBox,\r\nBox/shelf,\r\nChange box/shelf details,\r\nChange site details,\r\nChange tank details,\r\nChange tray/box details,\r\nDelete a box/shelf,\r\nDelete a site,\r\nDelete a tank,\r\nDelete a tray/box,\r\nGenerate report (tray/box),\r\nInventory,\r\nInventory hierarchy,\r\nPictorial tray displays,\r\nSite,\r\nTank,\r\nTray/box,\r\ntray,\r\nbox\r\n" .
-</05 - Biogenix Inventory.pdf> <http://purl.org/dc/elements/1.0/creator> "Neuragenix Demo" .
-</05 - Biogenix Inventory.pdf> <http://www.ais.columbia.edu/sws/xmlns/cucms#comment> "" .

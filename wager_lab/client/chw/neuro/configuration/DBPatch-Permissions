@@ -1,5 +1,0 @@
---
---Rights to be change the study settings
---
-
-INSERT INTO ix_activity ("NAME", "DESCRIPTION") VALUES ( 'study_settings', 'Study Settings');

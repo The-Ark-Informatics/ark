@@ -1,2 +1,0 @@
-alter table ix_protein drop column "DISEASE";
-alter table ix_protein add column "DISEASE" character varying(50);

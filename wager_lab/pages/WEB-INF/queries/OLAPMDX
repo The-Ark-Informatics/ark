@@ -1,4 +1,0 @@
-SELECT 
-{[Measures].[Number of patients]} ON COLUMNS,
-{Hierarchize(Descendants([Patients].[All Patients]))} ON ROWS
-FROM ReportBio

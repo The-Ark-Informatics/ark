@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<filesystems>
-    <filesystem-type name="local-editioning" class="edu.columbia.ais.filesystem.impl.LocalEditioningFileSystemImpl"/>
-    <filesystem-type name="local" class="edu.columbia.ais.filesystem.impl.LocalNonEditioningFileSystemImpl"/>
-    <filesystem-type name="ftp" class="edu.columbia.ais.filesystem.impl.FTPUnixFileSystemImpl"/>
-</filesystems>

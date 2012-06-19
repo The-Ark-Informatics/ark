@@ -1,9 +1,0 @@
-<casegenix>
-<entry name="MantasAlertExportData">casegenix</entry>
-<entry name="AlertID">data_sequence</entry>
-<entry name="AlertContext">CORECASE</entry>
-<entry name="FocusTypeCode">CORECASE_intCaseID</entry>
-<entry name="FocusTypeName">CORECASE_intCaseID</entry>
-<entry name="FocalEntityID">CORECASE_intExternalCoreCaseKey</entry>
-
-</casegenix>

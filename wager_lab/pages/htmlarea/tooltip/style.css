@@ -1,9 +1,0 @@
-
-body2 {font:11px/1.5 Verdana, Arial, Helvetica, sans-serif; background:#FFF7E4}
-#text {margin:50px auto; width:500px}
-.hotspot {color:#900; padding-bottom:1px; border-bottom:1px dotted #900; cursor:pointer}
-
-#tt {margin:0; padding:0;position:absolute; display:block; background:url(images/tt_left.gif) top left no-repeat; }
-#tttop {margin:0; padding:0;display:block; height:5px; margin-left:5px; background:url(images/tt_top.gif) top right no-repeat; overflow:hidden}
-#ttcont {font:11px/1.5 Verdana, Arial, Helvetica, sans-serif; background:#FFF7E4; margin:0; padding:0;display:block; padding:2px 12px 3px 7px; margin-left:5px; background:#fff7e4; color: black; border-right: thin solid #ffd87e}
-#ttbot {margin:0; padding:0;display:block; height:5px; margin-left:5px; background:url(images/tt_bottom.gif) top right no-repeat; overflow:hidden}
