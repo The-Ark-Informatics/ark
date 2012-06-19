@@ -122,6 +122,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 		uploadTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.uploadType.required", this, new Model<String>("Upload")));
+		customFieldGroupDdc.setRequired(true).setLabel(new StringResourceModel("error.customFieldGroup.required", this,  new Model<String>("CFG")));
 		//TODO uplaod
 	}
 
@@ -129,6 +130,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 		add(fileUploadField);
 		add(delimiterTypeDdc);
 		add(uploadTypeDdc);
+		add(customFieldGroupDdc);
 	}
 
 	@Override
