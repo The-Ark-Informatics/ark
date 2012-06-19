@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd" xml:lang="da" lang="da">
+	<head>
+		<title>
+			<wicket:message key="page.title">
+				Page Title will be inserted here
+			</wicket:message>
+		</title>
+		<!-- The ARK icon in browser address bar -->
+		<link rel="icon" type="image/ico" href="favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="css/header.css"/>
+		<link rel="stylesheet" type="text/css" href="css/welcome.css"/>
+		<link rel="stylesheet" type="text/css" href="css/login.css"/>
+		<link rel="stylesheet" type="text/css" href="css/panel.css"/>
+		<link rel="stylesheet" type="text/css" href="css/footer.css"/>
+	</head>
+	<body>
+		<div id="mainheaderouter">
+			<div class="mainheader">
+				<div class="logo">
+					<!-- Start div header -->
+					<div id="header" class="header">
+						<!--	Header images -->
+						<!--	Hosted by image -->
+						<div id="hostedby">
+							<img wicket:id="hostedByImage" alt="Hosted By"/>
+						</div>
+
+						<!--	Product image -->
+						<div id="product">
+							<img wicket:id="productImage" alt="the-ark"/>
+						</div>
+
+						<!--	Login/Logout Welcome Panel must be made a re-usable panel-->
+						<div id="welcomePanel">
+							&nbsp;
+						</div>
+					</div>
+					<!-- End div header -->
+				</div>
+
+				<!--	Header banner (image accessed in css) -->
+				<div id="banner" />
+			</div>
+			<!-- End div mainheader -->
+		</div>
+		<!--	End div mainheaderouter -->
+
+		<!-- Start div wrap -->
+		<div id="wrap">
+			<!-- Start div main -->
+			<div id="main">
+				<table border="0" width="100%">
+					<tr>
+						<td width="20%" align="left">
+							<!--	Page Left Top Zone -->
+							<div id="leftZoneTop">
+								&nbsp;
+							</div>
+						</td>
+
+						<td width="60%" align="center">
+							<!-- Page Login Feedback zone-->
+							<div id="LoginFeedbackZone">
+								<span wicket:id="feedbackMessage">
+									[Feedback]
+								</span>
+							</div>
+						</td>
+
+						<td width="20%" align="right">
+							<!--	Right Top Zone -->
+							<div id="rightZoneTop">
+								&nbsp;
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td width="20%" align="left">
+							<!--	Page Left Zone -->
+							<div id="leftZone">
+								&nbsp;
+							</div>
+						</td>
+
+						<td width="60%" align="center">
+							<!-- Content Zone Left -->
+							<div id="contentZoneLeft">
+								&nbsp;
+							</div>
+
+							<!-- Content Zone Right -->
+							<div id="contentZoneRight">
+								&nbsp;
+							</div>
+
+							<!-- Content Zone Center -->
+							<div id="contentZoneCenter">
+								<!--	Start div login -->
+								<div id="resetPassword">
+									<table border="0" width="100%" cellpadding="15">
+										<!--	Information row -->
+										<tr>
+											<td align="left" colspan="3">
+												Welcome to The Ark.
+												<br/>
+												<br/>
+												To reset your password, please enter your email address, and the reCAPTCHA words, click 'Reset password' and a new password will be sent to you.
+												<br/>
+												<br/>
+											</td>
+										</tr>
+
+										<!-- Form Row -->
+										<tr>
+											<td>
+												<!--	Reset Form	-->
+												<form wicket:id="resetForm">
+													<table border="0" width="100%">
+														<tr align="center">
+															<td align="left">
+																&nbsp;
+															</td>
+															<td align="right">
+																<div class="label">
+																	<wicket:message key="userName">
+																		Email Address:
+																	</wicket:message>
+																</div>
+															</td>
+															<td align="left">
+																<div class="label">
+																	<input wicket:id="userName" type="text" size="30"/><span class="requiredHint">*</span>
+																</div>
+															</td>
+															<td align="left">
+																&nbsp;
+															</td>
+														</tr>
+														<tr align="center">
+															<td align="left">
+																&nbsp;
+															</td>
+															<td align="center" colspan="2">
+																<div wicket:id="reCaptchaPanel">
+																	[reCAPTCHAPanel]
+																</div>
+															</td>
+															<td align="left">
+																&nbsp;
+															</td>
+														</tr>
+														<tr align="center">
+															<td align="center" colspan="4">
+																<input wicket:id="resetButton" type="submit" wicket:message="value:resetButton" />
+																<!-- Enable/disable submit button depending if JavaScript enabled -->
+																<script type="text/javascript">
+																	var _onload = window.onload || function()
+																	{
+																		var resetButton = document.getElementsByName('resetButton')[0];
+																		if (resetButton.disabled==true)
+																		{
+																			resetButton.disabled=false
+																		}
+																	}
+
+																	_onload();
+																</script>
+																<noscript>
+																	<div class="note">
+																		This site will not run properly without JavaScript enabled.
+																	</div>
+																</noscript>
+																<input wicket:id="cancelButton" type="submit" wicket:message="value:cancelButton" />
+															</td>
+														</tr>
+														<tr>
+															<td align="center" colspan="4">
+																<input wicket:id="signInButton" type="submit" wicket:message="value:signInButton" />
+															</td>
+														</tr>
+													</table>
+												</form>
+												<!--	End of Form	-->
+											</td>
+											<td width="35%">
+												&nbsp;
+											</td>
+										</tr>
+										<tr>
+											<td width="100%" align="center">
+												<br />
+												<div id="bestResolution">
+													<div id="note">
+														<wicket:message	key="page.bestResolutionNote">
+															[Note replaced from properties]
+														</wicket:message>
+													</div>
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+								<!--	End div login -->
+							</div>
+						</td>
+
+						<td width="20%" align="right">
+							<!--	Page right Zone -->
+							<div id="rightZone">
+								&nbsp;
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<!-- End div main -->
+			<div class="push">
+			</div>
+		</div>
+		<!-- End div wrap -->
+
+		<!-- Start div footer -->
+		<div id="footer" class="footer">
+			<wicket:message key="page.version">
+				[Version]
+			</wicket:message>
+			<wicket:message key="page.copyright">
+				[Copyright]
+			</wicket:message>
+		</div>
+		<!-- End div footer -->
+	</body>
+</html>

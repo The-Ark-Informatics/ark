@@ -1,0 +1,109 @@
+div.tree-subtree {
+  margin: 0px 0px 0px 18px;
+  padding: 0px;
+}
+
+div.tree-branch {
+  margin: 0px;
+  padding: 0px;
+}
+
+div.tree-branch-mid {
+  background-image: url(../images/tree.gif);
+  background-position: -54px center;
+  background-repeat: repeat-y;
+}
+
+div.tree-branch-last {
+}
+
+/* node */
+
+span.tree-junction {
+  display: block;
+  float: left;
+  width: 18px;
+  background-image: url(../images/tree.gif);
+  background-position: -36px center;
+  background-repeat: no-repeat;
+}
+
+a.tree-junction-expanded {
+  display: block;
+  float: left;
+  width: 18px;
+  background-image: url(../images/tree.gif);
+  background-position: -18px center;
+  background-repeat: no-repeat;
+  text-decoration: none;
+}
+
+a.tree-junction-collapsed {
+  display: block;
+  float: left;
+  width: 18px;
+  background-image: url(../images/tree.gif);
+  background-position: 0px center;
+  background-repeat: no-repeat;
+  text-decoration: none;
+}
+
+span.tree-content {
+  display: block;
+  margin-left: 18px;
+}
+
+/* tabletree */
+
+table.tree {
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+
+table.tree tr.selected {
+  background-color: #0000ee;
+  color: #FFFFFF;
+}
+
+table.tree td {
+  /* allow tree divs to fill complete td (regretfully height 100% on divs does not work) */
+  margin: 0px;
+  padding: 0px;
+}
+
+/* content */
+
+span.tree-content a {
+  color: black;
+  text-decoration: none;
+}
+
+span.tree-content a:hover {
+  text-decoration: underline;
+}
+
+span.tree-content .selected span.tree-label {
+  background-color: #0000ee;
+  color: #FFFFFF;
+}
+
+.tree-folder-closed {
+  padding-left: 18px;
+  background-image: url(../images/folder-closed.gif);
+  background-position: 0px 50%;
+  background-repeat: no-repeat;
+}
+
+.tree-folder-open {
+  padding-left: 18px;
+  background-image: url(../images/folder-open.gif);
+  background-position: 0px 50%;
+  background-repeat: no-repeat;
+}
+
+.tree-folder-other {
+  padding-left: 18px;
+  background-image: url(../images/folder-other.gif);
+  background-position: 0px 50%;
+  background-repeat: no-repeat;
+}

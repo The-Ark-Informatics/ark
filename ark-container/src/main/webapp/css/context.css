@@ -1,0 +1,42 @@
+#contextMenu {
+height:20px;
+width:100%;
+background:url("../images/context_bg.gif") repeat-x scroll center bottom #000;
+}
+
+#contextMenu ul {
+float:left;
+font:bold 13px Verdana, sans-serif;
+margin-left:0;
+padding:0;
+width:100%;
+}
+
+#contextMenu ul li {
+list-style:none;
+float:left;
+margin-left:1%;
+margin-right:2%;
+border-bottom:none;
+text-decoration:none;
+background-position:50%;
+background-repeat:repeat-x;
+display:block;
+padding:0;
+}
+
+.clearfix:after {
+content:".";
+display:block;
+height:0;
+clear:both;
+visibility:hidden;
+}
+
+* html .clearfix {
+height:1%;
+}
+
+*:first-child+html .clearfix {
+min-height:1px;
+}

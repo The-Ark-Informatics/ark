@@ -1,0 +1,174 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailsForm">
+		<div class="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+				<!--	Row 1 -->
+				<div class="fldLabel">
+					<wicket:message key="id">
+						ID:
+					</wicket:message>
+				</div>
+				<div class="fldControl">
+					<input wicket:id="id" type="text" />
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="name">
+						Name:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="name" type="text" />
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="study">
+						Study:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="study">
+						<option>
+							Study selection
+						</option>
+					</select>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<!--	empty -->
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="description">
+						Description:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<textarea wicket:id="description" maxlength="255" cols="25">
+					</textarea>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="location">
+						Location:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="location" type="text" />
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="host">
+						Host:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="host" type="text" />
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message	key="port">
+						Port:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<div class="port">
+						<input wicket:id="port" type="text" size="4"/>
+					</div>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+			</div>
+			<!-- End detailFormContainer -->
+
+			<div wicket:id="editButtonContainer">
+				<div class="fldLabel">
+					&nbsp;
+				</div>
+				<div class="fldControl">
+					&nbsp;
+				</div>
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+				<div class="actionButtons">
+					&nbsp;
+					<div class="label">
+						<input wicket:id="save" type="submit" wicket:message="value:button.save" />
+						<div class="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
+						<div class="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
+						&nbsp;
+					</div>
+				</div>
+			</div>
+			<div class="detailPanelBreaker">
+				&nbsp;
+			</div>
+		</div>
+		<!-- End detailsPanelBorder -->
+	</form>
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+</wicket:panel>

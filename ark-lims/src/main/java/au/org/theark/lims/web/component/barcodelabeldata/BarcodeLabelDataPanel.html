@@ -1,0 +1,133 @@
+<wicket:panel class="detailSubForm">
+	<div class="panelContentLeft">
+		&nbsp;
+	</div>
+
+	<div class="fldLabel">
+		<wicket:message key="labelPrefix">
+			Label Prefix:
+		</wicket:message>
+	</div>
+
+	<div class="fldControl">
+		<textarea wicket:id="labelPrefix" maxlength="255" cols="25">
+		</textarea>
+	</div>
+
+	<div class="panelMargin">
+		&nbsp;
+	</div>
+
+	<div class="detailPanelBreaker">
+		&nbsp;
+	</div>
+
+	<div class="detailPanel">
+		<table width="100%" cellspacing="0" class="dataview" border="0">
+			<tr>
+				<th>
+					ID
+				</th>
+				<th>
+					Command
+				</th>
+				<th>
+					X Coord
+				</th>
+				<th>
+					Y Coord
+				</th>
+				<th>
+					P1
+				</th>
+				<th>
+					P2
+				</th>
+				<th>
+					P3
+				</th>
+				<th>
+					P4
+				</th>
+				<th>
+					P5
+				</th>
+				<th>
+					P6
+				</th>
+				<th>
+					P7
+				</th>
+				<th>
+					P8
+				</th>
+				<th>
+					DATA
+				</th>
+				<th>
+					&nbsp;
+				</th>
+			</tr>
+			<tr wicket:id="barcodeLabelData">
+				<td>
+					<input wicket:id="id" type="text" size="4"/>
+				</td>
+				<td>
+					<input wicket:id="command" type="text" size="10"/>
+				</td>
+				<td>
+					<input wicket:id="xCoord" type="text" size="6"/>
+				</td>
+				<td>
+					<input wicket:id="yCoord" type="text" size="6"/>
+				</td>
+				<td>
+					<input wicket:id="p1" type="text" size="6"/>
+				</td>
+				<td>
+					<input wicket:id="p2" type="text" size="6"/>
+				</td>
+				<td>
+					<input wicket:id="p3" type="text" size="6"/>
+				</td>
+				<td>
+					<input wicket:id="p4" type="text" size="6"/>
+				</td>
+				<td>
+					<input wicket:id="p5" type="text" size="6"/>
+				</td>
+				<td>
+					<input wicket:id="p6" type="text" size="6"/>
+				</td>
+				<td>
+					<input wicket:id="p7" type="text" size="6"/>
+				</td>
+				<td>
+					<input wicket:id="p8" type="text" size="6"/>
+				</td>
+				<td>
+					<input wicket:id="data" type="text" size="25"/>
+				</td>
+			</tr>
+		</table>
+
+	</div>
+	<div class="detailPanelBreaker">
+		&nbsp;
+	</div>
+
+	<div class="panelContentLeft">
+		&nbsp;
+	</div>
+
+	<div class="fldLabel">
+		<wicket:message key="labelSuffix">
+			Label Suffix:
+		</wicket:message>
+	</div>
+
+	<div class="fldControl">
+		<textarea wicket:id="labelSuffix" maxlength="255" cols="25">
+		</textarea>
+	</div>
+</wicket:panel>

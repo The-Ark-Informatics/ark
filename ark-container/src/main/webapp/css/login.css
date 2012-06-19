@@ -1,0 +1,29 @@
+span.requiredHint {
+font-size:12pt;
+}
+#LoginFeedbackZone {
+min-height:50px;
+text-align: center;
+width: 100%;
+}
+#login,#resetPassword {
+background-color: #EEEEEE;
+border: 1px solid #000000;
+margin: auto;
+padding: 15px;
+position: relative;
+width: 700px;
+}
+.loginFeedbackZone {
+min-height:50px;
+text-align: center;
+width: 100%;
+}
+.loginForm, .resetPassword {
+background-color: #EEEEEE;
+border: 1px solid #000000;
+margin: auto;
+padding: 15px;
+position: relative;
+width: 700px;
+}

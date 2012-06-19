@@ -1,0 +1,51 @@
+<wicket:panel>
+	<!--	Page Left Zone -->
+	<div id="leftZone">
+		&nbsp;
+	</div>
+
+	<!-- Content Zone -->
+	<div id="contentZone">
+		<span wicket:id="feedbackMessage">
+		</span>
+
+		<form wicket:id="form">
+			<select wicket:id="dbName">
+				<option>
+					Study
+				</option>
+				<option>
+					LIMS
+				</option>
+			</select>
+
+			<div class="searchPanelBreaker">
+				&nbsp;
+			</div>
+
+			<textarea wicket:id="query" cols="25">
+				[query text]
+			</textarea>
+
+			<div class="searchPanelBreaker">
+				&nbsp;
+			</div>
+
+			<input wicket:id="runQuery" type="submit" value="Run query" />
+
+			<div class="searchPanelBreaker">
+				&nbsp;
+			</div>
+
+			<!-- The custom datasource Panel -->
+			<div wicket:id="datasourceTablePanel" class="detailPanel">
+				[datasourceTablePanel]
+			</div>
+		</form>
+	</div>
+
+	<!--	Page right Zone -->
+	<div id="rightZone">
+		&nbsp;
+	</div>
+</wicket:panel>
