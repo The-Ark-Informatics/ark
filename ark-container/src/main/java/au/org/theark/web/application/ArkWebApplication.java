@@ -19,6 +19,7 @@
 package au.org.theark.web.application;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -32,6 +33,10 @@ public class ArkWebApplication extends BaseApplication{
 		log.info("In Constructor of ArkApplication");
 		super.init();
 		getComponentInstantiationListeners().add(new SpringComponentInjector(this,context(),true));
+		SecurePackageResourceGuard guard = new SecurePackageResourceGuard();
+      guard.addPattern("+*.js");
+      guard.addPattern("+*.jar");
+      getResourceSettings().setPackageResourceGuard(guard); 
 	}
 	
 	@Override
