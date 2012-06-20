@@ -39,7 +39,6 @@ import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.web.component.customdataupload.form.WizardForm;
 import au.org.theark.phenotypic.util.CustomDataUploadValidator;
-//import au.org.theark.phenotypic.util.SubjectUploadValidator;
 
 /**
  * The first step of this wizard.
@@ -48,8 +47,8 @@ public class CustomDataUploadStep2 extends AbstractWizardStepPanel {
 
 	private static final long				serialVersionUID		= -4070515786803720370L;
 	private Form<UploadVO>					containerForm;
-	private String								validationMessage;
-	public java.util.Collection<String>	validationMessages	= null;
+	private String							validationMessage;
+	public java.util.Collection<String>		validationMessages	= null;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;

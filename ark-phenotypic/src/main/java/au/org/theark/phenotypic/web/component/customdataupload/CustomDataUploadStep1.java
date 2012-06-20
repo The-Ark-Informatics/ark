@@ -93,8 +93,6 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 	@SuppressWarnings("unchecked")
 	private void initCustomFieldGroup() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		//Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
-
 		Study study = new Study();
 		java.util.Collection<CustomFieldGroup> cfgList = null;
 
@@ -103,7 +101,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 			cfgList = iPhenotypicService.getCustomFieldGroupList(study);
 		}
 		else {
-			log.error("\n\n\ncan't hve a null study and see pheno!");
+			log.error("\n\n\n can't have a null study and see pheno!");
 		}
 																					//TODO fix, though will work
 		ChoiceRenderer fieldDataCollRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_NAME, au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_ID);
@@ -164,7 +162,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 		byte[] byteArray = fileUpload.getMD5();
 		String checksum = getHex(byteArray);
 		
-		containerForm.getModelObject().getUpload().setStudy(study);//TODO: analyze costs of repeated containerForm.getModelObject().getUpload()
+		containerForm.getModelObject().getUpload().setStudy(study);
 		containerForm.getModelObject().getUpload().setFileFormat(fileFormat);
 		containerForm.getModelObject().getUpload().setChecksum(checksum);
 		containerForm.getModelObject().getUpload().setFilename(filename);
