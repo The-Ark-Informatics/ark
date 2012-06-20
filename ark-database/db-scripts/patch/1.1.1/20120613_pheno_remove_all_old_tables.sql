@@ -18,4 +18,7 @@ drop table pheno.field_upload_v;
 drop table pheno.file_format;
 SET foreign_key_checks = 1;
 
+-- new self explanatory status
+INSERT INTO `pheno`.`questionnaire_status` (`NAME`, `DESCRIPTION`) VALUES ('Uploaded From File', 'The Questionnaire data has been update from file, with no further action taken since then.');
+
 -- keep pheno_collection, pheno_data, questionnaire_status, status
