@@ -957,7 +957,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public CustomField getCustomFieldByNameStudyArkFunction(String customFieldName, Study study, ArkFunction arkFunction) {
 		return customFieldDao.getCustomFieldByNameStudyArkFunction(customFieldName, study, arkFunction);
 	}
-
+	
+	public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup){
+		return customFieldDao.getCustomFieldByNameStudyCFG(customFieldName, study, arkFunction, customFieldGroup);
+	}
+	
 	public UnitType getUnitTypeByNameAndArkFunction(String name, ArkFunction arkFunction) {
 		return customFieldDao.getUnitTypeByNameAndArkFunction(name, arkFunction);
 	}
