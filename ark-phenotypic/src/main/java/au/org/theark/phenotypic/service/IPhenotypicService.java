@@ -25,24 +25,18 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.Upload;
-import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
-import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
-import au.org.theark.phenotypic.model.vo.UploadVO;
 
 public interface IPhenotypicService {
 
