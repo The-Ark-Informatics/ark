@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
@@ -47,6 +48,7 @@ public class UploadVO implements Serializable {
 	private java.util.Collection<String>		validationMessages;
 	private Boolean									updateChkBox;
 	private CustomFieldGroup					customFieldGroup;
+	private PhenoCollection						phenoCollection;
 
 	public UploadVO() {
 		upload = new Upload();
@@ -217,5 +219,13 @@ public class UploadVO implements Serializable {
 
 	public CustomFieldGroup getCustomFieldGroup() {
 		return customFieldGroup;
+	}
+
+	public void setPhenoCollection(PhenoCollection phenoCollection) {
+		this.phenoCollection = phenoCollection;
+	}
+
+	public PhenoCollection getPhenoCollection() {
+		return phenoCollection;
 	}
 }
