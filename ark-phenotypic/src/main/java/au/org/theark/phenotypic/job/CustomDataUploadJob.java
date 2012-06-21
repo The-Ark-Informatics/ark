@@ -57,7 +57,7 @@ public class CustomDataUploadJob implements Job {
 	public static final String		SIZE				= "size";
 	public static final String		REPORT				= "report";
 	public static final String		LIST_OF_UIDS_TO_UPDATE	= "listOfUidsToUpdate";
-	public static final String		CUSTOM_FIELD_GROUP = "customFieldGroupDdc";
+	public static final String		CUSTOM_FIELD_GROUP = "customFieldGroup";
 	
 	private 	IPhenotypicService	iPhenoService;
 	private 	IArkCommonService<Void>	iArkCommonService;
