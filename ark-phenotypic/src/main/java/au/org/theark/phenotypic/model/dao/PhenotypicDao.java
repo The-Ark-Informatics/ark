@@ -24,14 +24,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
@@ -48,26 +45,20 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.DelimiterType;
-import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
-import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
-import au.org.theark.phenotypic.model.vo.UploadVO;
 
 @SuppressWarnings("unchecked")
 @Repository("phenotypicDao")
@@ -1333,7 +1324,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public long getPhenoDataCount(PhenoCollection phenoCollection) {
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.createAlias("customFieldGroupDdc", "qnaire");
+		criteria.createAlias("customFieldGroup", "qnaire");
 		criteria.add(Restrictions.eq("qnaire.id", phenoCollection.getQuestionnaire().getId()));
 		criteria.setProjection(Projections.rowCount());
 		Long count = (Long) criteria.uniqueResult();
@@ -1495,7 +1486,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public List<CustomField> getCustomFieldsLinkedToCustomFieldGroup(CustomFieldGroup customFieldCriteria){
 		
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.add(Restrictions.eq("customFieldGroupDdc",customFieldCriteria));
+		criteria.add(Restrictions.eq("customFieldGroup",customFieldCriteria));
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("customField"));
 		criteria.setProjection(projectionList);
@@ -1513,7 +1504,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	
 	private List<CustomFieldDisplay> getCustomFieldDisplayForCustomFieldGroup(CustomFieldGroup customFieldGroup){
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.add(Restrictions.eq("customFieldGroupDdc",customFieldGroup));
+		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
 		return criteria.list();
 	}
 	
@@ -1619,7 +1610,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	
 	public Collection<CustomFieldDisplay> getCFDLinkedToQuestionnaire(CustomFieldGroup customFieldGroup, int first, int count){
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.add(Restrictions.eq("customFieldGroupDdc",customFieldGroup));
+		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
 		criteria.addOrder(Order.asc("sequence"));
@@ -1629,7 +1620,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	
 	public long getCFDLinkedToQuestionnaireCount(CustomFieldGroup customFieldGroup){
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
-		criteria.add(Restrictions.eq("customFieldGroupDdc",customFieldGroup));
+		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
 		criteria.setProjection(Projections.rowCount());
 		return (Long)criteria.uniqueResult();
 	}
