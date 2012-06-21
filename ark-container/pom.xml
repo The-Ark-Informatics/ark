@@ -91,6 +91,12 @@
 			<version>${ark-admin.version}</version>
 		</dependency>
 		
+		<!-- Ark Work Tracking Module -->
+		<dependency>
+			<groupId>au.org.theark.worktracking</groupId>
+			<artifactId>ark-work-tracking</artifactId>
+			<version>${ark-work-tracking.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -229,5 +235,6 @@
 		<ark-lims.version>1.0.1</ark-lims.version>
 		<ark-report.version>1.0.0</ark-report.version>
 		<ark-admin.version>1.0.0</ark-admin.version>
+		<ark-work-tracking.version>1.0.0</ark-work-tracking.version>
 	</properties>
 </project>
