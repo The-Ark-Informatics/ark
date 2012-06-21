@@ -3,6 +3,7 @@ package au.org.theark.core.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -48,7 +49,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	public FieldType getFieldTypeByName(String typeName) throws EntityNotFoundException {
 		FieldType fieldType = null;
 		Criteria criteria = getSession().createCriteria(FieldType.class);
-		criteria.add(Restrictions.eq("name", typeName));
+		criteria.add(Restrictions.eq("name", typeName!=null?typeName.toUpperCase():typeName));
 
 		fieldType = (FieldType) criteria.uniqueResult();	// should not have more than on field called the same name
 		if (fieldType == null) {
@@ -312,6 +313,44 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return result;
 	}
 
+	public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup){
+		
+		/*
+		log.info("name" +  "\nstudy" + study.getId() + "\narkFunc="+ arkFunction.getId() + "cfg name=" + customFieldGroup.getName());
+		Criteria criteria = getSession().createCriteria(CustomField.class);
+		criteria.add(Restrictions.eq("name", customFieldName));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		criteria.add(Restrictions.eq("customFieldGroup", customFieldGroup));//where exists (select blah from customfield where customfield.cfg - cfg
+		*/
+		Query q = getSession().createQuery("Select customField from CustomField customField " +
+											" where customField.name =:customFieldName " +
+											" and customField.study =:study " +
+											" and customField.arkFunction =:arkFunction " +
+											" and exists (" +
+											"				from CustomFieldDisplay as customFieldDisplay " +
+											"				where customFieldDisplay.customField = customField " +
+											"				and customFieldDisplay.customFieldGroup =:customFieldGroup ) ");
+		
+		
+		//linkSubjectStudyCriteria = getSession().createQuery(" select subject from LinkSubjectStudy subject " +
+				//			" where study =:study and subjectUID=:subjectUID " +
+				//			" left join fetch subject.person ");
+				//	linkSubjectStudyCriteria.setParameter("subjectUID", subjectUID);
+				//	linkSubjectStudyCriteria.setParameter("study", study);
+		q.setParameter("customFieldName", customFieldName);
+		q.setParameter("study", study);
+		q.setParameter("arkFunction", arkFunction);
+		q.setParameter("customFieldGroup", customFieldGroup);
+		
+		List<CustomField> results = q.list();
+		//CustomField result = (CustomField) criteria.uniqueResult();
+		if(results.size()>0){
+			return results.get(0);
+		}
+		return null;
+	}
+	
 	public UnitType getUnitTypeByNameAndArkFunction(String name, ArkFunction arkFunction) {
 		Criteria criteria = getSession().createCriteria(UnitType.class);
 		// UnitType name should be sufficient to return only 1 row (i.e. uniqueness at the global and arkFunction-specific levels)
