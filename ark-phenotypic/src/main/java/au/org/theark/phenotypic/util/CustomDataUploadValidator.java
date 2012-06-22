@@ -182,14 +182,14 @@ public class CustomDataUploadValidator {
 	 *           is the UploadVO of the file
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileFormat(UploadVO uploadVo, PhenoCollection phenoCollection) {
+	public Collection<String> validateCustomFieldFileFormat(UploadVO uploadVo, PhenoCollection phenoCollection, CustomFieldGroup cfg) {
 		java.util.Collection<String> validationMessages = null;
 		try {
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
 			String filename = uploadVo.getFileUpload().getClientFileName();
 			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-			validationMessages = validateCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter, phenoCollection);
+			validationMessages = validateCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter, phenoCollection, cfg);
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -208,7 +208,7 @@ public class CustomDataUploadValidator {
 	 *           is the delimiter character of the file (eg comma)
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar, PhenoCollection phenoCollection) {
+	public Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar, PhenoCollection phenoCollection, CustomFieldGroup cfg) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
@@ -228,7 +228,7 @@ public class CustomDataUploadValidator {
 					log.error(e.getMessage());
 				}
 			}
-			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar, phenoCollection);
+			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar, phenoCollection, cfg);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.phenotypic.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -310,10 +310,8 @@ public class CustomDataUploadValidator {
 	 *            general ARK Exception
 	 * @return a collection of file format validation messages
 	 */
-	public java.util.Collection<String> validateCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, PhenoCollection phenoCollection) throws FileFormatException, ArkBaseException {
+	public java.util.Collection<String> validateCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, PhenoCollection phenoCollection, CustomFieldGroup customFieldGroup) throws FileFormatException, ArkBaseException {
 		delimiterCharacter = inDelimChr;
-
-		CustomFieldGroup customFieldGroup = phenoCollection.getQuestionnaire();
 		
 		fileFormat = inFileFormat;
 		row = 0;
@@ -330,22 +328,26 @@ public class CustomDataUploadValidator {
 			String[] headerColumnArray = csvReader.getHeaders();
 			boolean headerError = false;
 			boolean hasSubjectUIDHeader = false;
-			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+			boolean hasDateHeader = false;																//TODO check this
+			ArkFunction customFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD);//Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 			List<String> badHeaders = new ArrayList<String>();
 			
 			for(String header : headerColumnArray){																						
 				if(header.equalsIgnoreCase("SUBJECTUID")) {
 					hasSubjectUIDHeader = true;
+				}																						
+				else if(header.equalsIgnoreCase("RECORD_DATE_TIME")) {
+					hasDateHeader = true;
 				}
 				else{
 					//TODO just make it get all of them and look through in memory rather than 10-50-300-500 selects?
-					if(iArkCommonService.getCustomFieldByNameStudyArkFunction(header, study, subjectCustomFieldArkFunction) == null){
+					if(iArkCommonService.getCustomFieldByNameStudyCFG(header, study, customFieldArkFunction, customFieldGroup) == null){
 						badHeaders.add(header);
 						headerError = true;
 					}
 				}
 			}
-			if (headerError || !hasSubjectUIDHeader) {
+			if (headerError || !hasSubjectUIDHeader || !hasDateHeader) {
 				// Invalid file format
 				StringBuffer stringBuffer = new StringBuffer();
 				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n\n");
@@ -353,6 +355,9 @@ public class CustomDataUploadValidator {
 				fileValidationMessages.add(stringBuffer.toString());
 				if(!hasSubjectUIDHeader){
 					fileValidationMessages.add("The column name \"SUBJECTUID\" must exist as the header of the first column.\n");
+				}
+				if(!hasDateHeader){
+					fileValidationMessages.add("The column name \"RECORD_DATE_TIME\" must exist as the header of the second column.\n");
 				}
 				for (String badHeader : badHeaders) {
 					fileValidationMessages.add("The column name " + badHeader + " does not with an existing study-specific custom field.\n");
@@ -420,7 +425,6 @@ public class CustomDataUploadValidator {
 		row = 1;
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
-		int duplicateRowCount =0;
 		
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
@@ -432,11 +436,18 @@ public class CustomDataUploadValidator {
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			csvReader.readHeaders();
 			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
-			//uidsToUpdateReference = subjectUIDsAlreadyExisting;
+
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
 			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 																							//remove if not subjectuid, enforce fetch of customField to save another query each
 			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
+			
+			/* 
+			 * other validation for pheno?
+			 * - do u own it?
+			 * all the validation that is on subject custom fields too
+			 * 
+			 */
 			
 			while (csvReader.readRecord()) {
 				stringLineArray = csvReader.getValues();//i might still need this or might not now that i am evaluating by name ... TODO evaluate
