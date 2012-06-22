@@ -124,6 +124,9 @@ public class Constants {
 	public static final String		FIELD_DATAVO_FIELD_DATA_UPDATE_TIME						= "fieldData.updateTime";
 
 	// UploadVO
+
+	public static final String		PHENOCOLLECTION_NAME									= "phenoCollection.name";
+	public static final String		PHENOCOLLECTION_DESCRIPTION								= "phenoCollection.description";
 	public static final String		UPLOADVO_UPLOAD_ID										= "upload.id";
 	public static final String		UPLOADVO_UPLOAD_COLLECTION_UPLOAD						= "upload.collectionUpload";
 	public static final String		UPLOADVO_UPLOAD_COLLECTION_UPLOAD_ID					= "upload.collectionUpload.id";

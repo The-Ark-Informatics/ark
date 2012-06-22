@@ -26,6 +26,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.Model;
@@ -61,6 +62,8 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 	private DropDownChoice<UploadType>		uploadTypeDdc;
 	private WizardForm						wizardForm;
 	private DropDownChoice<CustomFieldGroup>	customFieldGroupDdc;
+	private TextField<String>				phenoCollectionName;
+	private TextField<String>				phenoCollectionDescription;
 	
 	public CustomDataUploadStep1(String id) {
 		super(id);
@@ -111,12 +114,15 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 	public void initialiseDetailForm() {
 		// uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleUploadForm);
 		fileUploadField = new FileUploadField(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME);
+		phenoCollectionName = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENOCOLLECTION_NAME);
+		phenoCollectionDescription = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENOCOLLECTION_DESCRIPTION);
 		initialiseDropDownChoices();
 		attachValidators();
 		addComponents();
 	}
 
 	protected void attachValidators() {
+		phenoCollectionName.setRequired(true).setLabel(new StringResourceModel("error.phenoCollectionName.required", this, new Model<String>("PhenoCollectionName")));
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 		uploadTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.uploadType.required", this, new Model<String>("Upload")));
@@ -129,6 +135,8 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 		add(delimiterTypeDdc);
 		add(uploadTypeDdc);
 		add(customFieldGroupDdc);
+		add(phenoCollectionName);
+		add(phenoCollectionDescription);
 	}
 
 	@Override

@@ -103,25 +103,15 @@ public class CustomDataUploadStep2 extends AbstractWizardStepPanel {
 			if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
 				throw new FileFormatException();
 			}
-			
-			
-			
-																										//TODO kill hardcoding throughout codebase
+																													//TODO kill hardcoding throughout codebase
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Custom Data Sets")){
 				//TODO : custom field validation
 				CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService);
 				
-				PhenoCollection phenoCollectionCriteria = new PhenoCollection();
-				/*phenoCollectionCriteria.setDescription();
-				phenoCollectionCriteria.setName(name);
-				phenoCollectionCriteria.setQuestionnaire();
-				phenoCollectionCriteria.setStatus(status);
-				phenoCollectionCriteria.setRecordDate(recordDate);
-				phenoCollectionCriteria.setReviewedBy(reviewedBy);
-				phenoCollectionCriteria.setReviewedDate(reviewedDate);
-				*/
+				PhenoCollection phenoCollectionCriteria =containerForm.getModelObject().getPhenoCollection();
+				CustomFieldGroup cfgSelected = containerForm.getModelObject().getCustomFieldGroup();
 				
-				validationMessages = customFieldUploadValidator.validateCustomFieldFileFormat(containerForm.getModelObject(), phenoCollectionCriteria);			
+				validationMessages = customFieldUploadValidator.validateCustomFieldFileFormat(containerForm.getModelObject(), phenoCollectionCriteria, cfgSelected);			
 			}
 			else{
 				//TODO : Throw error back to user
