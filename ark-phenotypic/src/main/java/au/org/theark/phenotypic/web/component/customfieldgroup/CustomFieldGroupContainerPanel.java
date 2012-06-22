@@ -132,7 +132,7 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 		};
 		
 		// Set the criteria for the data provider
-		arkDataProvider.setCriteriaModel(new PropertyModel<CustomFieldGroup>(cpModel, "customFieldGroupDdc"));
+		arkDataProvider.setCriteriaModel(new PropertyModel<CustomFieldGroup>(cpModel, "customFieldGroup"));
 
 		dataView = searchResultListPanel.buildDataView(arkDataProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);

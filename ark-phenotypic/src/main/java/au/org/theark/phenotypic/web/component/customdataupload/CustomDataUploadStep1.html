@@ -27,13 +27,37 @@
 			</div>
 		</div>
 
-		<!--
-			div class="fldLabel"> <div class="label"> <label for="uploadType"> <wicket:message key="upload.uploadType"> Upload
-			Type: </wicket:message> </label> </div> </div> <div class="fldControl"> <div class="label"> <select
-			wicket:id="upload.uploadType"> <option> Demographic </option> <option> Study-specific </option> </select> </div>
-			</div
-		-->
 
+		<div class="fldLabel">
+			<div class="label">
+				<label for="uploadType">
+					<wicket:message key="upload.uploadType">
+						Upload Type:
+					</wicket:message>
+				</label>
+			</div>
+		</div>
+		<div class="fldControl">
+			<div class="label">
+				<select wicket:id="upload.uploadType">
+					<option>
+						Demographic
+					</option>
+					<option>
+						Study-specific
+					</option>
+				</select>
+			</div>
+		</div>
+
+
+		<div class="wizardPanelBreaker">
+			&nbsp;
+		</div>
+		<div class="wizardPanelContentLeft">
+			&nbsp;
+		</div>
+		
 		<div class="fldLabel">
 			<div class="label">
 				<label for="customFieldGroup">
@@ -54,26 +78,41 @@
 			</div>
 		</div>
 
+<!-- margin here -->
+
+		<div class="fldLabel">
+			<wicket:message key="phenoCollection.name">
+				Name:
+			</wicket:message>
+		</div>
+
+		<div class="fldControl">
+			<input wicket:id="phenoCollection.name"	type="text" />
+		</div>
+
+
 		<div class="wizardPanelBreaker">
 			&nbsp;
 		</div>
 		<div class="wizardPanelContentLeft">
 			&nbsp;
 		</div>
+		
+		
 
 		<div class="fldLabel">
-			<wicket:message key="customField.name">
+			<wicket:message key="phenoCollection.description">
 				Name:
 			</wicket:message>
 		</div>
 
 		<div class="fldControl">
-			<input wicket:id="customField.name"	type="text" />
+			<input wicket:id="phenoCollection.description"	type="text" />
 		</div>
-
-		<div class="wizardPanelContentLeft">
-			&nbsp;
-		</div>
+		
+		
+		
+<!-- margin here		-->
 
 		<div class="fldLabel">
 			<div class="label">
