@@ -18,48 +18,19 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.StringTokenizer;
-
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
 
 import org.apache.commons.lang.time.StopWatch;
-import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.exception.ArkBaseException;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.exception.PhenotypicSystemException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
-import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-
-import com.csvreader.CsvReader;
 
 /**
  * PhenotypicValidator provides support for validating phenotypic data with the defined data dictionary
