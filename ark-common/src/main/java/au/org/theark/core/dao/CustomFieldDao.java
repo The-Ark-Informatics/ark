@@ -314,15 +314,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	}
 
 	public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup){
-		
-		/*
-		log.info("name" +  "\nstudy" + study.getId() + "\narkFunc="+ arkFunction.getId() + "cfg name=" + customFieldGroup.getName());
-		Criteria criteria = getSession().createCriteria(CustomField.class);
-		criteria.add(Restrictions.eq("name", customFieldName));
-		criteria.add(Restrictions.eq("study", study));
-		criteria.add(Restrictions.eq("arkFunction", arkFunction));
-		criteria.add(Restrictions.eq("customFieldGroup", customFieldGroup));//where exists (select blah from customfield where customfield.cfg - cfg
-		*/
+
 		Query q = getSession().createQuery("Select customField from CustomField customField " +
 											" where customField.name =:customFieldName " +
 											" and customField.study =:study " +
@@ -332,12 +324,6 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 											"				where customFieldDisplay.customField = customField " +
 											"				and customFieldDisplay.customFieldGroup =:customFieldGroup ) ");
 		
-		
-		//linkSubjectStudyCriteria = getSession().createQuery(" select subject from LinkSubjectStudy subject " +
-				//			" where study =:study and subjectUID=:subjectUID " +
-				//			" left join fetch subject.person ");
-				//	linkSubjectStudyCriteria.setParameter("subjectUID", subjectUID);
-				//	linkSubjectStudyCriteria.setParameter("study", study);
 		q.setParameter("customFieldName", customFieldName);
 		q.setParameter("study", study);
 		q.setParameter("arkFunction", arkFunction);
