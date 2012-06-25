@@ -191,6 +191,7 @@ public class Constants {
 	/* Schema */
 	public static final String			STUDY_SCHEMA														= "study";
 	public static final String			AUDIT_SCHEMA														= "audit";
+	public static final String			ADMIN_SCHEMA														= "admin";
 
 	/* Default Country */
 	public static final String			DEFAULT_COUNTRY													= "Australia";
