@@ -460,6 +460,15 @@ public interface IArkCommonService<T> {
 	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count);
 
 	/**
+	 * A less generic interface that will return a list CustomFields specified by a particular criteria, and a paginated reference point
+	 * @param customFieldCriteria
+	 * @param first - index to the first item (for that page)
+	 * @param count - number of items to return (for that page)
+	 * @return Collection of Custom Fields
+	 */
+	public List<CustomField> searchPageableCustomFieldsForPheno(CustomField customFieldCriteria, int first, int count);
+
+	/**
 	 * A generic interface that will return a list Custom Field FieldTypes
 	 * @return Collection of Custom Field FieldTypes
 	 */

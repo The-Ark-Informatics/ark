@@ -1450,11 +1450,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("subjectId", collectionCriteria.getPhenoCollection().getLinkSubjectStudy().getId());
 		query.setParameter("studyId", collectionCriteria.getCustomFieldGroup().getStudy().getId());
-		log.info("colcrit ark=" + collectionCriteria.getArkFunction());
+		//log.info("colcrit ark=" + collectionCriteria.getArkFunction());
 		long id = collectionCriteria.getArkFunction().getId();
-		log.info("id=" + id);
+		//log.info("id=" + id);
 		query.setParameter("functionId",id);
-		log.info("gday");
 		query.setFirstResult(first);
 		query.setMaxResults(count);
 		
@@ -1491,7 +1490,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		projectionList.add(Projections.property("customField"));
 		criteria.setProjection(projectionList);
 		criteria.addOrder(Order.asc("sequence"));
-		return criteria.list();
+		List<CustomField> fieldsList = criteria.list();
+		//log.warn("______________customFieldsList = " + fieldsList.size());
+		return fieldsList;
 		
 	}
 

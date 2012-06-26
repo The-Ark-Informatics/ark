@@ -19,6 +19,11 @@
 package au.org.theark.core.web.component.customfield;
 
 public class Constants {
+
+	//TODO make all of these constants firstly look in common?
+	public static final String			FUNCTION_KEY_VALUE_PHENO_COLLECTION							= "PHENO_COLLECTION";
+	public static final String			FUNCTION_KEY_VALUE_DATA_DICTIONARY							= "DATA_DICTIONARY";
+	
 	
 	public static final String		CHARACTER_FIELD_TYPE_NAME									= "CHARACTER";
 	public static final String		DATE_FIELD_TYPE_NAME											= "DATE";

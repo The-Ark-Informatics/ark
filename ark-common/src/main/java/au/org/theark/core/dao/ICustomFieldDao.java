@@ -148,6 +148,16 @@ public interface ICustomFieldDao {
 	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count);
 
 	/**
+	 * Search for CustomFields based on the criteria provided, limiting to the pageable amounts first and count
+	 *  BUT WILL FORCE PHENO_ARK_MODULE so that it only gets pheno fields, workaround until an agreed method of sorting
+	 * @param customFieldCriteria
+	 * @param first
+	 * @param count
+	 * @return
+	 */
+	public List<CustomField> searchPageableCustomFieldsForPheno(CustomField customFieldCriteria, int first, int count);
+
+	/**
 	 * Update a CustomField
 	 * @param customField
 	 * @throws ArkSystemException

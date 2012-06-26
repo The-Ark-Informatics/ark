@@ -35,6 +35,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -140,15 +142,27 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return (int)iArkCommonService.getCustomFieldCount(criteriaModel.getObject());//todo safe int conversion
+
+				if(criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)){
+					criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
+					return (int)iArkCommonService.getCustomFieldCount(criteriaModel.getObject());//todo safe int conversion
+				}
+				else{
+					return (int)iArkCommonService.getCustomFieldCount(criteriaModel.getObject());//todo safe int conversion
+				}
 			}
 
 			public Iterator<CustomField> iterator(int first, int count) {
-				List<CustomField> listSubjects = new ArrayList<CustomField>();
+				List<CustomField> listCustomFields = new ArrayList<CustomField>();
 				if (isActionPermitted()) {
-					listSubjects = iArkCommonService.searchPageableCustomFields(criteriaModel.getObject(), first, count);
+					if(criteriaModel.getObject().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)){
+						listCustomFields = iArkCommonService.searchPageableCustomFieldsForPheno(criteriaModel.getObject(), first, count);
+					}
+					else{
+						listCustomFields = iArkCommonService.searchPageableCustomFields(criteriaModel.getObject(), first, count);
+					}
 				}
-				return listSubjects.iterator();
+				return listCustomFields.iterator();
 			}
 		};
 		// Set the criteria for the data provider

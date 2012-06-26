@@ -135,7 +135,8 @@ public class SearchResultListPanel extends Panel {
 				CompoundPropertyModel<CustomFieldGroupVO> newModel = new CompoundPropertyModel<CustomFieldGroupVO>(new CustomFieldGroupVO());
 
 				CustomField customFieldCriteria = new CustomField();
-				ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+				//ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+				ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 				customFieldCriteria.setStudy(cfg.getStudy());
 				customFieldCriteria.setArkFunction(arkFunction);
 

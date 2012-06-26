@@ -240,7 +240,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 	protected void onSave(Form<CustomFieldGroupVO> containerForm, AjaxRequestTarget target) {
 		if (getModelObject().getCustomFieldGroup().getId() == null) {
 			// Create
-			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			Study study = iArkCommonService.getStudy(studyId);
 			getModelObject().getCustomFieldGroup().setArkFunction(arkFunction);
