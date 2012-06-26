@@ -34,7 +34,6 @@ import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.phenotypic.model.vo.PhenoFieldUploadVO;
-import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenofielduploader.form.ContainerForm;
 
 public class FieldUploadContainerPanel extends AbstractContainerPanel<PhenoFieldUploadVO> {
@@ -47,9 +46,6 @@ public class FieldUploadContainerPanel extends AbstractContainerPanel<PhenoField
 	private PageableListView<Upload>	listView;
 	private ContainerForm						containerForm;
 
-	@SpringBean(name = "phenotypicService")
-	private IPhenotypicService					serviceInterface;
-
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
 
@@ -58,6 +54,7 @@ public class FieldUploadContainerPanel extends AbstractContainerPanel<PhenoField
 
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<PhenoFieldUploadVO>(new PhenoFieldUploadVO());
+		System.out.println("arkfun = " + arkFunction.getName());//TODO ASAP remove
 		cpModel.getObject().getUpload().setArkFunction(arkFunction);	//set the relevant arkFunction  
 
 		/* Bind the CPM to the Form */
@@ -94,6 +91,7 @@ public class FieldUploadContainerPanel extends AbstractContainerPanel<PhenoField
 					Upload searchPhenoUpload = new Upload();
 					Study study = iArkCommonService.getStudy(sessionStudyId);
 					searchPhenoUpload.setStudy(study);
+					System.out.println("________________________________________function=" + containerForm.getModelObject().getUpload().getArkFunction().getName());
 					searchPhenoUpload.setArkFunction(containerForm.getModelObject().getUpload().getArkFunction());
 
 					java.util.Collection<Upload> phenoUploads = iArkCommonService.searchUploads(searchPhenoUpload);

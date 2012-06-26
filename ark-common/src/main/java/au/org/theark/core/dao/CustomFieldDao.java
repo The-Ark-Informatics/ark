@@ -64,6 +64,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		Criteria criteria = getSession().createCriteria(CustomField.class);
 		// Must be constrained on study and function
 		criteria.add(Restrictions.eq("study", customField.getStudy()));
+		
 		criteria.add(Restrictions.eq("arkFunction", customField.getArkFunction()));
 		
 		if (customField.getId() != null) {
@@ -215,6 +216,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		// Return fields ordered alphabetically
 		criteria.addOrder(Order.asc("name"));
 		List<CustomField> customFieldList = (List<CustomField>) criteria.list();
+		//log.warn("customfieldcriteria (just using name got a list of size " + customFieldList.size());
 		return customFieldList;
 	}
 
@@ -284,6 +286,20 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return customFieldList;
 	}
 
+
+	public ArkFunction getArkFunctionByName(String functionName) {
+		Criteria criteria = getSession().createCriteria(ArkFunction.class);
+		criteria.add(Restrictions.eq("name", functionName));
+		criteria.setMaxResults(1);
+		ArkFunction arkFunction = (ArkFunction) criteria.uniqueResult();
+		return arkFunction;
+	}
+	
+	public List<CustomField> searchPageableCustomFieldsForPheno(CustomField customFieldCriteria, int first, int count) {
+		customFieldCriteria.setArkFunction(getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
+		return searchPageableCustomFields(customFieldCriteria, first, count);
+	}
+
 	public void updateCustomField(CustomField customField) throws  ArkSystemException{
 		if(customField.getFieldType().getName().equals(Constants.NUMBER_FIELD_TYPE_NAME)) {
 			if(customField.getMinValue()!=null){
@@ -323,16 +339,14 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 											"				from CustomFieldDisplay as customFieldDisplay " +
 											"				where customFieldDisplay.customField = customField " +
 											"				and customFieldDisplay.customFieldGroup =:customFieldGroup ) ");
-		
 		q.setParameter("customFieldName", customFieldName);
 		q.setParameter("study", study);
 		q.setParameter("arkFunction", arkFunction);
 		q.setParameter("customFieldGroup", customFieldGroup);
 		
 		List<CustomField> results = q.list();
-		//CustomField result = (CustomField) criteria.uniqueResult();
 		if(results.size()>0){
-			return results.get(0);
+			return (CustomField)results.get(0);
 		}
 		return null;
 	}

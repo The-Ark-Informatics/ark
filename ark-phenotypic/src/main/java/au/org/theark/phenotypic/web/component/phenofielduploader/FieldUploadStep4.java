@@ -116,7 +116,7 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 		Subject currentUser = SecurityUtils.getSubject();
 		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
-		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD);
 		CustomFieldImporter fieldImporter = new CustomFieldImporter(study, arkFunction, iArkCommonService, fileFormat, delimiterChar);
 
 		try {
@@ -175,12 +175,9 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 		InputStream inputStream = null;
 		try {
 			inputStream = new BufferedInputStream(new FileInputStream(temp));
-			// Copy file to BLOB object
-			//Blob payload = util.createBlob(inputStream, temp.length());
 			containerForm.getModelObject().getUpload().setPayload(IOUtils.toByteArray(inputStream));
-
 			containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
-			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD);
 			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
 			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 			Collection<CustomFieldUpload> cfUploadLinks = containerForm.getModelObject().getCustomFieldUploadCollection();
@@ -202,7 +199,6 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 				}
 			}
 			if (temp != null) {
-				// Attempt manual a delete
 				temp.delete();
 				temp = null;
 				containerForm.getModelObject().setTempFile(temp);

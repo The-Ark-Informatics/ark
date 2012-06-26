@@ -20,6 +20,7 @@ package au.org.theark.core.model.study.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,6 +29,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -43,7 +45,8 @@ public class ArkFunction implements Serializable {
 	private String				name;
 	private String				description;
 	private String				resourceKey;
-	private ArkFunctionType	arkFunctionType;
+	private ArkFunctionType		arkFunctionType;
+//	private ArkModuleFunction	arkModuleFunction;
 
 	@Id
 	@SequenceGenerator(name = "ark_function_generator", sequenceName = "ARK_FUNCTION_SEQUENCE")
@@ -132,4 +135,14 @@ public class ArkFunction implements Serializable {
 		return true;
 	}
 
+/*
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "arkFunction")
+	public void setArkModuleFunction(ArkModuleFunction arkModuleFunction) {
+		this.arkModuleFunction = arkModuleFunction;
+	}
+
+	public ArkModuleFunction getArkModuleFunction() {
+		return arkModuleFunction;
+	}
+*/
 }

@@ -134,15 +134,7 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 
 			//this is not the best way to do this fix TODO
 			List<String> listOfUidsToUpdate = new ArrayList<String>();				//TODO remove hardcoding
-/*			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")){
-				SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
-				validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject(), listOfUidsToUpdate);
-				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
-				insertRows = subjectUploadValidator.getInsertRows();
-				updateRows = subjectUploadValidator.getUpdateRows();
-				errorCells = subjectUploadValidator.getErrorCells();
-			}																												//TODO remove hardcoding
-			else */
+
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Custom Data Sets")){
 				CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService);
 				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);
@@ -155,12 +147,12 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 			}
 			else{
 				//TODO : Throw error back to user
+				log.error("unexpected upload type");
 			}
 			
 			this.containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-
 
 			// Show file data (and key reference)
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 

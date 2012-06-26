@@ -792,7 +792,7 @@ public class DataUploader {
 				subjectCount ++;
 			}
 			log.info("finished message for " + subjectCount + "         updates= " + updateFieldsCount + " or \ncustomFieldsToupdate.size=" + customFieldsToUpdate.size() +
-					"\n             inserts = " + insertFieldsCount + "  or  \ncustomFieldsToInsert.size = " + customFieldsToInsert.size() + "   amount of empty scells =" + emptyDataCount );
+					"\n     inserts = " + insertFieldsCount + "  or  \ncustomFieldsToInsert.size = " + customFieldsToInsert.size() + "   amount of empty scells =" + emptyDataCount );
 		}
 		catch (IOException ioe) {
 			uploadReport.append("Unexpected I/O exception whilst reading the subject data file\n");

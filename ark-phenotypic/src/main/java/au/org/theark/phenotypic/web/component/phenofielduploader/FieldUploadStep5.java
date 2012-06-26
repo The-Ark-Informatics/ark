@@ -29,13 +29,9 @@ import au.org.theark.phenotypic.model.vo.PhenoFieldUploadVO;
  * The final step of this wizard.
  */
 public class FieldUploadStep5 extends AbstractWizardStepPanel {
-
 	private static final long	serialVersionUID	= -6803600838428204753L;
 	private Form<PhenoFieldUploadVO>		containerForm;
 
-	/**
-	 * Construct.
-	 */
 	public FieldUploadStep5(String id, Form<PhenoFieldUploadVO> containerForm) {
 		super(id, "Step 5/5: Data Upload Finished", "The data is successfully uploaded, click Finish.");
 		this.containerForm = containerForm;

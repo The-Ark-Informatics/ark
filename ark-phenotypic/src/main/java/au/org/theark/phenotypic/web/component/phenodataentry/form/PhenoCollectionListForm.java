@@ -156,11 +156,12 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 			}
 
 			public Iterator<PhenoCollection> iterator(int first, int count) {
-				List<PhenoCollection> biospecimenList = new ArrayList<PhenoCollection>();
+				List<PhenoCollection> phenoCollectionList = new ArrayList<PhenoCollection>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
-					biospecimenList = iPhenotypicService.searchPageablePhenoCollections(criteriaModel.getObject(), first, count);
+					criteriaModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
+					phenoCollectionList = iPhenotypicService.searchPageablePhenoCollections(criteriaModel.getObject(), first, count);
 				}
-				return biospecimenList.iterator();
+				return phenoCollectionList.iterator();
 			}
 		};
 		// Set the criteria into the data provider's model
@@ -314,7 +315,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	}
 
 	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
-		cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY));
+		cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
 		modalContentPanel = new PhenoDataEntryModalDetailPanel("content", modalWindow, cpModel);
 
 		// Set the modalWindow title and content
