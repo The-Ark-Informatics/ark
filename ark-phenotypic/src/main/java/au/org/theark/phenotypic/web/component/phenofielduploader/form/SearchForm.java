@@ -118,7 +118,7 @@ public class SearchForm extends AbstractSearchForm<PhenoFieldUploadVO> {
 
 		Upload searchUpload = getModelObject().getUpload();
 		searchUpload.setStudy(study);
-		searchUpload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY));
+		searchUpload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD));
 
 		Collection<Upload> uploadCollection = iArkCommonService.searchUploads(searchUpload);
 

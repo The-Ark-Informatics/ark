@@ -646,6 +646,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return customFieldDao.searchPageableCustomFields(customFieldCriteria, first, count);
 	}
 
+	public List<CustomField> searchPageableCustomFieldsForPheno(CustomField customFieldCriteria, int first, int count) {
+		return customFieldDao.searchPageableCustomFieldsForPheno(customFieldCriteria, first, count);
+	}
+
 	public List<FieldType> getFieldTypes() {
 		return customFieldDao.getFieldTypes();
 	}

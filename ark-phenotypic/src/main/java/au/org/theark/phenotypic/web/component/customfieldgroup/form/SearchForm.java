@@ -76,7 +76,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
 		
-		ArkFunction arkFunction  =iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+		ArkFunction arkFunction  =iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 		customFieldCriteria.setStudy(study);
 		customFieldCriteria.setArkFunction(arkFunction);
 		

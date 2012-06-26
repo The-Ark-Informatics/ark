@@ -329,7 +329,7 @@ public class CustomDataUploadValidator {
 			boolean headerError = false;
 			boolean hasSubjectUIDHeader = false;
 			boolean hasDateHeader = false;																//TODO check this
-			ArkFunction customFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD);//Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+			ArkFunction customFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);//Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 			List<String> badHeaders = new ArrayList<String>();
 			
 			for(String header : headerColumnArray){																						

@@ -59,7 +59,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 	private Form<UploadVO>					containerForm;
 	private FileUploadField					fileUploadField;
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
-	private DropDownChoice<UploadType>		uploadTypeDdc;
+//	private DropDownChoice<UploadType>		uploadTypeDdc;
 	private WizardForm						wizardForm;
 	private DropDownChoice<CustomFieldGroup>	customFieldGroupDdc;
 	private TextField<String>				phenoCollectionName;
@@ -76,6 +76,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 		this.containerForm = containerForm;
 		this.setWizardForm(wizardForm);
 		initialiseDetailForm();
+		containerForm.getModelObject().getUpload().setUploadType(iArkCommonService.getCustomFieldDataUploadType());
 	}
 
 	@SuppressWarnings( { "unchecked" })
@@ -85,10 +86,10 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
 		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
 		
-		java.util.Collection<UploadType> uploadTypeCollection = iArkCommonService.getUploadTypes();
-		ChoiceRenderer uploadTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.UPLOAD_TYPE_NAME, au.org.theark.phenotypic.web.Constants.UPLOAD_TYPE_ID);
-		uploadTypeDdc = new DropDownChoice<UploadType>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_TYPE, (List) uploadTypeCollection, uploadTypeRenderer);
-		containerForm.getModelObject().getUpload().setUploadType(iArkCommonService.getDefaultUploadType());
+		//java.util.Collection<UploadType> uploadTypeCollection = iArkCommonService.getUploadTypes();
+		//ChoiceRenderer uploadTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.UPLOAD_TYPE_NAME, au.org.theark.phenotypic.web.Constants.UPLOAD_TYPE_ID);
+		//uploadTypeDdc = new DropDownChoice<UploadType>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_TYPE, (List) uploadTypeCollection, uploadTypeRenderer);
+		//containerForm.getModelObject().getUpload().setUploadType(iArkCommonService.getDefaultUploadType());
 
 		initCustomFieldGroup();
 	}
@@ -125,7 +126,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 		phenoCollectionName.setRequired(true).setLabel(new StringResourceModel("error.phenoCollectionName.required", this, new Model<String>("PhenoCollectionName")));
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
-		uploadTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.uploadType.required", this, new Model<String>("Upload")));
+		//uploadTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.uploadType.required", this, new Model<String>("Upload")));
 		customFieldGroupDdc.setRequired(true).setLabel(new StringResourceModel("error.customFieldGroup.required", this,  new Model<String>("CFG")));
 		//TODO uplaod
 	}
@@ -133,7 +134,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 	private void addComponents() {
 		add(fileUploadField);
 		add(delimiterTypeDdc);
-		add(uploadTypeDdc);
+		//add(uploadTypeDdc);
 		add(customFieldGroupDdc);
 		add(phenoCollectionName);
 		add(phenoCollectionDescription);

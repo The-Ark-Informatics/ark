@@ -155,6 +155,16 @@ public class CustomFieldImporter {
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 			log.debug("Header length: " + csvReader.getHeaders().toString().length());
+		
+			ArkFunction arkFunctionToBeUsed = arkFunction;
+				
+			log.info("ark function = " + arkFunction.getName());
+			
+			//these fields must be available for phenocollection...therefore we are to save / update / get by that ark function...ideally this should be by ark module
+			if(arkFunction.getName().equals(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY) ||
+					arkFunction.getName().equals(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD)){
+				arkFunctionToBeUsed = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+			}
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
@@ -167,7 +177,7 @@ public class CustomFieldImporter {
 				customField = new CustomField();
 				customField.setStudy(study);
 
-				CustomField oldField = iArkCommonService.getCustomFieldByNameStudyArkFunction(csvReader.get("FIELD_NAME"), study, arkFunction);
+				CustomField oldField = iArkCommonService.getCustomFieldByNameStudyArkFunction(csvReader.get("FIELD_NAME"), study, arkFunctionToBeUsed);
 				if (oldField != null) {
 					uploadReport.append("Updating field for: ");
 					uploadReport.append("\tFIELD: ");
@@ -184,7 +194,7 @@ public class CustomFieldImporter {
 					oldField.setDescription(csvReader.get("DESCRIPTION"));
 					oldField.setFieldLabel(csvReader.get("QUESTION"));
 					if (csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
-						UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
+						UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunctionToBeUsed);
 						if (unitType == null) {
 							throw new SystemDataMismatchException("Unit '" + csvReader.get("UNITS") + "' in file do not match known units in internal system table\n");
 						}
@@ -214,10 +224,10 @@ public class CustomFieldImporter {
 					customField = new CustomField();
 					customField.setStudy(study);
 					customField.setName(fieldName);
-					customField.setArkFunction(arkFunction);
+					customField.setArkFunction(arkFunctionToBeUsed);
 
 					if (csvReader.get("UNITS") != null && !csvReader.get("UNITS").isEmpty()) {
-						UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunction);
+						UnitType unitType = iArkCommonService.getUnitTypeByNameAndArkFunction(csvReader.get("UNITS"), arkFunctionToBeUsed);
 						if (unitType == null) {
 							throw new SystemDataMismatchException("Unit '" + csvReader.get("UNITS") + "' in file do not match known units in internal system table\n");
 						}
