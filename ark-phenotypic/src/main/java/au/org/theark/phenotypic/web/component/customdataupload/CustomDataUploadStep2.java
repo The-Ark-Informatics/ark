@@ -104,7 +104,7 @@ public class CustomDataUploadStep2 extends AbstractWizardStepPanel {
 				throw new FileFormatException();
 			}
 																													//TODO kill hardcoding throughout codebase
-			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Custom Data Sets")){
+			//if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Custom Data Sets")){
 				//TODO : custom field validation
 				CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService);
 				
@@ -112,10 +112,10 @@ public class CustomDataUploadStep2 extends AbstractWizardStepPanel {
 				CustomFieldGroup cfgSelected = containerForm.getModelObject().getCustomFieldGroup();
 				
 				validationMessages = customFieldUploadValidator.validateCustomFieldFileFormat(containerForm.getModelObject(), phenoCollectionCriteria, cfgSelected);			
-			}
-			else{
-				//TODO : Throw error back to user
-			}
+			//}
+			//else{
+			//	//TODO : Throw error back to user
+			//}
 
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, 
 					fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE, containerForm.getModelObject().getUpload().getUploadType());

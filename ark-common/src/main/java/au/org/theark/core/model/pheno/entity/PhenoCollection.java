@@ -2,7 +2,10 @@ package au.org.theark.core.model.pheno.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -36,6 +40,7 @@ public class PhenoCollection implements Serializable{
 	private String description;
 	private LinkSubjectStudy linkSubjectStudy;
 	private Date recordDate;
+	private Set<PhenoData> phenoData = new HashSet<PhenoData>();
 	private Date reviewedDate;
 	private ArkUser reviewedBy;
 	private CustomFieldGroup questionnaire;
@@ -136,5 +141,14 @@ public class PhenoCollection implements Serializable{
 
 	public void setStatus(QuestionnaireStatus status) {
 		this.status = status;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phenoCollection")
+	public Set<PhenoData> getPhenoData() {
+		return phenoData;
+	}
+	
+	public void setPhenoData(Set<PhenoData> phenoData){
+		this.phenoData = phenoData;
 	}
 }

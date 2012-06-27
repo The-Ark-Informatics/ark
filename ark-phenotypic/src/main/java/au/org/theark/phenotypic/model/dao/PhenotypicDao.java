@@ -21,8 +21,10 @@ package au.org.theark.phenotypic.model.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
@@ -55,6 +57,7 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldGroupVO;
@@ -1429,7 +1432,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		criteria.createAlias("questionnaire", "qnaire");
 		criteria.add(Restrictions.eq("linkSubjectStudy", collectionCriteria.getPhenoCollection().getLinkSubjectStudy()));
 		// Just a precaution (PhenoCollection to should always map to a CustomFieldGroup where the ArkFunction will correspond to Pheno) 
-		criteria.add(Restrictions.eq("qnaire.arkFunction", collectionCriteria.getArkFunction()));	
+		//criteria.add(Restrictions.eq("qnaire.arkFunction", collectionCriteria.getArkFunction()));	
 		criteria.setProjection(Projections.rowCount());
 		Long count = (Long) criteria.uniqueResult();
 		return count;
@@ -1444,16 +1447,16 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		sb.append("  LEFT JOIN qnaire.phenoCollection as pc ");
 		sb.append("  WITH pc.linkSubjectStudy.id = :subjectId ");
 		sb.append(" WHERE qnaire.study.id = :studyId " );
-		sb.append("   AND qnaire.arkFunction.id = :functionId ");
+		//sb.append("   AND qnaire.arkFunction.id = :functionId ");
 		sb.append("   AND qnaire.published = true ");
 		
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("subjectId", collectionCriteria.getPhenoCollection().getLinkSubjectStudy().getId());
 		query.setParameter("studyId", collectionCriteria.getCustomFieldGroup().getStudy().getId());
 		//log.info("colcrit ark=" + collectionCriteria.getArkFunction());
-		long id = collectionCriteria.getArkFunction().getId();
+		//long id = collectionCriteria.getArkFunction().getId();
 		//log.info("id=" + id);
-		query.setParameter("functionId",id);
+		//query.setParameter("functionId",id);
 		query.setFirstResult(first);
 		query.setMaxResults(count);
 		
@@ -1733,4 +1736,24 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Collection<CustomFieldGroup>  result = criteria.list();
 		return result;
 	}
+	
+	public void processPhenoCollectionsWithTheirDataToInsertBatch(List<PhenoCollection> phenoCollectionsWithTheirDataToInsert, Study study){
+		Session session = getSession();
+//		int count = 0;
+		for(PhenoCollection collectionToInsert : phenoCollectionsWithTheirDataToInsert){
+			//TODO : investigate more efficient way to deal with null parent entity
+			Set<PhenoData> dataToSave = collectionToInsert.getPhenoData();
+			collectionToInsert.setPhenoData(new HashSet<PhenoData>());
+			
+			session.save(collectionToInsert);
+			session.refresh(collectionToInsert);
+			for(PhenoData data : dataToSave){
+				data.setPhenoCollection(collectionToInsert);
+				session.save(data);
+			}
+		}
+		session.flush();
+		session.clear();
+	}
+
 }

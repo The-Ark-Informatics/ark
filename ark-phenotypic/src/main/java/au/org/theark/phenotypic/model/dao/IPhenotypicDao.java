@@ -274,4 +274,6 @@ public interface IPhenotypicDao {
 
 	public Collection<CustomFieldGroup> getCustomFieldGroupList(Study study);
 
+	public void processPhenoCollectionsWithTheirDataToInsertBatch(List<PhenoCollection> phenoCollectionsWithTheirDataToInsert, Study study);
+
 }
