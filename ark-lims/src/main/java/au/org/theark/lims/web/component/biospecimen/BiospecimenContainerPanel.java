@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.biospecimen.form.ContainerForm;
-import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 
 /**
  * 

@@ -32,8 +32,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.util.string.StringValue;
 
-import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
-
 /**
  * Embedded PrintApplet and dynamic drop-down list that populates with the printers connected to the client machine
  * 
