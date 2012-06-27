@@ -101,7 +101,7 @@ public class Consent implements Serializable {
 		this.studyComp = studyComp;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_COMP_STATUS_ID")
 	public StudyCompStatus getStudyComponentStatus() {
 		return studyComponentStatus;
