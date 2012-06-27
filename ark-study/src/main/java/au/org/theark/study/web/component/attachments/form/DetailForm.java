@@ -35,6 +35,7 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,12 +135,10 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				FileUpload fileSubjectFile = fileSubjectFileField.getFileUpload();
 
 				try {
-					// Copy file to BLOB object
-					Blob payload = util.createBlob(fileSubjectFile.getInputStream(), fileSubjectFile.getSize());
-					containerForm.getModelObject().getSubjectFile().setPayload(payload);
+					containerForm.getModelObject().getSubjectFile().setPayload(IOUtils.toByteArray(fileSubjectFile.getInputStream()));
 				}
-				catch (IOException ioe) {
-					log.error("Failed to save the uploaded file: " + ioe);
+				catch (IOException e) {
+					log.error("IOException trying to convert inputstream" + e);
 				}
 
 				byte[] byteArray = fileSubjectFile.getMD5();
