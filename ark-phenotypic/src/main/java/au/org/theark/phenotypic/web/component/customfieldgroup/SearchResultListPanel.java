@@ -40,10 +40,10 @@ public class SearchResultListPanel extends Panel {
 
 
 	private static final long serialVersionUID = 1L;
-	private CompoundPropertyModel<CustomFieldGroupVO>						cpmModel;
-	private FeedbackPanel															feedbackPanel;
-	private ArkCrudContainerVO														arkCrudContainerVO;
-	private DataView<CustomFieldDisplay>										cfdDataView;
+	private CompoundPropertyModel<CustomFieldGroupVO>					cpmModel;
+	private FeedbackPanel												feedbackPanel;
+	private ArkCrudContainerVO											arkCrudContainerVO;
+	private DataView<CustomFieldDisplay>								cfdDataView;
 	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>	cfdArkDataProvider;
 
 	/**

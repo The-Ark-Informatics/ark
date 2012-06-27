@@ -922,5 +922,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	public Collection<CustomFieldGroup> getCustomFieldGroupList(Study study){
 		return phenotypicDao.getCustomFieldGroupList(study);
 	}
-	
+
+	public void processPhenoCollectionsWithTheirDataToInsertBatch(List<PhenoCollection> phenoCollectionsWithTheirDataToInsert, Study study){
+		phenotypicDao.processPhenoCollectionsWithTheirDataToInsertBatch( phenoCollectionsWithTheirDataToInsert, study);
+	}
 }

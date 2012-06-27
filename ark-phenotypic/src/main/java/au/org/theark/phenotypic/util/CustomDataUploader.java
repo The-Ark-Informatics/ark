@@ -37,13 +37,14 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
@@ -93,11 +94,7 @@ public class CustomDataUploader {
 	}
 
 	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, List<String> listOfUIDsToUpdate, CustomFieldGroup customFieldGroup, PhenoCollection phenoCollection) throws FileFormatException, ArkSystemException {
-		List<SubjectCustomFieldData> customFieldsToUpdate = new ArrayList<SubjectCustomFieldData>();
-		List<SubjectCustomFieldData> customFieldsToInsert = new ArrayList<SubjectCustomFieldData>();
-		
-		//phenoCollection.getPhenoCollectionUploads();
-		
+		List<PhenoCollection> phenoCollectionsWithTheirDataToInsert = new ArrayList<PhenoCollection>();
 		
 		delimiterCharacter = delimChar;
 		uploadReport = new StringBuffer();
@@ -120,7 +117,7 @@ public class CustomDataUploader {
 				allSubjectWhichWillBeUpdated = iArkCommonService.getUniqueSubjectsWithTheseUIDs(study, listOfUIDsToUpdate);
 			}
 			else{
-				allSubjectWhichWillBeUpdated 	= new ArrayList();
+				allSubjectWhichWillBeUpdated 	= new ArrayList<LinkSubjectStudy>();
 			}
 			if (size <= 0) {
 				uploadReport.append("The input size was not greater than 0. Actual length reported: ");
@@ -132,54 +129,55 @@ public class CustomDataUploader {
 			csvReader.readHeaders();
 
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
-			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);//");
+			ArkFunction phenoCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);//");
 
-			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
-			List<SubjectCustomFieldData> dataThatWeHave = iArkCommonService.getCustomFieldDataFor(cfdsThatWeNeed, allSubjectWhichWillBeUpdated);
+			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, phenoCustomFieldArkFunction);
+		
+			//Paul has requested - in pheno we only insert List<PhenoData> dataThatWeHave = iArkCommonService.getCustomFieldDataFor(cfdsThatWeNeed, allSubjectWhichWillBeUpdated);
 			//read one line which contains potentially many custom fields
-			while (csvReader.readRecord()) {
-				log.info("reading record " + subjectCount);
-				
+			QuestionnaireStatus uploadingStatus = iPhenotypicService.getPhenoCollectionStatusByName(Constants.PHENO_COLLECTION_STATUS_UPLOADED);
+			
+			while (csvReader.readRecord()){
+				List<PhenoData> phenoDataToInsertForThisPhenoCollection = new ArrayList<PhenoData>();
+				log.info("reading record " + subjectCount);				
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[0];
 				LinkSubjectStudy subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
 				//log.info("get subject from list");
-				CustomField customField = null;		
-				for(CustomFieldDisplay cfd : cfdsThatWeNeed){					
-					customField = cfd.getCustomField();
-					//log.info("got customfield from cfd");
-					SubjectCustomFieldData dataInDB = getCustomFieldFromList(dataThatWeHave, subjectUID, cfd);
-					//log.info("got 'data in db' from cfd, subject and ALL data");
-					String theDataAsString = csvReader.get(cfd.getCustomField().getName());
-					//log.info("read data from file");
+				CustomField customField = null;
+				
+				PhenoCollection phenoCollectionIntoDB = new PhenoCollection();
+				phenoCollectionIntoDB.setDescription(phenoCollection.getDescription());
+				phenoCollectionIntoDB.setLinkSubjectStudy(subject);
+				phenoCollectionIntoDB.setName(phenoCollection.getName());
+				phenoCollectionIntoDB.setQuestionnaire(customFieldGroup);
+				phenoCollectionIntoDB.setRecordDate(phenoCollection.getRecordDate()==null?new Date():phenoCollection.getRecordDate());
+				phenoCollectionIntoDB.setStatus(uploadingStatus); //TODO for this to be UPLOADED TYPE STATUS
+				
+				for(CustomFieldDisplay cfd : cfdsThatWeNeed){	
 					
+					customField = cfd.getCustomField();
+					String theDataAsString = csvReader.get(cfd.getCustomField().getName());
+
 					if(theDataAsString!=null && !theDataAsString.isEmpty()){
-						if(dataInDB != null){
-							dataInDB = setValue(customField, dataInDB, theDataAsString);	
-							//log.info("have set value to entity");
-							customFieldsToUpdate.add(dataInDB);
-							//log.info("added entity to list");
-							updateFieldsCount++;
-						}
-						else{
-							SubjectCustomFieldData dataToInsert = new SubjectCustomFieldData();
-							dataToInsert.setCustomFieldDisplay(cfd);
-							dataToInsert.setLinkSubjectStudy(subject);
-							setValue(customField, dataToInsert, theDataAsString);	
-							customFieldsToInsert.add(dataToInsert);
-							insertFieldsCount++;
-						}
+						PhenoData dataToInsert = new PhenoData();
+						dataToInsert.setCustomFieldDisplay(cfd);
+						//as much as i disagree...pheno data isn't tied to subject....pheno collection is dataToInsert.setLinkSubjectStudy(subject);
+						setValue(customField, dataToInsert, theDataAsString);	
+						phenoDataToInsertForThisPhenoCollection.add(dataToInsert);
+						insertFieldsCount++;
 					}
 					else
 					{
 						emptyDataCount++;
 					}
 				}
-				
+				phenoCollectionIntoDB.getPhenoData().addAll(phenoDataToInsertForThisPhenoCollection);
+				phenoCollectionsWithTheirDataToInsert.add(phenoCollectionIntoDB);
 				subjectCount ++;
 			}
-			log.info("finished message for " + subjectCount + "         updates= " + updateFieldsCount + " or \ncustomFieldsToupdate.size=" + customFieldsToUpdate.size() +
-					"\n             inserts = " + insertFieldsCount + "  or  \ncustomFieldsToInsert.size = " + customFieldsToInsert.size() + "   amount of empty scells =" + emptyDataCount );
+			log.info("finished message for " + subjectCount + "\n      DATA inserts = " + insertFieldsCount + "  phenocollections = " + 
+					phenoCollectionsWithTheirDataToInsert.size() + "  amount of empty scells =" + emptyDataCount );
 		}
 		catch (IOException ioe) {
 			uploadReport.append("Unexpected I/O exception whilst reading the subject data file\n");
@@ -229,12 +227,11 @@ public class CustomDataUploader {
 		uploadReport.append("\n");
 
 		//TODO better exceptionhandling
-		//TODO ASAP ASAP implement
-//		iPhenotypicService.processFieldsBatch(customFieldsToUpdate, study, customFieldsToInsert);
+		iPhenotypicService.processPhenoCollectionsWithTheirDataToInsertBatch(phenoCollectionsWithTheirDataToInsert, study);
 		return uploadReport;
 	}
 
-	private SubjectCustomFieldData setValue(CustomField customField, SubjectCustomFieldData data, String theDataAsString){
+	private PhenoData setValue(CustomField customField, PhenoData data, String theDataAsString){
 //		log.warn("cf=" + customField + "\ndata=" + data+ "dataAsString=" + theDataAsString);
 		
 		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
@@ -257,8 +254,8 @@ public class CustomDataUploader {
 		return data;
 	}
 	
-	private SubjectCustomFieldData getCustomFieldFromList(List<SubjectCustomFieldData> dataThatWeHave, String subjectUID, CustomFieldDisplay cfd) {
-		for(SubjectCustomFieldData data : dataThatWeHave){
+	/*private PhenoData getCustomFieldFromList(List<PhenoData> dataThatWeHave, String subjectUID, CustomFieldDisplay cfd) {
+		for(PhenoData data : dataThatWeHave){
 																//TODO ASAP return to ignores case?
 			if(data.getLinkSubjectStudy().getSubjectUID().equals(subjectUID) &&
 					data.getCustomFieldDisplay().getId().equals(cfd.getId())){
@@ -267,6 +264,6 @@ public class CustomDataUploader {
 			}
 		}
 		return null;
-	}
+	}*/
 
 }

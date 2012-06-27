@@ -49,7 +49,7 @@ public class CustomDataUploadStep4 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
 
-	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
+	@SpringBean(name = au.org.theark.core.Constants.PHENO_SERVICE)
 	private IPhenotypicService		iPhenoService;
 
 	public CustomDataUploadStep4(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
@@ -95,13 +95,12 @@ public class CustomDataUploadStep4 extends AbstractWizardStepPanel {
 			Subject currentUser = SecurityUtils.getSubject();
 			Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-			PhenoCollection phenoCollectionCriteria = new PhenoCollection();
-			CustomFieldGroup customFieldGroup = new CustomFieldGroup();
-			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Custom Data Sets")){
-				CustomDataUploadExecutor task = new CustomDataUploadExecutor(iArkCommonService, iPhenoService, inputStream, uploadId, //null user
-							studyId, fileFormat, delimiterChar, size, report, uidsToUpload, phenoCollectionCriteria, customFieldGroup);
-				task.run();
-			}
+			PhenoCollection phenoCollectionCriteria = containerForm.getModelObject().getPhenoCollection();
+			CustomFieldGroup customFieldGroup = containerForm.getModelObject().getCustomFieldGroup();
+			
+			CustomDataUploadExecutor task = new CustomDataUploadExecutor(iArkCommonService, iPhenoService, inputStream, uploadId, //null user
+						studyId, fileFormat, delimiterChar, size, report, uidsToUpload, phenoCollectionCriteria, customFieldGroup);
+			task.run();
 			
 		}
 		catch (Exception e1) {
