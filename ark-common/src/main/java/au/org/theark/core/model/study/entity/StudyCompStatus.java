@@ -39,9 +39,6 @@ import au.org.theark.core.Constants;
 @Table(name = "STUDY_COMP_STATUS", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class StudyCompStatus implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
 	private Long							id;
 	private String							name;
