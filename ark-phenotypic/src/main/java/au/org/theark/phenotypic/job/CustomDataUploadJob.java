@@ -80,11 +80,11 @@ public class CustomDataUploadJob implements Job {
 		iArkCommonService			= (IArkCommonService<Void>) data.get(IARKCOMMONSERVICE);
 		iPhenoService				= (IPhenotypicService) data.get(IPHENOSERVICE);
 		Long uploadId 				= (Long) data.get(UPLOADID);
-		char delimiter 			= (Character) data.get(DELIMITER);
-		String fileFormat 		= (String) data.get(FILE_FORMAT);
-		InputStream inputStream = (InputStream) data.get(INPUT_STREAM);
+		char delimiter 				= (Character) data.get(DELIMITER);
+		String fileFormat 			= (String) data.get(FILE_FORMAT);
+		InputStream inputStream 	= (InputStream) data.get(INPUT_STREAM);
 		long size 					= data.getLongValue(SIZE);
-		String originalReport 	= data.getString(REPORT);
+		String originalReport 		= data.getString(REPORT);
 		Long studyId 				= data.getLongValue(STUDY_ID);
 		List<String> uidsToUpdate=(List<String>)data.get(LIST_OF_UIDS_TO_UPDATE);
 		CustomFieldGroup customFieldGroup = (CustomFieldGroup) data.get(CUSTOM_FIELD_GROUP);
