@@ -57,6 +57,7 @@ public class ByteDataResourceRequestHandler extends ByteArrayResource implements
 	 * @see org.apache.wicket.request.IRequestHandler#detach(org.apache.wicket.request.IRequestCycle)
 	 */
 	public void detach(IRequestCycle arg0) {
+		
 		// TODO Auto-generated method stub
 
 	}
