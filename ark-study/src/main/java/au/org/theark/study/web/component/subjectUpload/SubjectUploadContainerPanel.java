@@ -33,7 +33,6 @@ import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 
 public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO> {

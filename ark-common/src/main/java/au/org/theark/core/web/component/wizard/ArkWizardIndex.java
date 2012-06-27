@@ -40,7 +40,7 @@ public class ArkWizardIndex extends WebMarkupContainer {
 	 * 
 	 * @param <T>
 	 */
-	@SuppressWarnings({ "unused", "serial", "unchecked" })
+	@SuppressWarnings({ "unused", "serial" })
 	private static final class WizardLink<T> extends AjaxLink<T> {
 
 		private final Class<? extends Wizard>	wizardClass;

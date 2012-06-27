@@ -120,7 +120,6 @@ public abstract class AbstractListDetailForm<T> extends Form<T> {
 		return listEditor;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);

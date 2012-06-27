@@ -1,9 +1,5 @@
 package au.org.theark.core.util;
 
-import au.org.theark.core.Constants;
-//import au.org.theark.core.model.pheno.entity.Field;
-//import au.org.theark.core.model.pheno.entity.FieldData;
-
 /**
  * @author nivedann
  *
