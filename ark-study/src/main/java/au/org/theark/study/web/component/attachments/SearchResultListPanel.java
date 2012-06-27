@@ -170,7 +170,7 @@ public class SearchResultListPanel extends Panel {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
 				try {
-					data = subjectFile.getPayload().getBytes(1, (int) subjectFile.getPayload().length());
+					data = subjectFile.getPayload();//.getBytes(1, (int) subjectFile.getPayload().length());
 
 					if (data != null) {
 						InputStream inputStream = new ByteArrayInputStream(data);
@@ -196,9 +196,6 @@ public class SearchResultListPanel extends Panel {
 					log.error(e.getMessage());
 				}
 				catch (IOException e) {
-					log.error(e.getMessage());
-				}
-				catch (SQLException e) {
 					log.error(e.getMessage());
 				}
 			}
