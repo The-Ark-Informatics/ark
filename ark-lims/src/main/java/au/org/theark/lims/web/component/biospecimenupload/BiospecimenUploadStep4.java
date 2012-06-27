@@ -27,7 +27,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -41,8 +40,6 @@ import au.org.theark.lims.web.component.biospecimenupload.form.WizardForm;
  */
 public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 
-	@SpringBean(name = "lobUtil")
-	private LobUtil			util;
 	private static final long	serialVersionUID	= 2971945948091031160L;
 	private Form<UploadVO>		containerForm;
 	private WizardForm			wizardForm;
@@ -54,9 +51,6 @@ public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
 	private ILimsService iLimsService;
 
-	/**
-	 * Construct.
-	 */
 	public BiospecimenUploadStep4(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 4/5: Confirm Upload", "Data will now be written to the database, click Next to continue, otherwise click Cancel.");
 		this.containerForm = containerForm;
@@ -115,7 +109,6 @@ public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 		biospecimenUploadReport.appendDetails(containerForm.getModelObject().getUpload());
 		biospecimenUploadReport.append(importReport);
 		byte[] bytes = biospecimenUploadReport.getReport().toString().getBytes();
-		//Blob uploadReportBlob = util.createBlob(bytes);
 		containerForm.getModelObject().getUpload().setUploadReport(bytes);
 	}
 
