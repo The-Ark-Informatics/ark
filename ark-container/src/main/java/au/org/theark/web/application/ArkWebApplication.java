@@ -36,6 +36,7 @@ public class ArkWebApplication extends BaseApplication{
 		SecurePackageResourceGuard guard = new SecurePackageResourceGuard();
       guard.addPattern("+*.js");
       guard.addPattern("+*.jar");
+
       getResourceSettings().setPackageResourceGuard(guard); 
 	}
 	

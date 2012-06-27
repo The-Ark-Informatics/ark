@@ -42,6 +42,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IOUtils;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
@@ -446,8 +447,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 				containerForm.getModelObject().getSubjectFile().setLinkSubjectStudy(linkSubjectStudy);
 			
 				// Copy file to BLOB object
-				Blob payload = lobUtil.createBlob(fileSubjectFile.getInputStream(), fileSubjectFile.getSize());
-				containerForm.getModelObject().getSubjectFile().setPayload(payload);
+				//Blob payload = lobUtil.createBlob(fileSubjectFile.getInputStream(), fileSubjectFile.getSize());
+				containerForm.getModelObject().getSubjectFile().setPayload(IOUtils.toByteArray(fileSubjectFile.getInputStream()));
 				
 				byte[] byteArray = fileSubjectFile.getMD5();
 				String checksum = getHex(byteArray);
