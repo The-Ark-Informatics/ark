@@ -34,9 +34,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IStudyDao;
+import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
@@ -53,6 +55,7 @@ import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.PhenoDataCollectionVO;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
+import au.org.theark.phenotypic.util.CustomDataUploader;
 
 @Transactional
 @Service("phenotypicService")
@@ -894,11 +897,23 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	}
 
 	/****TODO IMPLEMENT THIS THING AGAIN!****/
-	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimiter, Long studyId, List<String> uidsToUpdate, CustomFieldGroup customFieldGroup,
-			PhenoCollection phenoCollection){
+	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, Long studyId, List<String> listOfUIDsToUpdate, 
+			CustomFieldGroup customFieldGroup, PhenoCollection phenoCollection){
 		
-		
-		return new StringBuffer();
+		StringBuffer uploadReport = null;
+		Study study = iArkCommonService.getStudy(studyId);
+		CustomDataUploader dataUploader = new CustomDataUploader(study, iArkCommonService, this);
+		try {
+			//log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
+			uploadReport = dataUploader.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate, customFieldGroup, phenoCollection);
+		}
+		catch (FileFormatException ffe) {
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkSystemException ae){
+			log.error("Exception in handling batch upload of custom data (phenotypic) " + ae);
+		}
+		return uploadReport;
 	}
 
 	/****TODO IMPLEMENT THIS THING AGAIN!****/
