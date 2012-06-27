@@ -18,8 +18,6 @@
  ******************************************************************************/
 package au.org.theark.core.model.study.entity;
 
-import java.sql.Blob;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,6 +25,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -42,19 +41,15 @@ import au.org.theark.core.Constants;
 @Table(name = "SUBJECT_FILE", schema = Constants.STUDY_SCHEMA)
 public class SubjectFile implements java.io.Serializable {
 
-
-
-
 	private static final long	serialVersionUID	= -3611814204230766317L;
 	private Long					id;
 	private LinkSubjectStudy	linkSubjectStudy;
 	private StudyComp				studyComp;
 	private String					filename;
-	private Blob					payload;
+	private byte[]					payload;
 	private String					checksum;
 	private String					userId;
 	private String					comments;
-
 
 	public SubjectFile() {
 	}
@@ -122,12 +117,13 @@ public class SubjectFile implements java.io.Serializable {
 		this.filename = filename;
 	}
 
+	@Lob
 	@Column(name = "PAYLOAD")
-	public Blob getPayload() {
+	public byte[] getPayload() {
 		return this.payload;
 	}
 
-	public void setPayload(Blob payload) {
+	public void setPayload(byte[] payload) {
 		this.payload = payload;
 	}
 
