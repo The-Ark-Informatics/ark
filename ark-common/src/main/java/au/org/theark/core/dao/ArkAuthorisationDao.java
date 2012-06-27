@@ -21,7 +21,6 @@ package au.org.theark.core.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -440,10 +439,10 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		arkModuleList = criteria.list();
 	
 		//TODO:  What  are we iterating for if we are not doing anything?  delete?
-		for (Iterator iterator = arkModuleList.iterator(); iterator.hasNext();) {
+		/*for (Iterator iterator = arkModuleList.iterator(); iterator.hasNext();) {
 			ArkModuleRole arkModuleRole = (ArkModuleRole) iterator.next();
 
-		}
+		}*/
 		return arkModuleList;
 	}
 

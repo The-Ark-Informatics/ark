@@ -19,12 +19,6 @@
 package au.org.theark.phenotypic.model.vo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.Study;
 
 /**
  * @author cellis

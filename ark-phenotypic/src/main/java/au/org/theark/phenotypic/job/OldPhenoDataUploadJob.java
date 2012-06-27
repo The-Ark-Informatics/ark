@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.util.Date;
 
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -38,8 +37,6 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.exception.PhenotypicSystemException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 //import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -47,8 +44,6 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.util.OldPhenoDataUploader;
-import au.org.theark.phenotypic.util.PhenoUploadReport;
 
 /**
  * 

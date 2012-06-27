@@ -24,7 +24,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionListPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenListPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.form.ContainerForm;

@@ -18,10 +18,6 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.util;
 
-import au.org.theark.core.Constants;
-import au.org.theark.core.model.pheno.entity.PhenoData;
-import au.org.theark.core.model.study.entity.CustomField;
-
 /**
  * @author cellis
  * 
