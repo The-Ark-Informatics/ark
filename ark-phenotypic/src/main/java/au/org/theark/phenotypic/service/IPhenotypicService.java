@@ -173,5 +173,9 @@ public interface IPhenotypicService {
 	public void refreshUpload(Upload upload);
 
 	public Collection<CustomFieldGroup> getCustomFieldGroupList(Study study);
+
+	public void processPhenoCollectionsWithTheirDataToInsertBatch(
+			List<PhenoCollection> phenoCollectionsWithTheirDataToInsert,
+			Study study);
 	
 }
