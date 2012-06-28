@@ -39,6 +39,7 @@ import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
+import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -137,7 +138,9 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 
 			// TODO: AJAX-ified and asynchronous and hit database
 			FileUpload fileUpload = fileUploadField.getFileUpload();
-			containerForm.getModelObject().getUpload().setPayload(fileUpload.getBytes());
+			Payload payload = iArkCommonService.createPayload(fileUpload.getBytes());
+
+			containerForm.getModelObject().getUpload().setPayload(payload);
 
 			// Set details of Upload object
 			containerForm.getModelObject().getUpload().setStudy(study);

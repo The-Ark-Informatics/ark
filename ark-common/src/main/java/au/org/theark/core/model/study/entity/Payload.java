@@ -28,6 +28,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -44,7 +45,7 @@ public class Payload implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long								id;
 	private Set<Upload>			uploads					= new HashSet<Upload>(0);
-
+	private byte[] payload;
 	public Payload() {
 	}
 
@@ -52,8 +53,10 @@ public class Payload implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public Payload(Set<Upload> uploads) {
-		this.uploads = uploads;
+	
+	
+	public Payload(byte[] payload) {
+		this.payload = payload;
 	}
 
 	@Id
@@ -75,6 +78,24 @@ public class Payload implements java.io.Serializable {
 
 	public void setUploads(Set<Upload> uploads) {
 		this.uploads = uploads;
+	}
+
+	/*
+	 * @return the payload
+	 */
+	//	@Fetch(FetchMode.SELECT)
+	@Lob
+	@Column(name = "PAYLOAD")
+	public byte[] getPayload() {
+		return this.payload;
+	}
+
+	/**
+	 * @param payload
+	 *           the payload to set
+	 */
+	public void setPayload(byte[] payload) {
+		this.payload = payload;
 	}
 	
 }

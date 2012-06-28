@@ -162,7 +162,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			public void onClick() {
-				byte[] data = upload.getPayload();
+				byte[] data = upload.getPayload().getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 
 			};
@@ -180,7 +180,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				byte[] data = upload.getPayload();
+				byte[] data = upload.getPayload().getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 			}
 
