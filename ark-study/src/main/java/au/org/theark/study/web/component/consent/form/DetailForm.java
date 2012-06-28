@@ -19,7 +19,6 @@
 package au.org.theark.study.web.component.consent.form;
 
 import java.io.IOException;
-import java.sql.Blob;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -433,7 +432,6 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	}
 
 	private void createConsentFile() throws ArkSystemException {
-		// Retrieve file and store as Blob in database
 		FileUpload fileSubjectFile = fileSubjectFileField.getFileUpload();
 
 		if(fileSubjectFile != null) {
@@ -445,9 +443,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 			try {
 				linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId, study);
 				containerForm.getModelObject().getSubjectFile().setLinkSubjectStudy(linkSubjectStudy);
-			
-				// Copy file to BLOB object
-				//Blob payload = lobUtil.createBlob(fileSubjectFile.getInputStream(), fileSubjectFile.getSize());
+
 				containerForm.getModelObject().getSubjectFile().setPayload(IOUtils.toByteArray(fileSubjectFile.getInputStream()));
 				
 				byte[] byteArray = fileSubjectFile.getMD5();

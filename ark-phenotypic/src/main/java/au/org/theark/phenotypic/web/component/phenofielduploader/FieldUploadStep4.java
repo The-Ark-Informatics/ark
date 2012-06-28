@@ -166,7 +166,6 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 		phenoUploadReport.appendDetails(containerForm.getModelObject().getUpload());
 		phenoUploadReport.append(importReport);
 		byte[] bytes = phenoUploadReport.getReport().toString().getBytes();
-		//Blob uploadReportBlob = util.createBlob(bytes);
 		containerForm.getModelObject().getUpload().setUploadReport(bytes);
 	}
 

@@ -211,10 +211,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 			if (containerForm.getModelObject().getCorrespondence().getId() == null) {
 				// store correspondence file attachment
 				if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
-					// retrieve file and store as Blob in database
 					FileUpload fileUpload = fileUploadField.getFileUpload();
-					// copy file to Blob object
-					//Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
 					containerForm.getModelObject().getCorrespondence().setAttachmentPayload(fileUpload.getBytes());
 					containerForm.getModelObject().getCorrespondence().setAttachmentFilename(fileUpload.getClientFileName());
 				}

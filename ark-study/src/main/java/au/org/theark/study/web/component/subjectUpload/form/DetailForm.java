@@ -117,50 +117,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	protected void onSave(Form<UploadVO> containerForm, AjaxRequestTarget target) {
 		System.err.println("*********************************************************************************" +
 				"******************************************************************************************************************" +
-				"WHY ARE WE SAVING HERE TOO???? ARE WE?????");/*
-		if (containerForm.getModelObject().getUpload().getId() == null) {
-			setMultiPart(true); // multipart required for file uploads
-
-			// Set study in context
-			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-			Study study = iArkCommonService.getStudy(studyId);
-
-			FileUpload fileUpload = fileUploadField.getFileUpload();
-			try {
-				Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
-				containerForm.getModelObject().getUpload().setPayload(payload);
-			}
-			catch (IOException ioe) {
-				System.out.println("Failed to save the uploaded file: " + ioe);
-				//TO DO this really ought to be handled appropriately
-			}
-
-			byte[] byteArray = fileUpload.getMD5();
-			String checksum = getHex(byteArray);
-
-			containerForm.getModelObject().getUpload().setStudy(study);
-			containerForm.getModelObject().getUpload().setChecksum(checksum);
-			containerForm.getModelObject().getUpload().setFilename(fileUpload.getClientFileName());
-
-			// Save
-			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
-			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
-
-			this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was created successfully");
-			processErrors(target);
-		}
-		else {
-			// Update
-			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
-			iArkCommonService.updateUpload(containerForm.getModelObject().getUpload());
-			this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was updated successfully");
-			processErrors(target);
-		}
-
-		onSavePostProcess(target);
-		*
-		 * TO DO :(CE) To handle Business and System Exceptions here
-		 */
+				"WHY ARE WE SAVING HERE TOO???? ARE WE?????");
 	}
 
 	static final String	HEXES	= "0123456789ABCDEF";

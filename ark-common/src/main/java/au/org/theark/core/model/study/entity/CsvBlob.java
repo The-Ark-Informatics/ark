@@ -41,6 +41,7 @@ public class CsvBlob implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Long		id;
+	//TODO may want to consider byte[]
 	private Blob		csvBlob;
 	
 	/** default constructor */

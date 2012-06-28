@@ -160,7 +160,6 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 		phenoUploadReport.appendDetails(containerForm.getModelObject().getUpload());
 		phenoUploadReport.append(importReport);
 		byte[] bytes = phenoUploadReport.getReport().toString().getBytes();
-		//Blob uploadReportBlob = util.createBlob(bytes);
 		containerForm.getModelObject().getUpload().setUploadReport(bytes);
 	}
 
@@ -169,8 +168,6 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 		InputStream inputStream = null;
 		try {
 			inputStream = new BufferedInputStream(new FileInputStream(temp));
-			// Copy file to BLOB object
-			//Blob payload = util.createBlob(inputStream, temp.length());
 			byte[] bytes = IOUtils.toByteArray(inputStream);
 			containerForm.getModelObject().getUpload().setPayload(bytes);
 

@@ -19,7 +19,6 @@
 package au.org.theark.study.web.component.attachments.form;
 
 import java.io.IOException;
-import java.sql.Blob;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
