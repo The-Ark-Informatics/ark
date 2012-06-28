@@ -135,18 +135,9 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			Study study = iArkCommonService.getStudy(studyId);
 
-			// Retrieve file and store as Blob in database
 			// TODO: AJAX-ified and asynchronous and hit database
 			FileUpload fileUpload = fileUploadField.getFileUpload();
-
-			//try {
-				// Copy file to BLOB object
-			//	Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
-				containerForm.getModelObject().getUpload().setPayload(fileUpload.getBytes());
-			//}
-			//catch (IOException ioe) {
-			//	System.out.println("Failed to save the uploaded file: " + ioe);
-			//}
+			containerForm.getModelObject().getUpload().setPayload(fileUpload.getBytes());
 
 			// Set details of Upload object
 			containerForm.getModelObject().getUpload().setStudy(study);
@@ -155,14 +146,6 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 			String checksum = getHex(byteArray);
 			containerForm.getModelObject().getUpload().setChecksum(checksum);
 			containerForm.getModelObject().getUpload().setFilename(fileUpload.getClientFileName());
-
-			// containerForm.getModelObject().setPhenoCollection(studyService.getPhenoCollection(sessionPhenoCollectionId));
-
-			// Set details of link table object
-			// PhenoCollectionUpload phenoCollectionUpload = new PhenoCollectionUpload();
-			// phenoCollectionUpload.setCollection(studyService.getPhenoCollection(sessionPhenoCollectionId));
-			// phenoCollectionUpload.setUpload(containerForm.getModelObject().getUpload());
-			// containerForm.getModelObject().setPhenoCollectionUpload(phenoCollectionUpload);
 
 			// Save
 			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);

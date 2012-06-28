@@ -45,9 +45,6 @@ import au.org.theark.core.Constants;
 @Table(name = "CONSENT_FILE", schema = Constants.STUDY_SCHEMA)
 public class ConsentFile implements java.io.Serializable {
 
-
-
-
 	private static final long	serialVersionUID	= -3611814204230766317L;
 	private Long					id;
 	private Consent				consent;
@@ -102,6 +99,7 @@ public class ConsentFile implements java.io.Serializable {
 		this.filename = filename;
 	}
 
+	//TODO may want to consider byte[]
 	@Column(name = "PAYLOAD")
 	public Blob getPayload() {
 		return this.payload;
