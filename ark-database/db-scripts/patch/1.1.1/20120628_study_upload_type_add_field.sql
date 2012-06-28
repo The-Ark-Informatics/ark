@@ -1,4 +1,4 @@
-ALTER TABLE `study`.`upload_type` ADD COLUMN `ARK_MODULE_ID` INT(11) NOT NULL DEFAULT 2  AFTER `DESCRIPTION` , 
+ALTER TABLE `study`.`upload_type` ADD COLUMN `ARK_MODULE_ID` INT(11)  DEFAULT 2  AFTER `DESCRIPTION` , 
   ADD CONSTRAINT `fk_upload_type_ark_module`
   FOREIGN KEY (`ARK_MODULE_ID` )
   REFERENCES `study`.`ark_module` (`ID` )
