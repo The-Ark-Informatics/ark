@@ -31,9 +31,11 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.io.IOUtils;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.service.IArkCommonService;
@@ -127,7 +129,9 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		Study study = iArkCommonService.getStudy(studyId);
 		FileUpload fileUpload = fileUploadField.getFileUpload();
 		containerForm.getModelObject().setFileUpload(fileUpload);
-		containerForm.getModelObject().getUpload().setPayload(fileUpload.getBytes());
+		Payload payload = iArkCommonService.createPayload(fileUpload.getBytes());
+		
+		containerForm.getModelObject().getUpload().setPayload(payload);
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 		String fileFormatName = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 		au.org.theark.core.model.study.entity.FileFormat fileFormat = new au.org.theark.core.model.study.entity.FileFormat();

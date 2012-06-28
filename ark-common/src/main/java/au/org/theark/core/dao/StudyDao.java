@@ -77,6 +77,7 @@ import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -1306,6 +1307,19 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			query.setParameterList("customFieldDisplaysThatWeNeed", customFieldDisplaysThatWeNeed);
 			return query.list();
 		}
+	}
+
+	public Payload createPayload(byte[] bytes) {
+		Payload payload = new Payload(bytes);
+		getSession().save(payload);
+		getSession().flush();
+		getSession().refresh(payload);
+		return payload;
+	}
+
+	public Payload getPayloadForUpload(Upload upload){
+		getSession().refresh(upload);//bit paranoid but the code calling this may be from wicket and not be attached?
+		return upload.getPayload();
 	}
 	
 }

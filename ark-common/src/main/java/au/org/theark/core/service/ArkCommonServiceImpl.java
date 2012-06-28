@@ -97,6 +97,7 @@ import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.PhoneStatus;
@@ -1163,5 +1164,13 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded) {
 		return studyDao.getCustomFieldDataFor(customFieldDisplaysThatWeNeed, subjectUIDsToBeIncluded);
+	}
+
+	public Payload createPayload(byte[] bytes){
+		return studyDao.createPayload(bytes);
+	}
+
+	public Payload getPayloadForUpload(Upload upload){
+		return studyDao.getPayloadForUpload(upload);
 	}
 }

@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -162,7 +163,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			public void onClick() {
-				byte[] data = upload.getPayload();
+				byte[] data = upload.getPayload().getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 
 			};
@@ -180,7 +181,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				byte[] data = upload.getPayload();
+				byte[] data = upload.getPayload().getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 			}
 

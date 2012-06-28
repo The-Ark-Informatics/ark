@@ -43,6 +43,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.FileFormat;
+import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.CustomFieldImporter;
@@ -169,7 +170,8 @@ public class CustomFieldUploadStep4 extends AbstractWizardStepPanel {
 		try {
 			inputStream = new BufferedInputStream(new FileInputStream(temp));
 			byte[] bytes = IOUtils.toByteArray(inputStream);
-			containerForm.getModelObject().getUpload().setPayload(bytes);
+			Payload payload = iArkCommonService.createPayload(bytes);
+			containerForm.getModelObject().getUpload().setPayload(payload);
 
 			containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
 			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());

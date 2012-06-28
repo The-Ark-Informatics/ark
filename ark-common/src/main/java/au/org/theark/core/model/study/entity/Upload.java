@@ -45,19 +45,21 @@ import au.org.theark.core.Constants;
 public class Upload implements java.io.Serializable {
 
 
-	private Long				id;
-	private Study				study;
+	private Long			id;
+	private Study			study;
 	private FileFormat		fileFormat;
+	//intent is to take this payload entity and use it instead of payload byte[] to stop hibernate/mysql from forcing us to get it every time!
+	private Payload			payload;
 	private DelimiterType	delimiterType;
 	private UploadType		uploadType;
-	private String				filename;
-	private byte[]				payload;
-	private String				checksum;
-	private Date				startTime;
-	private Date				finishTime;
-	private byte[]				uploadReport;
-	private String				userId;
-	private ArkFunction	arkFunction;
+	private String			filename;
+//	private byte[]			payload;
+	private String			checksum;
+	private Date			startTime;
+	private Date			finishTime;
+	private byte[]			uploadReport;
+	private String			userId;
+	private ArkFunction		arkFunction;
 
 
 	public Upload() {
@@ -101,9 +103,6 @@ public class Upload implements java.io.Serializable {
 		this.study = study;
 	}
 
-	/**
-	 * @return the fileFormat
-	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FILE_FORMAT_ID", nullable = false)
 	public FileFormat getFileFormat() {
@@ -112,6 +111,16 @@ public class Upload implements java.io.Serializable {
 
 	public void setFileFormat(FileFormat fileFormat) {
 		this.fileFormat = fileFormat;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PAYLOAD_ID", nullable = true)
+	public Payload getPayload() {
+		return payload;
+	}
+	
+	public void setPayload(Payload payload) {
+		this.payload = payload;
 	}
 
 	/**
@@ -147,9 +156,9 @@ public class Upload implements java.io.Serializable {
 		this.filename = filename;
 	}
 
-	/**
+	/*
 	 * @return the payload
-	 */
+	 *
 	//	@Fetch(FetchMode.SELECT)
 	@Lob
 	@Column(name = "PAYLOAD")
@@ -160,10 +169,10 @@ public class Upload implements java.io.Serializable {
 	/**
 	 * @param payload
 	 *           the payload to set
-	 */
+	 *
 	public void setPayload(byte[] payload) {
 		this.payload = payload;
-	}
+	}*/
 
 	/**
 	 * @return the checksum
