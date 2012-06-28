@@ -38,6 +38,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
@@ -160,7 +161,8 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		// TODO: AJAX-ified and asynchronous and hit database
 		FileUpload fileUpload = fileUploadField.getFileUpload();
 		containerForm.getModelObject().setFileUpload(fileUpload);
-		containerForm.getModelObject().getUpload().setPayload(fileUpload.getBytes());
+		Payload payload = iArkCommonService.createPayload(fileUpload.getBytes());
+		containerForm.getModelObject().getUpload().setPayload(payload);
 
 		// Set details of Upload object
 		containerForm.getModelObject().getUpload().setStudy(studyDdc.getModelObject());

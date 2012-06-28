@@ -36,6 +36,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
@@ -175,7 +176,10 @@ public class SearchResultListPanel extends Panel {
 		Link link = new Link(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE) {
 			@Override
 			public void onClick() {
-				byte[] data = upload.getPayload();
+
+				Payload payload  = iArkCommonService.getPayloadForUpload(upload);
+				byte[] data = payload.getPayload();
+				
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/csv", data, upload.getFilename()));
 
 			};
@@ -191,7 +195,10 @@ public class SearchResultListPanel extends Panel {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				byte[] data = upload.getPayload();
+
+				Payload payload  = iArkCommonService.getPayloadForUpload(upload);
+				byte[] data = payload.getPayload();
+				
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/csv", data, upload.getFilename()));
 			}
 
@@ -203,7 +210,17 @@ public class SearchResultListPanel extends Panel {
 
 		ajaxButton.setDefaultFormProcessing(false);
 
-		if (upload.getPayload() == null)
+		log.warn("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n how many times is this run?");
+
+		//TODO remove
+		Payload payload  = iArkCommonService.getPayloadForUpload(upload);
+		byte[] data = payload.getPayload();
+
+		
+		
+		//TODO move back
+		//if (upload.getPayload() == null)
+		if (data == null)
 			ajaxButton.setVisible(false);
 
 		return ajaxButton;
