@@ -162,14 +162,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			public void onClick() {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				//try {
-					data = upload.getPayload();//.getBytes(1, (int) upload.getPayload().length());
-				//}
-				//catch (SQLException e) {
-				//	log.error(e.getMessage());
-				//}
+				byte[] data = upload.getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 
 			};
@@ -187,14 +180,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				//try {
-					data = upload.getPayload();//.getBytes(1, (int) upload.getPayload().length());
-				//}
-				//catch (SQLException e) {
-				//	log.error(e.getMessage());
-				//}
+				byte[] data = upload.getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 			}
 
@@ -220,14 +206,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			public void onClick() {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				//try {
-					data = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length());
-				//}
-				//catch (SQLException e) {
-				//	log.error(e.getMessage());
-				//}
+				byte[] data = upload.getUploadReport();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			};
 		};
@@ -244,14 +223,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				//try {
-					data = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length());
-				//}
-				//catch (SQLException e) {
-				//	e.printStackTrace();
-				//}
+				byte[] data = upload.getUploadReport();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			}
 

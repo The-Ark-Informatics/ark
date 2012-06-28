@@ -43,6 +43,7 @@ public class CorrespondenceAuditAttachment implements Serializable {
 	private Long						id;
 	private CorrespondenceAudit	correspondenceAudit;
 	private String						filename;
+	//TODO may want to consider byte[]
 	private Blob						payload;
 	private String						checksum;
 	private String						userId;

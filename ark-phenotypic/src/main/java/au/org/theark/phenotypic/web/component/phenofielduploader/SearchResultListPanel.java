@@ -175,15 +175,7 @@ public class SearchResultListPanel extends Panel {
 		Link link = new Link(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE) {
 			@Override
 			public void onClick() {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				//try {
-					data = upload.getPayload();//.getBytes(1, (int) upload.getPayload().length());
-				//}
-				//catch (SQLException e) {
-				//	log.error(e.getMessage());
-				//}
-				
+				byte[] data = upload.getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/csv", data, upload.getFilename()));
 
 			};
@@ -199,15 +191,7 @@ public class SearchResultListPanel extends Panel {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				//try {
-					data = upload.getPayload();//.getBytes(1, (int) upload.getPayload().length());
-				//}
-				//catch (SQLException e) {
-				//	log.error(e.getMessage());
-				//}
-				//
+				byte[] data = upload.getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/csv", data, upload.getFilename()));
 			}
 
@@ -229,8 +213,7 @@ public class SearchResultListPanel extends Panel {
 		Link link = new Link(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT) {
 			@Override
 			public void onClick() {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data  = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length())
+				byte[] data  = upload.getUploadReport();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			};
 		};
@@ -245,8 +228,7 @@ public class SearchResultListPanel extends Panel {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, new StringResourceModel("downloadReportKey", this, null)) {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length());
+				byte[] data = upload.getUploadReport();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			}
 

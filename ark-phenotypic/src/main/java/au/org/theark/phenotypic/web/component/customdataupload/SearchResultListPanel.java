@@ -162,15 +162,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			public void onClick() {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				//try {
-					data = upload.getPayload();//.getBytes(1, (int) upload.getPayload().length());
-				//	log.warn(" buildDownloadReportButton onclick");
-				//}
-				//catch (SQLException e) {
-				//	log.error(e.getMessage());
-				//}
+				byte[] data = upload.getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 
 			};
@@ -188,7 +180,6 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// Attempt to download the Blob as an array of bytes
 				byte[] data = upload.getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 			}
