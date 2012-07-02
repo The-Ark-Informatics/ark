@@ -279,6 +279,7 @@ public class BiospecimenUploader {
 				}
 				
 				invCell = iInventoryService.getInvCellByLocationNames(siteName, freezerName, rackName, boxName, row, column);
+				//TODO : null checking here.  should be picked up ikn validation  JIRA 657 Created  log.info("invcell null?" + (invCell == null));
 				invCell.setBiospecimen(biospecimen);
 				if(invCell.getId() != null) {
 					updateInvCells.add(invCell);
