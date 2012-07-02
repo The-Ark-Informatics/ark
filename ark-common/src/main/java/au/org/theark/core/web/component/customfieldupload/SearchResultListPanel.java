@@ -165,9 +165,10 @@ public class SearchResultListPanel extends Panel {
 
 		ajaxButton.setDefaultFormProcessing(false);
 
-		if (upload.getPayload() == null) {
-			ajaxButton.setVisible(false);
-		}
+		//TODO TEST...payload should never be nulll...but test.
+		//if (upload.getPayload() == null) {
+		ajaxButton.setVisible(false);
+		//}
 
 		return ajaxButton;
 	}
