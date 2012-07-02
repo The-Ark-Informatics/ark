@@ -170,6 +170,7 @@ public class SearchResultListPanel extends Panel {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
 				try {
+					
 					data = subjectFile.getPayload();//.getBytes(1, (int) subjectFile.getPayload().length());
 
 					if (data != null) {
@@ -210,8 +211,8 @@ public class SearchResultListPanel extends Panel {
 		ajaxButton.setVisible(true);
 		ajaxButton.setDefaultFormProcessing(false);
 
-		if (subjectFile.getPayload() == null)
-			ajaxButton.setVisible(false);
+		//if (subjectFile.getPayload() == null)
+		//ajaxButton.setVisible(false);
 
 		return ajaxButton;
 	}

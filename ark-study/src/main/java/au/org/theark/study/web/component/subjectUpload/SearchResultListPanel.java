@@ -200,18 +200,18 @@ public class SearchResultListPanel extends Panel {
 
 		ajaxButton.setVisible(true);
 		ajaxButton.setDefaultFormProcessing(false);
-		log.warn("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n how many times is this run?");
+		//log.warn("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n how many times is this run?");
 
 		//TODO remove
-		Payload payload  = iArkCommonService.getPayloadForUpload(upload);
-		byte[] data = payload.getPayload();
+		//Payload payload  = iArkCommonService.getPayloadForUpload(upload);
+		//byte[] data = payload.getPayload();
 
 		
 		
 		//TODO move back
 		//if (upload.getPayload() == null)
-		if (data == null)
-			ajaxButton.setVisible(false);
+		//if (data == null)
+		//ajaxButton.setVisible(false);
 
 		return ajaxButton;
 	}

@@ -53,7 +53,6 @@ public class Upload implements java.io.Serializable {
 	private DelimiterType	delimiterType;
 	private UploadType		uploadType;
 	private String			filename;
-//	private byte[]			payload;
 	private String			checksum;
 	private Date			startTime;
 	private Date			finishTime;
@@ -155,24 +154,6 @@ public class Upload implements java.io.Serializable {
 	public void setFilename(String filename) {
 		this.filename = filename;
 	}
-
-	/*
-	 * @return the payload
-	 *
-	//	@Fetch(FetchMode.SELECT)
-	@Lob
-	@Column(name = "PAYLOAD")
-	public byte[] getPayload() {
-		return this.payload;
-	}
-
-	/**
-	 * @param payload
-	 *           the payload to set
-	 *
-	public void setPayload(byte[] payload) {
-		this.payload = payload;
-	}*/
 
 	/**
 	 * @return the checksum
