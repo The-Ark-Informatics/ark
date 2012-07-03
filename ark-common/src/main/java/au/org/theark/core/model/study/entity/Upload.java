@@ -44,7 +44,6 @@ import au.org.theark.core.Constants;
 @Table(name = "UPLOAD", schema = Constants.STUDY_SCHEMA)
 public class Upload implements java.io.Serializable {
 
-
 	private Long			id;
 	private Study			study;
 	private FileFormat		fileFormat;
@@ -59,7 +58,7 @@ public class Upload implements java.io.Serializable {
 	private byte[]			uploadReport;
 	private String			userId;
 	private ArkFunction		arkFunction;
-
+	private UploadStatus	uploadStatus;
 
 	public Upload() {
 	}
@@ -251,5 +250,14 @@ public class Upload implements java.io.Serializable {
 		this.uploadType = uploadType;
 	}
 
-	
+	@ManyToOne(fetch = FetchType.LAZY)  // or eager?
+	@JoinColumn(name = "STATUS_ID", nullable = false)
+	public UploadStatus getUploadStatus() {
+		return uploadStatus;
+	}
+
+	public void setUploadStatus(UploadStatus uploadStatus) {
+		this.uploadStatus = uploadStatus;
+	}
+
 }
