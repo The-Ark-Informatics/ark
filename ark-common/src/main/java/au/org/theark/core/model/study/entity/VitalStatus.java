@@ -86,7 +86,7 @@ public class VitalStatus implements Serializable {
 		this.description = description;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "vitalStatus")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vitalStatus")
 	public Set<Person> getPersons() {
 		return this.persons;
 	}
