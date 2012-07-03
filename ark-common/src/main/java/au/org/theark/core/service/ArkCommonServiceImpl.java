@@ -114,6 +114,7 @@ import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.UnitType;
+import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
@@ -1172,5 +1173,13 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public Payload getPayloadForUpload(Upload upload){
 		return studyDao.getPayloadForUpload(upload);
+	}
+
+	public UploadStatus getUploadStatusForUploaded(){
+		return studyDao.getUploadStatusForUploaded();
+	}
+
+	public UploadStatus getUploadStatusForAwaitingValidation(){
+		return studyDao.getUploadStatusForAwaitingValidation();
 	}
 }
