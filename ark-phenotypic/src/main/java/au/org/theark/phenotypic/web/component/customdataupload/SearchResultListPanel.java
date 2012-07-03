@@ -187,7 +187,7 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				Payload payload  = iArkCommonService.getPayloadForUpload(upload);
-				byte[] data = upload.getPayload().getPayload();
+				byte[] data = payload.getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 			}
 
