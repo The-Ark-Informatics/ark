@@ -95,6 +95,7 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
@@ -1033,6 +1034,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public void createUpload(Upload studyUpload) {
+		if(studyUpload.getUploadStatus() == null){
+			studyUpload.setUploadStatus(getUploadStatusForUndefined());
+		}
 		Subject currentUser = SecurityUtils.getSubject();
 		String userId = (String) currentUser.getPrincipal();
 		studyUpload.setUserId(userId);
@@ -1321,5 +1325,22 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		getSession().refresh(upload);//bit paranoid but the code calling this may be from wicket and not be attached?
 		return upload.getPayload();
 	}
+
+	public UploadStatus getUploadStatusForUploaded(){
+		Criteria criteria = getSession().createCriteria(UploadStatus.class);
+		criteria.add(Restrictions.eq("name", "UPLOADED"));
+		return (UploadStatus)criteria.uniqueResult();
+	}
 	
+	public UploadStatus getUploadStatusForUndefined(){
+		Criteria criteria = getSession().createCriteria(UploadStatus.class);
+		criteria.add(Restrictions.eq("name", "STATUS_NOT_UPDATED"));
+		return (UploadStatus)criteria.uniqueResult();
+	}
+
+	public UploadStatus getUploadStatusForAwaitingValidation(){
+		Criteria criteria = getSession().createCriteria(UploadStatus.class);
+		criteria.add(Restrictions.eq("name", "AWAITING_VALIDATION"));
+		return (UploadStatus)criteria.uniqueResult();		
+	}
 }

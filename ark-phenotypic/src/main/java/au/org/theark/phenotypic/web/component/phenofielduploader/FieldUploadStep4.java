@@ -181,6 +181,7 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 			containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
 			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD);
 			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
+			containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForUploaded());		
 			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 			Collection<CustomFieldUpload> cfUploadLinks = containerForm.getModelObject().getCustomFieldUploadCollection();
 			for (CustomFieldUpload cfUpload : cfUploadLinks) {
