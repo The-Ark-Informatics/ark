@@ -97,7 +97,6 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 		uploadTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.uploadType.required", this, new Model<String>("Upload")));
-		//TODO uplaod
 	}
 
 	private void addComponents() {
@@ -113,7 +112,6 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	@Override
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		saveFileInMemory();
-		//TODO perhaps we can branch here for different file
 	}
 
 	public void setWizardForm(WizardForm wizardForm) {
@@ -138,8 +136,9 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		fileFormat = iArkCommonService.getFileFormatByName(fileFormatName);
 		byte[] byteArray = fileUpload.getMD5();
 		String checksum = getHex(byteArray);
-		
-		containerForm.getModelObject().getUpload().setStudy(study);//TODO: analyze costs of repeated containerForm.getModelObject().getUpload()
+
+		containerForm.getModelObject().getUpload().setStudy(study);
+		//containerForm.getModelObject().getUpload().set;
 		containerForm.getModelObject().getUpload().setFileFormat(fileFormat);
 		containerForm.getModelObject().getUpload().setChecksum(checksum);
 		containerForm.getModelObject().getUpload().setFilename(filename);
@@ -147,7 +146,8 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
 		wizardForm.setFileName(filename);
 
-		//TODO analyse how many times this is saved and where it should be saved
+		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForAwaitingValidation());		
+		
 		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 	}
 }
