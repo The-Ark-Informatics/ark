@@ -39,18 +39,24 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
-import org.apache.wicket.markup.html.link.DownloadLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.Loop;
 import org.apache.wicket.markup.html.list.LoopItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.IRequestCycle;
+import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
+import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
+import org.apache.wicket.util.file.Files;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.apache.wicket.util.io.IOUtils;
+import org.apache.wicket.util.resource.FileResourceStream;
+import org.apache.wicket.util.resource.IResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -287,7 +293,7 @@ public class GridBoxPanel extends Panel {
 		gridBoxKeyContainer.addOrReplace(new Image("barcodeCellIcon", BARCODE_CELL_ICON));
 
 		// Download file link
-		gridBoxKeyContainer.addOrReplace(buildDownloadLink(invCellList));
+		gridBoxKeyContainer.addOrReplace(buildXLSDownloadLink(invCellList));
 		addOrReplace(gridBoxKeyContainer);
 		gridBoxKeyContainer.setVisible(!allocating);
 	}
@@ -345,23 +351,43 @@ public class GridBoxPanel extends Panel {
 	 * @param invCellList
 	 * @return
 	 */
-	protected DownloadLink buildDownloadLink(final List<InvCell> invCellList) {
-		byte[] data = createWorkBookAsByteArray(invCellList);
-		InputStream inputStream = new ByteArrayInputStream(data);
-		OutputStream outputStream;
-		DownloadLink link = null;
-		try {
-			java.io.File file = File.createTempFile("exportXlsFileName", ".xls");
-			outputStream = new FileOutputStream(file);
-			IOUtils.copy(inputStream, outputStream);
-			link = new DownloadLink("downloadGridBoxDataLink", file);
-		}
-		catch (FileNotFoundException e) {
-			log.error(e.getMessage());
-		}
-		catch (IOException e) {
-			log.error(e.getMessage());
-		}
+	protected Link<String> buildXLSDownloadLink(final List<InvCell> invCellList) {
+		Link<String> link = new Link<String>("downloadGridBoxDataLink") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			public void onClick() {
+				byte[] data = createWorkBookAsByteArray(invCellList);
+				if (data != null) {
+					InputStream inputStream = new ByteArrayInputStream(data);
+					OutputStream outputStream;
+					try {
+						final String tempDir = System.getProperty("java.io.tmpdir");
+						final java.io.File file = new File(tempDir, limsVo.getInvBox().getName() + ".xls");
+						final String fileName = limsVo.getInvBox().getName() + ".xls";
+						outputStream = new FileOutputStream(file);
+						IOUtils.copy(inputStream, outputStream);
+
+						IResourceStream resourceStream = new FileResourceStream(new org.apache.wicket.util.file.File(file));
+						getRequestCycle().scheduleRequestHandlerAfterCurrent(new ResourceStreamRequestHandler(resourceStream) {
+							@Override
+							public void respond(IRequestCycle requestCycle) {
+								super.respond(requestCycle);
+								Files.remove(file);
+							}
+						}.setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT));
+					}
+					catch (FileNotFoundException e) {
+						log.error(e.getMessage());
+					}
+					catch (IOException e) {
+						log.error(e.getMessage());
+					}
+				}
+			}
+		};
 		
 		return link;
 	}
