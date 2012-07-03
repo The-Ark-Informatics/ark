@@ -27,6 +27,7 @@ import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ByteArrayResource;
 import org.apache.wicket.request.resource.ContentDisposition;
+import org.apache.wicket.util.file.Files;
 import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 
@@ -57,9 +58,7 @@ public class ByteDataResourceRequestHandler extends ByteArrayResource implements
 	 * @see org.apache.wicket.request.IRequestHandler#detach(org.apache.wicket.request.IRequestCycle)
 	 */
 	public void detach(IRequestCycle arg0) {
-		
-		// TODO Auto-generated method stub
-
+		// nothing
 	}
 
 	/*
@@ -68,8 +67,10 @@ public class ByteDataResourceRequestHandler extends ByteArrayResource implements
 	 * @see org.apache.wicket.request.IRequestHandler#respond(org.apache.wicket.request.IRequestCycle)
 	 */
 	public void respond(IRequestCycle requestCycle) {
-		// StringResourceStream stringResourceStream = new StringResourceStream( new String(this.getData(null)));
-		File file = new File(this.fileName);// how about accessors mutators?
+		// Write out data as a file in temporary directory
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		final java.io.File file = new File(tempDir, fileName);
+		
 		FileOutputStream fos = null;
 		try {
 			fos = new FileOutputStream(file);
@@ -86,15 +87,18 @@ public class ByteDataResourceRequestHandler extends ByteArrayResource implements
 				}
 			}
 			catch (IOException e) {
-				e.printStackTrace();// TODO handle this
+				e.printStackTrace();
 			}
 		}
+		
+		// Send file back as attachment
 		IResourceStream resourceStream = new FileResourceStream(new org.apache.wicket.util.file.File(file));
-
-		// ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stringResourceStream);
 		ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(resourceStream);
 		resourceStreamRequestHandler.setFileName(fileName);
 		resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
 		requestCycle.scheduleRequestHandlerAfterCurrent(resourceStreamRequestHandler);
+		
+		// Remove downloaded file
+		Files.remove(file);
 	}
 }
