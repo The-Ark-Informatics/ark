@@ -160,7 +160,46 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioTransactionDetailWmc = new WebMarkupContainer("bioTransactionDetailWmc");
 		bioTransactionDetailWmc.setOutputMarkupPlaceholderTag(true);
 		bioTransactionDetailWmc.setEnabled(cpModel.getObject().getBiospecimen().getId() == null);
+	}
+	
+	/**
+	 * Enable quantity/treatment
+	 */
+	private void enableQuantityTreatment(AjaxRequestTarget target) {
+		setQuantityLabel();
 
+		treatmentTypeDdc.setEnabled(true);
+		bioTransactionDetailWmc.setEnabled(true);
+
+		target.add(treatmentTypeDdc);
+		target.add(bioTransactionDetailWmc);
+	}
+
+	protected void refreshEntityFromBackend() {
+		// Get the Biospecimen entity fresh from backend
+		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
+
+		if (biospecimen.getId() != null) {
+			try {
+				final Biospecimen biospecimenFromDB = iLimsService.getBiospecimen(biospecimen.getId());
+				biospecimenFromDB.setQuantity(iLimsService.getQuantityAvailable(biospecimenFromDB));
+				cpModel.getObject().setBiospecimen(biospecimenFromDB);
+				
+				// Get/set location details
+				cpModel.getObject().setBiospecimenLocationVO(iInventoryService.getBiospecimenLocation(biospecimenFromDB));
+				cpModel.getObject().setStudy(biospecimenFromDB.getStudy());
+			}
+			catch (EntityNotFoundException e) {
+				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
+				log.error(e.getMessage());
+			}
+			catch (ArkSystemException e) {
+				log.error(e.getMessage());
+			}
+		}
+	}
+	
+	private void initialiseBiospecimenButtonsPanel() {
 		biospecimenbuttonsPanel = new BiospecimenButtonsPanel("biospecimenButtonPanel", new PropertyModel<Biospecimen>(cpModel.getObject(), "biospecimen")) {
 
 			private static final long	serialVersionUID	= 1L;
@@ -221,43 +260,6 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		addOrReplace(biospecimenbuttonsPanel);
 	}
 
-	/**
-	 * Enable quantity/treatment
-	 */
-	private void enableQuantityTreatment(AjaxRequestTarget target) {
-		setQuantityLabel();
-
-		treatmentTypeDdc.setEnabled(true);
-		bioTransactionDetailWmc.setEnabled(true);
-
-		target.add(treatmentTypeDdc);
-		target.add(bioTransactionDetailWmc);
-	}
-
-	protected void refreshEntityFromBackend() {
-		// Get the Biospecimen entity fresh from backend
-		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
-
-		if (biospecimen.getId() != null) {
-			try {
-				final Biospecimen biospecimenFromDB = iLimsService.getBiospecimen(biospecimen.getId());
-				biospecimenFromDB.setQuantity(iLimsService.getQuantityAvailable(biospecimenFromDB));
-				cpModel.getObject().setBiospecimen(biospecimenFromDB);
-				
-				// Get/set location details
-				cpModel.getObject().setBiospecimenLocationVO(iInventoryService.getBiospecimenLocation(biospecimenFromDB));
-				cpModel.getObject().setStudy(biospecimenFromDB.getStudy());
-			}
-			catch (EntityNotFoundException e) {
-				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
-				log.error(e.getMessage());
-			}
-			catch (ArkSystemException e) {
-				log.error(e.getMessage());
-			}
-		}
-	}
-
 	private boolean initialiseBiospecimenCFDataEntry() {
 		boolean replacePanel = false;
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
@@ -292,7 +294,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 	private boolean initialiseBiospecimenLocationPanel() {
 		boolean replacePanel = false;
+		// Cannot allocate a Biospecimen until saved
 		biospecimenLocationPanel = new BioLocationDetailPanel("biospecimenLocationPanel", cpModel);
+		biospecimenLocationPanel.setVisible(!isNew());
 		replacePanel = true;
 		return replacePanel;
 	}
@@ -401,6 +405,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		initialiseBiospecimenCFDataEntry();
 		initialiseBioTransactionListPanel();
 		initialiseBiospecimenLocationPanel();
+		initialiseBiospecimenButtonsPanel();
 
 		attachValidators();
 		addComponents();
@@ -709,8 +714,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
 			target.add(barcodeImage);
 
-			// Enable button panel
-			biospecimenbuttonsPanel.setVisible(true);
+			// Enable/re-enable buttons panel
+			initialiseBiospecimenButtonsPanel();
+			
 			target.add(biospecimenbuttonsPanel);
 
 			onSavePostProcess(target);
