@@ -41,16 +41,15 @@ import au.org.theark.core.model.Constants;
 @Table(name = "inv_cell", schema = Constants.LIMS_TABLE_SCHEMA)
 public class InvCell implements java.io.Serializable {
 
-
-	private static final long serialVersionUID = 1L;
-	private Long	id;
-	private String	timestamp;
-	private InvBox	invBox;
-	private Long	deleted;
-	private Long	rowno;
-	private Long	colno;
-	private String	status;
-	private Biospecimen biospecimen;
+	private static final long	serialVersionUID	= 1L;
+	private Long					id;
+	private String					timestamp;
+	private InvBox					invBox;
+	private Long					deleted;
+	private Long					rowno;
+	private Long					colno;
+	private String					status;
+	private Biospecimen			biospecimen;
 
 	public InvCell() {
 	}
@@ -134,7 +133,7 @@ public class InvCell implements java.io.Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BIOSPECIMEN_ID")
 	public Biospecimen getBiospecimen() {
