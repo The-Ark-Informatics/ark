@@ -30,11 +30,14 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Upload;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
@@ -48,6 +51,9 @@ import au.org.theark.phenotypic.web.component.customdataupload.form.ContainerFor
  */
 public class SearchResultListPanel extends Panel {
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>			iArkCommonService;
+	
 	private static final long	serialVersionUID	= 6150100976180421479L;
 
 	private transient Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
@@ -180,6 +186,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				Payload payload  = iArkCommonService.getPayloadForUpload(upload);
 				byte[] data = upload.getPayload().getPayload();
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 			}
@@ -193,8 +200,8 @@ public class SearchResultListPanel extends Panel {
 		ajaxButton.setVisible(true);
 		ajaxButton.setDefaultFormProcessing(false);
 
-		if (upload.getPayload() == null)
-			ajaxButton.setVisible(false);
+		//if (upload.getPayload() == null)
+		//ajaxButton.setVisible(false);
 
 		return ajaxButton;
 	}
