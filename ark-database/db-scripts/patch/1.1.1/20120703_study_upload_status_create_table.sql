@@ -1,8 +1,8 @@
 CREATE  TABLE `study`.`upload_status` (
   `id` INT NOT NULL ,
   `name` VARCHAR(45) NOT NULL ,
-  `long_message` VARCHAR(45) NOT NULL COMMENT 'evenutally messages may all be brought out to allow i18n (internationalization)' ,
-  `short_message` VARCHAR(45) NOT NULL COMMENT 'evenutally messages may all be brought out to allow i18n (internationalization)' ,
+  `short_message` VARCHAR(128) NOT NULL COMMENT 'evenutally messages may all be brought out to allow i18n (internationalization)' ,
+  `long_message` VARCHAR(256) NOT NULL COMMENT 'evenutally messages may all be brought out to allow i18n (internationalization)' ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) );
 
@@ -28,14 +28,18 @@ insert upload_status(id, name, short_message, long_message)
 			values(0, 'STATUS_NOT_UPDATED', 'Status not defined', 'Status not defined.  This may predate our adding status to uploads');
 
 insert upload_status(id, name, short_message, long_message)
-			values(0, 'ERROR_IN_VALIDATION', 'Error while validating', 'Error while validating data, prior to uploading');
+			values(1, 'ERROR_IN_VALIDATION', 'Error while validating', 'Error while validating data, prior to uploading');
 
 insert upload_status(id, name, short_message, long_message)
-			values(0, 'ERROR_ON_UPLOAD', 'Error while uploading data', 'While the file passed validation, an error occured during the upload.  Please contact your system administrator.');
+			values(2, 'ERROR_ON_UPLOAD', 'Error while uploading data', 'While the file passed validation, an error occured during the upload.  Please contact your system administrator.');
 
 insert upload_status(id, name, short_message, long_message)
-			values(0, 'VALIDATED', 'Successfully validatied', 'Successfully validatied.  Awaiting upload into fields');
+			values(3, 'VALIDATED', 'Successfully validatied', 'Successfully validatied.  Awaiting upload into fields');
 
 insert upload_status(id, name, short_message, long_message)
-			values(0, 'UPLOADED', 'Successfully uploaded', 'Successfully updated into fields');
+			values(4, 'UPLOADED', 'Successfully uploaded', 'Successfully updated into fields');
+
+insert upload_status(id, name, short_message, long_message)
+			values(5, 'AWAITING_VALIDATION', 'Awaiting Validation', 'Successfully uploaded to our server, awaiting validation and upload to fields');
+
 
