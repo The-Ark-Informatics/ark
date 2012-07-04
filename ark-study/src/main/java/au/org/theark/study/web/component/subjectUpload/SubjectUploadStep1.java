@@ -79,7 +79,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
 		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
 		
-		java.util.Collection<UploadType> uploadTypeCollection = iArkCommonService.getUploadTypes();
+		java.util.Collection<UploadType> uploadTypeCollection = iArkCommonService.getUploadTypesForSubject();
 		ChoiceRenderer uploadTypeRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.UPLOAD_TYPE_NAME, au.org.theark.study.web.Constants.UPLOAD_TYPE_ID);
 		uploadTypeDdc = new DropDownChoice<UploadType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_UPLOAD_TYPE, (List) uploadTypeCollection, uploadTypeRenderer);
 		containerForm.getModelObject().getUpload().setUploadType(iArkCommonService.getDefaultUploadType());

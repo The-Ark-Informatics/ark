@@ -25,6 +25,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -500,6 +504,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean isSubjectConsentedToComponent(StudyComp studyComponent, Person person, Study study) {
 		boolean isConsented = false;
 		Criteria criteria = getSession().createCriteria(Consent.class);
@@ -1212,7 +1217,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 
-	public long countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids) {
+	public long countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection<String> subjectUids) {
 		String queryString = "select count(*) " +
 									"from LinkSubjectStudy subject " +
 									"where study =:study " +
@@ -1225,7 +1230,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	@Override
-	public List<String> getSubjectUIDsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids) {
+	public List<String> getSubjectUIDsThatAlreadyExistWithTheseUIDs(Study study, Collection<String> subjectUids) {
 		String queryString = "select subject.subjectUID " +
 		"from LinkSubjectStudy subject " +
 		"where study =:study " +
@@ -1343,4 +1348,18 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("name", "AWAITING_VALIDATION"));
 		return (UploadStatus)criteria.uniqueResult();		
 	}
+	
+	public Collection<UploadType> getUploadTypesForSubject(){
+		Criteria criteria = getSession().createCriteria(UploadType.class);
+		criteria.add(Restrictions.eq("arkModule", getArkModuleForSubject()));
+		return criteria.list();
+	}
+
+	public ArkModule getArkModuleForSubject() {
+		Criteria criteria = getSession().createCriteria(ArkModule.class);
+		criteria.add(Restrictions.eq("name", "Subject"));
+		return (ArkModule)criteria.uniqueResult();
+	}
+	
+
 }

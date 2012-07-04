@@ -1182,4 +1182,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public UploadStatus getUploadStatusForAwaitingValidation(){
 		return studyDao.getUploadStatusForAwaitingValidation();
 	}
+
+	
+	public Collection<UploadType> getUploadTypesForSubject(){
+		return studyDao.getUploadTypesForSubject();
+	}
 }
