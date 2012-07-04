@@ -611,8 +611,10 @@ public interface IStudyDao {
 	
 	public List<LinkSubjectStudy> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection<String> subjectUids);
 
+	@SuppressWarnings("unchecked")
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction);
 
+	@SuppressWarnings("unchecked")
 	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded);
 
 	public Payload createPayload(byte[] bytes);
@@ -620,6 +622,8 @@ public interface IStudyDao {
 	public Payload getPayloadForUpload(Upload upload);
 
 	public UploadStatus getUploadStatusForUploaded();
+
+	public UploadStatus getUploadStatusForValidated();
 	
 	public UploadStatus getUploadStatusForAwaitingValidation();
 

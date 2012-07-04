@@ -103,7 +103,9 @@ import au.org.theark.study.service.Constants;
 public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	private static Logger		log	= LoggerFactory.getLogger(StudyDao.class);
+	@SuppressWarnings("unchecked")
 	private IArkCommonService	arkCommonService;
+	@SuppressWarnings("unchecked")
 	private IArkAuthorisation	iArkAuthorisationService;
 	private Date					dateNow;
 	private ArkUidGenerator		arkUidGenerator;
@@ -113,6 +115,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		this.arkUidGenerator = arkUidGenerator;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Autowired
 	public void setArkCommonService(IArkCommonService arkCommonService) {
 		this.arkCommonService = arkCommonService;
@@ -830,6 +833,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Phone> getPersonPhoneList(Long personId) throws ArkSystemException {
 		Criteria phoneCriteria = getSession().createCriteria(Phone.class);
 		phoneCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
@@ -844,6 +848,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return personPhoneList;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Phone> getPersonPhoneList(Long personId, Phone phone) throws ArkSystemException {
 
 		Criteria phoneCriteria = getSession().createCriteria(Phone.class);
@@ -891,6 +896,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Address> getPersonAddressList(Long personId, Address address) throws ArkSystemException {
 
 		Criteria criteria = getSession().createCriteria(Address.class);
@@ -1005,10 +1011,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException, ArkSystemException {
-
 		Criteria criteria = getSession().createCriteria(Consent.class);
 		if (consent != null) {
-
 			criteria.add(Restrictions.eq("study.id", consent.getStudy().getId()));
 
 			if (consent.getStudyComp() != null) {
@@ -1034,12 +1038,12 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			if (consent.getConsentType() != null) {
 				criteria.add(Restrictions.eq("consentType", consent.getConsentType()));
 			}
-
 		}
 
 		return criteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Consent> searchConsent(ConsentVO consentVO) throws EntityNotFoundException, ArkSystemException {
 
 		Criteria criteria = getSession().createCriteria(Consent.class);
@@ -1079,7 +1083,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public void create(Correspondences correspondence) throws ArkSystemException {
-
 		try {
 			getSession().save(correspondence);
 		}
@@ -1087,11 +1090,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			log.error("A Hibernate exception occurred when creating a correspondence record. Cause: " + ex.getStackTrace());
 			throw new ArkSystemException("Unable to create a correspondence record.");
 		}
-
 	}
 
 	public void update(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException {
-
 		try {
 			getSession().update(correspondence);
 		}
@@ -1099,7 +1100,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			log.error("A Hibernate exception occurred when updating a correspondence record. Cause: " + ex.getStackTrace());
 			throw new ArkSystemException("Unable to update a correspondence record.");
 		}
-
 	}
 
 	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException {
