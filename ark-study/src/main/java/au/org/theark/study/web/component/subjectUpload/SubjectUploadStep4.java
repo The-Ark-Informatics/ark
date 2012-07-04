@@ -82,7 +82,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 		try {			
 			List<String> uidsToUpload = containerForm.getModelObject().getUidsToUpload();
-log.info("________________________________________________________" + "about to try passing list of uids is of size " + uidsToUpload.size() );
+//log.info("________________________________________________________" + "about to try passing list of uids is of size " + uidsToUpload.size() );
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			long size = containerForm.getModelObject().getFileUpload().getSize();
 			Long uploadId = containerForm.getModelObject().getUpload().getId();

@@ -118,6 +118,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		dateOfBirthTxtFld.add(dobDatePicker);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initVitalStatusDdc() {
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
@@ -128,6 +129,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.VITAL_STATUS, vitalStatusPm, (List) vitalStatusList, vitalStatusRenderer);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initSubjectStatusDdc() {
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
@@ -137,6 +139,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS, subjectStatusPm, subjectStatusList, subjectStatusRenderer);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initGenderTypeDdc() {
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");

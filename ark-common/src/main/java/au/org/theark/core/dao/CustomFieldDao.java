@@ -202,6 +202,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return totalCount;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<CustomFieldGroup> getCustomFieldGroups(CustomFieldGroup customFieldGroup, int first, int count){
 	
 		Criteria criteria = buildGenericCustomFieldGroupCriteria(customFieldGroup);
@@ -211,12 +212,13 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria){
 		Criteria criteria = buildGeneralCustomFieldCritera(customFieldCriteria);
 		// Return fields ordered alphabetically
 		criteria.addOrder(Order.asc("name"));
 		List<CustomField> customFieldList = (List<CustomField>) criteria.list();
-		//log.warn("customfieldcriteria (just using name got a list of size " + customFieldList.size());
+		//log.warn("custom field criteria (just using name got a list of size " + customFieldList.size());
 		return customFieldList;
 	}
 
@@ -227,12 +229,14 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return (FieldType)criteria.uniqueResult();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<FieldType> getFieldTypes() {
 		Criteria criteria = getSession().createCriteria(FieldType.class);
 		List<FieldType> customFieldTypeList = (List<FieldType>) criteria.list();
 		return customFieldTypeList;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<String> getUnitTypeNames(UnitType unitTypeCriteria, int maxResults) {
 		Criteria criteria = buildGeneralUnitTypeCriteria(unitTypeCriteria);
 		if (maxResults > 0) {
@@ -244,6 +248,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return customFieldUnitTypeNames;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria) {
 		Criteria criteria = buildGeneralUnitTypeCriteria(unitTypeCriteria);
 		List<UnitType> results = criteria.list();
@@ -276,6 +281,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return isUnique;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count) {
 		Criteria criteria = buildGeneralCustomFieldCritera(customFieldCriteria);
 		criteria.setFirstResult(first);
@@ -329,6 +335,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup){
 
 		Query q = getSession().createQuery("Select customField from CustomField customField " +
