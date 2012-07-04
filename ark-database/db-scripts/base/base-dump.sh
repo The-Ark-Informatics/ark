@@ -5,7 +5,7 @@ E_BADARGS=65
 
 if [ $# -ne $EXPECTED_ARGS ] 
 then
-  echo "Usage: `basename $0` {version} {databsae hostname} {databsae password}"
+  echo "Usage: `basename $0` {version} {databsae hostname} {database password}"
   exit $E_BADARGS
 fi
 
@@ -25,6 +25,7 @@ echo "CREATE DATABASE /*!32312 IF NOT EXISTS*/ pheno /*!40100 DEFAULT CHARACTER 
 echo "CREATE DATABASE /*!32312 IF NOT EXISTS*/ geno /*!40100 DEFAULT CHARACTER SET latin1 */;" >> $VERSION/ark-$VERSION.sql
 echo "CREATE DATABASE /*!32312 IF NOT EXISTS*/ lims /*!40100 DEFAULT CHARACTER SET latin1 */;" >> $VERSION/ark-$VERSION.sql
 echo "CREATE DATABASE /*!32312 IF NOT EXISTS*/ reporting /*!40100 DEFAULT CHARACTER SET latin1 */;" >> $VERSION/ark-$VERSION.sql
+echo "CREATE DATABASE /*!32312 IF NOT EXISTS*/ work-tracking /*!40100 DEFAULT CHARACTER SET latin1 */;" >> $VERSION/ark-$VERSION.sql
 echo "" >> $VERSION/ark-$VERSION.sql
 
 echo ""
@@ -59,10 +60,16 @@ echo 'USE lims;' >> $VERSION/ark-$VERSION.sql
 mysqldump --no-data -h $HOSTNAME -u arkadmin -p$PASSWORD lims | sed 's/AUTO_INCREMENT=[0-9]*\b//' >> $VERSION/ark-$VERSION.sql
 
 echo ""
-echo "Dumping Reporting table structures"
+echo "Reporting table structures"
 echo "" >> $VERSION/ark-$VERSION.sql
 echo 'USE reporting;' >> $VERSION/ark-$VERSION.sql
 mysqldump --no-data -h $HOSTNAME -u arkadmin -p$PASSWORD reporting | sed 's/AUTO_INCREMENT=[0-9]*\b//' >> $VERSION/ark-$VERSION.sql
+
+echo ""
+echo "Work-tracking (admin) table structures"
+echo "" >> $VERSION/ark-$VERSION.sql
+echo 'USE admin;' >> $VERSION/ark-$VERSION.sql
+mysqldump --no-data -h $HOSTNAME -u arkadmin -p$PASSWORD admin | sed 's/AUTO_INCREMENT=[0-9]*\b//' >> $VERSION/ark-$VERSION.sql
 
 echo "Exporting reference/lookup data"
 echo "==============================="
@@ -78,7 +85,7 @@ correspondence_mode_type correspondence_outcome_type correspondence_status_type 
 state delimiter_type domain_type email_account_type entity_type field_type file_format \
 gender_type marital_status person_contact_method phone_status phone_type \
 registration_status relationship study_comp_status study_status subject_status subjectuid_padchar \
-subjectuid_token title_type upload_type unit_type vital_status yes_no consent_option measurement_type \
+subjectuid_token title_type upload_type upload_status unit_type vital_status yes_no consent_option measurement_type \
 >> $VERSION/ark-$VERSION.sql
 
 echo "Pheno reference data"
@@ -107,6 +114,12 @@ echo "" >> $VERSION/ark-$VERSION.sql
 echo 'USE reporting;' >> $VERSION/ark-$VERSION.sql
 mysqldump -h $HOSTNAME -u arkadmin -p$PASSWORD --no-create-info --complete-insert reporting \
 report_output_format report_template >> $VERSION/ark-$VERSION.sql
+
+echo "Work-tracking reference data (NOTE: USING 'admin' as reference schema)"
+echo "" >> $VERSION/ark-$VERSION.sql
+echo 'USE admin;' >> $VERSION/ark-$VERSION.sql
+mysqldump -h $HOSTNAME -u arkadmin -p$PASSWORD --no-create-info --complete-insert admin \
+billable_item_status billable_item_type_status billing_type researcher_role researcher_status work_request_status >> $VERSION/ark-$VERSION.sql
 
 echo "/* Initialise the super user in the database */" >> $VERSION/ark-$VERSION.sql
 echo "" >> $VERSION/ark-$VERSION.sql
