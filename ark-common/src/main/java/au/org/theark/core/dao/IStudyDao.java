@@ -602,14 +602,14 @@ public interface IStudyDao {
 
 	public boolean customFieldHasData(CustomField customField);
 
-	public long countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids);
+	public long countNumberOfSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection<String> subjectUids);
 
 	//TODO evaluate performance vs return list of strings as needed for large comparisons
 	public List<String> getAllSubjectUIDs(Study study);
 
-	public List<String> getSubjectUIDsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids);
+	public List<String> getSubjectUIDsThatAlreadyExistWithTheseUIDs(Study study, Collection<String> subjectUids);
 	
-	public List<LinkSubjectStudy> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids);
+	public List<LinkSubjectStudy> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection<String> subjectUids);
 
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction);
 
@@ -622,4 +622,6 @@ public interface IStudyDao {
 	public UploadStatus getUploadStatusForUploaded();
 	
 	public UploadStatus getUploadStatusForAwaitingValidation();
+
+	public Collection<UploadType> getUploadTypesForSubject();
 }

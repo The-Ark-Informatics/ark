@@ -20,7 +20,10 @@ package au.org.theark.core.model.study.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
@@ -37,7 +40,8 @@ public class UploadType implements java.io.Serializable {
 	private Long					id;
 	private String					name;
 	private String					description;
-
+	private ArkModule				arkModule;
+	
 	public UploadType() {
 	}
 
@@ -77,4 +81,15 @@ public class UploadType implements java.io.Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)  // or eager?
+	@JoinColumn(name = "ARK_MODULE_ID", nullable = false)
+	public ArkModule getArkModule() {
+		return arkModule;
+	}
+
+	public void setArkModule(ArkModule arkModule) {
+		this.arkModule = arkModule;
+	}
+
 }
