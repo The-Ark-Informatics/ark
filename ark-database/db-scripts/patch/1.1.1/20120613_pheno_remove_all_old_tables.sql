@@ -1,5 +1,5 @@
 -- dropping a bunch of unused tables from pheno
-
+use pheno;
 SET foreign_key_checks = 0;
 drop table pheno.collection;
 drop table pheno.collection_upload;
