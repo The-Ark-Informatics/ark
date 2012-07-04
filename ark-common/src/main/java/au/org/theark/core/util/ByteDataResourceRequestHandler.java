@@ -31,6 +31,8 @@ import org.apache.wicket.util.file.Files;
 import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+
 public class ByteDataResourceRequestHandler extends ByteArrayResource implements IRequestHandler {
 
 	private static final long	serialVersionUID	= 1L;
@@ -70,7 +72,7 @@ public class ByteDataResourceRequestHandler extends ByteArrayResource implements
 		// Write out data as a file in temporary directory
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		final java.io.File file = new File(tempDir, fileName);
-		
+
 		FileOutputStream fos = null;
 		try {
 			fos = new FileOutputStream(file);
@@ -90,15 +92,15 @@ public class ByteDataResourceRequestHandler extends ByteArrayResource implements
 				e.printStackTrace();
 			}
 		}
-		
-		// Send file back as attachment
+
+		// Send file back as attachment, and remove after download
 		IResourceStream resourceStream = new FileResourceStream(new org.apache.wicket.util.file.File(file));
-		ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(resourceStream);
-		resourceStreamRequestHandler.setFileName(fileName);
-		resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
-		requestCycle.scheduleRequestHandlerAfterCurrent(resourceStreamRequestHandler);
-		
-		// Remove downloaded file
-		Files.remove(file);
+		requestCycle.scheduleRequestHandlerAfterCurrent(new ResourceStreamRequestHandler(resourceStream) {
+			@Override
+			public void respond(IRequestCycle requestCycle) {
+				super.respond(requestCycle);
+				Files.remove(file);
+			}
+		}.setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT));
 	}
 }
