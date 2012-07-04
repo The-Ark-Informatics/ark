@@ -9,7 +9,7 @@
 					<wicket:message	key="upload.id">Upload ID</wicket:message>
 				</label>
 			</th>
-			<th width="15%">
+			<th width="20%">
 				<label for="col2">
 					<wicket:message	key="upload.filename">Name</wicket:message>
 				</label>
@@ -37,7 +37,9 @@
 			<th width="20%">
 				<input wicket:id="downloadTemplate" type="button" value="Download Template" />
 			</th>
-			<th width="2%">&nbsp;</th>
+			<th width="20%">
+				<wicket:message	key="upload.uploadStatusName">Upload Status</wicket:message>				
+			</th>
 			<th width="2%">&nbsp;</th>
 		</tr>
 		<!--  The Data Result Set -->
@@ -46,7 +48,7 @@
 			<td width="5%">
 				<span wicket:id="upload.id">ID</span>&nbsp;
 			</td>
-			<td width="15%">
+			<td width="20%">
 			  	<span wicket:id="upload.filename">Filename</span>
 			</td>
 			<td width="5%">
@@ -61,11 +63,12 @@
 			<td width="5%">
 				<span wicket:id="upload.finishTime">Finish Time</span>
 			</td>
-			<td width="10%">
+			<td width="20%">
 			  	<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />&nbsp;
-			</td>
-			<td width="10%">
 				<input wicket:id="upload.uploadReport" type="submit" wicket:message="value:button.downloadReport" />&nbsp;
+			</td>
+			<td width="20%">
+				<span wicket:id="upload.uploadStatus.name">Upload Status</span>
 			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
