@@ -431,6 +431,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		return getArkRolePermission(null, userRole, null);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Collection<ArkModuleRole> getArkModuleAndLinkedRoles() {
 		Collection<ArkModuleRole> arkModuleList = new ArrayList<ArkModuleRole>();
 		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);

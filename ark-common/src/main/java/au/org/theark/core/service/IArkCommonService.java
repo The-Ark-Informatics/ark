@@ -586,7 +586,10 @@ public interface IArkCommonService<T> {
 	public UploadType getCustomFieldDataUploadType();
 	
 	public Collection<DelimiterType> getDelimiterTypes();
+	
 	public Collection<UploadType> getUploadTypes();
+	
+	public Collection<UploadType> getUploadTypesForSubject();
 
 	public List<Upload> searchUploads(Upload uploadCriteria);
 
@@ -632,7 +635,7 @@ public interface IArkCommonService<T> {
 	public long getCountOfSubjects(Study study);
 
 //	public long countNumberOfUniqueSubjects(Study study, List subjects);
-	public long countNumberOfUniqueSubjectsWithTheseUIDs(Study study, List subjectUIDs);
+	public long countNumberOfUniqueSubjectsWithTheseUIDs(Study study, List<String> subjectUIDs);
 	
 	public BiospecimenUidTemplate getBiospecimenUidTemplate(Study study);
 	
@@ -681,15 +684,15 @@ public interface IArkCommonService<T> {
 	
 	public boolean customFieldHasData(CustomField customField);
 
-	public List<String> getUniqueSubjectUIDsWithTheseUIDs(Study study, Collection subjectUIDs);
+	public List<String> getUniqueSubjectUIDsWithTheseUIDs(Study study, Collection<String> subjectUIDs);
 
-	public List<LinkSubjectStudy> getUniqueSubjectsWithTheseUIDs(Study study, Collection subjectUIDs);
+	public List<LinkSubjectStudy> getUniqueSubjectsWithTheseUIDs(Study study, Collection<String> subjectUIDs);
 	
 	public List<String> getAllSubjectUIDs(Study study);
 
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction);
 
-	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded);
+	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List<String> subjectUIDsToBeIncluded);
 
 	public Payload createPayload(byte[] bytes);
 
