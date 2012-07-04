@@ -23,23 +23,11 @@ ALTER TABLE `study`.`upload` ADD COLUMN `STATUS_ID` INT(11) NOT NULL  AFTER `PAY
 , ADD INDEX `fk_upload_status` (`STATUS_ID` ASC);
 
 
-
-insert upload_status(id, name, short_message, long_message)
-			values(0, 'STATUS_NOT_UPDATED', 'Status not defined', 'Status not defined.  This may predate our adding status to uploads');
-
-insert upload_status(id, name, short_message, long_message)
-			values(1, 'ERROR_IN_VALIDATION', 'Error while validating', 'Error while validating data, prior to uploading');
-
-insert upload_status(id, name, short_message, long_message)
-			values(2, 'ERROR_ON_UPLOAD', 'Error while uploading data', 'While the file passed validation, an error occured during the upload.  Please contact your system administrator.');
-
-insert upload_status(id, name, short_message, long_message)
-			values(3, 'VALIDATED', 'Successfully validatied', 'Successfully validatied.  Awaiting upload into fields');
-
-insert upload_status(id, name, short_message, long_message)
-			values(4, 'UPLOADED', 'Successfully uploaded', 'Successfully updated into fields');
-
-insert upload_status(id, name, short_message, long_message)
-			values(5, 'AWAITING_VALIDATION', 'Awaiting Validation', 'Successfully uploaded to our server, awaiting validation and upload to fields');
-
+INSERT INTO `study`.`upload_status` (ID,NAME,SHORT_MESSAGE,LONG_MESSAGE) VALUES (-3,'ERROR_ON_DATA_IMPORT','Error while importing data','While the file passed validation, an error occured during the import of data.  Please contact your system administrator.');
+INSERT INTO `study`.`upload_status` (ID,NAME,SHORT_MESSAGE,LONG_MESSAGE) VALUES (-2,'ERROR_IN_DATA_VALIDATION','Error while validating data','Error while validating data, prior to uploading');
+INSERT INTO `study`.`upload_status` (ID,NAME,SHORT_MESSAGE,LONG_MESSAGE) VALUES (-1,'ERROR_IN_FILE_VALIDATION','Error validation file','Error in file format or header values.');
+INSERT INTO `study`.`upload_status` (ID,NAME,SHORT_MESSAGE,LONG_MESSAGE) VALUES (0,'STATUS_NOT_DEFINED','Status not defined','Status not defined.  This may predate our adding status to uploads');
+INSERT INTO `study`.`upload_status` (ID,NAME,SHORT_MESSAGE,LONG_MESSAGE) VALUES (1,'AWAITING_VALIDATION','Awaiting Validation','Successfully uploaded to our server, awaiting validation and upload to fields');
+INSERT INTO `study`.`upload_status` (ID,NAME,SHORT_MESSAGE,LONG_MESSAGE) VALUES (2,'VALIDATED','Successfully validated','Successfully validated.  Awaiting upload into fields');
+INSERT INTO `study`.`upload_status` (ID,NAME,SHORT_MESSAGE,LONG_MESSAGE) VALUES (3,'COMPLETED','Successfully completed','Successfully completed upload');
 
