@@ -368,6 +368,8 @@ public class Constants {
 	public static final String			UPLOADVO_UPLOAD_CHECKSUM										= "upload.checksum";
 	public static final String			UPLOADVO_UPLOAD_START_TIME										= "upload.startTime";
 	public static final String			UPLOADVO_UPLOAD_FINISH_TIME									= "upload.finishTime";
+
+	public static final String			UPLOADVO_UPLOAD_UPLOAD_STATUS_NAME								= "upload.uploadStatus.name";
 	public static final String			UPLOADVO_UPLOAD_UPLOAD_REPORT									= "upload.uploadReport";
 	public static final String			UPLOADVO_UPLOAD_STUDY											= "upload.study";
 

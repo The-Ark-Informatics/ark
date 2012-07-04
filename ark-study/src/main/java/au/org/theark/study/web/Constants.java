@@ -272,56 +272,57 @@ public class Constants {
 	// States
 
 	public static final String			SUBJECT_CONSENT_TO_ACTIVE_CONTACT						= "linkSubjectStudy.consentToActiveContact";
-	public static final String			SUBJECT_CONSENT_TO_USEDATA									= "linkSubjectStudy.consentToUseData";
+	public static final String			SUBJECT_CONSENT_TO_USEDATA								= "linkSubjectStudy.consentToUseData";
 	public static final String			SUBJECT_CONSENT_PASSIVE_DATA_GATHER						= "linkSubjectStudy.consentToPassiveDataGathering";
 	public static final String			SUBJECT_HEARD_ABOUT_STUDY_FROM							= "linkSubjectStudy.heardAboutStudy";
-	public static final String			SUBJECT_AUTO_GENERATED										= "Auto-generated";
-	public static final String			SUBJECTUID_EXAMPLE											= "AAA-000000001";
-	public static final String			BIOSPECIMENUID_EXAMPLE										= "AAA-000000001";
-	public static final String			BIOCOLLECTIONUID_EXAMPLE									= "AAA-000000001";
+	public static final String			SUBJECT_AUTO_GENERATED									= "Auto-generated";
+	public static final String			SUBJECTUID_EXAMPLE										= "AAA-000000001";
+	public static final String			BIOSPECIMENUID_EXAMPLE									= "AAA-000000001";
+	public static final String			BIOCOLLECTIONUID_EXAMPLE								= "AAA-000000001";
 
 	// UploadVO
-	public static final String			UPLOADVO_UPLOAD_ID											= "upload.id";
+	public static final String			UPLOADVO_UPLOAD_ID										= "upload.id";
 	public static final String			UPLOADVO_UPLOAD_COLLECTION_UPLOAD						= "upload.collectionUpload";
 	public static final String			UPLOADVO_UPLOAD_COLLECTION_UPLOAD_ID					= "upload.collectionUpload.id";
 	public static final String			UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION			= "upload.collectionUpload.collection";
-	public static final String			UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION_ID		= "upload.collectionUpload.collection.id";
-	public static final String			UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION_NAME	= "upload.collectionUpload.collection.name";
-	public static final String			UPLOADVO_UPLOAD_FILENAME									= "upload.filename";
+	public static final String			UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION_ID			= "upload.collectionUpload.collection.id";
+	public static final String			UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION_NAME		= "upload.collectionUpload.collection.name";
+	public static final String			UPLOADVO_UPLOAD_FILENAME								= "upload.filename";
 	public static final String			UPLOADVO_UPLOAD_FILE_FORMAT								= "upload.fileFormat";
 	public static final String			UPLOADVO_UPLOAD_FILE_FORMAT_ID							= "upload.fileFormat.id";
-	public static final String			UPLOADVO_UPLOAD_FILE_FORMAT_NAME							= "upload.fileFormat.name";
-	public static final String			UPLOADVO_UPLOAD_PAYLOAD										= "upload.payload";
+	public static final String			UPLOADVO_UPLOAD_FILE_FORMAT_NAME						= "upload.fileFormat.name";
+	public static final String			UPLOADVO_UPLOAD_PAYLOAD									= "upload.payload";
 	public static final String			UPLOADVO_UPLOAD_DELIMITER_TYPE							= "upload.delimiterType";
 	public static final String			UPLOADVO_UPLOAD_UPLOAD_TYPE								= "upload.uploadType";
-	public static final String			UPLOADVO_UPLOAD_USER											= "upload.user";
-	public static final String			UPLOADVO_UPLOAD_USER_ID										= "upload.userId";
+	public static final String			UPLOADVO_UPLOAD_USER									= "upload.user";
+	public static final String			UPLOADVO_UPLOAD_USER_ID									= "upload.userId";
 	public static final String			UPLOADVO_UPLOAD_INSERT_TIME								= "upload.insertTime";
 	public static final String			UPLOADVO_UPLOAD_UPDATE_USER								= "upload.user";
 	public static final String			UPLOADVO_UPLOAD_UPDATE_USER_ID							= "upload.user.id";
 	public static final String			UPLOADVO_UPLOAD_UPDATE_TIME								= "upload.updateTime";
-	public static final String			UPLOADVO_UPLOAD_CHECKSUM									= "upload.checksum";
-	public static final String			UPLOADVO_UPLOAD_START_TIME									= "upload.startTime";
+	public static final String			UPLOADVO_UPLOAD_CHECKSUM								= "upload.checksum";
+	public static final String			UPLOADVO_UPLOAD_START_TIME								= "upload.startTime";
 	public static final String			UPLOADVO_UPLOAD_FINISH_TIME								= "upload.finishTime";
-	public static final String			UPLOADVO_UPLOAD_UPLOAD_REPORT								= "upload.uploadReport";
+	public static final String			UPLOADVO_UPLOAD_UPLOAD_STATUS_NAME						= "upload.uploadStatus.name";
+	public static final String			UPLOADVO_UPLOAD_UPLOAD_REPORT							= "upload.uploadReport";
 
-	public static final String			FILE_FORMAT														= "fileFormat";
-	public static final String			FILE_FORMAT_ID													= "id";
-	public static final String			FILE_FORMAT_NAME												= "name";
+	public static final String			FILE_FORMAT												= "fileFormat";
+	public static final String			FILE_FORMAT_ID											= "id";
+	public static final String			FILE_FORMAT_NAME										= "name";
 
-	public static final String			UPLOAD															= "upload";
-	public static final String			UPLOAD_ID														= "id";
-	public static final String			UPLOAD_STUDY													= "study";
-	public static final String			UPLOAD_FILE_FORMAT											= "fileFormat";
-	public static final String			UPLOAD_DELIMITER_TYPE										= "delimiterType";
-	public static final String			UPLOAD_FILENAME												= "filename";
-	public static final String			UPLOAD_PAYLOAD													= "payload";
-	public static final String			UPLOAD_USER														= "user";
-	public static final String			UPLOAD_CHECKSUM												= "checksum";
-	public static final String			DELIMITER_TYPE_ID												= "id";
-	public static final String			UPLOAD_TYPE_ID												= "id";
-	public static final String			DELIMITER_TYPE_NAME											= "name";
-	public static final String			UPLOAD_TYPE_NAME												= "name";
+	public static final String			UPLOAD													= "upload";
+	public static final String			UPLOAD_ID												= "id";
+	public static final String			UPLOAD_STUDY											= "study";
+	public static final String			UPLOAD_FILE_FORMAT										= "fileFormat";
+	public static final String			UPLOAD_DELIMITER_TYPE									= "delimiterType";
+	public static final String			UPLOAD_FILENAME											= "filename";
+	public static final String			UPLOAD_PAYLOAD											= "payload";
+	public static final String			UPLOAD_USER												= "user";
+	public static final String			UPLOAD_CHECKSUM											= "checksum";
+	public static final String			DELIMITER_TYPE_ID										= "id";
+	public static final String			UPLOAD_TYPE_ID											= "id";
+	public static final String			DELIMITER_TYPE_NAME										= "name";
+	public static final String			UPLOAD_TYPE_NAME										= "name";
 
 	// Exception messages
 	public static final String			IO_EXCEPTION													= "IOException: Input error. ";
