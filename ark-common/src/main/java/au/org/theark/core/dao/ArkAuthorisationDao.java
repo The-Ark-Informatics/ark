@@ -118,6 +118,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * 
 	 * @return List<ArkRole>
 	 */
+	@SuppressWarnings("unchecked")
 	public List<ArkRole> getArkRoles() {
 
 		Criteria criteria = getSession().createCriteria(ArkRole.class);
@@ -175,6 +176,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		return isAdminType;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<ArkUserRole> getArkSuperAdministratorList() throws EntityNotFoundException {
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		ArkRole arkRole = getArkRoleByName(RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
@@ -232,6 +234,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @return Collection<String>
 	 * @throws EntityNotFoundException
 	 */
+	@SuppressWarnings("unchecked")
 	public Collection<String> getUserAdminRoles(String ldapUserName) throws EntityNotFoundException {
 
 		ArkUser arkUser = getArkUser(ldapUserName);
@@ -256,7 +259,8 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		session.close();
 		return userRoles;
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	public List<ArkUserRole> getArkUserAdminRoles(String ldapUserName) throws EntityNotFoundException {
 		ArkUser arkUser = getArkUser(ldapUserName);
 		StatelessSession session = getStatelessSession();
@@ -294,6 +298,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @throws EntityNotFoundException
 	 */
 
+	@SuppressWarnings("unchecked")
 	public String getUserRole(String ldapUserName, ArkFunction arkFunction, ArkModule arkModule, Study study) throws EntityNotFoundException {
 		String roleName = "";
 
@@ -368,6 +373,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		return arkModule;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Collection<String> getArkRolePermission(ArkFunction arkFunction, String userRole, ArkModule arkModule) throws EntityNotFoundException {
 
 		Collection<String> stringPermissions = new ArrayList<String>();
@@ -400,6 +406,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public Collection<String> getArkPermission() {
 		Collection<String> arkStringPermissions = new ArrayList<String>();
 		Criteria criteria = getSession().createCriteria(ArkPermission.class);
@@ -410,6 +417,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		return arkStringPermissions;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Collection<Class<T>> getEntityList(Class aClass) {
 		Collection<Class<T>> arkModuleList = new ArrayList<Class<T>>();
 		Criteria criteria = getSession().createCriteria(aClass);
@@ -470,6 +478,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @param study
 	 * @return Collection<ArkModuleVO> Minus the Reporting Module
 	 */
+	@SuppressWarnings("unchecked")
 	public Collection<ArkModuleVO> getArkModulesAndRolesLinkedToStudy(Study study) {
 
 		ArkModule arkModuleToExclude = getArkModuleByName(Constants.ARK_MODULE_REPORTING);
@@ -499,6 +508,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		return arkModuleVOList;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Collection<ArkModule> getArkModulesLinkedWithStudy(Study study) {
 		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class);
 		criteria.add(Restrictions.eq("study", study));
@@ -512,6 +522,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		return arkModuleList;
 	}
 
+	@SuppressWarnings("unchecked")
 	public ArrayList<ArkRole> getArkRoleLinkedToModule(ArkModule arkModule) {
 		Collection<ArkModuleRole> arkModuleList = new ArrayList<ArkModuleRole>();
 		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);
@@ -528,6 +539,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		return moduleArkRolesList;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<ArkUserRole> getArkUserRoleList(Study study, ArkUser arkUser) {
 
 //		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class, "linkStudyArkModule");
@@ -685,6 +697,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @param arkModule
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public List<ArkUserRole> getArkUserLinkedModule(Study study, ArkModule arkModule) {
 		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>();
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
@@ -701,6 +714,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @param study
 	 * @return List<LinkStudyArkModule>
 	 */
+	@SuppressWarnings("unchecked")
 	public List<LinkStudyArkModule> getLinkStudyArkModulesList(Study study) {
 		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class);
 		criteria.add(Restrictions.eq("study", study));
@@ -877,12 +891,14 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @param searchStudy
 	 * @return List<Study>
 	 */
+	@SuppressWarnings("unchecked")
 	private List<Study> getAllStudiesForSuperAdmin(Study searchStudy) {
 		Criteria criteria = getSession().createCriteria(Study.class);
 		applyStudySearchCriteria(searchStudy, criteria, true);
 		return criteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Study> getStudyListForUser(ArkUserVO arkUserVo) {
 		List<Study> studyList = new ArrayList<Study>(0);
 		Study searchStudy = arkUserVo.getStudy();
@@ -912,6 +928,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule) {
 		List<Study> studyList = new ArrayList<Study>(0);
 		Study searchStudy = arkUserVo.getStudy();
@@ -1026,6 +1043,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		return hasModuleAccess;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<ArkModule> getArkModuleListByArkUser(ArkUser arkUser) {
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		ArkModule arkModule = null;
@@ -1072,6 +1090,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		return flag;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<ArkUser> getArkUserListByStudy(Study study) {
 		List<ArkUser> arkUserList = new ArrayList<ArkUser>(0);
 		
@@ -1084,28 +1103,30 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		
 		return arkUserList;
 	}
-	
-	public List<Study> getParentStudyList() {
-			List<Study> studyList = new ArrayList<Study>(0);
-			
-			// Restrict on study criteria (by default, NOT 'Archive' status)
-			Criteria studyCriteria = getSession().createCriteria(Study.class);
-			StudyStatus status;
-			try {
-				status = getStudyStatus("Archive");
-				studyCriteria.add(Restrictions.ne("studyStatus", status));
-			}
-			catch (StatusNotAvailableException e) {
-				log.error(e.getMessage());
-			}
-			
-			// Can only select studies with null parent, or where the study is a parent
-			studyCriteria.add(Restrictions.disjunction().add(Restrictions.isNull("parentStudy")).add(Restrictions.eqProperty("parentStudy.id", "id")));
-			studyCriteria.addOrder(Order.asc("name"));
-			studyList = studyCriteria.list();
-			return studyList;
-		}
 
+	@SuppressWarnings("unchecked")
+	public List<Study> getParentStudyList() {
+		List<Study> studyList = new ArrayList<Study>(0);
+		
+		// Restrict on study criteria (by default, NOT 'Archive' status)
+		Criteria studyCriteria = getSession().createCriteria(Study.class);
+		StudyStatus status;
+		try {
+			status = getStudyStatus("Archive");
+			studyCriteria.add(Restrictions.ne("studyStatus", status));
+		}
+		catch (StatusNotAvailableException e) {
+			log.error(e.getMessage());
+		}
+		
+		// Can only select studies with null parent, or where the study is a parent
+		studyCriteria.add(Restrictions.disjunction().add(Restrictions.isNull("parentStudy")).add(Restrictions.eqProperty("parentStudy.id", "id")));
+		studyCriteria.addOrder(Order.asc("name"));
+		studyList = studyCriteria.list();
+		return studyList;
+	}
+
+	@SuppressWarnings("unchecked")
 	public List<Study> getAssignedChildStudyListForUser(ArkUserVO arkUserVo) {
 		List<Study> studyList = new ArrayList<Study>(0);
 		
