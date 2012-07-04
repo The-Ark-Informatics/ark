@@ -4,7 +4,7 @@
 	<groupId>au.org.theark</groupId>
 	<artifactId>ark-container</artifactId>
 	<packaging>war</packaging>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<name>Ark Container</name>
 	<description>The top level container web application that will contain other sub-modules.</description>
 	<organization>
