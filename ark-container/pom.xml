@@ -14,7 +14,7 @@
 	<url>http://the-ark.org.au/</url>
 	<issueManagement>
 		<system>JIRA</system>
-		<url>http://projects.the-ark.org.au/secure/Dashboard.jspa</url>
+		<url>https://the-ark.atlassian.net/secure/Dashboard.jspa</url>
 	</issueManagement>
 	<licenses>
 		<license>
