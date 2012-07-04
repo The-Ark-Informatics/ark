@@ -1,4 +1,4 @@
--- dropping a bunch of unused tables from pheno
+-- dropping a bunch of unused tables/views from pheno
 use pheno;
 SET foreign_key_checks = 0;
 drop table pheno.collection;
@@ -13,9 +13,11 @@ drop table pheno.field_group;
 drop table pheno.field_group_upload;
 drop table pheno.field_summary;
 drop table pheno.field_type;
-drop table pheno.field_upload;
-drop table pheno.field_upload_v;
 drop table pheno.file_format;
+drop table pheno.field_upload;
+drop view pheno.field_upload_v;
+drop view pheno.field_summary;
+
 SET foreign_key_checks = 1;
 
 -- new self explanatory status
