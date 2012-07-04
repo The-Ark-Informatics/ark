@@ -1333,13 +1333,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	public UploadStatus getUploadStatusForUploaded(){
 		Criteria criteria = getSession().createCriteria(UploadStatus.class);
-		criteria.add(Restrictions.eq("name", "UPLOADED"));
+		criteria.add(Restrictions.eq("name", "COMPLETED"));
 		return (UploadStatus)criteria.uniqueResult();
 	}
-	
+	//TODO Constants?
 	public UploadStatus getUploadStatusForUndefined(){
 		Criteria criteria = getSession().createCriteria(UploadStatus.class);
-		criteria.add(Restrictions.eq("name", "STATUS_NOT_UPDATED"));
+		criteria.add(Restrictions.eq("name", "STATUS_NOT_DEFINED"));
 		return (UploadStatus)criteria.uniqueResult();
 	}
 
@@ -1348,7 +1348,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("name", "AWAITING_VALIDATION"));
 		return (UploadStatus)criteria.uniqueResult();		
 	}
+/*
+	public UploadStatus getUploadStatusForValidated(){
+		Criteria criteria = getSession().createCriteria(UploadStatus.class);
+		criteria.add(Restrictions.eq("name", "AWAITING_VALIDATION"));
+		return (UploadStatus)criteria.uniqueResult();		
+	}
+*/
+	public UploadStatus getUploadStatusForValidated(){
+		Criteria criteria = getSession().createCriteria(UploadStatus.class);
+		criteria.add(Restrictions.eq("name", "VALIDATED"));
+		return (UploadStatus)criteria.uniqueResult();		
+	}
 	
+	@SuppressWarnings("unchecked")
 	public Collection<UploadType> getUploadTypesForSubject(){
 		Criteria criteria = getSession().createCriteria(UploadType.class);
 		criteria.add(Restrictions.eq("arkModule", getArkModuleForSubject()));

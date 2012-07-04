@@ -48,6 +48,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 
 	private static final long	serialVersionUID	= 1L;
 
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
 
@@ -97,6 +98,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 
 	// Reset button implemented in AbstractSearchForm
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
