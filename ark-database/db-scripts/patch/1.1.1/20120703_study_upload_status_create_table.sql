@@ -6,6 +6,7 @@ CREATE  TABLE `study`.`upload_status` (
   `LONG_MESSAGE` VARCHAR(256) NOT NULL COMMENT 'evenutally messages may all be brought out to allow i18n (internationalization)' ,
   PRIMARY KEY (`ID`) ,
   UNIQUE INDEX `name_UNIQUE` (`NAME` ASC) );
+ALTER TABLE `study`.`upload_status` ENGINE = InnoDB ;
 
 ALTER TABLE `study`.`upload` DROP COLUMN `STATUS`;
 
