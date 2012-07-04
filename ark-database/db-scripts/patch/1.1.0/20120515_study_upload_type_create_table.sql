@@ -11,7 +11,7 @@ ALTER TABLE `study`.`upload` ADD COLUMN `UPLOAD_TYPE_ID` INT(11) NULL  AFTER `ST
 ALTER TABLE `study`.`upload` 
   ADD CONSTRAINT `fk_upload_upload_type`
   FOREIGN KEY (`UPLOAD_TYPE_ID` )
-  REFERENCES `study`.`upload_type` (`id` )
+  REFERENCES `study`.`upload_type` (`ID` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
 , ADD INDEX `fk_upload_upload_type` (`UPLOAD_TYPE_ID` ASC) ;
