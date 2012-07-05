@@ -59,22 +59,12 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>		iArkCommonService;
 
-	//TODO analyze this field, is this bean injection used by wicket possibly?
-	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService				iPhenotypicService;
-
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt")  {
-
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
-
 		@Override
 		protected void onError(AjaxRequestTarget target, Form<?> form) {
 			this.error("Unexpected Error: Download request could not be processed");
 		}
-		
 	};
 
 	public FieldUploadStep2(String id) {

@@ -21,14 +21,13 @@ package au.org.theark.phenotypic.util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -67,10 +66,10 @@ public class OldPhenoDataImportValidator {
 	private HashSet<ArkGridCell>		warningCells				= new HashSet<ArkGridCell>();
 	private HashSet<ArkGridCell>		errorCells					= new HashSet<ArkGridCell>();
 	private String							fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;	// default
-	private int								row							= 1;
+//	private int								row							= 1;
 	private ArkFunction 					arkFunction;
 	private CustomFieldGroup			questionnaire;
-	private List<CustomFieldDisplay>	cfdHeaderList;
+//	private List<CustomFieldDisplay>	cfdHeaderList;
 
 	/**
 	 * PhenotypicValidator constructor

@@ -57,10 +57,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
 
-//	private int										mode;
-
 	private TextField<String>					uploadIdTxtFld;
-//	private TextField<String>					uploadFilenameTxtFld;
 	private DropDownChoice<FileFormat>		fileFormatDdc;
 	private FileUploadField						fileUploadField;
 	// private UploadProgressBar uploadProgressBar;
@@ -90,11 +87,6 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		// Set up field on form here
 		uploadIdTxtFld = new TextField<String>(Constants.UPLOADVO_UPLOAD_ID);
 		// uploadFilenameTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILENAME);
-
-		// progress bar for upload
-		// uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleUploadForm);
-
-		// fileUpload for payload
 		fileUploadField = new FileUploadField(Constants.UPLOADVO_UPLOAD_FILENAME);
 		fileUploadField.add(new ArkDefaultFormFocusBehavior());
 

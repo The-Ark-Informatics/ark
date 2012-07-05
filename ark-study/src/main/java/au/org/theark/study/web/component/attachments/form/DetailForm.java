@@ -38,7 +38,6 @@ import org.apache.wicket.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.dao.LobUtil;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -67,9 +66,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
-
-	@SpringBean(name = "lobUtil")
-	private LobUtil			util;
 	
 	private TextField<String>				subjectFileIdTxtFld;
 	private FileUploadField					fileSubjectFileField;
