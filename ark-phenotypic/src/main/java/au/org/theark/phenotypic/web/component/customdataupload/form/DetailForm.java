@@ -52,14 +52,10 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
 
-	// REMOVED BY TRAV private int mode;
-
 	private TextField<String>					uploadIdTxtFld;
-//	private TextField<String> uploadFilenameTxtFld;
-	private DropDownChoice<FileFormat>		fileFormatDdc;
+	private DropDownChoice<FileFormat>			fileFormatDdc;
 	private FileUploadField						fileUploadField;
-	// private UploadProgressBar uploadProgressBar;
-	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
+	private DropDownChoice<DelimiterType>		delimiterTypeDdc;
 	@SuppressWarnings("unused")
 	private ArkFunction							arkFunction;
 
@@ -79,9 +75,9 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_ID);
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
 
-		java.util.Collection<String> uploadTypeCollection = iArkCommonService.getUploadTypes();
+	/*	java.util.Collection<String> uploadTypeCollection = iArkCommonService.getUploadTypes();
 		ChoiceRenderer uploadTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_ID);
-		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
+		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);*/
 	}
 
 	public void initialiseDetailForm() {
@@ -90,10 +86,6 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 
 		// Set up field on form here
 		uploadIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_ID);
-//		uploadFilenameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME);
-
-		// progress bar for upload
-		// uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleUploadForm);
 
 		// fileUpload for payload
 		fileUploadField = new FileUploadField(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME);
