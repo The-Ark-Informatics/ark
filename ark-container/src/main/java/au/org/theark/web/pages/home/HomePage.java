@@ -49,6 +49,7 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
 import au.org.theark.web.pages.login.LoginPage;
+import au.org.theark.worktracking.web.menu.WorkTrackingTabProviderImpl;
 
 /**
  * <p>
@@ -224,7 +225,18 @@ public class HomePage extends BasePage {
 						moduleTabsList.add(tab);
 					}
 				}
+				
+				if(arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_WORKTRACKING)){
+					//  Work
+					WorkTrackingTabProviderImpl workTrackingTabProvider=new WorkTrackingTabProviderImpl(arkModule.getName());
+					List<ITab> workTabList = workTrackingTabProvider.buildTabs();
+					for (ITab tab : workTabList) {
+						moduleTabsList.add(tab);
+					}
+				}
 			}
+			
+			
 		}
 		catch (EntityNotFoundException e) {
 			log.error("ArkUser [" + ldapUserName + "] was not found!");
