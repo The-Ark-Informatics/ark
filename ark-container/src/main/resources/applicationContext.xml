@@ -131,6 +131,7 @@
 				<!-- <value>au.org.theark.registry.model.entity</value>-->
 				<value>au.org.theark.core.model.lims.entity</value>
 				<value>au.org.theark.core.model.audit.entity</value>
+				<value>au.org.theark.core.model.worktracking.entity</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
