@@ -1,0 +1,355 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailsForm">
+		<div class="detailsPanelBorder">
+		  <div wicket:id="detailFormContainer">
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			<!-- Row 1 Study ID and Name-->
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="id">
+						<wicket:message key="work.researcher.id">Researcher Id:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<input wicket:id="researcher.id" type="text" />
+				</div>
+			</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="institute"><wicket:message	key="work.researcher.institute">Institute:</wicket:message></label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<input wicket:id="researcher.institute" type="text" /> 
+				</div>
+			</div>
+			
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="firstName">
+						<wicket:message key="work.researcher.firstname">First Name:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<input wicket:id="researcher.firstName" type="text" /> 
+				</div>
+			</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="lastName"><wicket:message	key="work.researcher.lastname">Last Name:</wicket:message></label> 
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+					<input wicket:id="researcher.lastName" type="text"/> 
+				</div>
+			</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+					<div class="label">
+						<label for="role">
+							<wicket:message key="work.researcher.role">
+								Role:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<select wicket:id="researcher.researcherRole">
+							<option>
+								Chief Investigator
+							</option>
+							<option>
+								Associate Investigator
+							</option>
+						</select>
+					</div>
+				</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="officePhone"><wicket:message	key="work.researcher.officephone">Office Phone:</wicket:message></label> 
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+					<input wicket:id="researcher.officePhone" type="text" size="13"/> 
+				</div>
+			</div>
+			<div class="detailPanelBreaker">&nbsp;</div>	
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+					<div class="label">
+						<label for="role">
+							<wicket:message key="work.researcher.status">
+								Status:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<select wicket:id="researcher.researcherStatus">
+							<option>
+								Available
+							</option>
+							<option>
+								EOI
+							</option>
+						</select>
+					</div>
+				</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="mobile"><wicket:message	key="work.researcher.mobile">Mobile:</wicket:message></label> 
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+					<input wicket:id="researcher.mobile" type="text" size="13"/> 
+				</div>
+			</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="address">
+						<wicket:message key="work.researcher.address">Address:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<textarea wicket:id="researcher.address" cols="25" maxLength="255"></textarea>
+				</div>
+			</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="email"><wicket:message	key="work.researcher.email">Email:</wicket:message></label> 
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+					<input wicket:id="researcher.email" type="text"/> 
+				</div>
+			</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="lastActiveDate">
+						<wicket:message key="work.researcher.lastactivedate">Last Active date:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<input wicket:id="researcher.lastActiveDate" type="text" size="9"/>
+				</div>
+			</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="email"><wicket:message	key="work.researcher.fax">Fax:</wicket:message></label> 
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+					<input wicket:id="researcher.fax" type="text"/> 
+				</div>
+			</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			<div class="fldLabel">
+				<div class="label">
+					<label for="comment">
+						<wicket:message key="work.researcher.comment">Comment:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					
+					<textarea wicket:id="researcher.comment" cols="25" maxLength="255"></textarea>
+				</div>
+			</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					&nbsp;
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+					&nbsp;
+				</div>
+			</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			
+			<div class="detailSectionBorder">
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="accountNumber">
+						<wicket:message key="work.researcher.accountnumber">Account Number:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<input wicket:id="researcher.accountNumber" type="text" /> 
+				</div>
+			</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="billingType"><wicket:message	key="work.researcher.billingtype">Billing Type:</wicket:message></label> 
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+					<select wicket:id="researcher.billingType">
+							<option>
+								Available
+							</option>
+							<option>
+								EOI
+							</option>
+						</select> 
+				</div>
+			</div>
+			<div class="detailPanelBreaker">&nbsp;</div>	
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="bank">
+						<wicket:message key="work.researcher.bank">Bank:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<input wicket:id="researcher.bank" type="text" /> 
+				</div>
+			</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="bsb"><wicket:message	key="work.researcher.bsb">BSB:</wicket:message></label> 
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+					 <input wicket:id="researcher.bsb" type="text" /> 
+				</div>
+			</div>
+			<div class="detailPanelBreaker">&nbsp;</div>	
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="accountname">
+						<wicket:message key="work.researcher.accoutname">Account Name:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<input wicket:id="researcher.accountName" type="text" /> 
+				</div>
+			</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					&nbsp; 
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+					 &nbsp; 
+				</div>
+			</div>
+			<div class="detailPanelBreaker">&nbsp;</div>	
+			
+			
+			
+			</div>
+				
+			</div>
+			
+			<!--  Row 2 Action Buttons -->
+			
+			<div wicket:id="editButtonContainer">
+				<div class="fldLabel">&nbsp;</div>
+				<div class="fldControl">&nbsp;</div>
+				<div class="panelMargin">&nbsp;</div>
+				<div class="actionButtons">&nbsp;
+					<div class="label">
+					  <input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
+					  <div class="panelMargin">&nbsp;</div>
+					  <input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />&nbsp;
+					  <div class="panelMargin">&nbsp;</div>
+					  <input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
+				  	</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</wicket:panel>

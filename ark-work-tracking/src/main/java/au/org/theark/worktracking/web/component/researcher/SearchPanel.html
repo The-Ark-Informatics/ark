@@ -1,0 +1,202 @@
+<wicket:panel>
+	&nbsp;
+	<div class="searchPanelContainer">
+		<form wicket:id="searchForm">
+			<div class="searchPanelContent">
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="id">
+							<wicket:message key="work.researcher.id">
+								Researcher Id:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<!--	this will change to ID -->
+						<input wicket:id="researcher.id"	type="text" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="firstName">
+							<wicket:message key="work.researcher.firstname">
+								First Name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="researcher.firstName"	type="text" />
+					</div>
+				</div>
+
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="institute">
+							<wicket:message key="work.researcher.institute">
+								Institute:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="researcher.institute"	type="text" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="lastName">
+							<wicket:message key="work.researcher.lastname">
+								Last Name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="researcher.lastName"	type="text" />
+					</div>
+				</div>
+
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="lastActiveDate">
+							<wicket:message key="work.researcher.lastactivedate">
+								Last Active Date:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="researcher.lastActiveDate" type="text" maxLength="10" />
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="role">
+							<wicket:message key="work.researcher.role">
+								Role:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<select wicket:id="researcher.researcherRole">
+							<option>
+								Chief Investigator
+							</option>
+							<option>
+								Associate Investigator
+							</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+				
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="status">
+							<wicket:message key="work.researcher.status">
+								Status:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<select wicket:id="researcher.researcherStatus">
+							<option>
+								Active
+							</option>
+							<option>
+								Inactive
+							</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<!--	Defines the location for buttons -->
+				<div class="actionButtons">
+					<input wicket:id="search" type="submit" wicket:message="value:page.search" />
+					<input wicket:id="reset" type="submit" wicket:message="value:page.reset" />
+					<input wicket:id="new" type="submit" wicket:message="value:page.new" />
+				</div>
+
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+			</div>
+		</form>
+	</div>
+</wicket:panel>
