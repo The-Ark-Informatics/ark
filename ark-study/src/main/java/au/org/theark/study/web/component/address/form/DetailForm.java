@@ -175,6 +175,11 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		otherStateInvalidError = new Label("address.otherStateInvalidError", "");
 		otherStateInvalidError.setOutputMarkupPlaceholderTag(true);
 		otherStateInvalidError.add(new Behavior(){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -6756543741833275627L;
+
 			@Override
 			public void onComponentTag(Component component, ComponentTag tag) {
 				super.onComponentTag(component, tag);

@@ -275,6 +275,11 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 				//alert the user
 				otherStateInvalidError =new Label("address.otherStateInvalidError", "Previously uploaded value " + otherState.getModelObject() + " was invalid.");
 				otherStateInvalidError.add(new Behavior(){
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 7964297415151363039L;
+
 					@Override
 					public void onComponentTag(Component component, ComponentTag tag) {
 						super.onComponentTag(component, tag);

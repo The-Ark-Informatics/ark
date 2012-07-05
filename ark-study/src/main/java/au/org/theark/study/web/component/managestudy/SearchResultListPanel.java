@@ -51,7 +51,6 @@ import au.org.theark.core.vo.StudyCrudContainerVO;
 import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
-import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
 
@@ -59,10 +58,6 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
-
-	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService			studyService;
-
 
 	private static final long		serialVersionUID	= 1L;
 	private NonCachingImage			studyLogoImage;

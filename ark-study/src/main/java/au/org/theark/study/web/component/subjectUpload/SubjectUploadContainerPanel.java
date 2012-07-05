@@ -24,6 +24,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -45,7 +46,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 	// Panels
 	private SearchPanel							searchComponentPanel;
 	private SearchResultListPanel				searchResultPanel;
-	private DetailPanel							detailPanel;
+//	private DetailPanel							detailPanel;
 	private WizardPanel							wizardPanel;
 	private PageableListView<Upload>	listView;
 	private ContainerForm						containerForm;
@@ -109,9 +110,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO, arkFunction);
-		detailPanel.initialisePanel();
-		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
+		arkCrudContainerVO.getDetailPanelContainer().add(new EmptyPanel("detailPanel"));
 		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 

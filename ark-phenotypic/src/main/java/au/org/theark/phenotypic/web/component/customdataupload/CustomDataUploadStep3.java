@@ -192,6 +192,11 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 			target.add(form.getWizardButtonContainer());
 			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
 
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 8692319829915212732L;
+
 				@Override
 				protected void onError(AjaxRequestTarget target, Form<?> form) {
 					this.error("Unexpected Error: Download request could not be processed");
