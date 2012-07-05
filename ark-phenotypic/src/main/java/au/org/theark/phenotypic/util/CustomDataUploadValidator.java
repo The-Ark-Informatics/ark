@@ -584,7 +584,7 @@ public class CustomDataUploadValidator {
 		// Number field type
 		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 			try {
-				Double doubleFieldValue = Double.parseDouble(value);
+				Double.parseDouble(value);
 			}
 			catch (NumberFormatException nfe) {
 				errorMessages.add(fieldDataNotDefinedType(customField, value, subjectUID));
@@ -605,10 +605,9 @@ public class CustomDataUploadValidator {
 		// Date field type
 		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
 			try {//TODO : think about defining date format with the field, particularly after i18n and if datetime needed 
-				Date dateFieldValue = new Date();
 				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				dateFormat.setLenient(false);
-				dateFieldValue = dateFormat.parse(value);
+				dateFormat.parse(value);
 			}
 			catch (ParseException pe) {
 				errorMessages.add(fieldDataNotValidDate(customField, value, subjectUID));

@@ -31,9 +31,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Upload;
@@ -56,7 +53,7 @@ public class SearchResultListPanel extends Panel {
 	private IArkCommonService<Void>			iArkCommonService;
 	private static final long	serialVersionUID	= 6150100976180421479L;
 
-	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
+//	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
 
 	public SearchResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
