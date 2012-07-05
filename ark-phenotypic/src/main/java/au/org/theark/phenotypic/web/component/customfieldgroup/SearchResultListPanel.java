@@ -40,10 +40,11 @@ public class SearchResultListPanel extends Panel {
 
 
 	private static final long serialVersionUID = 1L;
+	@SuppressWarnings("unused")
 	private CompoundPropertyModel<CustomFieldGroupVO>					cpmModel;
 	private FeedbackPanel												feedbackPanel;
 	private ArkCrudContainerVO											arkCrudContainerVO;
-	private DataView<CustomFieldDisplay>								cfdDataView;
+//	private DataView<CustomFieldDisplay>								cfdDataView;
 	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>	cfdArkDataProvider;
 
 	/**
@@ -63,12 +64,10 @@ public class SearchResultListPanel extends Panel {
 	 * @param feedBackPanel
 	 */
 	public SearchResultListPanel(String id, CompoundPropertyModel<CustomFieldGroupVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
-
 		super(id);
 		this.cpmModel = cpModel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
-
 	}
 
 	public DataView<CustomFieldGroup> buildDataView(ArkDataProvider2<CustomFieldGroup, CustomFieldGroup> provider) {
@@ -117,6 +116,7 @@ public class SearchResultListPanel extends Panel {
 		return dataView;
 	}
 
+	@SuppressWarnings("unchecked")
 	public WebMarkupContainer buildLink(final Item<CustomFieldGroup> item) {
 
 		WebMarkupContainer linkWmc = new WebMarkupContainer("customfieldGroupLinkWMC", item.getModel());
@@ -148,7 +148,7 @@ public class SearchResultListPanel extends Panel {
 				newModel.getObject().setSelectedCustomFields(selectedList);
 				newModel.getObject().setCustomFieldGroup(cfg);
 
-				// Data providor to paginate a list of CustomFieldDisplays linked to the CustomFieldGroup
+				// Data provider to paginate a list of CustomFieldDisplays linked to the CustomFieldGroup
 				cfdArkDataProvider = new ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>() {
 
 					private static final long serialVersionUID = 1L;
