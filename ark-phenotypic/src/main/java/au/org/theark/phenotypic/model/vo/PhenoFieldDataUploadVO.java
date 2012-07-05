@@ -6,7 +6,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.vo.UploadVO;
 
-public class PhenoFieldDataUploadVO extends UploadVO {
+public class PhenoFieldDataUploadVO extends UploadVO {/*
 
 	private static final long	serialVersionUID	= -3761087990900803427L;
 
@@ -63,6 +63,6 @@ public class PhenoFieldDataUploadVO extends UploadVO {
 
 	public void setUploadType(String uploadType) {
 		this.uploadType = uploadType;
-	}
+	}*/
 
 }
