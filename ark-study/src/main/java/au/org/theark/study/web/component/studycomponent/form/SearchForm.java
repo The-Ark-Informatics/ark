@@ -49,7 +49,7 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 	private TextField<String>				studyCompIdTxtFld;
 	private TextField<String>				compNameTxtFld;
 
-	private TextArea<String>				descriptionTxtArea;
+//	private TextArea<String>				descriptionTxtArea;
 	private TextArea<String>				keywordTxtArea;
 	private PageableListView<StudyComp>	listView;
 
@@ -87,7 +87,7 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 
 		studyCompIdTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_ID);
 		compNameTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_NAME);
-		descriptionTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_DESCRIPTION);
+	//	descriptionTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_DESCRIPTION);
 		keywordTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_KEYWORD);
 	}
 
