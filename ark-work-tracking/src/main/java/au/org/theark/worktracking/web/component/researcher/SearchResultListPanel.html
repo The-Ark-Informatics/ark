@@ -1,0 +1,65 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			<th width="5%">
+				<label for="id">
+					<wicket:message	key="work.researcher.id">ID:</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="studyCompName">
+					<wicket:message	key="work.researcher.institute">Institute:</wicket:message>
+				</label>
+			</th>
+			<th width="25%">
+				<label for="studyCompDescription">
+					<wicket:message	key="work.researcher.fullname">Full Name:</wicket:message>
+				</label>
+			</th>
+			<th width="20%">
+				<label for="studyCompKeyword">
+					<wicket:message	key="work.researcher.lastactivedate">Last Active Date:</wicket:message>
+				</label>
+			</th>
+			<th width="20%">
+				<label for="studyCompKeyword">
+					<wicket:message	key="work.researcher.role">Role:</wicket:message>
+				</label>
+			</th>
+			<th width="2%">&nbsp;</th>			
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="researcherList">
+			<td width="2%">&nbsp;</td>
+			<td width="5%">
+				<span wicket:id="researcher.id">100</span>
+			</td>
+			<td width="15%">
+				<span wicket:id="researcher.institute">Description</span>
+			</td>
+			<td width="25%">
+			  <a href="#"wicket:id="researcher.fullName">
+			  	<span wicket:id="nameLbl">Name</span>
+			  </a>
+			</td>
+			<td width="20%">
+				<span wicket:id="researcher.lastActiveDate">Active Date</span>
+			</td>
+			<td width="20%">
+				<span wicket:id="researcher.researcherRole">Role name</span>
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tfoot>
+			<tr>
+				<td width="2%">&nbsp;</td>
+				<td colspan="4"><span wicket:id="navigator" class="a"></span></td>
+				<td width="2%">&nbsp;</td>
+			</tr>
+		</tfoot>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>
