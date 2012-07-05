@@ -28,5 +28,4 @@ public class PhenoFieldUploadVO extends UploadVO {
 	public File getTempFile() {
 		return tempFile;
 	}
-	
 }
