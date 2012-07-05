@@ -79,5 +79,6 @@ public class ResearcherRole implements Serializable {
 	public void setResearchers(Set<Researcher> researchers) {
 		this.researchers = researchers;
 	}
+	
 
 }
