@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -57,7 +56,6 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldGroupVO;
@@ -67,8 +65,6 @@ import au.org.theark.core.vo.PhenoDataCollectionVO;
 @Repository("phenotypicDao")
 public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao {
 	static Logger		log	= LoggerFactory.getLogger(PhenotypicDao.class);
-	private Subject	currentUser;
-	private Date		dateNow;
 
 	private IArkCommonService<Void>	iArkCommonService;
 	@Autowired
@@ -600,7 +596,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Session session = getSession();
 
 		//currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
+		Date dateNow = new Date(System.currentTimeMillis());
 		//phenoUpload.setInsertTime(dateNow);
 		//phenoUpload.setUserId(currentUser.getPrincipal().toString());
 
