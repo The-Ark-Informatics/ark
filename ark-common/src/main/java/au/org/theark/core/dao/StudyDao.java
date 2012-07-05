@@ -25,10 +25,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -93,12 +89,12 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
@@ -121,6 +117,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * 
 	 * @see au.org.theark.core.dao.IStudyDao#getStudy(au.org.theark.core.model.study.entity.Study)
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Study> getStudy(Study study) {
 
 		Criteria studyCriteria = getSession().createCriteria(Study.class);
@@ -176,6 +173,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return studyList;
 	}
 
+	@SuppressWarnings("unchecked")
 	public SubjectStatus getSubjectStatus(String statusName) {
 
 		SubjectStatus statusToReturn = null;
@@ -200,6 +198,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	/**
 	 * Given a status name will return the StudyStatus object.
 	 */
+	@SuppressWarnings("unchecked")
 	public StudyStatus getStudyStatus(String statusName) throws StatusNotAvailableException {
 		StudyStatus studyStatus = new StudyStatus();
 		studyStatus.setName("Archive");
@@ -218,6 +217,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<StudyStatus> getListOfStudyStatus() {
 		Example studyStatus = Example.create(new StudyStatus());
 		Criteria criteria = getSession().createCriteria(StudyStatus.class).add(studyStatus);
@@ -230,12 +230,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return study;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Collection<TitleType> getTitleType() {
 		Example example = Example.create(new TitleType());
 		Criteria criteria = getSession().createCriteria(TitleType.class).add(example);
 		return criteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public Collection<VitalStatus> getVitalStatus() {
 		Example example = Example.create(new VitalStatus());
 		Criteria criteria = getSession().createCriteria(VitalStatus.class).add(example);
@@ -243,18 +245,21 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	//TODO:  cache?
+	@SuppressWarnings("unchecked")
 	public Collection<GenderType> getGenderTypes() {
 		Example example = Example.create(new GenderType());
 		Criteria criteria = getSession().createCriteria(GenderType.class).add(example);
 		return criteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<PhoneType> getListOfPhoneType() {
 		Example phoneTypeExample = Example.create(new PhoneType());
 		Criteria criteria = getSession().createCriteria(PhoneType.class).add(phoneTypeExample);
 		return criteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<SubjectStatus> getSubjectStatus() {
 
 		Example example = Example.create(new SubjectStatus());
@@ -262,6 +267,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public Collection<MaritalStatus> getMaritalStatus() {
 		Example example = Example.create(new MaritalStatus());
 		Criteria criteria = getSession().createCriteria(MaritalStatus.class).add(example);
@@ -274,6 +280,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @param subjectVO
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO) {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.createAlias("person", "p");
@@ -348,13 +355,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Phone> getPhonesForPerson(Person person) {
-
 		Criteria personCriteria = getSession().createCriteria(Phone.class);
 		personCriteria.add(Restrictions.eq("person", person));// Filter the phones linked to this personID/Key
 		return personCriteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException {
 
 		Criteria linkSubjectStudyCriteria = getSession().createCriteria(LinkSubjectStudy.class);
@@ -368,6 +376,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public LinkSubjectStudy getSubjectByUID(String subjectUID, Study study) throws EntityNotFoundException {
 
 		Criteria linkSubjectStudyCriteria = getSession().createCriteria(LinkSubjectStudy.class);
@@ -414,6 +423,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	/**
 	 * Returns a list of Countries
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Country> getCountries() {
 		Criteria criteria = getSession().createCriteria(Country.class);
 		criteria.addOrder(Order.asc("name"));
@@ -1254,6 +1264,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @param study
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction){
 		/*log.warn("fieldnamecollection size=" + fieldNameCollection.size() +
 						"\nstudy=" + study.getName() + " with id=" + study.getId() + 
@@ -1277,6 +1288,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<LinkSubjectStudy> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids) {
 		String queryString = "select subject " +
@@ -1290,6 +1302,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return query.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<String> getAllSubjectUIDs(Study study) {
 		String queryString = "select subject.subjectUID " +
 		"from LinkSubjectStudy subject " +
@@ -1301,6 +1314,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return query.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded) {
 		if(customFieldDisplaysThatWeNeed == null || customFieldDisplaysThatWeNeed.isEmpty() ||
 				subjectUIDsToBeIncluded == null || subjectUIDsToBeIncluded.isEmpty() ){
