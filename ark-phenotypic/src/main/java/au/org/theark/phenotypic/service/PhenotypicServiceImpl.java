@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import au.org.theark.core.dao.IStudyDao;
-import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
@@ -65,11 +61,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	private IArkCommonService<Void>	iArkCommonService;
 	private IPhenotypicDao				phenotypicDao;
 
-	//TODO analyze if accessed
-	private IStudyDao						studyDao;
-	private Long							studyId;
-	private Study							study;
-
 	@Autowired
 	public void setiArkCommonService(IArkCommonService<Void> iArkCommonService) {
 		this.iArkCommonService = iArkCommonService;
@@ -80,12 +71,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		this.phenotypicDao = phenotypicDao;
 	}
 	
-	/* To access Hibernate Study Dao */
-	@Autowired
-	public void setStudyDao(IStudyDao studyDao) {
-		this.studyDao = studyDao;
-	}
-
 	/**
 	 * A Phenotypic collection is the data storage or grouping of a particular set set of data, containing subjects with fields with field data values
 	 * for a particular date collected
@@ -94,8 +79,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	 *           the collection object to be created
 	 */
 	public void createCollection(PhenoCollection col) {
-		Subject currentUser = SecurityUtils.getSubject();
-		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		//Subject currentUser = SecurityUtils.getSubject();
+		//studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
 		// Newly created collections must start with a Created status
 		//atus status = phenotypicDao.getStatusByName(Constants.STATUS_CREATED);
