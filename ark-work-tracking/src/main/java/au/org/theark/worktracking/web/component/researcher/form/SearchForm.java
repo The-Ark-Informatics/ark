@@ -13,8 +13,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
@@ -29,7 +27,7 @@ import au.org.theark.worktracking.util.Constants;
 
 public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 	private static final long				serialVersionUID	= 1L;
-	private static final Logger						log					= LoggerFactory.getLogger(SearchForm.class);
+	//private static final Logger						log					= LoggerFactory.getLogger(SearchForm.class);
 	
 	@SpringBean(name = Constants.WORK_TRACKING_SERVICE)
 	private IWorkTrackingService iWorkTrackingService;
