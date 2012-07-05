@@ -54,7 +54,7 @@ public class Consent implements Serializable {
 	private ConsentStatus		consentStatus;
 	private ConsentType			consentType;
 	private Date					consentDate;
-	private String					consentedBy;				// Staff
+	private String					consentedBy;
 	private String					comments;
 	private Date					requestedDate;
 	private Date					receivedDate;
