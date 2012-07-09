@@ -34,6 +34,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -527,7 +528,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		Collection<ArkModuleRole> arkModuleList = new ArrayList<ArkModuleRole>();
 		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);
 		criteria.add(Restrictions.eq("arkModule", arkModule));
-		criteria.createAlias("arkRole", "role", Criteria.LEFT_JOIN);
+		criteria.createAlias("arkRole", "role", JoinType.LEFT_OUTER_JOIN);
 		criteria.addOrder(Order.asc("role.name"));
 		arkModuleList = criteria.list();
 		ArrayList<ArkRole> moduleArkRolesList = new ArrayList<ArkRole>();
