@@ -139,7 +139,7 @@ public class PhenoCollectionDataEntryContainerPanel extends Panel {
 				arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
 				if (study != null && linkSubjectStudy != null && arkModule != null) {
 					contextLoaded = true;
-					cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY));
+					cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
 				}
 			}
 			catch (EntityNotFoundException e) {
