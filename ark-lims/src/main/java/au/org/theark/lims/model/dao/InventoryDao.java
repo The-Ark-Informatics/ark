@@ -25,9 +25,9 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -542,11 +542,11 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 
 		Criteria criteria = getSession().createCriteria(InvCell.class);
-		criteria.createAlias("invBox","box",CriteriaSpecification.LEFT_JOIN);
-		criteria.createAlias("box.invRack","rack",CriteriaSpecification.LEFT_JOIN);
-		criteria.createAlias("rack.invFreezer","freezer",CriteriaSpecification.LEFT_JOIN);
-		criteria.createAlias("freezer.invSite","site",CriteriaSpecification.LEFT_JOIN);
-		criteria.createAlias("biospecimen","b",CriteriaSpecification.LEFT_JOIN);
+		criteria.createAlias("invBox","box",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("box.invRack","rack",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("rack.invFreezer","freezer",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("freezer.invSite","site",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("biospecimen","b",JoinType.LEFT_OUTER_JOIN);
 		criteria.add(Restrictions.eq("site.name", siteName));
 		criteria.add(Restrictions.eq("freezer.name", freezerName));
 		criteria.add(Restrictions.eq("rack.name", rackName));
