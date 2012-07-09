@@ -37,6 +37,7 @@ import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1656,8 +1657,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public void isDataAvailableForQuestionnaire(CustomFieldGroup customFieldGroup){
 		
 		Criteria criteria = getSession().createCriteria(CustomField.class, "cf");
-		criteria.createAlias("customFieldDisplay", "cfd", Criteria.LEFT_JOIN);	// Left join to CustomFieldDisplay
-		criteria.createAlias("cfd.customFieldGroup", "cfg", Criteria.LEFT_JOIN); // Left join to CustomFieldGroup
+		criteria.createAlias("customFieldDisplay", "cfd", JoinType.LEFT_OUTER_JOIN);	// Left join to CustomFieldDisplay
+		criteria.createAlias("cfd.customFieldGroup", "cfg", JoinType.LEFT_OUTER_JOIN); // Left join to CustomFieldGroup
 		criteria.add(Restrictions.eq("cf.study", customFieldGroup.getStudy()));
 		
 		ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
