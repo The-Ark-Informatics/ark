@@ -215,7 +215,7 @@ public class SearchResultListPanel extends Panel {
 			public void onClick() {
 				byte[] data = upload.getUploadReport();//.getBytes(1, (int) upload.getUploadReport().length());
 				log.warn("buildDownloadReportLink onclick get blob");
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId() + ".txt"));
 			};
 		};
 
@@ -233,7 +233,7 @@ public class SearchResultListPanel extends Panel {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = upload.getUploadReport();
 				log.warn("buildDownloadReportButton onsubmit get blob");
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId() + ".txt"));
 			}
 
 			@Override

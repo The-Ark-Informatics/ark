@@ -213,7 +213,7 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			public void onClick() {
 				byte[] data = upload.getUploadReport();
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId() + ".txt"));
 			};
 		};
 
