@@ -87,7 +87,6 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 		initialiseDetailForm();
 	}
 
-	@SuppressWarnings("serial")
 	private void initialiseDetailForm() {
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
 		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
