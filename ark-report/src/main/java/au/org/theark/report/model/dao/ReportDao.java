@@ -33,6 +33,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.hibernate.sql.JoinType;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -264,21 +265,21 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			criteria.add(Restrictions.eq("lss." + Constants.LINKSUBJECTSTUDY_CONSENTDATE, cdrVO.getConsentDate()));
 		}
 		
-		criteria.createAlias("lss.consentStatus", "cs", Criteria.LEFT_JOIN);
+		criteria.createAlias("lss.consentStatus", "cs", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("lss.subjectStatus", "ss");
 		criteria.createAlias("lss.person", "p");
 		criteria.createAlias("lss.person.genderType", "genderType");
 		
 		// Restrict any addresses to the preferred mailing address
-		Criteria addressCriteria = criteria.createAlias("lss.person.addresses", "a", Criteria.LEFT_JOIN);
+		Criteria addressCriteria = criteria.createAlias("lss.person.addresses", "a", JoinType.LEFT_OUTER_JOIN);
 		addressCriteria.add(Restrictions.or(Restrictions.eq("a.preferredMailingAddress", true), Restrictions.isNull("a.preferredMailingAddress")));
 		
-		criteria.createAlias("lss.person.addresses.country", "c", Criteria.LEFT_JOIN);
-		criteria.createAlias("lss.person.addresses.state", "state", Criteria.LEFT_JOIN);
-		criteria.createAlias("lss.person.phones", "phone", Criteria.LEFT_JOIN);
+		criteria.createAlias("lss.person.addresses.country", "c", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("lss.person.addresses.state", "state", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("lss.person.phones", "phone", JoinType.LEFT_OUTER_JOIN);
 		
 		//TODO: Get work phone returned as well
-		criteria.createAlias("lss.person.phones.phoneType", "phoneType", Criteria.LEFT_JOIN).add(Restrictions.or(Restrictions.eq("phoneType.name", "Home"), Restrictions.isNull("phoneType.name")));
+		criteria.createAlias("lss.person.phones.phoneType", "phoneType", JoinType.LEFT_OUTER_JOIN).add(Restrictions.or(Restrictions.eq("phoneType.name", "Home"), Restrictions.isNull("phoneType.name")));
 		criteria.createAlias("lss.person.titleType", "title");
 		
 		ProjectionList projectionList = Projections.projectionList();
@@ -565,10 +566,10 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			 * associated with a customFieldGroups (via customFieldDisplay)
 			 */
 			Criteria criteria = getSession().createCriteria(CustomField.class, "cf");
-			criteria.createAlias("customFieldDisplay", "cfd", Criteria.LEFT_JOIN);	// Left join to CustomFieldDisplay
-			criteria.createAlias("cfd.customFieldGroup", "cfg", Criteria.LEFT_JOIN); // Left join to CustomFieldGroup
-			criteria.createAlias("fieldType", "ft", Criteria.LEFT_JOIN); // Left join to FieldType
-			criteria.createAlias("unitType", "ut", Criteria.LEFT_JOIN); // Left join to UnitType
+			criteria.createAlias("customFieldDisplay", "cfd", JoinType.LEFT_OUTER_JOIN);	// Left join to CustomFieldDisplay
+			criteria.createAlias("cfd.customFieldGroup", "cfg", JoinType.LEFT_OUTER_JOIN); // Left join to CustomFieldGroup
+			criteria.createAlias("fieldType", "ft", JoinType.LEFT_OUTER_JOIN); // Left join to FieldType
+			criteria.createAlias("unitType", "ut", JoinType.LEFT_OUTER_JOIN); // Left join to UnitType
 			criteria.add(Restrictions.eq("cf.study", fdrVO.getStudy()));
 			ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 			criteria.add(Restrictions.eq("cf.arkFunction", function));
