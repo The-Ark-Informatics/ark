@@ -1,11 +1,11 @@
 #EclipseHTMLEditor configuration file
-#Mon Jul 09 13:12:36 WST 2012
+#Mon Jul 09 13:16:12 WST 2012
 javaScriptDeprecated=Off
 javaScriptIndentChar=\ 
 javaScriptCheckTypes=Off
 useDTD=false
 javaScriptCheckRegExp=Off
-validateJS=true
+validateJS=false
 javaScriptUnknownDefines=Off
 javaScriptStrictModuleDepCheck=Off
 javaScriptAccessControls=Off
@@ -20,7 +20,7 @@ javaScripts=
 javaScriptBracesOnOwnLine=true
 removeMarkers=false
 javaScriptUndefinedVars=Off
-validateJSP=true
+validateJSP=false
 javaScriptSpaceAfterAnonFunc=false
 validateHTML=false
 javaScriptPreserveNewlines=true
@@ -29,5 +29,5 @@ javaScriptUseUndefined=Off
 javaScriptMissingProperties=Off
 javaScriptIndentSize=4
 javaScriptLibPaths=
-validateDTD=true
+validateDTD=false
 javaScriptCheckVars=Off
