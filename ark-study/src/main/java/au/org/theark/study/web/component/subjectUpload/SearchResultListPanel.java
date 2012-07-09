@@ -235,7 +235,7 @@ public class SearchResultListPanel extends Panel {
 			public void onClick() {
 				byte[] data = upload.getUploadReport();
 				log.warn("buildDownloadReportLink onclick get blob");
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId() + ".txt"));
 			};
 		};
 
@@ -252,7 +252,7 @@ public class SearchResultListPanel extends Panel {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				byte[] data = upload.getUploadReport();
 				log.warn("buildDownloadReportButton onsubmit get blob");
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId() + ".txt"));
 			}
 
 			@Override
