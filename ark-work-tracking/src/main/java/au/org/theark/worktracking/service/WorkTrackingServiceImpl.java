@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.model.worktracking.entity.BillableItemType;
+import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.model.worktracking.entity.BillingType;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
@@ -60,9 +62,9 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void create(Researcher researcher) throws ArkSystemException,
+	public void createResearcher(Researcher researcher) throws ArkSystemException,
 			EntityExistsException {
-		workTrackingDao.create(researcher);
+		workTrackingDao.createResearcher(researcher);
 		
 	}
 
@@ -70,9 +72,9 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void update(Researcher researcher) throws ArkSystemException,
+	public void updateResearcher(Researcher researcher) throws ArkSystemException,
 			EntityExistsException {
-		workTrackingDao.update(researcher);
+		workTrackingDao.updateResearcher(researcher);
 		
 	}
 
@@ -80,15 +82,51 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void delete(Researcher researcher) throws ArkSystemException,
+	public void deleteResearcher(Researcher researcher) throws ArkSystemException,
 			EntityCannotBeRemoved {
-		workTrackingDao.delete(researcher);
+		workTrackingDao.deleteResearcher(researcher);
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Researcher> searchResearcher(Researcher researcher) {
 		// TODO Auto-generated method stub
 		return workTrackingDao.searchResearcher(researcher);
-	}	
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void createBillableItemType(BillableItemType billableItemType)
+			throws ArkSystemException, EntityExistsException {
+		 workTrackingDao.createBillableItemType(billableItemType);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void updateBillableItemType(BillableItemType billableItemType)
+			throws ArkSystemException, EntityExistsException {
+		workTrackingDao.updateBillableItemType(billableItemType);		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<BillableItemTypeStatus> getBillableItemTypeStatuses() {
+		return workTrackingDao.getBillableItemTypeStatuses();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<BillableItemType> searchBillableItemType(
+			BillableItemType billableItemType) {
+		return workTrackingDao.searchBillableItemType(billableItemType);
+	}
 	
 }

@@ -274,13 +274,13 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 				
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				containerForm.getModelObject().getResearcher().setStudyId(studyId);
-				iWorkTrackingService.create(containerForm.getModelObject().getResearcher());
+				iWorkTrackingService.createResearcher(containerForm.getModelObject().getResearcher());
 				this.info("Researcher " + containerForm.getModelObject().getResearcher().getFirstName() + " " + containerForm.getModelObject().getResearcher().getLastName() + " was created successfully");
 				processErrors(target);
 			}
 			else {
 
-				iWorkTrackingService.update(containerForm.getModelObject().getResearcher());
+				iWorkTrackingService.updateResearcher(containerForm.getModelObject().getResearcher());
 				this.info("Researcher " + containerForm.getModelObject().getResearcher().getFirstName() + " " + containerForm.getModelObject().getResearcher().getLastName() + " was updated successfully");
 				processErrors(target);
 			}
@@ -312,7 +312,7 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
-			iWorkTrackingService.delete(containerForm.getModelObject().getResearcher());
+			iWorkTrackingService.deleteResearcher(containerForm.getModelObject().getResearcher());
 			ResearcherVo researcherVo = new ResearcherVo();
 			containerForm.setModelObject(researcherVo);
 			containerForm.info("The Researcher was deleted successfully.");

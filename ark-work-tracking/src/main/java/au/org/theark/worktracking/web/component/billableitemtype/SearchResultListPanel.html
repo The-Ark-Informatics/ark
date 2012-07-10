@@ -6,50 +6,50 @@
 			<th width="2%">&nbsp;</th>
 			<th width="5%">
 				<label for="id">
-					<wicket:message	key="work.researcher.id">ID:</wicket:message>
+					<wicket:message	key="work.billableitemtype.id">ID:</wicket:message>
 				</label>
 			</th>
 			<th width="15%">
-				<label for="institute">
-					<wicket:message	key="work.researcher.institute">Institute:</wicket:message>
+				<label for="itemName">
+					<wicket:message	key="work.billableitemtype.itemname">Item Name:</wicket:message>
 				</label>
 			</th>
 			<th width="25%">
-				<label for="fullName">
-					<wicket:message	key="work.researcher.fullname">Full Name:</wicket:message>
+				<label for="quantityPerUnit">
+					<wicket:message	key="work.billableitemtype.quantityperunit">Quantity Per Unit:</wicket:message>
 				</label>
 			</th>
 			<th width="20%">
-				<label for="lastActiveDate">
-					<wicket:message	key="work.researcher.lastactivedate">Last Active Date:</wicket:message>
+				<label for="unitPrice">
+					<wicket:message	key="work.billableitemtype.unitprice">Unit Price:</wicket:message>
 				</label>
 			</th>
 			<th width="20%">
-				<label for="role">
-					<wicket:message	key="work.researcher.role">Role:</wicket:message>
+				<label for="gst">
+					<wicket:message	key="work.billableitemtype.gst">GST:</wicket:message>
 				</label>
 			</th>
 			<th width="2%">&nbsp;</th>			
 		</tr>
 		<!--  The Data Result Set -->
-		<tr wicket:id="researcherList">
+		<tr wicket:id="billableItemTypeList">
 			<td width="2%">&nbsp;</td>
 			<td width="5%">
-				<span wicket:id="researcher.id">100</span>
+				<span wicket:id="billableItemType.id">100</span>
 			</td>
 			<td width="15%">
-				<span wicket:id="researcher.institute">Description</span>
-			</td>
-			<td width="25%">
-			  <a href="#"wicket:id="researcher.fullName">
+				<a href="#"wicket:id="billableItemType.itemName">
 			  	<span wicket:id="nameLbl">Name</span>
 			  </a>
 			</td>
-			<td width="20%">
-				<span wicket:id="researcher.lastActiveDate">Active Date</span>
+			<td width="25%">
+			  <span wicket:id="billableItemType.quantityPerUnit">Quantity Per Unit</span>
 			</td>
 			<td width="20%">
-				<span wicket:id="researcher.researcherRole">Role name</span>
+				<span wicket:id="billableItemType.unitPrice">Unit Price</span>
+			</td>
+			<td width="20%">
+				<span wicket:id="billableItemType.gst">GST</span>
 			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>

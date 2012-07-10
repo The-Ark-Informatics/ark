@@ -3,8 +3,12 @@ package au.org.theark.worktracking.util;
 public class Constants {
 	
 	//Menu Constants
-	public static final String RESEARCHER 											= "Researcher";
+	public static final String RESEARCHER 											= "RESEARCHER";
 	public static final String TAB_MODULE_RESEARCHER 								= "tab.module.work.researcher";
+	
+	public static final String BILLABLE_ITEM_TYPE 									= "BILLABLE_ITEM_TYPE";
+	public static final String TAB_MODULE_BILLABLE_ITEM_TYPE 						= "tab.module.work.billableitemtype";
+	
 	public static final String WORK_SUBMENU 										= "WorkSubMenus";
 	
 	
@@ -90,4 +94,33 @@ public class Constants {
 	public static final String ERROR_WORK_RESEARCHER_FIRSTNAME_LENGTH 									= "error.work.researcher.firstname.length";
 	public static final String RESEARCHER_FIRST_NAME_TAG 												= "Researcher First Name";
 	public static final String ERROR_WORK_RESEARCHER_FIRSTNAME_REQUIRED 								= "error.work.researcher.firstname.required";
+	
+	
+	//Billable Item Constants
+	public static final String			BILLABLE_ITEM_TYPE_ID											= "billableItemType.id";
+	public static final String			BILLABLE_ITEM_TYPE_ITEM_NAME									= "billableItemType.itemName";
+	public static final String			BILLABLE_ITEM_TYPE_QUANTITY_PER_UNIT							= "billableItemType.quantityPerUnit";
+	public static final String			BILLABLE_ITEM_TYPE_UNIT_PRICE									= "billableItemType.unitPrice";
+	public static final String			BILLABLE_ITEM_TYPE_GST											= "billableItemType.gst";
+	public static final String			BILLABLE_ITEM_TYPE_DESCRIPTION									= "billableItemType.description";
+	
+	public static final String			BIT_ID															= "id";
+	public static final String			BIT_ITEM_NAME													= "itemName";
+	public static final String			BIT_QUANTITY_PER_UNIT											= "quantityPerUnit";
+	public static final String			BIT_UNIT_PRICE													= "unitPrice";
+	public static final String			BIT_GST															= "gst";
+	public static final String			BIT_STATUS														="billableItemTypeStatus";
+	
+	public static final String			BILLABLE_ITEM_TYPE_CUSTOM										= "CUSTOM";
+	public static final String			BILLABLE_ITEM_TYPE_DEFAULT										= "DEFAULT";
+	
+	public static final String			BILLABLE_ITEM_TYPE_ACTIVE										= "ACTIVE";
+	public static final String			BILLABLE_ITEM_TYPE_INACTIVE										= "INACTIVE";
+	
+	public static final String 			BILLABLE_ITEM_TYPE_ITEM_NAME_TAG 								= "Item Name";
+	public static final String 			ERROR_BILLABLE_ITEM_TYPE_ITEM_NAME_REQUIRED 					= "error.work.billableitemtype.itemname.required";
+	public static final String 			ERROR_BILLABLE_ITEM_TYPE_ITEM_NAME_LENGTH 						= "error.work.billableitemtype.itemname.length";
+	public static final String 			BILLABLE_ITEM_TYPE_DESCRIPTION_TAG 								= "Description";
+	public static final String 			ERROR_BILLABLE_ITEM_TYPE_DESCRIPTION_LENGTH 					= "error.work.billableitemtype.description.length";
+	
 }
