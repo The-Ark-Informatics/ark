@@ -13,6 +13,8 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.model.worktracking.entity.BillableItemType;
+import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.model.worktracking.entity.BillingType;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
@@ -58,7 +60,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void create(Researcher researcher) throws ArkSystemException, EntityExistsException {
+	public void createResearcher(Researcher researcher) throws ArkSystemException, EntityExistsException {
 		getSession().save(researcher);
 
 	}
@@ -66,14 +68,14 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void update(Researcher researcher) throws ArkSystemException, EntityExistsException {
+	public void updateResearcher(Researcher researcher) throws ArkSystemException, EntityExistsException {
 		getSession().update(researcher);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void delete(Researcher researcher) throws ArkSystemException, EntityCannotBeRemoved {
+	public void deleteResearcher(Researcher researcher) throws ArkSystemException, EntityCannotBeRemoved {
 		
 		getSession().delete(researcher);
 	}
@@ -115,4 +117,66 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		return list;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void createBillableItemType(BillableItemType billableItemType)
+			throws ArkSystemException, EntityExistsException {
+		getSession().save(billableItemType);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void updateBillableItemType(BillableItemType billableItemType)
+			throws ArkSystemException, EntityExistsException {
+		getSession().update(billableItemType);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<BillableItemTypeStatus> getBillableItemTypeStatuses() {
+		Example billableItemTypeStatus = Example.create(new BillableItemTypeStatus());
+		Criteria criteria = getSession().createCriteria(BillableItemTypeStatus.class)
+				.add(billableItemTypeStatus);
+		return criteria.list();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<BillableItemType> searchBillableItemType(
+			BillableItemType billableItemTypeCriteria) {
+		Criteria criteria = getSession().createCriteria(BillableItemType.class);
+		criteria.add(Restrictions.eq(Constants.STUDY_ID , billableItemTypeCriteria.getStudyId()));
+		
+		if(billableItemTypeCriteria.getId() != null ){
+			criteria.add(Restrictions.eq(Constants.BIT_ID, billableItemTypeCriteria.getId()));
+		}
+
+		if(billableItemTypeCriteria.getItemName() != null ){
+			criteria.add(Restrictions.like(Constants.BIT_ITEM_NAME, billableItemTypeCriteria.getItemName()+"%"));
+		}
+		
+		if(billableItemTypeCriteria.getQuantityPerUnit() != null ){
+			criteria.add(Restrictions.eq(Constants.BIT_QUANTITY_PER_UNIT, billableItemTypeCriteria.getQuantityPerUnit()));
+		}
+		
+		if(billableItemTypeCriteria.getUnitPrice() != null ){
+			criteria.add(Restrictions.eq(Constants.BIT_UNIT_PRICE, billableItemTypeCriteria.getUnitPrice()));
+		}
+		
+		if(billableItemTypeCriteria.getGst() != null ){
+			criteria.add(Restrictions.eq(Constants.BIT_GST , billableItemTypeCriteria.getGst()));
+		}
+		
+		if(billableItemTypeCriteria.getBillableItemTypeStatus() != null ){
+			criteria.add(Restrictions.eq(Constants.BIT_STATUS , billableItemTypeCriteria.getBillableItemTypeStatus()));
+		}
+		
+		List<BillableItemType> list = criteria.list();
+		return list;
+	}
+	
 }
