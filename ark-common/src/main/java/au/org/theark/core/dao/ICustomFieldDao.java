@@ -2,6 +2,8 @@ package au.org.theark.core.dao;
 
 import java.util.List;
 
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -183,5 +185,7 @@ public interface ICustomFieldDao {
 	public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup);
 	
 	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria, CustomFieldGroup customFieldGroup);
+	
+	public List<CustomField> matchCustomFieldsFromInputFile(FileUpload fileUpload, Study study, ArkFunction arkFunction);
 	
 }

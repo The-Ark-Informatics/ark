@@ -10,12 +10,14 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -59,13 +61,16 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService														iArkCommonService;
 
+	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>	cfdProvider;
+	private DataView<CustomFieldDisplay>										dataView;
+	
 	private TextField<String>														customFieldGroupTxtFld;
 	private TextArea<String>														description;
 	private Palette<CustomField>													customFieldPalette;
 	private CheckBox																	publishedStatusCb;
 	private Boolean																	addCustomFieldDisplayList;
-	private ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay>	cfdProvider;
-	private DataView<CustomFieldDisplay>										dataView;
+	private FileUploadField															fileUploadField;
+	private Button																		fileUploadButton;
 
 	/**
 	 * @param id
@@ -78,6 +83,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
 		this.addCustomFieldDisplayList = addCustomFieldDisplayList;
 		this.cfdProvider = cfdProvider;
+		setMultiPart(true);
 	}
 
 	public void onBeforeRender() {
@@ -145,6 +151,20 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 				}
 			}
 		});
+		
+		fileUploadField = new FileUploadField("customFieldFileUploadField");
+		fileUploadButton = new Button("uploadCustomFieldField"){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			public void onSubmit() {
+				setSelectedCustomFieldsFromFile();
+			}
+			
+		};
+		fileUploadButton.setDefaultFormProcessing(false);
 		
 		if (addCustomFieldDisplayList) {
 			initCustomFieldDataListPanel();
@@ -281,6 +301,20 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 
 	}
 
+	@SuppressWarnings("unchecked")
+	private void setSelectedCustomFieldsFromFile() {
+		if(fileUploadField.getFileUpload() != null) {
+			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study = iArkCommonService.getStudy(studyId);
+			ArrayList<CustomField> selectedCustomFields = (ArrayList<CustomField>) iArkCommonService.matchCustomFieldsFromInputFile(fileUploadField.getFileUpload(), study, arkFunction); 
+			cpModel.getObject().setSelectedCustomFields(selectedCustomFields);
+		}
+		
+		initCustomFieldPalette();
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldPalette);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -302,6 +336,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(description);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(publishedStatusCb);
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(fileUploadField);
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(fileUploadButton);
 		addOrReplace(arkCrudContainerVO.getWmcForCustomFieldDisplayListPanel());
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}

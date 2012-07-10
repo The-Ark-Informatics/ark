@@ -65,6 +65,9 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
+		
+		// Added to allow file uploads of custom fields
+		containerForm.setMultiPart(true);
 		add(containerForm);
 	}
 
