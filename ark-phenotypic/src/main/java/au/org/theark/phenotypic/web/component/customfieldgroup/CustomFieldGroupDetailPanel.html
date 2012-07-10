@@ -3,7 +3,7 @@
 	<form wicket:id="detailsForm">
 		<div class="detailsPanelBorder">
 			<div wicket:id="detailFormContainer">
-				<div class="searchPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 				<div class="panelContentLeft">
@@ -45,13 +45,14 @@
 					</div>
 				</div>
 
-				<div class="searchPanelBreaker">
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
+				
 				<div class="fldLabel">
 					<div class="label">
 						<label for="customFieldPalette">
@@ -64,6 +65,7 @@
 						</label>
 					</div>
 				</div>
+				
 				<div class="fldControl">
 					&nbsp;
 				</div>
@@ -81,14 +83,39 @@
 						</label>
 					</div>
 				</div>
+				
 				<div class="fldControl">
 					<div class="label">
 						<input type="checkbox" wicket:id="customFieldGroup.published"/>
 					</div>
 				</div>
+				
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+				
+				<div class="fldLabel">
+					<wicket:message	key="customFieldFileUploadField">
+						File of Custom Fields:
+					</wicket:message>
+					<div class="note">
+						<wicket:message	key="customFieldFileUploadField.note">
+							Note: Will replace selected list
+						</wicket:message>
+					</div>
+				</div>
+				
+				<div class="fldControl">
+					<input wicket:id="customFieldFileUploadField" id="upload" type="file"/>
+					<input wicket:id="uploadCustomFieldField" type="submit" wicket:message="value:uploadCustomFieldField" />
+				</div>
 			</div>
 
-			<div class="searchPanelBreaker">
+			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
 			
@@ -102,7 +129,7 @@
 				</div>
 			</div>
 
-			<div class="searchPanelBreaker">
+			<div class="detailPanelBreaker">
 				&nbsp;
 			</div>
 

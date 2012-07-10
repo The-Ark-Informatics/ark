@@ -1,7 +1,10 @@
 package au.org.theark.core.dao;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
@@ -22,6 +25,7 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.UnitType;
+import au.org.theark.core.util.CsvListReader;
 import au.org.theark.core.web.component.customfield.Constants;
 
 @Repository("customFieldDao")
@@ -373,6 +377,30 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
 		criteria.setMaxResults(1);
 		return (CustomFieldDisplay)criteria.uniqueResult();
+	}
+	
+	public List<CustomField> matchCustomFieldsFromInputFile(FileUpload fileUpload, Study study, ArkFunction arkFunction) {
+		List<CustomField> customFieldList = new ArrayList<CustomField>();
+		List<String> customFieldNameList = new ArrayList<String>(0);
+
+		try {
+			customFieldNameList = CsvListReader.readColumnIntoList(fileUpload.getInputStream());
+		}
+		catch (IOException e) {
+			log.error("Error in Custom Field list file");
+			return customFieldList;
+		}
+
+		// Loop through list to get order
+		for (String name : customFieldNameList) {
+			Criteria criteria = getSession().createCriteria(CustomField.class);
+			criteria.add(Restrictions.eq("study", study));
+			criteria.add(Restrictions.eq("name", name));
+			criteria.add(Restrictions.eq("arkFunction", arkFunction));
+			customFieldList.add((CustomField) criteria.uniqueResult());
+		}
+		
+		return customFieldList;
 	}
 	
 }
