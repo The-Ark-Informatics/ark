@@ -20,7 +20,7 @@ public class CustomFieldGroupVO implements Serializable{
 	private ArrayList<CustomField> selectedCustomFields;
 	private Collection<CustomField> availableCustomFields;
 	private CustomFieldDisplay customFieldDisplay;
-	
+	private String		customFieldFileUploadField;
 	
 	/**
 	 * Constructor
@@ -63,6 +63,12 @@ public class CustomFieldGroupVO implements Serializable{
 	public void setCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) {
 		this.customFieldDisplay = customFieldDisplay;
 	}
-
-
+	
+	public String getcustomFieldFileUploadField() {
+		return customFieldFileUploadField;
+	}
+	
+	public void setcustomFieldFileUploadField(String customFieldFileUploadField) {
+		this.customFieldFileUploadField = customFieldFileUploadField;
+	}
 }
