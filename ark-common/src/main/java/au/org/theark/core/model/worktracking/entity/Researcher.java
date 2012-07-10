@@ -214,7 +214,7 @@ public class Researcher implements Serializable {
 		this.billingType = billingType;
 	}
 
-	@Column(name = "ACCOUNT_NUMBER")
+	@Column(name = "ACCOUNT_NUMBER", length = 30)
 	public String getAccountNumber() {
 		return accountNumber;
 	}
@@ -223,7 +223,7 @@ public class Researcher implements Serializable {
 		this.accountNumber = accountNumber;
 	}
 
-	@Column(name = "BSB")
+	@Column(name = "BSB", length = 8)
 	public String getBsb() {
 		return bsb;
 	}
