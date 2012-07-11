@@ -5,7 +5,7 @@ E_BADARGS=65
 
 if [ $# -ne $EXPECTED_ARGS ] 
 then
-  echo "Usage: `basename $0` {version} {databsae hostname} {database password}"
+  echo "Usage: `basename $0` {version} {database hostname} {database password}"
   exit $E_BADARGS
 fi
 
@@ -25,7 +25,7 @@ echo "CREATE DATABASE /*!32312 IF NOT EXISTS*/ pheno /*!40100 DEFAULT CHARACTER 
 echo "CREATE DATABASE /*!32312 IF NOT EXISTS*/ geno /*!40100 DEFAULT CHARACTER SET latin1 */;" >> $VERSION/ark-$VERSION.sql
 echo "CREATE DATABASE /*!32312 IF NOT EXISTS*/ lims /*!40100 DEFAULT CHARACTER SET latin1 */;" >> $VERSION/ark-$VERSION.sql
 echo "CREATE DATABASE /*!32312 IF NOT EXISTS*/ reporting /*!40100 DEFAULT CHARACTER SET latin1 */;" >> $VERSION/ark-$VERSION.sql
-echo "CREATE DATABASE /*!32312 IF NOT EXISTS*/ work-tracking /*!40100 DEFAULT CHARACTER SET latin1 */;" >> $VERSION/ark-$VERSION.sql
+echo "CREATE DATABASE /*!32312 IF NOT EXISTS*/ admin /*!40100 DEFAULT CHARACTER SET latin1 */;" >> $VERSION/ark-$VERSION.sql
 echo "" >> $VERSION/ark-$VERSION.sql
 
 echo ""
@@ -91,8 +91,7 @@ subjectuid_token title_type upload_type upload_status unit_type vital_status yes
 echo "Pheno reference data"
 echo "" >> $VERSION/ark-$VERSION.sql
 echo 'USE pheno;' >> $VERSION/ark-$VERSION.sql
-mysqldump -h $HOSTNAME -u arkadmin -p$PASSWORD --no-create-info --complete-insert pheno delimiter_type \
-field_type file_format questionnaire_status status >> $VERSION/ark-$VERSION.sql 
+mysqldump -h $HOSTNAME -u arkadmin -p$PASSWORD --no-create-info --complete-insert pheno questionnaire_status status >> $VERSION/ark-$VERSION.sql 
 
 echo "Geno reference data"
 echo "" >> $VERSION/ark-$VERSION.sql
