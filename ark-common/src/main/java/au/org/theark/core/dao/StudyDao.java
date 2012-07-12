@@ -1013,6 +1013,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (UploadType)(getSession().get(UploadType.class, 1L));//TODO:  maybe fix ALL such entities by adding isDefault boolean to table?
 	}
 
+	public UploadType getDefaultUploadTypeForLims(){
+		return (UploadType)(getSession().get(UploadType.class, 4L));//TODO:  maybe fix ALL such entities by adding isDefault boolean to table?
+	}
+
 	public UploadType getCustomFieldDataUploadType(){
 		return (UploadType)(getSession().get(UploadType.class, 3L));//TODO:  maybe fix ALL such entities by adding isDefault boolean to table?
 	}
@@ -1382,9 +1386,22 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	public Collection<UploadType> getUploadTypesForLims(){
+		Criteria criteria = getSession().createCriteria(UploadType.class);
+		criteria.add(Restrictions.eq("arkModule", getArkModuleForLims()));
+		return criteria.list();
+	}
+
 	public ArkModule getArkModuleForSubject() {
 		Criteria criteria = getSession().createCriteria(ArkModule.class);
 		criteria.add(Restrictions.eq("name", "Subject"));
+		return (ArkModule)criteria.uniqueResult();
+	}
+
+	public ArkModule getArkModuleForLims() {
+		Criteria criteria = getSession().createCriteria(ArkModule.class);
+		criteria.add(Restrictions.eq("name", "LIMS"));
 		return (ArkModule)criteria.uniqueResult();
 	}
 	
