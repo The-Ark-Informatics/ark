@@ -148,4 +148,84 @@ public class Constants {
 	public static final String	SUBJECTUIDSEQ_STUDYNAMEID					= "studyNameId";
 
 	public static final String	AUTO_GENERATED									= "Auto-generated";
+	
+
+	// UploadVO
+	public static final String			UPLOADVO_UPLOAD_ID										= "upload.id";
+	public static final String			UPLOADVO_UPLOAD_COLLECTION_UPLOAD						= "upload.collectionUpload";
+	public static final String			UPLOADVO_UPLOAD_COLLECTION_UPLOAD_ID					= "upload.collectionUpload.id";
+	public static final String			UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION			= "upload.collectionUpload.collection";
+	public static final String			UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION_ID			= "upload.collectionUpload.collection.id";
+	public static final String			UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION_NAME		= "upload.collectionUpload.collection.name";
+	public static final String			UPLOADVO_UPLOAD_FILENAME								= "upload.filename";
+	public static final String			UPLOADVO_UPLOAD_FILE_FORMAT								= "upload.fileFormat";
+	public static final String			UPLOADVO_UPLOAD_FILE_FORMAT_ID							= "upload.fileFormat.id";
+	public static final String			UPLOADVO_UPLOAD_FILE_FORMAT_NAME						= "upload.fileFormat.name";
+	public static final String			UPLOADVO_UPLOAD_PAYLOAD									= "upload.payload";
+	public static final String			UPLOADVO_UPLOAD_DELIMITER_TYPE							= "upload.delimiterType";
+	public static final String			UPLOADVO_UPLOAD_UPLOAD_TYPE								= "upload.uploadType";
+	public static final String			UPLOADVO_UPLOAD_USER									= "upload.user";
+	public static final String			UPLOADVO_UPLOAD_USER_ID									= "upload.userId";
+	public static final String			UPLOADVO_UPLOAD_INSERT_TIME								= "upload.insertTime";
+	public static final String			UPLOADVO_UPLOAD_UPDATE_USER								= "upload.user";
+	public static final String			UPLOADVO_UPLOAD_UPDATE_USER_ID							= "upload.user.id";
+	public static final String			UPLOADVO_UPLOAD_UPDATE_TIME								= "upload.updateTime";
+	public static final String			UPLOADVO_UPLOAD_CHECKSUM								= "upload.checksum";
+	public static final String			UPLOADVO_UPLOAD_START_TIME								= "upload.startTime";
+	public static final String			UPLOADVO_UPLOAD_FINISH_TIME								= "upload.finishTime";
+	public static final String			UPLOADVO_UPLOAD_UPLOAD_STATUS_NAME						= "upload.uploadStatus.name";
+	public static final String			UPLOADVO_UPLOAD_UPLOAD_REPORT							= "upload.uploadReport";
+
+	public static final String			FILE_FORMAT												= "fileFormat";
+	public static final String			FILE_FORMAT_ID											= "id";
+	public static final String			FILE_FORMAT_NAME										= "name";
+
+	public static final String			UPLOAD													= "upload";
+	public static final String			UPLOAD_ID												= "id";
+	public static final String			UPLOAD_STUDY											= "study";
+	public static final String			UPLOAD_FILE_FORMAT										= "fileFormat";
+	public static final String			UPLOAD_DELIMITER_TYPE									= "delimiterType";
+	public static final String			UPLOAD_FILENAME											= "filename";
+	public static final String			UPLOAD_PAYLOAD											= "payload";
+	public static final String			UPLOAD_USER												= "user";
+	public static final String			UPLOAD_CHECKSUM											= "checksum";
+	public static final String			DELIMITER_TYPE_ID										= "id";
+	public static final String			UPLOAD_TYPE_ID											= "id";
+	public static final String			DELIMITER_TYPE_NAME										= "name";
+	public static final String			UPLOAD_TYPE_NAME										= "name";
+
+	// Exception messages
+	public static final String			IO_EXCEPTION											= "IOException: Input error. ";
+	public static final String			FILE_FORMAT_EXCEPTION									= "File Format Exception: Input error. ";
+	public static final String			ARK_SYSTEM_EXCEPTION									= "General ARK System Exception: ";
+	public static final String			ARK_BASE_EXCEPTION										= "Base ARK System Exception: ";	
+	/* Custom Field */
+	public static final String			CUSTOM_FIELD_FIELD_TITLE									= "customField.fieldTitle";
+	public static final String			CUSTOM_FIELD_FIELD_NAME										= "customField.name";
+	public static final String			SEARCH_RESULT_LIST											= "searchResultList";
+	public static final String			CUSTOM_FIELD_LABEL											= "fieldTitleLabel";
+	public static final String			DOWNLOAD_FILE													= "downloadFile";
+	public static final String			DELETE_FILE														= "deleteFile";
+
+	public static final String			STUDY_STATUS_COMPLETED										= "Completed";
+	public static final String			STUDY_STATUS_REQUESTED										= "Requested";
+	public static final String			STUDY_STATUS_RECEIVED										= "Received";
+	public static final String			WMC_RECIEVED													= "wmc-received";
+	public static final String			WMC_COMPLETED													= "wmc-completed";
+	public static final String			WMC_REQUESTED													= "wmc-requested";
+	public static final String			WMC_PLAIN														= "wmc-plain";
+	public static final String			SUBJECT_FILE_ID												= "subjectFile.id";
+	public static final String			SUBJECT_FILE_FILENAME										= "subjectFile.filename";
+	public static final String			SUBJECT_FILE_STUDY_COMP										= "subjectFile.studyComp";
+	public static final String			SUBJECT_FILE_USER_ID											= "subjectFile.userId";
+	public static final String			SUBJECT_FILE_COMMENTS										= "subjectFile.comments";
+	
+	/* General ones */
+	public static final String			PAGE_SEARCH												= "page.search";
+	public static final String			PAGE_NEW												= "page.new";
+	public static final String			CANCEL_KEY												= "cancelKey";
+	public static final String			SAVE_KEY												= "saveKey";
+	public static final String			DELETE_KEY												= "deleteKey";
+	public static final String			STUDY													= "study";
+
 }
