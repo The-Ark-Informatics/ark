@@ -63,7 +63,8 @@ public class BioUploadStep1 extends AbstractWizardStepPanel {
 	}
 
 	public BioUploadStep1(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
-		super(id, "Step 1/5: Select data file to upload", "Select the file containing data, the file type and the specified delimiter, click Next to continue.");
+		super(id, "Step 1/5: Select data file to upload", 
+				"Select the file containing data, the file type and the specified delimiter, click Next to continue.");
 
 		this.containerForm = containerForm;
 		this.setWizardForm(wizardForm);
@@ -77,7 +78,7 @@ public class BioUploadStep1 extends AbstractWizardStepPanel {
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.lims.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
 		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
 		
-		java.util.Collection<UploadType> uploadTypeCollection = iArkCommonService.getUploadTypesForSubject();
+		java.util.Collection<UploadType> uploadTypeCollection = iArkCommonService.getUploadTypesForLims();
 		ChoiceRenderer uploadTypeRenderer = new ChoiceRenderer(au.org.theark.lims.web.Constants.UPLOAD_TYPE_NAME, au.org.theark.lims.web.Constants.UPLOAD_TYPE_ID);
 		uploadTypeDdc = new DropDownChoice<UploadType>(au.org.theark.lims.web.Constants.UPLOADVO_UPLOAD_UPLOAD_TYPE, (List) uploadTypeCollection, uploadTypeRenderer);
 		containerForm.getModelObject().getUpload().setUploadType(iArkCommonService.getDefaultUploadType());
