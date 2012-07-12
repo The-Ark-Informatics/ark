@@ -43,7 +43,7 @@ import au.org.theark.lims.util.CustomFieldUploadValidator;
 import au.org.theark.lims.util.SubjectUploadValidator;
 import au.org.theark.lims.web.component.bioupload.form.WizardForm;
 
-public class SubjectUploadStep3 extends AbstractWizardStepPanel {
+public class BioUploadStep3 extends AbstractWizardStepPanel {
 
 	private static final long				serialVersionUID		= 2987959815074138750L;
 	private Form<UploadVO>					containerForm;
@@ -67,7 +67,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 
 																				};
 
-	public SubjectUploadStep3(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
+	public BioUploadStep3(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 3/5: Data Validation", "The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.");
 		this.containerForm = containerForm;
 		this.wizardForm = wizardForm;
