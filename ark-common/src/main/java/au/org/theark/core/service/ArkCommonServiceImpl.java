@@ -948,6 +948,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getDefaultUploadType();
 	}
 
+	public UploadType getDefaultUploadTypeForLims(){
+		return studyDao.getDefaultUploadTypeForLims();
+	}
+
 	public UploadType getCustomFieldDataUploadType(){
 		return studyDao.getCustomFieldDataUploadType();
 	}	
@@ -1183,9 +1187,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getUploadStatusForAwaitingValidation();
 	}
 
-	
+
 	public Collection<UploadType> getUploadTypesForSubject(){
 		return studyDao.getUploadTypesForSubject();
+	}
+	public Collection<UploadType> getUploadTypesForLims(){
+		return studyDao.getUploadTypesForLims();
 	}
 	
 	public List<CustomField> matchCustomFieldsFromInputFile(FileUpload fileUpload, Study study, ArkFunction arkFunction) {
