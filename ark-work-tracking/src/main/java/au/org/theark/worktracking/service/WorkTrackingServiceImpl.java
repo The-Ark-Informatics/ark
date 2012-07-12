@@ -18,6 +18,8 @@ import au.org.theark.core.model.worktracking.entity.BillingType;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
 import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
+import au.org.theark.core.model.worktracking.entity.WorkRequest;
+import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
 import au.org.theark.worktracking.model.dao.IWorkTrackingDao;
 import au.org.theark.worktracking.util.Constants;
 
@@ -92,7 +94,6 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	public List<Researcher> searchResearcher(Researcher researcher) {
-		// TODO Auto-generated method stub
 		return workTrackingDao.searchResearcher(researcher);
 	}
 
@@ -128,5 +129,46 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 			BillableItemType billableItemType) {
 		return workTrackingDao.searchBillableItemType(billableItemType);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<WorkRequestStatus> getWorkRequestStatuses() {
+		return workTrackingDao.getWorkRequestStatuses();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void createWorkRequest(WorkRequest workRequest)
+			throws ArkSystemException, EntityExistsException {
+		workTrackingDao.createWorkRequest(workRequest);		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void updateWorkRequest(WorkRequest workRequest)
+			throws ArkSystemException, EntityExistsException {
+		workTrackingDao.updateWorkRequest(workRequest);		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void deleteWorkRequest(WorkRequest workRequest)
+			throws ArkSystemException, EntityCannotBeRemoved {
+		workTrackingDao.deleteWorkRequest(workRequest);
+		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<WorkRequest> searchWorkRequest(WorkRequest workRequest) {
+		return workTrackingDao.searchWorkRequest(workRequest);
+	}
+	
+	
 	
 }
