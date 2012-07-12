@@ -590,6 +590,8 @@ public interface IArkCommonService<T> {
 	public Collection<UploadType> getUploadTypes();
 	
 	public Collection<UploadType> getUploadTypesForSubject();
+	
+	public Collection<UploadType> getUploadTypesForLims();
 
 	public List<Upload> searchUploads(Upload uploadCriteria);
 

@@ -518,6 +518,8 @@ public interface IStudyDao {
 
 	public UploadType getDefaultUploadType();
 	
+	public UploadType getDefaultUploadTypeForLims();
+	
 	public UploadType getCustomFieldDataUploadType();
 	
 	/**
@@ -628,4 +630,7 @@ public interface IStudyDao {
 	public UploadStatus getUploadStatusForAwaitingValidation();
 
 	public Collection<UploadType> getUploadTypesForSubject();
+
+	public Collection<UploadType> getUploadTypesForLims();
+	
 }
