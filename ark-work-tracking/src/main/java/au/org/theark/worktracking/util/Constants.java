@@ -9,6 +9,9 @@ public class Constants {
 	public static final String BILLABLE_ITEM_TYPE 									= "BILLABLE_ITEM_TYPE";
 	public static final String TAB_MODULE_BILLABLE_ITEM_TYPE 						= "tab.module.work.billableitemtype";
 	
+	public static final String WORK_REQUEST 										= "WORK_REQUEST";
+	public static final String TAB_MODULE_WORK_REQUEST 								= "tab.module.work.workrequest";
+	
 	public static final String WORK_SUBMENU 										= "WorkSubMenus";
 	
 	
@@ -21,10 +24,12 @@ public class Constants {
 	public static final String			WORK_TRACKING_SERVICE											= "workTrackingService";
 	public static final String			WORK_TRACKING_DAO												= "workTrackingDao";
 	
-	
-	/* Researcher Constants */
+	/* Common Constants */
 	public static final String			ID																= "id";
 	public static final String			NAME															= "name";
+	public static final String			STUDY_ID														= "studyId";
+	
+	/* Researcher Constants */	
 	public static final String			FIRST_NAME														= "firstName";
 	public static final String			LAST_NAME														= "lastName";
 	public static final String			EMAIL															= "email";
@@ -33,7 +38,6 @@ public class Constants {
 	public static final String			ROLE													        = "researcherRole";
 	public static final String			STATUS													    	= "researcherStatus";
 	public static final String			LAST_ACTIVE_DATE											    = "lastActiveDate";
-	public static final String			STUDY_ID														= "studyId";
 	
 	public static final String			RESEARCHER_STATUS_KEY											= "id";
 	public static final String			RESEARCHER_ROLE_KEY												= "id";
@@ -109,7 +113,7 @@ public class Constants {
 	public static final String			BIT_QUANTITY_PER_UNIT											= "quantityPerUnit";
 	public static final String			BIT_UNIT_PRICE													= "unitPrice";
 	public static final String			BIT_GST															= "gst";
-	public static final String			BIT_STATUS														="billableItemTypeStatus";
+	public static final String			BIT_STATUS														= "billableItemTypeStatus";
 	
 	public static final String			BILLABLE_ITEM_TYPE_CUSTOM										= "CUSTOM";
 	public static final String			BILLABLE_ITEM_TYPE_DEFAULT										= "DEFAULT";
@@ -117,10 +121,39 @@ public class Constants {
 	public static final String			BILLABLE_ITEM_TYPE_ACTIVE										= "ACTIVE";
 	public static final String			BILLABLE_ITEM_TYPE_INACTIVE										= "INACTIVE";
 	
-	public static final String 			BILLABLE_ITEM_TYPE_ITEM_NAME_TAG 								= "Item Name";
-	public static final String 			ERROR_BILLABLE_ITEM_TYPE_ITEM_NAME_REQUIRED 					= "error.work.billableitemtype.itemname.required";
-	public static final String 			ERROR_BILLABLE_ITEM_TYPE_ITEM_NAME_LENGTH 						= "error.work.billableitemtype.itemname.length";
-	public static final String 			BILLABLE_ITEM_TYPE_DESCRIPTION_TAG 								= "Description";
-	public static final String 			ERROR_BILLABLE_ITEM_TYPE_DESCRIPTION_LENGTH 					= "error.work.billableitemtype.description.length";
+	public static final String BILLABLE_ITEM_TYPE_ITEM_NAME_TAG 										= "Item Name";
+	public static final String ERROR_BILLABLE_ITEM_TYPE_ITEM_NAME_REQUIRED 								= "error.work.billableitemtype.itemname.required";
+	public static final String ERROR_BILLABLE_ITEM_TYPE_ITEM_NAME_LENGTH 								= "error.work.billableitemtype.itemname.length";
+	public static final String BILLABLE_ITEM_TYPE_DESCRIPTION_TAG 										= "Description";
+	public static final String ERROR_BILLABLE_ITEM_TYPE_DESCRIPTION_LENGTH 								= "error.work.billableitemtype.description.length";
+	
+	//Work Request Constants
+	
+	public static final String			WORK_REQUEST_ID													= "workRequest.id";
+	public static final String			WORK_REQUEST_ITEM_NAME											= "workRequest.name";
+	public static final String			WORK_REQUEST_REQUESTED_DATE										= "workRequest.requestedDate";
+	public static final String			WORK_REQUEST_REQUEST_STATUS										= "workRequest.requestStatus";
+	public static final String			WORK_REQUEST_COMMENCED_DATE										= "workRequest.commencedDate";
+	public static final String			WORK_REQUEST_COMPLETED_DATE										= "workRequest.completedDate";
+	public static final String			WORK_REQUEST_DESCRIPTION										= "workRequest.description";
+	public static final String			WORK_REQUEST_RESEARCHER											= "workRequest.researcher";
+	
+	public static final String			WORK_REQUEST_STATUS_KEY											= "id";
+	public static final String			WORK_REQUEST_RESEARCHER_KEY										= "id";
+	
+	public static final String			WR_REQUESTED_DATE												= "requestedDate";
+	public static final String			WR_COMMENCED_DATE												= "commencedDate";
+	public static final String			WR_COMPLETED_DATE												= "completedDate";
+	public static final String			WR_STATUS														= "requestStatus";
+	
+	public static final String WORK_REQUEST_ITEM_NAME_TAG 												= "Item Name";
+	public static final String ERROR_WORK_REQUEST_ITEM_NAME_REQUIRED 									= "error.work.workrequest.name.required";
+	public static final String ERROR_WORK_REQUEST_ITEM_NAME_LENGTH 										= "error.work.workrequest.name.length";
+	public static final String WORK_REQUEST_DESCRIPTION_TAG 											= "Description";
+	public static final String ERROR_WORK_REQUEST_DESCRIPTION_LENGTH 									= "error.work.workrequest.description.length";
+	public static final String WORK_REQUEST_REQUESTED_DATE_TAG 											= "Requested Date";
+	public static final String ERROR_WORK_REQUEST_REQUESTED_DATE_REQUIRED 								= "error.work.workrequest.requesteddate.required";
+	public static final String WORK_REQUEST_STATUS_TAG 													= "Status";
+	public static final String ERROR_WORK_REQUEST_STATUS_REQUIRED 										= "error.work.workrequest.requeststatus.required";
 	
 }

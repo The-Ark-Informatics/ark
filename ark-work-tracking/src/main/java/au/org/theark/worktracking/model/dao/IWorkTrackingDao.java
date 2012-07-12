@@ -11,6 +11,8 @@ import au.org.theark.core.model.worktracking.entity.BillingType;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
 import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
+import au.org.theark.core.model.worktracking.entity.WorkRequest;
+import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
 
 public interface IWorkTrackingDao {
 
@@ -92,5 +94,41 @@ public interface IWorkTrackingDao {
 	 * @return
 	 */
 	public List<BillableItemType> searchBillableItemType(BillableItemType billableItemType);
+	
+	/**
+	 * @return List of {@link WorkRequestStatus} assigned to work requests.
+	 */
+	public List<WorkRequestStatus> getWorkRequestStatuses();
+	
+	/**
+	 * Create new {@link WorkRequest} record
+	 * @param workRequest
+	 * @throws ArkSystemException
+	 * @throws EntityExistsException
+	 */
+	public void createWorkRequest(WorkRequest workRequest) throws ArkSystemException, EntityExistsException ;
+	
+	/**
+	 * Update {@link WorkRequest} record
+	 * @param billableItemType
+	 * @throws ArkSystemException
+	 * @throws EntityExistsException
+	 */
+	public void updateWorkRequest(WorkRequest workRequest) throws ArkSystemException, EntityExistsException ;
+	
+	/**
+	 * Delete {@link WorkRequest} record
+	 * @param billableItemType
+	 * @throws ArkSystemException
+	 * @throws EntityExistsException
+	 */
+	public void deleteWorkRequest(WorkRequest workRequest) throws ArkSystemException, EntityCannotBeRemoved ;
+	
+	/**
+	 * Search Work Request's for the given criteria
+	 * @param researcher
+	 * @return Selected Researcher List.
+	 */
+	public List<WorkRequest> searchWorkRequest(WorkRequest workRequest);
 	
 }

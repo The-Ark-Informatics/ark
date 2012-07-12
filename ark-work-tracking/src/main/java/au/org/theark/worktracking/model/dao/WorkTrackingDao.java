@@ -19,6 +19,8 @@ import au.org.theark.core.model.worktracking.entity.BillingType;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
 import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
+import au.org.theark.core.model.worktracking.entity.WorkRequest;
+import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
 import au.org.theark.worktracking.util.Constants;
 
 @Repository(Constants.WORK_TRACKING_DAO)
@@ -178,5 +180,74 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		List<BillableItemType> list = criteria.list();
 		return list;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<WorkRequestStatus> getWorkRequestStatuses() {
+		Example workRequestStatus = Example.create(new WorkRequestStatus());
+		Criteria criteria = getSession().createCriteria(WorkRequestStatus.class)
+				.add(workRequestStatus);
+		return criteria.list();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void createWorkRequest(WorkRequest workRequest)
+			throws ArkSystemException, EntityExistsException {
+		getSession().save(workRequest);		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void updateWorkRequest(WorkRequest workRequest)
+			throws ArkSystemException, EntityExistsException {
+		getSession().update(workRequest);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void deleteWorkRequest(WorkRequest workRequest)
+			throws ArkSystemException, EntityCannotBeRemoved {
+		getSession().delete(workRequest);
+		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<WorkRequest> searchWorkRequest(WorkRequest workRequestCriteria) {
+		Criteria criteria = getSession().createCriteria(WorkRequest.class);
+		criteria.add(Restrictions.eq(Constants.STUDY_ID , workRequestCriteria.getStudyId()));
+		if(workRequestCriteria.getId() != null ){
+			criteria.add(Restrictions.eq(Constants.ID, workRequestCriteria.getId()));
+		}	
+		
+		if(workRequestCriteria.getName() != null ){
+			criteria.add(Restrictions.like(Constants.NAME, workRequestCriteria.getName()+"%"));
+		}
+		
+		if(workRequestCriteria.getRequestedDate() != null ){
+			criteria.add(Restrictions.eq(Constants.WR_REQUESTED_DATE, workRequestCriteria.getRequestedDate()));
+		}
+		
+		if(workRequestCriteria.getCommencedDate() != null ){
+			criteria.add(Restrictions.eq(Constants.WR_COMMENCED_DATE, workRequestCriteria.getCommencedDate()));
+		}
+		
+		if(workRequestCriteria.getCompletedDate() != null ){
+			criteria.add(Restrictions.eq(Constants.WR_COMPLETED_DATE, workRequestCriteria.getCompletedDate()));
+		}
+		
+		if(workRequestCriteria.getRequestStatus() != null ){
+			criteria.add(Restrictions.eq(Constants.WR_STATUS, workRequestCriteria.getRequestStatus()));
+		}
+			
+		List<WorkRequest> list = criteria.list();
+		return list;
+	}	
 	
 }
