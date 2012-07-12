@@ -31,7 +31,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
-import au.org.theark.lims.job.SubjectCustomDataUploadExecutor;
+import au.org.theark.lims.job.BioSpecimenCustomDataUploadExecutor;
 import au.org.theark.lims.job.StudyDataUploadExecutor;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.SubjectUploadReport;
@@ -97,7 +97,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 				task.run();
 			}
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")){
-				SubjectCustomDataUploadExecutor task = new SubjectCustomDataUploadExecutor(iArkCommonService, iLimsService, inputStream, uploadId, //null user
+				BioSpecimenCustomDataUploadExecutor task = new BioSpecimenCustomDataUploadExecutor(iArkCommonService, iLimsService, inputStream, uploadId, //null user
 							studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
 				task.run();
 			}
