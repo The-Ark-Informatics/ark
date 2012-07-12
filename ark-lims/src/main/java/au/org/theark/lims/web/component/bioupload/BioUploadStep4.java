@@ -37,7 +37,7 @@ import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.SubjectUploadReport;
 import au.org.theark.lims.web.component.bioupload.form.WizardForm;
 
-public class SubjectUploadStep4 extends AbstractWizardStepPanel {
+public class BioUploadStep4 extends AbstractWizardStepPanel {
 	private static final long	serialVersionUID	= 2971945948091031160L;
 	private Form<UploadVO>		containerForm;
 	private WizardForm			wizardForm;
@@ -48,7 +48,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private ILimsService		iLimsService;
 
-	public SubjectUploadStep4(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
+	public BioUploadStep4(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 4/5: Confirm Upload", "Data will now be written to the database, click Next to continue, otherwise click Cancel.");
 		this.containerForm = containerForm;
 		this.wizardForm = wizardForm;

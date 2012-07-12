@@ -111,7 +111,6 @@ public class BioSpecimenCustomDataUploadExecutor {
 		SimpleTrigger trigger1 = newTrigger().withIdentity("BiospecimenCustomDataUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
 		
 		sched.scheduleJob(customDataUploadJob, trigger1);
-		//		log.warn(studyUploadJob.getKey() + " will run at: " + scheduleTime1 + " and repeat: " + trigger1.getRepeatCount() + " times, every " + trigger1.getRepeatInterval() / 1000 + " seconds");
 		// All of the jobs have been added to the scheduler, but none of the jobs will run until the scheduler has been started
 		sched.start();
 	}

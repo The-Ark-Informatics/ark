@@ -27,10 +27,10 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.lims.web.component.bioupload.BioUploadStep1;
-import au.org.theark.lims.web.component.bioupload.SubjectUploadStep2;
-import au.org.theark.lims.web.component.bioupload.SubjectUploadStep3;
-import au.org.theark.lims.web.component.bioupload.SubjectUploadStep4;
-import au.org.theark.lims.web.component.bioupload.SubjectUploadStep5;
+import au.org.theark.lims.web.component.bioupload.BioUploadStep2;
+import au.org.theark.lims.web.component.bioupload.BioUploadStep3;
+import au.org.theark.lims.web.component.bioupload.BioUploadStep4;
+import au.org.theark.lims.web.component.bioupload.BioUploadStep5;
 
 /**
  * @author cellis
@@ -56,10 +56,10 @@ public class WizardForm extends AbstractWizardForm<UploadVO> {
 
 	public void initialiseSteps() {
 		BioUploadStep1 step1 = new BioUploadStep1("step", containerForm, this);
-		SubjectUploadStep2 step2 = new SubjectUploadStep2("step", containerForm, this);
-		SubjectUploadStep3 step3 = new SubjectUploadStep3("step", containerForm, this);
-		SubjectUploadStep4 step4 = new SubjectUploadStep4("step", containerForm, this);
-		SubjectUploadStep5 step5 = new SubjectUploadStep5("step", containerForm);
+		BioUploadStep2 step2 = new BioUploadStep2("step", containerForm, this);
+		BioUploadStep3 step3 = new BioUploadStep3("step", containerForm, this);
+		BioUploadStep4 step4 = new BioUploadStep4("step", containerForm, this);
+		BioUploadStep5 step5 = new BioUploadStep5("step", containerForm);
 
 		step1.setNextStep(step2);
 		step2.setNextStep(step3);

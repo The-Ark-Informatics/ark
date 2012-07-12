@@ -42,7 +42,7 @@ import au.org.theark.lims.web.component.bioupload.form.WizardForm;
 /**
  * The first step of this wizard.
  */
-public class SubjectUploadStep2 extends AbstractWizardStepPanel {
+public class BioUploadStep2 extends AbstractWizardStepPanel {
 
 	private static final long				serialVersionUID		= -4070515786803720370L;
 	private Form<UploadVO>					containerForm;
@@ -60,12 +60,12 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 													}
 												};
 
-	public SubjectUploadStep2(String id) {
+	public BioUploadStep2(String id) {
 		super(id);
 		initialiseDetailForm();
 	}
 
-	public SubjectUploadStep2(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
+	public BioUploadStep2(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 2/5: File Format Validation", "The file format has been validated. If there are no errors, click Next to continue.");
 		this.containerForm = containerForm;
 		initialiseDetailForm();
