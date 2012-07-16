@@ -49,6 +49,7 @@ import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
 import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataContainerPanel;
 import au.org.theark.lims.web.component.biospecimenuidtemplate.BiospecimenUidTemplateContainerPanel;
 import au.org.theark.lims.web.component.biospecimenupload.BiospecimenUploadContainerPanel;
+import au.org.theark.lims.web.component.bioupload.BioUploadContainerPanel;
 import au.org.theark.lims.web.component.inventory.panel.InventoryContainerPanel;
 import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.SubjectContainerPanel;
@@ -178,7 +179,7 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = new BarcodeLabelContainerPanel(panelId, arkContextMarkup);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD)) {
-			panelToReturn = new BarcodeLabelContainerPanel(panelId, arkContextMarkup);
+			panelToReturn = new BioUploadContainerPanel(panelId, arkFunction);
 		}
 		else {
 			//TODO: This shouldn't happen when all functions have been implemented
