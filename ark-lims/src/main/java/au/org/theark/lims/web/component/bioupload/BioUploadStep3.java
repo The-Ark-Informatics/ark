@@ -133,7 +133,7 @@ public class BioUploadStep3 extends AbstractWizardStepPanel {
 			List<String> listOfUidsToUpdate = new ArrayList<String>();				//TODO remove hardcoding
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biospecimen Custom Data")){
 				BioCustomFieldUploadValidator customFieldUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService);
-				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);
+				validationMessages = customFieldUploadValidator.validateBiospecimenCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				insertRows = customFieldUploadValidator.getInsertRows();
 				updateRows = customFieldUploadValidator.getUpdateRows();
@@ -141,7 +141,7 @@ public class BioUploadStep3 extends AbstractWizardStepPanel {
 			}																												//TODO remove hardcoding
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biocollection Custom Data")){
 				BioCustomFieldUploadValidator customFieldUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService);
-				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);
+				validationMessages = customFieldUploadValidator.validateBiocollectionCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				//TODO consider if we want alternative way to do this - and maybe a superclass of uploadvalidator which draws out commonalities
 				insertRows = customFieldUploadValidator.getInsertRows();
