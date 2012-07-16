@@ -177,6 +177,9 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BARCODE_LABEL)) {
 			panelToReturn = new BarcodeLabelContainerPanel(panelId, arkContextMarkup);
 		}
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD)) {
+			panelToReturn = new BarcodeLabelContainerPanel(panelId, arkContextMarkup);
+		}
 		else {
 			//TODO: This shouldn't happen when all functions have been implemented
 			panelToReturn = new EmptyPanel(panelId);
