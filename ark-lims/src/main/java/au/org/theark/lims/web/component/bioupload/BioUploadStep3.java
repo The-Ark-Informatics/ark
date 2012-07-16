@@ -40,7 +40,6 @@ import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.lims.util.BioCustomFieldUploadValidator;
-import au.org.theark.lims.util.BioUploadValidator;
 import au.org.theark.lims.web.component.bioupload.form.WizardForm;
 
 public class BioUploadStep3 extends AbstractWizardStepPanel {
@@ -133,12 +132,12 @@ public class BioUploadStep3 extends AbstractWizardStepPanel {
 			//this is not the best way to do this fix TODO
 			List<String> listOfUidsToUpdate = new ArrayList<String>();				//TODO remove hardcoding
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biospecimen Custom Data")){
-				BioUploadValidator subjectUploadValidator = new BioUploadValidator(iArkCommonService);
-				validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject(), listOfUidsToUpdate);
+				BioCustomFieldUploadValidator customFieldUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService);
+				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
-				insertRows = subjectUploadValidator.getInsertRows();
-				updateRows = subjectUploadValidator.getUpdateRows();
-				errorCells = subjectUploadValidator.getErrorCells();
+				insertRows = customFieldUploadValidator.getInsertRows();
+				updateRows = customFieldUploadValidator.getUpdateRows();
+				errorCells = customFieldUploadValidator.getErrorCells();
 			}																												//TODO remove hardcoding
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biocollection Custom Data")){
 				BioCustomFieldUploadValidator customFieldUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService);
