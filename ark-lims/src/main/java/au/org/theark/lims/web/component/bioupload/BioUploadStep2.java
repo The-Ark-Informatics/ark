@@ -35,8 +35,8 @@ import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
-import au.org.theark.lims.util.CustomFieldUploadValidator;
-import au.org.theark.lims.util.SubjectUploadValidator;
+import au.org.theark.lims.util.BioCustomFieldUploadValidator;
+import au.org.theark.lims.util.BioUploadValidator;
 import au.org.theark.lims.web.component.bioupload.form.WizardForm;
 
 /**
@@ -52,13 +52,13 @@ public class BioUploadStep2 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
 
-	private ArkDownloadAjaxButton		downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
-													private static final long	serialVersionUID	= 1L;
-													@Override
-													protected void onError(AjaxRequestTarget target, Form<?> form) {
-														this.error("Unexpected Error: Download request could not be processed");
-													}
-												};
+	private ArkDownloadAjaxButton	downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
+												private static final long	serialVersionUID	= 1L;
+												@Override
+												protected void onError(AjaxRequestTarget target, Form<?> form) {
+													this.error("Unexpected Error: Download request could not be processed");
+												}
+											};
 
 	public BioUploadStep2(String id) {
 		super(id);
@@ -103,14 +103,14 @@ public class BioUploadStep2 extends AbstractWizardStepPanel {
 				throw new FileFormatException();
 			}
 																									//TODO: remove hardcode
-			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")){
-				SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
-				validationMessages = subjectUploadValidator.validateSubjectFileFormat(containerForm.getModelObject());				
+			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biospecimen Custom Data")){
+				BioCustomFieldUploadValidator subjectUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService);
+				validationMessages = subjectUploadValidator.validateBiospecimenCustomFieldFileFormat(containerForm.getModelObject());				
 			}
-			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")){
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biocollection Custom Data")){
 				//TODO : custom field validation
-				CustomFieldUploadValidator customFieldUploadValidator = new CustomFieldUploadValidator(iArkCommonService);
-				validationMessages = customFieldUploadValidator.validateCustomFieldFileFormat(containerForm.getModelObject());			
+				BioCustomFieldUploadValidator customFieldUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService);
+				validationMessages = customFieldUploadValidator.validateBiocollectionCustomFieldFileFormat(containerForm.getModelObject());			
 			}
 			else{
 				//TODO : Throw error back to user
