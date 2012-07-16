@@ -59,9 +59,9 @@ import com.csvreader.CsvReader;
  * 
  * @author cellis
  */
-public class SubjectUploadValidator {
+public class BioUploadValidator {
 	private static final long		serialVersionUID			= -1933045886948087734L;
-	private static Logger			log							= LoggerFactory.getLogger(SubjectUploadValidator.class);
+	private static Logger			log							= LoggerFactory.getLogger(BioUploadValidator.class);
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
 	private Long						studyId;
@@ -77,7 +77,7 @@ public class SubjectUploadValidator {
 	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
 	private int							row							= 1;
 
-	public SubjectUploadValidator() {
+	public BioUploadValidator() {
 		super();
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -88,7 +88,7 @@ public class SubjectUploadValidator {
 		simpleDateFormat.setLenient(false);
 	}
 
-	public SubjectUploadValidator(Study study) {
+	public BioUploadValidator(Study study) {
 		super();
 		this.study = study;
 		this.insertRows = new HashSet<Integer>();
@@ -98,7 +98,7 @@ public class SubjectUploadValidator {
 	}
 
 	@SuppressWarnings("unchecked")
-	public SubjectUploadValidator(IArkCommonService iArkCommonService) {
+	public BioUploadValidator(IArkCommonService iArkCommonService) {
 		super();
 		this.iArkCommonService = iArkCommonService;
 		Subject currentUser = SecurityUtils.getSubject();
