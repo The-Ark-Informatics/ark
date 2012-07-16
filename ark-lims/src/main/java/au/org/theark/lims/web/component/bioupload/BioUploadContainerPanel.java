@@ -36,7 +36,7 @@ import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.lims.web.component.bioupload.form.ContainerForm;
 
-public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
+public class BioUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
@@ -52,7 +52,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 	private ContainerForm						containerForm;
 	private ArkFunction							arkFunction;
 
-	public SubjectUploadContainerPanel(String id, ArkFunction arkFunction) {
+	public BioUploadContainerPanel(String id, ArkFunction arkFunction) {
 		super(id);
 
 		/* Initialise the CPM */
