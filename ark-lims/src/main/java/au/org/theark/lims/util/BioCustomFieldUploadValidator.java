@@ -249,7 +249,7 @@ public class BioCustomFieldUploadValidator {
 					log.error(e.getMessage());
 				}
 			}
-			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			validationMessages = validateBiocollectionCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.lims.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -292,7 +292,7 @@ public class BioCustomFieldUploadValidator {
 					log.error(e.getMessage());
 				}
 			}
-			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			validationMessages = validateBiospecimenCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.lims.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -310,7 +310,7 @@ public class BioCustomFieldUploadValidator {
 	 *           is the UploadVO of the file
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
+	public Collection<String> validateBiospecimenCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
 		java.util.Collection<String> validationMessages = null;
 		try {
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
@@ -332,6 +332,46 @@ public class BioCustomFieldUploadValidator {
 				}
 			}
 
+			//todo split if we see the differences validationMessages = validateBiospecimenSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
+			 validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
+		}
+		catch (IOException e) {
+			log.error(e.getMessage());
+		}
+		return validationMessages;
+	}
+
+
+	/**
+	 * Validates the file in the default "matrix" file data assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * 
+	 * @param uploadVo
+	 *           is the UploadVO of the file
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateBiocollectionCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
+		java.util.Collection<String> validationMessages = null;
+		try {
+			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
+			String filename = uploadVo.getFileUpload().getClientFileName();
+			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
+			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
+
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS")) {
+				Workbook w;
+				try {
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = convertXlsToCsv(w);
+					inputStream.reset();
+					delimiterCharacter = ',';
+				}
+				catch (BiffException e) {
+					log.error(e.getMessage());
+				}
+			}
+
+			//todo split if we see the differences validationMessages = validateBiocollectionSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
 			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
 		}
 		catch (IOException e) {
@@ -340,6 +380,15 @@ public class BioCustomFieldUploadValidator {
 		return validationMessages;
 	}
 
+	/*
+	 * TODO ASAP:  investigate this sort of method...all it seems to do is catch an exception and log it (seemingly letting 
+	 * the file appear validated.  This is likely to be replicated many places 
+	 * @param inputStream
+	 * @param fileFormat
+	 * @param delimChar
+	 * @param uidsToUpdateReference
+	 * @return
+	 */
 	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
 		java.util.Collection<String> validationMessages = null;
 
@@ -374,7 +423,7 @@ public class BioCustomFieldUploadValidator {
 	 *            general ARK Exception
 	 * @return a collection of file format validation messages
 	 */
-	public java.util.Collection<String> validateCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkBaseException {
+	public java.util.Collection<String> validateBiospecimenCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkBaseException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		row = 0;
@@ -395,7 +444,7 @@ public class BioCustomFieldUploadValidator {
 			List<String> badHeaders = new ArrayList<String>();
 			
 			for(String header : headerColumnArray){																						
-				if(header.equalsIgnoreCase("SUBJECTUID")) {
+				if(header.equalsIgnoreCase("BIOSPECIMENUID")) {
 					hasSubjectUIDHeader = true;
 				}
 				else{
@@ -456,6 +505,108 @@ public class BioCustomFieldUploadValidator {
 		return fileValidationMessages;
 	}
 
+
+
+	/**
+	 * Validates the file in the custom field list.
+	 * 
+	 * Requires.  SubjectUID specified in row one.  And all Fields must be valid for its type
+	 * 
+	 * Where N is any number of columns
+	 * 
+	 * @param fileInputStream
+	 *           is the input stream of a file
+	 * @param inLength
+	 *           is the length of a file
+	 * @throws FileFormatException
+	 *            file format Exception
+	 * @throws ArkBaseException
+	 *            general ARK Exception
+	 * @return a collection of file format validation messages
+	 */
+	public java.util.Collection<String> validateBiocollectionCustomFieldMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkBaseException {
+		delimiterCharacter = inDelimChr;
+		fileFormat = inFileFormat;
+		row = 0;
+		InputStreamReader inputStreamReader = null;
+		CsvReader csvReader = null;
+		try {
+			inputStreamReader = new InputStreamReader(fileInputStream);
+			if (inLength <= 0) {
+				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + inLength);
+			}
+
+			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+			csvReader.readHeaders();
+			String[] headerColumnArray = csvReader.getHeaders();
+			boolean headerError = false;
+			boolean hasSubjectUIDHeader = false;
+			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+			List<String> badHeaders = new ArrayList<String>();
+			
+			for(String header : headerColumnArray){																						
+				if(header.equalsIgnoreCase("BIOCOLLECTIONUID")) {
+					hasSubjectUIDHeader = true;
+				}
+				else{
+					//TODO just make it get all of them and look through in memory rather than 10-50-300-500 selects?
+					if(iArkCommonService.getCustomFieldByNameStudyArkFunction(header, study, subjectCustomFieldArkFunction) == null){
+						badHeaders.add(header);
+						headerError = true;
+					}
+				}
+			}
+			if (headerError || !hasSubjectUIDHeader) {
+				// Invalid file format
+				StringBuffer stringBuffer = new StringBuffer();
+				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n\n");
+				stringBuffer.append("This file is not valid because; \n");
+				fileValidationMessages.add(stringBuffer.toString());
+				if(!hasSubjectUIDHeader){
+					fileValidationMessages.add("The column name \"SUBJECTUID\" must exist as the header of the first column.\n");
+				}
+				for (String badHeader : badHeaders) {
+					fileValidationMessages.add("The column name " + badHeader + " does not with an existing study-specific custom field.\n");
+				}
+				log.warn("failed header validation");
+			}
+			else{
+				log.warn("passed header validation");
+			}
+			row = 1;
+		}
+		catch (IOException ioe) {
+			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+		}
+		catch (Exception ex) {
+			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
+			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+		}
+		finally {
+			if (csvReader != null) {
+				try {
+					csvReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			if (inputStreamReader != null) {
+				try {
+					//TODO ASAP : re-evaluate below
+					inputStreamReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}
+			}
+		}
+
+		return fileValidationMessages;
+	}
+
+
 	/**
 	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN...
 	 * 
@@ -493,7 +644,7 @@ public class BioCustomFieldUploadValidator {
 			csvReader.readHeaders();
 			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
 			//uidsToUpdateReference = subjectUIDsAlreadyExisting;
-			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
+			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());			//
 			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 																							//remove if not subjectuid, enforce fetch of customField to save another query each
 			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
