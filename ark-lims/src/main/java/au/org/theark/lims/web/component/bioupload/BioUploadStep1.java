@@ -137,7 +137,6 @@ public class BioUploadStep1 extends AbstractWizardStepPanel {
 		String checksum = getHex(byteArray);
 
 		containerForm.getModelObject().getUpload().setStudy(study);
-		//containerForm.getModelObject().getUpload().set;
 		containerForm.getModelObject().getUpload().setFileFormat(fileFormat);
 		containerForm.getModelObject().getUpload().setChecksum(checksum);
 		containerForm.getModelObject().getUpload().setFilename(filename);
