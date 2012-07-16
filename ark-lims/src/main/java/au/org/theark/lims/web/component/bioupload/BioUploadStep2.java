@@ -36,7 +36,6 @@ import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.lims.util.BioCustomFieldUploadValidator;
-import au.org.theark.lims.util.BioUploadValidator;
 import au.org.theark.lims.web.component.bioupload.form.WizardForm;
 
 /**
