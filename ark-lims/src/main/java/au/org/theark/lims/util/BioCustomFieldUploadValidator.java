@@ -66,9 +66,9 @@ import com.csvreader.CsvReader;
  * 
  * @author travis
  */
-public class CustomFieldUploadValidator {
+public class BioCustomFieldUploadValidator {
 	private static final long		serialVersionUID			= -1933045886948087734L;
-	private static Logger			log							= LoggerFactory.getLogger(CustomFieldUploadValidator.class);
+	private static Logger			log							= LoggerFactory.getLogger(BioCustomFieldUploadValidator.class);
 
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
@@ -84,7 +84,7 @@ public class CustomFieldUploadValidator {
 	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
 	private int							row							= 1;
 
-	public CustomFieldUploadValidator() {
+	public BioCustomFieldUploadValidator() {
 		super();
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -95,7 +95,7 @@ public class CustomFieldUploadValidator {
 		simpleDateFormat.setLenient(false);
 	}
 
-	public CustomFieldUploadValidator(Study study) {
+	public BioCustomFieldUploadValidator(Study study) {
 		super();
 		this.study = study;
 		this.existantSubjectUIDRows = new HashSet<Integer>();
@@ -105,7 +105,7 @@ public class CustomFieldUploadValidator {
 	}
 
 	@SuppressWarnings("unchecked")
-	public CustomFieldUploadValidator(IArkCommonService iArkCommonService) {
+	public BioCustomFieldUploadValidator(IArkCommonService iArkCommonService) {
 		super();
 		this.iArkCommonService = iArkCommonService;
 		Subject currentUser = SecurityUtils.getSubject();
@@ -180,14 +180,37 @@ public class CustomFieldUploadValidator {
 	 *           is the UploadVO of the file
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileFormat(UploadVO uploadVo) {
+	public Collection<String> validateBiocollectionCustomFieldFileFormat(UploadVO uploadVo) {
 		java.util.Collection<String> validationMessages = null;
 		try {
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
 			String filename = uploadVo.getFileUpload().getClientFileName();
 			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-			validationMessages = validateCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter);
+			validationMessages = validateBiocollectionCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter);
+		}
+		catch (IOException e) {
+			log.error(e.getMessage());
+		}
+		return validationMessages;
+	}
+
+
+	/**
+	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * 
+	 * @param uploadVo
+	 *           is the UploadVO of the file
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateBiospecimenCustomFieldFileFormat(UploadVO uploadVo) {
+		java.util.Collection<String> validationMessages = null;
+		try {
+			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
+			String filename = uploadVo.getFileUpload().getClientFileName();
+			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
+			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
+			validationMessages = validateBiospecimenCustomFieldFileFormat(inputStream, fileFormat, delimiterCharacter);
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -206,7 +229,50 @@ public class CustomFieldUploadValidator {
 	 *           is the delimiter character of the file (eg comma)
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
+	public Collection<String> validateBiocollectionCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
+		java.util.Collection<String> validationMessages = null;
+
+		try {
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS")) {
+				Workbook w;
+				try {
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = convertXlsToCsv(w);
+					inputStream.reset();
+					delimiterCharacter = ',';
+				}
+				catch (BiffException e) {
+					log.error(e.getMessage());
+				}
+				catch (IOException e) {
+					log.error(e.getMessage());
+				}
+			}
+			validationMessages = validateCustomFieldMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+		}
+		catch (FileFormatException ffe) {
+			log.error(au.org.theark.lims.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe) {
+			log.error(au.org.theark.lims.web.Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return validationMessages;
+	}
+
+
+	/**
+	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * 
+	 * @param inputStream
+	 *           is the input stream of the file
+	 * @param fileFormat
+	 *           is the file format (eg txt)
+	 * @param delimChar
+	 *           is the delimiter character of the file (eg comma)
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateBiospecimenCustomFieldFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {

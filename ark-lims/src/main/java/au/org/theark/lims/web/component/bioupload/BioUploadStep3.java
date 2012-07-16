@@ -39,33 +39,31 @@ import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
-import au.org.theark.lims.util.CustomFieldUploadValidator;
-import au.org.theark.lims.util.SubjectUploadValidator;
+import au.org.theark.lims.util.BioCustomFieldUploadValidator;
+import au.org.theark.lims.util.BioUploadValidator;
 import au.org.theark.lims.web.component.bioupload.form.WizardForm;
 
 public class BioUploadStep3 extends AbstractWizardStepPanel {
 
-	private static final long				serialVersionUID		= 2987959815074138750L;
-	private Form<UploadVO>					containerForm;
-	private String								validationMessage;
+	private static final long			serialVersionUID		= 2987959815074138750L;
+	private Form<UploadVO>				containerForm;
+	private String						validationMessage;
 	public java.util.Collection<String>	validationMessages	= null;
-	private WizardForm						wizardForm;
-	private WebMarkupContainer				updateExistingDataContainer;
-	private CheckBox							updateChkBox;
+	private WizardForm					wizardForm;
+	private WebMarkupContainer			updateExistingDataContainer;
+	private CheckBox					updateChkBox;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService				iArkCommonService;
+	private IArkCommonService			iArkCommonService;
 
-	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
+	private ArkDownloadAjaxButton		downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
+																			private static final long	serialVersionUID	= 1L;
 
-																					private static final long	serialVersionUID	= 1L;
-
-																					@Override
-																					protected void onError(AjaxRequestTarget target, Form<?> form) {
-																						this.error("Unexpected Error: Download request could not be processed");
-																					}
-
-																				};
+																			@Override
+																			protected void onError(AjaxRequestTarget target, Form<?> form) {
+																				this.error("Unexpected Error: Download request could not be processed");
+																			}
+																	};
 
 	public BioUploadStep3(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 3/5: Data Validation", "The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.");
@@ -134,16 +132,16 @@ public class BioUploadStep3 extends AbstractWizardStepPanel {
 
 			//this is not the best way to do this fix TODO
 			List<String> listOfUidsToUpdate = new ArrayList<String>();				//TODO remove hardcoding
-			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")){
-				SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
+			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biospecimen Custom Data")){
+				BioUploadValidator subjectUploadValidator = new BioUploadValidator(iArkCommonService);
 				validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject(), listOfUidsToUpdate);
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				insertRows = subjectUploadValidator.getInsertRows();
 				updateRows = subjectUploadValidator.getUpdateRows();
 				errorCells = subjectUploadValidator.getErrorCells();
 			}																												//TODO remove hardcoding
-			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")){
-				CustomFieldUploadValidator customFieldUploadValidator = new CustomFieldUploadValidator(iArkCommonService);
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biocollection Custom Data")){
+				BioCustomFieldUploadValidator customFieldUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService);
 				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				//TODO consider if we want alternative way to do this - and maybe a superclass of uploadvalidator which draws out commonalities
