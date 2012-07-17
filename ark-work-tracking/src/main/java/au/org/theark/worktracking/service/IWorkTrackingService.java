@@ -5,6 +5,7 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.model.worktracking.entity.BillingType;
@@ -129,5 +130,36 @@ public interface IWorkTrackingService {
 	 * @return Selected Researcher List.
 	 */
 	public List<WorkRequest> searchWorkRequest(WorkRequest workRequest);
+	
+	/**
+	 * Create new {@link BillableItem} object
+	 * @param workRequest
+	 * @throws ArkSystemException
+	 * @throws EntityExistsException
+	 */
+	public void createBillableItem(BillableItem billableItem) throws ArkSystemException, EntityExistsException ;
+	
+	/**
+	 * Update {@link BillableItem} object
+	 * @param billableItemType
+	 * @throws ArkSystemException
+	 * @throws EntityExistsException
+	 */
+	public void updateBillableItem(BillableItem billableItem) throws ArkSystemException, EntityExistsException ;
+	
+	/**
+	 * Delete {@link BillableItem} object
+	 * @param billableItemType
+	 * @throws ArkSystemException
+	 * @throws EntityExistsException
+	 */
+	public void deleteBillableItem(BillableItem billableItem) throws ArkSystemException, EntityCannotBeRemoved ;
+	
+	/**
+	 * Search Billable Item's for the given criteria
+	 * @param researcher
+	 * @return Selected Researcher List.
+	 */
+	public List<BillableItem> searchBillableItem(BillableItem billableItem);
 	
 }

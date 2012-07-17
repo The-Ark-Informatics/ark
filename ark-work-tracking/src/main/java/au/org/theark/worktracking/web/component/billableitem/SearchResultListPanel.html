@@ -1,0 +1,75 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			<th width="5%">
+				<label for="id">
+					<wicket:message key="work.billableitem.id">
+						ID
+					</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="description">
+					<wicket:message key="work.billableitem.description">
+						Description:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="25%">
+				<label for="workRequest">
+					<wicket:message key="work.billableitem.workrequest">
+						Work Request:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="20%">
+				<label for="quantity">
+					<wicket:message key="work.billableitem.quantity">
+						Quantity:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="20%">
+				<label for="invoiced">
+					<wicket:message key="work.billableitem.invoice">
+						Invoiced:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="2%">&nbsp;</th>			
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="billableItemList">
+			<td width="2%">&nbsp;</td>
+			<td width="5%">
+				<span wicket:id="billableItem.id">100</span>
+			</td>
+			<td width="15%">
+				<a href="#"wicket:id="billableItem.description">
+			  	<span wicket:id="nameLbl">Name</span>
+			  </a>
+			</td>
+			<td width="25%">
+			  <span wicket:id="billableItem.workRequest">Work request name</span>
+			</td>
+			<td width="20%">
+				<span wicket:id="billableItem.quantity">quantity</span>
+			</td>
+			<td width="20%">
+				<span wicket:id="billableItem.invoice">invoiced</span>
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tfoot>
+			<tr>
+				<td width="2%">&nbsp;</td>
+				<td colspan="5"><span wicket:id="navigator" class="a"></span></td>
+				<td width="2%">&nbsp;</td>
+			</tr>
+		</tfoot>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>

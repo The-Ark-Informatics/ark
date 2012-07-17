@@ -46,8 +46,4 @@ public class BillableItemTypeVo implements Serializable {
 	public void setMode(int mode) {
 		this.mode = mode;
 	}
-	
-	
-	
-	
 }
