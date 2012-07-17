@@ -15,6 +15,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.worktracking.util.Constants;
+import au.org.theark.worktracking.web.component.billableitem.BillableItemContainerPanel;
 import au.org.theark.worktracking.web.component.billableitemtype.BillableItemTypeContainerPanel;
 import au.org.theark.worktracking.web.component.researcher.ResearcherContainerPanel;
 import au.org.theark.worktracking.web.component.workrequest.WorkRequestContainerPanel;
@@ -65,6 +66,9 @@ public class WorkTrackingSubMenuTab extends AbstractArkTabPanel{
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(Constants.WORK_REQUEST)) {
 						panelToReturn = new WorkRequestContainerPanel(panelId);
+					}
+					else if (menuArkFunction.getName().equalsIgnoreCase(Constants.BILLABLE_ITEM)) {
+						panelToReturn = new BillableItemContainerPanel(panelId);
 					}
 					return panelToReturn;
 				}

@@ -12,6 +12,9 @@ public class Constants {
 	public static final String WORK_REQUEST 										= "WORK_REQUEST";
 	public static final String TAB_MODULE_WORK_REQUEST 								= "tab.module.work.workrequest";
 	
+	public static final String BILLABLE_ITEM	 									= "BILLABLE_ITEM";
+	public static final String TAB_MODULE_BILLABLE_ITEM		 						= "tab.module.work.billableitem";
+	
 	public static final String WORK_SUBMENU 										= "WorkSubMenus";
 	
 	
@@ -28,6 +31,11 @@ public class Constants {
 	public static final String			ID																= "id";
 	public static final String			NAME															= "name";
 	public static final String			STUDY_ID														= "studyId";
+	public static final String			YES																= "Yes";
+	public static final String			NO																= "No";
+	public static final String			Y																= "Y";
+	public static final String			N																= "N";
+	
 	
 	/* Researcher Constants */	
 	public static final String			FIRST_NAME														= "firstName";
@@ -156,4 +164,35 @@ public class Constants {
 	public static final String WORK_REQUEST_STATUS_TAG 													= "Status";
 	public static final String ERROR_WORK_REQUEST_STATUS_REQUIRED 										= "error.work.workrequest.requeststatus.required";
 	
+	
+	//Billable Item Constants
+	
+	public static final String			BILLABLE_ITEM_MANUAL											= "MANUAL";
+	public static final String			BILLABLE_ITEM_AUTOMATED											= "AUTOMATED";
+	
+	public static final String			BILLABLE_ITEM_ID												= "billableItem.id";
+	public static final String			BILLABLE_ITEM_DESCRIPTION										= "billableItem.description";
+	public static final String			BILLABLE_ITEM_WORK_REQUEST										= "billableItem.workRequest";
+	public static final String			BILLABLE_ITEM_QUANTITY											= "billableItem.quantity";
+	public static final String			BILLABLE_ITEM_INVOICE											= "billableItem.invoice";
+	public static final String			BILLABLE_ITEM_COMMENCE_DATE										= "billableItem.commenceDate";
+	public static final String			BILLABLE_ITEM_BILLABLE_ITEM_TYPE								= "billableItem.billableItemType";
+	public static final String			FILE_NAME														= "fileName";
+	
+	public static final String			BI_DESCRIPTION													= "description";
+	public static final String			BI_QUANTITY														= "quantity";
+	public static final String			BI_WORK_REQUEST													= "workRequest";
+	public static final String			BI_INVOICE														= "invoice";
+	
+	public static final String BILLABLE_ITEM_DESCRIPTION_TAG											= "Description";
+	public static final String ERROR_BILLABLE_ITEM_DESCRIPTION_REQUIRED 								= "error.work.billableitem.description.required";
+	public static final String ERROR_BILLABLE_ITEM_DESCRIPTION_LENGTH 									= "error.work.billableitem.description.length";
+	public static final String BILLABLE_ITEM_QUANTITY_TAG												= "Quantity";
+	public static final String ERROR_BILLABLE_ITEM_QUANTITY_REQUIRED 									= "error.work.billableitem.quantity.required";
+	public static final String BILLABLE_ITEM_WORK_REQUEST_TAG											= "Work Request";
+	public static final String ERROR_BILLABLE_ITEM_WORK_REQUEST_REQUIRED 								= "error.work.billableitem.workrequest.required";
+	public static final String BILLABLE_ITEM_INVOICE_TAG												= "Invoice";
+	public static final String ERROR_BILLABLE_ITEM_INVOICE_REQUIRED 									= "error.work.billableitem.invoice.required";
+	public static final String BILLABLE_ITEM_BILLABLE_ITEM_TYPE_TAG										= "Billable Item Type";
+	public static final String ERROR_BILLABLE_ITEM_BILLABLE_ITEM_TYPE_REQUIRED 							= "error.work.billableitem.billableitemtype.required";
 }

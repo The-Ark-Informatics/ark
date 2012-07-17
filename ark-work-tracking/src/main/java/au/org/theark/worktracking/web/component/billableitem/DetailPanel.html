@@ -1,0 +1,200 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailsForm">
+		<div class="detailsPanelBorder">
+		  <div wicket:id="detailFormContainer">
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			<!-- Row 1 Study ID and Name-->
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="id">
+						<wicket:message key="work.billableitem.id">
+							Billable Item Id:
+						</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<input wicket:id="billableItem.id"	type="text" />
+				</div>
+			</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="description">
+						<wicket:message key="work.billableitem.description">
+							Description:
+						</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<input wicket:id="billableItem.description"	type="text" />
+				</div>
+			</div>
+			
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="quantity">
+							<wicket:message key="work.billableitem.quantity">
+								Quantity:
+							</wicket:message>
+						</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<input wicket:id="billableItem.quantity" type="text"/>
+				</div>
+			</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="workRequest">
+							<wicket:message key="work.billableitem.workrequest">
+								Work Request:
+							</wicket:message>
+						</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<select wicket:id="billableItem.workRequest">
+							<option>
+								WR1
+							</option>
+							<option>
+								WR2
+							</option>
+							<option>
+								WR3
+							</option>
+						</select>
+				</div>
+			</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+					<div class="label">
+						<label for="invoiced">
+							<wicket:message key="work.billableitem.invoice">
+								Invoiced:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<select wicket:id="billableItem.invoice">
+							<option>
+								YES
+							</option>
+							<option>
+								NO
+							</option>
+						</select>
+					</div>
+				</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="commenceDate">
+							<wicket:message key="work.billableitem.commencedate">
+								Completed Date:
+							</wicket:message>
+						</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+					<input wicket:id="billableItem.commenceDate" type="text" maxlength="10"/>
+					
+				</div>
+			</div>
+			
+			
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+					<div class="label">
+						<label for="billableItemType">
+							<wicket:message key="work.billableitem.billableitemtype">
+								Billable Item Type:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<select wicket:id="billableItem.billableItemType">
+							<option>
+								BIT1
+							</option>
+							<option>
+								BIT2
+							</option>
+						</select>
+					</div>
+				</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+						<label for="fileName">
+							<wicket:message	key="work.billableitem.billableitemsubjects">
+							Billable Item Subjects:
+						</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+					<input wicket:id="fileName" id="studyLogoUpload" type="file" />	
+				</div>
+			</div>
+			
+								
+			</div>
+			
+			<div class="detailPanelBreaker">&nbsp;</div>
+			<!--  Row 2 Action Buttons -->
+			
+			<div wicket:id="editButtonContainer">
+				<div class="fldLabel">&nbsp;</div>
+				<div class="fldControl">&nbsp;</div>
+				<div class="panelMargin">&nbsp;</div>
+				<div class="actionButtons">&nbsp;
+					<div class="label">
+					  <input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
+					  <div class="panelMargin">&nbsp;</div>
+					  <input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />&nbsp;
+					  <div class="panelMargin">&nbsp;</div>
+					  <input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
+				  	</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</wicket:panel>
