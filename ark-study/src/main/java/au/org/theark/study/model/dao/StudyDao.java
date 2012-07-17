@@ -65,7 +65,6 @@ import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
-import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
@@ -86,12 +85,12 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidSequence;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
@@ -1160,67 +1159,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return personCorrespondenceList;
 	}
 
-	public void create(CorrespondenceAttachment correspondenceAttachment) {
-		getSession().save(correspondenceAttachment);
-	}
-
-	public void delete(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException {
-
-		try {
-			Session session = getSession();
-			correspondenceAttachment = (CorrespondenceAttachment) session.get(CorrespondenceAttachment.class, correspondenceAttachment.getId());
-			if (correspondenceAttachment != null) {
-				getSession().delete(correspondenceAttachment);
-			}
-			else {
-				throw new EntityNotFoundException("The correspondence attachment file you tried to remove does not exist in the Ark system");
-			}
-		}
-		catch (HibernateException ex) {
-			log.error("An error occurred while trying to delete a correspondence attachment file " + ex.getStackTrace());
-		}
-		catch (Exception ex) {
-			log.error("An exception occurred while trying to delete a correspondence attachment file " + ex.getStackTrace());
-			throw new ArkSystemException("A system error has occurred.  You will be contacted about this issue.");
-		}
-	}
-
-	public List<CorrespondenceAttachment> searchCorrespondenceAttachment(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException {
-
-		Criteria criteria = getSession().createCriteria(CorrespondenceAttachment.class);
-		if (correspondenceAttachment != null) {
-
-			if (correspondenceAttachment.getId() != null) {
-				criteria.add(Restrictions.eq("id", correspondenceAttachment.getId()));
-			}
-			if (correspondenceAttachment.getCorrespondence() != null) {
-				criteria.add(Restrictions.eq("correspondence", correspondenceAttachment.getCorrespondence()));
-			}
-			if (correspondenceAttachment.getFilename() != null) {
-				criteria.add(Restrictions.ilike("filename", correspondenceAttachment.getFilename(), MatchMode.ANYWHERE));
-			}
-
-		}
-
-		criteria.addOrder(Order.desc("id"));
-		@SuppressWarnings("unchecked")
-		List<CorrespondenceAttachment> list = criteria.list();
-		return list;
-
-	}
-
-	public void update(CorrespondenceAttachment correspondenceAttachment) throws EntityNotFoundException {
-		Session session = getSession();
-		dateNow = new Date(System.currentTimeMillis());
-
-		if ((CorrespondenceAttachment) session.get(CorrespondenceAttachment.class, correspondenceAttachment.getId()) != null) {
-			session.update(correspondenceAttachment);
-		}
-		else {
-			throw new EntityNotFoundException("The correspondence attachment file you tried to update does not exist in the Ark system.");
-		}
-	}
-
 	public List<CorrespondenceDirectionType> getCorrespondenceDirectionTypes() {
 		Example directionTypeExample = Example.create(new CorrespondenceDirectionType());
 		Criteria criteria = getSession().createCriteria(CorrespondenceDirectionType.class).add(directionTypeExample);
@@ -1228,21 +1166,18 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public List<CorrespondenceModeType> getCorrespondenceModeTypes() {
-
 		Example modeTypeExample = Example.create(new CorrespondenceModeType());
 		Criteria criteria = getSession().createCriteria(CorrespondenceModeType.class).add(modeTypeExample);
 		return criteria.list();
 	}
 
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes() {
-
 		Example outcomeTypeExample = Example.create(new CorrespondenceOutcomeType());
 		Criteria criteria = getSession().createCriteria(CorrespondenceOutcomeType.class).add(outcomeTypeExample);
 		return criteria.list();
 	}
 
 	public List<CorrespondenceStatusType> getCorrespondenceStatusTypes() {
-
 		Example statusTypeExample = Example.create(new CorrespondenceStatusType());
 		Criteria criteria = getSession().createCriteria(CorrespondenceStatusType.class).add(statusTypeExample);
 		return criteria.list();

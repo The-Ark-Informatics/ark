@@ -63,7 +63,6 @@ import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
-import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
@@ -82,11 +81,11 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
@@ -96,8 +95,8 @@ import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.model.dao.IStudyDao;
-import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.util.DataUploader;
+import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.Constants;
 
 @Transactional
@@ -671,43 +670,6 @@ public class StudyServiceImpl implements IStudyService {
 
 	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException {
 		return iStudyDao.getPersonCorrespondenceList(personId, correspondence);
-	}
-
-	public void create(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException {
-		iStudyDao.create(correspondenceAttachment);
-
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created CorrespondenceAttachment " + correspondenceAttachment.getId());
-		ah.setEntityType("Correspondence Attachment");
-		ah.setEntityId(correspondenceAttachment.getId());
-		iArkCommonService.createAuditHistory(ah);
-	}
-
-	public void update(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException {
-		iStudyDao.update(correspondenceAttachment);
-
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated CorrespondenceAttachment " + correspondenceAttachment.getId());
-		ah.setEntityType("Correspondence Attachment");
-		ah.setEntityId(correspondenceAttachment.getId());
-		iArkCommonService.createAuditHistory(ah);
-	}
-
-	public void delete(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException {
-		iStudyDao.delete(correspondenceAttachment);
-
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted CorrespondenceAttachment " + correspondenceAttachment.getId());
-		ah.setEntityType("Correspondence Attachment");
-		ah.setEntityId(correspondenceAttachment.getId());
-		iArkCommonService.createAuditHistory(ah);
-	}
-
-	public List<CorrespondenceAttachment> searchCorrespondenceAttachment(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException {
-		return iStudyDao.searchCorrespondenceAttachment(correspondenceAttachment);
 	}
 
 	public List<CorrespondenceStatusType> getCorrespondenceStatusTypes() {
