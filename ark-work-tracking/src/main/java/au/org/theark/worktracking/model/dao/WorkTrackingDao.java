@@ -13,8 +13,10 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
+import au.org.theark.core.model.worktracking.entity.BillableSubject;
 import au.org.theark.core.model.worktracking.entity.BillingType;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
@@ -215,7 +217,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		getSession().delete(workRequest);
 		
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -248,6 +250,84 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 			
 		List<WorkRequest> list = criteria.list();
 		return list;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void createBillableItem(BillableItem billableItem)
+			throws ArkSystemException, EntityExistsException {
+		getSession().save(billableItem);
+		if(billableItem.getBillableSubjects() !=null ){
+			saveBillableSubject(billableItem);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void updateBillableItem(BillableItem billableItem)
+			throws ArkSystemException, EntityExistsException {
+		getSession().update(billableItem);
+		if(billableItem.getBillableSubjects() !=null ){
+			saveBillableSubject(billableItem);
+		}		
+	}
+	
+	/**
+	 * Save or Update the {@link BillableSubject}s attached to a {@link BillableItem}
+	 * @param billableItem
+	 */
+	private void saveBillableSubject(BillableItem billableItem){
+		for(BillableSubject billableSubject:billableItem.getBillableSubjects()){
+			billableSubject.setBillableItem(billableItem);
+			if(billableSubject.getId() == null){
+				getSession().save(billableSubject);
+			}else{
+				getSession().update(billableSubject);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void deleteBillableItem(BillableItem billableItem)
+			throws ArkSystemException, EntityCannotBeRemoved {
+		getSession().delete(billableItem);
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<BillableItem> searchBillableItem(BillableItem billableItemCriteria) {
+		Criteria criteria = getSession().createCriteria(BillableItem.class);
+		criteria.add(Restrictions.eq(Constants.STUDY_ID , billableItemCriteria.getStudyId()));
+		if(billableItemCriteria.getId() != null ){
+			criteria.add(Restrictions.eq(Constants.ID, billableItemCriteria.getId()));
+		}	
+		
+		if(billableItemCriteria.getDescription() != null ){
+			criteria.add(Restrictions.like(Constants.BI_DESCRIPTION, billableItemCriteria.getDescription()+"%"));
+		}
+		
+		if(billableItemCriteria.getQuantity() != null ){
+			criteria.add(Restrictions.eq(Constants.BI_QUANTITY, billableItemCriteria.getQuantity()));
+		}
+		
+		if(billableItemCriteria.getWorkRequest() != null ){
+			criteria.add(Restrictions.eq(Constants.BI_WORK_REQUEST, billableItemCriteria.getWorkRequest()));
+		}
+		
+		if(billableItemCriteria.getInvoice() != null ){
+			criteria.add(Restrictions.eq(Constants.BI_INVOICE, billableItemCriteria.getInvoice()));
+		}
+			
+		List<BillableItem> list = criteria.list();
+		return list;
 	}	
+	
+	
 	
 }
