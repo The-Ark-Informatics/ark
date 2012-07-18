@@ -63,7 +63,7 @@ public class SearchResultListPanel extends Panel {
 		//TODO asap replace
 		String[] blah = {""};
 		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", 
-				"SubjectUpload", blah)  { //au.org.theark.lims.web.Constants.SUBJECT_TEMPLATE_CELLS) {
+				"BioUpload", blah)  { //au.org.theark.lims.web.Constants.SUBJECT_TEMPLATE_CELLS) {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
