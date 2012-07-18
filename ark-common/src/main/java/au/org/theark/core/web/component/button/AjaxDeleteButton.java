@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.button;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
@@ -57,6 +58,12 @@ public abstract class AjaxDeleteButton extends IndicatingAjaxButton {
 			@Override
 			public CharSequence preDecorateScript(CharSequence script) {
 				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	this.disabled = true; " + "};" + script;
+			}
+			
+			@Override
+			public CharSequence decorateOnSuccessScript(Component c,
+					CharSequence script) {
+				return super.decorateOnSuccessScript(c, "	this.disabled = false; "+script );
 			}
 		};
 	}
