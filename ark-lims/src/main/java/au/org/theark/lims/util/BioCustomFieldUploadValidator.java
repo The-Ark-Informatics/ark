@@ -439,33 +439,33 @@ public class BioCustomFieldUploadValidator {
 			csvReader.readHeaders();
 			String[] headerColumnArray = csvReader.getHeaders();
 			boolean headerError = false;
-			boolean hasSubjectUIDHeader = false;
-			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+			boolean hasBiospecimenUIDHeader = false;
+			ArkFunction biospecimenCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN);
 			List<String> badHeaders = new ArrayList<String>();
 			
 			for(String header : headerColumnArray){																						
 				if(header.equalsIgnoreCase("BIOSPECIMENUID")) {
-					hasSubjectUIDHeader = true;
+					hasBiospecimenUIDHeader = true;
 				}
 				else{
 					//TODO just make it get all of them and look through in memory rather than 10-50-300-500 selects?
-					if(iArkCommonService.getCustomFieldByNameStudyArkFunction(header, study, subjectCustomFieldArkFunction) == null){
+					if(iArkCommonService.getCustomFieldByNameStudyArkFunction(header, study, biospecimenCustomFieldArkFunction) == null){
 						badHeaders.add(header);
 						headerError = true;
 					}
 				}
 			}
-			if (headerError || !hasSubjectUIDHeader) {
+			if (headerError || !hasBiospecimenUIDHeader) {
 				// Invalid file format
 				StringBuffer stringBuffer = new StringBuffer();
 				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n\n");
 				stringBuffer.append("This file is not valid because; \n");
 				fileValidationMessages.add(stringBuffer.toString());
-				if(!hasSubjectUIDHeader){
-					fileValidationMessages.add("The column name \"SUBJECTUID\" must exist as the header of the first column.\n");
+				if(!hasBiospecimenUIDHeader){
+					fileValidationMessages.add("The column name \"BIOSPECIMENUID\" must exist as the header of the first column.\n");
 				}
 				for (String badHeader : badHeaders) {
-					fileValidationMessages.add("The column name " + badHeader + " does not with an existing study-specific custom field.\n");
+					fileValidationMessages.add("The column name " + badHeader + " does not with an existing biospecimen-specific custom field.\n");
 				}
 				log.warn("failed header validation");
 			}
@@ -540,33 +540,33 @@ public class BioCustomFieldUploadValidator {
 			csvReader.readHeaders();
 			String[] headerColumnArray = csvReader.getHeaders();
 			boolean headerError = false;
-			boolean hasSubjectUIDHeader = false;
-			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+			boolean hasBiocollectionUIDHeader = false;							//naming is not great but we are stuck with it for now as it used throughout app/db
+			ArkFunction biocollectionCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
 			List<String> badHeaders = new ArrayList<String>();
 			
 			for(String header : headerColumnArray){																						
 				if(header.equalsIgnoreCase("BIOCOLLECTIONUID")) {
-					hasSubjectUIDHeader = true;
+					hasBiocollectionUIDHeader = true;
 				}
 				else{
 					//TODO just make it get all of them and look through in memory rather than 10-50-300-500 selects?
-					if(iArkCommonService.getCustomFieldByNameStudyArkFunction(header, study, subjectCustomFieldArkFunction) == null){
+					if(iArkCommonService.getCustomFieldByNameStudyArkFunction(header, study, biocollectionCustomFieldArkFunction) == null){
 						badHeaders.add(header);
 						headerError = true;
 					}
 				}
 			}
-			if (headerError || !hasSubjectUIDHeader) {
+			if (headerError || !hasBiocollectionUIDHeader) {
 				// Invalid file format
 				StringBuffer stringBuffer = new StringBuffer();
 				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n\n");
 				stringBuffer.append("This file is not valid because; \n");
 				fileValidationMessages.add(stringBuffer.toString());
-				if(!hasSubjectUIDHeader){
-					fileValidationMessages.add("The column name \"SUBJECTUID\" must exist as the header of the first column.\n");
+				if(!hasBiocollectionUIDHeader){
+					fileValidationMessages.add("The column name \"BIOCOLLECTIONUID\" must exist as the header of the first column.\n");
 				}
 				for (String badHeader : badHeaders) {
-					fileValidationMessages.add("The column name " + badHeader + " does not with an existing study-specific custom field.\n");
+					fileValidationMessages.add("The column name " + badHeader + " does not with an existing biocollection-specific custom field.\n");
 				}
 				log.warn("failed header validation");
 			}
