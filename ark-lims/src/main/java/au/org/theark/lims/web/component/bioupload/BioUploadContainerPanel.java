@@ -89,8 +89,9 @@ public class BioUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
 				if (isActionPermitted() && sessionStudyId != null) {
 					Upload studyUpload = new Upload();
 					studyUpload.setStudy(iArkCommonService.getStudy(sessionStudyId));
-					studyUpload.setArkFunction(arkFunction);
-					studyUploads = iArkCommonService.searchUploads(studyUpload);
+					//explicitly search all bio uploads not based on ark function 
+					//studyUpload.setArkFunction(arkFunction);
+					studyUploads = iArkCommonService.searchUploadsForBio(studyUpload);
 
 				}
 				listView.removeAll();
