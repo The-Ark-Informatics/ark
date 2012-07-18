@@ -979,7 +979,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<Upload> searchUploads(Upload uploadCriteria) {
 		return studyDao.searchUploads(uploadCriteria);
 	}
-
+	
+	public List<Upload> searchUploadsForBio(Upload uploadCriteria) {
+		return studyDao.searchUploadsForBio(uploadCriteria);
+	}
+	
 	public void createUpload(Upload studyUpload) {
 		//log.debug("about to studydao.createupload");
 		studyDao.createUpload(studyUpload);

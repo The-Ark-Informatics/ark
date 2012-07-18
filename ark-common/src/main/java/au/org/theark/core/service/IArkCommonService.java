@@ -595,6 +595,8 @@ public interface IArkCommonService<T> {
 
 	public List<Upload> searchUploads(Upload uploadCriteria);
 
+	public List<Upload> searchUploadsForBio(Upload uploadCriteria);
+
 	public CustomField getCustomFieldByNameStudyArkFunction(String customFieldName, Study study, ArkFunction arkFunction);
 	
 	public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup);
