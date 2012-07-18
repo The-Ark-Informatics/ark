@@ -148,6 +148,15 @@ public interface IWorkTrackingService {
 	public void updateBillableItem(BillableItem billableItem) throws ArkSystemException, EntityExistsException ;
 	
 	/**
+	 * Update All {@link BillableItem} s  
+	 * @param billableItemList
+	 * @throws ArkSystemException
+	 * @throws EntityExistsException
+	 */
+	public void updateAllBillableItems(List<BillableItem> billableItemList)
+			throws ArkSystemException, EntityExistsException;
+	
+	/**
 	 * Delete {@link BillableItem} object
 	 * @param billableItemType
 	 * @throws ArkSystemException

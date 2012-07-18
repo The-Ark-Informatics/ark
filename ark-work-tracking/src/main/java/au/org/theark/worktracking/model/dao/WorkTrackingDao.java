@@ -7,6 +7,7 @@ import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
@@ -272,6 +273,16 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		if(billableItem.getBillableSubjects() !=null ){
 			saveBillableSubject(billableItem);
 		}		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void updateAllBillableItems(List<BillableItem> billableItemList)
+			throws ArkSystemException, EntityExistsException {
+		for(BillableItem billableItem:billableItemList){
+			getSession().update(billableItem);
+		}
 	}
 	
 	/**

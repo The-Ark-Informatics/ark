@@ -7,8 +7,10 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -17,11 +19,13 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.worktracking.model.vo.BillableItemVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
@@ -50,6 +54,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		
 	private List<WorkRequest>								workRequestList;
 	
+	private AjaxButton										invoiceButton;
 
 	/**
 	 * 
@@ -81,6 +86,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		add(billableItemQuantityTxtField);
 		add(workRequests);
 		add(invoiceStatuses);
+		add(invoiceButton);
 	}
 
 	protected void initialiseSearchForm() {
@@ -101,6 +107,42 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		PropertyModel<WorkRequest> pmWorkRequest = new PropertyModel<WorkRequest>(pm, "workRequest");
 		initWorkRequestDropDown(pmWorkRequest);
 		initInvoiceDropDown();
+		
+		invoiceButton=new AjaxDeleteButton(Constants.INVOICE, new StringResourceModel("confirmInvoice", this, null), new StringResourceModel(Constants.INVOICE, this, null)) {			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				List<BillableItem> itemList = getBillableItemList();
+				List<BillableItem> updateBillableItemList=new ArrayList<BillableItem>(0);
+				try{
+					for(BillableItem item:itemList){
+						if(Constants.BILLABLE_ITEM_MANUAL.equalsIgnoreCase(item.getType()) 
+								&& !Constants.Y.equalsIgnoreCase(item.getType())){
+							item.setInvoice(Constants.Y);
+							updateBillableItemList.add(item);
+						}
+					}
+				
+					iWorkTrackingService.updateAllBillableItems(updateBillableItemList);
+				
+					Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					getBillableItem().setStudyId(studyId);
+				
+					List<BillableItem> resultList = iWorkTrackingService.searchBillableItem(getBillableItem());
+					setBillableItemList(resultList);
+					listView.removeAll();
+					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				
+				}catch(Exception ex){
+					this.error("A System error occured in invoice update");
+				}
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				
+			}
+		};
 		
 	}
 
@@ -156,7 +198,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			getModelObject().getBillableItem().setStudyId(studyId);
 			
-			List<BillableItem> resultList= iWorkTrackingService.searchBillableItem(getModelObject().getBillableItem());
+			List<BillableItem> resultList = iWorkTrackingService.searchBillableItem(getModelObject().getBillableItem());
 			
 			if(resultList != null && resultList.size() == 0){
 				this.info("Billable Item with the specified criteria does not exist in the system.");
@@ -167,5 +209,17 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 			listView.removeAll();
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+	}
+	
+	private List<BillableItem> getBillableItemList(){
+		return getModelObject().getBillableItemList();
+	}
+	
+	private void setBillableItemList(List<BillableItem> billableItems){
+		getModelObject().setBillableItemList(billableItems);
+	}
+	
+	private BillableItem getBillableItem(){
+		return getModelObject().getBillableItem();
 	}
 }
