@@ -167,6 +167,7 @@ public class Constants {
 	
 	//Billable Item Constants
 	
+	public static final String			INVOICE															= "invoice";
 	public static final String			BILLABLE_ITEM_MANUAL											= "MANUAL";
 	public static final String			BILLABLE_ITEM_AUTOMATED											= "AUTOMATED";
 	

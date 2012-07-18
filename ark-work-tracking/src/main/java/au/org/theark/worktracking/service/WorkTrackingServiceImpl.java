@@ -192,6 +192,15 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 		workTrackingDao.updateBillableItem(billableItem);
 		
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void updateAllBillableItems(List<BillableItem> billableItemList)
+			throws ArkSystemException, EntityExistsException{
+		workTrackingDao.updateAllBillableItems(billableItemList);
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -209,7 +218,5 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	public List<BillableItem> searchBillableItem(BillableItem billableItem) {
 		return workTrackingDao.searchBillableItem(billableItem);
 	}
-	
-	
-	
+
 }
