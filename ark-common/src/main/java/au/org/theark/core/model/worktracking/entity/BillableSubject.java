@@ -118,4 +118,11 @@ public class BillableSubject implements Serializable {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "BillableSubject [Id=" + Id + ", subjectId=" + subjectId
+				+ ", description=" + description + "]";
+	}
+	
 }
