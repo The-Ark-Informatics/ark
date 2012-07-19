@@ -107,7 +107,7 @@
 	<bean id="shibbolethServiceProvider" class="au.org.theark.core.dao.ArkShibbolethServiceProviderContextSource">
 		<!-- Handler URL for Service providor -->
 		<!-- NOTE: MUST BE CHANGED TO HOSTNAME OF SERVER -->
-		<property name="handlerUrl" value="https://hostname/Shibboleth.sso" />
+		<property name="handlerUrl" value="https://test.the-ark.org.au/Shibboleth.sso" />
 		<!-- Extension service that generates "approximate" metadata based on SP configuration. -->
         <property name="metadataGenerator" value="/Metadata"/>
         <!-- Status reporting service. -->
@@ -116,6 +116,8 @@
        <property name="session" value="/Session"/>
        <!-- JSON feed of discovery information. -->
        <property name="discoveryFeed" value="/DiscoFeed"/>
+       <!-- Determines if Shibboleth actually configured/used -->
+       <property name="useShibboleth" value="true"/>
 	</bean>
 
 	<!--  Hibernate Session Factory -->
@@ -138,6 +140,9 @@
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.use_sql_comments">true</prop>
+				
 				<!-- prop key="hibernate.">true</prop>
 				<prop key="cache.use_query_cache">false</prop>
 				<prop key="cache.use_second_level_cache">false</prop-->
