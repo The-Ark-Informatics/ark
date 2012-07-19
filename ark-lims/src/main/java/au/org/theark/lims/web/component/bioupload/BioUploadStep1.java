@@ -138,7 +138,22 @@ public class BioUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setChecksum(checksum);
 		containerForm.getModelObject().getUpload().setFilename(filename);
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
-		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
+		if(containerForm.getModelObject().getUpload().getUploadType() != null){
+			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biospecimen Custom Data")){
+				containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
+			}
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biocollection Custom Data")){
+				containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
+			}
+			else{
+				log.error("\n\n\n\n\n\n\n\n\n\n\nuploadType unrecognized");
+			}
+			//containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
+			log.info("\n\n\n\n\n\n\n\n\n\n\n\n upload type = " + containerForm.getModelObject().getUpload().getUploadType().getName());
+		}
+		else{
+			log.error("\n\n\n\n\n\n\n\n\n\n\nuploadType is null");
+		}
 		wizardForm.setFileName(filename);
 
 		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForAwaitingValidation());
