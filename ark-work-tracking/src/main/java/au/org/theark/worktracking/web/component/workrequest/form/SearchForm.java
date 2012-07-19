@@ -110,7 +110,7 @@ public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 	
 	private void initWorkRequestStatusDropDown(
 		PropertyModel<WorkRequestStatus> workRequestStatus) {
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.WORK_REQUEST_STATUS_KEY);
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		workRequestStatuses = new DropDownChoice(Constants.WORK_REQUEST_REQUEST_STATUS, workRequestStatus, this.workRequestStatusList, defaultChoiceRenderer);
 		
 	}

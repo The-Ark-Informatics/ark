@@ -1,5 +1,6 @@
 package au.org.theark.worktracking.web.component.billableitemtype.form;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -11,10 +12,10 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.util.convert.converter.DoubleConverter;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -65,12 +66,39 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 		billableItemTypeIdTxtField.setEnabled(false);
 		billableItemTypeItemNameTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_ITEM_NAME);       
 		billableItemTypeQuantityPerUnitTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_QUANTITY_PER_UNIT);
-		billableItemTypeUnitPriceTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE);      
-		billableItemTypeGstTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_GST);            
+		billableItemTypeUnitPriceTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public <C> IConverter<C> getConverter(Class<C> type) {
+				  	DoubleConverter converter = (DoubleConverter)DoubleConverter.INSTANCE;
+					NumberFormat format = converter.getNumberFormat(getLocale());
+					format.setMinimumFractionDigits(2);
+					converter.setNumberFormat(getLocale(), format);
+					return (IConverter<C>) converter; 
+			}
+		};            
+      
+		billableItemTypeGstTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_GST){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public <C> IConverter<C> getConverter(Class<C> type) {
+				  	DoubleConverter converter = (DoubleConverter)DoubleConverter.INSTANCE;
+					NumberFormat format = converter.getNumberFormat(getLocale());
+					format.setMinimumFractionDigits(4);
+					converter.setNumberFormat(getLocale(), format);
+					return (IConverter<C>) converter; 
+			}
+		};            
 		billableItemTypeDescriptionTxtArea=new TextArea<String>(Constants.BILLABLE_ITEM_TYPE_DESCRIPTION);
-		
-	
-		
+				
 		addDetailFormComponents();
 		attachValidators();
 	}
@@ -95,7 +123,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 		billableItemTypeItemNameTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_ITEM_NAME_REQUIRED, billableItemTypeItemNameTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_ITEM_NAME_TAG)));
 		billableItemTypeItemNameTxtField.add(StringValidator.lengthBetween(1, 30)).setLabel(
 				new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_ITEM_NAME_LENGTH, billableItemTypeItemNameTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_ITEM_NAME_TAG)));
-		
 		billableItemTypeDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(
 				new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_DESCRIPTION_LENGTH, billableItemTypeDescriptionTxtArea, new Model<String>(Constants.BILLABLE_ITEM_TYPE_DESCRIPTION_TAG)));
 		
@@ -148,11 +175,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 			onSavePostProcess(target);
 
 		}
-		catch (EntityExistsException e) {
-			this.error("A Billa Item Type with the same name already exists for this study.");
-			processErrors(target);
-		}
-		catch (ArkSystemException e) {
+		catch (Exception e) {
 			this.error("A System error occured, we will have someone contact you.");
 			processErrors(target);
 		}
@@ -173,6 +196,9 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			
+		Long count = iWorkTrackingService.getBillableItemCount(containerForm.getModelObject().getBillableItemType());
+		if(count == 0){
+			
 			for(BillableItemTypeStatus status:billableItemTypeStatusses){
 				if(Constants.BILLABLE_ITEM_TYPE_INACTIVE.equalsIgnoreCase(status.getName())){
 					containerForm.getModelObject().getBillableItemType().setBillableItemTypeStatus(status);
@@ -183,11 +209,12 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 			iWorkTrackingService.updateBillableItemType(containerForm.getModelObject().getBillableItemType());
 			containerForm.info("The Billable Item type was deleted successfully.");
 			editCancelProcess(target);
-		}
-		catch (EntityExistsException entityExistsException) {
+		}else{
+			containerForm.error("Cannot Delete this Billable Item type. This Billable Item type is associated with existing billable Itemes");
 			processErrors(target);
+		}	
 		}
-		catch (ArkSystemException e) {
+		catch (Exception e) {
 			containerForm.error("A System Error has occured please contact support.");
 			processErrors(target);
 		}

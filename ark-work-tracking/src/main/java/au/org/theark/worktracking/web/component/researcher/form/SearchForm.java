@@ -120,12 +120,12 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 	}
 	
 	private void initResearcherStatusDropDown(PropertyModel<ResearcherStatus> researcherStatus) {
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.RESEARCHER_STATUS_KEY);
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		researcherStatuses = new DropDownChoice(Constants.RESEARCHER_STATUS, researcherStatus, this.researcherStatusList, defaultChoiceRenderer);
 	}
 	
 	private void initResearcherRoleDropDown(PropertyModel<ResearcherRole> researcherRole) {
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.RESEARCHER_ROLE_KEY);
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		researcherRoles = new DropDownChoice(Constants.RESEARCHER_ROLE, researcherRole, this.researcherRoleList, defaultChoiceRenderer);
 	}
 

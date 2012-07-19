@@ -2,16 +2,11 @@ package au.org.theark.worktracking.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
@@ -28,8 +23,6 @@ import au.org.theark.worktracking.util.Constants;
 @Service(Constants.WORK_TRACKING_SERVICE)
 public class WorkTrackingServiceImpl implements IWorkTrackingService{
 
-	private static Logger		log	= LoggerFactory.getLogger(WorkTrackingServiceImpl.class);
-	
 	private IWorkTrackingDao workTrackingDao;
 
 	@Autowired
@@ -65,8 +58,7 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void createResearcher(Researcher researcher) throws ArkSystemException,
-			EntityExistsException {
+	public void createResearcher(Researcher researcher){
 		workTrackingDao.createResearcher(researcher);
 		
 	}
@@ -75,8 +67,7 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void updateResearcher(Researcher researcher) throws ArkSystemException,
-			EntityExistsException {
+	public void updateResearcher(Researcher researcher){
 		workTrackingDao.updateResearcher(researcher);
 		
 	}
@@ -85,8 +76,7 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void deleteResearcher(Researcher researcher) throws ArkSystemException,
-			EntityCannotBeRemoved {
+	public void deleteResearcher(Researcher researcher){
 		workTrackingDao.deleteResearcher(researcher);
 		
 	}
@@ -102,8 +92,7 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void createBillableItemType(BillableItemType billableItemType)
-			throws ArkSystemException, EntityExistsException {
+	public void createBillableItemType(BillableItemType billableItemType){
 		 workTrackingDao.createBillableItemType(billableItemType);
 	}
 
@@ -111,8 +100,7 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void updateBillableItemType(BillableItemType billableItemType)
-			throws ArkSystemException, EntityExistsException {
+	public void updateBillableItemType(BillableItemType billableItemType){
 		workTrackingDao.updateBillableItemType(billableItemType);		
 	}
 
@@ -142,8 +130,7 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void createWorkRequest(WorkRequest workRequest)
-			throws ArkSystemException, EntityExistsException {
+	public void createWorkRequest(WorkRequest workRequest){
 		workTrackingDao.createWorkRequest(workRequest);		
 	}
 
@@ -151,8 +138,7 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void updateWorkRequest(WorkRequest workRequest)
-			throws ArkSystemException, EntityExistsException {
+	public void updateWorkRequest(WorkRequest workRequest){
 		workTrackingDao.updateWorkRequest(workRequest);		
 	}
 
@@ -160,8 +146,7 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void deleteWorkRequest(WorkRequest workRequest)
-			throws ArkSystemException, EntityCannotBeRemoved {
+	public void deleteWorkRequest(WorkRequest workRequest){
 		workTrackingDao.deleteWorkRequest(workRequest);
 		
 	}
@@ -177,8 +162,7 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void createBillableItem(BillableItem billableItem)
-			throws ArkSystemException, EntityExistsException {
+	public void createBillableItem(BillableItem billableItem){
 		workTrackingDao.createBillableItem(billableItem);
 		
 	}
@@ -187,8 +171,7 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void updateBillableItem(BillableItem billableItem)
-			throws ArkSystemException, EntityExistsException {
+	public void updateBillableItem(BillableItem billableItem){
 		workTrackingDao.updateBillableItem(billableItem);
 		
 	}
@@ -197,8 +180,7 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void updateAllBillableItems(List<BillableItem> billableItemList)
-			throws ArkSystemException, EntityExistsException{
+	public void updateAllBillableItems(List<BillableItem> billableItemList){
 		workTrackingDao.updateAllBillableItems(billableItemList);
 	}
 
@@ -206,8 +188,7 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 * {@inheritDoc}
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void deleteBillableItem(BillableItem billableItem)
-			throws ArkSystemException, EntityCannotBeRemoved {
+	public void deleteBillableItem(BillableItem billableItem){
 		workTrackingDao.deleteBillableItem(billableItem);
 		
 	}
@@ -217,6 +198,34 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 */
 	public List<BillableItem> searchBillableItem(BillableItem billableItem) {
 		return workTrackingDao.searchBillableItem(billableItem);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Long getBillableItemCount(BillableItemType itemType){
+		return workTrackingDao.getBillableItemCount(itemType);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Long getWorkRequestCount(Researcher researcher) {
+		return workTrackingDao.getWorkRequestCount(researcher);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Long getBillableItemCount(WorkRequest workRequest) {
+		return workTrackingDao.getBillableItemCount(workRequest);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Long getBillableSubjectCount(BillableItem billableItem) {
+		return workTrackingDao.getBillableSubjectCount(billableItem);
 	}
 
 }

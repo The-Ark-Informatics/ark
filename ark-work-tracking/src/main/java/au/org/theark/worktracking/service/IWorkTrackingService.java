@@ -2,9 +2,6 @@ package au.org.theark.worktracking.service;
 
 import java.util.List;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
@@ -38,26 +35,20 @@ public interface IWorkTrackingService {
 	/**
 	 * Create new {@link Researcher} object
 	 * @param researcher
-	 * @throws ArkSystemException
-	 * @throws EntityExistsException
 	 */
-	public void createResearcher(Researcher researcher) throws ArkSystemException, EntityExistsException ;
+	public void createResearcher(Researcher researcher) ;
 	
 	/**
 	 * Update selected {@link Researcher} object
 	 * @param researcher
-	 * @throws ArkSystemException
-	 * @throws EntityExistsException
 	 */
-	public void updateResearcher(Researcher researcher) throws ArkSystemException, EntityExistsException ;
+	public void updateResearcher(Researcher researcher) ;
 
 	/**
 	 * Delete selected {@link Researcher} object
 	 * @param researcher
-	 * @throws ArkSystemException
-	 * @throws EntityCannotBeRemoved
 	 */
-	public void deleteResearcher(Researcher researcher) throws ArkSystemException, EntityCannotBeRemoved ;
+	public void deleteResearcher(Researcher researcher) ;
 
 	/**
 	 * Search Researcher's for the given properties
@@ -69,18 +60,14 @@ public interface IWorkTrackingService {
 	/**
 	 * Create new {@link BillableItemType} Object
 	 * @param billableItemType
-	 * @throws ArkSystemException
-	 * @throws EntityExistsException
 	 */
-	public void createBillableItemType(BillableItemType billableItemType) throws ArkSystemException, EntityExistsException ;
+	public void createBillableItemType(BillableItemType billableItemType);
 	
 	/**
 	 * Update {@link BillableItemType} record
 	 * @param billableItemType
-	 * @throws ArkSystemException
-	 * @throws EntityExistsException
 	 */
-	public void updateBillableItemType(BillableItemType billableItemType) throws ArkSystemException, EntityExistsException ;
+	public void updateBillableItemType(BillableItemType billableItemType);
 	
 	/**
 	 * 
@@ -103,26 +90,20 @@ public interface IWorkTrackingService {
 	/**
 	 * Create new {@link WorkRequest} object
 	 * @param workRequest
-	 * @throws ArkSystemException
-	 * @throws EntityExistsException
 	 */
-	public void createWorkRequest(WorkRequest workRequest) throws ArkSystemException, EntityExistsException ;
+	public void createWorkRequest(WorkRequest workRequest);
 	
 	/**
 	 * Update {@link WorkRequest} object
 	 * @param billableItemType
-	 * @throws ArkSystemException
-	 * @throws EntityExistsException
 	 */
-	public void updateWorkRequest(WorkRequest workRequest) throws ArkSystemException, EntityExistsException ;
+	public void updateWorkRequest(WorkRequest workRequest);
 	
 	/**
 	 * Delete {@link WorkRequest} object
 	 * @param billableItemType
-	 * @throws ArkSystemException
-	 * @throws EntityExistsException
 	 */
-	public void deleteWorkRequest(WorkRequest workRequest) throws ArkSystemException, EntityCannotBeRemoved ;
+	public void deleteWorkRequest(WorkRequest workRequest);
 	
 	/**
 	 * Search Work Request's for the given criteria
@@ -134,35 +115,26 @@ public interface IWorkTrackingService {
 	/**
 	 * Create new {@link BillableItem} object
 	 * @param workRequest
-	 * @throws ArkSystemException
-	 * @throws EntityExistsException
 	 */
-	public void createBillableItem(BillableItem billableItem) throws ArkSystemException, EntityExistsException ;
+	public void createBillableItem(BillableItem billableItem);
 	
 	/**
 	 * Update {@link BillableItem} object
 	 * @param billableItemType
-	 * @throws ArkSystemException
-	 * @throws EntityExistsException
 	 */
-	public void updateBillableItem(BillableItem billableItem) throws ArkSystemException, EntityExistsException ;
+	public void updateBillableItem(BillableItem billableItem);
 	
 	/**
 	 * Update All {@link BillableItem} s  
 	 * @param billableItemList
-	 * @throws ArkSystemException
-	 * @throws EntityExistsException
 	 */
-	public void updateAllBillableItems(List<BillableItem> billableItemList)
-			throws ArkSystemException, EntityExistsException;
+	public void updateAllBillableItems(List<BillableItem> billableItemList);
 	
 	/**
 	 * Delete {@link BillableItem} object
 	 * @param billableItemType
-	 * @throws ArkSystemException
-	 * @throws EntityExistsException
 	 */
-	public void deleteBillableItem(BillableItem billableItem) throws ArkSystemException, EntityCannotBeRemoved ;
+	public void deleteBillableItem(BillableItem billableItem);
 	
 	/**
 	 * Search Billable Item's for the given criteria
@@ -171,4 +143,31 @@ public interface IWorkTrackingService {
 	 */
 	public List<BillableItem> searchBillableItem(BillableItem billableItem);
 	
+	/**
+	 * Get the billable item count associate with the given Billable item type 
+	 * @param itemType
+	 * @return billable item count
+	 */
+	public Long getBillableItemCount(BillableItemType itemType);
+	
+	/**
+	 * Get the work request count associate with the given Researcher
+	 * @param researcher
+	 * @return work request count
+	 */
+	public Long getWorkRequestCount(Researcher researcher);
+	
+	/**
+	 * Get the work billable item count associate with the given work request
+	 * @param workRequest
+	 * @return billable item count
+	 */
+	public Long getBillableItemCount(WorkRequest workRequest);
+	
+	/**
+	 * Get the billable subject count associate with the given billable item.
+	 * @param billableItem
+	 * @return billable subject count
+	 */
+	public Long getBillableSubjectCount(BillableItem billableItem);
 }

@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -26,18 +25,11 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.model.worktracking.entity.BillableSubject;
-import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
-import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -49,8 +41,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	
 	public static final long	serialVersionUID	= -8267651986631341353L;
 	
-	private static final Logger							log				= LoggerFactory.getLogger(DetailForm.class);
-
 	@SpringBean(name = Constants.WORK_TRACKING_SERVICE)
 	private IWorkTrackingService iWorkTrackingService;
 	
@@ -61,13 +51,9 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	
 	private DropDownChoice<WorkRequest>		 				billableItemWorkRequests;
 	private DropDownChoice<BillableItemType>		 		billableItemItemTypes;
-	private DropDownChoice<String>		billableItemInvoiceStatuses;
+	private DropDownChoice<String>							billableItemInvoiceStatuses;
 	
 	private FileUploadField									subjectsUploadField;
-	
-	private List<WorkRequestStatus> workRequestStatusList;
-	private List<Researcher> researcherList;
-	
 	
 	private List<WorkRequest>								workRequestList;
 	private List<BillableItemType>							billableItemTypeList;
@@ -155,15 +141,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		this.billableItemTypeList = iWorkTrackingService.searchBillableItemType(billableItemType);
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.BIT_ITEM_NAME, Constants.ID);
 		billableItemItemTypes = new DropDownChoice(Constants.BILLABLE_ITEM_BILLABLE_ITEM_TYPE,  this.billableItemTypeList, defaultChoiceRenderer);
-		billableItemItemTypes.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				
-			}
-		});
 	}
 
 	private void initWorkRequestDropDown() {
@@ -173,15 +150,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		this.workRequestList = iWorkTrackingService.searchWorkRequest(workRequest);
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		billableItemWorkRequests = new DropDownChoice(Constants.BILLABLE_ITEM_WORK_REQUEST,  this.workRequestList, defaultChoiceRenderer);
-		billableItemWorkRequests.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				
-			}
-		});
 	}
 	
 	public void addDetailFormComponents() {		
@@ -273,11 +241,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 			this.error("Error reading the input subject list file");
 			processErrors(target);
 		}
-		catch (EntityExistsException e) {
-			this.error("A Billa Item Type with the same name already exists for this study.");
-			processErrors(target);
-		}
-		catch (ArkSystemException e) {
+		catch (Exception e) {
 			this.error("A System error occured, we will have someone contact you.");
 			processErrors(target);
 		}
@@ -297,14 +261,17 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
+			Long count = iWorkTrackingService.getBillableSubjectCount(containerForm.getModelObject().getBillableItem());
+		if(count == 0){	
 			iWorkTrackingService.deleteBillableItem(containerForm.getModelObject().getBillableItem());
 			containerForm.info("The Billable Item was deleted successfully.");
 			editCancelProcess(target);
-		}
-		catch (EntityCannotBeRemoved entityCannotBeRemoved) {
+		}else{
+			containerForm.error("Cannot Delete this Billable Item Component. This Billable Item is associated with existing Billable Subjects ");
 			processErrors(target);
+		}	
 		}
-		catch (ArkSystemException e) {
+		catch (Exception e) {
 			containerForm.error("A System Error has occured please contact support.");
 			processErrors(target);
 		}
