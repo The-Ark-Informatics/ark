@@ -51,6 +51,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -70,6 +71,9 @@ public class BioCustomFieldUploadValidator {
 	private static final long		serialVersionUID			= -1933045886948087734L;
 	private static Logger			log							= LoggerFactory.getLogger(BioCustomFieldUploadValidator.class);
 
+	private static final String			BIOSPECIMEN				= "BIOSPECIMEN";
+	private static final String			BIOCOLLECTION			= "BIOCOLLECTION";
+	
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
 	private Long						studyId;
@@ -303,109 +307,7 @@ public class BioCustomFieldUploadValidator {
 		return validationMessages;
 	}
 
-	/**
-	 * Validates the file in the default "matrix" file data assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
-	 * 
-	 * @param uploadVo
-	 *           is the UploadVO of the file
-	 * @return a collection of validation messages
-	 */
-	public Collection<String> validateBiospecimenCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
-		java.util.Collection<String> validationMessages = null;
-		try {
-			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
-			String filename = uploadVo.getFileUpload().getClientFileName();
-			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
-			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-
-			// If Excel, convert to CSV for validation
-			if (fileFormat.equalsIgnoreCase("XLS")) {
-				Workbook w;
-				try {
-					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
-					inputStream.reset();
-					delimiterCharacter = ',';
-				}
-				catch (BiffException e) {
-					log.error(e.getMessage());
-				}
-			}
-
-			//todo split if we see the differences validationMessages = validateBiospecimenSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
-			 validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
-		}
-		catch (IOException e) {
-			log.error(e.getMessage());
-		}
-		return validationMessages;
-	}
-
-
-	/**
-	 * Validates the file in the default "matrix" file data assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
-	 * 
-	 * @param uploadVo
-	 *           is the UploadVO of the file
-	 * @return a collection of validation messages
-	 */
-	public Collection<String> validateBiocollectionCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
-		java.util.Collection<String> validationMessages = null;
-		try {
-			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
-			String filename = uploadVo.getFileUpload().getClientFileName();
-			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
-			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
-
-			// If Excel, convert to CSV for validation
-			if (fileFormat.equalsIgnoreCase("XLS")) {
-				Workbook w;
-				try {
-					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
-					inputStream.reset();
-					delimiterCharacter = ',';
-				}
-				catch (BiffException e) {
-					log.error(e.getMessage());
-				}
-			}
-
-			//todo split if we see the differences validationMessages = validateBiocollectionSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
-			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
-		}
-		catch (IOException e) {
-			log.error(e.getMessage());
-		}
-		return validationMessages;
-	}
-
-	/*
-	 * TODO ASAP:  investigate this sort of method...all it seems to do is catch an exception and log it (seemingly letting 
-	 * the file appear validated.  This is likely to be replicated many places 
-	 * @param inputStream
-	 * @param fileFormat
-	 * @param delimChar
-	 * @param uidsToUpdateReference
-	 * @return
-	 */
-	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
-		java.util.Collection<String> validationMessages = null;
-
-		try {
-			//TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
-			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though, and if it bloats with more fields could be part of batch too
-			validationMessages = validateMatrixCustomFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateReference);
-		}
-		catch (FileFormatException ffe) {
-			log.error(au.org.theark.lims.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
-		}
-		catch (ArkBaseException abe) {
-			log.error(au.org.theark.lims.web.Constants.ARK_BASE_EXCEPTION + abe);
-		}
-		return validationMessages;
-	}
-
+	
 	/**
 	 * Validates the file in the custom field list.
 	 * 
@@ -605,8 +507,132 @@ public class BioCustomFieldUploadValidator {
 
 		return fileValidationMessages;
 	}
+	
+	
+	
+	
+	
+
+	/**
+	 * END OF CODE WHICH VALDIATES RAW FILE ISSUES AND HEADER ISSUES
+	 */
+
+	
+	
+	
+	
+	
+	/**
+	 * START OF CODE WHICH JUST LOOKS AT VALIDITY OF DATA AND TYPES
+	 */
+	
+	
+	/**
+	 * Validates the file in the default "matrix" file data assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * 
+	 * @param uploadVo
+	 *           is the UploadVO of the file
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateBiospecimenCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
+		java.util.Collection<String> validationMessages = null;
+		try {
+			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
+			String filename = uploadVo.getFileUpload().getClientFileName();
+			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
+			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
+
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS")) {
+				Workbook w;
+				try {
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = convertXlsToCsv(w);
+					inputStream.reset();
+					delimiterCharacter = ',';
+				}
+				catch (BiffException e) {
+					log.error(e.getMessage());
+				}
+			}
+
+			//todo split if we see the differences validationMessages = validateBiospecimenSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
+			 validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference, BIOSPECIMEN);
+		}
+		catch (IOException e) {
+			log.error(e.getMessage());
+		}
+		return validationMessages;
+	}
 
 
+	/**
+	 * Validates the file in the default "matrix" file data assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * 
+	 * @param uploadVo
+	 *           is the UploadVO of the file
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateBiocollectionCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
+		java.util.Collection<String> validationMessages = null;
+		try {
+			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
+			String filename = uploadVo.getFileUpload().getClientFileName();
+			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
+			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
+
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS")) {
+				Workbook w;
+				try {
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = convertXlsToCsv(w);
+					inputStream.reset();
+					delimiterCharacter = ',';
+				}
+				catch (BiffException e) {
+					log.error(e.getMessage());
+				}
+			}
+
+			//todo split if we see the differences validationMessages = validateBiocollectionSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
+			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference, BIOCOLLECTION);
+		}
+		catch (IOException e) {
+			log.error(e.getMessage());
+		}
+		return validationMessages;
+	}
+
+	
+	
+	/*
+	 * TODO ASAP:  investigate this sort of method...all it seems to do is catch an exception and log it (seemingly letting 
+	 * the file appear validated.  This is likely to be replicated many places 
+	 * @param inputStream
+	 * @param fileFormat
+	 * @param delimChar
+	 * @param uidsToUpdateReference
+	 * @return
+	 */
+	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, 
+			List<String> uidsToUpdateReference, String bioFieldType) {
+		java.util.Collection<String> validationMessages = null;
+
+		try {
+			//TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
+			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though, and if it bloats with more fields could be part of batch too
+			validationMessages = validateMatrixCustomFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateReference);
+		}
+		catch (FileFormatException ffe) {
+			log.error(au.org.theark.lims.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe) {
+			log.error(au.org.theark.lims.web.Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return validationMessages;
+	}
+	
 	/**
 	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN...
 	 * 
