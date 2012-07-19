@@ -46,11 +46,7 @@ public class Constants {
 	public static final String			ROLE													        = "researcherRole";
 	public static final String			STATUS													    	= "researcherStatus";
 	public static final String			LAST_ACTIVE_DATE											    = "lastActiveDate";
-	
-	public static final String			RESEARCHER_STATUS_KEY											= "id";
-	public static final String			RESEARCHER_ROLE_KEY												= "id";
-	public static final String			RESEARCHER_BILLING_KEY											= "id";
-	
+		
 	public static final String			RESEARCHER_ID													= "researcher.id";
 	public static final String			RESEARCHER_FIRST_NAME											= "researcher.firstName";
 	public static final String			RESEARCHER_LAST_NAME											= "researcher.lastName";
@@ -116,7 +112,6 @@ public class Constants {
 	public static final String			BILLABLE_ITEM_TYPE_GST											= "billableItemType.gst";
 	public static final String			BILLABLE_ITEM_TYPE_DESCRIPTION									= "billableItemType.description";
 	
-	public static final String			BIT_ID															= "id";
 	public static final String			BIT_ITEM_NAME													= "itemName";
 	public static final String			BIT_QUANTITY_PER_UNIT											= "quantityPerUnit";
 	public static final String			BIT_UNIT_PRICE													= "unitPrice";
@@ -145,9 +140,6 @@ public class Constants {
 	public static final String			WORK_REQUEST_COMPLETED_DATE										= "workRequest.completedDate";
 	public static final String			WORK_REQUEST_DESCRIPTION										= "workRequest.description";
 	public static final String			WORK_REQUEST_RESEARCHER											= "workRequest.researcher";
-	
-	public static final String			WORK_REQUEST_STATUS_KEY											= "id";
-	public static final String			WORK_REQUEST_RESEARCHER_KEY										= "id";
 	
 	public static final String			WR_REQUESTED_DATE												= "requestedDate";
 	public static final String			WR_COMMENCED_DATE												= "commencedDate";
