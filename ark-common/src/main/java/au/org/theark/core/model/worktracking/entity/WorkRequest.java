@@ -101,7 +101,7 @@ public class WorkRequest implements Serializable {
 	}
 
 	@ManyToOne()
-	@JoinColumn(name="RESEARCHER_ID", referencedColumnName="ID")	
+	@JoinColumn(name="RESEARCHER_ID")	
 	public Researcher getResearcher() {
 		return researcher;
 	}
@@ -213,7 +213,14 @@ public class WorkRequest implements Serializable {
 			return false;
 		return true;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "WorkRequest [id=" + id + ", name=" + name + ", description="
+				+ description + ", requestedDate=" + requestedDate
+				+ ", commencedDate=" + commencedDate + ", completedDate="
+				+ completedDate + ", studyId=" + studyId + "]";
+	}
 	
 
 }

@@ -209,7 +209,13 @@ public class BillableItemType implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
 
+	@Override
+	public String toString() {
+		return "BillableItemType [id=" + id + ", itemName=" + itemName
+				+ ", description=" + description + ", quantityPerUnit="
+				+ quantityPerUnit + ", unitPrice=" + unitPrice + ", gst=" + gst
+				+ ", studyId=" + studyId + ", type=" + type + "]";
+	}
+	
 }

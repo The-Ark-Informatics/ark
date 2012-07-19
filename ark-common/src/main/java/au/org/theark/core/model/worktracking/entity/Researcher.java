@@ -379,8 +379,18 @@ public class Researcher implements Serializable {
 		} else if (!studyId.equals(other.studyId))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Researcher [id=" + id + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", institute=" + institute
+				+ ", address=" + address + ", lastActiveDate=" + lastActiveDate
+				+ ", officePhone=" + officePhone + ", mobile=" + mobile
+				+ ", email=" + email + ", fax=" + fax + ", comment=" + comment
+				+ ", accountNumber=" + accountNumber + ", bsb=" + bsb
+				+ ", bank=" + bank + ", accountName=" + accountName
+				+ ", studyId=" + studyId + "]";
 	}	
-	
-	
 	
 }
