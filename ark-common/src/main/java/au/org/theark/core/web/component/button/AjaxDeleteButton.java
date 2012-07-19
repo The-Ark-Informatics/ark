@@ -58,13 +58,7 @@ public abstract class AjaxDeleteButton extends IndicatingAjaxButton {
 			@Override
 			public CharSequence preDecorateScript(CharSequence script) {
 				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	this.disabled = true; " + "};" + script;
-			}
-			
-			@Override
-			public CharSequence decorateOnSuccessScript(Component c,
-					CharSequence script) {
-				return super.decorateOnSuccessScript(c, "	this.disabled = false; "+script );
-			}
+			}		
 		};
 	}
 
