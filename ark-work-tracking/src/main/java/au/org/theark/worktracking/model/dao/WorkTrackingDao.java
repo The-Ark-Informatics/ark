@@ -4,16 +4,13 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
@@ -55,7 +52,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<BillingType> getResearcherBillingTypes() {
+	public List<BillingType> getResearcherBillingTypes(){
 		Example researcherBillingType = Example.create(new BillingType());
 		Criteria criteria = getSession().createCriteria(BillingType.class)
 				.add(researcherBillingType);
@@ -65,7 +62,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void createResearcher(Researcher researcher) throws ArkSystemException, EntityExistsException {
+	public void createResearcher(Researcher researcher){
 		getSession().save(researcher);
 
 	}
@@ -73,14 +70,14 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void updateResearcher(Researcher researcher) throws ArkSystemException, EntityExistsException {
+	public void updateResearcher(Researcher researcher){
 		getSession().update(researcher);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void deleteResearcher(Researcher researcher) throws ArkSystemException, EntityCannotBeRemoved {
+	public void deleteResearcher(Researcher researcher){
 		
 		getSession().delete(researcher);
 	}
@@ -125,16 +122,14 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void createBillableItemType(BillableItemType billableItemType)
-			throws ArkSystemException, EntityExistsException {
+	public void createBillableItemType(BillableItemType billableItemType){
 		getSession().save(billableItemType);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void updateBillableItemType(BillableItemType billableItemType)
-			throws ArkSystemException, EntityExistsException {
+	public void updateBillableItemType(BillableItemType billableItemType){
 		getSession().update(billableItemType);
 	}
 
@@ -157,7 +152,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		criteria.add(Restrictions.eq(Constants.STUDY_ID , billableItemTypeCriteria.getStudyId()));
 		
 		if(billableItemTypeCriteria.getId() != null ){
-			criteria.add(Restrictions.eq(Constants.BIT_ID, billableItemTypeCriteria.getId()));
+			criteria.add(Restrictions.eq(Constants.ID, billableItemTypeCriteria.getId()));
 		}
 
 		if(billableItemTypeCriteria.getItemName() != null ){
@@ -197,24 +192,21 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void createWorkRequest(WorkRequest workRequest)
-			throws ArkSystemException, EntityExistsException {
+	public void createWorkRequest(WorkRequest workRequest){
 		getSession().save(workRequest);		
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	public void updateWorkRequest(WorkRequest workRequest)
-			throws ArkSystemException, EntityExistsException {
+	public void updateWorkRequest(WorkRequest workRequest){
 		getSession().update(workRequest);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void deleteWorkRequest(WorkRequest workRequest)
-			throws ArkSystemException, EntityCannotBeRemoved {
+	public void deleteWorkRequest(WorkRequest workRequest){
 		getSession().delete(workRequest);
 		
 	}
@@ -256,8 +248,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void createBillableItem(BillableItem billableItem)
-			throws ArkSystemException, EntityExistsException {
+	public void createBillableItem(BillableItem billableItem){
 		getSession().save(billableItem);
 		if(billableItem.getBillableSubjects() !=null ){
 			saveBillableSubject(billableItem);
@@ -267,8 +258,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void updateBillableItem(BillableItem billableItem)
-			throws ArkSystemException, EntityExistsException {
+	public void updateBillableItem(BillableItem billableItem){
 		getSession().update(billableItem);
 		if(billableItem.getBillableSubjects() !=null ){
 			saveBillableSubject(billableItem);
@@ -278,8 +268,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void updateAllBillableItems(List<BillableItem> billableItemList)
-			throws ArkSystemException, EntityExistsException {
+	public void updateAllBillableItems(List<BillableItem> billableItemList){
 		for(BillableItem billableItem:billableItemList){
 			getSession().update(billableItem);
 		}
@@ -303,8 +292,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void deleteBillableItem(BillableItem billableItem)
-			throws ArkSystemException, EntityCannotBeRemoved {
+	public void deleteBillableItem(BillableItem billableItem){
 		getSession().delete(billableItem);
 		
 	}
@@ -339,6 +327,52 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		return list;
 	}	
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Long getBillableItemCount(BillableItemType itemType){
+		Long count = new Long(0);
+		Criteria criteria = getSession().createCriteria(BillableItem.class);
+		criteria.add(Restrictions.eq("billableItemType", itemType));
+		criteria.setProjection(Projections.rowCount());
+		count= (Long)criteria.uniqueResult();
+		return count;
+	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Long getWorkRequestCount(Researcher researcher){
+		Long count = new Long(0);
+		Criteria criteria = getSession().createCriteria(WorkRequest.class);
+		criteria.add(Restrictions.eq("researcher", researcher));
+		criteria.setProjection(Projections.rowCount());
+		count= (Long)criteria.uniqueResult();
+		return count;
+	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Long getBillableItemCount(WorkRequest workRequest){
+		Long count = new Long(0);
+		Criteria criteria = getSession().createCriteria(BillableItem.class);
+		criteria.add(Restrictions.eq("workRequest", workRequest));
+		criteria.setProjection(Projections.rowCount());
+		count= (Long)criteria.uniqueResult();
+		return count;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Long getBillableSubjectCount(BillableItem billableItem){
+		Long count = new Long(0);
+		Criteria criteria = getSession().createCriteria(BillableSubject.class);
+		criteria.add(Restrictions.eq("billableItem", billableItem));
+		criteria.setProjection(Projections.rowCount());
+		count= (Long)criteria.uniqueResult();
+		return count;
+	}
+
 }

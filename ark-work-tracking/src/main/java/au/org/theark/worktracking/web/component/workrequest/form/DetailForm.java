@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -17,9 +17,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -94,17 +91,18 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		researcher.setStudyId(studyId);
 		this.researcherList=iWorkTrackingService.searchResearcher(researcher);
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.FIRST_NAME, Constants.WORK_REQUEST_RESEARCHER_KEY);
-		workRequestResearchers = new DropDownChoice(Constants.WORK_REQUEST_RESEARCHER,  this.researcherList, defaultChoiceRenderer);
-		workRequestResearchers.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+		IChoiceRenderer customChoiceRenderer = new IChoiceRenderer<Researcher>() {
 
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				
+			public Object getDisplayValue(Researcher researcher) {
+				return researcher.getFirstName()+" "+researcher.getLastName();
 			}
-		});
+
+			public String getIdValue(Researcher researcher, int index) {
+				return researcher.getId().toString();
+			}
+			
+		};
+		workRequestResearchers = new DropDownChoice(Constants.WORK_REQUEST_RESEARCHER,  this.researcherList, customChoiceRenderer);
 	}
 
 		
@@ -112,17 +110,8 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 
 	private void initWorkRequestStatusDropDown() {
 		this.workRequestStatusList=iWorkTrackingService.getWorkRequestStatuses();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.WORK_REQUEST_STATUS_KEY);
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		workRequestStatuses = new DropDownChoice(Constants.WORK_REQUEST_REQUEST_STATUS,  this.workRequestStatusList, defaultChoiceRenderer);
-		workRequestStatuses.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				
-			}
-		});
 	}
 	
 	public void addDetailFormComponents() {	
@@ -198,11 +187,7 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 			onSavePostProcess(target);
 
 		}
-		catch (EntityExistsException e) {
-			this.error("A Billa Item Type with the same name already exists for this study.");
-			processErrors(target);
-		}
-		catch (ArkSystemException e) {
+		catch (Exception e) {
 			this.error("A System error occured, we will have someone contact you.");
 			processErrors(target);
 		}
@@ -222,14 +207,17 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
-			iWorkTrackingService.deleteWorkRequest(containerForm.getModelObject().getWorkRequest());
-			containerForm.info("The Billable Item type was deleted successfully.");
-			editCancelProcess(target);
+			Long count = iWorkTrackingService.getBillableItemCount(containerForm.getModelObject().getWorkRequest());
+			if(count == 0){
+				iWorkTrackingService.deleteWorkRequest(containerForm.getModelObject().getWorkRequest());
+				containerForm.info("The Work Request was deleted successfully.");
+				editCancelProcess(target);
+			}else{
+				containerForm.error("Cannot Delete this Work Request Component. This Work Request is associated with existing Billable Items ");
+				processErrors(target);
+			}
 		}
-		catch (EntityCannotBeRemoved entityCannotBeRemoved) {
-			processErrors(target);
-		}
-		catch (ArkSystemException e) {
+		catch (Exception e) {
 			containerForm.error("A System Error has occured please contact support.");
 			processErrors(target);
 		}

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -17,9 +16,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.worktracking.entity.BillingType;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
 import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
@@ -122,49 +118,20 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 	
 	private void initResearcherStatusDropDown() {
 		this.researcherStatusList=this.iWorkTrackingService.getResearcherStatuses();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.RESEARCHER_STATUS_KEY);
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		researcherStatuses = new DropDownChoice(Constants.RESEARCHER_STATUS,  this.researcherStatusList, defaultChoiceRenderer);
-		researcherStatuses.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				
-			}
-		});
 	}
 	
 	private void initResearcherRoleDropDown() {
 		this.researcherRoleList=this.iWorkTrackingService.getResearcherRoles();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.RESEARCHER_ROLE_KEY);
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		researcherRoles = new DropDownChoice(Constants.RESEARCHER_ROLE,  this.researcherRoleList, defaultChoiceRenderer);
-		researcherRoles.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				
-			}
-		});
 	}
 	
-	private void initBillingTypeDropDown() {
-		
-		
+	private void initBillingTypeDropDown() {		
 		this.billingTypeList=this.iWorkTrackingService.getResearcherBillingTypes();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.RESEARCHER_BILLING_KEY);
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		this.billingTypes=new DropDownChoice(Constants.RESEARCHER_BILLING_TYPE,  this.billingTypeList, defaultChoiceRenderer);
-		researcherRoles.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				
-			}
-		});
 	}
 
 	public void addDetailFormComponents() {
@@ -288,11 +255,7 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 			onSavePostProcess(target);
 
 		}
-		catch (EntityExistsException e) {
-			this.error("A Rsearcher with the same name already exists for this study.");
-			processErrors(target);
-		}
-		catch (ArkSystemException e) {
+		catch (Exception e) {
 			this.error("A System error occured, we will have someone contact you.");
 			processErrors(target);
 		}
@@ -312,17 +275,20 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
-			iWorkTrackingService.deleteResearcher(containerForm.getModelObject().getResearcher());
-			ResearcherVo researcherVo = new ResearcherVo();
-			containerForm.setModelObject(researcherVo);
-			containerForm.info("The Researcher was deleted successfully.");
-			editCancelProcess(target);
+			Long count = iWorkTrackingService.getWorkRequestCount(containerForm.getModelObject().getResearcher());
+			if(count == 0){
+				
+				iWorkTrackingService.deleteResearcher(containerForm.getModelObject().getResearcher());
+				ResearcherVo researcherVo = new ResearcherVo();
+				containerForm.setModelObject(researcherVo);
+				containerForm.info("The Researcher was deleted successfully.");
+				editCancelProcess(target);
+			}else{
+				containerForm.error("Cannot Delete this Researcher Component. This researcher is associated with existing Work Requests ");
+				processErrors(target);
+			}
 		}
-		catch (EntityCannotBeRemoved cannotRemoveException) {
-			containerForm.error("Cannot Delete this Researcher Component. This researcher is associated with a billable item ");
-			processErrors(target);
-		}
-		catch (ArkSystemException e) {
+		catch (Exception e) {
 			containerForm.error("A System Error has occured please contact support.");
 			processErrors(target);
 		}

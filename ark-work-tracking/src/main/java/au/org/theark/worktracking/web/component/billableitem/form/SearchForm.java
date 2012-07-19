@@ -25,7 +25,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.button.AjaxDeleteButton;
+import au.org.theark.core.web.component.button.AjaxInvoiceButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.worktracking.model.vo.BillableItemVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
@@ -108,7 +108,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		initWorkRequestDropDown(pmWorkRequest);
 		initInvoiceDropDown();
 		
-		invoiceButton=new AjaxDeleteButton(Constants.INVOICE, new StringResourceModel("confirmInvoice", this, null), new StringResourceModel(Constants.INVOICE, this, null)) {			
+		invoiceButton=new AjaxInvoiceButton(Constants.INVOICE, new StringResourceModel("confirmInvoice", this, null), new StringResourceModel(Constants.INVOICE, this, null)) {			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				List<BillableItem> itemList = getBillableItemList();
