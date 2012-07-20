@@ -103,8 +103,8 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		if(researcherCriteria.getInstitute() != null ){
 			criteria.add(Restrictions.like(Constants.INSTITUTE, researcherCriteria.getInstitute()+"%"));
 		}
-		if(researcherCriteria.getLastActiveDate() != null ){
-			criteria.add(Restrictions.eq(Constants.LAST_ACTIVE_DATE , researcherCriteria.getLastActiveDate()));
+		if(researcherCriteria.getCreatedDate() != null ){
+			criteria.add(Restrictions.eq(Constants.CREATED_DATE , researcherCriteria.getCreatedDate()));
 		}
 		
 		if(researcherCriteria.getResearcherRole() != null ){

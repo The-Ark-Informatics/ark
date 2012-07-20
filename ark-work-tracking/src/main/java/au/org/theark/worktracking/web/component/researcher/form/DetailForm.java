@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -20,7 +20,6 @@ import au.org.theark.core.model.worktracking.entity.BillingType;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
 import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.worktracking.model.vo.ResearcherVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
@@ -31,7 +30,6 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 
 	public static final long	serialVersionUID	= -8267651986631341353L;
 
-	@SuppressWarnings("unchecked")
 	@SpringBean(name = Constants.WORK_TRACKING_SERVICE)
 	private IWorkTrackingService iWorkTrackingService;
 
@@ -52,14 +50,15 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 	private TextArea<String>	resercherAddressTxtArea;
 	private TextArea<String>	resercherCommentTxtArea;
 	
-	private DateTextField					lastActiveDateDp;
+	private DateLabel						createdDateLabel;
+	
 	private DropDownChoice<ResearcherStatus>		 researcherStatuses;
 	private DropDownChoice<ResearcherRole>		 	 researcherRoles;
-	private DropDownChoice<BillingType>		 	 billingTypes;
+	private DropDownChoice<BillingType>		 	 	 billingTypes;
 	
-	private List<ResearcherStatus> researcherStatusList;
-	private List<ResearcherRole> researcherRoleList;
-	private List<BillingType> billingTypeList;
+	private List<ResearcherStatus> 	researcherStatusList;
+	private List<ResearcherRole> 	researcherRoleList;
+	private List<BillingType> 		billingTypeList;
 	
 	private FeedbackPanel		feedBackPanel;
 
@@ -101,12 +100,8 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		resercherAddressTxtArea = new  TextArea<String>(Constants.RESEARCHER_ADDRESS);
 		resercherCommentTxtArea = new  TextArea<String>(Constants.RESEARCHER_COMMENT);
 		
+		createdDateLabel = DateLabel.forDatePattern(Constants.RESEARCHER_CREATED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);	
 		
-		lastActiveDateDp=new DateTextField(Constants.RESEARCHER_LAST_ACTIVE_DATE,au.org.theark.core.Constants.DD_MM_YYYY);
-		ArkDatePicker datePicker = new ArkDatePicker();
-		datePicker.bind(lastActiveDateDp);
-		lastActiveDateDp.add(datePicker);
-				
 		this.initResearcherStatusDropDown();
 		this.initResearcherRoleDropDown();
 		this.initBillingTypeDropDown();
@@ -146,7 +141,7 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherFaxTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherAddressTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherCommentTxtArea);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(lastActiveDateDp);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(createdDateLabel);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(researcherRoles);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(researcherStatuses);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherAccountNumberTxtFld);
