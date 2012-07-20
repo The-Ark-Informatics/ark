@@ -35,6 +35,7 @@ import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.BioCustomFieldUploadValidator;
 import au.org.theark.lims.web.component.bioupload.form.WizardForm;
 
@@ -50,6 +51,10 @@ public class BioUploadStep2 extends AbstractWizardStepPanel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
+
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
+	private ILimsService			iLimsService;
+
 
 	private ArkDownloadAjaxButton	downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
 												private static final long	serialVersionUID	= 1L;
@@ -103,12 +108,12 @@ public class BioUploadStep2 extends AbstractWizardStepPanel {
 			}
 																									//TODO: remove hardcode
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biospecimen Custom Data")){
-				BioCustomFieldUploadValidator subjectUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService);
+				BioCustomFieldUploadValidator subjectUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService, iLimsService);
 				validationMessages = subjectUploadValidator.validateBiospecimenCustomFieldFileFormat(containerForm.getModelObject());				
 			}
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biocollection Custom Data")){
 				//TODO : custom field validation
-				BioCustomFieldUploadValidator customFieldUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService);
+				BioCustomFieldUploadValidator customFieldUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService, iLimsService);
 				validationMessages = customFieldUploadValidator.validateBiocollectionCustomFieldFileFormat(containerForm.getModelObject());			
 			}
 			else{

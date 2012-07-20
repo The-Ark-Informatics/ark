@@ -800,4 +800,13 @@ public class LimsServiceImpl implements ILimsService {
 	public List<Biospecimen> getBiospecimenByBioCollection(BioCollection bioCollection) {
 		return iBiospecimenDao.getBiospecimenByBioCollection(bioCollection);
 	}
+
+	public List<String> getAllBiospecimenUIDs(Study study){
+		return iBiospecimenDao.getAllBiospecimenUIDs(study);
+	}
+	
+	public List<String> getAllBiocollectionUIDs(Study study){
+		return iBioCollectionDao.getAllBiocollectionUIDs(study);
+	}
+	
 }

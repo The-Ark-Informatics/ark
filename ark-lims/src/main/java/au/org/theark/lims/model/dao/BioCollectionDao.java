@@ -403,4 +403,16 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		BioCollection bioCollection = (BioCollection) criteria.uniqueResult();
 		return bioCollection;
 	}
+	
+
+	public List<String> getAllBiocollectionUIDs(Study study){
+		String queryString = "select bio.name " +
+		"from BioCollection bio " +
+		"where study =:study " +
+		"order by name ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("study", study);
+		return query.list();
+	}
+	
 }

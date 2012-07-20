@@ -166,4 +166,10 @@ public interface IBiospecimenDao {
 	public Unit getUnitByName(String name);
 
 	public List<Biospecimen> getBiospecimenByBioCollection(BioCollection bioCollection);
+
+	public List<String> getAllBiospecimenUIDs(Study study);
+	
+	
+	
 }
+

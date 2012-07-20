@@ -39,6 +39,7 @@ import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.BioCustomFieldUploadValidator;
 import au.org.theark.lims.web.component.bioupload.form.WizardForm;
 
@@ -54,6 +55,9 @@ public class BioUploadStep3 extends AbstractWizardStepPanel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService			iArkCommonService;
+
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
+	private ILimsService			iLimsService;
 
 	private ArkDownloadAjaxButton		downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
 																			private static final long	serialVersionUID	= 1L;
@@ -132,7 +136,7 @@ public class BioUploadStep3 extends AbstractWizardStepPanel {
 			//this is not the best way to do this fix TODO
 			List<String> listOfUidsToUpdate = new ArrayList<String>();				//TODO remove hardcoding
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biospecimen Custom Data")){
-				BioCustomFieldUploadValidator customFieldUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService);
+				BioCustomFieldUploadValidator customFieldUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService, iLimsService);
 				validationMessages = customFieldUploadValidator.validateBiospecimenCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				insertRows = customFieldUploadValidator.getInsertRows();
@@ -140,7 +144,7 @@ public class BioUploadStep3 extends AbstractWizardStepPanel {
 				errorCells = customFieldUploadValidator.getErrorCells();
 			}																												//TODO remove hardcoding
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Biocollection Custom Data")){
-				BioCustomFieldUploadValidator customFieldUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService);
+				BioCustomFieldUploadValidator customFieldUploadValidator = new BioCustomFieldUploadValidator(iArkCommonService, iLimsService);
 				validationMessages = customFieldUploadValidator.validateBiocollectionCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				//TODO consider if we want alternative way to do this - and maybe a superclass of uploadvalidator which draws out commonalities

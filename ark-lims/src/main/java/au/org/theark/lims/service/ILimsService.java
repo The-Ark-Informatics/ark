@@ -43,6 +43,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.lims.model.vo.LimsVO;
 
 public interface ILimsService {
@@ -351,4 +352,11 @@ public interface ILimsService {
 	public Unit getUnitByName(String name);
 
 	public List<Biospecimen> getBiospecimenByBioCollection(BioCollection bioCollection);
+
+	public List<String> getAllBiospecimenUIDs(Study study);
+	
+	public List<String> getAllBiocollectionUIDs(Study study);
+	
+
+	
 }
