@@ -125,7 +125,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 				new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_ITEM_NAME_LENGTH, billableItemTypeItemNameTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_ITEM_NAME_TAG)));
 		billableItemTypeDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(
 				new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_DESCRIPTION_LENGTH, billableItemTypeDescriptionTxtArea, new Model<String>(Constants.BILLABLE_ITEM_TYPE_DESCRIPTION_TAG)));
-		
 	}
 
 	/*

@@ -15,6 +15,7 @@ import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.worktracking.model.vo.BillableItemTypeVo;
+import au.org.theark.worktracking.model.vo.ResearcherVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
 import au.org.theark.worktracking.util.Constants;
 
@@ -87,8 +88,8 @@ public class SearchForm  extends AbstractSearchForm<BillableItemTypeVo> {
 	 */
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
+		setModelObject(new BillableItemTypeVo());
 		getModelObject().setMode(Constants.MODE_NEW);
-		getModelObject().getBillableItemType().setId(null);
 		preProcessDetailPanel(target);
 	}
 

@@ -1,5 +1,6 @@
 package au.org.theark.worktracking.web.component.researcher.form;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -27,7 +28,6 @@ import au.org.theark.worktracking.util.Constants;
 
 public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 	private static final long				serialVersionUID	= 1L;
-	//private static final Logger						log					= LoggerFactory.getLogger(SearchForm.class);
 	
 	@SpringBean(name = Constants.WORK_TRACKING_SERVICE)
 	private IWorkTrackingService iWorkTrackingService;
@@ -39,7 +39,7 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 	private TextField<String>				lastNameTxtFld;
 	private TextField<String>				instituteTxtFld;
 	
-	private DateTextField					lastActiveDateDp;
+	private DateTextField					createdDateDp;
 	private DropDownChoice<ResearcherStatus>		 researcherStatuses;
 	private DropDownChoice<ResearcherRole>		 	 researcherRoles;
 
@@ -82,7 +82,7 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 		add(lastNameTxtFld);
 		add(instituteTxtFld);
 		
-		add(lastActiveDateDp);
+		add(createdDateDp);
 		add(researcherStatuses);
 		add(researcherRoles);		
 	}
@@ -94,10 +94,10 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 		lastNameTxtFld=new TextField<String>(Constants.RESEARCHER_LAST_NAME);
 		instituteTxtFld=new TextField<String>(Constants.RESEARCHER_INSTITUTE);
 		
-		lastActiveDateDp=new DateTextField(Constants.RESEARCHER_LAST_ACTIVE_DATE,au.org.theark.core.Constants.DD_MM_YYYY);
+		createdDateDp=new DateTextField(Constants.RESEARCHER_CREATED_DATE,au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker datePicker = new ArkDatePicker();
-		datePicker.bind(lastActiveDateDp);
-		lastActiveDateDp.add(datePicker);
+		datePicker.bind(createdDateDp);
+		createdDateDp.add(datePicker);
 		
 		
 		
@@ -136,8 +136,9 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 	 */
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
+		setModelObject(new ResearcherVo());
 		getModelObject().setMode(Constants.MODE_NEW);
-		getModelObject().getResearcher().setId(null);
+		getModelObject().getResearcher().setCreatedDate(new Date());
 		preProcessDetailPanel(target);
 	}
 

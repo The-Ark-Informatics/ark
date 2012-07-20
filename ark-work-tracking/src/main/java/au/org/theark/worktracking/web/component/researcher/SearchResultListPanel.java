@@ -1,5 +1,7 @@
 package au.org.theark.worktracking.web.component.researcher;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -57,12 +59,15 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.RESEARCHER_INSTITUTE, ""));
 				}
-				item.add(buildLink(researcher));				
-				if (researcher.getLastActiveDate() != null) {
-					item.add(new Label(Constants.RESEARCHER_LAST_ACTIVE_DATE, researcher.getLastActiveDate().toString()));
+				item.add(buildLink(researcher));
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				String createdDate = "";
+				if (researcher.getCreatedDate() != null) {
+					createdDate = simpleDateFormat.format(researcher.getCreatedDate());
+					item.add(new Label(Constants.RESEARCHER_CREATED_DATE, createdDate));
 				}
 				else {
-					item.add(new Label(Constants.RESEARCHER_LAST_ACTIVE_DATE, ""));
+					item.add(new Label(Constants.RESEARCHER_CREATED_DATE, createdDate));
 				}
 				if (researcher.getResearcherRole() != null) {
 					item.add(new Label(Constants.RESEARCHER_ROLE, researcher.getResearcherRole().getName()));
