@@ -1202,4 +1202,5 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<CustomField> matchCustomFieldsFromInputFile(FileUpload fileUpload, Study study, ArkFunction arkFunction) {
 		return customFieldDao.matchCustomFieldsFromInputFile(fileUpload, study, arkFunction);
 	}
+	
 }

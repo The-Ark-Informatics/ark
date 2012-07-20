@@ -143,6 +143,7 @@ public class Constants {
 
 	public static final String STUDY_SERVICE = "studyService";
 	public static final String PHENO_SERVICE = "phenotypicService";
+	public static final String LIMS_SERVICE = "limsService";
 	public static final String STUDY_DAO = "studyDao";
 
 	public static final String FIELD_TYPE_NUMBER = "NUMBER";
