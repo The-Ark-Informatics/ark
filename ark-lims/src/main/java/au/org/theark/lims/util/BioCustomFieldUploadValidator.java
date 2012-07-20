@@ -622,7 +622,8 @@ public class BioCustomFieldUploadValidator {
 		try {
 			//TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
 			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though, and if it bloats with more fields could be part of batch too
-			validationMessages = validateMatrixCustomFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateReference);
+			validationMessages = validateMatrixCustomFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, 
+					uidsToUpdateReference, bioFieldType);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.lims.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -652,7 +653,8 @@ public class BioCustomFieldUploadValidator {
 	 *            general ARK Exception
 	 * @return a collection of data validation messages
 	 */
-	public java.util.Collection<String> validateMatrixCustomFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate, List<String> uidsToUpdateReference) throws FileFormatException, ArkSystemException {
+	public java.util.Collection<String> validateMatrixCustomFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, 
+			long rowsToValidate, List<String> uidsToUpdateReference, String bioFieldType) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		row = 1;
@@ -670,14 +672,23 @@ public class BioCustomFieldUploadValidator {
 			csvReader.readHeaders();
 			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
 			//uidsToUpdateReference = subjectUIDsAlreadyExisting;
-			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());			//
+			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());			
+			if(bioFieldType.equalsIgnoreCase(BIOCOLLECTION)){
+				
+			}
+			else if(bioFieldType.equalsIgnoreCase(BIOSPECIMEN)){
+				
+			}
+			else{
+				log.error("invalid biofield type...this should never happen");
+			}
 			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 																							//remove if not subjectuid, enforce fetch of customField to save another query each
 			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
 			
 			while (csvReader.readRecord()) {
 				stringLineArray = csvReader.getValues();//i might still need this or might not now that i am evaluating by name ... TODO evaluate
-				String subjectUID = stringLineArray[0];	// First/0th column should be the SubjectUID
+				String subjectUID = stringLineArray[0];	// First/0th column should be the SubjectUID	
 				if(!subjectUIDsAlreadyExisting.contains(subjectUID)){
 					nonExistantUIDs.add(row);//TODO test and compare array.
 					for(CustomFieldDisplay cfd : cfdsThatWeNeed){
