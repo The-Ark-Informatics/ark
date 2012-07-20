@@ -1,5 +1,7 @@
 package au.org.theark.worktracking.web.component.workrequest;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -57,25 +59,33 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.WORK_REQUEST_REQUEST_STATUS, ""));
 				}
 				
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				
+				String requestedDate = "";
 				if (workRequest.getRequestedDate() != null) {
-					item.add(new Label(Constants.WORK_REQUEST_REQUESTED_DATE, workRequest.getRequestedDate().toString()));
+					requestedDate= simpleDateFormat.format(workRequest.getRequestedDate());
+					item.add(new Label(Constants.WORK_REQUEST_REQUESTED_DATE, requestedDate));
 				}
 				else {
-					item.add(new Label(Constants.WORK_REQUEST_REQUESTED_DATE, ""));
+					item.add(new Label(Constants.WORK_REQUEST_REQUESTED_DATE, requestedDate));
 				}
 				
+				String commencedDate="";
 				if (workRequest.getCommencedDate() != null) {
-					item.add(new Label(Constants.WORK_REQUEST_COMMENCED_DATE, workRequest.getCommencedDate().toString()));
+					commencedDate =  simpleDateFormat.format(workRequest.getCommencedDate());
+					item.add(new Label(Constants.WORK_REQUEST_COMMENCED_DATE, commencedDate));
 				}
 				else {
-					item.add(new Label(Constants.WORK_REQUEST_COMMENCED_DATE, ""));
+					item.add(new Label(Constants.WORK_REQUEST_COMMENCED_DATE, commencedDate));
 				}
 
+				String completedDate="";
 				if (workRequest.getCompletedDate() != null) {
-					item.add(new Label(Constants.WORK_REQUEST_COMPLETED_DATE, workRequest.getCompletedDate().toString()));
+					completedDate=simpleDateFormat.format(workRequest.getCompletedDate());
+					item.add(new Label(Constants.WORK_REQUEST_COMPLETED_DATE, completedDate));
 				}
 				else {
-					item.add(new Label(Constants.WORK_REQUEST_COMPLETED_DATE, ""));
+					item.add(new Label(Constants.WORK_REQUEST_COMPLETED_DATE, completedDate));
 				}
 				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {

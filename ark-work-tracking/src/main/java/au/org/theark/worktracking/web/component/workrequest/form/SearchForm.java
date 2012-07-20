@@ -122,8 +122,8 @@ public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 	 */
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
+		setModelObject(new WorkRequestVo());
 		getModelObject().setMode(Constants.MODE_NEW);
-		getModelObject().getWorkRequest().setId(null);
 		preProcessDetailPanel(target);
 	}
 

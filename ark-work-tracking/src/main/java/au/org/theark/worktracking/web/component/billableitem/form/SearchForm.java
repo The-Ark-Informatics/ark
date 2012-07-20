@@ -181,8 +181,8 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 	 */
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
+		setModelObject(new BillableItemVo());
 		getModelObject().setMode(Constants.MODE_NEW);
-		getModelObject().getBillableItem().setId(null);
 		preProcessDetailPanel(target);
 	}
 

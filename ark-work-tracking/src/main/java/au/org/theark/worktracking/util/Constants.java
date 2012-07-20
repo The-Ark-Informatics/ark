@@ -45,13 +45,13 @@ public class Constants {
 	public static final String			INSTITUTE													    = "institute";
 	public static final String			ROLE													        = "researcherRole";
 	public static final String			STATUS													    	= "researcherStatus";
-	public static final String			LAST_ACTIVE_DATE											    = "lastActiveDate";
+	public static final String			CREATED_DATE											    	= "createdDate";
 		
 	public static final String			RESEARCHER_ID													= "researcher.id";
 	public static final String			RESEARCHER_FIRST_NAME											= "researcher.firstName";
 	public static final String			RESEARCHER_LAST_NAME											= "researcher.lastName";
 	public static final String			RESEARCHER_INSTITUTE											= "researcher.institute";
-	public static final String			RESEARCHER_LAST_ACTIVE_DATE										= "researcher.lastActiveDate";
+	public static final String			RESEARCHER_CREATED_DATE											= "researcher.createdDate";
 	public static final String			RESEARCHER_STATUS											    = "researcher.researcherStatus";
 	public static final String			RESEARCHER_ROLE											        = "researcher.researcherRole";	
 	public static final String			RESEARCHER_OFFICE_PHONE											= "researcher.officePhone";
