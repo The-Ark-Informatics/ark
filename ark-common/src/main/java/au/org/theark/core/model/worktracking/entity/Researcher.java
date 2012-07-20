@@ -33,7 +33,7 @@ public class Researcher implements Serializable {
 	private String								address;
 	private ResearcherRole						researcherRole;
 	private ResearcherStatus					researcherStatus;
-	private Date								lastActiveDate;
+	private Date								createdDate;
 	private String								officePhone;
 	private String								mobile;
 	private String								email;
@@ -55,7 +55,7 @@ public class Researcher implements Serializable {
 
 	public Researcher(Long id, String firstName, String lastName,
 			String institute, String address, ResearcherRole researcherRole,
-			ResearcherStatus researcherStatus, Date lastActiveDate,
+			ResearcherStatus researcherStatus, Date createdDate,
 			String officePhone, String mobile, String email, String fax,
 			String comment, BillingType billingType, String accountNumber,
 			String bsb, String bank, String accountName, Long studyId) {
@@ -67,7 +67,7 @@ public class Researcher implements Serializable {
 		this.address = address;
 		this.researcherRole = researcherRole;
 		this.researcherStatus = researcherStatus;
-		this.lastActiveDate = lastActiveDate;
+		this.createdDate = createdDate;
 		this.officePhone = officePhone;
 		this.mobile = mobile;
 		this.email = email;
@@ -148,15 +148,15 @@ public class Researcher implements Serializable {
 	public void setResearcherStatus(ResearcherStatus researcherStatus) {
 		this.researcherStatus = researcherStatus;
 	}
-
+	
 	@Temporal(TemporalType.DATE)
-	@Column(name = "LAST_ACTIVE_DATE", length = 7)
-	public Date getLastActiveDate() {
-		return lastActiveDate;
+	@Column(name = "CREATED_DATE", length = 7)
+	public Date getCreatedDate() {
+		return createdDate;
 	}
 
-	public void setLastActiveDate(Date lastActiveDate) {
-		this.lastActiveDate = lastActiveDate;
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 
 	@Column(name = "OFFICE_PHONE", length = 12)
@@ -279,7 +279,7 @@ public class Researcher implements Serializable {
 		result = prime * result
 				+ ((institute == null) ? 0 : institute.hashCode());
 		result = prime * result
-				+ ((lastActiveDate == null) ? 0 : lastActiveDate.hashCode());
+				+ ((createdDate == null) ? 0 : createdDate.hashCode());
 		result = prime * result
 				+ ((lastName == null) ? 0 : lastName.hashCode());
 		result = prime * result + ((mobile == null) ? 0 : mobile.hashCode());
@@ -353,10 +353,10 @@ public class Researcher implements Serializable {
 				return false;
 		} else if (!institute.equals(other.institute))
 			return false;
-		if (lastActiveDate == null) {
-			if (other.lastActiveDate != null)
+		if (createdDate == null) {
+			if (other.createdDate != null)
 				return false;
-		} else if (!lastActiveDate.equals(other.lastActiveDate))
+		} else if (!createdDate.equals(other.createdDate))
 			return false;
 		if (lastName == null) {
 			if (other.lastName != null)
@@ -385,7 +385,7 @@ public class Researcher implements Serializable {
 	public String toString() {
 		return "Researcher [id=" + id + ", firstName=" + firstName
 				+ ", lastName=" + lastName + ", institute=" + institute
-				+ ", address=" + address + ", lastActiveDate=" + lastActiveDate
+				+ ", address=" + address + ", createdDate=" + createdDate
 				+ ", officePhone=" + officePhone + ", mobile=" + mobile
 				+ ", email=" + email + ", fax=" + fax + ", comment=" + comment
 				+ ", accountNumber=" + accountNumber + ", bsb=" + bsb
