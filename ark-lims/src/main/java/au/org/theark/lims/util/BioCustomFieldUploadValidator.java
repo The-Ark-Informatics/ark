@@ -59,6 +59,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
+import au.org.theark.lims.service.ILimsService;
 
 import com.csvreader.CsvReader;
 
@@ -71,22 +72,25 @@ public class BioCustomFieldUploadValidator {
 	private static final long		serialVersionUID			= -1933045886948087734L;
 	private static Logger			log							= LoggerFactory.getLogger(BioCustomFieldUploadValidator.class);
 
-	private static final String			BIOSPECIMEN				= "BIOSPECIMEN";
-	private static final String			BIOCOLLECTION			= "BIOCOLLECTION";
+	private static final String		BIOSPECIMEN				= "BIOSPECIMEN";
+	private static final String		BIOCOLLECTION			= "BIOCOLLECTION";
 	
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
-	private Long						studyId;
-	private Study						study;
+	
+	@SuppressWarnings("unchecked")
+	private ILimsService			iLimsService;
+	private Long					studyId;
+	private Study					study;
 	java.util.Collection<String>	fileValidationMessages	= new java.util.ArrayList<String>();
 	java.util.Collection<String>	dataValidationMessages	= new java.util.ArrayList<String>();
 	private HashSet<Integer>		existantSubjectUIDRows;
 	private HashSet<Integer>		nonExistantUIDs;
 	private HashSet<ArkGridCell>	errorCells;
 	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
-	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
-	private int							row							= 1;
+	private char					delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
+	private String					fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
+	private int						row							= 1;
 
 	public BioCustomFieldUploadValidator() {
 		super();
@@ -109,9 +113,10 @@ public class BioCustomFieldUploadValidator {
 	}
 
 	@SuppressWarnings("unchecked")
-	public BioCustomFieldUploadValidator(IArkCommonService iArkCommonService) {
+	public BioCustomFieldUploadValidator(IArkCommonService iArkCommonService, ILimsService iLimsService) {
 		super();
 		this.iArkCommonService = iArkCommonService;
+		this.iLimsService = iLimsService;
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		this.study = iArkCommonService.getStudy(studyId);
@@ -670,26 +675,29 @@ public class BioCustomFieldUploadValidator {
 
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			csvReader.readHeaders();
-			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
+			List<String> bioUIDsAlreadyExisting = null;	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
 			//uidsToUpdateReference = subjectUIDsAlreadyExisting;
-			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());			
-			if(bioFieldType.equalsIgnoreCase(BIOCOLLECTION)){
-				
+			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());	
+
+			ArkFunction bioCustomFieldArkFunction = null;
+			if(bioFieldType.equalsIgnoreCase(BIOSPECIMEN)){
+				bioUIDsAlreadyExisting = iLimsService.getAllBiospecimenUIDs(study);
+				bioCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN);
 			}
-			else if(bioFieldType.equalsIgnoreCase(BIOSPECIMEN)){
-				
+			else if(bioFieldType.equalsIgnoreCase(BIOCOLLECTION)){
+				bioUIDsAlreadyExisting = iLimsService.getAllBiocollectionUIDs(study);
+				bioCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
 			}
 			else{
-				log.error("invalid biofield type...this should never happen");
+				log.error("invalid biofield type...this should never happen");//TODO fix exception handling globally
 			}
-			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
 																							//remove if not subjectuid, enforce fetch of customField to save another query each
-			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
+			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, bioCustomFieldArkFunction);
 			
 			while (csvReader.readRecord()) {
 				stringLineArray = csvReader.getValues();//i might still need this or might not now that i am evaluating by name ... TODO evaluate
-				String subjectUID = stringLineArray[0];	// First/0th column should be the SubjectUID	
-				if(!subjectUIDsAlreadyExisting.contains(subjectUID)){
+				String bioId = stringLineArray[0];	// First/0th column should be the SubjectUID	
+				if(!bioUIDsAlreadyExisting.contains(bioId)){
 					nonExistantUIDs.add(row);//TODO test and compare array.
 					for(CustomFieldDisplay cfd : cfdsThatWeNeed){
 						errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
@@ -697,16 +705,16 @@ public class BioCustomFieldUploadValidator {
 					errorCells.add(new ArkGridCell(0, row));
 				}
 				else{
-					if(uidsToUpdateReference.contains(subjectUID)){
+					if(uidsToUpdateReference.contains(bioId)){
 						for(CustomFieldDisplay cfd : cfdsThatWeNeed){
 							errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
 						}
 						errorCells.add(new ArkGridCell(0, row));
-						dataValidationMessages.add("Subject " + subjectUID + " on row " + row + " is listed multiple times in this file.  " +
+						dataValidationMessages.add("Subject " + bioId + " on row " + row + " is listed multiple times in this file.  " +
 								"Please remove this row and retry.");
 					}
 					else{
-						uidsToUpdateReference.add(subjectUID);
+						uidsToUpdateReference.add(bioId);
 						CustomField customField = null;		
 						for(CustomFieldDisplay cfd : cfdsThatWeNeed){
 							customField = cfd.getCustomField();
@@ -719,7 +727,7 @@ public class BioCustomFieldUploadValidator {
 								else
 								{
 									//log.info("customField = " + customField==null?"null":customField.getName());
-									if(!validateFieldData(customField, theDataAsString, subjectUID, dataValidationMessages)){
+									if(!validateFieldData(customField, theDataAsString, bioId, dataValidationMessages)){
 										errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
 									}								
 								}

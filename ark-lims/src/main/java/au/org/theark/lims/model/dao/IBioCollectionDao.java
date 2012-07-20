@@ -27,6 +27,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
 
 public interface IBioCollectionDao {
 	/**
@@ -124,5 +125,7 @@ public interface IBioCollectionDao {
 	public BioCollectionCustomFieldData getBioCollectionCustomFieldData(BioCollection bioCollectionCriteria, ArkFunction arkFunction, String customFieldName);
 
 	public BioCollection getBioCollectionByName(String name);
+
+	public List<String> getAllBiocollectionUIDs(Study study);
 
 }

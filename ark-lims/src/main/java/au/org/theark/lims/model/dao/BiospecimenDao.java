@@ -561,4 +561,14 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		criteria.add(Restrictions.eq("bioCollection", bioCollection));
 		return criteria.list();
 	}
+
+	public List<String> getAllBiospecimenUIDs(Study study) {
+		String queryString = "select bio.biospecimenUid " +
+		"from Biospecimen bio " +
+		"where study =:study " +
+		"order by biospecimenUid ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("study", study);
+		return query.list();
+	}
 }
