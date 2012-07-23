@@ -104,7 +104,7 @@ public class Constants {
 	public static final String ERROR_WORK_RESEARCHER_FIRSTNAME_REQUIRED 								= "error.work.researcher.firstname.required";
 	
 	
-	//Billable Item Constants
+	//Billable Item  Type Constants
 	public static final String			BILLABLE_ITEM_TYPE_ID											= "billableItemType.id";
 	public static final String			BILLABLE_ITEM_TYPE_ITEM_NAME									= "billableItemType.itemName";
 	public static final String			BILLABLE_ITEM_TYPE_QUANTITY_PER_UNIT							= "billableItemType.quantityPerUnit";
@@ -129,6 +129,11 @@ public class Constants {
 	public static final String ERROR_BILLABLE_ITEM_TYPE_ITEM_NAME_LENGTH 								= "error.work.billableitemtype.itemname.length";
 	public static final String BILLABLE_ITEM_TYPE_DESCRIPTION_TAG 										= "Description";
 	public static final String ERROR_BILLABLE_ITEM_TYPE_DESCRIPTION_LENGTH 								= "error.work.billableitemtype.description.length";
+	public static final String BILLABLE_ITEM_TYPE_GST_PATTERN 											= "\\d*||\\d*.\\d{1,4}";
+	public static final String ERROR_BILLABLE_ITEM_TYPE_GST			 									= "error.work.billableitemtype.gst";
+	public static final String BILLABLE_ITEM_TYPE_UNIT_PRICE_PATTERN 									= "\\d*||\\d*.\\d{1,2}";
+	public static final String ERROR_BILLABLE_ITEM_TYPE_UNIT_PRICE		 								= "error.work.billableitemtype.unitprice";
+
 	
 	//Work Request Constants
 	
