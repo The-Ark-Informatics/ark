@@ -6,3 +6,5 @@ UPDATE `study`.`upload_type` SET `DESCRIPTION`='Custom Data to be associated wit
 
 INSERT INTO `study`.`upload_type` (`ID`, `NAME`, `DESCRIPTION`, `ARK_MODULE_ID`) VALUES (4, 'Biocollection Custom Data', 'Custom Data to be associated with a biospecimen', 5);
 
+--note ark_module_function done via web interface...or should we default to having it there and they can use webface to remove it?
+
