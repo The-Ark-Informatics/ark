@@ -61,20 +61,20 @@ import com.csvreader.CsvReader;
  * @author cellis
  */
 public class BiospecimenUploader {
-	private long						recordCount;
-	private long						insertCount;
-	private long						updateCount;
-	private long						curPos;
-	private long						srcLength				= -1;
-	private StopWatch					timer						= null;
-	private char						delimiterCharacter	= Constants.DEFAULT_DELIMITER_CHARACTER;
-	private Study						study;
-	static Logger						log						= LoggerFactory.getLogger(BiospecimenUploader.class);
+	private long					recordCount;
+	private long					insertCount;
+	private long					updateCount;
+	private long					curPos;
+	private long					srcLength				= -1;
+	private StopWatch				timer						= null;
+	private char					delimiterCharacter	= Constants.DEFAULT_DELIMITER_CHARACTER;
+	private Study					study;
+	static Logger					log						= LoggerFactory.getLogger(BiospecimenUploader.class);
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService		= null;
-	private ILimsService				iLimsService			= null;
+	private ILimsService			iLimsService			= null;
 	private IInventoryService		iInventoryService		= null;
-	private StringBuffer				uploadReport			= null;
+	private StringBuffer			uploadReport			= null;
 	private SimpleDateFormat		simpleDateFormat		= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	private List<Biospecimen>		insertBiospecimens	= new ArrayList<Biospecimen>();
 	private List<Biospecimen>		updateBiospecimens	= new ArrayList<Biospecimen>();

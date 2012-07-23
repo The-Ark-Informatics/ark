@@ -51,7 +51,6 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -64,7 +63,7 @@ import au.org.theark.lims.service.ILimsService;
 import com.csvreader.CsvReader;
 
 /**
- * CustomField UploadValidator provides support for validating subject matrix-formatted files.
+ * Bio CustomField UploadValidator provides support for validating matrix-formatted files.
  * 
  * @author travis
  */
@@ -72,8 +71,8 @@ public class BioCustomFieldUploadValidator {
 	private static final long		serialVersionUID			= -1933045886948087734L;
 	private static Logger			log							= LoggerFactory.getLogger(BioCustomFieldUploadValidator.class);
 
-	private static final String		BIOSPECIMEN				= "BIOSPECIMEN";
-	private static final String		BIOCOLLECTION			= "BIOCOLLECTION";
+	private static final String		BIOSPECIMEN				= "Biospecimen";
+	private static final String		BIOCOLLECTION			= "Biocollection";
 	
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
@@ -383,11 +382,11 @@ public class BioCustomFieldUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the bio custom data file");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			throw new ArkSystemException("Unexpected exception occurred when trying to process bio custom data file");
 		}
 		finally {
 			if (csvReader != null) {
@@ -484,11 +483,11 @@ public class BioCustomFieldUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the bio custom data file");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			throw new ArkSystemException("Unexpected exception occurred when trying to process bio custom data file");
 		}
 		finally {
 			if (csvReader != null) {
@@ -676,7 +675,6 @@ public class BioCustomFieldUploadValidator {
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			csvReader.readHeaders();
 			List<String> bioUIDsAlreadyExisting = null;	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
-			//uidsToUpdateReference = subjectUIDsAlreadyExisting;
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());	
 
 			ArkFunction bioCustomFieldArkFunction = null;
@@ -691,7 +689,7 @@ public class BioCustomFieldUploadValidator {
 			else{
 				log.error("invalid biofield type...this should never happen");//TODO fix exception handling globally
 			}
-																							//remove if not subjectuid, enforce fetch of customField to save another query each
+
 			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, bioCustomFieldArkFunction);
 			
 			while (csvReader.readRecord()) {
@@ -727,7 +725,7 @@ public class BioCustomFieldUploadValidator {
 								else
 								{
 									//log.info("customField = " + customField==null?"null":customField.getName());
-									if(!validateFieldData(customField, theDataAsString, bioId, dataValidationMessages)){
+									if(!validateFieldData(customField, theDataAsString, bioId, bioFieldType, dataValidationMessages)){
 										errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
 									}								
 								}
@@ -741,11 +739,11 @@ public class BioCustomFieldUploadValidator {
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the biocustom  data file");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			throw new ArkSystemException("Unexpected exception occurred when trying to process bio custom data file");
 		}
 		finally {
 			if (csvReader != null) {
@@ -769,7 +767,8 @@ public class BioCustomFieldUploadValidator {
 		//TODO:  test hashset this i.intvalue or left hashset value??
 		for (Iterator<Integer> iterator = nonExistantUIDs.iterator(); iterator.hasNext();) {
 			Integer i = (Integer) iterator.next();
-			dataValidationMessages.add("Subject on row " + i.intValue() + " does not exist in the database.  Please remove this row and retry or run upload/create this subject first.");
+			dataValidationMessages.add(bioFieldType + " on row " + i.intValue() + " does not exist in the database.  " +
+					"Please remove this row and retry or run upload/create this " + bioFieldType + " first.");
 		}
 		return dataValidationMessages;
 	}
@@ -822,7 +821,7 @@ public class BioCustomFieldUploadValidator {
 	 * @param customField
 	 * @return boolean
 	 */
-	public static boolean isValidFieldData(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages) {
+	public static boolean isValidFieldData(CustomField customField, String value, String bioUID, String bioFieldType, java.util.Collection<String> errorMessages) {
 		boolean isValidFieldData = true;
 		//TODO ASAP is null coming in acceptable? or do we just just check before call... if value null return false?
 		
@@ -832,7 +831,7 @@ public class BioCustomFieldUploadValidator {
 				Double.parseDouble(value);
 			}
 			catch (NumberFormatException nfe) {
-				errorMessages.add(fieldDataNotDefinedType(customField, value, subjectUID));
+				errorMessages.add(fieldDataNotDefinedType(customField, value, bioUID, bioFieldType));
 				log.error("Field data number format exception " + nfe.getMessage());
 				isValidFieldData = false;
 			}
@@ -855,7 +854,7 @@ public class BioCustomFieldUploadValidator {
 				dateFormat.parse(value);
 			}
 			catch (ParseException pe) {
-				errorMessages.add(fieldDataNotValidDate(customField, value, subjectUID));
+				errorMessages.add(fieldDataNotValidDate(customField, value, bioUID, bioFieldType));
 				log.error("Field data date parse exception " + pe.getMessage());
 				isValidFieldData = false;
 			}
@@ -874,7 +873,7 @@ public class BioCustomFieldUploadValidator {
 	 * @param customField
 	 * @return boolean
 	 */
-	public static boolean isInValidRange(CustomField customField, String valueToValidate, String subjectUID, java.util.Collection<String> errorMessages) {
+	public static boolean isInValidRange(CustomField customField, String valueToValidate, String bioUID, String bioFieldType, java.util.Collection<String> errorMessages) {
 		boolean isInValidRange = true;
 		//Field field = fieldData.getField();
 		String minValue = customField.getMinValue();
@@ -896,10 +895,10 @@ public class BioCustomFieldUploadValidator {
 
 				if ((doubleFieldValue > doubleMaxValue) || (doubleFieldValue < doubleMinValue)) {
 					if ((doubleFieldValue > doubleMaxValue)) {
-						errorMessages.add("Subject " + subjectUID + " has a value: " + valueToValidate + " which is greater than the maximum allowed value of " + doubleMaxValue);
+						errorMessages.add( bioFieldType + " " + bioUID + " has a value: " + valueToValidate + " which is greater than the maximum allowed value of " + doubleMaxValue);
 					}
 					if ((doubleFieldValue < doubleMinValue)) {
-						errorMessages.add("Subject " + subjectUID + " has a value: " + valueToValidate + " which  is less than the minimum allowed value of " + doubleMinValue);
+						errorMessages.add( bioFieldType + " " + bioUID + " has a value: " + valueToValidate + " which  is less than the minimum allowed value of " + doubleMinValue);
 					}
 					isInValidRange = false;
 				}
@@ -948,7 +947,7 @@ public class BioCustomFieldUploadValidator {
 	 * @param customfield
 	 * @return boolean
 	 */
-	public static boolean isInEncodedValues(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages) {
+	public static boolean isInEncodedValues(CustomField customField, String value, String bioUID, String bioFieldType, java.util.Collection<String> errorMessages) {
 		boolean inEncodedValues = true;
 		
 		if(customField.getMissingValue()!=null && value!=null && value.trim().equalsIgnoreCase(customField.getMissingValue().trim())) {
@@ -979,7 +978,7 @@ public class BioCustomFieldUploadValidator {
 				}
 
 				if (!inEncodedValues) {
-					errorMessages.add(fieldDataNotInEncodedValues(customField, value, subjectUID));
+					errorMessages.add(fieldDataNotInEncodedValues(customField, value, bioUID, bioFieldType));
 				}
 
 			}
@@ -999,17 +998,17 @@ public class BioCustomFieldUploadValidator {
 	 * @param errorMessages
 	 * @return boolean
 	 */
-	public static boolean validateFieldData(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages) {
+	public static boolean validateFieldData(CustomField customField, String value, String bioUID, String bioFieldType, java.util.Collection<String> errorMessages) {
 		boolean isValid = true;
 		boolean isValidFieldData = true;
 		boolean isValidEncodedValues = true;
 		boolean isValidRange = true;
 
-		isValidFieldData = isValidFieldData(customField, value, subjectUID, errorMessages);
+		isValidFieldData = isValidFieldData(customField, value, bioUID, bioFieldType, errorMessages);
 		//log.info("isValidFieldData " + isValidFieldData );
-		isValidEncodedValues = isInEncodedValues(customField,value, subjectUID, errorMessages);
+		isValidEncodedValues = isInEncodedValues(customField,value, bioUID, bioFieldType, errorMessages);
 		//log.info("isValidEncodedValues " + isValidEncodedValues );
-		isValidRange = isInValidRange(customField, value, subjectUID, errorMessages);
+		isValidRange = isInValidRange(customField, value, bioUID, bioFieldType, errorMessages);
 		//log.info("isInValidRange " + isValidRange );
 		isValid = (isValidFieldData && isValidEncodedValues && isValidRange);
 		//log.info("isvalidoverall " + isValid );
@@ -1023,10 +1022,10 @@ public class BioCustomFieldUploadValidator {
 	 * @param fieldData
 	 * @return String
 	 */
-	public static String fieldDataSubjectUidNotFound(String subjectUid) {
+	public static String fieldDataSubjectUidNotFound(String bioUID, String bioFieldType) {
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(subjectUid);
+		stringBuffer.append(bioFieldType + " ");
+		stringBuffer.append(bioUID);
 		stringBuffer.append(" ");
 		stringBuffer.append("was not found in the database. Please check and try again.");
 		return (stringBuffer.toString());
@@ -1039,10 +1038,10 @@ public class BioCustomFieldUploadValidator {
 	 * @param fieldData
 	 * @return String
 	 */
-	public static String fieldDataGreaterThanMaxValue(CustomField field, String value, String subjectUID) {
+	public static String fieldDataGreaterThanMaxValue(CustomField field, String value, String bioUID, String bioFieldType) {
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(subjectUID);
+		stringBuffer.append(bioFieldType + " ");
+		stringBuffer.append(bioUID);
 		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
@@ -1060,10 +1059,10 @@ public class BioCustomFieldUploadValidator {
 	 * @param fieldData
 	 * @return String
 	 */
-	public static String fieldDataLessThanMinValue(CustomField field, String value, String subjectUID) {
+	public static String fieldDataLessThanMinValue(CustomField field, String value, String bioUID, String bioFieldType) {
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(subjectUID);
+		stringBuffer.append(bioFieldType + " ");
+		stringBuffer.append(bioUID);
 		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
@@ -1081,10 +1080,10 @@ public class BioCustomFieldUploadValidator {
 	 * @param fieldData
 	 * @return String
 	 */
-	public static String fieldDataNotInEncodedValues(CustomField field, String value, String subjectUID) {
+	public static String fieldDataNotInEncodedValues(CustomField field, String value, String bioUID, String bioFieldType) {
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(subjectUID);
+		stringBuffer.append(bioFieldType + " ");
+		stringBuffer.append(bioUID);
 		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
@@ -1102,11 +1101,11 @@ public class BioCustomFieldUploadValidator {
 	 * @param fieldData
 	 * @return String
 	 */
-	public static String fieldDataNotValidDate(CustomField field, String value, String subjectUID) {
+	public static String fieldDataNotValidDate(CustomField field, String value, String bioUID, String bioFieldType) {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
-		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(subjectUID);
+		stringBuffer.append(bioFieldType + " ");
+		stringBuffer.append(bioUID);
 		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
@@ -1124,10 +1123,10 @@ public class BioCustomFieldUploadValidator {
 	 * @param fieldData
 	 * @return String
 	 **/
-	public static String fieldDataNotDefinedType(CustomField field, String value, String subjectUID) {
+	public static String fieldDataNotDefinedType(CustomField field, String value, String bioUID, String bioFieldType) {
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(subjectUID);
+		stringBuffer.append(bioFieldType + " ");
+		stringBuffer.append(bioUID);
 		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
@@ -1138,18 +1137,11 @@ public class BioCustomFieldUploadValidator {
 		return (stringBuffer.toString());
 	}
 	
-	/**
-	 * Returns dateCollected not a valid date format error message
-	 * 
-	 * @param subjectUid
-	 * @param dateCollectedStr
-	 * @return String
-	 */
-	public static String dateCollectedNotValidDate(String subjectUid, String dateCollectedStr) {
+	public static String dateCollectedNotValidDate(String bioUID, String bioFieldType, String dateCollectedStr) {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
-		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(subjectUid);
+		stringBuffer.append(bioFieldType + " ");
+		stringBuffer.append(bioUID);
 		stringBuffer.append(": ");
 		stringBuffer.append(" with the date collected: ");
 		stringBuffer.append(dateCollectedStr);
@@ -1168,18 +1160,11 @@ public class BioCustomFieldUploadValidator {
 		return (stringBuffer.toString());
 	}
 
-	/**
-	 * Returns status not valid error message
-	 * 
-	 * @param subjectUid
-	 * @param statusStr
-	 * @return String
-	 */
-	public static String statusNotValid(String subjectUid, String statusStr) {
+	public static String statusNotValid(String bioUID, String bioFieldType, String statusStr) {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Error: ");
-		stringBuffer.append("Subject UID: ");
-		stringBuffer.append(subjectUid);
+		stringBuffer.append(bioFieldType + " ");
+		stringBuffer.append(bioUID);
 		stringBuffer.append(": ");
 		stringBuffer.append(" with the status: ");
 		stringBuffer.append(statusStr);
