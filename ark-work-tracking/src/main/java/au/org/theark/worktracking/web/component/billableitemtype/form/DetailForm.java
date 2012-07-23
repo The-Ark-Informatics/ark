@@ -9,11 +9,16 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.DoubleConverter;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidationError;
+import org.apache.wicket.validation.ValidationError;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
@@ -125,8 +130,78 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 				new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_ITEM_NAME_LENGTH, billableItemTypeItemNameTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_ITEM_NAME_TAG)));
 		billableItemTypeDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(
 				new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_DESCRIPTION_LENGTH, billableItemTypeDescriptionTxtArea, new Model<String>(Constants.BILLABLE_ITEM_TYPE_DESCRIPTION_TAG)));
-	}
+		
+		billableItemTypeUnitPriceTxtField.add(new PatternValidator(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE_PATTERN){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
+			@Override
+			protected void onValidate(IValidatable<String> validatable) {
+				super.onValidate(new DoubleValidatable(validatable,2));
+			}
+		});
+		
+		billableItemTypeGstTxtField.add(new PatternValidator(Constants.BILLABLE_ITEM_TYPE_GST_PATTERN){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onValidate(IValidatable<String> validatable) {
+				super.onValidate(new DoubleValidatable(validatable,4));
+			}
+		});		
+	}
+	
+	
+	/**
+	 * Convert Double input value to String and set the validate error messages.  
+	 * @author thilina
+	 * 
+	 * @see IValidatable
+	 * @see PatternValidator
+	 *
+	 */
+	private class DoubleValidatable implements IValidatable<String>{
+		
+		private IValidatable<String> validatable;
+		private int decimalPointsCount;
+		
+		DoubleValidatable(IValidatable<String> validatable,int decimalPointsCount){
+			this.validatable=validatable;
+			this.decimalPointsCount=decimalPointsCount;
+		}
+		
+		public String getValue() {
+			Object obj=this.validatable.getValue();
+			return obj.toString();
+		}
+
+		public void error(IValidationError error) {
+			ValidationError validationError = (ValidationError) error;
+			if(this.decimalPointsCount == 2){
+				this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_TYPE_UNIT_PRICE));
+			}else if(this.decimalPointsCount == 4){
+				this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_TYPE_GST));
+			}
+		}
+
+		public boolean isValid() {
+			// TODO Auto-generated method stub
+			return this.validatable.isValid();
+		}
+
+		public IModel<String> getModel() {
+			// TODO Auto-generated method stub
+			return this.validatable.getModel();
+		}
+		
+	}
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
