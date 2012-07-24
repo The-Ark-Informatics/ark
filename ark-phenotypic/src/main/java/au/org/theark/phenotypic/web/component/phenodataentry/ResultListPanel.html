@@ -120,6 +120,17 @@
 			<!--	The detailModalWindow for detail edit/add from listPanel -->
 			<div wicket:id="detailModalWindow">
 			</div>
+			
+			<div class="detailPanel">
+				<div class="buttons">
+					<select wicket:id="customFieldGroupSelected">[Custom Field Group]</select>
+					<input wicket:id="getData" type="submit" wicket:message="value:getData" />
+				</div>
+			
+				<div wicket:id="phenoDataView" class="datatable">
+					[phenoDataView]
+				</div>
+			</div>
 		</div>
 	</form>
 </wicket:panel>

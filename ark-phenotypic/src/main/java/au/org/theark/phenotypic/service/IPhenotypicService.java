@@ -33,6 +33,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.vo.CustomFieldGroupVO;
@@ -178,4 +179,11 @@ public interface IPhenotypicService {
 			List<PhenoCollection> phenoCollectionsWithTheirDataToInsert,
 			Study study);
 	
+	public List<List<String>> getPhenoDataAsMatrix (Study study, List<String> subjectUids, List<CustomField> customFields, List<CustomFieldGroup> customFieldGroups);
+	
+	public List<CustomFieldGroup> getCustomFieldGroupsByLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy);
+
+	public CustomFieldGroup getCustomFieldGroupByNameAndStudy(String name, Study study);
+	
+	public CustomFieldGroup getCustomFieldGroupById(Long id);
 }

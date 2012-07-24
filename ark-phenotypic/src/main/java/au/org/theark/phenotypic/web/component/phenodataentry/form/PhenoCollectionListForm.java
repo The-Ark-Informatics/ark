@@ -26,9 +26,14 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -44,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -54,6 +60,7 @@ import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
+import au.org.theark.core.web.component.panel.table.DataTablePanel;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataEntryModalDetailPanel;
 
@@ -87,10 +94,13 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 	private Panel												modalContentPanel;
 	protected ArkBusyAjaxButton							newButton;
+	protected AjaxButton									getDataButton;
 
 	protected WebMarkupContainer							dataViewListWMC;
 	private DataView<PhenoCollection>				dataView;
 	private ArkDataProvider2<PhenoDataCollectionVO, PhenoCollection>	PhenoCollectionProvider;
+	private DropDownChoice<CustomFieldGroup>			customFieldGroupDdc;
+	private WebMarkupContainer								phenoDataView;
 
 	public PhenoCollectionListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<PhenoDataCollectionVO> cpModel) {
 		super(id, cpModel);
@@ -98,7 +108,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		this.feedbackPanel = feedbackPanel;
 		this.modalWindow = modalWindow;
 	}
-
+	
 	public void initialiseForm() {
 		modalContentPanel = new EmptyPanel("content");
 //		ArkFunction associatedPrimaryFn = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
@@ -108,8 +118,39 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		
 		initialiseDataView();
 		initialiseNewButton();
+		initCustomFieldGroupDdc();
+		
+		phenoDataView = new EmptyPanel("phenoDataView");
+		phenoDataView.setOutputMarkupPlaceholderTag(true);
+		add(phenoDataView);
+		
+		initialiseGetDataButton();
 
-		add(modalWindow);
+		add(modalWindow);		
+	}
+
+	private void initCustomFieldGroupDdc() {
+		LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getPhenoCollection().getLinkSubjectStudy();
+		List<CustomFieldGroup> customFieldGroups = iPhenotypicService.getCustomFieldGroupsByLinkSubjectStudy(linkSubjectStudy);
+		
+		ChoiceRenderer<CustomFieldGroup> renderer = new ChoiceRenderer<CustomFieldGroup>("name", "id");
+		customFieldGroupDdc = new DropDownChoice<CustomFieldGroup>("customFieldGroupSelected", customFieldGroups);
+		customFieldGroupDdc.setChoiceRenderer(renderer);
+		
+		customFieldGroupDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+         /**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			protected void onUpdate(AjaxRequestTarget target) {
+             // Enable getData button when customFieldGroup actually selected
+             getDataButton.setEnabled(customFieldGroupDdc.getValue() != null && !customFieldGroupDdc.getValue().isEmpty());
+             target.add(getDataButton);
+         }
+     });
+		
+		add(customFieldGroupDdc);
 	}
 
 	@Override
@@ -213,6 +254,50 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		newButton.setDefaultFormProcessing(false);
 
 		add(newButton);
+	}
+	
+	private void initialiseGetDataButton() {
+		getDataButton = new AjaxButton("getData") {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public boolean isVisible() {
+				boolean isVisible = true;
+
+				String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+				isVisible = (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW) && sessionSubjectUID != null);
+
+				return isVisible;
+			}
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getPhenoCollection().getLinkSubjectStudy();
+				
+				List<CustomFieldGroup> customFieldGroups = new ArrayList<CustomFieldGroup>(0);
+				CustomFieldGroup cfg = iPhenotypicService.getCustomFieldGroupById(new Long(customFieldGroupDdc.getValue()));
+				customFieldGroups.add(cfg);
+				
+				List<CustomField> customFields = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(cfg);
+				List<String> subjectUids = new ArrayList<String>(0);
+				subjectUids.add(linkSubjectStudy.getSubjectUID());
+				List<List<String>> dataSet = iPhenotypicService.getPhenoDataAsMatrix(linkSubjectStudy.getStudy(), subjectUids, customFields, customFieldGroups);
+				
+				phenoDataView = new DataTablePanel("phenoDataView", dataSet);
+				PhenoCollectionListForm.this.addOrReplace(phenoDataView);
+				target.add(phenoDataView);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to proceed with New");
+			}
+		};
+		getDataButton.setDefaultFormProcessing(false);
+		getDataButton.setEnabled(customFieldGroupDdc.getValue() != null && (!customFieldGroupDdc.getValue().isEmpty()));
+
+		add(getDataButton);
 	}
 
 	/**

@@ -44,6 +44,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
@@ -910,5 +911,21 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 	public void processPhenoCollectionsWithTheirDataToInsertBatch(List<PhenoCollection> phenoCollectionsWithTheirDataToInsert, Study study){
 		phenotypicDao.processPhenoCollectionsWithTheirDataToInsertBatch( phenoCollectionsWithTheirDataToInsert, study);
+	}
+	
+	public List<List<String>> getPhenoDataAsMatrix (Study study, List<String> subjectUids, List<CustomField> customFields, List<CustomFieldGroup> customFieldGroups) {
+		return phenotypicDao.getPhenoDataAsMatrix(study, subjectUids, customFields, customFieldGroups);
+	}
+	
+	public List<CustomFieldGroup> getCustomFieldGroupsByLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
+		return phenotypicDao.getCustomFieldGroupsByLinkSubjectStudy(linkSubjectStudy);
+	}
+
+	public CustomFieldGroup getCustomFieldGroupByNameAndStudy(String name, Study study) {
+		return phenotypicDao.getCustomFieldGroupByNameAndStudy(name, study);
+	}
+	
+	public CustomFieldGroup getCustomFieldGroupById(Long id) {
+		return phenotypicDao.getCustomFieldGroupById(id);
 	}
 }
