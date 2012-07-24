@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -56,6 +57,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
@@ -1506,6 +1508,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	private List<CustomFieldDisplay> getCustomFieldDisplayForCustomFieldGroup(CustomFieldGroup customFieldGroup){
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.add(Restrictions.eq("customFieldGroup",customFieldGroup));
+		criteria.addOrder(Order.asc("sequence"));
 		return criteria.list();
 	}
 	
@@ -1753,4 +1756,142 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		session.clear();
 	}
 
+	/**
+	 * Extract phenotypic data for a specifed study, list of subjects, custom fields and custom field groups
+	 * @param study
+	 * @param subjectUids
+	 * @param customFields
+	 * @param customFieldGroups
+	 * @return
+	 */
+	public List<List<String>>  getPhenoDataAsMatrix (Study study, List<String> subjectUids, List<CustomField> customFields, List<CustomFieldGroup> customFieldGroups) {
+		List<List<String>>  dataSet = new ArrayList<List<String>>();
+		StringBuffer dataHQLquery = new StringBuffer();
+		StringBuffer noDataHQLquery = new StringBuffer();
+		StringBuffer customFieldColumnSQL = new StringBuffer();
+		List<String> header = new ArrayList<String>(0);
+		
+		//stringBuffer.append("SELECT data.* FROM (\n");
+		dataHQLquery.append("SELECT lss.subjectUID, pc.recordDate, pc.name, \n");
+		noDataHQLquery.append("SELECT lss.subjectUID, cast(null as char) AS recordDate, cast(null as char) AS name, \n");
+		header.add("SUBJECTUID");
+		header.add("RECORD_DATE");
+		header.add("COLLECTION");
+		
+		// Loop for all custom goups
+		for(CustomFieldGroup cfg : customFieldGroups) {
+			// Get all custom fields for the group and create pivot SQL to create column
+			for(CustomFieldDisplay cfd : getCustomFieldDisplayForCustomFieldGroup(cfg)) {
+				//MAX(IF(custom_field_display_id = 14, pd.number_data_value, NULL)) AS cfd14,
+				customFieldColumnSQL.append("(MAX(CASE WHEN pd.customFieldDisplay.id = ");
+				customFieldColumnSQL.append(cfd.getId());
+				
+				// Determine field type and append SQL accordingly
+				if(cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+					customFieldColumnSQL.append(" THEN pd.dateDataValue ELSE NULL END) ");
+				}
+				if(cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+					customFieldColumnSQL.append(" THEN pd.numberDataValue ELSE NULL END) ");
+				}
+				if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+					customFieldColumnSQL.append(" THEN pd.textDataValue ELSE NULL END) ");
+				}
+				
+				customFieldColumnSQL.append(") AS ");
+				customFieldColumnSQL.append(cfd.getCustomField().getName().toUpperCase());
+				customFieldColumnSQL.append(",");
+				
+				noDataHQLquery.append("cast(null as char) AS ");
+				noDataHQLquery.append(cfd.getCustomField().getName().toUpperCase());
+				noDataHQLquery.append(",");
+				
+				header.add(cfd.getCustomField().getName().toUpperCase());
+			}
+		}
+		// Remove erroneous ',' char from end of strings
+		customFieldColumnSQL.setLength(customFieldColumnSQL.length()-1);
+		noDataHQLquery.setLength(noDataHQLquery.length()-1);
+		dataHQLquery.append(customFieldColumnSQL);
+		
+		dataHQLquery.append("\nFROM \n");
+		dataHQLquery.append(" PhenoData pd, ");
+		dataHQLquery.append(" PhenoCollection pc, ");
+		dataHQLquery.append(" LinkSubjectStudy lss, ");
+		dataHQLquery.append(" CustomFieldDisplay cfd \n");
+		dataHQLquery.append("WHERE pd.phenoCollection.id = pc.id \n");
+		dataHQLquery.append(" AND pc.linkSubjectStudy.id = lss.id \n");
+		dataHQLquery.append(" AND lss.study = :study \n");
+		dataHQLquery.append(" AND lss.subjectUID IN (:subjectUids) \n");
+		dataHQLquery.append(" AND cfd.customFieldGroup in (:customFieldGroups) \n");
+		dataHQLquery.append(" AND pd.customFieldDisplay.id = cfd.id \n");
+		dataHQLquery.append("GROUP BY lss.subjectUID, pd.phenoCollection");
+		
+		noDataHQLquery.append("\nFROM LinkSubjectStudy lss\n");
+		noDataHQLquery.append("WHERE lss.study = :study \n");
+		noDataHQLquery.append("AND lss.id NOT IN (SELECT pc.linkSubjectStudy.id FROM PhenoCollection pc WHERE pc.questionnaire IN (:customFieldGroups))\n");
+		
+		String hqlQuery = dataHQLquery.toString();
+		
+		Session session = getSession();
+		
+		Query dataQuery = session.createQuery(hqlQuery);
+		dataQuery.setParameter("study", study);
+		dataQuery.setParameterList("subjectUids", subjectUids);
+		dataQuery.setParameterList("customFieldGroups", customFieldGroups);
+		
+		// Add header as first list item
+		dataSet.add(header);
+		// Add data
+		//ArrayList<List<String>> dataList = new ArrayList<List<String>>();
+		//dataList = (ArrayList<List<String>>) dataQuery.list();
+		
+		//This result set contains a List of Object arrays—each array represents one set of properties
+      Iterator it=dataQuery.iterate();
+      while (it.hasNext()) {
+          Object[] val = (Object[]) it.next();
+          List<String> stringList = new ArrayList<String>();
+          for(Object o : val) {
+         	 stringList.add(o !=null ? o.toString() : new String());
+          }
+          dataSet.add(stringList);
+      }
+		
+		
+		
+		hqlQuery = noDataHQLquery.toString();
+		
+		Query noDataQuery = session.createQuery(hqlQuery);
+		noDataQuery.setParameter("study", study);
+		noDataQuery.setParameterList("customFieldGroups", customFieldGroups);
+		//noDataQuery.list();
+		//dataSet.addAll(noDataQuery.list());
+		
+		return dataSet;
+	}
+	
+	public List<CustomFieldGroup> getCustomFieldGroupsByLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
+		Criteria criteria = getSession().createCriteria(PhenoCollection.class);
+		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("questionnaire"));
+		criteria.setProjection(projectionList);
+		//criteria.setResultTransformer(Transformers.aliasToBean(CustomFieldGroup.class));
+		List<CustomFieldGroup>  result = criteria.list();
+		return result;
+	}
+
+	public CustomFieldGroup getCustomFieldGroupByNameAndStudy(String name, Study study) {
+		Criteria criteria = getSession().createCriteria(CustomFieldGroup.class);
+		criteria.add(Restrictions.eq("name", name));
+		criteria.add(Restrictions.eq("study", study));
+		
+		CustomFieldGroup  result = null; 
+		result = (CustomFieldGroup) criteria.uniqueResult();
+		return result;
+	}
+
+	public CustomFieldGroup getCustomFieldGroupById(Long id) {
+		CustomFieldGroup customFieldGroup = (CustomFieldGroup) getSession().get(CustomFieldGroup.class, id);
+		return customFieldGroup;
+	}
 }
