@@ -28,6 +28,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -348,6 +349,33 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 		return invCell;
 	}
+	
+	public List<InvRack> searchInvRack(InvRack invRack, List<Study> studyListForUser) throws ArkSystemException {
+		StringBuilder hqlString = new StringBuilder();
+		hqlString.append("FROM InvRack AS rack \n");
+		hqlString.append("LEFT JOIN invFreezer AS freezer \n");
+		hqlString.append("LEFT JOIN freezer.invSite AS site \n");
+		hqlString.append("WHERE site.study IN (:studies)");
+
+		Query q = getSession().createQuery(hqlString.toString());
+		q.setParameterList("studies", studyListForUser);
+		q.setResultTransformer(Transformers.aliasToBean(InvRack.class));
+
+		List<InvRack> list = q.list();
+		return list;
+	}
+	
+	public List<InvFreezer> searchInvFreezer(InvFreezer invFreezer, List<Study> studyListForUser) throws ArkSystemException {	
+		StringBuilder hqlString = new StringBuilder();
+		hqlString.append("FROM InvFreezer AS freezer \n");
+		hqlString.append("WHERE invSite.study IN (:studies)");
+
+		Query q = getSession().createQuery(hqlString.toString());
+		q.setParameterList("studies", studyListForUser);
+
+		List<InvFreezer> list = q.list();
+		return list;
+	}
 
 	public List<InvBox> searchInvBox(InvBox invBox) throws ArkSystemException {
 		Criteria criteria = getSession().createCriteria(InvBox.class);
@@ -364,35 +392,6 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		return list;
 	}
 
-	public List<InvFreezer> searchInvFreezer(InvFreezer invFreezer) throws ArkSystemException {
-		Criteria criteria = getSession().createCriteria(InvFreezer.class);
-
-		if (invFreezer.getId() != null) {
-			criteria.add(Restrictions.eq("id", invFreezer.getId()));
-		}
-
-		if (invFreezer.getName() != null) {
-			criteria.add(Restrictions.eq("name", invFreezer.getName()));
-		}
-
-		List<InvFreezer> list = criteria.list();
-		return list;
-	}
-
-	public List<InvRack> searchInvRack(InvRack invRack) throws ArkSystemException {
-		Criteria criteria = getSession().createCriteria(InvRack.class);
-
-		if (invRack.getId() != null) {
-			criteria.add(Restrictions.eq("id", invRack.getId()));
-		}
-
-		if (invRack.getName() != null) {
-			criteria.add(Restrictions.eq("name", invRack.getName()));
-		}
-
-		List<InvRack> list = criteria.list();
-		return list;
-	}
 
 	public BiospecimenLocationVO getBiospecimenLocation(Biospecimen biospecimen) {
 		BiospecimenLocationVO biospecimenLocationVo = new BiospecimenLocationVO();

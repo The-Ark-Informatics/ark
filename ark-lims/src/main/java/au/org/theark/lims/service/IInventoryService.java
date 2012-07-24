@@ -217,18 +217,20 @@ public interface IInventoryService {
 	/**
 	 * Search on a particular freezer
 	 * @param invFreezer
+	 * @param studyListForUser 
 	 * @return a List of InvTank(s)
 	 * @throws ArkSystemException
 	 */
-	public List<InvFreezer> searchInvFreezer(InvFreezer invFreezer) throws ArkSystemException;
+	public List<InvFreezer> searchInvFreezer(InvFreezer invFreezer, List<Study> studyListForUser) throws ArkSystemException;
 	
 	/**
 	 * Search on a particular Rack
-	 * @param invSite
-	 * @return a List of InvSite(s)
+	 * @param invRack
+	 * @param studyListForUser 
+	 * @return a List of InvRack(s)
 	 * @throws ArkSystemException
 	 */
-	public List<InvRack> searchInvRack(InvRack invRack) throws ArkSystemException;
+	public List<InvRack> searchInvRack(InvRack invRack, List<Study> studyListForUser) throws ArkSystemException;
 	
 	/**
 	 * Search on a particular box
