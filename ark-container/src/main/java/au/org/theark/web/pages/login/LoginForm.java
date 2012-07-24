@@ -41,6 +41,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.dao.ArkShibbolethServiceProviderContextSource;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
@@ -100,6 +101,7 @@ public class LoginForm extends StatelessForm<ArkUserVO> {
 			}
 		};
 		aafLogInButton.setDefaultFormProcessing(false);
+		aafLogInButton.setVisible(ArkShibbolethServiceProviderContextSource.useShibboleth.equalsIgnoreCase("true"));
 		
 		signInButton = new AjaxButton("signInButton") {
 
