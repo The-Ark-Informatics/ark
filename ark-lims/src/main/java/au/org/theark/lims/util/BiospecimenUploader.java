@@ -49,6 +49,7 @@ import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 
@@ -156,12 +157,13 @@ public class BiospecimenUploader {
 				String biospecimenUID = csvReader.get("BIOSPECIMENUID");
 
 				LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-				linkSubjectStudy.setStudy(study);
+				//linkSubjectStudy.setStudy(study);
 
 				try {
 					linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID, study);
 				}
 				catch (EntityNotFoundException enf) {
+					log.error("\n\n\n\n\n\n\n\n\n\n\n\nUnexpected subject?   ashouldnt happen");
 					// New subject
 					linkSubjectStudy.setSubjectUID(subjectUID);
 					linkSubjectStudy.setStudy(study);
@@ -180,7 +182,16 @@ public class BiospecimenUploader {
 				if (csvReader.getIndex("BIOCOLLECTION") > 0) {
 					String name = csvReader.get("BIOCOLLECTION");
 					BioCollection bioCollection = iLimsService.getBioCollectionByName(name);
-					biospecimen.setBioCollection(bioCollection);
+					if(bioCollection == null){
+						bioCollection = new BioCollection();
+						bioCollection.setLinkSubjectStudy(linkSubjectStudy);
+						bioCollection.setStudy(study);
+						bioCollection = iLimsService.createBioCollection(bioCollection);
+						biospecimen.setBioCollection(bioCollection);
+					}
+					else{
+						biospecimen.setBioCollection(bioCollection);
+					}
 				}
 
 				if (csvReader.getIndex("SAMPLETYPE") > 0) {
@@ -278,10 +289,12 @@ public class BiospecimenUploader {
 					column = csvReader.get("COLUMN");
 				}
 				
+				invCell = new InvCell();
 				invCell = iInventoryService.getInvCellByLocationNames(siteName, freezerName, rackName, boxName, row, column);
 				//TODO : null checking here.  should be picked up ikn validation  JIRA 657 Created  log.info("invcell null?" + (invCell == null));
-				invCell.setBiospecimen(biospecimen);
-				if(invCell.getId() != null) {
+
+				if(invCell != null && invCell.getId() != null) {
+					invCell.setBiospecimen(biospecimen);
 					updateInvCells.add(invCell);
 				}
 				

@@ -513,18 +513,20 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	}
 
 	public void batchInsertBiospecimens(Collection<Biospecimen> insertBiospecimens) {
-		StatelessSession session = getStatelessSession();
-		Transaction tx = session.beginTransaction();
-
+	//	StatelessSession session = getStatelessSession();
+		//Transaction tx = session.beginTransaction();
+		
 		for (Biospecimen biospecimen : insertBiospecimens) {
-			session.insert(biospecimen);
+			//session.insert(biospecimen);
+			getSession().save(biospecimen);
 			
 			for(BioTransaction bioTransaction : biospecimen.getBioTransactions()){
-				session.insert(bioTransaction);
+				//session.insert(bioTransaction);
+				getSession().save(bioTransaction);
 			}
 		}
-		tx.commit();
-		session.close();
+//		tx.commit();
+	//	session.close();
 	}
 
 	public void batchUpdateBiospecimens(Collection<Biospecimen> updateBiospecimens) {
