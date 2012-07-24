@@ -306,16 +306,16 @@ public class InventoryServiceImpl implements IInventoryService {
 		return iInventoryDao.getInvCell(id);
 	}
 
+	public List<InvFreezer> searchInvFreezer(InvFreezer invTank, List<Study> studyListForUser) throws ArkSystemException {
+		return iInventoryDao.searchInvFreezer(invTank, studyListForUser);
+	}
+
+	public List<InvRack> searchInvRack(InvRack invRack, List<Study> studyListForUser) throws ArkSystemException {
+		return iInventoryDao.searchInvRack(invRack, studyListForUser);
+	}
+	
 	public List<InvBox> searchInvBox(InvBox invBox) throws ArkSystemException {
 		return iInventoryDao.searchInvBox(invBox);
-	}
-
-	public List<InvFreezer> searchInvFreezer(InvFreezer invTank) throws ArkSystemException {
-		return iInventoryDao.searchInvFreezer(invTank);
-	}
-
-	public List<InvRack> searchInvRack(InvRack invRack) throws ArkSystemException {
-		return iInventoryDao.searchInvRack(invRack);
 	}
 
 	public BiospecimenLocationVO getBiospecimenLocation(Biospecimen biospecimen) throws ArkSystemException {
