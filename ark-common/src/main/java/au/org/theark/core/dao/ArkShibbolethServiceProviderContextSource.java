@@ -24,7 +24,7 @@ public class ArkShibbolethServiceProviderContextSource {
 	public static String	status;
 	public static String	session;
 	public static String	discoveryFeed;
-	public static Boolean	useShibboleth;
+	public static String	useShibboleth;
 
 	/**
 	 * @return the handlerUrl
@@ -104,14 +104,14 @@ public class ArkShibbolethServiceProviderContextSource {
 	/**
 	 * @return the useShibboleth
 	 */
-	public static Boolean getUseShibboleth() {
+	public static String getUseShibboleth() {
 		return useShibboleth;
 	}
 
 	/**
 	 * @param useShibboleth the useShibboleth to set
 	 */
-	public static void setUseShibboleth(Boolean useShibboleth) {
+	public static void setUseShibboleth(String useShibboleth) {
 		ArkShibbolethServiceProviderContextSource.useShibboleth = useShibboleth;
 	}
 }
