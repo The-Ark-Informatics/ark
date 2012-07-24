@@ -158,6 +158,10 @@ public class LimsServiceImpl implements ILimsService {
 		iBioCollectionDao.createBioCollection(modelObject.getBioCollection());
 	}
 
+	public BioCollection createBioCollection(BioCollection modelObject) {
+		return iBioCollectionDao.createBioCollection(modelObject);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

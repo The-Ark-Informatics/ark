@@ -98,13 +98,15 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		return list;
 	}
 
-	public void createBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection) {
+	public BioCollection createBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection) {
 		String bioCollectionUid = getNextGeneratedBiCollectionUID(bioCollection.getStudy());
 		if(bioCollectionUid.isEmpty()) {
 			bioCollectionUid = UniqueIdGenerator.generateUniqueId();
 		}
 		bioCollection.setName(bioCollectionUid);
 		getSession().save(bioCollection);
+		getSession().refresh(bioCollection);
+		return bioCollection;
 	}
 
 	private String getNextGeneratedBiCollectionUID(Study study) {

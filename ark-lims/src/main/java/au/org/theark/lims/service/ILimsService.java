@@ -82,6 +82,9 @@ public interface ILimsService {
 	 */
 	public void createBioCollection(LimsVO modelObject);
 
+
+	public BioCollection createBioCollection(BioCollection modelObject);
+	
 	/**
 	 * Search the database for a list of BioCollections based on the supplied BioCollection
 	 * 

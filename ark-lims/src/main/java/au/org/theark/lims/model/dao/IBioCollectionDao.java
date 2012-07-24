@@ -55,7 +55,7 @@ public interface IBioCollectionDao {
 	 * 
 	 * @param limsCollection
 	 */
-	public void createBioCollection(au.org.theark.core.model.lims.entity.BioCollection limsCollection);
+	public BioCollection createBioCollection(au.org.theark.core.model.lims.entity.BioCollection limsCollection);
 
 	/**
 	 * Update a LIMS collection based on the supplied limsCollection
