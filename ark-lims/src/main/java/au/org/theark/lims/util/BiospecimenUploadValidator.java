@@ -459,23 +459,11 @@ public class BiospecimenUploadValidator {
 					LinkSubjectStudy linkSubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID, study));
 					linkSubjectStudy.setStudy(study);
 
-					BioCollection biocollection = iLimsService.getBioCollectionByName(biocollectionUID);//TODO this really should be study specific?
+					BioCollection biocollection = iLimsService.getBioCollectionByName(biocollectionUID);
+					//TODO this really should be study specific?
 					Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUID);//TODO this really should be study specific?
 
-					if (biocollection == null) {
-						//blow up fail
-						StringBuilder errorString = new StringBuilder();
-						errorString.append("Error: Row ");
-						errorString.append(row);
-						errorString.append(": SubjectUID: ");
-						errorString.append(subjectUID);
-						errorString.append(" The details/name of the BIOCOLLECTION ");
-						errorString.append(biocollectionUID);
-						errorString.append(" does not exist in the database. Please check and try again");
-						dataValidationMessages.add(errorString.toString());
-						errorCells.add(new ArkGridCell(csvReader.getIndex("BIOCOLLECTION"), row));
-					}//otherwise go on like we always do
-					else{
+					
 						
 						if (biospecimen == null) {
 							// Biospecimen not found, thus a new Biospecimen to be inserted
@@ -484,8 +472,8 @@ public class BiospecimenUploadValidator {
 						else {
 							updateRows.add(row);
 						}
-	
-						if (csvReader.get("SITE") != null && csvReader.get("FREEZER") != null && csvReader.get("RACK") != null && csvReader.get("BOX") != null && csvReader.get("ROW") != null
+						
+ 						if (csvReader.get("SITE") != null && csvReader.get("FREEZER") != null && csvReader.get("RACK") != null && csvReader.get("BOX") != null && csvReader.get("ROW") != null
 								&& csvReader.get("COLUMN") != null) {
 							InvCell invCell = iInventoryService.getInvCellByLocationNames(csvReader.get("SITE"), csvReader.get("FREEZER"), csvReader.get("RACK"), csvReader.get("BOX"), csvReader.get("ROW"),
 									csvReader.get("COLUMN"));
@@ -507,7 +495,7 @@ public class BiospecimenUploadValidator {
 								errorCells.add(new ArkGridCell(csvReader.getIndex("COLUMN"), row));
 							}
 						}
-					}
+					
 				}
 				catch (EntityNotFoundException enf) {
 					// SubjectUID not found, thus a new Biospecimen to be inserted

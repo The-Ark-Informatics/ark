@@ -559,14 +559,15 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	}
 
 	public void batchUpdateInvCells(List<InvCell> updateInvCells) {
-		StatelessSession session = getStatelessSession();
-		Transaction tx = session.beginTransaction();
+		//StatelessSession session = getStatelessSession();
+		//Transaction tx = session.beginTransaction();
 
 		for (InvCell invCell : updateInvCells) {
-			session.update(invCell);
+			//session.update(invCell);
+			getSession().update(invCell);
 		}
-		tx.commit();
-		session.close();
+		//tx.commit();
+		//session.close();
 	}
 
 	public InvCell getNextAvailableInvCell(InvBox invBox) {
