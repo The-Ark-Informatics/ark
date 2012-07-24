@@ -265,8 +265,8 @@
 
 		<dependency>
 			<groupId>org.wicketstuff</groupId>
-			<artifactId>datatables</artifactId>
-			<version>1.5-RC5.1</version>
+			<artifactId>wicketstuff-datatables</artifactId>
+			<version>1.5.7</version>
 		</dependency>
 	</dependencies>
 	<build>
