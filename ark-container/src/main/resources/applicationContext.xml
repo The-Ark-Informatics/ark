@@ -107,7 +107,7 @@
 	<bean id="shibbolethServiceProvider" class="au.org.theark.core.dao.ArkShibbolethServiceProviderContextSource">
 		<!-- Handler URL for Service providor -->
 		<!-- NOTE: MUST BE CHANGED TO HOSTNAME OF SERVER -->
-		<property name="handlerUrl" value="https://test.the-ark.org.au/Shibboleth.sso" />
+		<property name="handlerUrl" value="https://hostname/Shibboleth.sso" />
 		<!-- Extension service that generates "approximate" metadata based on SP configuration. -->
         <property name="metadataGenerator" value="/Metadata"/>
         <!-- Status reporting service. -->
