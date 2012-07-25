@@ -353,13 +353,11 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	public List<InvRack> searchInvRack(InvRack invRack, List<Study> studyListForUser) throws ArkSystemException {
 		StringBuilder hqlString = new StringBuilder();
 		hqlString.append("FROM InvRack AS rack \n");
-		hqlString.append("LEFT JOIN invFreezer AS freezer \n");
-		hqlString.append("LEFT JOIN freezer.invSite AS site \n");
-		hqlString.append("WHERE site.study IN (:studies)");
+		hqlString.append("WHERE invFreezer.id IN (SELECT id FROM InvFreezer AS freezer \n");
+		hqlString.append("								WHERE freezer.invSite.study IN (:studies))");
 
 		Query q = getSession().createQuery(hqlString.toString());
 		q.setParameterList("studies", studyListForUser);
-		q.setResultTransformer(Transformers.aliasToBean(InvRack.class));
 
 		List<InvRack> list = q.list();
 		return list;
@@ -397,8 +395,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		BiospecimenLocationVO biospecimenLocationVo = new BiospecimenLocationVO();
 
 		StringBuilder hqlString = new StringBuilder();
-		hqlString
-				.append("SELECT site.name AS siteName, freezer.name as freezerName, rack.name AS rackName, box.name AS boxName, cell.colno AS column, cell.rowno AS row, box.colnotype.name AS colNoType, box.rownotype.name AS rowNoType \n");
+		hqlString.append("SELECT site.name AS siteName, freezer.name as freezerName, rack.name AS rackName, box.name AS boxName, cell.colno AS column, cell.rowno AS row, box.colnotype.name AS colNoType, box.rownotype.name AS rowNoType \n");
 		hqlString.append("FROM InvCell AS cell \n");
 		hqlString.append("LEFT JOIN cell.invBox AS box \n");
 		hqlString.append("LEFT JOIN box.invRack AS rack \n");
