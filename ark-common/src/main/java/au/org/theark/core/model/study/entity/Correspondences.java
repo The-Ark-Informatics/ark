@@ -46,7 +46,6 @@ public class Correspondences implements Serializable {
 	private Long								id;
 	private Person								person;
 	private Study								study;
-	private CorrespondenceStatusType		correspondenceStatusType;
 	private ArkUser							operator;
 	private Date								date;
 	private String								time;
@@ -89,16 +88,6 @@ public class Correspondences implements Serializable {
 
 	public void setStudy(Study study) {
 		this.study = study;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STATUS_TYPE_ID")
-	public CorrespondenceStatusType getCorrespondenceStatusType() {
-		return correspondenceStatusType;
-	}
-
-	public void setCorrespondenceStatusType(CorrespondenceStatusType correspondenceStatusType) {
-		this.correspondenceStatusType = correspondenceStatusType;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
