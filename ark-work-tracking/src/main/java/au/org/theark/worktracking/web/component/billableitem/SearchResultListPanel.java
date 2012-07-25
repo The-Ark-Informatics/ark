@@ -48,7 +48,14 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_ID, ""));
 				}
-				item.add(buildLink(billableItem));				
+				item.add(buildLink(billableItem));
+
+				if (billableItem.getItemStatus() != null) {
+					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_STATUS, billableItem.getItemStatus().getName()));
+				}
+				else {
+					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_STATUS, ""));
+				}
 				if (billableItem.getWorkRequest() != null) {
 					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST, billableItem.getWorkRequest().getName()));
 				}
@@ -67,6 +74,13 @@ public class SearchResultListPanel extends Panel {
 				}
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_INVOICE, ""));
+				}
+				if (billableItem.getType()!=null) {
+					String automatedType= Constants.BILLABLE_ITEM_AUTOMATED.equalsIgnoreCase(billableItem.getType())? Constants.YES : Constants.NO;
+					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_TYPE,automatedType ));
+				}
+				else {
+					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_TYPE, ""));
 				}
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					private static final long	serialVersionUID	= 1L;

@@ -135,12 +135,26 @@
 
 				<div class="fldLabel">
 					<div class="label">
-						&nbsp;
+						<label for="status">
+							<wicket:message key="work.billableitem.status">
+								Status:
+							</wicket:message>
+						</label>	
 					</div>
 				</div>
 				<div class="fldControl">
 					<div class="label">
-						&nbsp;
+						<select wicket:id="billableItem.itemStatus">
+							<option>
+								NOT COMMENCED
+							</option>
+							<option>
+								COMMENCED
+							</option>
+							<option>
+								COMPLETED
+							</option>
+						</select>
 					</div>
 				</div>
 

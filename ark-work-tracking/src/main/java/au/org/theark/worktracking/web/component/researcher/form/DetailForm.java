@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.model.worktracking.entity.BillingType;
@@ -208,6 +209,7 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		
 		resercherAccountNameTxtFld.add(StringValidator.lengthBetween(1, 50)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_ACCOUNTNAME_LENGTH, resercherAccountNameTxtFld, new Model<String>(Constants.RESEARCHER_ACCOUNT_NAME_TAG)));
+		resercherEmailTxtFld.add(EmailAddressValidator.getInstance());
 	}
 
 	/*
