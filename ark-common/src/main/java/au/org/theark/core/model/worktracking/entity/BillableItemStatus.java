@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import au.org.theark.core.Constants;
 
 @Entity
-@Table(name = "BILLABLE_ITEM__STATUS", schema = Constants.ADMIN_SCHEMA)
+@Table(name = "BILLABLE_ITEM_STATUS", schema = Constants.ADMIN_SCHEMA)
 public class BillableItemStatus implements Serializable {
 
 	/**
