@@ -174,11 +174,51 @@
 					<input wicket:id="fileName" id="studyLogoUpload" type="file" />	
 				</div>
 			</div>
+			<div class="detailPanelBreaker">&nbsp;</div>
 			
+			<div class="panelContentLeft">&nbsp;</div>
+			<div class="fldLabel">
+					<div class="label">
+						<label for="itemStatus">
+							<wicket:message key="work.billableitem.status">
+								Status:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<select wicket:id="billableItem.itemStatus">
+							<option>
+								NOT COMMENCED
+							</option>
+							<option>
+								COMMENCED
+							</option>
+							<option>
+								COMPLETED
+							</option>
+						</select>
+					</div>
+				</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+						&nbsp;
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+					&nbsp;		
+				</div>
+			</div>
 								
 			</div>
-			
+				
 			<div class="detailPanelBreaker">&nbsp;</div>
+			
 			<!--  Row 2 Action Buttons -->
 			
 			<div wicket:id="editButtonContainer">

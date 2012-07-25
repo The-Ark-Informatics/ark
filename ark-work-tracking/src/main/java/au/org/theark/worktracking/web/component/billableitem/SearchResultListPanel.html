@@ -18,6 +18,13 @@
 					</wicket:message>
 				</label>
 			</th>
+			<th width="15%">
+				<label for="status">
+					<wicket:message key="work.billableitem.status">
+						Status:
+					</wicket:message>
+				</label>
+			</th>
 			<th width="25%">
 				<label for="workRequest">
 					<wicket:message key="work.billableitem.workrequest">
@@ -39,6 +46,13 @@
 					</wicket:message>
 				</label>
 			</th>
+			<th width="20%">
+				<label for="invoiced">
+					<wicket:message key="work.billableitem.type">
+						System Generated:
+					</wicket:message>
+				</label>
+			</th>
 			<th width="2%">&nbsp;</th>			
 		</tr>
 		<!--  The Data Result Set -->
@@ -52,6 +66,9 @@
 			  	<span wicket:id="nameLbl">Name</span>
 			  </a>
 			</td>
+			<td width="15%">
+				<span wicket:id="billableItem.itemStatus">COMMENCED</span>
+			</td>
 			<td width="25%">
 			  <span wicket:id="billableItem.workRequest">Work request name</span>
 			</td>
@@ -61,12 +78,15 @@
 			<td width="20%">
 				<span wicket:id="billableItem.invoice">invoiced</span>
 			</td>
+			<td width="20%">
+				<span wicket:id="billableItem.type">yes</span>
+			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<tfoot>
 			<tr>
 				<td width="2%">&nbsp;</td>
-				<td colspan="5"><span wicket:id="navigator" class="a"></span></td>
+				<td colspan="7"><span wicket:id="navigator" class="a"></span></td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>

@@ -23,6 +23,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.worktracking.entity.BillableItem;
+import au.org.theark.core.model.worktracking.entity.BillableItemStatus;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxInvoiceButton;
@@ -47,12 +48,14 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 	
 	private DropDownChoice<WorkRequest>		 				workRequests;
 	private DropDownChoice<String>							invoiceStatuses;
+	private DropDownChoice<BillableItemStatus>		 		billableItemStatuses;
 	
 	private PageableListView<BillableItem>					listView;
 	
 	private CompoundPropertyModel<BillableItemVo>			cpmModel;
 		
 	private List<WorkRequest>								workRequestList;
+	private List<BillableItemStatus>						billableItemStatusList;
 	
 	private AjaxButton										invoiceButton;
 
@@ -87,6 +90,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		add(workRequests);
 		add(invoiceStatuses);
 		add(invoiceButton);
+		add(billableItemStatuses);
 	}
 
 	protected void initialiseSearchForm() {
@@ -107,6 +111,10 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		PropertyModel<WorkRequest> pmWorkRequest = new PropertyModel<WorkRequest>(pm, "workRequest");
 		initWorkRequestDropDown(pmWorkRequest);
 		initInvoiceDropDown();
+		
+		this.billableItemStatusList = iWorkTrackingService.getBillableItemStatusses();
+		PropertyModel<BillableItemStatus> pmBillableItemStatus = new PropertyModel<BillableItemStatus>(pm, "itemStatus");
+		initBillableItemStatusDropDown(pmBillableItemStatus);
 		
 		invoiceButton=new AjaxInvoiceButton(Constants.INVOICE, new StringResourceModel("confirmInvoice", this, null), new StringResourceModel(Constants.INVOICE, this, null)) {			
 			@Override
@@ -172,6 +180,12 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 			PropertyModel<WorkRequest> pmWorkRequest) {
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		workRequests = new DropDownChoice(Constants.BILLABLE_ITEM_WORK_REQUEST ,  this.workRequestList, defaultChoiceRenderer);
+	}
+	
+	private void initBillableItemStatusDropDown(
+			PropertyModel<BillableItemStatus> pmBillableItemStatus) {
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		billableItemStatuses = new DropDownChoice(Constants.BILLABLE_ITEM_ITEM_STATUS ,  this.billableItemStatusList, defaultChoiceRenderer);
 	}
 
 	/*
