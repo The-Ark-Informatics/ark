@@ -43,7 +43,6 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
-import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
@@ -316,8 +315,6 @@ public interface IStudyDao {
 	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
 
 	public List<Correspondences> getPersonCorrespondenceList(Long id, Correspondences correspondence) throws ArkSystemException;
-
-	public List<CorrespondenceStatusType> getCorrespondenceStatusTypes();
 
 	public List<CorrespondenceModeType> getCorrespondenceModeTypes();
 

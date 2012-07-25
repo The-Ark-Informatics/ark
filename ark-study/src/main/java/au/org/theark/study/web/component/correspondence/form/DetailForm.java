@@ -45,13 +45,11 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
-import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CorrespondenceVO;
-import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
@@ -67,7 +65,6 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService											studyService;
 
-	private DropDownChoice<CorrespondenceStatusType>		statusTypeChoice;
 	private DropDownChoice<ArkUser>								operatorChoice;
 	private DateTextField											dateFld;
 	private TextField<String>										timeTxtFld;
@@ -85,8 +82,6 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	}
 
 	public void initialiseDetailForm() {
-
-		initialiseStatusTypeDropDown();
 		initialiseOperatorDropDown();
 		// create new DateTextField and assign date format
 		dateFld = new DateTextField("correspondence.date", au.org.theark.core.Constants.DD_MM_YYYY);
@@ -108,14 +103,6 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 		addDetailFormComponents();
 		attachValidators();
-	}
-
-	private void initialiseStatusTypeDropDown() {
-
-		List<CorrespondenceStatusType> list = studyService.getCorrespondenceStatusTypes();
-		ChoiceRenderer<CorrespondenceStatusType> defaultRenderer = new ChoiceRenderer<CorrespondenceStatusType>("name", "id");
-		statusTypeChoice = new DropDownChoice<CorrespondenceStatusType>("correspondence.correspondenceStatusType", list, defaultRenderer);
-		statusTypeChoice.add(new ArkDefaultFormFocusBehavior());
 	}
 
 	private void initialiseOperatorDropDown() {
@@ -152,8 +139,6 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	}
 
 	public void addDetailFormComponents() {
-
-		arkCrudContainerVO.getDetailPanelFormContainer().add(statusTypeChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(operatorChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(timeTxtFld);
@@ -243,10 +228,6 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		catch (ArkSystemException ex) {
 			ex.printStackTrace();
 		}
-	/*	catch (IOException ex) {
-			this.error("There was an error transferring the specified correspondence attachment.");
-			ex.printStackTrace();
-		}*/
 	}
 
 	@Override
@@ -264,5 +245,4 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 			return false;
 		}
 	}
-
 }
