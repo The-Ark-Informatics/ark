@@ -1,244 +1,206 @@
 <wicket:panel>
 	&nbsp;
 	<form wicket:id="detailsForm">
-		 <div class="detailsPanelBorder">
-		  <div wicket:id="detailFormContainer">
-		    <div class="detailPanelBreaker">&nbsp;</div>
-			<div class="panelContentLeft">&nbsp;</div>
-			
-			<!--  Row 1 -->
-			<div class="fldLabel">
-				<div class="label">
-						<label for="correspondenceStatus">
-							<wicket:message key="correspondenceStatus">Status:</wicket:message>
-						</label>
+		<div class="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<div class="detailPanelBreaker">
+					&nbsp;
 				</div>
-			</div>
-			
-			<div class="fldControl">
-				<div class="label">
-					<select wicket:id="correspondence.correspondenceStatusType">
-		       			<option>Archived</option>
-		       		</select>
+				<div class="panelContentLeft">
+					&nbsp;
 				</div>
-			</div>
-			
-			<div class="panelMargin">&nbsp;</div>
-			
-			<div class="fldLabel">
-				<div class="label">
-					<label for="operator">
-						<wicket:message key="operator">Operator:</wicket:message>
-					</label>	
+
+				<!--	Row 1 -->
+				<div class="fldLabel">
+					<wicket:message key="date">
+						Date:
+					</wicket:message>
 				</div>
-			</div>
-			
-			<div class="fldControl">
-				<div class="label">
-					<select wicket:id="correspondence.operator">
-		       			<option>Adrian</option>
-		       		</select>
-				</div>
-			</div>
-			
-			
-			<div class="detailPanelBreaker">&nbsp;</div>
-			<div class="panelContentLeft">&nbsp;</div>
-			
-			<div class="fldLabel">
-				<div class="label">
-					<label for="date">
-						<wicket:message key="date">Date:</wicket:message>
-					</label>
-				</div>
-			</div>
-			
-			<div class="fldControl">
-				<div class="label">
+
+				<div class="fldControl">
 					<input wicket:id="correspondence.date" type="text" maxlength="10" />
 				</div>
-			</div>			
-			
-			<div class="panelMargin">&nbsp;</div>
-					
-			<div class="fldLabel">
-				<div class="label">
-					<label for="time">
-						<wicket:message key="time">Time:</wicket:message>
-					</label>
-				</div>
-			</div>
-			
-			<div class="fldControl">
-				<div class="label">
-					<input wicket:id="correspondence.time"  type="text" />
-				</div>
-			</div>
-			
-			
-			<div class="detailPanelBreaker">&nbsp;</div>
-			<div class="panelContentLeft">&nbsp;</div>
 
-			<div class="fldLabel">
-		 		<div class="label">
-					<label for="correspondenceMode">
-						<wicket:message key="correspondenceMode">Mode:</wicket:message>
-					</label>
-		 		</div> 
-		 	</div> 			       			
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="time">
+						Time:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="correspondence.time"	type="text" />
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="operator">
+						Operator:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="correspondence.operator">
+						<option>
+							Adrian
+						</option>
+					</select>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
 				
-			<div class="fldControl">
-				<div class="label">
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="correspondenceMode">
+						Type:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
 					<select wicket:id="correspondence.correspondenceModeType">
-		       			<option>Mail</option>
-		       		</select>
+						<option>
+							Mail
+						</option>
+					</select>
 				</div>
-			</div>
-		       	
-	    	<div class="panelMargin">&nbsp;</div>
 
-			<div class="fldLabel">
-		 		<div class="label">
-					<label for="correspondenceDirection">
-						<wicket:message key="correspondenceDirection">Direction:</wicket:message>
-					</label>		
-		 		</div>
-		 	</div>		
-				
-			<div class="fldControl">
-				<div class="label">
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="correspondenceDirection">
+						Direction:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
 					<select wicket:id="correspondence.correspondenceDirectionType">
-		       			<option>Outgoing</option>
-		       		</select>
+						<option>
+							Outgoing
+						</option>
+					</select>
 				</div>
-			</div>
 
-			
-			<div class="detailPanelBreaker">&nbsp;</div>
-			<div class="panelContentLeft">&nbsp;</div>
-		    			
-			<div class="fldLabel">
-	 			<div class="label">
-					<label for="correspondenceOutcome">
-						<wicket:message key="correspondenceOutcome">Outcome:</wicket:message>
-					</label>
-	 			</div> 
-	 		</div> 			       			
-				
-			<div class="fldControl">
-				<div class="label">
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="correspondenceOutcome">
+						Outcome:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
 					<select wicket:id="correspondence.correspondenceOutcomeType">
-		       			<option>Sent</option>
-		       		</select>						
+						<option>
+							Sent
+						</option>
+					</select>
 				</div>
-			</div>
 
-	    	<div class="panelMargin">&nbsp;</div>
-						
-			<div class="fldLabel">
-				<div class="label">
-					<label for="reason">
-						<wicket:message key="reason">Reason:</wicket:message>
-					</label>	
-				</div>
-			</div>
-			
-			<div class="fldControl">
-				<div class="label">
-					<textarea wicket:id="correspondence.reason" id="correspondence.reason" cols="25" maxLength="4096"></textarea>
-				</div>
-			</div>
-		       	   		       			
-			
-			<div class="detailPanelBreaker">&nbsp;</div>
-			<div class="panelContentLeft">&nbsp;</div>
-						
-			<div class="fldLabel">
-		 		<div class="label">
-		 			<label for="details">
-						<wicket:message key="details">Details:</wicket:message>
-					</label>
-		 		</div> 
-		 	</div> 			       			
-				
-			<div class="fldControl">
-				<div class="label">
-					 <textarea wicket:id="correspondence.details" id="correspondence.details" cols="25" maxLength="4096"></textarea>
-				</div>
-			</div>
-
-		    <div class="panelMargin">&nbsp;</div>
-			
-			<div class="fldLabel">
-		 			<div class="label">
-		 				<label for="comments">
-							<wicket:message key="comments">Comments:</wicket:message>
-						</label>	
-		 			</div>
-		 	</div> 			       			
-				
-			<div class="fldControl">
-				<div class="label">
-					 <textarea wicket:id="correspondence.comments" id="correspondence.comments" cols="25" maxLength="4096"></textarea>
-				</div>
-			</div>
-
-			
-			<div class="detailPanelBreaker">&nbsp;</div>
-			<div class="panelContentLeft">&nbsp;</div>
-			
-			<div class="fldLabel">
-		 		<div class="label">
-		 			<label for="attachmentUpload">
-						<wicket:message key="attachmentUpload">Upload file:</wicket:message>
-					</label>
-		 		</div> 
-		 	</div> 			       			
-
-			<div class="fldControl">
-				<div class="label">
-					  <input wicket:id="correspondence.attachmentFilename" type="file" />
-				</div>
-			</div>
-
-		    <div class="panelMargin">&nbsp;</div>
-			
-			<div class="fldLabel">
-		 		<div class="label">
+				<div class="panelMargin">
 					&nbsp;
-		 		</div>
-		 	</div> 			       			
-				
-			<div class="fldControl">
-				<div class="label">
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="reason">
+						Reason:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<textarea wicket:id="correspondence.reason" id="correspondence.reason" cols="25" maxLength="4096">
+					</textarea>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="details">
+						Details:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<textarea wicket:id="correspondence.details" id="correspondence.details" cols="25" maxLength="4096">
+					</textarea>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="comments">
+						Comments:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<textarea wicket:id="correspondence.comments" id="correspondence.comments" cols="25" maxLength="4096">
+					</textarea>
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="attachmentUpload">
+						Upload file:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="correspondence.attachmentFilename" type="file" />
+				</div>
+
+				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
 			</div>
 
-			
-			<div class="detailPanelBreaker">&nbsp;</div>
-			
-			<div class="detailPanelBreaker">&nbsp;</div>
-				
-			</div>
-			
-			<!--  Row 2 Action Buttons -->
-			
+			<!--	Row 2 Action Buttons -->
 			<div wicket:id="editButtonContainer">
-				<div class="fldLabel">&nbsp;</div>
-				<div class="fldControl">&nbsp;</div>
-				<div class="panelMargin">&nbsp;</div>
-				<div class="actionButtons">&nbsp;
+				<div class="actionButtons">
 					<div class="label">
-					  <input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
-					  <div class="panelMargin">&nbsp;</div>
-					  <input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />&nbsp;
-					  <div class="panelMargin">&nbsp;</div>
-					  <input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
-				  	</div>
+						<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+						<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+						<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
+					</div>
 				</div>
 			</div>
-			
 		</div>
 	</form>
-</wicket:panel>	
+</wicket:panel>

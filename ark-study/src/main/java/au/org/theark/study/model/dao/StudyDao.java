@@ -68,7 +68,6 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
-import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -1132,9 +1131,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			if (correspondence.getCorrespondenceOutcomeType() != null) {
 				criteria.add(Restrictions.eq("correspondenceOutcomeType", correspondence.getCorrespondenceOutcomeType()));
 			}
-			if (correspondence.getCorrespondenceStatusType() != null) {
-				criteria.add(Restrictions.eq("correspondenceStatusType", correspondence.getCorrespondenceStatusType()));
-			}
 			if (correspondence.getDate() != null) {
 				criteria.add(Restrictions.eq("date", correspondence.getDate()));
 			}
@@ -1174,12 +1170,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes() {
 		Example outcomeTypeExample = Example.create(new CorrespondenceOutcomeType());
 		Criteria criteria = getSession().createCriteria(CorrespondenceOutcomeType.class).add(outcomeTypeExample);
-		return criteria.list();
-	}
-
-	public List<CorrespondenceStatusType> getCorrespondenceStatusTypes() {
-		Example statusTypeExample = Example.create(new CorrespondenceStatusType());
-		Criteria criteria = getSession().createCriteria(CorrespondenceStatusType.class).add(statusTypeExample);
 		return criteria.list();
 	}
 

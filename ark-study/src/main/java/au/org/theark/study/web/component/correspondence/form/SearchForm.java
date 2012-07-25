@@ -43,7 +43,6 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
-import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -69,7 +68,6 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 
 	private PageableListView<Correspondences>					pageableListView;
 
-	private DropDownChoice<CorrespondenceStatusType>		statusTypeChoice;
 	private DropDownChoice<ArkUser>								operatorChoice;
 	private DateTextField											dateFld;
 	private TextField<String>										timeTxtFld;
@@ -93,8 +91,6 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 
 	@SuppressWarnings("unused")
 	private void initialiseSearchForm() {
-
-		initialiseStatusTypeDropDown();
 		initialiseOperatorDropDown();
 		dateFld = new DateTextField("correspondence.date", au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker datePicker = new ArkDatePicker();
@@ -123,13 +119,6 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 		operatorChoice = new DropDownChoice<ArkUser>("correspondence.operator", list, defaultRenderer);
 	}
 
-	private void initialiseStatusTypeDropDown() {
-
-		List<CorrespondenceStatusType> list = studyService.getCorrespondenceStatusTypes();
-		ChoiceRenderer<CorrespondenceStatusType> defaultRenderer = new ChoiceRenderer<CorrespondenceStatusType>("name", "id");
-		statusTypeChoice = new DropDownChoice<CorrespondenceStatusType>("correspondence.correspondenceStatusType", list, defaultRenderer);
-	}
-
 	private void initialiseModeTypeDropDown() {
 
 		List<CorrespondenceModeType> list = studyService.getCorrespondenceModeTypes();
@@ -152,8 +141,6 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	}
 
 	private void addSearchComponentsToForm() {
-
-		add(statusTypeChoice);
 		add(operatorChoice);
 		add(dateFld);
 		add(timeTxtFld);
