@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
+import au.org.theark.core.model.worktracking.entity.BillableItemStatus;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.model.worktracking.entity.BillableSubject;
@@ -322,6 +323,9 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		if(billableItemCriteria.getInvoice() != null ){
 			criteria.add(Restrictions.eq(Constants.BI_INVOICE, billableItemCriteria.getInvoice()));
 		}
+		if(billableItemCriteria.getItemStatus() != null ){
+			criteria.add(Restrictions.eq(Constants.BI_ITEM_STATUS, billableItemCriteria.getItemStatus()));
+		}
 			
 		List<BillableItem> list = criteria.list();
 		return list;
@@ -374,5 +378,17 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		count= (Long)criteria.uniqueResult();
 		return count;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<BillableItemStatus> getBillableItemStatusses() {
+		Example billableItemStatus = Example.create(new BillableItemStatus());
+		Criteria criteria = getSession().createCriteria(BillableItemStatus.class)
+				.add(billableItemStatus);
+		return criteria.list();
+	}
+	
+	
 
 }

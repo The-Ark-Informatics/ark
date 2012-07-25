@@ -1,5 +1,8 @@
 package au.org.theark.worktracking.web.component.billableitemtype;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -57,15 +60,18 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_QUANTITY_PER_UNIT, ""));
 				}
 				
+				NumberFormat formatter = null;
 				if (billableItemType.getUnitPrice() != null) {
-					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE, billableItemType.getUnitPrice().toString()));
+					formatter = new DecimalFormat("#0.00");
+					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE, formatter.format(billableItemType.getUnitPrice())));
 				}
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE, ""));
 				}
 				
 				if (billableItemType.getGst() != null) {
-					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_GST, billableItemType.getGst().toString()));
+					formatter = new DecimalFormat("#0.0000");
+					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_GST,  formatter.format(billableItemType.getGst())));
 				}
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_GST, ""));

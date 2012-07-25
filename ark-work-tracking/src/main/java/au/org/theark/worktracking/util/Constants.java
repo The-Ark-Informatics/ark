@@ -94,15 +94,14 @@ public class Constants {
 	public static final String RESEARCHER_ADDRESS_TAG 													= "Researcher Address";
 	public static final String ERROR_WORK_RESEARCHER_ADDRESS_REQUIRED 									= "error.work.researcher.address.required";
 	public static final String ERROR_WORK_RESEARCHER_INSTITUTE_LENGTH 									= "error.work.researcher.institute.length";
-	public static final String RESEARCHER_INSTITUTE_TAG 												= "Researcher Institute";
+	public static final String RESEARCHER_INSTITUTE_TAG 												= "Researcher Organization";
 	public static final String ERROR_WORK_RESEARCHER_INSTITUTE_REQUIRED 								= "error.work.researcher.institute.required";
 	public static final String ERROR_WORK_RESEARCHER_LASTNAME_LENGTH 									= "error.work.researcher.lastname.length";
 	public static final String RESEARCHER_LAST_NAME_TAG 												= "Researcher Last Name";
 	public static final String ERROR_WORK_RESEARCHER_LASTNAME_REQUIRED 									= "error.work.researcher.lastname.required";
 	public static final String ERROR_WORK_RESEARCHER_FIRSTNAME_LENGTH 									= "error.work.researcher.firstname.length";
 	public static final String RESEARCHER_FIRST_NAME_TAG 												= "Researcher First Name";
-	public static final String ERROR_WORK_RESEARCHER_FIRSTNAME_REQUIRED 								= "error.work.researcher.firstname.required";
-	
+	public static final String ERROR_WORK_RESEARCHER_FIRSTNAME_REQUIRED 								= "error.work.researcher.firstname.required";	
 	
 	//Billable Item  Type Constants
 	public static final String			BILLABLE_ITEM_TYPE_ID											= "billableItemType.id";
@@ -175,12 +174,15 @@ public class Constants {
 	public static final String			BILLABLE_ITEM_INVOICE											= "billableItem.invoice";
 	public static final String			BILLABLE_ITEM_COMMENCE_DATE										= "billableItem.commenceDate";
 	public static final String			BILLABLE_ITEM_BILLABLE_ITEM_TYPE								= "billableItem.billableItemType";
+	public static final String			BILLABLE_ITEM_ITEM_STATUS										= "billableItem.itemStatus";
 	public static final String			FILE_NAME														= "fileName";
+	public static final String			BILLABLE_ITEM_ITEM_TYPE											= "billableItem.type";
 	
 	public static final String			BI_DESCRIPTION													= "description";
 	public static final String			BI_QUANTITY														= "quantity";
 	public static final String			BI_WORK_REQUEST													= "workRequest";
 	public static final String			BI_INVOICE														= "invoice";
+	public static final String			BI_ITEM_STATUS													= "itemStatus";
 	
 	public static final String BILLABLE_ITEM_DESCRIPTION_TAG											= "Description";
 	public static final String ERROR_BILLABLE_ITEM_DESCRIPTION_REQUIRED 								= "error.work.billableitem.description.required";
@@ -193,4 +195,6 @@ public class Constants {
 	public static final String ERROR_BILLABLE_ITEM_INVOICE_REQUIRED 									= "error.work.billableitem.invoice.required";
 	public static final String BILLABLE_ITEM_BILLABLE_ITEM_TYPE_TAG										= "Billable Item Type";
 	public static final String ERROR_BILLABLE_ITEM_BILLABLE_ITEM_TYPE_REQUIRED 							= "error.work.billableitem.billableitemtype.required";
+	public static final String BILLABLE_ITEM_ITEM_STATUS_TAG											= "Status";
+	public static final String ERROR_BILLABLE_ITEM_ITEM_STATUS_REQUIRED 								= "error.work.billableitem.itemstatus.required";
 }

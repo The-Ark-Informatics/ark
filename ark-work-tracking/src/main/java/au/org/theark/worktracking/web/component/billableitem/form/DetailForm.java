@@ -26,6 +26,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 
+import au.org.theark.core.model.worktracking.entity.BillableItemStatus;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.model.worktracking.entity.BillableSubject;
@@ -52,12 +53,13 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	private DropDownChoice<WorkRequest>		 				billableItemWorkRequests;
 	private DropDownChoice<BillableItemType>		 		billableItemItemTypes;
 	private DropDownChoice<String>							billableItemInvoiceStatuses;
+	private DropDownChoice<BillableItemStatus>		 		billableItemStatuses;
 	
 	private FileUploadField									subjectsUploadField;
 	
 	private List<WorkRequest>								workRequestList;
 	private List<BillableItemType>							billableItemTypeList;
-	
+	private List<BillableItemStatus>						billableItemStatusList;
 	
 	
 	private FeedbackPanel		feedBackPanel;
@@ -97,6 +99,8 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		initWorkRequestDropDown();
 		initBillableItemTypeDropDown();
 		initInvoiceDropDown();
+		
+		initBillableItemStatusDropDown();
 		
 		addDetailFormComponents();
 		attachValidators();
@@ -152,6 +156,12 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		billableItemWorkRequests = new DropDownChoice(Constants.BILLABLE_ITEM_WORK_REQUEST,  this.workRequestList, defaultChoiceRenderer);
 	}
 	
+	private void initBillableItemStatusDropDown(){
+		this.billableItemStatusList = iWorkTrackingService.getBillableItemStatusses();
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		billableItemStatuses = new DropDownChoice(Constants.BILLABLE_ITEM_ITEM_STATUS,  this.billableItemStatusList, defaultChoiceRenderer);
+	}
+	
 	public void addDetailFormComponents() {		
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemIdTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemDescriptionTxtField);
@@ -159,8 +169,10 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemCommenceDateDp);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemWorkRequests);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemItemTypes);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemInvoiceStatuses);	
+		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemInvoiceStatuses);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemStatuses);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectsUploadField);
+		
 	}
 	
 	/*
@@ -177,6 +189,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		billableItemWorkRequests.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_WORK_REQUEST_REQUIRED, billableItemWorkRequests, new Model<String>(Constants.BILLABLE_ITEM_WORK_REQUEST_TAG)));
 		billableItemItemTypes.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_BILLABLE_ITEM_TYPE_REQUIRED, billableItemItemTypes, new Model<String>(Constants.BILLABLE_ITEM_BILLABLE_ITEM_TYPE_TAG)));
 		billableItemInvoiceStatuses.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_INVOICE_REQUIRED, billableItemInvoiceStatuses, new Model<String>(Constants.BILLABLE_ITEM_INVOICE_TAG)));
+		billableItemStatuses.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_ITEM_STATUS_REQUIRED, billableItemStatuses, new Model<String>(Constants.BILLABLE_ITEM_ITEM_STATUS_TAG)));
 	}
 
 	/*
@@ -198,7 +211,8 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	@Override
 	protected void onSave(Form<BillableItemVo> containerForm, AjaxRequestTarget target) {
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
-		
+		int successSubjects=0;
+		int ignoredSubjects=0;
 		try {
 			HashSet<BillableSubject> subjectSet=null;
 			if(subjectsUploadField != null && subjectsUploadField.getFileUpload() != null){
@@ -209,10 +223,16 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 				
 		    	while ((line = br.readLine()) != null) {
 		    		String array[]=line.split(",");
-		    		BillableSubject billableSubject=new BillableSubject();
-		    		billableSubject.setSubjectId(Long.valueOf(array[0]));
-		    		billableSubject.setDescription(array[1]);
-		    		subjectSet.add(billableSubject);
+		    		if(array.length>1){
+		    			BillableSubject billableSubject=new BillableSubject();
+		    			billableSubject.setSubjectId(Long.valueOf(array[0]));
+		    			billableSubject.setDescription(array[1]);
+		    			subjectSet.add(billableSubject);
+		    			++successSubjects;
+		    		}else{
+		    			++ignoredSubjects;
+		    			continue;
+		    		}
 		    	} 			
 			}
 			
@@ -225,12 +245,12 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 				containerForm.getModelObject().getBillableItem().setType(Constants.BILLABLE_ITEM_MANUAL);
 				
 				iWorkTrackingService.createBillableItem(containerForm.getModelObject().getBillableItem());
-				this.info("Billable Item " + containerForm.getModelObject().getBillableItem().getDescription()  + " was created successfully");
+				this.info("Billable Item " + containerForm.getModelObject().getBillableItem().getDescription()  + " was created successfully with "+successSubjects+" subjects");
 				processErrors(target);
 			}
 			else {
 				iWorkTrackingService.updateBillableItem(containerForm.getModelObject().getBillableItem());
-				this.info("Billable Item " + containerForm.getModelObject().getBillableItem().getDescription() + " was updated successfully");
+				this.info("Billable Item " + containerForm.getModelObject().getBillableItem().getDescription() + " was updated successfully with "+successSubjects+" subjects");
 				processErrors(target);
 			}
 
