@@ -97,7 +97,7 @@ public class BoxDetailPanel extends Panel {
 	protected void onBeforeRender() {
 		super.onBeforeRender();
 		if(containerForm.getModelObject().getInvBox().getId() != null) {
-			gridBoxPanel.replaceWith(new GridBoxPanel("gridBoxPanel", containerForm.getModelObject(), modalWindow, false));
+			addOrReplace(new GridBoxPanel("gridBoxPanel", containerForm.getModelObject(), modalWindow, false));
 		}
 	}
 }
