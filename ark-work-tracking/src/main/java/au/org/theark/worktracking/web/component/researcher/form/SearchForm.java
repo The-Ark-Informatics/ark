@@ -37,7 +37,7 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 	private TextField<String>				researcherIdTxtField;
 	private TextField<String>				firstNameTxtFld;
 	private TextField<String>				lastNameTxtFld;
-	private TextField<String>				instituteTxtFld;
+	private TextField<String>				organizationTxtFld;
 	
 	private DateTextField					createdDateDp;
 	private DropDownChoice<ResearcherStatus>		 researcherStatuses;
@@ -80,7 +80,7 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 		add(researcherIdTxtField);
 		add(firstNameTxtFld);
 		add(lastNameTxtFld);
-		add(instituteTxtFld);
+		add(organizationTxtFld);
 		
 		add(createdDateDp);
 		add(researcherStatuses);
@@ -92,7 +92,7 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 		researcherIdTxtField = new TextField<String>(Constants.RESEARCHER_ID);
 		firstNameTxtFld=new TextField<String>(Constants.RESEARCHER_FIRST_NAME);
 		lastNameTxtFld=new TextField<String>(Constants.RESEARCHER_LAST_NAME);
-		instituteTxtFld=new TextField<String>(Constants.RESEARCHER_INSTITUTE);
+		organizationTxtFld=new TextField<String>(Constants.RESEARCHER_ORGANIZATION);
 		
 		createdDateDp=new DateTextField(Constants.RESEARCHER_CREATED_DATE,au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker datePicker = new ArkDatePicker();

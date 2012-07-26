@@ -42,7 +42,7 @@ public class Constants {
 	public static final String			LAST_NAME														= "lastName";
 	public static final String			EMAIL															= "email";
 	public static final String			PHONE_NUMBER													= "phoneNumber";
-	public static final String			INSTITUTE													    = "institute";
+	public static final String			ORGANIZATION													= "organization";
 	public static final String			ROLE													        = "researcherRole";
 	public static final String			STATUS													    	= "researcherStatus";
 	public static final String			CREATED_DATE											    	= "createdDate";
@@ -50,7 +50,7 @@ public class Constants {
 	public static final String			RESEARCHER_ID													= "researcher.id";
 	public static final String			RESEARCHER_FIRST_NAME											= "researcher.firstName";
 	public static final String			RESEARCHER_LAST_NAME											= "researcher.lastName";
-	public static final String			RESEARCHER_INSTITUTE											= "researcher.institute";
+	public static final String			RESEARCHER_ORGANIZATION											= "researcher.organization";
 	public static final String			RESEARCHER_CREATED_DATE											= "researcher.createdDate";
 	public static final String			RESEARCHER_STATUS											    = "researcher.researcherStatus";
 	public static final String			RESEARCHER_ROLE											        = "researcher.researcherRole";	
@@ -93,9 +93,9 @@ public class Constants {
 	public static final String ERROR_WORK_RESEARCHER_ADDRESS_LENGTH 									= "error.work.researcher.address.length";
 	public static final String RESEARCHER_ADDRESS_TAG 													= "Researcher Address";
 	public static final String ERROR_WORK_RESEARCHER_ADDRESS_REQUIRED 									= "error.work.researcher.address.required";
-	public static final String ERROR_WORK_RESEARCHER_INSTITUTE_LENGTH 									= "error.work.researcher.institute.length";
-	public static final String RESEARCHER_INSTITUTE_TAG 												= "Researcher Organization";
-	public static final String ERROR_WORK_RESEARCHER_INSTITUTE_REQUIRED 								= "error.work.researcher.institute.required";
+	public static final String ERROR_WORK_RESEARCHER_ORGANIZATION_LENGTH 								= "error.work.researcher.organization.length";
+	public static final String RESEARCHER_ORGANIZATION_TAG 												= "Researcher Organization";
+	public static final String ERROR_WORK_RESEARCHER_ORGANIZATION_REQUIRED 								= "error.work.researcher.organization.required";
 	public static final String ERROR_WORK_RESEARCHER_LASTNAME_LENGTH 									= "error.work.researcher.lastname.length";
 	public static final String RESEARCHER_LAST_NAME_TAG 												= "Researcher Last Name";
 	public static final String ERROR_WORK_RESEARCHER_LASTNAME_REQUIRED 									= "error.work.researcher.lastname.required";

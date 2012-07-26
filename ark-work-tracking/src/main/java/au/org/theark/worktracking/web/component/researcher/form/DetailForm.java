@@ -35,7 +35,7 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 	private IWorkTrackingService iWorkTrackingService;
 
 	private TextField<String>	resercherIdTxtFld;
-	private TextField<String>	resercherInstituteTxtFld;
+	private TextField<String>	resercherOrganizationTxtFld;
 	private TextField<String>	resercherFirstNameTxtFld;
 	private TextField<String>	resercherLastNameTxtFld;
 	private TextField<String>	resercherOfficePhoneTxtFld;
@@ -86,7 +86,7 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		resercherIdTxtFld.setEnabled(false);
 		resercherFirstNameTxtFld=new TextField<String>(Constants.RESEARCHER_FIRST_NAME);
 		resercherLastNameTxtFld=new TextField<String>(Constants.RESEARCHER_LAST_NAME);
-		resercherInstituteTxtFld=new TextField<String>(Constants.RESEARCHER_INSTITUTE);
+		resercherOrganizationTxtFld=new TextField<String>(Constants.RESEARCHER_ORGANIZATION);
 		
 		resercherOfficePhoneTxtFld = new TextField<String>(Constants.RESEARCHER_OFFICE_PHONE);
 		resercherMobileTxtFld = new TextField<String>(Constants.RESEARCHER_MOBILE);
@@ -133,7 +133,7 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 	public void addDetailFormComponents() {
 		
 		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherIdTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherInstituteTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherOrganizationTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherFirstNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherLastNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherOfficePhoneTxtFld);
@@ -169,10 +169,10 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		resercherLastNameTxtFld.add(StringValidator.lengthBetween(1, 45)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_LASTNAME_LENGTH, resercherLastNameTxtFld, new Model<String>(Constants.RESEARCHER_LAST_NAME_TAG)));
 		
-		resercherInstituteTxtFld.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_INSTITUTE_REQUIRED, resercherInstituteTxtFld, new Model<String>(Constants.RESEARCHER_INSTITUTE_TAG)));
+		resercherOrganizationTxtFld.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_ORGANIZATION_REQUIRED, resercherOrganizationTxtFld, new Model<String>(Constants.RESEARCHER_ORGANIZATION_TAG)));
 		
-		resercherInstituteTxtFld.add(StringValidator.lengthBetween(1, 50)).setLabel(
-				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_INSTITUTE_LENGTH, resercherInstituteTxtFld, new Model<String>(Constants.RESEARCHER_INSTITUTE_TAG)));
+		resercherOrganizationTxtFld.add(StringValidator.lengthBetween(1, 50)).setLabel(
+				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_ORGANIZATION_LENGTH, resercherOrganizationTxtFld, new Model<String>(Constants.RESEARCHER_ORGANIZATION_TAG)));
 		
 		resercherAddressTxtArea.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_ADDRESS_REQUIRED, resercherAddressTxtArea, new Model<String>(Constants.RESEARCHER_ADDRESS_TAG)));
 		
