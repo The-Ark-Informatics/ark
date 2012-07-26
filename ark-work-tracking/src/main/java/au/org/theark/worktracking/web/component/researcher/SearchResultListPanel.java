@@ -53,11 +53,11 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.RESEARCHER_ID, ""));
 				}
 
-				if (researcher.getInstitute() != null) {
-					item.add(new Label(Constants.RESEARCHER_INSTITUTE, researcher.getInstitute()));
+				if (researcher.getOrganization() != null) {
+					item.add(new Label(Constants.RESEARCHER_ORGANIZATION, researcher.getOrganization()));
 				}
 				else {
-					item.add(new Label(Constants.RESEARCHER_INSTITUTE, ""));
+					item.add(new Label(Constants.RESEARCHER_ORGANIZATION, ""));
 				}
 				item.add(buildLink(researcher));
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
