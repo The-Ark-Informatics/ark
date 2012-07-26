@@ -212,3 +212,7 @@ CREATE TABLE `link_billable_item_subject` (
   CONSTRAINT `fk_link_billable_item_subject_bi_id` FOREIGN KEY (`BILLABLE_ITEM_ID`) REFERENCES `bilable_item` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- Rename the researcher table column institute to organization
+
+ALTER TABLE `admin`.`researcher` CHANGE COLUMN `INSTITUTE` `ORGANIZATION` VARCHAR(50) NULL DEFAULT NULL  ;
+
