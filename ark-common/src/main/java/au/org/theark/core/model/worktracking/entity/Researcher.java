@@ -29,7 +29,7 @@ public class Researcher implements Serializable {
 	private Long								id;
 	private String								firstName;
 	private String								lastName;
-	private String								institute;
+	private String								organization;
 	private String								address;
 	private ResearcherRole						researcherRole;
 	private ResearcherStatus					researcherStatus;
@@ -54,7 +54,7 @@ public class Researcher implements Serializable {
 	}
 
 	public Researcher(Long id, String firstName, String lastName,
-			String institute, String address, ResearcherRole researcherRole,
+			String organization, String address, ResearcherRole researcherRole,
 			ResearcherStatus researcherStatus, Date createdDate,
 			String officePhone, String mobile, String email, String fax,
 			String comment, BillingType billingType, String accountNumber,
@@ -63,7 +63,7 @@ public class Researcher implements Serializable {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.institute = institute;
+		this.organization = organization;
 		this.address = address;
 		this.researcherRole = researcherRole;
 		this.researcherStatus = researcherStatus;
@@ -111,13 +111,13 @@ public class Researcher implements Serializable {
 		this.lastName = lastName;
 	}
 
-	@Column(name = "INSTITUTE", length = 50)
-	public String getInstitute() {
-		return institute;
+	@Column(name = "ORGANIZATION", length = 50)
+	public String getOrganization() {
+		return organization;
 	}
 
-	public void setInstitute(String institute) {
-		this.institute = institute;
+	public void setOrganization(String organization) {
+		this.organization = organization;
 	}
 
 	@Column(name = "ADDRESS", length = 255)
@@ -277,7 +277,7 @@ public class Researcher implements Serializable {
 				+ ((firstName == null) ? 0 : firstName.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result
-				+ ((institute == null) ? 0 : institute.hashCode());
+				+ ((organization == null) ? 0 : organization.hashCode());
 		result = prime * result
 				+ ((createdDate == null) ? 0 : createdDate.hashCode());
 		result = prime * result
@@ -348,10 +348,10 @@ public class Researcher implements Serializable {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (institute == null) {
-			if (other.institute != null)
+		if (organization == null) {
+			if (other.organization != null)
 				return false;
-		} else if (!institute.equals(other.institute))
+		} else if (!organization.equals(other.organization))
 			return false;
 		if (createdDate == null) {
 			if (other.createdDate != null)
@@ -384,7 +384,7 @@ public class Researcher implements Serializable {
 	@Override
 	public String toString() {
 		return "Researcher [id=" + id + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", institute=" + institute
+				+ ", lastName=" + lastName + ", organization=" + organization
 				+ ", address=" + address + ", createdDate=" + createdDate
 				+ ", officePhone=" + officePhone + ", mobile=" + mobile
 				+ ", email=" + email + ", fax=" + fax + ", comment=" + comment
