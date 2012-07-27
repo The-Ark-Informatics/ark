@@ -47,6 +47,12 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.worktracking.entity.BillableItem;
+import au.org.theark.core.model.worktracking.entity.BillableItemStatus;
+import au.org.theark.core.model.worktracking.entity.BillableItemType;
+import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
+import au.org.theark.core.model.worktracking.entity.BillableSubject;
+import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CorrespondenceVO;
@@ -54,6 +60,7 @@ import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.worktracking.service.IWorkTrackingService;
 
 public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
@@ -64,6 +71,9 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService											studyService;
+	
+	@SpringBean(name = au.org.theark.worktracking.util.Constants.WORK_TRACKING_SERVICE)
+	private IWorkTrackingService iWorkTrackingService;
 
 	private DropDownChoice<ArkUser>								operatorChoice;
 	private DateTextField											dateFld;
@@ -75,7 +85,10 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	private TextArea<String>										detailsTxtArea;
 	private TextArea<String>										commentsTxtArea;
 	private FileUploadField											fileUploadField;
-
+	
+	private DropDownChoice<WorkRequest>		 				billableItemWorkRequests;
+	private DropDownChoice<BillableItemType>		 		billableItemItemTypes;
+	
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		setMultiPart(true);
@@ -100,6 +113,9 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		// fileUploadField = new FileUploadField("correspondence.attachmentFilename", new Model<List<FileUpload>>());
 		fileUploadField = new FileUploadField("correspondence.attachmentFilename");
 		setMaxSize(Bytes.kilobytes(2048));
+		
+		initBillableItemTypeDropDown();
+		initWorkRequestDropDown();
 
 		addDetailFormComponents();
 		attachValidators();
@@ -137,6 +153,34 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		ChoiceRenderer<CorrespondenceOutcomeType> defaultRenderer = new ChoiceRenderer<CorrespondenceOutcomeType>("name", "id");
 		outcomeTypeChoice = new DropDownChoice<CorrespondenceOutcomeType>("correspondence.correspondenceOutcomeType", list, defaultRenderer);
 	}
+	
+	private void initBillableItemTypeDropDown() {
+		
+		BillableItemType billableItemType=new BillableItemType();
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		billableItemType.setStudyId(studyId);
+		List<BillableItemTypeStatus> billableItemTypeStatusses = iWorkTrackingService.getBillableItemTypeStatuses();
+		
+		for(BillableItemTypeStatus status:billableItemTypeStatusses){
+			if(au.org.theark.worktracking.util.Constants.BILLABLE_ITEM_TYPE_ACTIVE.equalsIgnoreCase(status.getName())){
+				billableItemType.setBillableItemTypeStatus(status);
+				break;
+			}
+		}
+		
+		List<BillableItemType>				billableItemTypeList = iWorkTrackingService.searchBillableItemType(billableItemType);
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(au.org.theark.worktracking.util.Constants.BIT_ITEM_NAME, Constants.ID);
+		billableItemItemTypes = new DropDownChoice("billableItemType",  billableItemTypeList, defaultChoiceRenderer);
+	}
+
+	private void initWorkRequestDropDown() {
+		WorkRequest workRequest =new WorkRequest();
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		workRequest.setStudyId(studyId);
+		List<WorkRequest>								workRequestList = iWorkTrackingService.searchWorkRequest(workRequest);
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(au.org.theark.worktracking.util.Constants.NAME, Constants.ID);
+		billableItemWorkRequests = new DropDownChoice("workRequest",  workRequestList, defaultChoiceRenderer);
+	}
 
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(operatorChoice);
@@ -149,6 +193,9 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(detailsTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
+		
+		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemWorkRequests);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemItemTypes);
 	}
 
 	protected void attachValidators() {
@@ -202,7 +249,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 				}
 
 				// save
-				studyService.create(containerForm.getModelObject().getCorrespondence());
+				studyService.create(containerForm.getModelObject().getCorrespondence());				
 				this.info("Correspondence was successfully added and linked to subject: " + person.getFirstName() + " " + person.getLastName());
 				processErrors(target);
 			}
@@ -220,6 +267,12 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 				processErrors(target);
 			}
 			// invoke backend to persist the correspondence
+			
+			if(containerForm.getModelObject().getWorkRequest()!=null &&
+					containerForm.getModelObject().getBillableItemType()!=null){
+				createAutomatedBillableItem();
+			}
+			
 			onSavePostProcess(target);
 		}
 		catch (EntityNotFoundException ex) {
@@ -228,6 +281,46 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		catch (ArkSystemException ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Create the automated billable item when user has selected the work request and billable item type. 
+	 */
+	private void createAutomatedBillableItem(){
+		//Create new billable Item
+		BillableItem billableItem =new BillableItem();
+		billableItem.setType(au.org.theark.worktracking.util.Constants.BILLABLE_ITEM_AUTOMATED);
+		billableItem.setWorkRequest(containerForm.getModelObject().getWorkRequest());
+		billableItem.setBillableItemType(containerForm.getModelObject().getBillableItemType());
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		billableItem.setStudyId(studyId);
+		billableItem.setQuantity(1);
+		
+		//Create new billable subject with selected subject id
+		BillableSubject billableSubject = new BillableSubject();
+		Long subjectId= new Long( SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID).toString());
+		billableSubject.setSubjectId(subjectId);
+		billableItem.getBillableSubjects().add(billableSubject);	
+		
+		billableItem.setDescription("Automated - Subject Id "+subjectId);
+		billableItem.setInvoice(au.org.theark.worktracking.util.Constants.Y);
+		
+		List<BillableItemStatus> itemStatusList = iWorkTrackingService.getBillableItemStatusses();
+		for(BillableItemStatus status:itemStatusList){
+			if("Not Commenced".equalsIgnoreCase(status.getName())){
+				billableItem.setItemStatus(status);
+				break;
+			}
+		}
+		
+		
+		//Save newly created objects
+		iWorkTrackingService.createBillableItem(billableItem);
+		
+		//reset workrequest and billable item type
+		containerForm.getModelObject().setWorkRequest(null);
+		containerForm.getModelObject().setBillableItemType(null);
+		
 	}
 
 	@Override
