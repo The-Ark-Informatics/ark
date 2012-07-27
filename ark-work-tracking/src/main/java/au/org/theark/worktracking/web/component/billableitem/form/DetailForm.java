@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -88,7 +89,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		billableItemDescriptionTxtField=new TextField<String>(Constants.BILLABLE_ITEM_DESCRIPTION);
 		billableItemQuantityTxtField=new TextField<String>(Constants.BILLABLE_ITEM_QUANTITY);
 		
-		billableItemCommenceDateDp= new DateTextField(Constants.BILLABLE_ITEM_COMMENCE_DATE);
+		billableItemCommenceDateDp= new DateTextField(Constants.BILLABLE_ITEM_COMMENCE_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(billableItemCommenceDateDp);
 		billableItemCommenceDateDp.add(datePicker);
@@ -254,7 +255,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 				processErrors(target);
 			}
 
-			onSavePostProcess(target);
+			this.billableItemOnSavePostProcess( target, containerForm.getModelObject());
 
 		}
 		catch(IOException ioException){
@@ -266,6 +267,21 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 			processErrors(target);
 		}
 
+	}
+	
+	/**
+	 * Disable the delete button for automated billable items.
+	 * @param target
+	 * @param billableItemVo
+	 * 
+	 * @see #onSavePostProcess(AjaxRequestTarget)
+	 */
+	private void billableItemOnSavePostProcess(AjaxRequestTarget target,BillableItemVo billableItemVo){
+		super.onSavePostProcess(target);
+		if(Constants.BILLABLE_ITEM_AUTOMATED.equalsIgnoreCase(billableItemVo.getBillableItem().getType())){
+			AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
+			ajaxButton.setEnabled(false);
+		}
 	}
 
 	/*
