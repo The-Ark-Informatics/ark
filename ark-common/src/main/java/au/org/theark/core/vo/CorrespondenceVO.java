@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.worktracking.entity.BillableItemType;
+import au.org.theark.core.model.worktracking.entity.WorkRequest;
 
 public class CorrespondenceVO implements Serializable {
 
@@ -30,6 +32,10 @@ public class CorrespondenceVO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Correspondences								correspondence;
 	private Collection<Correspondences>				correspondenceList;
+	
+	//Required to create automated billable items
+	private WorkRequest			workRequest;
+	private BillableItemType 	billableItemType;
 
 	public CorrespondenceVO() {
 		correspondence = new Correspondences();
@@ -51,4 +57,21 @@ public class CorrespondenceVO implements Serializable {
 	public void setCorrespondenceList(Collection<Correspondences> correspondenceList) {
 		this.correspondenceList = correspondenceList;
 	}
+
+	public WorkRequest getWorkRequest() {
+		return workRequest;
+	}
+
+	public void setWorkRequest(WorkRequest workRequest) {
+		this.workRequest = workRequest;
+	}
+
+	public BillableItemType getBillableItemType() {
+		return billableItemType;
+	}
+
+	public void setBillableItemType(BillableItemType billableItemType) {
+		this.billableItemType = billableItemType;
+	}
+	
 }
