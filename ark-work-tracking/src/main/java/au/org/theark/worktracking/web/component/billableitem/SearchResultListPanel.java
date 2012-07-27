@@ -104,13 +104,10 @@ public class SearchResultListPanel extends Panel {
 				billableItemVo.setMode(Constants.MODE_EDIT);
 				billableItemVo.setBillableItem(billableItem);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-				if(Constants.BILLABLE_ITEM_AUTOMATED.equalsIgnoreCase( containerForm.getModelObject().getBillableItem().getType())){
-					arkCrudContainerVO.getEditButtonContainer().get(au.org.theark.core.Constants.SAVE).setEnabled(false);
-					
+				if(Constants.BILLABLE_ITEM_AUTOMATED.equalsIgnoreCase( containerForm.getModelObject().getBillableItem().getType())){					
 					arkCrudContainerVO.getEditButtonContainer().get(au.org.theark.core.Constants.DELETE).setEnabled(false);
 				}
 				else{
-					arkCrudContainerVO.getEditButtonContainer().get(au.org.theark.core.Constants.SAVE).setEnabled(true);
 					if(containerForm.getModelObject().getBillableItem().getId()!=null){
 						arkCrudContainerVO.getEditButtonContainer().get(au.org.theark.core.Constants.DELETE).setEnabled(true);
 					}
