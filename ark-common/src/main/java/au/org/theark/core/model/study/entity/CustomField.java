@@ -61,6 +61,7 @@ public class CustomField implements Serializable {
 	private String	encodedValues;
 	private String	missingValue;
 	private Boolean customFieldHasData;
+	private Boolean allowMultiselect;
 	private String fieldLabel;
 
 	private Set<CustomFieldDisplay> customFieldDisplay = new HashSet<CustomFieldDisplay>();
@@ -183,6 +184,15 @@ public class CustomField implements Serializable {
 
 	public void setCustomFieldHasData(Boolean customFieldHasData) {
 		this.customFieldHasData = customFieldHasData;
+	}
+
+	@Column(name = "ALLOW_MULTIPLE_SELECTION", precision = 1, scale = 0)
+	public Boolean getAllowMultiselect() {
+		return allowMultiselect;
+	}
+
+	public void setAllowMultiselect(Boolean allowMultiselect) {
+		this.allowMultiselect = allowMultiselect;
 	}
 
 	@Column(name = "CUSTOM_FIELD_LABEL",length=255)
