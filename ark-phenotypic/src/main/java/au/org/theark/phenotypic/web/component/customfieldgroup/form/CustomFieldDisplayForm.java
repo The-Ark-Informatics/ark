@@ -32,7 +32,8 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 //	private TextField<String>										requiredMessageTxtFld;
 	private TextField<String>										customFieldNameTxtFld;
 	private TextField<String>										customFieldDisplayIdTxtFld;
-	private CheckBox													requiredFieldCb;
+	private CheckBox												requiredFieldCb;
+	private CheckBox												allowMultiselectCb;
 	protected CompoundPropertyModel<CustomFieldGroupVO>	cpModel;
 	protected AjaxButton												saveButton;
 	protected AjaxButton												cancelButton;
@@ -83,6 +84,7 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 		customFieldDisplayIdTxtFld.setEnabled(false);
 		customFieldNameTxtFld = new TextField<String>("customFieldDisplay.customField.name");
 		requiredFieldCb = new CheckBox("customFieldDisplay.required");
+		allowMultiselectCb = new CheckBox("customField.allowMultiselect");
 		
 		saveButton = new AjaxButton(Constants.SAVE) {
 

@@ -95,7 +95,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	private TextField<String>					fieldMissingValueTxtFld;
 	
 	private TextArea<String>					fieldLabelTxtAreaFld;
-	private CheckBox								fieldDisplayRequiredChkBox;
+	private CheckBox							fieldDisplayRequiredChkBox;
+	private CheckBox							fieldAllowMultiselectChkBox;
 //	private TextArea<String>					fieldDisplayRequireMsgTxtAreaFld;
 	private DropDownChoice<CustomFieldGroup>	fieldDisplayFieldGroupDdc;
 	
@@ -278,6 +279,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		
 		fieldMissingValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
 		fieldDisplayRequiredChkBox = new CheckBox(Constants.FIELDVO_CUSTOMFIELDDISPLAY_REQUIRED);
+		fieldAllowMultiselectChkBox = new CheckBox(Constants.FIELDVO_CUSTOMFIELD_ALLOW_MULTISELECT);
 //		fieldDisplayRequireMsgTxtAreaFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELDDISPLAY_REQUIRED_MSG);
 		
 		if (getModelObject().isUseCustomFieldDisplay()) {
@@ -442,6 +444,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		customFieldDisplayDetailWMC = new WebMarkupContainer("customFieldDisplayDetailWMC");
 		customFieldDisplayDetailWMC.add(customFieldDisplayPositionPanel);
 		customFieldDisplayDetailWMC.add(fieldDisplayRequiredChkBox);
+		customFieldDisplayDetailWMC.add(fieldAllowMultiselectChkBox);
 //		customFieldDisplayDetailWMC.add(fieldDisplayRequireMsgTxtAreaFld);
 		// Only show these fields if necessary...
 		if (getModelObject().isUseCustomFieldDisplay() == false) {
