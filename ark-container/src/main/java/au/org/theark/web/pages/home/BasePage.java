@@ -70,9 +70,9 @@ public abstract class BasePage extends WebPage {
 	private MyDetailModalWindow	modalWindow;
 	private ArkBusyAjaxLink<Void> ajaxLogoutLink;
 	
-	/**
-	 * Default constructor
-	 */
+
+
+	
 	@SuppressWarnings("unchecked")
 	public BasePage() {
 		currentUser = SecurityUtils.getSubject();

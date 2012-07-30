@@ -40,9 +40,9 @@ public class LoginPage<T> extends WebPage {
 	private static final long			serialVersionUID	= -985615571643703296L;
 	
 	
-	/**
-	 * LoginPage Constructor
-	 */
+
+
+	
 	public LoginPage() {
 		LoginForm form = new LoginForm("loginForm");
 		this.add(form);
