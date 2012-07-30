@@ -30,9 +30,9 @@ public class MutableTreeNode extends DefaultMutableTreeNode {
 
 	private static final long	serialVersionUID	= 1L;
 	
-	/**
-	 * Default constructor
-	 */
+
+
+	
 	public MutableTreeNode(){
 		super();
 	}

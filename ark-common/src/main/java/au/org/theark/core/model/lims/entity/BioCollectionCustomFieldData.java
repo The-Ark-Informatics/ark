@@ -58,9 +58,9 @@ public class BioCollectionCustomFieldData implements Serializable,  ICustomField
 	private Double numberDataValue;
 	private String errorDataValue;
 	
-	/**
-	 * Default Constructor
-	 */
+
+
+	
 	public BioCollectionCustomFieldData(){
 		
 	}

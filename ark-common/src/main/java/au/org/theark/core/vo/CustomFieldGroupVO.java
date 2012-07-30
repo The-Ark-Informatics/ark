@@ -22,9 +22,9 @@ public class CustomFieldGroupVO implements Serializable{
 	private CustomFieldDisplay customFieldDisplay;
 	private String		customFieldFileUploadField;
 	
-	/**
-	 * Constructor
-	 */
+
+
+	
 	public CustomFieldGroupVO(){
 		
 		customFieldGroup = new CustomFieldGroup();
