@@ -43,9 +43,9 @@ public class LinkStudyArkModule implements Serializable {
 	private Study		study;
 	private ArkModule	arkModule;
 
-	/**
-	 * Constructor
-	 */
+
+
+	
 	public LinkStudyArkModule() {
 
 	}

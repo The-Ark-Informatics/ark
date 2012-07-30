@@ -27,9 +27,9 @@ public class QuestionnaireStatus implements Serializable {
 	private String	name;
 	private String	description;
 	
-	/**
-	 * Constructor
-	 */
+
+
+	
 	public QuestionnaireStatus(){
 		
 	}

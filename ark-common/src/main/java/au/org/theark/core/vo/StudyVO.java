@@ -30,9 +30,9 @@ public class StudyVO extends BaseVO {
 	private List<ModuleVO>	modules;
 	private List<RoleVO>		roles;		// From a user' perspective the list of roles for a study in context. E.g. study_admin or ordinary_user
 
-	/**
-	 * Constructor
-	 */
+
+
+	
 	public StudyVO() {
 		super();
 		this.roles = new ArrayList<RoleVO>();

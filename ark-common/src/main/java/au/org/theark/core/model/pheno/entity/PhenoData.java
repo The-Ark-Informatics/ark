@@ -39,9 +39,9 @@ public class PhenoData implements Serializable, ICustomFieldData {
 	private Double numberDataValue;
 	private String errorDataValue;
 	
-	/**
-	 * Constructor
-	 */
+
+
+	
 	public PhenoData(){
 		
 	}

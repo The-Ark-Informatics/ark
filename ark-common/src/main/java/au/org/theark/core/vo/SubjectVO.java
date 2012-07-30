@@ -61,9 +61,9 @@ public class SubjectVO implements Serializable {
 	private List<Study>			availableChildStudies;
 	private List<Study>			selectedChildStudies;
 
-	/**
-	 * Constructor
-	 */
+
+
+	
 	public SubjectVO() {
 		phoneList = new ArrayList<Phone>();
 		addressList = new ArrayList<Address>();
