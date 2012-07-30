@@ -42,19 +42,15 @@ import au.org.theark.core.Constants;
 @Table(name = "AUDIT_HISTORY", schema = Constants.STUDY_SCHEMA)
 public class AuditHistory implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
-	private Long			id;
-	private StudyStatus	studyStatus;
-	private Date			dateTime;
-	private String			actionType;
-	private String			arkUserId;
-	private String			comment;
-	private Long			entityId;
-	private String			entityType;
-
+	private Long id;
+	private StudyStatus studyStatus;
+	private Date dateTime;
+	private String actionType;
+	private String arkUserId;
+	private String comment;
+	private Long entityId;
+	private String entityType;
 
 	public AuditHistory() {
 	}
@@ -63,7 +59,9 @@ public class AuditHistory implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public AuditHistory(Long id, StudyStatus studyStatus, Date dateTime, String actionType, String etaUserId, String comment, Long entityKey, String entityType) {
+	public AuditHistory(Long id, StudyStatus studyStatus, Date dateTime,
+			String actionType, String etaUserId, String comment,
+			Long entityKey, String entityType) {
 		this.id = id;
 		this.studyStatus = studyStatus;
 		this.dateTime = dateTime;

@@ -38,11 +38,10 @@ import au.org.theark.core.Constants;
 @Table(name = "ARK_MODULE", schema = Constants.STUDY_SCHEMA)
 public class ArkModule implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long	id;
-	private String	name;
-	private String	description;
+	private Long id;
+	private String name;
+	private String description;
 
 	public ArkModule() {
 	}
@@ -98,14 +97,12 @@ public class ArkModule implements Serializable {
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		}
-		else if (!id.equals(other.id))
+		} else if (!id.equals(other.id))
 			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		}
-		else if (!name.equals(other.name))
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}

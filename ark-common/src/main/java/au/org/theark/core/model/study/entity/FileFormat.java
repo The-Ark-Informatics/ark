@@ -33,10 +33,8 @@ import au.org.theark.core.Constants;
 @Table(name = "FILE_FORMAT", schema = Constants.STUDY_SCHEMA)
 public class FileFormat implements java.io.Serializable {
 
-
-	private Long	id;
-	private String	name;
-
+	private Long id;
+	private String name;
 
 	public FileFormat() {
 	}

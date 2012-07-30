@@ -44,26 +44,28 @@ import au.org.theark.core.Constants;
 @Table(name = "UPLOAD", schema = Constants.STUDY_SCHEMA)
 public class Upload implements java.io.Serializable {
 
-	private Long			id;
-	private Study			study;
-	private FileFormat		fileFormat;
-	//intent is to take this payload entity and use it instead of payload byte[] to stop hibernate/mysql from forcing us to get it every time!
-	private Payload			payload;
-	private DelimiterType	delimiterType;
-	private UploadType		uploadType;
-	private String			filename;
-	private String			checksum;
-	private Date			startTime;
-	private Date			finishTime;
-	private byte[]			uploadReport;
-	private String			userId;
-	private ArkFunction		arkFunction;
-	private UploadStatus	uploadStatus;
+	private Long id;
+	private Study study;
+	private FileFormat fileFormat;
+	// intent is to take this payload entity and use it instead of payload
+	// byte[] to stop hibernate/mysql from forcing us to get it every time!
+	private Payload payload;
+	private DelimiterType delimiterType;
+	private UploadType uploadType;
+	private String filename;
+	private String checksum;
+	private Date startTime;
+	private Date finishTime;
+	private byte[] uploadReport;
+	private String userId;
+	private ArkFunction arkFunction;
+	private UploadStatus uploadStatus;
 
 	public Upload() {
 	}
 
-	public Upload(Long id, FileFormat fileFormat, DelimiterType delimiterType, String filename, byte[] uploadReport, ArkFunction arkFunction) {
+	public Upload(Long id, FileFormat fileFormat, DelimiterType delimiterType,
+			String filename, byte[] uploadReport, ArkFunction arkFunction) {
 		this.id = id;
 		this.fileFormat = fileFormat;
 		this.delimiterType = delimiterType;
@@ -95,7 +97,7 @@ public class Upload implements java.io.Serializable {
 
 	/**
 	 * @param study
-	 *           the study to set
+	 *            the study to set
 	 */
 	public void setStudy(Study study) {
 		this.study = study;
@@ -116,14 +118,14 @@ public class Upload implements java.io.Serializable {
 	public Payload getPayload() {
 		return payload;
 	}
-	
+
 	public void setPayload(Payload payload) {
 		this.payload = payload;
 	}
 
 	/**
 	 * @param delimiterType
-	 *           the delimiterType to set
+	 *            the delimiterType to set
 	 */
 	public void setDelimiterType(DelimiterType delimiterType) {
 		this.delimiterType = delimiterType;
@@ -148,7 +150,7 @@ public class Upload implements java.io.Serializable {
 
 	/**
 	 * @param filename
-	 *           the filename to set
+	 *            the filename to set
 	 */
 	public void setFilename(String filename) {
 		this.filename = filename;
@@ -164,7 +166,7 @@ public class Upload implements java.io.Serializable {
 
 	/**
 	 * @param checksum
-	 *           the checksum to set
+	 *            the checksum to set
 	 */
 	public void setChecksum(String checksum) {
 		this.checksum = checksum;
@@ -181,7 +183,7 @@ public class Upload implements java.io.Serializable {
 
 	/**
 	 * @param startTime
-	 *           the startTime to set
+	 *            the startTime to set
 	 */
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
@@ -198,7 +200,7 @@ public class Upload implements java.io.Serializable {
 
 	/**
 	 * @param finishTime
-	 *           the finishTime to set
+	 *            the finishTime to set
 	 */
 	public void setFinishTime(Date finishTime) {
 		this.finishTime = finishTime;
@@ -206,7 +208,7 @@ public class Upload implements java.io.Serializable {
 
 	/**
 	 * @param uploadReport
-	 *           the uploadReport to set
+	 *            the uploadReport to set
 	 */
 	public void setUploadReport(byte[] uploadReport) {
 		this.uploadReport = uploadReport;
@@ -245,12 +247,13 @@ public class Upload implements java.io.Serializable {
 	public UploadType getUploadType() {
 		return uploadType;
 	}
-	
+
 	public void setUploadType(UploadType uploadType) {
 		this.uploadType = uploadType;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)  // or eager?
+	@ManyToOne(fetch = FetchType.LAZY)
+	// or eager?
 	@JoinColumn(name = "STATUS_ID", nullable = false)
 	public UploadStatus getUploadStatus() {
 		return uploadStatus;

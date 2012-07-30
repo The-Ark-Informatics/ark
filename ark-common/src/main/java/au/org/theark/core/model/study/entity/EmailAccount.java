@@ -36,16 +36,12 @@ import au.org.theark.core.Constants;
 @Table(name = "EMAIL_ACCOUNT", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class EmailAccount implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
-	private Long					id;
-	private EmailAccountType	emailAccountType;
-	private String					name;
-	private boolean				primaryAccount;
-	private Long					personId;
-
+	private Long id;
+	private EmailAccountType emailAccountType;
+	private String name;
+	private boolean primaryAccount;
+	private Long personId;
 
 	public EmailAccount() {
 	}
@@ -54,7 +50,8 @@ public class EmailAccount implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public EmailAccount(Long id, EmailAccountType emailAccountType, String name, boolean primaryAccount, Long personId) {
+	public EmailAccount(Long id, EmailAccountType emailAccountType,
+			String name, boolean primaryAccount, Long personId) {
 		this.id = id;
 		this.emailAccountType = emailAccountType;
 		this.name = name;

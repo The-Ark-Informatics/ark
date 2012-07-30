@@ -39,35 +39,33 @@ import au.org.theark.core.model.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 
 @Entity
 @Table(name = "CUSTOM_FIELD", schema = Constants.STUDY_SCHEMA)
 public class CustomField implements Serializable {
-	
-
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private String	name;
-	private String	description;
+	private String name;
+	private String description;
 	private FieldType fieldType;
 	private Study study;
 	private ArkFunction arkFunction;
 	private UnitType unitType;
-	private String	minValue;
-	private String	maxValue;
-	private String	encodedValues;
-	private String	missingValue;
+	private String minValue;
+	private String maxValue;
+	private String encodedValues;
+	private String missingValue;
 	private Boolean customFieldHasData;
 	private Boolean allowMultiselect;
 	private String fieldLabel;
 
 	private Set<CustomFieldDisplay> customFieldDisplay = new HashSet<CustomFieldDisplay>();
 
-	public CustomField(){
-		
+	public CustomField() {
+
 	}
 
 	@Id
@@ -119,7 +117,7 @@ public class CustomField implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	@Column(name = "MIN_VALUE", length = 100)
 	public String getMinValue() {
 		return minValue;
@@ -166,7 +164,6 @@ public class CustomField implements Serializable {
 		this.unitType = unitType;
 	}
 
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ARK_FUNCTION_ID", nullable = false)
 	public ArkFunction getArkFunction() {
@@ -195,17 +192,15 @@ public class CustomField implements Serializable {
 		this.allowMultiselect = allowMultiselect;
 	}
 
-	@Column(name = "CUSTOM_FIELD_LABEL",length=255)
+	@Column(name = "CUSTOM_FIELD_LABEL", length = 255)
 	public String getFieldLabel() {
 		return fieldLabel;
 	}
-
 
 	public void setFieldLabel(String fieldLabel) {
 		this.fieldLabel = fieldLabel;
 	}
 
-	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customField")
 	public Set<CustomFieldDisplay> getCustomFieldDisplay() {
 		return customFieldDisplay;
@@ -215,7 +210,6 @@ public class CustomField implements Serializable {
 		this.customFieldDisplay = customFieldDisplay;
 	}
 
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -247,5 +241,4 @@ public class CustomField implements Serializable {
 		return true;
 	}
 
-	
 }

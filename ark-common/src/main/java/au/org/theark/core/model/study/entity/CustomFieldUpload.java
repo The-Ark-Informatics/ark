@@ -33,22 +33,21 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 
 @Entity
 @Table(name = "CUSTOM_FIELD_UPLOAD", schema = Constants.STUDY_SCHEMA)
-public class CustomFieldUpload  implements java.io.Serializable {
+public class CustomFieldUpload implements java.io.Serializable {
 
-	private static final long	serialVersionUID	= 1L;
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	private Upload studyUpload;
 	private CustomField customField;
-	
-	
-	public CustomFieldUpload(){
-		
+
+	public CustomFieldUpload() {
+
 	}
 
 	@Id
@@ -82,6 +81,5 @@ public class CustomFieldUpload  implements java.io.Serializable {
 	public void setCustomField(CustomField customField) {
 		this.customField = customField;
 	}
-	
 
 }

@@ -43,12 +43,12 @@ import au.org.theark.core.Constants;
 @Table(name = "ARK_ROLE", schema = Constants.STUDY_SCHEMA)
 public class ArkRole implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long							id;
-	private String							name;
-	private String							description;
-	private Set<ArkRolePermission>	arkRolePermission	= new HashSet<ArkRolePermission>(0);
+	private Long id;
+	private String name;
+	private String description;
+	private Set<ArkRolePermission> arkRolePermission = new HashSet<ArkRolePermission>(
+			0);
 
 	public ArkRole() {
 
@@ -113,8 +113,7 @@ public class ArkRole implements Serializable {
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		}
-		else if (!id.equals(other.id))
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}

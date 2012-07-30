@@ -32,13 +32,9 @@ import au.org.theark.core.Constants;
 @Table(name = "SUBJECTUID_PADCHAR", schema = Constants.STUDY_SCHEMA)
 public class SubjectUidPadChar implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
-	private Long	id;
-	private String	name;
-
+	private Long id;
+	private String name;
 
 	public SubjectUidPadChar() {
 	}

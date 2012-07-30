@@ -43,26 +43,25 @@ import au.org.theark.core.Constants;
 @Table(name = "ADDRESS", schema = Constants.STUDY_SCHEMA)
 public class Address implements java.io.Serializable {
 
-
 	private static final long serialVersionUID = 1L;
 
-	private Long				id;
-	private Person				person;
-	private String				addressLineOne;
-	private String				streetAddress;
-	private String				postCode;
-	private String				city;
-	private Country			country;
-	private State				state;
-	private String				otherState;
-	private AddressStatus	addressStatus;
-	private AddressType		addressType;
-	private Date				dateReceived;
-	private String				comments;
-	private Boolean			preferredMailingAddress;
-	private String				source;
+	private Long id;
+	private Person person;
+	private String addressLineOne;
+	private String streetAddress;
+	private String postCode;
+	private String city;
+	private Country country;
+	private State state;
+	private String otherState;
+	private AddressStatus addressStatus;
+	private AddressType addressType;
+	private Date dateReceived;
+	private String comments;
+	private Boolean preferredMailingAddress;
+	private String source;
 
-	private Set<StudySite>	studySites	= new HashSet<StudySite>(0);
+	private Set<StudySite> studySites = new HashSet<StudySite>(0);
 
 	public Address() {
 	}
@@ -83,7 +82,7 @@ public class Address implements java.io.Serializable {
 		this.id = id;
 	}
 
-	//TODO Lets keep naming consistant 
+	// TODO Lets keep naming consistant
 	@Column(name = "STREET_ADDRESS")
 	public String getStreetAddress() {
 		return this.streetAddress;

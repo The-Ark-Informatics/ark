@@ -29,38 +29,35 @@ import au.org.theark.core.model.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 
-@Entity(name="au.org.theark.core.model.study.entity.FieldType")
+@Entity(name = "au.org.theark.core.model.study.entity.FieldType")
 @Table(name = "FIELD_TYPE", schema = Constants.STUDY_SCHEMA)
-public class FieldType implements Serializable{
-	
+public class FieldType implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private Long	id;
-	private String	name;
-	
+	private Long id;
+	private String name;
 
-
-	
-	public FieldType(){
-		
+	public FieldType() {
 	}
-	
+
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	@Column(name = "NAME", nullable = false, length = 255, unique=true)
+
+	@Column(name = "NAME", nullable = false, length = 255, unique = true)
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}

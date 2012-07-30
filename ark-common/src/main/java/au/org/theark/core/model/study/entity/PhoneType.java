@@ -38,15 +38,11 @@ import au.org.theark.core.Constants;
 @Table(name = "PHONE_TYPE", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class PhoneType implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
-	private Long			id;
-	private String			name;
-	private String			description;
-	private Set<Phone>	phones	= new HashSet<Phone>(0);
-
+	private Long id;
+	private String name;
+	private String description;
+	private Set<Phone> phones = new HashSet<Phone>(0);
 
 	public PhoneType() {
 	}

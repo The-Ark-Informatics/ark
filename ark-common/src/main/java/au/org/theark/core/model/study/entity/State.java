@@ -34,15 +34,17 @@ import au.org.theark.core.Constants;
 @Table(name = "STATE", schema = Constants.STUDY_SCHEMA)
 public class State implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long		id;
-	private Country	country;
-	private String		name;
-	private String		code;
-	private String		type; //ie; is it a state, territory, county, etc
-	//TODO the field state that is in db now, will be exchanged for alias / aka / alternative_name, etc.  Long term we may want a table for many alternatives/i18n, etc
-	private String		shortName;
+	private Long id;
+	private Country country;
+	private String name;
+	private String code;
+	private String type; // ie; is it a state, territory, county, etc
+	// TODO the field state that is in db now, will be exchanged for alias / aka
+	// / alternative_name, etc. Long term we may want a table for many
+	// alternatives/i18n, etc
+	private String shortName;
+
 	public State() {
 
 	}
@@ -76,7 +78,7 @@ public class State implements Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "CODE" )
+	@Column(name = "CODE")
 	public String getCode() {
 		return code;
 	}
@@ -84,8 +86,8 @@ public class State implements Serializable {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	
-	@Column(name = "TYPE" )
+
+	@Column(name = "TYPE")
 	public String getType() {
 		return type;
 	}
@@ -94,10 +96,11 @@ public class State implements Serializable {
 		this.type = type;
 	}
 
-	@Column(name = "SHORT_NAME" )
+	@Column(name = "SHORT_NAME")
 	public String getShortName() {
 		return shortName;
 	}
+
 	public void setShortName(String shortName) {
 		this.shortName = shortName;
 	}

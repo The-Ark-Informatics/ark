@@ -34,11 +34,10 @@ import au.org.theark.core.Constants;
 @Table(name = "correspondence_outcome_type", schema = Constants.STUDY_SCHEMA)
 public class CorrespondenceOutcomeType implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long	id;
-	private String	name;
-	private String	description;
+	private Long id;
+	private String name;
+	private String description;
 
 	@Id
 	@SequenceGenerator(name = "correspondence_outcome_type_generator", sequenceName = "CORRESPONDENCE_OUTCOME_TYPE_SEQUENCE")

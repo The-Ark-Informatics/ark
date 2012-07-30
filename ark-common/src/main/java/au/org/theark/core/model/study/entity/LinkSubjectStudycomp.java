@@ -38,16 +38,12 @@ import au.org.theark.core.Constants;
 @Table(name = "LINK_SUBJECT_STUDYCOMP", schema = Constants.STUDY_SCHEMA)
 public class LinkSubjectStudycomp implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
-	private Long				id;
-	private StudyComp			studyComp;
-	private Study				study;
-	private Person				person;
-	private StudyCompStatus	studyComponentStatus;
-
+	private Long id;
+	private StudyComp studyComp;
+	private Study study;
+	private Person person;
+	private StudyCompStatus studyComponentStatus;
 
 	public LinkSubjectStudycomp() {
 	}
@@ -56,7 +52,8 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public LinkSubjectStudycomp(Long id, StudyComp studyComp, Study study, Person person, StudyCompStatus studyComponentStatus) {
+	public LinkSubjectStudycomp(Long id, StudyComp studyComp, Study study,
+			Person person, StudyCompStatus studyComponentStatus) {
 		this.id = id;
 		this.studyComp = studyComp;
 		this.study = study;

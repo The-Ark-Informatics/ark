@@ -42,16 +42,15 @@ import au.org.theark.core.model.pheno.entity.PhenoData;
 
 /**
  * @author nivedann
- *
+ * 
  */
 
 @Entity
 @Table(name = "CUSTOM_FIELD_DISPLAY", schema = Constants.STUDY_SCHEMA)
-public class CustomFieldDisplay implements Serializable{
-	
+public class CustomFieldDisplay implements Serializable {
 
-	private static final long	serialVersionUID	= 1L;
-	
+	private static final long serialVersionUID = 1L;
+
 	private Long id;
 	private CustomField customField;
 	private CustomFieldGroup customFieldGroup;
@@ -63,11 +62,9 @@ public class CustomFieldDisplay implements Serializable{
 	private Set<BiospecimenCustomFieldData> biospecimenCustomFieldData = new HashSet<BiospecimenCustomFieldData>();
 	private Set<PhenoData> phenoData = new HashSet<PhenoData>();
 
+	public CustomFieldDisplay() {
 
-	public CustomFieldDisplay(){
-		
 	}
-
 
 	@Id
 	@SequenceGenerator(name = "custom_field_display_seq_gen", sequenceName = "CUSTOM_FIELD_DISPLAY_SEQ_GEN")
@@ -77,11 +74,9 @@ public class CustomFieldDisplay implements Serializable{
 		return id;
 	}
 
-
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CUSTOM_FIELD_ID", nullable = false)
@@ -89,18 +84,15 @@ public class CustomFieldDisplay implements Serializable{
 		return customField;
 	}
 
-
 	public void setCustomField(CustomField customField) {
 		this.customField = customField;
 	}
-
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CUSTOM_FIELD_GROUP_ID")
 	public CustomFieldGroup getCustomFieldGroup() {
 		return customFieldGroup;
 	}
-
 
 	public void setCustomFieldGroup(CustomFieldGroup customFieldGroup) {
 		this.customFieldGroup = customFieldGroup;
@@ -111,7 +103,6 @@ public class CustomFieldDisplay implements Serializable{
 		return required;
 	}
 
-
 	public void setRequired(Boolean required) {
 		this.required = required;
 	}
@@ -121,16 +112,14 @@ public class CustomFieldDisplay implements Serializable{
 		return requiredMessage;
 	}
 
-
 	public void setRequiredMessage(String requiredMessage) {
 		this.requiredMessage = requiredMessage;
 	}
 
-	@Column(name = "SEQUENCE",  precision = 22, scale = 0)
+	@Column(name = "SEQUENCE", precision = 22, scale = 0)
 	public Long getSequence() {
 		return sequence;
 	}
-
 
 	public void setSequence(Long sequence) {
 		this.sequence = sequence;
@@ -141,30 +130,30 @@ public class CustomFieldDisplay implements Serializable{
 		return subjectCustomFieldData;
 	}
 
-	public void setSubjectCustomFieldData(Set<SubjectCustomFieldData> subjectCustomFieldData) {
+	public void setSubjectCustomFieldData(
+			Set<SubjectCustomFieldData> subjectCustomFieldData) {
 		this.subjectCustomFieldData = subjectCustomFieldData;
 	}
 
-	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
 	public Set<BioCollectionCustomFieldData> getBioCollectionCustomFieldData() {
 		return bioCollectionCustomFieldData;
 	}
 
-	public void setBioCollectionCustomFieldData(Set<BioCollectionCustomFieldData> bioCollectionCustomFieldData) {
+	public void setBioCollectionCustomFieldData(
+			Set<BioCollectionCustomFieldData> bioCollectionCustomFieldData) {
 		this.bioCollectionCustomFieldData = bioCollectionCustomFieldData;
 	}
-
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
 	public Set<BiospecimenCustomFieldData> getBiospecimenCustomFieldData() {
 		return biospecimenCustomFieldData;
 	}
 
-	public void setBiospecimenCustomFieldData(Set<BiospecimenCustomFieldData> biospecimenCustomFieldData) {
+	public void setBiospecimenCustomFieldData(
+			Set<BiospecimenCustomFieldData> biospecimenCustomFieldData) {
 		this.biospecimenCustomFieldData = biospecimenCustomFieldData;
 	}
-
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
 	public Set<PhenoData> getPhenoData() {

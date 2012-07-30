@@ -37,14 +37,14 @@ import au.org.theark.core.Constants;
 @Table(name = "ARK_FUNCTION", schema = Constants.STUDY_SCHEMA)
 public class ArkFunction implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long				id;
-	private String				name;
-	private String				description;
-	private String				resourceKey;
-	private ArkFunctionType		arkFunctionType;
-//	private ArkModuleFunction	arkModuleFunction;
+	private Long id;
+	private String name;
+	private String description;
+	private String resourceKey;
+	private ArkFunctionType arkFunctionType;
+
+	// private ArkModuleFunction arkModuleFunction;
 
 	@Id
 	@SequenceGenerator(name = "ark_function_generator", sequenceName = "ARK_FUNCTION_SEQUENCE")
@@ -133,14 +133,12 @@ public class ArkFunction implements Serializable {
 		return true;
 	}
 
-/*
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "arkFunction")
-	public void setArkModuleFunction(ArkModuleFunction arkModuleFunction) {
-		this.arkModuleFunction = arkModuleFunction;
-	}
-
-	public ArkModuleFunction getArkModuleFunction() {
-		return arkModuleFunction;
-	}
-*/
+	/*
+	 * @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy =
+	 * "arkFunction") public void setArkModuleFunction(ArkModuleFunction
+	 * arkModuleFunction) { this.arkModuleFunction = arkModuleFunction; }
+	 * 
+	 * public ArkModuleFunction getArkModuleFunction() { return
+	 * arkModuleFunction; }
+	 */
 }

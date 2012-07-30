@@ -38,15 +38,11 @@ import au.org.theark.core.Constants;
 @Table(name = "EMAIL_ACCOUNT_TYPE", schema = Constants.STUDY_SCHEMA)
 public class EmailAccountType implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
-	private Long					id;
-	private String					name;
-	private String					description;
-	private Set<EmailAccount>	emailAccounts	= new HashSet<EmailAccount>(0);
-
+	private Long id;
+	private String name;
+	private String description;
+	private Set<EmailAccount> emailAccounts = new HashSet<EmailAccount>(0);
 
 	public EmailAccountType() {
 	}
@@ -55,7 +51,8 @@ public class EmailAccountType implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public EmailAccountType(Long id, String name, String description, Set<EmailAccount> emailAccounts) {
+	public EmailAccountType(Long id, String name, String description,
+			Set<EmailAccount> emailAccounts) {
 		this.id = id;
 		this.name = name;
 		this.description = description;

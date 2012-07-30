@@ -35,12 +35,10 @@ import au.org.theark.core.Constants;
 @Table(name = "PERSON_CONTACT_METHOD", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class PersonContactMethod implements java.io.Serializable {
 
+	private static final long serialVersionUID = -5632425806775287317L;
 
-	private static final long	serialVersionUID	= -5632425806775287317L;
-
-	private Long					id;
-	private String					name;
-
+	private Long id;
+	private String name;
 
 	public PersonContactMethod() {
 	}

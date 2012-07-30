@@ -44,19 +44,17 @@ import au.org.theark.core.Constants;
 @Table(name = "STUDY_COMP", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class StudyComp implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
-	private Long								id;
-	private Study								study;
-	private String								name;
-	private String								description;
-	private String								keyword;
+	private Long id;
+	private Study study;
+	private String name;
+	private String description;
+	private String keyword;
 
-	private Set<LinkSubjectStudycomp>	linkSubjectStudycomps	= new HashSet<LinkSubjectStudycomp>(0);
-	private Set<LinkStudyStudycomp>		linkStudyStudycomps		= new HashSet<LinkStudyStudycomp>(0);
-
+	private Set<LinkSubjectStudycomp> linkSubjectStudycomps = new HashSet<LinkSubjectStudycomp>(
+			0);
+	private Set<LinkStudyStudycomp> linkStudyStudycomps = new HashSet<LinkStudyStudycomp>(
+			0);
 
 	public StudyComp() {
 	}
@@ -65,7 +63,9 @@ public class StudyComp implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public StudyComp(Long id, Study study, String name, String description, String keyword, Set<LinkSubjectStudycomp> linkSubjectStudycomps, Set<LinkStudyStudycomp> linkStudyStudycomps) {
+	public StudyComp(Long id, Study study, String name, String description,
+			String keyword, Set<LinkSubjectStudycomp> linkSubjectStudycomps,
+			Set<LinkStudyStudycomp> linkStudyStudycomps) {
 		this.id = id;
 		this.study = study;
 		this.name = name;
@@ -129,7 +129,8 @@ public class StudyComp implements java.io.Serializable {
 		return this.linkSubjectStudycomps;
 	}
 
-	public void setLinkSubjectStudycomps(Set<LinkSubjectStudycomp> linkSubjectStudycomps) {
+	public void setLinkSubjectStudycomps(
+			Set<LinkSubjectStudycomp> linkSubjectStudycomps) {
 		this.linkSubjectStudycomps = linkSubjectStudycomps;
 	}
 
@@ -138,7 +139,8 @@ public class StudyComp implements java.io.Serializable {
 		return this.linkStudyStudycomps;
 	}
 
-	public void setLinkStudyStudycomps(Set<LinkStudyStudycomp> linkStudyStudycomps) {
+	public void setLinkStudyStudycomps(
+			Set<LinkStudyStudycomp> linkStudyStudycomps) {
 		this.linkStudyStudycomps = linkStudyStudycomps;
 	}
 
@@ -146,7 +148,8 @@ public class StudyComp implements java.io.Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result
+				+ ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((keyword == null) ? 0 : keyword.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -165,26 +168,22 @@ public class StudyComp implements java.io.Serializable {
 		if (description == null) {
 			if (other.description != null)
 				return false;
-		}
-		else if (!description.equals(other.description))
+		} else if (!description.equals(other.description))
 			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		}
-		else if (!id.equals(other.id))
+		} else if (!id.equals(other.id))
 			return false;
 		if (keyword == null) {
 			if (other.keyword != null)
 				return false;
-		}
-		else if (!keyword.equals(other.keyword))
+		} else if (!keyword.equals(other.keyword))
 			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		}
-		else if (!name.equals(other.name))
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}

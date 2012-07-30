@@ -40,14 +40,13 @@ import au.org.theark.core.Constants;
 @Table(name = "COUNTRY", schema = Constants.STUDY_SCHEMA)
 public class Country implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long	id;
-	private String	name;
-	private String	officialName;
-	private String	countryCode;
-	private String	alpha3Code;	//official 3 letter code
-	private String	numericCode;	//official numeric code
+	private Long id;
+	private String name;
+	private String officialName;
+	private String countryCode;
+	private String alpha3Code; // official 3 letter code
+	private String numericCode; // official numeric code
 	private Set<State> states = new HashSet<State>(0);
 
 	public Country() {
@@ -115,18 +114,15 @@ public class Country implements Serializable {
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		}
-		else if (!id.equals(other.id))
+		} else if (!id.equals(other.id))
 			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		}
-		else if (!name.equals(other.name))
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}
-
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "country")
 	public Set<State> getStates() {
@@ -141,20 +137,18 @@ public class Country implements Serializable {
 	public String getNumericCode() {
 		return numericCode;
 	}
-	
+
 	public void setNumericCode(String numericCode) {
 		this.numericCode = numericCode;
 	}
-	
+
 	@Column(name = "ALPHA_3_CODE", length = 3)
 	public String getAlpha3Code() {
 		return alpha3Code;
 	}
-	
+
 	public void setAlpha3Code(String alpha3Code) {
 		this.alpha3Code = alpha3Code;
 	}
 
-
-	
 }
