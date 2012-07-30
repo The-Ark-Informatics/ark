@@ -40,27 +40,24 @@ import au.org.theark.core.model.pheno.entity.PhenoCollection;
 
 /**
  * @author nivedann
- *
+ * 
  */
-
 
 @Entity
 @Table(name = "CUSTOM_FIELD_GROUP", schema = Constants.STUDY_SCHEMA)
-public class CustomFieldGroup implements Serializable{
-	
+public class CustomFieldGroup implements Serializable {
 
-	private static final long	serialVersionUID	= 1L;
-	
-	private Long	id;
-	private String	name;
-	private String	description;
+	private static final long serialVersionUID = 1L;
+
+	private Long id;
+	private String name;
+	private String description;
 	private Study study;
 	private Boolean published;
 	private ArkFunction arkFunction;
 	private Set<PhenoCollection> phenoCollection = new HashSet<PhenoCollection>();
-	
 
-	public CustomFieldGroup(){
+	public CustomFieldGroup() {
 	}
 
 	@Id
@@ -117,8 +114,7 @@ public class CustomFieldGroup implements Serializable{
 		return phenoCollection;
 	}
 
-	public void setPhenoCollection(
-			Set<PhenoCollection> phenoCollection) {
+	public void setPhenoCollection(Set<PhenoCollection> phenoCollection) {
 		this.phenoCollection = phenoCollection;
 	}
 

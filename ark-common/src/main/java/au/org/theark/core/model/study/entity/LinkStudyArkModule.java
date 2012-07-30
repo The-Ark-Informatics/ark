@@ -37,15 +37,11 @@ import au.org.theark.core.Constants;
 @Table(name = "link_study_arkmodule", schema = Constants.STUDY_SCHEMA)
 public class LinkStudyArkModule implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long		id;
-	private Study		study;
-	private ArkModule	arkModule;
+	private Long id;
+	private Study study;
+	private ArkModule arkModule;
 
-
-
-	
 	public LinkStudyArkModule() {
 
 	}

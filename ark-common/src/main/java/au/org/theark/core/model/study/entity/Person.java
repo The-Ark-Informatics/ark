@@ -46,34 +46,39 @@ import au.org.theark.core.Constants;
 @Table(name = "PERSON", schema = Constants.STUDY_SCHEMA)
 public class Person implements java.io.Serializable {
 
-
 	private static final long serialVersionUID = 1L;
 
-	private Long								id;
-	private String								firstName;
-	private String								middleName;
-	private String								lastName;
-	private String								preferredName;
-	private GenderType						genderType;
-	private VitalStatus						vitalStatus;
-	private TitleType							titleType;
-	private MaritalStatus					maritalStatus;
-	private Date								dateOfBirth;
-	private Date								dateOfDeath;
-	private String								causeOfDeath;
-	private PersonContactMethod			personContactMethod;
-	private String								preferredEmail;
-	private String								otherEmail;
-	private Date								dateLastKnownAlive;
+	private Long id;
+	private String firstName;
+	private String middleName;
+	private String lastName;
+	private String preferredName;
+	private GenderType genderType;
+	private VitalStatus vitalStatus;
+	private TitleType titleType;
+	private MaritalStatus maritalStatus;
+	private Date dateOfBirth;
+	private Date dateOfDeath;
+	private String causeOfDeath;
+	private PersonContactMethod personContactMethod;
+	private String preferredEmail;
+	private String otherEmail;
+	private Date dateLastKnownAlive;
 
-	private Set<LinkSubjectStudy>			linkSubjectStudies					= new HashSet<LinkSubjectStudy>(0);
-	private Set<Address>						addresses								= new HashSet<Address>(0);
-	private Set<Phone>						phones									= new HashSet<Phone>(0);
-	private Set<LinkSubjectStudycomp>	linkSubjectStudycomps				= new HashSet<LinkSubjectStudycomp>(0);
-	private Set<LinkSubjectContact>		linkSubjectContactsForContactKey	= new HashSet<LinkSubjectContact>(0);
-	private Set<LinkSiteContact>			linkSiteContacts						= new HashSet<LinkSiteContact>(0);
-	private Set<LinkSubjectContact>		linkSubjectContactsForSubjectKey	= new HashSet<LinkSubjectContact>(0);
-	private Set<PersonLastnameHistory>	personLastnameHistory				= new HashSet<PersonLastnameHistory>(0);
+	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(
+			0);
+	private Set<Address> addresses = new HashSet<Address>(0);
+	private Set<Phone> phones = new HashSet<Phone>(0);
+	private Set<LinkSubjectStudycomp> linkSubjectStudycomps = new HashSet<LinkSubjectStudycomp>(
+			0);
+	private Set<LinkSubjectContact> linkSubjectContactsForContactKey = new HashSet<LinkSubjectContact>(
+			0);
+	private Set<LinkSiteContact> linkSiteContacts = new HashSet<LinkSiteContact>(
+			0);
+	private Set<LinkSubjectContact> linkSubjectContactsForSubjectKey = new HashSet<LinkSubjectContact>(
+			0);
+	private Set<PersonLastnameHistory> personLastnameHistory = new HashSet<PersonLastnameHistory>(
+			0);
 
 	public Person() {
 	}
@@ -82,9 +87,14 @@ public class Person implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public Person(Long id, String firstName, String middleName, String lastName, String preferredName, Date dateOfBirth, VitalStatus vitalStatus, TitleType titleType, GenderType genderType,
-			Set<LinkSubjectStudy> linkSubjectStudies, Set<Phone> phones, Set<LinkSubjectStudycomp> linkSubjectStudycomps, Set<LinkSubjectContact> linkSubjectContactsForContactKey,
-			Set<LinkSiteContact> linkSiteContacts, Set<LinkSubjectContact> linkSubjectContactsForSubjectKey) {
+	public Person(Long id, String firstName, String middleName,
+			String lastName, String preferredName, Date dateOfBirth,
+			VitalStatus vitalStatus, TitleType titleType,
+			GenderType genderType, Set<LinkSubjectStudy> linkSubjectStudies,
+			Set<Phone> phones, Set<LinkSubjectStudycomp> linkSubjectStudycomps,
+			Set<LinkSubjectContact> linkSubjectContactsForContactKey,
+			Set<LinkSiteContact> linkSiteContacts,
+			Set<LinkSubjectContact> linkSubjectContactsForSubjectKey) {
 		this.id = id;
 		this.firstName = firstName;
 		this.middleName = middleName;
@@ -213,11 +223,11 @@ public class Person implements java.io.Serializable {
 	public Set<Address> getAddresses() {
 		return addresses;
 	}
-	
+
 	public void setAddresses(Set<Address> addresses) {
 		this.addresses = addresses;
 	}
-	
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
 	public Set<Phone> getPhones() {
 		return this.phones;
@@ -232,7 +242,8 @@ public class Person implements java.io.Serializable {
 		return this.linkSubjectStudycomps;
 	}
 
-	public void setLinkSubjectStudycomps(Set<LinkSubjectStudycomp> linkSubjectStudycomps) {
+	public void setLinkSubjectStudycomps(
+			Set<LinkSubjectStudycomp> linkSubjectStudycomps) {
 		this.linkSubjectStudycomps = linkSubjectStudycomps;
 	}
 
@@ -241,7 +252,8 @@ public class Person implements java.io.Serializable {
 		return this.linkSubjectContactsForContactKey;
 	}
 
-	public void setLinkSubjectContactsForContactKey(Set<LinkSubjectContact> linkSubjectContactsForContactKey) {
+	public void setLinkSubjectContactsForContactKey(
+			Set<LinkSubjectContact> linkSubjectContactsForContactKey) {
 		this.linkSubjectContactsForContactKey = linkSubjectContactsForContactKey;
 	}
 
@@ -259,13 +271,14 @@ public class Person implements java.io.Serializable {
 		return this.linkSubjectContactsForSubjectKey;
 	}
 
-	public void setLinkSubjectContactsForSubjectKey(Set<LinkSubjectContact> linkSubjectContactsForSubjectKey) {
+	public void setLinkSubjectContactsForSubjectKey(
+			Set<LinkSubjectContact> linkSubjectContactsForSubjectKey) {
 		this.linkSubjectContactsForSubjectKey = linkSubjectContactsForSubjectKey;
 	}
 
 	/**
 	 * @param personContactMethod
-	 *           the personContactMethod to set
+	 *            the personContactMethod to set
 	 */
 	public void setPersonContactMethod(PersonContactMethod personContactMethod) {
 		this.personContactMethod = personContactMethod;
@@ -282,7 +295,7 @@ public class Person implements java.io.Serializable {
 
 	/**
 	 * @param preferredEmail
-	 *           the preferredEmail to set
+	 *            the preferredEmail to set
 	 */
 	public void setPreferredEmail(String preferredEmail) {
 		this.preferredEmail = preferredEmail;
@@ -298,7 +311,7 @@ public class Person implements java.io.Serializable {
 
 	/**
 	 * @param otherEmail
-	 *           the otherEmail to set
+	 *            the otherEmail to set
 	 */
 	public void setOtherEmail(String otherEmail) {
 		this.otherEmail = otherEmail;
@@ -314,9 +327,10 @@ public class Person implements java.io.Serializable {
 
 	/**
 	 * @param personLastnameHistory
-	 *           the personLastnameHistory to set
+	 *            the personLastnameHistory to set
 	 */
-	public void setPersonLastnameHistory(Set<PersonLastnameHistory> personLastnameHistory) {
+	public void setPersonLastnameHistory(
+			Set<PersonLastnameHistory> personLastnameHistory) {
 		this.personLastnameHistory = personLastnameHistory;
 	}
 
@@ -330,7 +344,7 @@ public class Person implements java.io.Serializable {
 
 	/**
 	 * @param causeOfDeath
-	 *           the causeOfDeath to set
+	 *            the causeOfDeath to set
 	 */
 	public void setCauseOfDeath(String causeOfDeath) {
 		this.causeOfDeath = causeOfDeath;
@@ -346,7 +360,7 @@ public class Person implements java.io.Serializable {
 
 	/**
 	 * @param dateOfDeath
-	 *           the dateOfDeath to set
+	 *            the dateOfDeath to set
 	 */
 	public void setDateOfDeath(Date dateOfDeath) {
 		this.dateOfDeath = dateOfDeath;

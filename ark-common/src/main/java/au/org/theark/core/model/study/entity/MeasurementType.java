@@ -15,17 +15,16 @@ import au.org.theark.core.model.Constants;
 
 /**
  * @author travis endersby
- *
+ * 
  */
 @Entity
 @Table(name = "MEASUREMENT_TYPE", schema = Constants.STUDY_SCHEMA)
 public class MeasurementType {
 
-
-	private Long			id;
-	private Set<UnitType>	unitTypes	= new HashSet<UnitType>(0);
-	private String			value;
-	private String			description;
+	private Long id;
+	private Set<UnitType> unitTypes = new HashSet<UnitType>(0);
+	private String value;
+	private String description;
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
@@ -36,7 +35,7 @@ public class MeasurementType {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	@Column(name = "VALUE", length = 45)
 	public String getValue() {
 		return this.value;
@@ -46,7 +45,7 @@ public class MeasurementType {
 		this.value = value;
 	}
 
-	@Column(name = "DESCRIPTION", length=255)
+	@Column(name = "DESCRIPTION", length = 255)
 	public String getDescription() {
 		return this.description;
 	}
@@ -54,7 +53,7 @@ public class MeasurementType {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "measurementType")
 	public Set<UnitType> getUnitTypes() {
 		return this.unitTypes;

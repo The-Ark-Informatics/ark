@@ -32,25 +32,24 @@ import au.org.theark.core.model.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "UNIT_TYPE", schema = Constants.STUDY_SCHEMA)
-public class UnitType implements Serializable{
-	
+public class UnitType implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private Long		id;
-	private ArkFunction	arkFunction;
-	private String		name;
-	private String		description;
+	private Long id;
+	private ArkFunction arkFunction;
+	private String name;
+	private String description;
 	private MeasurementType measurementType;
-	private Long		displayOrder;
-	
-	public UnitType(){
+	private Long displayOrder;
+
+	public UnitType() {
 		arkFunction = new ArkFunction();
 	}
-	
+
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
@@ -70,7 +69,7 @@ public class UnitType implements Serializable{
 	public void setArkFunction(ArkFunction arkFunction) {
 		this.arkFunction = arkFunction;
 	}
-	
+
 	@Column(name = "NAME", length = 45)
 	public String getName() {
 		return this.name;
@@ -80,7 +79,7 @@ public class UnitType implements Serializable{
 		this.name = name;
 	}
 
-	@Column(name = "DESCRIPTION", length=255)
+	@Column(name = "DESCRIPTION", length = 255)
 	public String getDescription() {
 		return this.description;
 	}
@@ -98,7 +97,7 @@ public class UnitType implements Serializable{
 	public void setMeasurementType(MeasurementType measurementType) {
 		this.measurementType = measurementType;
 	}
-	
+
 	@Column(name = "DISPLAY_ORDER")
 	public Long getDisplayOrder() {
 		return this.displayOrder;
@@ -108,7 +107,6 @@ public class UnitType implements Serializable{
 		this.displayOrder = displayOrder;
 	}
 
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -146,6 +144,5 @@ public class UnitType implements Serializable{
 			return false;
 		return true;
 	}
-
 
 }

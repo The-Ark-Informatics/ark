@@ -44,22 +44,21 @@ import au.org.theark.core.Constants;
 @Table(name = "CONSENT", schema = Constants.STUDY_SCHEMA)
 public class Consent implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long					id;
-	private Study					study;
-	private LinkSubjectStudy	linkSubjectStudy;
-	private StudyComp				studyComp;
-	private StudyCompStatus		studyComponentStatus;
-	private ConsentStatus		consentStatus;
-	private ConsentType			consentType;
-	private Date					consentDate;
-	private String					consentedBy;
-	private String					comments;
-	private Date					requestedDate;
-	private Date					receivedDate;
-	private Date					completedDate;
-	private YesNo					consentDownloaded;
+	private Long id;
+	private Study study;
+	private LinkSubjectStudy linkSubjectStudy;
+	private StudyComp studyComp;
+	private StudyCompStatus studyComponentStatus;
+	private ConsentStatus consentStatus;
+	private ConsentType consentType;
+	private Date consentDate;
+	private String consentedBy;
+	private String comments;
+	private Date requestedDate;
+	private Date receivedDate;
+	private Date completedDate;
+	private YesNo consentDownloaded;
 
 	public Consent() {
 

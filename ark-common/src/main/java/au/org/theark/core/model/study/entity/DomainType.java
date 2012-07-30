@@ -35,11 +35,10 @@ import au.org.theark.core.Constants;
 @Table(name = "DOMAIN_TYPE", schema = Constants.STUDY_SCHEMA)
 public class DomainType implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long	id;
-	private String	name;
-	private String	description;
+	private Long id;
+	private String name;
+	private String description;
 
 	public DomainType() {
 

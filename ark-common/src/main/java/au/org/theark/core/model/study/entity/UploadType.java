@@ -31,17 +31,17 @@ import au.org.theark.core.Constants;
 /**
  * 
  * @author travis
- *
+ * 
  */
 @Entity(name = "au.org.theark.common.model.study.entity.UploadType")
 @Table(name = "UPLOAD_TYPE", schema = Constants.STUDY_SCHEMA)
 public class UploadType implements java.io.Serializable {
-	private static final long	serialVersionUID	= -575828532949091593L;
-	private Long					id;
-	private String					name;
-	private String					description;
-	private ArkModule				arkModule;
-	
+	private static final long serialVersionUID = -575828532949091593L;
+	private Long id;
+	private String name;
+	private String description;
+	private ArkModule arkModule;
+
 	public UploadType() {
 	}
 
@@ -81,8 +81,9 @@ public class UploadType implements java.io.Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	@ManyToOne(fetch = FetchType.LAZY)  // or eager?
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	// or eager?
 	@JoinColumn(name = "ARK_MODULE_ID", nullable = false)
 	public ArkModule getArkModule() {
 		return arkModule;

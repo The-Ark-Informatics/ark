@@ -40,13 +40,11 @@ import au.org.theark.core.Constants;
 @Table(name = "PERSON_LASTNAME_HISTORY", schema = Constants.STUDY_SCHEMA)
 public class PersonLastnameHistory implements java.io.Serializable {
 
+	private static final long serialVersionUID = -568162910323332654L;
 
-	private static final long	serialVersionUID	= -568162910323332654L;
-
-	private Long					id;
-	private Person					person;
-	private String					lastName;
-
+	private Long id;
+	private Person person;
+	private String lastName;
 
 	public PersonLastnameHistory() {
 	}
@@ -75,7 +73,7 @@ public class PersonLastnameHistory implements java.io.Serializable {
 
 	/**
 	 * @param person
-	 *           the person to set
+	 *            the person to set
 	 */
 	public void setPerson(Person person) {
 		this.person = person;
@@ -100,7 +98,7 @@ public class PersonLastnameHistory implements java.io.Serializable {
 
 	/**
 	 * @param person
-	 *           the surname to set
+	 *            the surname to set
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;

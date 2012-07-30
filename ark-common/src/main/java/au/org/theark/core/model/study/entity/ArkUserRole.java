@@ -42,13 +42,12 @@ import au.org.theark.core.Constants;
 @Table(name = "ARK_USER_ROLE", schema = Constants.STUDY_SCHEMA)
 public class ArkUserRole implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long		id;
-	private ArkRole	arkRole;
-	private ArkModule	arkModule;
-	private ArkUser	arkUser;
-	private Study		study;
+	private Long id;
+	private ArkRole arkRole;
+	private ArkModule arkModule;
+	private ArkUser arkUser;
+	private Study study;
 
 	public ArkUserRole() {
 
@@ -110,7 +109,8 @@ public class ArkUserRole implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((arkModule == null) ? 0 : arkModule.hashCode());
+		result = prime * result
+				+ ((arkModule == null) ? 0 : arkModule.hashCode());
 		result = prime * result + ((arkRole == null) ? 0 : arkRole.hashCode());
 		return result;
 	}
@@ -127,14 +127,12 @@ public class ArkUserRole implements Serializable {
 		if (arkModule == null) {
 			if (other.arkModule != null)
 				return false;
-		}
-		else if (!arkModule.equals(other.arkModule))
+		} else if (!arkModule.equals(other.arkModule))
 			return false;
 		if (arkRole == null) {
 			if (other.arkRole != null)
 				return false;
-		}
-		else if (!arkRole.equals(other.arkRole))
+		} else if (!arkRole.equals(other.arkRole))
 			return false;
 		return true;
 	}

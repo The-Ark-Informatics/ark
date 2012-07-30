@@ -43,9 +43,10 @@ import au.org.theark.core.Constants;
 public class Payload implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private Long								id;
-	private Set<Upload>			uploads					= new HashSet<Upload>(0);
+	private Long id;
+	private Set<Upload> uploads = new HashSet<Upload>(0);
 	private byte[] payload;
+
 	public Payload() {
 	}
 
@@ -53,8 +54,6 @@ public class Payload implements java.io.Serializable {
 		this.id = id;
 	}
 
-	
-	
 	public Payload(byte[] payload) {
 		this.payload = payload;
 	}
@@ -83,7 +82,7 @@ public class Payload implements java.io.Serializable {
 	/*
 	 * @return the payload
 	 */
-	//	@Fetch(FetchMode.SELECT)
+	// @Fetch(FetchMode.SELECT)
 	@Lob
 	@Column(name = "PAYLOAD")
 	public byte[] getPayload() {
@@ -92,10 +91,10 @@ public class Payload implements java.io.Serializable {
 
 	/**
 	 * @param payload
-	 *           the payload to set
+	 *            the payload to set
 	 */
 	public void setPayload(byte[] payload) {
 		this.payload = payload;
 	}
-	
+
 }

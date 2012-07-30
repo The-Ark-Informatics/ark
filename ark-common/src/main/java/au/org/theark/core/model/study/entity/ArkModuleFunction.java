@@ -41,16 +41,12 @@ import au.org.theark.core.Constants;
 @Table(name = "ARK_MODULE_FUNCTION", schema = Constants.STUDY_SCHEMA)
 public class ArkModuleFunction implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long			id;
-	private ArkModule		arkModule;
-	private ArkFunction		arkFunction;
-	private Long			functionSequence;
+	private Long id;
+	private ArkModule arkModule;
+	private ArkFunction arkFunction;
+	private Long functionSequence;
 
-
-
-	
 	public ArkModuleFunction() {
 		arkModule = new ArkModule();
 		arkFunction = new ArkFunction();

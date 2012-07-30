@@ -40,15 +40,15 @@ import au.org.theark.core.Constants;
 public class CsvBlob implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private Long		id;
-	//TODO may want to consider byte[]
-	private Blob		csvBlob;
-	
+	private Long id;
+	// TODO may want to consider byte[]
+	private Blob csvBlob;
+
 	/** default constructor */
 	public CsvBlob() {
-		
+
 	}
-	
+
 	@Id
 	@SequenceGenerator(name = "CSV_BLOB_PK_SEQ", sequenceName = "STUDY.CSV_BLOB_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "CSV_BLOB_PK_SEQ")
@@ -56,10 +56,11 @@ public class CsvBlob implements Serializable {
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * @return the csvBlob
 	 */
@@ -67,12 +68,12 @@ public class CsvBlob implements Serializable {
 	public Blob getCsvBlob() {
 		return csvBlob;
 	}
-	
+
 	/**
 	 * @param csvBlob
-	 *           the csvBlob to set
+	 *            the csvBlob to set
 	 */
 	public void setCsvBlob(Blob csvBlob) {
 		this.csvBlob = csvBlob;
-	}	
+	}
 }

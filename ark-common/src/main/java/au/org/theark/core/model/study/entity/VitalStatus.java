@@ -39,15 +39,13 @@ import au.org.theark.core.Constants;
 @Table(name = "VITAL_STATUS", schema = Constants.STUDY_SCHEMA)
 public class VitalStatus implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
 
+	private Long id;
 
-	private Long			id;
-
-	private String			name;
-	private String			description;
-	private Set<Person>	persons	= new HashSet<Person>(0);
+	private String name;
+	private String description;
+	private Set<Person> persons = new HashSet<Person>(0);
 
 	public VitalStatus() {
 
