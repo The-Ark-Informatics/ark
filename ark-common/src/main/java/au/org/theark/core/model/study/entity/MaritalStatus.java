@@ -35,11 +35,10 @@ import au.org.theark.core.Constants;
 @Table(name = "MARITAL_STATUS", schema = Constants.STUDY_SCHEMA)
 public class MaritalStatus implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long	id;
-	private String	name;
-	private String	description;
+	private Long id;
+	private String name;
+	private String description;
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)

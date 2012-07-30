@@ -35,10 +35,9 @@ import au.org.theark.core.Constants;
 @Table(name = "ADDRESS_STATUS", schema = Constants.STUDY_SCHEMA)
 public class AddressStatus implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long	id;
-	private String	name;
+	private Long id;
+	private String name;
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)

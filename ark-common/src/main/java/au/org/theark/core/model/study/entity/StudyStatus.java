@@ -38,15 +38,11 @@ import au.org.theark.core.Constants;
 @Table(name = "STUDY_STATUS", schema = Constants.STUDY_SCHEMA)
 public class StudyStatus implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
-	private Long			id;
-	private String			name;
-	private String			description;
-	private Set<Study>	studies	= new HashSet<Study>(0);
-
+	private Long id;
+	private String name;
+	private String description;
+	private Set<Study> studies = new HashSet<Study>(0);
 
 	public StudyStatus() {
 	}
@@ -55,7 +51,8 @@ public class StudyStatus implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public StudyStatus(Long id, String name, String description, Set<Study> studies) {
+	public StudyStatus(Long id, String name, String description,
+			Set<Study> studies) {
 		this.id = id;
 		this.name = name;
 		this.description = description;

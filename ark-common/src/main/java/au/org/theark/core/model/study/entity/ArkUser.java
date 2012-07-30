@@ -38,10 +38,9 @@ import au.org.theark.core.Constants;
 @Table(name = "ARK_USER", schema = Constants.STUDY_SCHEMA)
 public class ArkUser implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long	id;
-	private String	ldapUserName;
+	private Long id;
+	private String ldapUserName;
 
 	public ArkUser() {
 	}

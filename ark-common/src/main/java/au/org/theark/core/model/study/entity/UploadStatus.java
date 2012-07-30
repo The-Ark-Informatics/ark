@@ -39,16 +39,14 @@ import au.org.theark.core.Constants;
 @Table(name = "UPLOAD_STATUS", schema = Constants.STUDY_SCHEMA)
 public class UploadStatus implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
 
+	private Long id;
 
-	private Long			id;
-
-	private String			name;
-	private String			shortMessage;
-	private String			longMessage;
-	private Set<Upload>	uploads	= new HashSet<Upload>();
+	private String name;
+	private String shortMessage;
+	private String longMessage;
+	private Set<Upload> uploads = new HashSet<Upload>();
 
 	public UploadStatus() {
 

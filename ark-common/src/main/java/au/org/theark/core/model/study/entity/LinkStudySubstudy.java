@@ -38,14 +38,10 @@ import au.org.theark.core.Constants;
 @Table(name = "LINK_STUDY_SUBSTUDY", schema = Constants.STUDY_SCHEMA)
 public class LinkStudySubstudy implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
-	private Long	id;
-	private Study	mainStudy;
-	private Study	subStudy;
-
+	private Long id;
+	private Study mainStudy;
+	private Study subStudy;
 
 	public LinkStudySubstudy() {
 	}
@@ -60,7 +56,6 @@ public class LinkStudySubstudy implements java.io.Serializable {
 		this.subStudy = subStudy;
 	}
 
-	
 	@Id
 	@SequenceGenerator(name = "link_study_substudy_generator", sequenceName = "LSS_STUDY_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "link_study_substudy_generator")

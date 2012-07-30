@@ -39,15 +39,12 @@ import au.org.theark.core.Constants;
 @Table(name = "RELATIONSHIP", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class Relationship implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
-	private Long							id;
-	private String							name;
-	private String							description;
-	private Set<LinkSubjectContact>	linkSubjectContacts	= new HashSet<LinkSubjectContact>(0);
-
+	private Long id;
+	private String name;
+	private String description;
+	private Set<LinkSubjectContact> linkSubjectContacts = new HashSet<LinkSubjectContact>(
+			0);
 
 	public Relationship() {
 	}
@@ -56,7 +53,8 @@ public class Relationship implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public Relationship(Long id, String name, String description, Set<LinkSubjectContact> linkSubjectContacts) {
+	public Relationship(Long id, String name, String description,
+			Set<LinkSubjectContact> linkSubjectContacts) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -96,7 +94,8 @@ public class Relationship implements java.io.Serializable {
 		return this.linkSubjectContacts;
 	}
 
-	public void setLinkSubjectContacts(Set<LinkSubjectContact> linkSubjectContacts) {
+	public void setLinkSubjectContacts(
+			Set<LinkSubjectContact> linkSubjectContacts) {
 		this.linkSubjectContacts = linkSubjectContacts;
 	}
 

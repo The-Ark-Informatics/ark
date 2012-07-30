@@ -47,22 +47,22 @@ import au.org.theark.core.Constants;
 public class LinkSubjectStudy implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private Long							id;
-	private Study							study;
-	private SubjectStatus				subjectStatus;
-	private Person							person;
-	private String							subjectUID;
-	private ConsentOption				consentToActiveContact;
-	private ConsentOption				consentToPassiveDataGathering;
-	private ConsentOption				consentToUseData;
-	private ConsentStatus				consentStatus;
-	private ConsentType					consentType;
-	private Date							consentDate;
-	private String							heardAboutStudy;
-	private String							comment;
-	private YesNo							consentDownloaded;
+	private Long id;
+	private Study study;
+	private SubjectStatus subjectStatus;
+	private Person person;
+	private String subjectUID;
+	private ConsentOption consentToActiveContact;
+	private ConsentOption consentToPassiveDataGathering;
+	private ConsentOption consentToUseData;
+	private ConsentStatus consentStatus;
+	private ConsentType consentType;
+	private Date consentDate;
+	private String heardAboutStudy;
+	private String comment;
+	private YesNo consentDownloaded;
 
-	private Set<Consent>					consents					= new HashSet<Consent>();
+	private Set<Consent> consents = new HashSet<Consent>();
 	private Set<SubjectCustomFieldData> subjectCustomFieldDataSet = new HashSet<SubjectCustomFieldData>();
 
 	public LinkSubjectStudy() {
@@ -74,31 +74,34 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public LinkSubjectStudy(Long id, Study study, SubjectStatus subjectStatus, Person person, Set<SubjectCustomFieldData> subjectCustomFieldDataSet) {
+	public LinkSubjectStudy(Long id, Study study, SubjectStatus subjectStatus,
+			Person person, Set<SubjectCustomFieldData> subjectCustomFieldDataSet) {
 		this.id = id;
 		this.study = study;
 		this.subjectStatus = subjectStatus;
 		this.person = person;
 		this.subjectCustomFieldDataSet = subjectCustomFieldDataSet;
-		
+
 	}
-	
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "linkSubjectStudy")
 	public Set<SubjectCustomFieldData> getSubjectCustomFieldDataSet() {
 		return subjectCustomFieldDataSet;
 	}
 
-	public void setSubjectCustomFieldDataSet(Set<SubjectCustomFieldData> subjectCustomFieldDataSet) {
+	public void setSubjectCustomFieldDataSet(
+			Set<SubjectCustomFieldData> subjectCustomFieldDataSet) {
 		this.subjectCustomFieldDataSet = subjectCustomFieldDataSet;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TO_PASSIVE_DATA_GATHERING_ID")
-	public ConsentOption	getConsentToPassiveDataGathering() {
+	public ConsentOption getConsentToPassiveDataGathering() {
 		return consentToPassiveDataGathering;
 	}
 
-	public void setConsentToPassiveDataGathering(ConsentOption consentToPassiveDataGathering) {
+	public void setConsentToPassiveDataGathering(
+			ConsentOption consentToPassiveDataGathering) {
 		this.consentToPassiveDataGathering = consentToPassiveDataGathering;
 	}
 

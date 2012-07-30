@@ -41,20 +41,21 @@ import au.org.theark.core.Constants;
 @Table(name = "SUBJECT_FILE", schema = Constants.STUDY_SCHEMA)
 public class SubjectFile implements java.io.Serializable {
 
-	private static final long	serialVersionUID	= -3611814204230766317L;
-	private Long					id;
-	private LinkSubjectStudy	linkSubjectStudy;
-	private StudyComp				studyComp;
-	private String					filename;
-	private byte[]					payload;
-	private String					checksum;
-	private String					userId;
-	private String					comments;
+	private static final long serialVersionUID = -3611814204230766317L;
+	private Long id;
+	private LinkSubjectStudy linkSubjectStudy;
+	private StudyComp studyComp;
+	private String filename;
+	private byte[] payload;
+	private String checksum;
+	private String userId;
+	private String comments;
 
 	public SubjectFile() {
 	}
 
-	public SubjectFile(Long id, LinkSubjectStudy linkSubjectStudy, StudyComp studyComp, String filename, String userId) {
+	public SubjectFile(Long id, LinkSubjectStudy linkSubjectStudy,
+			StudyComp studyComp, String filename, String userId) {
 		this.id = id;
 		this.linkSubjectStudy = linkSubjectStudy;
 		this.studyComp = studyComp;
@@ -76,7 +77,7 @@ public class SubjectFile implements java.io.Serializable {
 
 	/**
 	 * @param linkSubjectStudy
-	 *           the linkSubjectStudy to set
+	 *            the linkSubjectStudy to set
 	 */
 	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
 		this.linkSubjectStudy = linkSubjectStudy;
@@ -93,7 +94,7 @@ public class SubjectFile implements java.io.Serializable {
 
 	/**
 	 * @param studyComp
-	 *           the studyComp to set
+	 *            the studyComp to set
 	 */
 	public void setStudyComp(StudyComp studyComp) {
 		this.studyComp = studyComp;
@@ -147,7 +148,7 @@ public class SubjectFile implements java.io.Serializable {
 
 	/**
 	 * @param comments
-	 *           the comments to set
+	 *            the comments to set
 	 */
 	public void setComments(String comments) {
 		this.comments = comments;

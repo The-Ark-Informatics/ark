@@ -40,20 +40,21 @@ import au.org.theark.core.Constants;
  * Phone entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "PHONE", schema = Constants.STUDY_SCHEMA, uniqueConstraints = { @UniqueConstraint(columnNames = { "AREA_CODE", "PHONE_NUMBER", "PERSON_ID" }) })
+@Table(name = "PHONE", schema = Constants.STUDY_SCHEMA, uniqueConstraints = { @UniqueConstraint(columnNames = {
+		"AREA_CODE", "PHONE_NUMBER", "PERSON_ID" }) })
 public class Phone implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private Long			id;
-	private PhoneType		phoneType;
-	private Person			person;
-	private String			phoneNumber;
-	private String			areaCode;
-	private PhoneStatus	phoneStatus;
-	private String			source;
-	private Date			dateReceived;
-	private YesNo			silentMode;
-	private String			comment;
+	private Long id;
+	private PhoneType phoneType;
+	private Person person;
+	private String phoneNumber;
+	private String areaCode;
+	private PhoneStatus phoneStatus;
+	private String source;
+	private Date dateReceived;
+	private YesNo silentMode;
+	private String comment;
 
 	/** default constructor */
 	public Phone() {
@@ -63,7 +64,8 @@ public class Phone implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public Phone(Long id, PhoneType phoneType, Person person, String phoneNumber, String areaCode) {
+	public Phone(Long id, PhoneType phoneType, Person person,
+			String phoneNumber, String areaCode) {
 		this.id = id;
 		this.phoneType = phoneType;
 		this.person = person;
@@ -150,7 +152,10 @@ public class Phone implements java.io.Serializable {
 		this.dateReceived = dateReceived;
 	}
 
-	/* TODO :  Java does already have a concept like this ... boolean ... does this code have a legacy reason? */
+	/*
+	 * TODO : Java does already have a concept like this ... boolean ... does
+	 * this code have a legacy reason?
+	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SILENT")
 	public YesNo getSilentMode() {

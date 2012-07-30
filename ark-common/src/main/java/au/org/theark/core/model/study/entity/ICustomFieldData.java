@@ -24,7 +24,8 @@ public interface ICustomFieldData {
 
 	public abstract CustomFieldDisplay getCustomFieldDisplay();
 
-	public abstract void setCustomFieldDisplay(CustomFieldDisplay customFieldDisplay);
+	public abstract void setCustomFieldDisplay(
+			CustomFieldDisplay customFieldDisplay);
 
 	public abstract Date getDateDataValue();
 

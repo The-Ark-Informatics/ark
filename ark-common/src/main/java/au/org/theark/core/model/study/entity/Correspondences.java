@@ -41,22 +41,21 @@ import au.org.theark.core.Constants;
 @Table(name = "correspondences", schema = Constants.STUDY_SCHEMA)
 public class Correspondences implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
-	private Long								id;
-	private Person								person;
-	private Study								study;
-	private ArkUser							operator;
-	private Date								date;
-	private String								time;
-	private String								reason;
-	private CorrespondenceModeType		correspondenceModeType;
-	private CorrespondenceDirectionType	correspondenceDirectionType;
-	private CorrespondenceOutcomeType	correspondenceOutcomeType;
-	private String								details;
-	private String								comments;
-	private String								attachmentFilename;
-	private byte[]								attachmentPayload;
+	private Long id;
+	private Person person;
+	private Study study;
+	private ArkUser operator;
+	private Date date;
+	private String time;
+	private String reason;
+	private CorrespondenceModeType correspondenceModeType;
+	private CorrespondenceDirectionType correspondenceDirectionType;
+	private CorrespondenceOutcomeType correspondenceOutcomeType;
+	private String details;
+	private String comments;
+	private String attachmentFilename;
+	private byte[] attachmentPayload;
 
 	@Id
 	@SequenceGenerator(name = "correspondences_generator", sequenceName = "CORRESPONDENCES_SEQUENCE")
@@ -134,7 +133,8 @@ public class Correspondences implements Serializable {
 		return correspondenceModeType;
 	}
 
-	public void setCorrespondenceModeType(CorrespondenceModeType correspondenceModeType) {
+	public void setCorrespondenceModeType(
+			CorrespondenceModeType correspondenceModeType) {
 		this.correspondenceModeType = correspondenceModeType;
 	}
 
@@ -144,7 +144,8 @@ public class Correspondences implements Serializable {
 		return correspondenceDirectionType;
 	}
 
-	public void setCorrespondenceDirectionType(CorrespondenceDirectionType correspondenceDirectionType) {
+	public void setCorrespondenceDirectionType(
+			CorrespondenceDirectionType correspondenceDirectionType) {
 		this.correspondenceDirectionType = correspondenceDirectionType;
 	}
 
@@ -154,7 +155,8 @@ public class Correspondences implements Serializable {
 		return correspondenceOutcomeType;
 	}
 
-	public void setCorrespondenceOutcomeType(CorrespondenceOutcomeType correspondenceOutcomeType) {
+	public void setCorrespondenceOutcomeType(
+			CorrespondenceOutcomeType correspondenceOutcomeType) {
 		this.correspondenceOutcomeType = correspondenceOutcomeType;
 	}
 

@@ -38,14 +38,14 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 
 @Entity
 @Table(name = "SUBJECT_CUSTOM_FIELD_DATA", schema = Constants.STUDY_SCHEMA)
 public class SubjectCustomFieldData implements Serializable, ICustomFieldData {
-	
-	private static final long	serialVersionUID	= 1L;
+
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private LinkSubjectStudy linkSubjectStudy;
 	private CustomFieldDisplay customFieldDisplay;
@@ -53,26 +53,26 @@ public class SubjectCustomFieldData implements Serializable, ICustomFieldData {
 	private Date dateDataValue;
 	private String errorDataValue;
 	private Double numberDataValue;
-	
-	public SubjectCustomFieldData(){
-		
-	}
-	
-	/*
-	@Id
-	@SequenceGenerator(name = "subject_custom_field_data_generator", sequenceName = "SUBJECT_CUSTOM_FIELD_DATA_SEQ")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "subject_custom_field_data_generator")
-	*/
 
-	@TableGenerator(name = "subject_custom_field_data_generator", 
-						table = "study.subjectuid_sequence", 
-						pkColumnValue = "NotAStudy.CustomField",
-						valueColumnName = "UID_SEQUENCE",
-						pkColumnName = "STUDY_NAME_ID",
-						initialValue=1000000,
-						allocationSize=1000)
+	public SubjectCustomFieldData() {
+
+	}
+
+	/*
+	 * @Id
+	 * 
+	 * @SequenceGenerator(name = "subject_custom_field_data_generator",
+	 * sequenceName = "SUBJECT_CUSTOM_FIELD_DATA_SEQ")
+	 * 
+	 * @GeneratedValue(strategy = GenerationType.AUTO, generator =
+	 * "subject_custom_field_data_generator")
+	 */
+
+	@TableGenerator(name = "subject_custom_field_data_generator", table = "study.subjectuid_sequence", pkColumnValue = "NotAStudy.CustomField", valueColumnName = "UID_SEQUENCE", pkColumnName = "STUDY_NAME_ID", initialValue = 1000000, allocationSize = 1000)
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "subject_custom_field_data_generator") //@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "subject_custom_field_data_generator")
+	// @Column(name = "ID", unique = true, nullable = false, precision = 22,
+	// scale = 0)
 	public Long getId() {
 		return id;
 	}
@@ -101,7 +101,6 @@ public class SubjectCustomFieldData implements Serializable, ICustomFieldData {
 		this.customFieldDisplay = customFieldDisplay;
 	}
 
-
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATE_DATA_VALUE")
 	public Date getDateDataValue() {
@@ -120,8 +119,8 @@ public class SubjectCustomFieldData implements Serializable, ICustomFieldData {
 	public void setErrorDataValue(String errorDataValue) {
 		this.errorDataValue = errorDataValue;
 	}
-	
-	@Column(name="NUMBER_DATA_VALUE")
+
+	@Column(name = "NUMBER_DATA_VALUE")
 	public Double getNumberDataValue() {
 		return numberDataValue;
 	}
@@ -138,6 +137,5 @@ public class SubjectCustomFieldData implements Serializable, ICustomFieldData {
 	public void setTextDataValue(String textDataValue) {
 		this.textDataValue = textDataValue;
 	}
-	
 
 }

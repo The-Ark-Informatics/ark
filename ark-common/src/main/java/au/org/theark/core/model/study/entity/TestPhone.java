@@ -35,15 +35,11 @@ import javax.persistence.TemporalType;
 @Table(name = "TEST_PHONE", schema = "ETA")
 public class TestPhone implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
-	private BigDecimal	id;
-	private String			phoneNumber;
-	private boolean		status;
-	private Date			joinDate;
-
+	private BigDecimal id;
+	private String phoneNumber;
+	private boolean status;
+	private Date joinDate;
 
 	public TestPhone() {
 	}
@@ -52,7 +48,8 @@ public class TestPhone implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public TestPhone(BigDecimal id, String phoneNumber, boolean status, Date joinDate) {
+	public TestPhone(BigDecimal id, String phoneNumber, boolean status,
+			Date joinDate) {
 		this.id = id;
 		this.phoneNumber = phoneNumber;
 		this.status = status;

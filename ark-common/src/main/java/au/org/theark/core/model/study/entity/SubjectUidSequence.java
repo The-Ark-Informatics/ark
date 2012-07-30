@@ -34,19 +34,17 @@ import au.org.theark.core.Constants;
 @Table(name = "SUBJECTUID_SEQUENCE", schema = Constants.STUDY_SCHEMA)
 public class SubjectUidSequence implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
 
-	private static final long	serialVersionUID	= 1L;
-
-
-	private String					studyNameId;
-	private Integer				uidSequence;
-	private Boolean				insertLock;
-
+	private String studyNameId;
+	private Integer uidSequence;
+	private Boolean insertLock;
 
 	public SubjectUidSequence() {
 	}
 
-	public SubjectUidSequence(String studyNameId, Integer uidSequence, Boolean insertLock) {
+	public SubjectUidSequence(String studyNameId, Integer uidSequence,
+			Boolean insertLock) {
 		this.studyNameId = studyNameId;
 		this.uidSequence = uidSequence;
 		this.insertLock = insertLock;

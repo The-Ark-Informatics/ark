@@ -39,15 +39,12 @@ import au.org.theark.core.Constants;
 @Table(name = "SUBJECT_STATUS", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class SubjectStatus implements java.io.Serializable {
 
-
-
-
 	private static final long serialVersionUID = 1L;
-	private Long						id;
-	private String						name;
-	private String						description;
-	private Set<LinkSubjectStudy>	linkSubjectStudies	= new HashSet<LinkSubjectStudy>(0);
-
+	private Long id;
+	private String name;
+	private String description;
+	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(
+			0);
 
 	public SubjectStatus() {
 	}
@@ -56,7 +53,8 @@ public class SubjectStatus implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public SubjectStatus(Long id, String name, String description, Set<LinkSubjectStudy> linkSubjectStudies) {
+	public SubjectStatus(Long id, String name, String description,
+			Set<LinkSubjectStudy> linkSubjectStudies) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
