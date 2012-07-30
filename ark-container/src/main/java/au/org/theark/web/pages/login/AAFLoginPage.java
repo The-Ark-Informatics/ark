@@ -40,9 +40,9 @@ public class AAFLoginPage<T> extends WebPage {
 	private static final long			serialVersionUID	= -985615571643703296L;
 	
 	
-	/**
-	 * LoginPage Constructor
-	 */
+
+
+	
 	public AAFLoginPage() {
 		AAFLoginForm form = new AAFLoginForm("loginForm");
 		this.add(form);
