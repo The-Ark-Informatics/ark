@@ -41,9 +41,9 @@ public class FieldType implements Serializable{
 	private Long	id;
 	private String	name;
 	
-	/**
-	 * Constructor
-	 */
+
+
+	
 	public FieldType(){
 		
 	}

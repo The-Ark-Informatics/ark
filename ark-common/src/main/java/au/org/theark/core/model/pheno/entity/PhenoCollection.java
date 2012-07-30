@@ -46,9 +46,9 @@ public class PhenoCollection implements Serializable{
 	private CustomFieldGroup questionnaire;
 	private QuestionnaireStatus status;
 	
-	/**
-	 * Constructor
-	 */
+
+
+	
 	public  PhenoCollection(){
 		
 	}

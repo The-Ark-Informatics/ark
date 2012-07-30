@@ -17,9 +17,9 @@ public class ArkUserVO implements Serializable {
 	private String	lastName;
 	private String	password;
 
-	/**
-	 * Constructor
-	 */
+
+
+	
 	public ArkUserVO() {
 		arkUserId = "";
 		firstName = "";

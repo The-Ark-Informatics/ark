@@ -48,9 +48,9 @@ public class ArkModuleFunction implements Serializable {
 	private ArkFunction		arkFunction;
 	private Long			functionSequence;
 
-	/**
-	 * Constructor
-	 */
+
+
+	
 	public ArkModuleFunction() {
 		arkModule = new ArkModule();
 		arkFunction = new ArkFunction();
