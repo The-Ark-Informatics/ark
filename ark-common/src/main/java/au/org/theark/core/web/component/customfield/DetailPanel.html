@@ -235,12 +235,26 @@
 						&nbsp;
 					</div>
 
-					<!--
-						<div class="panelContentLeft">&nbsp;</div> <div class="fldLabel"> <div class="label"> <label for="requireMsg"><wicket:message
-						key="customFieldDisplay.requiredMessage">Required Message:</wicket:message></label> </div> </div> <div class="fldControl"> <div
-						class="label"> <textarea wicket:id="customFieldDisplay.requiredMessage" rows="3" cols="25"></textarea> </div> <div
-						id="panelMargin">&nbsp;</div> </div> <div class="panelMargin">&nbsp;</div>
-					-->
+
+
+
+
+
+					<div class="fldLabel">
+						<wicket:message key="customField.allowMultiselect">
+							Allow Multiple Selections:
+						</wicket:message>
+					</div>
+					<div class="fldControl">
+						<input wicket:id="customField.allowMultiselect" type="checkbox" />
+					</div>
+
+					<div class="detailPanelBreaker">
+						&nbsp;
+					</div>
+
+
+
 					<div wicket:id="customFieldDisplayPositionPanel">
 					</div>
 				</div>
