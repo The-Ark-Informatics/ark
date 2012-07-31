@@ -85,6 +85,7 @@ public class CustomFieldDisplayListPanel extends Panel {
 				}
 
 				item.add(buildLink(item));
+				
 
 				if (cfd.getCustomField().getFieldLabel() != null) {
 					item.add(new Label("fieldLabel", cfd.getCustomField().getFieldLabel()));
@@ -105,6 +106,12 @@ public class CustomFieldDisplayListPanel extends Panel {
 				}
 				else {
 					item.addOrReplace(new ContextImage("required", new Model<String>("images/icons/cross.png")));
+				}
+				if(cfd.getAllowMultiselect() != null && cfd.getAllowMultiselect()){
+					item.addOrReplace(new ContextImage("allowMultiselect", new Model<String>("images/icons/tick.png")));
+				}
+				else{
+					item.addOrReplace(new ContextImage("allowMultiselect", new Model<String>("images/icons/cross.png")));
 				}
 			}
 		};

@@ -84,7 +84,7 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 		customFieldDisplayIdTxtFld.setEnabled(false);
 		customFieldNameTxtFld = new TextField<String>("customFieldDisplay.customField.name");
 		requiredFieldCb = new CheckBox("customFieldDisplay.required");
-		allowMultiselectCb = new CheckBox("customField.allowMultiselect");
+		allowMultiselectCb = new CheckBox("customFieldDisplay.allowMultiselect");
 		
 		saveButton = new AjaxButton(Constants.SAVE) {
 
@@ -141,6 +141,8 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 		cfdMarkupContainer.add(customFieldDisplayIdTxtFld);
 		cfdMarkupContainer.add(customFieldNameTxtFld);
 		cfdMarkupContainer.add(requiredFieldCb);
+
+		cfdMarkupContainer.add(allowMultiselectCb);
 
 		add(saveButton);
 		add(cancelButton.setDefaultFormProcessing(false));

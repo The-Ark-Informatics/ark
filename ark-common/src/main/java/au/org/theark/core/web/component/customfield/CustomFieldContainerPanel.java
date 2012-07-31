@@ -52,15 +52,15 @@ import au.org.theark.core.web.component.customfield.form.ContainerForm;
 @SuppressWarnings("unchecked")
 public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFieldVO> {
 
-	private static final long									serialVersionUID	= -1L;
-	private static final Logger								log					= LoggerFactory.getLogger(CustomFieldContainerPanel.class);
+	private static final long							serialVersionUID	= -1L;
+	private static final Logger							log					= LoggerFactory.getLogger(CustomFieldContainerPanel.class);
 
-	private ContainerForm										containerForm;
+	private ContainerForm								containerForm;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService									iArkCommonService;
+	private IArkCommonService							iArkCommonService;
 
-	private DataView<CustomField>								dataView;
+	private DataView<CustomField>						dataView;
 	private ArkDataProvider2<CustomField, CustomField>	customFieldProvider;
 
 	/**
