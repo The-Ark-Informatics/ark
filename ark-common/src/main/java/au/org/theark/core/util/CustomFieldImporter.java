@@ -165,6 +165,11 @@ public class CustomFieldImporter {
 					arkFunction.getName().equals(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD)){
 				arkFunctionToBeUsed = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 			}
+			else if(arkFunction.getName().equals(Constants.FUNCTION_KEY_VALUE_SUBJECT) ){
+				arkFunctionToBeUsed = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+			}
+			
+			
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
@@ -255,7 +260,18 @@ public class CustomFieldImporter {
 					customFieldVo.setCustomField(customField);
 					customFieldVo.setUseCustomFieldDisplay(true);	// do not create the CustomFieldDisplay entity
 					
-					customFieldVo.getCustomFieldDisplay().setRequired(csvReader.get("REQUIRED") != null);
+					customFieldVo.getCustomFieldDisplay().setRequired(csvReader.get("REQUIRED") != null && 
+							(	csvReader.get("REQUIRED").equalsIgnoreCase("yes") ||
+								csvReader.get("REQUIRED").equalsIgnoreCase("y") ||
+								csvReader.get("REQUIRED").equalsIgnoreCase("true") ||
+								csvReader.get("REQUIRED").equalsIgnoreCase("1") ) );
+					
+					customFieldVo.getCustomFieldDisplay().setAllowMultiselect(csvReader.get("ALLOW_MULTIPLE_SELECTIONS") != null && 
+							(	csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("yes") ||
+								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("y") ||
+								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("true") ||
+								csvReader.get("ALLOW_MULTIPLE_SELECTIONS").equalsIgnoreCase("1") ) );
+					
 					iArkCommonService.createCustomField(customFieldVo);
 					insertCount++;
 
