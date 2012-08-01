@@ -340,7 +340,7 @@ public class Constants {
 			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE" };
 	public static final String[] CUSTOM_FIELD_UPLOAD_HEADER = { "FIELD_NAME",
 			"FIELD_TYPE", "DESCRIPTION", "QUESTION", "UNITS", "ENCODED_VALUES",
-			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED" };
+			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"  };
 
 	public static final String NAME = "name";
 	public static final String ID = "id";
