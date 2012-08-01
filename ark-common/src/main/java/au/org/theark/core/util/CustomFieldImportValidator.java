@@ -129,7 +129,7 @@ public class CustomFieldImportValidator {
 
 	/**
 	 * Validates the data dictionary file's general structure/format:<BR>
-	 * "FIELD_NAME","FIELD_TYPE","DESCRIPTION", "QUESTION", "UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE","REQUIRED"
+	 * "FIELD_NAME","FIELD_TYPE","DESCRIPTION", "QUESTION", "UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE","REQUIRED","ALLOW_MULTIPLE_SELECTION"
 	 * 
 	 * @param fileInputStream
 	 *           is the input stream of a file
@@ -385,7 +385,17 @@ public class CustomFieldImportValidator {
 
 					field.setFieldType(studyFieldType);
 
-					field.setEncodedValues(csvReader.get("ENCODED_VALUES"));
+					String encodedValues = csvReader.get("ENCODED_VALUES");
+
+					field.setEncodedValues(encodedValues);
+					/* removed the below logic whie this is moved to customfieldgroup
+					if(encodedValues!=null && !encodedValues.isEmpty()){
+						field.setEncodedValues(encodedValues);
+						if(csvReader.get("ALLOW_MULTIPLE_SELECTIONS")!=null && !csvReader.get("ALLOW_MULTIPLE_SELECTIONS").isEmpty()){
+							field.
+						}
+					}*/
+					
 					field.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
 					field.setMissingValue(csvReader.get("MISSING_VALUE"));
