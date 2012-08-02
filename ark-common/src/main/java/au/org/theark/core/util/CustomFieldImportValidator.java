@@ -170,7 +170,7 @@ public class CustomFieldImportValidator {
 
 			// Uploading a Custom Field (Data Dictionary) file
 			Collection<String> fileHeaderCollection = new ArrayList<String>();
-			String[] requiredHeaderArray = Constants.CUSTOM_FIELD_UPLOAD_HEADER;
+			String[] requiredHeaderArray = Constants.DATA_DICTIONARY_HEADER;
 
 			/*
 			 * In general, all columns are mandatory
