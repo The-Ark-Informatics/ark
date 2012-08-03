@@ -43,12 +43,20 @@
 			<div class="fldLabel">
 				<div class="label">
 					<label for="firstName">
-						<wicket:message key="work.researcher.firstname">First Name:</wicket:message>
+						<wicket:message key="work.researcher.firstname.title">Title/First Name:</wicket:message>
 					</label>
 				</div>
 			</div>
 			<div class="fldControl">
 				<div class="label">
+					<select wicket:id="researcher.titleType">
+							<option>
+								Dr:
+							</option>
+							<option>
+								Mr:
+							</option>
+						</select>
 					<input wicket:id="researcher.firstName" type="text" /> 
 				</div>
 			</div>

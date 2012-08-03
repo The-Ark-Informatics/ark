@@ -241,6 +241,10 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		if(workRequestCriteria.getRequestStatus() != null ){
 			criteria.add(Restrictions.eq(Constants.WR_STATUS, workRequestCriteria.getRequestStatus()));
 		}
+		
+		if(workRequestCriteria.getResearcher() != null ){
+			criteria.add(Restrictions.eq(Constants.WR_RESEARCHER, workRequestCriteria.getResearcher()));
+		}
 			
 		List<WorkRequest> list = criteria.list();
 		return list;
@@ -323,9 +327,9 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		if(billableItemCriteria.getInvoice() != null ){
 			criteria.add(Restrictions.eq(Constants.BI_INVOICE, billableItemCriteria.getInvoice()));
 		}
-		if(billableItemCriteria.getItemStatus() != null ){
-			criteria.add(Restrictions.eq(Constants.BI_ITEM_STATUS, billableItemCriteria.getItemStatus()));
-		}
+//		if(billableItemCriteria.getItemStatus() != null ){
+//			criteria.add(Restrictions.eq(Constants.BI_ITEM_STATUS, billableItemCriteria.getItemStatus()));
+//		}
 			
 		List<BillableItem> list = criteria.list();
 		return list;

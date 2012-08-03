@@ -12,6 +12,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
+import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
@@ -86,6 +87,14 @@ public class SearchResultListPanel extends Panel {
 				}
 				else {
 					item.add(new Label(Constants.WORK_REQUEST_COMPLETED_DATE, completedDate));
+				}
+				
+				if(workRequest.getResearcher() != null){
+					Researcher researcher = workRequest.getResearcher();
+					item.add(new Label(Constants.WORK_REQUEST_RESEARCHER, researcher.getFirstName()+" "+researcher.getLastName()));
+				}
+				else{
+					item.add(new Label(Constants.WORK_REQUEST_RESEARCHER,""));
 				}
 				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
