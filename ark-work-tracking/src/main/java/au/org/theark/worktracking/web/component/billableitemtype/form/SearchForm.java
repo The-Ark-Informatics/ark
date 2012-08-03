@@ -15,7 +15,6 @@ import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.worktracking.model.vo.BillableItemTypeVo;
-import au.org.theark.worktracking.model.vo.ResearcherVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
 import au.org.theark.worktracking.util.Constants;
 

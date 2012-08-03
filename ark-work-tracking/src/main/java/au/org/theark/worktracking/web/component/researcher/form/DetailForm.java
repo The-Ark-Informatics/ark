@@ -1,5 +1,6 @@
 package au.org.theark.worktracking.web.component.researcher.form;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -17,9 +18,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
+import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.worktracking.entity.BillingType;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
 import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.worktracking.model.vo.ResearcherVo;
@@ -33,6 +36,9 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 
 	@SpringBean(name = Constants.WORK_TRACKING_SERVICE)
 	private IWorkTrackingService iWorkTrackingService;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService	iArkCommonService;
 
 	private TextField<String>	resercherIdTxtFld;
 	private TextField<String>	resercherOrganizationTxtFld;
@@ -56,6 +62,7 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 	private DropDownChoice<ResearcherStatus>		 researcherStatuses;
 	private DropDownChoice<ResearcherRole>		 	 researcherRoles;
 	private DropDownChoice<BillingType>		 	 	 billingTypes;
+	private DropDownChoice<TitleType>		 	 	 titleTypes;
 	
 	private List<ResearcherStatus> 	researcherStatusList;
 	private List<ResearcherRole> 	researcherRoleList;
@@ -106,12 +113,20 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		this.initResearcherStatusDropDown();
 		this.initResearcherRoleDropDown();
 		this.initBillingTypeDropDown();
+		this.initTitleTypeDropDown();
 		
 		addDetailFormComponents();
 		attachValidators();
 	}
 	
 	
+	private void initTitleTypeDropDown() {
+		Collection<TitleType> titleTypeList = iArkCommonService.getTitleType();
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		titleTypes = new DropDownChoice(Constants.RESEARCHER_TITLE,  (List)titleTypeList, defaultChoiceRenderer);
+		
+	}
+
 	private void initResearcherStatusDropDown() {
 		this.researcherStatusList=this.iWorkTrackingService.getResearcherStatuses();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
@@ -150,6 +165,8 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherBankTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherBSBTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherAccountNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(resercherAccountNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(titleTypes);
 	}
 
 	/*
@@ -210,6 +227,8 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		resercherAccountNameTxtFld.add(StringValidator.lengthBetween(1, 50)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_ACCOUNTNAME_LENGTH, resercherAccountNameTxtFld, new Model<String>(Constants.RESEARCHER_ACCOUNT_NAME_TAG)));
 		resercherEmailTxtFld.add(EmailAddressValidator.getInstance());
+		
+		titleTypes.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_TITLE_TYPE_REQUIRED, researcherStatuses, new Model<String>(Constants.RESEARCHER_TITLE_TYPE_TAG)));
 	}
 
 	/*

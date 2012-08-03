@@ -19,19 +19,24 @@
 					<wicket:message	key="work.workrequest.requeststatus">Request Status:</wicket:message>
 				</label>
 			</th>
-			<th width="20%">
+			<th width="15%">
 				<label for="requestedDate">
 					<wicket:message	key="work.workrequest.requesteddate">Requested Date:</wicket:message>
 				</label>
 			</th>
-			<th width="20%">
+			<th width="15%">
 				<label for="commencedDate">
 					<wicket:message	key="work.workrequest.commenceddate">Commenced Date:</wicket:message>
 				</label>
 			</th>
-			<th width="20%">
+			<th width="15%">
 				<label for="completedDate">
 					<wicket:message	key="work.workrequest.completeddate">Completed Date:</wicket:message>
+				</label>
+			</th>
+			<th width="40%">
+				<label for="researcher">
+					<wicket:message	key="work.workrequest.researcher">Researcher:</wicket:message>
 				</label>
 			</th>
 			<th width="2%">&nbsp;</th>			
@@ -50,21 +55,24 @@
 			<td width="25%">
 			  <span wicket:id="workRequest.requestStatus">Request Status</span>
 			</td>
-			<td width="20%">
+			<td width="15%">
 				<span wicket:id="workRequest.requestedDate">Requested Date</span>
 			</td>
-			<td width="20%">
+			<td width="15%">
 				<span wicket:id="workRequest.commencedDate">Commenced Date</span>
 			</td>
-			<td width="20%">
+			<td width="15%">
 				<span wicket:id="workRequest.completedDate">Completed Date</span>
+			</td>
+			<td width="40%">
+				<span wicket:id="workRequest.researcher">Researcher</span>
 			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<tfoot>
 			<tr>
 				<td width="2%">&nbsp;</td>
-				<td colspan="6"><span wicket:id="navigator" class="a"></span></td>
+				<td colspan="7"><span wicket:id="navigator" class="a"></span></td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>

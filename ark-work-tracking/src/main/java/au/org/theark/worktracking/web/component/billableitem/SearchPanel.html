@@ -34,16 +34,16 @@
 
 				<div class="fldLabel">
 					<div class="label">
-						<label for="description">
-							<wicket:message key="work.billableitem.description">
-								Description:
+						<label for="commenceDate">
+							<wicket:message key="work.billableitem.commencedate">
+								Date:
 							</wicket:message>
 						</label>
 					</div>
 				</div>
 				<div class="fldControl">
 					<div class="label">
-						<input wicket:id="billableItem.description"	type="text" />
+						<input wicket:id="billableItem.commenceDate" type="text" maxlength="10"/>
 					</div>
 				</div>
 
@@ -52,25 +52,6 @@
 				</div>
 
 				<div class="panelContentLeft">
-					&nbsp;
-				</div>
-
-				<div class="fldLabel">
-					<div class="label">
-						<label for="quantity">
-							<wicket:message key="work.billableitem.quantity">
-								Quantity:
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="billableItem.quantity" type="text"/>
-					</div>
-				</div>
-
-				<div class="panelMargin">
 					&nbsp;
 				</div>
 
@@ -96,6 +77,25 @@
 								WR3
 							</option>
 						</select>
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="id">
+							<wicket:message key="work.billableitem.description">
+								Work Summarry:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="billableItem.description"	type="text" />
 					</div>
 				</div>
 
@@ -135,26 +135,12 @@
 
 				<div class="fldLabel">
 					<div class="label">
-						<label for="status">
-							<wicket:message key="work.billableitem.status">
-								Status:
-							</wicket:message>
-						</label>	
+						&nbsp;
 					</div>
 				</div>
 				<div class="fldControl">
 					<div class="label">
-						<select wicket:id="billableItem.itemStatus">
-							<option>
-								NOT COMMENCED
-							</option>
-							<option>
-								COMMENCED
-							</option>
-							<option>
-								COMPLETED
-							</option>
-						</select>
+						&nbsp;
 					</div>
 				</div>
 

@@ -97,7 +97,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 			public <C> IConverter<C> getConverter(Class<C> type) {
 				  	DoubleConverter converter = (DoubleConverter)DoubleConverter.INSTANCE;
 					NumberFormat format = converter.getNumberFormat(getLocale());
-					format.setMinimumFractionDigits(4);
+					format.setMinimumFractionDigits(2);
 					converter.setNumberFormat(getLocale(), format);
 					return (IConverter<C>) converter; 
 			}
@@ -117,6 +117,10 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemTypeIdTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemTypeDescriptionTxtArea);
 	}
+	
+	private enum BillablePriceType{
+		UNIT_PRICE,GST;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -131,7 +135,11 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 		billableItemTypeDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(
 				new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_DESCRIPTION_LENGTH, billableItemTypeDescriptionTxtArea, new Model<String>(Constants.BILLABLE_ITEM_TYPE_DESCRIPTION_TAG)));
 		
-		billableItemTypeUnitPriceTxtField.add(new PatternValidator(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE_PATTERN){
+		billableItemTypeUnitPriceTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_UNIT_PRICE_REQUIRED, billableItemTypeUnitPriceTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE_TAG)));
+		
+		billableItemTypeQuantityPerUnitTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_QUNATITY_PER_UNIT_REQUIRED, billableItemTypeUnitPriceTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_QUNATITY_PER_UNIT_TAG)));
+		
+		billableItemTypeUnitPriceTxtField.add(new PatternValidator(Constants.BILLABLE_ITEM_TYPE_TWO_DECIMAL_PATTERN){
 			/**
 			 * 
 			 */
@@ -139,11 +147,11 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 
 			@Override
 			protected void onValidate(IValidatable<String> validatable) {
-				super.onValidate(new DoubleValidatable(validatable,2));
+				super.onValidate(new DoubleValidatable(validatable,BillablePriceType.UNIT_PRICE));
 			}
 		});
 		
-		billableItemTypeGstTxtField.add(new PatternValidator(Constants.BILLABLE_ITEM_TYPE_GST_PATTERN){
+		billableItemTypeGstTxtField.add(new PatternValidator(Constants.BILLABLE_ITEM_TYPE_TWO_DECIMAL_PATTERN){
 			/**
 			 * 
 			 */
@@ -151,7 +159,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 
 			@Override
 			protected void onValidate(IValidatable<String> validatable) {
-				super.onValidate(new DoubleValidatable(validatable,4));
+				super.onValidate(new DoubleValidatable(validatable,BillablePriceType.GST));
 			}
 		});		
 	}
@@ -168,11 +176,11 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 	private class DoubleValidatable implements IValidatable<String>{
 		
 		private IValidatable<String> validatable;
-		private int decimalPointsCount;
+		private BillablePriceType priceType;
 		
-		DoubleValidatable(IValidatable<String> validatable,int decimalPointsCount){
+		DoubleValidatable(IValidatable<String> validatable,BillablePriceType priceType){
 			this.validatable=validatable;
-			this.decimalPointsCount=decimalPointsCount;
+			this.priceType=priceType;
 		}
 		
 		public String getValue() {
@@ -182,10 +190,13 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 
 		public void error(IValidationError error) {
 			ValidationError validationError = (ValidationError) error;
-			if(this.decimalPointsCount == 2){
-				this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_TYPE_UNIT_PRICE));
-			}else if(this.decimalPointsCount == 4){
-				this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_TYPE_GST));
+			switch(priceType){
+				case UNIT_PRICE:
+					this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_TYPE_UNIT_PRICE));
+					break;
+				case GST:
+					this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_TYPE_GST));
+					break;
 			}
 		}
 

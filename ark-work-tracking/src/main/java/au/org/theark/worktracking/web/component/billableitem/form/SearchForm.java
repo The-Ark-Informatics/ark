@@ -2,12 +2,14 @@ package au.org.theark.worktracking.web.component.billableitem.form;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -23,9 +25,9 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.worktracking.entity.BillableItem;
-import au.org.theark.core.model.worktracking.entity.BillableItemStatus;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.AjaxInvoiceButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.worktracking.model.vo.BillableItemVo;
@@ -44,18 +46,17 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 	
 	private TextField<String>								billableItemIdTxtField;
 	private TextField<String>								billableItemDescriptionTxtField;
-	private TextField<String>								billableItemQuantityTxtField;
+	
+	private DateTextField									billableItemCommenceDateDp;
 	
 	private DropDownChoice<WorkRequest>		 				workRequests;
 	private DropDownChoice<String>							invoiceStatuses;
-	private DropDownChoice<BillableItemStatus>		 		billableItemStatuses;
 	
 	private PageableListView<BillableItem>					listView;
 	
 	private CompoundPropertyModel<BillableItemVo>			cpmModel;
 		
 	private List<WorkRequest>								workRequestList;
-	private List<BillableItemStatus>						billableItemStatusList;
 	
 	private AjaxButton										invoiceButton;
 
@@ -86,18 +87,16 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 	protected void addSearchComponentsToForm() {		
 		add(billableItemIdTxtField);
 		add(billableItemDescriptionTxtField);
-		add(billableItemQuantityTxtField);
 		add(workRequests);
 		add(invoiceStatuses);
 		add(invoiceButton);
-		add(billableItemStatuses);
+		add(billableItemCommenceDateDp);
 	}
 
 	protected void initialiseSearchForm() {
 		
 		billableItemIdTxtField=new TextField<String>(Constants.BILLABLE_ITEM_ID);
 		billableItemDescriptionTxtField=new TextField<String>(Constants.BILLABLE_ITEM_DESCRIPTION);
-		billableItemQuantityTxtField=new TextField<String>(Constants.BILLABLE_ITEM_QUANTITY);
 		
 		CompoundPropertyModel<BillableItemVo> billableItemCmpModel = (CompoundPropertyModel<BillableItemVo>) cpmModel;
 		
@@ -112,9 +111,9 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		initWorkRequestDropDown(pmWorkRequest);
 		initInvoiceDropDown();
 		
-		this.billableItemStatusList = iWorkTrackingService.getBillableItemStatusses();
-		PropertyModel<BillableItemStatus> pmBillableItemStatus = new PropertyModel<BillableItemStatus>(pm, "itemStatus");
-		initBillableItemStatusDropDown(pmBillableItemStatus);
+		billableItemCommenceDateDp= new DateTextField(Constants.BILLABLE_ITEM_COMMENCE_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		initDataPicker(billableItemCommenceDateDp);
+		
 		
 		invoiceButton=new AjaxInvoiceButton(Constants.INVOICE, new StringResourceModel("confirmInvoice", this, null), new StringResourceModel(Constants.INVOICE, this, null)) {			
 			@Override
@@ -153,7 +152,13 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		};
 		
 	}
-
+	
+	private void initDataPicker(DateTextField dateTextField){
+		ArkDatePicker datePicker = new ArkDatePicker();
+		datePicker.bind(dateTextField);
+		dateTextField.add(datePicker);
+	}
+	
 	private void initInvoiceDropDown() {
 		final LinkedHashMap<String, String> invoicePreferences = new LinkedHashMap();
 		invoicePreferences.put(Constants.Y, Constants.YES);
@@ -181,12 +186,6 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		workRequests = new DropDownChoice(Constants.BILLABLE_ITEM_WORK_REQUEST ,  this.workRequestList, defaultChoiceRenderer);
 	}
-	
-	private void initBillableItemStatusDropDown(
-			PropertyModel<BillableItemStatus> pmBillableItemStatus) {
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		billableItemStatuses = new DropDownChoice(Constants.BILLABLE_ITEM_ITEM_STATUS ,  this.billableItemStatusList, defaultChoiceRenderer);
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -197,6 +196,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 	protected void onNew(AjaxRequestTarget target) {
 		setModelObject(new BillableItemVo());
 		getModelObject().setMode(Constants.MODE_NEW);
+		getModelObject().getBillableItem().setCommenceDate(new Date());
 		preProcessDetailPanel(target);
 	}
 

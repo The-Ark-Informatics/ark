@@ -28,6 +28,105 @@
 			
 			<div class="fldLabel">
 				<div class="label">
+					<label for="commenceDate">
+						<wicket:message key="work.billableitem.commencedate">
+							Date:
+						</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<input wicket:id="billableItem.commenceDate" type="text" maxlength="10"/>
+				</div>
+			</div>
+			
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="workRequest">
+						<wicket:message key="work.billableitem.workrequest">
+							Work Request:
+						</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<select wicket:id="billableItem.workRequest">
+						<option>
+							WR1
+						</option>
+						<option>
+							WR2
+						</option>
+						<option>
+							WR3
+						</option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					&nbsp;
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					&nbsp;
+				</div>
+			</div>
+			
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="id">
+						<wicket:message key="work.billableitem.researchername">
+							Researcher Name:
+						</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<span wicket:id="researcherFullName">researcher name</span>
+				</div>
+			</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="workRequest">
+						<wicket:message key="work.billableitem.workrequestdescription">
+							Work Request:
+						</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<span wicket:id="workRequestDescription">request description </span>
+				</div>
+			</div>
+			
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
 					<label for="description">
 						<wicket:message key="work.billableitem.description">
 							Description:
@@ -38,116 +137,23 @@
 			<div class="fldControl">
 				<div class="label">
 					<input wicket:id="billableItem.description"	type="text" />
-				</div>
-			</div>
-			
-			<div class="detailPanelBreaker">&nbsp;</div>
-			
-			
-			<div class="panelContentLeft">&nbsp;</div>
-			
-			<div class="fldLabel">
-				<div class="label">
-					<label for="quantity">
-							<wicket:message key="work.billableitem.quantity">
-								Quantity:
-							</wicket:message>
-						</label>
-				</div>
-			</div>
-			<div class="fldControl">
-				<div class="label">
-					<input wicket:id="billableItem.quantity" type="text"/>
-				</div>
-			</div>
-			
-			<div class="panelMargin">&nbsp;</div>
-			
-			<div class="fldLabel">
-				<div class="label">
-					<label for="workRequest">
-							<wicket:message key="work.billableitem.workrequest">
-								Work Request:
-							</wicket:message>
-						</label>
-				</div>
-			</div>
-			<div class="fldControl">
-				<div class="label">
-					<select wicket:id="billableItem.workRequest">
-							<option>
-								WR1
-							</option>
-							<option>
-								WR2
-							</option>
-							<option>
-								WR3
-							</option>
-						</select>
-				</div>
-			</div>
-			<div class="detailPanelBreaker">&nbsp;</div>
-			
-			<div class="panelContentLeft">&nbsp;</div>
-			
-			<div class="fldLabel">
-					<div class="label">
-						<label for="invoiced">
-							<wicket:message key="work.billableitem.invoice">
-								Invoiced:
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-				<div class="fldControl">
-					<div class="label">
-						<select wicket:id="billableItem.invoice">
-							<option>
-								YES
-							</option>
-							<option>
-								NO
-							</option>
-						</select>
-					</div>
-				</div>
-			
-			<div class="panelMargin">&nbsp;</div>
-			
-			<div class="fldLabel">
-				<div class="label">
-					<label for="commenceDate">
-							<wicket:message key="work.billableitem.commencedate">
-								Completed Date:
-							</wicket:message>
-						</label>
-				</div>
-			</div>
-			<div class="fldControl">
-				<div class="label" >
-					<input wicket:id="billableItem.commenceDate" type="text" maxlength="10"/>
 					
 				</div>
 			</div>
 			
-			
-			<div class="detailPanelBreaker">&nbsp;</div>
-			
-			<div class="panelContentLeft">&nbsp;</div>
-			
+			<div class="panelMargin">&nbsp;</div>
 			<div class="fldLabel">
-					<div class="label">
-						<label for="billableItemType">
-							<wicket:message key="work.billableitem.billableitemtype">
-								Billable Item Type:
-							</wicket:message>
-						</label>
-					</div>
+				<div class="label">
+					<label for="billableItemType">
+						<wicket:message key="work.billableitem.billableitemtype">
+							Billable Item Type:
+						</wicket:message>
+					</label>
 				</div>
-				<div class="fldControl">
-					<div class="label">
-						<select wicket:id="billableItem.billableItemType">
+			</div>
+			<div class="fldControl">
+				<div class="label">
+					<select wicket:id="billableItem.billableItemType">
 							<option>
 								BIT1
 							</option>
@@ -155,50 +161,24 @@
 								BIT2
 							</option>
 						</select>
-					</div>
-				</div>
-			
-			<div class="panelMargin">&nbsp;</div>
-			
-			<div class="fldLabel">
-				<div class="label">
-						<label for="fileName">
-							<wicket:message	key="work.billableitem.billableitemsubjects">
-							Billable Item Subjects:
-						</wicket:message>
-					</label>
-				</div>
-			</div>
-			<div class="fldControl">
-				<div class="label" >
-					<input wicket:id="fileName" id="studyLogoUpload" type="file" />	
 				</div>
 			</div>
 			<div class="detailPanelBreaker">&nbsp;</div>
 			
 			<div class="panelContentLeft">&nbsp;</div>
+			
 			<div class="fldLabel">
 					<div class="label">
-						<label for="itemStatus">
-							<wicket:message key="work.billableitem.status">
-								Status:
+						<label for="quantity">
+							<wicket:message key="work.billableitem.quantity">
+								Quantity:
 							</wicket:message>
 						</label>
 					</div>
 				</div>
 				<div class="fldControl">
 					<div class="label">
-						<select wicket:id="billableItem.itemStatus">
-							<option>
-								NOT COMMENCED
-							</option>
-							<option>
-								COMMENCED
-							</option>
-							<option>
-								COMPLETED
-							</option>
-						</select>
+						<input wicket:id="billableItem.quantity" type="text"/>
 					</div>
 				</div>
 			
@@ -206,15 +186,102 @@
 			
 			<div class="fldLabel">
 				<div class="label">
-						&nbsp;
+					<label for="invoiced">
+							<wicket:message key="work.billableitem.invoice">
+								Invoiced:
+							</wicket:message>
+					</label>
 				</div>
 			</div>
+			
 			<div class="fldControl">
 				<div class="label" >
-					&nbsp;		
+					<select wicket:id="billableItem.invoice">
+							<option>
+								YES
+							</option>
+							<option>
+								NO
+							</option>
+						</select>
+				</div>
+			</div>		
+			
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+					<div class="label">
+						<label for="itemCost">
+							<wicket:message	key="work.billableitem.itemcost">
+								Item Cost:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="billableItem.itemCost" id="billableItem.itemCost" type="text" />	
+					</div>
+				</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					<label for="totalCost">
+						<b>
+							<wicket:message	key="work.billableitem.totalcost">
+								Total Cost:
+							</wicket:message>
+						</b>	
+						</label>	
 				</div>
 			</div>
-								
+			
+			<div class="fldControl">
+				<div class="label" >
+					<b>
+						<span wicket:id="totalCost">total cost</span>
+					</b>
+				</div>
+			</div>
+	
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+					<div class="label">
+						<label for="fileName">
+							<wicket:message	key="work.billableitem.attachmentfilename">
+								Billable Item Subjects:
+							</wicket:message>
+						</label>
+						
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="fileName" id="studyLogoUpload" type="file" />	
+					</div>
+				</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+					&nbsp;
+				</div>
+			</div>
+			
+			<div class="fldControl">
+				<div class="label" >
+					&nbsp;
+				</div>
+			</div>
+						
 			</div>
 				
 			<div class="detailPanelBreaker">&nbsp;</div>
