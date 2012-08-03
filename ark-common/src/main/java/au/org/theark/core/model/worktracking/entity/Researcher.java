@@ -17,6 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.study.entity.TitleType;
 
 @Entity
 @Table(name = "RESEARCHER", schema = Constants.ADMIN_SCHEMA)
@@ -46,6 +47,8 @@ public class Researcher implements Serializable {
 	private String								accountName;
 	private Long								studyId;
 	
+	private TitleType							titleType;
+	
 	public Researcher() {
 	}
 
@@ -58,7 +61,7 @@ public class Researcher implements Serializable {
 			ResearcherStatus researcherStatus, Date createdDate,
 			String officePhone, String mobile, String email, String fax,
 			String comment, BillingType billingType, String accountNumber,
-			String bsb, String bank, String accountName, Long studyId) {
+			String bsb, String bank, String accountName, Long studyId,TitleType titleType) {
 		
 		this.id = id;
 		this.firstName = firstName;
@@ -79,6 +82,7 @@ public class Researcher implements Serializable {
 		this.bank = bank;
 		this.accountName = accountName;
 		this.studyId=studyId;
+		this.titleType=titleType;
 	}
 
 	@Id
@@ -258,6 +262,17 @@ public class Researcher implements Serializable {
 	public void setStudyId(Long studyId) {
 		this.studyId = studyId;
 	}
+	
+	@ManyToOne()
+	@JoinColumn(name = "TITLE_TYPE_ID")
+	public TitleType getTitleType() {
+		return this.titleType;
+	}
+
+	public void setTitleType(TitleType titleType) {
+		this.titleType = titleType;
+	}
+
 
 	@Override
 	public int hashCode() {
