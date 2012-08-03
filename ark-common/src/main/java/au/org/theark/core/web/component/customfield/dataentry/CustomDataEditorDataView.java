@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.ICustomFieldData;
 
 /**
@@ -66,6 +67,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 	protected void populateItem(Item<T> item) {
 		ICustomFieldData aCustomData = item.getModelObject();
 		CustomField cf = aCustomData.getCustomFieldDisplay().getCustomField();
+		CustomFieldDisplay cfd = aCustomData.getCustomFieldDisplay();
 		
 		Label fieldLabelLbl; 
 		if (cf.getFieldLabel() != null) {
@@ -128,6 +130,18 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 					encodedValueVo.setKey(keyValueArray[0]);
 					encodedValueVo.setValue(keyValueArray[1]);
 					choiceList.add(encodedValueVo);
+				}
+				
+				if(cfd.getAllowMultiselect()){
+					
+					//TODO  handle multiselect
+					
+					
+					//then lets handle this differently/
+						//how bout using this http://wicket.apache.org/apidocs/1.4/org/apache/wicket/markup/html/form/ListMultipleChoice.html
+					
+					
+					
 				}
 				// TODO: Do the encodedValues required more validation???
 				ChoiceRenderer<EncodedValueVO> ddcChoiceRender = new ChoiceRenderer<EncodedValueVO>("value", "key");
