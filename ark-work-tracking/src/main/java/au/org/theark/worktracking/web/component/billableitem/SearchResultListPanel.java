@@ -1,9 +1,14 @@
 package au.org.theark.worktracking.web.component.billableitem;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -11,6 +16,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.model.worktracking.entity.BillableItem;
+import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
@@ -48,13 +54,23 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_ID, ""));
 				}
-				item.add(buildLink(billableItem));
-
-				if (billableItem.getItemStatus() != null) {
-					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_STATUS, billableItem.getItemStatus().getName()));
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);	
+				String commenceDate = "";
+				if (billableItem.getCommenceDate() != null) {
+					commenceDate = simpleDateFormat.format(billableItem.getCommenceDate());
+					item.add(new Label(Constants.BILLABLE_ITEM_COMMENCE_DATE	, commenceDate));
 				}
 				else {
-					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_STATUS, ""));
+					item.add(new Label(Constants.BILLABLE_ITEM_COMMENCE_DATE, commenceDate));
+				}
+				
+				if (billableItem.getWorkRequest() != null
+							&& billableItem.getWorkRequest().getResearcher()!=null) {			
+					Researcher researcher= billableItem.getWorkRequest().getResearcher();
+					item.add(new Label(Constants.BILLABLE_ITEM_RESEARCHER_FULL_NAME	, researcher.getFirstName()+" "+researcher.getLastName() ));
+				}
+				else {
+					item.add(new Label(Constants.BILLABLE_ITEM_RESEARCHER_FULL_NAME, ""));
 				}
 				if (billableItem.getWorkRequest() != null) {
 					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST, billableItem.getWorkRequest().getName()));
@@ -62,12 +78,32 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST, ""));
 				}
+				
+				item.add(buildLink(billableItem));
+				
 				if (billableItem.getQuantity() != null) {
 					item.add(new Label(Constants.BILLABLE_ITEM_QUANTITY, billableItem.getQuantity().toString()));
 				}
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_QUANTITY, ""));
 				}
+				DecimalFormat df = new DecimalFormat("#0.00");
+				if (billableItem.getItemCost() != null) {
+					
+					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_COST, df.format(billableItem.getItemCost())));
+				}
+				else {
+					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_COST, ""));
+				}
+				
+				if (billableItem.getTotalCost() != null) {
+					
+					item.add(new Label(Constants.BILLABLE_ITEM_TOTAL_COST, df.format(billableItem.getTotalCost())));
+				}
+				else {
+					item.add(new Label(Constants.BILLABLE_ITEM_TOTAL_COST, ""));
+				}
+				
 				if (billableItem.getInvoice() != null) {
 					String invoiceType= billableItem.getInvoice().toString().startsWith(Constants.Y)? Constants.YES : Constants.NO;
 					item.add(new Label(Constants.BILLABLE_ITEM_INVOICE,invoiceType ));
@@ -75,6 +111,7 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_INVOICE, ""));
 				}
+				
 				if (billableItem.getType()!=null) {
 					String automatedType= Constants.BILLABLE_ITEM_AUTOMATED.equalsIgnoreCase(billableItem.getType())? Constants.YES : Constants.NO;
 					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_TYPE,automatedType ));
@@ -82,6 +119,17 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_TYPE, ""));
 				}
+				
+				if (billableItem.getAttachmentFilename()!=null) {
+					
+					item.add(new Label(Constants.BILLABLE_ITEM_ATTACHMENT_FILE_NAME,billableItem.getAttachmentFilename() ));
+				}
+				else {
+					item.add(new Label(Constants.BILLABLE_ITEM_ATTACHMENT_FILE_NAME, ""));
+				}
+				
+				item.add(buildDownloadButton(billableItem));
+				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					private static final long	serialVersionUID	= 1L;
 					@Override
@@ -118,6 +166,34 @@ public class SearchResultListPanel extends Panel {
 		link.add(nameLinkLabel);
 		return link;
 
+	}
+	
+	private AjaxButton buildDownloadButton(final BillableItem billableItem) {
+		AjaxButton ajaxButton = new AjaxButton(Constants.DOWNLOAD_FILE) {
+
+			private static final long	serialVersionUID	= 4494157023173040075L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				byte[] data = billableItem.getAttachmentPayload();
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("", data, billableItem.getAttachmentFilename()));
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				// TODO: log!
+				System.err.println(" Error Downloading File ");
+				this.error("There was an error while downloading file.  Please contact Administrator");
+			};
+		};
+
+		ajaxButton.setVisible(true);
+		ajaxButton.setDefaultFormProcessing(false);
+
+		if (billableItem.getAttachmentFilename() == null)
+			ajaxButton.setVisible(false);
+
+		return ajaxButton;
 	}
 
 }

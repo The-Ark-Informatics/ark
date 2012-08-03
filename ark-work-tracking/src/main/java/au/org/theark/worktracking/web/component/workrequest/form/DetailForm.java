@@ -145,6 +145,7 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 				new StringResourceModel(Constants.ERROR_WORK_REQUEST_DESCRIPTION_LENGTH, workRequestDescriptionTxtArea, new Model<String>(Constants.WORK_REQUEST_DESCRIPTION_TAG)));
 		workRequestRequestedDateDp.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_REQUEST_REQUESTED_DATE_REQUIRED, workRequestRequestedDateDp, new Model<String>(Constants.WORK_REQUEST_REQUESTED_DATE_TAG)));
 		workRequestStatuses.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_REQUEST_STATUS_REQUIRED, workRequestStatuses, new Model<String>(Constants.WORK_REQUEST_STATUS_TAG)));
+		workRequestResearchers.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_REQUEST_RESEARCHER_REQUIRED, workRequestResearchers, new Model<String>(Constants.WORK_REQUEST_RESEARCHER_TAG)));
 	}
 
 	/*

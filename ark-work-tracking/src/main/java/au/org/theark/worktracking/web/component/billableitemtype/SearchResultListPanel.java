@@ -60,9 +60,9 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_QUANTITY_PER_UNIT, ""));
 				}
 				
-				NumberFormat formatter = null;
+				NumberFormat formatter = new DecimalFormat("#0.00");
 				if (billableItemType.getUnitPrice() != null) {
-					formatter = new DecimalFormat("#0.00");
+					
 					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE, formatter.format(billableItemType.getUnitPrice())));
 				}
 				else {
@@ -70,7 +70,6 @@ public class SearchResultListPanel extends Panel {
 				}
 				
 				if (billableItemType.getGst() != null) {
-					formatter = new DecimalFormat("#0.0000");
 					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_GST,  formatter.format(billableItemType.getGst())));
 				}
 				else {

@@ -7,13 +7,16 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.util.SetModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -40,12 +43,14 @@ public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 	private DateTextField					workRequestCompletedDateDp;
 	
 	private DropDownChoice<WorkRequestStatus>		 workRequestStatuses;
+	private DropDownChoice<Researcher>		 		 workRequestResearchers;
 	
 	private PageableListView<WorkRequest>	listView;
 	
 	private CompoundPropertyModel<WorkRequestVo>	cpmModel;
 		
 	private List<WorkRequestStatus> workRequestStatusList;
+	private List<Researcher> 		researcherList;
 	
 
 	/**
@@ -78,6 +83,7 @@ public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 		add(workRequestCommencedDateDp);
 		add(workRequestCompletedDateDp);
 		add(workRequestStatuses);
+		add(workRequestResearchers);
 		
 	}
 
@@ -98,8 +104,12 @@ public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 		PropertyModel<WorkRequest> pm = new PropertyModel<WorkRequest>(workRequestCmpModel, "workRequest");	
 		
 		this.workRequestStatusList=this.iWorkTrackingService.getWorkRequestStatuses();
+		
 		PropertyModel<WorkRequestStatus> pmWorkRequestStatus = new PropertyModel<WorkRequestStatus>(pm, "requestStatus");
 		this.initWorkRequestStatusDropDown(pmWorkRequestStatus);
+		
+		PropertyModel<Researcher> pmResearcher = new PropertyModel<Researcher>(pm, "researcher");
+		this.initResearcherDropDown(pmResearcher);
 	}
 	
 	private void initDateTextField(DateTextField dateTextField){
@@ -113,6 +123,35 @@ public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		workRequestStatuses = new DropDownChoice(Constants.WORK_REQUEST_REQUEST_STATUS, workRequestStatus, this.workRequestStatusList, defaultChoiceRenderer);
 		
+	}
+	
+	private void initResearcherDropDown(
+			PropertyModel<Researcher> workRequestResearcher) {
+		
+		Researcher researcher=new Researcher();
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		researcher.setStudyId(studyId);
+		this.researcherList=iWorkTrackingService.searchResearcher(researcher);
+		
+		IChoiceRenderer<Researcher> customChoiceRenderer = new IChoiceRenderer<Researcher>() {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public Object getDisplayValue(Researcher researcher) {
+				return researcher.getFirstName()+" "+researcher.getLastName();
+			}
+
+			public String getIdValue(Researcher researcher, int index) {
+				return researcher.getId().toString();
+			}
+			
+		};
+		workRequestResearchers = new DropDownChoice(Constants.WORK_REQUEST_RESEARCHER,  this.researcherList, customChoiceRenderer);
+		workRequestResearchers.setModel(workRequestResearcher);
+				
 	}
 
 	/*
