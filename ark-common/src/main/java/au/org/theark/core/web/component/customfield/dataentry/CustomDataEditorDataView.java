@@ -119,45 +119,62 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 			}
 			dataValueEntryPanel = dateDataEntryPanel;
 		}
-		else {
+		else {//ie if its not a date...
 			if (encodedValues != null && !encodedValues.isEmpty()) {
 				// The presence of encodedValues means it should be a DropDownChoice
 				List<String> encodeKeyValueList = Arrays.asList(encodedValues.split(";"));
-				List<EncodedValueVO> choiceList = new ArrayList<EncodedValueVO>();
+				ArrayList<EncodedValueVO> choiceList = new ArrayList<EncodedValueVO>();
 				for (String keyValue : encodeKeyValueList) {
 					String[] keyValueArray = keyValue.split("=");
 					EncodedValueVO encodedValueVo = new EncodedValueVO();
 					encodedValueVo.setKey(keyValueArray[0]);
 					encodedValueVo.setValue(keyValueArray[1]);
 					choiceList.add(encodedValueVo);
-				}
+				}				
+				
+
+				ChoiceRenderer<EncodedValueVO> choiceRenderer = new ChoiceRenderer<EncodedValueVO>("value", "key");
 				
 				if(cfd.getAllowMultiselect()){
-					
 					//TODO  handle multiselect
-					
-					
 					//then lets handle this differently/
 						//how bout using this http://wicket.apache.org/apidocs/1.4/org/apache/wicket/markup/html/form/ListMultipleChoice.html
+						//but paul would prefer this...so we will go with it
+							//http://www.wicket-library.com/wicket-examples/compref/wicket/bookmarkable/org.apache.wicket.examples.compref.CheckGroupPage;jsessionid=6CD144C6124ACBB5771928E0A2FAC4C5?0
+					CheckGroupDataEntryPanel cgdePanel = 
+							new CheckGroupDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
+																new Model<String>(cf.getFieldLabel()), choiceList, choiceRenderer); 
 					
 					
+					cgdePanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
+					cgdePanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
+
+					if (cf.getMissingValue() != null && !cf.getMissingValue().isEmpty()) {
+						cgdePanel.setMissingValue(cf.getMissingValue());
+					}
+					if (requiredField != null && requiredField == true) {
+						cgdePanel.setRequired(true);
+					}
 					
+					dataValueEntryPanel = cgdePanel;
+
+					//dataValueEntryPanel = new EmptyPanel("dataValueEntryPanel");
 				}
-				// TODO: Do the encodedValues required more validation???
-				ChoiceRenderer<EncodedValueVO> ddcChoiceRender = new ChoiceRenderer<EncodedValueVO>("value", "key");
-				DropDownChoiceDataEntryPanel ddcPanel = 
-							new DropDownChoiceDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
-																			new Model<String>(cf.getFieldLabel()), choiceList, ddcChoiceRender);
-				ddcPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-				ddcPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
-				
-				if (cf.getMissingValue() != null && !cf.getMissingValue().isEmpty()) {
-					ddcPanel.setMissingValue(cf.getMissingValue());
+				else{
+					DropDownChoiceDataEntryPanel ddcPanel = 
+								new DropDownChoiceDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
+																				new Model<String>(cf.getFieldLabel()), choiceList, choiceRenderer);
+					ddcPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
+					ddcPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
+					
+					if (cf.getMissingValue() != null && !cf.getMissingValue().isEmpty()) {
+						ddcPanel.setMissingValue(cf.getMissingValue());
+					}
+					if (requiredField != null && requiredField == true) {
+						ddcPanel.setRequired(true);
+					}
+					dataValueEntryPanel = ddcPanel;
 				}
-				if (requiredField != null && requiredField == true) {
-					ddcPanel.setRequired(true);
-				}
-				dataValueEntryPanel = ddcPanel;
 			}
 			else {
 				if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.CHARACTER_FIELD_TYPE_NAME)) {
@@ -176,8 +193,8 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				else if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.NUMBER_FIELD_TYPE_NAME)) {
 					// Number data
 					NumberDataEntryPanel numberDataEntryPanel = new NumberDataEntryPanel("dataValueEntryPanel", 
-																												new PropertyModel<Double>(item.getModel(), "numberDataValue"), 
-																												new Model<String>(cf.getFieldLabel()));
+																						new PropertyModel<Double>(item.getModel(), "numberDataValue"), 
+																						new Model<String>(cf.getFieldLabel()));
 					numberDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
 					numberDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
 										

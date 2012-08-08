@@ -209,7 +209,7 @@ public class DataUploader {
 			int maritalStatusIndex 	= csvReader.getIndex("MARITAL_STATUS");
 			int statusIndex 			= csvReader.getIndex("STATUS");
  
-				int addressLine1Index			= csvReader.getIndex("ADDRESS_LINE_1");
+			int addressLine1Index			= csvReader.getIndex("ADDRESS_LINE_1");
 			int addressLine2Index			= csvReader.getIndex("ADDRESS_LINE_2");
 			int suburbIndex					= csvReader.getIndex("SUBURB");
 			int stateIndex						= csvReader.getIndex("STATE");
