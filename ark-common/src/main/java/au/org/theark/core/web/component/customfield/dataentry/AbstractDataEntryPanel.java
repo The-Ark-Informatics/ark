@@ -53,9 +53,10 @@ public abstract class AbstractDataEntryPanel<T> extends Panel {
 	private static final String	NUMBER_VALIDATION_ERROR_RSRC_KEY		= "validationError.numberType";
 	private static final String	TEXT_VALIDATION_ERROR_RSRC_KEY		= "validationError.textType";
 	private static final String	DROPDOWN_VALIDATION_ERROR_RSRC_KEY	= "validationError.dropDownType";
+	private static final String	CHECKGROUP_VALIDATION_ERROR_RSRC_KEY	= "validationError.checkGroupType";
 
 	public enum DataEntryType {
-		TEXT, DROPDOWN, NUMBER, DATE
+		TEXT, DROPDOWN, NUMBER, DATE, CHECKGROUP
 	}
 
 	public AbstractDataEntryPanel(String id, IModel<String> labelModel) {
@@ -123,6 +124,9 @@ public abstract class AbstractDataEntryPanel<T> extends Panel {
 				break;
 			case DROPDOWN:
 				typeRsrcKey = DROPDOWN_VALIDATION_ERROR_RSRC_KEY;
+				break;
+			case CHECKGROUP:
+				typeRsrcKey = CHECKGROUP_VALIDATION_ERROR_RSRC_KEY;
 				break;
 			default:
 				log.error("Internal error: Code did not map all DataEntryType enums to resource keys");
