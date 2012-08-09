@@ -24,6 +24,7 @@ import java.util.Map;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
+import au.org.theark.core.model.report.entity.ResearcherBillableItemTypeCostDataRow;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
@@ -32,9 +33,11 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
+import au.org.theark.report.model.vo.ResearcherCostResportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
@@ -102,5 +105,10 @@ public interface IReportDao {
 	public List<CustomFieldGroup> getQuestionnaireList(Study study);
 	
 	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsDataRowList(ConsentDetailsReportVO cdrVO);
+	
+	
+	public List<ResearcherBillableItemTypeCostDataRow> getBillableItemTypeCostData(final ResearcherCostResportVO researcherCostResportVO);
+	
+	public List<Researcher> searchResearcherByStudyId(final Long studyId);
 
 }
