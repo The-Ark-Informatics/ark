@@ -44,6 +44,7 @@ public class BillableItem implements Serializable {
 	private BillableItemType billableItemType;
 	private Double totalCost;
 	private Double itemCost;
+	private Double totalGST;
 	
 	private String	attachmentFilename;
 	private byte[]	attachmentPayload;
@@ -62,7 +63,7 @@ public class BillableItem implements Serializable {
 			WorkRequest workRequest, String invoice, Long studyId,
 			BillableItemType billableItemType, Double totalCost,
 			Double itemCost, String attachmentFilename,
-			byte[] attachmentPayload, Set<BillableSubject> billableSubjects) {
+			byte[] attachmentPayload, Set<BillableSubject> billableSubjects,Double totalGST) {
 		super();
 		this.id = id;
 		this.description = description;
@@ -79,6 +80,7 @@ public class BillableItem implements Serializable {
 		this.attachmentFilename = attachmentFilename;
 		this.attachmentPayload = attachmentPayload;
 		this.billableSubjects = billableSubjects;
+		this.totalGST=totalGST;
 	}
 
 	@Id
@@ -223,14 +225,19 @@ public class BillableItem implements Serializable {
 		this.attachmentPayload = attachmentPayload;
 	}
 
+	@Column(name = "TOTAL_GST")
+	public Double getTotalGST() {
+		return totalGST;
+	}
+
+	public void setTotalGST(Double totalGST) {
+		this.totalGST = totalGST;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime
-				* result
-				+ ((attachmentFilename == null) ? 0 : attachmentFilename
-						.hashCode());
 		result = prime * result
 				+ ((commenceDate == null) ? 0 : commenceDate.hashCode());
 		result = prime * result
@@ -244,6 +251,8 @@ public class BillableItem implements Serializable {
 		result = prime * result + ((studyId == null) ? 0 : studyId.hashCode());
 		result = prime * result
 				+ ((totalCost == null) ? 0 : totalCost.hashCode());
+		result = prime * result
+				+ ((totalGST == null) ? 0 : totalGST.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
@@ -257,11 +266,6 @@ public class BillableItem implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		BillableItem other = (BillableItem) obj;
-		if (attachmentFilename == null) {
-			if (other.attachmentFilename != null)
-				return false;
-		} else if (!attachmentFilename.equals(other.attachmentFilename))
-			return false;
 		if (commenceDate == null) {
 			if (other.commenceDate != null)
 				return false;
@@ -302,6 +306,11 @@ public class BillableItem implements Serializable {
 				return false;
 		} else if (!totalCost.equals(other.totalCost))
 			return false;
+		if (totalGST == null) {
+			if (other.totalGST != null)
+				return false;
+		} else if (!totalGST.equals(other.totalGST))
+			return false;
 		if (type == null) {
 			if (other.type != null)
 				return false;
@@ -316,7 +325,8 @@ public class BillableItem implements Serializable {
 				+ ", quantity=" + quantity + ", commenceDate=" + commenceDate
 				+ ", type=" + type + ", invoice=" + invoice + ", studyId="
 				+ studyId + ", totalCost=" + totalCost + ", itemCost="
-				+ itemCost + ", attachmentFilename=" + attachmentFilename + "]";
+				+ itemCost + ", totalGST=" + totalGST + ", attachmentFilename="
+				+ attachmentFilename + "]";
 	}
 
 }
