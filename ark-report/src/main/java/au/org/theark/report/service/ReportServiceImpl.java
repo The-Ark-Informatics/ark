@@ -33,6 +33,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
+import au.org.theark.core.model.report.entity.ResearcherBillableItemTypeCostDataRow;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
@@ -43,14 +44,17 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.report.model.dao.IReportDao;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
+import au.org.theark.report.model.vo.ResearcherCostResportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
+
 import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 
 @Transactional
@@ -363,4 +367,17 @@ public class ReportServiceImpl implements IReportService {
 	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsDataRowList(ConsentDetailsReportVO cdrVO) {
 		return reportDao.getStudyLevelConsentDetailsDataRowList(cdrVO);
 	}
+
+	public List<ResearcherBillableItemTypeCostDataRow> getBillableItemTypeCostData(
+			ResearcherCostResportVO researcherCostResportVO) {
+		// TODO Auto-generated method stub
+		return reportDao.getBillableItemTypeCostData(researcherCostResportVO);
+	}
+
+	public List<Researcher> searchResearcherByStudyId(final Long studyId) {
+		// TODO Auto-generated method stub
+		return reportDao.searchResearcherByStudyId(studyId);
+	}
+	
+	
 }

@@ -20,20 +20,20 @@ package au.org.theark.report.web;
 
 public class Constants {
 
-	public static final String	REPORT_MAIN_TAB						= "Reporting";
+	public static final String	REPORT_MAIN_TAB							= "Reporting";
 	public static final String	REPORT_DETAIL							= "Reports";
-	public static final String	TAB_MODULE_REPORT_DETAIL			= "tab.module.report.detail";
+	public static final String	TAB_MODULE_REPORT_DETAIL				= "tab.module.report.detail";
 	public static final String	REPORT_SUBMENU							= "ReportSubMenus";
 
 	public static final String	LOAD_BUTTON								= "load";
-	public static final String	GENERATE_BUTTON						= "generate";
-	public static final String	REPORT_DROP_DOWN_CHOICE				= "report.reportChoice";
-	public static final String	REPORT_OUTPUT_DROP_DOWN_CHOICE	= "report.outputFormatChoice";
+	public static final String	GENERATE_BUTTON							= "generate";
+	public static final String	REPORT_DROP_DOWN_CHOICE					= "report.reportChoice";
+	public static final String	REPORT_OUTPUT_DROP_DOWN_CHOICE			= "report.outputFormatChoice";
 
-	public static final String	REPORT_OUTPUT_NAME					= "name";
+	public static final String	REPORT_OUTPUT_NAME						= "name";
 
-	public static final String	LINKSUBJECTSTUDY_SUBJECTUID		= "linkSubjectStudy.subjectUID";
-	public static final String	LINKSUBJECTSTUDY_SUBJECTSTATUS	= "linkSubjectStudy.subjectStatus";
+	public static final String	LINKSUBJECTSTUDY_SUBJECTUID				= "linkSubjectStudy.subjectUID";
+	public static final String	LINKSUBJECTSTUDY_SUBJECTSTATUS			= "linkSubjectStudy.subjectStatus";
 	public static final String	CONSENT_DATE							= "consentDate";
 	public static final String	CONSENT_STATUS							= "consentStatus";
 	public static final String	STUDY_COMP								= "studyComp";
@@ -43,6 +43,17 @@ public class Constants {
 
 	// TODO :: May become irrelevant
 	public static final String	REPORT_NAME								= "reportTemplate.name";
-	public static final String	LINK_STUDY_REPORT_TEMPLATE_KEY	= "id";
-
+	public static final String	LINK_STUDY_REPORT_TEMPLATE_KEY			= "id";
+	
+	public static final String	RESEARCHER_COST_REPORT_RESEARCHE	 	= "researcher";
+	public static final String	RESEARCHER_COST_REPORT_YEAR 			= "year";
+	public static final String	RESEARCHER_COST_REPORT_YEAR_PATTERN 	= "\\d{4}";
+	
+	public static final String	ERROR_RESEARCHER_COST_REPORT_RESEARCHER_REQUIRED 	= "error.researchercostreport.researcher.required";
+	public static final String	RESEARCHER_COST_REPORT_RESEARCHER_TAG 				= "Researcher";
+	
+	public static final String	ERROR_RESEARCHER_COST_REPORT_YEAR_REQUIRED 			= "error.researchercostreport.year.required";
+	public static final String	ERROR_RESEARCHER_COST_REPORT_YEAR_INVALID_FORMAT 	= "error.researchercostreport.year.invalid.format";
+	public static final String	RESEARCHER_COST_REPORT_YEAR_TAG 					= "Year";
+	
 }

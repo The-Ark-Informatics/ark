@@ -45,6 +45,7 @@ import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
+import au.org.theark.core.model.report.entity.ResearcherBillableItemTypeCostDataRow;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -55,10 +56,12 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
+import au.org.theark.report.model.vo.ResearcherCostResportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
@@ -630,6 +633,24 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.add(Restrictions.eq("arkFunction", function));
 		results = criteria.list();
 		return results;
+	}
+	
+	public List<ResearcherBillableItemTypeCostDataRow> getBillableItemTypeCostData(final ResearcherCostResportVO researcherCostResportVO){
+		List<ResearcherBillableItemTypeCostDataRow> results = null;
+		Query query = getSession().getNamedQuery("findTotalBillableItemTypeCostsPerResearcher")
+				.setString("invoice", researcherCostResportVO.getInvoice())
+				.setString("billableYear", researcherCostResportVO.getYear())
+				.setLong("researcherId", researcherCostResportVO.getResearcherId())
+				.setLong("studyId",researcherCostResportVO.getStudyId());
+		results=query.list();
+		return results;
+	}
+	
+	public List<Researcher> searchResearcherByStudyId(final Long studyId) {
+		Criteria criteria = getSession().createCriteria(Researcher.class);
+		criteria.add(Restrictions.eq("studyId" , studyId));
+		List<Researcher> list = criteria.list();
+		return list;
 	}
 	
 }
