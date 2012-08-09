@@ -217,14 +217,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			maxValueEntryPnl.setEnabled(false);
 		}
 //	Not supporting min and max value for CHARACTER fieldTypes 
-//		else if (fieldType.getName().equals(Constants.CHARACTER_FIELD_TYPE_NAME)) {
-//			IModel<String> minValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
-//			IModel<String> maxValueMdl = new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE);
-//			minValueEntryPnl = new TextDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
-//			minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
-//			maxValueEntryPnl = new TextDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
-//			maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
-//		}
 		else if (fieldType.getName().equals(Constants.NUMBER_FIELD_TYPE_NAME)) {
 			// NUMBER fieldType
 			IModel<Double> minValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);

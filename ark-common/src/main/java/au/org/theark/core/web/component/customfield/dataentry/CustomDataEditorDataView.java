@@ -135,7 +135,9 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 
 				ChoiceRenderer<EncodedValueVO> choiceRenderer = new ChoiceRenderer<EncodedValueVO>("value", "key");
 				
-				if(cfd.getAllowMultiselect()){
+ 				if(cfd.getAllowMultiselect()){
+ 					
+ 					
 					//TODO  handle multiselect
 					//then lets handle this differently/
 						//how bout using this http://wicket.apache.org/apidocs/1.4/org/apache/wicket/markup/html/form/ListMultipleChoice.html
@@ -143,7 +145,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 							//http://www.wicket-library.com/wicket-examples/compref/wicket/bookmarkable/org.apache.wicket.examples.compref.CheckGroupPage;jsessionid=6CD144C6124ACBB5771928E0A2FAC4C5?0
 					CheckGroupDataEntryPanel cgdePanel = 
 							new CheckGroupDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
-																new Model<String>(cf.getFieldLabel()), choiceList, choiceRenderer); 
+																new Model<String>(cf.getFieldLabel()), choiceList, parseMultiSelect(aCustomData.getTextDataValue(), choiceList), choiceRenderer); 
 					
 					
 					cgdePanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
@@ -238,6 +240,23 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 
 		item.add(fieldLabelLbl);
 		item.add(dataValueEntryPanel);
+	}
+
+	private ArrayList<EncodedValueVO> parseMultiSelect(String textDataValue, ArrayList<EncodedValueVO> allPosibileEncodedValueVOs) {
+		ArrayList selectedEvvos = new ArrayList<EncodedValueVO>();
+		if(textDataValue != null && !textDataValue.isEmpty()){
+			List<String> encodeKeyValueList = Arrays.asList(textDataValue.split(";"));
+			for (String keyValue : encodeKeyValueList) {
+					//				if(keyValue is in the list of our keys in allPossibilities))
+						//			then add is to list to return			
+				for(EncodedValueVO evvo : allPosibileEncodedValueVOs){
+					if(keyValue.equalsIgnoreCase(evvo.getKey())){
+						selectedEvvos.add(evvo);
+					}
+				}
+			}		
+		}
+		return selectedEvvos;
 	}
 
 	protected abstract WebMarkupContainer getParentContainer();

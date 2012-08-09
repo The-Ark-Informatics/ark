@@ -48,6 +48,7 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<SubjectCu
 	}
 
 	public void onEditSave(AjaxRequestTarget target, Form<?> form) {
+		
 		List<SubjectCustomFieldData> errorList = studyService.createOrUpdateSubjectCustomFieldData(cpModel.getObject().getCustomFieldDataList());
 		if (errorList.size() > 0) {
 			for (SubjectCustomFieldData subjectCustomFieldData : errorList) {
