@@ -19,6 +19,7 @@
 package au.org.theark.core.web.component.customfield.dataentry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.markup.html.form.CheckBoxMultipleChoice;
@@ -40,7 +41,7 @@ import org.apache.wicket.validation.IValidator;
  * + Only the displayed choices (with their internal encoded "key" mapping) are needed, so it 
  *    relies an external conversion process for the CustomField's encodeValue attribute.
  */
-public class CheckGroupDataEntryPanel extends AbstractDataEntryPanel<EncodedValueVO> {
+public class CheckGroupDataEntryPanel extends AbstractDataEntryPanel<ArrayList<EncodedValueVO>> {
 	
 	private static final long	serialVersionUID	= 1L;
 	
@@ -53,16 +54,55 @@ public class CheckGroupDataEntryPanel extends AbstractDataEntryPanel<EncodedValu
 	 * @param id - component id
 	 * @param dataModel - must be a model for a String dataValue
 	 * @param labelModel - field-specific String label model to be used for feedback
-	 * @param choiceList - list of choices for the Dropdown
+	 * @param allChoicesList - list of choices for the Dropdown
 	 */
 	public CheckGroupDataEntryPanel(String id, IModel<String> dataModel, IModel<String> labelModel, 
-													ArrayList<EncodedValueVO> choiceList, ChoiceRenderer<EncodedValueVO> renderer) {
+													final ArrayList<EncodedValueVO> allChoicesList, ArrayList<EncodedValueVO> selectedList, ChoiceRenderer<EncodedValueVO> renderer) {
 		super(id, labelModel);
 		missingValueVo = null;
 		underlyingDataModel = dataModel;
-		ArrayList selectedBoxes = new ArrayList<EncodedValueVO>();
+//		ArrayList selectedBoxes = new ArrayList<EncodedValueVO>();
+	//	ArrayList encodedVOs = new ArrayList<En>
 		// Slightly tricky mapping from the EncodedVO's key to the underlying dataValue (i.e. a String) 
-		dataValueModel = new Model<EncodedValueVO>(); 
+		//dataValueModel = new Model<EncodedValueVO>(); 
+//		dataValueModel = new Model<ArrayList<EncodedValueVO>>(selectedList); 
+		dataValueModel = new Model<ArrayList<EncodedValueVO>>(selectedList){
+			private static final long serialVersionUID = 1L;
+			
+			public ArrayList<EncodedValueVO> getObject() {
+				
+				String textDataValue = underlyingDataModel.getObject();
+				ArrayList selectedEvvos = new ArrayList<EncodedValueVO>();
+				if(textDataValue != null && !textDataValue.isEmpty()){
+					List<String> encodeKeyValueList = Arrays.asList(textDataValue.split(";"));
+					for (String keyValue : encodeKeyValueList) {
+							//				if(keyValue is in the list of our keys in allPossibilities))
+								//			then add is to list to return			
+						for(EncodedValueVO evvo : allChoicesList){
+							if(keyValue.equalsIgnoreCase(evvo.getKey())){
+								selectedEvvos.add(evvo);
+							}
+						}
+					}		
+				}
+				return selectedEvvos;
+			}
+			
+			public void setObject(ArrayList<EncodedValueVO> object) {
+				String keyConcat = "";
+				if (object == null || object.isEmpty()) {
+					underlyingDataModel.setObject(null);
+				}
+				else {
+					for(EncodedValueVO evvo : object){
+						keyConcat += evvo.getKey() + ";"; 
+					}
+					underlyingDataModel.setObject(keyConcat);
+				}
+			}
+
+		};
+		
 		/*dataValueModel = new IModel<EncodedValueVO>() {
 
 
@@ -90,7 +130,7 @@ public class CheckGroupDataEntryPanel extends AbstractDataEntryPanel<EncodedValu
 			}
 			
 		};*/
-		checkBoxMultipleChoice = new CheckBoxMultipleChoice("checkGroupDataValue", dataValueModel, choiceList, renderer);
+		checkBoxMultipleChoice = new CheckBoxMultipleChoice("checkGroupDataValue", dataValueModel, allChoicesList, renderer);
 		//checkBoxMultipleChoice.setNullValid(true);	// nullValid allows you to set the "Choose One" option
 		checkBoxMultipleChoice.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
 		this.add(checkBoxMultipleChoice);
@@ -158,7 +198,7 @@ public class CheckGroupDataEntryPanel extends AbstractDataEntryPanel<EncodedValu
 	}
 	
 	@Override
-	public void addValidator(IValidator<EncodedValueVO> aValidator) {
+	public void addValidator(IValidator<ArrayList<EncodedValueVO>> aValidator) {
 		//log.info("we dont have a validator");
 		//checkBoxMultipleChoice.add(aValidator);
 	}
