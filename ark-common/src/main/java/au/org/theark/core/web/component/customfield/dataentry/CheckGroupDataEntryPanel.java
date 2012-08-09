@@ -57,16 +57,12 @@ public class CheckGroupDataEntryPanel extends AbstractDataEntryPanel<ArrayList<E
 	 * @param allChoicesList - list of choices for the Dropdown
 	 */
 	public CheckGroupDataEntryPanel(String id, IModel<String> dataModel, IModel<String> labelModel, 
-													final ArrayList<EncodedValueVO> allChoicesList, ArrayList<EncodedValueVO> selectedList, ChoiceRenderer<EncodedValueVO> renderer) {
+													final ArrayList<EncodedValueVO> allChoicesList, ChoiceRenderer<EncodedValueVO> renderer) {
 		super(id, labelModel);
 		missingValueVo = null;
 		underlyingDataModel = dataModel;
-//		ArrayList selectedBoxes = new ArrayList<EncodedValueVO>();
-	//	ArrayList encodedVOs = new ArrayList<En>
-		// Slightly tricky mapping from the EncodedVO's key to the underlying dataValue (i.e. a String) 
-		//dataValueModel = new Model<EncodedValueVO>(); 
 //		dataValueModel = new Model<ArrayList<EncodedValueVO>>(selectedList); 
-		dataValueModel = new Model<ArrayList<EncodedValueVO>>(selectedList){
+		dataValueModel = new Model<ArrayList<EncodedValueVO>>(){
 			private static final long serialVersionUID = 1L;
 			
 			public ArrayList<EncodedValueVO> getObject() {
@@ -76,8 +72,7 @@ public class CheckGroupDataEntryPanel extends AbstractDataEntryPanel<ArrayList<E
 				if(textDataValue != null && !textDataValue.isEmpty()){
 					List<String> encodeKeyValueList = Arrays.asList(textDataValue.split(";"));
 					for (String keyValue : encodeKeyValueList) {
-							//				if(keyValue is in the list of our keys in allPossibilities))
-								//			then add is to list to return			
+							//				if(key is in the list of our keys in allPossibilities)) 		then add it to out list to return			
 						for(EncodedValueVO evvo : allChoicesList){
 							if(keyValue.equalsIgnoreCase(evvo.getKey())){
 								selectedEvvos.add(evvo);
@@ -103,33 +98,6 @@ public class CheckGroupDataEntryPanel extends AbstractDataEntryPanel<ArrayList<E
 
 		};
 		
-		/*dataValueModel = new IModel<EncodedValueVO>() {
-
-
-			private static final long serialVersionUID = 1L;
-
-			public EncodedValueVO getObject() {
-				EncodedValueVO object = null;
-				if (underlyingDataModel.getObject() != null) {
-					object = new EncodedValueVO();
-					object.setKey(underlyingDataModel.getObject());
-				}
-				return object;
-			}
-
-			public void setObject(EncodedValueVO object) {
-				if (object == null) {
-					underlyingDataModel.setObject(null);
-				}
-				else {
-					underlyingDataModel.setObject(object.getKey());
-				}
-			}
-
-			public void detach() {
-			}
-			
-		};*/
 		checkBoxMultipleChoice = new CheckBoxMultipleChoice("checkGroupDataValue", dataValueModel, allChoicesList, renderer);
 		//checkBoxMultipleChoice.setNullValid(true);	// nullValid allows you to set the "Choose One" option
 		checkBoxMultipleChoice.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
