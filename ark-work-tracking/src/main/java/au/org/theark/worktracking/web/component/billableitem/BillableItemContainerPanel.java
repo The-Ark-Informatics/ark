@@ -61,7 +61,8 @@ public class BillableItemContainerPanel extends AbstractContainerPanel {
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				containerForm.getModelObject().getBillableItem().setStudyId(studyId);
 
-				containerForm.getModelObject().setBillableItemList(iWorkTrackingService.searchBillableItem(containerForm.getModelObject().getBillableItem()));					
+//				containerForm.getModelObject().setBillableItemList(iWorkTrackingService.searchBillableItem(containerForm.getModelObject().getBillableItem()));					
+				containerForm.getModelObject().setBillableItemList(iWorkTrackingService.searchBillableItem(containerForm.getModelObject()));
 				pageableListView.removeAll();
 				return containerForm.getModelObject().getBillableItemList();
 			}

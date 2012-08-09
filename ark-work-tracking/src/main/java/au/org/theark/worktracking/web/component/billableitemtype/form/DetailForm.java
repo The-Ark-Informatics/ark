@@ -139,6 +139,8 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 		
 		billableItemTypeQuantityPerUnitTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_QUNATITY_PER_UNIT_REQUIRED, billableItemTypeUnitPriceTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_QUNATITY_PER_UNIT_TAG)));
 		
+		billableItemTypeGstTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_GST_REQUIRED,billableItemTypeGstTxtField,new Model<String>(Constants.BILLABLE_ITEM_TYPE_GST_TAG)));
+		
 		billableItemTypeUnitPriceTxtField.add(new PatternValidator(Constants.BILLABLE_ITEM_TYPE_TWO_DECIMAL_PATTERN){
 			/**
 			 * 

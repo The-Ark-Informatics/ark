@@ -86,16 +86,26 @@
 
 				<div class="fldLabel">
 					<div class="label">
-						<label for="id">
-							<wicket:message key="work.billableitem.description">
-								Work Summarry:
+						<label for="researcher">
+							<wicket:message key="work.billableitem.researcher">
+								Researcher:
 							</wicket:message>
 						</label>
 					</div>
 				</div>
 				<div class="fldControl">
 					<div class="label">
-						<input wicket:id="billableItem.description"	type="text" />
+						<select wicket:id="researcher">
+							<option>
+								researcher1
+							</option>
+							<option>
+								researcher2
+							</option>
+							<option>
+								researcher3
+							</option>
+						</select>
 					</div>
 				</div>
 
@@ -135,12 +145,16 @@
 
 				<div class="fldLabel">
 					<div class="label">
-						&nbsp;
+						<label for="description">
+							<wicket:message key="work.billableitem.description">
+								Work Summarry:
+							</wicket:message>
+						</label>
 					</div>
 				</div>
 				<div class="fldControl">
 					<div class="label">
-						&nbsp;
+						<input wicket:id="billableItem.description"	type="text" />
 					</div>
 				</div>
 

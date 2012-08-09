@@ -12,6 +12,7 @@ import au.org.theark.core.model.worktracking.entity.ResearcherRole;
 import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
+import au.org.theark.worktracking.model.vo.BillableItemVo;
 
 public interface IWorkTrackingDao {
 
@@ -140,10 +141,17 @@ public interface IWorkTrackingDao {
 	
 	/**
 	 * Search Billable Item's for the given criteria
-	 * @param researcher
+	 * @param billableItem
 	 * @return Selected BillableItem List.
 	 */
 	public List<BillableItem> searchBillableItem(BillableItem billableItem);
+	
+	/**
+	 * Search Billable Item's for the given Value object criteria
+	 * @param billableItemVo
+	 * @return Selected BillableItem List.
+	 */
+	public List<BillableItem> searchBillableItem(BillableItemVo billableItemVo);
 	
 	/**
 	 * Get the billable item count associate with the given Billable item type 

@@ -24,6 +24,7 @@ public class BillableItemVo implements Serializable {
 	private String 				researcherFullName;
 	private String				workRequestDescription;
 	private String				totalCost;
+	private Researcher			researcher;
 	
 	public BillableItemVo() {
 		this.billableItem = new BillableItem();
@@ -101,6 +102,14 @@ public class BillableItemVo implements Serializable {
 			
 		}
 		return totalCost;
+	}
+
+	public Researcher getResearcher() {
+		return researcher;
+	}
+
+	public void setResearcher(Researcher researcher) {
+		this.researcher = researcher;
 	}	
-	
+
 }
