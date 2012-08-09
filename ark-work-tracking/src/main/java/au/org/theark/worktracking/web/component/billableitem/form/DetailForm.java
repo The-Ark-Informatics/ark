@@ -321,6 +321,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 			
 			
 			containerForm.getModelObject().getBillableItem().setTotalCost(BillableItemCostCalculator.calculateItemCost(containerForm.getModelObject().getBillableItem()));
+			containerForm.getModelObject().getBillableItem().setTotalGST(BillableItemCostCalculator.calculateItemGST(containerForm.getModelObject().getBillableItem()));
 			
 			if (containerForm.getModelObject().getBillableItem().getId() == null) {
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
