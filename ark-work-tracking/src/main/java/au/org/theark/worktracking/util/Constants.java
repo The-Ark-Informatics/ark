@@ -203,12 +203,14 @@ public class Constants {
 	public static final String			BILLABLE_ITEM_RESEARCHER_FULL_NAME								= "researcherFullName";
 	public static final String			BILLABLE_ITEM_WORK_REQUEST_DESCRIPTION							= "workRequestDescription";
 	public static final String			BILLABLE_ITEM_TOTAL_COST										= "totalCost";
+	public static final String			BILLABLE_ITEM_RESEARCHER										= "researcher";
 	
 	public static final String			BI_DESCRIPTION													= "description";
 	public static final String			BI_QUANTITY														= "quantity";
 	public static final String			BI_WORK_REQUEST													= "workRequest";
 	public static final String			BI_INVOICE														= "invoice";
 	public static final String			BI_ITEM_STATUS													= "itemStatus";
+	public static final String			BI_ITEM_RESEARCHER												= "researcher";
 	
 	public static final String BILLABLE_ITEM_DESCRIPTION_TAG											= "Description";
 	public static final String ERROR_BILLABLE_ITEM_DESCRIPTION_REQUIRED 								= "error.work.billableitem.description.required";

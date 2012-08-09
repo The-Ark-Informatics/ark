@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -25,6 +26,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.worktracking.entity.BillableItem;
+import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -59,6 +61,8 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 	private List<WorkRequest>								workRequestList;
 	
 	private AjaxButton										invoiceButton;
+	
+	private DropDownChoice<Researcher>		 		 		workRequestResearchers;
 
 	/**
 	 * 
@@ -91,6 +95,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		add(invoiceStatuses);
 		add(invoiceButton);
 		add(billableItemCommenceDateDp);
+		add(workRequestResearchers);
 	}
 
 	protected void initialiseSearchForm() {
@@ -99,6 +104,9 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		billableItemDescriptionTxtField=new TextField<String>(Constants.BILLABLE_ITEM_DESCRIPTION);
 		
 		CompoundPropertyModel<BillableItemVo> billableItemCmpModel = (CompoundPropertyModel<BillableItemVo>) cpmModel;
+		
+		PropertyModel<Researcher> rpm = new PropertyModel<Researcher>(billableItemCmpModel, "researcher");
+		initResearcherDropDown(rpm);
 		
 		// Create a propertyModel to bind the components of this form, the root which is WorkRequest Container
 		PropertyModel<BillableItem> pm = new PropertyModel<BillableItem>(billableItemCmpModel, "billableItem");	
@@ -118,7 +126,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		invoiceButton=new AjaxInvoiceButton(Constants.INVOICE, new StringResourceModel("confirmInvoice", this, null), new StringResourceModel(Constants.INVOICE, this, null)) {			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				List<BillableItem> itemList = getBillableItemList();
+				List<BillableItem> itemList = getFormModelObject().getBillableItemList();
 				List<BillableItem> updateBillableItemList=new ArrayList<BillableItem>(0);
 				try{
 					for(BillableItem item:itemList){
@@ -132,10 +140,10 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 					iWorkTrackingService.updateAllBillableItems(updateBillableItemList);
 				
 					Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-					getBillableItem().setStudyId(studyId);
+					getFormModelObject().getBillableItem().setStudyId(studyId);
 				
-					List<BillableItem> resultList = iWorkTrackingService.searchBillableItem(getBillableItem());
-					setBillableItemList(resultList);
+					List<BillableItem> resultList = iWorkTrackingService.searchBillableItem(getFormModelObject());
+					getFormModelObject().setBillableItemList(resultList);
 					listView.removeAll();
 					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
@@ -180,11 +188,77 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		  }
 		});
 	}
+	
+	private void initResearcherDropDown(
+			PropertyModel<Researcher> workRequestResearcher) {
+		
+		Researcher researcher=new Researcher();
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		researcher.setStudyId(studyId);
+		List<Researcher> researcherList=iWorkTrackingService.searchResearcher(researcher);
+		
+		IChoiceRenderer<Researcher> customChoiceRenderer = new IChoiceRenderer<Researcher>() {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			public Object getDisplayValue(Researcher researcher) {
+				return researcher.getFirstName()+" "+researcher.getLastName();
+			}
+
+			public String getIdValue(Researcher researcher, int index) {
+				return researcher.getId().toString();
+			}
+			
+		};
+		workRequestResearchers = new DropDownChoice(Constants.BILLABLE_ITEM_RESEARCHER, researcherList, customChoiceRenderer);
+		workRequestResearchers.setModel(workRequestResearcher);
+		
+		workRequestResearchers.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				getFormModelObject().getBillableItem().setWorkRequest(null);
+				target.add(workRequests);
+	
+				
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, RuntimeException e) {
+				// TODO Auto-generated method stub
+				getFormModelObject().getBillableItem().setWorkRequest(null);
+				target.add(workRequests);
+			}
+		});
+				
+	}
 
 	private void initWorkRequestDropDown(
 			PropertyModel<WorkRequest> pmWorkRequest) {
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		workRequests = new DropDownChoice(Constants.BILLABLE_ITEM_WORK_REQUEST ,  this.workRequestList, defaultChoiceRenderer);
+		workRequests.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				getFormModelObject().setResearcher(null);
+				target.add(workRequestResearchers);
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, RuntimeException e) {
+				// TODO Auto-generated method stub
+				getFormModelObject().setResearcher(null);
+				target.add(workRequestResearchers);
+			}
+		});
 	}
 
 	/*
@@ -212,7 +286,9 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			getModelObject().getBillableItem().setStudyId(studyId);
 			
-			List<BillableItem> resultList = iWorkTrackingService.searchBillableItem(getModelObject().getBillableItem());
+//			List<BillableItem> resultList = iWorkTrackingService.searchBillableItem(getModelObject().getBillableItem());
+			
+			List<BillableItem> resultList = iWorkTrackingService.searchBillableItem(getModelObject());
 			
 			if(resultList != null && resultList.size() == 0){
 				this.info("Billable Item with the specified criteria does not exist in the system.");
@@ -225,15 +301,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	}
 	
-	private List<BillableItem> getBillableItemList(){
-		return getModelObject().getBillableItemList();
-	}
-	
-	private void setBillableItemList(List<BillableItem> billableItems){
-		getModelObject().setBillableItemList(billableItems);
-	}
-	
-	private BillableItem getBillableItem(){
-		return getModelObject().getBillableItem();
+	private BillableItemVo getFormModelObject(){
+		return getModelObject();
 	}
 }

@@ -6,6 +6,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -22,6 +23,7 @@ import au.org.theark.core.model.worktracking.entity.ResearcherRole;
 import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
+import au.org.theark.worktracking.model.vo.BillableItemVo;
 import au.org.theark.worktracking.util.Constants;
 
 @Repository(Constants.WORK_TRACKING_DAO)
@@ -333,7 +335,47 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 			
 		List<BillableItem> list = criteria.list();
 		return list;
-	}	
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<BillableItem> searchBillableItem(BillableItemVo billableItemVo) {
+		
+		BillableItem billableItemCriteria=billableItemVo.getBillableItem();
+		
+		Criteria criteria = getSession().createCriteria(BillableItem.class, "bi");
+		criteria.createAlias("billableItemType", "bit", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("workRequest", "wr", JoinType.LEFT_OUTER_JOIN);
+		
+		criteria.add(Restrictions.eq("bi.studyId" , billableItemCriteria.getStudyId()));
+		if(billableItemCriteria.getId() != null ){
+			criteria.add(Restrictions.eq("bi.id", billableItemCriteria.getId()));
+		}	
+		
+		if(billableItemCriteria.getDescription() != null ){
+			criteria.add(Restrictions.like("bi.description", billableItemCriteria.getDescription()+"%"));
+		}
+		
+		if(billableItemCriteria.getQuantity() != null ){
+			criteria.add(Restrictions.eq("bi.quantity", billableItemCriteria.getQuantity()));
+		}
+		
+		if(billableItemCriteria.getWorkRequest() != null ){
+			criteria.add(Restrictions.eq("bi.workRequest", billableItemCriteria.getWorkRequest()));
+		}
+		
+		if(billableItemCriteria.getInvoice() != null ){
+			criteria.add(Restrictions.eq("bi.invoice", billableItemCriteria.getInvoice()));
+		}
+		
+		if(billableItemVo.getResearcher() != null ){
+			criteria.add(Restrictions.eq("wr.researcher", billableItemVo.getResearcher()));
+		}
+		
+		List<BillableItem> list = criteria.list();
+		return list;
+	}
 	
 	/**
 	 * {@inheritDoc}
