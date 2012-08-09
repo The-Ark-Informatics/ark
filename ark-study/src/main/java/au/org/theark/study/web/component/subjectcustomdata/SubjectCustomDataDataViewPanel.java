@@ -150,21 +150,4 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 		return dataView;
 	}
 
-	public void saveCustomData() {
-		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SAVE)) {
-			List<SubjectCustomFieldData> errorList = studyService.createOrUpdateSubjectCustomFieldData(cpModel.getObject().getCustomFieldDataList());
-			if (errorList.size() > 0) {
-				for (SubjectCustomFieldData subjectCustomFieldData : errorList) {
-					CustomField cf = subjectCustomFieldData.getCustomFieldDisplay().getCustomField();
-					String fieldType = cf.getFieldType().getName();
-					if (fieldType.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
-						this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getDateDataValue());
-					}
-					else {
-						this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getTextDataValue());
-					}
-				}
-			}
-		}
-	}
 }

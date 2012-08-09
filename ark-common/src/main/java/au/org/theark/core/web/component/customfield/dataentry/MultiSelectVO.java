@@ -20,7 +20,7 @@ package au.org.theark.core.web.component.customfield.dataentry;
 
 import java.io.Serializable;
 
-public class EncodedValueVO implements Serializable {
+public class MultiSelectVO implements Serializable {
 
 	private static final long	serialVersionUID	= 1L;
 	String key;
@@ -37,6 +37,10 @@ public class EncodedValueVO implements Serializable {
 	}
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	public String toString(){
+		return value + ";";
 	}
 	
 }
