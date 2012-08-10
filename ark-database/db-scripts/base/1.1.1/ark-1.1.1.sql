@@ -86,7 +86,7 @@ CREATE TABLE `lss_consent_history` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:43
+-- Dump completed on 2012-07-25 15:58:47
 
 USE study;
 -- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
@@ -591,21 +591,6 @@ CREATE TABLE `correspondence_outcome_type` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `correspondence_status_type`
---
-
-DROP TABLE IF EXISTS `correspondence_status_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `correspondence_status_type` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(255) NOT NULL,
-  `DESCRIPTION` varchar(4096) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `correspondences`
 --
 
@@ -616,7 +601,6 @@ CREATE TABLE `correspondences` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `PERSON_ID` int(11) NOT NULL,
   `STUDY_ID` int(11) NOT NULL,
-  `STATUS_TYPE_ID` int(11) DEFAULT NULL,
   `ARK_USER_ID` int(11) DEFAULT NULL,
   `DATE` date DEFAULT NULL,
   `TIME` varchar(255) DEFAULT NULL,
@@ -629,7 +613,6 @@ CREATE TABLE `correspondences` (
   `ATTACHMENT_FILENAME` varchar(255) DEFAULT NULL,
   `ATTACHMENT_PAYLOAD` longblob,
   PRIMARY KEY (`ID`),
-  KEY `status_type` (`STATUS_TYPE_ID`) USING BTREE,
   KEY `mode_type` (`MODE_TYPE_ID`) USING BTREE,
   KEY `direction_type` (`DIRECTION_TYPE_ID`) USING BTREE,
   KEY `outcome_type` (`OUTCOME_TYPE_ID`) USING BTREE,
@@ -640,7 +623,6 @@ CREATE TABLE `correspondences` (
   CONSTRAINT `correspondences_mode_type_id` FOREIGN KEY (`MODE_TYPE_ID`) REFERENCES `correspondence_mode_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `correspondences_outcome_type_id` FOREIGN KEY (`OUTCOME_TYPE_ID`) REFERENCES `correspondence_outcome_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `correspondences_person_id` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `correspondences_status_type_id` FOREIGN KEY (`STATUS_TYPE_ID`) REFERENCES `correspondence_status_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `correspondences_study_id` FOREIGN KEY (`STUDY_ID`) REFERENCES `study` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_correspondences_ark_user` FOREIGN KEY (`ARK_USER_ID`) REFERENCES `ark_user` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
@@ -1860,7 +1842,7 @@ CREATE TABLE `yes_no` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:44
+-- Dump completed on 2012-07-25 15:58:48
 
 USE pheno;
 -- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
@@ -2004,7 +1986,7 @@ CREATE TABLE `upload` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:44
+-- Dump completed on 2012-07-25 15:58:48
 
 USE geno;
 -- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
@@ -2451,7 +2433,7 @@ CREATE TABLE `upload_marker_group` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:44
+-- Dump completed on 2012-07-25 15:58:49
 
 USE lims;
 -- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
@@ -3644,7 +3626,7 @@ CREATE TABLE `unit` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:45
+-- Dump completed on 2012-07-25 15:58:49
 
 USE reporting;
 -- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
@@ -3712,7 +3694,7 @@ CREATE TABLE `report_template` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:45
+-- Dump completed on 2012-07-25 15:58:49
 
 USE admin;
 -- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
@@ -3768,11 +3750,11 @@ DROP TABLE IF EXISTS `billable_item_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `billable_item_status` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(25) NOT NULL,
   `DESCRIPTION` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3808,11 +3790,11 @@ DROP TABLE IF EXISTS `billable_item_type_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `billable_item_type_status` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(25) NOT NULL,
   `DESCRIPTION` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3823,11 +3805,11 @@ DROP TABLE IF EXISTS `billing_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `billing_type` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(25) NOT NULL,
   `DESCRIPTION` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3863,7 +3845,7 @@ CREATE TABLE `researcher` (
   `ADDRESS` varchar(255) DEFAULT NULL,
   `ROLE_ID` int(11) DEFAULT NULL,
   `STATUS_ID` int(11) DEFAULT NULL,
-  `LAST_ACTIVE_DATE` date DEFAULT NULL,
+  `CREATED_DATE` date DEFAULT NULL,
   `OFFICE_PHONE` varchar(12) DEFAULT NULL,
   `MOBILE` varchar(12) DEFAULT NULL,
   `EMAIL` varchar(45) DEFAULT NULL,
@@ -3893,11 +3875,11 @@ DROP TABLE IF EXISTS `researcher_role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `researcher_role` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(25) NOT NULL,
   `DESCRIPTION` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3908,11 +3890,11 @@ DROP TABLE IF EXISTS `researcher_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `researcher_status` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(25) NOT NULL,
   `DESCRIPTION` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3948,11 +3930,11 @@ DROP TABLE IF EXISTS `work_request_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `work_request_status` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(25) NOT NULL,
   `DESCRIPTION` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -3964,7 +3946,7 @@ CREATE TABLE `work_request_status` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:45
+-- Dump completed on 2012-07-25 15:58:49
 /* Reference/lookup data */
 
 USE study;
@@ -4021,7 +4003,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `ark_function` WRITE;
 /*!40000 ALTER TABLE `ark_function` DISABLE KEYS */;
-INSERT INTO `ark_function` (`ID`, `NAME`, `DESCRIPTION`, `ARK_FUNCTION_TYPE_ID`, `RESOURCE_KEY`) VALUES (1,'STUDY','Study Management  usecase. This is represented via the Study Detail Tab under the main Study  Tab. ',1,'tab.module.study.details'),(2,'STUDY_COMPONENT','Study Component usecase.This is represented via the StudyComponent Tab under the main Study  Tab. ',1,'tab.module.study.components'),(3,'MY_DETAIL','Edit My details usecase, this is represented via My Detail tab.',1,'tab.module.mydetails'),(4,'USER','User management usecase. This is represented via the User Tab under the main Study  Tab.',1,'tab.module.user.management'),(5,'SUBJECT','Subject management usecase. This is represented via the Subject Tab under the main Study  Tab.',1,'tab.module.subject.detail'),(6,'PHONE','Manage phone usecase. This is represented via the Phone tab under the main Study  Tab.',1,'tab.module.person.phone'),(7,'ADDRESS','Manage Address',1,'tab.module.person.address'),(8,'ATTACHMENT','Manage Consent and Component attachments. This is represented via the Attachment tab under Subject Main tab.',1,'tab.module.subject.subjectFile'),(9,'CONSENT','Manage Subject Consents. This is represented via the Consent tab under the main Study  Tab.',1,'tab.module.subject.consent'),(10,'SUBJECT_UPLOAD','Bulk upload of Subjects.',1,'tab.module.subject.subjectUpload'),(11,'SUBJECT_CUSTOM_FIELD','Manage Custom Fields for Subjects.',1,'tab.module.subject.subjectcustomfield'),(12,'DATA_DICTIONARY','Phenotypic Data Dictionary use case. This is represented by the Data Dictionary tab, under the main Phenotypic Tab.',1,'tab.module.phenotypic.field'),(13,'DATA_DICTIONARY_UPLOAD','Phenotypic Data Dictionary Upload use case. This is represented by the Data Dictionary Upload tab, under the main Phenotypic Tab.',1,'tab.module.phenotypic.fieldUpload'),(14,'PHENO_COLLECTION','Phenotypic Collection use case. This is represented by the Collection tab, under the main Phenotypic Tab.',1,'tab.module.phenotypic.collection'),(15,'FIELD_DATA','Phenotypic Field Data use case. This is represented by the Field Data tab, under the main Phenotypic Tab.',1,'tab.module.phenotypic.fieldData'),(16,'FIELD_DATA_UPLOAD','Phenotypic Field Data Upload use case. This is represented by the Data Upload tab, under the main Phenotypic Tab.',1,'tab.module.phenotypic.phenoUpload'),(17,'LIMS_SUBJECT','LIMS Subject use case. This is represented by the Subject tab, under the main LIMS Tab.',1,'tab.module.lims.subject.detail'),(18,'LIMS_COLLECTION','LIMS Collection use case. This is represented by the Collection tab, under the main LIMS Tab.',1,'tab.module.lims.collection'),(19,'BIOSPECIMEN','LIMS Biospecimen use case. This is represented by the Biospecimen tab, under the main LIMS Tab.',1,'tab.module.lims.biospecimen'),(20,'INVENTORY','LIMS Inventory use case. This is represented by the Inventory tab, under the main LIMS Tab.',1,'tab.module.lims.inventory'),(21,'CORRESPONDENCE','',1,'tab.module.subject.correspondence'),(22,'SUMMARY','Phenotypic Summary.',1,'tab.module.phenotypic.summary'),(23,'REPORT_STUDYSUMARY','Study Summary Report provides an overview of subject information for a study.  It contains information like: <ul>   <li>total subject count</li>   <li>subject counts grouped by subject status</li>   <li>subject counts grouped by consent status</li> </ul>',2,NULL),(24,'REPORT_STUDYLEVELCONSENT','Study-level Consent Details Report lists detailed subject information for a particular study based on their consent status at the study-level.',2,NULL),(25,'REPORT_STUDYCOMPCONSENT','Study Component Consent Details Report lists detailed subject information for a particular study based on their consent status for a specific study component.',2,NULL),(26,'REPORT_PHENOFIELDDETAILS','Phenotypic Field Details Report (Data Dictionary) lists detailed field information for a particular study based on their associated phenotypic collection.',2,NULL),(27,'GENO_COLLECTION','Genotypic Collection use case. This is represented by the Collection tab, under the main Genotypic Menu',1,'tab.module.geno.collection'),(28,'ROLE_POLICY_TEMPLATE','Allows CRUD operations on the ark_role_policy_template table for the Ark application',1,'tab.module.admin.rolePolicyTemplate'),(29,'MODULE','Allows CRUD operations on the ark_module table for the Ark application',1,'tab.module.admin.module'),(30,'FUNCTION','Allows CRUD operations on the ark_function table for the Ark application',1,'tab.module.admin.function'),(33,'REPORT_STUDY_USER_ROLE_PERMISSIONS','Study User Role Permissions Report lists all user role and permissions for the study in context.',2,NULL),(34,'SUBJECT_CUSTOM_DATA','Data entry for Subject Custom Fields.',1,'tab.module.subject.subjectcustomdata'),(35,'LIMS_COLLECTION_CUSTOM_FIELD','Manage Custom Fields for LIMS collections.',1,'tab.module.lims.collectioncustomfield'),(36,'LIMS_COLLECTION_CUSTOM_DATA','Data entry for LIMS collection Custom Fields.',1,'tab.module.lims.collectioncustomdata'),(37,'BIOSPECIMEN_CUSTOM_FIELD','Manage Custom Fields for Biospecimens.',1,'tab.module.lims.biospecimencustomfield'),(38,'BIOSPECIMEN_CUSTOM_DATA','Data entry for Biospecimen Custom Fields.',1,'tab.module.lims.biospecimencustomdata'),(41,'BIOSPECIMENUID_TEMPLATE','Manage BiospecimenUid templates for the study,',1,'tab.module.lims.biospecimenuidtemplate'),(42,'BARCODE_LABEL','Manage barcode label definitions the study,',1,'tab.module.lims.barcodelabel'),(43,'BARCODE_PRINTER','Manage barcode printers for the study,',1,'tab.module.lims.barcodeprinter'),(44,'MODULE_FUNCTION','Allows CRUD operations on the ark_module_function table for the Ark application',1,'tab.module.admin.modulefunction'),(45,'ROLE','Allows CRUD operations on user\'s roles',1,'tab.module.admin.role'),(46,'MODULE_ROLE','Allows CRUD operations on module_role table',1,'tab.module.admin.modulerole'),(47,'BIOSPECIMEN_UPLOAD','Uploader for bispecimens',1,'tab.module.lims.biospecimenUpload'),(50,'SUBJECT_CUSTOM_FIELD_UPLOAD','Uploader for Subject Custom Fields',1,'tab.module.subject.subjectCustomFieldUpload'),(51,'BIOCOLLECTION_CUSTOM_FIELD_UPLOAD','Uploader for BioCollection Custom Fields',1,'tab.module.lims.bioCollectionCustomFieldUpload'),(52,'BIOSPECIMEN_CUSTOM_FIELD_UPLOAD','Uploader for Biospecimen Custom Fields',1,'tab.module.lims.biospecimenCustomFieldUpload'),(54,'RESEARCHER','Researcher use case',1,'tab.module.work.researcher'),(55,'BILLABLE_ITEM_TYPE','Billable item type use case',1,'tab.module.work.billableitemtype'),(56,'WORK_REQUEST','Work Request tab',1,'tab.module.work.workrequest'),(57,'BILLABLE_ITEM','Billable Item Tab',1,'tab.module.work.billableitem'),(58,'BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD','Uploader for both Biospecimen and Biocollection Custom Fields',1,'tab.module.lims.bioupload');
+INSERT INTO `ark_function` (`ID`, `NAME`, `DESCRIPTION`, `ARK_FUNCTION_TYPE_ID`, `RESOURCE_KEY`) VALUES (1,'STUDY','Study Management  usecase. This is represented via the Study Detail Tab under the main Study  Tab. ',1,'tab.module.study.details'),(2,'STUDY_COMPONENT','Study Component usecase. This is represented via the StudyComponent Tab under the main Study  Tab. ',1,'tab.module.study.components'),(3,'MY_DETAIL','Edit My details usecase, this is represented via My Detail tab.',1,'tab.module.mydetails'),(4,'USER','User management usecase. This is represented via the User Tab under the main Study  Tab.',1,'tab.module.user.management'),(5,'SUBJECT','Subject management usecase. This is represented via the Subject Tab under the main Study  Tab.',1,'tab.module.subject.detail'),(6,'PHONE','Manage phone usecase. This is represented via the Phone tab under the main Study  Tab.',1,'tab.module.person.phone'),(7,'ADDRESS','Manage Address',1,'tab.module.person.address'),(8,'ATTACHMENT','Manage Consent and Component attachments. This is represented via the Attachment tab under Subject Main tab.',1,'tab.module.subject.subjectFile'),(9,'CONSENT','Manage Subject Consents. This is represented via the Consent tab under the main Study  Tab.',1,'tab.module.subject.consent'),(10,'SUBJECT_UPLOAD','Bulk upload of Subjects.',1,'tab.module.subject.subjectUpload'),(11,'SUBJECT_CUSTOM_FIELD','Manage Custom Fields for Subjects.',1,'tab.module.subject.subjectcustomfield'),(12,'DATA_DICTIONARY','Phenotypic Data Dictionary use case. This is represented by the Data Dictionary tab, under the main Phenotypic Tab.',1,'tab.module.phenotypic.field'),(13,'DATA_DICTIONARY_UPLOAD','Phenotypic Data Dictionary Upload use case. This is represented by the Data Dictionary Upload tab, under the main Phenotypic Tab.',1,'tab.module.phenotypic.fieldUpload'),(14,'PHENO_COLLECTION','Phenotypic Collection use case. This is represented by the Collection tab, under the main Phenotypic Tab.',1,'tab.module.phenotypic.collection'),(15,'FIELD_DATA','Phenotypic Field Data use case. This is represented by the Field Data tab, under the main Phenotypic Tab.',1,'tab.module.phenotypic.fieldData'),(16,'FIELD_DATA_UPLOAD','Phenotypic Field Data Upload use case. This is represented by the Data Upload tab, under the main Phenotypic Tab.',1,'tab.module.phenotypic.phenoUpload'),(17,'LIMS_SUBJECT','LIMS Subject use case. This is represented by the Subject tab, under the main LIMS Tab.',1,'tab.module.lims.subject.detail'),(18,'LIMS_COLLECTION','LIMS Collection use case. This is represented by the Collection tab, under the main LIMS Tab.',1,'tab.module.lims.collection'),(19,'BIOSPECIMEN','LIMS Biospecimen use case. This is represented by the Biospecimen tab, under the main LIMS Tab.',1,'tab.module.lims.biospecimen'),(20,'INVENTORY','LIMS Inventory use case. This is represented by the Inventory tab, under the main LIMS Tab.',1,'tab.module.lims.inventory'),(21,'CORRESPONDENCE','',1,'tab.module.subject.correspondence'),(22,'SUMMARY','Phenotypic Summary.',1,'tab.module.phenotypic.summary'),(23,'REPORT_STUDYSUMARY','Study Summary Report provides an overview of subject information for a study.  It contains information like: <ul>   <li>total subject count</li>   <li>subject counts grouped by subject status</li>   <li>subject counts grouped by consent status</li> </ul>',2,NULL),(24,'REPORT_STUDYLEVELCONSENT','Study-level Consent Details Report lists detailed subject information for a particular study based on their consent status at the study-level.',2,NULL),(25,'REPORT_STUDYCOMPCONSENT','Study Component Consent Details Report lists detailed subject information for a particular study based on their consent status for a specific study component.',2,NULL),(26,'REPORT_PHENOFIELDDETAILS','Phenotypic Field Details Report (Data Dictionary) lists detailed field information for a particular study based on their associated phenotypic collection.',2,NULL),(27,'GENO_COLLECTION','Genotypic Collection use case. This is represented by the Collection tab, under the main Genotypic Menu',1,'tab.module.geno.collection'),(28,'ROLE_POLICY_TEMPLATE','Allows CRUD operations on the ark_role_policy_template table for the Ark application',1,'tab.module.admin.rolePolicyTemplate'),(29,'MODULE','Allows CRUD operations on the ark_module table for the Ark application',1,'tab.module.admin.module'),(30,'FUNCTION','Allows CRUD operations on the ark_function table for the Ark application',1,'tab.module.admin.function'),(33,'REPORT_STUDY_USER_ROLE_PERMISSIONS','Study User Role Permissions Report lists all user role and permissions for the study in context.',2,NULL),(34,'SUBJECT_CUSTOM_DATA','Data entry for Subject Custom Fields.',1,'tab.module.subject.subjectcustomdata'),(35,'LIMS_COLLECTION_CUSTOM_FIELD','Manage Custom Fields for LIMS collections.',1,'tab.module.lims.collectioncustomfield'),(36,'LIMS_COLLECTION_CUSTOM_DATA','Data entry for LIMS collection Custom Fields.',1,'tab.module.lims.collectioncustomdata'),(37,'BIOSPECIMEN_CUSTOM_FIELD','Manage Custom Fields for Biospecimens.',1,'tab.module.lims.biospecimencustomfield'),(38,'BIOSPECIMEN_CUSTOM_DATA','Data entry for Biospecimen Custom Fields.',1,'tab.module.lims.biospecimencustomdata'),(41,'BIOSPECIMENUID_TEMPLATE','Manage BiospecimenUid templates for the study,',1,'tab.module.lims.biospecimenuidtemplate'),(42,'BARCODE_LABEL','Manage barcode label definitions the study,',1,'tab.module.lims.barcodelabel'),(43,'BARCODE_PRINTER','Manage barcode printers for the study,',1,'tab.module.lims.barcodeprinter'),(44,'MODULE_FUNCTION','Allows CRUD operations on the ark_module_function table for the Ark application',1,'tab.module.admin.modulefunction'),(45,'ROLE','Allows CRUD operations on users roles',1,'tab.module.admin.role'),(46,'MODULE_ROLE','Allows CRUD operations on module_role table',1,'tab.module.admin.modulerole'),(47,'BIOSPECIMEN_UPLOAD','Uploader for bispecimens',1,'tab.module.lims.biospecimenUpload'),(50,'SUBJECT_CUSTOM_FIELD_UPLOAD','Uploader for Subject Custom Fields',1,'tab.module.subject.subjectCustomFieldUpload'),(51,'BIOCOLLECTION_CUSTOM_FIELD_UPLOAD','Uploader for BioCollection Custom Fields',1,'tab.module.lims.bioCollectionCustomFieldUpload'),(52,'BIOSPECIMEN_CUSTOM_FIELD_UPLOAD','Uploader for Biospecimen Custom Fields',1,'tab.module.lims.biospecimenCustomFieldUpload'),(54,'RESEARCHER','Researcher use case',1,'tab.module.work.researcher'),(55,'BILLABLE_ITEM_TYPE','Billable item type use case',1,'tab.module.work.billableitemtype'),(56,'WORK_REQUEST','Work Request tab',1,'tab.module.work.workrequest'),(57,'BILLABLE_ITEM','Billable Item Tab',1,'tab.module.work.billableitem'),(58,'BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD','Uploader for both Biospecimen and Biocollection Custom Fields',1,'tab.module.lims.bioupload');
 /*!40000 ALTER TABLE `ark_function` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4051,7 +4033,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `ark_module_function` WRITE;
 /*!40000 ALTER TABLE `ark_module_function` DISABLE KEYS */;
-INSERT INTO `ark_module_function` (`ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `FUNCTION_SEQUENCE`) VALUES (1,1,1,1),(2,1,2,2),(4,1,4,3),(23,1,23,NULL),(27,4,27,1),(88,7,29,1),(89,7,30,2),(90,7,44,3),(91,7,45,4),(92,7,46,5),(93,7,28,6),(117,3,26,1),(118,3,12,2),(119,3,13,3),(120,3,14,4),(121,3,15,5),(122,3,16,6),(135,2,24,1),(136,2,25,2),(137,2,5,3),(138,2,34,4),(139,2,6,5),(140,2,7,6),(141,2,8,7),(142,2,9,8),(143,2,21,9),(144,2,10,10),(145,2,11,11),(159,8,54,1),(160,8,55,2),(161,8,56,3),(162,8,57,4),(164,5,58,1),(165,5,17,2),(166,5,19,3),(167,5,20,4),(168,5,35,5),(169,5,36,6),(170,5,37,7),(171,5,38,8),(172,5,41,9),(173,5,51,10),(174,5,52,11);
+INSERT INTO `ark_module_function` (`ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `FUNCTION_SEQUENCE`) VALUES (1,1,1,1),(2,1,2,2),(4,1,4,3),(23,1,23,NULL),(27,4,27,1),(88,7,29,1),(89,7,30,2),(90,7,44,3),(91,7,45,4),(92,7,46,5),(93,7,28,6),(117,3,26,1),(118,3,12,2),(119,3,13,3),(120,3,14,4),(121,3,15,5),(122,3,16,6),(135,2,24,1),(136,2,25,2),(137,2,5,3),(138,2,34,4),(139,2,6,5),(140,2,7,6),(141,2,8,7),(142,2,9,8),(143,2,21,9),(144,2,10,10),(145,2,11,11),(159,8,54,1),(160,8,55,2),(161,8,56,3),(162,8,57,4),(199,5,17,1),(200,5,19,2),(201,5,20,3),(202,5,35,4),(203,5,36,5),(204,5,37,6),(205,5,38,7),(206,5,41,8),(207,5,51,9),(208,5,52,10),(209,5,47,11);
 /*!40000 ALTER TABLE `ark_module_function` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4061,7 +4043,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `ark_module_role` WRITE;
 /*!40000 ALTER TABLE `ark_module_role` DISABLE KEYS */;
-INSERT INTO `ark_module_role` (`ID`, `ARK_MODULE_ID`, `ARK_ROLE_ID`) VALUES (3,2,4),(4,2,5),(5,2,6),(6,3,7),(7,3,8),(8,5,9),(9,5,10),(10,4,11),(11,5,12),(12,3,13),(20,1,2),(21,1,3),(22,8,1),(23,8,2);
+INSERT INTO `ark_module_role` (`ID`, `ARK_MODULE_ID`, `ARK_ROLE_ID`) VALUES (3,2,4),(4,2,5),(5,2,6),(6,3,7),(7,3,8),(8,5,9),(9,5,10),(10,4,11),(11,5,12),(12,3,13),(20,1,2),(21,1,3),(24,8,2);
 /*!40000 ALTER TABLE `ark_module_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4091,7 +4073,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `ark_role_policy_template` WRITE;
 /*!40000 ALTER TABLE `ark_role_policy_template` DISABLE KEYS */;
-INSERT INTO `ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (1,1,NULL,NULL,1),(2,1,NULL,NULL,2),(3,1,NULL,NULL,3),(4,1,NULL,NULL,4),(7,2,1,2,1),(8,2,1,2,2),(9,2,1,2,3),(10,2,1,3,2),(11,2,1,3,3),(15,3,1,1,2),(16,3,1,2,2),(20,4,2,5,1),(21,4,2,5,2),(22,4,2,5,3),(23,4,2,6,1),(24,4,2,6,2),(25,4,2,6,3),(26,4,2,6,4),(27,4,2,7,1),(28,4,2,7,2),(29,4,2,7,3),(30,4,2,7,4),(31,4,2,8,1),(32,4,2,8,2),(33,4,2,8,3),(34,4,2,8,4),(35,4,2,9,1),(36,4,2,9,2),(37,4,2,9,3),(38,4,2,9,4),(39,5,2,5,2),(40,5,2,6,2),(41,5,2,6,3),(42,5,2,7,2),(43,5,2,7,3),(44,5,2,8,2),(45,5,2,8,3),(46,5,2,9,2),(47,5,2,9,3),(48,4,2,10,1),(49,4,2,10,2),(50,4,2,10,3),(51,4,2,11,1),(52,4,2,11,2),(53,4,2,11,3),(54,5,2,5,1),(55,5,2,5,3),(56,5,2,6,1),(57,5,2,6,4),(58,5,2,7,1),(59,5,2,7,4),(60,5,2,8,1),(61,5,2,8,4),(62,5,2,9,1),(63,5,2,9,4),(64,6,2,5,2),(65,6,2,6,2),(66,6,2,7,2),(67,6,2,8,2),(68,6,2,9,2),(69,6,2,34,2),(70,8,3,12,2),(71,8,3,13,2),(74,8,3,16,1),(75,10,5,17,3),(76,10,5,18,3),(77,10,5,19,3),(78,10,5,20,3),(79,9,5,17,2),(80,9,5,18,2),(81,9,5,19,2),(82,9,5,20,2),(83,7,3,12,2),(84,7,3,13,2),(85,7,3,14,2),(86,7,3,15,2),(87,7,3,16,2),(88,5,2,10,1),(89,8,3,22,2),(91,10,5,17,4),(92,2,1,23,2),(93,3,1,23,2),(94,4,2,24,2),(95,5,2,24,2),(96,6,2,24,2),(98,5,2,25,2),(99,6,2,25,2),(100,7,3,26,2),(101,8,3,26,2),(102,10,5,17,4),(103,10,5,19,4),(104,11,4,27,2),(106,8,3,14,2),(107,6,2,21,2),(108,5,2,21,1),(109,5,2,21,2),(110,5,2,21,3),(111,5,2,21,4),(112,4,2,21,1),(113,4,2,21,2),(114,4,2,21,3),(115,4,2,21,4),(116,12,5,17,1),(117,12,5,17,2),(118,12,5,17,3),(119,12,5,17,4),(120,12,5,18,1),(121,12,5,18,2),(122,12,5,18,3),(123,12,5,18,4),(124,12,5,19,1),(125,12,5,19,2),(126,12,5,19,3),(127,12,5,19,4),(128,12,5,20,1),(129,12,5,20,2),(130,12,5,20,3),(131,12,5,20,4),(133,13,3,13,1),(136,13,3,16,1),(138,13,3,26,2),(142,1,7,28,1),(143,1,7,28,2),(144,1,7,28,3),(145,1,7,28,4),(146,13,3,22,2),(147,7,3,22,2),(148,13,3,12,1),(149,13,3,12,2),(184,4,2,34,1),(185,4,2,34,2),(186,4,2,34,3),(187,4,2,34,4),(188,5,2,34,1),(189,5,2,34,2),(190,5,2,34,3),(191,5,2,34,4),(192,12,5,35,1),(193,12,5,35,2),(194,12,5,35,3),(195,12,5,36,1),(196,12,5,36,2),(197,12,5,36,3),(198,12,5,36,4),(199,10,5,36,1),(200,10,5,36,2),(201,10,5,36,3),(202,10,5,36,4),(203,9,5,36,2),(204,12,5,37,1),(205,12,5,37,2),(206,12,5,37,3),(207,12,5,38,1),(208,12,5,38,2),(209,12,5,38,3),(210,12,5,38,4),(211,10,5,38,1),(212,10,5,38,2),(213,10,5,38,3),(214,10,5,38,4),(215,9,5,38,2),(228,8,3,15,1),(229,8,3,15,2),(230,8,3,15,3),(233,3,1,3,2),(246,14,1,23,2),(247,14,1,1,2),(248,14,1,2,2),(249,14,1,4,2),(250,2,1,23,2),(252,2,1,2,2),(254,3,1,23,2),(255,3,1,1,2),(256,3,1,2,2),(257,3,1,4,2),(258,4,1,23,2),(259,4,1,1,2),(260,4,1,2,2),(261,4,1,4,2),(262,2,1,33,2),(263,13,3,15,1),(264,13,3,15,2),(265,13,3,15,3),(266,13,3,15,4),(267,13,3,14,1),(268,13,3,14,2),(269,13,3,14,3),(270,13,3,14,4),(279,10,5,47,1),(280,10,5,47,2),(281,10,5,47,3),(282,10,5,47,4),(283,12,5,47,1),(284,12,5,47,2),(285,12,5,47,3),(286,12,5,47,4),(287,2,1,1,1),(288,2,1,1,2),(289,2,1,1,3),(290,12,5,NULL,4),(295,12,5,51,1),(296,12,5,51,2),(297,12,5,51,3),(298,12,5,51,4),(299,12,5,52,1),(300,12,5,52,2),(301,12,5,52,3),(302,12,5,52,4),(303,4,2,50,1),(304,4,2,50,2),(305,4,2,50,3),(306,4,2,50,4),(308,12,5,42,1),(309,12,5,42,2),(310,12,5,42,3),(311,12,5,42,4),(312,2,1,4,1),(313,2,1,4,2),(314,2,1,4,3),(315,2,1,4,4),(316,12,5,58,1),(317,12,5,58,2),(318,12,5,58,3),(319,12,5,58,4);
+INSERT INTO `ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (1,1,NULL,NULL,1),(2,1,NULL,NULL,2),(3,1,NULL,NULL,3),(4,1,NULL,NULL,4),(7,2,1,2,1),(8,2,1,2,2),(9,2,1,2,3),(10,2,1,3,2),(11,2,1,3,3),(15,3,1,1,2),(16,3,1,2,2),(20,4,2,5,1),(21,4,2,5,2),(22,4,2,5,3),(23,4,2,6,1),(24,4,2,6,2),(25,4,2,6,3),(26,4,2,6,4),(27,4,2,7,1),(28,4,2,7,2),(29,4,2,7,3),(30,4,2,7,4),(31,4,2,8,1),(32,4,2,8,2),(33,4,2,8,3),(34,4,2,8,4),(35,4,2,9,1),(36,4,2,9,2),(37,4,2,9,3),(38,4,2,9,4),(39,5,2,5,2),(40,5,2,6,2),(41,5,2,6,3),(42,5,2,7,2),(43,5,2,7,3),(44,5,2,8,2),(45,5,2,8,3),(46,5,2,9,2),(47,5,2,9,3),(48,4,2,10,1),(49,4,2,10,2),(50,4,2,10,3),(51,4,2,11,1),(52,4,2,11,2),(53,4,2,11,3),(54,5,2,5,1),(55,5,2,5,3),(56,5,2,6,1),(57,5,2,6,4),(58,5,2,7,1),(59,5,2,7,4),(60,5,2,8,1),(61,5,2,8,4),(62,5,2,9,1),(63,5,2,9,4),(64,6,2,5,2),(65,6,2,6,2),(66,6,2,7,2),(67,6,2,8,2),(68,6,2,9,2),(69,6,2,34,2),(70,8,3,12,2),(71,8,3,13,2),(74,8,3,16,1),(75,10,5,17,3),(76,10,5,18,3),(77,10,5,19,3),(78,10,5,20,3),(79,9,5,17,2),(80,9,5,18,2),(81,9,5,19,2),(82,9,5,20,2),(83,7,3,12,2),(84,7,3,13,2),(85,7,3,14,2),(86,7,3,15,2),(87,7,3,16,2),(88,5,2,10,1),(89,8,3,22,2),(91,10,5,17,4),(92,2,1,23,2),(93,3,1,23,2),(94,4,2,24,2),(95,5,2,24,2),(96,6,2,24,2),(98,5,2,25,2),(99,6,2,25,2),(100,7,3,26,2),(101,8,3,26,2),(102,10,5,17,4),(103,10,5,19,4),(104,11,4,27,2),(106,8,3,14,2),(107,6,2,21,2),(108,5,2,21,1),(109,5,2,21,2),(110,5,2,21,3),(111,5,2,21,4),(112,4,2,21,1),(113,4,2,21,2),(114,4,2,21,3),(115,4,2,21,4),(116,12,5,17,1),(117,12,5,17,2),(118,12,5,17,3),(119,12,5,17,4),(120,12,5,18,1),(121,12,5,18,2),(122,12,5,18,3),(123,12,5,18,4),(124,12,5,19,1),(125,12,5,19,2),(126,12,5,19,3),(127,12,5,19,4),(128,12,5,20,1),(129,12,5,20,2),(130,12,5,20,3),(131,12,5,20,4),(133,13,3,13,1),(136,13,3,16,1),(138,13,3,26,2),(142,1,7,28,1),(143,1,7,28,2),(144,1,7,28,3),(145,1,7,28,4),(146,13,3,22,2),(147,7,3,22,2),(148,13,3,12,1),(149,13,3,12,2),(184,4,2,34,1),(185,4,2,34,2),(186,4,2,34,3),(187,4,2,34,4),(188,5,2,34,1),(189,5,2,34,2),(190,5,2,34,3),(191,5,2,34,4),(192,12,5,35,1),(193,12,5,35,2),(194,12,5,35,3),(195,12,5,36,1),(196,12,5,36,2),(197,12,5,36,3),(198,12,5,36,4),(199,10,5,36,1),(200,10,5,36,2),(201,10,5,36,3),(202,10,5,36,4),(203,9,5,36,2),(204,12,5,37,1),(205,12,5,37,2),(206,12,5,37,3),(207,12,5,38,1),(208,12,5,38,2),(209,12,5,38,3),(210,12,5,38,4),(211,10,5,38,1),(212,10,5,38,2),(213,10,5,38,3),(214,10,5,38,4),(215,9,5,38,2),(228,8,3,15,1),(229,8,3,15,2),(230,8,3,15,3),(233,3,1,3,2),(246,14,1,23,2),(247,14,1,1,2),(248,14,1,2,2),(249,14,1,4,2),(250,2,1,23,2),(252,2,1,2,2),(254,3,1,23,2),(255,3,1,1,2),(256,3,1,2,2),(257,3,1,4,2),(258,4,1,23,2),(259,4,1,1,2),(260,4,1,2,2),(261,4,1,4,2),(262,2,1,33,2),(263,13,3,15,1),(264,13,3,15,2),(265,13,3,15,3),(266,13,3,15,4),(267,13,3,14,1),(268,13,3,14,2),(269,13,3,14,3),(270,13,3,14,4),(279,10,5,47,1),(280,10,5,47,2),(281,10,5,47,3),(282,10,5,47,4),(283,12,5,47,1),(284,12,5,47,2),(285,12,5,47,3),(286,12,5,47,4),(287,2,1,1,1),(288,2,1,1,2),(289,2,1,1,3),(290,12,5,NULL,4),(295,12,5,51,1),(296,12,5,51,2),(297,12,5,51,3),(298,12,5,51,4),(299,12,5,52,1),(300,12,5,52,2),(301,12,5,52,3),(302,12,5,52,4),(303,4,2,50,1),(304,4,2,50,2),(305,4,2,50,3),(306,4,2,50,4),(308,12,5,42,1),(309,12,5,42,2),(310,12,5,42,3),(311,12,5,42,4),(312,2,1,4,1),(313,2,1,4,2),(314,2,1,4,3),(315,2,1,4,4),(316,12,5,58,1),(317,12,5,58,2),(318,12,5,58,3),(319,12,5,58,4),(325,2,8,54,1),(326,2,8,54,2),(327,2,8,54,3),(328,2,8,54,4),(329,2,8,55,1),(330,2,8,55,2),(331,2,8,55,3),(332,2,8,55,4),(333,2,8,56,1),(334,2,8,56,2),(335,2,8,56,3),(336,2,8,56,4),(337,2,8,57,1),(338,2,8,57,2),(339,2,8,57,3),(340,2,8,57,4);
 /*!40000 ALTER TABLE `ark_role_policy_template` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4153,16 +4135,6 @@ LOCK TABLES `correspondence_outcome_type` WRITE;
 /*!40000 ALTER TABLE `correspondence_outcome_type` DISABLE KEYS */;
 INSERT INTO `correspondence_outcome_type` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'Sent',NULL),(2,'Received',NULL),(3,'Return to sender',NULL),(4,'Engaged',NULL),(5,'No answer',NULL),(6,'Contact made',NULL),(7,'Message given to person',NULL),(8,'Not applicable',NULL);
 /*!40000 ALTER TABLE `correspondence_outcome_type` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `correspondence_status_type`
---
-
-LOCK TABLES `correspondence_status_type` WRITE;
-/*!40000 ALTER TABLE `correspondence_status_type` DISABLE KEYS */;
-INSERT INTO `correspondence_status_type` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'On call',NULL),(2,'Archived',NULL);
-/*!40000 ALTER TABLE `correspondence_status_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -4450,7 +4422,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:46
+-- Dump completed on 2012-07-25 15:58:50
 
 USE pheno;
 -- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
@@ -4499,7 +4471,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:46
+-- Dump completed on 2012-07-25 15:58:50
 
 USE geno;
 -- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
@@ -4586,7 +4558,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:46
+-- Dump completed on 2012-07-25 15:58:50
 
 USE lims;
 -- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
@@ -4795,7 +4767,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:46
+-- Dump completed on 2012-07-25 15:58:50
 
 USE reporting;
 -- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
@@ -4844,7 +4816,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:46
+-- Dump completed on 2012-07-25 15:58:50
 
 USE admin;
 -- MySQL dump 10.13  Distrib 5.5.24, for debian-linux-gnu (i686)
@@ -4870,6 +4842,7 @@ USE admin;
 
 LOCK TABLES `billable_item_status` WRITE;
 /*!40000 ALTER TABLE `billable_item_status` DISABLE KEYS */;
+INSERT INTO `billable_item_status` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'Not Commenced',''),(2,'Commenced',''),(3,'Completed','');
 /*!40000 ALTER TABLE `billable_item_status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4909,7 +4882,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `researcher_status` WRITE;
 /*!40000 ALTER TABLE `researcher_status` DISABLE KEYS */;
-INSERT INTO `researcher_status` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'Active',NULL),(2,'Discussion',NULL),(3,'EOI',NULL),(4,'Full Application',NULL);
+INSERT INTO `researcher_status` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'Active',NULL),(2,'Inactive','');
 /*!40000 ALTER TABLE `researcher_status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4919,7 +4892,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `work_request_status` WRITE;
 /*!40000 ALTER TABLE `work_request_status` DISABLE KEYS */;
-INSERT INTO `work_request_status` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'Not Commenced',''),(2,'Started',''),(3,'Completed','');
+INSERT INTO `work_request_status` (`ID`, `NAME`, `DESCRIPTION`) VALUES (1,'Not Commenced',''),(2,'Commenced',''),(3,'Completed','');
 /*!40000 ALTER TABLE `work_request_status` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -4932,7 +4905,7 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-19 11:11:46
+-- Dump completed on 2012-07-25 15:58:50
 /* Initialise the super user in the database */
 
 USE study;
