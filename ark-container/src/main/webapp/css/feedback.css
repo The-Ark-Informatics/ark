@@ -1,0 +1,37 @@
+.feedbackPanelERROR {
+color: red;
+list-style: circle;
+font-family: 'Lucida Sans', 'Helvetica', 'Sans-serif', 'sans';
+font-weight: 700;
+}
+.fieldErrorMessage {
+color: red;
+font-family: 'Lucida Sans', 'Helvetica', 'Sans-serif', 'sans';
+font-weight: 700;
+}
+.feedbackPanelINFO {
+color: green;
+list-style: circle;
+font-family: 'Lucida Sans', 'Helvetica', 'Sans-serif', 'sans';
+font-weight: 700;
+}
+#feedbackPanel {
+float: left;
+padding-left: 20px;
+width: 600px;
+}
+.feedbackPanel {
+float: left;
+padding-left: 20px;
+width: 600px;
+}
+.feedbackZone {
+float: left;
+width: 40%;
+height: 10%;
+}
+#feedbackZone {
+float: left;
+width: 40%;
+height: 10%;
+}
