@@ -21,7 +21,7 @@
 						</wicket:message>
 					</th>
 					<th width="10%">
-						<wicket:message	key="bioTransaction.quantity">
+						<wicket:message	key="quantity">
 							Quantity:
 						</wicket:message>
 					</th>
@@ -39,7 +39,7 @@
 					</th>
 					<th width="25%">
 						<wicket:message	key="bioTransaction.recorder">
-							Comments:
+							Recorder:
 						</wicket:message>
 					</th>
 					<th width="10%">
@@ -125,14 +125,56 @@
 		</table>
 	</div>
 	<form wicket:id="bioTransactionListForm">
-		<!-- New button row -->
-		<div class="buttons">
-			<input wicket:id="newButton" type="submit" value="New"/>
-		</div>
-		<!--	End listDetailsPanelBorder -->
-
-		<!--	The detailModalWindow for detail edit/add from listPanel -->
-		<div wicket:id="detailModalWindow">
+		<span wicket:id="feedback">[Feedback]</span>
+		<div class="detailPanel">
+			<table width="100%" cellspacing="0" class="dataview" border="0">
+				<tr>
+					<td width="2%">
+						&nbsp;
+					</td>
+					<td width="5%">
+						&nbsp;
+					</td>
+					<td width="10%">
+						<span wicket:id="bioTransaction.transactionDate">
+						</span>
+					</td>
+					<td width="10%">
+						<input wicket:id="bioTransaction.quantity" type="text" size="1"/><span class="requiredHint">*</span>
+						<span wicket:id="bioTransaction.biospecimen.unit.name">
+						</span>
+					</td>
+					<td width="10%">
+						<select wicket:id="bioTransaction.status">
+							<option>
+								1
+							</option>
+							<option>
+								2
+							</option>
+						</select>
+					</td>
+					<td width="20%">
+						<input wicket:id="bioTransaction.reason" type="text" />
+					</td>
+					<td width="25%">
+						<span wicket:id="bioTransaction.recorder"></span>
+					</td>
+					<td width="10%">
+						<select wicket:id="bioTransaction.accessRequest">
+							<option>
+								1
+							</option>
+							<option>
+								2
+							</option>
+						</select>
+					</td>
+					<td>
+						<input wicket:id="saveButton" type="submit" value="Save"/>
+					</td>
+				</tr>
+			</table>
 		</div>
 	</form>
 </wicket:panel>

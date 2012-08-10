@@ -20,6 +20,7 @@ package au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +28,8 @@ import java.util.List;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DateTimeField;
@@ -133,7 +136,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private TextField<Double>									bioTransactionQuantityTxtFld;
 	private DropDownChoice<Unit>								unitDdc;
 	private DropDownChoice<TreatmentType>					treatmentTypeDdc;
-
+	
+	private TextField<Number>									concentrationTxtFld;
+	private Label													amountLbl;
+	
 	private Panel													biospecimenLocationPanel;
 	private WebMarkupContainer									bioTransactionDetailWmc;
 	private Panel													bioTransactionListPanel;
@@ -142,6 +148,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 	private BiospecimenButtonsPanel							biospecimenbuttonsPanel;
 	private ModalWindow											modalWindow;
+	
+	private AjaxLink<Date>										useCollectionDate;
 
 	/**
 	 * Constructor
@@ -161,6 +169,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioTransactionDetailWmc.setOutputMarkupPlaceholderTag(true);
 		bioTransactionDetailWmc.setEnabled(cpModel.getObject().getBiospecimen().getId() == null);
 	}
+	
+	public void onBeforeRender() {
+		refreshEntityFromBackend();
+		super.onBeforeRender();
+	};
 	
 	/**
 	 * Enable quantity/treatment
@@ -307,6 +320,16 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		parentUidTxtFld = new TextField<String>("biospecimen.parentUid");
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		useCollectionDate = new AjaxLink<Date>("useCollectionDate"){
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target) {
+				cpModel.getObject().getBiospecimen().setSampleDate(cpModel.getObject().getBiospecimen().getBioCollection().getCollectionDate());
+				target.add(sampleDateTxtFld);
+			}
+		};
+		
 		sampleTimeTxtFld = new DateTimeField("biospecimen.sampleTime") {
 
 			private static final long	serialVersionUID	= 1L;
@@ -384,6 +407,42 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				return (IConverter<C>) doubleConverter;
 			}
 		};
+		bioTransactionQuantityTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				target.add(amountLbl);
+			}
+		});
+		
+		concentrationTxtFld = new TextField<Number>("biospecimen.concentration");
+		concentrationTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				target.add(amountLbl);
+			}
+		});
+		amountLbl = new Label("biospecimen.amount", new Model<Number>(){
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public Number getObject() {
+				Number concentration = ((concentrationTxtFld.getModelObject() == null) ? 0 : concentrationTxtFld.getModelObject());
+				Number quantity = null;
+				if(bioTransactionQuantityTxtFld.isVisible()) {
+					quantity = ((bioTransactionQuantityTxtFld.getModelObject() == null) ? 0 : bioTransactionQuantityTxtFld.getModelObject());
+				}
+				else{
+					quantity = ((quantityTxtFld.getModelObject() == null) ? 0 : quantityTxtFld.getModelObject());
+				}
+				Number amount =  (concentration.doubleValue() * quantity.doubleValue());
+				return amount;
+			}
+		});
+		amountLbl.setOutputMarkupPlaceholderTag(true);
 
 		setQuantityLabel();
 		initSampleTypeDdc();
@@ -531,6 +590,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(parentUidTxtFld.setEnabled(false));
 		arkCrudContainerVo.getDetailPanelFormContainer().add(sampleTypeDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(sampleDateTxtFld);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(useCollectionDate);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(sampleTimeTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(processedDateTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(processedTimeTxtFld);
@@ -544,6 +604,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(anticoagDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(statusDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(qualityDdc);
+		
 
 		// Quantity label depends on new/existing Biospecimen
 		bioTransactionDetailWmc.addOrReplace(quantityNoteLbl);
@@ -553,6 +614,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioTransactionDetailWmc.add(bioTransactionQuantityTxtFld);
 		bioTransactionDetailWmc.add(unitDdc);
 		bioTransactionDetailWmc.add(treatmentTypeDdc);
+		
+		arkCrudContainerVo.getDetailPanelFormContainer().add(concentrationTxtFld);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(amountLbl);
 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioTransactionDetailWmc);
 
@@ -673,6 +737,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				}
 			}
 			
+			// Update qty avail
+			cpModel.getObject().getBiospecimen().setQuantity(iLimsService.getQuantityAvailable(cpModel.getObject().getBiospecimen()));
+			
 			// Update biospecimen
 			iLimsService.updateBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
@@ -708,7 +775,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			bioTransactionDetailWmc.setEnabled(false);
 			bioTransactionQuantityTxtFld.setVisible(false);
 			quantityTxtFld.setVisible(true);
-			quantityTxtFld.setModelObject(bioTransactionQuantityTxtFld.getModelObject());
+			//quantityTxtFld.setModelObject(bioTransactionQuantityTxtFld.getModelObject());
 			target.add(bioTransactionDetailWmc);
 
 			barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
@@ -772,6 +839,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			limsVo.getBiospecimen().setComments("Clone of " + parentBiospecimenUid);
 			limsVo.getBiospecimen().setBarcoded(false);
 			limsVo.setBiospecimenLocationVO(new BiospecimenLocationVO());
+			limsVo.getBiospecimen().setChildren(new ArrayList<Biospecimen>());
 
 			// Inital transaction detail (quantity grabbed from previous biospecimen)
 			limsVo.getBioTransaction().setId(null);
@@ -779,6 +847,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			limsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
 
 			iLimsService.createBiospecimen(limsVo);
+			limsVo.setBioTransaction(new BioTransaction());
 			cpModel.setObject(limsVo);
 			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was cloned from " + parentBiospecimenUid + " successfully");
 			target.add(feedbackPanel);
@@ -886,8 +955,6 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		catch (NoSuchMethodException e) {
 			log.error(e.getMessage());
 		}
-
-
 	}
 
 	public CheckBox getBarcodedChkBox() {
