@@ -22,6 +22,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.AccessRequest;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.TreatmentType;
@@ -94,5 +95,7 @@ public interface IBioTransactionDao {
 	 * @return
 	 */
 	public BioTransactionStatus getBioTransactionStatusByName(String statusName);
+
+	public List<AccessRequest> getAccessRequests();
 
 }

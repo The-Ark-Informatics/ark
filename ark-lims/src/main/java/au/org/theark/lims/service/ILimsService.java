@@ -24,6 +24,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.AccessRequest;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioSampletype;
@@ -358,7 +359,6 @@ public interface ILimsService {
 	public List<String> getAllBiospecimenUIDs(Study study);
 	
 	public List<String> getAllBiocollectionUIDs(Study study);
-	
 
-	
+	public List<AccessRequest> getAccessRequests();
 }

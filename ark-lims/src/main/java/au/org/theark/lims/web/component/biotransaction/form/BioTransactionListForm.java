@@ -18,134 +18,163 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biotransaction.form;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.AbstractDetailModalWindow;
+import au.org.theark.core.model.lims.entity.AccessRequest;
+import au.org.theark.core.model.lims.entity.BioTransaction;
+import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.lims.service.ILimsService;
+import au.org.theark.lims.web.Constants;
 
 /**
  * @author cellis
  * 
  */
-public class BioTransactionListForm extends Form<LimsVO> {
-
+public class BioTransactionListForm extends Form<BioTransaction> {
 	private static final long								serialVersionUID	= 1L;
-	private static final Logger							log					= LoggerFactory.getLogger(BioTransactionListForm.class);
 
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>						iArkCommonService;
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
+	private ILimsService											iLimsService;
+	
+	private CompoundPropertyModel<LimsVO> 					cpModel;
+	private FeedbackPanel										feedbackPanel;
+	private Label													transactionDateLbl;
+	private TextField<Number>									quantity;
+	private Label													unitsLbl;
+	private Label													recorderLbl;
+	private TextField<String>									reasonLbl;
+	private DropDownChoice<BioTransactionStatus>			status;
+	private DropDownChoice<AccessRequest>					accessRequest;
+	private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+	private ArkBusyAjaxButton							saveButton;
 
-	protected CompoundPropertyModel<LimsVO>			cpModel;
-	protected FeedbackPanel									feedbackPanel;
-	protected AbstractDetailModalWindow					modalWindow;
-
-	private Panel												modalContentPanel;
-	protected ArkBusyAjaxButton							newButton;
-
-	public BioTransactionListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
-		super(id, cpModel);
+	public BioTransactionListForm(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<LimsVO> cpModel) {
+		super(id);
 		this.cpModel = cpModel;
-		this.feedbackPanel = feedbackPanel;
-		this.modalWindow = modalWindow;
+		BioTransaction bioTransaction = new BioTransaction();
+		bioTransaction.setBiospecimen(cpModel.getObject().getBiospecimen());
+		cpModel.getObject().setBioTransaction(bioTransaction);
 	}
 
 	public void initialiseForm() {
-		modalContentPanel = new EmptyPanel("content");
-
-		initialiseNewButton();
-
-		add(modalWindow);
+		feedbackPanel = new FeedbackPanel("feedback");
+		feedbackPanel.setOutputMarkupPlaceholderTag(true);
+		add(feedbackPanel);
+		
+		transactionDateLbl = new Label("bioTransaction.transactionDate", simpleDateFormat.format(new Date()));
+		quantity = new TextField<Number>("bioTransaction.quantity");
+		
+		unitsLbl = new Label("bioTransaction.biospecimen.unit.name", cpModel.getObject().getBiospecimen().getUnit().getName());
+		reasonLbl = new TextField<String>("bioTransaction.reason");
+		recorderLbl = new Label("bioTransaction.recorder", SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString());
+		
+		initStatus();
+		initAccessRequest();
+		initSaveButton();
+		addFormComponents();
 	}
 
-	@Override
-	public void onBeforeRender() {
-		// Get session data (used for subject search)
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-		if(cpModel.getObject().getBiospecimen() == null || cpModel.getObject().getBiospecimen().getId() == null){
-			if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
-				LinkSubjectStudy linkSubjectStudy = null;
-				Study study = null;
-				boolean contextLoaded = false;
-				try {
-					study = iArkCommonService.getStudy(sessionStudyId);
-					linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
-					if (study != null && linkSubjectStudy != null) {
-						contextLoaded = true;
-					}
-				}
-				catch (EntityNotFoundException e) {
-					log.error(e.getMessage());
-				}
-
-				if (contextLoaded) {
-					// Successfully loaded from backend
-					cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
-					cpModel.getObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
-					cpModel.getObject().getBiospecimen().setStudy(study);
-				}
-			}
-		}
-
-		super.onBeforeRender();
+	private void initStatus() {
+		List<BioTransactionStatus> list = iLimsService.getBioTransactionStatusChoices();		
+		ChoiceRenderer<BioTransactionStatus> choiceRenderer = new ChoiceRenderer<BioTransactionStatus>(Constants.NAME, Constants.ID);
+		status = new DropDownChoice<BioTransactionStatus>("bioTransaction.status", list, choiceRenderer);
+	}
+	
+	private void initAccessRequest() {
+		List<AccessRequest> list = iLimsService.getAccessRequests();
+		ChoiceRenderer<AccessRequest> choiceRenderer = new ChoiceRenderer<AccessRequest>(Constants.NAME, Constants.ID);
+		accessRequest = new DropDownChoice<AccessRequest>("bioTransaction.accessRequest", list, choiceRenderer);
 	}
 
-	private void initialiseNewButton() {
-		newButton = new ArkBusyAjaxButton("newButton", new StringResourceModel("listNewKey", this, null)) {
-
+	private void initSaveButton() {
+		saveButton = new ArkBusyAjaxButton("saveButton") {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public boolean isVisible() {
-				return false;
+				return true;
 			}
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onNew(target);
+				// Set defaults
+				cpModel.getObject().getBioTransaction().setTransactionDate(new Date());
+				cpModel.getObject().getBioTransaction().setRecorder(SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString());
+				
+				Double qtyAvail = iLimsService.getQuantityAvailable(cpModel.getObject().getBiospecimen());
+				Double txnQuantity = cpModel.getObject().getBioTransaction().getQuantity();
+				
+				if(txnQuantity == null) {
+					error("Field 'Quantity' is required");
+					target.add(feedbackPanel);
+				}
+				else {
+					// Make quantity minus if positive and Aliquoted or Processed
+					String status = cpModel.getObject().getBioTransaction().getStatus().getName();
+					if(status != null && (status.equalsIgnoreCase("Aliquoted") || status.equalsIgnoreCase("Processed")) && txnQuantity != null && txnQuantity > 0) {
+						cpModel.getObject().getBioTransaction().setQuantity(-1 * txnQuantity);
+					}
+					
+					// Check that quantity specified not greater than available
+					if(txnQuantity < 0 && (Math.abs(txnQuantity) > qtyAvail)) {
+						error("When aliquoting or processing, transaction quantity may not exceed total quantity available.");
+						target.add(feedbackPanel);
+					}
+					else {
+						iLimsService.createBioTransaction(cpModel.getObject());
+						info("Transaction saved successfully");
+						
+						// update biospecimen (qty avail)
+						qtyAvail = iLimsService.getQuantityAvailable(cpModel.getObject().getBiospecimen());
+						cpModel.getObject().getBiospecimen().setQuantity(qtyAvail);
+						iLimsService.updateBiospecimen(cpModel.getObject());
+						
+						// refresh transaction form
+						BioTransaction bioTransaction = new BioTransaction();
+						bioTransaction.setBiospecimen(cpModel.getObject().getBiospecimen());
+						cpModel.getObject().setBioTransaction(bioTransaction);
+						
+						target.add(form.getParent().getParent());
+						target.add(feedbackPanel);
+					}
+				}
+			}
+			
+			@Override
+			public boolean isEnabled() {
+				return (iLimsService.getQuantityAvailable(cpModel.getObject().getBiospecimen()) > 0);
 			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				// TODO: Fix hardcoded message::
-				log.error("Error occured on the click of the New BioTransaction AjaxButton");
+				target.add(feedbackPanel);
 			}
 		};
-		newButton.setDefaultFormProcessing(false);
-
-		add(newButton);
-	}
-
-	protected void onNew(AjaxRequestTarget target) {
-		CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
-		// Create new BioTransaction given a biospecimen
-		newModel.getObject().setBiospecimen(cpModel.getObject().getBiospecimen());
-		showModalWindow(target, newModel);
-
-		// refresh the feedback messages
-		target.add(feedbackPanel);
 	}
 	
-	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<LimsVO> cpModel) {
-		modalContentPanel = new EmptyPanel("content");
-		// Set the modalWindow title and content
-		modalWindow.setTitle("Biospecimen Detail");
-		modalWindow.setContent(modalContentPanel);
-		modalWindow.show(target);
+	private void addFormComponents() {
+		add(transactionDateLbl);
+		add(quantity);
+		add(unitsLbl);
+		add(recorderLbl);
+		add(reasonLbl);
+		add(status);
+		add(accessRequest);
+		add(saveButton);	
 	}
 }

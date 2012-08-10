@@ -46,7 +46,6 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.link.AjaxConfirmLink;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -88,26 +87,16 @@ public class BioTransactionListPanel extends Panel {
 		setOutputMarkupPlaceholderTag(true);
 	}
 
-	// Allow chaining of initialiosPanel and constructor...
-	public BioTransactionListPanel initialisePanel() {
-		final BioTransactionListPanel panelToRepaint = this;
-		AbstractDetailModalWindow modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
-
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onCloseModalWindow(AjaxRequestTarget target) {
-				target.add(panelToRepaint);
-			}
-
-		};
-
-		bioTransactionListForm = new BioTransactionListForm("bioTransactionListForm", feedbackPanel, modalWindow, cpModel);
+	// Allow chaining of initialisePanel and constructor...
+	public BioTransactionListPanel initialisePanel() {		
+		initialiseDataView();
+		
+		BioTransaction bioTransaction = new BioTransaction();
+		bioTransaction.setBiospecimen(cpModel.getObject().getBiospecimen());
+		
+		bioTransactionListForm = new BioTransactionListForm("bioTransactionListForm", feedbackPanel, cpModel);
 		bioTransactionListForm.initialiseForm();
 		add(bioTransactionListForm);
-
-		initialiseDataView();
 
 		return this;
 	}
@@ -183,9 +172,16 @@ public class BioTransactionListPanel extends Panel {
 					public void onClick(AjaxRequestTarget target) {
 						BioTransaction bioTransaction = getModelObject();
 						iLimsService.deleteBioTransaction(bioTransaction);
+						
+						// update biospecimen (qty avail)
+						Double qtyAvail = iLimsService.getQuantityAvailable(cpModel.getObject().getBiospecimen());
+						cpModel.getObject().getBiospecimen().setQuantity(qtyAvail);
+						iLimsService.updateBiospecimen(cpModel.getObject());
+						
 						this.info("Successfully removed the transaction");
 						target.add(feedbackPanel);
 						target.add(dataViewListWMC); // repaint the list
+						target.add(dataViewListWMC.getParent().getParent()); // repaint the parent form
 					}
 
 				};

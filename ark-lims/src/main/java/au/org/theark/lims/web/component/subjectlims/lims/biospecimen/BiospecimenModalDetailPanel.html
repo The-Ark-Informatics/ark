@@ -12,11 +12,11 @@
 	<div class="contentZone">
 		<span wicket:id="detailFeedback">
 		</span>
-		
+
 		<div wicket:id="subjectDetailPanel">
 			[Subject detail]
 		</div>
-		
+
 		<form wicket:id="biospecimenModalDetailForm">
 			<div class="detailsPanelBorder">
 				<div wicket:id="detailFormContainer">
@@ -114,7 +114,7 @@
 							</label>
 						</div>
 					</div>
-					
+
 					<div class="fldControl">
 						<select wicket:id="biospecimen.bioCollection">
 							<option>
@@ -142,6 +142,12 @@
 
 					<div class="fldControl">
 						<input wicket:id="biospecimen.sampleDate"	type="text" maxLength="10"/>
+						<div class="note">
+							<a href="#" wicket:id="useCollectionDate">
+								<wicket:message	key="useCollectionDate">
+								</wicket:message>
+							</a>
+						</div>
 					</div>
 
 					<div class="panelMargin">
@@ -231,10 +237,10 @@
 								<wicket:message	key="biospecimen.barcoded.note">
 									[Note replaced from properties]
 								</wicket:message>
-							</div>		
+							</div>
 						</div>
 					</div>
-					
+
 					<div class="fldControl">
 						<div class="controlTop">
 							<img wicket:id="biospecimen.barcodeImage" width="20px" height="20px"/>
@@ -243,7 +249,7 @@
 							<input type="checkbox" wicket:id="biospecimen.barcoded"/>
 						</div>
 					</div>
-					
+
 					<div class="detailPanelBreaker">
 						&nbsp;
 					</div>
@@ -289,11 +295,11 @@
 							</option>
 						</select>
 					</div>
-					
+
 					<div class="detailPanelBreaker">
 						&nbsp;
 					</div>
-					
+
 					<div class="panelContentLeft">
 						&nbsp;
 					</div>
@@ -335,7 +341,7 @@
 							</option>
 						</select>
 					</div>
-					
+
 					<div class="detailPanelBreaker">
 						&nbsp;
 					</div>
@@ -379,16 +385,12 @@
 							</div>
 
 							<div class="fldLabel">
-								<label for="biospecimen.quantity">
-									<span wicket:id="biospecimen.quantity.label">
-										[Quantity]
-									</span>
-								</label>
-								<div class="label">
-									<span id="note" wicket:id="biospecimen.quantity.note">
-										[Note replaced from properties]
-									</span>
-								</div>
+								<span wicket:id="biospecimen.quantity.label">
+									[Quantity]
+								</span>
+								<span id="note" wicket:id="biospecimen.quantity.note">
+									[Note replaced from properties]
+								</span>
 							</div>
 
 							<div class="fldControl">
@@ -409,26 +411,59 @@
 							</div>
 
 							<div class="fldLabel">
-								<div class="label">
-									<label for="biospecimen.treatmentType">
-										<wicket:message key="biospecimen.treatmentType">
-											Treatment:
-										</wicket:message>
-									</label>
-								</div>
+								<wicket:message key="biospecimen.treatmentType">
+									Treatment:
+								</wicket:message>
 							</div>
 
 							<div class="fldControl">
-								<div class="label">
-									<select wicket:id="biospecimen.treatmentType">
-										<option>
-											1
-										</option>
-										<option>
-											2
-										</option>
-									</select>
-								</div>
+								<select wicket:id="biospecimen.treatmentType">
+									<option>
+										1
+									</option>
+									<option>
+										2
+									</option>
+								</select>
+							</div>
+						</div>
+						
+						<div class="detailPanelBreaker">
+							&nbsp;
+						</div>
+	
+						<div class="panelContentLeft">
+							&nbsp;
+						</div>
+	
+						<div class="fldLabel">
+							<wicket:message key="biospecimen.concentration">
+								Concentration:
+							</wicket:message>
+						</div>
+	
+						<div class="fldControl">
+							<input wicket:id="biospecimen.concentration" type="text" maxLength="10" size="5"/>
+						</div>
+						
+						<div class="panelMargin">
+							&nbsp;
+						</div>
+
+						<div class="fldLabel">
+							<wicket:message key="biospecimen.amount">
+								Amount:
+							</wicket:message>
+						</div>
+
+						<div class="fldControl">
+							<span wicket:id="biospecimen.amount"></span>
+						</div>
+
+						<!-- Transaction detail -->
+						<div class="detailPanel">
+							<!-- Biospecimen transaction detail -->
+							<div wicket:id="bioTransactionListPanel">
 							</div>
 						</div>
 					</div>
@@ -445,13 +480,6 @@
 							</div>
 						</div>
 					</div>
-
-					<div class="detailPanel">
-						<!-- Biospecimen transaction detail -->
-						<div wicket:id="bioTransactionListPanel">
-						</div>
-					</div>
-
 				</div>
 				<!-- detailFormContainer end-->
 

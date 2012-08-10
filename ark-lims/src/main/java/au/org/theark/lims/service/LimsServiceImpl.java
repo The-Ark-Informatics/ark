@@ -35,6 +35,7 @@ import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.lims.entity.AccessRequest;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioSampletype;
@@ -253,6 +254,10 @@ public class LimsServiceImpl implements ILimsService {
 		BioTransactionStatus initialStatus = getBioTransactionStatusByName(Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
 		bioTransaction.setStatus(initialStatus);	//ensure that the initial transaction can be identified
 		iBioTransactionDao.createBioTransaction(bioTransaction);
+		
+		// update quantity
+		biospecimen.setQuantity(getQuantityAvailable(biospecimen));
+		iBiospecimenDao.updateBiospecimen(biospecimen);
 	}
 
 	/*
@@ -811,6 +816,10 @@ public class LimsServiceImpl implements ILimsService {
 	
 	public List<String> getAllBiocollectionUIDs(Study study){
 		return iBioCollectionDao.getAllBiocollectionUIDs(study);
+	}
+
+	public List<AccessRequest> getAccessRequests() {
+		return iBioTransactionDao.getAccessRequests();
 	}
 	
 }
