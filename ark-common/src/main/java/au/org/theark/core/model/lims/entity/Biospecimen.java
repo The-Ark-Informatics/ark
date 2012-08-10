@@ -39,6 +39,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -84,6 +85,8 @@ public class Biospecimen implements java.io.Serializable {
 	private BiospecimenQuality			quality;
 	private BiospecimenAnticoagulant	anticoag;
 	private BiospecimenStatus			status;
+	private Double							concentration;
+	private Double							amount;
 
 	private Set<BioTransaction>		bioTransactions	= new HashSet<BioTransaction>(0);
 
@@ -386,7 +389,21 @@ public class Biospecimen implements java.io.Serializable {
 	public void setStatus(BiospecimenStatus status) {
 		this.status = status;
 	}
-	
+		
+	@Column(name = "CONCENTRATION")
+	public Double getConcentration() {
+		return concentration;
+	}
+
+	public void setConcentration(Double concentration) {
+		this.concentration = concentration;
+	}
+
+	@Transient
+	public Double getAmount() {
+		return amount;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BIOSPECIMEN_ANTICOAGULANT_ID")
 	public BiospecimenAnticoagulant getAnticoag() {
