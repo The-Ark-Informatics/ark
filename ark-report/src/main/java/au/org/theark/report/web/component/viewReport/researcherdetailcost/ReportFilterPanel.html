@@ -1,0 +1,78 @@
+<wicket:panel>
+	<form wicket:id="filterForm">
+		<div id="searchPanelContent">
+
+			<div id="searchPanelBreaker">&nbsp;</div>
+			
+			
+			<div id="panelContentLeft">&nbsp;</div>
+
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="researcher">
+						<wicket:message key="researchercost.researcher">Researcher:</wicket:message>
+					</label>
+	 			</div> 
+	 		</div> 			     
+
+			<div id="fldControl">
+				<div class="label">
+					<select wicket:id="researcher">
+	       				<option>PDF</option>
+	       			</select>
+	       		</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+		
+			<div id="fldLabel">
+				<div class="label">
+					<label for="year">
+						<wicket:message key="researchercost.year">Year:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+	       			<input wicket:id="year" type="text" maxLength="4"/>
+	       		</div>
+			</div>
+			
+					
+			<div id="searchPanelBreaker">&nbsp;</div>		
+			
+					
+
+			<div id="panelContentLeft">&nbsp;</div>
+
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="report.outputFormatChoice"><wicket:message key="report.outputFormatChoice">Output Format:</wicket:message></label>
+	 			</div> 
+	 		</div> 			     
+
+			<div id="fldControl">
+				<div class="label">
+					<select wicket:id="report.outputFormatChoice">
+	       				<option>PDF</option>
+	       			</select>
+	       		</div>
+			</div>
+					
+			<div id="searchPanelBreaker">&nbsp;</div>		
+			<!--  Defines the location for buttons -->			
+			
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="actionButtons">&nbsp;
+				<div>
+					<input wicket:id="generate" type="submit" wicket:message="value:button.generate" />
+				</div>
+			</div>
+			
+			<div id="searchPanelBreaker">&nbsp;</div>
+		</div>
+	</form>
+</wicket:panel>

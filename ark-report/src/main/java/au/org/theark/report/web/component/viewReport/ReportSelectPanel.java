@@ -52,6 +52,7 @@ import au.org.theark.report.service.IReportService;
 import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsReportContainer;
 import au.org.theark.report.web.component.viewReport.phenoFieldDetails.PhenoFieldDetailsReportContainer;
 import au.org.theark.report.web.component.viewReport.researchercost.WorkResearcherCostReportContainer;
+import au.org.theark.report.web.component.viewReport.researcherdetailcost.WorkResearcherDetailCostReportContainer;
 import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLevelConsentReportContainer;
 import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryReportContainer;
 import au.org.theark.report.web.component.viewReport.studyUserRolePermissions.StudyUserRolePermissionsReportContainer;
@@ -318,6 +319,21 @@ public class ReportSelectPanel extends Panel {
 					}
 					else {
 						WorkResearcherCostReportContainer selectedReportPanel = new WorkResearcherCostReportContainer("selectedReportContainerPanel");
+						selectedReportPanel.setOutputMarkupId(true);
+						// Replace the old selectedReportPanel with this new one
+						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
+						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
+						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
+						target.add(reportContainerVO.getSelectedReportContainerWMC());
+						this.info(reportTemplate.getName() + " template selected.");
+					}
+				}
+				else if(reportTemplate.getName().equals(Constants.WORK_RESEARCHER_DETAIL_COST_REPORT_NAME)){
+					if (reportSelectCPM.getObject().getStudy() == null) {
+						this.error("This report requires a study in context. Please put a study in context first.");
+					}
+					else {
+						WorkResearcherDetailCostReportContainer selectedReportPanel = new WorkResearcherDetailCostReportContainer("selectedReportContainerPanel");
 						selectedReportPanel.setOutputMarkupId(true);
 						// Replace the old selectedReportPanel with this new one
 						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
