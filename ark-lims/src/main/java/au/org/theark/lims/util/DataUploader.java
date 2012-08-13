@@ -27,11 +27,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,31 +37,12 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
-import au.org.theark.core.model.study.entity.Address;
-import au.org.theark.core.model.study.entity.AddressStatus;
-import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.ConsentOption;
-import au.org.theark.core.model.study.entity.ConsentStatus;
-import au.org.theark.core.model.study.entity.ConsentType;
-import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.MaritalStatus;
-import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.PersonContactMethod;
-import au.org.theark.core.model.study.entity.PersonLastnameHistory;
-import au.org.theark.core.model.study.entity.Phone;
-import au.org.theark.core.model.study.entity.PhoneStatus;
-import au.org.theark.core.model.study.entity.PhoneType;
-import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
-import au.org.theark.core.model.study.entity.SubjectStatus;
-import au.org.theark.core.model.study.entity.TitleType;
-import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.lims.service.ILimsService;
 
@@ -132,74 +111,6 @@ public class DataUploader {
 		return new StringBuffer();//uploadReport;
 	}
 
-	private State findStateWithinThisCountry(String stateString, Country country) {
-		if(stateString!=null && !StringUtils.isBlank(stateString)){
-			for(State state : country.getStates()){
-				if(state.getName().equalsIgnoreCase(stateString)){
-					return state;
-				}
-			}
-		}
-		return null;
-	}
-
-	private Country findCountry(List<Country> countriesPossible, String countryString) {
-		if(countryString!=null && !StringUtils.isBlank(countryString)){
-			for(Country country : countriesPossible){
-				if(country.getName().equalsIgnoreCase(countryString)){
-					return country;
-				}
-			}
-		}
-		return null;
-	}
-
-	private AddressStatus findAddressStatusOrSetDefault(List<AddressStatus> StatiiAlreadyExisting, AddressStatus defaultAddressStatus, String stringRepresentingTheStatusWeWant) {
-		if(stringRepresentingTheStatusWeWant!=null && !StringUtils.isBlank(stringRepresentingTheStatusWeWant)){
-			for(AddressStatus nextStatus : StatiiAlreadyExisting){
-				if(nextStatus.getName().equalsIgnoreCase(stringRepresentingTheStatusWeWant)){
-					return nextStatus;
-				}
-			}
-		}
-		return defaultAddressStatus;
-	}
-
-
-	private AddressType findAddressTypeOrSetDefault(List<AddressType> typesAlreadyExisting, AddressType defaultAddressType, String stringRepresentingTheTypeWeWant) {
-		if(stringRepresentingTheTypeWeWant!=null && !StringUtils.isBlank(stringRepresentingTheTypeWeWant)){
-			for(AddressType nextType : typesAlreadyExisting){
-				if(nextType.getName().equalsIgnoreCase(stringRepresentingTheTypeWeWant)){
-					return nextType;
-				}
-			}
-		}
-		return defaultAddressType;
-	}
-
-
-	private PhoneStatus findPhoneStatusOrSetDefault(List<PhoneStatus> StatiiAlreadyExisting, PhoneStatus defaultPhoneStatus, String stringRepresentingTheStatusWeWant) {
-		if(stringRepresentingTheStatusWeWant!=null && !StringUtils.isBlank(stringRepresentingTheStatusWeWant)){
-			for(PhoneStatus nextStatus : StatiiAlreadyExisting){
-				if(nextStatus.getName().equalsIgnoreCase(stringRepresentingTheStatusWeWant)){
-					return nextStatus;
-				}
-			}
-		}
-		return defaultPhoneStatus;
-	}
-
-
-	private PhoneType findPhoneTypeOrSetDefault(List<PhoneType> typesAlreadyExisting, PhoneType defaultPhoneType, String stringRepresentingTheTypeWeWant) {
-		if(stringRepresentingTheTypeWeWant!=null && !StringUtils.isBlank(stringRepresentingTheTypeWeWant)){
-			for(PhoneType nextType : typesAlreadyExisting){
-				if(nextType.getName().equalsIgnoreCase(stringRepresentingTheTypeWeWant)){
-					return nextType;
-				}
-			}
-		}
-		return defaultPhoneType;
-	}
 
 	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, List<String> listOfUIDsToUpdate) throws FileFormatException, ArkSystemException {
 		List<SubjectCustomFieldData> customFieldsToUpdate = new ArrayList<SubjectCustomFieldData>();
