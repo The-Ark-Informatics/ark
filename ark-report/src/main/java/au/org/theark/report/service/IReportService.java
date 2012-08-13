@@ -37,6 +37,7 @@ import au.org.theark.report.model.vo.ResearcherCostResportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
 import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 
 public interface IReportService {
@@ -73,6 +74,8 @@ public interface IReportService {
 	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsDataRowList(ConsentDetailsReportVO cdrVO);
 	
 	public List<ResearcherBillableItemTypeCostDataRow> getBillableItemTypeCostData(final ResearcherCostResportVO researcherCostResportVO);
+	
+	public List<ResearcherDetailCostDataRow> getBillableItemDetailCostData(final ResearcherCostResportVO researcherCostResportVO);
 	
 	public List<Researcher> searchResearcherByStudyId(final Long studyId);
 

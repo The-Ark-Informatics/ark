@@ -2,9 +2,10 @@ package au.org.theark.report.model.vo;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
-import au.org.theark.report.model.vo.report.ResearcherCostDataRow;
+import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
 
 /**
  * 
@@ -17,23 +18,32 @@ public class BeanFactory {
 	
 	public  BeanFactory() {
     }
-
+	
 	/**
 	 * Sample data collection population method.
 	 * @return data beans collection.
 	 */
-    public static Collection<ResearcherCostDataRow> getBeans() {
-        List<ResearcherCostDataRow> costTypes = new  ArrayList<ResearcherCostDataRow>();
+    public static Collection<ResearcherDetailCostDataRow> getBeans() {
+        List<ResearcherDetailCostDataRow> costTypes = new  ArrayList<ResearcherDetailCostDataRow>();
 
-        ResearcherCostDataRow data1 = new  ResearcherCostDataRow("Mail out", 10,2.5);
+        ResearcherDetailCostDataRow data1 = new  ResearcherDetailCostDataRow("1:1", new Date(),"Y","GST Inclusive",100,103.42,3.42,"Mailouts",1L);
         costTypes.add(data1);
         
-        ResearcherCostDataRow data2 = new  ResearcherCostDataRow("post", 9,1.5);
+        ResearcherDetailCostDataRow data2 = new  ResearcherDetailCostDataRow("1:2", new Date(),"Y","GST Inclusive",400,148.23,8.23,"Mailouts",1L);
         costTypes.add(data2);
         
-        ResearcherCostDataRow data3 = new  ResearcherCostDataRow("call back", 8,0.5);
+        ResearcherDetailCostDataRow data3 = new  ResearcherDetailCostDataRow("1:3", new Date(),"Y","GST Inclusive",400,148.23,8.23,"Mailouts",1L);
         costTypes.add(data3);
 
+        ResearcherDetailCostDataRow data4 = new  ResearcherDetailCostDataRow("1:4", new Date(),"Y","GST Inclusive",400,148.23,8.23,"Mailouts",1L);
+        costTypes.add(data4);
+        
+        ResearcherDetailCostDataRow data5 = new  ResearcherDetailCostDataRow("1:1", new Date(),"Y","GST Inclusive",5,303.80,3.80,"Phone Follow-Up Charges",2L);
+        costTypes.add(data5);
+        
+        ResearcherDetailCostDataRow data6 = new  ResearcherDetailCostDataRow("Project & Data Management Costs ", new Date(),"Y","GST Inclusive",12,592.92,2.92,"Administration Charges",3L);
+        costTypes.add(data6);
+            
         return  costTypes;
     }
 }
