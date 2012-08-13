@@ -1,0 +1,140 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="batchCreateBiospecimenForm">
+		<div class="listPanelBorder">
+			<table width="0%" cellspacing="0">
+			</table>
+			<table width="100%" cellspacing="0" class="dataview" border="1">
+				<!-- Header row -->
+				<tr>
+					<th width="2%">
+						&nbsp;
+					</th>
+					<th width="5%">
+						<wicket:message	key="numberToCreate">
+							Number to Create:
+						</wicket:message>
+					</th>
+					<th width="15%">
+						<wicket:message	key="biospecimen.bioCollection">
+							Collection:
+						</wicket:message>
+					</th>
+					<th width="35%">
+						<wicket:message	key="biospecimen.sampleType">
+							Sample Type:
+						</wicket:message>
+					</th>
+					<th width="15%">
+						<wicket:message	key="biospecimen.sampleDate">
+							Sample Date:
+						</wicket:message>
+					</th>
+					<th width="15%">
+						<wicket:message	key="biospecimen.sampleTime">
+							Sample Time:
+						</wicket:message>
+					</th>
+					<th width="10%">
+						<wicket:message	key="biospecimen.quantity">
+							Quantity:
+						</wicket:message>
+					</th>
+					<th width="10%">
+						<wicket:message	key="biospecimen.treatmentType">
+							Treatment:
+						</wicket:message>
+					</th>
+					<th width="2%">
+						&nbsp;
+					</th>
+				</tr>
+				<tbody>
+					<!-- Repeated item row -->
+					<tr wicket:id="batchBiospecimenList">
+						<td width="2%">
+							&nbsp;
+						</td>
+						<td width="5%">
+							<input wicket:id="numberToCreate" type="text" maxLength="10" size="5"/>
+						</td>
+
+						<td>
+							<select wicket:id="biospecimen.bioCollection">
+								<option>
+									1
+								</option>
+								<option>
+									2
+								</option>
+							</select>
+
+						</td>
+
+						<td>
+							<select wicket:id="biospecimen.sampleType">
+								<option>
+									1
+								</option>
+								<option>
+									2
+								</option>
+							</select>
+						</td>
+
+						<td>
+							<input wicket:id="biospecimen.sampleDate"	type="text" maxLength="10"/>
+						</td>
+
+						<td>
+							<span wicket:id="biospecimen.sampleTime">
+							</span>
+						</td>
+						<td>
+							<input wicket:id="biospecimen.quantity" type="text" maxLength="10" size="5"/>
+							<select wicket:id="biospecimen.unit">
+								<option>
+									1
+								</option>
+								<option>
+									2
+								</option>
+							</select>
+						</td>
+						<td>
+							<select wicket:id="biospecimen.treatmentType">
+								<option>
+									1
+								</option>
+								<option>
+									2
+								</option>
+							</select>
+						</td>
+
+						<td width="2%">
+							&nbsp;
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td width="2%">
+							&nbsp;
+						</td>
+						<td width="96%" colspan="7">
+							<input wicket:id="new" type="submit" wicket:message="value:button.new" />
+						</td>
+						<td width="2%">
+							&nbsp;
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		<!-- End listPanelBorder -->
+		<div class="buttons">
+			<input wicket:id="save" type="submit" wicket:message="value:button.save" />
+		</div>
+	</form>
+</wicket:panel>
