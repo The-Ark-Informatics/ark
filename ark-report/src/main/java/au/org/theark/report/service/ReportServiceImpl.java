@@ -54,6 +54,7 @@ import au.org.theark.report.model.vo.ResearcherCostResportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
 
 import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 
@@ -377,6 +378,12 @@ public class ReportServiceImpl implements IReportService {
 	public List<Researcher> searchResearcherByStudyId(final Long studyId) {
 		// TODO Auto-generated method stub
 		return reportDao.searchResearcherByStudyId(studyId);
+	}
+
+	public List<ResearcherDetailCostDataRow> getBillableItemDetailCostData(
+			ResearcherCostResportVO researcherCostResportVO) {
+		// TODO Auto-generated method stub
+		return reportDao.getBillableItemDetailCostData(researcherCostResportVO);
 	}
 	
 	

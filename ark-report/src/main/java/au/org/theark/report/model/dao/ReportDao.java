@@ -18,7 +18,10 @@
  ******************************************************************************/
 package au.org.theark.report.model.dao;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +59,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
@@ -65,6 +69,7 @@ import au.org.theark.report.model.vo.ResearcherCostResportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
 import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 import au.org.theark.report.service.Constants;
 
@@ -652,5 +657,52 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		List<Researcher> list = criteria.list();
 		return list;
 	}
+
+	public List<ResearcherDetailCostDataRow> getBillableItemDetailCostData(
+			ResearcherCostResportVO researcherCostResportVO) {
+		List<ResearcherDetailCostDataRow> results = new ArrayList<ResearcherDetailCostDataRow>();
+		Criteria criteria = getSession().createCriteria(BillableItem.class, "bi");
+		criteria.createAlias("workRequest", "wr", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("billableItemType", "bit", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("wr.researcher", "re", JoinType.LEFT_OUTER_JOIN);
+		criteria.add(Restrictions.eq("re.id", researcherCostResportVO.getResearcherId()));
+		criteria.add(Restrictions.eq("bi.studyId", researcherCostResportVO.getStudyId()));
+		criteria.add(Restrictions.eq("bi.invoice", researcherCostResportVO.getInvoice()));
+		Integer commenceYear=Integer.parseInt(researcherCostResportVO.getYear());
+		criteria.add(Restrictions.le("bi.commenceDate", toEndOfYear(commenceYear)));
+		criteria.add(Restrictions.ge("bi.commenceDate", toStartOfYear(commenceYear)));
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("bi.description"), "description");
+		projectionList.add(Projections.property("bi.commenceDate"), "commencedDate");
+		projectionList.add(Projections.property("bi.invoice"), "invoice");
+		projectionList.add(Projections.property("bi.quantity"), "quantity");
+		projectionList.add(Projections.property("bi.totalCost"), "totalAmount");
+		projectionList.add(Projections.property("bi.totalGST"), "totalGST");
+		projectionList.add(Projections.property("bit.itemName"), "itemType");
+		projectionList.add(Projections.property("bit.id"), "typeId");
+
+		criteria.setProjection(projectionList); // only return fields required for report
+		criteria.setResultTransformer(Transformers.aliasToBean(ResearcherDetailCostDataRow.class));
+		results=criteria.list();
+		return results;
+	}
+	
+	private Date toStartOfYear(int year) {
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.set(Calendar.YEAR, year);
+	    calendar.set(Calendar.WEEK_OF_YEAR, 1);
+	    calendar.set(Calendar.DAY_OF_WEEK,1);
+	    return calendar.getTime();
+	}
+
+	private Date toEndOfYear(int year) {
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.set(Calendar.YEAR, year);
+	    calendar.set(Calendar.MONTH,11);
+	    calendar.set(Calendar.DAY_OF_MONTH,31);
+	    return calendar.getTime();
+	}
+
 	
 }
