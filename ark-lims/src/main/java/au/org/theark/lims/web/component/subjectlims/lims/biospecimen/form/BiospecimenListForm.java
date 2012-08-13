@@ -65,6 +65,7 @@ import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biolocation.BioLocationPanel;
+import au.org.theark.lims.web.component.biospecimen.batchcreate.BatchCreateBiospecimenPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
 
 /**
@@ -103,6 +104,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 	private Panel												modalContentPanel;
 	protected ArkBusyAjaxButton							newButton;
+	protected ArkBusyAjaxButton							batchCreateButton;
 
 	protected WebMarkupContainer							dataViewListWMC;
 	private DataView<Biospecimen>							dataView;
@@ -120,6 +122,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 		initialiseDataView();
 		initialiseNewButton();
+		initialiseBatchCreateButton();
 
 		add(modalWindow);
 	}
@@ -249,6 +252,91 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		newButton.setDefaultFormProcessing(false);
 
 		add(newButton);
+	}
+	
+	private void initialiseBatchCreateButton() {
+		batchCreateButton = new ArkBusyAjaxButton("batchCreate") {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public boolean isVisible() {
+				boolean isVisible = true;
+
+				String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+				isVisible = (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW) && sessionSubjectUID != null);
+
+				return isVisible;
+			}
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onBatchCreate(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to proceed with Batch Crreate Biospecimen");
+			}
+		};
+		batchCreateButton.setDefaultFormProcessing(false);
+
+		add(batchCreateButton);
+	}
+	
+	private void onBatchCreate(AjaxRequestTarget target) {
+	// Needs CREATE permission AND a BioCollection to select from
+		boolean hasBioCollections = false;
+
+		// Get session data (used for subject search)
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+
+		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
+			LinkSubjectStudy linkSubjectStudy = null;
+			Study study = null;
+			boolean contextLoaded = false;
+			try {
+				study = iArkCommonService.getStudy(sessionStudyId);
+				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
+				if (study != null && linkSubjectStudy != null) {
+					contextLoaded = true;
+				}
+			}
+			catch (EntityNotFoundException e) {
+				log.error(e.getMessage());
+			}
+
+			if (contextLoaded) {
+				// Successfully loaded from backend
+				cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
+				cpModel.getObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
+				cpModel.getObject().getBiospecimen().setStudy(study);
+			}
+		}
+
+		hasBioCollections = iLimsService.hasBioCollections(cpModel.getObject().getLinkSubjectStudy());
+
+		if (hasBioCollections) {
+			// Set new Biospecimen into model, then show modalWindow to save
+			CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
+			newModel.getObject().setLinkSubjectStudy(cpModel.getObject().getLinkSubjectStudy());
+			newModel.getObject().setStudy(cpModel.getObject().getStudy());
+			newModel.getObject().getBiospecimen().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
+			newModel.getObject().getBiospecimen().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
+			newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
+
+			// Set the modalWindow title and content
+			modalContentPanel = new BatchCreateBiospecimenPanel("content", feedbackPanel, newModel);
+			modalWindow.setTitle("Batch Create Biospecimens");
+			modalWindow.setContent(modalContentPanel);
+			modalWindow.show(target);
+		}
+		else {
+			this.error("No Biospecimen Collections exist. Please create at least one Collection.");
+		}
+		// refresh the feedback messages
+		target.add(feedbackPanel);
 	}
 
 	/**
