@@ -66,6 +66,8 @@ public class LimsVO implements Serializable {
 	protected List<Study>				studyList;
 
 	protected String						biospecimenProcessing;
+	
+	protected BatchBiospecimenVO   batchBiospecimenVO;   
 
 	public LimsVO() {
 		this.study = new Study();
@@ -84,6 +86,7 @@ public class LimsVO implements Serializable {
 		this.studyList = new ArrayList<Study>(0);
 		this.biospecimenProcessing = new String();
 		this.biospecimenLocationVO = new BiospecimenLocationVO();
+		this.batchBiospecimenVO	= new BatchBiospecimenVO();
 	}
 
 	/**
@@ -325,5 +328,19 @@ public class LimsVO implements Serializable {
 
 	public void setBiospecimenProcessing(String biospecimenProcessing) {
 		this.biospecimenProcessing = biospecimenProcessing;
+	}
+
+	/**
+	 * @return the batchBiospecimenVO
+	 */
+	public BatchBiospecimenVO getBatchBiospecimenVO() {
+		return batchBiospecimenVO;
+	}
+
+	/**
+	 * @param batchBiospecimenVO the batchBiospecimenVO to set
+	 */
+	public void setBatchBiospecimenVO(BatchBiospecimenVO batchBiospecimenVO) {
+		this.batchBiospecimenVO = batchBiospecimenVO;
 	}
 }
