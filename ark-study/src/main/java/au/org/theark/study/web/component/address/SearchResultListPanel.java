@@ -77,12 +77,14 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label("city", ""));
 				}
-
+				
 				if (address.getState() != null && address.getState().getName() != null) {
 					item.add(new Label("state.name", address.getState().getName()));//TODO things like this might almost need to be constants
 				}
 				else {
-					item.add(new Label("state.name", ""));
+					item.add(new Label("state.name", (address.getOtherState()!=null && !address.getOtherState().isEmpty())?
+							("other: "+address.getOtherState())
+							:"not defined"));
 				}
 
 				if (address.getPostCode() != null) {
@@ -159,7 +161,12 @@ public class SearchResultListPanel extends Panel {
 			}
 
 		};
-		Label nameLinkLabel = new Label(Constants.ADDRESS_LABEL, address.getStreetAddress());
+		String add1 = address.getAddressLineOne()!=null?address.getAddressLineOne():"";
+		String streetAdd = address.getStreetAddress()==null?"":address.getStreetAddress();
+		
+		String concat = (add1.isEmpty()?streetAdd:(add1 + " " + streetAdd) );
+		//could be neatened up a little more...but that will do for now.  presentation later
+		Label nameLinkLabel = new Label(Constants.ADDRESS_LABEL, concat);
 		link.add(nameLinkLabel);
 		return link;
 	}
