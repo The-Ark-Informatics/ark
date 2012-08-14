@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.report.model.dao;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

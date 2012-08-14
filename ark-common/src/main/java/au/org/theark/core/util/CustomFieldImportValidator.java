@@ -40,7 +40,6 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
