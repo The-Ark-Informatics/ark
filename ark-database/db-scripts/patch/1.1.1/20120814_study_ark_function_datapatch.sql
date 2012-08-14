@@ -1,0 +1,1 @@
+UPDATE `study`.`ark_function` SET `DESCRIPTION`='Phenotypic Field Details Report (Data Dictionary) lists detailed field information for a particular study based on their associated phenotypic data set.' WHERE `ID`='26';
