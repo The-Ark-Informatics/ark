@@ -578,7 +578,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			criteria.createAlias("fieldType", "ft", JoinType.LEFT_OUTER_JOIN); // Left join to FieldType
 			criteria.createAlias("unitType", "ut", JoinType.LEFT_OUTER_JOIN); // Left join to UnitType
 			criteria.add(Restrictions.eq("cf.study", fdrVO.getStudy()));
-			ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+			ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 			criteria.add(Restrictions.eq("cf.arkFunction", function));
 
 			if (fdrVO.getCustomFieldDisplay().getCustomFieldGroup() != null) {
@@ -605,7 +605,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			criteria.setProjection(projectionList); // only return fields required for report
 			criteria.setResultTransformer(Transformers.aliasToBean(CustomFieldDetailsDataRow.class));
 			criteria.addOrder(Order.asc("cfg.id"));
-			criteria.addOrder(Order.asc("cf.name"));
+			criteria.addOrder(Order.asc("cfd.sequence"));
 			results = criteria.list();
 		}
 
@@ -633,7 +633,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		List<CustomFieldGroup> results = null;
 		Criteria criteria = getSession().createCriteria(CustomFieldGroup.class);
 		criteria.add(Restrictions.eq("study", study));
-		ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
+		ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 		criteria.add(Restrictions.eq("arkFunction", function));
 		results = criteria.list();
 		return results;
