@@ -33,7 +33,6 @@ import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +70,6 @@ public class CustomFieldImporter {
 	private double							speed;
 	private long							curPos;
 	private long							srcLength					= -1;																// -1 means nothing being processed
-	private StopWatch						timer							= null;
 	private char							phenotypicDelimChr		= Constants.IMPORT_DELIM_CHAR_COMMA;						// default phenotypic file
 																																						// delimiter: COMMA
 	private String							fileFormat;
@@ -147,9 +145,6 @@ public class CustomFieldImporter {
 				uploadReport.append("\n");
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
-
-			timer = new StopWatch();
-			timer.start();
 
 			csvReader.readHeaders();
 
@@ -280,9 +275,6 @@ public class CustomFieldImporter {
 					fieldUploadList.add(customFieldUpload);
 				}
 
-				// Debug only - Show progress and speed
-				log.debug("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
-				log.debug("\n");
 				fieldCount++;
 			}
 			completionTime = new Date(System.currentTimeMillis());
@@ -303,23 +295,12 @@ public class CustomFieldImporter {
 			throw new ArkSystemException("Unexpected exception occurred when trying to process phenotypic data file");
 		}
 		finally {
-			// Clean up the IO objects
-			timer.stop();
-			uploadReport.append("Total elapsed time: ");
-			uploadReport.append(timer.getTime());
-			uploadReport.append(" ms or ");
-			uploadReport.append(decimalFormat.format(timer.getTime() / 1000.0));
-			uploadReport.append(" s");
-			uploadReport.append("\n");
 			uploadReport.append("Total file size: ");
 			uploadReport.append(inLength);
 			uploadReport.append(" B or ");
 			uploadReport.append(decimalFormat.format(inLength / 1024.0 / 1024.0));
 			uploadReport.append(" MB");
 			uploadReport.append("\n");
-
-			if (timer != null)
-				timer = null;
 
 			if (csvReader != null) {
 				try {
@@ -420,17 +401,4 @@ public class CustomFieldImporter {
 		return progress;
 	}
 
-	/**
-	 * Return the speed of the current process in KB/s
-	 * 
-	 * @return if a process is actively running, then speed in KB/s; or if no process running, then returns -1
-	 */
-	public double getSpeed() {
-		double speed = -1;
-
-		if (srcLength > 0)
-			speed = curPos / 1024 / (timer.getTime() / 1000.0); // KB/s
-
-		return speed;
-	}
 }
