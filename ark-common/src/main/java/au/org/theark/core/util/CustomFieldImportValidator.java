@@ -78,7 +78,7 @@ public class CustomFieldImportValidator {
 	private long							fieldCount;
 	private long							curPos;
 	private long							srcLength					= -1;
-	private StopWatch						timer							= null;
+//	private StopWatch						timer							= null;
 	private char							delimChr						= Constants.IMPORT_DELIM_CHAR_COMMA;
 	private List<String>					fileValidationMessages	= new ArrayList<String>();
 	private List<String>					dataValidationMessages	= new ArrayList<String>();
@@ -157,8 +157,8 @@ public class CustomFieldImportValidator {
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
 
-			timer = new StopWatch();
-			timer.start();
+//			timer = new StopWatch();
+//			timer.start();
 
 			csvReader.readHeaders();
 
@@ -172,9 +172,7 @@ public class CustomFieldImportValidator {
 			Collection<String> fileHeaderCollection = new ArrayList<String>();
 			String[] requiredHeaderArray = Constants.DATA_DICTIONARY_HEADER;
 
-			/*
-			 * In general, all columns are mandatory
-			 */
+			//all columns mandatory, even if data empty
 			if (fileHeaderColumnArray.length < requiredHeaderArray.length) {
 				headerError = true;
 			}
@@ -269,12 +267,12 @@ public class CustomFieldImportValidator {
 		}
 		finally {
 			// Clean up the IO objects
-			timer.stop();
+			//timer.stop();
 			// fileValidationMessages.add("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
 			// fileValidationMessages.add("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
 
-			if (timer != null)
-				timer = null;
+			//if (timer != null)
+			//	timer = null;
 			if (csvReader != null) {
 				try {
 					csvReader.close();
@@ -334,8 +332,8 @@ public class CustomFieldImportValidator {
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
 
-			timer = new StopWatch();
-			timer.start();
+//			timer = new StopWatch();
+//			timer.start();
 
 			csvReader.readHeaders();
 
@@ -497,11 +495,11 @@ public class CustomFieldImportValidator {
 		}
 		finally {
 			// Clean up the IO objects
-			timer.stop();
-			log.debug("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
+//			timer.stop();
+//			log.debug("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
 			log.debug("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
-			if (timer != null)
-				timer = null;
+//			if (timer != null)
+//				timer = null;
 			if (csvReader != null) {
 				try {
 					csvReader.close();
@@ -848,10 +846,6 @@ public class CustomFieldImportValidator {
 	}
 
 	/**
-	 * Return the speed of the current process in KB/s
-	 * 
-	 * @return if a process is actively running, then speed in KB/s; or if no process running, then returns -1
-	 */
 	public double getSpeed() {
 		double speed = -1;
 
@@ -860,6 +854,7 @@ public class CustomFieldImportValidator {
 
 		return speed;
 	}
+*/
 
 	public HashSet<Integer> getInsertRows() {
 		return insertRows;
