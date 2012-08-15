@@ -29,11 +29,13 @@ public final class BillableItemCostCalculator {
 	 * @return total cost.
 	 */
 	public static double calculateItemCost(final BillableItem billableItem){
-		double totalCost=0;
-		double grossTotalCost= BillableItemCostCalculator.calculateItemGrossTotalCost(billableItem);
-		if(grossTotalCost > 0 ){
-			double gst= billableItem.getBillableItemType().getGst();			
-			totalCost =grossTotalCost *(100+gst)/100;
+		double totalCost= BillableItemCostCalculator.calculateItemGrossTotalCost(billableItem);
+		if(totalCost > 0
+				&& billableItem.getGstAllow() !=null
+				&& billableItem.getGstAllow()
+				&& billableItem.getGst() !=null){
+			double gst= billableItem.getGst();			
+			totalCost =totalCost *(100+gst)/100;
 			totalCost=Math.round(totalCost*100.0)/100.0;
 		}
 		return totalCost;
@@ -47,8 +49,12 @@ public final class BillableItemCostCalculator {
 	public static double calculateItemGST(final BillableItem billableItem){
 		double grossTotalCost= BillableItemCostCalculator.calculateItemCost(billableItem);
 		double totalGST=0;
-		if(grossTotalCost > 0 && billableItem.getBillableItemType().getGst() > 0 ){			
-			double gst= billableItem.getBillableItemType().getGst();
+		if(grossTotalCost > 0
+				&& billableItem.getGstAllow() !=null
+				&& billableItem.getGstAllow() 
+				&& billableItem.getGst() !=null
+				&& billableItem.getGst() > 0 ){			
+			double gst= billableItem.getGst();
 			totalGST =  grossTotalCost*gst/100;
 			totalGST=Math.round(totalGST*100.0)/100.0;
 		}

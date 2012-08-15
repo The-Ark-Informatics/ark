@@ -31,7 +31,6 @@ public class SearchForm  extends AbstractSearchForm<BillableItemTypeVo> {
 	private TextField<String>				billableItemTypeItemNameTxtField;
 	private TextField<String>				billableItemTypeQuantityPerUnitTxtField;
 	private TextField<String>				billableItemTypeUnitPriceTxtField;
-	private TextField<String>				billableItemTypeGstTxtField;
 	
 	private PageableListView<BillableItemType>	listView;
 	
@@ -68,7 +67,6 @@ public class SearchForm  extends AbstractSearchForm<BillableItemTypeVo> {
 		add(billableItemTypeItemNameTxtField);
 		add(billableItemTypeQuantityPerUnitTxtField);
 		add(billableItemTypeUnitPriceTxtField);
-		add(billableItemTypeGstTxtField);
 	}
 
 	protected void initialiseSearchForm() {
@@ -76,8 +74,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemTypeVo> {
 		billableItemTypeIdTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_ID);             
 		billableItemTypeItemNameTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_ITEM_NAME);       
 		billableItemTypeQuantityPerUnitTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_QUANTITY_PER_UNIT);
-		billableItemTypeUnitPriceTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE);
-		billableItemTypeGstTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_GST);                       		
+		billableItemTypeUnitPriceTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE);                    		
 	}
 	
 	/*
