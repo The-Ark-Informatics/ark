@@ -54,6 +54,20 @@
 				</label>
 			</th>
 			<th width="15%">
+				<label for="gstAllowed">
+					<wicket:message key="work.billableitem.gstallowed">
+						GST Allowed:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="gst">
+					<wicket:message key="work.billableitem.gst">
+						GST:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
 				<label for="totalCost">
 					<wicket:message key="work.billableitem.totalcost">
 						total cost:
@@ -115,6 +129,12 @@
 				<span wicket:id="billableItem.itemCost">item cost</span>
 			</td>
 			<td width="15%">
+				<span wicket:id="billableItem.gstAllow">GST Allowed</span>
+			</td>
+			<td width="15%">
+				<span wicket:id="billableItem.gst">GST</span>
+			</td>
+			<td width="15%">
 				<span wicket:id="totalCost">total cost</span>
 			</td>
 			<td width="20%">
@@ -134,7 +154,7 @@
 		<tfoot>
 			<tr>
 				<td width="2%">&nbsp;</td>
-				<td colspan="12"><span wicket:id="navigator" class="a"></span></td>
+				<td colspan="14"><span wicket:id="navigator" class="a"></span></td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>

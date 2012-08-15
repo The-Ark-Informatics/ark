@@ -82,7 +82,8 @@ public class SearchResultListPanel extends Panel {
 				item.add(buildLink(billableItem));
 				
 				if (billableItem.getQuantity() != null) {
-					item.add(new Label(Constants.BILLABLE_ITEM_QUANTITY, billableItem.getQuantity().toString()));
+					DecimalFormat qunatityFormat = new DecimalFormat("#0.##");
+					item.add(new Label(Constants.BILLABLE_ITEM_QUANTITY, qunatityFormat.format( billableItem.getQuantity())));
 				}
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_QUANTITY, ""));
@@ -95,7 +96,20 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_COST, ""));
 				}
-				
+				if (billableItem.getGstAllow() != null) {
+					
+					item.add(new Label(Constants.BILLABLE_ITEM_GST_ALLOW, billableItem.getGstAllow()?"Yes":"No"));
+				}
+				else {
+					item.add(new Label(Constants.BILLABLE_ITEM_GST_ALLOW, "No"));
+				}
+				if (billableItem.getGst() != null) {
+					
+					item.add(new Label(Constants.BILLABLE_ITEM_GST, df.format(billableItem.getGst())));
+				}
+				else {
+					item.add(new Label(Constants.BILLABLE_ITEM_GST, ""));
+				}
 				if (billableItem.getTotalCost() != null) {
 					
 					item.add(new Label(Constants.BILLABLE_ITEM_TOTAL_COST, df.format(billableItem.getTotalCost())));
