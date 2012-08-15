@@ -245,7 +245,27 @@ VALUES
 );
 
 -- Rename the Work module to Work Tracking
-UPDATE `study`.`ark_module` SET `NAME`='Work Tracking' WHERE `NAME`='Work';
+UPDATE `study`.`ark_module` SET `NAME`='Work Tracking' WHERE `NAME`='Work'
+
+-- Researcher detail cost report
+INSERT INTO `reporting`.`report_template` (`NAME`, `DESCRIPTION`, `TEMPLATE_PATH`, `MODULE_ID`, `FUNCTION_ID`) VALUES ('Work Researcher Detail Cost Report', 'This report lists the individual billable item costs group by the billable item type realated to a researcher', 'ResearcherCostReport.jrxml', 8, 57);
+
+-- Researcher detail cost report related changes. 
+ALTER TABLE `admin`.`bilable_item` ADD COLUMN `GST` DOUBLE NULL  AFTER `TOTAL_GST` ;
+
+ALTER TABLE `admin`.`bilable_item` ADD COLUMN `GST_ALLOW` VARCHAR(45) NULL  AFTER `GST` ;
+
+ALTER TABLE `admin`.`bilable_item` CHANGE COLUMN `QUANTITY` `QUANTITY` DOUBLE NULL DEFAULT NULL  ;
+
+ALTER TABLE `admin`.`billable_item_type` ADD COLUMN `QUANTITY_TYPE` VARCHAR(45) NULL  AFTER `TYPE` ;
+
+ALTER TABLE `admin`.`billable_item_type` DROP COLUMN `GST` ;
+
+ALTER TABLE `admin`.`bilable_item` DROP FOREIGN KEY `fk_bilable_item_status` ;
+
+drop table `admin`.`billable_item_status`;
+
+drop table `admin`.`link_billable_item_subject`;
 
 
 
