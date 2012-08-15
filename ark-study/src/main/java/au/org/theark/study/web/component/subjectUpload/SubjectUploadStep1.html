@@ -40,18 +40,18 @@
 		<div class="wizardPanelContentLeft">&nbsp;</div>
 		
 		<div class="fldLabel">
-			<div class="label">
-				<label for="delimiterType"><wicket:message	key="upload.delimiterType">Delimiter:</wicket:message></label> 
+			<label for="delimiterType"><wicket:message	key="upload.delimiterType">Delimiter:</wicket:message></label> 
+			<div class="note">
+				<wicket:message key="delimiterType.note">[NOTE]</wicket:message>
 			</div>
 		</div>
+		
 		<div class="fldControl">
-			<div class="label">
-				<select wicket:id="upload.delimiterType">
-       				<option>1</option>
-       				<option>2</option>
-       				<option>3</option>
-       			</select>
-	       	</div>
+			<select wicket:id="upload.delimiterType">
+   				<option>1</option>
+   				<option>2</option>
+   				<option>3</option>
+   			</select>
 		</div>
 		
 		<div class="wizardPanelBreaker">&nbsp;</div>
