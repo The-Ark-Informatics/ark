@@ -74,7 +74,7 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 	}
 
 	public BiospecimenUploadStep1(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
-		super(id, "Step 1/5: Select data file to upload", "Select the file containing data, the Study, the file type and the specified delimiter, click Next to continue.");
+		super(id, "Step 1/5: Select data file to upload", "Select the file containing data, the Study and the specified delimiter, click Next to continue.");
 
 		this.containerForm = containerForm;
 		this.setWizardForm(wizardForm);
