@@ -24,10 +24,10 @@ public class BillableItemType implements Serializable {
 	private String					description;
 	private Integer					quantityPerUnit;
 	private Double 					unitPrice;
-	private Double					gst;
 	private BillableItemTypeStatus 	billableItemTypeStatus;
 	private Long 					studyId;
 	private String					type;
+	private String					quantityType;
 	
 	public BillableItemType() {
 		// TODO Auto-generated constructor stub
@@ -39,18 +39,18 @@ public class BillableItemType implements Serializable {
 	}
 
 	public BillableItemType(Long id, String itemName, String description,
-			Integer quantityPerUnit, Double unitPrice, Double gst,
-			BillableItemTypeStatus billableItemTypeStatus, Long studyId, String type) {
+			Integer quantityPerUnit, Double unitPrice,
+			BillableItemTypeStatus billableItemTypeStatus, Long studyId, String type, String quantityType) {
 		super();
 		this.id = id;
 		this.itemName = itemName;
 		this.description = description;
 		this.quantityPerUnit = quantityPerUnit;
 		this.unitPrice = unitPrice;
-		this.gst = gst;
 		this.billableItemTypeStatus = billableItemTypeStatus;
 		this.studyId = studyId;
 		this.type = type;
+		this.quantityType=quantityType;
 	}
 
 	@Id
@@ -101,15 +101,6 @@ public class BillableItemType implements Serializable {
 		this.unitPrice = unitPrice;
 	}
 	
-	@Column(name = "GST")
-	public Double getGst() {
-		return gst;
-	}
-	
-	public void setGst(Double gst) {
-		this.gst = gst;
-	}
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STATUS_ID")
 	public BillableItemTypeStatus getBillableItemTypeStatus() {
@@ -138,6 +129,15 @@ public class BillableItemType implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	@Column(name = "QUANTITY_TYPE", length = 45)
+	public String getQuantityType() {
+		return quantityType;
+	}
+
+	public void setQuantityType(String quantityType) {
+		this.quantityType = quantityType;
+	}
 
 	@Override
 	public int hashCode() {
@@ -145,12 +145,13 @@ public class BillableItemType implements Serializable {
 		int result = 1;
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((gst == null) ? 0 : gst.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result
 				+ ((itemName == null) ? 0 : itemName.hashCode());
 		result = prime * result
 				+ ((quantityPerUnit == null) ? 0 : quantityPerUnit.hashCode());
+		result = prime * result
+				+ ((quantityType == null) ? 0 : quantityType.hashCode());
 		result = prime * result + ((studyId == null) ? 0 : studyId.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		result = prime * result
@@ -172,11 +173,6 @@ public class BillableItemType implements Serializable {
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
-		if (gst == null) {
-			if (other.gst != null)
-				return false;
-		} else if (!gst.equals(other.gst))
-			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -191,6 +187,11 @@ public class BillableItemType implements Serializable {
 			if (other.quantityPerUnit != null)
 				return false;
 		} else if (!quantityPerUnit.equals(other.quantityPerUnit))
+			return false;
+		if (quantityType == null) {
+			if (other.quantityType != null)
+				return false;
+		} else if (!quantityType.equals(other.quantityType))
 			return false;
 		if (studyId == null) {
 			if (other.studyId != null)
@@ -214,8 +215,9 @@ public class BillableItemType implements Serializable {
 	public String toString() {
 		return "BillableItemType [id=" + id + ", itemName=" + itemName
 				+ ", description=" + description + ", quantityPerUnit="
-				+ quantityPerUnit + ", unitPrice=" + unitPrice + ", gst=" + gst
-				+ ", studyId=" + studyId + ", type=" + type + "]";
+				+ quantityPerUnit + ", unitPrice=" + unitPrice 
+				+ ", studyId=" + studyId + ", type=" + type + ", quantityType="
+				+ quantityType + "]";
 	}
 	
 }
