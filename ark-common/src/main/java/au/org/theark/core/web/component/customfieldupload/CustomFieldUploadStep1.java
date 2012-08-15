@@ -71,7 +71,7 @@ public class CustomFieldUploadStep1 extends AbstractWizardStepPanel {
 	}
 
 	public CustomFieldUploadStep1(String id, Form<CustomFieldUploadVO> containerForm, WizardForm wizardForm) {
-		super(id, "Step 1/5: Select data file to upload", "Select the file containing data, the file type and the specified delimiter, click Next to continue.");
+		super(id, "Step 1/5: Select data file to upload", "Select the file containing data and the specified delimiter, click Next to continue.");
 
 		this.containerForm = containerForm;
 		this.setWizardForm(wizardForm);
