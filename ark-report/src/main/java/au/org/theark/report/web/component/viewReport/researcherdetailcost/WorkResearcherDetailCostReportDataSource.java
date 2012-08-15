@@ -42,9 +42,6 @@ public class WorkResearcherDetailCostReportDataSource implements Serializable,
 				value ="";
 			}
 		}
-		else if("gst".equalsIgnoreCase(fieldName)){
-			value = "GST inclusive";
-		}
 		else if("quantity".equalsIgnoreCase(fieldName)){
 			value = data.get(index).getQuantity();
 		}
@@ -59,6 +56,12 @@ public class WorkResearcherDetailCostReportDataSource implements Serializable,
 		}
 		else if("typeId".equalsIgnoreCase(fieldName)){
 			value = data.get(index).getTypeId();
+		}
+		else if("quantityType".equalsIgnoreCase(fieldName)){
+			value = data.get(index).getQuantityType();
+		}
+		else if("gstAllowed".equalsIgnoreCase(fieldName)){
+			value = data.get(index).getGstAllowed();
 		}
 		return value;
 	}

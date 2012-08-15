@@ -14,18 +14,20 @@ public class ResearcherDetailCostDataRow implements Serializable {
 	private Date commencedDate;
 	private String invoice;
 	private String gst;
-	private Integer quantity;
+	private Double quantity;
 	private Double totalAmount;
 	private Double totalGST;
 	private String itemType;
 	private Long typeId;
+	private String quantityType;
+	private Boolean gstAllowed;
 	
 	public ResearcherDetailCostDataRow() {
 	}
 
 	public ResearcherDetailCostDataRow(String description, Date commencedDate,
-			String invoice, String gst, Integer quantity, Double totalAmount,
-			Double totalGST, String itemType, Long typeId) {
+			String invoice, String gst, Double quantity, Double totalAmount,
+			Double totalGST, String itemType, Long typeId,String quantityType, Boolean gstAllowed) {
 		this.description = description;
 		this.commencedDate = commencedDate;
 		this.invoice = invoice;
@@ -35,6 +37,8 @@ public class ResearcherDetailCostDataRow implements Serializable {
 		this.totalGST = totalGST;
 		this.itemType = itemType;
 		this.typeId = typeId;
+		this.quantityType=quantityType;
+		this.gstAllowed=gstAllowed;
 	}
 	
 	public String getDescription() {
@@ -61,10 +65,10 @@ public class ResearcherDetailCostDataRow implements Serializable {
 	public void setGst(String gst) {
 		this.gst = gst;
 	}
-	public Integer getQuantity() {
+	public Double getQuantity() {
 		return quantity;
 	}
-	public void setQuantity(Integer quantity) {
+	public void setQuantity(Double quantity) {
 		this.quantity = quantity;
 	}
 	public Double getTotalAmount() {
@@ -90,5 +94,17 @@ public class ResearcherDetailCostDataRow implements Serializable {
 	}
 	public void setTypeId(Long typeId) {
 		this.typeId = typeId;
+	}
+	public String getQuantityType() {
+		return quantityType;
+	}
+	public void setQuantityType(String quantityType) {
+		this.quantityType = quantityType;
+	}
+	public Boolean getGstAllowed() {
+		return gstAllowed;
+	}
+	public void setGstAllowed(Boolean gstAllowed) {
+		this.gstAllowed = gstAllowed;
 	}
 }
