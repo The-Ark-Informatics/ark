@@ -2,19 +2,15 @@ package au.org.theark.core.model.worktracking.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -34,10 +30,9 @@ public class BillableItem implements Serializable {
 	
 	private Long id;
 	private String description;
-	private Integer quantity;
+	private Double quantity;
 	private Date commenceDate;
 	private String type;
-	private BillableItemStatus itemStatus;
 	private WorkRequest workRequest;
 	private String invoice;
 	private Long studyId;
@@ -45,11 +40,12 @@ public class BillableItem implements Serializable {
 	private Double totalCost;
 	private Double itemCost;
 	private Double totalGST;
+	private Double gst;
+	private Boolean gstAllow;
 	
 	private String	attachmentFilename;
 	private byte[]	attachmentPayload;
 	
-	private Set<BillableSubject> billableSubjects =new HashSet<BillableSubject>(0);
 	
 	public BillableItem() {
 	}
@@ -58,29 +54,32 @@ public class BillableItem implements Serializable {
 		this.id = id;
 	}
 
-	public BillableItem(Long id, String description, Integer quantity,
-			Date commenceDate, String type, BillableItemStatus itemStatus,
+	
+	
+
+	public BillableItem(Long id, String description, Double quantity,
+			Date commenceDate, String type,
 			WorkRequest workRequest, String invoice, Long studyId,
 			BillableItemType billableItemType, Double totalCost,
-			Double itemCost, String attachmentFilename,
-			byte[] attachmentPayload, Set<BillableSubject> billableSubjects,Double totalGST) {
+			Double itemCost, Double totalGST, Double gst, Boolean gstAllow,
+			String attachmentFilename, byte[] attachmentPayload) {
 		super();
 		this.id = id;
 		this.description = description;
 		this.quantity = quantity;
 		this.commenceDate = commenceDate;
 		this.type = type;
-		this.itemStatus = itemStatus;
 		this.workRequest = workRequest;
 		this.invoice = invoice;
 		this.studyId = studyId;
 		this.billableItemType = billableItemType;
 		this.totalCost = totalCost;
 		this.itemCost = itemCost;
+		this.totalGST = totalGST;
+		this.gst = gst;
+		this.gstAllow = gstAllow;
 		this.attachmentFilename = attachmentFilename;
 		this.attachmentPayload = attachmentPayload;
-		this.billableSubjects = billableSubjects;
-		this.totalGST=totalGST;
 	}
 
 	@Id
@@ -104,11 +103,11 @@ public class BillableItem implements Serializable {
 	}
 
 	@Column(name = "QUANTITY")
-	public Integer getQuantity() {
+	public Double getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(Integer quantity) {
+	public void setQuantity(Double quantity) {
 		this.quantity = quantity;
 	}
 
@@ -131,16 +130,6 @@ public class BillableItem implements Serializable {
 		this.type = type;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STATUS_ID")
-	public BillableItemStatus getItemStatus() {
-		return itemStatus;
-	}
-
-	public void setItemStatus(BillableItemStatus itemStatus) {
-		this.itemStatus = itemStatus;
-	}
-	
 	@ManyToOne()
 	@JoinColumn(name="REQUEST_ID")
 	public WorkRequest getWorkRequest() {
@@ -179,15 +168,6 @@ public class BillableItem implements Serializable {
 		this.billableItemType = billableItemType;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "billableItem")
-	public Set<BillableSubject> getBillableSubjects() {
-		return billableSubjects;
-	}
-
-	public void setBillableSubjects(Set<BillableSubject> billableSubjects) {
-		this.billableSubjects = billableSubjects;
-	}
-	
 	@Column(name ="TOTAL_COST")
 	public Double getTotalCost() {
 		return totalCost;
@@ -233,15 +213,40 @@ public class BillableItem implements Serializable {
 	public void setTotalGST(Double totalGST) {
 		this.totalGST = totalGST;
 	}
+	
+	@Column(name = "GST")
+	public Double getGst() {
+		return gst;
+	}
+
+	public void setGst(Double gst) {
+		this.gst = gst;
+	}
+
+	@Column(name = "GST_ALLOW")
+	public Boolean getGstAllow() {
+		return gstAllow;
+	}
+
+	public void setGstAllow(Boolean gstAllow) {
+		this.gstAllow = gstAllow;
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime
+				* result
+				+ ((attachmentFilename == null) ? 0 : attachmentFilename
+						.hashCode());
 		result = prime * result
 				+ ((commenceDate == null) ? 0 : commenceDate.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((gst == null) ? 0 : gst.hashCode());
+		result = prime * result
+				+ ((gstAllow == null) ? 0 : gstAllow.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((invoice == null) ? 0 : invoice.hashCode());
 		result = prime * result
@@ -253,7 +258,6 @@ public class BillableItem implements Serializable {
 				+ ((totalCost == null) ? 0 : totalCost.hashCode());
 		result = prime * result
 				+ ((totalGST == null) ? 0 : totalGST.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -266,6 +270,11 @@ public class BillableItem implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		BillableItem other = (BillableItem) obj;
+		if (attachmentFilename == null) {
+			if (other.attachmentFilename != null)
+				return false;
+		} else if (!attachmentFilename.equals(other.attachmentFilename))
+			return false;
 		if (commenceDate == null) {
 			if (other.commenceDate != null)
 				return false;
@@ -275,6 +284,16 @@ public class BillableItem implements Serializable {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
+			return false;
+		if (gst == null) {
+			if (other.gst != null)
+				return false;
+		} else if (!gst.equals(other.gst))
+			return false;
+		if (gstAllow == null) {
+			if (other.gstAllow != null)
+				return false;
+		} else if (!gstAllow.equals(other.gstAllow))
 			return false;
 		if (id == null) {
 			if (other.id != null)
@@ -311,11 +330,6 @@ public class BillableItem implements Serializable {
 				return false;
 		} else if (!totalGST.equals(other.totalGST))
 			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
 		return true;
 	}
 
@@ -323,10 +337,14 @@ public class BillableItem implements Serializable {
 	public String toString() {
 		return "BillableItem [id=" + id + ", description=" + description
 				+ ", quantity=" + quantity + ", commenceDate=" + commenceDate
-				+ ", type=" + type + ", invoice=" + invoice + ", studyId="
-				+ studyId + ", totalCost=" + totalCost + ", itemCost="
-				+ itemCost + ", totalGST=" + totalGST + ", attachmentFilename="
-				+ attachmentFilename + "]";
+				+ ", invoice=" + invoice + ", studyId=" + studyId
+				+ ", totalCost=" + totalCost + ", itemCost=" + itemCost
+				+ ", totalGST=" + totalGST + ", gst=" + gst + ", gstAllow="
+				+ gstAllow + ", attachmentFilename=" + attachmentFilename + "]";
 	}
+
+	
+
+	
 
 }
