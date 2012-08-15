@@ -308,9 +308,19 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private boolean initialiseBiospecimenLocationPanel() {
 		boolean replacePanel = false;
 		// Cannot allocate a Biospecimen until saved
-		biospecimenLocationPanel = new BioLocationDetailPanel("biospecimenLocationPanel", cpModel);
-		biospecimenLocationPanel.setVisible(!isNew());
-		replacePanel = true;
+		
+		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
+		if (biospecimen.getId() == null) {
+			// Handle for new Biospecimen being created
+			biospecimenLocationPanel = new EmptyPanel("biospecimenLocationPanel");
+			replacePanel = true;
+		}
+		else {
+			if (!(biospecimenLocationPanel instanceof BioLocationDetailPanel)) {
+				biospecimenLocationPanel = new BioLocationDetailPanel("biospecimenLocationPanel", cpModel);
+				replacePanel = true;
+			}
+		}
 		return replacePanel;
 	}
 
