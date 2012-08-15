@@ -48,10 +48,8 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
-import au.org.theark.core.model.worktracking.entity.BillableItemStatus;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
-import au.org.theark.core.model.worktracking.entity.BillableSubject;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -294,27 +292,13 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		billableItem.setBillableItemType(containerForm.getModelObject().getBillableItemType());
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		billableItem.setStudyId(studyId);
-		billableItem.setQuantity(1);
+		billableItem.setQuantity(1d);
 		
-		//Create new billable subject with selected subject id
-		BillableSubject billableSubject = new BillableSubject();
-		Long subjectId= new Long( SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID).toString());
-		billableSubject.setSubjectId(subjectId);
-		billableItem.getBillableSubjects().add(billableSubject);	
-		
+		Long subjectId= new Long( SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID).toString());		
 		billableItem.setDescription("Automated - Subject Id "+subjectId);
 		billableItem.setInvoice(au.org.theark.worktracking.util.Constants.Y);
 		
-		List<BillableItemStatus> itemStatusList = iWorkTrackingService.getBillableItemStatusses();
-		for(BillableItemStatus status:itemStatusList){
-			if("Not Commenced".equalsIgnoreCase(status.getName())){
-				billableItem.setItemStatus(status);
-				break;
-			}
-		}
-		
-		
-		//Save newly created objects
+		//Save newly created object
 		iWorkTrackingService.createBillableItem(billableItem);
 		
 		//reset workrequest and billable item type
