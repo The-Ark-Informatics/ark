@@ -13,10 +13,8 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
-import au.org.theark.core.model.worktracking.entity.BillableItemStatus;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
-import au.org.theark.core.model.worktracking.entity.BillableSubject;
 import au.org.theark.core.model.worktracking.entity.BillingType;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
@@ -170,10 +168,6 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 			criteria.add(Restrictions.eq(Constants.BIT_UNIT_PRICE, billableItemTypeCriteria.getUnitPrice()));
 		}
 		
-		if(billableItemTypeCriteria.getGst() != null ){
-			criteria.add(Restrictions.eq(Constants.BIT_GST , billableItemTypeCriteria.getGst()));
-		}
-		
 		if(billableItemTypeCriteria.getBillableItemTypeStatus() != null ){
 			criteria.add(Restrictions.eq(Constants.BIT_STATUS , billableItemTypeCriteria.getBillableItemTypeStatus()));
 		}
@@ -257,19 +251,13 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	 */
 	public void createBillableItem(BillableItem billableItem){
 		getSession().save(billableItem);
-		if(billableItem.getBillableSubjects() !=null ){
-			saveBillableSubject(billableItem);
-		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void updateBillableItem(BillableItem billableItem){
-		getSession().update(billableItem);
-		if(billableItem.getBillableSubjects() !=null ){
-			saveBillableSubject(billableItem);
-		}		
+		getSession().update(billableItem);		
 	}
 	
 	/**
@@ -278,21 +266,6 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	public void updateAllBillableItems(List<BillableItem> billableItemList){
 		for(BillableItem billableItem:billableItemList){
 			getSession().update(billableItem);
-		}
-	}
-	
-	/**
-	 * Save or Update the {@link BillableSubject}s attached to a {@link BillableItem}
-	 * @param billableItem
-	 */
-	private void saveBillableSubject(BillableItem billableItem){
-		for(BillableSubject billableSubject:billableItem.getBillableSubjects()){
-			billableSubject.setBillableItem(billableItem);
-			if(billableSubject.getId() == null){
-				getSession().save(billableSubject);
-			}else{
-				getSession().update(billableSubject);
-			}
 		}
 	}
 
@@ -329,9 +302,6 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		if(billableItemCriteria.getInvoice() != null ){
 			criteria.add(Restrictions.eq(Constants.BI_INVOICE, billableItemCriteria.getInvoice()));
 		}
-//		if(billableItemCriteria.getItemStatus() != null ){
-//			criteria.add(Restrictions.eq(Constants.BI_ITEM_STATUS, billableItemCriteria.getItemStatus()));
-//		}
 			
 		List<BillableItem> list = criteria.list();
 		return list;
@@ -413,28 +383,4 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		return count;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	public Long getBillableSubjectCount(BillableItem billableItem){
-		Long count = new Long(0);
-		Criteria criteria = getSession().createCriteria(BillableSubject.class);
-		criteria.add(Restrictions.eq("billableItem", billableItem));
-		criteria.setProjection(Projections.rowCount());
-		count= (Long)criteria.uniqueResult();
-		return count;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<BillableItemStatus> getBillableItemStatusses() {
-		Example billableItemStatus = Example.create(new BillableItemStatus());
-		Criteria criteria = getSession().createCriteria(BillableItemStatus.class)
-				.add(billableItemStatus);
-		return criteria.list();
-	}
-	
-	
-
 }

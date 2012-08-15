@@ -27,6 +27,8 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.worktracking.model.vo.BillableItemTypeVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
 import au.org.theark.worktracking.util.Constants;
+import au.org.theark.worktracking.util.DoubleValidatable;
+import au.org.theark.worktracking.util.ValidatableItemType;
 
 public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 	
@@ -42,7 +44,8 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 	private TextField<String>				billableItemTypeItemNameTxtField;
 	private TextField<String>				billableItemTypeQuantityPerUnitTxtField;
 	private TextField<String>				billableItemTypeUnitPriceTxtField;
-	private TextField<String>				billableItemTypeGstTxtField;
+//	private TextField<String>				billableItemTypeGstTxtField;
+	private TextField<String>				billableItemTypeQuantityTypeTxtField;
 	
 	private TextArea<String>				billableItemTypeDescriptionTxtArea;
 	
@@ -87,22 +90,20 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 			}
 		};            
       
-		billableItemTypeGstTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_GST){
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public <C> IConverter<C> getConverter(Class<C> type) {
-				  	DoubleConverter converter = (DoubleConverter)DoubleConverter.INSTANCE;
-					NumberFormat format = converter.getNumberFormat(getLocale());
-					format.setMinimumFractionDigits(2);
-					converter.setNumberFormat(getLocale(), format);
-					return (IConverter<C>) converter; 
-			}
-		};            
+//		billableItemTypeGstTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_GST){
+//			private static final long serialVersionUID = 1L;
+//
+//			@Override
+//			public <C> IConverter<C> getConverter(Class<C> type) {
+//				  	DoubleConverter converter = (DoubleConverter)DoubleConverter.INSTANCE;
+//					NumberFormat format = converter.getNumberFormat(getLocale());
+//					format.setMinimumFractionDigits(2);
+//					converter.setNumberFormat(getLocale(), format);
+//					return (IConverter<C>) converter; 
+//			}
+//		};            
 		billableItemTypeDescriptionTxtArea=new TextArea<String>(Constants.BILLABLE_ITEM_TYPE_DESCRIPTION);
+		billableItemTypeQuantityTypeTxtField= new TextField<String>(Constants.BILLABLE_ITEM_TYPE_QUANTITY_TYPE);
 				
 		addDetailFormComponents();
 		attachValidators();
@@ -113,14 +114,15 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemTypeItemNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemTypeQuantityPerUnitTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemTypeUnitPriceTxtField);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemTypeGstTxtField);
+//		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemTypeGstTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemTypeIdTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemTypeDescriptionTxtArea);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemTypeQuantityTypeTxtField);
 	}
 	
-	private enum BillablePriceType{
-		UNIT_PRICE,GST;
-	}
+//	private enum BillablePriceType{
+//		UNIT_PRICE,GST;
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -139,9 +141,9 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 		
 		billableItemTypeQuantityPerUnitTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_QUNATITY_PER_UNIT_REQUIRED, billableItemTypeUnitPriceTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_QUNATITY_PER_UNIT_TAG)));
 		
-		billableItemTypeGstTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_GST_REQUIRED,billableItemTypeGstTxtField,new Model<String>(Constants.BILLABLE_ITEM_TYPE_GST_TAG)));
+//		billableItemTypeGstTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_GST_REQUIRED,billableItemTypeGstTxtField,new Model<String>(Constants.BILLABLE_ITEM_TYPE_GST_TAG)));
 		
-		billableItemTypeUnitPriceTxtField.add(new PatternValidator(Constants.BILLABLE_ITEM_TYPE_TWO_DECIMAL_PATTERN){
+		billableItemTypeUnitPriceTxtField.add(new PatternValidator(Constants.TWO_DECIMAL_PATTERN){
 			/**
 			 * 
 			 */
@@ -149,21 +151,23 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 
 			@Override
 			protected void onValidate(IValidatable<String> validatable) {
-				super.onValidate(new DoubleValidatable(validatable,BillablePriceType.UNIT_PRICE));
+				super.onValidate(new DoubleValidatable(validatable,ValidatableItemType.UNIT_PRICE));
 			}
 		});
 		
-		billableItemTypeGstTxtField.add(new PatternValidator(Constants.BILLABLE_ITEM_TYPE_TWO_DECIMAL_PATTERN){
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void onValidate(IValidatable<String> validatable) {
-				super.onValidate(new DoubleValidatable(validatable,BillablePriceType.GST));
-			}
-		});		
+		billableItemTypeQuantityTypeTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_TYPE_QUNATITY_TYPE_REQUIRED, billableItemTypeQuantityTypeTxtField, new Model<String>(Constants.BILLABLE_ITEM_TYPE_QUNATITY_TYPE_TAG)));
+		
+//		billableItemTypeGstTxtField.add(new PatternValidator(Constants.BILLABLE_ITEM_TYPE_TWO_DECIMAL_PATTERN){
+//			/**
+//			 * 
+//			 */
+//			private static final long serialVersionUID = 1L;
+//
+//			@Override
+//			protected void onValidate(IValidatable<String> validatable) {
+//				super.onValidate(new DoubleValidatable(validatable,ValidatableItemType.GST));
+//			}
+//		});		
 	}
 	
 	
@@ -175,44 +179,44 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 	 * @see PatternValidator
 	 *
 	 */
-	private class DoubleValidatable implements IValidatable<String>{
-		
-		private IValidatable<String> validatable;
-		private BillablePriceType priceType;
-		
-		DoubleValidatable(IValidatable<String> validatable,BillablePriceType priceType){
-			this.validatable=validatable;
-			this.priceType=priceType;
-		}
-		
-		public String getValue() {
-			Object obj=this.validatable.getValue();
-			return obj.toString();
-		}
-
-		public void error(IValidationError error) {
-			ValidationError validationError = (ValidationError) error;
-			switch(priceType){
-				case UNIT_PRICE:
-					this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_TYPE_UNIT_PRICE));
-					break;
-				case GST:
-					this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_TYPE_GST));
-					break;
-			}
-		}
-
-		public boolean isValid() {
-			// TODO Auto-generated method stub
-			return this.validatable.isValid();
-		}
-
-		public IModel<String> getModel() {
-			// TODO Auto-generated method stub
-			return this.validatable.getModel();
-		}
-		
-	}
+//	private class DoubleValidatable implements IValidatable<String>{
+//		
+//		private IValidatable<String> validatable;
+//		private BillablePriceType priceType;
+//		
+//		DoubleValidatable(IValidatable<String> validatable,BillablePriceType priceType){
+//			this.validatable=validatable;
+//			this.priceType=priceType;
+//		}
+//		
+//		public String getValue() {
+//			Object obj=this.validatable.getValue();
+//			return obj.toString();
+//		}
+//
+//		public void error(IValidationError error) {
+//			ValidationError validationError = (ValidationError) error;
+//			switch(priceType){
+//				case UNIT_PRICE:
+//					this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_TYPE_UNIT_PRICE));
+//					break;
+//				case GST:
+//					this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_TYPE_GST));
+//					break;
+//			}
+//		}
+//
+//		public boolean isValid() {
+//			// TODO Auto-generated method stub
+//			return this.validatable.isValid();
+//		}
+//
+//		public IModel<String> getModel() {
+//			// TODO Auto-generated method stub
+//			return this.validatable.getModel();
+//		}
+//		
+//	}
 	
 	
 	/*

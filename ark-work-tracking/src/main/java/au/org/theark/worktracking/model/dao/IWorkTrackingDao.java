@@ -3,7 +3,6 @@ package au.org.theark.worktracking.model.dao;
 import java.util.List;
 
 import au.org.theark.core.model.worktracking.entity.BillableItem;
-import au.org.theark.core.model.worktracking.entity.BillableItemStatus;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.model.worktracking.entity.BillingType;
@@ -174,16 +173,4 @@ public interface IWorkTrackingDao {
 	 */
 	public Long getBillableItemCount(WorkRequest workRequest);
 	
-	/**
-	 * Get the billable subject count associate with the given billable item.
-	 * @param billableItem
-	 * @return billable subject count
-	 */
-	public Long getBillableSubjectCount(BillableItem billableItem);
-	
-	/**
-	 * 
-	 * @return Billable Item Status List
-	 */
-	public List<BillableItemStatus> getBillableItemStatusses();
 }

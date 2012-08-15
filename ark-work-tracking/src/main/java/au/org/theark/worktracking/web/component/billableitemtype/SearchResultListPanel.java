@@ -69,11 +69,11 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE, ""));
 				}
 				
-				if (billableItemType.getGst() != null) {
-					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_GST,  formatter.format(billableItemType.getGst())));
+				if (billableItemType.getQuantityType() != null) {
+					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_QUANTITY_TYPE,  billableItemType.getQuantityType()));
 				}
 				else {
-					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_GST, ""));
+					item.add(new Label(Constants.BILLABLE_ITEM_TYPE_QUANTITY_TYPE, ""));
 				}
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {

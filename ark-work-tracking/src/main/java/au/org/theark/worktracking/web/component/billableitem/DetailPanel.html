@@ -230,21 +230,18 @@
 			
 			<div class="fldLabel">
 				<div class="label">
-					<label for="totalCost">
-						<b>
-							<wicket:message	key="work.billableitem.totalcost">
-								Total Cost:
-							</wicket:message>
-						</b>	
+					<label for="gst">
+							<wicket:message	key="work.billableitem.gst">
+								GST%:
+							</wicket:message>	
 						</label>	
 				</div>
 			</div>
 			
 			<div class="fldControl">
 				<div class="label" >
-					<b>
-						<span wicket:id="totalCost">total cost</span>
-					</b>
+					<input type="checkbox" wicket:id="billableItem.gstAllow" />
+					<input type="text" wicket:id="billableItem.gst" />
 				</div>
 			</div>
 	
@@ -254,17 +251,20 @@
 			
 			<div class="fldLabel">
 					<div class="label">
-						<label for="fileName">
-							<wicket:message	key="work.billableitem.attachmentfilename">
-								Billable Item Subjects:
-							</wicket:message>
+						<label for="totalCost">
+							<b>
+								<wicket:message	key="work.billableitem.totalcost">
+									Total Cost:
+								</wicket:message>
+							</b>	
 						</label>
-						
 					</div>
 				</div>
 				<div class="fldControl">
 					<div class="label">
-						<input wicket:id="fileName" id="studyLogoUpload" type="file" />	
+						<b>
+							<span wicket:id="totalCost">total cost</span>
+						</b>
 					</div>
 				</div>
 			
@@ -272,13 +272,17 @@
 			
 			<div class="fldLabel">
 				<div class="label">
-					&nbsp;
+					<label for="fileName">
+						<wicket:message	key="work.billableitem.attachmentfilename">
+							Billable Item Subjects:
+						</wicket:message>
+					</label>
 				</div>
 			</div>
 			
 			<div class="fldControl">
 				<div class="label" >
-					&nbsp;
+					<input wicket:id="fileName" id="studyLogoUpload" type="file" />
 				</div>
 			</div>
 						

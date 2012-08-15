@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.model.worktracking.entity.BillableItem;
-import au.org.theark.core.model.worktracking.entity.BillableItemStatus;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.model.worktracking.entity.BillingType;
@@ -223,21 +222,6 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 	 */
 	public Long getBillableItemCount(WorkRequest workRequest) {
 		return workTrackingDao.getBillableItemCount(workRequest);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Long getBillableSubjectCount(BillableItem billableItem) {
-		return workTrackingDao.getBillableSubjectCount(billableItem);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<BillableItemStatus> getBillableItemStatusses() {
-		// TODO Auto-generated method stub
-		return workTrackingDao.getBillableItemStatusses();
 	}
 
 	/**
