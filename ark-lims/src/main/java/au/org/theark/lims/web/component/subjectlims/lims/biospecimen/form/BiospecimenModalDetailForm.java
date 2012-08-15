@@ -670,7 +670,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 					Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParent().getId());
 
 					if (bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
-						this.error("Cannot process more than the total amount of the parent biospecimen");
+						StringBuffer errorMessage = new StringBuffer();
+						
+						errorMessage.append("Cannot process more than ");
+						errorMessage.append(parentBiospecimen.getQuantity());
+						errorMessage.append(parentBiospecimen.getUnit().getName());
+						errorMessage.append(" of the parent biospecimen");
+						
+						this.error(errorMessage);
 						saveOk = false;
 					}
 					else {
@@ -692,6 +699,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 						BioTransactionStatus bioTransactionStatus = iLimsService.getBioTransactionStatusByName("Processed");
 						parentLimsVo.getBioTransaction().setStatus(bioTransactionStatus);
 						iLimsService.createBioTransaction(parentLimsVo);
+						
 						this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
 						setQuantityLabel();
 					}
@@ -709,7 +717,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 					Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParent().getId());
 
 					if (bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
-						this.error("Cannot aliquot more than the total amount of the parent biospecimen");
+						StringBuffer errorMessage = new StringBuffer();
+						
+						errorMessage.append("Cannot aliquot more than ");
+						errorMessage.append(parentBiospecimen.getQuantity());
+						errorMessage.append(parentBiospecimen.getUnit().getName());
+						errorMessage.append(" of the parent biospecimen");
+						
+						this.error(errorMessage);
 						saveOk = false;
 					}
 					else {
@@ -730,9 +745,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 						BioTransactionStatus bioTransactionStatus = iLimsService.getBioTransactionStatusByName("Aliquoted");
 						parentLimsVo.getBioTransaction().setStatus(bioTransactionStatus);
 						iLimsService.createBioTransaction(parentLimsVo);
+						
+						this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
+						setQuantityLabel();
 					}
-					this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
-					setQuantityLabel();
 				}
 				catch (EntityNotFoundException e) {
 					log.error(e.getMessage());
@@ -946,7 +962,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				target.add(biospecimenLocationPanel);
 				
 				// Notify in progress
-				this.info(processOrAliquot + " biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + ", please save to confirm");
+				this.info(processOrAliquot + " biospecimen " + cpModel.getObject().getBiospecimen().getParentUid() + ", please save to confirm");
 				target.add(feedbackPanel);
 
 				// hide button panel
