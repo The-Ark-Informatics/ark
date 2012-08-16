@@ -341,6 +341,7 @@ public class SubjectUploadValidator {
 				//TODO:  maybe in this case just tell them issue with headers and point them back to the template rather than trying 
 							//to recreate this in an error message that is too big to utilise anyway
 				StringBuffer stringBuffer = new StringBuffer();
+				//TODO ASAP : this should utilize the file that creates the template/requirements!
 				stringBuffer.append("Error: The specified file does not appear to conform to the expected file format.\n");
 				stringBuffer.append("The specified fileformat was: " + fileFormat + ".\n");
 				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n");
@@ -380,7 +381,7 @@ public class SubjectUploadValidator {
 				stringBuffer.append(delimiterCharacter);
 				stringBuffer.append("EMAIL\n");
 /*
- * ADDRESS_LINE_1	ADDRESS_LINE_2	SUBURB	STATE	COUNTRY	POST_CODE	ADDRESS_SOURCE	ADDRESS_STATUS	 ADDRESS_TYPE	 ADDRESS_DATE_RECEIVED	ADDRESS_COMMENTS	IS_PREFERRED_MAILING_ADDRESS	PHONE_AREA_CODE	PHONE_NUMBER	PHONE_TYPE	PHONE_STATUS	PHONE_SOURCE	PHONE_COMMENTS	SILENT
+ * BUILDING_NAME	STREET_ADDRESS	SUBURB	STATE	COUNTRY	POST_CODE	ADDRESS_SOURCE	ADDRESS_STATUS	 ADDRESS_TYPE	 ADDRESS_DATE_RECEIVED	ADDRESS_COMMENTS	IS_PREFERRED_MAILING_ADDRESS	PHONE_AREA_CODE	PHONE_NUMBER	PHONE_TYPE	PHONE_STATUS	PHONE_SOURCE	PHONE_COMMENTS	SILENT
  *
  *this is the newest fields and will be such a mess no point displaying???
  */
