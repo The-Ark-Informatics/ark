@@ -19,6 +19,7 @@
 package au.org.theark.lims.web.component.biospecimen.batchcreate.form;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +48,8 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
+import au.org.theark.core.model.lims.entity.BioTransaction;
+import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -56,6 +59,7 @@ import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.component.listeditor.AjaxEditorButton;
 import au.org.theark.core.web.component.listeditor.ListItem;
+import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.lims.model.vo.BatchBiospecimenVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
@@ -81,6 +85,9 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService								iInventoryService;
 
+	// Add a visitor class for required field marking/validation/highlighting
+	protected ArkFormVisitor		formVisitor			= new ArkFormVisitor();
+	
 	protected CompoundPropertyModel<LimsVO>			cpModel;
 	protected FeedbackPanel								feedbackPanel;
 	private AbstractListEditor<BatchBiospecimenVO>	listEditor;
@@ -93,11 +100,17 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 	private TextField<Double>								quantityTxtFld;
 	private DropDownChoice<Unit>							unitDdc;
 	private DropDownChoice<TreatmentType>				treatmentTypeDdc;
+	private BatchBiospecimenVO								batchBiospecimenVO = new BatchBiospecimenVO();
+	private List<BatchBiospecimenVO>						batchBiospecimenList = new ArrayList<BatchBiospecimenVO>();
 
-	public BatchCreateBiospecimenForm(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<LimsVO> cpModel, IModel<BatchBiospecimenVO> model) {
+	public BatchCreateBiospecimenForm(String id, CompoundPropertyModel<LimsVO> cpModel, IModel<BatchBiospecimenVO> model) {
 		super(id, model);
-		this.feedbackPanel = feedbackPanel;
+		this.feedbackPanel = new FeedbackPanel("feedback");
+		feedbackPanel.setOutputMarkupId(true);
 		this.cpModel = cpModel;
+		setMultiPart(true);
+		batchBiospecimenList.add(new BatchBiospecimenVO());
+		add(feedbackPanel);
 	}
 
 	public void initialiseForm() {
@@ -107,14 +120,17 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(feedbackPanel);
 			}
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				BatchBiospecimenVO item = new BatchBiospecimenVO();
+				item.setBiospecimen(new Biospecimen());
 				item.getBiospecimen().setLinkSubjectStudy(cpModel.getObject().getLinkSubjectStudy());
 				item.getBiospecimen().setStudy(cpModel.getObject().getStudy());
 				listEditor.addItem(item);
+				target.add(form);
 			}
 		}.setDefaultFormProcessing(false));
 		
@@ -123,12 +139,13 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				info("Batch biospecimens saved");
+				onSave(target);
 				target.add(feedbackPanel);
 			}
-			
+
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(feedbackPanel);
 			}
 		});
 	}
@@ -163,6 +180,7 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 		}
 
 		super.onBeforeRender();
+		visitChildren(formVisitor);
 	}
 
 	/**
@@ -170,13 +188,16 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 	 * @return the listEditor of BatchBiospecimen(s)
 	 */
 	public AbstractListEditor<BatchBiospecimenVO> buildListEditor() {
-		listEditor = new AbstractListEditor<BatchBiospecimenVO>("batchBiospecimenList", new PropertyModel(this, "batchBiospecimenVO.batchBiospecimenList")) {
+		listEditor = new AbstractListEditor<BatchBiospecimenVO>("batchBiospecimenList", new PropertyModel(this, "batchBiospecimenList")) {
 
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void onPopulateItem(final ListItem<BatchBiospecimenVO> item) {
 				item.setOutputMarkupId(true);
+				item.setModel(new CompoundPropertyModel<BatchBiospecimenVO>(item.getModel()));
+				item.getModelObject().getBiospecimen().setLinkSubjectStudy(cpModel.getObject().getLinkSubjectStudy());
+				item.getModelObject().getBiospecimen().setStudy(cpModel.getObject().getLinkSubjectStudy().getStudy());
 
 				numberToCreateTxtFld = new TextField<Number>("numberToCreate");
 				
@@ -208,7 +229,6 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 				};
 
 				quantityTxtFld = new TextField<Double>("biospecimen.quantity") {
-
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -220,8 +240,8 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 						return (IConverter<C>) doubleConverter;
 					}
 				};
-				initTreatmentTypeDdc();
 				initUnitDdc();
+				initTreatmentTypeDdc();
 
 				item.add(numberToCreateTxtFld);
 				item.add(bioCollectionDdc);
@@ -229,9 +249,9 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 				item.add(sampleDateTxtFld);
 				item.add(sampleTimeTxtFld);
 				item.add(quantityTxtFld);
-				item.add(treatmentTypeDdc);
 				item.add(unitDdc);
-
+				item.add(treatmentTypeDdc);
+				
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 
 					private static final long	serialVersionUID	= 1L;
@@ -282,5 +302,121 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 		ChoiceRenderer<Unit> choiceRenderer = new ChoiceRenderer<Unit>(Constants.NAME, Constants.ID);
 		unitDdc = new DropDownChoice<Unit>("biospecimen.unit", (List<Unit>) unitList, choiceRenderer);
 		unitDdc.setNullValid(false);
+	}
+	
+	private void onSave(AjaxRequestTarget target) {
+		if(validatedList()) {
+			info("Batch biospecimens created:");
+			
+			// Loop through entire list
+			List<LimsVO> limsVoList = new ArrayList<LimsVO>(0);
+			
+			for (BatchBiospecimenVO batchBiospecimenVO: batchBiospecimenList) {
+				// Create multiple biospecimens per list row
+				for (int i = 0; i < batchBiospecimenVO.getNumberToCreate(); i++) {
+					LimsVO limsVo = new LimsVO();
+					Biospecimen biospecimen = new Biospecimen();
+					biospecimen = batchBiospecimenVO.getBiospecimen();					
+					limsVo.setBiospecimen(biospecimen);
+					limsVo.setBioTransaction(new BioTransaction());
+					limsVo.getBioTransaction().setQuantity(batchBiospecimenVO.getBiospecimen().getQuantity());
+					limsVo.getBioTransaction().setRecorder(SecurityUtils.getSubject().getPrincipal().toString());
+					limsVoList.add(limsVo);
+				}
+				
+				StringBuffer message = new StringBuffer();
+				message.append("Created ");
+				message.append(batchBiospecimenVO.getNumberToCreate());
+				message.append(" ");
+				message.append(batchBiospecimenVO.getBiospecimen().getSampleType().getName());
+				message.append(" ");
+				message.append("biospecimens");
+				info(message);
+			}
+			
+			log.info("Attempting to create " + limsVoList.size() + " biospecimens");
+			for(LimsVO limsVo : limsVoList){
+				iLimsService.createBiospecimen(limsVo);
+				log.info("Creating biospecimen: " + limsVo.getBiospecimen().getSampleType().getName());
+			}
+		}
+	}
+
+	private boolean validatedList() {
+		boolean ok = true;
+		boolean numberToCreateError = false;
+		boolean collectionError = false;
+		boolean sampleTypeError = false;
+		boolean quantityError = false;
+		boolean unitError = false;
+		boolean treatmentTypeError = false;
+		
+		// Check for any empty required fields in list
+		for (BatchBiospecimenVO batchBiospecimenVO: batchBiospecimenList) {
+			numberToCreateError = (batchBiospecimenVO.getNumberToCreate() == null);
+			collectionError = (batchBiospecimenVO.getBiospecimen().getBioCollection() == null);
+			sampleTypeError = (batchBiospecimenVO.getBiospecimen().getSampleType() == null);
+			quantityError = (batchBiospecimenVO.getBiospecimen().getQuantity() == null);
+			unitError = (batchBiospecimenVO.getBiospecimen().getUnit() == null);
+			treatmentTypeError = (batchBiospecimenVO.getBiospecimen().getTreatmentType() == null);
+			
+			if(numberToCreateError || collectionError || sampleTypeError || quantityError || unitError || treatmentTypeError) {
+				break;
+			}
+		}
+		
+		if(numberToCreateError) {
+			error("Field 'Number to Create' is required.");
+			ok = false;
+		}
+		if(collectionError) {
+			error("Field 'Collection' is required.");
+			ok = false;
+		}
+		if(sampleTypeError) {
+			error("Field 'Sample Type' is required.");
+			ok = false;
+		}
+		if(quantityError) {
+			error("Field 'Quantity' is required.");
+			ok = false;
+		}
+		if(unitError) {
+			error("Field 'Units' is required.");
+			ok = false;
+		}
+		if(treatmentTypeError) {
+			error("Field 'Treatment' is required.");
+			ok = false;
+		}
+		return ok;
+	}
+
+	/**
+	 * @param batchBiospecimenVO the batchBiospecimenVO to set
+	 */
+	public void setBatchBiospecimenVO(BatchBiospecimenVO batchBiospecimenVO) {
+		this.batchBiospecimenVO = batchBiospecimenVO;
+	}
+
+	/**
+	 * @return the batchBiospecimenVO
+	 */
+	public BatchBiospecimenVO getBatchBiospecimenVO() {
+		return batchBiospecimenVO;
+	}
+
+	/**
+	 * @param batchBiospecimenList the batchBiospecimenList to set
+	 */
+	public void setBatchBiospecimenList(List<BatchBiospecimenVO> batchBiospecimenList) {
+		this.batchBiospecimenList = batchBiospecimenList;
+	}
+
+	/**
+	 * @return the batchBiospecimenList
+	 */
+	public List<BatchBiospecimenVO> getBatchBiospecimenList() {
+		return batchBiospecimenList;
 	}
 }
