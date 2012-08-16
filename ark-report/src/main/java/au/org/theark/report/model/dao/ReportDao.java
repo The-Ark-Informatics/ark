@@ -664,7 +664,11 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.createAlias("workRequest", "wr", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("billableItemType", "bit", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("wr.researcher", "re", JoinType.LEFT_OUTER_JOIN);
-		criteria.add(Restrictions.eq("re.id", researcherCostResportVO.getResearcherId()));
+		
+		if(researcherCostResportVO.getResearcherId() !=null){
+			criteria.add(Restrictions.eq("re.id", researcherCostResportVO.getResearcherId()));
+		}
+		
 		criteria.add(Restrictions.eq("bi.studyId", researcherCostResportVO.getStudyId()));
 		criteria.add(Restrictions.eq("bi.invoice", researcherCostResportVO.getInvoice()));
 		Integer commenceYear=Integer.parseInt(researcherCostResportVO.getYear());
@@ -685,6 +689,8 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 
 		criteria.setProjection(projectionList); // only return fields required for report
 		criteria.setResultTransformer(Transformers.aliasToBean(ResearcherDetailCostDataRow.class));
+		criteria.addOrder(Order.asc("bit.id"));
+		criteria.addOrder(Order.asc("bi.commenceDate"));
 		results=criteria.list();
 		return results;
 	}
