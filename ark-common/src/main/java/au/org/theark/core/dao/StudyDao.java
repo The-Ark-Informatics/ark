@@ -1417,6 +1417,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("name", "AWAITING_VALIDATION"));
 		return (UploadStatus)criteria.uniqueResult();		
 	}
+
+	public UploadStatus getUploadStatusFor(String statusFromConstant){
+		Criteria criteria = getSession().createCriteria(UploadStatus.class);
+		criteria.add(Restrictions.eq("name", statusFromConstant));
+		return (UploadStatus)criteria.uniqueResult();		
+	}
 /*
 	public UploadStatus getUploadStatusForValidated(){
 		Criteria criteria = getSession().createCriteria(UploadStatus.class);

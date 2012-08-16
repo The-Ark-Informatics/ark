@@ -32,6 +32,7 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
@@ -183,6 +184,11 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 				target.add(updateExistingDataContainer);
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
+				
+			}
+			else{
+				this.containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.study.web.Constants.UPLOAD_STATUS_OF_VALIDATED));
+				iArkCommonService.updateUpload(this.containerForm.getModelObject().getUpload());
 			}
 		}
 		catch (IOException e) {
