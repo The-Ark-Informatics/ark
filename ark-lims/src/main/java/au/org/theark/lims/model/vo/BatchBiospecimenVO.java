@@ -19,8 +19,6 @@
 package au.org.theark.lims.model.vo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import au.org.theark.core.model.lims.entity.Biospecimen;
 
@@ -32,20 +30,22 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
  */
 public class BatchBiospecimenVO implements Serializable {
 	private static final long	serialVersionUID	= 1L;
-	protected int				numberToCreate;
+	protected Integer		numberToCreate;
 	protected Biospecimen	biospecimen;
-	protected List<BatchBiospecimenVO> batchBiospecimenList = new ArrayList<BatchBiospecimenVO>(1);
 	
+	public BatchBiospecimenVO() {
+		biospecimen = new Biospecimen();
+	}
 	/**
 	 * @return the numberToCreate
 	 */
-	public int getNumberToCreate() {
+	public Integer getNumberToCreate() {
 		return numberToCreate;
 	}
 	/**
 	 * @param numberToCreate the numberToCreate to set
 	 */
-	public void setNumberToCreate(int numberToCreate) {
+	public void setNumberToCreate(Integer numberToCreate) {
 		this.numberToCreate = numberToCreate;
 	}
 	/**
@@ -60,16 +60,4 @@ public class BatchBiospecimenVO implements Serializable {
 	public void setBiospecimen(Biospecimen biospecimen) {
 		this.biospecimen = biospecimen;
 	}
-	/**
-	 * @return the batchBiospecimenList
-	 */
-	public List<BatchBiospecimenVO> getBatchBiospecimenList() {
-		return batchBiospecimenList;
-	}
-	/**
-	 * @param batchBiospecimenList the batchBiospecimenList to set
-	 */
-	public void setBatchBiospecimenList(List<BatchBiospecimenVO> batchBiospecimenList) {
-		this.batchBiospecimenList = batchBiospecimenList;
-	}	
 }
