@@ -56,6 +56,7 @@ import au.org.theark.report.web.component.viewReport.researcherdetailcost.WorkRe
 import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLevelConsentReportContainer;
 import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryReportContainer;
 import au.org.theark.report.web.component.viewReport.studyUserRolePermissions.StudyUserRolePermissionsReportContainer;
+import au.org.theark.report.web.component.viewReport.studycost.StudyCostReportContainer;
 
 public class ReportSelectPanel extends Panel {
 
@@ -334,6 +335,21 @@ public class ReportSelectPanel extends Panel {
 					}
 					else {
 						WorkResearcherDetailCostReportContainer selectedReportPanel = new WorkResearcherDetailCostReportContainer("selectedReportContainerPanel");
+						selectedReportPanel.setOutputMarkupId(true);
+						// Replace the old selectedReportPanel with this new one
+						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
+						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
+						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
+						target.add(reportContainerVO.getSelectedReportContainerWMC());
+						this.info(reportTemplate.getName() + " template selected.");
+					}
+				}
+				else if(reportTemplate.getName().equals(Constants.WORK_STUDY_DETAIL_COST_REPORT_NAME)){
+					if (reportSelectCPM.getObject().getStudy() == null) {
+						this.error("This report requires a study in context. Please put a study in context first.");
+					}
+					else {
+						StudyCostReportContainer selectedReportPanel = new StudyCostReportContainer("selectedReportContainerPanel");
 						selectedReportPanel.setOutputMarkupId(true);
 						// Replace the old selectedReportPanel with this new one
 						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
