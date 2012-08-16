@@ -1,43 +1,50 @@
 <wicket:panel>
-	&nbsp;
 	<form wicket:id="batchCreateBiospecimenForm">
+		<span wicket:id="feedback">
+			[Feedback]
+		</span>
 		<div class="listPanelBorder">
 			<table width="0%" cellspacing="0">
 			</table>
-			<table width="100%" cellspacing="0" class="dataview" border="1">
+			<table width="100%" cellspacing="0" class="dataview" border="0">
 				<!-- Header row -->
 				<tr>
 					<th width="2%">
 						&nbsp;
 					</th>
-					<th width="5%">
+					<th width="1%">
 						<wicket:message	key="numberToCreate">
 							Number to Create:
 						</wicket:message>
 					</th>
-					<th width="15%">
+					<th width="10%">
 						<wicket:message	key="biospecimen.bioCollection">
 							Collection:
 						</wicket:message>
 					</th>
-					<th width="35%">
+					<th width="10%">
 						<wicket:message	key="biospecimen.sampleType">
 							Sample Type:
 						</wicket:message>
 					</th>
-					<th width="15%">
+					<th width="10%">
 						<wicket:message	key="biospecimen.sampleDate">
 							Sample Date:
 						</wicket:message>
 					</th>
-					<th width="15%">
+					<th width="5%">
 						<wicket:message	key="biospecimen.sampleTime">
 							Sample Time:
 						</wicket:message>
 					</th>
-					<th width="10%">
-						<wicket:message	key="biospecimen.quantity">
+					<th width="5%">
+						<wicket:message	key="quantity">
 							Quantity:
+						</wicket:message>
+					</th>
+					<th width="10%">
+						<wicket:message	key="biospecimen.unit">
+							Units:
 						</wicket:message>
 					</th>
 					<th width="10%">
@@ -55,8 +62,8 @@
 						<td width="2%">
 							&nbsp;
 						</td>
-						<td width="5%">
-							<input wicket:id="numberToCreate" type="text" maxLength="10" size="5"/>
+						<td>
+							<input wicket:id="numberToCreate" type="text" maxLength="10" size="1"/><span class="requiredHint">*</span>
 						</td>
 
 						<td>
@@ -67,8 +74,7 @@
 								<option>
 									2
 								</option>
-							</select>
-
+							</select><span class="requiredHint">*</span>
 						</td>
 
 						<td>
@@ -79,19 +85,19 @@
 								<option>
 									2
 								</option>
-							</select>
+							</select><span class="requiredHint">*</span>
 						</td>
 
 						<td>
-							<input wicket:id="biospecimen.sampleDate"	type="text" maxLength="10"/>
+							<input wicket:id="biospecimen.sampleDate" type="text" maxLength="10" size="10"/>
 						</td>
 
 						<td>
 							<span wicket:id="biospecimen.sampleTime">
 							</span>
 						</td>
-						<td>
-							<input wicket:id="biospecimen.quantity" type="text" maxLength="10" size="5"/>
+						<td colspan="2">
+							<input wicket:id="biospecimen.quantity" type="text" maxLength="10" size="1"/><span class="requiredHint">*</span>
 							<select wicket:id="biospecimen.unit">
 								<option>
 									1
@@ -99,7 +105,7 @@
 								<option>
 									2
 								</option>
-							</select>
+							</select><span class="requiredHint">*</span>
 						</td>
 						<td>
 							<select wicket:id="biospecimen.treatmentType">
@@ -109,7 +115,7 @@
 								<option>
 									2
 								</option>
-							</select>
+							</select><span class="requiredHint">*</span>
 						</td>
 
 						<td width="2%">
@@ -122,7 +128,7 @@
 						<td width="2%">
 							&nbsp;
 						</td>
-						<td width="96%" colspan="7">
+						<td width="96%" colspan="8">
 							<input wicket:id="new" type="submit" wicket:message="value:button.new" />
 						</td>
 						<td width="2%">
@@ -132,9 +138,23 @@
 				</tfoot>
 			</table>
 		</div>
+		<div class="detailPanelBreaker">
+		</div>
 		<!-- End listPanelBorder -->
-		<div class="buttons">
+		<div class="actionButtons">
 			<input wicket:id="save" type="submit" wicket:message="value:button.save" />
 		</div>
 	</form>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
 </wicket:panel>

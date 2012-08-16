@@ -46,7 +46,7 @@ public class BatchCreateBiospecimenPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		form = new BatchCreateBiospecimenForm("batchCreateBiospecimenForm", feedbackPanel, cpModel, new Model<BatchBiospecimenVO>(new BatchBiospecimenVO()));
+		form = new BatchCreateBiospecimenForm("batchCreateBiospecimenForm", cpModel, new Model<BatchBiospecimenVO>(new BatchBiospecimenVO()));
 		form.initialiseForm();
 		add(form);
 	}
