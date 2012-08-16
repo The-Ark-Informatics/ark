@@ -19,6 +19,13 @@
 package au.org.theark.study.web;
 
 public class Constants {
+	public static final String			UPLOAD_STATUS_OF_AWAITING_VALIDATION				= "AWAITING_VALIDATION";
+	public static final String			UPLOAD_STATUS_OF_COMPLETED								= "COMPLETED";
+	public static final String			UPLOAD_STATUS_OF_ERROR_IN_DATA_VALIDATION			= "ERROR_IN_DATA_VALIDATION";
+	public static final String			UPLOAD_STATUS_OF_ERROR_IN_FILE_VALIDATION			= "ERROR_IN_FILE_VALIDATION";
+	public static final String			UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT				= "ERROR_ON_DATA_IMPORT";
+	public static final String			UPLOAD_STATUS_OF_STATUS_NOT_DEFINED					= "STATUS_NOT_DEFINED";
+	public static final String			UPLOAD_STATUS_OF_VALIDATED								= "VALIDATED";
 	public static final String			ADMIN_TAB														= "Administration";
 	public static final String			STUDY_TAB														= "Study";
 	public static final String			SUBJECT_TAB														= "Subject";
