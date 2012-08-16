@@ -634,6 +634,8 @@ public interface IStudyDao {
 	public Collection<UploadType> getUploadTypesForLims();
 
 	public List<Upload> searchUploadsForBio(Upload uploadCriteria);
+
+	public UploadStatus getUploadStatusFor(String uploadStatusConstant);
 	
 	
 }

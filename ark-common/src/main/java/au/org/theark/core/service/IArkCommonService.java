@@ -705,6 +705,8 @@ public interface IArkCommonService<T> {
 	public UploadStatus getUploadStatusForUploaded();
 
 	public UploadStatus getUploadStatusForAwaitingValidation();
+
+	public UploadStatus getUploadStatusFor(String uploadStatusConstant);
 	
 	public List<CustomField> matchCustomFieldsFromInputFile(FileUpload fileUpload, Study study, ArkFunction arkFunction);
 
