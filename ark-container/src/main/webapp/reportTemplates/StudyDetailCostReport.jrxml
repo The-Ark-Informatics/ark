@@ -3,7 +3,6 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<parameter name="researcherName" class="java.lang.String"/>
 	<parameter name="studyId" class="java.lang.String"/>
 	<parameter name="studyName" class="java.lang.String"/>
 	<parameter name="reportYear" class="java.lang.String"/>
@@ -137,13 +136,13 @@
 		<band/>
 	</background>
 	<title>
-		<band height="136">
+		<band height="113">
 			<staticText>
 				<reportElement mode="Transparent" x="0" y="0" width="316" height="23"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="16" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Researcher Recruitment Cost]]></text>
+				<text><![CDATA[Total Study Cost]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="0" y="23" width="316" height="20"/>
@@ -152,36 +151,22 @@
 				</textElement>
 				<text><![CDATA[Billable Item Charges By Year]]></text>
 			</staticText>
-			<staticText>
-				<reportElement mode="Transparent" x="0" y="55" width="30" height="20"/>
-				<textElement>
-					<font fontName="DejaVu Sans" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Ref:]]></text>
-			</staticText>
 			<textField>
-				<reportElement mode="Transparent" x="71" y="55" width="245" height="20"/>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{researcherName}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement mode="Transparent" x="0" y="75" width="71" height="20"/>
+				<reportElement mode="Transparent" x="0" y="57" width="71" height="20"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{studyId}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="71" y="75" width="100" height="20"/>
+				<reportElement mode="Transparent" x="71" y="57" width="100" height="20"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{studyName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="0" y="110" width="127" height="21"/>
+				<reportElement mode="Transparent" x="0" y="90" width="127" height="21"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="14" isBold="true"/>
 				</textElement>
