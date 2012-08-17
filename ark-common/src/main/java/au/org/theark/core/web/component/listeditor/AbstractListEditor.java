@@ -49,7 +49,18 @@ public abstract class AbstractListEditor<T> extends RepeatingView implements IFo
 		add(item);
 		onPopulateItem(item);
 	}
-
+	
+	public void removeItem(ListItem<T> item) {
+		int idx = item.getIndex();
+		for (int i = idx + 1; i < item.getParent().size(); i++) {
+			ListItem<?> itemReIndex = (ListItem<?>) item.getParent().get(i);
+			itemReIndex.setIndex(itemReIndex.getIndex() - 1);
+		}
+		
+		items.remove(item.getIndex());
+		remove(item);
+	}
+	
 	@Override
 	protected void onBeforeRender() {
 		if (!hasBeenRendered()) {
@@ -122,5 +133,7 @@ public abstract class AbstractListEditor<T> extends RepeatingView implements IFo
 	public final void setModelObject(List<T> object) {
 		setDefaultModelObject(object);
 	}
+
+	
 
 }
