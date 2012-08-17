@@ -5,28 +5,28 @@
 	<table width="100%" cellspacing="0" class="dataview">
 		<tr>
 			<th width="2%">&nbsp;</th>
-			<th width="15%">
+			<th width="10%">
 				<label for="date">
 					<wicket:message	key="date">
 						Date:
 					</wicket:message>
 				</label>
 			</th>
-			<th width="15%">
+			<th width="10%">
 				<label for="time">
 					<wicket:message	key="time">
 						Time:
 					</wicket:message>
 				</label>
 			</th>
-			<th width="15%">
+			<th width="10%">
 				<label for="operator">
 					<wicket:message	key="operator">
 						Operator:
 					</wicket:message>
 				</label>
 			</th>
-			<th width="15%">
+			<th width="10%">
 				<label for="correspondenceMode">
 					<wicket:message	key="correspondenceMode">
 						Type:
@@ -60,24 +60,24 @@
 		<!--	The Data Result Set -->
 		<tr wicket:id="correspondenceList">
 			<td width="2%">&nbsp;</td>
-			<td width="15%">
+			<td width="10%">
 				<a href="#" wicket:id="correspondence">
 					<span wicket:id="correspondenceLabel">
 						A correspondence link
 					</span>
 				</a>
 			</td>
-			<td width="15%">
+			<td width="10%">
 				<span wicket:id="time">
 					3:30pm
 				</span>
 			</td>
-			<td width="15%">
+			<td width="10%">
 				<span wicket:id="operator.ldapUserName">
 					John Smith
 				</span>
 			</td>
-			<td width="15%">
+			<td width="10%">
 				<span wicket:id="correspondenceModeType.name">
 					Mail
 				</span>
@@ -98,7 +98,8 @@
 				</span>
 			</td>
 			<td width="10%">
-			  	<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />&nbsp;
+			  	<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />
+			  	<input wicket:id="deleteFile" type="submit" wicket:message="value:button.deleteFile" />
 			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
