@@ -11,7 +11,7 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.web.component.export.ExportToolbar;
-import au.org.theark.core.web.component.export.ExportablePropertyColumn;
+import au.org.theark.core.web.component.export.ExportableTextColumn;
 import au.org.theark.core.web.component.export.ResultSetDataProvider;
 
 public class DataSourceTablePanel extends Panel {
@@ -38,7 +38,7 @@ public class DataSourceTablePanel extends Panel {
 		for (int i = 0; i < prov.getColumnCount(); i++) {
 			//cols.add(new MetaDataColumn(prov, i));
 			//TODO: check this still works...
-			cols.add(new ExportablePropertyColumn<Void>(Model.of(prov.getColNames().get(i)), prov.getColNames().get(i)));
+			cols.add(new ExportableTextColumn<Void>(Model.of(prov.getColNames().get(i)), prov.getColNames().get(i)));
 		}
 
 		DataTable table = new DataTable("dataTable", cols, prov, Constants.ROWS_PER_PAGE);
