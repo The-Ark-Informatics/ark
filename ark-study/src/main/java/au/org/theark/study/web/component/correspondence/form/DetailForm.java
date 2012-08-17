@@ -59,6 +59,7 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.worktracking.service.IWorkTrackingService;
+import au.org.theark.worktracking.util.BillableItemCostCalculator;
 
 public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
@@ -293,11 +294,13 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		billableItem.setStudyId(studyId);
 		billableItem.setQuantity(1d);
+		billableItem.setItemCost(containerForm.getModelObject().getBillableItemType().getUnitPrice());
+		billableItem.setTotalCost(BillableItemCostCalculator.calculateItemCost(billableItem));
 		
-		Long subjectId= new Long( SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID).toString());		
+		String subjectId= SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID).toString();		
 		billableItem.setDescription("Automated - Subject Id "+subjectId);
 		billableItem.setInvoice(au.org.theark.worktracking.util.Constants.Y);
-		
+		billableItem.setCommenceDate(containerForm.getModelObject().getCorrespondence().getDate());
 		//Save newly created object
 		iWorkTrackingService.createBillableItem(billableItem);
 		
