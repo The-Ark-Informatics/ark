@@ -133,6 +133,10 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 
 			if (validationMessage != null && validationMessage.length() > 0) {
+				this.containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.study.web.Constants.UPLOAD_STATUS_OF_ERROR_IN_FILE_VALIDATION));
+				this.containerForm.getModelObject().getUpload().setFilename(filename);//have to reset this because the container has the file name...luckily it never changes 
+				iArkCommonService.updateUpload(this.containerForm.getModelObject().getUpload());
+
 				log.warn("validation = " + validationMessage);
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
@@ -146,6 +150,11 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 				addOrReplace(downloadValMsgButton);
 				target.add(downloadValMsgButton);
 			}
+			/*else{
+				this.containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.study.web.Constants.UPLOAD_STATUS_OF_VALIDATED));
+				this.containerForm.getModelObject().getUpload().setFilename(filename);//have to reset this because the container has the file name...luckily it never changes 
+				iArkCommonService.updateUpload(this.containerForm.getModelObject().getUpload());
+			}*/
 			
 		}
 		catch (IOException e) {
@@ -156,6 +165,13 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 		}
 		catch (FileFormatException ffe) {
 			validationMessage = "Error uploading file. You can only upload files of type: CSV (comma separated values), TXT (text), or XLS (Microsoft Excel file)";
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+			form.getNextButton().setEnabled(false);
+			target.add(form.getWizardButtonContainer());
+		}
+		catch(Exception e){
+			log.error("unexpected exception, not shown to user...INVESTIGATE :\n", e);
+			validationMessage = "Error attempting to validate the file. Please contact your system administrator.";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 			form.getNextButton().setEnabled(false);
 			target.add(form.getWizardButtonContainer());
