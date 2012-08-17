@@ -19,6 +19,7 @@
 package au.org.theark.lims.web.component.biospecimen.batchcreate;
 
 
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -37,16 +38,16 @@ public class BatchCreateBiospecimenPanel extends Panel {
 	protected FeedbackPanel							feedbackPanel;
 	private BatchCreateBiospecimenForm					form;
 
-	public BatchCreateBiospecimenPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<LimsVO> cpModel) {
+	public BatchCreateBiospecimenPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<LimsVO> cpModel, ModalWindow modalWindow) {
 		super(id);
 		this.feedbackPanel = feedbackPanel;
 		this.cpModel = cpModel;
-		initialisePanel();
+		initialisePanel(modalWindow);
 		setOutputMarkupPlaceholderTag(true);
 	}
 
-	public void initialisePanel() {
-		form = new BatchCreateBiospecimenForm("batchCreateBiospecimenForm", cpModel, new Model<BatchBiospecimenVO>(new BatchBiospecimenVO()));
+	public void initialisePanel(ModalWindow modalWindow) {
+		form = new BatchCreateBiospecimenForm("batchCreateBiospecimenForm", cpModel, new Model<BatchBiospecimenVO>(new BatchBiospecimenVO()), modalWindow);
 		form.initialiseForm();
 		add(form);
 	}

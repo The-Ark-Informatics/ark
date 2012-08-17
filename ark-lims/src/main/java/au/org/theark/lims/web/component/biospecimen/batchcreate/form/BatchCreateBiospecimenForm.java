@@ -18,15 +18,21 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biospecimen.batchcreate.form;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DateTimeField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -49,6 +55,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
+import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
@@ -102,13 +109,15 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 	private DropDownChoice<TreatmentType>				treatmentTypeDdc;
 	private BatchBiospecimenVO								batchBiospecimenVO = new BatchBiospecimenVO();
 	private List<BatchBiospecimenVO>						batchBiospecimenList = new ArrayList<BatchBiospecimenVO>();
+	protected ModalWindow 									modalWindow;
 
-	public BatchCreateBiospecimenForm(String id, CompoundPropertyModel<LimsVO> cpModel, IModel<BatchBiospecimenVO> model) {
+	public BatchCreateBiospecimenForm(String id, CompoundPropertyModel<LimsVO> cpModel, IModel<BatchBiospecimenVO> model, ModalWindow modalWindow) {
 		super(id, model);
 		this.feedbackPanel = new FeedbackPanel("feedback");
 		feedbackPanel.setOutputMarkupId(true);
 		this.cpModel = cpModel;
 		setMultiPart(true);
+		this.modalWindow = modalWindow;
 		batchBiospecimenList.add(new BatchBiospecimenVO());
 		add(feedbackPanel);
 	}
@@ -148,6 +157,20 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 				target.add(feedbackPanel);
 			}
 		});
+		
+		add(new AjaxButton(Constants.CANCEL) {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				modalWindow.close(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(feedbackPanel);
+			}
+		}.setDefaultFormProcessing(false));
 	}
 
 	@Override
@@ -252,6 +275,21 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 				item.add(unitDdc);
 				item.add(treatmentTypeDdc);
 				
+				item.add(new AjaxEditorButton(Constants.DELETE) {
+					private static final long	serialVersionUID	= 1L;
+
+					@Override
+					protected void onError(AjaxRequestTarget target, Form<?> form) {
+						target.add(feedbackPanel);
+					}
+
+					@Override
+					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+						listEditor.removeItem(item);
+						target.add(form);
+					}
+				}.setDefaultFormProcessing(false).setVisible(item.getIndex()>0));
+				
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 
 					private static final long	serialVersionUID	= 1L;
@@ -307,21 +345,42 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 	private void onSave(AjaxRequestTarget target) {
 		if(validatedList()) {
 			info("Batch biospecimens created:");
-			
+			List<Biospecimen> biospecimenList = new ArrayList<Biospecimen>(0);
+
 			// Loop through entire list
-			List<LimsVO> limsVoList = new ArrayList<LimsVO>(0);
-			
 			for (BatchBiospecimenVO batchBiospecimenVO: batchBiospecimenList) {
 				// Create multiple biospecimens per list row
-				for (int i = 0; i < batchBiospecimenVO.getNumberToCreate(); i++) {
-					LimsVO limsVo = new LimsVO();
+				int i = 0;
+				while ( i < batchBiospecimenVO.getNumberToCreate()) {
 					Biospecimen biospecimen = new Biospecimen();
-					biospecimen = batchBiospecimenVO.getBiospecimen();					
-					limsVo.setBiospecimen(biospecimen);
-					limsVo.setBioTransaction(new BioTransaction());
-					limsVo.getBioTransaction().setQuantity(batchBiospecimenVO.getBiospecimen().getQuantity());
-					limsVo.getBioTransaction().setRecorder(SecurityUtils.getSubject().getPrincipal().toString());
-					limsVoList.add(limsVo);
+					try {
+						PropertyUtils.copyProperties(biospecimen, batchBiospecimenVO.getBiospecimen());
+						Set<BioTransaction> bioTransactions = new HashSet<BioTransaction>(0);
+						
+						// Inheriently create a transaction for the initial quantity
+						BioTransaction bioTransaction = new BioTransaction();
+						bioTransaction.setBiospecimen(biospecimen);
+						bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
+						bioTransaction.setQuantity(biospecimen.getQuantity());
+						bioTransaction.setReason(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
+						
+						BioTransactionStatus initialStatus = iLimsService.getBioTransactionStatusByName(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
+						bioTransaction.setStatus(initialStatus);	//ensure that the initial transaction can be identified
+						bioTransactions.add(bioTransaction);
+						biospecimen.setBioTransactions(bioTransactions);
+						biospecimen.setBiospecimenUid(iLimsService.getNextGeneratedBiospecimenUID(biospecimen.getStudy()));
+						biospecimenList.add(biospecimen);
+						i++;
+					}
+					catch (IllegalAccessException e) {
+						log.error(e.getMessage());
+					}
+					catch (InvocationTargetException e) {
+						log.error(e.getMessage());
+					}
+					catch (NoSuchMethodException e) {
+						log.error(e.getMessage());
+					}
 				}
 				
 				StringBuffer message = new StringBuffer();
@@ -334,11 +393,8 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 				info(message);
 			}
 			
-			log.info("Attempting to create " + limsVoList.size() + " biospecimens");
-			for(LimsVO limsVo : limsVoList){
-				iLimsService.createBiospecimen(limsVo);
-				log.info("Creating biospecimen: " + limsVo.getBiospecimen().getSampleType().getName());
-			}
+			log.info("Attempting to create " + biospecimenList.size() + " biospecimens");
+			iLimsService.batchInsertBiospecimens(biospecimenList);
 		}
 	}
 
