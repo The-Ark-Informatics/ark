@@ -20,6 +20,10 @@ package au.org.theark.study.web.component.correspondence;
 
 import java.text.SimpleDateFormat;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -31,18 +35,25 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.correspondence.form.ContainerForm;
 
 public class SearchResultListPanel extends Panel {
-
-
 	private static final long	serialVersionUID	= 6424424894090501973L;
-
+	private transient Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
+	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
+	private IStudyService		studyService;
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private ContainerForm		containerForm;
 
@@ -108,8 +119,11 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("reason", ""));
 				}
 
-				// Download file link button
+				// Download file button
 				item.add(buildDownloadButton(correspondence));
+				
+				// Delete file button
+				item.add(buildDeleteButton(correspondence));
 
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					private static final long	serialVersionUID	= -1588380616547616236L;
@@ -120,6 +134,8 @@ public class SearchResultListPanel extends Panel {
 					}
 				}));
 			}
+
+			
 		};
 
 		return pageableListView;
@@ -135,7 +151,7 @@ public class SearchResultListPanel extends Panel {
 			public void onClick(AjaxRequestTarget target) {
 				containerForm.getModelObject().setCorrespondence(correspondence);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-
+				target.add(containerForm);
 			}
 		};
 
@@ -163,9 +179,8 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				// TODO: log!
-				System.err.println(" Error Downloading File ");
-				this.error("There was an error while downloading file.  Please contact Administrator");
+				log.error("Error Downloading File: " + correspondences.getAttachmentFilename());
+				this.error("There was an error while downloading file. Please contact Administrator");
 			};
 		};
 
@@ -175,6 +190,57 @@ public class SearchResultListPanel extends Panel {
 		if (correspondences.getAttachmentFilename() == null)
 			ajaxButton.setVisible(false);
 
+		return ajaxButton;
+	}
+	
+	private AjaxButton buildDeleteButton(final Correspondences correspondences) {
+		DeleteButton ajaxButton = new DeleteButton(correspondences, SearchResultListPanel.this) {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				String filename = correspondences.getAttachmentFilename();
+				// Attempt to delete attachment
+				if (correspondences.getId() != null) {
+					try {
+						correspondences.setAttachmentFilename(null);
+						correspondences.setAttachmentPayload(null);
+						studyService.update(correspondences);
+					}
+					catch (ArkSystemException e) {
+						log.error(e.getMessage());
+					}
+					catch (EntityNotFoundException e) {
+						log.error(e.getMessage());
+					}
+				}
+
+				containerForm.info("Correspondence attachment " + filename + " was deleted successfully.");
+
+				// Update the result panel
+				// target.add(searchResultContainer);
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+
+				target.add(containerForm);
+			}
+
+			@Override
+			public boolean isVisible() {
+				SecurityManager securityManager = ThreadContext.getSecurityManager();
+				Subject currentUser = SecurityUtils.getSubject();
+				boolean flag = false;
+				flag = (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE) && (correspondences.getAttachmentFilename() != null)); 
+				return flag;
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Delete request could not be fulfilled.");
+			}
+		};
+
+		ajaxButton.setDefaultFormProcessing(false);
 		return ajaxButton;
 	}
 }
