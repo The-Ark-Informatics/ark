@@ -12,10 +12,10 @@ import com.itextpdf.text.pdf.PdfPTable;
 
 import au.org.theark.core.util.CsvWriter;
 
-public class ExportablePropertyColumn<T> extends PropertyColumn<T> implements ExportableColumn<T> {
+public class ExportableTextColumn<T> extends PropertyColumn<T> implements ExportableColumn<T> {
 	private static final long	serialVersionUID	= 1L;
 
-	public ExportablePropertyColumn(IModel<String> displayModel, String propertyExpression) {
+	public ExportableTextColumn(IModel<String> displayModel, String propertyExpression) {
 		super(displayModel, propertyExpression);
 	}
 
