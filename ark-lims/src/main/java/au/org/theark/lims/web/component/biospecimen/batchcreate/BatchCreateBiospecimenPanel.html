@@ -52,6 +52,11 @@
 							Treatment:
 						</wicket:message>
 					</th>
+					
+					<th width="1%">
+						&nbsp;
+					</th>
+					
 					<th width="2%">
 						&nbsp;
 					</th>
@@ -118,6 +123,10 @@
 							</select><span class="requiredHint">*</span>
 						</td>
 
+						<td>
+							<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
+						</td>
+						
 						<td width="2%">
 							&nbsp;
 						</td>
@@ -128,7 +137,7 @@
 						<td width="2%">
 							&nbsp;
 						</td>
-						<td width="96%" colspan="8">
+						<td width="96%" colspan="9">
 							<input wicket:id="new" type="submit" wicket:message="value:button.new" />
 						</td>
 						<td width="2%">
@@ -143,6 +152,7 @@
 		<!-- End listPanelBorder -->
 		<div class="actionButtons">
 			<input wicket:id="save" type="submit" wicket:message="value:button.save" />
+			<input wicket:id="cancel" type="submit" wicket:message="value:button.cancel" />
 		</div>
 	</form>
 	<br>
