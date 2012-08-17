@@ -77,7 +77,24 @@ public class SubjectVO implements Serializable {
 	}
 
 	public String getSubjectFullName() {
-		return subjectFullName;
+		StringBuffer sb = new StringBuffer();
+		
+		String firstName = linkSubjectStudy.getPerson().getFirstName();
+		String midName = linkSubjectStudy.getPerson().getMiddleName();
+		String lastName = linkSubjectStudy.getPerson().getLastName();
+
+		if (firstName != null) {
+			sb.append(linkSubjectStudy.getPerson().getFirstName());
+			sb.append(" ");
+		}
+		if (midName != null) {
+			sb.append(linkSubjectStudy.getPerson().getMiddleName());
+			sb.append(" ");
+		}
+		if (lastName != null) {
+			sb.append(linkSubjectStudy.getPerson().getLastName());
+		}
+		return sb.toString();
 	}
 
 	public void setSubjectFullName(String subjectFullName) {
