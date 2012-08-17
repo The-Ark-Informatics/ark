@@ -84,25 +84,6 @@ public class SearchResultListPanel extends Panel {
 			protected void populateItem(final Item<SubjectVO> item) {
 				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
 				item.add(buildLink(item.getModelObject()));
-
-				StringBuffer sb = new StringBuffer();
-				String firstName = subject.getPerson().getFirstName();
-				String midName = subject.getPerson().getMiddleName();
-				String lastName = subject.getPerson().getLastName();
-
-				if (firstName != null) {
-					sb.append(subject.getPerson().getFirstName());
-					sb.append(" ");
-				}
-				if (midName != null) {
-					sb.append(subject.getPerson().getMiddleName());
-					sb.append(" ");
-				}
-				if (lastName != null) {
-					sb.append(subject.getPerson().getLastName());
-				}
-
-				item.getModelObject().setSubjectFullName(sb.toString());
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
 
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
@@ -154,25 +135,6 @@ public class SearchResultListPanel extends Panel {
 			protected void populateItem(final ListItem<SubjectVO> item) {
 				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
 				item.add(buildLink(item.getModelObject()));
-
-				StringBuffer sb = new StringBuffer();
-				String firstName = subject.getPerson().getFirstName();
-				String midName = subject.getPerson().getMiddleName();
-				String lastName = subject.getPerson().getLastName();
-
-				if (firstName != null) {
-					sb.append(subject.getPerson().getFirstName());
-					sb.append(" ");
-				}
-				if (midName != null) {
-					sb.append(subject.getPerson().getMiddleName());
-					sb.append(" ");
-				}
-				if (lastName != null) {
-					sb.append(subject.getPerson().getLastName());
-				}
-
-				item.getModelObject().setSubjectFullName(sb.toString());
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
 
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {

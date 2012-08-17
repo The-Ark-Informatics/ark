@@ -57,7 +57,7 @@ import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.export.ExportToolbar;
-import au.org.theark.core.web.component.export.ExportablePropertyColumn;
+import au.org.theark.core.web.component.export.ExportableTextColumn;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -163,12 +163,12 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		dataViewListWMC.add(dataView);
 		
 		List<IColumn<Biospecimen>> columns = new ArrayList<IColumn<Biospecimen>>();
-		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("BiospecimenUID"), "biospecimenUid"));
-		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("Study"), "study.name"));
-		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("SubjectUID"), "linkSubjectStudy.subjectUID"));
-		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("Collection"), "bioCollection.name"));
-		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("Sample Type"), "sampleType.name"));
-		columns.add(new ExportablePropertyColumn<Biospecimen>(Model.of("Quantity"), "quantity"));
+		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("BiospecimenUID"), "biospecimenUid"));
+		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Study"), "study.name"));
+		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("SubjectUID"), "linkSubjectStudy.subjectUID"));
+		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Collection"), "bioCollection.name"));
+		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Sample Type"), "sampleType.name"));
+		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Quantity"), "quantity"));
 		
 		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), au.org.theark.core.Constants.ROWS_PER_PAGE);
 		List<String> headers = new ArrayList<String>(0);
