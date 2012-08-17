@@ -45,12 +45,4 @@ public class RemoveButton extends EditorButton {
 	public boolean isEnabled() {
 		return getEditor().checkRemove(getItem());
 	}
-	/*
-	 * @Override protected void onSubmit(AjaxRequestTarget target, Form<?> form) { int idx = getItem().getIndex();
-	 * 
-	 * for (int i = idx + 1; i < getItem().getParent().size(); i++) { ListItem< ? > item = (ListItem< ? >)getItem().getParent().get(i);
-	 * item.setIndex(item.getIndex() - 1); }
-	 * 
-	 * getList().remove(idx); getEditor().remove(getItem()); }
-	 */
 }
