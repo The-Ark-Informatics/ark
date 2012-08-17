@@ -327,7 +327,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
 
 			// Set the modalWindow title and content
-			modalContentPanel = new BatchCreateBiospecimenPanel("content", feedbackPanel, newModel);
+			modalContentPanel = new BatchCreateBiospecimenPanel("content", feedbackPanel, newModel, modalWindow);
 			modalWindow.setTitle("Batch Create Biospecimens");
 			modalWindow.setContent(modalContentPanel);
 			modalWindow.show(target);
