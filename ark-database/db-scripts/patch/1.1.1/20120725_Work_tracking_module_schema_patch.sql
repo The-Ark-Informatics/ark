@@ -248,7 +248,21 @@ VALUES
 UPDATE `study`.`ark_module` SET `NAME`='Work Tracking' WHERE `NAME`='Work'
 
 -- Researcher detail cost report
-INSERT INTO `reporting`.`report_template` (`NAME`, `DESCRIPTION`, `TEMPLATE_PATH`, `MODULE_ID`, `FUNCTION_ID`) VALUES ('Work Researcher Detail Cost Report', 'This report lists the individual billable item costs group by the billable item type realated to a researcher', 'ResearcherCostReport.jrxml', 8, 57);
+INSERT INTO `reporting`.`report_template` (`NAME`, `DESCRIPTION`, `TEMPLATE_PATH`, `MODULE_ID`, `FUNCTION_ID`) 
+VALUES 
+('Work Researcher Detail Cost Report', 'This report lists the individual billable item costs group by the billable item type realated to a researcher', 'ResearcherCostReport.jrxml', 
+(select ID from study.ark_module where name='Work Tracking'),
+(select ID from study.ark_function where name='BILLABLE_ITEM')
+);
+
+
+-- Study detail cost report
+INSERT INTO `reporting`.`report_template` (`NAME`, `DESCRIPTION`, `TEMPLATE_PATH`, `MODULE_ID`, `FUNCTION_ID`) 
+VALUES 
+('Work Study Detail Cost Report', 'This report lists the individual billable item costs group by the billable item type related to context study', 'StudyDetailCostReport.jrxml', 
+(select ID from study.ark_module where name='Work Tracking'),
+(select ID from study.ark_function where name='BILLABLE_ITEM')
+);
 
 -- Researcher detail cost report related changes. 
 ALTER TABLE `admin`.`bilable_item` ADD COLUMN `GST` DOUBLE NULL  AFTER `TOTAL_GST` ;
@@ -266,6 +280,8 @@ ALTER TABLE `admin`.`bilable_item` DROP FOREIGN KEY `fk_bilable_item_status` ;
 drop table `admin`.`billable_item_status`;
 
 drop table `admin`.`link_billable_item_subject`;
+
+
 
 
 
