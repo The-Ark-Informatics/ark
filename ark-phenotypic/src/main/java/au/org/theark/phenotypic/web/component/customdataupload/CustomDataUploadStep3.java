@@ -187,6 +187,8 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 
+		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
+		
 		if (validationMessage != null && validationMessage.length() > 0) {
 			form.getNextButton().setEnabled(false);
 			target.add(form.getWizardButtonContainer());
@@ -205,6 +207,15 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 			};
 			addOrReplace(downloadValMsgButton);
 			target.add(downloadValMsgButton);
+
+			this.containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.phenotypic.web.Constants.UPLOAD_STATUS_OF_ERROR_IN_DATA_VALIDATION));
+			this.containerForm.getModelObject().getUpload().setFilename(filename);//have to reset this because the container has the file name...luckily it never changes 
+			iArkCommonService.updateUpload(this.containerForm.getModelObject().getUpload());
+		}
+		else{
+			this.containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.phenotypic.web.Constants.UPLOAD_STATUS_OF_VALIDATED));
+			this.containerForm.getModelObject().getUpload().setFilename(filename);//have to reset this because the container has the file name...luckily it never changes 
+			iArkCommonService.updateUpload(this.containerForm.getModelObject().getUpload());
 		}
 	}
 

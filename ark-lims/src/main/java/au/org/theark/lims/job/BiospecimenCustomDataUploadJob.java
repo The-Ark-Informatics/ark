@@ -96,6 +96,8 @@ public class BiospecimenCustomDataUploadJob implements Job {
 		/*catch (FileFormatException e) {	}catch (ArkSystemException e) {	}*/
 		catch(Exception e){
 			// TODO Auto-generated catch block ...fix this throughout the application
+			//Upload upload = iLimsService.getUpload(uploadId);
+			//upload.setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.lims.web.Constants.UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT));
 			e.printStackTrace();
 		}
 	}
@@ -108,6 +110,7 @@ public class BiospecimenCustomDataUploadJob implements Job {
 		upload.setStartTime(startTime);
 		upload.setFinishTime(new Date(System.currentTimeMillis()));
 		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
+		upload.setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.lims.web.Constants.UPLOAD_STATUS_OF_COMPLETED));
 		iArkCommonService.updateUpload(upload);
 	}
 
