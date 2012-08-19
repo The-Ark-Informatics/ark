@@ -65,6 +65,7 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.study.service.IStudyService;
 
 import com.csvreader.CsvReader;
@@ -130,10 +131,11 @@ public class DataUploader {
 	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, List<String> uidsWhichNeedUpdating) throws FileFormatException, ArkSystemException {
 		List<LinkSubjectStudy>	insertSubjects			= new ArrayList<LinkSubjectStudy>();
 		List<LinkSubjectStudy>	updateSubjects			= new ArrayList<LinkSubjectStudy>();
-		long						subjectCount = 0;
-		long						insertCount = 0;
-		long						updateCount = 0;
-		long						srcLength = -1;	// -1 means nothing being processed
+		long	rowCount = 0;
+		long	subjectCount = 0;
+		long	insertCount = 0;
+		long	updateCount = 0;
+		long	srcLength = -1;	// -1 means nothing being processed
 		delimiterCharacter = inDelimChr;
 		uploadReport = new StringBuffer();
 
@@ -246,354 +248,382 @@ public class DataUploader {
 												((csvReader.getIndex("GENDER") > 0) ? csvReader.getIndex("GENDER"): 
 												((csvReader.getIndex("SEX") > 0) ? csvReader.getIndex("SEX"):-1)));   
 
+
+			boolean isAutoGen = study.getAutoGenerateSubjectUid();
+			
 			while (csvReader.readRecord()) {
+				rowCount++;
 				LinkSubjectStudy subject = null;
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[0];
-				subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
-				boolean thisSubjectAlreadyExists = (subject!=null);
 
-				Person person = null;
-				if(thisSubjectAlreadyExists){
-					person = subject.getPerson();
+				boolean hasSomeData = false;
+				for(String next : stringLineArray){
+					if(next != null && !next.isEmpty()){
+						hasSomeData = true;
+					}
+				}
+				
+				if(!isAutoGen && (subjectUID == null || subjectUID.isEmpty()) ){
+					if(!hasSomeData){
+						uploadReport.append("Warning/Info: Row " + rowCount + ":  There appeared to be no data on this row, so we ignored this line");
+					}
+					else{
+						//THIS SHOULD NEVER EVER HAPPEN IF VALIDATION IS CORRECT
+						uploadReport.append("Error: Row " + rowCount + ":  There is no subject UID on this row, " +
+								"yet the study is not set up to auto generate subject UIDs.  This line was ignored.  Please remove this line or provide an ID");
+					}
+				}
+				else if(isAutoGen && (subjectUID == null || subjectUID.isEmpty())  && !hasSomeData){
+					uploadReport.append("Warning/Info: Row " + rowCount + ":  There appeared to be no data on this row, so we ignored this line");
 				}
 				else{
-					subject = new LinkSubjectStudy();
-					subject.setSubjectUID(subjectUID);//note: this will be overwritten IF study.isautogenerate
-					subject.setStudy(study);
-					person = new Person();
-				}
 				
-				if (firstNameIndex > 0)
-					person.setFirstName(stringLineArray[firstNameIndex]);
-
-				if (middleNameIndex > 0)
-					person.setMiddleName(stringLineArray[middleNameIndex]);
-
-				if (lastNameIndex > 0){
-					String lastnameFromFile = stringLineArray[lastNameIndex];
-					
-					if (thisSubjectAlreadyExists  && lastnameFromFile!=null  && !lastnameFromFile.equalsIgnoreCase(person.getLastName()) ) {
-						PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-						personLastNameHistory.setPerson(person);
-						personLastNameHistory.setLastName(person.getLastName());
-						person.getPersonLastnameHistory().add(personLastNameHistory);//TODO analyze this
-					}
-					person.setLastName(lastnameFromFile);
-				}
-				if (preferredNameIndex > 0){
-					person.setPreferredName(stringLineArray[preferredNameIndex]);
-				}
-
-				if(genderIndex>0){
-					if (stringLineArray[genderIndex] != null && stringLineArray[genderIndex].length() > 0) {
-						for(GenderType boygirl : genderTypesPossible){
-							if(boygirl.getName().equalsIgnoreCase(stringLineArray[genderIndex])){
-								person.setGenderType(boygirl);		
-							}
-						}
-						if (person.getGenderType() == null || 
-								StringUtils.isBlank(person.getGenderType().getName())) {
-							person.setGenderType(defaultGenderType);
-						}
-					}	
-				}
-
-				if (dateOfBirthIndex > 0) {
-					Date dateOfBirth = new Date();
-					
-					if (stringLineArray[dateOfBirthIndex] != null && stringLineArray[dateOfBirthIndex].length() > 0) {
-						dateOfBirth = simpleDateFormat.parse(stringLineArray[dateOfBirthIndex]);
-						person.setDateOfBirth(dateOfBirth);
-					}
-				}
-
-				if (dateOfDeathIndex > 0) {
-					Date dateOfDeath = new Date();
-					if (stringLineArray[dateOfDeathIndex] != null && stringLineArray[dateOfDeathIndex].length() > 0) {
-						dateOfDeath = simpleDateFormat.parse(stringLineArray[dateOfDeathIndex]);
-						person.setDateOfDeath(dateOfDeath);
-					}
-				}
-
-				if (causeOfDeathIndex > 0) {
-					if (stringLineArray[causeOfDeathIndex] != null && stringLineArray[causeOfDeathIndex].length() > 0) {
-						person.setCauseOfDeath(stringLineArray[causeOfDeathIndex]);
-					}
-				}
-
-				if (vitalStatusIndex > 0) {
-					String vitalStatusStr = (stringLineArray[vitalStatusIndex]);
-					for(VitalStatus vitalStat : vitalStatiiPossible){
-						if(vitalStat.getName().equalsIgnoreCase(vitalStatusStr)){
-							person.setVitalStatus(vitalStat);		
-						}	
-					}					
-					if (person.getVitalStatus() == null || StringUtils.isBlank(person.getVitalStatus().getName())) {
-						person.setVitalStatus(defaultVitalStatus);
-					}
-				}
-
-				if (preferredEmailIndex > 0) {
-					person.setPreferredEmail(stringLineArray[preferredEmailIndex]);
-				}
-
-				if (otherEmailIndex > 0) {
-					person.setPreferredEmail(stringLineArray[otherEmailIndex]);
-				}
-
-				if (titleIndex > 0) {
-					String titleStr = (stringLineArray[titleIndex]);
-					for(TitleType titleType : titleTypesPossible){
-						if(titleType.getName().equalsIgnoreCase(titleStr)){
-							person.setTitleType(titleType);		
-						}
-					}
-					if (person.getTitleType() == null || StringUtils.isBlank(person.getTitleType().getName())) {
-						person.setTitleType(defaultTitleType);
-					}
-				}
-				
-				if (maritalStatusIndex > 0) {
-					String maritalStatusStr = (stringLineArray[maritalStatusIndex]);
-					for(MaritalStatus maritalStat : maritalStatiiPossible){
-						if(maritalStat.getName().equalsIgnoreCase(maritalStatusStr)){
-							person.setMaritalStatus(maritalStat);		
-						}
-					}
-					if (person.getMaritalStatus() == null || 
-							StringUtils.isBlank(person.getMaritalStatus().getName())) {
-						person.setMaritalStatus(defaultMaritalStatus);
-					}
-				}
-
-				if (personContactIndex > 0) {
-					String personContactMethodStr = null;
-					personContactMethodStr = (stringLineArray[personContactIndex]);				
-					for(PersonContactMethod possibleMethod : personContactMethodPossible){
-						if(possibleMethod.getName().equalsIgnoreCase(personContactMethodStr)){
-							person.setPersonContactMethod(possibleMethod);		
-						}	
-					}//TODO if we get to the end and personcontactmethod doesnt exist...what do we do?  do we want a default or does it get ignored
-				}
-
-				if (statusIndex > 0) {
-					String statusStr = (stringLineArray[statusIndex]);
-					for(SubjectStatus subjectStat : subjectStatiiPossible){
-						if(subjectStat.getName().equalsIgnoreCase(statusStr)){
-							subject.setSubjectStatus(subjectStat);		
-						}
-					}
-					if (subject.getSubjectStatus() == null || StringUtils.isBlank(subject.getSubjectStatus().getName())) {
-						subject.setSubjectStatus(defaultSubjectStatus);
-					}
-					//if the study is autoconsent...then there are some defaults we have to set TODO get rid of hardcoding
-					if(autoConsent && subject.getSubjectStatus().getName().equalsIgnoreCase("Subject")) {
-						subject.setConsentDate(new Date());
-						subject.setConsentStatus(consentStatusOfConsented);
-						subject.setConsentType(consentTypeOfElectronic);
-
-						ConsentOption defaultConsentOption = concentOptionOfYes;
-						subject.setConsentToActiveContact(defaultConsentOption);
-						subject.setConsentToPassiveDataGathering(defaultConsentOption);
-						subject.setConsentToUseData(defaultConsentOption);
-					}
-				}
-				
-				//if no address info - ignore
-				if(addressLine1Index>0 || addressLine1Index>0){
-					boolean updateAddress = false;
-					String address1String = stringLineArray[addressLine1Index];
-					String address2String = stringLineArray[addressLine2Index];
-					
-					if(	(address1String == null || StringUtils.isBlank(address1String)) &&
-							(address2String == null || StringUtils.isBlank(address2String)) ){
-						//then lets just jump out as there is no address to validate.  lay down to user that they must have data if they want an update
+					subject = getSubjectByUIDFromExistList(allSubjectWhichWillBeUpdated, subjectUID);
+					boolean thisSubjectAlreadyExists = (subject!=null);
+	
+					Person person = null;
+					if(thisSubjectAlreadyExists){
+						person = subject.getPerson();
 					}
 					else{
-						Address addressToAttachToPerson = null;
-						if(thisSubjectAlreadyExists){
-							String typeString = null;
-							String statusString = null;
-
-							if (addressTypeIndex > 0)
-								typeString = stringLineArray[addressTypeIndex];
-							if (addressStatusIndex > 0)
-								statusString = stringLineArray[addressStatusIndex];							
-							
-							for(Address a : person.getAddresses()){
-								if(a.getAddressStatus().getName().equalsIgnoreCase(statusString) &&
-									a.getAddressType().getName().equalsIgnoreCase(typeString)){
-									
-									addressToAttachToPerson = a;
-									updateAddress = true;
-								
+						subject = new LinkSubjectStudy();
+						subject.setSubjectUID(subjectUID);//note: this will be overwritten IF study.isautogenerate
+						subject.setStudy(study);
+						person = new Person();
+					}
+					
+					if (firstNameIndex > 0)
+						person.setFirstName(stringLineArray[firstNameIndex]);
+	
+					if (middleNameIndex > 0)
+						person.setMiddleName(stringLineArray[middleNameIndex]);
+	
+					if (lastNameIndex > 0){
+						String lastnameFromFile = stringLineArray[lastNameIndex];
+						
+						if (thisSubjectAlreadyExists  && lastnameFromFile!=null  && !lastnameFromFile.equalsIgnoreCase(person.getLastName()) ) {
+							PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+							personLastNameHistory.setPerson(person);
+							personLastNameHistory.setLastName(person.getLastName());
+							person.getPersonLastnameHistory().add(personLastNameHistory);//TODO analyze this
+						}
+						person.setLastName(lastnameFromFile);
+					}
+					if (preferredNameIndex > 0){
+						person.setPreferredName(stringLineArray[preferredNameIndex]);
+					}
+	
+					if(genderIndex>0){
+						if (stringLineArray[genderIndex] != null && stringLineArray[genderIndex].length() > 0) {
+							for(GenderType boygirl : genderTypesPossible){
+								if(boygirl.getName().equalsIgnoreCase(stringLineArray[genderIndex])){
+									person.setGenderType(boygirl);		
 								}
 							}
-						}
-						
-						if(addressToAttachToPerson==null){
-							log.info("address was null");
-							addressToAttachToPerson = new Address();
-						}
-						else
-						{
-							log.info("address was not null");
-						}
-						
-						AddressType type = findAddressTypeOrSetDefault(addressTypesPossible, defaultAddressType, stringLineArray[addressTypeIndex]);
-						AddressStatus status = findAddressStatusOrSetDefault(addressStatiiPossible, defaultAddressStatus, stringLineArray[addressTypeIndex]);
-						String addressComments = stringLineArray[addressCommentsIndex];
-						String suburb = stringLineArray[suburbIndex];
-						
-						String countryString = stringLineArray[countryIndex];
-						Country country = findCountry(countriesPossible, countryString);
-						if(country!=null){
-							addressToAttachToPerson.setCountry(country);
-							String stateString = stringLineArray[stateIndex];
-							//TODO one option: all possible states locally and test where it matches might work...or lets see how the entity goes first, and if it hits db again! 
-							//State state = findState(statesPossible, stateString, country);
-							State state = findStateWithinThisCountry(stateString, country);
-							if(state==null){
-								uploadReport.append("could not find a state named '" + stateString + "' in " + country.getName() + "\n");
-								addressToAttachToPerson.setOtherState(stateString);
+							if (person.getGenderType() == null || 
+									StringUtils.isBlank(person.getGenderType().getName())) {
+								person.setGenderType(defaultGenderType);
 							}
-							else{
-								addressToAttachToPerson.setState(state);
+						}	
+					}
+	
+					if (dateOfBirthIndex > 0) {
+						Date dateOfBirth = new Date();
+						
+						if (stringLineArray[dateOfBirthIndex] != null && stringLineArray[dateOfBirthIndex].length() > 0) {
+							dateOfBirth = simpleDateFormat.parse(stringLineArray[dateOfBirthIndex]);
+							person.setDateOfBirth(dateOfBirth);
+						}
+					}
+	
+					if (dateOfDeathIndex > 0) {
+						Date dateOfDeath = new Date();
+						if (stringLineArray[dateOfDeathIndex] != null && stringLineArray[dateOfDeathIndex].length() > 0) {
+							dateOfDeath = simpleDateFormat.parse(stringLineArray[dateOfDeathIndex]);
+							person.setDateOfDeath(dateOfDeath);
+						}
+					}
+	
+					if (causeOfDeathIndex > 0) {
+						if (stringLineArray[causeOfDeathIndex] != null && stringLineArray[causeOfDeathIndex].length() > 0) {
+							person.setCauseOfDeath(stringLineArray[causeOfDeathIndex]);
+						}
+					}
+	
+					if (vitalStatusIndex > 0) {
+						String vitalStatusStr = (stringLineArray[vitalStatusIndex]);
+						for(VitalStatus vitalStat : vitalStatiiPossible){
+							if(vitalStat.getName().equalsIgnoreCase(vitalStatusStr)){
+								person.setVitalStatus(vitalStat);		
+							}	
+						}					
+						if (person.getVitalStatus() == null || StringUtils.isBlank(person.getVitalStatus().getName())) {
+							person.setVitalStatus(defaultVitalStatus);
+						}
+					}
+	
+					if (preferredEmailIndex > 0) {
+						person.setPreferredEmail(stringLineArray[preferredEmailIndex]);
+					}
+	
+					if (otherEmailIndex > 0) {
+						person.setPreferredEmail(stringLineArray[otherEmailIndex]);
+					}
+	
+					if (titleIndex > 0) {
+						String titleStr = (stringLineArray[titleIndex]);
+						for(TitleType titleType : titleTypesPossible){
+							if(titleType.getName().equalsIgnoreCase(titleStr)){
+								person.setTitleType(titleType);		
 							}
+						}
+						if (person.getTitleType() == null || StringUtils.isBlank(person.getTitleType().getName())) {
+							person.setTitleType(defaultTitleType);
+						}
+					}
+					
+					if (maritalStatusIndex > 0) {
+						String maritalStatusStr = (stringLineArray[maritalStatusIndex]);
+						for(MaritalStatus maritalStat : maritalStatiiPossible){
+							if(maritalStat.getName().equalsIgnoreCase(maritalStatusStr)){
+								person.setMaritalStatus(maritalStat);		
+							}
+						}
+						if (person.getMaritalStatus() == null || 
+								StringUtils.isBlank(person.getMaritalStatus().getName())) {
+							person.setMaritalStatus(defaultMaritalStatus);
+						}
+					}
+	
+					if (personContactIndex > 0) {
+						String personContactMethodStr = null;
+						personContactMethodStr = (stringLineArray[personContactIndex]);				
+						for(PersonContactMethod possibleMethod : personContactMethodPossible){
+							if(possibleMethod.getName().equalsIgnoreCase(personContactMethodStr)){
+								person.setPersonContactMethod(possibleMethod);		
+							}	
+						}//TODO if we get to the end and personcontactmethod doesnt exist...what do we do?  do we want a default or does it get ignored
+					}
+	
+					if (statusIndex > 0) {
+						String statusStr = (stringLineArray[statusIndex]);
+						for(SubjectStatus subjectStat : subjectStatiiPossible){
+							if(subjectStat.getName().equalsIgnoreCase(statusStr)){
+								subject.setSubjectStatus(subjectStat);		
+							}
+						}
+						if (subject.getSubjectStatus() == null || StringUtils.isBlank(subject.getSubjectStatus().getName())) {
+							subject.setSubjectStatus(defaultSubjectStatus);
+						}
+						//if the study is autoconsent...then there are some defaults we have to set TODO get rid of hardcoding
+						if(autoConsent && subject.getSubjectStatus().getName().equalsIgnoreCase("Subject")) {
+							subject.setConsentDate(new Date());
+							subject.setConsentStatus(consentStatusOfConsented);
+							subject.setConsentType(consentTypeOfElectronic);
+	
+							ConsentOption defaultConsentOption = concentOptionOfYes;
+							subject.setConsentToActiveContact(defaultConsentOption);
+							subject.setConsentToPassiveDataGathering(defaultConsentOption);
+							subject.setConsentToUseData(defaultConsentOption);
+						}
+					}
+					
+					//if no address info - ignore
+					if(addressLine1Index>0 || addressLine1Index>0){
+						boolean updateAddress = false;
+						String address1String = stringLineArray[addressLine1Index];
+						String address2String = stringLineArray[addressLine2Index];
+						
+						if(	(address1String == null || StringUtils.isBlank(address1String)) &&
+								(address2String == null || StringUtils.isBlank(address2String)) ){
+							//then lets just jump out as there is no address to validate.  lay down to user that they must have data if they want an update
 						}
 						else{
-							uploadReport.append("Could not find country '" + countryString + "'\n");
-						}
-						
-						String postCode = stringLineArray[postCodeIndex];
-						String addressSource = stringLineArray[addressSourceIndex];
-						String dateReceivedString = stringLineArray[addressReceivedIndex];
-						String isPreferredMailingString = stringLineArray[isPreferredMailingIndex];
-
-						addressToAttachToPerson.setAddressType(type);
-						addressToAttachToPerson.setAddressStatus(status);
-						if(postCode!=null && !postCode.isEmpty())
-							addressToAttachToPerson.setPostCode(postCode);
-						if(address1String!=null && !address1String.isEmpty())
-							addressToAttachToPerson.setAddressLineOne(address1String);
-						if(address2String!=null && !address2String.isEmpty())
-							addressToAttachToPerson.setStreetAddress(address2String);//yeah..
-						if(dateReceivedString!=null && !dateReceivedString.isEmpty()){
-							// TODO dateconvert and set
-							Date dateReceived = new Date();
-							dateReceived = simpleDateFormat.parse(dateReceivedString);
-							addressToAttachToPerson.setDateReceived(dateReceived);
-						}
-						if(suburb!=null && !suburb.isEmpty())
-							addressToAttachToPerson.setCity(suburb);
-						if(addressComments!=null && !addressComments.isEmpty())
-							addressToAttachToPerson.setComments(addressComments);
-						if(isPreferredMailingString!=null && !isPreferredMailingString.isEmpty())
-							addressToAttachToPerson.setPreferredMailingAddress(Boolean.valueOf(isPreferredMailingString));
-						if(addressSource!=null && !addressSource.isEmpty())
-							addressToAttachToPerson.setSource(addressSource);
-						if(!updateAddress){
-							//TODO check this works in all cases
-							addressToAttachToPerson.setPerson(person);
-							person.getAddresses().add(addressToAttachToPerson);
-						}
-					}							
-					
-				}
-
-				//if no address info - ignore
-				if(phoneNumberIndex  >0){
-					boolean updatePhones= false;
-					String phoneNumberString = stringLineArray[phoneNumberIndex];
-					
-					if(phoneNumberString == null || StringUtils.isBlank(phoneNumberString)){
-						//then lets just jump out as there is no phone to validate.  lay down to user that they must have data if they want an update
-					}
-					else{
-						Phone phoneToAttachToPerson = null;
-						if(thisSubjectAlreadyExists){
-							String typeString = null;
-							String statusString = null;
-
-							if (phoneTypeIndex > 0)
-								typeString = stringLineArray[phoneTypeIndex];
-							if (phoneStatusIndex > 0)
-								statusString = stringLineArray[phoneStatusIndex];							
-							
-							for(Phone phone : person.getPhones()){
-								if(phone.getPhoneStatus().getName().equalsIgnoreCase(statusString) &&
-									phone.getPhoneType().getName().equalsIgnoreCase(typeString)){
-									phoneToAttachToPerson = phone;
-									updatePhones = true;
+							Address addressToAttachToPerson = null;
+							if(thisSubjectAlreadyExists){
+								String typeString = null;
+								String statusString = null;
+	
+								if (addressTypeIndex > 0)
+									typeString = stringLineArray[addressTypeIndex];
+								if (addressStatusIndex > 0)
+									statusString = stringLineArray[addressStatusIndex];							
+								
+								for(Address a : person.getAddresses()){
+									if(a.getAddressStatus().getName().equalsIgnoreCase(statusString) &&
+										a.getAddressType().getName().equalsIgnoreCase(typeString)){
+										
+										addressToAttachToPerson = a;
+										updateAddress = true;
+									
+									}
 								}
 							}
-						}
-						if(phoneToAttachToPerson==null){
-							phoneToAttachToPerson = new Phone();
-						}
+							
+							if(addressToAttachToPerson==null){
+								log.info("address was null");
+								addressToAttachToPerson = new Address();
+							}
+							else
+							{
+								log.info("address was not null");
+							}
+							
+							AddressType type = findAddressTypeOrSetDefault(addressTypesPossible, defaultAddressType, stringLineArray[addressTypeIndex]);
+							AddressStatus status = findAddressStatusOrSetDefault(addressStatiiPossible, defaultAddressStatus, stringLineArray[addressTypeIndex]);
+							String addressComments = stringLineArray[addressCommentsIndex];
+							String suburb = stringLineArray[suburbIndex];
+							
+							String countryString = stringLineArray[countryIndex];
+							Country country = findCountry(countriesPossible, countryString);
+							if(country!=null){
+								addressToAttachToPerson.setCountry(country);
+								String stateString = stringLineArray[stateIndex];
+								//TODO one option: all possible states locally and test where it matches might work...or lets see how the entity goes first, and if it hits db again! 
+								//State state = findState(statesPossible, stateString, country);
+								State state = findStateWithinThisCountry(stateString, country);
+								if(state==null){
+									uploadReport.append("could not find a state named '" + stateString + "' in " + country.getName() + "\n");
+									addressToAttachToPerson.setOtherState(stateString);
+								}
+								else{
+									addressToAttachToPerson.setState(state);
+								}
+							}
+							else{
+								uploadReport.append("Could not find country '" + countryString + "'\n");
+							}
+							
+							String postCode = stringLineArray[postCodeIndex];
+							String addressSource = stringLineArray[addressSourceIndex];
+							String dateReceivedString = stringLineArray[addressReceivedIndex];
+							String isPreferredMailingString = stringLineArray[isPreferredMailingIndex];
+	
+							addressToAttachToPerson.setAddressType(type);
+							addressToAttachToPerson.setAddressStatus(status);
+							if(postCode!=null && !postCode.isEmpty())
+								addressToAttachToPerson.setPostCode(postCode);
+							if(address1String!=null && !address1String.isEmpty())
+								addressToAttachToPerson.setAddressLineOne(address1String);
+							if(address2String!=null && !address2String.isEmpty())
+								addressToAttachToPerson.setStreetAddress(address2String);//yeah..
+							if(dateReceivedString!=null && !dateReceivedString.isEmpty()){
+								// TODO dateconvert and set
+								Date dateReceived = new Date();
+								dateReceived = simpleDateFormat.parse(dateReceivedString);
+								addressToAttachToPerson.setDateReceived(dateReceived);
+							}
+							if(suburb!=null && !suburb.isEmpty())
+								addressToAttachToPerson.setCity(suburb);
+							if(addressComments!=null && !addressComments.isEmpty())
+								addressToAttachToPerson.setComments(addressComments);
+							if(isPreferredMailingString!=null && !isPreferredMailingString.isEmpty())
+								addressToAttachToPerson.setPreferredMailingAddress(Boolean.valueOf(isPreferredMailingString));
+							if(addressSource!=null && !addressSource.isEmpty())
+								addressToAttachToPerson.setSource(addressSource);
+							if(!updateAddress){
+								//TODO check this works in all cases
+								addressToAttachToPerson.setPerson(person);
+								person.getAddresses().add(addressToAttachToPerson);
+							}
+						}							
 						
-						PhoneType type = findPhoneTypeOrSetDefault(phoneTypesPossible, defaultPhoneType, stringLineArray[phoneTypeIndex]);
-						PhoneStatus status = findPhoneStatusOrSetDefault(phoneStatiiPossible, defaultPhoneStatus, stringLineArray[phoneTypeIndex]);
-						String phoneComments = stringLineArray[phoneCommentsIndex];
-													
-						String areaCode = stringLineArray[areaCodeIndex];
-						String phoneSource = stringLineArray[phoneSourceIndex];
-						String phoneDateReceivedString = stringLineArray[phoneDateReceivedIndex];
-						//log.warn("phone Date Reveived = " + phoneDateReceivedString + " for index = " +  phoneDateReceivedIndex);
-
-						phoneToAttachToPerson.setPhoneType(type);
-						phoneToAttachToPerson.setPhoneStatus(status);
-						if(areaCode!=null && !areaCode.isEmpty())
-							phoneToAttachToPerson.setAreaCode(areaCode);
-						if(phoneNumberString !=null && !phoneNumberString.isEmpty())
-							phoneToAttachToPerson.setPhoneNumber(phoneNumberString);
-						if(phoneDateReceivedString!=null && !phoneDateReceivedString.isEmpty()){
-							// TODO dateconvert and set
-							Date dateReceived = new Date();
-							dateReceived = simpleDateFormat.parse(phoneDateReceivedString);
-							phoneToAttachToPerson.setDateReceived(dateReceived);
+					}
+	
+					//if no address info - ignore
+					if(phoneNumberIndex  >0){
+						boolean updatePhones= false;
+						String phoneNumberString = stringLineArray[phoneNumberIndex];
+						
+						if(phoneNumberString == null || StringUtils.isBlank(phoneNumberString)){
+							//then lets just jump out as there is no phone to validate.  lay down to user that they must have data if they want an update
 						}
-						if(phoneComments!=null && !phoneComments.isEmpty())
-							phoneToAttachToPerson.setComment(phoneComments);
-						if(phoneSource!=null && !phoneSource.isEmpty())
-							phoneToAttachToPerson.setSource(phoneSource);
-						if(!updatePhones){
-							//TODO check this works in all cases
-							phoneToAttachToPerson.setPerson(person);
-							person.getPhones().add(phoneToAttachToPerson);
+						else{
+							Phone phoneToAttachToPerson = null;
+							if(thisSubjectAlreadyExists){
+								String typeString = null;
+								String statusString = null;
+	
+								if (phoneTypeIndex > 0)
+									typeString = stringLineArray[phoneTypeIndex];
+								if (phoneStatusIndex > 0)
+									statusString = stringLineArray[phoneStatusIndex];							
+								
+								for(Phone phone : person.getPhones()){
+									if(phone.getPhoneStatus().getName().equalsIgnoreCase(statusString) &&
+										phone.getPhoneType().getName().equalsIgnoreCase(typeString)){
+										phoneToAttachToPerson = phone;
+										updatePhones = true;
+									}
+								}
+							}
+							if(phoneToAttachToPerson==null){
+								phoneToAttachToPerson = new Phone();
+							}
+							
+							PhoneType type = findPhoneTypeOrSetDefault(phoneTypesPossible, defaultPhoneType, stringLineArray[phoneTypeIndex]);
+							PhoneStatus status = findPhoneStatusOrSetDefault(phoneStatiiPossible, defaultPhoneStatus, stringLineArray[phoneTypeIndex]);
+							String phoneComments = stringLineArray[phoneCommentsIndex];
+														
+							String areaCode = stringLineArray[areaCodeIndex];
+							String phoneSource = stringLineArray[phoneSourceIndex];
+							String phoneDateReceivedString = stringLineArray[phoneDateReceivedIndex];
+							//log.warn("phone Date Reveived = " + phoneDateReceivedString + " for index = " +  phoneDateReceivedIndex);
+	
+							phoneToAttachToPerson.setPhoneType(type);
+							phoneToAttachToPerson.setPhoneStatus(status);
+							if(areaCode!=null && !areaCode.isEmpty())
+								phoneToAttachToPerson.setAreaCode(areaCode);
+							if(phoneNumberString !=null && !phoneNumberString.isEmpty())
+								phoneToAttachToPerson.setPhoneNumber(phoneNumberString);
+							if(phoneDateReceivedString!=null && !phoneDateReceivedString.isEmpty()){
+								// TODO dateconvert and set
+								Date dateReceived = new Date();
+								dateReceived = simpleDateFormat.parse(phoneDateReceivedString);
+								phoneToAttachToPerson.setDateReceived(dateReceived);
+							}
+							if(phoneComments!=null && !phoneComments.isEmpty())
+								phoneToAttachToPerson.setComment(phoneComments);
+							if(phoneSource!=null && !phoneSource.isEmpty())
+								phoneToAttachToPerson.setSource(phoneSource);
+							if(!updatePhones){
+								//TODO check this works in all cases
+								phoneToAttachToPerson.setPerson(person);
+								person.getPhones().add(phoneToAttachToPerson);
+							}
 						}
 					}
+	
+					subject.setPerson(person);
+	
+					if (subject.getId() == null || subject.getPerson().getId() == 0) {
+						insertSubjects.add(subject);
+						/*StringBuffer sb = new StringBuffer();	//does this report have to happen? ... and in reality it hasnt had success yet
+						sb.append("\nCreated subject from original Subject UID: ");
+						sb.append(subject.getSubjectUID());
+						//sb.append(" has been created successfully and linked to the study: ");
+						//sb.append(study.getName());
+						//sb.append("\n");
+						uploadReport.append(sb);*/
+						insertCount++;
+					}
+					else {
+						// iStudyService.updateSubject(subjectVo);
+						updateSubjects.add(subject);
+						/*StringBuffer sb = new StringBuffer();
+						sb.append("\nUpdate subject with Subject UID: ");
+						sb.append(subject.getSubjectUID());
+						//sb.append(" has been updated successfully and linked to the study: ");
+						//sb.append(study.getName());
+						//sb.append("\n");
+						uploadReport.append(sb);*/
+						updateCount++;
+					}
+	
+					subjectCount++;
+					
 				}
-
-				subject.setPerson(person);
-
-				if (subject.getId() == null || subject.getPerson().getId() == 0) {
-					insertSubjects.add(subject);
-					/*StringBuffer sb = new StringBuffer();	//does this report have to happen? ... and in reality it hasnt had success yet
-					sb.append("\nCreated subject from original Subject UID: ");
-					sb.append(subject.getSubjectUID());
-					//sb.append(" has been created successfully and linked to the study: ");
-					//sb.append(study.getName());
-					//sb.append("\n");
-					uploadReport.append(sb);*/
-					insertCount++;
-				}
-				else {
-					// iStudyService.updateSubject(subjectVo);
-					updateSubjects.add(subject);
-					/*StringBuffer sb = new StringBuffer();
-					sb.append("\nUpdate subject with Subject UID: ");
-					sb.append(subject.getSubjectUID());
-					//sb.append(" has been updated successfully and linked to the study: ");
-					//sb.append(study.getName());
-					//sb.append("\n");
-					uploadReport.append(sb);*/
-					updateCount++;
-				}
-
-				subjectCount++;
-				//log.warn("finished message for " + subjectCount + "         updates= " + updateCount + "     inserts = " + insertCount + "   " );
 			}
 		}
 		catch (IOException ioe) {
