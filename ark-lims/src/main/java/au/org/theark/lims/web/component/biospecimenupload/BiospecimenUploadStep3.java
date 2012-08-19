@@ -79,9 +79,7 @@ public class BiospecimenUploadStep3 extends AbstractWizardStepPanel {
 		
 	};
 
-	/**
-	 * Construct.
-	 */
+
 	public BiospecimenUploadStep3(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 3/5: Data Validation", "The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.");
 		this.containerForm = containerForm;
@@ -187,6 +185,16 @@ public class BiospecimenUploadStep3 extends AbstractWizardStepPanel {
 				target.add(updateExistingDataContainer);
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
+
+
+				this.containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.lims.web.Constants.UPLOAD_STATUS_OF_ERROR_IN_DATA_VALIDATION));
+				this.containerForm.getModelObject().getUpload().setFilename(filename);//have to reset this because the container has the file name...luckily it never changes 
+				iArkCommonService.updateUpload(this.containerForm.getModelObject().getUpload());
+			}
+			else{
+				this.containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.lims.web.Constants.UPLOAD_STATUS_OF_VALIDATED));
+				this.containerForm.getModelObject().getUpload().setFilename(filename);//have to reset this because the container has the file name...luckily it never changes 
+				iArkCommonService.updateUpload(this.containerForm.getModelObject().getUpload());
 			}
 		}
 		catch (IOException e) {

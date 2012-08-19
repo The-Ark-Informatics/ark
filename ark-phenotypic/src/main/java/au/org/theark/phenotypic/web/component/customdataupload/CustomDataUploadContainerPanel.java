@@ -34,7 +34,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.phenotypic.web.component.customdataupload.form.ContainerForm;
-//import au.org.theark.phenotypic.service.IPhenotypicService;
+
 
 public class CustomDataUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
 
@@ -89,6 +89,7 @@ public class CustomDataUploadContainerPanel extends AbstractContainerPanel<Uploa
 				if (isActionPermitted() && sessionStudyId != null) {
 					Upload studyUpload = new Upload();
 					studyUpload.setStudy(iArkCommonService.getStudy(sessionStudyId));
+					
 					studyUpload.setArkFunction(arkFunction);
 					studyUploads = iArkCommonService.searchUploads(studyUpload);
 

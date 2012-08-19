@@ -424,13 +424,21 @@ public class DataUploader {
 							for(Address a : person.getAddresses()){
 								if(a.getAddressStatus().getName().equalsIgnoreCase(statusString) &&
 									a.getAddressType().getName().equalsIgnoreCase(typeString)){
+									
 									addressToAttachToPerson = a;
 									updateAddress = true;
+								
 								}
 							}
 						}
-						else{
+						
+						if(addressToAttachToPerson==null){
+							log.info("address was null");
 							addressToAttachToPerson = new Address();
+						}
+						else
+						{
+							log.info("address was not null");
 						}
 						
 						AddressType type = findAddressTypeOrSetDefault(addressTypesPossible, defaultAddressType, stringLineArray[addressTypeIndex]);
@@ -487,6 +495,7 @@ public class DataUploader {
 							addressToAttachToPerson.setSource(addressSource);
 						if(!updateAddress){
 							//TODO check this works in all cases
+							addressToAttachToPerson.setPerson(person);
 							person.getAddresses().add(addressToAttachToPerson);
 						}
 					}							
@@ -520,7 +529,7 @@ public class DataUploader {
 								}
 							}
 						}
-						else{
+						if(phoneToAttachToPerson==null){
 							phoneToAttachToPerson = new Phone();
 						}
 						
@@ -551,6 +560,7 @@ public class DataUploader {
 							phoneToAttachToPerson.setSource(phoneSource);
 						if(!updatePhones){
 							//TODO check this works in all cases
+							phoneToAttachToPerson.setPerson(person);
 							person.getPhones().add(phoneToAttachToPerson);
 						}
 					}

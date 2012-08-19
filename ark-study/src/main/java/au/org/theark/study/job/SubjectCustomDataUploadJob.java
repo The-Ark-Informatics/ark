@@ -96,7 +96,6 @@ public class SubjectCustomDataUploadJob implements Job {
 			// TODO Auto-generated catch block ...fix this throughout the application
 			Upload upload = iStudyService.getUpload(uploadId);
 			upload.setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.study.web.Constants.UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT));
-			upload.setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.study.web.Constants.UPLOAD_STATUS_OF_COMPLETED));
 			e.printStackTrace();
 		}
 	}
