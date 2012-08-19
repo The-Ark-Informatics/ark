@@ -99,6 +99,9 @@ public class CustomDataUploadJob implements Job {
 		/*catch (FileFormatException e) {	}catch (ArkSystemException e) {	}*/
 		catch(Exception e){
 			// TODO Auto-generated catch block ...fix this throughout the application
+			Upload upload = iPhenoService.getUpload(uploadId);
+			upload.setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.phenotypic.web.Constants.UPLOAD_STATUS_OF_ERROR_ON_DATA_IMPORT));
+			upload.setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.phenotypic.web.Constants.UPLOAD_STATUS_OF_COMPLETED));
 			e.printStackTrace();
 		}
 	}
@@ -110,6 +113,7 @@ public class CustomDataUploadJob implements Job {
 		upload.setStartTime(startTime);
 		upload.setFinishTime(new Date(System.currentTimeMillis()));
 		upload.setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD));
+		upload.setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.phenotypic.web.Constants.UPLOAD_STATUS_OF_COMPLETED));
 		iArkCommonService.updateUpload(upload);
 	}
 }

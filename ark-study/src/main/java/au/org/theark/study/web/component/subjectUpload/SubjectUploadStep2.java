@@ -133,6 +133,7 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 
 			if (validationMessage != null && validationMessage.length() > 0) {
+				
 				this.containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.study.web.Constants.UPLOAD_STATUS_OF_ERROR_IN_FILE_VALIDATION));
 				this.containerForm.getModelObject().getUpload().setFilename(filename);//have to reset this because the container has the file name...luckily it never changes 
 				iArkCommonService.updateUpload(this.containerForm.getModelObject().getUpload());
