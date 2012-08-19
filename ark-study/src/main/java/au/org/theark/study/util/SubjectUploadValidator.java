@@ -502,6 +502,7 @@ public class SubjectUploadValidator {
 			csvReader.readHeaders();
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 			String[] fieldNameArray = csvReader.getHeaders();
+			boolean isAutoGen = study.getAutoGenerateSubjectUid();
 
 			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
 
@@ -511,88 +512,117 @@ public class SubjectUploadValidator {
 
 				// First/0th column should be the SubjectUID
 				String subjectUID = stringLineArray[0];
-				boolean isUpdate = subjectUIDsAlreadyExisting.contains(subjectUID);
-
-				if(isUpdate){
-					updateRows.add(row);
-					uidsToUpdateReferenceToBeUpdated.add(subjectUID);
+				
+				
+				boolean hasSomeData = false;
+				for(String next : stringLineArray){
+					if(next != null && !next.isEmpty()){
+						hasSomeData = true;
+					}
+				}
+				
+				if(!isAutoGen && (subjectUID == null || subjectUID.isEmpty()) ){
+					
+					if(!hasSomeData){
+						//TODO Add some ability to have a lower level info setting...that warns but doesnt require a checkbox etcdataValidationMessages.add("Warning/Info: Row " + row + ":  There appeared to be no data on this row, so we ignored this line");
+						row++;
+					}
+					else{
+						dataValidationMessages.add("Error: Row " + row + ":  There is no subject UID on this row, " +
+								"yet the study is not set up to auto generate subject UIDs.  Please remove this line or provide an ID");
+						errorCells.add(new ArkGridCell(0, row));
+						row++;
+					}
+				}
+				else if(isAutoGen && (subjectUID == null || subjectUID.isEmpty())  && !hasSomeData){
+					//TODO Add some ability to have a lower level info setting...that warns but doesnt require a checkbox etc	dataValidationMessages.add("Warning/Info: Row " + row  + ":  There appeared to be no data on this row, so we ignored this line");
+					row++;
 				}
 				else{
-					insertRows.add(row);
+					
+					boolean isUpdate = subjectUIDsAlreadyExisting.contains(subjectUID);
+	
+					if(isUpdate){
+						updateRows.add(row);
+						uidsToUpdateReferenceToBeUpdated.add(subjectUID);
+					}
+					else{
+						insertRows.add(row);
+					}
+					
+					int col = 0;
+					String dateStr = new String();
+	
+					if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0) {
+						if (csvReader.getIndex("DATE_OF_BIRTH") > 0) {
+							col = csvReader.getIndex("DATE_OF_BIRTH");
+						}
+						else {
+							col = csvReader.getIndex("DOB");
+						}
+						try {
+							dateStr = stringLineArray[col];
+							if (dateStr != null && dateStr.length() > 0)
+								simpleDateFormat.parse(dateStr);
+						}
+						catch (ParseException pex) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
+									+ Constants.DD_MM_YYYY.toLowerCase());
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+	
+					if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0) {
+						if (csvReader.getIndex("DATE_OF_DEATH") > 0) {
+							col = csvReader.getIndex("DATE_OF_DEATH");
+						}
+						else {
+							col = csvReader.getIndex("DODEATH");
+						}
+						try {
+							dateStr = stringLineArray[col];
+							if (dateStr != null && dateStr.length() > 0)
+								simpleDateFormat.parse(dateStr);
+						}
+						catch (ParseException pex) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
+									+ Constants.DD_MM_YYYY.toLowerCase());
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+	
+					
+					if (csvReader.getIndex("ADDRESS_DATE_RECEIVED") > 0 ) {
+						col = csvReader.getIndex("ADDRESS_DATE_RECEIVED");
+						try {
+							dateStr = stringLineArray[col];
+							if (dateStr != null && dateStr.length() > 0)
+								simpleDateFormat.parse(dateStr);
+						}
+						catch (ParseException pex) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
+									+ Constants.DD_MM_YYYY.toLowerCase());
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+	
+					if (csvReader.getIndex("PHONE_DATE_RECEIVED") > 0 ) {
+						col = csvReader.getIndex("PHONE_DATE_RECEIVED");
+						try {
+							dateStr = stringLineArray[col];
+							if (dateStr != null && dateStr.length() > 0)
+								simpleDateFormat.parse(dateStr);
+						}
+						catch (ParseException pex) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
+									+ Constants.DD_MM_YYYY.toLowerCase());
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+	
+					subjectCount++;
+					row++;
 				}
-				
-				int col = 0;
-				String dateStr = new String();
-
-				if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0) {
-					if (csvReader.getIndex("DATE_OF_BIRTH") > 0) {
-						col = csvReader.getIndex("DATE_OF_BIRTH");
-					}
-					else {
-						col = csvReader.getIndex("DOB");
-					}
-					try {
-						dateStr = stringLineArray[col];
-						if (dateStr != null && dateStr.length() > 0)
-							simpleDateFormat.parse(dateStr);
-					}
-					catch (ParseException pex) {
-						dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
-								+ Constants.DD_MM_YYYY.toLowerCase());
-						errorCells.add(new ArkGridCell(col, row));
-					}
-				}
-
-				if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0) {
-					if (csvReader.getIndex("DATE_OF_DEATH") > 0) {
-						col = csvReader.getIndex("DATE_OF_DEATH");
-					}
-					else {
-						col = csvReader.getIndex("DODEATH");
-					}
-					try {
-						dateStr = stringLineArray[col];
-						if (dateStr != null && dateStr.length() > 0)
-							simpleDateFormat.parse(dateStr);
-					}
-					catch (ParseException pex) {
-						dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
-								+ Constants.DD_MM_YYYY.toLowerCase());
-						errorCells.add(new ArkGridCell(col, row));
-					}
-				}
-
-				
-				if (csvReader.getIndex("ADDRESS_DATE_RECEIVED") > 0 ) {
-					col = csvReader.getIndex("ADDRESS_DATE_RECEIVED");
-					try {
-						dateStr = stringLineArray[col];
-						if (dateStr != null && dateStr.length() > 0)
-							simpleDateFormat.parse(dateStr);
-					}
-					catch (ParseException pex) {
-						dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
-								+ Constants.DD_MM_YYYY.toLowerCase());
-						errorCells.add(new ArkGridCell(col, row));
-					}
-				}
-
-				if (csvReader.getIndex("PHONE_DATE_RECEIVED") > 0 ) {
-					col = csvReader.getIndex("PHONE_DATE_RECEIVED");
-					try {
-						dateStr = stringLineArray[col];
-						if (dateStr != null && dateStr.length() > 0)
-							simpleDateFormat.parse(dateStr);
-					}
-					catch (ParseException pex) {
-						dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
-								+ Constants.DD_MM_YYYY.toLowerCase());
-						errorCells.add(new ArkGridCell(col, row));
-					}
-				}
-
-				subjectCount++;
-				row++;
 			}
 
 		}
