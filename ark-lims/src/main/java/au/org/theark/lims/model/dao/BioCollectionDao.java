@@ -54,6 +54,8 @@ import au.org.theark.lims.util.UniqueIdGenerator;
 @Repository("bioCollectionDao")
 public class BioCollectionDao extends HibernateSessionDao implements IBioCollectionDao {
 	private static Logger		log	= LoggerFactory.getLogger(BioCollection.class);
+	private final static String GET_BIO_COLLECTION_BY_NAME_AND_STUDY_ID="select bio from BioCollection as bio left outer join bio.linkSubjectStudy as linkStudy left outer join linkStudy.study as study where bio.name=:name and study.id=:studyId";
+	
 	private BioCollectionUidGenerator bioCollectionUidGenerator;
 
 	@Autowired
@@ -399,10 +401,11 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		return count;
 	}
 
-	public BioCollection getBioCollectionByName(String name) {
-		Criteria criteria = getSession().createCriteria(BioCollection.class);
-		criteria.add(Restrictions.eq("name", name));
-		BioCollection bioCollection = (BioCollection) criteria.uniqueResult();
+	public BioCollection getBioCollectionByName(final String name, final Long studyId) {
+		Query query=getSession().createQuery(BioCollectionDao.GET_BIO_COLLECTION_BY_NAME_AND_STUDY_ID);
+		query.setString("name", name);
+		query.setLong("studyId", studyId);		
+		BioCollection bioCollection = (BioCollection)query.uniqueResult();
 		return bioCollection;
 	}
 	

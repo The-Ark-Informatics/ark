@@ -459,9 +459,9 @@ public class BiospecimenUploadValidator {
 					LinkSubjectStudy linkSubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID, study));
 					linkSubjectStudy.setStudy(study);
 
-					BioCollection biocollection = iLimsService.getBioCollectionByName(biocollectionUID);
+					BioCollection biocollection = iLimsService.getBioCollectionByName(biocollectionUID,this.study.getId());
 					//TODO this really should be study specific?
-					Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUID);//TODO this really should be study specific?
+					Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUID,study);//TODO this really should be study specific?
 
 					
 						
