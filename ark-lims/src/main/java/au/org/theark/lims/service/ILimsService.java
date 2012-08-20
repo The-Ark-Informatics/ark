@@ -249,9 +249,10 @@ public interface ILimsService {
 	/**
 	 * Get a Biospecimen entity based on a specified BiospecimenUid
 	 * @param biospecimenUid
+	 * @param study
 	 * @return
 	 */
-	public Biospecimen getBiospecimenByUid(String biospecimenUid);
+	public Biospecimen getBiospecimenByUid(String biospecimenUid, Study study);
 
 	public long getBioCollectionCustomFieldDataCount(BioCollection criteria, ArkFunction arkFunction);
 	
@@ -350,7 +351,7 @@ public interface ILimsService {
 
 	public void batchUpdateInvCells(List<InvCell> updateInvCells);
 
-	public BioCollection getBioCollectionByName(String name);
+	public BioCollection getBioCollectionByName(String name,Long studyId);
 
 	public Unit getUnitByName(String name);
 

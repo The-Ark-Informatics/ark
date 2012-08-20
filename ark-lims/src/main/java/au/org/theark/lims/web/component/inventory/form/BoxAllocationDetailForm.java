@@ -20,6 +20,7 @@ package au.org.theark.lims.web.component.inventory.form;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -33,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.form.AbstractContainerForm;
@@ -61,6 +64,9 @@ public class BoxAllocationDetailForm extends AbstractInventoryDetailForm<LimsVO>
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService				iInventoryService;
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService				iArkCommonService;
+	
 	private TextField<String>				invBoxNameTxtFld;
 	private TextField<String>				biospecimenUidTxtFld;
 	private GridBoxPanel						gridBoxPanel;
@@ -123,7 +129,9 @@ public class BoxAllocationDetailForm extends AbstractInventoryDetailForm<LimsVO>
 			String biospecimenUid = containerForm.getModelObject().getBiospecimen().getBiospecimenUid();
 	
 			if (biospecimenUid != null && !biospecimenUid.isEmpty()) {
-				Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUid);
+				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				Study study=iArkCommonService.getStudy(studyId);
+				Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUid,study);
 				
 				if(biospecimen != null && biospecimen.getId() != null) {
 					InvCell invCell = iInventoryService.getInvCellByBiospecimen(biospecimen);
