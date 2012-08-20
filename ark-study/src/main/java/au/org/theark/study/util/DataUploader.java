@@ -321,11 +321,11 @@ public class DataUploader {
 									person.setGenderType(boygirl);		
 								}
 							}
-							if (person.getGenderType() == null || 
-									StringUtils.isBlank(person.getGenderType().getName())) {
-								person.setGenderType(defaultGenderType);
-							}
 						}	
+						if (person.getGenderType() == null || 
+								StringUtils.isBlank(person.getGenderType().getName())) {
+							person.setGenderType(defaultGenderType);
+						}
 					}
 	
 					if (dateOfBirthIndex > 0) {
@@ -545,11 +545,18 @@ public class DataUploader {
 								String typeString = null;
 								String statusString = null;
 	
-								if (phoneTypeIndex > 0)
+								if (phoneTypeIndex > 0){
 									typeString = stringLineArray[phoneTypeIndex];
-								if (phoneStatusIndex > 0)
-									statusString = stringLineArray[phoneStatusIndex];							
-								
+									if(typeString==null || typeString.isEmpty()){
+										typeString = defaultPhoneType.getName();
+									}
+								}
+								if (phoneStatusIndex > 0){
+									statusString = stringLineArray[phoneStatusIndex];		
+									if(statusString==null || statusString.isEmpty()){
+										statusString = defaultPhoneStatus.getName();
+									}					
+								}
 								for(Phone phone : person.getPhones()){
 									if(phone.getPhoneStatus().getName().equalsIgnoreCase(statusString) &&
 										phone.getPhoneType().getName().equalsIgnoreCase(typeString)){
