@@ -7,3 +7,9 @@ ALTER TABLE `study`.`phone` CHANGE COLUMN `PHONE_STATUS_ID` `PHONE_STATUS_ID` IN
   REFERENCES `study`.`phone_status` (`ID` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+
+  
+-- just a bit over the top and unnecessary.  deleting
+ALTER TABLE `study`.`phone` 
+DROP INDEX `AREA_CODE` ;
+ 
