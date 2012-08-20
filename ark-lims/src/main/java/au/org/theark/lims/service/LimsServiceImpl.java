@@ -410,8 +410,8 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#getBiospecimenByUid()
 	 */
-	public Biospecimen getBiospecimenByUid(String biospecimenUid) {
-		return iBiospecimenDao.getBiospecimenByUid(biospecimenUid);
+	public Biospecimen getBiospecimenByUid(String biospecimenUid, Study study) {
+		return iBiospecimenDao.getBiospecimenByUid(biospecimenUid, study);
 	}
 	
 	public long getBioCollectionCustomFieldDataCount(BioCollection criteria, ArkFunction arkFunction) {
@@ -798,8 +798,8 @@ public class LimsServiceImpl implements ILimsService {
 		return uploadReport;
 	}
 
-	public BioCollection getBioCollectionByName(String name) {
-		return iBioCollectionDao.getBioCollectionByName(name);
+	public BioCollection getBioCollectionByName(String name,Long studyId) {
+		return iBioCollectionDao.getBioCollectionByName(name,studyId);
 	}
 
 	public Unit getUnitByName(String name) {

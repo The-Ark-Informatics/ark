@@ -99,10 +99,13 @@ public interface IBiospecimenDao {
 
 	/**
 	 * Get a Biospecimen entity based on a specified BiospecimenUid
+	 * <p>
+	 * And selected study
 	 * @param biospecimenUid
+	 * @param study
 	 * @return
 	 */
-	public Biospecimen getBiospecimenByUid(String biospecimenUid);
+	public Biospecimen getBiospecimenByUid(String biospecimenUid, Study study);
 
 	/**
 	 * Get the Biospecimen count based on a LimsVO criteria
