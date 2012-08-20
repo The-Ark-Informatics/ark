@@ -74,6 +74,11 @@ public class FreezerDetailPanel extends Panel {
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 			}
+			
+			@Override
+			public boolean isEnabled() {
+				return containerForm.getModelObject().getInvFreezer().getAvailable() != null && containerForm.getModelObject().getInvFreezer().getAvailable() > 0;
+			}
 		};
 		
 		add(detailForm);
