@@ -1797,12 +1797,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 					customFieldColumnSQL.append(" THEN pd.textDataValue ELSE NULL END) ");
 				}
 				
-				customFieldColumnSQL.append(") AS ");
-				customFieldColumnSQL.append(cfd.getCustomField().getName().toUpperCase());
+				customFieldColumnSQL.append(") ");
 				customFieldColumnSQL.append(",");
 				
-				noDataHQLquery.append("cast(null as char) AS ");
-				noDataHQLquery.append(cfd.getCustomField().getName().toUpperCase());
+				noDataHQLquery.append("cast(null as char) ");
 				noDataHQLquery.append(",");
 				
 				header.add(cfd.getCustomField().getName().toUpperCase());
