@@ -74,6 +74,11 @@ public class RackDetailPanel extends Panel {
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 			}
+			
+			@Override
+			public boolean isEnabled() {
+				return containerForm.getModelObject().getInvRack().getAvailable() != null && containerForm.getModelObject().getInvRack().getAvailable() > 0;
+			}
 		};
 		
 		add(detailForm);
