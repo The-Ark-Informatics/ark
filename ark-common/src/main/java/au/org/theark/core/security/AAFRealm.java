@@ -157,4 +157,9 @@ public class AAFRealm extends AuthorizingRealm {
 		}
 		return sai;
 	}
+	
+	@Override
+	public void clearCachedAuthorizationInfo(PrincipalCollection principals) {
+		super.clearCachedAuthorizationInfo(principals);
+	}
 }
