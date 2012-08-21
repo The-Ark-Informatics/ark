@@ -15,6 +15,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.worktracking.entity.BillingType;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
 import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
@@ -139,6 +140,13 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 		setModelObject(new ResearcherVo());
 		getModelObject().setMode(Constants.MODE_NEW);
 		getModelObject().getResearcher().setCreatedDate(new Date());
+		List<BillingType> billingTypeList=this.iWorkTrackingService.getResearcherBillingTypes();
+		for(BillingType billingType:billingTypeList){
+			if("EFT".equalsIgnoreCase(billingType.getName())){
+				getModelObject().getResearcher().setBillingType(billingType);
+				break;
+			}
+		}
 		preProcessDetailPanel(target);
 	}
 

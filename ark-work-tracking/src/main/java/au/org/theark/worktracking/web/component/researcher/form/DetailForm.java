@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -20,6 +21,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.worktracking.entity.BillingType;
+import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
 import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
 import au.org.theark.core.service.IArkCommonService;
@@ -123,26 +125,52 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 	private void initTitleTypeDropDown() {
 		Collection<TitleType> titleTypeList = iArkCommonService.getTitleType();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		titleTypes = new DropDownChoice(Constants.RESEARCHER_TITLE,  (List)titleTypeList, defaultChoiceRenderer);
+		this.titleTypes = new DropDownChoice(Constants.RESEARCHER_TITLE,  (List)titleTypeList, defaultChoiceRenderer);
 		
 	}
 
 	private void initResearcherStatusDropDown() {
 		this.researcherStatusList=this.iWorkTrackingService.getResearcherStatuses();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		researcherStatuses = new DropDownChoice(Constants.RESEARCHER_STATUS,  this.researcherStatusList, defaultChoiceRenderer);
+		this.researcherStatuses = new DropDownChoice(Constants.RESEARCHER_STATUS,  this.researcherStatusList, defaultChoiceRenderer);
 	}
 	
 	private void initResearcherRoleDropDown() {
 		this.researcherRoleList=this.iWorkTrackingService.getResearcherRoles();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		researcherRoles = new DropDownChoice(Constants.RESEARCHER_ROLE,  this.researcherRoleList, defaultChoiceRenderer);
+		this.researcherRoles = new DropDownChoice(Constants.RESEARCHER_ROLE,  this.researcherRoleList, defaultChoiceRenderer);
 	}
 	
 	private void initBillingTypeDropDown() {		
 		this.billingTypeList=this.iWorkTrackingService.getResearcherBillingTypes();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		this.billingTypes=new DropDownChoice(Constants.RESEARCHER_BILLING_TYPE,  this.billingTypeList, defaultChoiceRenderer);
+		this.billingTypes.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				Researcher researcher=getFormModel().getResearcher();
+				if(researcher.getBillingType()!=null 
+						&& !"EFT".equalsIgnoreCase(researcher.getBillingType().getName())){					
+					researcher.setAccountName(null);
+					researcher.setAccountNumber(null);
+					researcher.setBank(null);
+					researcher.setBsb(null);
+					setEnableBankFields(false,target);
+				}
+				else{
+					setEnableBankFields(true,target);
+				}
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, RuntimeException e) {
+				// TODO Auto-generated method stub
+				setEnableBankFields(true,target);
+			}
+		});
 	}
 
 	public void addDetailFormComponents() {
@@ -262,20 +290,16 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 				processErrors(target);
 			}
 			else {
-
 				iWorkTrackingService.updateResearcher(containerForm.getModelObject().getResearcher());
 				this.info("Researcher " + containerForm.getModelObject().getResearcher().getFirstName() + " " + containerForm.getModelObject().getResearcher().getLastName() + " was updated successfully");
 				processErrors(target);
 			}
-
 			onSavePostProcess(target);
-
 		}
 		catch (Exception e) {
 			this.error("A System error occured, we will have someone contact you.");
 			processErrors(target);
 		}
-
 	}
 
 	/*
@@ -286,7 +310,6 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
 		target.add(feedBackPanel);
-
 	}
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
@@ -309,6 +332,18 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 			processErrors(target);
 		}
 	}
+	
+	private void setEnableBankFields(final boolean enabled,final AjaxRequestTarget target) {
+		resercherAccountNumberTxtFld.setEnabled(enabled);
+		resercherBankTxtFld.setEnabled(enabled);
+		resercherBSBTxtFld.setEnabled(enabled);
+		resercherAccountNameTxtFld.setEnabled(enabled);
+		
+		target.add(resercherAccountNumberTxtFld);
+		target.add(resercherBankTxtFld);
+		target.add(resercherBSBTxtFld);
+		target.add(resercherAccountNameTxtFld);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -324,6 +359,10 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 			return false;
 		}
 
+	}
+	
+	private ResearcherVo getFormModel(){
+		return containerForm.getModelObject();
 	}
 
 }

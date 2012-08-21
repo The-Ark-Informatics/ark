@@ -102,7 +102,13 @@ public class SearchResultListPanel extends Panel {
 				researcherVo.setMode(Constants.MODE_EDIT);
 				researcherVo.setResearcher(researcher);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-
+				if(researcher.getBillingType()!=null 
+						&& !"EFT".equalsIgnoreCase(researcher.getBillingType().getName())){					
+					enableResearcherBankDetailFields(false);
+				}
+				else{
+					enableResearcherBankDetailFields(true);
+				}
 			}
 		};
 		
@@ -110,7 +116,12 @@ public class SearchResultListPanel extends Panel {
 		Label nameLinkLabel = new Label("nameLbl", fullName);
 		link.add(nameLinkLabel);
 		return link;
-
 	}
 
+	private void enableResearcherBankDetailFields(final boolean enable){
+		arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_ACCOUNT_NUMBER).setEnabled(enable);
+		arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_BANK).setEnabled(enable);
+		arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_BSB).setEnabled(enable);
+		arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_ACCOUNT_NAME).setEnabled(enable);
+	}
 }
