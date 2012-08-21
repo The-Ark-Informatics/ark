@@ -43,6 +43,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.security.AAFRealm;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.security.ModuleConstants;
 import au.org.theark.core.service.IArkCommonService;
@@ -65,7 +66,10 @@ public class SearchResultListPanel extends Panel {
 	private TabbedPanel				moduleTabbedPanel;
 
 	@SpringBean(name = "arkLdapRealm")
-	private ArkLdapRealm				realm;
+	private ArkLdapRealm				arkLdapRealm;
+	
+	@SpringBean(name = "aafRealm")
+	private AAFRealm					aafRealm;
 
 	private Container					studyContainerForm;
 	private StudyCrudContainerVO	studyCrudContainerVO;
@@ -163,8 +167,10 @@ public class SearchResultListPanel extends Panel {
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 				// Clear out any Subject UID placed in session via LIMS
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.SUBJECTUID);
+
 				// Force clearing of Cache to re-load roles for the user for the study
-				realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
+				arkLdapRealm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
+				aafRealm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 
 				Study searchStudy = iArkCommonService.getStudy(study.getId());
 				Study parentStudy = searchStudy.getParentStudy();
