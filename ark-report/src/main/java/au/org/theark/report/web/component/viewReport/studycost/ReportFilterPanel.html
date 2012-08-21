@@ -27,14 +27,14 @@
 		
 			<div id="fldLabel">
 				<div class="label">
-					<label for="year">
-						<wicket:message key="researchercost.year">Year:</wicket:message>
+	       			<label for="period">
+						<wicket:message key="researchercost.period">Period:</wicket:message>
 					</label>
-				</div>
+	       		</div>
 			</div>
 			<div id="fldControl">
 				<div class="label">
-	       			<input wicket:id="year" type="text" maxLength="4"/>
+	       			<input wicket:id="fromDate" type="text" maxLength="10"/><span> to </span><input wicket:id="toDate" type="text" maxLength="10"/>
 	       		</div>
 			</div>
 			

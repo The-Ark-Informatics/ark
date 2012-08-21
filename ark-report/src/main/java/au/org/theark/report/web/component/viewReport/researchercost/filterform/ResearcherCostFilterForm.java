@@ -1,6 +1,7 @@
 package au.org.theark.report.web.component.viewReport.researchercost.filterform;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,14 +16,13 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.validation.validator.PatternValidator;
 import org.wicketstuff.jasperreports.JRConcreteResource;
 import org.wicketstuff.jasperreports.JRResource;
 import org.wicketstuff.jasperreports.handlers.CsvResourceHandler;
@@ -32,6 +32,7 @@ import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.worktracking.entity.Researcher;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.report.model.vo.ResearcherCostResportVO;
 import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterForm;
@@ -43,7 +44,11 @@ public class ResearcherCostFilterForm extends AbstractReportFilterForm<Researche
 	
 	private DropDownChoice<Researcher> researcherDropDown;
 	
-	private TextField<String> yearTxtField;
+//	Removed to add a date range. 	
+//	private TextField<String> yearTxtField;
+	
+	private DateTextField fromDateDp;
+	private DateTextField toDateDp;
 	
 
 	public ResearcherCostFilterForm(String id, CompoundPropertyModel<ResearcherCostResportVO> model) {
@@ -93,19 +98,19 @@ public class ResearcherCostFilterForm extends AbstractReportFilterForm<Researche
 		parameters.put("researcherAddress", selectedResearcher.getAddress());
 		parameters.put("researcherPhone", selectedResearcher.getOfficePhone());
 		parameters.put("researcherEmail", selectedResearcher.getEmail());
-		String selectedYear= getModelObject().getYear();
-		parameters.put("reportYear", selectedYear);
+		SimpleDateFormat sdf= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+		String selectedPeriod= sdf.format(getModelObject().getFromDate()) +" to " + sdf.format(getModelObject().getToDate());
+		parameters.put("reportPeriod", selectedPeriod);
 		parameters.put("invoiceType", "INV");
-		
 		
 		ResearcherCostResportVO researcherCostResportVO= new ResearcherCostResportVO();
 		researcherCostResportVO.setInvoice("Y");
 		researcherCostResportVO.setResearcherId(selectedResearcher.getId());
 		researcherCostResportVO.setStudyId(sessionStudyId);
-		researcherCostResportVO.setYear(selectedYear);
+		researcherCostResportVO.setFromDate(getModelObject().getFromDate());
+		researcherCostResportVO.setToDate(getModelObject().getToDate());
 		
 		WorkResearcherCostReportDataSource reportDS= new WorkResearcherCostReportDataSource(reportService, researcherCostResportVO);
-		
 
 		JRResource reportResource = null;
 		if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.PDF_REPORT_FORMAT)) {
@@ -133,20 +138,28 @@ public class ResearcherCostFilterForm extends AbstractReportFilterForm<Researche
 
 	@Override
 	protected void initialiseCustomFilterComponents() {
-		yearTxtField = new TextField<String>(Constants.RESEARCHER_COST_REPORT_YEAR);
+//		yearTxtField = new TextField<String>(Constants.RESEARCHER_COST_REPORT_YEAR);
+		fromDateDp= new DateTextField(Constants.RESEARCHER_COST_REPORT_FROM_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		initDataPicker(fromDateDp);
+		toDateDp= new DateTextField(Constants.RESEARCHER_COST_REPORT_TO_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		initDataPicker(toDateDp);
 		this.initResearcherDropDown();
 		this.addFilterFormComponents();
 		this.addValidators();
 	}
 
 	private void addFilterFormComponents() {
-		this.add(yearTxtField);
+//		this.add(yearTxtField);
+		this.add(fromDateDp);
+		this.add(toDateDp);
 		this.add(researcherDropDown);
 	}
 
 	private void addValidators() {
-		yearTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_RESEARCHER_COST_REPORT_YEAR_REQUIRED, yearTxtField, new Model<String>(Constants.RESEARCHER_COST_REPORT_YEAR_TAG)));
-		yearTxtField.add(new PatternValidator(Constants.RESEARCHER_COST_REPORT_YEAR_PATTERN));
+//		yearTxtField.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_RESEARCHER_COST_REPORT_YEAR_REQUIRED, yearTxtField, new Model<String>(Constants.RESEARCHER_COST_REPORT_YEAR_TAG)));
+//		yearTxtField.add(new PatternValidator(Constants.RESEARCHER_COST_REPORT_YEAR_PATTERN));
+		fromDateDp.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_RESEARCHER_COST_REPORT_FROM_DATE_REQUIRED, fromDateDp, new Model<String>(Constants.RESEARCHER_COST_REPORT_FROM_DATE_TAG)));
+		toDateDp.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_RESEARCHER_COST_REPORT_TO_DATE_REQUIRED, toDateDp, new Model<String>(Constants.RESEARCHER_COST_REPORT_TO_DATE_TAG)));
 		researcherDropDown.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_RESEARCHER_COST_REPORT_RESEARCHER_REQUIRED, researcherDropDown, new Model<String>(Constants.RESEARCHER_COST_REPORT_RESEARCHER_TAG)));
 	}
 
@@ -165,6 +178,13 @@ public class ResearcherCostFilterForm extends AbstractReportFilterForm<Researche
 			
 		};
 		researcherDropDown = new DropDownChoice(Constants.RESEARCHER_COST_REPORT_RESEARCHE, researchers, customChoiceRenderer);
+	}
+	
+	
+	private void initDataPicker(DateTextField dateTextField){
+		ArkDatePicker datePicker = new ArkDatePicker();
+		datePicker.bind(dateTextField);
+		dateTextField.add(datePicker);
 	}
 
 }
