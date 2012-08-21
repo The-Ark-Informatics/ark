@@ -74,9 +74,6 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	private DataView<LinkSubjectStudy>						dataView;
 	private ArkDataProvider2<LimsVO, LinkSubjectStudy>	subjectProvider;
 
-	@SpringBean(name = "arkLdapRealm")
-	private ArkLdapRealm											realm;
-
 	/**
 	 * 
 	 * @param id
@@ -111,7 +108,8 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 		
 		// Force clearing of Cache to re-load roles for the user for the study
-		realm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
+		arkLdapRealm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
+		aafRealm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
 
 		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
 			LinkSubjectStudy subjectFromBackend = new LinkSubjectStudy();
