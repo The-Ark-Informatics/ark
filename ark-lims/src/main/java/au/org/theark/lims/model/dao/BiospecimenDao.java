@@ -185,7 +185,9 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	public Biospecimen getBiospecimenByUid(String biospecimenUid, final Study study) {
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);
 		criteria.add(Restrictions.eq("biospecimenUid", biospecimenUid));
-		criteria.add(Restrictions.eq("study", study));
+		if(study!=null){
+			criteria.add(Restrictions.eq("study", study));
+		}
 		Biospecimen biospecimen = (Biospecimen) criteria.uniqueResult();
 		return biospecimen;
 	}

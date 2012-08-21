@@ -130,7 +130,12 @@ public class BoxAllocationDetailForm extends AbstractInventoryDetailForm<LimsVO>
 	
 			if (biospecimenUid != null && !biospecimenUid.isEmpty()) {
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				Study study=iArkCommonService.getStudy(studyId);
+				Study study=null;
+				//Inventory can be loaded without selecting a study
+				if(studyId!=null){
+					study=iArkCommonService.getStudy(studyId);
+				}
+				
 				Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUid,study);
 				
 				if(biospecimen != null && biospecimen.getId() != null) {
