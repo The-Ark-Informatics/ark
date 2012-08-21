@@ -67,6 +67,20 @@ drop table `admin`.`billable_item_status`;
 
 drop table `admin`.`link_billable_item_subject`;
 
+--Change update type to CASCADE in fk_researcher_billing_type_id constraint
+ALTER TABLE `admin`.`researcher` DROP FOREIGN KEY `fk_researcher_billing_type_id` ;
+ALTER TABLE `admin`.`researcher` 
+  ADD CONSTRAINT `fk_researcher_billing_type_id`
+  FOREIGN KEY (`BILLING_TYPE_ID` )
+  REFERENCES `admin`.`billing_type` (`ID` )
+  ON DELETE NO ACTION
+  ON UPDATE CASCADE;
+
+-- Update Billing types
+UPDATE `admin`.`billing_type` SET `NAME`='EFT' WHERE `ID`='1';
+
+UPDATE `admin`.`billing_type` SET `NAME`='CASH' WHERE `ID`='3';
+
 
 
 
