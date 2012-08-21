@@ -208,7 +208,7 @@ public class Researcher implements Serializable {
 		this.comment = comment;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "BILLING_TYPE_ID")
 	public BillingType getBillingType() {
 		return billingType;
