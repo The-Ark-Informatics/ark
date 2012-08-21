@@ -9,7 +9,7 @@
 	<parameter name="researcherAddress" class="java.lang.String"/>
 	<parameter name="researcherPhone" class="java.lang.String"/>
 	<parameter name="researcherEmail" class="java.lang.String"/>
-	<parameter name="reportYear" class="java.lang.String"/>
+	<parameter name="reportPeriod" class="java.lang.String"/>
 	<parameter name="invoiceType" class="java.lang.String"/>
 	<parameter name="baseDir" class="java.io.File"/>
 	<queryString>
@@ -107,22 +107,22 @@
 					<text><![CDATA[Invoice Type]]></text>
 				</staticText>
 				<textField>
-					<reportElement positionType="Float" mode="Transparent" x="88" y="260" width="100" height="14"/>
+					<reportElement positionType="Float" mode="Transparent" x="88" y="260" width="428" height="14"/>
 					<textElement>
 						<font fontName="DejaVu Sans"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$P{reportYear}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{reportPeriod}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement positionType="Float" mode="Transparent" x="10" y="260" width="30" height="14"/>
+					<reportElement positionType="Float" mode="Transparent" x="10" y="260" width="40" height="14"/>
 					<textElement>
 						<font fontName="DejaVu Sans" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Year]]></text>
+					<text><![CDATA[Period]]></text>
 				</staticText>
 			</elementGroup>
 			<rectangle>
-				<reportElement positionType="Float" mode="Opaque" x="17" y="243" width="281" height="10"/>
+				<reportElement positionType="Float" mode="Opaque" x="17" y="243" width="281" height="10" forecolor="#FFFFFF"/>
 				<graphicElement>
 					<pen lineStyle="Double" lineColor="#FCF5F5"/>
 				</graphicElement>

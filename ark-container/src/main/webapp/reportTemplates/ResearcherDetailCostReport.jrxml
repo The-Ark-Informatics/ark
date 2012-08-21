@@ -6,7 +6,7 @@
 	<parameter name="researcherName" class="java.lang.String"/>
 	<parameter name="studyId" class="java.lang.String"/>
 	<parameter name="studyName" class="java.lang.String"/>
-	<parameter name="reportYear" class="java.lang.String"/>
+	<parameter name="reportPeriod" class="java.lang.String"/>
 	<parameter name="baseDir" class="java.io.File"/>
 	<queryString>
 		<![CDATA[]]>
@@ -51,10 +51,10 @@
 		<variableExpression><![CDATA[$F{totalAmount}]]></variableExpression>
 	</variable>
 	<variable name="subTotalExpression" class="java.lang.String" resetType="Group" resetGroup="itemType">
-		<variableExpression><![CDATA["Total "+$F{itemType}.toLowerCase()+" costs for "+$P{reportYear}]]></variableExpression>
+		<variableExpression><![CDATA["Total "+$F{itemType}.toLowerCase()+" costs for "+$P{reportPeriod}]]></variableExpression>
 	</variable>
 	<variable name="totalCostsExpression" class="java.lang.String">
-		<variableExpression><![CDATA["Total costs for "+$P{reportYear}]]></variableExpression>
+		<variableExpression><![CDATA["Total costs for "+$P{reportPeriod}]]></variableExpression>
 	</variable>
 	<variable name="totalAmount" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{totalAmount}]]></variableExpression>
@@ -111,7 +111,7 @@
 					</textElement>
 					<textFieldExpression class="java.lang.Double"><![CDATA[$V{totalAmountSubTotal}]]></textFieldExpression>
 				</textField>
-				<textField isBlankWhenNull="true">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 					<reportElement mode="Transparent" x="0" y="12" width="343" height="20"/>
 					<textElement>
 						<font fontName="DejaVu Sans" size="12" isBold="true"/>
@@ -181,11 +181,11 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{studyName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="0" y="110" width="127" height="21"/>
+				<reportElement mode="Transparent" x="0" y="110" width="416" height="21"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="14" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{reportYear}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{reportPeriod}]]></textFieldExpression>
 			</textField>
 			<image>
 				<reportElement mode="Transparent" x="427" y="0" width="128" height="55"/>
@@ -247,12 +247,12 @@
 	</detail>
 	<columnFooter>
 		<band height="70">
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement mode="Transparent" x="0" y="0" width="171" height="20"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{reportYear}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{reportPeriod}]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="416" y="0" width="110" height="20"/>
@@ -289,12 +289,12 @@
 				</textElement>
 				<textFieldExpression class="java.lang.Double"><![CDATA[$V{totalCostWithGst}!=null?$V{totalCostWithGst}:new Double("0.00")]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement mode="Transparent" x="171" y="0" width="245" height="20"/>
 				<textElement>
 					<font fontName="DejaVu Sans" size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA["Total costs for "+$P{reportYear}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA["Total costs for "+$P{reportPeriod}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnFooter>
