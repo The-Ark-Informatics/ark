@@ -643,7 +643,9 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		List<ResearcherBillableItemTypeCostDataRow> results = null;
 		Query query = getSession().getNamedQuery("findTotalBillableItemTypeCostsPerResearcher")
 				.setString("invoice", researcherCostResportVO.getInvoice())
-				.setString("billableYear", researcherCostResportVO.getYear())
+//				.setString("billableYear", researcherCostResportVO.getYear())
+				.setDate("fromDate", researcherCostResportVO.getFromDate())
+				.setDate("toDate", researcherCostResportVO.getToDate())
 				.setLong("researcherId", researcherCostResportVO.getResearcherId())
 				.setLong("studyId",researcherCostResportVO.getStudyId());
 		results=query.list();
@@ -671,9 +673,8 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		
 		criteria.add(Restrictions.eq("bi.studyId", researcherCostResportVO.getStudyId()));
 		criteria.add(Restrictions.eq("bi.invoice", researcherCostResportVO.getInvoice()));
-		Integer commenceYear=Integer.parseInt(researcherCostResportVO.getYear());
-		criteria.add(Restrictions.le("bi.commenceDate", toEndOfYear(commenceYear)));
-		criteria.add(Restrictions.ge("bi.commenceDate", toStartOfYear(commenceYear)));
+		criteria.add(Restrictions.le("bi.commenceDate", researcherCostResportVO.getToDate()));
+		criteria.add(Restrictions.ge("bi.commenceDate", researcherCostResportVO.getFromDate()));
 		
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("bi.description"), "description");

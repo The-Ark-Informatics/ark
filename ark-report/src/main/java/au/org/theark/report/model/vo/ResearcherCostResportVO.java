@@ -1,5 +1,9 @@
 package au.org.theark.report.model.vo;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import au.org.theark.core.model.worktracking.entity.Researcher;
 
 public class ResearcherCostResportVO extends GenericReportViewVO {
@@ -12,8 +16,23 @@ public class ResearcherCostResportVO extends GenericReportViewVO {
 	private Long studyId;
 	private String invoice;
 	private String year;
+	private Date fromDate;
+	private Date toDate;
 	private Researcher researcher;
 	
+	
+	
+	public ResearcherCostResportVO() {
+		
+		Calendar firstDayCalendar=Calendar.getInstance();
+		firstDayCalendar.set(Calendar.DAY_OF_YEAR,1);
+		fromDate= firstDayCalendar.getTime();
+		
+		Calendar lastDayCalendar=Calendar.getInstance();
+		lastDayCalendar.set(Calendar.MONTH,11);
+		lastDayCalendar.set(Calendar.DAY_OF_MONTH,31);
+		toDate= lastDayCalendar.getTime();	
+	}
 	public Long getResearcherId() {
 		return researcherId;
 	}
@@ -43,5 +62,17 @@ public class ResearcherCostResportVO extends GenericReportViewVO {
 	}
 	public void setResearcher(Researcher researcher) {
 		this.researcher = researcher;
+	}
+	public Date getFromDate() {
+		return fromDate;
+	}
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+	public Date getToDate() {
+		return toDate;
+	}
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
 	}
 }

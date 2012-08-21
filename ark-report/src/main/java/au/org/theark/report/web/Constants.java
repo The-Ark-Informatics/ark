@@ -49,8 +49,17 @@ public class Constants {
 	public static final String	RESEARCHER_COST_REPORT_YEAR 			= "year";
 	public static final String	RESEARCHER_COST_REPORT_YEAR_PATTERN 	= "\\d{4}";
 	
+	public static final String	RESEARCHER_COST_REPORT_FROM_DATE 		= "fromDate";
+	public static final String	RESEARCHER_COST_REPORT_TO_DATE 			= "toDate";
+	
 	public static final String	ERROR_RESEARCHER_COST_REPORT_RESEARCHER_REQUIRED 	= "error.researchercostreport.researcher.required";
 	public static final String	RESEARCHER_COST_REPORT_RESEARCHER_TAG 				= "Researcher";
+	
+	public static final String	ERROR_RESEARCHER_COST_REPORT_FROM_DATE_REQUIRED 	= "error.researchercostreport.fromdate.required";
+	public static final String	RESEARCHER_COST_REPORT_FROM_DATE_TAG 				= "Period Start Date";
+	
+	public static final String	ERROR_RESEARCHER_COST_REPORT_TO_DATE_REQUIRED 		= "error.researchercostreport.todate.required";
+	public static final String	RESEARCHER_COST_REPORT_TO_DATE_TAG 					= "Period End Date";
 	
 	public static final String	ERROR_RESEARCHER_COST_REPORT_YEAR_REQUIRED 			= "error.researchercostreport.year.required";
 	public static final String	ERROR_RESEARCHER_COST_REPORT_YEAR_INVALID_FORMAT 	= "error.researchercostreport.year.invalid.format";
