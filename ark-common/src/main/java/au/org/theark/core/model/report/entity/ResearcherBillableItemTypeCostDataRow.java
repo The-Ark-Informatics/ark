@@ -25,7 +25,7 @@ import javax.persistence.Table;
             "        inner join admin.work_request wr on wr.id = bi.request_id\n" +
             "        inner join admin.researcher re on re.id = wr.researcher_id\n" +
             "where bi.invoice = :invoice\n" +
-            "         and YEAR(bi.commence_date)=:billableYear\n" +
+            "         and (bi.commence_date between :fromDate and :toDate) \n" +
             "         and re.id = :researcherId\n" +
             "         and re.study_id = :studyId\n" +
             "group by bi.billable_type) x on bit.id = x.billable_type where bit.study_id =:studyId \n",
