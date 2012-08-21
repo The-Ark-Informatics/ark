@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.security.AAFRealm;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
@@ -72,7 +73,10 @@ public class SearchResultListPanel extends Panel {
 	private IArkCommonService		iArkCommonService;
 
 	@SpringBean(name = "arkLdapRealm")
-	private ArkLdapRealm				realm;
+	private ArkLdapRealm				arkLdapRealm;
+	
+	@SpringBean(name = "aafRealm")
+	private AAFRealm					aafRealm;
 
 	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id);
@@ -173,7 +177,8 @@ public class SearchResultListPanel extends Panel {
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 
 				// Force clearing of Cache to re-load roles for the user for the study
-				realm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
+				arkLdapRealm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
+				aafRealm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
 
 				LimsVO limsVo = new LimsVO();
 				limsVo.setLinkSubjectStudy(subjectFromBackend);
