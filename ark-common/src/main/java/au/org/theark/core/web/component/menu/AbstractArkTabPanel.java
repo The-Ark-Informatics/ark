@@ -25,6 +25,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.security.AAFRealm;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 
@@ -38,7 +39,10 @@ public class AbstractArkTabPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 
 	@SpringBean(name = "arkLdapRealm")
-	private ArkLdapRealm					realm;
+	protected ArkLdapRealm						arkLdapRealm;
+	
+	@SpringBean(name = "aafRealm")
+	protected AAFRealm					aafRealm;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
@@ -63,7 +67,8 @@ public class AbstractArkTabPanel extends Panel {
 		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY, arkFunction.getId());
 		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY, arkModule.getId());
 		Subject currentUser = SecurityUtils.getSubject();
-		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
+		arkLdapRealm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
+		aafRealm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 	}
 
 }
