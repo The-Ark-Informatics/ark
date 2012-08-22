@@ -27,7 +27,9 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.model.lims.entity.InvRack;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.form.FreezerDetailForm;
@@ -79,6 +81,12 @@ public class FreezerDetailPanel extends Panel {
 			public boolean isEnabled() {
 				return containerForm.getModelObject().getInvFreezer().getAvailable() != null && containerForm.getModelObject().getInvFreezer().getAvailable() > 0;
 			}
+			
+			@Override
+			public boolean isVisible() {
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+			}
+			
 		};
 		
 		add(detailForm);
