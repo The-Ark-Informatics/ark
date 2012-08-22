@@ -103,19 +103,14 @@ public class CustomDataUploadStep2 extends AbstractWizardStepPanel {
 			if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
 				throw new FileFormatException();
 			}
-																													//TODO kill hardcoding throughout codebase
-			//if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Custom Data Sets")){
-				//TODO : custom field validation
-				CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService);
+
+			CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService);
 				
-				PhenoCollection phenoCollectionCriteria =containerForm.getModelObject().getPhenoCollection();
-				CustomFieldGroup cfgSelected = containerForm.getModelObject().getCustomFieldGroup();
+			PhenoCollection phenoCollectionCriteria =containerForm.getModelObject().getPhenoCollection();
+			CustomFieldGroup cfgSelected = containerForm.getModelObject().getCustomFieldGroup();
 				
-				validationMessages = customFieldUploadValidator.validateCustomFieldFileFormat(containerForm.getModelObject(), phenoCollectionCriteria, cfgSelected);			
-			//}
-			//else{
-			//	//TODO : Throw error back to user
-			//}
+			validationMessages = customFieldUploadValidator.validateCustomFieldFileFormat(containerForm.getModelObject(), phenoCollectionCriteria, cfgSelected);			
+
 
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, 
 					fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE, containerForm.getModelObject().getUpload().getUploadType());

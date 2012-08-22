@@ -614,7 +614,7 @@ public interface IStudyDao {
 	public List<LinkSubjectStudy> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection<String> subjectUids);
 
 	@SuppressWarnings("unchecked")
-	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction);
+	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List<String> fieldNameCollection, Study study, ArkFunction arkFunction);
 
 	@SuppressWarnings("unchecked")
 	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded);

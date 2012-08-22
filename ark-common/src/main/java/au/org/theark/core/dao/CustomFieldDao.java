@@ -344,7 +344,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 
 		Query q = getSession().createQuery("Select customField from CustomField customField " +
 											" where customField.name =:customFieldName " +
-											" and customField.study =:study " +
+											" and lower(customField.study) =lower(:study) " +
 											" and customField.arkFunction =:arkFunction " +
 											" and exists (" +
 											"				from CustomFieldDisplay as customFieldDisplay " +
