@@ -33,6 +33,8 @@ import jxl.Workbook;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
@@ -60,9 +62,15 @@ import org.apache.wicket.util.resource.IResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
@@ -85,10 +93,15 @@ public class GridBoxPanel extends Panel {
 	private static final PackageResourceReference	EMPTY_CELL_ICON		= new PackageResourceReference(GridBoxPanel.class, "emptyCell.gif");
 	private static final PackageResourceReference	USED_CELL_ICON			= new PackageResourceReference(GridBoxPanel.class, "usedCell.gif");
 	private static final PackageResourceReference	BARCODE_CELL_ICON		= new PackageResourceReference(GridBoxPanel.class, "barcodeCell.gif");
+	private static final PackageResourceReference	PRIVATE_USED_CELL_ICON		= new PackageResourceReference(GridCellContentPanel.class, "privateUsedCell.gif");
+	
 	
 	private AbstractDetailModalWindow		modalWindow;
 	private LimsVO limsVo;
 	private Boolean allocating = false;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>	iArkCommonService;
 	
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService					iInventoryService;
@@ -142,6 +155,8 @@ public class GridBoxPanel extends Panel {
 		List<InvCell> invCellList = new ArrayList<InvCell>(0);
 		invCellList = limsVo.getInvBox().getInvCells();
 		
+		setUserStudyList();
+		
 		// Handle for no cells in InvCell table!
 		int cells = limsVo.getInvBox().getNoofcol() * limsVo.getInvBox().getNoofrow();
 		if (invCellList.size() != cells) {
@@ -155,6 +170,24 @@ public class GridBoxPanel extends Panel {
 			addOrReplace(createHeadings(limsVo.getInvBox()));
 			addOrReplace(createMainGrid(limsVo.getInvBox(), invCellList));
 			initialiseGridKey(invCellList);
+		}
+	}
+	
+	private void setUserStudyList() {
+		List<Study> studyListForUser = new ArrayList<Study>(0);
+		try {
+			Subject currentUser = SecurityUtils.getSubject();
+			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+			
+			Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+			ArkModule arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
+			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+			limsVo.setStudyList(studyListForUser);
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
 		}
 	}
 
@@ -290,6 +323,7 @@ public class GridBoxPanel extends Panel {
 
 		gridBoxKeyContainer.addOrReplace(new Image("emptyCellIcon", EMPTY_CELL_ICON));
 		gridBoxKeyContainer.addOrReplace(new Image("usedCellIcon", USED_CELL_ICON));
+		gridBoxKeyContainer.addOrReplace(new Image("privateUsedCellIcon", PRIVATE_USED_CELL_ICON));
 		gridBoxKeyContainer.addOrReplace(new Image("barcodeCellIcon", BARCODE_CELL_ICON));
 
 		// Download file link
