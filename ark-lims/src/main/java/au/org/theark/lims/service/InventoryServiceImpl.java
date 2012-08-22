@@ -15,6 +15,7 @@ import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.model.lims.entity.StudyInvSite;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -94,6 +95,13 @@ public class InventoryServiceImpl implements IInventoryService {
 	public void createInvSite(LimsVO modelObject) {
 		InvSite invSite = modelObject.getInvSite();
 		iInventoryDao.createInvSite(invSite);
+
+		for(Study study : modelObject.getSelectedStudies()) {
+			StudyInvSite studyInvSite = new StudyInvSite();
+			studyInvSite.setStudy(study);
+			studyInvSite.setInvSite(invSite);
+			iInventoryDao.createStudyInvSite(studyInvSite);
+		}
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
@@ -236,7 +244,7 @@ public class InventoryServiceImpl implements IInventoryService {
 
 	public void updateInvSite(LimsVO modelObject) {
 		InvSite invSite = modelObject.getInvSite();
-		iInventoryDao.updateInvSite(invSite);
+		iInventoryDao.updateInvSite(modelObject);
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);

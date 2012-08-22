@@ -27,7 +27,9 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.model.lims.entity.InvFreezer;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.form.SiteDetailForm;
@@ -73,6 +75,11 @@ public class SiteDetailPanel extends Panel {
 			
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
+			}
+			
+			@Override
+			public boolean isVisible() {
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 		};
 		add(detailForm);

@@ -1,13 +1,12 @@
 <wicket:panel>
 	<div class="detailFormLabelBorder">
 		<div class="label">
-			<label for="formLabel">
-				<wicket:message key="formLabel">
+			<wicket:message key="formLabel">
 					Site:
-				</wicket:message>
-			</label>
+			</wicket:message>
 		</div>
 	</div>
+	
 	<div class="detailsPanelBorder">
 		<form wicket:id="detailForm">
 			<div wicket:id="detailFormContainer">
@@ -22,18 +21,63 @@
 				</div>
 
 				<div class="fldLabel">
-					<div class="label">
-						<label for="id">
-							<wicket:message key="invSite.id">
-								Site ID:
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="invSite.id">
+						Site ID:
+					</wicket:message>
 				</div>
+				
 				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="invSite.id" type="text" />
-					</div>
+					<input wicket:id="invSite.id" type="text" />
+				</div>
+				
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldControl">
+					<wicket:message	key="invSite.studies">
+						Studies:
+					</wicket:message>
+					<span wicket:id="selectedStudies">
+						[Palette]
+					</span>
+				</div>
+				
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message	key="invSite.name">
+						Name:
+					</wicket:message>
+				</div>
+				
+				<div class="fldControl">
+					<input wicket:id="invSite.name" type="text" />
+				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+				
+				<div class="fldLabel">
+					<wicket:message key="invSite.address">
+						Address:
+					</wicket:message>
+				</div>
+				
+				<div class="fldControl">
+					<textarea wicket:id="invSite.address" cols="25">
+					</textarea>
 				</div>
 				
 				<div class="panelMargin">
@@ -41,48 +85,15 @@
 				</div>
 
 				<div class="fldLabel">
-					<div class="label">
-						<label for="study">
-							<wicket:message key="invSite.study">
-								Study:
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="invSite.contact">
+						Contact:
+					</wicket:message>
 				</div>
 				
 				<div class="fldControl">
-					<div class="label">
-						<select wicket:id="invSite.study">
-							<option>
-								Study selection
-							</option>
-						</select>
-					</div>
+					<input wicket:id="invSite.contact" type="text" />
 				</div>
 				
-				<div class="detailPanelBreaker">
-					&nbsp;
-				</div>
-
-				<div class="panelContentLeft">
-					&nbsp;
-				</div>
-
-				<div class="fldLabel">
-					<div class="label">
-						<label for="name">
-							<wicket:message	key="invSite.name">
-								Name:
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="invSite.name" type="text" />
-					</div>
-				</div>
-
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
@@ -92,57 +103,15 @@
 				</div>
 				
 				<div class="fldLabel">
-					<div class="label">
-						<label for="address">
-							<wicket:message key="invSite.address">
-								Address:
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="invSite.phone">
+						Phone:
+					</wicket:message>
 				</div>
+				
 				<div class="fldControl">
-					<div class="label">
-						<textarea wicket:id="invSite.address" cols="25">
-						</textarea>
-					</div>
+					<input wicket:id="invSite.phone" type="text" />
 				</div>
-				<div class="panelMargin">
-					&nbsp;
-				</div>
-				<div class="fldLabel">
-					<div class="label">
-						<label for="invSite.comments">
-							<wicket:message key="invSite.contact">
-								Contact:
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="invSite.contact" type="text" />
-					</div>
-				</div>
-				<div class="detailPanelBreaker">
-					&nbsp;
-				</div>
-				<div class="panelContentLeft">
-					&nbsp;
-				</div>
-				<div class="fldLabel">
-					<div class="label">
-						<label for="phone">
-							<wicket:message key="invSite.phone">
-								Phone:
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="invSite.phone" type="text" />
-					</div>
-				</div>
+				
 				<div class="panelMargin">
 					&nbsp;
 				</div>
@@ -151,7 +120,7 @@
 
 			</div>
 			<div class="detailPanelBreaker">
-					&nbsp;
+				&nbsp;
 			</div>
 			<!-- End detailFormContainer" -->
 
