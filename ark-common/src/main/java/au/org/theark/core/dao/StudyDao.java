@@ -1320,24 +1320,30 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction){
+	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List<String> fieldNameCollection, Study study, ArkFunction arkFunction){
 		/*log.warn("fieldnamecollection size=" + fieldNameCollection.size() +
 						"\nstudy=" + study.getName() + " with id=" + study.getId() + 
 						"\narkFunctionid=" + arkFunction.getId());*/
+		
 		if(fieldNameCollection == null || fieldNameCollection.isEmpty()){
 			return new ArrayList<CustomFieldDisplay>();
 		}
 		else{
+			List<String> lowerCaseNames = new ArrayList<String>();
+			for(String name : fieldNameCollection){
+				lowerCaseNames.add(name.toLowerCase());
+			}
 			String queryString = "select cfd " +
 			"from CustomFieldDisplay cfd " +
 			"where customField.id in ( " +
 				" SELECT id from CustomField cf " +
 				" where cf.study =:study " +
-				" and cf.name in (:names) " +
+				" and lower(cf.name) in (:names) " +
 				" and cf.arkFunction =:arkFunction )";
 			Query query =  getSession().createQuery(queryString);
 			query.setParameter("study", study);
-			query.setParameterList("names", fieldNameCollection);
+			//query.setParameterList("names", fieldNameCollection);
+			query.setParameterList("names", lowerCaseNames);
 			query.setParameter("arkFunction", arkFunction);
 			return query.list();
 		}
