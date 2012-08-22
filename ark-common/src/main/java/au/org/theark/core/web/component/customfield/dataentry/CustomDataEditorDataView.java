@@ -177,7 +177,8 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 																										new Model<String>(cf.getFieldLabel()));
 					textDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
 					textDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
-										
+					textDataEntryPanel.setTextFieldSize(60);
+					
 					if (requiredField != null && requiredField == true) {
 						 textDataEntryPanel.setRequired(true);
 					}

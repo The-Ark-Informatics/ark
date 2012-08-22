@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield.dataentry;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
@@ -64,5 +65,13 @@ public class TextDataEntryPanel extends AbstractDataEntryPanel<String> {
 	@Override
 	protected DataEntryType getDataEntryType() {
 		return DataEntryType.TEXT;
+	}
+	
+	/**
+	 * Set the text field size
+	 * @param size
+	 */
+	public void setTextFieldSize(final int size){
+		this.dataValueTxtFld.add(new AttributeModifier("size",size));
 	}
 }
