@@ -140,7 +140,7 @@ public class GridBoxPanel extends Panel {
 		limsVo.setInvBox(iInventoryService.getInvBox(limsVo.getInvBox().getId()));
 		
 		List<InvCell> invCellList = new ArrayList<InvCell>(0);
-		invCellList = iInventoryService.getCellAndBiospecimenListByBox(limsVo.getInvBox());
+		invCellList = limsVo.getInvBox().getInvCells();
 		
 		// Handle for no cells in InvCell table!
 		int cells = limsVo.getInvBox().getNoofcol() * limsVo.getInvBox().getNoofrow();
