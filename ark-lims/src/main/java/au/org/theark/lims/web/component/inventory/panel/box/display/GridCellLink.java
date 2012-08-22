@@ -12,6 +12,8 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.image.MouseOverImage;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
@@ -34,11 +36,14 @@ public class GridCellLink extends Panel {
 	private AbstractDetailModalWindow		modalWindow;
 	private Panel									modalContentPanel;
 	private LimsVO limsVo;
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
 	private ILimsService											iLimsService;
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService								iInventoryService;
-
+	private InvCell invCell = new InvCell();
 	/**
 	 * Constructor
 	 * @param id
@@ -48,11 +53,11 @@ public class GridCellLink extends Panel {
 	 * @param modalWindow
 	 * @param allocating
 	 */
-	public GridCellLink(String id, ResourceReference iconResourceReference, ResourceReference iconOverResourceReference, LimsVO limsVo, final InvCell invCell, final AbstractDetailModalWindow modalWindow, final Boolean allocating) {
+	public GridCellLink(String id, ResourceReference iconResourceReference, ResourceReference iconOverResourceReference, final LimsVO limsVo, final InvCell invCell, final AbstractDetailModalWindow modalWindow, final Boolean allocating) {
 		super(id);
 		this.modalWindow = modalWindow;
 		this.limsVo = limsVo;
-		
+		this.invCell = invCell;
 		ArkBusyAjaxLink<String> link = new ArkBusyAjaxLink<String>("link"){
 
 			private static final long	serialVersionUID	= 1L;
@@ -75,19 +80,43 @@ public class GridCellLink extends Panel {
 					allocateBiospecimenToCell(target, invCell);
 				}
 			}
+			
+			@Override
+			protected boolean isLinkEnabled() {
+				return isAccessible();
+			}
 		};
 		
 		MouseOverImage image = new MouseOverImage("icon", iconResourceReference, iconOverResourceReference, invCell.getId().toString());
 		link.add(image);
 		this.add(link);
 	}
+	
+	protected boolean isAccessible(){
+		boolean isAccessible = false;
+		if(invCell.getBiospecimen() != null) {
+			Long studyId = invCell.getBiospecimen().getStudy().getId();
+			for(Study study : limsVo.getStudyList()) {
+				Long sId = study.getId();
+				if(sId == studyId) {
+					isAccessible = true;
+				}
+			}
+		}
+		else {
+			// Empty cell
+			isAccessible = true;
+		}
+		return isAccessible;
+	}
 
 	protected void allocateBiospecimenToCell(AjaxRequestTarget target, InvCell invCell) {
-		invCell.setBiospecimen(limsVo.getBiospecimen());
+		InvCell updateInvCell = iInventoryService.getInvCell(invCell.getId());
+		updateInvCell.setBiospecimen(limsVo.getBiospecimen());
 		//TODO: use Reference CellStatus
-		invCell.setStatus("Not Empty");
+		updateInvCell.setStatus("Not Empty");
 	
-		limsVo.setInvCell(invCell);
+		limsVo.setInvCell(updateInvCell);
 		
 		// Update InvCell and Biospecimen
 		try {
@@ -97,7 +126,7 @@ public class GridCellLink extends Panel {
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
 		}
-		iInventoryService.updateInvCell(invCell);
+		iInventoryService.updateInvCell(updateInvCell);
 		iLimsService.updateBiospecimen(limsVo);
 		modalWindow.close(target);
 	}

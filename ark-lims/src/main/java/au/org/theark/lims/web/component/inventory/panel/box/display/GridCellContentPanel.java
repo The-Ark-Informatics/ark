@@ -11,6 +11,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
@@ -25,6 +26,7 @@ public class GridCellContentPanel extends Panel {
 
 	private static final PackageResourceReference	EMPTY_CELL_ICON				= new PackageResourceReference(GridCellContentPanel.class, "emptyCell.gif");
 	private static final PackageResourceReference	USED_CELL_ICON					= new PackageResourceReference(GridCellContentPanel.class, "usedCell.gif");
+	private static final PackageResourceReference	PRIVATE_USED_CELL_ICON		= new PackageResourceReference(GridCellContentPanel.class, "privateUsedCell.gif");
 	private static final PackageResourceReference	BARCODE_CELL_ICON				= new PackageResourceReference(GridBoxPanel.class, "barcodeCell.gif");
 	private static final PackageResourceReference	SELECTED_EMPTY_CELL_ICON	= new PackageResourceReference(GridCellContentPanel.class, "selectedEmptyCell.gif");
 	private static final PackageResourceReference	SELECTED_USED_CELL_ICON		= new PackageResourceReference(GridCellContentPanel.class, "selectedUsedCell.gif");
@@ -96,23 +98,28 @@ public class GridCellContentPanel extends Panel {
 		stringBuffer.append("Status: ");
 
 		if (invCell.getBiospecimen() != null) {
-			stringBuffer.append("Used");
-			stringBuffer.append("\t");
-			stringBuffer.append("BiospecimenUID: ");
-			stringBuffer.append(invCell.getBiospecimen().getBiospecimenUid());
-			stringBuffer.append("\t");
-			stringBuffer.append("Sample Type: ");
-			stringBuffer.append(invCell.getBiospecimen().getSampleType().getName());
-			stringBuffer.append("\t");
-			stringBuffer.append("Quantity: ");
-			if (invCell.getBiospecimen().getQuantity() != null) {
-				stringBuffer.append(invCell.getBiospecimen().getQuantity());
-				if (invCell.getBiospecimen().getUnit() != null) {
-					stringBuffer.append(invCell.getBiospecimen().getUnit().getName());
+			if(isAccessible()){
+				stringBuffer.append("Used");
+				stringBuffer.append("\t");
+				stringBuffer.append("BiospecimenUID: ");
+				stringBuffer.append(invCell.getBiospecimen().getBiospecimenUid());
+				stringBuffer.append("\t");
+				stringBuffer.append("Sample Type: ");
+				stringBuffer.append(invCell.getBiospecimen().getSampleType().getName());
+				stringBuffer.append("\t");
+				stringBuffer.append("Quantity: ");
+				if (invCell.getBiospecimen().getQuantity() != null) {
+					stringBuffer.append(invCell.getBiospecimen().getQuantity());
+					if (invCell.getBiospecimen().getUnit() != null) {
+						stringBuffer.append(invCell.getBiospecimen().getUnit().getName());
+					}
+				}
+				else {
+					stringBuffer.append("0");
 				}
 			}
-			else {
-				stringBuffer.append("0");
+			else{
+				stringBuffer = new StringBuffer("You do not have permission to access this cell.");
 			}
 		}
 		else {
@@ -120,8 +127,23 @@ public class GridCellContentPanel extends Panel {
 		}
 
 		String toolTip = stringBuffer.toString();
+		
+		
 		this.add(new AttributeModifier("showtooltip", new Model<Boolean>(true)));
 		this.add(new AttributeModifier("title", new Model<String>(toolTip)));
+	}
+	
+	protected boolean isAccessible(){
+		boolean isAccessible = false;
+		
+		Long studyId = invCell.getBiospecimen().getStudy().getId();
+		for(Study study : limsVo.getStudyList()) {
+			Long sId = study.getId();
+			if(sId == studyId) {
+				isAccessible = true;
+			}
+		}
+		return isAccessible;
 	}
 
 	/**
@@ -142,7 +164,12 @@ public class GridCellContentPanel extends Panel {
 				resourceReference = BARCODE_CELL_ICON;
 			}
 			else {
-				resourceReference = USED_CELL_ICON;
+				if(isAccessible()){
+					resourceReference = USED_CELL_ICON;
+				}
+				else{
+					resourceReference = PRIVATE_USED_CELL_ICON;
+				}
 			}
 		}
 		return resourceReference;
@@ -162,12 +189,18 @@ public class GridCellContentPanel extends Panel {
 			resourceReference = SELECTED_EMPTY_CELL_ICON;
 		}
 		else {
-			if (biospecimen.getBarcoded()) {
-				resourceReference = SELECTED_BARCODE_CELL_ICON;
+			if(isAccessible()){
+				if (biospecimen.getBarcoded()) {
+					resourceReference = SELECTED_BARCODE_CELL_ICON;
+				}
+				else {
+					resourceReference = SELECTED_USED_CELL_ICON;
+				}
 			}
-			else {
-				resourceReference = SELECTED_USED_CELL_ICON;
+			else{
+				resourceReference = PRIVATE_USED_CELL_ICON;
 			}
+			
 		}
 		return resourceReference;
 	}
