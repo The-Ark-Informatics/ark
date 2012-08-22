@@ -1,6 +1,5 @@
 package au.org.theark.report.model.vo;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
