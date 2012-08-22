@@ -9,6 +9,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.security.AAFRealm;
 import au.org.theark.core.security.ArkLdapRealm;
 
 /**
@@ -25,7 +26,10 @@ import au.org.theark.core.security.ArkLdapRealm;
 public abstract class AbstractInventoryPanel<T> extends Panel {
 
 	@SpringBean(name = "arkLdapRealm")
-	private ArkLdapRealm						realm;
+	protected ArkLdapRealm						arkLdapRealm;
+	
+	@SpringBean(name = "aafRealm")
+	protected AAFRealm					aafRealm;
 
 	protected FeedbackPanel					feedbackPanel;
 
@@ -42,7 +46,8 @@ public abstract class AbstractInventoryPanel<T> extends Panel {
 	public AbstractInventoryPanel(String id) {
 		super(id);
 		Subject currentUser = SecurityUtils.getSubject();
-		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
+		arkLdapRealm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
+		aafRealm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 		initialiseMarkupContainers();
 	}
 
