@@ -29,8 +29,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
@@ -58,8 +56,9 @@ public class InvSite implements java.io.Serializable {
 	private String			name;
 	private String			phone;
 	private String			ldapGroup;
-	private Study			study;
+	private List<StudyInvSite>	 studyInvSites	= new ArrayList<StudyInvSite>(0);
 	private List<InvFreezer>	invFreezers	= new ArrayList<InvFreezer>(0);
+	private List<Study> studies = new ArrayList<Study>(0);
 
 	public InvSite() {
 	}
@@ -153,21 +152,14 @@ public class InvSite implements java.io.Serializable {
 	public void setLdapGroup(String ldapGroup) {
 		this.ldapGroup = ldapGroup;
 	}
-
-	/**
-	 * @param study the study to set
-	 */
-	public void setStudy(Study study) {
-		this.study = study;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "invSite")
+	public List<StudyInvSite> getStudyInvSites() {
+		return this.studyInvSites;
 	}
 
-	/**
-	 * @return the study
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_ID")
-	public Study getStudy() {
-		return study;
+	public void setStudyInvSites(List<StudyInvSite> studyInvSites) {
+		this.studyInvSites = studyInvSites;
 	}
 
 	@OrderBy(value="name")
@@ -193,5 +185,13 @@ public class InvSite implements java.io.Serializable {
 	@Transient
 	public String getNodeType() {
 		return this.getClass().getCanonicalName();
+	}
+	
+	@Transient 
+	public List<Study> getStudies() {
+		for(StudyInvSite studyInvSite : getStudyInvSites()){
+			studies.add(studyInvSite.getStudy());
+		}
+		return studies;
 	}
 }

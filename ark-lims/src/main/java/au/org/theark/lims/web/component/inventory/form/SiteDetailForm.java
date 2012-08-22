@@ -27,13 +27,16 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -50,6 +53,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
@@ -79,7 +83,7 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private TextField<String>			contactTxtFld;
 	private TextArea<String>			addressTxtAreaFld;
 	private TextField<String>			phoneTxtFld;
-	private DropDownChoice<Study>		studyDdc;
+	private Palette<Study>				studyPalette;	
 
 	/**
 	 * 
@@ -97,7 +101,7 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("invSite.id");
-		initStudyDdc();
+		initStudyPalette();
 		nameTxtFld = new TextField<String>("invSite.name");
 		contactTxtFld = new TextField<String>("invSite.contact");
 		addressTxtAreaFld = new TextArea<String>("invSite.address");
@@ -110,8 +114,9 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
 	}
 	
-	private void initStudyDdc() {
-		PropertyModel<Study> studyPm = new PropertyModel<Study>(containerForm.getModel(), "invSite.study");
+	@SuppressWarnings("unchecked")
+	private void initStudyPalette() {
+		CompoundPropertyModel<LimsVO> cpm = (CompoundPropertyModel<LimsVO>) containerForm.getModel();
 		List<Study> studyListForUser = new ArrayList<Study>(0);
 		try {
 			Subject currentUser = SecurityUtils.getSubject();
@@ -123,23 +128,32 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			ArkModule arkModule = null;
 			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
 			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+			cpm.getObject().setStudyList(studyListForUser);
 		}
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
 		}
-		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
-		studyDdc = new DropDownChoice<Study>("invSite.study", studyPm, (List<Study>) studyListForUser, studyRenderer);
-		studyDdc.setEnabled(isNew());
+		
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "name");
+		PropertyModel<List<Study>> selectedStudies = new PropertyModel<List<Study>>(cpm, "selectedStudies");
+		PropertyModel<List<Study>> availableStudies = new PropertyModel<List<Study>>(cpm, "studyList");
+		studyPalette = new ArkPalette("selectedStudies", selectedStudies, availableStudies, renderer, au.org.theark.core.Constants.PALETTE_ROWS, false){
+			 @Override
+          protected Recorder newRecorderComponent() {
+              Recorder rec = super.newRecorderComponent();
+              rec.setRequired(true).setLabel(new StringResourceModel("error.invSite.studies.required", this, new Model<String>("Studies")));
+              return rec;
+          }
+		};
 	}
 
 	protected void attachValidators() {
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.invSite.name.required", this, new Model<String>("Name")));
-		studyDdc.setRequired(true).setLabel(new StringResourceModel("error.invSite.study.required", this, new Model<String>("Study")));
 	}
 
 	private void addComponents() {
 		detailFormContainer.add(idTxtFld.setEnabled(false));
-		detailFormContainer.add(studyDdc);
+		detailFormContainer.add(studyPalette);
 		detailFormContainer.add(nameTxtFld);
 		detailFormContainer.add(contactTxtFld);
 		detailFormContainer.add(addressTxtAreaFld);

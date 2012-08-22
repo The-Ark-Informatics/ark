@@ -195,6 +195,7 @@ public class InventoryNodePanel extends LinkIconPanel {
 			// Get object from database again, to be sure of persistence
 			invSite = iInventoryService.getInvSite(invSite.getId());
 			containerForm.getModelObject().setInvSite(invSite);
+			containerForm.getModelObject().setSelectedStudies(invSite.getStudies());
 
 			SiteDetailPanel detailPanel = new SiteDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, this.tree, node);
 			detailPanel.initialisePanel();

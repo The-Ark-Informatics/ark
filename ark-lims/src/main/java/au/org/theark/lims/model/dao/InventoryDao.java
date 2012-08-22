@@ -23,6 +23,8 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
@@ -39,8 +41,10 @@ import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.model.lims.entity.StudyInvSite;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
+import au.org.theark.lims.model.vo.LimsVO;
 
 @SuppressWarnings("unchecked")
 @Repository("inventoryDao")
@@ -102,49 +106,42 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 			criteria.add(Restrictions.eq("phone", invSite.getPhone()));
 		}
 
-		if (invSite.getStudy() != null) {
-			criteria.add(Restrictions.eq("study", invSite.getStudy()));
-		}
-
 		List<InvSite> list = criteria.list();
 		return list;
 	}
-	
+
 	public List<InvSite> searchInvSite(InvSite invSite, List<Study> studyList) throws ArkSystemException {
-		Criteria criteria = getSession().createCriteria(InvSite.class);
+		Criteria criteria = getSession().createCriteria(StudyInvSite.class);
 
-		if (invSite.getId() != null) {
-			criteria.add(Restrictions.eq("id", invSite.getId()));
-		}
+		/*
+		 * if (invSite.getId() != null) { criteria.add(Restrictions.eq("id", invSite.getId())); }
+		 * 
+		 * if (invSite.getName() != null) { criteria.add(Restrictions.eq("name", invSite.getName())); }
+		 * 
+		 * if (invSite.getContact() != null) { criteria.add(Restrictions.eq("contact", invSite.getContact())); }
+		 * 
+		 * if (invSite.getAddress() != null) { criteria.add(Restrictions.eq("address", invSite.getAddress())); }
+		 * 
+		 * if (invSite.getPhone() != null) { criteria.add(Restrictions.eq("phone", invSite.getPhone())); }
+		 */
 
-		if (invSite.getName() != null) {
-			criteria.add(Restrictions.eq("name", invSite.getName()));
-		}
-
-		if (invSite.getContact() != null) {
-			criteria.add(Restrictions.eq("contact", invSite.getContact()));
-		}
-
-		if (invSite.getAddress() != null) {
-			criteria.add(Restrictions.eq("address", invSite.getAddress()));
-		}
-
-		if (invSite.getPhone() != null) {
-			criteria.add(Restrictions.eq("phone", invSite.getPhone()));
-		}
-
-		if (invSite.getStudy() != null) {
-			criteria.add(Restrictions.eq("study", invSite.getStudy()));
-		}
-		
 		criteria.add(Restrictions.in("study", studyList));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("invSite"), "invSite");
+		criteria.setProjection(projectionList);
 
-		List<InvSite> list = criteria.list();
-		return list;
+		// List<StudyInvSite> list = criteria.list();
+		List<InvSite> invSiteList = new ArrayList<InvSite>(0);
+		invSiteList = criteria.list();
+		/*
+		 * for(StudyInvSite studyInvSite : list){ invSiteList.add(studyInvSite.getInvSite()); }
+		 */
+		return invSiteList;
 	}
 
 	public void updateInvSite(InvSite invSite) {
 		getSession().merge(invSite);
+		getSession().refresh(invSite);
 	}
 
 	public void updateInvFreezer(InvFreezer invFreezer) {
@@ -346,12 +343,13 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 		return invCell;
 	}
-	
+
 	public List<InvRack> searchInvRack(InvRack invRack, List<Study> studyListForUser) throws ArkSystemException {
 		StringBuilder hqlString = new StringBuilder();
 		hqlString.append("FROM InvRack AS rack \n");
 		hqlString.append("WHERE invFreezer.id IN (SELECT id FROM InvFreezer AS freezer \n");
-		hqlString.append("								WHERE freezer.invSite.study IN (:studies))");
+		hqlString.append("								WHERE freezer.invSite.id IN (SELECT invSite.id FROM StudyInvSite \n");
+		hqlString.append("																		WHERE study IN (:studies)))");
 
 		Query q = getSession().createQuery(hqlString.toString());
 		q.setParameterList("studies", studyListForUser);
@@ -359,11 +357,12 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		List<InvRack> list = q.list();
 		return list;
 	}
-	
-	public List<InvFreezer> searchInvFreezer(InvFreezer invFreezer, List<Study> studyListForUser) throws ArkSystemException {	
+
+	public List<InvFreezer> searchInvFreezer(InvFreezer invFreezer, List<Study> studyListForUser) throws ArkSystemException {
 		StringBuilder hqlString = new StringBuilder();
 		hqlString.append("FROM InvFreezer AS freezer \n");
-		hqlString.append("WHERE invSite.study IN (:studies)");
+		hqlString.append("WHERE freezer.invSite.id IN (SELECT invSite.id FROM StudyInvSite \n");
+		hqlString.append("							WHERE study IN (:studies))");
 
 		Query q = getSession().createQuery(hqlString.toString());
 		q.setParameterList("studies", studyListForUser);
@@ -387,12 +386,12 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		return list;
 	}
 
-
 	public BiospecimenLocationVO getBiospecimenLocation(Biospecimen biospecimen) {
 		BiospecimenLocationVO biospecimenLocationVo = new BiospecimenLocationVO();
 
 		StringBuilder hqlString = new StringBuilder();
-		hqlString.append("SELECT site.name AS siteName, freezer.name as freezerName, rack.name AS rackName, box.name AS boxName, cell.colno AS column, cell.rowno AS row, box.colnotype.name AS colNoType, box.rownotype.name AS rowNoType \n");
+		hqlString
+				.append("SELECT site.name AS siteName, freezer.name as freezerName, rack.name AS rackName, box.name AS boxName, cell.colno AS column, cell.rowno AS row, box.colnotype.name AS colNoType, box.rownotype.name AS rowNoType \n");
 		hqlString.append("FROM InvCell AS cell \n");
 		hqlString.append("LEFT JOIN cell.invBox AS box \n");
 		hqlString.append("LEFT JOIN box.invRack AS rack \n");
@@ -514,7 +513,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 
 	public InvCell getInvCellByLocationNames(String siteName, String freezerName, String rackName, String boxName, String row, String column) throws ArkSystemException {
 		InvCell invCell = new InvCell();
-		
+
 		Long rowno;
 		Long colno;
 
@@ -535,32 +534,32 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 
 		Criteria criteria = getSession().createCriteria(InvCell.class);
-		criteria.createAlias("invBox","box",JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("box.invRack","rack",JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("rack.invFreezer","freezer",JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("freezer.invSite","site",JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("biospecimen","b",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("invBox", "box", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("box.invRack", "rack", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("rack.invFreezer", "freezer", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("freezer.invSite", "site", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("biospecimen", "b", JoinType.LEFT_OUTER_JOIN);
 		criteria.add(Restrictions.eq("site.name", siteName));
 		criteria.add(Restrictions.eq("freezer.name", freezerName));
 		criteria.add(Restrictions.eq("rack.name", rackName));
 		criteria.add(Restrictions.eq("box.name", boxName));
 		criteria.add(Restrictions.eq("rowno", rowno));
-		criteria.add(Restrictions.eq("colno", colno));		
-		
+		criteria.add(Restrictions.eq("colno", colno));
+
 		invCell = (InvCell) criteria.uniqueResult();
 		return invCell;
 	}
 
 	public void batchUpdateInvCells(List<InvCell> updateInvCells) {
-		//StatelessSession session = getStatelessSession();
-		//Transaction tx = session.beginTransaction();
+		// StatelessSession session = getStatelessSession();
+		// Transaction tx = session.beginTransaction();
 
 		for (InvCell invCell : updateInvCells) {
-			//session.update(invCell);
+			// session.update(invCell);
 			getSession().update(invCell);
 		}
-		//tx.commit();
-		//session.close();
+		// tx.commit();
+		// session.close();
 	}
 
 	public InvCell getNextAvailableInvCell(InvBox invBox) {
@@ -575,5 +574,30 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		int total = 0;
 		total = ((Long) getSession().createQuery("SELECT COUNT(*) FROM InvCell WHERE invBox = :invBox and biospecimen IS NULL").setParameter("invBox", invBox).iterate().next()).intValue();
 		return total;
+	}
+
+	public void createStudyInvSite(StudyInvSite studyInvSite) {
+		getSession().save(studyInvSite);
+	}
+
+	public void deleteStudyInvSite(StudyInvSite studyInvSite) {
+		getSession().delete(studyInvSite);
+	}
+
+	public void updateInvSite(LimsVO modelObject) {
+		Session session = getSession();
+		session.update(modelObject.getInvSite());
+		session.flush();
+		session.refresh(modelObject.getInvSite());
+		for (StudyInvSite sis : modelObject.getInvSite().getStudyInvSites()) {
+			session.delete(sis);
+		}
+		session.refresh(modelObject.getInvSite());
+		for (Study study : modelObject.getSelectedStudies()) {
+			StudyInvSite studyInvSite = new StudyInvSite();
+			studyInvSite.setStudy(study);
+			studyInvSite.setInvSite(modelObject.getInvSite());
+			session.save(studyInvSite);
+		}
 	}
 }

@@ -28,8 +28,10 @@ import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.model.lims.entity.StudyInvSite;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
+import au.org.theark.lims.model.vo.LimsVO;
 
 public interface IInventoryDao {
 	/**
@@ -287,4 +289,10 @@ public interface IInventoryDao {
 	public InvCell getNextAvailableInvCell(InvBox invBox);
 
 	public Integer countAvailableCellsForBox(InvBox invBox);
+
+	public void createStudyInvSite(StudyInvSite studyInvSite);
+
+	public void deleteStudyInvSite(StudyInvSite studyInvSite);
+
+	public void updateInvSite(LimsVO modelObject);
 }
