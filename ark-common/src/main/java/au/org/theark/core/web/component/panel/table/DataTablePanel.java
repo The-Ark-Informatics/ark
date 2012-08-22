@@ -89,12 +89,11 @@ public class DataTablePanel extends Panel {
              Response response = getRequestCycle().getResponse();
              
              for (String col : headerList) {
-                 response.write("<th>" + col.toUpperCase() + "</th>\n");
+            	 //left align the header text
+                 response.write("<th align='left'>" + col.toUpperCase() + "</th>\n");
              }
          }
      });
-
-
 	}
 
 	private void initBody() {
@@ -123,4 +122,5 @@ public class DataTablePanel extends Panel {
 			}
 		});
 	}
+	
 }
