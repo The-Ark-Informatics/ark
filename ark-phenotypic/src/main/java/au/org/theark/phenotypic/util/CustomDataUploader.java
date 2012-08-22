@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -129,6 +130,7 @@ public class CustomDataUploader {
 			csvReader.readHeaders();
 
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
+			
 			ArkFunction phenoCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);//");
 
 			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, phenoCustomFieldArkFunction);
@@ -155,9 +157,20 @@ public class CustomDataUploader {
 				phenoCollectionIntoDB.setStatus(uploadingStatus); //TODO for this to be UPLOADED TYPE STATUS
 				
 				for(CustomFieldDisplay cfd : cfdsThatWeNeed){	
-					
+
+					String theDataAsString = null;
 					customField = cfd.getCustomField();
-					String theDataAsString = csvReader.get(cfd.getCustomField().getName());
+					
+					if(csvReader.getIndex(cfd.getCustomField().getName())<0){
+						for(String nameAsSeenInFile : fieldNameCollection){
+							if(nameAsSeenInFile.equalsIgnoreCase(cfd.getCustomField().getName())){
+								theDataAsString = csvReader.get(nameAsSeenInFile);
+							}
+						}
+					}
+					else{
+						theDataAsString = csvReader.get(cfd.getCustomField().getName());
+					}
 
 					if(theDataAsString!=null && !theDataAsString.isEmpty()){
 						PhenoData dataToInsert = new PhenoData();
