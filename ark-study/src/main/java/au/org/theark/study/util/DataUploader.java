@@ -65,7 +65,6 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.study.service.IStudyService;
 
 import com.csvreader.CsvReader;
