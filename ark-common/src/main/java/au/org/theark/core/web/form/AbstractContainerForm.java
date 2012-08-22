@@ -42,5 +42,6 @@ public abstract class AbstractContainerForm<T> extends Form<T> {
 	public AbstractContainerForm(String id, CompoundPropertyModel<T> cpmModel) {
 		super(id, cpmModel);
 		setOutputMarkupPlaceholderTag(true);
+		setMultiPart(true);
 	}
 }
