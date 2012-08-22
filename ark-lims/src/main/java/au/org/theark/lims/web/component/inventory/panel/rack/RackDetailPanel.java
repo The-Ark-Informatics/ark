@@ -27,7 +27,9 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.model.lims.entity.InvBox;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.form.RackDetailForm;
@@ -78,6 +80,11 @@ public class RackDetailPanel extends Panel {
 			@Override
 			public boolean isEnabled() {
 				return containerForm.getModelObject().getInvRack().getAvailable() != null && containerForm.getModelObject().getInvRack().getAvailable() > 0;
+			}
+			
+			@Override
+			public boolean isVisible() {
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 		};
 		
