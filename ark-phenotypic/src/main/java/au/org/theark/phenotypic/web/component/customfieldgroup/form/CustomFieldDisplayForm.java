@@ -55,6 +55,7 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 		this.feedbackPanel = feedbackPanel;
 		this.modalWindow = modalWindow;
 		this.flag = flag;
+		setMultiPart(true);
 		initialiseForm();
 		addSearchComponentsToForm();
 	}
