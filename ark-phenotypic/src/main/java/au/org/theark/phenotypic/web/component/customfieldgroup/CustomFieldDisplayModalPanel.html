@@ -4,28 +4,24 @@
 	</span>
 	<form wicket:id="customFieldDisplayForm">
 		<div class="detailsPanelBorder">
-
 			<div wicket:id="cfdFieldContainer">
 				<div class="detailFormBreaker">
 					&nbsp;
 				</div>
+				
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
+				
 				<!--	Row 1 -->
 				<div class="fldLabel">
-					<div class="label">
-						<label for="customFieldDisplay.id">
-							<wicket:message key="customFieldDisplay.id">
-								Custom Field Display Id:
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="customFieldDisplay.id">
+						Custom Field Display Id:
+					</wicket:message>
 				</div>
+				
 				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="customFieldDisplay.id"/>
-					</div>
+					<input wicket:id="customFieldDisplay.id"/>
 				</div>
 
 				<div class="panelMargin">
@@ -33,64 +29,52 @@
 				</div>
 
 				<div class="fldLabel">
-					<div class="label">
-						<label for="customField.name">
-							<wicket:message key="customField.name">
-								Custom Field Name:
-							</wicket:message>
-						</label>
-					</div>
+					<wicket:message key="customField.name">
+						Custom Field Name:
+					</wicket:message>
 				</div>
+				
 				<div class="fldControl">
-					<div class="label">
-						<input wicket:id="customFieldDisplay.customField.name"	type="text" />
-					</div>
+					<input wicket:id="customFieldDisplay.customField.name"	type="text" />
 				</div>
 
 				<div class="detailFormBreaker">
 					&nbsp;
 				</div>
 
-
 				<div class="detailFormBreaker">
 					&nbsp;
 				</div>
+				
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
+				
 				<!--	Row 1 -->
 				<div class="fldLabel">
-					<div class="label">
-						<label for="customFieldDisplay.required">
-							<wicket:message key="customFieldDisplay.required">
-								Required:
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-				<div class="fldControl">
-					<div class="label">
-						<input type="checkbox" wicket:id="customFieldDisplay.required"/>
-					</div>
+					<wicket:message key="customFieldDisplay.required">
+						Required:
+					</wicket:message>
 				</div>
 
-				
-				<div class="fldLabel">
-					<div class="label">
-						<label for="customFieldDisplay.allowMultiselect">
-							<wicket:message key="customFieldDisplay.allowMultiselect">
-								Allow Multuiple selections
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-				
 				<div class="fldControl">
-					<div class="label">
-						<input type="checkbox" wicket:id="customFieldDisplay.allowMultiselect"/>
-					</div>
+					<input type="checkbox" wicket:id="customFieldDisplay.required"/>
 				</div>
-				
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="customFieldDisplay.allowMultiselect">
+						Allow Multiple selections
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input type="checkbox" wicket:id="customFieldDisplay.allowMultiselect"/>
+				</div>
+
 				<div class="panelMargin">
 					&nbsp;
 				</div>
@@ -104,7 +88,7 @@
 				<input wicket:id="save" type="submit" wicket:message="value:page.save" />
 				<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
 			</div>
-			
+
 			<div class="detailFormBreaker">
 				&nbsp;
 			</div>
