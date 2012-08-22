@@ -61,9 +61,11 @@ public class BoxDetailPanel extends Panel {
 		detailForm = new BoxDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
 		detailForm.initialiseDetailForm();
 
+		// no need to show grid on New Box
+		gridBoxPanel = new EmptyPanel("gridBoxPanel");
+		gridBoxPanel.setOutputMarkupPlaceholderTag(true);
+		
 		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
-
-
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -72,9 +74,6 @@ public class BoxDetailPanel extends Panel {
 				target.add(gridBoxPanel);
 			}
 		};
-
-		// no need to show grid on New Box
-		gridBoxPanel = new EmptyPanel("gridBoxPanel");
 
 		add(detailForm);
 		add(gridBoxPanel);
