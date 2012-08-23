@@ -117,8 +117,7 @@ report_output_format report_template >> $VERSION/ark-$VERSION.sql
 echo "Work-tracking reference data (NOTE: USING 'admin' as reference schema)"
 echo "" >> $VERSION/ark-$VERSION.sql
 echo 'USE admin;' >> $VERSION/ark-$VERSION.sql
-mysqldump -h $HOSTNAME -u arkadmin -p$PASSWORD --no-create-info --complete-insert admin \
-billable_item_status billable_item_type_status billing_type researcher_role researcher_status work_request_status >> $VERSION/ark-$VERSION.sql
+mysqldump -h $HOSTNAME -u arkadmin -p$PASSWORD --no-create-info --complete-insert admin billable_item_type_status billing_type researcher_role researcher_status work_request_status >> $VERSION/ark-$VERSION.sql
 
 echo "/* Initialise the super user in the database */" >> $VERSION/ark-$VERSION.sql
 echo "" >> $VERSION/ark-$VERSION.sql
