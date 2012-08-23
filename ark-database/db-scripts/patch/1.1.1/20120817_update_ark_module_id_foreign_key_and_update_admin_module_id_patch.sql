@@ -72,6 +72,9 @@ ALTER TABLE `reporting`.`report_template`
   ON UPDATE CASCADE;
 
 
+ -- Rename the Work module to Work Tracking
+UPDATE `study`.`ark_module` SET `NAME`='Work Tracking' WHERE `NAME`='Work'; 
+  
 --Initialize the work module id
 SET @work_module_id =0; 
 
