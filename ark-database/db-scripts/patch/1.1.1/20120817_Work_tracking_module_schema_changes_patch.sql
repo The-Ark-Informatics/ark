@@ -30,9 +30,6 @@ VALUES
 (select ID from study.ark_function where name='BILLABLE_ITEM')
 );
 
--- Rename the Work module to Work Tracking
-UPDATE `study`.`ark_module` SET `NAME`='Work Tracking' WHERE `NAME`='Work'
-
 -- Researcher detail cost report
 INSERT INTO `reporting`.`report_template` (`NAME`, `DESCRIPTION`, `TEMPLATE_PATH`, `MODULE_ID`, `FUNCTION_ID`) 
 VALUES 
