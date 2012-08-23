@@ -514,6 +514,11 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	public InvCell getInvCellByLocationNames(String siteName, String freezerName, String rackName, String boxName, String row, String column) throws ArkSystemException {
 		InvCell invCell = new InvCell();
 
+		if((siteName == null || freezerName == null || rackName == null || boxName == null || row == null || column == null) ||
+				(siteName.isEmpty() || freezerName.isEmpty() || rackName.isEmpty() || boxName.isEmpty() || row.isEmpty() || column.isEmpty())) {
+			return invCell;
+		}
+		
 		Long rowno;
 		Long colno;
 
