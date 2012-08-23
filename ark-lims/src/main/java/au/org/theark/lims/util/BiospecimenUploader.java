@@ -162,7 +162,7 @@ public class BiospecimenUploader {
 					linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID, study);
 				}
 				catch (EntityNotFoundException enf) {
-					log.error("\n\n\n\n\n\n\n\n\n\n\n\nUnexpected subject?   ashouldnt happen");
+					log.error("\n\n\n\n\n\n\n\n\n\n\n\nUnexpected subject? a shouldnt happen");
 					// New subject
 					linkSubjectStudy.setSubjectUID(subjectUID);
 					linkSubjectStudy.setStudy(study);
@@ -173,10 +173,6 @@ public class BiospecimenUploader {
 					biospecimen = new Biospecimen();
 				}
 				biospecimen.setLinkSubjectStudy(linkSubjectStudy);
-
-				if (csvReader.getIndex("BIOSPECIMENUID") > 0) {
-					biospecimen.setBiospecimenUid(csvReader.get("BIOSPECIMENUID"));
-				}
 				
 				if (csvReader.getIndex("BIOCOLLECTION") > 0) {
 					String name = csvReader.get("BIOCOLLECTION");
