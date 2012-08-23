@@ -1,4 +1,5 @@
 INSERT INTO `study`.`phone_status` (`ID`, `NAME`, `DESCRIPTION`) VALUES (0, 'Unknown', 'Status not known, this will be the default if no status provided');
+UPDATE `study`.`phone_status` SET id = 0 WHERE name = 'Unknown';
 
 ALTER TABLE `study`.`phone` DROP FOREIGN KEY `phone_ibfk_3` ;
 ALTER TABLE `study`.`phone` CHANGE COLUMN `PHONE_STATUS_ID` `PHONE_STATUS_ID` INT(11) NOT NULL DEFAULT 0  , 
