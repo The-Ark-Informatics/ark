@@ -44,7 +44,7 @@ public class PhenoUploadReport {
 
 		dateNow = new Date(System.currentTimeMillis());
 		this.appendAndNewLine("************************************************************");
-		this.appendAndNewLine("the-ark.org.au Upload Report");
+		this.appendAndNewLine(" Upload Report");
 		this.appendAndNewLine(dateNow.toString());
 		this.appendAndNewLine("************************************************************");
 	}
