@@ -666,10 +666,25 @@ public class DataUploader {
 			}
 			// Restore the state of variables
 			srcLength = -1;
-		}
+		}/*
 		uploadReport.append("Processed ");
 		uploadReport.append(subjectCount);
+		uploadReport.append(" rows for ");
+		uploadReport.append(subjectCount);
 		uploadReport.append(" subjects.");
+		uploadReport.append("\n");
+		uploadReport.append(insertCount);
+		uploadReport.append(" fields were inserted.");
+		uploadReport.append("\n");
+		uploadReport.append(updateCount);
+		uploadReport.append(" fields were updated.");
+		uploadReport.append("\n");
+*/
+
+
+		uploadReport.append("Processed ");
+		uploadReport.append(subjectCount);
+		uploadReport.append(" rows.");
 		uploadReport.append("\n");
 		uploadReport.append("Inserted ");
 		uploadReport.append(insertCount);
@@ -679,6 +694,9 @@ public class DataUploader {
 		uploadReport.append(updateCount);
 		uploadReport.append(" subjects.");
 		uploadReport.append("\n");
+
+
+
 
 		//TODO better exceptionhandling
 		iStudyService.processBatch(insertSubjects, study, updateSubjects);
@@ -874,18 +892,22 @@ public class DataUploader {
 			}
 
 		}
-		uploadReport.append("Processed ");
-		uploadReport.append(subjectCount);
-		uploadReport.append(" rows.");
-		uploadReport.append("\n");
+
+		
+		
+		
 		uploadReport.append("Inserted ");
+		uploadReport.append(subjectCount);
+		uploadReport.append(" rows of data");
+		uploadReport.append("\n");
+
 		uploadReport.append(insertFieldsCount);
-		uploadReport.append(" subjects.");
+		uploadReport.append(" fields were inserted.");
 		uploadReport.append("\n");
-		uploadReport.append("Updated ");
 		uploadReport.append(updateFieldsCount);
-		uploadReport.append(" subjects.");
+		uploadReport.append(" fields were updated.");
 		uploadReport.append("\n");
+		
 
 		//TODO better exceptionhandling
 		iStudyService.processFieldsBatch(customFieldsToUpdate, study, customFieldsToInsert);

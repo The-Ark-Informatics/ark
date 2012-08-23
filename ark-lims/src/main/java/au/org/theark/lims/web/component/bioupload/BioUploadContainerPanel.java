@@ -86,7 +86,9 @@ public class BioUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
 				// Return all Uploads for the Study in context
 				java.util.Collection<Upload> studyUploads = new ArrayList<Upload>();
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				if (isActionPermitted() && sessionStudyId != null) {
+
+				//if (isActionPermitted() && sessionStudyId != null) {  TODO we need so make sure permission logic only occurs at the highest possible level
+				if(sessionStudyId != null) {
 					Upload studyUpload = new Upload();
 					studyUpload.setStudy(iArkCommonService.getStudy(sessionStudyId));
 					//explicitly search all bio uploads not based on ark function 
