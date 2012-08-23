@@ -219,8 +219,14 @@ public class LdapUserDao implements ILdapUserDao {
 			arkUserVO.setFirstName(context.getStringAttribute("givenName"));
 			arkUserVO.setLastName(context.getStringAttribute("sn"));
 			arkUserVO.setEmail(context.getStringAttribute("mail"));
-			String ldapPassword = new String((byte[]) context.getObjectAttribute("userPassword"));
-			arkUserVO.setPassword(ldapPassword);
+			
+			if(context.getObjectAttribute("userPassword") == null) {
+				arkUserVO.setPassword(new String());
+			}
+			else{
+				String ldapPassword = new String((byte[]) context.getObjectAttribute("userPassword"));
+				arkUserVO.setPassword(ldapPassword);
+			}
 			return arkUserVO;
 		}
 	}
