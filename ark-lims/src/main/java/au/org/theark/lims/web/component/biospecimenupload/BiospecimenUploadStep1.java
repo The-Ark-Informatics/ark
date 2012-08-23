@@ -19,6 +19,7 @@
 package au.org.theark.lims.web.component.biospecimenupload;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -176,6 +177,12 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		String checksum = getHex(byteArray);
 		containerForm.getModelObject().getUpload().setChecksum(checksum);
 		containerForm.getModelObject().getUpload().setFilename(fileUpload.getClientFileName());
+		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
+		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD));
 		wizardForm.setFileName(fileUpload.getClientFileName());
+
+		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForAwaitingValidation());		
+		
+		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 	}
 }
