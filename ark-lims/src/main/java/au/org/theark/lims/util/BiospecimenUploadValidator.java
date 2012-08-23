@@ -48,8 +48,11 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.lims.entity.TreatmentType;
+import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -465,36 +468,101 @@ public class BiospecimenUploadValidator {
 
 					
 						
-						if (biospecimen == null) {
-							// Biospecimen not found, thus a new Biospecimen to be inserted
-							insertRows.add(row);
+					if (biospecimen == null) {
+						// Biospecimen not found, thus a new Biospecimen to be inserted
+						insertRows.add(row);
+					}
+					else {
+						updateRows.add(row);
+					}
+					
+					if (csvReader.getIndex("SAMPLETYPE") > 0) {
+						String name = csvReader.get("SAMPLETYPE");
+						BioSampletype sampleType = new BioSampletype();
+						sampleType = iLimsService.getBioSampleTypeByName(name);
+						if (sampleType == null) {
+							StringBuilder errorString = new StringBuilder();
+							errorString.append("Error: Row ");
+							errorString.append(row);
+							errorString.append(": SubjectUID: ");
+							errorString.append(subjectUID);
+							errorString.append(" The sample type ");
+							errorString.append(name);
+							errorString.append(" of BiospecimenUID: ");
+							errorString.append(biospecimenUID);
+							errorString.append(" do not match the details in the database. Please check and try again");
+							dataValidationMessages.add(errorString.toString());
+							errorCells.add(new ArkGridCell(csvReader.getIndex("SAMPLETYPE"), row));
 						}
-						else {
-							updateRows.add(row);
+					}
+					
+					if (csvReader.getIndex("UNITS") > 0) {
+						String name = csvReader.get("UNITS");
+						Unit unit = iLimsService.getUnitByName(name);
+						if (unit == null) {
+							StringBuilder errorString = new StringBuilder();
+							errorString.append("Error: Row ");
+							errorString.append(row);
+							errorString.append(": SubjectUID: ");
+							errorString.append(subjectUID);
+							errorString.append(" The unit ");
+							errorString.append(name);
+							errorString.append(" of BiospecimenUID: ");
+							errorString.append(biospecimenUID);
+							errorString.append(" do not match the details in the database. Please check and try again");
+							dataValidationMessages.add(errorString.toString());
+							errorCells.add(new ArkGridCell(csvReader.getIndex("UNITS"), row));
 						}
-						
- 						if (csvReader.get("SITE") != null && csvReader.get("FREEZER") != null && csvReader.get("RACK") != null && csvReader.get("BOX") != null && csvReader.get("ROW") != null
-								&& csvReader.get("COLUMN") != null) {
-							InvCell invCell = iInventoryService.getInvCellByLocationNames(csvReader.get("SITE"), csvReader.get("FREEZER"), csvReader.get("RACK"), csvReader.get("BOX"), csvReader.get("ROW"),
-									csvReader.get("COLUMN"));
-							if (invCell == null) {
-								StringBuilder errorString = new StringBuilder();
-								errorString.append("Error: Row ");
-								errorString.append(row);
-								errorString.append(": SubjectUID: ");
-								errorString.append(subjectUID);
-								errorString.append(" The location details of BiospecimenUID: ");
-								errorString.append(biospecimenUID);
-								errorString.append(" do not match the details in the database. Please check and try again");
-								dataValidationMessages.add(errorString.toString());
-								errorCells.add(new ArkGridCell(csvReader.getIndex("SITE"), row));
-								errorCells.add(new ArkGridCell(csvReader.getIndex("FREEZER"), row));
-								errorCells.add(new ArkGridCell(csvReader.getIndex("RACK"), row));
-								errorCells.add(new ArkGridCell(csvReader.getIndex("BOX"), row));
-								errorCells.add(new ArkGridCell(csvReader.getIndex("ROW"), row));
-								errorCells.add(new ArkGridCell(csvReader.getIndex("COLUMN"), row));
-							}
+					}
+					
+					if (csvReader.getIndex("TREATMENT") > 0) {
+						String name = csvReader.get("TREATMENT");
+						TreatmentType treatmentType = new TreatmentType(); 
+						treatmentType = iLimsService.getTreatmentTypeByName(name);
+						if (treatmentType == null) {
+							StringBuilder errorString = new StringBuilder();
+							errorString.append("Error: Row ");
+							errorString.append(row);
+							errorString.append(": SubjectUID: ");
+							errorString.append(subjectUID);
+							errorString.append(" The treatment ");
+							errorString.append(name);
+							errorString.append(" of BiospecimenUID: ");
+							errorString.append(biospecimenUID);
+							errorString.append(" do not match the details in the database. Please check and try again");
+							dataValidationMessages.add(errorString.toString());
+							errorCells.add(new ArkGridCell(csvReader.getIndex("TREATMENT"), row));
 						}
+					}
+					
+					if ((csvReader.get("SITE") != null && csvReader.get("FREEZER") != null && csvReader.get("RACK") != null && csvReader.get("BOX") != null && csvReader.get("ROW") != null
+							&& csvReader.get("COLUMN") != null) &&
+					(!csvReader.get("SITE").isEmpty() && !csvReader.get("FREEZER").isEmpty() && !csvReader.get("RACK").isEmpty() && !csvReader.get("BOX").isEmpty() && !csvReader.get("ROW").isEmpty()
+							&& !csvReader.get("COLUMN").isEmpty())	
+					) {
+						InvCell invCell = iInventoryService.getInvCellByLocationNames(csvReader.get("SITE"), csvReader.get("FREEZER"), csvReader.get("RACK"), csvReader.get("BOX"), csvReader.get("ROW"),
+								csvReader.get("COLUMN"));
+						if (invCell == null) {
+							StringBuilder errorString = new StringBuilder();
+							errorString.append("Error: Row ");
+							errorString.append(row);
+							errorString.append(": SubjectUID: ");
+							errorString.append(subjectUID);
+							errorString.append(" The location details of BiospecimenUID: ");
+							errorString.append(biospecimenUID);
+							errorString.append(" do not match the details in the database. Please check and try again");
+							dataValidationMessages.add(errorString.toString());
+							errorCells.add(new ArkGridCell(csvReader.getIndex("SITE"), row));
+							errorCells.add(new ArkGridCell(csvReader.getIndex("FREEZER"), row));
+							errorCells.add(new ArkGridCell(csvReader.getIndex("RACK"), row));
+							errorCells.add(new ArkGridCell(csvReader.getIndex("BOX"), row));
+							errorCells.add(new ArkGridCell(csvReader.getIndex("ROW"), row));
+							errorCells.add(new ArkGridCell(csvReader.getIndex("COLUMN"), row));
+						}
+					}
+					else{
+						log.info("here");
+					}
 					
 				}
 				catch (EntityNotFoundException enf) {
