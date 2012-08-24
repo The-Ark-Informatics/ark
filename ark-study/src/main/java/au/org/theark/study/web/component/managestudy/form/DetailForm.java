@@ -203,8 +203,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			parentStudy= containerForm.getModelObject().getStudy().getParentStudy();
 		}
 		
+		boolean isChildStudy = (study != parentStudy && parentStudy != null);
 		parentStudyContainer.setEnabled(isNew());
-		parentStudyContainer.setVisible(study != parentStudy && parentStudy != null);
+		parentStudyContainer.setVisible(isChildStudy);
+		subjectFileUploadContainer.setVisible(!isNew() && isChildStudy);
 		super.onBeforeRender();
 	}
 
