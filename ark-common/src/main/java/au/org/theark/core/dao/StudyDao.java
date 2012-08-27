@@ -1467,6 +1467,22 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("name", "LIMS"));
 		return (ArkModule)criteria.uniqueResult();
 	}
+
+
+	@Override
+	public YesNo getYes() {
+		Criteria criteria = getSession().createCriteria(YesNo.class);
+		criteria.add(Restrictions.eq("name", "Yes"));
+		return (YesNo)criteria.uniqueResult();		
+	}
+
+
+	@Override
+	public YesNo getNo() {
+		Criteria criteria = getSession().createCriteria(YesNo.class);
+		criteria.add(Restrictions.eq("name", "No"));
+		return (YesNo)criteria.uniqueResult();		
+	}
 	
 
 }

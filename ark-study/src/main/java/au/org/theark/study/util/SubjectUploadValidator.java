@@ -615,10 +615,8 @@ public class SubjectUploadValidator {
 						if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(silent)){
 							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + 
 									" is not in the valid boolean value.  Please use true or false for this column.");
-							errorCells.add(new ArkGridCell(col, row));
-							
-						}
-							
+							errorCells.add(new ArkGridCell(col, row));							
+						}							
 					}
 
 					
@@ -628,10 +626,8 @@ public class SubjectUploadValidator {
 						if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(prefer)){
 							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + 
 									" is not in the valid boolean value.  Please use true or false for this column.");
-							errorCells.add(new ArkGridCell(col, row));
-							
-						}
-							
+							errorCells.add(new ArkGridCell(col, row));							
+						}							
 					}
 	
 					if (csvReader.getIndex("PHONE_DATE_RECEIVED") > 0 ) {
