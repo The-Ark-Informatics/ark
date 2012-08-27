@@ -65,6 +65,7 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.DataConversionAndManipulationHelper;
 import au.org.theark.study.service.IStudyService;
 
 import com.csvreader.CsvReader;
@@ -517,8 +518,13 @@ public class DataUploader {
 								addressToAttachToPerson.setCity(suburb);
 							if(addressComments!=null && !addressComments.isEmpty())
 								addressToAttachToPerson.setComments(addressComments);
-							if(isPreferredMailingString!=null && !isPreferredMailingString.isEmpty())
-								addressToAttachToPerson.setPreferredMailingAddress(Boolean.valueOf(isPreferredMailingString));
+							if(DataConversionAndManipulationHelper.isSomethingLikeTrue(isPreferredMailingString)){ //   isPreferredMailingString!=null && !isPreferredMailingString.isEmpty()){
+								addressToAttachToPerson.setPreferredMailingAddress(true);
+							}
+							else{
+								addressToAttachToPerson.setPreferredMailingAddress(false);
+							}
+								
 							if(addressSource!=null && !addressSource.isEmpty())
 								addressToAttachToPerson.setSource(addressSource);
 							if(!updateAddress){

@@ -49,6 +49,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.DataConversionAndManipulationHelper;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
 
@@ -604,6 +605,33 @@ public class SubjectUploadValidator {
 									+ Constants.DD_MM_YYYY.toLowerCase());
 							errorCells.add(new ArkGridCell(col, row));
 						}
+					}
+
+
+					// BOOLEAN CHECKS
+					if (csvReader.getIndex("SILENT") > 0 ) {
+						col = csvReader.getIndex("SILENT");
+						String silent = stringLineArray[col];
+						if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(silent)){
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + 
+									" is not in the valid boolean value.  Please use true or false for this column.");
+							errorCells.add(new ArkGridCell(col, row));
+							
+						}
+							
+					}
+
+					
+					if (csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS") > 0 ) {
+						col = csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS");
+						String prefer = stringLineArray[col];
+						if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(prefer)){
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + 
+									" is not in the valid boolean value.  Please use true or false for this column.");
+							errorCells.add(new ArkGridCell(col, row));
+							
+						}
+							
 					}
 	
 					if (csvReader.getIndex("PHONE_DATE_RECEIVED") > 0 ) {
