@@ -483,7 +483,7 @@ public class DataUploader {
 								//State state = findState(statesPossible, stateString, country);
 								State state = findStateWithinThisCountry(stateString, country);
 								if(state==null){
-									uploadReport.append("could not find a state named '" + stateString + "' in " + country.getName() + "\n");
+									uploadReport.append("Warning: could not find a state named '" + stateString + "' in " + country.getName() + " for row " + rowCount +  ", but will proceed.\n");
 									addressToAttachToPerson.setOtherState(stateString);
 								}
 								else{
@@ -491,7 +491,7 @@ public class DataUploader {
 								}
 							}
 							else{
-								uploadReport.append("Could not find country '" + countryString + "'\n");
+								uploadReport.append("Warning:  Could not find country '" + countryString + " for row " + rowCount + ", but will proceed.\n");
 							}
 							
 							String postCode = stringLineArray[postCodeIndex];
