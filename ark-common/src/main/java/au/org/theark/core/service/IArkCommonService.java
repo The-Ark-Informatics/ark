@@ -193,6 +193,10 @@ public interface IArkCommonService<T> {
 
 	public List<YesNo> getYesNoList();
 
+	public YesNo getYes();
+
+	public YesNo getNo();
+
 	public void createAuditHistory(AuditHistory auditHistory);
 
 	public List<PersonContactMethod> getPersonContactMethodList();

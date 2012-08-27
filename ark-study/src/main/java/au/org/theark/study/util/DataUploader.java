@@ -64,6 +64,7 @@ import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.DataConversionAndManipulationHelper;
 import au.org.theark.study.service.IStudyService;
@@ -165,7 +166,10 @@ public class DataUploader {
 			Collection<VitalStatus> vitalStatiiPossible = iArkCommonService.getVitalStatus();
 			Collection<PersonContactMethod> personContactMethodPossible = iArkCommonService.getPersonContactMethodList();
 			//Collection<MaritalStatus> yesNoList = iArkCommonService.getYesNoList(); //TODO would boolean not be better?
-
+			YesNo yes = iArkCommonService.getYes();//TODO: boolean
+			YesNo no = iArkCommonService.getNo();
+			
+			
 			boolean autoConsent = study.getAutoConsent();
 			SubjectStatus defaultSubjectStatus = iStudyService.getDefaultSubjectStatus();
 			TitleType defaultTitleType = iStudyService.getDefaultTitleType();
@@ -232,6 +236,7 @@ public class DataUploader {
 			int phoneSourceIndex				= csvReader.getIndex("PHONE_SOURCE");
 			int phoneCommentsIndex			= csvReader.getIndex("PHONE_COMMENTS");
 			int phoneDateReceivedIndex		= csvReader.getIndex("PHONE_DATE_RECEIVED");
+			int phoneSilentIndex				= csvReader.getIndex("SILENT");
 			
 			//if(PERSON_CONTACT_METHOD is in headers, use it, 
 								//else, if CONTACT_METHOD, us IT, else, just set to -1 
@@ -577,8 +582,9 @@ public class DataUploader {
 							PhoneType type = findPhoneTypeOrSetDefault(phoneTypesPossible, defaultPhoneType, stringLineArray[phoneTypeIndex]);
 							PhoneStatus status = findPhoneStatusOrSetDefault(phoneStatiiPossible, defaultPhoneStatus, stringLineArray[phoneTypeIndex]);
 							String phoneComments = stringLineArray[phoneCommentsIndex];
-														
+
 							String areaCode = stringLineArray[areaCodeIndex];
+							String silentString = stringLineArray[phoneSilentIndex];
 							String phoneSource = stringLineArray[phoneSourceIndex];
 							String phoneDateReceivedString = stringLineArray[phoneDateReceivedIndex];
 							//log.warn("phone Date Reveived = " + phoneDateReceivedString + " for index = " +  phoneDateReceivedIndex);
@@ -594,6 +600,12 @@ public class DataUploader {
 								Date dateReceived = new Date();
 								dateReceived = simpleDateFormat.parse(phoneDateReceivedString);
 								phoneToAttachToPerson.setDateReceived(dateReceived);
+							}
+							if(DataConversionAndManipulationHelper.isSomethingLikeTrue(silentString)){
+								phoneToAttachToPerson.setSilentMode(yes);
+							}
+							else{
+								phoneToAttachToPerson.setSilentMode(no);
 							}
 							if(phoneComments!=null && !phoneComments.isEmpty())
 								phoneToAttachToPerson.setComment(phoneComments);

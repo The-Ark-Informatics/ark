@@ -433,6 +433,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<YesNo> getYesNoList() {
 		return studyDao.getYesNoList();
 	}
+	
+	public YesNo getYes() {
+		return studyDao.getYes();
+	}
+	
+	public YesNo getNo() {
+		return studyDao.getNo();
+	}
 
 	public void createAuditHistory(AuditHistory auditHistory) {
 		studyDao.createAuditHistory(auditHistory);

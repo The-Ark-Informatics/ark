@@ -636,6 +636,10 @@ public interface IStudyDao {
 	public List<Upload> searchUploadsForBio(Upload uploadCriteria);
 
 	public UploadStatus getUploadStatusFor(String uploadStatusConstant);
+
+	public YesNo getYes();
+
+	public YesNo getNo();
 	
 	
 }
