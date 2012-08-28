@@ -344,6 +344,8 @@ public class SubjectUploadValidator {
 				StringBuffer stringBuffer = new StringBuffer();
 				//TODO ASAP : this should utilize the file that creates the template/requirements!
 				stringBuffer.append("Error: The specified file does not appear to conform to the expected file format.\n");
+				stringBuffer.append("Please refer to the template, as seen on step one, for the correct format. \n");
+				/*
 				stringBuffer.append("The specified fileformat was: " + fileFormat + ".\n");
 				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n");
 				stringBuffer.append(".\n");
@@ -385,7 +387,7 @@ public class SubjectUploadValidator {
  * BUILDING_NAME	STREET_ADDRESS	SUBURB	STATE	COUNTRY	POST_CODE	ADDRESS_SOURCE	ADDRESS_STATUS	 ADDRESS_TYPE	 ADDRESS_DATE_RECEIVED	ADDRESS_COMMENTS	IS_PREFERRED_MAILING_ADDRESS	PHONE_AREA_CODE	PHONE_NUMBER	PHONE_TYPE	PHONE_STATUS	PHONE_SOURCE	PHONE_COMMENTS	SILENT
  *
  *this is the newest fields and will be such a mess no point displaying???
- */
+ *
 
 				// Column values
 				stringBuffer.append("[ABC000001]");
@@ -414,11 +416,11 @@ public class SubjectUploadValidator {
 				stringBuffer.append(delimiterCharacter);
 				stringBuffer.append("[Single]");
 				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[Phone]");
+				stringBuffer.append("[P5h5one]");
 				stringBuffer.append(delimiterCharacter);
 				stringBuffer.append("[joebloggs@somewhere.com]\n");
 				stringBuffer.append("\n\nNOTE: Enclosing quotes are optional");
-
+*/
 				fileValidationMessages.add(stringBuffer.toString());
 
 				for (int i = 0; i < headerColumnArray.length; i++) {
@@ -612,22 +614,26 @@ public class SubjectUploadValidator {
 					if (csvReader.getIndex("SILENT") > 0 ) {
 						col = csvReader.getIndex("SILENT");
 						String silent = stringLineArray[col];
-						if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(silent)){
-							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + 
-									" is not in the valid boolean value.  Please use true or false for this column.");
-							errorCells.add(new ArkGridCell(col, row));							
-						}							
+						if(silent!=null && !silent.isEmpty()){//if null or empty just ignore...if invalid flag
+							if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(silent)){
+								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + 
+										" is not in the valid boolean value.  Please use true or false for this column.");
+								errorCells.add(new ArkGridCell(col, row));							
+							}					
+						}
 					}
 
 					
 					if (csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS") > 0 ) {
 						col = csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS");
 						String prefer = stringLineArray[col];
-						if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(prefer)){
-							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + 
-									" is not in the valid boolean value.  Please use true or false for this column.");
-							errorCells.add(new ArkGridCell(col, row));							
-						}							
+						if(prefer!=null && !prefer.isEmpty()){//if null or empty just ignore...if invalid flag
+							if (prefer != null && !DataConversionAndManipulationHelper.isSomethingLikeABoolean(prefer)){
+								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + 
+										" is not in the valid boolean value.  Please use true or false for this column.");
+								errorCells.add(new ArkGridCell(col, row));							
+							}
+						}
 					}
 	
 					if (csvReader.getIndex("PHONE_DATE_RECEIVED") > 0 ) {
