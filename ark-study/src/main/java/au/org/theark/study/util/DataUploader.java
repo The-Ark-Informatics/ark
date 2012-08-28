@@ -474,7 +474,7 @@ public class DataUploader {
 							{
 								log.info("address was not null");
 							}
-							
+
 							AddressType type = findAddressTypeOrSetDefault(addressTypesPossible, defaultAddressType, stringLineArray[addressTypeIndex]);
 							AddressStatus status = findAddressStatusOrSetDefault(addressStatiiPossible, defaultAddressStatus, stringLineArray[addressTypeIndex]);
 							String addressComments = stringLineArray[addressCommentsIndex];
@@ -523,11 +523,14 @@ public class DataUploader {
 								addressToAttachToPerson.setCity(suburb);
 							if(addressComments!=null && !addressComments.isEmpty())
 								addressToAttachToPerson.setComments(addressComments);
-							if(DataConversionAndManipulationHelper.isSomethingLikeTrue(isPreferredMailingString)){ //   isPreferredMailingString!=null && !isPreferredMailingString.isEmpty()){
-								addressToAttachToPerson.setPreferredMailingAddress(true);
-							}
-							else{
-								addressToAttachToPerson.setPreferredMailingAddress(false);
+								
+							if(DataConversionAndManipulationHelper.isSomethingLikeABoolean(isPreferredMailingString)){
+								if(DataConversionAndManipulationHelper.isSomethingLikeTrue(isPreferredMailingString)){ //   isPreferredMailingString!=null && !isPreferredMailingString.isEmpty()){
+									addressToAttachToPerson.setPreferredMailingAddress(true);
+								}
+								else{
+									addressToAttachToPerson.setPreferredMailingAddress(false);
+								}
 							}
 								
 							if(addressSource!=null && !addressSource.isEmpty())
@@ -601,11 +604,14 @@ public class DataUploader {
 								dateReceived = simpleDateFormat.parse(phoneDateReceivedString);
 								phoneToAttachToPerson.setDateReceived(dateReceived);
 							}
-							if(DataConversionAndManipulationHelper.isSomethingLikeTrue(silentString)){
-								phoneToAttachToPerson.setSilentMode(yes);
-							}
-							else{
-								phoneToAttachToPerson.setSilentMode(no);
+
+							if(DataConversionAndManipulationHelper.isSomethingLikeABoolean(silentString)){
+								if(DataConversionAndManipulationHelper.isSomethingLikeTrue(silentString)){
+									phoneToAttachToPerson.setSilentMode(yes);
+								}
+								else{
+									phoneToAttachToPerson.setSilentMode(no);
+								}
 							}
 							if(phoneComments!=null && !phoneComments.isEmpty())
 								phoneToAttachToPerson.setComment(phoneComments);
