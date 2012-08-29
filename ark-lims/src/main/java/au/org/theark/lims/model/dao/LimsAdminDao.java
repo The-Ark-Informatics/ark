@@ -88,7 +88,7 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 			// Restrict to latest version of label
 			DetachedCriteria versionCriteria = DetachedCriteria.forClass(BarcodeLabel.class);
 			versionCriteria.add(Restrictions.eq("name", barcodeLabel.getName()));
-			versionCriteria.add(Restrictions.eq("barcodePrinter", barcodeLabel.getBarcodePrinter()));
+
 			if (barcodeLabel.getStudy() != null) {
 				if(barcodeLabel.getStudy().getParentStudy() != null && barcodeLabel.getStudy().getParentStudy().getId() != null) {
 					// Use parent study
