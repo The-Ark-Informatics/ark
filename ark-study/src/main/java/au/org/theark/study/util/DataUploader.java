@@ -449,11 +449,21 @@ public class DataUploader {
 							if(thisSubjectAlreadyExists){
 								String typeString = null;
 								String statusString = null;
-	
-								if (addressTypeIndex > 0)
+
+
+								if (addressTypeIndex > 0){
 									typeString = stringLineArray[addressTypeIndex];
-								if (addressStatusIndex > 0)
+									if(typeString==null || typeString.isEmpty()){
+										typeString = defaultAddressType.getName();
+									}
+								
+								}
+								if (addressStatusIndex > 0){
 									statusString = stringLineArray[addressStatusIndex];							
+									if(statusString==null || statusString.isEmpty()){
+										statusString = defaultPhoneStatus.getName();
+									}		
+								}
 								
 								for(Address a : person.getAddresses()){
 									if(a.getAddressStatus().getName().equalsIgnoreCase(statusString) &&
