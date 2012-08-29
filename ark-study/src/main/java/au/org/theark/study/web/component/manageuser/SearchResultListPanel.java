@@ -160,7 +160,7 @@ public class SearchResultListPanel extends Panel {
 					List<Study> availableChildStudies = new ArrayList<Study>(0);
 					List<Study> selectedChildStudies = new ArrayList<Study>(0);
 
-					if (study.getParentStudy() != null) {
+					if (study.getParentStudy() != null && study.getParentStudy() == study) {
 						availableChildStudies = iStudyService.getChildStudyListOfParent(study);
 						selectedChildStudies = iArkCommonService.getAssignedChildStudyListForUser(arkUserVOFromBackend);
 					}
