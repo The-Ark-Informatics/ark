@@ -204,16 +204,17 @@ public class DataUploader {
 
 			csvReader.readHeaders();
 			srcLength = inLength - csvReader.getHeaders().toString().length();
-			int firstNameIndex 		= csvReader.getIndex("FIRST_NAME");
-			int middleNameIndex 		= csvReader.getIndex("MIDDLE_NAME");
-			int lastNameIndex 		= csvReader.getIndex("LAST_NAME");
-			int preferredNameIndex 	= csvReader.getIndex("PREFERRED_NAME");
-			int preferredEmailIndex = csvReader.getIndex("PREFERRED_EMAIL");
-			int otherEmailIndex 		= csvReader.getIndex("OTHER_EMAIL");
-			int titleIndex 			= csvReader.getIndex("TITLE");
-			int vitalStatusIndex		= csvReader.getIndex("VITAL_STATUS");
-			int maritalStatusIndex 	= csvReader.getIndex("MARITAL_STATUS");
-			int statusIndex 			= csvReader.getIndex("STATUS");
+			int firstNameIndex 			= csvReader.getIndex("FIRST_NAME");
+			int middleNameIndex 			= csvReader.getIndex("MIDDLE_NAME");
+			int lastNameIndex 			= csvReader.getIndex("LAST_NAME");
+			int previousLastNameIndex 	= csvReader.getIndex("PREVIOUS_LAST_NAME");
+			int preferredNameIndex 		= csvReader.getIndex("PREFERRED_NAME");
+			int preferredEmailIndex 	= csvReader.getIndex("PREFERRED_EMAIL");
+			int otherEmailIndex 			= csvReader.getIndex("OTHER_EMAIL");
+			int titleIndex 				= csvReader.getIndex("TITLE");
+			int vitalStatusIndex			= csvReader.getIndex("VITAL_STATUS");
+			int maritalStatusIndex 		= csvReader.getIndex("MARITAL_STATUS");
+			int statusIndex 				= csvReader.getIndex("STATUS");
  
 			int addressLine1Index			= csvReader.getIndex("BUILDING_NAME");
 			int addressLine2Index			= csvReader.getIndex("STREET_ADDRESS");
@@ -297,7 +298,7 @@ public class DataUploader {
 						subject.setStudy(study);
 						person = new Person();
 					}
-					
+
 					if (firstNameIndex > 0)
 						person.setFirstName(stringLineArray[firstNameIndex]);
 	
@@ -313,8 +314,38 @@ public class DataUploader {
 							personLastNameHistory.setLastName(person.getLastName());
 							person.getPersonLastnameHistory().add(personLastNameHistory);//TODO analyze this
 						}
+						else if(!thisSubjectAlreadyExists){
+							
+							if (previousLastNameIndex > 0){
+								String previousLastName = (stringLineArray[previousLastNameIndex]);
+							
+								if(previousLastName!=null && !previousLastName.isEmpty()){
+									PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+									personLastNameHistory.setPerson(person);
+									personLastNameHistory.setLastName(previousLastName);
+									person.getPersonLastnameHistory().add(personLastNameHistory);
+								}
+							}
+						}
+						
 						person.setLastName(lastnameFromFile);
 					}
+					else{
+						//just in the odd instance of no last name but has previous lastname known
+						if(!thisSubjectAlreadyExists){
+							if (previousLastNameIndex > 0){
+								String previousLastName = (stringLineArray[previousLastNameIndex]);							
+								if(previousLastName!=null && !previousLastName.isEmpty()){
+									PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+									personLastNameHistory.setPerson(person);
+									personLastNameHistory.setLastName(previousLastName);
+									person.getPersonLastnameHistory().add(personLastNameHistory);
+								}
+							}
+						}
+					}
+					
+					
 					if (preferredNameIndex > 0){
 						person.setPreferredName(stringLineArray[preferredNameIndex]);
 					}
