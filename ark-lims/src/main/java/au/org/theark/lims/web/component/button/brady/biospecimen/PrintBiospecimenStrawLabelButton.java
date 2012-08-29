@@ -74,7 +74,6 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
 
 		barcodeLabel = new BarcodeLabel();
-		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(biospecimen.getStudy());
 		barcodeLabel.setName("straw barcode");
 		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
@@ -83,11 +82,6 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 	@Override
 	public boolean isEnabled() {
 		boolean barcodePrinterAvailable = true;
-
-		if (barcodePrinter == null || barcodeLabel == null) {
-			log.error("A Brady barcode printer is currently not available. Please add the printer to the client machine and try again");
-			barcodePrinterAvailable = false;
-		}
 
 		if (barcodeLabel == null || barcodeLabel.getBarcodePrinterName() == null || barcodeLabel.getBarcodePrinterName().isEmpty()) {
 			log.error("A Brady barcode label is currently not available. Please define the label and try again");

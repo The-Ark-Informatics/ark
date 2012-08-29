@@ -92,7 +92,6 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
 
 		barcodeLabel = new BarcodeLabel();
-		barcodeLabel.setBarcodePrinter(barcodePrinter);
 		barcodeLabel.setStudy(bioCollection.getStudy());
 		barcodeLabel.setName("zebra biocollection");
 		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
@@ -101,11 +100,6 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	@Override
 	public boolean isEnabled() {
 		boolean barcodePrinterAvailable = true;
-
-		if (barcodePrinter == null) {
-			log.error("A Zebra barcode printer is currently not available. Please add the printer to the client machine and try again");
-			barcodePrinterAvailable = false;
-		}
 
 		if (barcodeLabel == null || barcodeLabel.getBarcodePrinterName() == null || barcodeLabel.getBarcodePrinterName().isEmpty()) {
 			log.error("A Zebra barcode label is currently not available. Please define the label and try again");
