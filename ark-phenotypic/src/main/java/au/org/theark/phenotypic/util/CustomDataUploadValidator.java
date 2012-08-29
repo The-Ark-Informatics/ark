@@ -350,8 +350,7 @@ public class CustomDataUploadValidator {
 			if (headerError || !hasSubjectUIDHeader || !hasDateHeader) {
 				// Invalid file format
 				StringBuffer stringBuffer = new StringBuffer();
-				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n\n");
-				stringBuffer.append("This file is not valid because; \n");
+				stringBuffer.append("ERROR:  This file is not valid because; \n");//The specified delimiter type was: " + delimiterCharacter + ".\n\n");This file is not valid because; \n");
 				fileValidationMessages.add(stringBuffer.toString());
 				if(!hasSubjectUIDHeader){
 					fileValidationMessages.add("The column name \"SUBJECTUID\" must exist as the header of the first column.\n");
@@ -465,7 +464,7 @@ public class CustomDataUploadValidator {
 							errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
 						}
 						errorCells.add(new ArkGridCell(0, row));
-						dataValidationMessages.add("Subject " + subjectUID + " on row " + row + " is listed multiple times in this file.  " +
+						dataValidationMessages.add("ERROR:  Subject " + subjectUID + " on row " + row + " is listed multiple times in this file.  " +
 								"Please remove this row and retry.");
 					}
 					else{
@@ -524,7 +523,7 @@ public class CustomDataUploadValidator {
 		//TODO:  test hashset this i.intvalue or left hashset value??
 		for (Iterator<Integer> iterator = nonExistantUIDs.iterator(); iterator.hasNext();) {
 			Integer i = (Integer) iterator.next();
-			dataValidationMessages.add("Subject on row " + i.intValue() + " does not exist in the database.  Please remove this row and retry or run upload/create this subject first.");
+			dataValidationMessages.add("ERROR:  Subject on row " + i.intValue() + " does not exist in the database.  Please remove this row and retry or run upload/create this subject first.");
 		}
 		return dataValidationMessages;
 	}
@@ -651,10 +650,10 @@ public class CustomDataUploadValidator {
 
 				if ((doubleFieldValue > doubleMaxValue) || (doubleFieldValue < doubleMinValue)) {
 					if ((doubleFieldValue > doubleMaxValue)) {
-						errorMessages.add("Subject " + subjectUID + " has a value: " + valueToValidate + " which is greater than the maximum allowed value of " + doubleMaxValue);
+						errorMessages.add("ERROR:  Subject " + subjectUID + " has a value: " + valueToValidate + " which is greater than the maximum allowed value of " + doubleMaxValue);
 					}
 					if ((doubleFieldValue < doubleMinValue)) {
-						errorMessages.add("Subject " + subjectUID + " has a value: " + valueToValidate + " which  is less than the minimum allowed value of " + doubleMinValue);
+						errorMessages.add("ERROR:  Subject " + subjectUID + " has a value: " + valueToValidate + " which  is less than the minimum allowed value of " + doubleMinValue);
 					}
 					isInValidRange = false;
 				}
