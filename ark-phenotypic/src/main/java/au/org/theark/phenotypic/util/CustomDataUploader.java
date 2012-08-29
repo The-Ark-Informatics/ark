@@ -120,7 +120,7 @@ public class CustomDataUploader {
 				allSubjectWhichWillBeUpdated 	= new ArrayList<LinkSubjectStudy>();
 			}
 			if (size <= 0) {
-				uploadReport.append("The input size was not greater than 0. Actual length reported: ");
+				uploadReport.append("ERROR:  The input size was not greater than 0. Actual length reported: ");
 				uploadReport.append(size);
 				uploadReport.append("\n");
 				throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + size);
@@ -192,12 +192,12 @@ public class CustomDataUploader {
 					phenoCollectionsWithTheirDataToInsert.size() + "  amount of empty scells =" + emptyDataCount );
 		}
 		catch (IOException ioe) {
-			uploadReport.append("Unexpected I/O exception whilst reading the subject data file\n");
+			uploadReport.append("SYSTEM ERROR:   Unexpected I/O exception whilst reading the subject data file\n");
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
 			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
 		}
 		catch (Exception ex) {
-			uploadReport.append("Unexpected exception whilst reading the subject data file\n");
+			uploadReport.append("SYSTEM ERROR:   Unexpected exception whilst reading the subject data file\n");
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
 			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
 		}
