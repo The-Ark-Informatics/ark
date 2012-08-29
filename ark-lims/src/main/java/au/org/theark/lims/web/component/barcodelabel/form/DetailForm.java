@@ -196,7 +196,6 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				target.add(barcodePrinterDdc);
 				target.add(barcodeLabelTemplateDdc);
 			}
 		});
@@ -278,7 +277,7 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld.setEnabled(false));
 		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
-		//arkCrudContainerVO.getDetailPanelFormContainer().add(barcodePrinterDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(studyDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(descriptionTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(versionTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(barcodeLabelDataPanel);
