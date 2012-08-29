@@ -196,7 +196,7 @@ public class DataUploader {
 			
 			srcLength = inLength;
 			if (srcLength <= 0) {
-				uploadReport.append("The input size was not greater than 0. Actual length reported: ");
+				uploadReport.append("ERROR:  The input size was not greater than 0. Actual length reported: ");
 				uploadReport.append(srcLength);
 				uploadReport.append("\n");
 				throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + srcLength);
@@ -445,6 +445,8 @@ public class DataUploader {
 							//then lets just jump out as there is no address to validate.  lay down to user that they must have data if they want an update
 						}
 						else{
+							boolean usingDefaultType = false;
+							boolean usingDefaultStatus = false;
 							Address addressToAttachToPerson = null;
 							if(thisSubjectAlreadyExists){
 								String typeString = null;
@@ -455,6 +457,7 @@ public class DataUploader {
 									typeString = stringLineArray[addressTypeIndex];
 									if(typeString==null || typeString.isEmpty()){
 										typeString = defaultAddressType.getName();
+										usingDefaultType = true;
 									}
 								
 								}
@@ -462,6 +465,7 @@ public class DataUploader {
 									statusString = stringLineArray[addressStatusIndex];							
 									if(statusString==null || statusString.isEmpty()){
 										statusString = defaultPhoneStatus.getName();
+										usingDefaultStatus =true;
 									}		
 								}
 								
@@ -485,8 +489,16 @@ public class DataUploader {
 								log.info("address was not null");
 							}
 
-							AddressType type = findAddressTypeOrSetDefault(addressTypesPossible, defaultAddressType, stringLineArray[addressTypeIndex]);
-							AddressStatus status = findAddressStatusOrSetDefault(addressStatiiPossible, defaultAddressStatus, stringLineArray[addressTypeIndex]);
+							AddressType type = findAddressType(addressTypesPossible, stringLineArray[addressTypeIndex]);
+							if(type==null){
+								type = defaultAddressType;
+								usingDefaultType = true;
+							}
+							AddressStatus status = findAddressStatus(addressStatiiPossible, stringLineArray[addressTypeIndex]);
+							if(status==null){
+								status = defaultAddressStatus;
+								usingDefaultStatus = true;
+							}
 							String addressComments = stringLineArray[addressCommentsIndex];
 							String suburb = stringLineArray[suburbIndex];
 							
@@ -499,7 +511,7 @@ public class DataUploader {
 								//State state = findState(statesPossible, stateString, country);
 								State state = findStateWithinThisCountry(stateString, country);
 								if(state==null){
-									uploadReport.append("Warning: could not find a state named '" + stateString + "' in " + country.getName() + " for row " + rowCount +  ", but will proceed.\n");
+									uploadReport.append("Warning/Info: could not find a state named '" + stateString + "' in " + country.getName() + " for row " + rowCount +  ", but will proceed.\n");
 									addressToAttachToPerson.setOtherState(stateString);
 								}
 								else{
@@ -507,7 +519,7 @@ public class DataUploader {
 								}
 							}
 							else{
-								uploadReport.append("Warning:  Could not find country '" + countryString + " for row " + rowCount + ", but will proceed.\n");
+								uploadReport.append("Warning/Info:  Could not find country '" + countryString + " for row " + rowCount + ", but will proceed.\n");
 							}
 							
 							String postCode = stringLineArray[postCodeIndex];
@@ -542,7 +554,18 @@ public class DataUploader {
 									addressToAttachToPerson.setPreferredMailingAddress(false);
 								}
 							}
-								
+
+							if(usingDefaultStatus && usingDefaultType){
+								uploadReport.append("Info:  Using the default status '" + defaultAddressStatus.getName() +  "' and the default type '" 
+										+ defaultAddressType.getName() + " for row " + rowCount + ", but will proceed.\n");
+							}
+							else if(usingDefaultType){
+								uploadReport.append("Info:  Using the default type '" + defaultAddressType.getName() + "' for row " + rowCount + ", but will proceed.\n");
+							}
+							else if(usingDefaultStatus){
+								uploadReport.append("Info:  Using the default status '" + defaultAddressStatus.getName() + " for row " + rowCount + ", but will proceed.\n");
+							}
+
 							if(addressSource!=null && !addressSource.isEmpty())
 								addressToAttachToPerson.setSource(addressSource);
 							if(!updateAddress){
@@ -557,6 +580,8 @@ public class DataUploader {
 					//if no address info - ignore
 					if(phoneNumberIndex  >0){
 						boolean updatePhones= false;
+						boolean usingDefaultType = false;
+						boolean usingDefaultStatus = false;
 						String phoneNumberString = stringLineArray[phoneNumberIndex];
 						
 						if(phoneNumberString == null || StringUtils.isBlank(phoneNumberString)){
@@ -572,12 +597,14 @@ public class DataUploader {
 									typeString = stringLineArray[phoneTypeIndex];
 									if(typeString==null || typeString.isEmpty()){
 										typeString = defaultPhoneType.getName();
+										usingDefaultType = true;
 									}
 								}
 								if (phoneStatusIndex > 0){
 									statusString = stringLineArray[phoneStatusIndex];		
 									if(statusString==null || statusString.isEmpty()){
 										statusString = defaultPhoneStatus.getName();
+										usingDefaultStatus = true;
 									}					
 								}
 								for(Phone phone : person.getPhones()){
@@ -627,6 +654,19 @@ public class DataUploader {
 								phoneToAttachToPerson.setComment(phoneComments);
 							if(phoneSource!=null && !phoneSource.isEmpty())
 								phoneToAttachToPerson.setSource(phoneSource);
+							
+							
+							if(usingDefaultStatus && usingDefaultType){
+								uploadReport.append("Info:  Using the default status '" + defaultAddressStatus.getName() +  "' and the default type '" 
+										+ defaultAddressType.getName() + " for row " + rowCount + ", but will proceed.\n");
+							}
+							else if(usingDefaultType){
+								uploadReport.append("Info:  Using the default type '" + defaultAddressType.getName() + "' for row " + rowCount + ", but will proceed.\n");
+							}
+							else if(usingDefaultStatus){
+								uploadReport.append("Info:  Using the default status '" + defaultAddressStatus.getName() + " for row " + rowCount + ", but will proceed.\n");
+							}
+							
 							if(!updatePhones){
 								//TODO check this works in all cases
 								phoneToAttachToPerson.setPerson(person);
@@ -667,12 +707,12 @@ public class DataUploader {
 			}
 		}
 		catch (IOException ioe) {
-			uploadReport.append("Unexpected I/O exception whilst reading the subject data file\n");
+			uploadReport.append("System Error:   Unexpected I/O exception whilst reading the subject data file\n");
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
 			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
 		}
 		catch (Exception ex) {
-			uploadReport.append("Unexpected exception whilst reading the subject data file\n");
+			uploadReport.append("System Error:  Unexpected exception whilst reading the subject data file\n");
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
 			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
 		}
@@ -760,7 +800,7 @@ public class DataUploader {
 		return null;
 	}
 
-	private AddressStatus findAddressStatusOrSetDefault(List<AddressStatus> StatiiAlreadyExisting, AddressStatus defaultAddressStatus, String stringRepresentingTheStatusWeWant) {
+/*	private AddressStatus findAddressStatusOrSetDefault(List<AddressStatus> StatiiAlreadyExisting, AddressStatus defaultAddressStatus, String stringRepresentingTheStatusWeWant) {
 		if(stringRepresentingTheStatusWeWant!=null && !StringUtils.isBlank(stringRepresentingTheStatusWeWant)){
 			for(AddressStatus nextStatus : StatiiAlreadyExisting){
 				if(nextStatus.getName().equalsIgnoreCase(stringRepresentingTheStatusWeWant)){
@@ -769,10 +809,22 @@ public class DataUploader {
 			}
 		}
 		return defaultAddressStatus;
+	}*/
+
+
+	private AddressStatus findAddressStatus(List<AddressStatus> StatiiAlreadyExisting, String stringRepresentingTheStatusWeWant) {
+		if(stringRepresentingTheStatusWeWant!=null && !StringUtils.isBlank(stringRepresentingTheStatusWeWant)){
+			for(AddressStatus nextStatus : StatiiAlreadyExisting){
+				if(nextStatus.getName().equalsIgnoreCase(stringRepresentingTheStatusWeWant)){
+					return nextStatus;
+				}
+			}
+		}
+		return null;
 	}
 
 
-	private AddressType findAddressTypeOrSetDefault(List<AddressType> typesAlreadyExisting, AddressType defaultAddressType, String stringRepresentingTheTypeWeWant) {
+/*	private AddressType findAddressTypeOrSetDefault(List<AddressType> typesAlreadyExisting, AddressType defaultAddressType, String stringRepresentingTheTypeWeWant) {
 		if(stringRepresentingTheTypeWeWant!=null && !StringUtils.isBlank(stringRepresentingTheTypeWeWant)){
 			for(AddressType nextType : typesAlreadyExisting){
 				if(nextType.getName().equalsIgnoreCase(stringRepresentingTheTypeWeWant)){
@@ -781,6 +833,17 @@ public class DataUploader {
 			}
 		}
 		return defaultAddressType;
+	}*/
+
+	private AddressType findAddressType(List<AddressType> typesAlreadyExisting, String stringRepresentingTheTypeWeWant) {
+		if(stringRepresentingTheTypeWeWant!=null && !StringUtils.isBlank(stringRepresentingTheTypeWeWant)){
+			for(AddressType nextType : typesAlreadyExisting){
+				if(nextType.getName().equalsIgnoreCase(stringRepresentingTheTypeWeWant)){
+					return nextType;
+				}
+			}
+		}
+		return null;
 	}
 
 
@@ -834,7 +897,7 @@ public class DataUploader {
 				allSubjectWhichWillBeUpdated 	= new ArrayList();
 			}
 			if (size <= 0) {
-				uploadReport.append("The input size was not greater than 0. Actual length reported: ");
+				uploadReport.append("ERROR:  The input size was not greater than 0. Actual length reported: ");
 				uploadReport.append(size);
 				uploadReport.append("\n");
 				throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + size);
@@ -893,12 +956,12 @@ public class DataUploader {
 					"\n     inserts = " + insertFieldsCount + "  or  \ncustomFieldsToInsert.size = " + customFieldsToInsert.size() + "   amount of empty scells =" + emptyDataCount );
 		}
 		catch (IOException ioe) {
-			uploadReport.append("Unexpected I/O exception whilst reading the subject data file\n");
+			uploadReport.append("SYSTEM ERROR:   Unexpected I/O exception whilst reading the subject data file\n");
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
 			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
 		}
 		catch (Exception ex) {
-			uploadReport.append("Unexpected exception whilst reading the subject data file\n");
+			uploadReport.append("SYSTEM ERROR:   Unexpected exception whilst reading the subject data file\n");
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
 			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
 		}
