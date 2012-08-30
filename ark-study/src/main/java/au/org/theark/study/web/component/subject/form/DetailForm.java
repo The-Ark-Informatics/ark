@@ -172,12 +172,15 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
 		previousLastNameTxtFld = new TextField<String>(Constants.SUBJECT_PREVIOUS_LAST_NAME) {
-
 			private static final long	serialVersionUID	= 1L;
-
 			@Override
 			protected void onBeforeRender() {
+				if(!isNew()){
+					String subjectPreviousLastname = iArkCommonService.getPreviousLastname(containerForm.getModelObject().getLinkSubjectStudy().getPerson());
+					containerForm.getModelObject().setSubjectPreviousLastname(subjectPreviousLastname);
+				}
 				setEnabled(isNew());
+				
 				super.onBeforeRender();
 			}
 		};
