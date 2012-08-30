@@ -96,6 +96,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 				AjaxButton deleteButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
 				deleteButton.setEnabled(false);
 			}
+			
+			if(getModelObject().getCustomFieldGroup().getPublished()) {
+				// Disable when published
+				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
+			}
 		}
 	}
 
@@ -144,10 +149,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				// Check what was selected and then toggle
 				if (publishedStatusCb.getModelObject().booleanValue()) {
-					// TODO: ???
+					error("Custom Fields may not be added or removed once the Data Set is published.");
+					target.add(feedBackPanel);
 				}
 				else {
-					// TODO: ???
+					target.add(feedBackPanel);
 				}
 			}
 		});
@@ -242,12 +248,12 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 		}
 		if (allowDelete) {
 			iPhenotypicService.deleteCustomFieldGroup(getModelObject());
-			this.info("Custom Field Group has been deleted successfully.");
+			this.info("Data Set has been deleted successfully.");
 			editCancelProcess(target);
 
 		}
 		else {
-			this.error("This Questionnaire cannot be deleted.");
+			this.error("This Data Set cannot be deleted.");
 		}
 	}
 
@@ -269,10 +275,10 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 			try {
 				iPhenotypicService.createCustomFieldGroup(getModelObject());
 				initCustomFieldDataListPanel();
-				this.info("Custom Field Group has been created successfully.");
+				this.info("Data Set has been created successfully.");
 			}
 			catch (EntityExistsException e) {
-				this.error("A Questionnaire with the same name already exisits. Please choose a unique one.");
+				this.error("A Data Set with the same name already exisits. Please choose a unique one.");
 			}
 			catch (ArkSystemException e) {
 				this.error("A System error occured. Please contact Administrator.");
@@ -283,11 +289,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 			try {
 				iPhenotypicService.updateCustomFieldGroup(getModelObject());
 				initCustomFieldDataListPanel();
-				this.info("Custom Field Group has been updated successfully.");
+				this.info("Data Set has been updated successfully.");
 
 			}
 			catch (EntityExistsException e) {
-				this.error("A Questionnaire with the same name already exisits. Please choose a unique one.");
+				this.error("A Data Set with the same name already exisits. Please choose a unique one.");
 				e.printStackTrace();
 			}
 			catch (ArkSystemException e) {
