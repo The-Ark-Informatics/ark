@@ -715,4 +715,7 @@ public interface IArkCommonService<T> {
 	public List<CustomField> matchCustomFieldsFromInputFile(FileUpload fileUpload, Study study, ArkFunction arkFunction);
 
 
+	public String getPreviousLastname(Person person);
+
+	
 }
