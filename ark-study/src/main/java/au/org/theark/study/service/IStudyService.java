@@ -227,15 +227,15 @@ public interface IStudyService {
 
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes();
 
-	public void createPersonLastnameHistory(Person person);
+//	public void createPersonLastnameHistory(Person person);
 
-	public void updatePersonLastnameHistory(Person person);
+//	public void updatePersonLastnameHistory(Person person);
 
 	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory);
 
 	public String getPreviousLastname(Person person);
 
-	public String getCurrentLastname(Person person);
+//	public String getCurrentLastname(Person person);
 
 	public List<PersonLastnameHistory> getLastnameHistory(Person person);
 

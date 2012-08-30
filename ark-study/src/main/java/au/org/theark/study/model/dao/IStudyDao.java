@@ -261,10 +261,6 @@ public interface IStudyDao {
 
 	public List<ConsentFile> searchConsentFile(ConsentFile consentFile) throws EntityNotFoundException, ArkSystemException;
 
-	public void createPersonLastnameHistory(Person person);
-
-	public void updatePersonLastnameHistory(Person person);
-
 	/**
 	 * Returns previousSurnameHistory
 	 * 
@@ -284,7 +280,7 @@ public interface IStudyDao {
 	 * 
 	 * @return
 	 */
-	public String getCurrentLastname(Person person);
+	public String getCurrentLastnameFromDB(Person person);
 
 	public boolean personHasPreferredMailingAddress(Person person, Long currentAddressId);
 

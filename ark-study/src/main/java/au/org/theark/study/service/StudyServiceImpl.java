@@ -720,7 +720,7 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.searchConsentFile(consentFile);
 	}
 
-	public void createPersonLastnameHistory(Person person) {
+	/*public void createPersonLastnameHistory(Person person) {
 		iStudyDao.createPersonLastnameHistory(person);
 
 		AuditHistory ah = new AuditHistory();
@@ -729,8 +729,8 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PERSON_LASTNAME_HISTORY);
 		ah.setEntityId(person.getId());
 		iArkCommonService.createAuditHistory(ah);
-	}
-
+	}*/
+/*
 	public void updatePersonLastnameHistory(Person person) {
 		iStudyDao.updatePersonLastnameHistory(person);
 
@@ -741,7 +741,7 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityId(person.getId());
 		iArkCommonService.createAuditHistory(ah);
 	}
-
+*/
 	public List<PersonLastnameHistory> getLastnameHistory(Person person) {
 		return iStudyDao.getLastnameHistory(person);
 	}
@@ -749,11 +749,11 @@ public class StudyServiceImpl implements IStudyService {
 	public String getPreviousLastname(Person person) {
 		return iStudyDao.getPreviousLastname(person);
 	}
-
+/*
 	public String getCurrentLastname(Person person) {
 		return iStudyDao.getCurrentLastname(person);
 	}
-
+*/
 	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory) {
 		return iStudyDao.getPreviousSurnameHistory(personSurnameHistory);
 	}

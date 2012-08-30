@@ -37,6 +37,9 @@ import javax.naming.ldap.Rdn;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +103,7 @@ import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
+//import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.State;
@@ -1214,5 +1218,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<CustomField> matchCustomFieldsFromInputFile(FileUpload fileUpload, Study study, ArkFunction arkFunction) {
 		return customFieldDao.matchCustomFieldsFromInputFile(fileUpload, study, arkFunction);
 	}
-	
+
+
+	public String getPreviousLastname(Person person) {
+		return studyDao.getPreviousLastname(person);
+	}
+
 }

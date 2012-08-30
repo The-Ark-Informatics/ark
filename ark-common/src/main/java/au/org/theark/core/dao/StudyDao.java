@@ -605,15 +605,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		return personLastnameHistoryToReturn;
 	}
-
-	public void createPersonLastnameHistory(Person person) {
-		PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-		personLastNameHistory.setPerson(person);
-		personLastNameHistory.setLastName(person.getLastName());
-
-		getSession().save(personLastNameHistory);
-	}
-
+/*
 	public void updatePersonLastnameHistory(Person person) {
 		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory();
 		personLastnameHistory.setPerson(person);
@@ -624,26 +616,27 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
 			getSession().save(personLastnameHistory);
 	}
-
+*/
 	public String getPreviousLastname(Person person) {
 		Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class);
 
 		if (person.getId() != null) {
 			criteria.add(Restrictions.eq(Constants.PERSON_SURNAME_HISTORY_PERSON, person));
 		}
-		criteria.addOrder(Order.desc("id"));
+		criteria.addOrder(Order.asc("id"));
 		PersonLastnameHistory personLastameHistory = new PersonLastnameHistory();
 
 		List<PersonLastnameHistory> results = criteria.list();
-		if (results.size()>1) {
+		if (results.size()>0) {
 			
 			//what this is saying is get the second-last last-name to display as "previous lastname"
-			personLastameHistory = (PersonLastnameHistory) results.get(1);
+			personLastameHistory = (PersonLastnameHistory) results.get(results.size()-1);
 		}//else it doesnt have a previous...only a current
 
 		return personLastameHistory.getLastName();
 	}
 
+	/*
 	public String getCurrentLastname(Person person) {
 		Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class);
 
@@ -659,7 +652,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 
 		return personLastnameHistory.getLastName();
-	}
+	}*/
 
 	public List<PersonLastnameHistory> getLastnameHistory(Person person) {
 		Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class);

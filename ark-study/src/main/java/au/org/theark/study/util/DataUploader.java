@@ -404,7 +404,7 @@ public class DataUploader {
 					}
 	
 					if (otherEmailIndex > 0) {
-						person.setPreferredEmail(stringLineArray[otherEmailIndex]);
+						person.setOtherEmail(stringLineArray[otherEmailIndex]);
 					}
 	
 					if (titleIndex > 0) {

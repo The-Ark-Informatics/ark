@@ -313,18 +313,13 @@ public interface IStudyDao {
 	 */
 	public boolean isSubjectConsentedToComponent(StudyComp studyComponent, Person subject, Study study);
 
-	/**
-	 * Create a new LastNameHistory for the Person
-	 * @param person
-	 */
-	public void createPersonLastnameHistory(Person person);
 
 	/**
 	 * Update the Persons LastNameHistory
 	 * @param person
-	 */
+	 *
 	public void updatePersonLastnameHistory(Person person);
-
+*/
 	/**
 	 * Returns previousSurnameHistory
 	 * 
@@ -344,7 +339,7 @@ public interface IStudyDao {
 	 * 
 	 * @return
 	 */
-	public String getCurrentLastname(Person person);
+	//public String getCurrentLastname(Person person);
 
 	/**
 	 * Returns a list of PersonSurnameHistory
