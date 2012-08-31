@@ -397,49 +397,6 @@ public class Constants {
 	public static final String FILE_FORMAT_ID = "id";
 	public static final String FILE_FORMAT_NAME = "name";
 
-	public static final String[] SUBJECT_TEMPLATE_HEADER = { "SUBJECTUID",
-			"TITLE", "FIRST_NAME", "MIDDLE_NAME", "LAST_NAME",
-			"PREFERRED_NAME", "DATE_OF_BIRTH", "VITAL_STATUS", "GENDER",
-			"STATUS", "DATE_OF_DEATH", "CAUSE_OF_DEATH", "MARITAL_STATUS",
-			"PREFERRED_CONTACT", "EMAIL" };
-	public static final String[][] SUBJECT_TEMPLATE_CELLS = {
-			{ "", "SUBJECTUID", "TITLE", "FIRST_NAME", "MIDDLE_NAME",
-					"LAST_NAME", "PREFERRED_NAME", "DATE_OF_BIRTH",
-					"VITAL_STATUS", "GENDER", "STATUS", "DATE_OF_DEATH",
-					"CAUSE_OF_DEATH", "MARITAL_STATUS", "PREFERRED_CONTACT",
-					"EMAIL" },
-			{
-					"DESCRIPTION",
-					"The unique identifier assigned for this subject.  This may be automatically generated on upload into The Ark",
-					"The title by which the subject prefers to be addressed",
-					"The subjects first name", "The subjects middle name",
-					"The subjects last or family name",
-					"The name by which the subject prefers to be addressed",
-					"The date the subject was born",
-					"The subject's vital status", "The subject's gender",
-					"The status of the subject as it pertains to the study",
-					"The date the subject died, if known",
-					"The cause of death", "The marital status of the subject",
-					"The preferred method for contacting the subject",
-					"The subject's primary email address" },
-			{ "FORMAT", "CHARACTER", "CHARACTER", "CHARACTER", "CHARACTER",
-					"CHARACTER", "CHARACTER", "DD/MM/YYYY", "CHARACTER",
-					"CHARACTER", "CHARACTER", "DD/MM/YYYY", "ALPHANUMERIC",
-					"CHARACTER", "CHARACTER", "ALPHANUMERIC" },
-			{ "MANDATORY", "Yes - unless assigned on upload", "No", "No", "No",
-					"No", "No", "No", "No", "No", "No", "No", "No", "No", "No",
-					"No" },
-			{
-					"VALID VALUES",
-					"",
-					"Unknown, Br, Capt, Col, Cpl, Dean, Dr, Fr, Lac, Major, Miss, Mr, Mrs, Ms, Past, Prof, Pstr, Rev, Sir, Sr",
-					"", "", "", "", "", "Alive, Deceased, Unknown",
-					"Male, Female, Unknown",
-					"Subject, Prospect, Withdrawn Subject, Archive", "", "",
-					"Married, Single, Divorced, Unknown",
-					"Email, Home telephone, Mobile telephone, Post", "" },
-			{ "NOTE: Removed this first column, and replace rows 2 to 6", "",
-					"", "", "", "", "", "", "", "", "", "", "", "", "", "" } };
 
 	// 1 digit, 1 lower, 1 upper, 1 symbol "~!@#$%^&*()_-+={}[]:;\"<>|", from 6
 	// to 20
