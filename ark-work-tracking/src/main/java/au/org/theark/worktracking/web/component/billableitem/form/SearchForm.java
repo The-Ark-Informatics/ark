@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -159,6 +160,13 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 			}
 		};
 		
+		Subject currentUser = SecurityUtils.getSubject();
+		if(currentUser!=null && currentUser.isPermitted(au.org.theark.core.Constants.PERMISSION_UPDATE)){
+			invoiceButton.setVisible(true);
+		}
+		else{
+			invoiceButton.setVisible(false);
+		}
 	}
 	
 	private void initDataPicker(DateTextField dateTextField){
