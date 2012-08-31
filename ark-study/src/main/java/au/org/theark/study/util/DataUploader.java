@@ -211,6 +211,8 @@ public class DataUploader {
 			int preferredNameIndex 		= csvReader.getIndex("PREFERRED_NAME");
 			int preferredEmailIndex 	= csvReader.getIndex("PREFERRED_EMAIL");
 			int otherEmailIndex 			= csvReader.getIndex("OTHER_EMAIL");
+			int heardAboutStudyIndex	= csvReader.getIndex("HEARD_ABOUT_STUDY");
+			int commentsIndex 			= csvReader.getIndex("COMMENTS");
 			int titleIndex 				= csvReader.getIndex("TITLE");
 			int vitalStatusIndex			= csvReader.getIndex("VITAL_STATUS");
 			int maritalStatusIndex 		= csvReader.getIndex("MARITAL_STATUS");
@@ -301,6 +303,12 @@ public class DataUploader {
 
 					if (firstNameIndex > 0)
 						person.setFirstName(stringLineArray[firstNameIndex]);
+
+					if (heardAboutStudyIndex > 0)
+						subject.setHeardAboutStudy(stringLineArray[heardAboutStudyIndex]);
+
+					if (commentsIndex > 0)
+						subject.setComment(stringLineArray[commentsIndex]);
 	
 					if (middleNameIndex > 0)
 						person.setMiddleName(stringLineArray[middleNameIndex]);
