@@ -405,19 +405,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria linkSubjectStudyCriteria = getSession().createCriteria(LinkSubjectStudy.class);
 		linkSubjectStudyCriteria.add(Restrictions.eq("subjectUID", subjectUID));
 		linkSubjectStudyCriteria.add(Restrictions.eq("study", study));
-	//	Query linkSubjectStudyCriteria = getSession().createQuery(" select subject from LinkSubjectStudy subject " +
-	//			" where study =:study and subjectUID=:subjectUID " +
-	//			" left join fetch subject.person ");
-	//	linkSubjectStudyCriteria.setParameter("subjectUID", subjectUID);
-	//	linkSubjectStudyCriteria.setParameter("study", study);
-		log.warn("about to ask hibernate for list right now");
 		return (LinkSubjectStudy)linkSubjectStudyCriteria.uniqueResult();
-		//		List<LinkSubjectStudy> listOfSubjects = linkSubjectStudyCriteria.uniqueResult();
-
-//		if (listOfSubjects != null && listOfSubjects.size() > 0) {
-//			return listOfSubjects.get(0);
-//		}
-//		return null;
 	}
 
 	/**
@@ -437,7 +425,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (Country) criteria.list().get(0);
 	}
 
-	//TODO
+	//TODO HARDCODING
 	public Country getCountry(String countryCode) {
 		Criteria criteria = getSession().createCriteria(Country.class);
 		criteria.add(Restrictions.eq("countryCode", countryCode));
@@ -605,18 +593,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		return personLastnameHistoryToReturn;
 	}
-/*
-	public void updatePersonLastnameHistory(Person person) {
-		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory();
-		personLastnameHistory.setPerson(person);
-		personLastnameHistory.setLastName(person.getLastName());
 
-		String currentLastName = getCurrentLastname(person);
 
-		if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
-			getSession().save(personLastnameHistory);
-	}
-*/
 	public String getPreviousLastname(Person person) {
 		Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class);
 
@@ -636,24 +614,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return personLastameHistory.getLastName();
 	}
 
-	/*
-	public String getCurrentLastname(Person person) {
-		Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class);
-
-		if (person.getId() != null) {
-			criteria.add(Restrictions.eq(Constants.PERSON_SURNAME_HISTORY_PERSON, person));
-		}
-		criteria.addOrder(Order.desc("id"));
-
-		List<PersonLastnameHistory> results = criteria.list();
-		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory();
-		if (!results.isEmpty()) {
-			personLastnameHistory = (PersonLastnameHistory) results.get(0);
-		}
-
-		return personLastnameHistory.getLastName();
-	}*/
-
+	
 	public List<PersonLastnameHistory> getLastnameHistory(Person person) {
 		Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class);
 
@@ -1422,13 +1383,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("name", statusFromConstant));
 		return (UploadStatus)criteria.uniqueResult();		
 	}
-/*
-	public UploadStatus getUploadStatusForValidated(){
-		Criteria criteria = getSession().createCriteria(UploadStatus.class);
-		criteria.add(Restrictions.eq("name", "AWAITING_VALIDATION"));
-		return (UploadStatus)criteria.uniqueResult();		
-	}
-*/
+
 	public UploadStatus getUploadStatusForValidated(){
 		Criteria criteria = getSession().createCriteria(UploadStatus.class);
 		criteria.add(Restrictions.eq("name", "VALIDATED"));
