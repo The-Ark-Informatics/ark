@@ -455,5 +455,8 @@ public class Constants {
 	public static final String DOWNLOAD_REPORT = "downloadReport";
 	public static final String SHIB_SESSION_ID = "SHIB_SESSION_ID";
 	public static final String PHENO_COLLECTION_STATUS_UPLOADED = "Uploaded From File";
+	
+	//Security permission types
+	public static final String PERMISSION_UPDATE="UPDATE";
 
 }
