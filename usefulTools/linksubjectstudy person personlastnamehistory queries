@@ -42,3 +42,17 @@ group by ark_function_id;
 
 select * from ark_function;
 
+select * from custom_field_display where ALLOW_MULTIPLE_SELECTION is null;
+
+ALTER TABLE `study`.`custom_field_display` CHANGE COLUMN `ALLOW_MULTIPLE_SELECTION` `ALLOW_MULTIPLE_SELECTION` TINYINT(1) NOT NULL DEFAULT 0  ;
+
+select * from custom_field_display where ALLOW_MULTIPLE_SELECTION = 1;
+select * from custom_field_display where ALLOW_MULTIPLE_SELECTION = 1;
+
+select * from custom_field where id in (280, 580);
+
+select * from custom_field_display where custom_field_id in (280, 580, 602);
+
+select * from custom_field_display where id in (602);
+
+select * from custom_field where id in (579, 580, 280);
