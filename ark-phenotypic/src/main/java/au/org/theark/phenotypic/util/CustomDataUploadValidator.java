@@ -481,7 +481,7 @@ public class CustomDataUploadValidator {
 								else
 								{
 									//log.info("customField = " + customField==null?"null":customField.getName());
-									if(!validateFieldData(customField, theDataAsString, subjectUID, dataValidationMessages)){
+									if(!validateFieldData(customField, theDataAsString, subjectUID, dataValidationMessages, cfd.getAllowMultiselect())){
 										errorCells.add(new ArkGridCell(csvReader.getIndex(cfd.getCustomField().getName()), row));
 									}								
 								}
@@ -698,44 +698,64 @@ public class CustomDataUploadValidator {
 
 	/**
 	 * Returns true if the field data value is within the discrete range as defined in the data dictionary
+	 * @param isMultiSelect 
 	 * 
 	 * @param customfield
 	 * @return boolean
 	 */
-	public static boolean isInEncodedValues(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages) {
+	public static boolean isInEncodedValues(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages, boolean isMultiSelect) {
 		boolean inEncodedValues = true;
 		
 		if(customField.getMissingValue()!=null && value!=null && value.trim().equalsIgnoreCase(customField.getMissingValue().trim())) {
 			return inEncodedValues;
 		}
 
-		// Validate if encoded values is defined, and not a DATE fieldType
+		// Validate if encoded values is definedisInEncodedValues, and not a DATE fieldType
 		if (customField.getEncodedValues() != null 
 				&& !customField.getEncodedValues().isEmpty() 
 				&& !customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+
+			List<String> allMyValues = new ArrayList<String>();
 			
 			try {
-				StringTokenizer stringTokenizer = new StringTokenizer(customField.getEncodedValues(), Constants.ENCODED_VALUES_TOKEN);
-
-				// Iterate through all discrete defined values and compare to field data value
-				while (stringTokenizer.hasMoreTokens()) {
-					String encodedValueToken = stringTokenizer.nextToken();
-					StringTokenizer encodedValueSeparator = new StringTokenizer(encodedValueToken, Constants.ENCODED_VALUES_SEPARATOR);
-					String encodedValue = encodedValueSeparator.nextToken().trim();
-
-					if (encodedValue.equalsIgnoreCase(value)) {
-						inEncodedValues = true;
-						break;
+				if(isMultiSelect){
+					StringTokenizer stringTokenizer = new StringTokenizer(customField.getEncodedValues(), Constants.ENCODED_VALUES_FROM_TELEFORMS_TOKEN_SPACE);
+					
+					// Iterate through all discrete defined values and compare to field data value
+					while (stringTokenizer.hasMoreTokens()) {
+						String encodedValueToken = stringTokenizer.nextToken();
+	
+						log.info("envoded:" + encodedValueToken);
+						allMyValues.add(encodedValueToken);
 					}
-					else {
-						inEncodedValues = false;
+
+				}
+				else{
+					allMyValues.add(value);
+				}
+				
+				for(String currentValue : allMyValues){
+					StringTokenizer stringTokenizer = new StringTokenizer(customField.getEncodedValues(), Constants.ENCODED_VALUES_TOKEN);
+	
+					// Iterate through all discrete defined values and compare to field data value
+					while (stringTokenizer.hasMoreTokens()) {
+						String encodedValueToken = stringTokenizer.nextToken();
+						StringTokenizer encodedValueSeparator = new StringTokenizer(encodedValueToken, Constants.ENCODED_VALUES_SEPARATOR);
+						String encodedValue = encodedValueSeparator.nextToken().trim();
+	
+						if (encodedValue.equalsIgnoreCase(currentValue)) {
+							inEncodedValues = true;
+							break;
+						}
+						else {
+							inEncodedValues = false;
+						}
+					}
+	
+					if (!inEncodedValues) {
+						errorMessages.add(fieldDataNotInEncodedValues(customField, value, subjectUID, isMultiSelect));
 					}
 				}
-
-				if (!inEncodedValues) {
-					errorMessages.add(fieldDataNotInEncodedValues(customField, value, subjectUID));
-				}
-
 			}
 			catch (NullPointerException npe) {
 				log.error("Field data null format exception " + npe.getMessage());
@@ -751,9 +771,10 @@ public class CustomDataUploadValidator {
 	 * 
 	 * @param customField
 	 * @param errorMessages
+	 * @param isMultiSelect 
 	 * @return boolean
 	 */
-	public static boolean validateFieldData(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages) {
+	public static boolean validateFieldData(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages, boolean isMultiSelect) {
 		boolean isValid = true;
 		boolean isValidFieldData = true;
 		boolean isValidEncodedValues = true;
@@ -761,7 +782,7 @@ public class CustomDataUploadValidator {
 
 		isValidFieldData = isValidFieldData(customField, value, subjectUID, errorMessages);
 		//log.info("isValidFieldData " + isValidFieldData );
-		isValidEncodedValues = isInEncodedValues(customField,value, subjectUID, errorMessages);
+		isValidEncodedValues = isInEncodedValues(customField,value, subjectUID, errorMessages, isMultiSelect);
 		//log.info("isValidEncodedValues " + isValidEncodedValues );
 		isValidRange = isInValidRange(customField, value, subjectUID, errorMessages);
 		//log.info("isInValidRange " + isValidRange );
@@ -832,10 +853,11 @@ public class CustomDataUploadValidator {
 	 * Returns field not within the defined encoded values error message
 	 * TODO: Remove after change to new tables
 	 * @param field
+	 * @param isMultiSelect 
 	 * @param fieldData
 	 * @return String
 	 */
-	public static String fieldDataNotInEncodedValues(CustomField field, String value, String subjectUID) {
+	public static String fieldDataNotInEncodedValues(CustomField field, String value, String subjectUID, boolean isMultiSelect) {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
 		stringBuffer.append(subjectUID);
@@ -844,7 +866,7 @@ public class CustomDataUploadValidator {
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" value ");
 		stringBuffer.append(value);
-		stringBuffer.append(" is not in the encoded values: ");
+		stringBuffer.append(isMultiSelect?" has value(s) not in the expected encoded values":" is not in the expected encoded values: ");
 		stringBuffer.append(field.getEncodedValues().replace('\n', ' '));
 		return (stringBuffer.toString());
 	}
