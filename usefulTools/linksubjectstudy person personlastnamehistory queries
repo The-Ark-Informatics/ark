@@ -56,3 +56,14 @@ select * from custom_field_display where custom_field_id in (280, 580, 602);
 select * from custom_field_display where id in (602);
 
 select * from custom_field where id in (579, 580, 280);
+
+select * from custom_field_group where name like 'PHENO_%'; -- '38', 'PHENO_multi', NULL, '83', '1', '14'
+
+select * from custom_field_display cfd, custom_field cf where cfd.custom_field_group_id in (38)
+and cfd.custom_field_id = cf.id;
+
+select * from pheno.pheno_data where id > 846000 and text_data_value is not null;
+
+select * from pheno.pheno_collection where id > 10000 ; -- '10121', 'pheno_multi_right_Field', '523683', '5', '2012-09-04 12:51:13', '38', NULL, NULL, NULL
+
+select * from pheno.pheno_data where pheno_collection_id >= 10121;
