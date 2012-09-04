@@ -698,6 +698,8 @@ public interface IArkCommonService<T> {
 	
 	public List<String> getAllSubjectUIDs(Study study);
 
+	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup);
+	
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction);
 
 	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List<String> subjectUIDsToBeIncluded);

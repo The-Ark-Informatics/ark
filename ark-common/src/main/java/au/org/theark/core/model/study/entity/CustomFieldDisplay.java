@@ -56,7 +56,7 @@ public class CustomFieldDisplay implements Serializable {
 	private CustomFieldGroup customFieldGroup;
 	private Boolean required;
 	private String requiredMessage;
-	private Boolean allowMultiselect;
+	private Boolean allowMultiselect = Boolean.FALSE;
 	private Long sequence;
 	private Set<SubjectCustomFieldData> subjectCustomFieldData = new HashSet<SubjectCustomFieldData>();
 	private Set<BioCollectionCustomFieldData> bioCollectionCustomFieldData = new HashSet<BioCollectionCustomFieldData>();
@@ -64,7 +64,7 @@ public class CustomFieldDisplay implements Serializable {
 	private Set<PhenoData> phenoData = new HashSet<PhenoData>();
 
 	public CustomFieldDisplay() {
-
+//		this.allowMultiselect = Boolean.FALSE;
 	}
 
 	@Id
