@@ -1175,6 +1175,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return new ArrayList<String>();//maybe exception actually good here
 	}
 	
+	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup){
+			return studyDao.getCustomFieldDisplaysIn(fieldNameCollection, study, arkFunction, customFieldGroup);
+	}
+
+	
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction){
 			return studyDao.getCustomFieldDisplaysIn(fieldNameCollection, study, arkFunction);
 	}

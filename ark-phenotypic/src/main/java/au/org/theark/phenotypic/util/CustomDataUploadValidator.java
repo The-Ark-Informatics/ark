@@ -246,7 +246,7 @@ public class CustomDataUploadValidator {
 	 *           is the UploadVO of the file
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
+	public Collection<String> validateCustomFieldFileData(UploadVO uploadVo, List<String> uidsToUpdateReference, CustomFieldGroup customFieldGroup) {
 		java.util.Collection<String> validationMessages = null;
 		try {
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
@@ -268,7 +268,7 @@ public class CustomDataUploadValidator {
 				}
 			}
 
-			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
+			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference, customFieldGroup);
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -276,13 +276,13 @@ public class CustomDataUploadValidator {
 		return validationMessages;
 	}
 
-	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
+	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference, CustomFieldGroup customFieldGroup) {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
 			//TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
 			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though, and if it bloats with more fields could be part of batch too
-			validationMessages = validateMatrixCustomFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateReference);
+			validationMessages = validateMatrixCustomFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateReference, customFieldGroup);
 		}
 		catch (FileFormatException ffe) {
 			log.error(au.org.theark.phenotypic.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
@@ -418,7 +418,8 @@ public class CustomDataUploadValidator {
 	 *            general ARK Exception
 	 * @return a collection of data validation messages
 	 */
-	public java.util.Collection<String> validateMatrixCustomFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate, List<String> uidsToUpdateReference) throws FileFormatException, ArkSystemException {
+	public java.util.Collection<String> validateMatrixCustomFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate, 
+			List<String> uidsToUpdateReference, CustomFieldGroup customFieldGroup) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		row = 1;
@@ -437,9 +438,9 @@ public class CustomDataUploadValidator {
 			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
 
 			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
-			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 																							//remove if not subjectuid, enforce fetch of customField to save another query each
-			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
+			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction, customFieldGroup);
 			
 			/* 
 			 * other validation for pheno?
@@ -704,10 +705,9 @@ public class CustomDataUploadValidator {
 	 * @return boolean
 	 */
 	public static boolean isInEncodedValues(CustomField customField, String value, String subjectUID, java.util.Collection<String> errorMessages, boolean isMultiSelect) {
-		boolean inEncodedValues = true;
-		
+		boolean allInEncodedValues = true;
 		if(customField.getMissingValue()!=null && value!=null && value.trim().equalsIgnoreCase(customField.getMissingValue().trim())) {
-			return inEncodedValues;
+			return true;
 		}
 
 		// Validate if encoded values is definedisInEncodedValues, and not a DATE fieldType
@@ -719,7 +719,7 @@ public class CustomDataUploadValidator {
 			
 			try {
 				if(isMultiSelect){
-					StringTokenizer stringTokenizer = new StringTokenizer(customField.getEncodedValues(), Constants.ENCODED_VALUES_FROM_TELEFORMS_TOKEN_SPACE);
+					StringTokenizer stringTokenizer = new StringTokenizer(value, Constants.ENCODED_VALUES_FROM_TELEFORMS_TOKEN_SPACE);
 					
 					// Iterate through all discrete defined values and compare to field data value
 					while (stringTokenizer.hasMoreTokens()) {
@@ -735,6 +735,8 @@ public class CustomDataUploadValidator {
 				}
 				
 				for(String currentValue : allMyValues){
+					boolean inEncodedValues = false;
+					
 					StringTokenizer stringTokenizer = new StringTokenizer(customField.getEncodedValues(), Constants.ENCODED_VALUES_TOKEN);
 	
 					// Iterate through all discrete defined values and compare to field data value
@@ -747,23 +749,23 @@ public class CustomDataUploadValidator {
 							inEncodedValues = true;
 							break;
 						}
-						else {
-							inEncodedValues = false;
-						}
 					}
-	
+
 					if (!inEncodedValues) {
 						errorMessages.add(fieldDataNotInEncodedValues(customField, value, subjectUID, isMultiSelect));
+						allInEncodedValues = false;
 					}
+	
 				}
 			}
 			catch (NullPointerException npe) {
 				log.error("Field data null format exception " + npe.getMessage());
-				inEncodedValues = false;
+				errorMessages.add("Unexpected data issue while validating an encoded value.  Please contact your System Administrator");
+				return false;
 			}
 
 		}
-		return inEncodedValues;
+		return allInEncodedValues;
 	}
 
 	/**
