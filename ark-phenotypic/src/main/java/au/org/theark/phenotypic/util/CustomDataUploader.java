@@ -132,7 +132,7 @@ public class CustomDataUploader {
 			
 			ArkFunction phenoCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);//");
 
-			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, phenoCustomFieldArkFunction);
+			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, phenoCustomFieldArkFunction, customFieldGroup);
 		
 			//Paul has requested - in pheno we only insert List<PhenoData> dataThatWeHave = iArkCommonService.getCustomFieldDataFor(cfdsThatWeNeed, allSubjectWhichWillBeUpdated);
 			//read one line which contains potentially many custom fields
@@ -175,7 +175,7 @@ public class CustomDataUploader {
 						PhenoData dataToInsert = new PhenoData();
 						dataToInsert.setCustomFieldDisplay(cfd);
 						//as much as i disagree...pheno data isn't tied to subject....pheno collection is dataToInsert.setLinkSubjectStudy(subject);
-						setValue(customField, dataToInsert, theDataAsString);	
+						setValue(customField, cfd,  dataToInsert, theDataAsString);	
 						phenoDataToInsertForThisPhenoCollection.add(dataToInsert);
 						insertFieldsCount++;
 					}
@@ -243,7 +243,7 @@ public class CustomDataUploader {
 		return uploadReport;
 	}
 
-	private PhenoData setValue(CustomField customField, PhenoData data, String theDataAsString){
+	private PhenoData setValue(CustomField customField, CustomFieldDisplay customFieldDisplay, PhenoData data, String theDataAsString){
 //		log.warn("cf=" + customField + "\ndata=" + data+ "dataAsString=" + theDataAsString);
 		
 		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
@@ -261,6 +261,12 @@ public class CustomDataUploader {
 			}
 		}
 		else if(customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+			if(customField.getEncodedValues()!=null && !customField.getEncodedValues().isEmpty() 
+					&& customFieldDisplay.getAllowMultiselect()){
+				if(theDataAsString != null){
+					theDataAsString = theDataAsString.replaceAll(" ", ";");
+				}
+			}
 			data.setTextDataValue(theDataAsString);
 		}
 		return data;

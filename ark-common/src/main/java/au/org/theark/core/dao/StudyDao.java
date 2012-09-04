@@ -71,6 +71,7 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -1260,9 +1261,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		return query.list();
 	}
+
 	
 	/**
-	 * based on sql concept of;
+	 * based on sql concept of;4
 	 * select id from custom_field_display 
 		where custom_field_id in 
 		(SELECT id FROM custom_field 
@@ -1275,7 +1277,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List<String> fieldNameCollection, Study study, ArkFunction arkFunction){
-		/*log.warn("fieldnamecollection size=" + fieldNameCollection.size() +
+		/*log.warn("fieldnamecollection size=" + fieldNameCollection.size() +4
 						"\nstudy=" + study.getName() + " with id=" + study.getId() + 
 						"\narkFunctionid=" + arkFunction.getId());*/
 		
@@ -1299,6 +1301,50 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//query.setParameterList("names", fieldNameCollection);
 			query.setParameterList("names", lowerCaseNames);
 			query.setParameter("arkFunction", arkFunction);
+			return query.list();
+		}
+	}
+
+	/**
+	 * based on sql concept of;
+	 * select id from custom_field_display 
+		where custom_field_id in 
+		(SELECT id FROM custom_field 
+		where name='AGE'
+		and study_id = 1
+		and ark_function_id = 5)
+	 * @param fieldNameCollection
+	 * @param study
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List<String> fieldNameCollection, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup){
+		/*log.warn("fieldnamecollection size=" + fieldNameCollection.size() +
+						"\nstudy=" + study.getName() + " with id=" + study.getId() + 
+						"\narkFunctionid=" + arkFunction.getId());*/
+		
+		if(fieldNameCollection == null || fieldNameCollection.isEmpty()){
+			return new ArrayList<CustomFieldDisplay>();
+		}
+		else{
+			List<String> lowerCaseNames = new ArrayList<String>();
+			for(String name : fieldNameCollection){
+				lowerCaseNames.add(name.toLowerCase());
+			}
+			String queryString = "select cfd " +
+			"from CustomFieldDisplay cfd " +
+			"where cfd.customFieldGroup =:customFieldGroup " +
+			"and  customField.id in ( " +
+				" SELECT id from CustomField cf " +
+				" where cf.study =:study " +
+				" and lower(cf.name) in (:names) " +
+				" and cf.arkFunction =:arkFunction )";
+			Query query =  getSession().createQuery(queryString);
+			query.setParameter("study", study);
+			//query.setParameterList("names", fieldNameCollection);
+			query.setParameterList("names", lowerCaseNames);
+			query.setParameter("arkFunction", arkFunction);
+			query.setParameter("customFieldGroup", customFieldGroup);
 			return query.list();
 		}
 	}

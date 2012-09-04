@@ -137,7 +137,7 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Custom Data Sets")){
 				CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService);
-				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);
+				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate, containerForm.getModelObject().getCustomFieldGroup());
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				//TODO consider if we want alternative way to do this - and maybe a superclass of uploadvalidator which draws out commonalities
 				insertRows = customFieldUploadValidator.getInsertRows();
