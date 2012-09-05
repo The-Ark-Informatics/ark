@@ -968,7 +968,7 @@ public class DataUploader {
 					
 					if(theDataAsString!=null && !theDataAsString.isEmpty()){
 						if(dataInDB != null){
-							dataInDB = setValue(customField, dataInDB, theDataAsString);	
+							dataInDB = setValue(customField, cfd, dataInDB, theDataAsString);	
 							//log.info("have set value to entity");
 							customFieldsToUpdate.add(dataInDB);
 							//log.info("added entity to list");
@@ -978,7 +978,7 @@ public class DataUploader {
 							SubjectCustomFieldData dataToInsert = new SubjectCustomFieldData();
 							dataToInsert.setCustomFieldDisplay(cfd);
 							dataToInsert.setLinkSubjectStudy(subject);
-							setValue(customField, dataToInsert, theDataAsString);	
+							setValue(customField, cfd, dataToInsert, theDataAsString);	
 							customFieldsToInsert.add(dataToInsert);
 							insertFieldsCount++;
 						}
@@ -1050,7 +1050,7 @@ public class DataUploader {
 		return uploadReport;
 	}
 
-	private SubjectCustomFieldData setValue(CustomField customField, SubjectCustomFieldData data, String theDataAsString){
+	private SubjectCustomFieldData setValue(CustomField customField, CustomFieldDisplay customFieldDisplay, SubjectCustomFieldData data, String theDataAsString){
 //		log.warn("cf=" + customField + "\ndata=" + data+ "dataAsString=" + theDataAsString);
 		
 		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
@@ -1068,6 +1068,12 @@ public class DataUploader {
 			}
 		}
 		else if(customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+			if(customField.getEncodedValues()!=null && !customField.getEncodedValues().isEmpty() 
+					&& customFieldDisplay.getAllowMultiselect()){
+				if(theDataAsString != null){
+					theDataAsString = theDataAsString.replaceAll(" ", ";");
+				}
+			}
 			data.setTextDataValue(theDataAsString);
 		}
 		return data;
