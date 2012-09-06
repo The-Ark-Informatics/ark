@@ -113,6 +113,11 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		
 		billableItemQuantityTxtField.add(new AjaxFormComponentUpdatingBehavior("onkeyup"){
 			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				BillableItem billableItem = getFormModelObject().getBillableItem();
@@ -254,14 +259,23 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		invoicePreferences.put(Constants.N, Constants.NO);
 
 		IModel<Object> dropDownModel = new Model() {
-		  public Serializable getObject() {
+		  /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+		public Serializable getObject() {
 		    return new ArrayList(invoicePreferences.keySet());
 		  }
 		};
 
 		billableItemInvoiceStatuses = new DropDownChoice(Constants.BILLABLE_ITEM_INVOICE, dropDownModel, new IChoiceRenderer<Object>() 
 		{
-		  public String getDisplayValue(Object object) {
+		  /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+		public String getDisplayValue(Object object) {
 		    return invoicePreferences.get(object);
 		  }
 		  public String getIdValue(Object object, int index) {
