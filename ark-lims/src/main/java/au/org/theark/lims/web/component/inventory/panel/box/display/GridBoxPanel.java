@@ -83,11 +83,11 @@ import au.org.theark.lims.web.Constants;
  */
 public class GridBoxPanel extends Panel {
 
-	private static final long					serialVersionUID		= -4769477913855966069L;
-	private static final Logger				log						= LoggerFactory.getLogger(GridBoxPanel.class);
+	private static final long						serialVersionUID		= -4769477913855966069L;
+	private static final Logger						log						= LoggerFactory.getLogger(GridBoxPanel.class);
 	
 	private byte[]									workBookAsBytes;
-	private WebMarkupContainer					gridBoxKeyContainer	= new WebMarkupContainer("gridBoxKeyContainer");
+	private WebMarkupContainer						gridBoxKeyContainer	= new WebMarkupContainer("gridBoxKeyContainer");
 	public String									exportXlsFileName;
 
 	private static final PackageResourceReference	EMPTY_CELL_ICON		= new PackageResourceReference(GridBoxPanel.class, "emptyCell.gif");
@@ -159,11 +159,18 @@ public class GridBoxPanel extends Panel {
 		
 		// Handle for no cells in InvCell table!
 		int cells = limsVo.getInvBox().getNoofcol() * limsVo.getInvBox().getNoofrow();
+		if(invCellList == null || invCellList.isEmpty()){
+			//refresh from db?
+			invCellList = iInventoryService.getCellAndBiospecimenListByBox(limsVo.getInvBox());
+		}
 		if (invCellList.size() != cells) {
+			//we were getting here every time we created a new cell because list was always empty...i "fixed" this by refreshing the cells from the db
+			// Chris, should I also set them in the lims VO...ie; via the limsVo.getinvbox.setinvCells(freshinvcellListFromDB) 
 			log.error("InvCell table is missing data for invBox.id " + limsVo.getInvBox().getId());
 			this.error("InvCell table is missing data for invBox.id " + limsVo.getInvBox().getId());
-			this.setVisible(false);
+			this.setVisible(false); 
 			addOrReplace(createHeadings(new InvBox()));
+			//This is pretty much 100% guaranteed to cause an NPE in the createMainGrid method...as it tried to do "stuff" with the new invbox and its 'null things'
 			addOrReplace(createMainGrid(new InvBox(), invCellList));
 		}
 		else {
