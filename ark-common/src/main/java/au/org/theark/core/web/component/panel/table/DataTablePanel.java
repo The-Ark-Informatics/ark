@@ -99,9 +99,7 @@ public class DataTablePanel extends Panel {
 	private void initBody() {
 		// Using a nested ListViews
 		table.add(new ListView<List<String>>("data", data) {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			@Override

@@ -133,10 +133,6 @@ public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 		this.researcherList=iWorkTrackingService.searchResearcher(researcher);
 		
 		IChoiceRenderer<Researcher> customChoiceRenderer = new IChoiceRenderer<Researcher>() {
-
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			public Object getDisplayValue(Researcher researcher) {
