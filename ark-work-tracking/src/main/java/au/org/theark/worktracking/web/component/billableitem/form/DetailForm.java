@@ -96,9 +96,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		billableItemIdTxtField.setEnabled(false);
 		billableItemDescriptionTxtField=new TextField<String>(Constants.BILLABLE_ITEM_DESCRIPTION);
 		billableItemQuantityTxtField=new TextField<String>(Constants.BILLABLE_ITEM_QUANTITY){
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -112,10 +109,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		};  
 		
 		billableItemQuantityTxtField.add(new AjaxFormComponentUpdatingBehavior("onkeyup"){
-			
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -152,9 +145,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		
 		billableItemItemCostTxtField =  new TextField<String>(Constants.BILLABLE_ITEM_ITEM_COST);
 		billableItemItemCostTxtField.add(new AjaxFormComponentUpdatingBehavior("onkeyup"){
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -177,9 +167,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		
 		billableItemGstAllowCheckBox = new CheckBox(Constants.BILLABLE_ITEM_GST_ALLOW);
 		billableItemGstAllowCheckBox.add(new AjaxFormComponentUpdatingBehavior("onChange"){
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -202,9 +189,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		
 		
 		billableItemGstTxtField = new TextField<String>(Constants.BILLABLE_ITEM_GST){
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -218,9 +202,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		};
 		
 		billableItemGstTxtField.add(new AjaxFormComponentUpdatingBehavior("onkeyup"){
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -259,9 +240,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		invoicePreferences.put(Constants.N, Constants.NO);
 
 		IModel<Object> dropDownModel = new Model() {
-		  /**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 		public Serializable getObject() {
@@ -271,9 +249,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 
 		billableItemInvoiceStatuses = new DropDownChoice(Constants.BILLABLE_ITEM_INVOICE, dropDownModel, new IChoiceRenderer<Object>() 
 		{
-		  /**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 		public String getDisplayValue(Object object) {
 		    return invoicePreferences.get(object);
@@ -415,9 +390,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		});	
 		
 		billableItemQuantityTxtField.add(new PatternValidator(Constants.TWO_DECIMAL_PATTERN){
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override

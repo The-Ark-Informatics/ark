@@ -386,10 +386,9 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 			}
 
 			/**
-			 * Determines whether row data is an insert or an update and amends the css of the
-			 * <tr>
+			 * Determines whether row data is an insert or an update and amends the css of the 
 			 * accordingly
-			 * 
+			 * <tr>
 			 * @param cell
 			 */
 			private void setRowCssStyle(Integer row, LoopItem item) {

@@ -137,9 +137,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		customFieldGroupDdc.setChoiceRenderer(renderer);
 		
 		customFieldGroupDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-         /**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			protected void onUpdate(AjaxRequestTarget target) {

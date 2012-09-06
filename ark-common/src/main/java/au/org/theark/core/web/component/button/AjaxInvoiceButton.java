@@ -26,11 +26,7 @@ public abstract class AjaxInvoiceButton extends IndicatingAjaxButton{
 	@Override
 	protected IAjaxCallDecorator getAjaxCallDecorator() {
 		return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
-			
 
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = -7982490494699252198L;
 
 			@Override
