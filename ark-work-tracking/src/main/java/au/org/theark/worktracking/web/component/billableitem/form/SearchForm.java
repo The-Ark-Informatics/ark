@@ -124,10 +124,8 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		initDataPicker(billableItemCommenceDateDp);
 		
 		
-		invoiceButton=new AjaxInvoiceButton(Constants.INVOICE, new StringResourceModel("confirmInvoice", this, null), new StringResourceModel(Constants.INVOICE, this, null)) {			
-			/**
-			 * 
-			 */
+		invoiceButton=new AjaxInvoiceButton(Constants.INVOICE, new StringResourceModel("confirmInvoice", this, null), new StringResourceModel(Constants.INVOICE, this, null)) {	
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -186,9 +184,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		invoicePreferences.put(Constants.N, Constants.NO);
 
 		IModel<Object> dropDownModel = new Model() {
-		  /**
-			 * 
-			 */
+
 			private static final long serialVersionUID = 1L;
 
 		public Serializable getObject() {
@@ -198,9 +194,6 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 
 		invoiceStatuses = new DropDownChoice(Constants.BILLABLE_ITEM_INVOICE, dropDownModel, new IChoiceRenderer<Object>() 
 		{
-		  /**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 		public String getDisplayValue(Object object) {
 		    return invoicePreferences.get(object);
@@ -221,9 +214,6 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		
 		IChoiceRenderer<Researcher> customChoiceRenderer = new IChoiceRenderer<Researcher>() {
 
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			public Object getDisplayValue(Researcher researcher) {

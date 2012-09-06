@@ -72,9 +72,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemTypeVo> {
 		billableItemTypeItemNameTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_ITEM_NAME);       
 		billableItemTypeQuantityPerUnitTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_QUANTITY_PER_UNIT);
 		billableItemTypeUnitPriceTxtField=new TextField<String>(Constants.BILLABLE_ITEM_TYPE_UNIT_PRICE){
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override

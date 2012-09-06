@@ -387,9 +387,7 @@ public class GridBoxPanel extends Panel {
 	 */
 	protected Link<String> buildXLSDownloadLink(final List<InvCell> invCellList) {
 		Link<String> link = new Link<String>("downloadGridBoxDataLink") {
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 
 			public void onClick() {

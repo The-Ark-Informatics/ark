@@ -92,10 +92,6 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 		researcher.setStudyId(studyId);
 		this.researcherList=iWorkTrackingService.searchResearcher(researcher);
 		IChoiceRenderer customChoiceRenderer = new IChoiceRenderer<Researcher>() {
-
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			public Object getDisplayValue(Researcher researcher) {

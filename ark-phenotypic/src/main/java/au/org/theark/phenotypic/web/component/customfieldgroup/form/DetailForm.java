@@ -160,9 +160,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 		
 		fileUploadField = new FileUploadField("customFieldFileUploadField");
 		fileUploadButton = new Button("uploadCustomFieldField"){
-			/**
-			 * 
-			 */
+
 			private static final long	serialVersionUID	= 1L;
 			@Override
 			public void onSubmit() {
