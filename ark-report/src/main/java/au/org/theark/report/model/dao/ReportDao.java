@@ -19,8 +19,6 @@
 package au.org.theark.report.model.dao;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -695,7 +693,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		results=criteria.list();
 		return results;
 	}
-	
+	/*
 	private Date toStartOfYear(int year) {
 	    Calendar calendar = Calendar.getInstance();
 	    calendar.set(Calendar.YEAR, year);
@@ -711,6 +709,6 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	    calendar.set(Calendar.DAY_OF_MONTH,31);
 	    return calendar.getTime();
 	}
-
+*/
 	
 }
