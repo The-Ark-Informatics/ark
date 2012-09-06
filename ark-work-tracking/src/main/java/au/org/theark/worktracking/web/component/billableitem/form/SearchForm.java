@@ -125,6 +125,11 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		
 		
 		invoiceButton=new AjaxInvoiceButton(Constants.INVOICE, new StringResourceModel("confirmInvoice", this, null), new StringResourceModel(Constants.INVOICE, this, null)) {			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				List<BillableItem> itemList = getFormModelObject().getBillableItemList();
@@ -181,14 +186,23 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		invoicePreferences.put(Constants.N, Constants.NO);
 
 		IModel<Object> dropDownModel = new Model() {
-		  public Serializable getObject() {
+		  /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+		public Serializable getObject() {
 		    return new ArrayList(invoicePreferences.keySet());
 		  }
 		};
 
 		invoiceStatuses = new DropDownChoice(Constants.BILLABLE_ITEM_INVOICE, dropDownModel, new IChoiceRenderer<Object>() 
 		{
-		  public String getDisplayValue(Object object) {
+		  /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+		public String getDisplayValue(Object object) {
 		    return invoicePreferences.get(object);
 		  }
 		  public String getIdValue(Object object, int index) {
