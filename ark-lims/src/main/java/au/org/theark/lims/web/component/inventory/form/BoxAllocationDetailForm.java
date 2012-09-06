@@ -70,7 +70,7 @@ public class BoxAllocationDetailForm extends AbstractInventoryDetailForm<LimsVO>
 	private TextField<String>				invBoxNameTxtFld;
 	private TextField<String>				biospecimenUidTxtFld;
 	private GridBoxPanel						gridBoxPanel;
-	private AbstractDetailModalWindow	modalWindow;
+	private AbstractDetailModalWindow		modalWindow;
 
 	/**
 	 * 
