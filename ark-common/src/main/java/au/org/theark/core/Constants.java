@@ -426,7 +426,7 @@ public class Constants {
 					"The box of the bispecimen location",
 					"The row of the bispecimen location",
 					"The column of the bispecimen location" },
-			{ "MANDATORY", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes",
+			{ "MANDATORY", "Mandatory IF study not set to autogenerate id's for biospecimens", "Mandatory IF study not set to autogenerate id's for biocollections", "Yes", "Yes", "Yes", "Yes", "Yes",
 					"No", "No", "No", "No", "No", "No" },
 			{
 					"VALID VALUES",
