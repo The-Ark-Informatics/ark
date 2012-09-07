@@ -270,7 +270,12 @@ public class Constants {
 	public static final String		QUESTIONNAIRE_ID											= "id";
 	public static final String		QUESTIONNAIRE_NAME										= "name";
 
-	public static final String[]	PHENO_TEMPLATE_CELLS	= {"SUBJECT_UID","REQUIRED_FIELD_1","ETC"};
+//	public static final String[]	PHENO_TEMPLATE_CELLS	= {"SUBJECT_UID","REQUIRED_FIELD_1","ETC"};
+	public static final String[][]	PHENO_TEMPLATE_CELLS = {
+			{ "", "SUBJECTUID", "RECORD_DATE_TIME", "YOUR_FIRST_CUSTOM_FIELD_NAME_HERE", "YOUR_SECOND_CUSTOM_FIELD_NAME_HERE", "AND SO ON"},
+			{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "The date this record was taken DD/MM/YYYY format", "Value for first custom field","Value for second field", "AND SO ON" },
+			{ "NOTE: Removed this first column, and replace row 2 with your actual custom field names (the headers only appear once, row 3 will have your next subject and his/her values", "", "" , "", "" , "" } 
+			};
 
 	public static final String		PHENOCOLLECTION_STATUS_IN_PROGRESS						= "In Progress";//TODO check
 
