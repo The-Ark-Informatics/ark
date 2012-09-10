@@ -1,4 +1,4 @@
-
+USE study;
             insert into country_state (type, code, name, country_id)
             values("Parish"
             ,"AD-07"

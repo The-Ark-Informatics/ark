@@ -1,3 +1,4 @@
+USE study;
 CREATE  TABLE `study`.`upload_type` (
   `ID` INT NOT NULL ,
   `NAME` VARCHAR(45) NULL ,
@@ -15,4 +16,3 @@ ALTER TABLE `study`.`upload`
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
 , ADD INDEX `fk_upload_upload_type` (`UPLOAD_TYPE_ID` ASC) ;
-
