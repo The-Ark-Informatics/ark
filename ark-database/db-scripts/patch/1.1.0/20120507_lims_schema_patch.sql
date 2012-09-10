@@ -1,3 +1,4 @@
+USE lims;
 SET FOREIGN_KEY_CHECKS=0;
 ALTER TABLE `biocollection` MODIFY COLUMN `DIAG_CATEGORY`  text CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL AFTER `SURGERYDATE`;
 ALTER TABLE `biocollection` DROP FOREIGN KEY `fk_collection_study`;
