@@ -70,6 +70,8 @@ public class Study implements java.io.Serializable {
 
 	// SubjectUID autogeneration parameters
 	private Boolean autoGenerateSubjectUid;
+	private Boolean autoGenerateBiospecimenUid;
+	private Boolean autoGenerateBiocollectionUid;
 	private Long subjectUidStart;
 	private String subjectUidPrefix;
 	private SubjectUidToken subjectUidToken;
@@ -474,5 +476,25 @@ public class Study implements java.io.Serializable {
 			return false;
 		return true;
 	}
+
+	@Column(name = "AUTO_GENERATE_BIOSPECIMENUID", precision = 1, scale = 0)
+	public Boolean getAutoGenerateBiospecimenUid() {
+		return autoGenerateBiospecimenUid;
+	}
+
+	public void setAutoGenerateBiospecimenUid(Boolean autoGenerateBiospecimenUid) {
+		this.autoGenerateBiospecimenUid = autoGenerateBiospecimenUid;
+	}
+
+	@Column(name = "AUTO_GENERATE_BIOCOLLECTIONUID", precision = 1, scale = 0)
+	public Boolean getAutoGenerateBiocollectionUid() {
+		return autoGenerateBiocollectionUid;
+	}
+	
+	public void setAutoGenerateBiocollectionUid(
+			Boolean autoGenerateBiocollectionUid) {
+		this.autoGenerateBiocollectionUid = autoGenerateBiocollectionUid;
+	}
+
 
 }
