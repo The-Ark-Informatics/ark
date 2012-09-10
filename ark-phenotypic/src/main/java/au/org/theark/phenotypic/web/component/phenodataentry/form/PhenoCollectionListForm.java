@@ -109,6 +109,9 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 	}
 	
 	public void initialiseForm() {
+		// Random exceptions occuring, Wicket suggests to implicitly set this, as it tries to auto-detect, but "some situations it cannot" 
+		setMultiPart(true);
+		
 		modalContentPanel = new EmptyPanel("content");
 //		ArkFunction associatedPrimaryFn = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
 //		CompoundPropertyModel<PhenoDataCollectionVO> phenoDataCPM = new CompoundPropertyModel<PhenoDataCollectionVO>(new PhenoDataCollectionVO());
