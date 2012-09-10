@@ -64,7 +64,7 @@ public class Study implements java.io.Serializable {
 	private String ldapGroupName;
 	private Boolean autoConsent;
 	private String subStudyBiospecimenPrefix;
-	// TODO may want to consider byte[]
+	// TODO may want to consider byte[] + @Lob annotation
 	private Blob studyLogoBlob;
 	private String filename;
 
