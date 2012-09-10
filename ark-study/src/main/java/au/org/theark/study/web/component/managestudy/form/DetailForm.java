@@ -133,6 +133,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private DateTextField									dateOfApplicationDp;
 	private DropDownChoice<StudyStatus>					studyStatusDpChoices;
 	private CheckBox											autoGenSubIdChkBox;
+	private CheckBox											autoGenBiospecimenIdChkBox;
+	private CheckBox											autoGenBiocollectionIdChkBox;
 	private CheckBox											autoConsentChkBox;
 
 	private Palette<ArkModule>								arkModulePalette;
@@ -145,6 +147,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	// Summary Details
 	private Label												studySummaryLabel;
 	private WebMarkupContainer								autoSubjectUidContainer;
+	private WebMarkupContainer								autoBiospecimenUidContainer;
+	private WebMarkupContainer								autoBiocollectionUidContainer;
 	private WebMarkupContainer								subjectUidContainer;
 
 	private String												subjectUidExampleTxt			= "";
@@ -234,6 +238,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		autoSubjectUidContainer = new WebMarkupContainer("autoSubjectUidContainer");
 		autoSubjectUidContainer.setOutputMarkupPlaceholderTag(true);
 
+		autoBiospecimenUidContainer = new WebMarkupContainer("autoBiospecimenUidContainer");
+		autoBiospecimenUidContainer.setOutputMarkupPlaceholderTag(true);
+
+		autoBiocollectionUidContainer = new WebMarkupContainer("autoBiocollectionUidContainer");
+		autoBiocollectionUidContainer.setOutputMarkupPlaceholderTag(true);
+
 		// Create new DateTextField and assign date format
 		dateOfApplicationDp = new DateTextField(Constants.STUDY_SEARCH_DOA, au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker datePicker = new ArkDatePicker();
@@ -245,7 +255,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 		autoGenSubIdChkBox = new CheckBox(Constants.STUDY_AUTO_GENERATE_SUBJECTUID);
 		autoGenSubIdChkBox.setVisible(true);
-
 		autoGenSubIdChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
 			private static final long	serialVersionUID	= 1L;
@@ -263,7 +272,53 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			}
 		});
 		autoGenSubIdChkBox.setOutputMarkupId(true);
+		
 
+
+		autoGenBiocollectionIdChkBox = new CheckBox(Constants.STUDY_AUTO_GENERATE_BIOCOLLECTIONUID);
+		autoGenBiocollectionIdChkBox.setVisible(true);
+		autoGenBiocollectionIdChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				// Check what was selected and then toggle
+				boolean autoGenerateBiocollectionUId = containerForm.getModelObject().getStudy().getAutoGenerateBiocollectionUid();
+				bioCollectionUidContainer.setEnabled(false);
+
+				if (autoGenerateBiocollectionUId) {
+					bioCollectionUidContainer.setEnabled(true);
+				}
+				target.add(bioCollectionUidContainer);
+			}
+		});
+		autoGenBiocollectionIdChkBox.setOutputMarkupId(true);
+
+		
+
+		autoGenBiospecimenIdChkBox = new CheckBox(Constants.STUDY_AUTO_GENERATE_BIOSPECIMENUID);
+		autoGenBiospecimenIdChkBox.setVisible(true);
+		autoGenBiospecimenIdChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				// Check what was selected and then toggle
+				boolean autoGenerateBiospecimenUId = containerForm.getModelObject().getStudy().getAutoGenerateBiospecimenUid();
+				biospecimenUidContainer.setEnabled(false);
+
+				if (autoGenerateBiospecimenUId) {
+					bioCollectionUidContainer.setEnabled(true);
+				}
+				target.add(bioCollectionUidContainer);
+			}
+		});
+		autoGenBiospecimenIdChkBox.setOutputMarkupId(true);
+
+		
+		
 		autoConsentChkBox = new CheckBox(Constants.STUDY_AUTO_CONSENT);
 		autoConsentChkBox.setVisible(true);
 
@@ -356,6 +411,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 				}
 
 				autoGenSubIdChkBox.setEnabled(false);
+				autoGenBiocollectionIdChkBox.setEnabled(false);
+				autoGenBiospecimenIdChkBox.setEnabled(false);
 				subjectUidContainer.setEnabled(false);
 				biospecimenUidContainer.setEnabled(false);
 				bioCollectionUidContainer.setEnabled(false);
@@ -366,13 +423,18 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 				// Hide Summary details on new
 				studyCrudVO.getSummaryContainer().setVisible(false);
 				target.add(studyCrudVO.getSummaryContainer());
-				
+
 				getAutoSubjectUidContainer().setEnabled(false);
+				getAutoBiocollectionUidContainer().setEnabled(false);
+				getAutoBiospecimenUidContainer().setEnabled(false);
 				getSubjectUidContainer().setEnabled(false);
-				bioCollectionUidContainer.setEnabled(false);
-				biospecimenUidContainer.setEnabled(false);
-				
+//				bioCollectionUidContainer.setEnabled(false);
+//				biospecimenUidContainer.setEnabled(false);
+
 				target.add(getAutoSubjectUidContainer());
+				target.add(getAutoBiocollectionUidContainer());
+				target.add(getAutoBiospecimenUidContainer());
+
 				target.add(getSubjectUidContainer());
 				target.add(bioCollectionUidContainer);
 				target.add(biospecimenUidContainer);
@@ -652,6 +714,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 					// Set auto-generated patterns to that of the parent study
 					study.setAutoGenerateSubjectUid(parentStudy.getAutoGenerateSubjectUid());
+					study.setAutoGenerateBiocollectionUid(parentStudy.getAutoGenerateBiocollectionUid());
+					study.setAutoGenerateBiospecimenUid(parentStudy.getAutoGenerateBiospecimenUid());
 					study.setSubjectUidPrefix(parentStudy.getSubjectUidPrefix());
 					study.setSubjectUidToken(parentStudy.getSubjectUidToken());
 					study.setSubjectUidPadChar(parentStudy.getSubjectUidPadChar());
@@ -691,6 +755,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 					}
 
 					autoGenSubIdChkBox.setEnabled(false);
+					autoGenBiocollectionIdChkBox.setEnabled(false);
+					autoGenBiospecimenIdChkBox.setEnabled(false);
 					subjectUidContainer.setEnabled(false);
 					biospecimenUidContainer.setEnabled(false);
 					bioCollectionUidContainer.setEnabled(false);
@@ -711,6 +777,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 					initBiospecimenUid();
 
 					autoGenSubIdChkBox.setEnabled(true);
+					autoGenBiocollectionIdChkBox.setEnabled(true);
+					autoGenBiospecimenIdChkBox.setEnabled(true);
 					subjectUidContainer.setEnabled(true);
 					subjectUidStartTxtFld.setEnabled(true);
 
@@ -743,6 +811,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 				// Repaint
 				target.add(autoGenSubIdChkBox);
+				target.add(autoGenBiocollectionIdChkBox);
+				target.add(autoGenBiospecimenIdChkBox);
 				target.add(subjectUidContainer);
 				target.add(subjectUidTokenDpChoices);
 				target.add(subjectUidExampleLbl);
@@ -951,7 +1021,14 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		// studyCrudVO.getDetailPanelFormContainer().add(studyDdc);
 		// AutoGenerateSubjectUID needs own container to be disabled on certain criteria
 		autoSubjectUidContainer.add(autoGenSubIdChkBox);
+		autoBiocollectionUidContainer.add(autoGenBiocollectionIdChkBox);
+		autoBiospecimenUidContainer.add(autoGenBiospecimenIdChkBox);
+		
 		studyCrudVO.getDetailPanelFormContainer().add(autoSubjectUidContainer);
+		//autoBiocollectionUidContainer.add(autoGenBiocollectionIdChkBox);
+		studyCrudVO.getDetailPanelFormContainer().add(autoBiocollectionUidContainer);
+		//autoSubjectUidContainer.add(autoGenBiospecimenIdChkBox);
+		studyCrudVO.getDetailPanelFormContainer().add(autoBiospecimenUidContainer);
 		studyCrudVO.getDetailPanelFormContainer().add(autoConsentChkBox);
 		studyCrudVO.getDetailPanelFormContainer().add(arkModulePalette);
 		studyCrudVO.getDetailPanelFormContainer().add(studyCrudVO.getStudyLogoUploadContainer());
@@ -1226,6 +1303,14 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 	public WebMarkupContainer getAutoSubjectUidContainer() {
 		return autoSubjectUidContainer;
+	}
+
+	public WebMarkupContainer getAutoBiospecimenUidContainer() {
+		return autoBiospecimenUidContainer;
+	}
+
+	public WebMarkupContainer getAutoBiocollectionUidContainer() {
+		return autoBiocollectionUidContainer;
 	}
 
 	public Label getSubjectUidExampleLbl() {

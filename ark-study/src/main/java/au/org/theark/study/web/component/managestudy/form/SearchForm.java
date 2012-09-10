@@ -240,6 +240,8 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		DetailPanel detailsPanel = (DetailPanel) wmc.get("detailPanel");
 		DetailForm detailForm = (DetailForm) detailsPanel.get("detailForm");
 		WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
+		WebMarkupContainer autoBiocollectionContainer = detailForm.getAutoBiocollectionUidContainer();
+		WebMarkupContainer autoBiospecimenContainer = detailForm.getAutoBiospecimenUidContainer();
 		WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();
 
 		// Example auto-generated SubjectUID to "AAA-0000000001" on new
@@ -249,6 +251,8 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		target.add(subjectUidExampleLbl);
 
 		autoSubjectUidcontainer.setEnabled(true);
+		autoBiocollectionContainer.setEnabled(true);
+		autoBiospecimenContainer.setEnabled(true);
 		subjectUidcontainer.setEnabled(false);
 		target.add(subjectUidcontainer);
 
