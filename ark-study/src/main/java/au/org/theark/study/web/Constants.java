@@ -153,6 +153,8 @@ public class Constants {
 	public static final String			STUDY_CHIEF_INVESTIGATOR									= "study.chiefInvestigator";
 	public static final String			STUDY_CO_INVESTIGATOR										= "study.coInvestigator";
 	public static final String			STUDY_AUTO_GENERATE_SUBJECTUID							= "study.autoGenerateSubjectUid";
+	public static final String			STUDY_AUTO_GENERATE_BIOCOLLECTIONUID					= "study.autoGenerateBiocollectionUid";
+	public static final String			STUDY_AUTO_GENERATE_BIOSPECIMENUID						= "study.autoGenerateBiospecimenUid";
 	public static final String			SUBJECT_UID_START												= "study.subjectUidStart";
 	public static final String			SUBJECT_UID_PREFIX											= "study.subjectUidPrefix";
 	public static final String			SUBJECT_UID_TOKEN												= "study.subjectUidToken";

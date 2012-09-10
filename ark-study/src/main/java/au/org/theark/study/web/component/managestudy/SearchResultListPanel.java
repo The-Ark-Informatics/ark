@@ -187,6 +187,8 @@ public class SearchResultListPanel extends Panel {
 
 				// All SubjectUID generator fields grouped within a container(s)
 				WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
+				WebMarkupContainer autoBiocollectionUidcontainer = detailForm.getAutoBiocollectionUidContainer();
+				WebMarkupContainer autoBiospecimenUidcontainer = detailForm.getAutoBiospecimenUidContainer();
 				WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();
 
 				// Disable all SubjectUID generation fields if subjects exist or is a child study
@@ -203,22 +205,26 @@ public class SearchResultListPanel extends Panel {
 						subjectUidcontainer.setEnabled(false);
 					}
 				}
-
+				
 				// Enable bioSpecimenUidContainer if there are no biospecimens created as yet
 				WebMarkupContainer biospecimenUidContainer = detailForm.getBiospecimenUidContainer();
 				if (iArkCommonService.studyHasBiospecimen(studyContainerForm.getModelObject().getStudy())) {
 					biospecimenUidContainer.setEnabled(false);
+					autoBiospecimenUidcontainer.setEnabled(false);
 				}
 				else {
 					biospecimenUidContainer.setEnabled(parentStudy == null);
+					autoBiospecimenUidcontainer.setEnabled(parentStudy == null);
 				}
 
 				WebMarkupContainer bioCollectionUidContainer = detailForm.getBioCollectionUidContainer();
 				if (iArkCommonService.studyHasBioCollection(studyContainerForm.getModelObject().getStudy())) {
 					bioCollectionUidContainer.setEnabled(false);
+					autoBiocollectionUidcontainer.setEnabled(false);
 				}
 				else {
 					bioCollectionUidContainer.setEnabled(parentStudy == null);
+					autoBiocollectionUidcontainer.setEnabled(parentStudy == null);
 				}
 
 				// Get the Source Modules from database
@@ -295,7 +301,9 @@ public class SearchResultListPanel extends Panel {
 				// Refresh base container form to remove any feedBack messages
 				target.add(autoSubjectUidcontainer);
 				target.add(subjectUidcontainer);
+				target.add(autoBiocollectionUidcontainer);
 				target.add(bioCollectionUidContainer);
+				target.add(autoBiospecimenUidcontainer);
 				target.add(biospecimenUidContainer);
 				target.add(studyContainerForm);
 				target.add(moduleTabbedPanel);
