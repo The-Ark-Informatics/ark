@@ -398,8 +398,38 @@ public class BiospecimenUploadValidator {
 
 	/**
 	 * Validates the file in the default "matrix" file format assumed: BiospecimenUID,FIELD1,FIELD2,FIELDN...
+		 * Where N is any number of columns
 	 * 
-	 * Where N is any number of columns
+	 * 
+	 * 
+	 * 
+	 * 
+	 * attempting to apply logic as seen: https://the-ark.atlassian.net/browse/ARK-790
+	 * 
+	 * THERE IS NO UPDATING
+
+		For Biospecimen;
+		if you have auto gen & you dont specific an id...then upload and generate biospec-id
+		if you have auto gen & you do specific an id...then error message - don't upload
+		if you DON'T have auto gen & you do specific an id...then
+		...if something exists with that id already...THEN ERROR
+		...else create the biospecimen with given id
+		if you DON'T have auto gen & you dont specific an id...then error - don't upload
+		
+		For Biocollection;
+		if you have auto gen & you dont specific an id...then upload and gen biocol
+		if you have auto gen & you do specific an id
+		...then look for existing biocol to point at
+		...if exists then put biospec in that biolcollection
+		...ELSE error
+		if you DON'T have auto gen & you do specific an id
+		...then if biocol already exists, use that existing biocol and tie biospec to it
+		........however if biocol doesnt exist...create biocol with the given id
+		if you DON'T have auto gen & you dont specific an id...then error
+
+	 * 
+	 * 
+	 * 
 	 * 
 	 * @param fileInputStream
 	 *           is the input stream of a file
@@ -446,129 +476,219 @@ public class BiospecimenUploadValidator {
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
-				// do something with the newline to put the data into
-				// the variables defined above
 				stringLineArray = csvReader.getValues();
-
 				// First/0th column should be the SubjectUID
 				String subjectUID = stringLineArray[0];
-
-				// 1th columsn should be BiospecimenUid
-				String biospecimenUID = stringLineArray[1];
+				// next should be BiospecimenUid -- TODO:  These assumptions is not tested earlier!!!;
+				String biospecimenUID = stringLineArray[1]; // io think something like this might be betteR?  csvReader.getIndex("BIOSPECIMENUID")
 				String biocollectionUID = stringLineArray[2];
 
-				// If no SubjectUID/BiospecimenUid found, caught by exception catch
-				try {
-					LinkSubjectStudy linkSubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID, study));
-					linkSubjectStudy.setStudy(study);
+			
+				LinkSubjectStudy linkSubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID, study));
+				linkSubjectStudy.setStudy(study);
 
-					BioCollection biocollection = iLimsService.getBioCollectionByName(biocollectionUID,this.study.getId());
-					//TODO this really should be study specific?
-					Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUID,study);//TODO this really should be study specific?
-
-					
-						
-					if (biospecimen == null) {
-						// Biospecimen not found, thus a new Biospecimen to be inserted
-						insertRows.add(row);
-					}
-					else {
-						updateRows.add(row);
-					}
-					
-					if (csvReader.getIndex("SAMPLETYPE") > 0) {
-						String name = csvReader.get("SAMPLETYPE");
-						BioSampletype sampleType = new BioSampletype();
-						sampleType = iLimsService.getBioSampleTypeByName(name);
-						if (sampleType == null) {
-							StringBuilder errorString = new StringBuilder();
-							errorString.append("Error: Row ");
-							errorString.append(row);
-							errorString.append(": SubjectUID: ");
-							errorString.append(subjectUID);
-							errorString.append(" The sample type ");
-							errorString.append(name);
-							errorString.append(" of BiospecimenUID: ");
-							errorString.append(biospecimenUID);
-							errorString.append(" do not match the details in the database. Please check and try again");
-							dataValidationMessages.add(errorString.toString());
-							errorCells.add(new ArkGridCell(csvReader.getIndex("SAMPLETYPE"), row));
-						}
-					}
-					
-					if (csvReader.getIndex("UNITS") > 0) {
-						String name = csvReader.get("UNITS");
-						Unit unit = iLimsService.getUnitByName(name);
-						if (unit == null) {
-							StringBuilder errorString = new StringBuilder();
-							errorString.append("Error: Row ");
-							errorString.append(row);
-							errorString.append(": SubjectUID: ");
-							errorString.append(subjectUID);
-							errorString.append(" The unit ");
-							errorString.append(name);
-							errorString.append(" of BiospecimenUID: ");
-							errorString.append(biospecimenUID);
-							errorString.append(" do not match the details in the database. Please check and try again");
-							dataValidationMessages.add(errorString.toString());
-							errorCells.add(new ArkGridCell(csvReader.getIndex("UNITS"), row));
-						}
-					}
-					
-					if (csvReader.getIndex("TREATMENT") > 0) {
-						String name = csvReader.get("TREATMENT");
-						TreatmentType treatmentType = new TreatmentType(); 
-						treatmentType = iLimsService.getTreatmentTypeByName(name);
-						if (treatmentType == null) {
-							StringBuilder errorString = new StringBuilder();
-							errorString.append("Error: Row ");
-							errorString.append(row);
-							errorString.append(": SubjectUID: ");
-							errorString.append(subjectUID);
-							errorString.append(" The treatment ");
-							errorString.append(name);
-							errorString.append(" of BiospecimenUID: ");
-							errorString.append(biospecimenUID);
-							errorString.append(" do not match the details in the database. Please check and try again");
-							dataValidationMessages.add(errorString.toString());
-							errorCells.add(new ArkGridCell(csvReader.getIndex("TREATMENT"), row));
-						}
-					}
-					
-					if ((csvReader.get("SITE") != null && csvReader.get("FREEZER") != null && csvReader.get("RACK") != null && csvReader.get("BOX") != null && csvReader.get("ROW") != null
-							&& csvReader.get("COLUMN") != null) &&
-					(!csvReader.get("SITE").isEmpty() && !csvReader.get("FREEZER").isEmpty() && !csvReader.get("RACK").isEmpty() && !csvReader.get("BOX").isEmpty() && !csvReader.get("ROW").isEmpty()
-							&& !csvReader.get("COLUMN").isEmpty())	
-					) {
-						InvCell invCell = iInventoryService.getInvCellByLocationNames(csvReader.get("SITE"), csvReader.get("FREEZER"), csvReader.get("RACK"), csvReader.get("BOX"), csvReader.get("ROW"),
-								csvReader.get("COLUMN"));
-						if (invCell == null) {
-							StringBuilder errorString = new StringBuilder();
-							errorString.append("Error: Row ");
-							errorString.append(row);
-							errorString.append(": SubjectUID: ");
-							errorString.append(subjectUID);
-							errorString.append(" The location details of BiospecimenUID: ");
-							errorString.append(biospecimenUID);
-							errorString.append(" do not match the details in the database. Please check and try again");
-							dataValidationMessages.add(errorString.toString());
-							errorCells.add(new ArkGridCell(csvReader.getIndex("SITE"), row));
-							errorCells.add(new ArkGridCell(csvReader.getIndex("FREEZER"), row));
-							errorCells.add(new ArkGridCell(csvReader.getIndex("RACK"), row));
-							errorCells.add(new ArkGridCell(csvReader.getIndex("BOX"), row));
-							errorCells.add(new ArkGridCell(csvReader.getIndex("ROW"), row));
-							errorCells.add(new ArkGridCell(csvReader.getIndex("COLUMN"), row));
-						}
+				BioCollection biocollection = null; //iLimsService.getBioCollectionByName(biocollectionUID,study.getId());
+				Biospecimen biospecimen = null;//iLimsService.getBiospecimenByUid(biospecimenUID,study);
+				
+				/*TODO ASAP 
+				 * 
+				 * once logic laid out
+				 * ...make sure you just break out of while on the first error 
+				 * ...change insertRow stuff to say rowIsOk = true/false
+				 * ....once we pass all tests THEN if(rowIsOK) THEN insertRows.add(row)
+				 * */	
+				
+				if (biospecimenUID == null) {
+					if(study.getAutoGenerateBiospecimenUid()){
+						insertRows.add(row);								
 					}
 					else{
-						log.info("here");
+						StringBuilder errorString = new StringBuilder();
+						errorString.append("Error: Row ");
+						errorString.append(row);
+						errorString.append(": SubjectUID: ");
+						errorString.append(subjectUID);
+						errorString.append(".  You have not specified a biospecimen UID, yet your study is not set up" +
+								" to auto generate biospecimen UIDs.  Please specify a unique ID.");
+						dataValidationMessages.add(errorString.toString());
+						errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
 					}
-					
 				}
-				catch (EntityNotFoundException enf) {
-					// SubjectUID not found, thus a new Biospecimen to be inserted
-					insertRows.add(row);
+				else {
+					if(study.getAutoGenerateBiospecimenUid()){
+						StringBuilder errorString = new StringBuilder();
+						errorString.append("Error: Row ");
+						errorString.append(row);
+						errorString.append(": SubjectUID: ");
+						errorString.append(subjectUID);
+						errorString.append(": BIOSPECIMENUID: ");
+						errorString.append(biospecimenUID);
+						errorString.append(".  You have specified a biospecimen UID, yet your study is set up" +
+								" to auto generate biospecimen UIDs.");
+						dataValidationMessages.add(errorString.toString());
+						errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
+					}
+					else{
+						biospecimen = iLimsService.getBiospecimenByUid(biospecimenUID,study);
+						if(biospecimen == null){
+							insertRows.add(row);								
+						}
+						else{
+							StringBuilder errorString = new StringBuilder();
+							errorString.append("Error: Row ");
+							errorString.append(row);
+							errorString.append(": SubjectUID: ");
+							errorString.append(subjectUID);
+							errorString.append(": BIOSPECIMENUID: ");
+							errorString.append(biospecimenUID);
+							errorString.append(".  You have specified an existing biospecimen UID.  This uploader created new " +
+									"biospecimens, but does not update existing biospecimens.  Please remove this row");
+							dataValidationMessages.add(errorString.toString());
+							errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
+						}
+					}
 				}
+				
+				
+				if (biocollectionUID == null) {
+					if(study.getAutoGenerateBiocollectionUid()){
+						insertRows.add(row);								
+					}
+					else{
+						StringBuilder errorString = new StringBuilder();
+						errorString.append("Error: Row ");
+						errorString.append(row);
+						errorString.append(": SubjectUID: ");
+						errorString.append(subjectUID);
+						errorString.append(".  You have not specified a biocollection UID, yet your study is not set up" +
+								" to auto generate biocollection UIDs.  Please specify a unique ID.");
+						dataValidationMessages.add(errorString.toString());
+						errorCells.add(new ArkGridCell(csvReader.getIndex("BIOCOLLECTIONUID"), row));
+					}
+				}
+				else {
+					biocollection = iLimsService.getBioCollectionByName(biocollectionUID,study.getId());
+					if(study.getAutoGenerateBiocollectionUid()){//ie; auto gen, id supplied.
+						if(biocollection==null){
+							StringBuilder errorString = new StringBuilder();
+							errorString.append("Error: Row ");
+							errorString.append(row);
+							errorString.append(": SubjectUID: ");
+							errorString.append(subjectUID);
+							errorString.append(": BIOCOLLECTIONUID: ");
+							errorString.append(biocollectionUID);
+							errorString.append(".  You have specified a non-existant biocollection UID, yet your study is set up" +
+									" to auto generate biocollection UIDs.  Check the biocollectionUID if you intended to relate it " +
+									"to a collection, otherwise remove the biocollectionid if you wish to generate a new biocollection");
+							dataValidationMessages.add(errorString.toString());
+							errorCells.add(new ArkGridCell(csvReader.getIndex("BIOCOLLECTIONUID"), row));
+						}
+						else{
+							insertRows.add(row);
+						}
+					}
+					else{//ie; not auto gen, id supplied.
+						
+						if(biocollection == null){
+							insertRows.add(row);	//this instance will need biocol created							
+						}
+						else{
+							insertRows.add(row);  //this istance will use the provided biocol.
+						}
+					}
+				}
+				
+				
+				
+				
+				if (csvReader.getIndex("SAMPLETYPE") > 0) {
+					String name = csvReader.get("SAMPLETYPE");
+					BioSampletype sampleType = new BioSampletype();
+					sampleType = iLimsService.getBioSampleTypeByName(name);
+					if (sampleType == null) {
+						StringBuilder errorString = new StringBuilder();
+						errorString.append("Error: Row ");
+						errorString.append(row);
+						errorString.append(": SubjectUID: ");
+						errorString.append(subjectUID);
+						errorString.append(" The sample type ");
+						errorString.append(name);
+						errorString.append(" of BiospecimenUID: ");
+						errorString.append(biospecimenUID);
+						errorString.append(" do not match the details in the database. Please check and try again");
+						dataValidationMessages.add(errorString.toString());
+						errorCells.add(new ArkGridCell(csvReader.getIndex("SAMPLETYPE"), row));
+					}
+				}
+				
+				if (csvReader.getIndex("UNITS") > 0) {
+					String name = csvReader.get("UNITS");
+					Unit unit = iLimsService.getUnitByName(name);
+					if (unit == null) {
+						StringBuilder errorString = new StringBuilder();
+						errorString.append("Error: Row ");
+						errorString.append(row);
+						errorString.append(": SubjectUID: ");
+						errorString.append(subjectUID);
+						errorString.append(" The unit ");
+						errorString.append(name);
+						errorString.append(" of BiospecimenUID: ");
+						errorString.append(biospecimenUID);
+						errorString.append(" do not match the details in the database. Please check and try again");
+						dataValidationMessages.add(errorString.toString());
+						errorCells.add(new ArkGridCell(csvReader.getIndex("UNITS"), row));
+					}
+				}
+				
+				if (csvReader.getIndex("TREATMENT") > 0) {
+					String name = csvReader.get("TREATMENT");
+					TreatmentType treatmentType = new TreatmentType(); 
+					treatmentType = iLimsService.getTreatmentTypeByName(name);
+					if (treatmentType == null) {
+						StringBuilder errorString = new StringBuilder();
+						errorString.append("Error: Row ");
+						errorString.append(row);
+						errorString.append(": SubjectUID: ");
+						errorString.append(subjectUID);
+						errorString.append(" The treatment ");
+						errorString.append(name);
+						errorString.append(" of BiospecimenUID: ");
+						errorString.append(biospecimenUID);
+						errorString.append(" do not match the details in the database. Please check and try again");
+						dataValidationMessages.add(errorString.toString());
+						errorCells.add(new ArkGridCell(csvReader.getIndex("TREATMENT"), row));
+					}
+				}
+				
+				if ((csvReader.get("SITE") != null && csvReader.get("FREEZER") != null && csvReader.get("RACK") != null && csvReader.get("BOX") != null && csvReader.get("ROW") != null
+						&& csvReader.get("COLUMN") != null) &&
+				(!csvReader.get("SITE").isEmpty() && !csvReader.get("FREEZER").isEmpty() && !csvReader.get("RACK").isEmpty() && !csvReader.get("BOX").isEmpty() && !csvReader.get("ROW").isEmpty()
+						&& !csvReader.get("COLUMN").isEmpty())	
+				) {
+					InvCell invCell = iInventoryService.getInvCellByLocationNames(csvReader.get("SITE"), csvReader.get("FREEZER"), csvReader.get("RACK"), csvReader.get("BOX"), csvReader.get("ROW"),
+							csvReader.get("COLUMN"));
+					if (invCell == null) {
+						StringBuilder errorString = new StringBuilder();
+						errorString.append("Error: Row ");
+						errorString.append(row);
+						errorString.append(": SubjectUID: ");
+						errorString.append(subjectUID);
+						errorString.append(" The location details of BiospecimenUID: ");
+						errorString.append(biospecimenUID);
+						errorString.append(" do not match the details in the database. Please check and try again");
+						dataValidationMessages.add(errorString.toString());
+						errorCells.add(new ArkGridCell(csvReader.getIndex("SITE"), row));
+						errorCells.add(new ArkGridCell(csvReader.getIndex("FREEZER"), row));
+						errorCells.add(new ArkGridCell(csvReader.getIndex("RACK"), row));
+						errorCells.add(new ArkGridCell(csvReader.getIndex("BOX"), row));
+						errorCells.add(new ArkGridCell(csvReader.getIndex("ROW"), row));
+						errorCells.add(new ArkGridCell(csvReader.getIndex("COLUMN"), row));
+					}
+				}
+				else{
+					log.info("here");
+				}
+			
 
 				int col = 0;
 				String dateStr = new String();
