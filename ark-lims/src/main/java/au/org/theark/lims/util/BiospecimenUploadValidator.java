@@ -676,6 +676,8 @@ public class BiospecimenUploadValidator {
 				String rowString = csvReader.get("TOW");
 				String columnString = csvReader.get("BOX");
 				
+				
+				//IF EVERY column has something...then
 				if ((site != null && freezer != null && rack != null && 
 						box != null && rowString != null && columnString != null) &&
 					(!site.isEmpty() && !freezer.isEmpty() && !rack.isEmpty() &&
@@ -689,7 +691,7 @@ public class BiospecimenUploadValidator {
 						errorString.append(row);
 						errorString.append(": SubjectUID: ");
 						errorString.append(subjectUID);
-						errorString.append(" The location details of BiospecimenUID: ");
+						errorString.append(" The location details provided for BiospecimenUID: ");
 						errorString.append(biospecimenUID);
 						errorString.append(" do not match the details in the database. Please check and try again");
 						dataValidationMessages.add(errorString.toString());
@@ -702,8 +704,34 @@ public class BiospecimenUploadValidator {
 						insertThisRow = false;//drop out also?
 					}
 				}
+				else if ((site == null && freezer == null && rack == null && 
+						box == null && rowString == null && columnString == null) ||
+						(!site.isEmpty() && !freezer.isEmpty() && !rack.isEmpty() &&
+							!box.isEmpty() && !rowString.isEmpty() && !columnString.isEmpty())	
+					){
+					//ie; EVERYTHING IS EMPTY...in which case, we let you go ahead and don't specify where the biospec lives
+					log.info("everything is empty so we still create it...we just don't put it somewhere");
+				}
 				else{
-					log.info("here");
+					//else you have incomplete info, and we aren't cool with that;
+					
+					StringBuilder errorString = new StringBuilder();
+					errorString.append("Error: Row ");
+					errorString.append(row);
+					errorString.append(": SubjectUID: ");
+					errorString.append(subjectUID);
+					errorString.append(" The location details provided for BiospecimenUID: ");
+					errorString.append(biospecimenUID);
+					errorString.append(" are incomplete. Please ensure you either provide all of the following information \"SITE, FREEZER, RACK, BOX, ROW and COLUMN\" or none of these ");
+					dataValidationMessages.add(errorString.toString());
+					errorCells.add(new ArkGridCell(csvReader.getIndex("SITE"), row));
+					errorCells.add(new ArkGridCell(csvReader.getIndex("FREEZER"), row));
+					errorCells.add(new ArkGridCell(csvReader.getIndex("RACK"), row));
+					errorCells.add(new ArkGridCell(csvReader.getIndex("BOX"), row));
+					errorCells.add(new ArkGridCell(csvReader.getIndex("ROW"), row));
+					errorCells.add(new ArkGridCell(csvReader.getIndex("COLUMN"), row));
+					insertThisRow = false;//drop out also?
+					
 				}
 			
 
@@ -739,12 +767,17 @@ public class BiospecimenUploadValidator {
 
 						dataValidationMessages.add(errorString.toString());
 						errorCells.add(new ArkGridCell(col, row));
+						insertThisRow = false;//drop out also?
 					}
 				}
 
 				log.debug("\n");
 				recordCount++;
 				row++;
+				if(insertThisRow){
+					insertRows.add(row);
+				}
+
 			}
 
 			if (dataValidationMessages.size() > 0) {
