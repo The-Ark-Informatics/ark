@@ -476,6 +476,7 @@ public class BiospecimenUploadValidator {
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
+				boolean insertThisRow = true;
 				stringLineArray = csvReader.getValues();
 				// First/0th column should be the SubjectUID
 				String subjectUID = stringLineArray[0];
@@ -500,7 +501,7 @@ public class BiospecimenUploadValidator {
 				
 				if (biospecimenUID == null) {
 					if(study.getAutoGenerateBiospecimenUid()){
-						insertRows.add(row);								
+						//insertRows.add(row);								
 					}
 					else{
 						StringBuilder errorString = new StringBuilder();
@@ -512,6 +513,7 @@ public class BiospecimenUploadValidator {
 								" to auto generate biospecimen UIDs.  Please specify a unique ID.");
 						dataValidationMessages.add(errorString.toString());
 						errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
+						insertThisRow = false;//drop out also?
 					}
 				}
 				else {
@@ -527,6 +529,7 @@ public class BiospecimenUploadValidator {
 								" to auto generate biospecimen UIDs.");
 						dataValidationMessages.add(errorString.toString());
 						errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
+						insertThisRow = false;//drop out also?
 					}
 					else{
 						biospecimen = iLimsService.getBiospecimenByUid(biospecimenUID,study);
@@ -545,6 +548,7 @@ public class BiospecimenUploadValidator {
 									"biospecimens, but does not update existing biospecimens.  Please remove this row");
 							dataValidationMessages.add(errorString.toString());
 							errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
+							insertThisRow = false;//drop out also?
 						}
 					}
 				}
@@ -552,7 +556,7 @@ public class BiospecimenUploadValidator {
 				
 				if (biocollectionUID == null) {
 					if(study.getAutoGenerateBiocollectionUid()){
-						insertRows.add(row);								
+						//insertRows.add(row);								
 					}
 					else{
 						StringBuilder errorString = new StringBuilder();
@@ -564,6 +568,7 @@ public class BiospecimenUploadValidator {
 								" to auto generate biocollection UIDs.  Please specify a unique ID.");
 						dataValidationMessages.add(errorString.toString());
 						errorCells.add(new ArkGridCell(csvReader.getIndex("BIOCOLLECTIONUID"), row));
+						insertThisRow = false;//drop out also?
 					}
 				}
 				else {
@@ -582,18 +587,19 @@ public class BiospecimenUploadValidator {
 									"to a collection, otherwise remove the biocollectionid if you wish to generate a new biocollection");
 							dataValidationMessages.add(errorString.toString());
 							errorCells.add(new ArkGridCell(csvReader.getIndex("BIOCOLLECTIONUID"), row));
+							insertThisRow = false;//drop out also?
 						}
 						else{
-							insertRows.add(row);
+							//insertRows.add(row);
 						}
 					}
 					else{//ie; not auto gen, id supplied.
 						
 						if(biocollection == null){
-							insertRows.add(row);	//this instance will need biocol created							
+							//insertRows.add(row);	//this instance will need biocol created							
 						}
 						else{
-							insertRows.add(row);  //this istance will use the provided biocol.
+							//insertRows.add(row);  //this istance will use the provided biocol.
 						}
 					}
 				}
@@ -618,6 +624,7 @@ public class BiospecimenUploadValidator {
 						errorString.append(" do not match the details in the database. Please check and try again");
 						dataValidationMessages.add(errorString.toString());
 						errorCells.add(new ArkGridCell(csvReader.getIndex("SAMPLETYPE"), row));
+						insertThisRow = false;//drop out also?
 					}
 				}
 				
@@ -637,6 +644,7 @@ public class BiospecimenUploadValidator {
 						errorString.append(" do not match the details in the database. Please check and try again");
 						dataValidationMessages.add(errorString.toString());
 						errorCells.add(new ArkGridCell(csvReader.getIndex("UNITS"), row));
+						insertThisRow = false;//drop out also?
 					}
 				}
 				
@@ -657,16 +665,24 @@ public class BiospecimenUploadValidator {
 						errorString.append(" do not match the details in the database. Please check and try again");
 						dataValidationMessages.add(errorString.toString());
 						errorCells.add(new ArkGridCell(csvReader.getIndex("TREATMENT"), row));
+						insertThisRow = false;//drop out also?
 					}
 				}
+
+				String site = csvReader.get("SITE");
+				String freezer = csvReader.get("FREEZER");
+				String rack = csvReader.get("RACK");
+				String box = csvReader.get("BOX");
+				String rowString = csvReader.get("TOW");
+				String columnString = csvReader.get("BOX");
 				
-				if ((csvReader.get("SITE") != null && csvReader.get("FREEZER") != null && csvReader.get("RACK") != null && csvReader.get("BOX") != null && csvReader.get("ROW") != null
-						&& csvReader.get("COLUMN") != null) &&
-				(!csvReader.get("SITE").isEmpty() && !csvReader.get("FREEZER").isEmpty() && !csvReader.get("RACK").isEmpty() && !csvReader.get("BOX").isEmpty() && !csvReader.get("ROW").isEmpty()
-						&& !csvReader.get("COLUMN").isEmpty())	
+				if ((site != null && freezer != null && rack != null && 
+						box != null && rowString != null && columnString != null) &&
+					(!site.isEmpty() && !freezer.isEmpty() && !rack.isEmpty() &&
+						!box.isEmpty() && !rowString.isEmpty() && !columnString.isEmpty())	
 				) {
-					InvCell invCell = iInventoryService.getInvCellByLocationNames(csvReader.get("SITE"), csvReader.get("FREEZER"), csvReader.get("RACK"), csvReader.get("BOX"), csvReader.get("ROW"),
-							csvReader.get("COLUMN"));
+					
+					InvCell invCell = iInventoryService.getInvCellByLocationNames(site, freezer, rack, box, rowString, columnString);
 					if (invCell == null) {
 						StringBuilder errorString = new StringBuilder();
 						errorString.append("Error: Row ");
@@ -683,6 +699,7 @@ public class BiospecimenUploadValidator {
 						errorCells.add(new ArkGridCell(csvReader.getIndex("BOX"), row));
 						errorCells.add(new ArkGridCell(csvReader.getIndex("ROW"), row));
 						errorCells.add(new ArkGridCell(csvReader.getIndex("COLUMN"), row));
+						insertThisRow = false;//drop out also?
 					}
 				}
 				else{
