@@ -118,11 +118,11 @@ public class CustomFieldUploadStep2 extends AbstractWizardStepPanel {
 				if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
 					throw new FileFormatException();
 				}
-				CustomFieldImportValidator phenotypicValidator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
+				CustomFieldImportValidator validator = new CustomFieldImportValidator(iArkCommonService, containerForm.getModelObject());
 
 				inputStream = new BufferedInputStream(new FileInputStream(temp));
-				validationMessages = phenotypicValidator.validateMatrixPhenoFileFormat(inputStream, fileFormat, delimChar);
 				inputStream.close();
+				validationMessages = validator.validateCustomDataMatrixFileFormat(inputStream, fileFormat, delimChar);
 				inputStream = null;
 
 				containerForm.getModelObject().setValidationMessages(validationMessages);
