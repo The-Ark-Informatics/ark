@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,7 +36,6 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +43,6 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
@@ -84,7 +81,7 @@ public class BiospecimenUploadValidator {
 	private long						recordCount;
 	private long						curPos;
 	private long						srcLength					= -1;
-	private StopWatch					timer							= null;
+//	private StopWatch					timer							= null;
 	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
 	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
 	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
@@ -304,9 +301,6 @@ public class BiospecimenUploadValidator {
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
 
-			timer = new StopWatch();
-			timer.start();
-
 			// Set field list (note 2th column to Nth column)
 			// BiospecimenUID DATE_COLLECTED F1 F2 FN
 			// 0 1 2 3 N
@@ -369,10 +363,7 @@ public class BiospecimenUploadValidator {
 		}
 		finally {
 			// Clean up the IO objects
-			timer.stop();
-
-			if (timer != null)
-				timer = null;
+			
 			if (csvReader != null) {
 				try {
 					csvReader.close();
@@ -450,8 +441,6 @@ public class BiospecimenUploadValidator {
 
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
-		DecimalFormat decimalFormat = new DecimalFormat("0.00");
-
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
@@ -462,8 +451,6 @@ public class BiospecimenUploadValidator {
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
 
-			timer = new StopWatch();
-			timer.start();
 
 			// Set field list (note 1th column to Nth column)
 			// BiospecimenUID F1 F2 FN
@@ -485,8 +472,25 @@ public class BiospecimenUploadValidator {
 				String biocollectionUID = stringLineArray[2];
 
 			
-				LinkSubjectStudy linkSubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID, study));
-				linkSubjectStudy.setStudy(study);
+				LinkSubjectStudy linkSubjectStudy = (iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study));
+				if(linkSubjectStudy==null){
+					StringBuilder errorString = new StringBuilder();
+					errorString.append("Error: Row ");
+					errorString.append(row);
+					errorString.append(": SubjectUID: ");
+					errorString.append(subjectUID);
+					errorString.append(" does not exist.  Please check this Subject UID and try again.");
+					dataValidationMessages.add(errorString.toString());
+					errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
+					insertThisRow = false;//drop out also?
+					recordCount++;
+					row++;
+					break;
+				}
+				
+				if(linkSubjectStudy.getStudy()==null){
+					linkSubjectStudy.setStudy(study);
+				}
 
 				BioCollection biocollection = null; //iLimsService.getBioCollectionByName(biocollectionUID,study.getId());
 				Biospecimen biospecimen = null;//iLimsService.getBiospecimenByUid(biospecimenUID,study);
@@ -604,9 +608,6 @@ public class BiospecimenUploadValidator {
 					}
 				}
 				
-				
-				
-				
 				if (csvReader.getIndex("SAMPLETYPE") > 0) {
 					String name = csvReader.get("SAMPLETYPE");
 					BioSampletype sampleType = new BioSampletype();
@@ -627,6 +628,41 @@ public class BiospecimenUploadValidator {
 						insertThisRow = false;//drop out also?
 					}
 				}
+				
+
+				
+				/***
+				 * TODO ASAP : ADD CONCENTRATION HERE
+				 */
+				
+
+				
+				if (csvReader.getIndex("CONCENTRATION") > 0) {
+					String concentrationString = csvReader.get("CONCENTRATION");
+					if (concentrationString != null && !concentrationString.isEmpty()) {
+						try{
+							Double.parseDouble(concentrationString);
+						}
+						catch(NumberFormatException ne){
+
+							StringBuilder errorString = new StringBuilder();
+							errorString.append("Error: Row ");
+							errorString.append(row);
+							errorString.append(": SubjectUID: ");
+							errorString.append(subjectUID);
+							errorString.append(" The concentration ");
+							errorString.append(concentrationString);
+							errorString.append(" of BiospecimenUID: ");
+							errorString.append(biospecimenUID);
+							errorString.append(" is not a valid number");
+							dataValidationMessages.add(errorString.toString());
+							errorCells.add(new ArkGridCell(csvReader.getIndex("CONCENTRATION"), row));
+							insertThisRow = false;//drop out also?
+						}
+						
+					}
+				}
+
 				
 				if (csvReader.getIndex("UNITS") > 0) {
 					String name = csvReader.get("UNITS");
@@ -771,7 +807,7 @@ public class BiospecimenUploadValidator {
 					}
 				}
 
-				log.debug("\n");
+				//log.debug("\n");
 				recordCount++;
 				row++;
 				if(insertThisRow){
@@ -795,17 +831,13 @@ public class BiospecimenUploadValidator {
 			log.error("processMatrixBiospecimenFile IOException stacktrace:", ioe);
 			throw new ArkSystemException("Unexpected I/O exception whilst reading the Biospecimen data file");
 		}
-		catch (Exception ex) {
-			log.error("processMatrixBiospecimenFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process Biospecimen data file");
-		}
 		finally {
 			// Clean up the IO objects
-			timer.stop();
-			log.debug("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
-			log.debug("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
-			if (timer != null)
-				timer = null;
+			//timer.stop();
+			//log.debug("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
+			//log.debug("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
+			//if (timer != null)
+			//	timer = null;
 			if (csvReader != null) {
 				try {
 					csvReader.close();
@@ -878,31 +910,4 @@ public class BiospecimenUploadValidator {
 		return new ByteArrayInputStream(out.toByteArray());
 	}
 
-	/**
-	 * Return the progress of the current process in %
-	 * 
-	 * @return if a process is actively running, then progress in %; or if no process running, then returns -1
-	 */
-	public double getProgress() {
-		double progress = -1;
-
-		if (srcLength > 0)
-			progress = curPos * 100.0 / srcLength; // %
-
-		return progress;
-	}
-
-	/**
-	 * Return the speed of the current process in KB/s
-	 * 
-	 * @return if a process is actively running, then speed in KB/s; or if no process running, then returns -1
-	 */
-	public double getSpeed() {
-		double speed = -1;
-
-		if (srcLength > 0)
-			speed = curPos / 1024 / (timer.getTime() / 1000.0); // KB/s
-
-		return speed;
-	}
 }
