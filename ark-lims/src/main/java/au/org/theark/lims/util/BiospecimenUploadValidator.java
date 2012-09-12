@@ -710,11 +710,10 @@ public class BiospecimenUploadValidator {
 							!box.isEmpty() && !rowString.isEmpty() && !columnString.isEmpty())	
 					){
 					//ie; EVERYTHING IS EMPTY...in which case, we let you go ahead and don't specify where the biospec lives
-					log.info("everything is empty so we still create it...we just don't put it somewhere");
+					log.debug("everything is empty so we still create it...we just don't put it somewhere");
 				}
 				else{
 					//else you have incomplete info, and we aren't cool with that;
-					
 					StringBuilder errorString = new StringBuilder();
 					errorString.append("Error: Row ");
 					errorString.append(row);
@@ -734,40 +733,41 @@ public class BiospecimenUploadValidator {
 					
 				}
 			
-
-				int col = 0;
-				String dateStr = new String();
-
-				if (csvReader.getIndex("SAMPLEDATE") > 0 || csvReader.getIndex("SAMPLE_DATE") > 0) {
-
-					if (csvReader.getIndex("SAMPLEDATE") > 0) {
-						col = csvReader.getIndex("SAMPLEDATE");
-					}
-					else {
-						col = csvReader.getIndex("SAMPLE_DATE");
-					}
-
-					try {
-						dateStr = stringLineArray[col];
-						if (dateStr != null && dateStr.length() > 0)
-							simpleDateFormat.parse(dateStr);
-					}
-					catch (ParseException pex) {
-						StringBuilder errorString = new StringBuilder();
-						errorString.append("Error: Row ");
-						errorString.append(row);
-						errorString.append(": SubjectUID: ");
-						errorString.append(subjectUID);
-						errorString.append(" ");
-						errorString.append(fieldNameArray[col]);
-						errorString.append(": ");
-						errorString.append(stringLineArray[col]);
-						errorString.append(" is not in the valid date format of: ");
-						errorString.append(Constants.DD_MM_YYYY.toLowerCase());
-
-						dataValidationMessages.add(errorString.toString());
-						errorCells.add(new ArkGridCell(col, row));
-						insertThisRow = false;//drop out also?
+				if(insertThisRow){
+					int col = 0;
+					String dateStr = new String();
+	
+					if (csvReader.getIndex("SAMPLEDATE") > 0 || csvReader.getIndex("SAMPLE_DATE") > 0) {
+	
+						if (csvReader.getIndex("SAMPLEDATE") > 0) {
+							col = csvReader.getIndex("SAMPLEDATE");
+						}
+						else {
+							col = csvReader.getIndex("SAMPLE_DATE");
+						}
+	
+						try {
+							dateStr = stringLineArray[col];
+							if (dateStr != null && dateStr.length() > 0)
+								simpleDateFormat.parse(dateStr);
+						}
+						catch (ParseException pex) {
+							StringBuilder errorString = new StringBuilder();
+							errorString.append("Error: Row ");
+							errorString.append(row);
+							errorString.append(": SubjectUID: ");
+							errorString.append(subjectUID);
+							errorString.append(" ");
+							errorString.append(fieldNameArray[col]);
+							errorString.append(": ");
+							errorString.append(stringLineArray[col]);
+							errorString.append(" is not in the valid date format of: ");
+							errorString.append(Constants.DD_MM_YYYY.toLowerCase());
+	
+							dataValidationMessages.add(errorString.toString());
+							errorCells.add(new ArkGridCell(col, row));
+							insertThisRow = false;//drop out also?
+						}
 					}
 				}
 
