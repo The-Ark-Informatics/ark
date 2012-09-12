@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
@@ -158,19 +157,21 @@ public class BiospecimenUploader {
 				LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 				//linkSubjectStudy.setStudy(study);
 
-				try {
-					linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID, study);
-				}
-				catch (EntityNotFoundException enf) {
-					log.error("\n\n\n\n\n\n\n\n\n\n\n\nUnexpected subject? a shouldnt happen");
-					// New subject
-					linkSubjectStudy.setSubjectUID(subjectUID);
-					linkSubjectStudy.setStudy(study);
+				linkSubjectStudy = iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study);
+
+				//this is validated in prior step and should never happen
+				if(linkSubjectStudy==null){
+					log.error("\n\n\n\n\n\n\n\n\n\n\n\nUnexpected subject? a shouldnt happen...we should have errored this in validation");
+					break;//TODO : log appropriately or do some handling
 				}
 
 				Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUID,study);
 				if(biospecimen == null) {
 					biospecimen = new Biospecimen();
+				}
+				else{
+					log.error("\n\n\n\n\n\n\n\n\n....We should NEVER have existing biospecimens this should be  validated in prior step");
+					break;
 				}
 				biospecimen.setLinkSubjectStudy(linkSubjectStudy);
 				
@@ -199,6 +200,12 @@ public class BiospecimenUploader {
 				if (csvReader.getIndex("QUANTITY") > 0) {
 					String quantity = csvReader.get("QUANTITY");
 					biospecimen.setQuantity(new Double(quantity));
+				}
+
+
+				if (csvReader.getIndex("CONCENTRATION") > 0) {
+					String concentration = csvReader.get("CONCENTRATION");
+					biospecimen.setConcentration(new Double(concentration));
 				}
 				
 				if (csvReader.getIndex("UNITS") > 0) {
@@ -293,7 +300,6 @@ public class BiospecimenUploader {
 					updateInvCells.add(invCell);
 				}
 				
-				log.debug("\n");
 				recordCount++;
 			}
 		}
