@@ -139,7 +139,7 @@ public class CustomFieldImportValidator {
 	 * @throws CustomFieldSystemException
 	 *            custom field system Exception
 	 */
-	public java.util.Collection<String> validateMatrixFileFormat(InputStream fileInputStream, long inLength) throws FileFormatException, CustomFieldSystemException {
+	public java.util.Collection<String> validateMatrixFileFormat(InputStream fileInputStream, long inLength, boolean isForPheno) throws FileFormatException, CustomFieldSystemException {
 		curPos = 0;
 		row = 0;
 
@@ -156,9 +156,6 @@ public class CustomFieldImportValidator {
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
 
-//			timer = new StopWatch();
-//			timer.start();
-
 			csvReader.readHeaders();
 
 			// Set field list (note 2th column to Nth column)
@@ -169,7 +166,15 @@ public class CustomFieldImportValidator {
 
 			// Uploading a Custom Field (Data Dictionary) file
 			Collection<String> fileHeaderCollection = new ArrayList<String>();
-			String[] requiredHeaderArray = Constants.DATA_DICTIONARY_HEADER;
+			
+			
+			String[] requiredHeaderArray = null;
+			if(isForPheno){
+				requiredHeaderArray = Constants.DATA_DICTIONARY_HEADER;
+			}
+			else{
+				requiredHeaderArray = Constants.CUSTOM_FIELD_UPLOAD_HEADER;
+			}
 
 			//all columns mandatory, even if data empty
 			if (fileHeaderColumnArray.length < requiredHeaderArray.length) {
@@ -553,6 +558,50 @@ public class CustomFieldImportValidator {
 
 		return isValid;
 	}
+	
+	
+	/**
+	 * Validates the general file format confirms to a data dictionary upload
+	 * 
+	 * @param inputStream
+	 *           is the input stream of the file
+	 * @param fileFormat
+	 *           is the file format (eg txt)
+	 * @param delimChar
+	 *           is the delimiter character of the file (eg comma)
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateCustomDataMatrixFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
+		java.util.Collection<String> validationMessages = null;
+
+		try {
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS")) {
+				Workbook w;
+				try {
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = convertXlsToCsv(w);
+					inputStream.reset();
+					delimChr = ',';
+				}
+				catch (BiffException e) {
+					log.error(e.getMessage());
+				}
+				catch (IOException e) {
+					log.error(e.getMessage());
+				}
+			}
+			validationMessages = validateMatrixFileFormat(inputStream, inputStream.toString().length(), false);
+		}
+		catch (FileFormatException ffe) {
+			log.error("FILE_FORMAT_EXCPEPTION: " + ffe);
+		}
+		catch (ArkBaseException abe) {
+			log.error("ARK_BASE_EXCEPTION: " + abe);
+		}
+		return validationMessages;
+	}
+
 
 	/**
 	 * Validates the general file format confirms to a data dictionary upload
@@ -585,7 +634,7 @@ public class CustomFieldImportValidator {
 					log.error(e.getMessage());
 				}
 			}
-			validationMessages = validateMatrixFileFormat(inputStream, inputStream.toString().length());
+			validationMessages = validateMatrixFileFormat(inputStream, inputStream.toString().length(), true);
 		}
 		catch (FileFormatException ffe) {
 			log.error("FILE_FORMAT_EXCPEPTION: " + ffe);
