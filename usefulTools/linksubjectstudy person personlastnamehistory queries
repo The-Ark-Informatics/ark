@@ -67,3 +67,6 @@ select * from pheno.pheno_data where id > 846000 and text_data_value is not null
 select * from pheno.pheno_collection where id > 10000 ; -- '10121', 'pheno_multi_right_Field', '523683', '5', '2012-09-04 12:51:13', '38', NULL, NULL, NULL
 
 select * from pheno.pheno_data where pheno_collection_id >= 10121;
+
+select * from inv_cell where box_id = 3094 order by id desc;
+select * from inv_box order by id desc;
