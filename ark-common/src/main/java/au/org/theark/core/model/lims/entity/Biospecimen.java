@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,6 +36,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -61,6 +63,7 @@ public class Biospecimen implements java.io.Serializable {
 	private LinkSubjectStudy			linkSubjectStudy;
 	private BioCollection				bioCollection;
 	private BioSampletype				sampleType;
+	private InvCell						invCell;
 	//private Long							parentId;
 	private String							parentUid;
 	private Long							oldId;
@@ -87,6 +90,7 @@ public class Biospecimen implements java.io.Serializable {
 	private BiospecimenStatus			status;
 	private Double							concentration;
 	private Double							amount;
+	
 
 	private Set<BioTransaction>		bioTransactions	= new HashSet<BioTransaction>(0);
 
@@ -121,6 +125,20 @@ public class Biospecimen implements java.io.Serializable {
 
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+	
+	//TODO ASAP invetigate onetoone....relationships should work still because there will only be one   --- NOW FIGURE OUT CASCADING RULES!!!!
+	//@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "biospecimen")
+	
+	
+
+	@OneToOne(fetch = FetchType.LAZY, mappedBy="biospecimen")
+	public InvCell getInvCell() {
+		return this.invCell;
+	}
+
+	public void setInvCell(InvCell invCell) {
+		this.invCell = invCell;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
