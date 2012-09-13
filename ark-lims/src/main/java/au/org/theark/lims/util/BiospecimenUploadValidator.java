@@ -79,7 +79,6 @@ public class BiospecimenUploadValidator {
 	private HashSet<Integer>		updateRows;
 	private HashSet<ArkGridCell>	errorCells;
 	private long						recordCount;
-	private long						curPos;
 	private long						srcLength					= -1;
 //	private StopWatch					timer							= null;
 	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
@@ -287,7 +286,6 @@ public class BiospecimenUploadValidator {
 			ArkBaseException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
-		curPos = 0;
 		row = 0;
 
 		InputStreamReader inputStreamReader = null;
@@ -436,7 +434,7 @@ public class BiospecimenUploadValidator {
 			ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
-		curPos = 0;
+
 		row = 1;
 
 		InputStreamReader inputStreamReader = null;
@@ -503,7 +501,7 @@ public class BiospecimenUploadValidator {
 				 * ....once we pass all tests THEN if(rowIsOK) THEN insertRows.add(row)
 				 * */	
 				
-				if (biospecimenUID == null) {
+				if (biospecimenUID == null || biospecimenUID.isEmpty() ) {
 					if(study.getAutoGenerateBiospecimenUid()){
 						//insertRows.add(row);								
 					}
@@ -558,7 +556,7 @@ public class BiospecimenUploadValidator {
 				}
 				
 				
-				if (biocollectionUID == null) {
+				if (biocollectionUID == null  || biocollectionUID.isEmpty() ) {
 					if(study.getAutoGenerateBiocollectionUid()){
 						//insertRows.add(row);								
 					}
@@ -709,17 +707,20 @@ public class BiospecimenUploadValidator {
 				String freezer = csvReader.get("FREEZER");
 				String rack = csvReader.get("RACK");
 				String box = csvReader.get("BOX");
-				String rowString = csvReader.get("TOW");
-				String columnString = csvReader.get("BOX");
+				String rowString = csvReader.get("ROW");
+				String columnString = csvReader.get("COLUMN");
 				
-				
-				//IF EVERY column has something...then
-				if ((site != null && freezer != null && rack != null && 
+				if ((site == null && freezer == null && rack == null && box == null && rowString == null && columnString == null) ||
+					(site.isEmpty() && freezer.isEmpty() && rack.isEmpty() && box.isEmpty() && rowString.isEmpty() && columnString.isEmpty())	
+					){
+						//ie; EVERYTHING IS EMPTY...in which case, we let you go ahead and don't specify where the biospec lives
+						log.debug("EVERYTHING is empty so we still create it...we just don't put it somewhere");
+				}
+				else if ((site != null && freezer != null && rack != null && 
 						box != null && rowString != null && columnString != null) &&
 					(!site.isEmpty() && !freezer.isEmpty() && !rack.isEmpty() &&
 						!box.isEmpty() && !rowString.isEmpty() && !columnString.isEmpty())	
 				) {
-					
 					InvCell invCell = iInventoryService.getInvCellByLocationNames(site, freezer, rack, box, rowString, columnString);
 					if (invCell == null) {
 						StringBuilder errorString = new StringBuilder();
@@ -739,14 +740,6 @@ public class BiospecimenUploadValidator {
 						errorCells.add(new ArkGridCell(csvReader.getIndex("COLUMN"), row));
 						insertThisRow = false;//drop out also?
 					}
-				}
-				else if ((site == null && freezer == null && rack == null && 
-						box == null && rowString == null && columnString == null) ||
-						(!site.isEmpty() && !freezer.isEmpty() && !rack.isEmpty() &&
-							!box.isEmpty() && !rowString.isEmpty() && !columnString.isEmpty())	
-					){
-					//ie; EVERYTHING IS EMPTY...in which case, we let you go ahead and don't specify where the biospec lives
-					log.debug("everything is empty so we still create it...we just don't put it somewhere");
 				}
 				else{
 					//else you have incomplete info, and we aren't cool with that;

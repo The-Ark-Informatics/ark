@@ -50,6 +50,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenStatus;
 import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.BiospecimenUidSequence;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
+import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -519,10 +520,16 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		for (Biospecimen biospecimen : insertBiospecimens) {
 
 			getSession().save(biospecimen);
-			
 			for(BioTransaction bioTransaction : biospecimen.getBioTransactions()){
-				
 				getSession().save(bioTransaction);
+			}
+
+			InvCell invCell = biospecimen.getInvCell();
+			if(invCell!=null){
+				getSession().refresh(biospecimen);
+				invCell.setBiospecimen(biospecimen);
+				invCell.setStatus("Not Empty"); // TODO constants/enum
+				getSession().saveOrUpdate(invCell);
 			}
 		}
 	}
