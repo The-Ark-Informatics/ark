@@ -150,6 +150,7 @@ public class BiospecimenUploader {
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
+				
 				log.info("At record: " + recordCount);
 				String subjectUID = csvReader.get("SUBJECTUID");
 				String biospecimenUID = csvReader.get("BIOSPECIMENUID");
@@ -237,7 +238,13 @@ public class BiospecimenUploader {
 					bioTransaction.setStatus(initialStatus);	//ensure that the initial transaction can be identified
 					bioTransactions.add(bioTransaction);
 					biospecimen.setBioTransactions(bioTransactions);
-					biospecimen.setBiospecimenUid(iLimsService.getNextGeneratedBiospecimenUID(study));
+					//validation SHOULD make sure these cases will work.  TODO:  test scripts
+					if(study.getAutoGenerateBiospecimenUid()){
+						biospecimen.setBiospecimenUid(iLimsService.getNextGeneratedBiospecimenUID(study));
+					}
+					else{
+						biospecimen.setBiospecimenUid(biospecimenUID);
+					}
 					insertBiospecimens.add(biospecimen);
 					StringBuffer sb = new StringBuffer();
 					sb.append("Biospecimen UID: ");
@@ -296,8 +303,10 @@ public class BiospecimenUploader {
 				//TODO : null checking here.  should be picked up ikn validation  JIRA 657 Created  log.info("invcell null?" + (invCell == null));
 
 				if(invCell != null && invCell.getId() != null) {
-					invCell.setBiospecimen(biospecimen);
-					updateInvCells.add(invCell);
+					biospecimen.setInvCell(invCell); //.set
+//					invCell.setBiospecimen(biospecimen);
+					
+					//updateInvCells.add(invCell);
 				}
 				
 				recordCount++;
@@ -367,8 +376,8 @@ public class BiospecimenUploader {
 
 		// Batch insert/update
 		iLimsService.batchInsertBiospecimens(insertBiospecimens);
-		iLimsService.batchUpdateBiospecimens(updateBiospecimens);
-		iLimsService.batchUpdateInvCells(updateInvCells);
+		//iLimsService.batchUpdateBiospecimens(updateBiospecimens);
+		//iLimsService.batchUpdateInvCells(updateInvCells);
 		
 		return uploadReport;
 	}
