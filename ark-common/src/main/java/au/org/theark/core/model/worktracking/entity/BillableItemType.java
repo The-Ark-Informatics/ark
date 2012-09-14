@@ -30,7 +30,6 @@ public class BillableItemType implements Serializable {
 	private String					quantityType;
 	
 	public BillableItemType() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public BillableItemType(Long id) {

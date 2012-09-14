@@ -36,7 +36,6 @@ public abstract class AbstractSearchResultPanel<T> extends Panel {
 	 */
 	public AbstractSearchResultPanel(String id) {
 		super(id);
-		// TODO Auto-generated constructor stub
 	}
 
 	public abstract PageableListView<T> buildPageableListView(IModel iModel);
