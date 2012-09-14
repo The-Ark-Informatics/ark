@@ -324,6 +324,9 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			newModel.getObject().setStudy(cpModel.getObject().getStudy());
 			newModel.getObject().getBiospecimen().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 			newModel.getObject().getBiospecimen().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
+			//TODO ASAP make this allow for non-auto-gen
+			//boolean isAutoBiospecimen = getModelObject().getLinkSubjectStudy().getStudy().getAutoGenerateBiospecimenUid();
+			//newModel.getObject().getBiospecimen().setBiospecimenUid(isAutoBiospecimen?Constants.AUTO_GENERATED:"");
 			newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
 
 			// Set the modalWindow title and content
