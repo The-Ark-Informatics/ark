@@ -62,8 +62,6 @@ public class ArkWizardIndex extends WebMarkupContainer {
 
 		@Override
 		public void onClick(AjaxRequestTarget target) {
-			// TODO Auto-generated method stub
-
 		}
 	}
 

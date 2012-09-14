@@ -224,8 +224,6 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 	}
 
 	public void cancelWizard(AjaxRequestTarget target) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
