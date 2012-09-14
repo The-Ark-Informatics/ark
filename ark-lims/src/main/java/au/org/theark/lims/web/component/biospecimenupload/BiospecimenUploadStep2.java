@@ -163,7 +163,6 @@ public class BiospecimenUploadStep2 extends AbstractWizardStepPanel {
 					@Override
 					protected void onError(AjaxRequestTarget target, Form<?> form) {
 						this.error("Unexpected Error: Download request could not be processed");
-						// TODO Auto-generated method stub
 					}
 					
 				};
