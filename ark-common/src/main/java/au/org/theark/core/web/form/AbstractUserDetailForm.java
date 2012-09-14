@@ -74,8 +74,6 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 
 			@Override
 			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
-				// TODO Auto-generated method stub
-				
 			}
 		};
 		arkCrudContainerVO.getEditButtonContainer().remove(Constants.DELETE);
