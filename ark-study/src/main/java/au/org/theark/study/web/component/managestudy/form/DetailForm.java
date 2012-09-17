@@ -310,9 +310,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 				biospecimenUidContainer.setEnabled(false);
 
 				if (autoGenerateBiospecimenUId) {
-					bioCollectionUidContainer.setEnabled(true);
+					biospecimenUidContainer.setEnabled(true);
 				}
-				target.add(bioCollectionUidContainer);
+				target.add(biospecimenUidContainer);
 			}
 		});
 		autoGenBiospecimenIdChkBox.setOutputMarkupId(true);
