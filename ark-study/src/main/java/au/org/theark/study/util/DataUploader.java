@@ -478,9 +478,18 @@ public class DataUploader {
 						boolean updateAddress = false;
 						String address1String = stringLineArray[addressLine1Index];
 						String address2String = stringLineArray[addressLine2Index];
+
+						String suburb = stringLineArray[suburbIndex];
+						String countryString = stringLineArray[countryIndex];
+						String stateString = stringLineArray[stateIndex];
+						String postCode = stringLineArray[postCodeIndex];
 						
 						if(	(address1String == null || StringUtils.isBlank(address1String)) &&
-								(address2String == null || StringUtils.isBlank(address2String)) ){
+								(address2String == null || StringUtils.isBlank(address2String)) &&
+								(suburb == null || StringUtils.isBlank(suburb)) &&
+								(postCode == null || StringUtils.isBlank(postCode)) &&
+								(countryString == null || StringUtils.isBlank(countryString)) &&
+								(stateString == null || StringUtils.isBlank(stateString)) ){
 							//then lets just jump out as there is no address to validate.  lay down to user that they must have data if they want an update
 						}
 						else{
@@ -539,13 +548,9 @@ public class DataUploader {
 								usingDefaultStatus = true;
 							}
 							String addressComments = stringLineArray[addressCommentsIndex];
-							String suburb = stringLineArray[suburbIndex];
-							
-							String countryString = stringLineArray[countryIndex];
 							Country country = findCountry(countriesPossible, countryString);
 							if(country!=null){
 								addressToAttachToPerson.setCountry(country);
-								String stateString = stringLineArray[stateIndex];
 								//TODO one option: all possible states locally and test where it matches might work...or lets see how the entity goes first, and if it hits db again! 
 								//State state = findState(statesPossible, stateString, country);
 								State state = findStateWithinThisCountry(stateString, country);
@@ -561,7 +566,6 @@ public class DataUploader {
 								uploadReport.append("Warning/Info:  Could not find country '" + countryString + " for row " + rowCount + ", but will proceed.\n");
 							}
 							
-							String postCode = stringLineArray[postCodeIndex];
 							String addressSource = stringLineArray[addressSourceIndex];
 							String dateReceivedString = stringLineArray[addressReceivedIndex];
 							String isPreferredMailingString = stringLineArray[isPreferredMailingIndex];
@@ -592,6 +596,9 @@ public class DataUploader {
 								else{
 									addressToAttachToPerson.setPreferredMailingAddress(false);
 								}
+							}
+							else{
+								addressToAttachToPerson.setPreferredMailingAddress(false);
 							}
 
 							if(usingDefaultStatus && usingDefaultType){
