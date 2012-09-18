@@ -549,7 +549,7 @@ public class CustomFieldImportValidator {
 			// At the moment, only allowed to have encodedValues for a field where fieldType == CHARACTER
 			errorMessages.add(CustomFieldValidationMessage.fieldTypeIsNotCharacterWithEncodedValue(field.getName(), field.getFieldType().getName()));
 		}
-		else if (!Pattern.matches("(\\b[\\w]+=[^;]+;)*", field.getEncodedValues())) {
+		else if (!Pattern.matches(Constants.ENCODED_VALUES_PATTERN, field.getEncodedValues())) {
 			errorMessages.add(CustomFieldValidationMessage.nonConformingEncodedValue(field.getName()));
 		}
 		else {
