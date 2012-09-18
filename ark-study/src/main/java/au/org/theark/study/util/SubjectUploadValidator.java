@@ -338,9 +338,6 @@ public class SubjectUploadValidator {
 			}
 
 			if (headerError) {
-				// Invalid file format
-				//TODO:  maybe in this case just tell them issue with headers and point them back to the template rather than trying 
-							//to recreate this in an error message that is too big to utilise anyway
 				StringBuffer stringBuffer = new StringBuffer();
 				//TODO ASAP : this should utilize the file that creates the template/requirements!
 				stringBuffer.append("Error: The specified file does not appear to conform to the expected file format.\n");
@@ -349,78 +346,8 @@ public class SubjectUploadValidator {
 				stringBuffer.append("The specified fileformat was: " + fileFormat + ".\n");
 				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n");
 				stringBuffer.append(".\n");
-				stringBuffer.append("The default format should be as follows:\n");
-				// SUBJECTUID TITLE FIRST_NAME MIDDLE_NAME LAST_NAME PREFERRED_NAME DATE_OF_BIRTH VITAL_STATUS GENDER STATUS DATE_OF_DEATH CAUSE_OF_DEATH
-				// MARITAL_STATUS PREFERRED_CONTACT EMAIL
-
-				// Column headers
-				stringBuffer.append(Constants.SUBJECTUID);
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("TITLE");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("FIRST_NAME");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("MIDDLE_NAME");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("LAST_NAME");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("PREFERRED_NAME");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("DATE_OF_BIRTH");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("VITAL_STATUS");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("GENDER");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("STATUS");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("DATE_OF_DEATH");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("CAUSE_OF_DEATH");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("MARITAL_STATUS");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("PREFERRED_CONTACT");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("EMAIL\n");
-/*
- * BUILDING_NAME	STREET_ADDRESS	SUBURB	STATE	COUNTRY	POST_CODE	ADDRESS_SOURCE	ADDRESS_STATUS	 ADDRESS_TYPE	 ADDRESS_DATE_RECEIVED	ADDRESS_COMMENTS	IS_PREFERRED_MAILING_ADDRESS	PHONE_AREA_CODE	PHONE_NUMBER	PHONE_TYPE	PHONE_STATUS	PHONE_SOURCE	PHONE_COMMENTS	SILENT
- *
- *this is the newest fields and will be such a mess no point displaying???
- *
-
-				// Column values
-				stringBuffer.append("[ABC000001]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[Mr]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[JOSEPH]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[BLOGGS]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[JOEY]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[19/02/1976]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[Alive]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[Male]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[Active]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[Single]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[P5h5one]");
-				stringBuffer.append(delimiterCharacter);
-				stringBuffer.append("[joebloggs@somewhere.com]\n");
-				stringBuffer.append("\n\nNOTE: Enclosing quotes are optional");
-*/
+				stringBuffer.append("The default format should be as follows:\n");*/
+	
 				fileValidationMessages.add(stringBuffer.toString());
 
 				for (int i = 0; i < headerColumnArray.length; i++) {
