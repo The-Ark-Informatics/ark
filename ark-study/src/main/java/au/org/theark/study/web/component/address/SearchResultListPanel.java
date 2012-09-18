@@ -163,8 +163,14 @@ public class SearchResultListPanel extends Panel {
 		};
 		String add1 = address.getAddressLineOne()!=null?address.getAddressLineOne():"";
 		String streetAdd = address.getStreetAddress()==null?"":address.getStreetAddress();
-		
-		String concat = (add1.isEmpty()?streetAdd:(add1 + " " + streetAdd) );
+
+		String concat = null;
+		if(add1.isEmpty() && streetAdd.isEmpty()){
+			concat = "no street address specified";
+		}
+		else{
+			concat = (add1.isEmpty()?streetAdd:(add1 + " " + streetAdd) );
+		}
 		//could be neatened up a little more...but that will do for now.  presentation later
 		Label nameLinkLabel = new Label(Constants.ADDRESS_LABEL, concat);
 		link.add(nameLinkLabel);
