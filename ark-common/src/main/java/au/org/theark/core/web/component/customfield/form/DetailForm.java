@@ -315,7 +315,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		//TODO : perhaps some validation on min max etc
 		
 		// TODO: Add correct validator, possibly custom with better validation message
-		fieldEncodedValuesTxtFld.add(new PatternValidator("(\\b[\\w]+=[^;]+;)*")).setLabel(
+		fieldEncodedValuesTxtFld.add(new PatternValidator(au.org.theark.core.Constants.ENCODED_VALUES_PATTERN)).setLabel(
 				new StringResourceModel("customField.encodedValues.validation", this, new Model<String>("Encoded Value definition")));
 	}
 

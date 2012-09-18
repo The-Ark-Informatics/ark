@@ -459,5 +459,5 @@ public class Constants {
 	
 	//Security permission types
 	public static final String PERMISSION_UPDATE="UPDATE";
-
+	public static final String	ENCODED_VALUES_PATTERN	= "(-?[0-9]+=[^;]+;)+";
 }
