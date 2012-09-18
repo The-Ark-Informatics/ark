@@ -194,9 +194,6 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 			target.add(form.getWizardButtonContainer());
 			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
 
-				/**
-				 * 
-				 */
 				private static final long serialVersionUID = 8692319829915212732L;
 
 				@Override
