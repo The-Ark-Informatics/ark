@@ -527,8 +527,13 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			newModel.getObject().setStudy(cpModel.getObject().getStudy());
 			newModel.getObject().getBiospecimen().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 			newModel.getObject().getBiospecimen().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
-			newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
-
+			//TODO ASAP handle this newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
+			if(getModelObject().getLinkSubjectStudy().getStudy().getAutoGenerateBiospecimenUid()){
+				newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
+			}
+			else{
+				newModel.getObject().getBiospecimen().setBiospecimenUid("");
+			}
 			showModalWindow(target, newModel); // listDetailsForm);
 		}
 		else {

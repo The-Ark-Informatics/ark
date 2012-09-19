@@ -233,7 +233,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#createBiospecimen(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void createBiospecimen(LimsVO modelObject) {
+	public void createBiospecimen(LimsVO modelObject) throws ArkSystemException {
 		Biospecimen biospecimen = modelObject.getBiospecimen();
 		iBiospecimenDao.createBiospecimen(biospecimen);
 		
@@ -265,7 +265,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#updateBiospecimen(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void updateBiospecimen(LimsVO modelObject) {
+	public void updateBiospecimen(LimsVO modelObject) throws ArkSystemException {
 		iBiospecimenDao.updateBiospecimen(modelObject.getBiospecimen());
 	}
 

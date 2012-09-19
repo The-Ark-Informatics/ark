@@ -116,11 +116,33 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		return list;
 	}
 
-	public void createBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen) {
-		String biospecimenUid = getNextGeneratedBiospecimenUID(biospecimen.getStudy());
-		if(biospecimenUid.isEmpty()) {
+	public void createBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen) throws ArkSystemException{
+		Study studyFromBiospecimen = biospecimen.getStudy();
+		Study studyToUse = null; 
+		String biospecimenUid = null;
+			
+		if(studyFromBiospecimen.getParentStudy() != null) {
+			studyToUse = studyFromBiospecimen.getParentStudy(); 
+		}
+		else {
+			studyToUse = studyFromBiospecimen;
+		}
+		if(studyToUse.getAutoGenerateBiospecimenUid()){
+			biospecimenUid = getNextGeneratedBiospecimenUID(biospecimen.getStudy());
+		}
+		else{
+			if(getBiospecimenByUid(biospecimen.getBiospecimenUid(), studyToUse) == null){
+				biospecimenUid = biospecimen.getBiospecimenUid();
+			}
+			else{
+				throw new ArkSystemException("The Biospecimen UID " + biospecimen.getBiospecimenUid() + " is not unique for the given study.  Please select a unique ID");
+			}
+		}
+		
+		if(biospecimenUid == null || biospecimenUid.isEmpty()) {
 			biospecimenUid = UniqueIdGenerator.generateUniqueId();
 		}
+		
 		biospecimen.setBiospecimenUid(biospecimenUid);
 		getSession().save(biospecimen);
 	}
@@ -129,7 +151,11 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		getSession().delete(biospecimen);
 	}
 
-	public void updateBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen) {
+	public void updateBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen) throws ArkSystemException{
+//		Biospecimen alreadyExisting = getBiospecimenByUid(biospecimen.getBiospecimenUid(), biospecimen.getStudy()) ;
+		if(doesSomeoneElseHaveThisUid(biospecimen.getBiospecimenUid(), biospecimen.getStudy(), biospecimen.getId()) ){ //ie; the uid exists BUT its not the current biospecimen itself			
+			throw new ArkSystemException("You are attempting to update a biospecimen to a UID (" + biospecimen.getBiospecimenUid() + ") that already exists.");
+		}		
 		getSession().update(biospecimen);
 	}
 
@@ -183,14 +209,14 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		return criteria;
 	}
 
-	public Biospecimen getBiospecimenByUid(String biospecimenUid, final Study study) {
+	public boolean doesSomeoneElseHaveThisUid(String biospecimenUid, final Study study, Long idToExcludeFromSearch) {
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);
 		criteria.add(Restrictions.eq("biospecimenUid", biospecimenUid));
+		criteria.add(Restrictions.ne("id", idToExcludeFromSearch));
 		if(study!=null){
 			criteria.add(Restrictions.eq("study", study));
 		}
-		Biospecimen biospecimen = (Biospecimen) criteria.uniqueResult();
-		return biospecimen;
+		return (criteria.list().size()>0);
 	}
 
 	public long getBiospecimenCount(LimsVO limsVo) {
@@ -565,6 +591,16 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		return criteria.list();
 	}
 
+	public Biospecimen getBiospecimenByUid(String biospecimenUid, final Study study) {
+		Criteria criteria = getSession().createCriteria(Biospecimen.class);
+		criteria.add(Restrictions.eq("biospecimenUid", biospecimenUid));
+		if(study!=null){
+			criteria.add(Restrictions.eq("study", study));
+		}
+		Biospecimen biospecimen = (Biospecimen) criteria.uniqueResult();
+		return biospecimen;
+	}
+
 	public List<String> getAllBiospecimenUIDs(Study study) {
 		String queryString = "select bio.biospecimenUid " +
 		"from Biospecimen bio " +
@@ -574,4 +610,6 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		query.setParameter("study", study);
 		return query.list();
 	}
+
+	
 }
