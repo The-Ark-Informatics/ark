@@ -42,6 +42,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
@@ -176,7 +177,11 @@ public class BioTransactionListPanel extends Panel {
 						// update biospecimen (qty avail)
 						Double qtyAvail = iLimsService.getQuantityAvailable(cpModel.getObject().getBiospecimen());
 						cpModel.getObject().getBiospecimen().setQuantity(qtyAvail);
-						iLimsService.updateBiospecimen(cpModel.getObject());
+						try {
+							iLimsService.updateBiospecimen(cpModel.getObject());
+						} catch (ArkSystemException e) {
+							this.error(e.getMessage());
+						}
 						
 						this.info("Successfully removed the transaction");
 						target.add(feedbackPanel);

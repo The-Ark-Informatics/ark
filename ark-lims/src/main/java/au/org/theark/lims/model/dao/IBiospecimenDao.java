@@ -63,14 +63,15 @@ public interface IBiospecimenDao {
 	 * 
 	 * @param biospecimen
 	 */
-	public void createBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen);
+	public void createBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen) throws ArkSystemException;
 
 	/**
 	 * Update a LIMS Biospecimen based on the supplied biospecimen
 	 * 
 	 * @param biospecimen
+	 * @throws ArkSystemException 
 	 */
-	public void updateBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen);
+	public void updateBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen) throws ArkSystemException;
 
 	/**
 	 * Delete a LIMS Biospecimen based on the supplied biospecimen

@@ -156,6 +156,7 @@ public class Constants {
 	public static final String	SUBJECTUIDSEQ_STUDYNAMEID					= "studyNameId";
 
 	public static final String	AUTO_GENERATED									= "Auto-generated";
+	public static final String	MANUAL_UIDS_NEXT_RELEASE									= "Manual UIDs next release";
 	
 
 	// UploadVO
