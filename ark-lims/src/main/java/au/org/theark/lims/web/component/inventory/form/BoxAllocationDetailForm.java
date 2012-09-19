@@ -171,7 +171,11 @@ public class BoxAllocationDetailForm extends AbstractInventoryDetailForm<LimsVO>
 		
 						containerForm.getModelObject().setInvCell(invCell);
 						iInventoryService.updateInvCell(invCell);
-						iLimsService.updateBiospecimen(containerForm.getModelObject());
+						try {
+							iLimsService.updateBiospecimen(containerForm.getModelObject());
+						} catch (ArkSystemException e1) {
+							this.error(e1.getMessage());
+						}
 		
 						// Refresh the gridpanel
 						gridBoxPanel = new GridBoxPanel("gridBoxPanel", containerForm.getModelObject(), modalWindow, false);

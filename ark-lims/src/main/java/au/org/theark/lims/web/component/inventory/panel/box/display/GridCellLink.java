@@ -127,7 +127,11 @@ public class GridCellLink extends Panel {
 			log.error(e.getMessage());
 		}
 		iInventoryService.updateInvCell(updateInvCell);
-		iLimsService.updateBiospecimen(limsVo);
+		try {
+			iLimsService.updateBiospecimen(limsVo);
+		} catch (ArkSystemException e) {
+			this.error(e.getMessage());
+		}
 		modalWindow.close(target);
 	}
 

@@ -33,6 +33,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.AccessRequest;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.BioTransactionStatus;
@@ -143,7 +144,11 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 						// update biospecimen (qty avail)
 						qtyAvail = iLimsService.getQuantityAvailable(cpModel.getObject().getBiospecimen());
 						cpModel.getObject().getBiospecimen().setQuantity(qtyAvail);
-						iLimsService.updateBiospecimen(cpModel.getObject());
+						try {
+							iLimsService.updateBiospecimen(cpModel.getObject());
+						} catch (ArkSystemException e) {
+							this.error(e.getMessage());
+						}
 						
 						// refresh transaction form
 						BioTransaction bioTransaction = new BioTransaction();

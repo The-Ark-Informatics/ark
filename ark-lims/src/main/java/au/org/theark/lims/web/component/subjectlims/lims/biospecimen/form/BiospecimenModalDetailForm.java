@@ -172,6 +172,16 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	
 	public void onBeforeRender() {
 		refreshEntityFromBackend();
+		Biospecimen biospecimen = this.getModelObject().getBiospecimen();
+		if(biospecimen != null){
+			Study study = biospecimen.getStudy();
+			if(study!=null && !study.getAutoGenerateBiospecimenUid()){
+				biospecimenUidTxtFld.setEnabled(true);
+			}
+			else{
+				biospecimenUidTxtFld.setEnabled(false);
+			}
+		}
 		super.onBeforeRender();
 	};
 	
@@ -235,9 +245,18 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				// Set barcoded flag to true, as barcode has been printed
 				cpModel.getObject().getBiospecimen().setBarcoded(true);
 				// Update/refresh
-				iLimsService.updateBiospecimen(cpModel.getObject());
-				target.add(barcodedChkBox);
-				target.add(barcodeImage);
+				
+				try {
+					iLimsService.updateBiospecimen(cpModel.getObject());
+					target.add(barcodedChkBox);
+					target.add(barcodeImage);
+				} 
+				catch (ArkSystemException e) {
+					this.error(e.getMessage());
+					//performSaveFailedActions();
+					//processErrors(target);
+					//return;
+				}
 			}
 
 			@Override
@@ -253,8 +272,13 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				// Set barcoded flag to true, as straw barcode has been printed
 				cpModel.getObject().getBiospecimen().setBarcoded(true);
 				// Update/refresh
-				iLimsService.updateBiospecimen(cpModel.getObject());
-				target.add(barcodedChkBox);
+				try {
+					iLimsService.updateBiospecimen(cpModel.getObject());
+					target.add(barcodedChkBox);
+				} 
+				catch (ArkSystemException e) {
+					this.error(e.getMessage());
+				}
 			}
 		};
 		biospecimenbuttonsPanel.setVisible(getModelObject().getBiospecimen().getId() != null);
@@ -650,7 +674,15 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				currentUser = SecurityUtils.getSubject();
 				cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
 
-				iLimsService.createBiospecimen(cpModel.getObject());
+				try {
+					iLimsService.createBiospecimen(cpModel.getObject());
+				}
+				catch (ArkSystemException e) {
+					this.error(e.getMessage());
+					performSaveFailedActions();
+					saveOk = false;
+					//return;
+				}
 				
 				// Update location
 				if(cpModel.getObject().getBiospecimenLocationVO().getIsAllocated()) {
@@ -707,6 +739,12 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				catch (EntityNotFoundException e) {
 					log.error(e.getMessage());
 				}
+				catch (ArkSystemException e) {
+					this.error(e.getMessage());
+					performSaveFailedActions();
+					//processErrors(target);
+					saveOk = false;
+				}
 			}
 			else if (cpModel.getObject().getBiospecimenProcessing().equalsIgnoreCase(au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_ALIQUOTING)) {
 				// Aliquot the biospecimen
@@ -753,6 +791,13 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				catch (EntityNotFoundException e) {
 					log.error(e.getMessage());
 				}
+				catch (ArkSystemException e) {
+					this.error(e.getMessage());
+					performSaveFailedActions();
+					//processErrors(target);
+					saveOk = false;
+					//return;
+				}
 			}
 		}
 		else {
@@ -767,7 +812,16 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			cpModel.getObject().getBiospecimen().setQuantity(iLimsService.getQuantityAvailable(cpModel.getObject().getBiospecimen()));
 			
 			// Update biospecimen
-			iLimsService.updateBiospecimen(cpModel.getObject());
+			try {
+				iLimsService.updateBiospecimen(cpModel.getObject());
+			} 
+			catch (ArkSystemException e) {
+				this.error(e.getMessage());
+				performSaveFailedActions();
+				//processErrors(target);
+				saveOk = false;
+				//return;
+			}
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
 
 			// Hide/show barcode image
@@ -816,6 +870,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		}
 
 		processErrors(target);
+	}
+
+	private void performSaveFailedActions() {
+		// TODO Auto-generated method stub - Chris :  what did you want to happen in this instance
+		
 	}
 
 	@Override
@@ -885,6 +944,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 			// Go straight into edit mode
 			onViewEdit(target, BiospecimenModalDetailForm.this);
+		}
+		catch (ArkSystemException e) {
+			log.error(e.getMessage());
 		}
 		catch (IllegalAccessException e) {
 			log.error(e.getMessage());

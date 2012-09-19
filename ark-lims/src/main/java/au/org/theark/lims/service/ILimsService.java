@@ -120,15 +120,16 @@ public interface ILimsService {
 	 * @param modelObject
 	 *           the LimsVO object
 	 */
-	public void createBiospecimen(LimsVO modelObject);
+	public void createBiospecimen(LimsVO modelObject) throws ArkSystemException;
 
 	/**
 	 * Update a LIMS biospecimen based on the supplied LimsVO
 	 * 
 	 * @param modelObject
 	 *           the LimsVO object
+	 * @throws ArkSystemException 
 	 */
-	public void updateBiospecimen(LimsVO modelObject);
+	public void updateBiospecimen(LimsVO modelObject) throws ArkSystemException;
 
 	/**
 	 * Delete a LIMS biospecimen based on the supplied LimsVO

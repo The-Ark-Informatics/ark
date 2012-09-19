@@ -364,6 +364,8 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	}
 
 	protected void onNew(AjaxRequestTarget target) {
+		log.error("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTHIS SHOULD NOT BE IN USE RIGHT NOW\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		/*
 		// Needs CREATE permission AND a BioCollection to select from
 		boolean hasBioCollections = false;
 		
@@ -401,15 +403,19 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 			newModel.getObject().getBiospecimen().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 			newModel.getObject().getBiospecimen().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
-			newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
-
+			if(getModelObject().getLinkSubjectStudy().getStudy().getAutoGenerateBiospecimenUid()){
+				newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
+			}
+			else{
+				newModel.getObject().getBiospecimen().setBiospecimenUid("not????");//TODO ASAP: Or constants.SOMETHING_THAT_SAYS_FILL_THIS_OUT...which we look for and don't permit???
+			}
 			showModalWindow(target, newModel); // listDetailsForm);
 		}
 		else {
 			this.error("No Biospecimen Collections exist. Please create at least one Collection.");
 		}
 		// refresh the feedback messages
-		target.add(feedbackPanel);
+		target.add(feedbackPanel);*/
 	}
 
 	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<LimsVO> cpModel) {
