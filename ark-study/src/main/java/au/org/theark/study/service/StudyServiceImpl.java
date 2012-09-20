@@ -95,6 +95,7 @@ import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.util.DataUploader;
+import au.org.theark.study.util.LinkSubjectStudyConsentHistoryComparator;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.Constants;
 
@@ -421,10 +422,16 @@ public class StudyServiceImpl implements IStudyService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException {
+	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException, EntityNotFoundException{
+		LinkSubjectStudy linkSubjectStudy = iStudyDao.getLinkSubjectStudy(subjectVO.getLinkSubjectStudy().getId());
+			
+		LinkSubjectStudyConsentHistoryComparator comparator=new LinkSubjectStudyConsentHistoryComparator();
+		if(comparator.compare(linkSubjectStudy,subjectVO.getLinkSubjectStudy())!=0){
+			updateLssConsentHistory(subjectVO.getLinkSubjectStudy());
+		}
+		
 		iStudyDao.updateSubject(subjectVO);
-		updateLssConsentHistory(subjectVO.getLinkSubjectStudy());
-
+		
 		assignChildStudies(subjectVO);
 
 		AuditHistory ah = new AuditHistory();
