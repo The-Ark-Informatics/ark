@@ -253,9 +253,6 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				} 
 				catch (ArkSystemException e) {
 					this.error(e.getMessage());
-					//performSaveFailedActions();
-					//processErrors(target);
-					//return;
 				}
 			}
 
@@ -665,217 +662,187 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	protected void onSave(AjaxRequestTarget target) {
 		boolean saveOk = true;
 		org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
-
-		if (cpModel.getObject().getBiospecimen().getId() == null) {
-			// Save/Process/Aliquot
-			if (cpModel.getObject().getBiospecimenProcessing().isEmpty()) {
-				// Normal Save functionality
-				// Initial transaction detail
-				currentUser = SecurityUtils.getSubject();
-				cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
-
-				try {
+		try{
+			if (cpModel.getObject().getBiospecimen().getId() == null) {
+				// Save/Process/Aliquot
+				if (cpModel.getObject().getBiospecimenProcessing().isEmpty()) {
+					// Normal Save functionality
+					// Initial transaction detail
+					currentUser = SecurityUtils.getSubject();
+					cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
+	
 					iLimsService.createBiospecimen(cpModel.getObject());
+										
+					// Update location
+					if(cpModel.getObject().getBiospecimenLocationVO().getIsAllocated()) {
+						if(cpModel.getObject().getInvCell() != null && cpModel.getObject().getInvCell().getBiospecimen() != null) {
+							iInventoryService.updateInvCell(cpModel.getObject().getInvCell());
+						}
+					}
+					this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
+					setQuantityLabel();
 				}
-				catch (ArkSystemException e) {
-					this.error(e.getMessage());
-					performSaveFailedActions();
-					saveOk = false;
-					//return;
+				else if (cpModel.getObject().getBiospecimenProcessing().equalsIgnoreCase(au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_PROCESSING)) {
+					// Process the biospecimen
+					try {
+						LimsVO limsVo = cpModel.getObject();
+						Biospecimen biospecimen = limsVo.getBiospecimen();
+						BioTransaction bioTransaction = limsVo.getBioTransaction();
+						Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParent().getId());
+	
+						if (bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
+							StringBuffer errorMessage = new StringBuffer();
+							
+							errorMessage.append("Cannot process more than ");
+							errorMessage.append(parentBiospecimen.getQuantity());
+							errorMessage.append(parentBiospecimen.getUnit().getName());
+							errorMessage.append(" of the parent biospecimen");
+							
+							this.error(errorMessage);
+							saveOk = false;
+						}
+						else {
+							// Process the biospecimen and it's parent
+							iLimsService.createBiospecimen(limsVo);
+	
+							// Add parent transaction
+							LimsVO parentLimsVo = new LimsVO();
+							parentLimsVo.setBiospecimen(parentBiospecimen);
+							parentLimsVo.getBioTransaction().setId(null);
+							parentLimsVo.getBioTransaction().setBiospecimen(parentBiospecimen);
+							parentLimsVo.getBioTransaction().setTransactionDate(Calendar.getInstance().getTime());
+							parentLimsVo.getBioTransaction().setQuantity(bioTransaction.getQuantity());
+							parentLimsVo.getBioTransaction().setReason("Processed for: " + biospecimen.getBiospecimenUid());
+							parentLimsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
+	
+							// NOTE: Removing from parent is negative-value transaction
+							parentLimsVo.getBioTransaction().setQuantity(bioTransaction.getQuantity() * -1);
+							BioTransactionStatus bioTransactionStatus = iLimsService.getBioTransactionStatusByName("Processed");
+							parentLimsVo.getBioTransaction().setStatus(bioTransactionStatus);
+							iLimsService.createBioTransaction(parentLimsVo);
+							
+							this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
+							setQuantityLabel();
+						}
+					}
+					catch (EntityNotFoundException e) {
+						log.error(e.getMessage());
+					}
 				}
-				
+				else if (cpModel.getObject().getBiospecimenProcessing().equalsIgnoreCase(au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_ALIQUOTING)) {
+					// Aliquot the biospecimen
+					try {
+						LimsVO limsVo = cpModel.getObject();
+						Biospecimen biospecimen = limsVo.getBiospecimen();
+						BioTransaction bioTransaction = limsVo.getBioTransaction();
+						Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParent().getId());
+	
+						if (bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
+							StringBuffer errorMessage = new StringBuffer();
+							
+							errorMessage.append("Cannot aliquot more than ");
+							errorMessage.append(parentBiospecimen.getQuantity());
+							errorMessage.append(parentBiospecimen.getUnit().getName());
+							errorMessage.append(" of the parent biospecimen");
+							
+							this.error(errorMessage);
+							saveOk = false;
+						}
+						else {
+							// Aliquot the biospecimen and it's parent
+							iLimsService.createBiospecimen(limsVo);
+	
+							// Add parent transaction
+							LimsVO parentLimsVo = new LimsVO();
+							parentLimsVo.setBiospecimen(parentBiospecimen);
+							parentLimsVo.getBioTransaction().setId(null);
+							parentLimsVo.getBioTransaction().setBiospecimen(parentBiospecimen);
+							parentLimsVo.getBioTransaction().setTransactionDate(Calendar.getInstance().getTime());
+							parentLimsVo.getBioTransaction().setReason("Sub-Aliquot for: " + biospecimen.getBiospecimenUid());
+							parentLimsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
+	
+							// NOTE: Removing from parent is negative-value transaction
+							parentLimsVo.getBioTransaction().setQuantity(bioTransaction.getQuantity() * -1);
+							BioTransactionStatus bioTransactionStatus = iLimsService.getBioTransactionStatusByName("Aliquoted");
+							parentLimsVo.getBioTransaction().setStatus(bioTransactionStatus);
+							iLimsService.createBioTransaction(parentLimsVo);
+							
+							this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
+							setQuantityLabel();
+						}
+					}
+					catch (EntityNotFoundException e) {
+						log.error(e.getMessage());
+					}
+				}
+			}
+			else {
 				// Update location
 				if(cpModel.getObject().getBiospecimenLocationVO().getIsAllocated()) {
 					if(cpModel.getObject().getInvCell() != null && cpModel.getObject().getInvCell().getBiospecimen() != null) {
 						iInventoryService.updateInvCell(cpModel.getObject().getInvCell());
 					}
 				}
-				this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
+				
+				// Update qty avail
+				cpModel.getObject().getBiospecimen().setQuantity(iLimsService.getQuantityAvailable(cpModel.getObject().getBiospecimen()));
+				
+				// Update biospecimen
+				iLimsService.updateBiospecimen(cpModel.getObject());
+				
+				this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
+	
+				// Hide/show barcode image
+				barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
+				target.add(barcodeImage);
 				setQuantityLabel();
 			}
-			else if (cpModel.getObject().getBiospecimenProcessing().equalsIgnoreCase(au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_PROCESSING)) {
-				// Process the biospecimen
-				try {
-					LimsVO limsVo = cpModel.getObject();
-					Biospecimen biospecimen = limsVo.getBiospecimen();
-					BioTransaction bioTransaction = limsVo.getBioTransaction();
-					Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParent().getId());
-
-					if (bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
-						StringBuffer errorMessage = new StringBuffer();
-						
-						errorMessage.append("Cannot process more than ");
-						errorMessage.append(parentBiospecimen.getQuantity());
-						errorMessage.append(parentBiospecimen.getUnit().getName());
-						errorMessage.append(" of the parent biospecimen");
-						
-						this.error(errorMessage);
-						saveOk = false;
-					}
-					else {
-						// Process the biospecimen and it's parent
-						iLimsService.createBiospecimen(limsVo);
-
-						// Add parent transaction
-						LimsVO parentLimsVo = new LimsVO();
-						parentLimsVo.setBiospecimen(parentBiospecimen);
-						parentLimsVo.getBioTransaction().setId(null);
-						parentLimsVo.getBioTransaction().setBiospecimen(parentBiospecimen);
-						parentLimsVo.getBioTransaction().setTransactionDate(Calendar.getInstance().getTime());
-						parentLimsVo.getBioTransaction().setQuantity(bioTransaction.getQuantity());
-						parentLimsVo.getBioTransaction().setReason("Processed for: " + biospecimen.getBiospecimenUid());
-						parentLimsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
-
-						// NOTE: Removing from parent is negative-value transaction
-						parentLimsVo.getBioTransaction().setQuantity(bioTransaction.getQuantity() * -1);
-						BioTransactionStatus bioTransactionStatus = iLimsService.getBioTransactionStatusByName("Processed");
-						parentLimsVo.getBioTransaction().setStatus(bioTransactionStatus);
-						iLimsService.createBioTransaction(parentLimsVo);
-						
-						this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
-						setQuantityLabel();
-					}
-				}
-				catch (EntityNotFoundException e) {
-					log.error(e.getMessage());
-				}
-				catch (ArkSystemException e) {
-					this.error(e.getMessage());
-					performSaveFailedActions();
-					//processErrors(target);
-					saveOk = false;
-				}
-			}
-			else if (cpModel.getObject().getBiospecimenProcessing().equalsIgnoreCase(au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_ALIQUOTING)) {
-				// Aliquot the biospecimen
-				try {
-					LimsVO limsVo = cpModel.getObject();
-					Biospecimen biospecimen = limsVo.getBiospecimen();
-					BioTransaction bioTransaction = limsVo.getBioTransaction();
-					Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParent().getId());
-
-					if (bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
-						StringBuffer errorMessage = new StringBuffer();
-						
-						errorMessage.append("Cannot aliquot more than ");
-						errorMessage.append(parentBiospecimen.getQuantity());
-						errorMessage.append(parentBiospecimen.getUnit().getName());
-						errorMessage.append(" of the parent biospecimen");
-						
-						this.error(errorMessage);
-						saveOk = false;
-					}
-					else {
-						// Aliquot the biospecimen and it's parent
-						iLimsService.createBiospecimen(limsVo);
-
-						// Add parent transaction
-						LimsVO parentLimsVo = new LimsVO();
-						parentLimsVo.setBiospecimen(parentBiospecimen);
-						parentLimsVo.getBioTransaction().setId(null);
-						parentLimsVo.getBioTransaction().setBiospecimen(parentBiospecimen);
-						parentLimsVo.getBioTransaction().setTransactionDate(Calendar.getInstance().getTime());
-						parentLimsVo.getBioTransaction().setReason("Sub-Aliquot for: " + biospecimen.getBiospecimenUid());
-						parentLimsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
-
-						// NOTE: Removing from parent is negative-value transaction
-						parentLimsVo.getBioTransaction().setQuantity(bioTransaction.getQuantity() * -1);
-						BioTransactionStatus bioTransactionStatus = iLimsService.getBioTransactionStatusByName("Aliquoted");
-						parentLimsVo.getBioTransaction().setStatus(bioTransactionStatus);
-						iLimsService.createBioTransaction(parentLimsVo);
-						
-						this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
-						setQuantityLabel();
-					}
-				}
-				catch (EntityNotFoundException e) {
-					log.error(e.getMessage());
-				}
-				catch (ArkSystemException e) {
-					this.error(e.getMessage());
-					performSaveFailedActions();
-					//processErrors(target);
-					saveOk = false;
-					//return;
-				}
-			}
-		}
-		else {
-			// Update location
-			if(cpModel.getObject().getBiospecimenLocationVO().getIsAllocated()) {
-				if(cpModel.getObject().getInvCell() != null && cpModel.getObject().getInvCell().getBiospecimen() != null) {
-					iInventoryService.updateInvCell(cpModel.getObject().getInvCell());
-				}
+	
+			// Allow the Biospecimen custom data to be saved any time save is performed
+			if (biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel) {
+				((BiospecimenCustomDataDataViewPanel) biospecimenCFDataEntryPanel).saveCustomData();
 			}
 			
-			// Update qty avail
-			cpModel.getObject().getBiospecimen().setQuantity(iLimsService.getQuantityAvailable(cpModel.getObject().getBiospecimen()));
-			
-			// Update biospecimen
-			try {
-				iLimsService.updateBiospecimen(cpModel.getObject());
-			} 
-			catch (ArkSystemException e) {
-				this.error(e.getMessage());
-				performSaveFailedActions();
-				//processErrors(target);
-				saveOk = false;
-				//return;
+			// refresh the custom field data entry panel (if necessary)
+			if (initialiseBiospecimenCFDataEntry()) {
+				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
 			}
-			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
-
-			// Hide/show barcode image
-			barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
-			target.add(barcodeImage);
-			setQuantityLabel();
-		}
-
-		// Allow the Biospecimen custom data to be saved any time save is performed
-		if (biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel) {
-			((BiospecimenCustomDataDataViewPanel) biospecimenCFDataEntryPanel).saveCustomData();
-		}
-		
-		// refresh the custom field data entry panel (if necessary)
-		if (initialiseBiospecimenCFDataEntry()) {
-			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
-		}
-		
-		// refresh the bio transactions (if necessary)
-		if (initialiseBioTransactionListPanel()) {
-			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
-		}
-		
-		// refresh the location panel
-		if(initialiseBiospecimenLocationPanel()) {
-			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenLocationPanel);
-		}
-
-		if (saveOk) {
-			// Disable initial transaction details, and hide inital quantity text box
-			bioTransactionDetailWmc.setEnabled(false);
-			bioTransactionQuantityTxtFld.setVisible(false);
-			quantityTxtFld.setVisible(true);
-			//quantityTxtFld.setModelObject(bioTransactionQuantityTxtFld.getModelObject());
-			target.add(bioTransactionDetailWmc);
-
-			barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
-			target.add(barcodeImage);
-
-			// Enable/re-enable buttons panel
-			initialiseBiospecimenButtonsPanel();
 			
-			target.add(biospecimenbuttonsPanel);
-
-			onSavePostProcess(target);
+			// refresh the bio transactions (if necessary)
+			if (initialiseBioTransactionListPanel()) {
+				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
+			}
+			
+			// refresh the location panel
+			if(initialiseBiospecimenLocationPanel()) {
+				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenLocationPanel);
+			}
+	
+			if (saveOk) {
+				// Disable initial transaction details, and hide inital quantity text box
+				bioTransactionDetailWmc.setEnabled(false);
+				bioTransactionQuantityTxtFld.setVisible(false);
+				quantityTxtFld.setVisible(true);
+				//quantityTxtFld.setModelObject(bioTransactionQuantityTxtFld.getModelObject());
+				target.add(bioTransactionDetailWmc);
+	
+				barcodeImage.setVisible(cpModel.getObject().getBiospecimen().getBarcoded());
+				target.add(barcodeImage);
+	
+				// Enable/re-enable buttons panel
+				initialiseBiospecimenButtonsPanel();
+				
+				target.add(biospecimenbuttonsPanel);
+	
+				onSavePostProcess(target);
+			}
 		}
-
+		catch (ArkSystemException e) {
+			this.error(e.getMessage());
+		}
 		processErrors(target);
 	}
 
-	private void performSaveFailedActions() {
-		// TODO Auto-generated method stub - Chris :  what did you want to happen in this instance
-		
-	}
 
 	@Override
 	protected void onClose(AjaxRequestTarget target) {

@@ -80,10 +80,10 @@ public interface ILimsService {
 	 * @param modelObject
 	 *           the LimsVO object
 	 */
-	public void createBioCollection(LimsVO modelObject);
+	public void createBioCollection(LimsVO modelObject) throws ArkSystemException;
 
 
-	public BioCollection createBioCollection(BioCollection modelObject);
+	public BioCollection createBioCollection(BioCollection modelObject) throws ArkSystemException;
 	
 	/**
 	 * Search the database for a list of BioCollections based on the supplied BioCollection
