@@ -154,12 +154,12 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#createCollection(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void createBioCollection(LimsVO modelObject) {
+	public void createBioCollection(LimsVO modelObject) throws ArkSystemException {
 		log.debug("Creating bioCollection: " + modelObject.getBioCollection().getName());
 		iBioCollectionDao.createBioCollection(modelObject.getBioCollection());
 	}
 
-	public BioCollection createBioCollection(BioCollection modelObject) {
+	public BioCollection createBioCollection(BioCollection modelObject)  throws ArkSystemException {
 		return iBioCollectionDao.createBioCollection(modelObject);
 	}
 
