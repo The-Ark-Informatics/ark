@@ -44,6 +44,7 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
 
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -517,6 +518,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 			catch (ArkUniqueException e) {
 				this.error("Subject UID must be unique.");
+			}
+			catch(EntityNotFoundException enf){
+				this.error("Cannot found the selected Subject.");
 			}
 		}
 		processErrors(target);
