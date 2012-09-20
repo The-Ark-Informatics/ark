@@ -103,7 +103,10 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 	public boolean doesSomeoneElseHaveThisUid(String biocollectionUid, final Study study, Long idToExcludeFromSearch) {
 		Criteria criteria = getSession().createCriteria(BioCollection.class);
 		criteria.add(Restrictions.eq("name", biocollectionUid));
-		criteria.add(Restrictions.ne("id", idToExcludeFromSearch));
+		if(idToExcludeFromSearch!=null){
+			criteria.add(Restrictions.ne("id", idToExcludeFromSearch));	
+		}
+
 		if(study!=null){
 			criteria.add(Restrictions.eq("study", study));
 		}
@@ -211,7 +214,11 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		getSession().delete(bioCollection);
 	}
 
-	public void updateBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection) {
+	public void updateBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection) throws ArkSystemException {
+		if(doesSomeoneElseHaveThisUid(bioCollection.getName(), bioCollection.getStudy(), bioCollection.getId())){
+			throw new ArkSystemException("The name '" + bioCollection.getName() +  "' already exists within this study.  Please give this biocollection a unique name");
+		}
+		
 		getSession().update(bioCollection);
 	}
 
