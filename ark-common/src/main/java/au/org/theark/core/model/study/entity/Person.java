@@ -385,4 +385,162 @@ public class Person implements java.io.Serializable {
 		this.dateLastKnownAlive = dateLastKnownAlive;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((addresses == null) ? 0 : addresses.hashCode());
+		result = prime * result
+				+ ((causeOfDeath == null) ? 0 : causeOfDeath.hashCode());
+		result = prime
+				* result
+				+ ((dateLastKnownAlive == null) ? 0 : dateLastKnownAlive
+						.hashCode());
+		result = prime * result
+				+ ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
+		result = prime * result
+				+ ((dateOfDeath == null) ? 0 : dateOfDeath.hashCode());
+		result = prime * result
+				+ ((firstName == null) ? 0 : firstName.hashCode());
+		result = prime * result
+				+ ((genderType == null) ? 0 : genderType.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result
+				+ ((lastName == null) ? 0 : lastName.hashCode());
+		result = prime * result
+				+ ((maritalStatus == null) ? 0 : maritalStatus.hashCode());
+		result = prime * result
+				+ ((middleName == null) ? 0 : middleName.hashCode());
+		result = prime * result
+				+ ((otherEmail == null) ? 0 : otherEmail.hashCode());
+		result = prime
+				* result
+				+ ((personContactMethod == null) ? 0 : personContactMethod
+						.hashCode());
+		result = prime
+				* result
+				+ ((personLastnameHistory == null) ? 0 : personLastnameHistory
+						.hashCode());
+		result = prime * result + ((phones == null) ? 0 : phones.hashCode());
+		result = prime * result
+				+ ((preferredEmail == null) ? 0 : preferredEmail.hashCode());
+		result = prime * result
+				+ ((preferredName == null) ? 0 : preferredName.hashCode());
+		result = prime * result
+				+ ((titleType == null) ? 0 : titleType.hashCode());
+		result = prime * result
+				+ ((vitalStatus == null) ? 0 : vitalStatus.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Person other = (Person) obj;
+		if (addresses == null) {
+			if (other.addresses != null)
+				return false;
+		} else if (!addresses.equals(other.addresses))
+			return false;
+		if (causeOfDeath == null) {
+			if (other.causeOfDeath != null)
+				return false;
+		} else if (!causeOfDeath.equals(other.causeOfDeath))
+			return false;
+		if (dateLastKnownAlive == null) {
+			if (other.dateLastKnownAlive != null)
+				return false;
+		} else if (!dateLastKnownAlive.equals(other.dateLastKnownAlive))
+			return false;
+		if (dateOfBirth == null) {
+			if (other.dateOfBirth != null)
+				return false;
+		} else if (!dateOfBirth.equals(other.dateOfBirth))
+			return false;
+		if (dateOfDeath == null) {
+			if (other.dateOfDeath != null)
+				return false;
+		} else if (!dateOfDeath.equals(other.dateOfDeath))
+			return false;
+		if (firstName == null) {
+			if (other.firstName != null)
+				return false;
+		} else if (!firstName.equals(other.firstName))
+			return false;
+		if (genderType == null) {
+			if (other.genderType != null)
+				return false;
+		} else if (!genderType.equals(other.genderType))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (lastName == null) {
+			if (other.lastName != null)
+				return false;
+		} else if (!lastName.equals(other.lastName))
+			return false;
+		if (maritalStatus == null) {
+			if (other.maritalStatus != null)
+				return false;
+		} else if (!maritalStatus.equals(other.maritalStatus))
+			return false;
+		if (middleName == null) {
+			if (other.middleName != null)
+				return false;
+		} else if (!middleName.equals(other.middleName))
+			return false;
+		if (otherEmail == null) {
+			if (other.otherEmail != null)
+				return false;
+		} else if (!otherEmail.equals(other.otherEmail))
+			return false;
+		if (personContactMethod == null) {
+			if (other.personContactMethod != null)
+				return false;
+		} else if (!personContactMethod.equals(other.personContactMethod))
+			return false;
+		if (personLastnameHistory == null) {
+			if (other.personLastnameHistory != null)
+				return false;
+		} else if (!personLastnameHistory.equals(other.personLastnameHistory))
+			return false;
+		if (phones == null) {
+			if (other.phones != null)
+				return false;
+		} else if (!phones.equals(other.phones))
+			return false;
+		if (preferredEmail == null) {
+			if (other.preferredEmail != null)
+				return false;
+		} else if (!preferredEmail.equals(other.preferredEmail))
+			return false;
+		if (preferredName == null) {
+			if (other.preferredName != null)
+				return false;
+		} else if (!preferredName.equals(other.preferredName))
+			return false;
+		if (titleType == null) {
+			if (other.titleType != null)
+				return false;
+		} else if (!titleType.equals(other.titleType))
+			return false;
+		if (vitalStatus == null) {
+			if (other.vitalStatus != null)
+				return false;
+		} else if (!vitalStatus.equals(other.vitalStatus))
+			return false;
+		return true;
+	}
+	
+	
+
 }
