@@ -111,21 +111,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 			}
 		}		
 	}
-	/*
-	public void onAfterRender(){
-		
-		log.info("sup");
 
-		Study study = this.getModelObject().getLinkSubjectStudy().getStudy();
-		Study studyDirect = this.getModelObject().getStudy();
-		if(study!=null && !study.getAutoGenerateBiocollectionUid()){
-			nameTxtFld.setEnabled(true);	
-		}
-		else{
-			nameTxtFld.setEnabled(false);
-		}
-		super.afterRender();
-	}*/
 
 	public void onBeforeRender(){
 		Study study = this.getModelObject().getBioCollection().getStudy();
@@ -227,38 +213,41 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 
 	@Override
 	protected void onSave(AjaxRequestTarget target) {
-		if (cpModel.getObject().getBioCollection().getId() == null) {
-			// Save
-			
-			try {
+
+		try {
+			if (cpModel.getObject().getBioCollection().getId() == null) {
+				// Save
+				
 				iLimsService.createBioCollection(cpModel.getObject());
-			} catch (ArkSystemException e) {
-				this.error(e.getMessage());
+				
+				this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getName() + " was created successfully");
+				
 			}
-			this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getName() + " was created successfully");
+			else {
+				// Update
+				iLimsService.updateBioCollection(cpModel.getObject());
+				this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getName() + " was updated successfully");
+				
+			}
+			if (bioCollectionCFDataEntryPanel instanceof BioCollectionCustomDataDataViewPanel) {
+				((BioCollectionCustomDataDataViewPanel) bioCollectionCFDataEntryPanel).saveCustomData();
+			}
+			// refresh the CF data entry panel (if necessary)
+			if (initialiseBioCollectionCFDataEntry() == true) {
+				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioCollectionCFDataEntryPanel);
+			}
+			
 			if (target != null) {
-				processErrors(target);
+				onSavePostProcess(target);
 			}
-		}
-		else {
-			// Update
-			iLimsService.updateBioCollection(cpModel.getObject());
-			this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getName() + " was updated successfully");
-			if (target != null) {
-				processErrors(target);
-			}
-		}
-		if (bioCollectionCFDataEntryPanel instanceof BioCollectionCustomDataDataViewPanel) {
-			((BioCollectionCustomDataDataViewPanel) bioCollectionCFDataEntryPanel).saveCustomData();
-		}
-		// refresh the CF data entry panel (if necessary)
-		if (initialiseBioCollectionCFDataEntry() == true) {
-			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioCollectionCFDataEntryPanel);
+		} catch (ArkSystemException e) {
+			this.error(e.getMessage());
 		}
 		
 		if (target != null) {
-			onSavePostProcess(target);
+			processErrors(target);
 		}
+		
 	}
 
 	@Override

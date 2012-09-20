@@ -61,8 +61,9 @@ public interface IBioCollectionDao {
 	 * Update a LIMS collection based on the supplied limsCollection
 	 * 
 	 * @param limsCollection
+	 * @throws ArkSystemException 
 	 */
-	public void updateBioCollection(au.org.theark.core.model.lims.entity.BioCollection limsCollection);
+	public void updateBioCollection(au.org.theark.core.model.lims.entity.BioCollection limsCollection) throws ArkSystemException;
 
 	/**
 	 * Delete a LIMS collection based on the supplied limsCollection

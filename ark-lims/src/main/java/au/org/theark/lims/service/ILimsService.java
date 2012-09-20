@@ -71,8 +71,9 @@ public interface ILimsService {
 	 * 
 	 * @param modelObject
 	 *           the LimsVO object
+	 * @throws ArkSystemException 
 	 */
-	public void updateBioCollection(LimsVO modelObject);
+	public void updateBioCollection(LimsVO modelObject) throws ArkSystemException;
 
 	/**
 	 * Create a LIMS collection based on the supplied LimsVO

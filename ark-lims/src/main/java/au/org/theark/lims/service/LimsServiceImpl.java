@@ -205,7 +205,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#updateCollection(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void updateBioCollection(LimsVO modelObject) {
+	public void updateBioCollection(LimsVO modelObject) throws ArkSystemException {
 		log.debug("Updating bioCollection: " + modelObject.getBioCollection().getName());
 		iBioCollectionDao.updateBioCollection(modelObject.getBioCollection());
 	}
