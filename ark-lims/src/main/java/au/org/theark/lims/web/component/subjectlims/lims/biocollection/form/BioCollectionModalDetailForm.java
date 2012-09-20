@@ -32,11 +32,16 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -106,7 +111,34 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 			}
 		}		
 	}
+	/*
+	public void onAfterRender(){
+		
+		log.info("sup");
 
+		Study study = this.getModelObject().getLinkSubjectStudy().getStudy();
+		Study studyDirect = this.getModelObject().getStudy();
+		if(study!=null && !study.getAutoGenerateBiocollectionUid()){
+			nameTxtFld.setEnabled(true);	
+		}
+		else{
+			nameTxtFld.setEnabled(false);
+		}
+		super.afterRender();
+	}*/
+
+	public void onBeforeRender(){
+		Study study = this.getModelObject().getBioCollection().getStudy();
+		
+		if(study!=null && !study.getAutoGenerateBiocollectionUid()){
+			nameTxtFld.setEnabled(true);	
+		}
+		else{
+			nameTxtFld.setEnabled(false);
+		}
+			super.onBeforeRender();
+	}
+	
 	private boolean initialiseBioCollectionCFDataEntry() {
 		boolean replacePanel = false;
 		BioCollection bioCollection = cpModel.getObject().getBioCollection();
@@ -192,11 +224,17 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
+
 	@Override
 	protected void onSave(AjaxRequestTarget target) {
 		if (cpModel.getObject().getBioCollection().getId() == null) {
 			// Save
-			iLimsService.createBioCollection(cpModel.getObject());
+			
+			try {
+				iLimsService.createBioCollection(cpModel.getObject());
+			} catch (ArkSystemException e) {
+				this.error(e.getMessage());
+			}
 			this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getName() + " was created successfully");
 			if (target != null) {
 				processErrors(target);

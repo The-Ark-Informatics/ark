@@ -100,15 +100,38 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		return list;
 	}
 
-	public BioCollection createBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection) {
-		String bioCollectionUid = getNextGeneratedBiCollectionUID(bioCollection.getStudy());
-		if(bioCollectionUid.isEmpty()) {
-			bioCollectionUid = UniqueIdGenerator.generateUniqueId();
+	public boolean doesSomeoneElseHaveThisUid(String biocollectionUid, final Study study, Long idToExcludeFromSearch) {
+		Criteria criteria = getSession().createCriteria(BioCollection.class);
+		criteria.add(Restrictions.eq("name", biocollectionUid));
+		criteria.add(Restrictions.ne("id", idToExcludeFromSearch));
+		if(study!=null){
+			criteria.add(Restrictions.eq("study", study));
 		}
-		bioCollection.setName(bioCollectionUid);
-		getSession().save(bioCollection);
-		getSession().refresh(bioCollection);
-		return bioCollection;
+		return (criteria.list().size()>0);
+	}
+	
+	public BioCollection createBioCollection(au.org.theark.core.model.lims.entity.BioCollection biocollection)  throws ArkSystemException{
+		Study study  = biocollection.getStudy();
+		String biocollectionUid = null;
+		if(study!= null && study.getAutoGenerateBiocollectionUid()){
+			biocollectionUid = getNextGeneratedBiCollectionUID(biocollection.getStudy());
+		}
+		else{
+			biocollectionUid = biocollection.getName();
+		}
+		
+		if(biocollectionUid.isEmpty()) {
+			biocollectionUid = UniqueIdGenerator.generateUniqueId();
+		}
+		
+		if(doesSomeoneElseHaveThisUid(biocollectionUid, study, biocollection.getId())){
+			throw new ArkSystemException("The biocollection UID " + biocollectionUid + " is currently used by another existing biocollection within this study.  Please select a unique identifier instead");
+		}
+		
+		biocollection.setName(biocollectionUid);
+		getSession().save(biocollection);
+		getSession().refresh(biocollection);
+		return biocollection;
 	}
 
 	private String getNextGeneratedBiCollectionUID(Study study) {
