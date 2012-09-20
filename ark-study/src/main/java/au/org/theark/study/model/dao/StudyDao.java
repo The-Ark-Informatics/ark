@@ -633,7 +633,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		
 		LinkSubjectStudy linkSubjectStudy = subjectVO.getLinkSubjectStudy();
-		session.update(linkSubjectStudy);
+		session.merge(linkSubjectStudy);
 	}
 		
 	/**
