@@ -410,8 +410,17 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkSubjectInsertException {
 		iStudyDao.createSubject(subjectVO);
-		createLssConsentHistory(subjectVO.getLinkSubjectStudy());
-
+		
+		//Consent history record create only when user has update one of the consent history fields.
+		if (subjectVO.getLinkSubjectStudy().getConsentToActiveContact() != null || 
+				subjectVO.getLinkSubjectStudy().getConsentToPassiveDataGathering() != null || 
+				subjectVO.getLinkSubjectStudy().getConsentToUseData() != null || 
+				subjectVO.getLinkSubjectStudy().getConsentStatus() != null || 
+				subjectVO.getLinkSubjectStudy().getConsentType() != null || 
+				subjectVO.getLinkSubjectStudy().getConsentDate() != null || 
+				subjectVO.getLinkSubjectStudy().getConsentDownloaded() != null) {
+			createLssConsentHistory(subjectVO.getLinkSubjectStudy());
+		}
 		assignChildStudies(subjectVO);
 
 		AuditHistory ah = new AuditHistory();
