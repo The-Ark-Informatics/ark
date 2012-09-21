@@ -538,7 +538,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
-	@Override
 	public void createAuditHistory(AuditHistory auditHistory, String userId, Study study) {
 		Date date = new Date(System.currentTimeMillis());
 
@@ -1249,7 +1248,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (Long)query.uniqueResult();
 	}
 
-	@Override
 	public List<String> getSubjectUIDsThatAlreadyExistWithTheseUIDs(Study study, Collection<String> subjectUids) {
 		String queryString = "select subject.subjectUID " +
 		"from LinkSubjectStudy subject " +
@@ -1350,7 +1348,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<LinkSubjectStudy> getSubjectsThatAlreadyExistWithTheseUIDs(Study study, Collection subjectUids) {
 		String queryString = "select subject " +
 		"from LinkSubjectStudy subject " +
@@ -1463,7 +1460,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 
-	@Override
 	public YesNo getYes() {
 		Criteria criteria = getSession().createCriteria(YesNo.class);
 		criteria.add(Restrictions.eq("name", "Yes"));
@@ -1471,7 +1467,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 
-	@Override
 	public YesNo getNo() {
 		Criteria criteria = getSession().createCriteria(YesNo.class);
 		criteria.add(Restrictions.eq("name", "No"));
