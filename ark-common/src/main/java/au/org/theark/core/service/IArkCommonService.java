@@ -108,6 +108,14 @@ public interface IArkCommonService<T> {
 
 	public List<SubjectStatus> getSubjectStatus();
 
+	/**
+	 * 
+	 * Something of a hack for data that has value rather than key set for encoded data.
+	 * 
+	 */
+	public void convertLimsBiospecimenCustomDataValuesToKeysForThisStudy(Study study);
+	public void convertLimsBiocollectionCustomDataValuesToKeysForThisStudy(Study study);
+	
 	public Collection<TitleType> getTitleType();
 
 	public Collection<VitalStatus> getVitalStatus();

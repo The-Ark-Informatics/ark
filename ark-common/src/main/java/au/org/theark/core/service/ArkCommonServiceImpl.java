@@ -1225,4 +1225,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getPreviousLastname(person);
 	}
 
+	public void convertLimsBiocollectionCustomDataValuesToKeysForThisStudy(Study study) {
+		customFieldDao.convertLimsBiocollectionCustomDataValuesToKeysForThisStudy(study);
+	}
+	public void convertLimsBiospecimenCustomDataValuesToKeysForThisStudy(Study study){
+		customFieldDao.convertLimsBiospecimenCustomDataValuesToKeysForThisStudy(study);
+	}
+
 }
