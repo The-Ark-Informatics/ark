@@ -3,6 +3,7 @@ package au.org.theark.core.dao;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
@@ -18,6 +19,9 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
+import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -401,6 +405,115 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		}
 		
 		return customFieldList;
+	}
+
+	@Override
+	public void convertLimsBiocollectionCustomDataValuesToKeysForThisStudy(Study study) {
+		/*StringBu
+		stringBuffer2.append(" SELECT cfd FROM  CustomFieldDisplay cfd  " );
+		stringBuffer2.append(" WHERE " );
+			//	"cfd.customField.study = :study ");
+		//stringBuffer.append(" AND ");
+		stringBuffer2.append(" cfd.customField.encodedValues is not null and cfd.customField.encodedValues != :emptyString ");
+		*/		StringBuffer stringBuffer = new StringBuffer();
+				
+				stringBuffer.append(" SELECT bscfd FROM BioCollectionCustomFieldData bscfd ");
+				stringBuffer.append(" WHERE bscfd.customFieldDisplay in ");
+				stringBuffer.append(" ( ");               
+					stringBuffer.append(" SELECT cfd FROM  CustomFieldDisplay cfd  " );
+					stringBuffer.append(" WHERE cfd.customField.study = :study ");
+					stringBuffer.append(" AND ");
+					stringBuffer.append(" cfd.customField.encodedValues is not null and cfd.customField.encodedValues != :emptyString ");
+					stringBuffer.append(" )");
+				
+				String theHQLQuery = stringBuffer.toString(); 
+				
+				Query query = getSession().createQuery(theHQLQuery);
+				query.setParameter("emptyString", "");
+				query.setParameter("study", study);
+				List<BioCollectionCustomFieldData> bscfds = query.list();
+				log.info("\n\n\n\n\n\n\n\n\n\nbiocol size = " + bscfds.size());
+				for (BioCollectionCustomFieldData bscfd : bscfds){
+					//bscfd.getCustomFieldDisplay().getCustomField().getEncodedValues();
+					log.info("text =" +bscfd.getTextDataValue());
+					if(!isInEncodedValues(bscfd.getCustomFieldDisplay().getCustomField(), bscfd.getTextDataValue())){
+						log.info( bscfd.getTextDataValue() + " not in enc values " + bscfd.getCustomFieldDisplay().getCustomField().getEncodedValues());
+					}
+					else{
+						log.info( bscfd.getTextDataValue() + " is in enc values " + bscfd.getCustomFieldDisplay().getCustomField().getEncodedValues());
+					}
+				}
+	}
+	
+	public static boolean isInEncodedValues(CustomField customField, String value) {
+		if(customField.getMissingValue()!=null && value!=null && value.trim().equalsIgnoreCase(customField.getMissingValue().trim())) {
+			return true;
+		}
+
+		// Validate if encoded values is definedisInEncodedValues, and not a DATE fieldType
+		if (customField != null && !customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+
+			try {
+				StringTokenizer stringTokenizer = new StringTokenizer(customField.getEncodedValues(), Constants.ENCODED_VALUES_TOKEN);
+
+				// Iterate through all discrete defined values and compare to field data value
+				while (stringTokenizer.hasMoreTokens()) {
+					String encodedValueToken = stringTokenizer.nextToken();
+					StringTokenizer encodedValueSeparator = new StringTokenizer(encodedValueToken, Constants.ENCODED_VALUES_SEPARATOR);
+					String encodedValue = encodedValueSeparator.nextToken().trim();
+
+					if (encodedValue.equalsIgnoreCase(value)) {
+						return true;
+					}
+				}
+
+			}
+			catch (NullPointerException npe) {
+				log.error("Field data null format exception " + npe.getMessage());
+				return false;
+			}
+
+		}
+		return false;
+	}
+
+
+	@Override
+	public void convertLimsBiospecimenCustomDataValuesToKeysForThisStudy(Study study) {
+		/*StringBu
+		stringBuffer2.append(" SELECT cfd FROM  CustomFieldDisplay cfd  " );
+		stringBuffer2.append(" WHERE " );
+			//	"cfd.customField.study = :study ");
+		//stringBuffer.append(" AND ");
+		stringBuffer2.append(" cfd.customField.encodedValues is not null and cfd.customField.encodedValues != :emptyString ");
+	*/		StringBuffer stringBuffer = new StringBuffer();
+			
+			stringBuffer.append(" SELECT bscfd FROM BiospecimenCustomFieldData bscfd ");
+			stringBuffer.append(" WHERE bscfd.customFieldDisplay in ");
+			stringBuffer.append(" ( ");               
+				stringBuffer.append(" SELECT cfd FROM  CustomFieldDisplay cfd  " );
+				stringBuffer.append(" WHERE cfd.customField.study = :study ");
+				stringBuffer.append(" AND ");
+				stringBuffer.append(" cfd.customField.encodedValues is not null and cfd.customField.encodedValues != :emptyString ");
+				stringBuffer.append(" )");
+			
+			String theHQLQuery = stringBuffer.toString(); 
+			
+			Query query = getSession().createQuery(theHQLQuery);
+			query.setParameter("emptyString", "");
+			query.setParameter("study", study);
+			List<BiospecimenCustomFieldData> bscfds = query.list();
+			log.info("\n\n\n\n\n\n\n\n\n\nbiospec size = " + bscfds.size());
+			for (BiospecimenCustomFieldData bscfd : bscfds){
+
+				log.info("text =" +bscfd.getTextDataValue());
+				if(!isInEncodedValues(bscfd.getCustomFieldDisplay().getCustomField(), bscfd.getTextDataValue())){
+					log.info( bscfd.getTextDataValue() + " not in enc values " + bscfd.getCustomFieldDisplay().getCustomField().getEncodedValues());
+				}
+				else{
+					log.info( bscfd.getTextDataValue() + " is in enc values " + bscfd.getCustomFieldDisplay().getCustomField().getEncodedValues());
+				}
+			}
 	}
 	
 }

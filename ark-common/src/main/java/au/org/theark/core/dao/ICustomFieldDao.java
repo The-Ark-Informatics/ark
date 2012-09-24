@@ -187,5 +187,10 @@ public interface ICustomFieldDao {
 	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria, CustomFieldGroup customFieldGroup);
 	
 	public List<CustomField> matchCustomFieldsFromInputFile(FileUpload fileUpload, Study study, ArkFunction arkFunction);
+
+	public void convertLimsBiocollectionCustomDataValuesToKeysForThisStudy(Study study);
+
+	public void convertLimsBiospecimenCustomDataValuesToKeysForThisStudy(Study study);
+	
 	
 }
