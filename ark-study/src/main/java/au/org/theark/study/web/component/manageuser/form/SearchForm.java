@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.manageuser.form;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -44,6 +45,7 @@ import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 
@@ -63,6 +65,9 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 	private TextField<String>				emailTxtField		= new TextField<String>(Constants.EMAIL);
 	protected DropDownChoice<YesNo>		usersLinkedToStudyOnlyChoice;
 
+	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
+	private IStudyService		iStudyService;
+	
 	@SpringBean(name = "userService")
 	private IUserService						userService;
 
@@ -124,6 +129,14 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 			arkUserRole.setArkModule(arkModuleVO.getArkModule());
 			containerForm.getModelObject().getArkUserRoleList().add(arkUserRole);
 		}
+		
+		// Available child studies
+		List<Study> availableChildStudies = new ArrayList<Study>(0);
+		if (study.getParentStudy() != null && study.getParentStudy() == study) {
+			availableChildStudies = iStudyService.getChildStudyListOfParent(study);
+		}
+
+		containerForm.getModelObject().setAvailableChildStudies(availableChildStudies);
 	}
 
 	@Override
@@ -131,6 +144,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 		containerForm.getModelObject().setMode(Constants.MODE_NEW);
 		prePopulateArkUserRoleList();
 		arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
+
 		// This should re-render the list again
 		ListView listView = (ListView) arkCrudContainerVO.getWmcForarkUserAccountPanel().get("arkUserRoleList");
 		listView.removeAll();

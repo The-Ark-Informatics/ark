@@ -168,21 +168,27 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	public void onBeforeRender() {
 		if (!isNew()) {
 			userNameTxtField.setEnabled(false);
-			boolean hasChildStudies = (!containerForm.getModelObject().getAvailableChildStudies().isEmpty());
-			assignedChildStudiesLabel.setVisible(hasChildStudies);
-			assignedChildStudiesPalette.setVisible(hasChildStudies);
-			assignedChildStudiesNote.setVisible(hasChildStudies);
 		}
 		else {
 			userNameTxtField.setEnabled(true);
 		}
 		
+		boolean hasChildStudies = (!containerForm.getModelObject().getAvailableChildStudies().isEmpty());
+		assignedChildStudiesLabel.setVisible(hasChildStudies);
+		assignedChildStudiesPalette.setVisible(hasChildStudies);
+		assignedChildStudiesNote.setVisible(hasChildStudies);
+		
 		boolean visible = false;
 		try {
-			visible = iArkCommonService.isSuperAdministrator(SecurityUtils.getSubject().getPrincipal().toString());
+			// Super adminstrator can update any user's password
+			// Current user can update their own, but the Study Administrator can also create a new user (gets access to New button on search form)
+			String currentUsername = SecurityUtils.getSubject().getPrincipal().toString();
+			visible = (iArkCommonService.isSuperAdministrator(currentUsername) || 
+							(containerForm.getModelObject().getUserName() != null && containerForm.getModelObject().getUserName().equals(currentUsername)) || 
+								isNew());
 		}
 		catch (EntityNotFoundException e) {
-			//
+			// Shouldn't actually ever get here...
 		}
 		groupPasswordContainer.setVisible(visible);
 		super.onBeforeRender();
