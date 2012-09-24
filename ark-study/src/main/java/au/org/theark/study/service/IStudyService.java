@@ -176,6 +176,8 @@ public interface IStudyService {
 	public void create(Consent consent) throws ArkSystemException;
 
 	public void update(Consent consent) throws ArkSystemException, EntityNotFoundException;
+	
+	public void update(Consent consent,boolean consentFile) throws ArkSystemException, EntityNotFoundException;
 
 	public void delete(Consent consent) throws ArkSystemException, EntityNotFoundException;
 

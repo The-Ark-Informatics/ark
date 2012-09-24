@@ -406,9 +406,13 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID, containerForm.getModelObject().getConsent().getId());
 				}
 				else {
-					iStudyService.update(containerForm.getModelObject().getConsent());
-
+					
+					boolean consentFile=fileSubjectFileField.getFileUpload()!=null;
+					iStudyService.update(containerForm.getModelObject().getConsent(),consentFile);
+					
 					createConsentFile();
+					//Check for consent file upload	
+				
 					
 					this.info("Consent was successfuly updated for the Subject ");
 					processErrors(target);

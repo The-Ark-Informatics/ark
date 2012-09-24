@@ -94,6 +94,7 @@ import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.model.dao.IStudyDao;
+import au.org.theark.study.util.ConsentHistoryComparator;
 import au.org.theark.study.util.DataUploader;
 import au.org.theark.study.util.LinkSubjectStudyConsentHistoryComparator;
 import au.org.theark.study.util.SubjectUploadValidator;
@@ -616,6 +617,23 @@ public class StudyServiceImpl implements IStudyService {
 	public void update(Consent consent) throws ArkSystemException, EntityNotFoundException {
 		iStudyDao.update(consent);
 		createConsentHistory(consent);
+
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Consent " + consent.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT);
+		ah.setEntityId(consent.getId());
+		iArkCommonService.createAuditHistory(ah);
+	}
+	
+	public void update(Consent consent,boolean consentFile) throws ArkSystemException, EntityNotFoundException {
+	
+		ConsentHistoryComparator comparator=new ConsentHistoryComparator();
+		if(consentFile ||
+				comparator.compare(iStudyDao.getConsent(consent.getId()), consent)!=0){
+			createConsentHistory(consent);
+		}
+		iStudyDao.update(consent);
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
