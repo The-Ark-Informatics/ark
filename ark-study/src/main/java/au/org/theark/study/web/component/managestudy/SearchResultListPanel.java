@@ -173,6 +173,14 @@ public class SearchResultListPanel extends Panel {
 				aafRealm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 
 				Study searchStudy = iArkCommonService.getStudy(study.getId());
+				/**************
+				 * this is code which must not be commented out...was to be utilized to deal with data from WAGER ... 
+				//TODO ASAP Dont leave this nasty hack here
+				iArkCommonService.convertLimsBiospecimenCustomDataValuesToKeysForThisStudy(searchStudy);~~~
+				//TODO ASAP Dont leave this nasty hack here
+				iArkCommonService.convertLimsBiocollectionCustomDataValuesToKeysForThisStudy(searchStudy);~~~
+				************/
+				
 				Study parentStudy = searchStudy.getParentStudy();
 
 				// Check if the study has been linked to a Main Study and if so get a reference to the main study.
