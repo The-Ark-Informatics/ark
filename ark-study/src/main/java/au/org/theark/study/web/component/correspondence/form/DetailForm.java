@@ -299,7 +299,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		
 		String subjectId= SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID).toString();		
 		billableItem.setDescription("Automated - Subject Id "+subjectId);
-		billableItem.setInvoice(au.org.theark.worktracking.util.Constants.Y);
+		billableItem.setInvoice(au.org.theark.worktracking.util.Constants.N);
 		billableItem.setCommenceDate(containerForm.getModelObject().getCorrespondence().getDate());
 		//Save newly created object
 		iWorkTrackingService.createBillableItem(billableItem);
