@@ -976,7 +976,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void update(Consent consent) throws ArkSystemException, EntityNotFoundException {
 		try {
 			Session session = getSession();
-			session.update(consent);
+			session.merge(consent);
 		}
 		catch (HibernateException someHibernateException) {
 			log.error("An Exception occured while trying to update this consent " + someHibernateException.getStackTrace());
