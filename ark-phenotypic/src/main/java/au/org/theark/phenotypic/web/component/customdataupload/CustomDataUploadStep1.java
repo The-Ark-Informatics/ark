@@ -122,7 +122,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 	}
 
 	protected void attachValidators() {
-		phenoCollectionName.setRequired(true).setLabel(new StringResourceModel("error.phenoCollectionName.required", this, new Model<String>("PhenoCollectionName")));
+//		phenoCollectionName.setRequired(true).setLabel(new StringResourceModel("error.phenoCollectionName.required", this, new Model<String>("PhenoCollectionName")));
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 		//uploadTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.uploadType.required", this, new Model<String>("Upload")));
