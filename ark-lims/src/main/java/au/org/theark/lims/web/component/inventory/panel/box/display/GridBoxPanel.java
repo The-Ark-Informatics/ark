@@ -44,6 +44,7 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.Loop;
 import org.apache.wicket.markup.html.list.LoopItem;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -210,6 +211,23 @@ public class GridBoxPanel extends Panel {
 		if(invBox.getId() != null) {
 			colRowNoType = invBox.getColnotype().getName();
 		}
+		else {
+			// handle for null invBox (eg when backend list of cells corrupted)
+			return new Loop("heading", 1){
+				private static final long	serialVersionUID	= 1L;
+
+				@Override
+				protected void populateItem(LoopItem item) {
+					Label colLabel = new Label("cellHead", "");
+					item.add(colLabel.setVisible(false));
+				}
+				
+				@Override
+				public boolean isVisible() {
+					return false;
+				}
+			};
+		}
 		
 		final String colNoType = colRowNoType;
 		
@@ -259,6 +277,30 @@ public class GridBoxPanel extends Panel {
 		if(invBox.getId() != null) {
 			colRowNoType = invBox.getRownotype().getName();
 		}
+		else {
+			// handle for null invBox (eg when backend list of cells corrupted)
+			return new Loop("rows", 1){
+				private static final long	serialVersionUID	= 1L;
+
+				@Override
+				protected void populateItem(LoopItem item) {
+					item.add(new Loop("cols", 1){
+						private static final long	serialVersionUID	= 1L;
+						@Override
+						protected void populateItem(LoopItem item) {
+							item.add(new EmptyPanel("cell"));
+						}
+						
+					}.setVisible(false));
+				}
+				
+				@Override
+				public boolean isVisible() {
+					return false;
+				}
+			};
+		}
+		
 		final String rowNoType = colRowNoType;
 		final int noOfCols = invBox.getNoofcol();
 		
