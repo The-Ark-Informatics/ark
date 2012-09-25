@@ -684,7 +684,9 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		projectionList.add(Projections.property("bit.itemName"), "itemType");
 		projectionList.add(Projections.property("bit.id"), "typeId");
 		projectionList.add(Projections.property("bit.quantityType"), "quantityType");
-		projectionList.add(Projections.property("bi.gstAllow"), "gstAllowed");
+		projectionList.add(Projections.property("wr.gstAllow"), "gstAllowed");
+		
+		projectionList.add(Projections.property("wr.name"), "requestName");
 
 		criteria.setProjection(projectionList); // only return fields required for report
 		criteria.setResultTransformer(Transformers.aliasToBean(ResearcherDetailCostDataRow.class));
