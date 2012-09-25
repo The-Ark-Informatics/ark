@@ -22,12 +22,14 @@ public class ResearcherDetailCostDataRow implements Serializable {
 	private String quantityType;
 	private Boolean gstAllowed;
 	
+	private String requestName;
+	
 	public ResearcherDetailCostDataRow() {
 	}
 
 	public ResearcherDetailCostDataRow(String description, Date commencedDate,
 			String invoice, String gst, Double quantity, Double totalAmount,
-			Double totalGST, String itemType, Long typeId,String quantityType, Boolean gstAllowed) {
+			Double totalGST, String itemType, Long typeId,String quantityType, Boolean gstAllowed, String requestName) {
 		this.description = description;
 		this.commencedDate = commencedDate;
 		this.invoice = invoice;
@@ -39,6 +41,7 @@ public class ResearcherDetailCostDataRow implements Serializable {
 		this.typeId = typeId;
 		this.quantityType=quantityType;
 		this.gstAllowed=gstAllowed;
+		this.requestName=requestName;
 	}
 	
 	public String getDescription() {
@@ -106,5 +109,11 @@ public class ResearcherDetailCostDataRow implements Serializable {
 	}
 	public void setGstAllowed(Boolean gstAllowed) {
 		this.gstAllowed = gstAllowed;
+	}
+	public String getRequestName(){
+		return requestName;
+	}
+	public void setWorkRequest(String requestName) {
+		this.requestName = requestName;
 	}
 }
