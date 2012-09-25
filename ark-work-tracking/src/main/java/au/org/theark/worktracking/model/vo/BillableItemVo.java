@@ -26,10 +26,15 @@ public class BillableItemVo implements Serializable {
 	private String				totalCost;
 	private Researcher			researcher;
 	
+	private String             billableItemGst;
+	
+	private NumberFormat format= new DecimalFormat("#0.00");
+	
 	public BillableItemVo() {
 		this.billableItem = new BillableItem();
 		this.billableItemList = new ArrayList<BillableItem>();
 		this.totalCost="0.00";
+		this.billableItemGst="0.00";
 	}
 	
 	public BillableItem getBillableItem() {
@@ -97,9 +102,8 @@ public class BillableItemVo implements Serializable {
 	public String getTotalCost() {
 		
 		if(this.billableItem.getTotalCost() !=null){
-			NumberFormat format= new DecimalFormat("#0.00");
-			totalCost=format.format(this.billableItem.getTotalCost());
 			
+			totalCost=this.format.format(this.billableItem.getTotalCost());		
 		}
 		return totalCost;
 	}
@@ -110,6 +114,17 @@ public class BillableItemVo implements Serializable {
 
 	public void setResearcher(Researcher researcher) {
 		this.researcher = researcher;
-	}	
+	}
 
+	public String getBillableItemGst() {
+		if(this.billableItem.getWorkRequest()!=null 
+				&& this.billableItem.getWorkRequest().getGstAllow() != null
+				&& this.billableItem.getWorkRequest().getGstAllow().equals(true)
+				&& this.billableItem.getWorkRequest().getGst()!=null){
+			
+			return this.format.format(this.billableItem.getWorkRequest().getGst());
+		}
+		return billableItemGst;
+	}
+	
 }
