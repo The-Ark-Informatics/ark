@@ -51,6 +51,8 @@ public class StudyCostReportDataSource implements Serializable, JRDataSource {
 			value = data.get(index).getQuantityType();
 		} else if ("gstAllowed".equalsIgnoreCase(fieldName)) {
 			value = data.get(index).getGstAllowed();
+		}else if("requestName".equalsIgnoreCase(fieldName)){
+			value = data.get(index).getRequestName();
 		}
 		return value;
 	}
