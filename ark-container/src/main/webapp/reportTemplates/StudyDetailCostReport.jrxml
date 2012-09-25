@@ -43,6 +43,9 @@
 	<field name="quantityType" class="java.lang.String">
 		<fieldDescription><![CDATA[quantityType]]></fieldDescription>
 	</field>
+	<field name="requestName" class="java.lang.String">
+		<fieldDescription><![CDATA[requestName]]></fieldDescription>
+	</field>
 	<variable name="quantitySubTotal" class="java.lang.Double" resetType="Group" resetGroup="itemType" calculation="Sum">
 		<variableExpression><![CDATA[$F{quantity}]]></variableExpression>
 	</variable>
@@ -191,7 +194,7 @@
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{description}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{requestName}+" - "+$F{description}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd-MMM-yy">
 				<reportElement mode="Transparent" x="151" y="0" width="86" height="20"/>
