@@ -1,0 +1,3 @@
+UPDATE `reporting`.`report_template` SET `DESCRIPTION`='This report lists the invoiced individual billable item costs group by the billable item type related to a researcher' WHERE `NAME`='Work Researcher Detail Cost Report';
+UPDATE `reporting`.`report_template` SET `DESCRIPTION`='This report lists the invoiced total billable item type costs related to a researcher' WHERE `NAME`='Work Researcher Cost Report';
+UPDATE `reporting`.`report_template` SET `DESCRIPTION`='This report lists the invoiced individual billable item costs group by the billable item type related to context study' WHERE `NAME`='Work Study Detail Cost Report';
