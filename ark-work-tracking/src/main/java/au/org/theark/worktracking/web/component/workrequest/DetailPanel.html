@@ -130,19 +130,21 @@
 			<div class="panelContentLeft">&nbsp;</div>
 			
 			<div class="fldLabel">
-					<div class="label">
-						<label for="description">
-							<wicket:message key="work.workrequest.description">
-								Description:
-							</wicket:message>
-						</label>
-					</div>
+				<div class="label">
+					<label for="gst">
+							<wicket:message	key="work.workrequest.gst">
+								GST%:
+							</wicket:message>	
+					</label>	
 				</div>
-				<div class="fldControl">
-					<div class="label">
-						<textarea wicket:id="workRequest.description" cols="25" maxLength="255"></textarea>
-					</div>
+			</div>
+			
+			<div class="fldControl">
+				<div class="label" >
+					<input type="checkbox" wicket:id="workRequest.gstAllow" />
+					<input type="text" wicket:id="workRequest.gst" />
 				</div>
+			</div>
 			
 			<div class="panelMargin">&nbsp;</div>
 			
@@ -168,6 +170,39 @@
 							researcher3
 						</option>
 					</select>
+				</div>
+			</div>
+			
+			
+			<div class="detailPanelBreaker">&nbsp;</div>
+			
+			<div class="panelContentLeft">&nbsp;</div>
+			
+			<div class="fldLabel">
+					<div class="label">
+						<label for="description">
+							<wicket:message key="work.workrequest.description">
+								Description:
+							</wicket:message>
+						</label>
+					</div>
+			</div>
+			<div class="fldControl">
+					<div class="label">
+						<textarea wicket:id="workRequest.description" cols="25" maxLength="255"></textarea>
+					</div>
+				</div>
+			
+			<div class="panelMargin">&nbsp;</div>
+			
+			<div class="fldLabel">
+				<div class="label">
+						&nbsp;
+					</div>
+			</div>
+			<div class="fldControl">
+				<div class="label" >
+						&nbsp;
 				</div>
 			</div>
 			

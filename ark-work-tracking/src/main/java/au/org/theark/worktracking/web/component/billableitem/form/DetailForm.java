@@ -12,7 +12,6 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -40,8 +39,8 @@ import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.worktracking.model.vo.BillableItemVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
-import au.org.theark.worktracking.util.Constants;
 import au.org.theark.worktracking.util.BillableItemCostCalculator;
+import au.org.theark.worktracking.util.Constants;
 import au.org.theark.worktracking.util.DoubleValidatable;
 import au.org.theark.worktracking.util.ValidatableItemType;
 
@@ -57,9 +56,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	private TextField<String>								billableItemQuantityTxtField;
 	private TextField<String>								billableItemItemCostTxtField;
 	private DateTextField									billableItemCommenceDateDp;
-	
-	private TextField<String>								billableItemGstTxtField;
-	private CheckBox										billableItemGstAllowCheckBox;
 		
 	private DropDownChoice<WorkRequest>		 				billableItemWorkRequests;
 	private DropDownChoice<BillableItemType>		 		billableItemItemTypes;
@@ -70,6 +66,8 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	private Label							    			researcherLbl;
 	private Label											workRequestLbl;
 	private Label											totalCostLbl;
+	
+	private Label											gstLbl;
 	
 	private FeedbackPanel		feedBackPanel;
 
@@ -143,65 +141,12 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		totalCostLbl.setOutputMarkupId(true);
 		totalCostLbl.setVisible(true);
 		
+		gstLbl =new Label(Constants.BILLABLE_ITEM_GST);
+		gstLbl.setOutputMarkupId(true);                       
+		gstLbl.setVisible(true);                              
+		
 		billableItemItemCostTxtField =  new TextField<String>(Constants.BILLABLE_ITEM_ITEM_COST);
 		billableItemItemCostTxtField.add(new AjaxFormComponentUpdatingBehavior("onkeyup"){
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				BillableItem billableItem = getFormModelObject().getBillableItem();
-				double totalCost=BillableItemCostCalculator.calculateItemCost(billableItem);
-				getFormModelObject().getBillableItem().setTotalCost(totalCost);
-				target.add(totalCostLbl);
-				
-			}
-			
-			@Override
-			protected void onError(AjaxRequestTarget target, RuntimeException e) {
-
-				getFormModelObject().getBillableItem().setTotalCost(0d);
-				target.add(totalCostLbl);
-			}
-		});
-		
-		
-		billableItemGstAllowCheckBox = new CheckBox(Constants.BILLABLE_ITEM_GST_ALLOW);
-		billableItemGstAllowCheckBox.add(new AjaxFormComponentUpdatingBehavior("onChange"){
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				BillableItem billableItem = getFormModelObject().getBillableItem();
-				double totalCost=BillableItemCostCalculator.calculateItemCost(billableItem);
-				getFormModelObject().getBillableItem().setTotalCost(totalCost);
-				target.add(totalCostLbl);
-				
-			}
-			
-			@Override
-			protected void onError(AjaxRequestTarget target, RuntimeException e) {
-
-				getFormModelObject().getBillableItem().setTotalCost(0d);
-				target.add(totalCostLbl);
-			}
-		});
-		
-		
-		
-		billableItemGstTxtField = new TextField<String>(Constants.BILLABLE_ITEM_GST){
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public <C> IConverter<C> getConverter(Class<C> type) {
-				  	DoubleConverter converter = (DoubleConverter)DoubleConverter.INSTANCE;
-					NumberFormat format = converter.getNumberFormat(getLocale());
-					format.setMinimumFractionDigits(2);
-					converter.setNumberFormat(getLocale(), format);
-					return (IConverter<C>) converter; 
-			}
-		};
-		
-		billableItemGstTxtField.add(new AjaxFormComponentUpdatingBehavior("onkeyup"){
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -328,7 +273,12 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				target.add(researcherLbl);
 				target.add(workRequestLbl);
-				
+				target.add(gstLbl);
+				//Re-calculate the cost
+				BillableItem billableItem = getFormModelObject().getBillableItem();
+				double totalCost=BillableItemCostCalculator.calculateItemCost(billableItem);			
+				getFormModelObject().getBillableItem().setTotalCost(totalCost);
+				target.add(totalCostLbl);
 			}
 			
 			@Override
@@ -337,6 +287,12 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 				getFormModelObject().getBillableItem().setWorkRequest(null);
 				target.add(researcherLbl);
 				target.add(workRequestLbl);
+				target.add(gstLbl);
+				
+				BillableItem billableItem = getFormModelObject().getBillableItem();
+				double totalCost=BillableItemCostCalculator.calculateItemCost(billableItem);			
+				getFormModelObject().getBillableItem().setTotalCost(totalCost);
+				target.add(totalCostLbl);
 			}
 		});
 	}
@@ -357,8 +313,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemItemCostTxtField);
 		
-		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemGstTxtField);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemGstAllowCheckBox);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(gstLbl);
 		
 	}
 	
@@ -377,18 +332,6 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		billableItemInvoiceStatuses.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_INVOICE_REQUIRED, billableItemInvoiceStatuses, new Model<String>(Constants.BILLABLE_ITEM_INVOICE_TAG)));
 		billableItemCommenceDateDp.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_BILLABLE_ITEM_COMMENCE_DATE_REQUIRED, billableItemCommenceDateDp, new Model<String>(Constants.BILLABLE_ITEM_COMMENCE_DATE_TAG)));
 		
-		billableItemGstTxtField.add(new PatternValidator(Constants.TWO_DECIMAL_PATTERN){
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		protected void onValidate(IValidatable<String> validatable) {
-			super.onValidate(new DoubleValidatable(validatable,ValidatableItemType.GST));
-		}
-		});	
-		
 		billableItemQuantityTxtField.add(new PatternValidator(Constants.TWO_DECIMAL_PATTERN){
 			private static final long serialVersionUID = 1L;
 
@@ -396,7 +339,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 			protected void onValidate(IValidatable<String> validatable) {
 				super.onValidate(new DoubleValidatable(validatable,ValidatableItemType.UNIT_QUANTITY));
 			}
-			});	
+		});	
 	}
 
 	/*
