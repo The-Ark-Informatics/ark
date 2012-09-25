@@ -37,6 +37,9 @@ public class WorkRequest implements Serializable {
 	private Date completedDate;
 	private Long studyId;
 	
+	private Double gst;
+	private Boolean gstAllow;
+	
 	public WorkRequest() {
 	}
 
@@ -47,7 +50,7 @@ public class WorkRequest implements Serializable {
 	public WorkRequest(Long id, String name, String description,
 			WorkRequestStatus requestStatus, Researcher researcher,
 			Date requestedDate, Date commencedDate, Date completedDate,
-			Long studyId) {
+			Long studyId,Double gst, Boolean gstAllow) {
 		
 		this.id = id;
 		this.name = name;
@@ -58,6 +61,8 @@ public class WorkRequest implements Serializable {
 		this.commencedDate = commencedDate;
 		this.completedDate = completedDate;
 		this.studyId = studyId;
+		this.gst = gst;
+		this.gstAllow = gstAllow;
 	}
 
 	@Id
@@ -90,7 +95,7 @@ public class WorkRequest implements Serializable {
 		this.description = description;
 	}	
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "STATUS_ID")
 	public WorkRequestStatus getRequestStatus() {
 		return requestStatus;
@@ -148,6 +153,24 @@ public class WorkRequest implements Serializable {
 	public void setStudyId(Long studyId) {
 		this.studyId = studyId;
 	}
+	
+	@Column(name = "GST")
+	public Double getGst() {
+		return gst;
+	}
+
+	public void setGst(Double gst) {
+		this.gst = gst;
+	}
+
+	@Column(name = "GST_ALLOW")
+	public Boolean getGstAllow() {
+		return gstAllow;
+	}
+
+	public void setGstAllow(Boolean gstAllow) {
+		this.gstAllow = gstAllow;
+	}
 
 	@Override
 	public int hashCode() {
@@ -159,8 +182,13 @@ public class WorkRequest implements Serializable {
 				+ ((completedDate == null) ? 0 : completedDate.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((gst == null) ? 0 : gst.hashCode());
+		result = prime * result
+				+ ((gstAllow == null) ? 0 : gstAllow.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result
+				+ ((requestStatus == null) ? 0 : requestStatus.hashCode());
 		result = prime * result
 				+ ((requestedDate == null) ? 0 : requestedDate.hashCode());
 		result = prime * result + ((studyId == null) ? 0 : studyId.hashCode());
@@ -191,6 +219,16 @@ public class WorkRequest implements Serializable {
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
+		if (gst == null) {
+			if (other.gst != null)
+				return false;
+		} else if (!gst.equals(other.gst))
+			return false;
+		if (gstAllow == null) {
+			if (other.gstAllow != null)
+				return false;
+		} else if (!gstAllow.equals(other.gstAllow))
+			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -200,6 +238,11 @@ public class WorkRequest implements Serializable {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
+			return false;
+		if (requestStatus == null) {
+			if (other.requestStatus != null)
+				return false;
+		} else if (!requestStatus.equals(other.requestStatus))
 			return false;
 		if (requestedDate == null) {
 			if (other.requestedDate != null)
@@ -217,10 +260,11 @@ public class WorkRequest implements Serializable {
 	@Override
 	public String toString() {
 		return "WorkRequest [id=" + id + ", name=" + name + ", description="
-				+ description + ", requestedDate=" + requestedDate
-				+ ", commencedDate=" + commencedDate + ", completedDate="
-				+ completedDate + ", studyId=" + studyId + "]";
+				+ description + ", requestStatus=" + requestStatus
+				+ ", researcher=" + researcher + ", requestedDate="
+				+ requestedDate + ", commencedDate=" + commencedDate
+				+ ", completedDate=" + completedDate + ", studyId=" + studyId
+				+ ", gst=" + gst + ", gstAllow=" + gstAllow + "]";
 	}
-	
 
 }
