@@ -162,6 +162,9 @@ public class Constants {
 	public static final String			WORK_REQUEST_COMPLETED_DATE										= "workRequest.completedDate";
 	public static final String			WORK_REQUEST_DESCRIPTION										= "workRequest.description";
 	public static final String			WORK_REQUEST_RESEARCHER											= "workRequest.researcher";
+	public static final String			WORK_REQUEST_GST												= "workRequest.gst";
+	public static final String			WORK_REQUEST_GST_ALLOW											= "workRequest.gstAllow";
+
 	
 	public static final String			WR_REQUESTED_DATE												= "requestedDate";
 	public static final String			WR_COMMENCED_DATE												= "commencedDate";
@@ -180,6 +183,8 @@ public class Constants {
 	public static final String ERROR_WORK_REQUEST_STATUS_REQUIRED 										= "error.work.workrequest.requeststatus.required";
 	public static final String WORK_REQUEST_RESEARCHER_TAG 												= "Researchr";
 	public static final String ERROR_WORK_REQUEST_RESEARCHER_REQUIRED 								    = "error.work.workrequest.researcher.required";
+	
+	public static final String ERROR_WORK_REQUEST_GST			 									    	= "error.work.workrequest.gst";
 	
 	
 	//Billable Item Constants
@@ -205,13 +210,14 @@ public class Constants {
 	public static final String			BILLABLE_ITEM_ITEM_STATUS										= "billableItem.itemStatus";
 	public static final String			FILE_NAME														= "fileName";
 	public static final String			BILLABLE_ITEM_ITEM_TYPE											= "billableItem.type";
-	public static final String			BILLABLE_ITEM_GST												= "billableItem.gst";
-	public static final String			BILLABLE_ITEM_GST_ALLOW											= "billableItem.gstAllow";
+	public static final String			BILLABLE_ITEM_WORK_REQUEST_GST									= "billableItem.workRequest.gst";
+	public static final String			BILLABLE_ITEM_WORK_REQUEST_GST_ALLOW							= "billableItem.workRequest.gstAllow";
 	
 	public static final String			BILLABLE_ITEM_RESEARCHER_FULL_NAME								= "researcherFullName";
 	public static final String			BILLABLE_ITEM_WORK_REQUEST_DESCRIPTION							= "workRequestDescription";
 	public static final String			BILLABLE_ITEM_TOTAL_COST										= "totalCost";
 	public static final String			BILLABLE_ITEM_RESEARCHER										= "researcher";
+	public static final String			BILLABLE_ITEM_GST												= "billableItemGst";
 	
 	public static final String			BI_DESCRIPTION													= "description";
 	public static final String			BI_QUANTITY														= "quantity";

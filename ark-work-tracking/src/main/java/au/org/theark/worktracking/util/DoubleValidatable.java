@@ -35,7 +35,7 @@ public class DoubleValidatable implements IValidatable<String> {
 				this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_TYPE_UNIT_PRICE));
 				break;
 			case GST:
-				this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_GST));
+				this.validatable.error(validationError.addMessageKey(Constants.ERROR_WORK_REQUEST_GST));
 				break;
 			case UNIT_QUANTITY:
 				this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_QUANTITY));

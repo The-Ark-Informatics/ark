@@ -96,19 +96,19 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.BILLABLE_ITEM_ITEM_COST, ""));
 				}
-				if (billableItem.getGstAllow() != null) {
+				if (billableItem.getWorkRequest()!=null && billableItem.getWorkRequest().getGstAllow() != null) {
 					
-					item.add(new Label(Constants.BILLABLE_ITEM_GST_ALLOW, billableItem.getGstAllow()?"Yes":"No"));
+					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST_GST_ALLOW, billableItem.getWorkRequest().getGstAllow()?"Yes":"No"));
 				}
 				else {
-					item.add(new Label(Constants.BILLABLE_ITEM_GST_ALLOW, "No"));
+					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST_GST_ALLOW, "No"));
 				}
-				if (billableItem.getGst() != null) {
+				if (billableItem.getWorkRequest()!=null && billableItem.getWorkRequest().getGst() != null) {
 					
-					item.add(new Label(Constants.BILLABLE_ITEM_GST, df.format(billableItem.getGst())));
+					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST_GST, df.format(billableItem.getWorkRequest().getGst())));
 				}
 				else {
-					item.add(new Label(Constants.BILLABLE_ITEM_GST, ""));
+					item.add(new Label(Constants.BILLABLE_ITEM_WORK_REQUEST_GST, ""));
 				}
 				if (billableItem.getTotalCost() != null) {
 					
