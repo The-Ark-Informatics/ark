@@ -1,5 +1,8 @@
 package au.org.theark.lims.web.component.inventory.tree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.wicket.AttributeModifier;
@@ -19,6 +22,7 @@ import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.lims.entity.InvBox;
+import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
@@ -234,6 +238,20 @@ public class InventoryNodePanel extends LinkIconPanel {
 
 			BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, this.tree, node);
 			detailPanel.initialisePanel();
+			
+			// Handle for no cells in InvCell table!
+			List<InvCell> invCellList = new ArrayList<InvCell>(0);
+			invCellList = invBox.getInvCells();
+			int cells = invBox.getNoofcol() * invBox.getNoofrow();
+			if(invCellList == null || invCellList.isEmpty()){
+				//refresh from db?
+				invCellList = iInventoryService.getCellAndBiospecimenListByBox(invBox);
+			}
+			if (invCellList.size() != cells) {
+				this.error("The Box with ID: " + invBox.getId() + " is missing cell information. Please contact support.");
+				detailPanel.setEnabled(false);
+				target.add(feedbackPanel);
+			}
 
 			detailContainer.addOrReplace(detailPanel);
 			detailContainer.setVisible(true);
