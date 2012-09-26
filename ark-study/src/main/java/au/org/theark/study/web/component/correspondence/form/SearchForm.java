@@ -156,6 +156,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 
 		setModelObject(new CorrespondenceVO());
 		preProcessDetailPanel(target);
+		arkCrudContainerVO.getDetailPanelFormContainer().get("worktrackingcontainer").setVisible(true);
 	}
 
 	@Override
