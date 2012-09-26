@@ -162,7 +162,11 @@ public class SearchResultListPanel extends Panel {
 
 					if (study.getParentStudy() != null && study.getParentStudy() == study) {
 						availableChildStudies = iStudyService.getChildStudyListOfParent(study);
-						selectedChildStudies = iArkCommonService.getAssignedChildStudyListForUser(arkUserVOFromBackend);
+						
+						// Only assign selected child studies if/when user actually assigned study in context
+						if(arkUserVOFromBackend.getStudy().getId() != null) {
+							selectedChildStudies = iArkCommonService.getAssignedChildStudyListForUser(arkUserVOFromBackend);
+						}
 					}
 
 					containerForm.getModelObject().setAvailableChildStudies(availableChildStudies);
