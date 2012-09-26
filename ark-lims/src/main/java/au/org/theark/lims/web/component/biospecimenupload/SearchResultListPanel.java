@@ -134,6 +134,13 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(Constants.UPLOADVO_UPLOAD_FINISH_TIME, ""));
 				}
+				
+				if (upload.getUploadStatus() != null && upload.getUploadStatus().getShortMessage()!=null) {
+					item.add(new Label(Constants.UPLOADVO_UPLOAD_UPLOAD_STATUS_NAME, upload.getUploadStatus().getShortMessage()));
+				}
+				else {
+					item.add(new Label(Constants.UPLOADVO_UPLOAD_UPLOAD_STATUS_NAME, ""));
+				}
 
 				// Download file link button
 				item.add(buildDownloadButton(upload));
