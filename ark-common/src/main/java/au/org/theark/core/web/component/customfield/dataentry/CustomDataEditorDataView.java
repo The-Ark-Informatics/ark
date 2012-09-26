@@ -125,7 +125,8 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				List<String> encodeKeyValueList = Arrays.asList(encodedValues.split(";"));
 				ArrayList<EncodedValueVO> choiceList = new ArrayList<EncodedValueVO>();
 				for (String keyValue : encodeKeyValueList) {
-					String[] keyValueArray = keyValue.split("=");
+					// Only split for the first instance of the '=' (allows the '=' character in the actual value)
+					String[] keyValueArray = keyValue.split("=", 2);
 					EncodedValueVO encodedValueVo = new EncodedValueVO();
 					encodedValueVo.setKey(keyValueArray[0]);
 					encodedValueVo.setValue(keyValueArray[1]);
