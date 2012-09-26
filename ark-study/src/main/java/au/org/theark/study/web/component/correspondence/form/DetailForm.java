@@ -117,8 +117,6 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		setMaxSize(Bytes.kilobytes(2048));
 		
 		workTrackingContainer = new WebMarkupContainer("worktrackingcontainer");
-//		setOutputMarkupPlaceholderTag(true);
-//		workTrackingContainer.setOutputMarkupPlaceholderTag(true);
 		workTrackingContainer.setVisible(false);
 		
 		initBillableItemTypeDropDown();
@@ -205,8 +203,6 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		workTrackingContainer.add(billableItemItemTypes);
 		
 		arkCrudContainerVO.getDetailPanelFormContainer().add(workTrackingContainer);
-//		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemWorkRequests);
-//		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemItemTypes);	
 	}
 
 	protected void attachValidators() {
