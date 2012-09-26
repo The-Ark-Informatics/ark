@@ -1141,10 +1141,11 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			Criteria studyCriteria = criteria.createCriteria("study");
 			studyCriteria.add(Restrictions.eq("parentStudy", arkUserVo.getStudy()));
 			studyCriteria.add(Restrictions.neProperty("id", "parentStudy.id"));
-			
+			studyCriteria.addOrder(Order.asc("name"));
 			ProjectionList projectionList = Projections.projectionList();
 			projectionList.add(Projections.groupProperty("study"), "study");
 			criteria.setProjection(projectionList);
+			
 			studyList = criteria.list();
 		}
 		catch (EntityNotFoundException e) {
