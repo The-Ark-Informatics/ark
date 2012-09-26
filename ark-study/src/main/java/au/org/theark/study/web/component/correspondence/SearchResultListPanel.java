@@ -152,6 +152,8 @@ public class SearchResultListPanel extends Panel {
 				containerForm.getModelObject().setCorrespondence(correspondence);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				target.add(containerForm);
+				
+				arkCrudContainerVO.getDetailPanelFormContainer().get("worktrackingcontainer").setVisible(false);
 			}
 		};
 

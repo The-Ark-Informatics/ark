@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -88,6 +89,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	private DropDownChoice<WorkRequest>		 				billableItemWorkRequests;
 	private DropDownChoice<BillableItemType>		 		billableItemItemTypes;
 	
+	private WebMarkupContainer workTrackingContainer;
+	
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		setMultiPart(true);
@@ -112,6 +115,11 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		// fileUploadField = new FileUploadField("correspondence.attachmentFilename", new Model<List<FileUpload>>());
 		fileUploadField = new FileUploadField("correspondence.attachmentFilename");
 		setMaxSize(Bytes.kilobytes(2048));
+		
+		workTrackingContainer = new WebMarkupContainer("worktrackingcontainer");
+//		setOutputMarkupPlaceholderTag(true);
+//		workTrackingContainer.setOutputMarkupPlaceholderTag(true);
+		workTrackingContainer.setVisible(false);
 		
 		initBillableItemTypeDropDown();
 		initWorkRequestDropDown();
@@ -193,8 +201,12 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
 		
-		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemWorkRequests);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemItemTypes);
+		workTrackingContainer.add(billableItemWorkRequests);
+		workTrackingContainer.add(billableItemItemTypes);
+		
+		arkCrudContainerVO.getDetailPanelFormContainer().add(workTrackingContainer);
+//		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemWorkRequests);
+//		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemItemTypes);	
 	}
 
 	protected void attachValidators() {
@@ -271,7 +283,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 					containerForm.getModelObject().getBillableItemType()!=null){
 				createAutomatedBillableItem();
 			}
-			
+			workTrackingContainer.setVisible(false);
 			onSavePostProcess(target);
 		}
 		catch (EntityNotFoundException ex) {
@@ -306,8 +318,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		
 		//reset workrequest and billable item type
 		containerForm.getModelObject().setWorkRequest(null);
-		containerForm.getModelObject().setBillableItemType(null);
-		
+		containerForm.getModelObject().setBillableItemType(null);	
 	}
 
 	@Override
