@@ -71,6 +71,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
@@ -1916,6 +1917,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Query query =  getSession().createQuery(queryString);
 		query.setParameter("person", person);
 		query.executeUpdate();
+	}
+
+	public EmailStatus getDefaultEmailStatus() {
+		return (EmailStatus) (getSession().get(EmailStatus.class, 0L));//TODO  hardcode removal
 	}
 
 }

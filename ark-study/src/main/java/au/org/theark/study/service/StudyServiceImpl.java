@@ -68,6 +68,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -1216,6 +1217,10 @@ public class StudyServiceImpl implements IStudyService {
 
 	public PhoneStatus getDefaultPhoneStatus() {
 		return iStudyDao.getDefaultPhoneStatus();
+	}
+
+	public EmailStatus getDefaultEmailStatus() {
+		return iStudyDao.getDefaultEmailStatus();
 	}
 
 }

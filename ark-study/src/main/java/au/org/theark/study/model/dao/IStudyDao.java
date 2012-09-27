@@ -44,6 +44,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -387,13 +388,21 @@ public interface IStudyDao {
 	public MaritalStatus getDefaultMaritalStatus();
 
 	public ConsentOption getConsentOptionForBoolean(boolean trueForYesFalseForNo);
+	
 	public ConsentType getConsentTypeByName(String name);
+	
 	public ConsentStatus getConsentStatusByName(String name);
 
 	public void setPreferredMailingAdressToFalse(Person person);
 
 	public AddressType getDefaultAddressType();
+	
 	public AddressStatus getDefaultAddressStatus();
+	
 	public PhoneType getDefaultPhoneType();
+	
 	public PhoneStatus getDefaultPhoneStatus();
+
+	public EmailStatus getDefaultEmailStatus();
+	
 }
