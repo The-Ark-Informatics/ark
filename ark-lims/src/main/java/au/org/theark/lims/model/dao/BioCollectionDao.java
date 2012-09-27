@@ -19,6 +19,7 @@
 package au.org.theark.lims.model.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -308,7 +309,16 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 	public long getBioCollectionCustomFieldDataCount(BioCollection bioCollectionCriteria, ArkFunction arkFunction) {
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.createAlias("customField", "cfield");
-		criteria.add(Restrictions.eq("cfield.study", bioCollectionCriteria.getStudy()));
+//		criteria.add(Restrictions.eq("cfield.study", bioCollectionCriteria.getStudy()));
+		
+		// Added to allow child studies to inherit parent defined custom fields
+		List studyList = new ArrayList();
+		studyList.add(bioCollectionCriteria.getStudy());
+		if(bioCollectionCriteria.getStudy().getParentStudy() != null && bioCollectionCriteria.getStudy().getParentStudy() != bioCollectionCriteria.getStudy()) {
+			studyList.add(bioCollectionCriteria.getStudy().getParentStudy());
+		}
+		
+		criteria.add(Restrictions.in("cfield.study", studyList));
 		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
 		criteria.setProjection(Projections.rowCount());
 		return (Long) criteria.uniqueResult();
@@ -321,13 +331,20 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
 		sb.append("LEFT JOIN cfd.bioCollectionCustomFieldData as fieldList ");
 		sb.append(" with fieldList.bioCollection.id = :bioCollectionId ");
-		sb.append( "  where cfd.customField.study.id = :studyId" );
-		sb.append(" and cfd.customField.arkFunction.id = :functionId");
-		sb.append(" order by cfd.sequence");
+		sb.append( "  WHERE cfd.customField.study.id IN (:studyId)" );
+		sb.append(" AND cfd.customField.arkFunction.id = :functionId");
+		sb.append(" ORDER BY cfd.sequence");
 		
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("bioCollectionId", bioCollectionCriteria.getId());
-		query.setParameter("studyId", bioCollectionCriteria.getStudy().getId());
+		
+		// Allow child studies to inherit parent defined custom fields
+		List studyList = new ArrayList();
+		studyList.add(bioCollectionCriteria.getStudy().getId());
+		if(bioCollectionCriteria.getStudy().getParentStudy() != null && bioCollectionCriteria.getStudy().getParentStudy() != bioCollectionCriteria.getStudy()) {
+			studyList.add(bioCollectionCriteria.getStudy().getParentStudy().getId());
+		}
+		query.setParameterList("studyId", studyList);
 		query.setParameter("functionId", arkFunction.getId());
 		query.setFirstResult(first);
 		query.setMaxResults(count);
@@ -355,14 +372,22 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
 		sb.append("LEFT JOIN cfd.bioCollectionCustomFieldData as fieldList ");
 		sb.append(" WITH fieldList.bioCollection.id = :bioCollectionId ");
-		sb.append( "  WHERE cfd.customField.study.id = :studyId" );
+		sb.append( "  WHERE cfd.customField.study.id IN (:studyId)" );
 		sb.append(" AND cfd.customField.arkFunction.id = :functionId");
 		sb.append(" AND cfd.customField.name = :customFieldName");
 		sb.append(" ORDER BY cfd.sequence");
 		
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("bioCollectionId", bioCollectionCriteria.getId());
-		query.setParameter("studyId", bioCollectionCriteria.getStudy().getId());
+		
+		// Allow child studies to inherit parent defined custom fields
+		List studyList = new ArrayList();
+		studyList.add(bioCollectionCriteria.getStudy().getId());
+		if(bioCollectionCriteria.getStudy().getParentStudy() != null && bioCollectionCriteria.getStudy().getParentStudy() != bioCollectionCriteria.getStudy()) {
+			studyList.add(bioCollectionCriteria.getStudy().getParentStudy().getId());
+		}
+		query.setParameterList("studyId", studyList);
+		
 		query.setParameter("functionId", arkFunction.getId());
 		query.setParameter("customFieldName", customFieldName);
 		
@@ -411,14 +436,22 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 			
 			stringBuffer.append(" SELECT COUNT(*) FROM BioCollectionCustomFieldData AS bccfd WHERE EXISTS ");
 			stringBuffer.append(" ( ");               
-			stringBuffer.append(" SELECT cfd.id FROM  CustomFieldDisplay AS cfd  WHERE cfd.customField.study.id = :studyId");
-			stringBuffer.append(" AND cfd.customField.arkFunction.id = :functionId AND bccfd.customFieldDisplay.id = :customFieldDisplayId");
+			stringBuffer.append("  SELECT cfd.id ");
+			stringBuffer.append("  FROM CustomFieldDisplay AS cfd ");
+			stringBuffer.append("  WHERE cfd.customField.study IN (:studyId)");
+			stringBuffer.append("  AND cfd.customField.arkFunction.id = :functionId AND bccfd.customFieldDisplay.id = :customFieldDisplayId");
 			stringBuffer.append(" )");
 			
 			String theHQLQuery = stringBuffer.toString();
 			
 			Query query = getSession().createQuery(theHQLQuery);
-			query.setParameter("studyId", subjectStudy.getId());
+			//query.setParameter("studyId", subjectStudy.getId());
+			List studyList = new ArrayList();
+			studyList.add(bioCollection.getStudy());
+			if(bioCollection.getStudy().getParentStudy() != null && bioCollection.getStudy().getParentStudy() != bioCollection.getStudy()) {
+				studyList.add(bioCollection.getStudy().getParentStudy());
+			}
+			query.setParameterList("studyId", studyList);
 			query.setParameter("functionId", arkFunction.getId());
 			query.setParameter("customFieldDisplayId", bioCollectionCFData.getCustomFieldDisplay().getId());
 			count = (Long) query.uniqueResult();
