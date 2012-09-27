@@ -98,7 +98,7 @@
 		<property name="url"
 			value="jdbc:mysql://ark-database:3306?rewriteBatchedStatements=true" />
 		<property name="username" value="arkadmin" />
-		<property name="password" value="#insert-ultra-secure-password-here#" />
+		<property name="password" value="v@Tym4np[]" />
 	</bean>
 
 	<!--  Ark LDAP configuration (includes the LDAP data source) -->
@@ -113,7 +113,7 @@
 		<property name="basePeopleDn" value="ou=arkUsers" />
 		<property name="base" value="dc=the-ark,dc=org,dc=au" />
 		<property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" />
-		<property name="password" value="#insert-ultra-secure-password-here#" />
+		<property name="password" value="v@Tym4np[]" />
 	</bean>
 
 	<!-- Shibboleth service provider -->
@@ -159,7 +159,7 @@
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">true</prop>
-				<prop key="hibernate.use_sql_comments">true</prop>
+				<prop key="hibernate.use_sql_comments">false</prop>
 
 				<!--
 					prop key="hibernate.">true</prop> <prop
@@ -284,7 +284,7 @@
 		<property name="cacheManager" ref="cacheManager" />
 	</bean>
 
-	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager" >
 		<property name="cacheManager" ref="ehCacheManager" />
 	</bean>
 
