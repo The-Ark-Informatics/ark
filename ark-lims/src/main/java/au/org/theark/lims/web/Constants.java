@@ -70,8 +70,10 @@ public class Constants {
 	public static final String	OLD_PASSWORD									= "oldPassword";
 	public static final String	CONFIRM_PASSWORD								= "confirmPassword";
 	public static final String	SAVE												= "save";
+	public static final String	SAVEANDCLOSE									= "saveAndClose";
 	public static final String	CANCEL											= "cancel";
 	public static final String	DELETE											= "delete";
+	public static final String	COPY												= "copy";
 	public static final String	ARCHIVE											= "archive";
 	public static final String	SEARCH_USER_FORM								= "searchUserForm";
 	public static final String	SEARCH_FORM										= "searchForm";
@@ -236,5 +238,4 @@ public class Constants {
 	public static final String			SAVE_KEY												= "saveKey";
 	public static final String			DELETE_KEY												= "deleteKey";
 	public static final String			STUDY													= "study";
-
 }
