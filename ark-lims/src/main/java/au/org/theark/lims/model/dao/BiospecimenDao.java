@@ -281,7 +281,15 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	public long getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction) {
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.createAlias("customField", "cfield");
-		criteria.add(Restrictions.eq("cfield.study", biospecimenCriteria.getStudy()));
+		
+		// Allow child studies to inherit parent defined custom fields
+		List studyList = new ArrayList();
+		studyList.add(biospecimenCriteria.getStudy());
+		if(biospecimenCriteria.getStudy().getParentStudy() != null && biospecimenCriteria.getStudy().getParentStudy() != biospecimenCriteria.getStudy()) {
+			studyList.add(biospecimenCriteria.getStudy().getParentStudy());
+		}
+		
+		criteria.add(Restrictions.in("cfield.study", studyList));
 		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
 		criteria.setProjection(Projections.rowCount());
 		return  (Long)criteria.uniqueResult();
@@ -294,13 +302,20 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
 		sb.append("LEFT JOIN cfd.biospecimenCustomFieldData as fieldList ");
 		sb.append(" with fieldList.biospecimen.id = :biospecimenId ");
-		sb.append( "  where cfd.customField.study.id = :studyId" );
+		sb.append( "  where cfd.customField.study.id IN (:studyId)" );
 		sb.append(" and cfd.customField.arkFunction.id = :functionId");
 		sb.append(" order by cfd.sequence");
 		
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("biospecimenId", biospecimenCriteria.getId());
-		query.setParameter("studyId", biospecimenCriteria.getStudy().getId());
+		
+		// Allow child studies to inherit parent defined custom fields
+		List studyList = new ArrayList();
+		studyList.add(biospecimenCriteria.getStudy().getId());
+		if(biospecimenCriteria.getStudy().getParentStudy() != null && biospecimenCriteria.getStudy().getParentStudy() != biospecimenCriteria.getStudy()) {
+			studyList.add(biospecimenCriteria.getStudy().getParentStudy().getId());
+		}
+		query.setParameterList("studyId", studyList);
 		query.setParameter("functionId", arkFunction.getId());
 		query.setFirstResult(first);
 		query.setMaxResults(count);
