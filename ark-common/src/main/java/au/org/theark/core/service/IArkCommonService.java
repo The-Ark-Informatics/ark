@@ -60,6 +60,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -138,6 +139,8 @@ public interface IArkCommonService<T> {
 	public LinkSubjectStudy getSubjectByUID(String subjectUID, Study study) throws EntityNotFoundException;
 
 	public Collection<MaritalStatus> getMaritalStatus();
+
+	public Collection<EmailStatus> getAllEmailStatuses();
 
 	public List<Country> getCountries();
 
