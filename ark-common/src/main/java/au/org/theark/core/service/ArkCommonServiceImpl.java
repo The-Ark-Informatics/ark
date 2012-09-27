@@ -91,6 +91,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -1230,6 +1231,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 	public void convertLimsBiospecimenCustomDataValuesToKeysForThisStudy(Study study){
 		customFieldDao.convertLimsBiospecimenCustomDataValuesToKeysForThisStudy(study);
+	}
+
+	public Collection<EmailStatus> getAllEmailStatuses(){
+		return studyDao.getAllEmailStatuses();
 	}
 
 }
