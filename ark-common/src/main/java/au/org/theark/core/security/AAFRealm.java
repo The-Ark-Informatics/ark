@@ -69,7 +69,6 @@ public class AAFRealm extends AuthorizingRealm {
 
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		log.info("In doGetAuthorizationInfo of AAFRealm");
 		SimpleAuthorizationInfo simpleAuthInfo = new SimpleAuthorizationInfo();
 
 		// Get the logged in user name from Shiro Session
