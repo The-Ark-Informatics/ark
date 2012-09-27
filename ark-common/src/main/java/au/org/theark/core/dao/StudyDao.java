@@ -74,6 +74,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.CustomFieldUpload;
 import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -275,6 +276,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
+	public List<EmailStatus> getAllEmailStatuses(){
+		Example example = Example.create(new EmailStatus());
+		Criteria criteria = getSession().createCriteria(EmailStatus.class).add(example);
+		return criteria.list();
+	}
+
+	
 	/**
 	 * Look up the Link Subject Study for subjects linked to a study
 	 * 
