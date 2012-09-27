@@ -63,6 +63,8 @@ public class Person implements java.io.Serializable {
 	private PersonContactMethod personContactMethod;
 	private String preferredEmail;
 	private String otherEmail;
+	private EmailStatus preferredEmailStatus;
+	private EmailStatus otherEmailStatus;
 	private Date dateLastKnownAlive;
 
 	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(
@@ -385,6 +387,33 @@ public class Person implements java.io.Serializable {
 		this.dateLastKnownAlive = dateLastKnownAlive;
 	}
 
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "OTHER_EMAIL_STATUS")
+	public EmailStatus getOtherEmailStatus() {
+		return this.otherEmailStatus;
+	}
+
+	public void setOtherEmailStatus(EmailStatus otherEmailStatus) {
+		this.otherEmailStatus = otherEmailStatus;
+	}
+
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PREFERRED_EMAIL_STATUS")
+	public EmailStatus getPreferredEmailStatus() {
+		return this.preferredEmailStatus;
+	}
+
+	public void setPreferredEmailStatus(EmailStatus preferredEmailStatus) {
+		this.preferredEmailStatus = preferredEmailStatus;
+	}
+
+	
+	
+	
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
