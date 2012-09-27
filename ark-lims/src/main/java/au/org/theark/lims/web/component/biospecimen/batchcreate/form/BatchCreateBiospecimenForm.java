@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,10 +30,10 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DateTimeField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -69,7 +68,6 @@ import au.org.theark.core.web.component.listeditor.ListItem;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.lims.model.vo.BatchBiospecimenVO;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 
@@ -89,9 +87,6 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService										iLimsService;
 
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
-	private IInventoryService								iInventoryService;
-
 	// Add a visitor class for required field marking/validation/highlighting
 	protected ArkFormVisitor		formVisitor			= new ArkFormVisitor();
 	
@@ -103,7 +98,6 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 	private DropDownChoice<BioCollection>				bioCollectionDdc;
 	private DropDownChoice<BioSampletype>				sampleTypeDdc;
 	private DateTextField									sampleDateTxtFld;
-	private DateTimeField									sampleTimeTxtFld;
 	private TextField<Double>								quantityTxtFld;
 	private DropDownChoice<Unit>							unitDdc;
 	private DropDownChoice<TreatmentType>				treatmentTypeDdc;
@@ -149,6 +143,22 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(target);
+				target.add(feedbackPanel);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				target.add(feedbackPanel);
+			}
+		});
+		
+		add(new AjaxButton(Constants.SAVEANDCLOSE) {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onSave(target);
+				modalWindow.close(target);
 				target.add(feedbackPanel);
 			}
 
@@ -215,43 +225,27 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 
 			private static final long	serialVersionUID	= 1L;
 
+			@SuppressWarnings("serial")
 			@Override
 			protected void onPopulateItem(final ListItem<BatchBiospecimenVO> item) {
 				item.setOutputMarkupId(true);
-				item.setModel(new CompoundPropertyModel<BatchBiospecimenVO>(item.getModel()));
+				
+				//item.setModel(new CompoundPropertyModel<BatchBiospecimenVO>(item.getModel()));
+				//item.setModel(new Model(new BatchBiospecimenVO()));
 				item.getModelObject().getBiospecimen().setLinkSubjectStudy(cpModel.getObject().getLinkSubjectStudy());
 				item.getModelObject().getBiospecimen().setStudy(cpModel.getObject().getLinkSubjectStudy().getStudy());
 
-				numberToCreateTxtFld = new TextField<Number>("numberToCreate");
+				numberToCreateTxtFld = new TextField<Number>("numberToCreate", new PropertyModel(item.getModelObject(), "numberToCreate"));
 				
-				initBioCollectionDdc();
-				initSampleTypeDdc();
+				initBioCollectionDdc(item);
+				initSampleTypeDdc(item);
 
-				sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
+				sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", new PropertyModel(item.getModelObject(), "biospecimen.sampleDate"), au.org.theark.core.Constants.DD_MM_YYYY);
 				ArkDatePicker sampleDatePicker = new ArkDatePicker();
 				sampleDatePicker.bind(sampleDateTxtFld);
 				sampleDateTxtFld.add(sampleDatePicker);
 
-				sampleTimeTxtFld = new DateTimeField("biospecimen.sampleTime") {
-
-					private static final long	serialVersionUID	= 1L;
-
-					@Override
-					protected void onBeforeRender() {
-						this.getDateTextField().setVisibilityAllowed(false);
-						super.onBeforeRender();
-					}
-
-					@Override
-					protected void convertInput() {
-						// Slight change to not default to today's date
-						Date modelObject = (Date) getDefaultModelObject();
-						getDateTextField().setConvertedInput(modelObject != null ? modelObject : null);
-						super.convertInput();
-					}
-				};
-
-				quantityTxtFld = new TextField<Double>("biospecimen.quantity") {
+				quantityTxtFld = new TextField<Double>("biospecimen.quantity", new PropertyModel(item.getModelObject(), "biospecimen.quantity")) {
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -263,17 +257,75 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 						return (IConverter<C>) doubleConverter;
 					}
 				};
-				initUnitDdc();
-				initTreatmentTypeDdc();
+				initUnitDdc(item);
+				initTreatmentTypeDdc(item);
 
-				item.add(numberToCreateTxtFld);
-				item.add(bioCollectionDdc);
-				item.add(sampleTypeDdc);
-				item.add(sampleDateTxtFld);
-				item.add(sampleTimeTxtFld);
-				item.add(quantityTxtFld);
-				item.add(unitDdc);
-				item.add(treatmentTypeDdc);
+				// Added onchange events to ensure model updated when any change made
+				item.add(numberToCreateTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				    @Override
+				    protected void onUpdate(AjaxRequestTarget target) {
+				    } 
+				}));
+				item.add(bioCollectionDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				    @Override
+				    protected void onUpdate(AjaxRequestTarget target) {
+				    } 
+				}));
+				item.add(sampleTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				    @Override
+				    protected void onUpdate(AjaxRequestTarget target) {
+				    } 
+				}));
+				item.add(sampleDateTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				    @Override
+				    protected void onUpdate(AjaxRequestTarget target) {
+				    } 
+				}));
+				item.add(quantityTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				    @Override
+				    protected void onUpdate(AjaxRequestTarget target) {
+				    } 
+				}));
+				item.add(unitDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				    @Override
+				    protected void onUpdate(AjaxRequestTarget target) {
+				    } 
+				}));
+				item.add(treatmentTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				    @Override
+				    protected void onUpdate(AjaxRequestTarget target) {
+				    } 
+				}));
+
+				// Copy button allows entire row details to be copied
+				item.add(new AjaxEditorButton(Constants.COPY) {
+					private static final long	serialVersionUID	= 1L;
+
+					@Override
+					protected void onError(AjaxRequestTarget target, Form<?> form) {
+						target.add(feedbackPanel);
+					}
+
+					@Override
+					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+						BatchBiospecimenVO batchBiospecimenVo = new BatchBiospecimenVO();
+						try {
+							batchBiospecimenVo.setNumberToCreate(item.getModelObject().getNumberToCreate());
+							PropertyUtils.copyProperties(batchBiospecimenVo.getBiospecimen(), item.getModelObject().getBiospecimen());
+							listEditor.addItem(batchBiospecimenVo);
+							target.add(form);
+						}
+						catch (IllegalAccessException e) {
+							e.printStackTrace();
+						}
+						catch (InvocationTargetException e) {
+							e.printStackTrace();
+						}
+						catch (NoSuchMethodException e) {
+							e.printStackTrace();
+						}
+					}
+				}.setDefaultFormProcessing(false));
 				
 				item.add(new AjaxEditorButton(Constants.DELETE) {
 					private static final long	serialVersionUID	= 1L;
@@ -305,7 +357,7 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 		return listEditor;
 	}
 
-	private void initBioCollectionDdc() {
+	private void initBioCollectionDdc(ListItem<BatchBiospecimenVO> item) {
 		// Get a list of collections for the subject in context by default
 		BioCollection bioCollection = new BioCollection();
 		bioCollection.setLinkSubjectStudy(cpModel.getObject().getBiospecimen().getLinkSubjectStudy());
@@ -314,7 +366,7 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 			cpModel.getObject().setBioCollectionList(iLimsService.searchBioCollection(bioCollection));
 
 			ChoiceRenderer<BioCollection> choiceRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
-			bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", cpModel.getObject().getBioCollectionList(), choiceRenderer);
+			bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", new PropertyModel(item.getModelObject(), "biospecimen.bioCollection"), cpModel.getObject().getBioCollectionList(), choiceRenderer);
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
@@ -322,23 +374,23 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 		}
 	}
 
-	private void initSampleTypeDdc() {
+	private void initSampleTypeDdc(ListItem<BatchBiospecimenVO> item) {
 		List<BioSampletype> sampleTypeList = iLimsService.getBioSampleTypes();
 		ChoiceRenderer<BioSampletype> choiceRenderer = new ChoiceRenderer<BioSampletype>(Constants.NAME, Constants.ID);
-		sampleTypeDdc = new DropDownChoice<BioSampletype>("biospecimen.sampleType", (List<BioSampletype>) sampleTypeList, choiceRenderer);
+		sampleTypeDdc = new DropDownChoice<BioSampletype>("biospecimen.sampleType", new PropertyModel(item.getModelObject(), "biospecimen.sampleType"), (List<BioSampletype>) sampleTypeList, choiceRenderer);
 	}
 
-	private void initTreatmentTypeDdc() {
+	private void initTreatmentTypeDdc(ListItem<BatchBiospecimenVO> item) {
 		List<TreatmentType> treatmentTypeList = iLimsService.getTreatmentTypes();
 		ChoiceRenderer<TreatmentType> choiceRenderer = new ChoiceRenderer<TreatmentType>(Constants.NAME, Constants.ID);
-		treatmentTypeDdc = new DropDownChoice<TreatmentType>("biospecimen.treatmentType", (List<TreatmentType>) treatmentTypeList, choiceRenderer);
+		treatmentTypeDdc = new DropDownChoice<TreatmentType>("biospecimen.treatmentType", new PropertyModel(item.getModelObject(), "biospecimen.treatmentType"), (List<TreatmentType>) treatmentTypeList, choiceRenderer);
 		treatmentTypeDdc.setNullValid(false);
 	}
 
-	private void initUnitDdc() {
+	private void initUnitDdc(ListItem<BatchBiospecimenVO> item) {
 		List<Unit> unitList = iLimsService.getUnits();
 		ChoiceRenderer<Unit> choiceRenderer = new ChoiceRenderer<Unit>(Constants.NAME, Constants.ID);
-		unitDdc = new DropDownChoice<Unit>("biospecimen.unit", (List<Unit>) unitList, choiceRenderer);
+		unitDdc = new DropDownChoice<Unit>("biospecimen.unit", new PropertyModel(item.getModelObject(), "biospecimen.unit"), (List<Unit>) unitList, choiceRenderer);
 		unitDdc.setNullValid(false);
 	}
 	
@@ -353,34 +405,36 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 				int i = 0;
 				while ( i < batchBiospecimenVO.getNumberToCreate()) {
 					Biospecimen biospecimen = new Biospecimen();
-					try {
-						PropertyUtils.copyProperties(biospecimen, batchBiospecimenVO.getBiospecimen());
-						Set<BioTransaction> bioTransactions = new HashSet<BioTransaction>(0);
-						
-						// Inheriently create a transaction for the initial quantity
-						BioTransaction bioTransaction = new BioTransaction();
-						bioTransaction.setBiospecimen(biospecimen);
-						bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
-						bioTransaction.setQuantity(biospecimen.getQuantity());
-						bioTransaction.setReason(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
-						
-						BioTransactionStatus initialStatus = iLimsService.getBioTransactionStatusByName(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
-						bioTransaction.setStatus(initialStatus);	//ensure that the initial transaction can be identified
-						bioTransactions.add(bioTransaction);
-						biospecimen.setBioTransactions(bioTransactions);
+					//PropertyUtils.copyProperties(biospecimen, batchBiospecimenVO.getBiospecimen());
+					biospecimen.setBioCollection(batchBiospecimenVO.getBiospecimen().getBioCollection());
+					biospecimen.setSampleType(batchBiospecimenVO.getBiospecimen().getSampleType());
+					biospecimen.setSampleDate(batchBiospecimenVO.getBiospecimen().getSampleDate());
+					biospecimen.setQuantity(batchBiospecimenVO.getBiospecimen().getQuantity());
+					biospecimen.setUnit(batchBiospecimenVO.getBiospecimen().getUnit());
+					biospecimen.setTreatmentType(batchBiospecimenVO.getBiospecimen().getTreatmentType());
+					biospecimen.setStudy(batchBiospecimenVO.getBiospecimen().getStudy());
+					biospecimen.setLinkSubjectStudy(batchBiospecimenVO.getBiospecimen().getLinkSubjectStudy());
+					
+					Set<BioTransaction> bioTransactions = new HashSet<BioTransaction>(0);
+					
+					// Inheriently create a transaction for the initial quantity
+					BioTransaction bioTransaction = new BioTransaction();
+					bioTransaction.setBiospecimen(biospecimen);
+					bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
+					bioTransaction.setQuantity(biospecimen.getQuantity());
+					bioTransaction.setReason(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
+					
+					BioTransactionStatus initialStatus = iLimsService.getBioTransactionStatusByName(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
+					bioTransaction.setStatus(initialStatus);	//ensure that the initial transaction can be identified
+					bioTransactions.add(bioTransaction);
+					biospecimen.setBioTransactions(bioTransactions);
+					
+					if(biospecimen.getStudy().getAutoGenerateBiospecimenUid()) {
 						biospecimen.setBiospecimenUid(iLimsService.getNextGeneratedBiospecimenUID(biospecimen.getStudy()));
-						biospecimenList.add(biospecimen);
-						i++;
 					}
-					catch (IllegalAccessException e) {
-						log.error(e.getMessage());
-					}
-					catch (InvocationTargetException e) {
-						log.error(e.getMessage());
-					}
-					catch (NoSuchMethodException e) {
-						log.error(e.getMessage());
-					}
+					
+					biospecimenList.add(biospecimen);
+					i++;
 				}
 				
 				StringBuffer message = new StringBuffer();
@@ -409,7 +463,7 @@ public class BatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 		
 		// Check for any empty required fields in list
 		for (BatchBiospecimenVO batchBiospecimenVO: batchBiospecimenList) {
-			numberToCreateError = (batchBiospecimenVO.getNumberToCreate() == null);
+			numberToCreateError = (batchBiospecimenVO.getNumberToCreate() == null);	
 			collectionError = (batchBiospecimenVO.getBiospecimen().getBioCollection() == null);
 			sampleTypeError = (batchBiospecimenVO.getBiospecimen().getSampleType() == null);
 			quantityError = (batchBiospecimenVO.getBiospecimen().getQuantity() == null);
