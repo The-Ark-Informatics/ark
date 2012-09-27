@@ -49,6 +49,7 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -153,6 +154,7 @@ public class DataUploader {
 			//much better to call this once than each one n times in the for loop...plus each ones default is n times
 			//should save 200,000-250,000 selects for a 17K insert.  may still wish to evaluate whats best here
 			Collection<MaritalStatus> maritalStatiiPossible = iArkCommonService.getMaritalStatus();
+			Collection<EmailStatus> emailStatiiPossible = iArkCommonService.getAllEmailStatuses();
 			Collection<SubjectStatus> subjectStatiiPossible = iArkCommonService.getSubjectStatus();
 			Collection<GenderType> genderTypesPossible = iArkCommonService.getGenderTypes();
 			Collection<TitleType> titleTypesPossible = iArkCommonService.getTitleType();
@@ -180,6 +182,7 @@ public class DataUploader {
 			GenderType defaultGenderType = iStudyService.getDefaultGenderType();
 			VitalStatus defaultVitalStatus = iStudyService.getDefaultVitalStatus();
 			MaritalStatus defaultMaritalStatus = iStudyService.getDefaultMaritalStatus();
+			EmailStatus defaultEmailStatus = iStudyService.getDefaultEmailStatus();
 			ConsentOption concentOptionOfYes = iStudyService.getConsentOptionForBoolean(true);//sounds a lot like boolean blah = true????
 			ConsentStatus consentStatusOfConsented = iStudyService.getConsentStatusByName("Consented");
 			ConsentType consentTypeOfElectronic = iStudyService.getConsentTypeByName("Electronic");
@@ -209,8 +212,10 @@ public class DataUploader {
 			int lastNameIndex 			= csvReader.getIndex("LAST_NAME");
 			int previousLastNameIndex 	= csvReader.getIndex("PREVIOUS_LAST_NAME");
 			int preferredNameIndex 		= csvReader.getIndex("PREFERRED_NAME");
-			int preferredEmailIndex 	= csvReader.getIndex("PREFERRED_EMAIL");
+			int preferredEmailIndex 	= csvReader.getIndex("EMAIL");
+			int preferredEmailStatusIndex	= csvReader.getIndex("EMAIL_STATUS");
 			int otherEmailIndex 			= csvReader.getIndex("OTHER_EMAIL");
+			int otherEmailStatusIndex	= csvReader.getIndex("OTHER_EMAIL_STATUS");
 			int heardAboutStudyIndex	= csvReader.getIndex("HEARD_ABOUT_STUDY");
 			int commentsIndex 			= csvReader.getIndex("COMMENTS");
 			int titleIndex 				= csvReader.getIndex("TITLE");
@@ -415,6 +420,41 @@ public class DataUploader {
 						person.setOtherEmail(stringLineArray[otherEmailIndex]);
 					}
 	
+
+					
+					if (preferredEmailStatusIndex > 0) {
+						String preferredEmailStatusStr = (stringLineArray[preferredEmailStatusIndex]);
+						for(EmailStatus possibleEmailStat : emailStatiiPossible){
+							if(possibleEmailStat.getName().equalsIgnoreCase(preferredEmailStatusStr)){
+								person.setPreferredEmailStatus(possibleEmailStat);		
+							}
+						}
+						if (person.getPreferredEmailStatus() == null || 
+								StringUtils.isBlank(person.getPreferredEmailStatus().getName())) {
+							person.setPreferredEmailStatus(defaultEmailStatus);
+						}
+					}
+					
+					if (otherEmailStatusIndex > 0) {
+						String OtherEmailStatusStr = (stringLineArray[otherEmailStatusIndex]);
+						for(EmailStatus possibleEmailStat : emailStatiiPossible){
+							if(possibleEmailStat.getName().equalsIgnoreCase(OtherEmailStatusStr)){
+								person.setOtherEmailStatus(possibleEmailStat);		
+							}
+						}
+						if (person.getOtherEmailStatus() == null || 
+								StringUtils.isBlank(person.getOtherEmailStatus().getName())) {
+							person.setOtherEmailStatus(defaultEmailStatus);
+						}
+					}
+	
+					
+					
+					
+					
+					
+					
+					
 					if (titleIndex > 0) {
 						String titleStr = (stringLineArray[titleIndex]);
 						for(TitleType titleType : titleTypesPossible){
