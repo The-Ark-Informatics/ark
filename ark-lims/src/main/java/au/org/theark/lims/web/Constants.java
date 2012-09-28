@@ -71,6 +71,7 @@ public class Constants {
 	public static final String	CONFIRM_PASSWORD								= "confirmPassword";
 	public static final String	SAVE												= "save";
 	public static final String	SAVEANDCLOSE									= "saveAndClose";
+	public static final String	CLOSE												= "Close";
 	public static final String	CANCEL											= "cancel";
 	public static final String	DELETE											= "delete";
 	public static final String	COPY												= "copy";
