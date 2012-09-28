@@ -65,7 +65,8 @@ import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biolocation.BioLocationPanel;
-import au.org.theark.lims.web.component.biospecimen.batchcreate.BatchCreateBiospecimenPanel;
+import au.org.theark.lims.web.component.biospecimen.batchcreate.AutoGenBatchCreateBiospecimenPanel;
+import au.org.theark.lims.web.component.biospecimen.batchcreate.ManualBatchCreateBiospecimenPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
 
 /**
@@ -324,13 +325,17 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			newModel.getObject().setStudy(cpModel.getObject().getStudy());
 			newModel.getObject().getBiospecimen().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 			newModel.getObject().getBiospecimen().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
-			//TODO ASAP make this allow for non-auto-gen
-			//boolean isAutoBiospecimen = getModelObject().getLinkSubjectStudy().getStudy().getAutoGenerateBiospecimenUid();
-			//newModel.getObject().getBiospecimen().setBiospecimenUid(isAutoBiospecimen?Constants.AUTO_GENERATED:"");
-			newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
 
+			// Allow for autogen or manual biospecimenUid entry
+			boolean isAutoBiospecimen = getModelObject().getLinkSubjectStudy().getStudy().getAutoGenerateBiospecimenUid();
+			if(isAutoBiospecimen) {
+				modalContentPanel = new AutoGenBatchCreateBiospecimenPanel("content", feedbackPanel, newModel, modalWindow);
+			}
+			else {
+				modalContentPanel = new ManualBatchCreateBiospecimenPanel("content", feedbackPanel, newModel, modalWindow);
+			}
+			
 			// Set the modalWindow title and content
-			modalContentPanel = new BatchCreateBiospecimenPanel("content", feedbackPanel, newModel, modalWindow);
 			modalWindow.setTitle("Batch Create Biospecimens");
 			modalWindow.setContent(modalContentPanel);
 			modalWindow.show(target);
