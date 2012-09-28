@@ -27,6 +27,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -324,5 +325,18 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		modalWindow.setTitle("Collection Detail");
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);
+		modalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback()
+		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			public void onClose(AjaxRequestTarget target)
+         {
+				// Refresh the list form whenever the modalwindow is closed
+         	target.add(BioCollectionListForm.this);	
+         }
+		});
 	}
 }
