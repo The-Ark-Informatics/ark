@@ -27,18 +27,18 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.lims.model.vo.BatchBiospecimenVO;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.web.component.biospecimen.batchcreate.form.BatchCreateBiospecimenForm;
+import au.org.theark.lims.web.component.biospecimen.batchcreate.form.ManualBatchCreateBiospecimenForm;
 
-public class BatchCreateBiospecimenPanel extends Panel {
+public class ManualBatchCreateBiospecimenPanel extends Panel {
 
 	private static final long						serialVersionUID	= 7224168117680252835L;
 
 	protected CompoundPropertyModel<LimsVO>	cpModel;
 
 	protected FeedbackPanel							feedbackPanel;
-	private BatchCreateBiospecimenForm					form;
+	private ManualBatchCreateBiospecimenForm					form;
 
-	public BatchCreateBiospecimenPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<LimsVO> cpModel, ModalWindow modalWindow) {
+	public ManualBatchCreateBiospecimenPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<LimsVO> cpModel, ModalWindow modalWindow) {
 		super(id);
 		this.feedbackPanel = feedbackPanel;
 		this.cpModel = cpModel;
@@ -47,7 +47,7 @@ public class BatchCreateBiospecimenPanel extends Panel {
 	}
 
 	public void initialisePanel(ModalWindow modalWindow) {
-		form = new BatchCreateBiospecimenForm("batchCreateBiospecimenForm", cpModel, new Model<BatchBiospecimenVO>(new BatchBiospecimenVO()), modalWindow);
+		form = new ManualBatchCreateBiospecimenForm("batchCreateBiospecimenForm", cpModel, new Model<BatchBiospecimenVO>(new BatchBiospecimenVO()), modalWindow);
 		form.initialiseForm();
 		add(form);
 	}
@@ -55,14 +55,14 @@ public class BatchCreateBiospecimenPanel extends Panel {
 	/**
 	 * @return the listDetailForm
 	 */
-	public BatchCreateBiospecimenForm getListDetailForm() {
+	public ManualBatchCreateBiospecimenForm getListDetailForm() {
 		return form;
 	}
 
 	/**
 	 * @param listDetailForm the listDetailForm to set
 	 */
-	public void setListDetailForm(BatchCreateBiospecimenForm listDetailForm) {
+	public void setListDetailForm(ManualBatchCreateBiospecimenForm listDetailForm) {
 		this.form = listDetailForm;
 	}
 }
