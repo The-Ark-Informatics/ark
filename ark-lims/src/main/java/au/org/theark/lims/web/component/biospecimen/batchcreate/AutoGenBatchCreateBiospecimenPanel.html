@@ -47,6 +47,11 @@
 							Treatment:
 						</wicket:message>
 					</th>
+					<th width="5%">
+						<wicket:message	key="biospecimen.concentration">
+							Concentration:
+						</wicket:message>
+					</th>
 					
 					<th width="5%">
 						&nbsp;
@@ -117,6 +122,10 @@
 								</option>
 							</select><span class="requiredHint">*</span>
 						</td>
+						
+						<td>
+							<input wicket:id="biospecimen.concentration" type="text" maxLength="10" size="5"/>
+						</td>
 
 						<td>
 							<input wicket:id="copy" type="submit" wicket:message="value:button.copy" />
@@ -135,7 +144,7 @@
 						<td width="2%">
 							&nbsp;
 						</td>
-						<td width="96%" colspan="9">
+						<td width="96%" colspan="10">
 							<input wicket:id="new" type="submit" wicket:message="value:button.new" />
 						</td>
 						<td width="2%">
