@@ -153,7 +153,7 @@
 				<textElement>
 					<font fontName="DejaVu Sans" size="14"/>
 				</textElement>
-				<text><![CDATA[Billable Item Charges By Year]]></text>
+				<text><![CDATA[Invoiced Billable Item Charges]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="0" y="55" width="30" height="20"/>
