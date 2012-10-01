@@ -350,7 +350,7 @@ public class CustomFieldUploadValidator {
 					fileValidationMessages.add("The column name \"SUBJECTUID\" must exist as the header of the first column.\n");
 				}
 				for (String badHeader : badHeaders) {
-					fileValidationMessages.add("The column name " + badHeader + " does not with an existing study-specific custom field.\n");
+					fileValidationMessages.add("The column name " + badHeader + " does not match with an existing study-specific custom field.\n");
 				}
 				log.warn("failed header validation");
 			}
