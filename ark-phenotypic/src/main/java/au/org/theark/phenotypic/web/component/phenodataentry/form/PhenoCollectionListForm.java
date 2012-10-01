@@ -404,7 +404,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		modalContentPanel = new PhenoDataEntryModalDetailPanel("content", modalWindow, cpModel);
 
 		// Set the modalWindow title and content
-		modalWindow.setTitle("Phenotypic Collection Detail");
+		modalWindow.setTitle("Subject Dataset Details");
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);
 	}
