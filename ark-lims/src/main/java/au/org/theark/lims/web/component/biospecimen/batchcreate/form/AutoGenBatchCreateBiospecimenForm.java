@@ -152,9 +152,8 @@ public class AutoGenBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> 
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				target.add(feedbackPanel);
 			}
-		});
+		}.setVisible(false));
 		
-		// If we ever want a save and close button, remove setVisible()
 		add(new AjaxButton(Constants.SAVEANDCLOSE) {
 			private static final long	serialVersionUID	= 1L;
 
@@ -170,7 +169,7 @@ public class AutoGenBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> 
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				target.add(feedbackPanel);
 			}
-		}).setVisible(false);
+		});
 		
 		add(new AjaxButton(Constants.CANCEL) {
 			private static final long	serialVersionUID	= 1L;
@@ -451,7 +450,9 @@ public class AutoGenBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> 
 				message.append(batchBiospecimenVO.getBiospecimen().getSampleType().getName());
 				message.append(" ");
 				message.append("biospecimens");
-				info(message);
+			
+				// Passes info messages to the session, so the parents feedback messages can be refreshed accordingly
+				getSession().info(message);
 			}
 			
 			log.info("Attempting to create " + biospecimenList.size() + " biospecimens");

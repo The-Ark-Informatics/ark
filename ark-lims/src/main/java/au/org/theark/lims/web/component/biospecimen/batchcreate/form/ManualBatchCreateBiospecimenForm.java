@@ -451,7 +451,9 @@ public class ManualBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 			message.append(biospecimenList.size());
 			message.append(" ");
 			message.append("biospecimens");
-			info(message);
+			
+			// Passes info messages to the session, so the parents feedback messages can be refreshed accordingly
+			getSession().info(message);
 			
 			log.info("Attempting to create " + biospecimenList.size() + " biospecimens");
 			iLimsService.batchInsertBiospecimens(biospecimenList);
