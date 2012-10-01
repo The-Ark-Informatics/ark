@@ -18,22 +18,32 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider2;
+import au.org.theark.core.web.component.export.ExportToolbar;
+import au.org.theark.core.web.component.export.ExportableTextColumn;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 
 /**
@@ -42,7 +52,6 @@ import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
  */
 @SuppressWarnings( { "unchecked", "serial" })
 public class SearchResultListPanel extends Panel {
-
 
 	private static final long							serialVersionUID	= -1L;
 	private CompoundPropertyModel<CustomFieldVO>	cpModel;
@@ -60,7 +69,7 @@ public class SearchResultListPanel extends Panel {
 
 	public DataView<CustomField> buildDataView(ArkDataProvider2<CustomField, CustomField> subjectProvider) {
 
-		DataView<CustomField> studyCompDataView = new DataView<CustomField>("customFieldList", subjectProvider) {
+		DataView<CustomField> customFieldDataView = new DataView<CustomField>("customFieldList", subjectProvider) {
 
 			@Override
 			protected void populateItem(final Item<CustomField> item) {
@@ -76,7 +85,7 @@ public class SearchResultListPanel extends Panel {
 
 				// Component Name Link
 				item.add(buildLinkWMC(item));
-				
+
 				// Field Label
 				if (field.getFieldType() != null) {
 					item.add(new Label(Constants.CUSTOMFIELD_FIELD_LABEL, field.getFieldLabel()));
@@ -135,7 +144,10 @@ public class SearchResultListPanel extends Panel {
 
 			}
 		};
-		return studyCompDataView;
+
+		addToolbars(customFieldDataView);
+
+		return customFieldDataView;
 	}
 
 	private WebMarkupContainer buildLinkWMC(final Item<CustomField> item) {
@@ -163,5 +175,36 @@ public class SearchResultListPanel extends Panel {
 		link.add(nameLinkLabel);
 		customfieldLinkWMC.add(link);
 		return customfieldLinkWMC;
+	}
+
+	private void addToolbars(DataView<CustomField> customFieldDataView) {
+		List<IColumn<CustomField>> columns = new ArrayList<IColumn<CustomField>>();
+		columns.add(new ExportableTextColumn<CustomField>(Model.of("name"), "name"));
+		columns.add(new ExportableTextColumn<CustomField>(Model.of("fieldType"), "fieldType.name"));
+		columns.add(new ExportableTextColumn<CustomField>(Model.of("description"), "description"));
+		columns.add(new ExportableTextColumn<CustomField>(Model.of("fieldLabel"), "fieldLabel"));
+		columns.add(new ExportableTextColumn<CustomField>(Model.of("unitType"), "unitType.name"));
+		columns.add(new ExportableTextColumn<CustomField>(Model.of("encodedValues"), "encodedValues"));
+		columns.add(new ExportableTextColumn<CustomField>(Model.of("minValue"), "minValue"));
+		columns.add(new ExportableTextColumn<CustomField>(Model.of("maxValue"), "maxValue"));
+		columns.add(new ExportableTextColumn<CustomField>(Model.of("missingValue"), "missingValue"));
+
+		DataTable table = new DataTable("datatable", columns, customFieldDataView.getDataProvider(), au.org.theark.core.Constants.ROWS_PER_PAGE);
+		List<String> headers = new ArrayList<String>(0);
+		headers.add("FIELD_NAME");
+		headers.add("FIELD_TYPE");
+		headers.add("DESCRIPTION");
+		headers.add("QUESTION");
+		headers.add("UNITS");
+		headers.add("ENCDODED_VALUES");
+		headers.add("MINIMUM_VALUE");
+		headers.add("MAXIMUM_VALUE");
+		headers.add("MISSING_VALUE");
+
+		String filename = "data_dictionary";
+		RepeatingView toolbars = new RepeatingView("toolbars");
+		ExportToolbar<String> exportToolBar = new ExportToolbar<String>(table, headers, filename);
+		toolbars.add(new Component[] { exportToolBar });
+		add(toolbars);
 	}
 }
