@@ -63,6 +63,8 @@ public class Constants {
 
 	/* Person */
 	public static final String			PERSON_PREFERRED_EMAIL										= "linkSubjectStudy.person.preferredEmail";
+	public static final String			PERSON_PREFERRED_EMAIL_STATUS								= "linkSubjectStudy.person.preferredEmailStatus";
+	public static final String			PERSON_OTHER_EMAIL_STATUS									= "linkSubjectStudy.person.otherEmailStatus";
 	public static final String			PERSON_OTHER_EMAIL											= "linkSubjectStudy.person.otherEmail";
 	public static final String			PERSON_PREFERRED_NAME										= "linkSubjectStudy.person.preferredName";
 	public static final String			PERSON_VITAL_STATUS											= "linkSubjectStudy.person.vitalStatus";

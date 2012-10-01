@@ -49,6 +49,7 @@ import au.org.theark.core.model.audit.entity.LssConsentHistory;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
+import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
@@ -109,6 +110,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	protected DropDownChoice<ConsentOption>			consentToPassDataGatheringDdc;
 
 	// Address Stuff comes here
+	protected DropDownChoice<EmailStatus>				preferredEmailStatusDdc;
+	protected DropDownChoice<EmailStatus>				otherEmailStatusDdc;
+
 	protected TextField<String>							preferredEmailTxtFld;
 	protected TextField<String>							otherEmailTxtFld;
 
@@ -225,11 +229,21 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		titleTypeDdc = new DropDownChoice<TitleType>(Constants.PERSON_TYTPE_TYPE, (List) titleTypeList, defaultChoiceRenderer);
 		titleTypeDdc.add(new ArkDefaultFormFocusBehavior());
 
-		// Vital Status
+		// Preferred Status
+		Collection<EmailStatus> allEmailStatusList = iArkCommonService.getAllEmailStatuses();
+		ChoiceRenderer<EmailStatus> preferredEmailStatusRenderer = new ChoiceRenderer<EmailStatus>(Constants.NAME, Constants.ID);
+		preferredEmailStatusDdc = new DropDownChoice<EmailStatus>(Constants.PERSON_PREFERRED_EMAIL_STATUS, (List<EmailStatus>) allEmailStatusList, preferredEmailStatusRenderer);
+	
+			// Email Status
+//		Collection<EmailStatus> emailStatusList = iArkCommonService.getEmailStatus();
+		ChoiceRenderer<EmailStatus> otherEmailStatusRenderer = new ChoiceRenderer<EmailStatus>(Constants.NAME, Constants.ID);
+		otherEmailStatusDdc = new DropDownChoice<EmailStatus>(Constants.PERSON_OTHER_EMAIL_STATUS, (List<EmailStatus>) allEmailStatusList, otherEmailStatusRenderer);
+		
+			// Vital Status
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
 		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.NAME, Constants.ID);
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS, (List<VitalStatus>) vitalStatusList, vitalStatusRenderer);
-		vitalStatusDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+				vitalStatusDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -400,6 +414,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		wmcPreferredEmailContainer.add(preferredEmailTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcPreferredEmailContainer);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(otherEmailTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(preferredEmailStatusDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(otherEmailStatusDdc);
 
 		// Add consent fields into the form container.
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentToActiveContactDdc);
