@@ -19,11 +19,6 @@
 					Field Name:
 				</wicket:message>
 			</th>
-			<th width="15%">
-				<wicket:message	key="customField.fieldLabel">
-					Field Label:
-				</wicket:message>
-			</th>
 			<th width="10%">
 				<wicket:message	key="customField.fieldType">
 					Field Type:
@@ -32,6 +27,11 @@
 			<th width="25%">
 				<wicket:message	key="customField.description">
 					Description:
+				</wicket:message>
+			</th>
+			<th width="15%">
+				<wicket:message	key="customField.fieldLabel">
+					Field Label:
 				</wicket:message>
 			</th>
 			<th width="10%">
@@ -73,11 +73,6 @@
 				</div>
 			</td>
 			<td width="10%">
-				<span wicket:id="fieldLabel">
-					Question/Label
-				</span>
-			</td>
-			<td width="10%">
 				<span wicket:id="fieldType">
 					Field Type
 				</span>
@@ -85,6 +80,11 @@
 			<td width="25%">
 				<span wicket:id="description">
 					Description
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="fieldLabel">
+					Question/Label
 				</span>
 			</td>
 			<td width="10%">
@@ -122,5 +122,6 @@
 		</tfoot>
 	</table>
 	<table width="0%" cellspacing="0">
+		<wicket:container wicket:id="toolbars"></wicket:container>
 	</table>
 </wicket:panel>
