@@ -150,7 +150,7 @@ public class DataUploader {
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			String[] stringLineArray;
 
-			//this is a list of all our somewhat enum like ref tables...
+			//this is a list of all our somewhat enum-like reference tables...
 			//much better to call this once than each one n times in the for loop...plus each ones default is n times
 			//should save 200,000-250,000 selects for a 17K insert.  may still wish to evaluate whats best here
 			Collection<MaritalStatus> maritalStatiiPossible = iArkCommonService.getMaritalStatus();
