@@ -359,7 +359,7 @@ public class CustomDataUploadValidator {
 					fileValidationMessages.add("The column name \"RECORD_DATE_TIME\" must exist as the header of the second column.\n");
 				}
 				for (String badHeader : badHeaders) {
-					fileValidationMessages.add("The column name " + badHeader + " does not with an existing study-specific custom field.\n");
+					fileValidationMessages.add("The column name " + badHeader + " does not match with an existing study-specific custom field.\n");
 				}
 				log.warn("failed header validation");
 			}
