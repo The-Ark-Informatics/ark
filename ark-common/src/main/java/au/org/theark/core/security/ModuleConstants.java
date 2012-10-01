@@ -27,7 +27,7 @@ package au.org.theark.core.security;
 public class ModuleConstants {
 	public static final String	ARK_MODULE_STUDY			= "Study";
 	public static final String	ARK_MODULE_SUBJECT		= "Subject";
-	public static final String	ARK_MODULE_PHENOTYPIC	= "Phenotypic";
+	public static final String	ARK_MODULE_PHENOTYPIC	= "Datasets";
 	public static final String	ARK_MODULE_GENOTYPIC		= "Genotypic";
 	public static final String	ARK_MODULE_LIMS			= "LIMS";
 	public static final String	ARK_MODULE_REPORTING		= "Reporting";
