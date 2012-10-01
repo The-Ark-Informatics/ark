@@ -21,6 +21,10 @@ package au.org.theark.study.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -33,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
@@ -140,6 +145,26 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 						panelToReturn = new UserContainerPanel(panelId);
 					}
 					return panelToReturn;
+				}
+				
+				@Override
+				public boolean isVisible() {
+					if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY)) {
+						// Study function always visible
+						return true;
+					}
+					else {
+						// Other functions require study in context 
+						Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+						
+						// Manage Users only visible to Super Administrators or Study Administrators 
+						if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_USER)) {
+							SecurityManager securityManager = ThreadContext.getSecurityManager();
+							Subject currentUser = SecurityUtils.getSubject();
+							return ArkPermissionHelper.hasEditPermission(securityManager, currentUser) && sessionStudyId != null;
+						}
+						return sessionStudyId != null;
+					}
 				}
 			});
 		}
