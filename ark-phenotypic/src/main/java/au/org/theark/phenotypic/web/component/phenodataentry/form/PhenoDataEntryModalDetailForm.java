@@ -237,14 +237,14 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 		if (cpModel.getObject().getPhenoCollection().getId() == null) {
 			// Save
 			iPhenotypicService.createCollection(cpModel.getObject().getPhenoCollection());
-			this.info("Phenotypic Collection " + cpModel.getObject().getPhenoCollection().getId() + " was created successfully");
+			this.info("Subject Dataset " + cpModel.getObject().getPhenoCollection().getId() + " was created successfully");
 			processErrors(target);
 
 		}
 		else {
 			// Update
 			iPhenotypicService.updateCollection(cpModel.getObject().getPhenoCollection());
-			this.info("Phenotypic Collection " + cpModel.getObject().getPhenoCollection().getId() + " was updated successfully");
+			this.info("Subject Dataset " + cpModel.getObject().getPhenoCollection().getId() + " was updated successfully");
 			processErrors(target);
 			
 		}
@@ -281,7 +281,7 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.info("Phenotypic collection " + cpModel.getObject().getPhenoCollection().getId() + " was deleted successfully");
+		this.info("Subject Dataset " + cpModel.getObject().getPhenoCollection().getId() + " was deleted successfully");
 		processErrors(target);
 
 		onClose(target);

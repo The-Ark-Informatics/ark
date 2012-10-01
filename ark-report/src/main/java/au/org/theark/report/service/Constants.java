@@ -27,7 +27,7 @@ public class Constants {
 	public static final String	STUDY_SUMMARY_REPORT_NAME			= "Study Summary Report";
 	public static final String	STUDY_COMP_CONSENT_REPORT_NAME	= "Study Component Consent Details Report";
 	public static final String	STUDY_LEVEL_CONSENT_REPORT_NAME	= "Study-level Consent Details Report";
-	public static final String	PHENO_FIELD_DETAILS_REPORT_NAME	= "Phenotypic Field Details Report (Data Dictionary)";
+	public static final String	PHENO_FIELD_DETAILS_REPORT_NAME	= "Datasets Field Details Report (Data Dictionary)";
 	public static final String	STUDY_USER_ROLE_PERMISSIONS	= "Study User Role Permissions Report";
 	public static final String	WORK_RESEARCHER_COST_REPORT_NAME			= "Work Researcher Cost Report";
 	public static final String	WORK_RESEARCHER_DETAIL_COST_REPORT_NAME		= "Work Researcher Detail Cost Report";

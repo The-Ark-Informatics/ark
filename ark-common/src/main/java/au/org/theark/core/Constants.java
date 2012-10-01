@@ -23,47 +23,7 @@ package au.org.theark.core;
  *  all of the Ark modules
  */
 public class Constants {
-	/* Module Role Display Names */
-	public static final String DISPLAY_ROLE_STUDY_ADMIN = "Study Admin";
-	public static final String DISPLAY_ROLE_ORDINARY_USER = "Ordinary User";
-	public static final String DISPLAY_ROLE_POWER_USER = "Power User";
-	public static final String DISPLAY_ROLE_LAB_PERSON = "Lab Person";
-	public static final String DISPLAY_ROLE_WADB_ADMIN = "WADB Admin";
-	public static final String DISPLAY_ROLE_WADB_PERSON = "WADB Person";
-	public static final String DISPLAY_ROLE_SUPER_ADMIN = "Super Admin";
 
-	public static final String ROLE_STUDY_ADMIN = "study_administrator";
-	public static final String ROLE_SUPER_ADMIN = "super_administrator";
-	public static final String ROLE_ORDINARY_USER = "ordinary_user";
-	public static final String ROLE_POWER_USER = "power_user";
-	public static final String ROLE_LAB_PERSON = "lab_person";
-	public static final String ROLE_WADB_ADMINISTRATOR = "wadb_administrator";
-	public static final String ROLE_WADB_PERSON = "wadb_person";
-
-	/* Module Names for display */
-	public static final String DISP_MODULE_ARK = "ARK";
-	public static final String DISP_MODULE_STUDY_MANAGER = "Study Management";
-	public static final String DISP_MODULE_SUBJECT = "Subject Management";
-	public static final String DISP_MODULE_GWAS = "Genotypic";
-	public static final String DISP_MODULE_PHENOTYPIC = "Phenotypic";
-	public static final String DISP_MODULE_REGISTRY = "Registry";
-	// TODO: All wager_lab references to become lims
-	public static final String DISP_MODULE_WAGER_LAB = "LIMS";
-	public static final String DISP_MODULE_LIMS = "LIMS";
-	public static final String DISP_MODULE_DATA_ANALYSIS = "Data Extraction";
-
-	/* Module Names stored in the system */
-	public static final String MODULE_STUDY_MANAGER = "study_manager";
-	public static final String MODULE_ARK = "ark";
-	public static final String MODULE_SUBJECT = "subject";
-	public static final String MODULE_GWAS = "gwas";
-	public static final String MODULE_PHENOTYPIC = "phenotypic";
-	public static final String MODULE_REGISTRY = "registry";
-	// TODO: All wager_lab references to become lims
-	public static final String MODULE_WAGER_LAB = "wager_lab";
-	public static final String MODULE_LIMS = "lims";
-	// TODO: data_analysis should be data_extract ??
-	public static final String MODULE_DATA_ANALYSIS = "data_analysis";
 
 	/* Common Service Names */
 	public static final String ARK_COMMON_SERVICE = "arkCommonService";
@@ -305,7 +265,7 @@ public class Constants {
 	public static final String ARK_MODULE_STUDY = "Study";
 	public static final String ARK_MODULE_SUBJECT = "Subject";
 	public static final String ARK_MODULE_USER = "User";
-	public static final String ARK_MODULE_PHENOTYPIC = "Phenotypic";
+	public static final String ARK_MODULE_PHENOTYPIC = "Datasets";
 	public static final String ARK_MODULE_GENOTYPIC = "Genotypic";
 	public static final String ARK_MODULE_LIMS = "LIMS";
 	public static final String ARK_MODULE_REGISTRY = "Registry";

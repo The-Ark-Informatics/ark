@@ -30,7 +30,7 @@ public class Constants {
 	public static final String		PHENOTYPIC_DAO													= "phenotypicDao";
 
 	// Tabs/menus
-	public static final String		PHENOTYPIC_MAIN_TAB											= "Phenotypic";
+	public static final String		PHENOTYPIC_MAIN_TAB											= "Datasets";
 
 	// Exception messages
 	public static final String			IO_EXCEPTION													= "IOException: Input error. ";

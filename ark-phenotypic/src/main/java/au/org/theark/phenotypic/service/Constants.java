@@ -40,5 +40,6 @@ public class Constants {
 	// Exception messages
 	public static final String	IO_EXCEPTION						= "IOException: Input error. ";
 	public static final String	FILE_FORMAT_EXCEPTION			= "File Format Exception: Input error. ";
-	public static final String	PHENOTYPIC_SYSTEM_EXCEPTION	= "Phenotypic System Exception: Input error. ";
+
+	
 }
