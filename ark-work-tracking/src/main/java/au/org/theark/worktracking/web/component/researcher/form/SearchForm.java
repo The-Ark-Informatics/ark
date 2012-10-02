@@ -96,9 +96,7 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 		organizationTxtFld=new TextField<String>(Constants.RESEARCHER_ORGANIZATION);
 		
 		createdDateDp=new DateTextField(Constants.RESEARCHER_CREATED_DATE,au.org.theark.core.Constants.DD_MM_YYYY);
-		ArkDatePicker datePicker = new ArkDatePicker();
-		datePicker.bind(createdDateDp);
-		createdDateDp.add(datePicker);
+		initDateTextField(createdDateDp);
 		
 		
 		
@@ -118,6 +116,12 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 		PropertyModel<ResearcherRole> pmResearcherRole = new PropertyModel<ResearcherRole>(pm, "researcherRole");
 		initResearcherRoleDropDown(pmResearcherRole);
 		
+	}
+	
+	private void initDateTextField(DateTextField dateTextField){
+		ArkDatePicker datePicker = new ArkDatePicker();
+		datePicker.bind(dateTextField);
+		dateTextField.add(datePicker);
 	}
 	
 	private void initResearcherStatusDropDown(PropertyModel<ResearcherStatus> researcherStatus) {
@@ -161,7 +165,7 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 			target.add(feedbackPanel);
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			getModelObject().getResearcher().setStudyId(studyId);
-
+			
 			List<Researcher> resultList = iWorkTrackingService.searchResearcher(getModelObject().getResearcher());
 
 			if (resultList != null && resultList.size() == 0) {
