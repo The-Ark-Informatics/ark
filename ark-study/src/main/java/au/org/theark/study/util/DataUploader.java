@@ -171,6 +171,9 @@ public class DataUploader {
 			YesNo yes = iArkCommonService.getYes();//TODO: boolean
 			YesNo no = iArkCommonService.getNo();
 			
+			//things inherant...		"CONSENT_ID", "CONSENT_STUDY_ID", "CONSENT_LINK_SUBJECT_STUDY_ID", 
+			//things needed from file... "CONSENT_STUDY_COMP_ID", "CONSENT_STUDY_COMP_STATUS_ID", "CONSENT_CONSENT_STATUS_ID", "CONSENT_CONSENT_TYPE_ID", "CONSENT_CONSENT_DATE", 
+							//"CONSENT_CONSENTED_BY", "CONSENT_COMMENTS", "CONSENT_REQUESTED_DATE", "CONSENT_RECEIVED_DATE", "CONSENT_COMPLETED_DATE", "CONSENT_CONSENT_DOWNLOADED_ID"?		
 			
 			boolean autoConsent = study.getAutoConsent();
 			SubjectStatus defaultSubjectStatus = iStudyService.getDefaultSubjectStatus();
