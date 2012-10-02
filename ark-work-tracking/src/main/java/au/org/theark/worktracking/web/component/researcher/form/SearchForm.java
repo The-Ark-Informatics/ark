@@ -15,7 +15,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.worktracking.entity.BillingType;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.ResearcherRole;
 import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
@@ -144,14 +143,35 @@ public class SearchForm extends AbstractSearchForm<ResearcherVo> {
 		setModelObject(new ResearcherVo());
 		getModelObject().setMode(Constants.MODE_NEW);
 		getModelObject().getResearcher().setCreatedDate(new Date());
-		List<BillingType> billingTypeList=this.iWorkTrackingService.getResearcherBillingTypes();
-		for(BillingType billingType:billingTypeList){
-			if("EFT".equalsIgnoreCase(billingType.getName())){
-				getModelObject().getResearcher().setBillingType(billingType);
-				break;
-			}
-		}
+
+		//Remove the default billing type as EFT after the UAT		
+		//		List<BillingType> billingTypeList=this.iWorkTrackingService.getResearcherBillingTypes();
+		//		for(BillingType billingType:billingTypeList){
+		//			if("EFT".equalsIgnoreCase(billingType.getName())){
+		//				getModelObject().getResearcher().setBillingType(billingType);
+		//				break;
+		//			}
+		//		}
+		
+		boolean enable=false;
+		
+		TextField<String> researcherAccountNumberTxt=(TextField) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_ACCOUNT_NUMBER);
+		enableAndRequiredTextField(researcherAccountNumberTxt, enable);
+		
+		TextField<String> researcherBankTxt = (TextField)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_BANK);
+		enableAndRequiredTextField(researcherBankTxt, enable);
+		
+		TextField<String> researcherBsbTxt = (TextField)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_BSB);
+		enableAndRequiredTextField(researcherBsbTxt, enable);
+		
+		TextField<String> researcherAccountNameTxt = (TextField)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_ACCOUNT_NAME);
+		enableAndRequiredTextField(researcherAccountNameTxt, enable);		
 		preProcessDetailPanel(target);
+	}
+	
+	private void enableAndRequiredTextField(final TextField textField, final boolean value){
+		textField.setEnabled(value);
+		textField.setRequired(value);
 	}
 
 	/*
