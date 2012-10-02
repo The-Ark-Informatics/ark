@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
@@ -94,16 +95,17 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		}
 
 		if(researcherCriteria.getFirstName() != null ){
-			criteria.add(Restrictions.like(Constants.FIRST_NAME, researcherCriteria.getFirstName()+"%"));
+			criteria.add(Restrictions.ilike(Constants.FIRST_NAME, researcherCriteria.getFirstName(),MatchMode.ANYWHERE));
 		}
 		
 		if(researcherCriteria.getLastName() != null ){
-			criteria.add(Restrictions.like(Constants.LAST_NAME, researcherCriteria.getLastName()+"%"));
+			criteria.add(Restrictions.ilike(Constants.LAST_NAME, researcherCriteria.getLastName(),MatchMode.ANYWHERE));
 		}
 		
 		if(researcherCriteria.getOrganization() != null ){
-			criteria.add(Restrictions.like(Constants.ORGANIZATION, researcherCriteria.getOrganization()+"%"));
+			criteria.add(Restrictions.ilike(Constants.ORGANIZATION, researcherCriteria.getOrganization(),MatchMode.ANYWHERE));
 		}
+		
 		if(researcherCriteria.getCreatedDate() != null ){
 			criteria.add(Restrictions.eq(Constants.CREATED_DATE , researcherCriteria.getCreatedDate()));
 		}
@@ -157,7 +159,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		}
 
 		if(billableItemTypeCriteria.getItemName() != null ){
-			criteria.add(Restrictions.like(Constants.BIT_ITEM_NAME, billableItemTypeCriteria.getItemName()+"%"));
+			criteria.add(Restrictions.ilike(Constants.BIT_ITEM_NAME, billableItemTypeCriteria.getItemName(),MatchMode.ANYWHERE));
 		}
 		
 		if(billableItemTypeCriteria.getQuantityPerUnit() != null ){
@@ -219,7 +221,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		}	
 		
 		if(workRequestCriteria.getName() != null ){
-			criteria.add(Restrictions.like(Constants.NAME, workRequestCriteria.getName()+"%"));
+			criteria.add(Restrictions.ilike(Constants.NAME, workRequestCriteria.getName(),MatchMode.ANYWHERE));
 		}
 		
 		if(workRequestCriteria.getRequestedDate() != null ){
@@ -288,7 +290,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		}	
 		
 		if(billableItemCriteria.getDescription() != null ){
-			criteria.add(Restrictions.like(Constants.BI_DESCRIPTION, billableItemCriteria.getDescription()+"%"));
+			criteria.add(Restrictions.ilike(Constants.BI_DESCRIPTION, billableItemCriteria.getDescription(),MatchMode.ANYWHERE));
 		}
 		
 		if(billableItemCriteria.getQuantity() != null ){
@@ -313,7 +315,6 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	public List<BillableItem> searchBillableItem(BillableItemVo billableItemVo) {
 		
 		BillableItem billableItemCriteria=billableItemVo.getBillableItem();
-		
 		Criteria criteria = getSession().createCriteria(BillableItem.class, "bi");
 		criteria.createAlias("billableItemType", "bit", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("workRequest", "wr", JoinType.LEFT_OUTER_JOIN);
@@ -324,7 +325,7 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		}	
 		
 		if(billableItemCriteria.getDescription() != null ){
-			criteria.add(Restrictions.like("bi.description", billableItemCriteria.getDescription()+"%"));
+			criteria.add(Restrictions.ilike("bi.description", billableItemCriteria.getDescription(),MatchMode.ANYWHERE));
 		}
 		
 		if(billableItemCriteria.getQuantity() != null ){

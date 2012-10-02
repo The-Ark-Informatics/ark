@@ -63,7 +63,6 @@ public class ResearcherContainerPanel extends AbstractContainerPanel {
 			protected Object load() {
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				containerForm.getModelObject().getResearcher().setStudyId(studyId);
-				containerForm.getModelObject().getResearcher().setCreatedDate(null);
 				containerForm.getModelObject().setResearcherList(iWorkTrackingService.searchResearcher(containerForm.getModelObject().getResearcher()));					
 				pageableListView.removeAll();
 				return containerForm.getModelObject().getResearcherList();
