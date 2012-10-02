@@ -20,7 +20,6 @@ package au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -85,7 +84,6 @@ import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.barcode.DataMatrixBarcodeImage;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biolocation.BioLocationDetailPanel;
-import au.org.theark.lims.web.component.biospecimen.batchcreate.form.ManualBatchCreateBiospecimenForm;
 import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataDataViewPanel;
 import au.org.theark.lims.web.component.biotransaction.BioTransactionListPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenButtonsPanel;
