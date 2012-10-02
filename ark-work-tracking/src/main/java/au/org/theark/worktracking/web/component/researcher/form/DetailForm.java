@@ -10,6 +10,7 @@ import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IFormSubmitter;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -116,6 +117,8 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		this.initResearcherRoleDropDown();
 		this.initBillingTypeDropDown();
 		this.initTitleTypeDropDown();
+	
+		this.setEnableBankFields(false);
 		
 		addDetailFormComponents();
 		attachValidators();
@@ -152,8 +155,9 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				Researcher researcher=getFormModel().getResearcher();
-				if(researcher.getBillingType()!=null 
-						&& !"EFT".equalsIgnoreCase(researcher.getBillingType().getName())){					
+				if(researcher.getBillingType() == null 
+						|| 
+							!"EFT".equalsIgnoreCase(researcher.getBillingType().getName())){					
 					researcher.setAccountName(null);
 					researcher.setAccountNumber(null);
 					researcher.setBank(null);
@@ -257,6 +261,29 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		resercherEmailTxtFld.add(EmailAddressValidator.getInstance());
 		
 		titleTypes.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_TITLE_TYPE_REQUIRED, researcherStatuses, new Model<String>(Constants.RESEARCHER_TITLE_TYPE_TAG)));
+	
+	}
+	
+	@Override
+	public void process(IFormSubmitter submittingComponent) {
+		Researcher researcher=getFormModel().getResearcher();
+		
+		if(researcher.getBillingType() !=null &&
+				"EFT".equalsIgnoreCase(researcher.getBillingType().getName())){
+			if(!resercherAccountNameTxtFld.isRequired()){
+				resercherAccountNameTxtFld.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_ACCOUNTNAME_REQUIRED, resercherAccountNameTxtFld, new Model<String>(Constants.RESEARCHER_ACCOUNT_NAME_TAG)));
+			}
+			if(!resercherBankTxtFld.isRequired()){
+				resercherBankTxtFld.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_BANK_REQUIRED, resercherBankTxtFld, new Model<String>(Constants.RESEARCHER_BANK_TAG)));
+			}
+			if(!resercherBSBTxtFld.isRequired()){
+				resercherBSBTxtFld.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_BSB_REQUIRED, resercherBSBTxtFld, new Model<String>(Constants.RESEARCHER_BSB_TAG)));
+			}
+			if(!resercherAccountNumberTxtFld.isRequired()){
+				resercherAccountNumberTxtFld.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_ACCOUNTNUMBER_REQUIRED, resercherAccountNumberTxtFld, new Model<String>(Constants.RESEARCHER_ACCOUNT_NUMBER_TAG)));
+			}	
+		}
+		super.process(submittingComponent);
 	}
 
 	/*
@@ -334,16 +361,27 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 	}
 	
 	private void setEnableBankFields(final boolean enabled,final AjaxRequestTarget target) {
+
 		resercherAccountNumberTxtFld.setEnabled(enabled);
 		resercherBankTxtFld.setEnabled(enabled);
 		resercherBSBTxtFld.setEnabled(enabled);
 		resercherAccountNameTxtFld.setEnabled(enabled);
 		
-		target.add(resercherAccountNumberTxtFld);
-		target.add(resercherBankTxtFld);
-		target.add(resercherBSBTxtFld);
-		target.add(resercherAccountNameTxtFld);
+		resercherAccountNameTxtFld.setRequired(false);
+		resercherBankTxtFld.setRequired(false);
+		resercherBSBTxtFld.setRequired(false);
+		resercherAccountNumberTxtFld.setRequired(false);
+		
+		target.add(resercherAccountNumberTxtFld,resercherBankTxtFld,resercherBSBTxtFld,resercherAccountNameTxtFld);
+
 	}
+	
+	private void setEnableBankFields(final boolean enabled) {
+		resercherAccountNumberTxtFld.setEnabled(enabled);
+		resercherBankTxtFld.setEnabled(enabled);
+		resercherBSBTxtFld.setEnabled(enabled);
+		resercherAccountNameTxtFld.setEnabled(enabled);
+	}	
 
 	/*
 	 * (non-Javadoc)

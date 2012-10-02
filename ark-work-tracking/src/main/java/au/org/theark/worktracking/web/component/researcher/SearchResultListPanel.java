@@ -6,6 +6,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -119,9 +120,21 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private void enableResearcherBankDetailFields(final boolean enable){
-		arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_ACCOUNT_NUMBER).setEnabled(enable);
-		arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_BANK).setEnabled(enable);
-		arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_BSB).setEnabled(enable);
-		arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_ACCOUNT_NAME).setEnabled(enable);
+		TextField<String> researcherAccountNumberTxt=(TextField) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_ACCOUNT_NUMBER);
+		enableAndRequiredTextField(researcherAccountNumberTxt, enable);
+		
+		TextField<String> researcherBankTxt = (TextField)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_BANK);
+		enableAndRequiredTextField(researcherBankTxt, enable);
+		
+		TextField<String> researcherBsbTxt = (TextField)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_BSB);
+		enableAndRequiredTextField(researcherBsbTxt, enable);
+		
+		TextField<String> researcherAccountNameTxt = (TextField)arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.RESEARCHER_ACCOUNT_NAME);
+		enableAndRequiredTextField(researcherAccountNameTxt, enable);
+	}
+	
+	private void enableAndRequiredTextField(final TextField textField, final boolean value){
+		textField.setEnabled(value);
+		textField.setRequired(value);
 	}
 }
