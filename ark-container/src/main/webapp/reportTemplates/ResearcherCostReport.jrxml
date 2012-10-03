@@ -173,12 +173,12 @@
 				</textElement>
 				<text><![CDATA[(GST inclusive where applicable)]]></text>
 			</staticText>
-			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="false">
 				<reportElement mode="Transparent" x="298" y="10" width="100" height="26"/>
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.Double"><![CDATA[$V{researcherTotalCost}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$V{researcherTotalCost}!=null? $V{researcherTotalCost} : new Double("0.00")]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement mode="Transparent" x="40" y="40" width="258" height="12"/>
@@ -199,7 +199,7 @@
 				<textElement textAlignment="Right">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.Double"><![CDATA[$V{researcherTotalGst}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$V{researcherTotalGst}!=null?$V{researcherTotalGst}:new Double("0.00")]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement positionType="Float" mode="Opaque" x="117" y="0" width="340" height="1"/>
