@@ -730,5 +730,5 @@ public interface IArkCommonService<T> {
 
 	public String getPreviousLastname(Person person);
 
-	
+	public List<Upload> searchUploadsForBiospecimen(Upload studyUpload, List<Study> studyListForUser);
 }
