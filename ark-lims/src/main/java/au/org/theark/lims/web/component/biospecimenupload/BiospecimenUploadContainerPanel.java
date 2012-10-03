@@ -19,7 +19,10 @@
 package au.org.theark.lims.web.component.biospecimenupload;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
@@ -27,9 +30,14 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.lims.web.component.biospecimenupload.form.ContainerForm;
@@ -77,20 +85,38 @@ public class BiospecimenUploadContainerPanel extends AbstractContainerPanel<Uplo
 
 	protected WebMarkupContainer initialiseSearchResults() {
 		searchResultPanel = new SearchResultListPanel("searchResults", feedBackPanel, containerForm, arkCrudContainerVO);
+		
+		
 
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected Object load() {
-				// Return all Uploads for the Study in context
+				// Return all Uploads for the Studies the user has access to
 				java.util.Collection<Upload> studyUploads = new ArrayList<Upload>();
 				if (isActionPermitted()) {
 					Upload studyUpload = new Upload();
 					
-					studyUpload.setStudy(containerForm.getModelObject().getUpload().getStudy());
-					studyUpload.setArkFunction(arkFunction);
-					studyUploads = iArkCommonService.searchUploads(studyUpload);
+					List<Study> studyListForUser = new ArrayList<Study>(0);
+					try {
+						Subject currentUser = SecurityUtils.getSubject();
+						ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+						ArkUserVO arkUserVo = new ArkUserVO();
+						arkUserVo.setArkUserEntity(arkUser);
+						
+						Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+						ArkModule arkModule = null;
+						arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
+						studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+						
+						studyUpload.setStudy(containerForm.getModelObject().getUpload().getStudy());
+						studyUpload.setArkFunction(arkFunction);
+						studyUploads = iArkCommonService.searchUploadsForBiospecimen(studyUpload, studyListForUser);
+						
+					}
+					catch (EntityNotFoundException e) {
+					}
 				}
 				listView.removeAll();
 				return studyUploads;

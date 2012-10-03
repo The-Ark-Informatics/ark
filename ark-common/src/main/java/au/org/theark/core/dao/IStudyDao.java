@@ -643,5 +643,5 @@ public interface IStudyDao {
 
 	public List<EmailStatus> getAllEmailStatuses();
 	
-	
+	public List<Upload> searchUploadsForBiospecimen(Upload uploadCriteria, List studyListForUser);	
 }

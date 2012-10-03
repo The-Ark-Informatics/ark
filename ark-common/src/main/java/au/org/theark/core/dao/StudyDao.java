@@ -1063,6 +1063,45 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		return resultsList;
 	}
+	
+	public List<Upload> searchUploadsForBiospecimen(Upload uploadCriteria, List studyListForUser) {
+		Criteria criteria = getSession().createCriteria(Upload.class);
+		// - due tonature of table design...we need to specify it like this
+		// ideally we might want to just have arkmodule in the upload table? 
+		// criteria.add(Restrictions.eq("arkFunction", uploadCriteria.getArkFunction()));
+		
+		ArkFunction biospecArkFunction = getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN);
+		
+		List<ArkFunction> arkFunctionsForBio = new ArrayList<ArkFunction>();
+		arkFunctionsForBio.add(biospecArkFunction);
+		
+		criteria.add(Restrictions.eq("arkFunction", uploadCriteria.getArkFunction()));
+		
+		if (uploadCriteria.getId() != null) {
+			criteria.add(Restrictions.eq("id", uploadCriteria.getId()));
+		}
+		
+		if(!studyListForUser.isEmpty()) {
+			criteria.add(Restrictions.in("study", studyListForUser));
+		}
+
+		if (uploadCriteria.getFileFormat() != null) {
+			criteria.add(Restrictions.ilike("fileFormat", uploadCriteria.getFileFormat()));
+		}
+
+		if (uploadCriteria.getDelimiterType() != null) {
+			criteria.add(Restrictions.ilike("delimiterType", uploadCriteria.getDelimiterType()));
+		}
+
+		if (uploadCriteria.getFilename() != null) {
+			criteria.add(Restrictions.ilike("filename", uploadCriteria.getFilename()));
+		}
+
+		criteria.addOrder(Order.desc("id"));
+		List<Upload> resultsList = criteria.list();
+
+		return resultsList;
+	}
 
 	
 	public void createUpload(Upload studyUpload) {
