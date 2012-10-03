@@ -173,8 +173,20 @@ public class DataUploader {
 			
 			//things inherant...		"CONSENT_ID", "CONSENT_STUDY_ID", "CONSENT_LINK_SUBJECT_STUDY_ID", 
 			//things needed from file... "CONSENT_STUDY_COMP_ID", "CONSENT_STUDY_COMP_STATUS_ID", "CONSENT_CONSENT_STATUS_ID", "CONSENT_CONSENT_TYPE_ID", "CONSENT_CONSENT_DATE", 
-							//"CONSENT_CONSENTED_BY", "CONSENT_COMMENTS", "CONSENT_REQUESTED_DATE", "CONSENT_RECEIVED_DATE", "CONSENT_COMPLETED_DATE", "CONSENT_CONSENT_DOWNLOADED_ID"?		
+			//"CONSENT_CONSENTED_BY", "CONSENT_COMMENTS", "CONSENT_REQUESTED_DATE", "CONSENT_RECEIVED_DATE", "CONSENT_COMPLETED_DATE", "CONSENT_CONSENT_DOWNLOADED_ID"?		
 			
+			int consentComponentIndex 			= csvReader.getIndex("CONSENT_STUDY_COMP_ID");  
+			int consentComponentStatusIndex 	= csvReader.getIndex("CONSENT_STUDY_COMP_STATUS_ID");  
+			int consentStatusIndex 				= csvReader.getIndex("CONSENT_CONSENT_STATUS_ID");  
+			int consentTypeIndex 				= csvReader.getIndex("CONSENT_CONSENT_TYPE_ID");  
+			int consentDateIndex 				= csvReader.getIndex("CONSENT_CONSENT_DATE");  
+			int consentByIndex 					= csvReader.getIndex("CONSENT_CONSENTED_BY");  
+			int consentCommentsIndex 			= csvReader.getIndex("CONSENT_COMMENTS");  
+			int consentRequestedDateIndex 	= csvReader.getIndex("CONSENT_REQUESTED_DATE");  
+			int consentReceivedDateIndex 		= csvReader.getIndex("CONSENT_RECEIVED_DATE");  
+			int consentCompletedDateIndex 	= csvReader.getIndex("CONSENT_COMPLETED_DATE");  
+//??? 			"CONSENT_CONSENT_DOWNLOADED_ID";		
+
 			boolean autoConsent = study.getAutoConsent();
 			SubjectStatus defaultSubjectStatus = iStudyService.getDefaultSubjectStatus();
 			TitleType defaultTitleType = iStudyService.getDefaultTitleType();
