@@ -6,8 +6,8 @@ import java.util.List;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
-import au.org.theark.core.model.report.entity.ResearcherBillableItemTypeCostDataRow;
 import au.org.theark.report.model.vo.ResearcherCostResportVO;
+import au.org.theark.report.model.vo.report.ResearcherCostDataRow;
 import au.org.theark.report.service.IReportService;
 
 
@@ -15,12 +15,13 @@ public class WorkResearcherCostReportDataSource  implements Serializable, JRData
 	
 	private static final long				serialVersionUID	= 1L;
 
-	private List<ResearcherBillableItemTypeCostDataRow>	data	= null;
+	private List<ResearcherCostDataRow>          	data	= null;
 
 	private int									index			= -1;
 	
 	public WorkResearcherCostReportDataSource(final IReportService reportService, final ResearcherCostResportVO  researcherCostResportVO) {
-		data =  reportService.getBillableItemTypeCostData(researcherCostResportVO);
+
+		data =  reportService.getResearcherBillableItemTypeCostData(researcherCostResportVO);
 	}
 
 	public Object getFieldValue(JRField field) throws JRException {

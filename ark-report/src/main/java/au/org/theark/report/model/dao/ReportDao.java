@@ -45,7 +45,6 @@ import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
-import au.org.theark.core.model.report.entity.ResearcherBillableItemTypeCostDataRow;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -66,6 +65,7 @@ import au.org.theark.report.model.vo.ResearcherCostResportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.ResearcherCostDataRow;
 import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
 import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 import au.org.theark.report.service.Constants;
@@ -637,16 +637,33 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return results;
 	}
 	
-	public List<ResearcherBillableItemTypeCostDataRow> getBillableItemTypeCostData(final ResearcherCostResportVO researcherCostResportVO){
-		List<ResearcherBillableItemTypeCostDataRow> results = null;
-		Query query = getSession().getNamedQuery("findTotalBillableItemTypeCostsPerResearcher")
-				.setString("invoice", researcherCostResportVO.getInvoice())
-//				.setString("billableYear", researcherCostResportVO.getYear())
-				.setDate("fromDate", researcherCostResportVO.getFromDate())
-				.setDate("toDate", researcherCostResportVO.getToDate())
-				.setLong("researcherId", researcherCostResportVO.getResearcherId())
-				.setLong("studyId",researcherCostResportVO.getStudyId());
-		results=query.list();
+	
+	public List<ResearcherCostDataRow> getResearcherBillableItemTypeCostData(final ResearcherCostResportVO researcherCostResportVO){
+		List<ResearcherCostDataRow> results = new ArrayList<ResearcherCostDataRow>();
+		Criteria criteria = getSession().createCriteria(BillableItem.class, "bi");
+		criteria.createAlias("workRequest", "wr", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("billableItemType", "bit", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("bit.billableItemTypeStatus", "bitst", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("wr.researcher", "re", JoinType.LEFT_OUTER_JOIN);
+		
+		criteria.add(Restrictions.eq("re.id", researcherCostResportVO.getResearcherId()));
+		criteria.add(Restrictions.eq("bi.studyId", researcherCostResportVO.getStudyId()));
+		criteria.add(Restrictions.eq("bi.invoice", researcherCostResportVO.getInvoice()));
+		criteria.add(Restrictions.le("bi.commenceDate", researcherCostResportVO.getToDate()));
+		criteria.add(Restrictions.ge("bi.commenceDate", researcherCostResportVO.getFromDate()));
+		criteria.add(Restrictions.eq("bitst.name", "ACTIVE"));
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("bit.id")); 
+		projectionList.add(Projections.property("bit.itemName"), "costType");
+		projectionList.add(Projections.sum("bi.totalCost"), "totalCost");
+		projectionList.add(Projections.sum("bi.totalGST"), "totalGST");
+		
+		criteria.setProjection(projectionList); // only return fields required for report
+		criteria.setResultTransformer(Transformers.aliasToBean(ResearcherCostDataRow.class));
+		
+		criteria.addOrder(Order.asc("bit.itemName"));
+		results=criteria.list();
 		return results;
 	}
 	
