@@ -24,7 +24,6 @@ import java.util.Map;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
-import au.org.theark.core.model.report.entity.ResearcherBillableItemTypeCostDataRow;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
@@ -41,6 +40,7 @@ import au.org.theark.report.model.vo.ResearcherCostResportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.ResearcherCostDataRow;
 import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
 import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 
@@ -108,7 +108,7 @@ public interface IReportDao {
 	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsDataRowList(ConsentDetailsReportVO cdrVO);
 	
 	
-	public List<ResearcherBillableItemTypeCostDataRow> getBillableItemTypeCostData(final ResearcherCostResportVO researcherCostResportVO);
+	public List<ResearcherCostDataRow> getResearcherBillableItemTypeCostData(final ResearcherCostResportVO researcherCostResportVO);
 	
 	public List<Researcher> searchResearcherByStudyId(final Long studyId);
 	
