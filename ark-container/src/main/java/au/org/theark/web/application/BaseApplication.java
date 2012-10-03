@@ -18,7 +18,10 @@
  ******************************************************************************/
 package au.org.theark.web.application;
 
+import net.ftlines.wicketsource.WicketSource;
+
 import org.apache.wicket.Page;
+import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.settings.IApplicationSettings;
 import org.slf4j.Logger;
@@ -37,12 +40,17 @@ public abstract class BaseApplication extends WebApplication {
 		getMarkupSettings().setStripWicketTags(true);
 		IApplicationSettings settings = getApplicationSettings();
 		
-		// Mount the pages for nikcer looking URL's
+		// Mount the pages for nicer looking URL's
 		mountPage("login",LoginPage.class);
 		mountPage("aaf-login",AAFLoginPage.class);
 		mountPage("home", HomePage.class);
 		
 		settings.setPageExpiredErrorPage(LoginPage.class);
+		
+		// Alow wicket-source for development debugging
+		if(getConfigurationType().equals(RuntimeConfigurationType.DEVELOPMENT)){
+			WicketSource.configure(this);
+		}
 	}
 
 	public Class<? extends Page> getHomePage() {
