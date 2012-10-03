@@ -183,6 +183,7 @@ public class BiospecimenUploader {
 						bioCollection = new BioCollection();
 						bioCollection.setLinkSubjectStudy(linkSubjectStudy);
 						bioCollection.setStudy(study);
+						bioCollection.setName(name);
 						bioCollection = iLimsService.createBioCollection(bioCollection);
 						biospecimen.setBioCollection(bioCollection);
 					}
