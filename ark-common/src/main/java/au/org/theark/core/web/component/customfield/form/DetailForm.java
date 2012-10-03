@@ -174,9 +174,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		if (fieldType != null && fieldType.getName().equals(Constants.CHARACTER_FIELD_TYPE_NAME)) {
 			// Only allowed to use encodedValues when fieldType == CHARACTER
 			fieldEncodedValuesTxtFld.setEnabled(true);
+			fieldAllowMultiselectChkBox.setEnabled(true);
 		}
 		else {
 			fieldEncodedValuesTxtFld.setEnabled(false);
+			fieldAllowMultiselectChkBox.setEnabled(false);
 		}
 	}
 	
