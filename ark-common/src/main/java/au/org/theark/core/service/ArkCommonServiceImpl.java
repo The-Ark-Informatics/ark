@@ -130,7 +130,6 @@ import au.org.theark.core.vo.SubjectVO;
  * 
  * @author nivedann
  * @param <T>
- * 
  */
 
 @Transactional
@@ -993,6 +992,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.searchUploadsForBio(uploadCriteria);
 	}
 	
+	
+	
 	public void createUpload(Upload studyUpload) {
 		//log.debug("about to studydao.createupload");
 		studyDao.createUpload(studyUpload);
@@ -1237,4 +1238,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getAllEmailStatuses();
 	}
 
+	public List<Upload> searchUploadsForBiospecimen(Upload uploadCriteria, List studyListForUser) {
+		return studyDao.searchUploadsForBiospecimen(uploadCriteria, studyListForUser);
+	}
 }
