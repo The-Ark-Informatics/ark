@@ -69,14 +69,17 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 		CustomField cf = aCustomData.getCustomFieldDisplay().getCustomField();
 		CustomFieldDisplay cfd = aCustomData.getCustomFieldDisplay();
 		
-		Label fieldLabelLbl; 
+		// Determine label of component, also used for error messages
+		String labelModel = new String();
 		if (cf.getFieldLabel() != null) {
-			fieldLabelLbl = new Label("fieldLabel", cf.getFieldLabel());
+			labelModel = cf.getFieldLabel();
 		}
 		else {
 			// Defaults to name if no fieldLabel
-			fieldLabelLbl = new Label("fieldLabel", cf.getName());
+			labelModel = cf.getName();
 		}
+		Label fieldLabelLbl = new Label("fieldLabel", labelModel);
+		
 		Panel dataValueEntryPanel;
 		String fieldTypeName = cf.getFieldType().getName();
 		String encodedValues = cf.getEncodedValues();
@@ -84,7 +87,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 		if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
 			DateDataEntryPanel dateDataEntryPanel = new DateDataEntryPanel("dataValueEntryPanel", 
 														new PropertyModel<Date>(item.getModel(), "dateDataValue"),
-														new Model<String>(cf.getFieldLabel()));
+														new Model<String>(labelModel));
 			dateDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
 			dateDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
 
@@ -139,7 +142,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
  				if(cfd.getAllowMultiselect()){
 
  					CheckGroupDataEntryPanel cgdePanel = new CheckGroupDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
-															new Model<String>(cf.getFieldLabel()), choiceList, choiceRenderer); 
+															new Model<String>(labelModel), choiceList, choiceRenderer); 
 					
 					cgdePanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
 					cgdePanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
@@ -157,7 +160,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				else{
 					DropDownChoiceDataEntryPanel ddcPanel = 
 								new DropDownChoiceDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
-																				new Model<String>(cf.getFieldLabel()), choiceList, choiceRenderer);
+																				new Model<String>(labelModel), choiceList, choiceRenderer);
 					ddcPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
 					ddcPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
 					
@@ -175,7 +178,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 					// Text data
 					TextDataEntryPanel textDataEntryPanel = new TextDataEntryPanel("dataValueEntryPanel", 
 																										new PropertyModel<String>(item.getModel(), "textDataValue"), 
-																										new Model<String>(cf.getFieldLabel()));
+																										new Model<String>(labelModel));
 					textDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
 					textDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
 					textDataEntryPanel.setTextFieldSize(60);
@@ -189,7 +192,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 					// Number data
 					NumberDataEntryPanel numberDataEntryPanel = new NumberDataEntryPanel("dataValueEntryPanel", 
 																						new PropertyModel<Double>(item.getModel(), "numberDataValue"), 
-																						new Model<String>(cf.getFieldLabel()));
+																						new Model<String>(labelModel));
 					numberDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
 					numberDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
 										
