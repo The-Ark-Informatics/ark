@@ -149,6 +149,7 @@ public class Constants {
 
 	/* Search result list rows per page */
 	public static final int ROWS_PER_PAGE = 10;
+	public static final int CUSTOM_FIELDS_PER_PAGE = 50;
 	public static final String RESULT_LIST = "resultList";
 
 	/* Schema */
