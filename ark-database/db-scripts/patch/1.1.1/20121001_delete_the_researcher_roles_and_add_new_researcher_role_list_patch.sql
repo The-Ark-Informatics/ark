@@ -1,7 +1,4 @@
-delete from admin.researcher_role
+USE admin;
 
 INSERT INTO `admin`.`researcher_role` (`NAME`) VALUES ('Principal Investigator');
-INSERT INTO `admin`.`researcher_role` (`NAME`) VALUES ('Chief Investigator');
-INSERT INTO `admin`.`researcher_role` (`NAME`) VALUES ('Assoc Investigator');
-INSERT INTO `admin`.`researcher_role` (`NAME`) VALUES ('Other Investigator');
-INSERT INTO `admin`.`researcher_role` (`NAME`) VALUES ('Research Assistant');
+UPDATE `admin`.`researcher_role` SET ID=0 WHERE NAME = 'Principal Investigator';
