@@ -268,6 +268,12 @@
 			<artifactId>wicketstuff-datatables</artifactId>
 			<version>1.5.7</version>
 		</dependency>
+		
+		 <dependency>
+	     	<groupId>net.ftlines.wicket-source</groupId>
+	     	<artifactId>wicket-source</artifactId>
+	     	<version>1.5.0.7</version>
+	 	</dependency>
 	</dependencies>
 	<build>
 		<resources>
