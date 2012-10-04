@@ -829,7 +829,7 @@ public class DataUploader {
 						
 						
 						
-						
+						/*
 						
 						boolean updatePhones= false;
 						boolean usingDefaultType = false;
@@ -924,7 +924,7 @@ public class DataUploader {
 								phoneToAttachToPerson.setPerson(person);
 								person.getPhones().add(phoneToAttachToPerson);
 							}
-						}
+						}*/
 					}
 						
 					
