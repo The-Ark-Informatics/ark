@@ -165,6 +165,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				target.add(minMaxValueEntryWMC);
 				target.add(fieldEncodedValuesTxtFld);
 				target.add(fieldUnitTypeDdc);
+				target.add(fieldAllowMultiselectChkBox);
 			}
 		});
 	}
