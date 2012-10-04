@@ -174,7 +174,7 @@ public class DataUploader {
 			//things inherant...		"CONSENT_ID", "CONSENT_STUDY_ID", "CONSENT_LINK_SUBJECT_STUDY_ID", 
 			//things needed from file... "CONSENT_STUDY_COMP_ID", "CONSENT_STUDY_COMP_STATUS_ID", "CONSENT_CONSENT_STATUS_ID", "CONSENT_CONSENT_TYPE_ID", "CONSENT_CONSENT_DATE", 
 			//"CONSENT_CONSENTED_BY", "CONSENT_COMMENTS", "CONSENT_REQUESTED_DATE", "CONSENT_RECEIVED_DATE", "CONSENT_COMPLETED_DATE", "CONSENT_CONSENT_DOWNLOADED_ID"?		
-			
+			/*
 			int consentComponentIndex 			= csvReader.getIndex("CONSENT_STUDY_COMP_ID");  
 			int consentComponentStatusIndex 	= csvReader.getIndex("CONSENT_STUDY_COMP_STATUS_ID");  
 			int consentStatusIndex 				= csvReader.getIndex("CONSENT_CONSENT_STATUS_ID");  
@@ -186,6 +186,19 @@ public class DataUploader {
 			int consentReceivedDateIndex 		= csvReader.getIndex("CONSENT_RECEIVED_DATE");  
 			int consentCompletedDateIndex 	= csvReader.getIndex("CONSENT_COMPLETED_DATE");  
 //??? 			"CONSENT_CONSENT_DOWNLOADED_ID";		
+ * 
+ * 
+ * 
+
+"CONSENT_TO_ACTIVE_CONTACT_ID", "CONSENT_TO_PASSIVE_DATA_GATHERING_ID", "CONSENT_TO_USE_DATA_ID", "CONSENT_STATUS_ID", "CONSENT_TYPE_ID", "CONSENT_DATE", "CONSENT_DOWNLOADED"
+			consent_option							c_o											c_o							c_status					c_type				date					study.yes_no
+each of these appears to have a link to consent_option table which has a number 1-6 for id each representing a status...there appears to be no default...therefore may need validation
+
+the diffrence being consent statuys and consent type  link to consent_status and consent_type tables...so look ups and validation needed
+*
+*/
+			
+			
 
 			boolean autoConsent = study.getAutoConsent();
 			SubjectStatus defaultSubjectStatus = iStudyService.getDefaultSubjectStatus();
@@ -810,7 +823,7 @@ public class DataUploader {
 					
 					
 					
-					
+					/*
 
 					
 					//if no address info - ignore
@@ -825,12 +838,7 @@ public class DataUploader {
 						
 						
 						
-						
-						
-						
-						
-						/*
-						
+
 						boolean updatePhones= false;
 						boolean usingDefaultType = false;
 						boolean usingDefaultStatus = false;
@@ -924,21 +932,8 @@ public class DataUploader {
 								phoneToAttachToPerson.setPerson(person);
 								person.getPhones().add(phoneToAttachToPerson);
 							}
-						}*/
-					}
-						
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
+						}
+					}*/
 					
 					
 					
