@@ -391,7 +391,11 @@ public class DataUploader {
 							person.setGenderType(defaultGenderType);
 						}
 					}
-	
+					if (person.getGenderType() == null) {
+						person.setGenderType(defaultGenderType);
+					}
+					
+					
 					if (dateOfBirthIndex > 0) {
 						Date dateOfBirth = new Date();
 						
@@ -426,6 +430,9 @@ public class DataUploader {
 							person.setVitalStatus(defaultVitalStatus);
 						}
 					}
+					if(person.getVitalStatus() == null){
+						person.setVitalStatus(defaultVitalStatus);
+					}
 	
 					if (preferredEmailIndex > 0) {
 						person.setPreferredEmail(stringLineArray[preferredEmailIndex]);
@@ -449,6 +456,9 @@ public class DataUploader {
 							person.setPreferredEmailStatus(defaultEmailStatus);
 						}
 					}
+					if(person.getPreferredEmailStatus() == null){
+						person.setPreferredEmailStatus(defaultEmailStatus);
+					}
 					
 					if (otherEmailStatusIndex > 0) {
 						String OtherEmailStatusStr = (stringLineArray[otherEmailStatusIndex]);
@@ -461,6 +471,9 @@ public class DataUploader {
 								StringUtils.isBlank(person.getOtherEmailStatus().getName())) {
 							person.setOtherEmailStatus(defaultEmailStatus);
 						}
+					}
+					if(person.getOtherEmailStatus() == null){
+						person.setOtherEmailStatus(defaultEmailStatus);
 					}
 	
 					
@@ -481,6 +494,9 @@ public class DataUploader {
 							person.setTitleType(defaultTitleType);
 						}
 					}
+					if(person.getTitleType() == null){
+						person.setTitleType(defaultTitleType);
+					}
 					
 					if (maritalStatusIndex > 0) {
 						String maritalStatusStr = (stringLineArray[maritalStatusIndex]);
@@ -494,7 +510,10 @@ public class DataUploader {
 							person.setMaritalStatus(defaultMaritalStatus);
 						}
 					}
-	
+					if(person.getMaritalStatus() == null){
+						person.setMaritalStatus(defaultMaritalStatus);
+					}
+					
 					if (personContactIndex > 0) {
 						String personContactMethodStr = null;
 						personContactMethodStr = (stringLineArray[personContactIndex]);				
@@ -776,6 +795,162 @@ public class DataUploader {
 						}
 					}
 	
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+
+					
+					//if no address info - ignore
+					if(consentByIndex  >0 &&
+							consentCompletedDateIndex  >0  &&
+							consentDateIndex  >0  &&
+							consentCompletedDateIndex  >0  &&
+							consentCompletedDateIndex  >0  &&
+							consentCompletedDateIndex  >0  &&
+							consentCompletedDateIndex  >0  &&
+							consentCompletedDateIndex  >0 ){
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						boolean updatePhones= false;
+						boolean usingDefaultType = false;
+						boolean usingDefaultStatus = false;
+						String phoneNumberString = stringLineArray[phoneNumberIndex];
+						
+						if(phoneNumberString == null || StringUtils.isBlank(phoneNumberString)){
+							//then lets just jump out as there is no phone to validate.  lay down to user that they must have data if they want an update
+						}
+						else{
+							Phone phoneToAttachToPerson = null;
+							if(thisSubjectAlreadyExists){
+								String typeString = null;
+								String statusString = null;
+	
+								if (phoneTypeIndex > 0){
+									typeString = stringLineArray[phoneTypeIndex];
+									if(typeString==null || typeString.isEmpty()){
+										typeString = defaultPhoneType.getName();
+										usingDefaultType = true;
+									}
+								}
+								if (phoneStatusIndex > 0){
+									statusString = stringLineArray[phoneStatusIndex];		
+									if(statusString==null || statusString.isEmpty()){
+										statusString = defaultPhoneStatus.getName();
+										usingDefaultStatus = true;
+									}					
+								}
+								for(Phone phone : person.getPhones()){
+									if(phone.getPhoneStatus().getName().equalsIgnoreCase(statusString) &&
+										phone.getPhoneType().getName().equalsIgnoreCase(typeString)){
+										phoneToAttachToPerson = phone;
+										updatePhones = true;
+									}
+								}
+							}
+							if(phoneToAttachToPerson==null){
+								phoneToAttachToPerson = new Phone();
+							}
+							
+							PhoneType type = findPhoneTypeOrSetDefault(phoneTypesPossible, defaultPhoneType, stringLineArray[phoneTypeIndex]);
+							PhoneStatus status = findPhoneStatusOrSetDefault(phoneStatiiPossible, defaultPhoneStatus, stringLineArray[phoneTypeIndex]);
+							String phoneComments = stringLineArray[phoneCommentsIndex];
+
+							String areaCode = stringLineArray[areaCodeIndex];
+							String silentString = stringLineArray[phoneSilentIndex];
+							String phoneSource = stringLineArray[phoneSourceIndex];
+							String phoneDateReceivedString = stringLineArray[phoneDateReceivedIndex];
+							//log.warn("phone Date Reveived = " + phoneDateReceivedString + " for index = " +  phoneDateReceivedIndex);
+	
+							phoneToAttachToPerson.setPhoneType(type);
+							phoneToAttachToPerson.setPhoneStatus(status);
+							if(areaCode!=null && !areaCode.isEmpty())
+								phoneToAttachToPerson.setAreaCode(areaCode);
+							if(phoneNumberString !=null && !phoneNumberString.isEmpty())
+								phoneToAttachToPerson.setPhoneNumber(phoneNumberString);
+							if(phoneDateReceivedString!=null && !phoneDateReceivedString.isEmpty()){
+								// TODO dateconvert and set
+								Date dateReceived = new Date();
+								dateReceived = simpleDateFormat.parse(phoneDateReceivedString);
+								phoneToAttachToPerson.setDateReceived(dateReceived);
+							}
+
+							if(DataConversionAndManipulationHelper.isSomethingLikeABoolean(silentString)){
+								if(DataConversionAndManipulationHelper.isSomethingLikeTrue(silentString)){
+									phoneToAttachToPerson.setSilentMode(yes);
+								}
+								else{
+									phoneToAttachToPerson.setSilentMode(no);
+								}
+							}
+							if(phoneComments!=null && !phoneComments.isEmpty())
+								phoneToAttachToPerson.setComment(phoneComments);
+							if(phoneSource!=null && !phoneSource.isEmpty())
+								phoneToAttachToPerson.setSource(phoneSource);
+							
+							
+							if(usingDefaultStatus && usingDefaultType){
+								uploadReport.append("Info:  Using the default status '" + defaultAddressStatus.getName() +  "' and the default type '" 
+										+ defaultAddressType.getName() + " for row " + rowCount + ", but will proceed.\n");
+							}
+							else if(usingDefaultType){
+								uploadReport.append("Info:  Using the default type '" + defaultAddressType.getName() + "' for row " + rowCount + ", but will proceed.\n");
+							}
+							else if(usingDefaultStatus){
+								uploadReport.append("Info:  Using the default status '" + defaultAddressStatus.getName() + " for row " + rowCount + ", but will proceed.\n");
+							}
+							
+							if(!updatePhones){
+								//TODO check this works in all cases
+								phoneToAttachToPerson.setPerson(person);
+								person.getPhones().add(phoneToAttachToPerson);
+							}
+						}
+					}
+						
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
 					subject.setPerson(person);
 	
 					if (subject.getId() == null || subject.getPerson().getId() == 0) {
