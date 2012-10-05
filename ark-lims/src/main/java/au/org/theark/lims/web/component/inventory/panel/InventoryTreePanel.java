@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.session.ArkSession;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.Constants;
@@ -50,6 +51,13 @@ public class InventoryTreePanel extends Panel {
 		setOutputMarkupPlaceholderTag(true);
 		initialiseButtons();
 		addComponents();
+		
+		//Check seassion has contained a node and highlight the node.
+		Object prevSelectedNode=ArkSession.get().getNodeObject();
+		if(prevSelectedNode!=null){
+			this.tree.getTreeState().selectNode(prevSelectedNode, true);
+			this.tree.updateTree();
+		}
 	}
 
 	private void initialiseButtons() {
