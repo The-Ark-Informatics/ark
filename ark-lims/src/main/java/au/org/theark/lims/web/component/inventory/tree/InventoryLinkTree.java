@@ -78,29 +78,7 @@ public class InventoryLinkTree extends LinkTree {
 		this.detailContainer = detailContainer;
 		this.containerForm = containerForm;
 		setModelObject(createTreeModel());
-		Object prevSelectedNode=ArkSession.get().getNodeObject();
-		if(prevSelectedNode!=null){
-//			this.nodeSelected(prevSelectedNode);
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("-------------------------InventoryLinkTree class         -------------------");
-			System.out.println("---------------------------------"+prevSelectedNode.toString()+"--------------------------------------");
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------------------------------------------------------------------");
-			
-//			getTreeState().selectNode(prevSelectedNode, true);
-//			this.updateTree();
-		}
-		else{
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("---------------------------------Previously selected node is null --------------------------------------");
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------------------------------------------------------------------");
-		}
+		
 	}
 	
 	/**
