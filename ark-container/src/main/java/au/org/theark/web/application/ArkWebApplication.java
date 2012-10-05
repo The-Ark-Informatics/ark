@@ -19,11 +19,15 @@
 package au.org.theark.web.application;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.SecurePackageResourceGuard;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.Response;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import au.org.theark.core.session.ArkSession;
 import au.org.theark.web.pages.login.LoginPage;
 
 public class ArkWebApplication extends BaseApplication{
@@ -49,6 +53,12 @@ public class ArkWebApplication extends BaseApplication{
 	public ApplicationContext context(){
 		
 		return WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+	}
+	
+	@Override
+	public Session newSession(Request request, Response response) {
+		// TODO Auto-generated method stub
+		return new ArkSession(request);
 	}
 
 }
