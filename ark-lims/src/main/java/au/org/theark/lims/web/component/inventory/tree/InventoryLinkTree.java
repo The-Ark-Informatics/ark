@@ -30,6 +30,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.html.tree.WicketTreeModel;
 import org.apache.wicket.model.IModel;
@@ -47,6 +48,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.session.ArkSession;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.lims.model.TreeNodeModel;
 import au.org.theark.lims.service.IInventoryService;
@@ -76,6 +78,29 @@ public class InventoryLinkTree extends LinkTree {
 		this.detailContainer = detailContainer;
 		this.containerForm = containerForm;
 		setModelObject(createTreeModel());
+		Object prevSelectedNode=ArkSession.get().getNodeObject();
+		if(prevSelectedNode!=null){
+//			this.nodeSelected(prevSelectedNode);
+			System.out.println("----------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------");
+			System.out.println("-------------------------InventoryLinkTree class         -------------------");
+			System.out.println("---------------------------------"+prevSelectedNode.toString()+"--------------------------------------");
+			System.out.println("----------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------");
+			
+//			getTreeState().selectNode(prevSelectedNode, true);
+//			this.updateTree();
+		}
+		else{
+			System.out.println("----------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------");
+			System.out.println("---------------------------------Previously selected node is null --------------------------------------");
+			System.out.println("----------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------");
+			System.out.println("----------------------------------------------------------------------------");
+		}
 	}
 	
 	/**
@@ -153,6 +178,7 @@ public class InventoryLinkTree extends LinkTree {
 	
 	@Override
 	protected void onJunctionLinkClicked(AjaxRequestTarget target, Object node) {
+		
 		final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node;
 		parentNode.removeAllChildren();
 		if (parentNode.getUserObject() instanceof InvSite) {
@@ -170,8 +196,22 @@ public class InventoryLinkTree extends LinkTree {
 			invRack = iInventoryService.getInvRack(invRack.getId());
 			addBoxes(parentNode, invRack.getInvBoxes());
 		}
+		
+		//Set the junction tree node to session
+		ArkSession.get().setNodeObject(node);
+		
 		this.updateTree(target);
 	}
+	
+	@Override
+	protected void onNodeLinkClicked(Object node, BaseTree tree,
+			AjaxRequestTarget target) {
+		// TODO Auto-generated method stub
+		//This method do not execute when select a node.
+	}
+	
+	
+	
 
 	@SuppressWarnings("unchecked")
 	@Override

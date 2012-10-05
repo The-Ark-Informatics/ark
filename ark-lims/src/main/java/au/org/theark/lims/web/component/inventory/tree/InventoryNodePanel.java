@@ -26,6 +26,7 @@ import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.session.ArkSession;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
@@ -69,7 +70,7 @@ public class InventoryNodePanel extends LinkIconPanel {
 		this.containerForm = containerForm;
 
 		// Add tooltip to the node/panel
-		addToolTipToNode(model.getObject());
+		addToolTipToNode(model.getObject());		
 	}
 
 	/**
@@ -272,6 +273,9 @@ public class InventoryNodePanel extends LinkIconPanel {
 
 		target.add(feedbackPanel);
 		target.add(detailContainer);
+		
+		//Add the selected node to session
+		ArkSession.get().setNodeObject(node);
 	}
 
 	/**
