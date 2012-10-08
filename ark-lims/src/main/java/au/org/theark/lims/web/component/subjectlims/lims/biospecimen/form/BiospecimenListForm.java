@@ -26,6 +26,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
@@ -42,6 +43,7 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
@@ -60,12 +62,14 @@ import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.export.ExportToolbar;
 import au.org.theark.core.web.component.export.ExportableTextColumn;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
+import au.org.theark.lims.model.vo.BatchBiospecimenAliquotsVO;
 import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biolocation.BioLocationPanel;
+import au.org.theark.lims.web.component.biospecimen.batchaliquot.BatchAliquotBiospecimenPanel;
 import au.org.theark.lims.web.component.biospecimen.batchcreate.AutoGenBatchCreateBiospecimenPanel;
 import au.org.theark.lims.web.component.biospecimen.batchcreate.ManualBatchCreateBiospecimenPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
@@ -465,7 +469,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				item.add(studyLblFld);
 				item.add(sampleTypeLblFld);
 				item.add(collectionLblFld);
-				item.add(commentsLblFld);
+				//item.add(commentsLblFld);
 				item.add(quantityLblFld);
 				item.add(unitsLblFld);
 				item.add(locationLink);
@@ -476,6 +480,28 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				else {
 					item.addOrReplace(new ContextImage("biospecimen.barcoded", new Model<String>("images/icons/cross.png")));
 				}
+				
+				item.add(new AjaxButton("batchAliquot"){
+
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
+					
+					protected void onSubmit(AjaxRequestTarget target, org.apache.wicket.markup.html.form.Form<?> form) {
+						onBatchAliquot(target, item.getModel());
+						target.add(feedbackPanel);
+					};
+					
+					protected void onError(AjaxRequestTarget target, org.apache.wicket.markup.html.form.Form<?> form) {
+						target.add(feedbackPanel);
+					};
+					
+					public boolean isVisible() {
+						return (item.getModelObject().getQuantity() != null && item.getModelObject().getQuantity() > 0);
+					};
+					
+				}.setDefaultFormProcessing(false));
 
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 
@@ -570,6 +596,19 @@ public class BiospecimenListForm extends Form<LimsVO> {
          }
 		});
 	}
+	
+	private void onBatchAliquot(AjaxRequestTarget target, IModel<Biospecimen> iModel) {
+			IModel model = new Model<BatchBiospecimenAliquotsVO>(new BatchBiospecimenAliquotsVO(iModel.getObject()));
+			// handles for auto-gen biospecimenUid or manual entry
+			modalContentPanel = new BatchAliquotBiospecimenPanel("content", feedbackPanel, model, modalWindow);
+				
+			// Set the modalWindow title and content
+			modalWindow.setTitle("Batch Aliquot Biospecimens");
+			modalWindow.setContent(modalContentPanel);
+			modalWindow.show(target);
+			// refresh the feedback messages
+			target.add(feedbackPanel);
+		}
 
 	/**
 	 * @return the newButton

@@ -822,4 +822,8 @@ public class LimsServiceImpl implements ILimsService {
 		return iBioTransactionDao.getAccessRequests();
 	}
 	
+	public void batchAliquotBiospecimens(List<Biospecimen> biospecimenList) {
+		iBiospecimenDao.batchAliquotBiospecimens(biospecimenList);
+		
+	}
 }

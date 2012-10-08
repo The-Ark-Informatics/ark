@@ -364,4 +364,6 @@ public interface ILimsService {
 	public List<String> getAllBiocollectionUIDs(Study study);
 
 	public List<AccessRequest> getAccessRequests();
+	
+	public void batchAliquotBiospecimens(List<Biospecimen> biospecimenList);
 }
