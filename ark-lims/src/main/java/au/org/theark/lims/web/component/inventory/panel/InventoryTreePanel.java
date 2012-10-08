@@ -1,6 +1,7 @@
 package au.org.theark.lims.web.component.inventory.panel;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -46,18 +47,41 @@ public class InventoryTreePanel extends Panel {
 		this.containerForm = containerForm;
 
 		tree = new InventoryLinkTree("tree", feedbackPanel, detailContainer, containerForm);
-		tree.setRootLess(true);
+		tree.setRootLess(true);	
+		
+		// Automatically expand all nodes on render. May be enough to resolve ARK-813 ??
+		tree.getTreeState().expandAll();
 		
 		setOutputMarkupPlaceholderTag(true);
 		initialiseButtons();
 		addComponents();
-		
-		//Check seassion has contained a node and highlight the node.
+
+		// Check session has contained a node and highlight the node.
 		Object prevSelectedNode=ArkSession.get().getNodeObject();
 		if(prevSelectedNode!=null){
-			this.tree.getTreeState().selectNode(prevSelectedNode, true);
-			this.tree.updateTree();
+			// Added to logically expand/select the node in session
+			TreeNode[] nodes = ((DefaultMutableTreeNode)prevSelectedNode).getPath();
+			for (int i = 0; i < nodes.length; i++) {
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) nodes[i];
+				if (!node.isLeaf()) {
+					if (tree.getTreeState().isNodeExpanded(node)) {
+						tree.getTreeState().collapseNode(node);
+					}
+					else {
+						tree.getTreeState().expandNode(node);
+					}
+				}
+			}
+			
+			// Even this is correctly assigned, the tree.updateTree(); still doesn't seem to actually do what was programatically specified
+			tree.getTreeState().selectNode(prevSelectedNode, true);
+			tree.updateTree();
 		}
+	}
+	
+	@Override
+	protected void onBeforeRender() {
+		super.onBeforeRender();
 	}
 
 	private void initialiseButtons() {
