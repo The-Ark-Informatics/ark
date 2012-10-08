@@ -172,6 +172,8 @@ public interface IBiospecimenDao {
 	public List<Biospecimen> getBiospecimenByBioCollection(BioCollection bioCollection);
 
 	public List<String> getAllBiospecimenUIDs(Study study);
+
+	public void batchAliquotBiospecimens(List<Biospecimen> biospecimenList);
 	
 	
 	

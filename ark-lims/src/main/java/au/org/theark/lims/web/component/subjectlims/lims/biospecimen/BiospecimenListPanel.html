@@ -45,11 +45,6 @@
 								Quantity:
 							</wicket:message>
 						</th>
-						<th width="15%">
-							<wicket:message	key="biospecimen.comments">
-								Comments:
-							</wicket:message>
-						</th>
 						<th width="5%">
 							<wicket:message	key="biospecimen.location">
 								Location:
@@ -59,6 +54,9 @@
 							<wicket:message	key="biospecimen.barcoded">
 								Barcoded:
 							</wicket:message>
+						</th>
+						<th width="2%">
+							&nbsp;
 						</th>
 						<th width="2%">
 							&nbsp;
@@ -101,10 +99,6 @@
 								<span wicket:id="biospecimen.unit">
 								</span>
 							</td>
-							<td width="15%">
-								<span wicket:id="biospecimen.comments" type="text">
-								</span>
-							</td>
 							<td width="5%" align="center">
 								<a href="#"wicket:id="biospecimen.location.link">
 									<span wicket:id="biospecimen.location" type="text">
@@ -114,6 +108,9 @@
 							</td>
 							<td width="6%" align="center">
 								<img wicket:id="biospecimen.barcoded"/>
+							</td>
+							<td width="6%" align="center">
+								<input wicket:id="batchAliquot" type="submit" wicket:message="value:button.batchAliquot" />
 							</td>
 							<td width="2%">
 								&nbsp;
