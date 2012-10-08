@@ -19,6 +19,7 @@
 package au.org.theark.lims.model.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,6 +42,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
+import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
@@ -67,6 +69,15 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	private static Logger		log	= LoggerFactory.getLogger(BiospecimenDao.class);
 	
 	private BiospecimenUidGenerator		biospecimenUidGenerator;
+	private IBioTransactionDao	iBioTransactionDao;
+	/**
+	 * @param iBioTransactionDao
+	 *           the iBioTransactionDao to set
+	 */
+	@Autowired
+	public void setiBioTransactionDao(IBioTransactionDao iBioTransactionDao) {
+		this.iBioTransactionDao = iBioTransactionDao;
+	}
 
 	/**
 	 * @param biospecimenUidGenerator the biospecimenUidGenerator to set
@@ -626,5 +637,58 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		return query.list();
 	}
 
+	public void batchAliquotBiospecimens(List<Biospecimen> biospecimenList) {
+		for (Biospecimen biospecimen : biospecimenList) {
+
+			getSession().save(biospecimen);
+			String recorder = new String();
+			for(BioTransaction bioTransaction : biospecimen.getBioTransactions()){
+				getSession().save(bioTransaction);
+				recorder = bioTransaction.getRecorder();
+			}
+			
+			getSession().refresh(biospecimen);
+			
+			BioTransaction bioTransaction = new BioTransaction();
+			bioTransaction.setBiospecimen(biospecimen.getParent());
+			bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
+			bioTransaction.setReason("Sub-Aliquot for: " + biospecimen.getBiospecimenUid());
+
+			// NOTE: Removing from parent is negative-value transaction
+			bioTransaction.setQuantity(biospecimen.getQuantity() * -1);
+			BioTransactionStatus bioTransactionStatus = iBioTransactionDao.getBioTransactionStatusByName("Aliquoted");
+			bioTransaction.setStatus(bioTransactionStatus);
+			bioTransaction.setRecorder(recorder);
+			getSession().save(bioTransaction);
+		}
+	}
 	
+	public void batchAliquotAndAllocateBiospecimens(List<Biospecimen> biospecimenList) {
+		for (Biospecimen biospecimen : biospecimenList) {
+
+			getSession().save(biospecimen);
+			for(BioTransaction bioTransaction : biospecimen.getBioTransactions()){
+				getSession().save(bioTransaction);
+			}
+			
+			BioTransaction bioTransaction = new BioTransaction();
+			bioTransaction.setBiospecimen(biospecimen.getParent());
+			bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
+			bioTransaction.setReason("Sub-Aliquot for: " + biospecimen.getBiospecimenUid());
+
+			// NOTE: Removing from parent is negative-value transaction
+			bioTransaction.setQuantity(biospecimen.getQuantity() * -1);
+			BioTransactionStatus bioTransactionStatus = iBioTransactionDao.getBioTransactionStatusByName("Aliquoted");
+			bioTransaction.setStatus(bioTransactionStatus);
+			getSession().save(bioTransaction);
+
+			InvCell invCell = biospecimen.getInvCell();
+			if(invCell!=null){
+				getSession().refresh(biospecimen);
+				invCell.setBiospecimen(biospecimen);
+				invCell.setStatus("Not Empty"); // TODO constants/enum
+				getSession().saveOrUpdate(invCell);
+			}
+		}
+	}
 }

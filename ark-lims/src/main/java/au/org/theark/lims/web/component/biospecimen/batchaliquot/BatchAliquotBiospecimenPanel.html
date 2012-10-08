@@ -1,0 +1,148 @@
+<wicket:panel>
+	<form wicket:id="batchAliquotBiospecimenForm">
+		<span wicket:id="feedback">
+			[Feedback]
+		</span>
+		
+		<div class="listPanelBorder">
+			<table width="0%" cellspacing="0">
+				<wicket:message	key="parentBiospecimen">
+					Parent Biospecimen:
+				</wicket:message>
+				<span wicket:id="parentBiospecimen.biospecimenUid">
+					ParentUID
+				</span>
+				<wicket:message	key="parentBiospecimenQty">
+					Quantity:
+				</wicket:message>
+				<span wicket:id="parentBiospecimen.quantity">
+					Parent qty
+				</span>
+				<span wicket:id="parentBiospecimen.unit.name">
+					Parent units
+				</span>
+			</table>
+			<table width="0%" cellspacing="0">
+				<wicket:enclosure child="numberToCreate">
+					<wicket:message	key="numberToCreate">
+						Number of Aliquots:
+					</wicket:message>
+					<input wicket:id="numberToCreate" type="text" maxLength="10" size="1"/>
+					<input wicket:id="numberToCreateButton" type="submit" wicket:message="value:button.numberToCreateButton" />
+				</wicket:enclosure>
+			</table>
+			<table width="100%" cellspacing="0" class="dataview" border="0">
+				<!-- Header row -->
+				<tr>
+					<th width="2%">
+						&nbsp;
+					</th>
+					<th width="5%">
+						<wicket:message	key="biospecimenUid">
+							Biospecimen UID:
+						</wicket:message>
+					</th>
+					<th width="5%">
+						<wicket:message	key="quantity">
+							Quantity:
+						</wicket:message>
+					</th>
+					<th width="10%">
+						<wicket:message	key="treatmentType">
+							Treatment:
+						</wicket:message>
+					</th>
+					<th width="5%">
+						<wicket:message	key="concentration">
+							Concentration:
+						</wicket:message>
+					</th>
+					
+					<th width="5%">
+						&nbsp;
+					</th>
+					
+					<th width="5%">
+						&nbsp;
+					</th>
+					
+					<th width="2%">
+						&nbsp;
+					</th>
+				</tr>
+				<tbody>
+					<!-- Repeated item row -->
+					<tr wicket:id="aliquots">
+						<td width="2%">
+							&nbsp;
+						</td>
+						<td>
+							<input wicket:id="biospecimenUid" type="text" maxLength="10" size="10"/><span class="requiredHint">*</span>
+						</td>
+						<td>
+							<input wicket:id="quantity" type="text" maxLength="10" size="1"/><span class="requiredHint">*</span>
+						</td>
+						<td>
+							<select wicket:id="treatmentType">
+								<option>
+									1
+								</option>
+								<option>
+									2
+								</option>
+							</select><span class="requiredHint">*</span>
+						</td>
+						
+						<td>
+							<input wicket:id="concentration" type="text" maxLength="10" size="5"/>
+						</td>
+
+						<td>
+							<input wicket:id="copy" type="submit" wicket:message="value:button.copy" />
+						</td>
+						<td>
+							<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />
+						</td>
+						
+						<td width="2%">
+							&nbsp;
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td width="2%">
+							&nbsp;
+						</td>
+						<td width="96%" colspan="6">
+							<input wicket:id="new" type="submit" wicket:message="value:button.new" />
+						</td>
+						<td width="2%">
+							&nbsp;
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		<div class="detailPanelBreaker">
+		</div>
+		<!-- End listPanelBorder -->
+		<div class="actionButtons">
+			<input wicket:id="save" type="submit" wicket:message="value:button.save" />
+			<input wicket:id="saveAndClose" type="submit" wicket:message="value:button.saveAndClose" />
+			<input wicket:id="cancel" type="submit" wicket:message="value:button.cancel" />
+		</div>
+	</form>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+</wicket:panel>
