@@ -18,3 +18,6 @@ CREATE  TABLE `reporting`.`search` (
   `TOP_LEVEL_GROUPING_ID` INT NULL ,
   PRIMARY KEY (`ID`) );
 
+ALTER TABLE `reporting`.`search` 
+ADD INDEX `fk_search_query_grouping` (`TOP_LEVEL_GROUPING_ID` ASC) ;
+
