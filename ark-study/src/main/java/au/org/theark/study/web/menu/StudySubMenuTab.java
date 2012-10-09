@@ -169,7 +169,7 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 			});
 		}
 
-		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_STUDY_SUBMENU, moduleSubTabsList);
+		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_STUDY_SUBMENU, moduleSubTabsList, arkContextMarkup);
 		add(moduleTabbedPanel);
 	}
 

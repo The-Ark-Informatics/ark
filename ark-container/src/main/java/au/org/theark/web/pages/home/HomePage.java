@@ -243,7 +243,7 @@ public class HomePage extends BasePage {
 			log.error(e.getMessage());
 		}
 		
-		moduleTabbedPanel = new ArkAjaxTabbedPanel("moduleTabsList", moduleTabsList);
+		moduleTabbedPanel = new ArkAjaxTabbedPanel("moduleTabsList", moduleTabsList, arkContextPanelMarkup);
 		moduleTabbedPanel.setOutputMarkupPlaceholderTag(true);
 		studyMainTabProvider.setModuleTabbedPanel(moduleTabbedPanel);
 		add(moduleTabbedPanel);
