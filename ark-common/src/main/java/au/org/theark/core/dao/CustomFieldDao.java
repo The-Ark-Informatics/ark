@@ -431,7 +431,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 				query.setParameter("emptyString", "");
 				query.setParameter("study", study);
 				List<BioCollectionCustomFieldData> bscfds = query.list();
-				log.info("\n\n\n\n\n\n\n\n\n\nbiocol size = " + bscfds.size());
+				//log.info("\n\n\n\n\n\n\n\n\n\nbiocol size = " + bscfds.size());
 				for (BioCollectionCustomFieldData bscfd : bscfds){
 					//bscfd.getCustomFieldDisplay().getCustomField().getEncodedValues();
 					log.info("text =" +bscfd.getTextDataValue());
