@@ -1,7 +1,20 @@
 CREATE  TABLE `reporting`.`query_grouping` (
-  `id` INT NOT NULL ,
-  `name` VARCHAR(45) NULL ,
-  PRIMARY KEY (`id`) );
+  `ID` INT NOT NULL ,
+  `NAME` VARCHAR(45) NULL ,
+  PRIMARY KEY (`ID`) );
 
 
+
+
+
+
+
+
+
+
+CREATE  TABLE `reporting`.`search` (
+  `ID` INT NOT NULL ,
+  `NAME` VARCHAR(255) NULL ,
+  `TOP_LEVEL_GROUPING_ID` INT NULL ,
+  PRIMARY KEY (`ID`) );
 
