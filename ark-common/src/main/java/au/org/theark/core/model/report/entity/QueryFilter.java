@@ -3,7 +3,7 @@ package au.org.theark.core.model.report.entity;
 public class QueryFilter {
 //	QueryFilter leftQueryFilter;	//potentially link to another query to combine rules on...its more explicit than relying on brackets.
 //	QueryFilter rightQueryFilter;	//potentially link to another query to combine rules on...its more explicit than relying on brackets.
-	FilterJoin filterJoin; //AND OR  
+	JoinType filterJoin; //AND OR  
 	
 	// which contraints field, operator, value, nullableSecondValue (eg in between),
 	Preprocessor precursor; //eg NOT, IN, 
