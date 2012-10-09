@@ -15,7 +15,8 @@ public class Search {
 	private String name;
 	private Set<CustomFieldDisplaySearch>  customFieldsToReturn;
 	private Set<DemographicFieldSearch>  demographicFieldsToReturn;
-	private Set<QueryFilter> queryFilters;
+//	private Set<QueryFilter> queryFilters;
+	private QueryGrouping topLevelQueryGrouping;
 	
 
 	public void setDemographicFieldsToReturn(Set<DemographicFieldSearch> demographicFieldsToReturn) {
@@ -30,12 +31,12 @@ public class Search {
 	public Set<CustomFieldDisplaySearch> getCustomFieldsToReturn() {
 		return customFieldsToReturn;
 	}
-	public void setQueryFilters(Set<QueryFilter> queryFilters) {
+/*	public void setQueryFilters(Set<QueryFilter> queryFilters) {
 		this.queryFilters = queryFilters;
 	}
 	public Set<QueryFilter> getQueryFilters() {
 		return queryFilters;
-	}
+	}*/
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -47,6 +48,12 @@ public class Search {
 	}
 	public Long getId() {
 		return id;
+	}
+	public void setTopLevelQueryGrouping(QueryGrouping topLevelQueryGrouping) {
+		this.topLevelQueryGrouping = topLevelQueryGrouping;
+	}
+	public QueryGrouping getTopLevelQueryGrouping() {
+		return topLevelQueryGrouping;
 	}
 	
 	
