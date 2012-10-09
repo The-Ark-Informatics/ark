@@ -50,6 +50,7 @@ public class Constants {
 	public static final String TAB_SUBJECT_CORRESPONDENCE = "Correspondence";
 
 	/* Menu Tab keys */
+	public static final String TAB_MODULE_SUBJECT_SEARCH = "tab.module.subject.search";
 	public static final String TAB_MODULE_SUBJECT_DETAIL = "tab.module.subject.detail";
 	public static final String TAB_MODULE_PERSON_PHONE = "tab.module.person.phone";
 	public static final String TAB_MODULE_PERSON_ADDRESS = "tab.module.person.address";
@@ -221,6 +222,8 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_MY_DETAIL = "MY_DETAIL";
 	public static final String FUNCTION_KEY_VALUE_USER = "USER";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT = "SUBJECT";
+	public static final String FUNCTION_KEY_VALUE_SUBJECT_SEARCH = "SUBJECT_SEARCH";
+	public static final String FUNCTION_KEY_VALUE_DEMOGRAPHIC_DATA = "DEMOGRAPHIC_DATA";
 	public static final String FUNCTION_KEY_VALUE_PHONE = "PHONE";
 	public static final String FUNCTION_KEY_VALUE_CONSENT = "CONSENT";
 	public static final String FUNCTION_KEY_VALUE_ATTACHMENT = "ATTACHMENT";
