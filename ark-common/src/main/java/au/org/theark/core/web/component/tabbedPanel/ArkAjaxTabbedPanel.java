@@ -22,10 +22,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +40,26 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel {
 	private static final long	serialVersionUID		= -3340777937373315256L;
 	private transient Logger	log						= LoggerFactory.getLogger(ArkAjaxTabbedPanel.class);
 	protected List<ArkMainTab>	mainTabs;
+	private WebMarkupContainer arkContextPanelMarkup;
 
 	public ArkAjaxTabbedPanel(String id, List<ITab> tabs) {
 		super(id, tabs);
+
+		mainTabs = new ArrayList<ArkMainTab>(0);
+		for (Iterator<ITab> iterator = tabs.iterator(); iterator.hasNext();) {
+			ITab iTab = (ITab) iterator.next();
+			if (iTab instanceof ArkMainTab) {
+				mainTabs.add((ArkMainTab) iTab);
+			}
+		}
+		if (!((mainTabs.size() == tabs.size()) || mainTabs.size() == 0)) {
+			log.error("Not all main tabs are using/extending ArkMainTab....");
+		}
+	}
+	
+	public ArkAjaxTabbedPanel(String id, List<ITab> tabs, WebMarkupContainer arkContextPanelMarkup) {
+		super(id, tabs);
+		this.arkContextPanelMarkup = arkContextPanelMarkup;
 
 		mainTabs = new ArrayList<ArkMainTab>(0);
 		for (Iterator<ITab> iterator = tabs.iterator(); iterator.hasNext();) {
@@ -63,6 +83,15 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel {
 			public void onClick(AjaxRequestTarget target) {
 				if (mainTabs.size() == 0 || (mainTabs.size() > 0 && mainTabs.get(index).isAccessible())) {
 					setSelectedTab(index);
+				
+					if(mainTabs.size() > 0 && mainTabs.get(index).getTitle().getObject().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT)) {
+						// Clear Subject session objects (ie force a new search)
+						SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.SUBJECTUID);
+						SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+						SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
+						arkContextPanelMarkup.get("subjectLabel").replaceWith(new Label("subjectLabel", new Model("")));
+						target.add(arkContextPanelMarkup);
+					}
 				}
 
 				if (target != null) {
