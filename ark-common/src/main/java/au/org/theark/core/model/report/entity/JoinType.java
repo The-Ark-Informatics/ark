@@ -1,5 +1,5 @@
 package au.org.theark.core.model.report.entity;
 
-public enum FilterJoin {
+public enum JoinType {
 	AND, OR, NONE
 }
