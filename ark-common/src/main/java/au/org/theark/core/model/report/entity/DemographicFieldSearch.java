@@ -1,26 +1,20 @@
 package au.org.theark.core.model.report.entity;
 
 public class DemographicFieldSearch {
-	private String entityName;
-	private String fieldName;
+
+	private DemographicFieldSearch demographicField;
 	private Search search;
 	
-	public void setEntityName(String entityName) {
-		this.entityName = entityName;
-	}
-	public String getEntityName() {
-		return entityName;
-	}
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
-	public String getFieldName() {
-		return fieldName;
-	}
 	public void setSearch(Search search) {
 		this.search = search;
 	}
 	public Search getSearch() {
 		return search;
+	}
+	public void setDemographicField(DemographicFieldSearch demographicField) {
+		this.demographicField = demographicField;
+	}
+	public DemographicFieldSearch getDemographicField() {
+		return demographicField;
 	}
 }
