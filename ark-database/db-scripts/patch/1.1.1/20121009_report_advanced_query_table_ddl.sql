@@ -61,9 +61,15 @@ CREATE  TABLE `reporting`.`demographic_field` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-COMMENT = 'represent how we might reference and select demographic fields (initially as needed by data extract tool)';
+COMMENT = 'represent how we might reference and select demographic fields (initially as needed by data extract tool)CREATE TABLE `demographic_field_search` (   `ID` int(11) NOT NULL,   `CUSTOM_FIELD_DISPLAY_ID` int(11) DEFAULT NULL,   `SEARCH_ID` int(11) DEFAULT NULL,   PRIMARY KEY (`ID`),   KEY `fk_cfds_custom_field_display` (`CUSTOM_FIELD_DISPLAY_ID`),   KEY `fk_cfds_search` (`SEARCH_ID`) ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='many to many join custom_field_display and search';
 
 
-
-
-
+CREATE TABLE `reporting`.`demographic_field_search` (   
+	`ID` int(11) NOT NULL,   
+	`CUSTOM_FIELD_DISPLAY_ID` int(11) DEFAULT NULL,   
+	`SEARCH_ID` int(11) DEFAULT NULL,   
+	PRIMARY KEY (`ID`),   
+	KEY `fk_dfs_custom_field_display` (`CUSTOM_FIELD_DISPLAY_ID`),
+   	KEY `fk_dfs_search` (`SEARCH_ID`) ) 
+ENGINE=MyISAM DEFAULT CHARSET=latin1 
+COMMENT='many to many join custom_field_display and search';
