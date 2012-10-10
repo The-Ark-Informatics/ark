@@ -65,4 +65,10 @@ public class Constants {
 	public static final String	ERROR_RESEARCHER_COST_REPORT_YEAR_INVALID_FORMAT 	= "error.researchercostreport.year.invalid.format";
 	public static final String	RESEARCHER_COST_REPORT_YEAR_TAG 					= "Year";
 	
+	public static final String	BIOSPECIMEN_SUMMARY_REPORT_STUDY					= "study";
+	public static final String	BIOSPECIMEN_SUMMARY_REPORT_SUBJECT_UID				= "subjectUID";
+	
+	public static final String	ERROR_BIOSPECIMEN_SUMMARY_REPORT_STUDY_REQUIRED 	= "error.biospecimensummaryreport.study.required";
+	public static final String	BIOSPECIMEN_SUMMARY_REPORT_STUDY_TAG 				= "Study";
+	
 }
