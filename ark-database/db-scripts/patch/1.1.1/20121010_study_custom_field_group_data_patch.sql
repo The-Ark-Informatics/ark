@@ -2,8 +2,7 @@
 -- This patch simply amends the custom field groups with data associated to published
 UPDATE study.custom_field_group
 SET published = 1
-WHERE id IN (SELECT DISTINCT cfg.id
-FROM pheno.pheno_data p, study.custom_field_display cfd, study.custom_field_group cfg
-WHERE p.custom_field_display_id = cfd.id
-AND cfd.custom_field_group_id = cfg.id
-AND cfg.published = 0);
+WHERE id IN (SELECT DISTINCT cfd.custom_field_group_id
+FROM pheno.pheno_data p, study.custom_field_display cfd
+WHERE p.custom_field_display_id = cfd.id)
+AND published = 0
