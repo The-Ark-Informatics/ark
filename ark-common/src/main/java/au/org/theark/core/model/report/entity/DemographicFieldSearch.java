@@ -2,7 +2,7 @@ package au.org.theark.core.model.report.entity;
 
 public class DemographicFieldSearch {
 
-	private DemographicFieldSearch demographicField;
+	private DemographicField demographicField;
 	private Search search;
 	
 	public void setSearch(Search search) {
@@ -11,10 +11,11 @@ public class DemographicFieldSearch {
 	public Search getSearch() {
 		return search;
 	}
-	public void setDemographicField(DemographicFieldSearch demographicField) {
+	
+	public void setDemographicField(DemographicField demographicField) {
 		this.demographicField = demographicField;
 	}
-	public DemographicFieldSearch getDemographicField() {
+	public DemographicField getDemographicField() {
 		return demographicField;
 	}
 }
