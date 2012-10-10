@@ -2,10 +2,9 @@ package au.org.theark.report.model.vo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
-import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
+import au.org.theark.report.model.vo.report.BiospecimenSummaryDataRow;
 
 /**
  * 
@@ -23,27 +22,27 @@ public class BeanFactory {
 	 * Sample data collection population method.
 	 * @return data beans collection.
 	 */
-    public static Collection<ResearcherDetailCostDataRow> getBeans() {
-        List<ResearcherDetailCostDataRow> costTypes = new  ArrayList<ResearcherDetailCostDataRow>();
+    public static Collection<BiospecimenSummaryDataRow> getBeans() {
+        List<BiospecimenSummaryDataRow> specimens = new  ArrayList<BiospecimenSummaryDataRow>();
 
-        ResearcherDetailCostDataRow data1 = new  ResearcherDetailCostDataRow("1:1", new Date(),"Y","GST Inclusive",100d,103.42,3.42,"Mailouts",1L,"Letters",true,"");
-        costTypes.add(data1);
+        BiospecimenSummaryDataRow data1 = new  BiospecimenSummaryDataRow("test1","0001",1111111L,"A00001","Blood/plasma",18.5d,"Initial Quantity");
+        specimens.add(data1);
         
-        ResearcherDetailCostDataRow data2 = new  ResearcherDetailCostDataRow("1:2", new Date(),"Y","GST Inclusive",400d,148.23,8.23,"Mailouts",1L,"Letters",true,"");
-        costTypes.add(data2);
+        BiospecimenSummaryDataRow data2 = new  BiospecimenSummaryDataRow("test2","0002",1111112L,"A00002","Blood/plasma",18.6d,"Initial Quantity");
+        specimens.add(data2);
         
-        ResearcherDetailCostDataRow data3 = new  ResearcherDetailCostDataRow("1:3", new Date(),"Y","GST Inclusive",400d,148.23,8.23,"Mailouts",1L,"Letters",true,"");
-        costTypes.add(data3);
+        BiospecimenSummaryDataRow data3 = new  BiospecimenSummaryDataRow("test3","0003",1111113L,"A00003","Blood/plasma",18.7d,"Initial Quantity");
+        specimens.add(data3);
 
-        ResearcherDetailCostDataRow data4 = new  ResearcherDetailCostDataRow("1:4", new Date(),"Y","GST Inclusive",400d,148.23,8.23,"Mailouts",1L,"Letters",true,"");
-        costTypes.add(data4);
+        BiospecimenSummaryDataRow data4 = new  BiospecimenSummaryDataRow("test4","0004",1111114L,"A00004","Blood/plasma",18.8d,"Initial Quantity");
+        specimens.add(data4);
         
-        ResearcherDetailCostDataRow data5 = new  ResearcherDetailCostDataRow("1:1", new Date(),"Y","GST Inclusive",5.5,303.80,3.80,"Phone Follow-Up Charges",2L,"Hours",true,"");
-        costTypes.add(data5);
+        BiospecimenSummaryDataRow data5 = new  BiospecimenSummaryDataRow("test5","0005",1111115L,"A00005","Blood/plasma",18.9d,"Initial Quantity");
+        specimens.add(data5);
         
-        ResearcherDetailCostDataRow data6 = new  ResearcherDetailCostDataRow("Project & Data Management Costs ", new Date(),"Y","GST Inclusive",12.6,592.92,2.92,"Administration Charges",3L,"Hours",true,"");
-        costTypes.add(data6);
+        BiospecimenSummaryDataRow data6 = new  BiospecimenSummaryDataRow("test6","0006",1111116L,"A00006","Blood/plasma",19.0d,"Initial Quantity");
+        specimens.add(data6);
             
-        return  costTypes;
+        return  specimens;
     }
 }

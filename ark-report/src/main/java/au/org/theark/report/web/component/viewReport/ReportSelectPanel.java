@@ -49,6 +49,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.report.model.vo.ReportSelectVO;
 import au.org.theark.report.service.Constants;
 import au.org.theark.report.service.IReportService;
+import au.org.theark.report.web.component.viewReport.biospecimensummary.BiospecimenSummaryReportContainer;
 import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsReportContainer;
 import au.org.theark.report.web.component.viewReport.phenoFieldDetails.PhenoFieldDetailsReportContainer;
 import au.org.theark.report.web.component.viewReport.researchercost.WorkResearcherCostReportContainer;
@@ -358,6 +359,17 @@ public class ReportSelectPanel extends Panel {
 						target.add(reportContainerVO.getSelectedReportContainerWMC());
 						this.info(reportTemplate.getName() + " template selected.");
 					}
+				}
+				else if(reportTemplate.getName().equals(Constants.LIMS_BIOSPECIMEN_SUMMARY_REPORT_NAME)){				
+						BiospecimenSummaryReportContainer selectedReportPanel = new BiospecimenSummaryReportContainer("selectedReportContainerPanel");
+						selectedReportPanel.setOutputMarkupId(true);
+						// Replace the old selectedReportPanel with this new one
+						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
+						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
+						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
+						target.add(reportContainerVO.getSelectedReportContainerWMC());
+						this.info(reportTemplate.getName() + " template selected.");
+					
 				}
 				else {
 					this.error("System error: " + reportTemplate.getName() + " has no implementation or has been deprecated.");
