@@ -8,5 +8,6 @@ public enum Operator {
 	LIKE, 
 	LESS_THAN_OR_EQUAL, 
 	GREATER_THAN_OR_EQUAL, 
-	NOT_EQUAL
+	NOT_EQUAL//,
+//	IN
 }
