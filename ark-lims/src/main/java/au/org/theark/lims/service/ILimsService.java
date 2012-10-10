@@ -353,7 +353,7 @@ public interface ILimsService {
 
 	public void batchUpdateInvCells(List<InvCell> updateInvCells);
 
-	public BioCollection getBioCollectionByName(String name,Long studyId);
+	public BioCollection getBioCollectionByUID(String biocollectionUid,Long studyId);
 
 	public Unit getUnitByName(String name);
 

@@ -574,7 +574,7 @@ public class BiospecimenUploadValidator {
 					}
 				}
 				else {
-					biocollection = iLimsService.getBioCollectionByName(biocollectionUID,study.getId());
+					biocollection = iLimsService.getBioCollectionByUID(biocollectionUID,study.getId());
 					if(study.getAutoGenerateBiocollectionUid()){//ie; auto gen, id supplied.
 						if(biocollection==null){
 							StringBuilder errorString = new StringBuilder();
