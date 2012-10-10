@@ -1,7 +1,10 @@
+DROP TABLE `reporting`.`query_grouping` ;
+
 CREATE  TABLE `reporting`.`query_grouping` (
   `ID` INT NOT NULL ,
   `NAME` VARCHAR(45) NULL ,
-  PRIMARY KEY (`ID`) );
+  PRIMARY KEY (`ID`) )
+ENGINE = InnoDB ;
 
 
 
@@ -11,19 +14,20 @@ CREATE  TABLE `reporting`.`query_grouping` (
 
 
 
-
+DROP  TABLE `reporting`.`search` 
 CREATE  TABLE `reporting`.`search` (
   `ID` INT NOT NULL ,
   `NAME` VARCHAR(255) NULL ,
   `TOP_LEVEL_GROUPING_ID` INT NULL ,
-  PRIMARY KEY (`ID`) );
+  PRIMARY KEY (`ID`) )
+ENGINE = InnoDB ;
 
 ALTER TABLE `reporting`.`search` 
 ADD INDEX `fk_search_query_grouping` (`TOP_LEVEL_GROUPING_ID` ASC) ;
 
 
 
-
+DROP  TABLE `reporting`.`custom_field_display_search`
 CREATE  TABLE `reporting`.`custom_field_display_search` (
   `ID` INT NOT NULL ,
   `CUSTOM_FIELD_DISPLAY_ID` INT NULL ,
@@ -41,12 +45,13 @@ CREATE  TABLE `reporting`.`custom_field_display_search` (
     REFERENCES `reporting`.`search` (`ID` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-COMMENT = 'many to many join custom_field_display and search';
+COMMENT = 'many to many join custom_field_display and search'
+ENGINE = InnoDB ;
 
 
 
 
-
+DROP  TABLE `reporting`.`demographic_field` 
 CREATE  TABLE `reporting`.`demographic_field` (
   `ID` INT NOT NULL ,
   `ENTITY` VARCHAR(255) NULL ,
@@ -61,9 +66,10 @@ CREATE  TABLE `reporting`.`demographic_field` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-COMMENT = 'represent how we might reference and select demographic fields (initially as needed by data extract tool)CREATE TABLE `demographic_field_search` (   `ID` int(11) NOT NULL,   `CUSTOM_FIELD_DISPLAY_ID` int(11) DEFAULT NULL,   `SEARCH_ID` int(11) DEFAULT NULL,   PRIMARY KEY (`ID`),   KEY `fk_cfds_custom_field_display` (`CUSTOM_FIELD_DISPLAY_ID`),   KEY `fk_cfds_search` (`SEARCH_ID`) ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='many to many join custom_field_display and search';
+COMMENT = 'represent how we might reference and select demographic fields (initially as needed by data extract tool)'
 
 
+DROP  TABLE `reporting`.`demographic_field_search`
 CREATE TABLE `reporting`.`demographic_field_search` (   
 	`ID` int(11) NOT NULL,   
 	`CUSTOM_FIELD_DISPLAY_ID` int(11) DEFAULT NULL,   
@@ -71,5 +77,42 @@ CREATE TABLE `reporting`.`demographic_field_search` (
 	PRIMARY KEY (`ID`),   
 	KEY `fk_dfs_custom_field_display` (`CUSTOM_FIELD_DISPLAY_ID`),
    	KEY `fk_dfs_search` (`SEARCH_ID`) ) 
-ENGINE=MyISAM DEFAULT CHARSET=latin1 
+ENGINE = InnoDB 
 COMMENT='many to many join custom_field_display and search';
+
+
+
+
+
+
+DROP 
+CREATE  TABLE `reporting`.`query_filter` (
+  `ID` INT NOT NULL ,
+  `DEMOGRAPHIC_FIELD_ID` INT NULL ,
+  `CUSTOM_FIELD_DISPLAY_ID` INT NULL ,
+  `VALUE` VARCHAR(512) NULL ,
+  `SECOND_VALUE` VARCHAR(512) NULL ,
+  `OPERATOR` VARCHAR(256) NULL ,
+  `PREFIX` VARCHAR(56) NULL ,
+  PRIMARY KEY (`ID`) )
+ENGINE = InnoDB ;
+
+ALTER TABLE `reporting`.`query_filter` 
+  ADD CONSTRAINT `fk_qf_df`
+  FOREIGN KEY (`DEMOGRAPHIC_FIELD_ID` )
+  REFERENCES `reporting`.`demographic_field` (`ID` )
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+, ADD INDEX `fk_qf_df_idx` (`DEMOGRAPHIC_FIELD_ID` ASC) ;
+
+# TODO repeat for custom_field_)display
+
+
+
+
+
+
+
+
+
+
