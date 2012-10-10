@@ -155,7 +155,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * @see au.org.theark.lims.service.ILimsService#createCollection(au.org.theark.lims.model.vo.LimsVO)
 	 */
 	public void createBioCollection(LimsVO modelObject) throws ArkSystemException {
-		log.debug("Creating bioCollection: " + modelObject.getBioCollection().getName());
+		log.debug("Creating bioCollection: " + modelObject.getBioCollection().getBiocollectionUid());
 		iBioCollectionDao.createBioCollection(modelObject.getBioCollection());
 	}
 
@@ -169,7 +169,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * @see au.org.theark.lims.service.ILimsService#deleteBioCollection(au.org.theark.lims.model.vo.LimsVO)
 	 */
 	public void deleteBioCollection(LimsVO modelObject) {
-		log.debug("Deleting bioCollection: " + modelObject.getBioCollection().getName());
+		log.debug("Deleting bioCollection: " + modelObject.getBioCollection().getBiocollectionUid());
 		iBioCollectionDao.deleteBioCollection(modelObject.getBioCollection());
 	}
 
@@ -206,7 +206,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * @see au.org.theark.lims.service.ILimsService#updateCollection(au.org.theark.lims.model.vo.LimsVO)
 	 */
 	public void updateBioCollection(LimsVO modelObject) throws ArkSystemException {
-		log.debug("Updating bioCollection: " + modelObject.getBioCollection().getName());
+		log.debug("Updating bioCollection: " + modelObject.getBioCollection().getBiocollectionUid());
 		iBioCollectionDao.updateBioCollection(modelObject.getBioCollection());
 	}
 
@@ -798,8 +798,8 @@ public class LimsServiceImpl implements ILimsService {
 		return uploadReport;
 	}
 
-	public BioCollection getBioCollectionByName(String name,Long studyId) {
-		return iBioCollectionDao.getBioCollectionByName(name,studyId);
+	public BioCollection getBioCollectionByUID(String biocollectionUid,Long studyId) {
+		return iBioCollectionDao.getBioCollectionByUID(biocollectionUid,studyId);
 	}
 
 	public Unit getUnitByName(String name) {

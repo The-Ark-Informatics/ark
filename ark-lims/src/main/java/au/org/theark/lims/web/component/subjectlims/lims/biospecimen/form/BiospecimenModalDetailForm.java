@@ -561,8 +561,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioCollection.setStudy(cpModel.getObject().getBiospecimen().getLinkSubjectStudy().getStudy());
 		try {
 			cpModel.getObject().setBioCollectionList(iLimsService.searchBioCollection(bioCollection));
-
-			ChoiceRenderer<BioCollection> choiceRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
+			// Amended renderer to display BiocollectionUID rather than name
+			ChoiceRenderer<BioCollection> choiceRenderer = new ChoiceRenderer<BioCollection>("biocollectionUid", Constants.ID);
 			bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", cpModel.getObject().getBioCollectionList(), choiceRenderer);
 		}
 		catch (ArkSystemException e) {

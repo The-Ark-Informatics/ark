@@ -396,7 +396,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 				studyLblFld = new Label("biospecimen.study.name", biospecimen.getStudy().getName());
 				sampleTypeLblFld = new Label("biospecimen.sampleType.name", biospecimen.getSampleType().getName());
-				collectionLblFld = new Label("biospecimen.bioCollection.name", biospecimen.getBioCollection().getName());
+				collectionLblFld = new Label("biospecimen.bioCollection.biocollectionUid", biospecimen.getBioCollection().getBiocollectionUid());
 				commentsLblFld = new Label("biospecimen.comments", biospecimen.getComments());
 
 				biospecimen.setQuantity(iLimsService.getQuantityAvailable(biospecimen));

@@ -123,8 +123,8 @@ public abstract class PrintBiospecimensForBioCollectionButton extends AjaxButton
 			
 			this.zplString = sb.toString();
 			if (zplString == null || zplString.isEmpty()) {
-				this.error("There was an error when attempting to print the biospecimen barcodes for: " + bioCollection.getName());
-				log.error("There was an error when attempting to print the biospecimen barcodes for: " + bioCollection.getName());
+				this.error("There was an error when attempting to print the biospecimen barcodes for: " + bioCollection.getBiocollectionUid());
+				log.error("There was an error when attempting to print the biospecimen barcodes for: " + bioCollection.getBiocollectionUid());
 			}
 			else {
 				log.debug(zplString);

@@ -54,7 +54,7 @@ import au.org.theark.lims.util.UniqueIdGenerator;
 @Repository("bioCollectionDao")
 public class BioCollectionDao extends HibernateSessionDao implements IBioCollectionDao {
 	private static Logger		log	= LoggerFactory.getLogger(BioCollection.class);
-	private final static String GET_BIO_COLLECTION_BY_NAME_AND_STUDY_ID="select bio from BioCollection as bio left outer join bio.linkSubjectStudy as linkStudy left outer join linkStudy.study as study where bio.name=:name and study.id=:studyId";
+	private final static String GET_BIO_COLLECTION_BY_UID_AND_STUDY_ID="select bio from BioCollection as bio left outer join bio.linkSubjectStudy as linkStudy left outer join linkStudy.study as study where bio.biocollectionUid=:biocollectionUid and study.id=:studyId";
 	
 	private BioCollectionUidGenerator bioCollectionUidGenerator;
 
@@ -81,6 +81,9 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		if (bioCollection.getId() != null)
 			criteria.add(Restrictions.eq("id", bioCollection.getId()));
 
+		if (bioCollection.getBiocollectionUid() != null)
+			criteria.add(Restrictions.eq("biocollectionUid", bioCollection.getBiocollectionUid()));
+		
 		if (bioCollection.getName() != null)
 			criteria.add(Restrictions.eq("name", bioCollection.getName()));
 
@@ -102,7 +105,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 
 	public boolean doesSomeoneElseHaveThisUid(String biocollectionUid, final Study study, Long idToExcludeFromSearch) {
 		Criteria criteria = getSession().createCriteria(BioCollection.class);
-		criteria.add(Restrictions.eq("name", biocollectionUid));
+		criteria.add(Restrictions.eq("biocollectionUid", biocollectionUid));
 		if(idToExcludeFromSearch!=null){
 			criteria.add(Restrictions.ne("id", idToExcludeFromSearch));	
 		}
@@ -120,7 +123,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 			biocollectionUid = getNextGeneratedBiCollectionUID(biocollection.getStudy());
 		}
 		else{
-			biocollectionUid = biocollection.getName();
+			biocollectionUid = biocollection.getBiocollectionUid();
 		}
 		
 		if(biocollectionUid.isEmpty()) {
@@ -131,7 +134,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 			throw new ArkSystemException("The biocollection UID " + biocollectionUid + " is currently used by another existing biocollection within this study.  Please select a unique identifier instead");
 		}
 		
-		biocollection.setName(biocollectionUid);
+		biocollection.setBiocollectionUid(biocollectionUid);
 		getSession().save(biocollection);
 		getSession().refresh(biocollection);
 		return biocollection;
@@ -215,8 +218,8 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 	}
 
 	public void updateBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection) throws ArkSystemException {
-		if(doesSomeoneElseHaveThisUid(bioCollection.getName(), bioCollection.getStudy(), bioCollection.getId())){
-			throw new ArkSystemException("The name '" + bioCollection.getName() +  "' already exists within this study.  Please give this biocollection a unique name");
+		if(doesSomeoneElseHaveThisUid(bioCollection.getBiocollectionUid(), bioCollection.getStudy(), bioCollection.getId())){
+			throw new ArkSystemException("The biocollectionUid '" + bioCollection.getBiocollectionUid() +  "' already exists within this study.  Please give this biocollection a unique UID");
 		}
 		
 		getSession().update(bioCollection);
@@ -281,23 +284,33 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 	protected Criteria buildBioCollectionCriteria(BioCollection bioCollectionCriteria) {
 		Criteria criteria = getSession().createCriteria(BioCollection.class);
 
-		if (bioCollectionCriteria.getId() != null)
+		if (bioCollectionCriteria.getId() != null){
 			criteria.add(Restrictions.eq("id", bioCollectionCriteria.getId()));
+		}
 
-		if (bioCollectionCriteria.getName() != null)
+		if (bioCollectionCriteria.getBiocollectionUid() != null){
+			criteria.add(Restrictions.eq("biocollectionUid", bioCollectionCriteria.getBiocollectionUid()));
+		}
+		
+		if (bioCollectionCriteria.getName() != null){
 			criteria.add(Restrictions.eq("name", bioCollectionCriteria.getName()));
+		}
 
-		if (bioCollectionCriteria.getLinkSubjectStudy() != null)
+		if (bioCollectionCriteria.getLinkSubjectStudy() != null){
 			criteria.add(Restrictions.eq("linkSubjectStudy", bioCollectionCriteria.getLinkSubjectStudy()));
+		}
 
-		if (bioCollectionCriteria.getStudy() != null)
+		if (bioCollectionCriteria.getStudy() != null) {
 			criteria.add(Restrictions.eq("study", bioCollectionCriteria.getStudy()));
+		}
 
-		if (bioCollectionCriteria.getCollectionDate() != null)
+		if (bioCollectionCriteria.getCollectionDate() != null) {
 			criteria.add(Restrictions.eq("collectionDate", bioCollectionCriteria.getCollectionDate()));
+		}
 
-		if (bioCollectionCriteria.getSurgeryDate() != null)
+		if (bioCollectionCriteria.getSurgeryDate() != null) {
 			criteria.add(Restrictions.eq("surgeryDate", bioCollectionCriteria.getSurgeryDate()));
+		}
 
 		return criteria;
 	}
@@ -463,9 +476,9 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		return count;
 	}
 
-	public BioCollection getBioCollectionByName(final String name, final Long studyId) {
-		Query query=getSession().createQuery(BioCollectionDao.GET_BIO_COLLECTION_BY_NAME_AND_STUDY_ID);
-		query.setString("name", name);
+	public BioCollection getBioCollectionByUID(final String biocollectionUid, final Long studyId) {
+		Query query=getSession().createQuery(BioCollectionDao.GET_BIO_COLLECTION_BY_UID_AND_STUDY_ID);
+		query.setString("biocollectionUid", biocollectionUid);
 		query.setLong("studyId", studyId);		
 		BioCollection bioCollection = (BioCollection)query.uniqueResult();
 		return bioCollection;
@@ -473,10 +486,10 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 	
 
 	public List<String> getAllBiocollectionUIDs(Study study){
-		String queryString = "select bio.name " +
+		String queryString = "select bio.biocollectionUid " +
 		"from BioCollection bio " +
 		"where study =:study " +
-		"order by name ";
+		"order by biocollectionUid ";
 		Query query =  getSession().createQuery(queryString);
 		query.setParameter("study", study);
 		return query.list();
