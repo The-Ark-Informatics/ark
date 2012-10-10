@@ -6,11 +6,14 @@ public class DemographicField {
 	//the alternative being to hit the mysql system tables somehow with a defined list of which fields in certain tables
 	
 	private Long id;
-	private String entity;
-	private String underlyingFieldName;
+	private String entity;					//eg; person.genderType
+	private String underlyingFieldName;		//eg; name
+//	private String additionalHQLConstraint; //eg; "address.addressType = 'Residential'"
 	//could potentially store table name and table field name too.  But first attempt will be at using hql and entities.
-	private String publicFieldName;
-	private FieldType fieldType;
+	private String publicFieldName;			//eg; Gender
+	private FieldType fieldType;			//eg; String (note the field type of the output/final field)
+	//private boolean hasDropDown
+	//private hqlForDropDown/Multichoice
 	
 	public void setId(Long id) {
 		this.id = id;
