@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,11 +47,14 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.report.model.dao.IReportDao;
+import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.ResearcherCostResportVO;
+import au.org.theark.report.model.vo.report.BiospecimenSummaryDataRow;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
@@ -385,6 +390,22 @@ public class ReportServiceImpl implements IReportService {
 		// TODO Auto-generated method stub
 		return reportDao.getBillableItemDetailCostData(researcherCostResportVO);
 	}
-	
-	
+
+	public List<Study> getStudyList() throws EntityNotFoundException {
+		
+		Study searchStudyCriteria = new Study();
+		Subject currentUser = SecurityUtils.getSubject();
+		ArkUser arkUser = arkCommonService.getArkUser(currentUser.getPrincipal().toString());
+		ArkUserVO arkUserVo = new ArkUserVO();
+		arkUserVo.setArkUserEntity(arkUser);
+		arkUserVo.setStudy(searchStudyCriteria);
+		return arkCommonService.getStudyListForUser(arkUserVo);
+	}
+
+	public List<BiospecimenSummaryDataRow> getBiospecimenSummaryData(
+			BiospecimenSummaryReportVO biospecimenSummaryReportVO) {
+		// TODO Auto-generated method stub
+		return reportDao.getBiospecimenSummaryData(biospecimenSummaryReportVO);
+	}
+
 }

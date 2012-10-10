@@ -21,6 +21,7 @@ package au.org.theark.report.service;
 import java.util.List;
 import java.util.Map;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
@@ -29,10 +30,12 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.worktracking.entity.Researcher;
+import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.ResearcherCostResportVO;
+import au.org.theark.report.model.vo.report.BiospecimenSummaryDataRow;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
@@ -78,5 +81,9 @@ public interface IReportService {
 	public List<ResearcherDetailCostDataRow> getBillableItemDetailCostData(final ResearcherCostResportVO researcherCostResportVO);
 	
 	public List<Researcher> searchResearcherByStudyId(final Long studyId);
+	
+	public List<Study> getStudyList() throws EntityNotFoundException ;
+	
+	public List<BiospecimenSummaryDataRow> getBiospecimenSummaryData(final BiospecimenSummaryReportVO biospecimenSummaryReportVO);
 
 }

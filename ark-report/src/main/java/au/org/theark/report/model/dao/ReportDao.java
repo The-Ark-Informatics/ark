@@ -41,8 +41,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
-import au.org.theark.core.model.pheno.entity.PhenoData;
+import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
@@ -58,10 +59,12 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.ResearcherCostResportVO;
+import au.org.theark.report.model.vo.report.BiospecimenSummaryDataRow;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
@@ -729,5 +732,44 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	    return calendar.getTime();
 	}
 */
+
+	public List<BiospecimenSummaryDataRow> getBiospecimenSummaryData(BiospecimenSummaryReportVO biospecimenSummaryReportVO) {
+		List<BiospecimenSummaryDataRow> results = new ArrayList<BiospecimenSummaryDataRow>();
+
+		Criteria criteria = getSession().createCriteria(BioTransaction.class, "bt");
+		
+		criteria.createAlias("status","bts",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("biospecimen","bs",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("bs.study", "st", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("bs.linkSubjectStudy", "lss", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("bs.sampleType", "sat", JoinType.LEFT_OUTER_JOIN);
+		
+		criteria.add(Restrictions.eq("st.id", biospecimenSummaryReportVO.getStudy().getId()));
+		if(biospecimenSummaryReportVO.getSubjectUID() !=null){
+			criteria.add(Restrictions.eq("lss.subjectUID", biospecimenSummaryReportVO.getSubjectUID()));
+		}
+	
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.min("bt.id"));
+		projectionList.add(Projections.groupProperty("bs.id"));
+		
+		projectionList.add(Projections.property("st.name"), "studyName");
+		projectionList.add(Projections.property("lss.subjectUID"), "subjectUId");
+		projectionList.add(Projections.property("bs.id"), "biospecimenId");
+		projectionList.add(Projections.property("bs.parentUid"), "parentId");
+		projectionList.add(Projections.property("sat.name"), "sampleType");
+		projectionList.add(Projections.property("bs.quantity"), "quantity");
+		projectionList.add(Projections.property("bts.name"), "initialStatus");
+	
+		criteria.setProjection(projectionList);
+		criteria.setResultTransformer(Transformers.aliasToBean(BiospecimenSummaryDataRow.class));
+		criteria.addOrder(Order.asc("lss.subjectUID"));
+		criteria.addOrder(Order.asc("bs.id"));
+		results=criteria.list();
+	
+		return results;
+	}
+	
+	
 	
 }
