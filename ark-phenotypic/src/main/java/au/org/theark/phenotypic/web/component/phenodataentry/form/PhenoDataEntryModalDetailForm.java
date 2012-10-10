@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxNavigationToolbar;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -64,7 +63,6 @@ import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataDataViewPa
 public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<PhenoDataCollectionVO> {
 
 	private static final long					serialVersionUID	= 2727419197330261916L;
-	@SuppressWarnings("unused")
 	private static final Logger				log					= LoggerFactory.getLogger(PhenoDataEntryModalDetailForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -275,12 +273,10 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 			iPhenotypicService.deletePhenoCollection(cpModel.getObject().getPhenoCollection());
 		}
 		catch (ArkSystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		catch (EntityCannotBeRemoved e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		this.info("Subject Dataset " + cpModel.getObject().getPhenoCollection().getId() + " was deleted successfully");
 		processErrors(target);
