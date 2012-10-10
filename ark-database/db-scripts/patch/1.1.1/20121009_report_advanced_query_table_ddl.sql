@@ -43,3 +43,27 @@ CREATE  TABLE `reporting`.`custom_field_display_search` (
     ON UPDATE NO ACTION)
 COMMENT = 'many to many join custom_field_display and search';
 
+
+
+
+
+CREATE  TABLE `reporting`.`demographic_field` (
+  `ID` INT NOT NULL ,
+  `ENTITY` VARCHAR(255) NULL ,
+  `FIELD_NAME` VARCHAR(255) NULL ,
+  `PUBLIC_FIELD_NAME` VARCHAR(255) NULL ,
+  `FIELD_TYPE_ID` INT NULL ,
+  PRIMARY KEY (`ID`) ,
+  INDEX `fk_demographic_field_field_type` (`FIELD_TYPE_ID` ASC) ,
+  CONSTRAINT `fk_demographic_field_field_type`
+    FOREIGN KEY (`FIELD_TYPE_ID` )
+    REFERENCES `study`.`field_type` (`ID` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'represent how we might reference and select demographic fields (initially as needed by data extract tool)';
+
+
+
+
+
