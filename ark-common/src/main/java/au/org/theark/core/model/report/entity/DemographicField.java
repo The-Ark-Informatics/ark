@@ -8,6 +8,7 @@ public class DemographicField {
 	private Long id;
 	private String entity;
 	private String underlyingFieldName;
+	//could potentially store table name and table field name too.  But first attempt will be at using hql and entities.
 	private String publicFieldName;
 	private FieldType fieldType;
 	
