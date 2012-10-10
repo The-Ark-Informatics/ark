@@ -8,7 +8,7 @@ public class QueryFilter {
 //	JoinType filterJoin; //AND OR  
 	
 	// which contraints field, operator, value, nullableSecondValue (eg in between),
-	Preprocessor precursor; //eg NOT, IN, 
+	Prefix prefix; //eg NOT, IN, 
 //	int numberOfLeftBracketsBeforePrecursor;
 //	int numberOfLeftBracketsAfterPrecursor;
 //	int numberOfRightBracketsBeforeJoin;
