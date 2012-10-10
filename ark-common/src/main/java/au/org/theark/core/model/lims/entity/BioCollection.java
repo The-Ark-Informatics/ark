@@ -21,7 +21,6 @@ package au.org.theark.core.model.lims.entity;
 // Generated 15/06/2011 1:22:58 PM by Hibernate Tools 3.3.0.GA
 
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,16 +45,15 @@ import au.org.theark.core.model.study.entity.Study;
 @Entity
 @Table(name = "biocollection", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BioCollection implements java.io.Serializable {
-
-
 	private static final long	serialVersionUID	= -7384213608019152409L;
 	private Long					id;
-	private String					timestamp;
+	private String					biocollectionUid;
 	private String					name;
 	private LinkSubjectStudy	linkSubjectStudy;
 	private Study					study;
 	private Date					collectionDate;
 	private Integer				deleted;
+	private String					timestamp;
 	private String					comments;
 	private String					hospital;
 	private Date					surgeryDate;
@@ -76,39 +74,6 @@ public class BioCollection implements java.io.Serializable {
 	public BioCollection() {
 	}
 
-	public BioCollection(Long id, String name, LinkSubjectStudy linkSubjectStudy) {
-		this.id = id;
-		this.name = name;
-		this.linkSubjectStudy = linkSubjectStudy;
-	}
-
-	public BioCollection(Long id, String name, LinkSubjectStudy linkSubjectStudy, Study study, Date collectionDate, Integer deleted, String comments, String hospital, Date surgeryDate,
-			String diagCategory, String refDoctor, Integer patientage, Date dischargeDate, String hospitalUr, Date diagDate, Integer collectiongroupId, String episodeNum, String episodeDesc,
-			String collectiongroup, String tissuetype, String tissueclass, String pathlabno, Set<Biospecimen> biospecimens) {
-		this.id = id;
-		this.name = name;
-		this.linkSubjectStudy = linkSubjectStudy;
-		this.study = study;
-		this.collectionDate = collectionDate;
-		this.deleted = deleted;
-		this.comments = comments;
-		this.hospital = hospital;
-		this.surgeryDate = surgeryDate;
-		this.diagCategory = diagCategory;
-		this.refDoctor = refDoctor;
-		this.patientage = patientage;
-		this.dischargeDate = dischargeDate;
-		this.hospitalUr = hospitalUr;
-		this.diagDate = diagDate;
-		this.collectiongroupId = collectiongroupId;
-		this.episodeNum = episodeNum;
-		this.episodeDesc = episodeDesc;
-		this.collectiongroup = collectiongroup;
-		this.tissuetype = tissuetype;
-		this.tissueclass = tissueclass;
-		this.pathlabno = pathlabno;
-	}
-
 	@Id
 	@SequenceGenerator(name = "Collection_PK_Seq", sequenceName = Constants.LIMS_COLLECTION_PK_SEQ)
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Collection_PK_Seq")
@@ -120,6 +85,15 @@ public class BioCollection implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	@Column(name = "BIOCOLLECTION_UID", nullable = false)
+	public String getBiocollectionUid() {
+		return biocollectionUid;
+	}
+	
+	public void setBiocollectionUid(String biocollectionUid) {
+		this.biocollectionUid = biocollectionUid;
+	}
 
 	@Column(name = "TIMESTAMP", length = 55)
 	public String getTimestamp() {
@@ -130,7 +104,7 @@ public class BioCollection implements java.io.Serializable {
 		this.timestamp = timestamp;
 	}
 
-	@Column(name = "NAME", nullable = false)
+	@Column(name = "NAME")
 	public String getName() {
 		return this.name;
 	}

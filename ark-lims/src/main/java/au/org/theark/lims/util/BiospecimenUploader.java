@@ -177,13 +177,13 @@ public class BiospecimenUploader {
 				biospecimen.setLinkSubjectStudy(linkSubjectStudy);
 				
 				if (csvReader.getIndex("BIOCOLLECTION") > 0) {
-					String name = csvReader.get("BIOCOLLECTION");
-					BioCollection bioCollection = iLimsService.getBioCollectionByName(name,this.study.getId());
+					String biocollectionUid = csvReader.get("BIOCOLLECTION");
+					BioCollection bioCollection = iLimsService.getBioCollectionByUID(biocollectionUid,this.study.getId());
 					if(bioCollection == null){
 						bioCollection = new BioCollection();
 						bioCollection.setLinkSubjectStudy(linkSubjectStudy);
 						bioCollection.setStudy(study);
-						bioCollection.setName(name);
+						bioCollection.setBiocollectionUid(biocollectionUid);
 						bioCollection = iLimsService.createBioCollection(bioCollection);
 						biospecimen.setBioCollection(bioCollection);
 					}

@@ -68,10 +68,10 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 	private ILimsService					iLimsService;
 
 	private TextField<String>			idTxtFld;
+	private TextField<String>			biocollectionUidTxtFld;
 	private TextField<String>			nameTxtFld;
 	private TextArea<String>			commentsTxtAreaFld;
 	private DateTextField				collectionDateTxtFld;
-	private DateTextField				surgeryDateTxtFld;
 	private ModalWindow					modalWindow;
 	private Panel 							bioCollectionCFDataEntryPanel;
 	private AjaxButton					printBioCollectionLabelButton;
@@ -114,10 +114,10 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		Study study = this.getModelObject().getBioCollection().getStudy();
 		
 		if(study!=null && !study.getAutoGenerateBiocollectionUid()){
-			nameTxtFld.setEnabled(true);	
+			biocollectionUidTxtFld.setEnabled(true);	
 		}
 		else{
-			nameTxtFld.setEnabled(false);
+			biocollectionUidTxtFld.setEnabled(false);
 		}
 			super.onBeforeRender();
 	}
@@ -137,22 +137,11 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("bioCollection.id");
-		
-		// bioCollection.name auto-generated, this read only
+		biocollectionUidTxtFld = new TextField<String>("bioCollection.biocollectionUid");
 		nameTxtFld = new TextField<String>("bioCollection.name");
-		nameTxtFld.setEnabled(false);
 		
 		commentsTxtAreaFld = new TextArea<String>("bioCollection.comments");
 		collectionDateTxtFld = new DateTextField("bioCollection.collectionDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		surgeryDateTxtFld = new DateTextField("bioCollection.surgeryDate", au.org.theark.core.Constants.DD_MM_YYYY);
-
-		ArkDatePicker startDatePicker = new ArkDatePicker();
-		startDatePicker.bind(collectionDateTxtFld);
-		collectionDateTxtFld.add(startDatePicker);
-
-		ArkDatePicker endDatePicker = new ArkDatePicker();
-		endDatePicker.bind(surgeryDateTxtFld);
-		surgeryDateTxtFld.add(endDatePicker);
 
 		initialiseBioCollectionCFDataEntry();
 		
@@ -189,15 +178,15 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 
 	protected void attachValidators() {
 		idTxtFld.setRequired(true);
-		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioCollection.name.required", this, new Model<String>("Name")));
+		biocollectionUidTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioCollection.biocollectionUid.required", this, new Model<String>("BioCollectionUid")));
 	}
 
 	private void addComponents() {
 		arkCrudContainerVo.getDetailPanelFormContainer().add(idTxtFld.setEnabled(false));
+		arkCrudContainerVo.getDetailPanelFormContainer().add(biocollectionUidTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(nameTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(commentsTxtAreaFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(collectionDateTxtFld);
-		arkCrudContainerVo.getDetailPanelFormContainer().add(surgeryDateTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioCollectionCFDataEntryPanel);
 		
 		add(numberOfLabels);
@@ -217,13 +206,13 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 				
 				iLimsService.createBioCollection(cpModel.getObject());
 				
-				this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getName() + " was created successfully");
+				this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getBiocollectionUid() + " was created successfully");
 				
 			}
 			else {
 				// Update
 				iLimsService.updateBioCollection(cpModel.getObject());
-				this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getName() + " was updated successfully");
+				this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getBiocollectionUid() + " was updated successfully");
 				
 			}
 			if (bioCollectionCFDataEntryPanel instanceof BioCollectionCustomDataDataViewPanel) {
@@ -258,11 +247,11 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		if (!iLimsService.hasBiospecimens(cpModel.getObject().getBioCollection())) {
 
 			iLimsService.deleteBioCollection(cpModel.getObject());
-			this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getName() + " was deleted successfully");
+			this.info("Biospecimen collection " + cpModel.getObject().getBioCollection().getBiocollectionUid() + " was deleted successfully");
 			onClose(target);
 		}
 		else {
-			this.error("Biospecimen collection " + cpModel.getObject().getBioCollection().getName() + " can not be deleted because there are biospecimens attached");
+			this.error("Biospecimen collection " + cpModel.getObject().getBioCollection().getBiocollectionUid() + " can not be deleted because there are biospecimens attached");
 			target.add(feedbackPanel);
 		}
 	}

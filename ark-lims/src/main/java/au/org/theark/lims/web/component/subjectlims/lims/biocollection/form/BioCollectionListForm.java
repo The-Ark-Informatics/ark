@@ -80,6 +80,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 	protected AbstractDetailModalWindow							modalWindow;
 
 	private Label														idLblFld;
+	private Label														biocollectionLblFld;
 	private Label														nameLblFld;
 	private Label														commentsLblFld;
 	private Label														collectionDateLblFld;
@@ -254,9 +255,9 @@ public class BioCollectionListForm extends Form<LimsVO> {
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 
 				idLblFld = new Label("bioCollection.id", String.valueOf(bioCollection.getId()));
-				
+				biocollectionLblFld = new Label("bioCollection.biocollectionUid", bioCollection.getBiocollectionUid());
 				nameLblFld = new Label("bioCollection.name", bioCollection.getName());
-				listDetailsLink.add(nameLblFld);
+				listDetailsLink.add(biocollectionLblFld);
 				rowDetailsWMC.add(listDetailsLink);
 
 				if (bioCollection.getCollectionDate() != null) {
@@ -277,8 +278,8 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 				item.add(idLblFld);
 				item.add(rowDetailsWMC);
+				item.add(nameLblFld);
 				item.add(collectionDateLblFld);
-				item.add(surgeryDateLblFld);
 				item.add(commentsLblFld);
 
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
@@ -306,10 +307,10 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		Study study = getModelObject().getLinkSubjectStudy().getStudy();
 		
 		if(study!=null && !study.getAutoGenerateBiocollectionUid()){
-			newModel.getObject().getBioCollection().setName("");
+			newModel.getObject().getBioCollection().setBiocollectionUid("");
 		}
 		else{
-			newModel.getObject().getBioCollection().setName(Constants.AUTO_GENERATED);
+			newModel.getObject().getBioCollection().setBiocollectionUid(Constants.AUTO_GENERATED);
 		}
 		
 		newModel.getObject().getBioCollection().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
