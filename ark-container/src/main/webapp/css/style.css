@@ -247,7 +247,7 @@ background-attachment: fixed;
 background-position: 96% 96%;
 color: #000;
 font-family: 'Lucida Sans', 'Helvetica', 'Sans-serif', 'sans';
-font-size: 10pt;
+font-size: 9pt;
 line-height: 1.3em;
 margin: 0;
 padding: 0;
@@ -640,3 +640,7 @@ float:left;
 .floatRight {
 float:right;
 }
+
+input, button, textarea, select { font-size: 9pt; }
+
+
