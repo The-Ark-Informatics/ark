@@ -100,7 +100,33 @@ ALTER TABLE `reporting`.`query_filter`
   ON UPDATE CASCADE
 , ADD INDEX `fk_qf_cfd_idx` (`CUSTOM_FIELD_DISPLAY_ID` ASC) ;
 
-# TODO repeat for custom_field_)display
+
+
+
+
+
+
+CREATE  TABLE `reporting`.`query_filter_grouping` (
+  `ID` INT NOT NULL ,
+  `PARENT_GROUPING` INT NOT NULL ,
+  `LEFT_FILTER` INT NOT NULL ,
+  `JOIN_TO_NEXT_FILTER` VARCHAR(56) NULL ,
+  `FILTER_PRECEDENCE` INT NULL ,
+  PRIMARY KEY (`ID`) ,
+  INDEX `fk_qfg_qg_idx` (`PARENT_GROUPING` ASC) ,
+  INDEX `fk_qfg_qf_idx` (`LEFT_FILTER` ASC) ,
+  CONSTRAINT `fk_qfg_qg`
+    FOREIGN KEY (`PARENT_GROUPING` )
+    REFERENCES `reporting`.`query_grouping` (`ID` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_qfg_qf`
+    FOREIGN KEY (`LEFT_FILTER` )
+    REFERENCES `reporting`.`query_filter` (`ID` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+# TODO analyse whether we want cascade.
 
 
 
