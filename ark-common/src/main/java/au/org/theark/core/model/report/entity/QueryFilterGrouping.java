@@ -2,7 +2,7 @@ package au.org.theark.core.model.report.entity;
 
 public class QueryFilterGrouping {
 	private Long id;
-	private QueryGrouping 	parent;
+	private QueryGrouping 	parentGrouping;
 	private QueryFilter 	leftFilter;
 	private JoinType 		joinToNextFilter;
 	private Long			precedence; //or order...but didn't want to confuse with order by
@@ -15,11 +15,11 @@ public class QueryFilterGrouping {
 		this.id = id;
 	}
 	
-	public QueryGrouping getParent() {
-		return parent;
+	public QueryGrouping getParentGrouping() {
+		return parentGrouping;
 	}
-	public void setParent(QueryGrouping parent) {
-		this.parent = parent;
+	public void setParentGrouping(QueryGrouping parentGrouping) {
+		this.parentGrouping = parentGrouping;
 	}
 	public QueryFilter getLeftFilter() {
 		return leftFilter;
