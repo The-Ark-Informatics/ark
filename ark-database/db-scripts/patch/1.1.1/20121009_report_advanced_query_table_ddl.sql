@@ -8,13 +8,7 @@ ENGINE = InnoDB ;
 
 
 
-
-
-
-
-
-
-DROP  TABLE `reporting`.`search` 
+DROP  TABLE `reporting`.`search` ;
 CREATE  TABLE `reporting`.`search` (
   `ID` INT NOT NULL ,
   `NAME` VARCHAR(255) NULL ,
@@ -26,8 +20,7 @@ ALTER TABLE `reporting`.`search`
 ADD INDEX `fk_search_query_grouping` (`TOP_LEVEL_GROUPING_ID` ASC) ;
 
 
-
-DROP  TABLE `reporting`.`custom_field_display_search`
+DROP  TABLE `reporting`.`custom_field_display_search`;
 CREATE  TABLE `reporting`.`custom_field_display_search` (
   `ID` INT NOT NULL ,
   `CUSTOM_FIELD_DISPLAY_ID` INT NULL ,
@@ -45,13 +38,11 @@ CREATE  TABLE `reporting`.`custom_field_display_search` (
     REFERENCES `reporting`.`search` (`ID` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-COMMENT = 'many to many join custom_field_display and search'
+COMMENT = 'many2many join custom_field_display and search'
 ENGINE = InnoDB ;
 
 
-
-
-DROP  TABLE `reporting`.`demographic_field` 
+DROP  TABLE `reporting`.`demographic_field` ;
 CREATE  TABLE `reporting`.`demographic_field` (
   `ID` INT NOT NULL ,
   `ENTITY` VARCHAR(255) NULL ,
@@ -65,11 +56,10 @@ CREATE  TABLE `reporting`.`demographic_field` (
     REFERENCES `study`.`field_type` (`ID` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
-COMMENT = 'represent how we might reference and select demographic fields (initially as needed by data extract tool)'
+ENGINE = InnoDB ;
 
 
-DROP  TABLE `reporting`.`demographic_field_search`
+DROP  TABLE `reporting`.`demographic_field_search`;
 CREATE TABLE `reporting`.`demographic_field_search` (   
 	`ID` int(11) NOT NULL,   
 	`CUSTOM_FIELD_DISPLAY_ID` int(11) DEFAULT NULL,   
@@ -78,14 +68,11 @@ CREATE TABLE `reporting`.`demographic_field_search` (
 	KEY `fk_dfs_custom_field_display` (`CUSTOM_FIELD_DISPLAY_ID`),
    	KEY `fk_dfs_search` (`SEARCH_ID`) ) 
 ENGINE = InnoDB 
-COMMENT='many to many join custom_field_display and search';
+COMMENT='many2many join demographic_field and search';
 
 
 
-
-
-
-DROP 
+DROP  TABLE `reporting`.`query_filter` ;
 CREATE  TABLE `reporting`.`query_filter` (
   `ID` INT NOT NULL ,
   `DEMOGRAPHIC_FIELD_ID` INT NULL ,
@@ -104,6 +91,14 @@ ALTER TABLE `reporting`.`query_filter`
   ON DELETE CASCADE
   ON UPDATE CASCADE
 , ADD INDEX `fk_qf_df_idx` (`DEMOGRAPHIC_FIELD_ID` ASC) ;
+
+ALTER TABLE `reporting`.`query_filter` 
+  ADD CONSTRAINT `fk_qf_cfd`
+  FOREIGN KEY (`CUSTOM_FIELD_DISPLAY_ID` )
+  REFERENCES `study`.`custom_field_display` (`ID` )
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+, ADD INDEX `fk_qf_cfd_idx` (`CUSTOM_FIELD_DISPLAY_ID` ASC) ;
 
 # TODO repeat for custom_field_)display
 
