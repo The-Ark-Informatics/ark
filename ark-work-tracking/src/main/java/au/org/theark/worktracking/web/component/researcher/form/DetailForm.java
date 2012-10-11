@@ -38,7 +38,6 @@ import au.org.theark.worktracking.service.IWorkTrackingService;
 import au.org.theark.worktracking.util.Constants;
 import au.org.theark.worktracking.util.NumberValidatable;
 import au.org.theark.worktracking.util.ValidatableItemType;
-import au.org.theark.worktracking.web.component.researcher.form.validator.BsbValidator;
 
 public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 	
