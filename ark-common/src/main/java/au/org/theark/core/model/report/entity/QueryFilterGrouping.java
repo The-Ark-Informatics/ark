@@ -5,7 +5,7 @@ public class QueryFilterGrouping {
 	private QueryGrouping 	parent;
 	private QueryFilter 	leftFilter;
 	private JoinType 		joinToNextFilter;
-	private Long			filterPrecedence; //or order...but didn't want to confuse with order by
+	private Long			precedence; //or order...but didn't want to confuse with order by
 
 	
 	public Long getId() {
@@ -33,11 +33,11 @@ public class QueryFilterGrouping {
 	public void setRelationshipToNextFilter(JoinType joinToNextFilter) {
 		this.joinToNextFilter = joinToNextFilter;
 	}
-	public Long getFilterPrecedence() {
-		return filterPrecedence;
+	public Long getPrecedence() {
+		return precedence;
 	}
-	public void setFilterPrecedence(Long filterPrecedence) {
-		this.filterPrecedence = filterPrecedence;
+	public void setPrecedence(Long precedence) {
+		this.precedence = precedence;
 	}
 
 }

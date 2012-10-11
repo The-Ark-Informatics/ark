@@ -2,21 +2,21 @@ package au.org.theark.core.model.report.entity;
 
 public class QueryGroupingGrouping {
 	private	Long id;
-	private QueryGrouping 	parent;
+	private QueryGrouping 	parentGrouping;
 	private QueryGrouping	leftGrouping;
-	private JoinType 		relationshipToNextFilter;
-	private Long			filterPrecedence; //or order...but didn't want to confuse with order by
+	private JoinType 		joinToNextFilter;
+	private Long			precedence; //or order...but didn't want to confuse with order by
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public QueryGrouping getParent() {
-		return parent;
+	public QueryGrouping getParentGrouping() {
+		return parentGrouping;
 	}
-	public void setParent(QueryGrouping parent) {
-		this.parent = parent;
+	public void setParentGrouping(QueryGrouping parentGrouping) {
+		this.parentGrouping = parentGrouping;
 	}
 	public QueryGrouping getLeftGrouping() {
 		return leftGrouping;
@@ -24,17 +24,17 @@ public class QueryGroupingGrouping {
 	public void setLeftGrouping(QueryGrouping leftGrouping) {
 		this.leftGrouping = leftGrouping;
 	}
-	public JoinType getRelationshipToNextFilter() {
-		return relationshipToNextFilter;
+	public JoinType getJoinToNextFilter() {
+		return joinToNextFilter;
 	}
-	public void setRelationshipToNextFilter(JoinType relationshipToNextFilter) {
-		this.relationshipToNextFilter = relationshipToNextFilter;
+	public void setJoinToNextFilter(JoinType joinToNextFilter) {
+		this.joinToNextFilter = joinToNextFilter;
 	}
-	public Long getFilterPrecedence() {
-		return filterPrecedence;
+	public Long getPrecedence() {
+		return precedence;
 	}
-	public void setFilterPrecedence(Long filterPrecedence) {
-		this.filterPrecedence = filterPrecedence;
+	public void setPrecedence(Long precedence) {
+		this.precedence = precedence;
 	}
 
 }
