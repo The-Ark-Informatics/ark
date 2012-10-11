@@ -14,10 +14,15 @@ import org.apache.wicket.markup.html.form.IFormSubmitter;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidationError;
+import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.model.study.entity.TitleType;
@@ -31,6 +36,9 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.worktracking.model.vo.ResearcherVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
 import au.org.theark.worktracking.util.Constants;
+import au.org.theark.worktracking.util.NumberValidatable;
+import au.org.theark.worktracking.util.ValidatableItemType;
+import au.org.theark.worktracking.web.component.researcher.form.validator.BsbValidator;
 
 public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 	
@@ -232,14 +240,39 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		
 		researcherStatuses.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_STATUS_REQUIRED, researcherStatuses, new Model<String>(Constants.RESEARCHER_STATUS_TAG)));
 		
-		resercherOfficePhoneTxtFld.add(StringValidator.lengthBetween(1, 12)).setLabel(
+		resercherOfficePhoneTxtFld.add(StringValidator.lengthBetween(1, 25)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_OFFICEPHONE_LENGTH, resercherOfficePhoneTxtFld, new Model<String>(Constants.RESEARCHER_OFFICE_PHONE_TAG)));
+		resercherOfficePhoneTxtFld.add(new PatternValidator(Constants.PHONE_NUMBER_PATTERN){
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onValidate(IValidatable<String> validatable) {
+				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.PHONE_NUMBER));
+			}
+		});	
 		
-		resercherMobileTxtFld.add(StringValidator.lengthBetween(1, 12)).setLabel(
+		resercherMobileTxtFld.add(StringValidator.lengthBetween(1, 25)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_MOBILEPHONE_LENGTH, resercherMobileTxtFld, new Model<String>(Constants.RESEARCHER_MOBILE_PHONE_TAG)));
+		resercherMobileTxtFld.add(new PatternValidator(Constants.PHONE_NUMBER_PATTERN){
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onValidate(IValidatable<String> validatable) {
+				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.MOBILE_NUMBER));
+			}
+		});	
 		
-		resercherFaxTxtFld.add(StringValidator.lengthBetween(1, 12)).setLabel(
+		
+		resercherFaxTxtFld.add(StringValidator.lengthBetween(1, 25)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_FAX_LENGTH, resercherFaxTxtFld, new Model<String>(Constants.RESEARCHER_FAX_TAG)));
+		resercherFaxTxtFld.add(new PatternValidator(Constants.PHONE_NUMBER_PATTERN){
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onValidate(IValidatable<String> validatable) {
+				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.FAX_NUMBER));
+			}
+		});	
 		
 		resercherEmailTxtFld.add(StringValidator.lengthBetween(1, 45)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_EMAIL_LENGTH, resercherEmailTxtFld, new Model<String>(Constants.RESEARCHER_EMAIL_TAG)));
@@ -250,8 +283,61 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		resercherAccountNumberTxtFld.add(StringValidator.lengthBetween(1, 30)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_ACCOUNTNUMBER_LENGTH, resercherAccountNumberTxtFld, new Model<String>(Constants.RESEARCHER_ACCOUNT_NUMBER_TAG)));
 		
-		resercherBSBTxtFld.add(StringValidator.lengthBetween(1, 8)).setLabel(
+		resercherAccountNumberTxtFld.add(new PatternValidator(Constants.FULL_NUMBER_PATTERN){
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onValidate(IValidatable<String> validatable) {
+				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.ACCOUNT_NUMBER));
+			}
+		});	
+		
+		
+		resercherBSBTxtFld.add(StringValidator.exactLength(6)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_BSB_LENGTH, resercherBSBTxtFld, new Model<String>(Constants.RESEARCHER_BSB_TAG)));
+		
+//		resercherBSBTxtFld.add(new PatternValidator("[0-9]+"){			
+//		@Override
+//		protected void onValidate(final IValidatable<String> validatable) {
+//				super.onValidate(new IValidatable<String>() {
+//
+//					public String getValue() {
+//						Object obj=validatable.getValue();
+//						return obj.toString();
+//					}
+//
+//					public void error(IValidationError error) {
+//						ValidationError validationError = (ValidationError) error;
+//						validatable.error(validationError.addMessageKey("error.work.researcher.bsb.format"));
+//						
+//					}
+//
+//					public boolean isValid() {
+//						// TODO Auto-generated method stub
+//						return validatable.isValid();
+//					}
+//
+//					public IModel<String> getModel() {
+//						// TODO Auto-generated method stub
+//						return validatable.getModel();
+//					}
+//					
+//				});
+//		}});
+		
+		
+		
+		//25 //s and +
+		
+		resercherBSBTxtFld.add(new PatternValidator(Constants.FULL_NUMBER_PATTERN){
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onValidate(IValidatable<String> validatable) {
+				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.BSB));
+			}
+		});	
+		
 		
 		resercherBankTxtFld.add(StringValidator.lengthBetween(1, 50)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_BANK_LENGTH, resercherBankTxtFld, new Model<String>(Constants.RESEARCHER_BANK_TAG)));

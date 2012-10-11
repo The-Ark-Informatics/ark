@@ -48,7 +48,7 @@ public final class BillableItemCostCalculator {
 	 * @return total GST.
 	 */
 	public static double calculateItemGST(final BillableItem billableItem){
-		double grossTotalCost= BillableItemCostCalculator.calculateItemCost(billableItem);
+		double grossTotalCost= BillableItemCostCalculator.calculateItemGrossTotalCost(billableItem);
 		double totalGST=0;
 		if(grossTotalCost > 0
 				&& billableItem.getWorkRequest() !=null
