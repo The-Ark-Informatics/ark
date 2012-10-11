@@ -37,8 +37,9 @@ public class Constants {
 	public static final String			N																= "N";
 	
 	public static final String TWO_DECIMAL_PATTERN 														= "\\d*||\\d*.\\d{1,2}";
-	public static final String FOUR_DECIMAL_PATTERN 													= "\\d*||\\d*.\\d{1,4}";
-	
+	public static final String FOUR_DECIMAL_PATTERN 														= "\\d*||\\d*.\\d{1,4}";
+	public static final String FULL_NUMBER_PATTERN 														= "[0-9]+";
+	public static final String PHONE_NUMBER_PATTERN 														= "[0-9+\\s]+";
 	
 	/* Researcher Constants */	
 	public static final String			FIRST_NAME														= "firstName";
@@ -49,7 +50,7 @@ public class Constants {
 	public static final String			ROLE													        = "researcherRole";
 	public static final String			STATUS													    	= "researcherStatus";
 	public static final String			CREATED_DATE											    	= "createdDate";
-		
+	
 	public static final String			RESEARCHER_ID													= "researcher.id";
 	public static final String			RESEARCHER_FIRST_NAME											= "researcher.firstName";
 	public static final String			RESEARCHER_LAST_NAME											= "researcher.lastName";
@@ -81,19 +82,24 @@ public class Constants {
 	public static final String RESEARCHER_BSB_TAG 														= "Researcher BSB";
 	public static final String ERROR_WORK_RESEARCHER_BSB_LENGTH 											= "error.work.researcher.bsb.length";
 	public static final String ERROR_WORK_RESEARCHER_BSB_REQUIRED 										= "error.work.researcher.bsb.required";
+	public static final String ERROR_WORK_RESEARCHER_BSB_FORMAT 											= "error.work.researcher.bsb.format";
 	public static final String RESEARCHER_ACCOUNT_NUMBER_TAG 												= "Researcher Account Number";
 	public static final String ERROR_WORK_RESEARCHER_ACCOUNTNUMBER_LENGTH 								= "error.work.researcher.accountnumber.length";
 	public static final String ERROR_WORK_RESEARCHER_ACCOUNTNUMBER_REQUIRED 								= "error.work.researcher.accountnumber.required";
+	public static final String ERROR_WORK_RESEARCHER_ACCOUNTNUMBER_FORMAT 								= "error.work.researcher.accountnumber.format";
 	public static final String RESEARCHER_COMMENT_TAG 													= "Researcher Comment";
 	public static final String ERROR_WORK_RESEARCHER_COMMENT_LENGTH 										= "error.work.researcher.comment.length";
 	public static final String RESEARCHER_EMAIL_TAG 														= "Researcher Email";
 	public static final String ERROR_WORK_RESEARCHER_EMAIL_LENGTH 										= "error.work.researcher.email.length";
 	public static final String RESEARCHER_FAX_TAG 														= "Researcher Fax";
 	public static final String ERROR_WORK_RESEARCHER_FAX_LENGTH 											= "error.work.researcher.fax.length";
+	public static final String ERROR_WORK_RESEARCHER_FAX_FORMAT 											= "error.work.researcher.fax.format";
 	public static final String RESEARCHER_MOBILE_PHONE_TAG 												= "Researcher Mobile Phone";
 	public static final String ERROR_WORK_RESEARCHER_MOBILEPHONE_LENGTH 									= "error.work.researcher.mobilephone.length";
+	public static final String ERROR_WORK_RESEARCHER_MOBILEPHONE_FORMAT 									= "error.work.researcher.mobilephone.format";
 	public static final String RESEARCHER_OFFICE_PHONE_TAG 												= "Researcher Office Phone";
 	public static final String ERROR_WORK_RESEARCHER_OFFICEPHONE_LENGTH 									= "error.work.researcher.officephone.length";
+	public static final String ERROR_WORK_RESEARCHER_OFFICEPHONE_FORMAT 									= "error.work.researcher.officephone.format";
 	public static final String RESEARCHER_STATUS_TAG 														= "Researcher Status";
 	public static final String ERROR_WORK_RESEARCHER_STATUS_REQUIRED 										= "error.work.researcher.status.required";
 	public static final String RESEARCHER_ROLE_TAG 														= "Researcher Role";

@@ -7,18 +7,18 @@ import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.PatternValidator;
 
 /**
- * Convert Double input value to String and set the validate error messages.  
+ * Convert input number to String and set the validate error messages.  
  * @author thilina
  * 
  * @see IValidatable
  * @see PatternValidator
  *
  */
-public class DoubleValidatable implements IValidatable<String> {
+public class NumberValidatable implements IValidatable<String> {
 	private IValidatable<String> validatable;
 	private ValidatableItemType itemType;
 	
-	public DoubleValidatable(IValidatable<String> validatable,ValidatableItemType itemType){
+	public NumberValidatable(IValidatable<String> validatable,ValidatableItemType itemType){
 		this.validatable=validatable;
 		this.itemType=itemType;
 	}
@@ -40,6 +40,21 @@ public class DoubleValidatable implements IValidatable<String> {
 			case UNIT_QUANTITY:
 				this.validatable.error(validationError.addMessageKey(Constants.ERROR_BILLABLE_ITEM_QUANTITY));
 				break;
+			case BSB:
+				this.validatable.error(validationError.addMessageKey(Constants.ERROR_WORK_RESEARCHER_BSB_FORMAT));
+				break;
+			case ACCOUNT_NUMBER:
+				this.validatable.error(validationError.addMessageKey(Constants.ERROR_WORK_RESEARCHER_ACCOUNTNUMBER_FORMAT));
+				break;
+			case PHONE_NUMBER:
+				this.validatable.error(validationError.addMessageKey(Constants.ERROR_WORK_RESEARCHER_OFFICEPHONE_FORMAT));
+				break;
+			case MOBILE_NUMBER:
+				this.validatable.error(validationError.addMessageKey(Constants.ERROR_WORK_RESEARCHER_MOBILEPHONE_FORMAT));
+				break;
+			case FAX_NUMBER:
+				this.validatable.error(validationError.addMessageKey(Constants.ERROR_WORK_RESEARCHER_FAX_FORMAT));
+				break;	
 		}
 	}
 

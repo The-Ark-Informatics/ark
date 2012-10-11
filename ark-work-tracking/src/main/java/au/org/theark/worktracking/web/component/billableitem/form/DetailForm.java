@@ -41,7 +41,7 @@ import au.org.theark.worktracking.model.vo.BillableItemVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
 import au.org.theark.worktracking.util.BillableItemCostCalculator;
 import au.org.theark.worktracking.util.Constants;
-import au.org.theark.worktracking.util.DoubleValidatable;
+import au.org.theark.worktracking.util.NumberValidatable;
 import au.org.theark.worktracking.util.ValidatableItemType;
 
 public class DetailForm extends AbstractDetailForm<BillableItemVo> {
@@ -337,7 +337,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 
 			@Override
 			protected void onValidate(IValidatable<String> validatable) {
-				super.onValidate(new DoubleValidatable(validatable,ValidatableItemType.UNIT_QUANTITY));
+				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.UNIT_QUANTITY));
 			}
 		});	
 	}
