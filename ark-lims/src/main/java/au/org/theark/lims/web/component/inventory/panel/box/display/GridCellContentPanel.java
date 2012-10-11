@@ -104,6 +104,9 @@ public class GridCellContentPanel extends Panel {
 				stringBuffer.append("BiospecimenUID: ");
 				stringBuffer.append(invCell.getBiospecimen().getBiospecimenUid());
 				stringBuffer.append("\t");
+				stringBuffer.append("Study: ");
+				stringBuffer.append(invCell.getBiospecimen().getStudy().getName());
+				stringBuffer.append("\t");
 				stringBuffer.append("Sample Type: ");
 				stringBuffer.append(invCell.getBiospecimen().getSampleType().getName());
 				stringBuffer.append("\t");
