@@ -14,13 +14,10 @@ import org.apache.wicket.markup.html.form.IFormSubmitter;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
-import org.apache.wicket.validation.IValidationError;
-import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -260,8 +257,7 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 				super.onValidate(new NumberValidatable(validatable,ValidatableItemType.MOBILE_NUMBER));
 			}
 		});	
-		
-		
+			
 		resercherFaxTxtFld.add(StringValidator.lengthBetween(1, 25)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_FAX_LENGTH, resercherFaxTxtFld, new Model<String>(Constants.RESEARCHER_FAX_TAG)));
 		resercherFaxTxtFld.add(new PatternValidator(Constants.PHONE_NUMBER_PATTERN){
@@ -295,39 +291,6 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		resercherBSBTxtFld.add(StringValidator.exactLength(6)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_BSB_LENGTH, resercherBSBTxtFld, new Model<String>(Constants.RESEARCHER_BSB_TAG)));
 		
-//		resercherBSBTxtFld.add(new PatternValidator("[0-9]+"){			
-//		@Override
-//		protected void onValidate(final IValidatable<String> validatable) {
-//				super.onValidate(new IValidatable<String>() {
-//
-//					public String getValue() {
-//						Object obj=validatable.getValue();
-//						return obj.toString();
-//					}
-//
-//					public void error(IValidationError error) {
-//						ValidationError validationError = (ValidationError) error;
-//						validatable.error(validationError.addMessageKey("error.work.researcher.bsb.format"));
-//						
-//					}
-//
-//					public boolean isValid() {
-//						// TODO Auto-generated method stub
-//						return validatable.isValid();
-//					}
-//
-//					public IModel<String> getModel() {
-//						// TODO Auto-generated method stub
-//						return validatable.getModel();
-//					}
-//					
-//				});
-//		}});
-		
-		
-		
-		//25 //s and +
-		
 		resercherBSBTxtFld.add(new PatternValidator(Constants.FULL_NUMBER_PATTERN){
 			private static final long serialVersionUID = 1L;
 
@@ -337,14 +300,12 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 			}
 		});	
 		
-		
 		resercherBankTxtFld.add(StringValidator.lengthBetween(1, 50)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_BANK_LENGTH, resercherBankTxtFld, new Model<String>(Constants.RESEARCHER_BANK_TAG)));
 		
 		resercherAccountNameTxtFld.add(StringValidator.lengthBetween(1, 50)).setLabel(
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_ACCOUNTNAME_LENGTH, resercherAccountNameTxtFld, new Model<String>(Constants.RESEARCHER_ACCOUNT_NAME_TAG)));
 		resercherEmailTxtFld.add(EmailAddressValidator.getInstance());
-		
 		titleTypes.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_TITLE_TYPE_REQUIRED, researcherStatuses, new Model<String>(Constants.RESEARCHER_TITLE_TYPE_TAG)));
 	
 	}
