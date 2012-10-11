@@ -106,6 +106,7 @@ ALTER TABLE `reporting`.`query_filter`
 
 
 
+DROP  TABLE `reporting`.`query_filter_grouping`;
 CREATE  TABLE `reporting`.`query_filter_grouping` (
   `ID` INT NOT NULL ,
   `PARENT_GROUPING` INT NOT NULL ,
@@ -129,6 +130,27 @@ ENGINE = InnoDB;
 # TODO analyse whether we want cascade.
 
 
+
+CREATE  TABLE `reporting`.`query_grouping_grouping` (
+  `ID` INT NOT NULL ,
+  `PARENT_GROUPING` INT NOT NULL ,
+  `LEFT_GROUPING` INT NOT NULL ,
+  `JOIN_TO_NEXT_FILTER` VARCHAR(56) NULL ,
+  `PRECEDENCE` INT NULL ,
+  PRIMARY KEY (`ID`) ,
+  INDEX `fk_qgg_parent_grouping_idx` (`PARENT_GROUPING` ASC) ,
+  INDEX `fk_qgg_left_grouping_idx` (`LEFT_GROUPING` ASC) ,
+  CONSTRAINT `fk_qgg_parent_grouping`
+    FOREIGN KEY (`PARENT_GROUPING` )
+    REFERENCES `reporting`.`query_grouping` (`ID` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_qgg_left_grouping`
+    FOREIGN KEY (`LEFT_GROUPING` )
+    REFERENCES `reporting`.`query_grouping` (`ID` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+# TODO analyse whether we want cascade.
 
 
 
