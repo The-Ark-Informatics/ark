@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
-import au.org.theark.report.model.vo.ResearcherCostResportVO;
 import au.org.theark.report.model.vo.report.BiospecimenSummaryDataRow;
-import au.org.theark.report.model.vo.report.ResearcherCostDataRow;
 import au.org.theark.report.service.IReportService;
 
 import net.sf.jasperreports.engine.JRDataSource;

@@ -19,18 +19,7 @@
 package au.org.theark.core.vo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.wicket.markup.html.form.upload.FileUpload;
-
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.Search;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
-import au.org.theark.core.model.study.entity.FileFormat;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.Upload;
 
 /**
  * @author cellis
