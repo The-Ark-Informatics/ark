@@ -167,7 +167,9 @@ public class LoadCsvFileHelper {
 		Workbook w;
 		try {
 			w = Workbook.getWorkbook(inputStream);
-			inputStream = convertWorkbookToCsv(w);
+			delimiterCharacter = ',';
+			XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+			inputStream = xlsToCsv.convertXlsToCsv(w);
 			inputStream.reset();
 		}
 		catch (BiffException e) {
@@ -177,50 +179,6 @@ public class LoadCsvFileHelper {
 			log.error(e.getMessage());
 		}
 		return inputStream;
-	}
-
-	/**
-	 * Return the inputstream of the converted workbook as csv
-	 * 
-	 * @return inputstream of the converted workbook as csv
-	 */
-	public InputStream convertWorkbookToCsv(Workbook w) {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			OutputStreamWriter osw = new OutputStreamWriter(out);
-
-			// Gets first sheet from workbook
-			Sheet s = w.getSheet(0);
-
-			Cell[] row = null;
-
-			// Gets the cells from sheet
-			for (int i = 0; i < s.getRows(); i++) {
-				row = s.getRow(i);
-
-				if (row.length > 0) {
-					osw.write(row[0].getContents());
-					for (int j = 1; j < row.length; j++) {
-						osw.write(delimiterCharacter);
-						osw.write(row[j].getContents());
-					}
-				}
-				osw.write("\n");
-			}
-
-			osw.flush();
-			osw.close();
-		}
-		catch (UnsupportedEncodingException e) {
-			System.err.println(e.toString());
-		}
-		catch (IOException e) {
-			System.err.println(e.toString());
-		}
-		catch (Exception e) {
-			System.err.println(e.toString());
-		}
-		return new ByteArrayInputStream(out.toByteArray());
 	}
 
 	public File getCsvFile() {
