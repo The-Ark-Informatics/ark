@@ -38,11 +38,22 @@ import au.org.theark.core.model.study.entity.Upload;
  */
 @SuppressWarnings("serial")
 public class SearchVO implements Serializable {
-	private Search search;		
+	private Search search;
+	
 	
 	public SearchVO() {
 
-
 	}
 
+
+	public Search getSearch() {
+		return search;
+	}
+
+
+	public void setSearch(Search search) {
+		this.search = search;
+	}
+
+	
 }
