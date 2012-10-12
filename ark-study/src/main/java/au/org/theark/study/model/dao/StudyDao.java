@@ -45,6 +45,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.ArkUidGenerator;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.dao.IArkAuthorisation;
+import au.org.theark.core.dao.IAuditDao;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
@@ -53,6 +54,7 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.audit.entity.LssConsentHistory;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -97,6 +99,7 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.Constants;
+import au.org.theark.study.util.LinkSubjectStudyConsentHistoryComparator;
 
 @Repository("studyDao")
 public class StudyDao extends HibernateSessionDao implements IStudyDao {
@@ -108,7 +111,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	private IArkAuthorisation	iArkAuthorisationService;
 	private Date					dateNow;
 	private ArkUidGenerator		arkUidGenerator;
-
+	private IAuditDao						iAuditDao;
+	
 	@Autowired
 	public void setArkUidGenerator(ArkUidGenerator arkUidGenerator) {
 		this.arkUidGenerator = arkUidGenerator;
@@ -127,6 +131,22 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	@Autowired
 	public void setIArkAuthorisationService(IArkAuthorisation iArkAuthorisationService) {
 		this.iArkAuthorisationService = iArkAuthorisationService;
+	}
+	
+	/**
+	 * @return the iAuditDao
+	 */
+	public IAuditDao getiAuditDao() {
+		return iAuditDao;
+	}
+
+	/**
+	 * @param iAuditDao
+	 *           the iAuditDao to set
+	 */
+	@Autowired
+	public void setiAuditDao(IAuditDao iAuditDao) {
+		this.iAuditDao = iAuditDao;
 	}
 
 	public void create(Study study) {
@@ -1485,12 +1505,20 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 				
 				// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
 				getSession().save(subject);
+				
+				// Create a new consent history by default
+				saveConsentHistory(subject);
 			}
-
+			
 			for (LinkSubjectStudy subject : subjectsToUpdate) {
-				Person person = subject.getPerson();
+				Person person = subject.getPerson();	
 				getSession().update(person);// Update Person and associated Phones  and addresses - TODO test personlastnamehistory nonsense
 				getSession().update(subject);
+				
+				// Only save history if indicated to do so (ie prevents save of history for every single update)
+				if(subject.getUpdateConsent()){
+					saveConsentHistory(subject);
+				}
 			}
 			//tx.commit();
 		}
@@ -1527,6 +1555,29 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		finally{
 			//session.close();
 		}
+	}
+	
+	public void saveConsentHistory(LinkSubjectStudy subject) {
+		if (subject.getConsentToActiveContact() != null || 
+				subject.getConsentToPassiveDataGathering() != null || 
+				subject.getConsentToUseData() != null || 
+				subject.getConsentStatus() != null || 
+				subject.getConsentType() != null || 
+				subject.getConsentDate() != null || 
+				subject.getConsentDownloaded() != null) {
+				
+				LssConsentHistory lssConsentHistory = new LssConsentHistory();
+				lssConsentHistory.setLinkSubjectStudy(subject);
+				lssConsentHistory.setConsentToActiveContact(subject.getConsentToActiveContact());
+				lssConsentHistory.setConsentToPassiveDataGathering(subject.getConsentToPassiveDataGathering());
+				lssConsentHistory.setConsentToUseData(subject.getConsentToUseData());
+				lssConsentHistory.setConsentStatus(subject.getConsentStatus());
+				lssConsentHistory.setConsentType(subject.getConsentType());
+				lssConsentHistory.setConsentDate(subject.getConsentDate());
+				lssConsentHistory.setConsentDownloaded(subject.getConsentDownloaded());
+				
+				iAuditDao.createLssConsentHistory(lssConsentHistory);
+			}
 	}
 
 	//TODO ASAP we need to handle excepions and ROLLBACK if something hits the fan.
@@ -1923,4 +1974,18 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return (EmailStatus) (getSession().get(EmailStatus.class, 0L));//TODO  hardcode removal
 	}
 
+	public List<ConsentOption> getConsentOptions() {
+		Criteria criteria = getSession().createCriteria(ConsentOption.class);
+		return criteria.list();
+	}
+
+	public List<ConsentStatus> getConsentStatus() {
+		Criteria criteria = getSession().createCriteria(ConsentStatus.class);
+		return criteria.list();
+	}
+
+	public List<ConsentType> getConsentType() {
+		Criteria criteria = getSession().createCriteria(ConsentType.class);
+		return criteria.list();
+	}
 }
