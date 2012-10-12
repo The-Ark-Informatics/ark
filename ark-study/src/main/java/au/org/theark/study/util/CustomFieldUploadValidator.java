@@ -18,12 +18,9 @@
  ******************************************************************************/
 package au.org.theark.study.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,14 +33,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import jxl.Cell;
-import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +50,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
 
@@ -215,9 +210,10 @@ public class CustomFieldUploadValidator {
 				Workbook w;
 				try {
 					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
-					inputStream.reset();
 					delimiterCharacter = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
+					inputStream.reset();
 				}
 				catch (BiffException e) {
 					log.error(e.getMessage());
@@ -257,9 +253,10 @@ public class CustomFieldUploadValidator {
 				Workbook w;
 				try {
 					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
-					inputStream.reset();
 					delimiterCharacter = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
+					inputStream.reset();
 				}
 				catch (BiffException e) {
 					log.error(e.getMessage());
@@ -409,6 +406,7 @@ public class CustomFieldUploadValidator {
 	 *            general ARK Exception
 	 * @return a collection of data validation messages
 	 */
+	@SuppressWarnings("unchecked")
 	public java.util.Collection<String> validateMatrixCustomFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate, List<String> uidsToUpdateReference) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
@@ -510,48 +508,6 @@ public class CustomFieldUploadValidator {
 			dataValidationMessages.add("Subject on row " + i.intValue() + " does not exist in the database.  Please remove this row and retry or run upload/create this subject first.");
 		}
 		return dataValidationMessages;
-	}
-
-	/**
-	 * Return the inputstream of the converted workbook as csv
-	 * 
-	 * @return inputstream of the converted workbook as csv
-	 */
-	public InputStream convertXlsToCsv(Workbook w) {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			OutputStreamWriter osw = new OutputStreamWriter(out);
-			// Gets first sheet from workbook
-			Sheet s = w.getSheet(0);
-			Cell[] row = null;
-
-			// Gets the cells from sheet
-			for (int i = 0; i < s.getRows(); i++) {
-				row = s.getRow(i);
-
-				if (row.length > 0) {
-					osw.write(row[0].getContents());
-					for (int j = 1; j < row.length; j++) {
-						osw.write(delimiterCharacter);
-						osw.write(row[j].getContents());
-					}
-				}
-				osw.write("\n");
-			}
-
-			osw.flush();
-			osw.close();
-		}
-		catch (UnsupportedEncodingException e) {
-			System.err.println(e.toString());
-		}
-		catch (IOException e) {
-			System.err.println(e.toString());
-		}
-		catch (Exception e) {
-			System.err.println(e.toString());
-		}
-		return new ByteArrayInputStream(out.toByteArray());
 	}
 
 	/**
