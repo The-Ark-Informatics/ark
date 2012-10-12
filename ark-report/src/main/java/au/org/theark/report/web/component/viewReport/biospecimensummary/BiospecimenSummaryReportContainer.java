@@ -5,7 +5,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
-import au.org.theark.report.model.vo.ResearcherCostResportVO;
 import au.org.theark.report.web.component.viewReport.AbstractSelectedReportContainer;
 import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
 

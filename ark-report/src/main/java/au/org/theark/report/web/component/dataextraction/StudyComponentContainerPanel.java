@@ -21,7 +21,6 @@ package au.org.theark.report.web.component.dataextraction;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
@@ -29,14 +28,11 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.report.web.component.dataextraction.form.ContainerForm;
-import au.org.theark.report.web.Constants;
 
 public class StudyComponentContainerPanel extends AbstractContainerPanel<SearchVO> {
 
