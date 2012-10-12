@@ -373,7 +373,7 @@ public interface IStudyService {
 
 	public void setPreferredMailingAdressToFalse(Person person);
 	
-	public void processBatch(List<LinkSubjectStudy> subjectsToUpdate, Study study, List<LinkSubjectStudy> subjectsToInsert);
+	public void processBatch(List<LinkSubjectStudy> subjectsToInsert, Study study, List<LinkSubjectStudy> subjectsToUpdate);
 
 	public void processFieldsBatch(List<SubjectCustomFieldData> fieldDataList, Study study, List<SubjectCustomFieldData> fieldDataToInsert);
 
@@ -386,4 +386,10 @@ public interface IStudyService {
 	public PhoneStatus getDefaultPhoneStatus();
 
 	public EmailStatus getDefaultEmailStatus();
+
+	public List<ConsentOption> getConsentOptions();
+
+	public List<ConsentStatus> getConsentStatus();
+
+	public List<ConsentType> getConsentType();
 }
