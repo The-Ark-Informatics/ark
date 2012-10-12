@@ -53,6 +53,7 @@ import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.lims.service.IInventoryService;
@@ -197,7 +198,9 @@ public class BiospecimenUploadValidator {
 				Workbook w;
 				try {
 					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
+					delimiterCharacter = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
 					inputStream.reset();
 					delimiterCharacter = ',';
 				}
@@ -239,9 +242,10 @@ public class BiospecimenUploadValidator {
 				Workbook w;
 				try {
 					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
-					inputStream.reset();
 					delimiterCharacter = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
+					inputStream.reset();
 				}
 				catch (BiffException e) {
 					log.error(e.getMessage());
@@ -858,49 +862,4 @@ public class BiospecimenUploadValidator {
 
 		return dataValidationMessages;
 	}
-
-	/**
-	 * Return the inputstream of the converted workbook as csv
-	 * 
-	 * @return inputstream of the converted workbook as csv
-	 */
-	public InputStream convertXlsToCsv(Workbook w) {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			OutputStreamWriter osw = new OutputStreamWriter(out);
-
-			// Gets first sheet from workbook
-			Sheet s = w.getSheet(0);
-
-			Cell[] row = null;
-
-			// Gets the cells from sheet
-			for (int i = 0; i < s.getRows(); i++) {
-				row = s.getRow(i);
-
-				if (row.length > 0) {
-					osw.write(row[0].getContents());
-					for (int j = 1; j < row.length; j++) {
-						osw.write(delimiterCharacter);
-						osw.write(row[j].getContents());
-					}
-				}
-				osw.write("\n");
-			}
-
-			osw.flush();
-			osw.close();
-		}
-		catch (UnsupportedEncodingException e) {
-			System.err.println(e.toString());
-		}
-		catch (IOException e) {
-			System.err.println(e.toString());
-		}
-		catch (Exception e) {
-			System.err.println(e.toString());
-		}
-		return new ByteArrayInputStream(out.toByteArray());
-	}
-
 }
