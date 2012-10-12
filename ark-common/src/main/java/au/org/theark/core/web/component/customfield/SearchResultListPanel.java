@@ -127,7 +127,7 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				// Max
-				if (field.getMinValue() != null) {
+				if (field.getMaxValue() != null) {
 					item.add(new Label(Constants.CUSTOMFIELD_MAX_VALUE, field.getMaxValue()));
 				}
 				else {
