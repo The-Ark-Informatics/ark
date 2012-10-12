@@ -404,5 +404,11 @@ public interface IStudyDao {
 	public PhoneStatus getDefaultPhoneStatus();
 
 	public EmailStatus getDefaultEmailStatus();
+
+	public List<ConsentOption> getConsentOptions();
+
+	public List<ConsentStatus> getConsentStatus();
+
+	public List<ConsentType> getConsentType();
 	
 }
