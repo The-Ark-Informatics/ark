@@ -278,6 +278,8 @@ INSERT INTO lims.bio_sampletype (name, sampletype, samplesubtype)
 SELECT DISTINCT CONCAT(sampletype, ' / ', samplesubtype), sampletype, samplesubtype FROM wagerlab.IX_BIOSPECIMEN
 WHERE (sampletype, samplesubtype) NOT IN (SELECT sampletype, samplesubtype FROM lims.bio_sampletype);
 
+-- TODO: HANDLE FOR STORED_IN
+
 /*
 -- Any Treatment types not already matched
 SELECT tt.* 
