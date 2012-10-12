@@ -6,6 +6,11 @@ public class QueryFilter {
 //	QueryFilter leftQueryFilter;	//potentially link to another query to combine rules on...its more explicit than relying on brackets.
 //	QueryFilter rightQueryFilter;	//potentially link to another query to combine rules on...its more explicit than relying on brackets.
 //	JoinType filterJoin; //AND OR  
+
+        @Id
+        @SequenceGenerator(name = "query_filter_generator", sequenceName = "QUERY_FILTER_SEQ")
+        @GeneratedValue(strategy = GenerationType.AUTO, generator = "query_filter_generator")
+        @Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	private Long id;
 	// which contraints field, operator, value, nullableSecondValue (eg in between),
 	private Prefix prefix; //eg NOT, IN, 
