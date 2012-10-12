@@ -18,12 +18,9 @@
  ******************************************************************************/
 package au.org.theark.core.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -35,19 +32,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import jxl.Cell;
-import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.CustomFieldSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -383,9 +378,13 @@ public class CustomFieldImportValidator {
 					}
 
 					FieldType studyFieldType = new FieldType();
-					studyFieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
-
-					field.setFieldType(studyFieldType);
+					try {
+						studyFieldType = iArkCommonService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
+						field.setFieldType(studyFieldType);
+					}
+					catch (EntityNotFoundException e){
+						// Field Type not found, handled in error messaging below....
+					}
 
 					String encodedValues = csvReader.get("ENCODED_VALUES");
 
@@ -437,7 +436,6 @@ public class CustomFieldImportValidator {
 						gridCell = new ArkGridCell(csvReader.getIndex("FIELD_TYPE"), rowIdx);
 						if (!CustomFieldImportValidator.validateFieldType(this.fieldName, csvReader.get("FIELD_TYPE"), dataValidationMessages)) {
 							errorCells.add(gridCell);
-							field.getFieldType().setName(csvReader.get("FIELD_TYPE"));
 						}
 					}
 
@@ -580,9 +578,10 @@ public class CustomFieldImportValidator {
 				Workbook w;
 				try {
 					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
-					inputStream.reset();
 					delimChr = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimChr);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
+					inputStream.reset();
 				}
 				catch (BiffException e) {
 					log.error(e.getMessage());
@@ -623,9 +622,10 @@ public class CustomFieldImportValidator {
 				Workbook w;
 				try {
 					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
-					inputStream.reset();
 					delimChr = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimChr);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
+					inputStream.reset();
 				}
 				catch (BiffException e) {
 					log.error(e.getMessage());
@@ -666,9 +666,10 @@ public class CustomFieldImportValidator {
 				Workbook w;
 				try {
 					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
-					inputStream.reset();
 					delimChr = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimChr);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
+					inputStream.reset();
 				}
 				catch (BiffException e) {
 					log.error(e.getMessage());
@@ -686,50 +687,6 @@ public class CustomFieldImportValidator {
 			log.error("ARK_BASE_EXCEPTION: " + abe);
 		}
 		return validationMessages;
-	}
-
-	/**
-	 * Return the inputstream of the converted workbook as csv
-	 * 
-	 * @return inputstream of the converted workbook as csv
-	 */
-	public InputStream convertXlsToCsv(Workbook w) {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			OutputStreamWriter osw = new OutputStreamWriter(out);
-
-			// Gets first sheet from workbook
-			Sheet s = w.getSheet(0);
-
-			Cell[] row = null;
-
-			// Gets the cells from sheet
-			for (int i = 0; i < s.getRows(); i++) {
-				row = s.getRow(i);
-
-				if (row.length > 0) {
-					osw.write(row[0].getContents());
-					for (int j = 1; j < row.length; j++) {
-						osw.write(delimChr);
-						osw.write(row[j].getContents());
-					}
-				}
-				osw.write("\n");
-			}
-
-			osw.flush();
-			osw.close();
-		}
-		catch (UnsupportedEncodingException e) {
-			System.err.println(e.toString());
-		}
-		catch (IOException e) {
-			System.err.println(e.toString());
-		}
-		catch (Exception e) {
-			System.err.println(e.toString());
-		}
-		return new ByteArrayInputStream(out.toByteArray());
 	}
 
 	private static boolean validateFieldMissingDefinition(CustomField field, Collection<String> errorMessages) {
