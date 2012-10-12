@@ -18,12 +18,9 @@
  ******************************************************************************/
 package au.org.theark.study.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,14 +29,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import jxl.Cell;
-import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +44,7 @@ import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.DataConversionAndManipulationHelper;
+import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
 
@@ -181,6 +176,25 @@ public class SubjectUploadValidator {
 			String filename = uploadVo.getFileUpload().getClientFileName();
 			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
+			
+		// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS")) {
+				Workbook w;
+				try {
+					w = Workbook.getWorkbook(inputStream);
+					delimiterCharacter = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
+					inputStream.reset();
+				}
+				catch (BiffException e) {
+					log.error(e.getMessage());
+				}
+				catch (IOException e) {
+					log.error(e.getMessage());
+				}
+			}
+			
 			validationMessages = validateSubjectFileFormat(inputStream, fileFormat, delimiterCharacter);
 		}
 		catch (IOException e) {
@@ -209,9 +223,10 @@ public class SubjectUploadValidator {
 				Workbook w;
 				try {
 					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
-					inputStream.reset();
 					delimiterCharacter = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
+					inputStream.reset();
 				}
 				catch (BiffException e) {
 					log.error(e.getMessage());
@@ -251,9 +266,10 @@ public class SubjectUploadValidator {
 				Workbook w;
 				try {
 					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
-					inputStream.reset();
 					delimiterCharacter = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
+					inputStream.reset();
 				}
 				catch (BiffException e) {
 					log.error(e.getMessage());
@@ -272,8 +288,9 @@ public class SubjectUploadValidator {
 		java.util.Collection<String> validationMessages = null;
 
 		try {
-			//TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
-			//I think this is acceptable for now to keep in user interface.  Can make some slight improvements though, and if it bloats with more fields could be part of batch too
+			// TODO performance of valdation now approx 60-90K records per minute, file creation after validation doubles that
+			// I think this is acceptable for now to keep in user interface. Can make some slight improvements though, and if it bloats with more fields
+			// could be part of batch too
 			validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar, Long.MAX_VALUE, uidsToUpdateRefence);
 		}
 		catch (FileFormatException ffe) {
@@ -304,7 +321,7 @@ public class SubjectUploadValidator {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		row = 0;
-		long						srcLength					= -1;
+		long srcLength = -1;
 
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
@@ -316,7 +333,7 @@ public class SubjectUploadValidator {
 			}
 
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
-			// Set field list (note 2th column to Nth column)	// SUBJECTUID DATE_COLLECTED F1 F2 FN // 0 1 2 3 N
+			// Set field list (note 2th column to Nth column) // SUBJECTUID DATE_COLLECTED F1 F2 FN // 0 1 2 3 N
 			csvReader.readHeaders();
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 			String[] headerColumnArray = csvReader.getHeaders();
@@ -339,15 +356,14 @@ public class SubjectUploadValidator {
 
 			if (headerError) {
 				StringBuffer stringBuffer = new StringBuffer();
-				//TODO ASAP : this should utilize the file that creates the template/requirements!
+				// TODO ASAP : this should utilize the file that creates the template/requirements!
 				stringBuffer.append("Error: The specified file does not appear to conform to the expected file format.\n");
 				stringBuffer.append("Please refer to the template, as seen on step one, for the correct format. \n");
 				/*
-				stringBuffer.append("The specified fileformat was: " + fileFormat + ".\n");
-				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n");
-				stringBuffer.append(".\n");
-				stringBuffer.append("The default format should be as follows:\n");*/
-	
+				 * stringBuffer.append("The specified fileformat was: " + fileFormat + ".\n"); stringBuffer.append("The specified delimiter type was: " +
+				 * delimiterCharacter + ".\n"); stringBuffer.append(".\n"); stringBuffer.append("The default format should be as follows:\n");
+				 */
+
 				fileValidationMessages.add(stringBuffer.toString());
 
 				for (int i = 0; i < headerColumnArray.length; i++) {
@@ -378,7 +394,7 @@ public class SubjectUploadValidator {
 			}
 			if (inputStreamReader != null) {
 				try {
-					//TODO ASAP : re-evaluate below
+					// TODO ASAP : re-evaluate below
 					inputStreamReader.close();
 				}
 				catch (Exception ex) {
@@ -393,7 +409,7 @@ public class SubjectUploadValidator {
 	/**
 	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN...
 	 * 
-	 * TODO:  remove globals unless their is a legit reason
+	 * TODO: remove globals unless their is a legit reason
 	 * 
 	 * Where N is any number of columns
 	 * 
@@ -409,15 +425,17 @@ public class SubjectUploadValidator {
 	 *            general ARK Exception
 	 * @return a collection of data validation messages
 	 */
-	public java.util.Collection<String> validateMatrixSubjectFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate, List<String> uidsToUpdateReferenceToBeUpdated) throws FileFormatException,
-			ArkSystemException {
+	public java.util.Collection<String> validateMatrixSubjectFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate,
+			List<String> uidsToUpdateReferenceToBeUpdated) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		row = 1;
-		long srcLength	= -1L;
-		
+		long srcLength = -1L;
+
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
+		
+		
 
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
@@ -434,149 +452,174 @@ public class SubjectUploadValidator {
 			String[] fieldNameArray = csvReader.getHeaders();
 			boolean isAutoGen = study.getAutoGenerateSubjectUid();
 
-			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
+			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study); // TODO evaluate data in future to know if should get
+																																// all id's in the csv, rather than getting all id's
+																																// in study to compre
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
+				stringLineArray = new String[fieldNameArray.length];
 				stringLineArray = csvReader.getValues();
-
 				// First/0th column should be the SubjectUID
 				String subjectUID = stringLineArray[0];
-				
-				
+
 				boolean hasSomeData = false;
-				for(String next : stringLineArray){
-					if(next != null && !next.isEmpty()){
+				for (String next : stringLineArray) {
+					if (next != null && !next.isEmpty()) {
 						hasSomeData = true;
 					}
 				}
-				
-				if(!isAutoGen && (subjectUID == null || subjectUID.isEmpty()) ){
-					
-					if(!hasSomeData){
-						//TODO Add some ability to have a lower level info setting...that warns but doesnt require a checkbox etcdataValidationMessages.add("Warning/Info: Row " + row + ":  There appeared to be no data on this row, so we ignored this line");
+
+				if (!isAutoGen && (subjectUID == null || subjectUID.isEmpty())) {
+
+					if (!hasSomeData) {
+						// TODO Add some ability to have a lower level info setting...that warns but doesnt require a checkbox
+						// etcdataValidationMessages.add("Warning/Info: Row " + row +
+						// ":  There appeared to be no data on this row, so we ignored this line");
 						row++;
 					}
-					else{
-						dataValidationMessages.add("Error: Row " + row + ":  There is no subject UID on this row, " +
-								"yet the study is not set up to auto generate subject UIDs.  Please remove this line or provide an ID");
+					else {
+						dataValidationMessages.add("Error: Row " + row + ":  There is no subject UID on this row, "
+								+ "yet the study is not set up to auto generate subject UIDs.  Please remove this line or provide an ID");
 						errorCells.add(new ArkGridCell(0, row));
 						row++;
 					}
 				}
-				else if(isAutoGen && (subjectUID == null || subjectUID.isEmpty())  && !hasSomeData){
-					//TODO Add some ability to have a lower level info setting...that warns but doesnt require a checkbox etc	dataValidationMessages.add("Warning/Info: Row " + row  + ":  There appeared to be no data on this row, so we ignored this line");
+				else if (isAutoGen && (subjectUID == null || subjectUID.isEmpty()) && !hasSomeData) {
+					// TODO Add some ability to have a lower level info setting...that warns but doesnt require a checkbox etc
+					// dataValidationMessages.add("Warning/Info: Row " + row + ":  There appeared to be no data on this row, so we ignored this line");
 					row++;
 				}
-				else{
-					
+				else {
+
 					boolean isUpdate = subjectUIDsAlreadyExisting.contains(subjectUID);
-	
-					if(isUpdate){
+
+					if (isUpdate) {
 						updateRows.add(row);
 						uidsToUpdateReferenceToBeUpdated.add(subjectUID);
 					}
-					else{
+					else {
 						insertRows.add(row);
 					}
-					
+
 					int col = 0;
 					String dateStr = new String();
-	
+					String cellValue = new String();
+
 					if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0) {
 						if (csvReader.getIndex("DATE_OF_BIRTH") > 0) {
 							col = csvReader.getIndex("DATE_OF_BIRTH");
+							cellValue = csvReader.get("DATE_OF_BIRTH");
 						}
 						else {
 							col = csvReader.getIndex("DOB");
+							cellValue = csvReader.get("DOB");
 						}
 						try {
-							dateStr = stringLineArray[col];
+							dateStr = cellValue;
 							if (dateStr != null && dateStr.length() > 0)
 								simpleDateFormat.parse(dateStr);
 						}
 						catch (ParseException pex) {
-							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid date format of: "
 									+ Constants.DD_MM_YYYY.toLowerCase());
 							errorCells.add(new ArkGridCell(col, row));
 						}
 					}
-	
+
 					if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0) {
 						if (csvReader.getIndex("DATE_OF_DEATH") > 0) {
 							col = csvReader.getIndex("DATE_OF_DEATH");
+							cellValue = csvReader.get("DATE_OF_DEATH");
 						}
 						else {
 							col = csvReader.getIndex("DODEATH");
+							cellValue = csvReader.get("DODEATH");
 						}
 						try {
-							dateStr = stringLineArray[col];
+							dateStr = cellValue;
 							if (dateStr != null && dateStr.length() > 0)
 								simpleDateFormat.parse(dateStr);
 						}
 						catch (ParseException pex) {
-							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
-									+ Constants.DD_MM_YYYY.toLowerCase());
-							errorCells.add(new ArkGridCell(col, row));
-						}
-					}
-	
-					
-					if (csvReader.getIndex("ADDRESS_DATE_RECEIVED") > 0 ) {
-						col = csvReader.getIndex("ADDRESS_DATE_RECEIVED");
-						try {
-							dateStr = stringLineArray[col];
-							if (dateStr != null && dateStr.length() > 0)
-								simpleDateFormat.parse(dateStr);
-						}
-						catch (ParseException pex) {
-							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid date format of: "
 									+ Constants.DD_MM_YYYY.toLowerCase());
 							errorCells.add(new ArkGridCell(col, row));
 						}
 					}
 
+					if (csvReader.getIndex("ADDRESS_DATE_RECEIVED") > 0) {
+						col = csvReader.getIndex("ADDRESS_DATE_RECEIVED");
+						cellValue = csvReader.get("ADDRESS_DATE_RECEIVED");
+						try {
+							dateStr = cellValue;
+							if (dateStr != null && dateStr.length() > 0)
+								simpleDateFormat.parse(dateStr);
+						}
+						catch (ParseException pex) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid date format of: "
+									+ Constants.DD_MM_YYYY.toLowerCase());
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
 
 					// BOOLEAN CHECKS
-					if (csvReader.getIndex("SILENT") > 0 ) {
+					if (csvReader.getIndex("SILENT") > 0) {
 						col = csvReader.getIndex("SILENT");
-						String silent = stringLineArray[col];
-						if(silent!=null && !silent.isEmpty()){//if null or empty just ignore...if invalid flag
-							if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(silent)){
-								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + 
-										" is not in the valid boolean value.  Please use true or false for this column.");
-								errorCells.add(new ArkGridCell(col, row));							
-							}					
-						}
-					}
-
-					
-					if (csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS") > 0 ) {
-						col = csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS");
-						String prefer = stringLineArray[col];
-						if(prefer!=null && !prefer.isEmpty()){//if null or empty just ignore...if invalid flag
-							if (prefer != null && !DataConversionAndManipulationHelper.isSomethingLikeABoolean(prefer)){
-								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + 
-										" is not in the valid boolean value.  Please use true or false for this column.");
-								errorCells.add(new ArkGridCell(col, row));							
+						cellValue = csvReader.get("SILENT");
+						String silent = cellValue;
+						if (silent != null && !silent.isEmpty()) {// if null or empty just ignore...if invalid flag
+							if (!DataConversionAndManipulationHelper.isSomethingLikeABoolean(silent)) {
+								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue
+										+ " is not in the valid boolean value.  Please use true or false for this column.");
+								errorCells.add(new ArkGridCell(col, row));
 							}
 						}
 					}
-	
-					if (csvReader.getIndex("PHONE_DATE_RECEIVED") > 0 ) {
+
+					if (csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS") > 0) {
+						col = csvReader.getIndex("IS_PREFERRED_MAILING_ADDRESS");
+						cellValue = csvReader.get("IS_PREFERRED_MAILING_ADDRESS");
+						String prefer = cellValue;
+						if (prefer != null && !prefer.isEmpty()) {// if null or empty just ignore...if invalid flag
+							if (prefer != null && !DataConversionAndManipulationHelper.isSomethingLikeABoolean(prefer)) {
+								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue
+										+ " is not in the valid boolean value. Please use true or false for this column.");
+								errorCells.add(new ArkGridCell(col, row));
+							}
+						}
+					}
+
+					if (csvReader.getIndex("PHONE_DATE_RECEIVED") > 0) {
 						col = csvReader.getIndex("PHONE_DATE_RECEIVED");
+						cellValue = csvReader.get("PHONE_DATE_RECEIVED");
 						try {
-							dateStr = stringLineArray[col];
+							dateStr = cellValue;
 							if (dateStr != null && dateStr.length() > 0)
 								simpleDateFormat.parse(dateStr);
 						}
 						catch (ParseException pex) {
-							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: "
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid date format of: "
 									+ Constants.DD_MM_YYYY.toLowerCase());
 							errorCells.add(new ArkGridCell(col, row));
 						}
 					}
-	
+					
+					if (csvReader.getIndex("CONSENT_DATE") > 0) {
+						col = csvReader.getIndex("CONSENT_DATE");
+						cellValue = csvReader.get("CONSENT_DATE");
+						try {
+							dateStr = cellValue;
+							if (dateStr != null && dateStr.length() > 0)
+								simpleDateFormat.parse(dateStr);
+						}
+						catch (ParseException pex) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid date format of: "
+									+ Constants.DD_MM_YYYY.toLowerCase());
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+
 					subjectCount++;
 					row++;
 				}
@@ -617,46 +660,4 @@ public class SubjectUploadValidator {
 
 		return dataValidationMessages;
 	}
-
-	/**
-	 * Return the inputstream of the converted workbook as csv
-	 * 
-	 * @return inputstream of the converted workbook as csv
-	 */
-	public InputStream convertXlsToCsv(Workbook w) {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			OutputStreamWriter osw = new OutputStreamWriter(out);
-			// Gets first sheet from workbook
-			Sheet s = w.getSheet(0);
-			Cell[] row = null;
-
-			for (int i = 0; i < s.getRows(); i++) {
-				row = s.getRow(i);
-
-				if (row.length > 0) {
-					osw.write(row[0].getContents());
-					for (int j = 1; j < row.length; j++) {
-						osw.write(delimiterCharacter);
-						osw.write(row[j].getContents());
-					}
-				}
-				osw.write("\n");
-			}
-
-			osw.flush();
-			osw.close();
-		}
-		catch (UnsupportedEncodingException e) {
-			System.err.println(e.toString());
-		}
-		catch (IOException e) {
-			System.err.println(e.toString());
-		}
-		catch (Exception e) {
-			System.err.println(e.toString());
-		}
-		return new ByteArrayInputStream(out.toByteArray());
-	}
-
 }
