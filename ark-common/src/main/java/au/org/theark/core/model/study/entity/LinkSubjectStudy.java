@@ -36,6 +36,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import au.org.theark.core.Constants;
 
@@ -61,6 +62,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private String heardAboutStudy;
 	private String comment;
 	private YesNo consentDownloaded;
+	private Boolean updateConsent;
 
 	private Set<Consent> consents = new HashSet<Consent>();
 	private Set<SubjectCustomFieldData> subjectCustomFieldDataSet = new HashSet<SubjectCustomFieldData>();
@@ -240,6 +242,21 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	public void setConsentDownloaded(YesNo consentDownloaded) {
 		this.consentDownloaded = consentDownloaded;
+	}
+
+	/**
+	 * @param updateConsent the updateConsent to set
+	 */
+	public void setUpdateConsent(Boolean updateConsent) {
+		this.updateConsent = updateConsent;
+	}
+
+	/**
+	 * @return the updateConsent
+	 */
+	@Transient
+	public Boolean getUpdateConsent() {
+		return updateConsent;
 	}
 
 	@Override
