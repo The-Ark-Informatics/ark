@@ -971,8 +971,8 @@ public class StudyServiceImpl implements IStudyService {
 		return subjectUploadValidator;
 	}
 
-	public void processBatch(List<LinkSubjectStudy> subjectList, Study study, List<LinkSubjectStudy> subjectsToInsert) {
-		iStudyDao.processBatch(subjectList, study, subjectsToInsert);
+	public void processBatch(List<LinkSubjectStudy> subjectListToInsert, Study study, List<LinkSubjectStudy> subjectsToUpdate) {
+		iStudyDao.processBatch(subjectListToInsert, study, subjectsToUpdate);
 	}
 
 	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert){
@@ -1223,4 +1223,15 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.getDefaultEmailStatus();
 	}
 
+	public List<ConsentOption> getConsentOptions() {
+		return iStudyDao.getConsentOptions();
+	}
+
+	public List<ConsentStatus> getConsentStatus() {
+		return iStudyDao.getConsentStatus();
+	}
+
+	public List<ConsentType> getConsentType() {
+		return iStudyDao.getConsentType();
+	}
 }
