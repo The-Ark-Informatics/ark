@@ -343,6 +343,9 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		if(billableItemVo.getResearcher() != null ){
 			criteria.add(Restrictions.eq("wr.researcher", billableItemVo.getResearcher()));
 		}
+		if(billableItemCriteria.getCommenceDate() !=null){
+			criteria.add(Restrictions.eq("bi.commenceDate", billableItemCriteria.getCommenceDate()));
+		}
 		
 		List<BillableItem> list = criteria.list();
 		return list;

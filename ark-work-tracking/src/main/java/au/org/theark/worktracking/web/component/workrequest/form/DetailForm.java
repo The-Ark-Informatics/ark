@@ -1,6 +1,7 @@
 package au.org.theark.worktracking.web.component.workrequest.form;
 
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -24,6 +25,7 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.model.worktracking.entity.Researcher;
+import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -208,6 +210,7 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 	protected void onSave(Form<WorkRequestVo> containerForm, AjaxRequestTarget target) {
 
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
+		if(isWorkRequestHasvalidDateValues(target)){
 		try {
 			
 			if (containerForm.getModelObject().getWorkRequest().getId() == null) {
@@ -232,6 +235,8 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 			this.error("A System error occured, we will have someone contact you.");
 			processErrors(target);
 		}
+		
+		}
 
 	}
 
@@ -243,7 +248,59 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
 		target.add(feedBackPanel);
+	}
+	
+	private boolean isWorkRequestHasvalidDateValues(final AjaxRequestTarget target){
+		boolean result=true;
+		WorkRequest workRequest= containerForm.getModelObject().getWorkRequest();
+		
+		Date requestedDate 	= workRequest.getRequestedDate();
+		Date commenceDate 	= workRequest.getCommencedDate();
+		Date completedDate	= workRequest.getCompletedDate();
+		
+		WorkRequestStatus status= workRequest.getRequestStatus();
 
+		if("Not Commenced".equalsIgnoreCase(status.getName())
+				&& requestedDate==null){
+			this.error("When Status is Not Commenced requested date cannot be empty");
+			processErrors(target);
+			return false;
+		}
+		else if("Commenced".equalsIgnoreCase(status.getName())
+				&& (requestedDate==null || commenceDate ==null)){
+			this.error("When Status is Commenced requested date and commence date cannot be empty");
+			processErrors(target);
+			return false;
+		}else if("Completed".equalsIgnoreCase(status.getName())
+				&& (requestedDate==null || commenceDate ==null || completedDate==null)){
+			this.error("When Status is Completed requested date, commence date and completed date cannot be empty");
+			processErrors(target);
+			return false;
+		}
+				
+		if(commenceDate !=null 
+				|| completedDate != null) {
+			if(commenceDate ==null 
+					&& completedDate !=null){
+				this.error("Update the commence date before update the completed date");
+				processErrors(target);
+				return false;
+			}
+			else if(commenceDate != null  
+					&& commenceDate.compareTo(requestedDate)<0){
+					this.error("Commenced date shoud be same or later than the requested date");
+					processErrors(target);
+					return false;	
+			}
+			else if(completedDate != null 
+					&& completedDate.compareTo(commenceDate)<0){
+					this.error("Completed date shoud be same or later than the commenced date");
+					processErrors(target);
+					return false;
+			}
+			
+		}
+		return true;
 	}
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
