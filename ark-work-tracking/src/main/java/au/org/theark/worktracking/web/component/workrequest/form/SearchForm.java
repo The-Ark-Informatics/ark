@@ -1,5 +1,6 @@
 package au.org.theark.worktracking.web.component.workrequest.form;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -24,7 +25,6 @@ import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.worktracking.model.vo.WorkRequestVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
 import au.org.theark.worktracking.util.Constants;
-
 
 public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 	private static final long				serialVersionUID	= 1L;
@@ -158,6 +158,7 @@ public class SearchForm  extends AbstractSearchForm<WorkRequestVo> {
 	protected void onNew(AjaxRequestTarget target) {
 		setModelObject(new WorkRequestVo());
 		getModelObject().setMode(Constants.MODE_NEW);
+		getModelObject().getWorkRequest().setRequestedDate(new Date());
 		preProcessDetailPanel(target);
 	}
 

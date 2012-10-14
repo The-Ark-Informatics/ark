@@ -258,7 +258,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	}
 
 	private void initWorkRequestDropDown() {
-		WorkRequest workRequest =new WorkRequest();
+		WorkRequest workRequest = new WorkRequest();
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		workRequest.setStudyId(studyId);
 		List<WorkRequest> workRequestList = iWorkTrackingService.searchWorkRequest(workRequest);
@@ -361,6 +361,9 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	@Override
 	protected void onSave(Form<BillableItemVo> containerForm, AjaxRequestTarget target) {
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
+		if(!isCommencedWorkRequest(target)){
+			return;
+		}
 		try {
 			
 			if (subjectsUploadField != null && subjectsUploadField.getFileUpload() != null) {
@@ -399,6 +402,17 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 
 	}
 	
+	private boolean isCommencedWorkRequest(final AjaxRequestTarget target){
+		boolean result=true;
+		WorkRequest workRequest= containerForm.getModelObject().getBillableItem().getWorkRequest();
+		if(!"Commenced".equalsIgnoreCase(workRequest.getRequestStatus().getName())){
+			this.error("Selected work request has to be commenced state");
+			processErrors(target);
+			result=false;
+		}
+		return result;
+	}
+	
 	/**
 	 * Disable the delete button for automated billable items.
 	 * @param target
@@ -410,6 +424,10 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		super.onSavePostProcess(target);
 		if(Constants.BILLABLE_ITEM_AUTOMATED.equalsIgnoreCase(billableItemVo.getBillableItem().getType())){
 			AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
+			ajaxButton.setEnabled(false);
+		}
+		if(Constants.Y.equalsIgnoreCase(billableItemVo.getBillableItem().getInvoice())){
+			AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("save");
 			ajaxButton.setEnabled(false);
 		}
 	}
