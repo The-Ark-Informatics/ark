@@ -38,18 +38,21 @@ public class QueryFilterGrouping {
 	public void setParentGrouping(QueryGrouping parentGrouping) {
 		this.parentGrouping = parentGrouping;
 	}
+	
 	public QueryFilter getLeftFilter() {
 		return leftFilter;
 	}
 	public void setLeftFilter(QueryFilter leftFilter) {
 		this.leftFilter = leftFilter;
 	}
+	
 	public JoinType getJoinToNextFilter() {
 		return joinToNextFilter;
 	}
-	public void setRelationshipToNextFilter(JoinType joinToNextFilter) {
+	public void setJoinToNextFilter(JoinType joinToNextFilter) {
 		this.joinToNextFilter = joinToNextFilter;
 	}
+	
 	public Long getPrecedence() {
 		return precedence;
 	}

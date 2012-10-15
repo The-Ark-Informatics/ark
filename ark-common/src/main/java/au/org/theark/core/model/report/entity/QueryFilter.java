@@ -57,8 +57,6 @@ public class QueryFilter {
 	public DemographicField getDemographicField() {
 		return demographicField;
 	}
-
-
 	public void setDemographicField(DemographicField demographicField) {
 		this.demographicField = demographicField;
 	}
