@@ -1,5 +1,12 @@
 package au.org.theark.core.model.report.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import au.org.theark.core.model.Constants;
+
+@Entity
+@Table(name = "demographic_field_search", schema = Constants.REPORT_SCHEMA)
 public class DemographicFieldSearch {
 
 	private DemographicField demographicField;
