@@ -1,13 +1,18 @@
 package au.org.theark.core.model.report.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
+import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
+@Entity
+@Table(name = "guery_filter", schema = Constants.REPORT_SCHEMA)
 public class QueryFilter {
 //	QueryFilter leftQueryFilter;	//potentially link to another query to combine rules on...its more explicit than relying on brackets.
 //	QueryFilter rightQueryFilter;	//potentially link to another query to combine rules on...its more explicit than relying on brackets.

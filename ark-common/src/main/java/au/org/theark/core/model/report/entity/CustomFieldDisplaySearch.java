@@ -1,7 +1,13 @@
 package au.org.theark.core.model.report.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
+@Entity
+@Table(name = "custom_field_display_search", schema = Constants.REPORT_SCHEMA)
 public class CustomFieldDisplaySearch {
 	private Long id;
 	private CustomFieldDisplay customFieldDisplay;

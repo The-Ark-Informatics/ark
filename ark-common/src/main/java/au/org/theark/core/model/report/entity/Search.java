@@ -2,6 +2,11 @@ package au.org.theark.core.model.report.entity;
 
 import java.util.Set;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import au.org.theark.core.model.Constants;
+
 /**
  * 
  * The search object is used to save what criteria, name, etc is used in a search 
@@ -9,6 +14,9 @@ import java.util.Set;
  * @author travis
  *
  */
+
+@Entity
+@Table(name = "search", schema = Constants.REPORT_SCHEMA)
 public class Search {
 
 	private Long id;
