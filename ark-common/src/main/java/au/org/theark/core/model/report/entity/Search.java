@@ -44,35 +44,39 @@ public class Search {
 		this.id = id;
 	}
 
+	public Set<DemographicFieldSearch> getDemographicFieldsToReturn() {
+		return demographicFieldsToReturn;
+	}
 	public void setDemographicFieldsToReturn(Set<DemographicFieldSearch> demographicFieldsToReturn) {
 		this.demographicFieldsToReturn = demographicFieldsToReturn;
 	}
-	public Set<DemographicFieldSearch> getDemographicFieldsToReturn() {
-		return demographicFieldsToReturn;
+
+	public Set<CustomFieldDisplaySearch> getCustomFieldsToReturn() {
+		return customFieldsToReturn;
 	}
 	public void setFieldsToReturn(Set<CustomFieldDisplaySearch> customFieldsToReturn) {
 		this.customFieldsToReturn = customFieldsToReturn;
 	}
-	public Set<CustomFieldDisplaySearch> getCustomFieldsToReturn() {
-		return customFieldsToReturn;
-	}
+	
 /*	public void setQueryFilters(Set<QueryFilter> queryFilters) {
 		this.queryFilters = queryFilters;
 	}
 	public Set<QueryFilter> getQueryFilters() {
 		return queryFilters;
 	}*/
-	public void setName(String name) {
-		this.name = name;
-	}
+	
 	public String getName() {
 		return name;
 	}
-	public void setTopLevelQueryGrouping(QueryGrouping topLevelQueryGrouping) {
-		this.topLevelQueryGrouping = topLevelQueryGrouping;
+	public void setName(String name) {
+		this.name = name;
 	}
+
 	public QueryGrouping getTopLevelQueryGrouping() {
 		return topLevelQueryGrouping;
+	}
+	public void setTopLevelQueryGrouping(QueryGrouping topLevelQueryGrouping) {
+		this.topLevelQueryGrouping = topLevelQueryGrouping;
 	}
 	
 	

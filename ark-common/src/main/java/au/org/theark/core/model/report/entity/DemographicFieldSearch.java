@@ -29,18 +29,18 @@ public class DemographicFieldSearch {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public void setSearch(Search search) {
-		this.search = search;
-	}
+
 	public Search getSearch() {
 		return search;
 	}
-	
-	public void setDemographicField(DemographicField demographicField) {
-		this.demographicField = demographicField;
+	public void setSearch(Search search) {
+		this.search = search;
 	}
+
 	public DemographicField getDemographicField() {
 		return demographicField;
+	}
+	public void setDemographicField(DemographicField demographicField) {
+		this.demographicField = demographicField;
 	}
 }

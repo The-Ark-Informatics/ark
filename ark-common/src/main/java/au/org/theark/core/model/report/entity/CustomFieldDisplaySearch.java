@@ -29,19 +29,19 @@ public class CustomFieldDisplaySearch {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public void setCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) {
-		this.customFieldDisplay = customFieldDisplay;
-	}
+
 	public CustomFieldDisplay getCustomFieldDisplay() {
 		return customFieldDisplay;
 	}
-	
-	public void setSearch(Search search) {
-		this.search = search;
+	public void setCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) {
+		this.customFieldDisplay = customFieldDisplay;
 	}
+
 	public Search getSearch() {
 		return search;
+	}
+	public void setSearch(Search search) {
+		this.search = search;
 	}
 	
 }
