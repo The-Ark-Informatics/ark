@@ -52,6 +52,7 @@ public class UploadVO implements Serializable {
 
 	public UploadVO() {
 		upload = new Upload();
+		phenoCollection = new PhenoCollection();
 		setUploadCollection(new ArrayList<Upload>());
 	}
 
