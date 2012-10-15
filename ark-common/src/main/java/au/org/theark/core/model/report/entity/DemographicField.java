@@ -39,33 +39,33 @@ public class DemographicField {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public void setEntity(String entity) {
-		this.entity = entity;
-	}
+
 	public String getEntity() {
 		return entity;
 	}
-	
-	public void setUnderlyingFieldName(String underlyingFieldName) {
-		this.underlyingFieldName = underlyingFieldName;
+	public void setEntity(String entity) {
+		this.entity = entity;
 	}
+
 	public String getUnderlyingFieldName() {
 		return underlyingFieldName;
 	}
-	
-	public void setPublicFieldName(String publicFieldName) {
-		this.publicFieldName = publicFieldName;
+	public void setUnderlyingFieldName(String underlyingFieldName) {
+		this.underlyingFieldName = underlyingFieldName;
 	}
+
 	public String getPublicFieldName() {
 		return publicFieldName;
 	}
-	
-	public void setFieldType(FieldType fieldType) {
-		this.fieldType = fieldType;
+	public void setPublicFieldName(String publicFieldName) {
+		this.publicFieldName = publicFieldName;
 	}
+
 	public FieldType getFieldType() {
 		return fieldType;
+	}
+	public void setFieldType(FieldType fieldType) {
+		this.fieldType = fieldType;
 	}
 	
 }
