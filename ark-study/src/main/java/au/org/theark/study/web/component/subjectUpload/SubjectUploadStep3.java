@@ -30,6 +30,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.service.IArkCommonService;
@@ -52,6 +53,9 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 	private WizardForm						wizardForm;
 	private WebMarkupContainer				updateExistingDataContainer;
 	private CheckBox							updateChkBox;
+	private WebMarkupContainer				continueDespiteBadDataContainer;
+	protected Boolean						continueDespiteBadData = false;
+	private CheckBox							continueChkBox;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
@@ -82,7 +86,6 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 		updateExistingDataContainer = new WebMarkupContainer("updateExistingDataContainer");
 		updateExistingDataContainer.setOutputMarkupId(true);
 		updateChkBox = new CheckBox("updateChkBox");
-		updateChkBox.setVisible(true);
 
 		updateChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
@@ -102,6 +105,25 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 
 		updateExistingDataContainer.add(updateChkBox);
 		add(updateExistingDataContainer);
+		
+		continueDespiteBadDataContainer = new WebMarkupContainer("continueDespiteBadDataContainer");
+		continueDespiteBadDataContainer.setOutputMarkupId(true);
+		continueChkBox = new CheckBox("continueChkBox", new PropertyModel<Boolean>(this, "continueDespiteBadData"));
+		continueChkBox.setVisible(true);
+
+		continueChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+
+			private static final long	serialVersionUID	= -4514605801401294450L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				wizardForm.getNextButton().setEnabled(continueChkBox.getModelObject());
+				target.add(wizardForm.getWizardButtonContainer());
+			}
+		});
+
+		continueDespiteBadDataContainer.add(continueChkBox);
+		add(continueDespiteBadDataContainer);
 	}
 
 	public void setValidationMessage(String validationMessage) {
@@ -183,6 +205,10 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 				target.add(updateExistingDataContainer);
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
+				
+				//TODO: consider invalid custom data to be warning cells rather than error cells
+				continueDespiteBadDataContainer.setVisible(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data"));
+				target.add(continueDespiteBadDataContainer);
 
 				this.containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.study.web.Constants.UPLOAD_STATUS_OF_ERROR_IN_DATA_VALIDATION));
 				this.containerForm.getModelObject().getUpload().setFilename(filename);//have to reset this because the container has the file name...luckily it never changes 
@@ -204,7 +230,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 
 		if (validationMessage != null && validationMessage.length() > 0) {
-			form.getNextButton().setEnabled(false);
+			form.getNextButton().setEnabled(continueChkBox.getModelObject());
 			target.add(form.getWizardButtonContainer());
 			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
 
