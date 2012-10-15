@@ -2,7 +2,12 @@ package au.org.theark.core.model.report.entity;
 
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
@@ -25,7 +30,19 @@ public class Search {
 	private Set<DemographicFieldSearch>  demographicFieldsToReturn;
 //	private Set<QueryFilter> queryFilters;
 	private QueryGrouping topLevelQueryGrouping;
+
+
+	@Id
+	@SequenceGenerator(name = "search_generator", sequenceName = "SEARCH_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "search_generator")
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return id;
+	}
 	
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public void setDemographicFieldsToReturn(Set<DemographicFieldSearch> demographicFieldsToReturn) {
 		this.demographicFieldsToReturn = demographicFieldsToReturn;
@@ -50,12 +67,6 @@ public class Search {
 	}
 	public String getName() {
 		return name;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public Long getId() {
-		return id;
 	}
 	public void setTopLevelQueryGrouping(QueryGrouping topLevelQueryGrouping) {
 		this.topLevelQueryGrouping = topLevelQueryGrouping;

@@ -35,10 +35,16 @@ public class QueryFilter {
 	private Operator operator;
 	private String secondValue; // for between and similar operators
 
+
+
+	@Id
+	@SequenceGenerator(name = "query_filter_generator", sequenceName = "QUERY_FILTER_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "query_filter_generator")
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
 	}
-
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
