@@ -64,7 +64,8 @@ public class Search {
 	public Set<QueryFilter> getQueryFilters() {
 		return queryFilters;
 	}*/
-	
+
+	@Column(name = "NAME", length = 255)
 	public String getName() {
 		return name;
 	}

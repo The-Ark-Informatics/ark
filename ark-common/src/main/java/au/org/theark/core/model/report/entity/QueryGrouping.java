@@ -29,7 +29,7 @@ public class QueryGrouping {
 	}
 
 
-	@Column(name = "NAME", length = 45)
+	@Column(name = "NAME", length = 255)
 	public String getName() {
 		return name;
 	}
