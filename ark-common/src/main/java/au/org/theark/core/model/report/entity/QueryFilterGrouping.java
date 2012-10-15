@@ -1,5 +1,12 @@
 package au.org.theark.core.model.report.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import au.org.theark.core.model.Constants;
+
+@Entity
+@Table(name = "guery_filter_grouping", schema = Constants.REPORT_SCHEMA)
 public class QueryFilterGrouping {
 	private Long id;
 	private QueryGrouping 	parentGrouping;
