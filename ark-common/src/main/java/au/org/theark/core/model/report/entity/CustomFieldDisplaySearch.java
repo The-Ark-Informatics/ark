@@ -2,9 +2,12 @@ package au.org.theark.core.model.report.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -30,6 +33,8 @@ public class CustomFieldDisplaySearch {
 		this.id = id;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CUSTOM_FIELD_DISPLAY_ID")
 	public CustomFieldDisplay getCustomFieldDisplay() {
 		return customFieldDisplay;
 	}
@@ -37,6 +42,8 @@ public class CustomFieldDisplaySearch {
 		this.customFieldDisplay = customFieldDisplay;
 	}
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "SEARCH_ID")
 	public Search getSearch() {
 		return search;
 	}
