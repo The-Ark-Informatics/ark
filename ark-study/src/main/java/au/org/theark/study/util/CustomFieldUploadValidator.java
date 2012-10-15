@@ -608,27 +608,41 @@ public class CustomFieldUploadValidator {
 			}
 		}
 		else if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-			if (customField.getMinValue() != null && customField.getMaxValue() != null) {
+			minValue = customField.getMinValue() == null ? new String() : customField.getMinValue();
+			maxValue = customField.getMaxValue() == null ? new String() : customField.getMaxValue();
+			
+			DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+			dateFormat.setLenient(false);
+			Date dateMinValue = new Date();
+			Date dateMaxValue = new Date();
+			
+			if(!minValue.isEmpty()) {
 				try {
-					DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-					dateFormat.setLenient(false);
-
-					Date dateMinValue = dateFormat.parse(customField.getMinValue());
-					Date dateMaxValue = dateFormat.parse(customField.getMaxValue());
+					dateMinValue = dateFormat.parse(minValue);
 					Date dateFieldValue = dateFormat.parse(valueToValidate);
-
-					if (dateFieldValue.after(dateMaxValue) || dateFieldValue.before(dateMinValue)) {
-						if (dateFieldValue.after(dateMaxValue)) {
-							errorMessages.add(valueToValidate + " is greater than the maximum allowed value of " + dateMaxValue);
-						}
-						if (dateFieldValue.before(dateMinValue)) {
-							errorMessages.add(valueToValidate + " is less than the minimum allowed value of " + dateMinValue);
-						}
+					if (dateFieldValue.before(dateMinValue)) {
+						errorMessages.add("Subject " + subjectUID + " has a value: " + valueToValidate + " which  is less than the minimum allowed value of " + dateFormat.format(dateMinValue));
 						isInValidRange = false;
 					}
 				}
 				catch (ParseException pe) {
-					isInValidRange = false;
+				}
+				catch (NullPointerException npe) {
+				}
+			}
+			
+			if(!maxValue.isEmpty()) {
+				try {
+					dateMaxValue = dateFormat.parse(maxValue);	
+					Date dateFieldValue = dateFormat.parse(valueToValidate);
+					if (dateFieldValue.after(dateMaxValue)) {
+						errorMessages.add("Subject " + subjectUID + " has a value: " + valueToValidate + " which is greater than the maximum allowed value of " + dateFormat.format(dateMaxValue));
+						isInValidRange = false;
+					}
+				}
+				catch (ParseException pe) {
+				}
+				catch (NullPointerException npe) {
 				}
 			}
 		}
