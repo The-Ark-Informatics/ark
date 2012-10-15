@@ -1262,17 +1262,50 @@ public class DataUploader {
 	private SubjectCustomFieldData setValue(CustomField customField, CustomFieldDisplay customFieldDisplay, SubjectCustomFieldData data, String theDataAsString) {
 		// log.warn("cf=" + customField + "\ndata=" + data+ "dataAsString=" + theDataAsString);
 
+		// Rerun the validation check to determine if "invalid" data was in fact ignored and forcibly set to be loaded in
+		boolean isValidData = CustomFieldUploadValidator.validateFieldData(customField, theDataAsString, "", new ArrayList<String>(0), customFieldDisplay.getAllowMultiselect());
+		
 		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-			data.setNumberDataValue(new Double(theDataAsString));
+			try {
+				if(isValidData) {
+					data.setNumberDataValue(new Double(theDataAsString));
+				}
+				else {
+					if(data.getId() != null) {
+						data.setNumberDataValue(null);
+					}
+					data.setErrorDataValue(theDataAsString);
+				}
+			}
+			catch(NumberFormatException nfe) {
+				if(data.getId() != null) {
+					data.setNumberDataValue(null);
+				}
+				data.setErrorDataValue(theDataAsString);
+			}
 		}
 		else if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
 			DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 			Date dateFieldValue;
 			try {
 				dateFieldValue = dateFormat.parse(theDataAsString);
-				data.setDateDataValue(dateFieldValue);
+				if(isValidData) {
+						data.setDateDataValue(dateFieldValue);
+						if(data.getId() != null) {
+							data.setErrorDataValue(null);
+						}
+				}
+				else {
+					if(data.getId() != null) {
+						data.setDateDataValue(null);
+					}
+					data.setErrorDataValue(theDataAsString);
+				}
 			}
 			catch (ParseException e) {
+				if(data.getId() != null) {
+					data.setDateDataValue(null);
+				}
 				data.setErrorDataValue(theDataAsString);
 			}
 		}
@@ -1282,7 +1315,15 @@ public class DataUploader {
 					theDataAsString = theDataAsString.replaceAll(" ", ";");
 				}
 			}
-			data.setTextDataValue(theDataAsString);
+			if(isValidData) {
+				data.setTextDataValue(theDataAsString);
+			}
+			else {
+				if(data.getId() != null) {
+					data.setTextDataValue(null);
+				}
+				data.setErrorDataValue(theDataAsString);
+			}
 		}
 		return data;
 	}
