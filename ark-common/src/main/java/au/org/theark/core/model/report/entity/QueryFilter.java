@@ -2,9 +2,14 @@ package au.org.theark.core.model.report.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -22,8 +27,7 @@ public class QueryFilter {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "query_filter_generator")
     @Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	private Long id;
-	// which contraints field, operator, value, nullableSecondValue (eg in between),
-	private Prefix prefix; //eg NOT, IN, 
+	 
 //	int numberOfLeftBracketsBeforePrecursor;
 //	int numberOfLeftBracketsAfterPrecursor;
 //	int numberOfRightBracketsBeforeJoin;
@@ -32,10 +36,12 @@ public class QueryFilter {
 	private DemographicField demographicField;	
 	private CustomFieldDisplay customFieldDisplay;
 	private String value;
-	private Operator operator;
 	private String secondValue; // for between and similar operators
-
-
+	@Enumerated(EnumType.STRING)
+	private Operator operator;
+// which contraints field, operator, value, nullableSecondValue (eg in between),
+   @Enumerated(EnumType.STRING)
+	private Prefix prefix; //eg NOT, IN,
 
 	@Id
 	@SequenceGenerator(name = "query_filter_generator", sequenceName = "QUERY_FILTER_SEQ")
@@ -53,7 +59,8 @@ public class QueryFilter {
 //		join.
 	}
 
-
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "DEMOGRAPHIC_FIELD_ID")
 	public DemographicField getDemographicField() {
 		return demographicField;
 	}
@@ -61,14 +68,8 @@ public class QueryFilter {
 		this.demographicField = demographicField;
 	}
 
-	public Prefix getPrefix() {
-		return prefix;
-	}
-
-	public void setPrefix(Prefix prefix) {
-		this.prefix = prefix;
-	}
-
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CUSTOM_FIELD_DISPLAY_ID")
 	public CustomFieldDisplay getCustomFieldDisplay() {
 		return customFieldDisplay;
 	}
@@ -77,6 +78,7 @@ public class QueryFilter {
 		this.customFieldDisplay = customFieldDisplay;
 	}
 
+	@Column(name ="VALUE")
 	public String getValue() {
 		return value;
 	}
@@ -85,6 +87,7 @@ public class QueryFilter {
 		this.value = value;
 	}
 
+	@Column(name ="OPERATOR")
 	public Operator getOperator() {
 		return operator;
 	}
@@ -93,6 +96,7 @@ public class QueryFilter {
 		this.operator = operator;
 	}
 
+	@Column(name = "SECOND_VALUE")
 	public String getSecondValue() {
 		return secondValue;
 	}
@@ -101,5 +105,13 @@ public class QueryFilter {
 		this.secondValue = secondValue;
 	}
 
+	@Column(name = "PREFIX")
+	public Prefix getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(Prefix prefix) {
+		this.prefix = prefix;
+	}
 
 }
