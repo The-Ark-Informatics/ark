@@ -1,6 +1,15 @@
-USE LIMS;
-CREATE TABLE `biospecimen_protocol` (
+USE lims;
+CREATE TABLE `lims`.`biospecimen_protocol` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `NAME` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB;
+
+ALTER TABLE `lims`.`biospecimen` ADD COLUMN `BIOSPECIMEN_PROTOCOL_ID` INT(11) NULL  AFTER `CONCENTRATION` , ADD COLUMN `PURITY` FLOAT NULL  AFTER `BIOSPECIMEN_PROTOCOL_ID` , 
+  ADD CONSTRAINT `fk_biospecimen_protocol`
+  FOREIGN KEY (`BIOSPECIMEN_PROTOCOL_ID` )
+  REFERENCES `lims`.`biospecimen_protocol` (`ID` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `fk_biospecimen_protocol` (`BIOSPECIMEN_PROTOCOL_ID` ASC) ;
+
