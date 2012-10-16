@@ -37,10 +37,7 @@ public class QueryFilter {
 	private CustomFieldDisplay customFieldDisplay;
 	private String value;
 	private String secondValue; // for between and similar operators
-	@Enumerated(EnumType.STRING)
 	private Operator operator;
-// which contraints field, operator, value, nullableSecondValue (eg in between),
-   @Enumerated(EnumType.STRING)
 	private Prefix prefix; //eg NOT, IN,
 
 	@Id
@@ -56,7 +53,6 @@ public class QueryFilter {
 	}
 	
 	public QueryFilter(){
-//		join.
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -87,6 +83,7 @@ public class QueryFilter {
 		this.value = value;
 	}
 
+	@Enumerated(EnumType.STRING)
 	@Column(name ="OPERATOR")
 	public Operator getOperator() {
 		return operator;
@@ -105,6 +102,7 @@ public class QueryFilter {
 		this.secondValue = secondValue;
 	}
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "PREFIX")
 	public Prefix getPrefix() {
 		return prefix;
