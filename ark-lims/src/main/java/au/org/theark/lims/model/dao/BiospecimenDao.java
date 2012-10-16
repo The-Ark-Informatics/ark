@@ -47,6 +47,7 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenGrade;
+import au.org.theark.core.model.lims.entity.BiospecimenProtocol;
 import au.org.theark.core.model.lims.entity.BiospecimenQuality;
 import au.org.theark.core.model.lims.entity.BiospecimenStatus;
 import au.org.theark.core.model.lims.entity.BiospecimenStorage;
@@ -690,5 +691,11 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 				getSession().saveOrUpdate(invCell);
 			}
 		}
+	}
+
+	public List<BiospecimenProtocol> getBiospecimenProtocolList() {
+		Criteria criteria = getSession().createCriteria(BiospecimenProtocol.class);
+		List<BiospecimenProtocol> list = criteria.list();
+		return list;
 	}
 }
