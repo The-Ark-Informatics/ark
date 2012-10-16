@@ -2,9 +2,12 @@ package au.org.theark.core.model.report.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -30,6 +33,8 @@ public class DemographicFieldSearch {
 		this.id = id;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SEARCH_ID")
 	public Search getSearch() {
 		return search;
 	}
@@ -37,6 +42,8 @@ public class DemographicFieldSearch {
 		this.search = search;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "DEMOGRAPHIC_FIELD_ID")
 	public DemographicField getDemographicField() {
 		return demographicField;
 	}
