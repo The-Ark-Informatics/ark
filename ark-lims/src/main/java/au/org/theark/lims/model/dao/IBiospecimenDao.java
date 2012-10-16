@@ -29,6 +29,7 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenGrade;
+import au.org.theark.core.model.lims.entity.BiospecimenProtocol;
 import au.org.theark.core.model.lims.entity.BiospecimenQuality;
 import au.org.theark.core.model.lims.entity.BiospecimenStatus;
 import au.org.theark.core.model.lims.entity.BiospecimenStorage;
@@ -174,6 +175,8 @@ public interface IBiospecimenDao {
 	public List<String> getAllBiospecimenUIDs(Study study);
 
 	public void batchAliquotBiospecimens(List<Biospecimen> biospecimenList);
+
+	public List<BiospecimenProtocol> getBiospecimenProtocolList();
 	
 	
 	

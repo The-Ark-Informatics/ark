@@ -63,7 +63,6 @@ public class Biospecimen implements java.io.Serializable {
 	private BioCollection				bioCollection;
 	private BioSampletype				sampleType;
 	private InvCell						invCell;
-	//private Long							parentId;
 	private String							parentUid;
 	private Long							oldId;
 	private Boolean						deleted				= false;
@@ -89,6 +88,8 @@ public class Biospecimen implements java.io.Serializable {
 	private BiospecimenStatus			status;
 	private Double							concentration;
 	private Double							amount;
+	private BiospecimenProtocol		biospecimenProtocol;
+	private Double							purity;
 	
 
 	private Set<BioTransaction>		bioTransactions	= new HashSet<BioTransaction>(0);
@@ -416,9 +417,34 @@ public class Biospecimen implements java.io.Serializable {
 		this.concentration = concentration;
 	}
 
+	/**
+	 * @return the biospecimenProtocol
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BIOSPECIMEN_PROTOCOL_ID")
+	public BiospecimenProtocol getBiospecimenProtocol() {
+		return biospecimenProtocol;
+	}
+	
+	/**
+	 * @param biospecimenProtocol the biospecimenProtocol to set
+	 */
+	public void setBiospecimenProtocol(BiospecimenProtocol biospecimenProtocol) {
+		this.biospecimenProtocol = biospecimenProtocol;
+	}
+
 	@Transient
 	public Double getAmount() {
 		return amount;
+	}
+	
+	@Column(name = "PURITY")
+	public Double getPurity() {
+		return purity;
+	}
+
+	public void setPurity(Double purity) {
+		this.purity = purity;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
