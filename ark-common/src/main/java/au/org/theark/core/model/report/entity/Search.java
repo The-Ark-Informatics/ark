@@ -61,7 +61,7 @@ public class Search {
 	public Set<CustomFieldDisplaySearch> getCustomFieldsToReturn() {
 		return customFieldsToReturn;
 	}
-	public void setFieldsToReturn(Set<CustomFieldDisplaySearch> customFieldsToReturn) {
+	public void setCustomFieldsToReturn(Set<CustomFieldDisplaySearch> customFieldsToReturn) {
 		this.customFieldsToReturn = customFieldsToReturn;
 	}
 	
