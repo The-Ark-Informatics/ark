@@ -33,7 +33,6 @@ public class Search {
 	private String name;
 	private Set<CustomFieldDisplaySearch>  customFieldsToReturn;
 	private Set<DemographicFieldSearch>  demographicFieldsToReturn;
-//	private Set<QueryFilter> queryFilters;
 	private QueryGrouping topLevelQueryGrouping;
 
 
@@ -65,12 +64,6 @@ public class Search {
 		this.customFieldsToReturn = customFieldsToReturn;
 	}
 	
-/*	public void setQueryFilters(Set<QueryFilter> queryFilters) {
-		this.queryFilters = queryFilters;
-	}
-	public Set<QueryFilter> getQueryFilters() {
-		return queryFilters;
-	}*/
 
 	@Column(name = "NAME", length = 255)
 	public String getName() {
