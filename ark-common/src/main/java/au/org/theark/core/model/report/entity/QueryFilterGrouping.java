@@ -2,11 +2,16 @@ package au.org.theark.core.model.report.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 
 import au.org.theark.core.model.Constants;
 
@@ -31,14 +36,18 @@ public class QueryFilterGrouping {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PARENT_GROUPING_ID")
 	public QueryGrouping getParentGrouping() {
 		return parentGrouping;
 	}
 	public void setParentGrouping(QueryGrouping parentGrouping) {
 		this.parentGrouping = parentGrouping;
 	}
-	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LEFT_FILTER_ID")
 	public QueryFilter getLeftFilter() {
 		return leftFilter;
 	}
@@ -46,13 +55,16 @@ public class QueryFilterGrouping {
 		this.leftFilter = leftFilter;
 	}
 	
+	@Enumerated(EnumType.STRING)
+	@JoinColumn(name = "JOIN_TO_NEXT_FILTER")
 	public JoinType getJoinToNextFilter() {
 		return joinToNextFilter;
 	}
 	public void setJoinToNextFilter(JoinType joinToNextFilter) {
 		this.joinToNextFilter = joinToNextFilter;
 	}
-	
+
+	@JoinColumn(name = "PRECEDENCE")
 	public Long getPrecedence() {
 		return precedence;
 	}
