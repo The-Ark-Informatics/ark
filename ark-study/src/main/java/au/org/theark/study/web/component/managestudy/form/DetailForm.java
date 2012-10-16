@@ -1267,6 +1267,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
+		logoFileUploadField.clearInput();
+		target.add(logoFileUploadField);
 		target.add(feedBackPanel);
 	}
 
