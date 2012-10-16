@@ -268,20 +268,18 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
-		
 		try {
 			iPhenotypicService.deletePhenoCollection(cpModel.getObject().getPhenoCollection());
+			this.info("Subject Dataset " + cpModel.getObject().getPhenoCollection().getId() + " was deleted successfully");
+			onClose(target);
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
 		}
 		catch (EntityCannotBeRemoved e) {
-			log.error(e.getMessage());
+			error(e.getMessage());
 		}
-		this.info("Subject Dataset " + cpModel.getObject().getPhenoCollection().getId() + " was deleted successfully");
 		processErrors(target);
-
-		onClose(target);
 	}
 
 	@Override
