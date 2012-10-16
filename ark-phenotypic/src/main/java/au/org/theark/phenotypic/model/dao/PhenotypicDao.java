@@ -255,8 +255,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	 */
 
 	public void deletePhenoCollection(PhenoCollection collection) throws ArkSystemException, EntityCannotBeRemoved {
-		getSession().delete(collection);
-
 		if (!phenoCollectionHasData(collection)) {
 			getSession().delete(collection);
 		}
