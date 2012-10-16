@@ -2,9 +2,12 @@ package au.org.theark.core.model.report.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -16,7 +19,8 @@ public class QueryGroupingGrouping {
 	private	Long id;
 	private QueryGrouping 	parentGrouping;
 	private QueryGrouping	leftGrouping;
-	private JoinType 		joinToNextFilter;
+	// Actually JoinType
+	private String 		joinToNextFilter;
 	private Long			precedence; //or order...but didn't want to confuse with order by
 
 
@@ -32,6 +36,8 @@ public class QueryGroupingGrouping {
 		this.id = id;
 	}
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PARENT_GROUPING_ID")
 	public QueryGrouping getParentGrouping() {
 		return parentGrouping;
 	}
@@ -39,6 +45,8 @@ public class QueryGroupingGrouping {
 		this.parentGrouping = parentGrouping;
 	}
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LEFT_GROUPING_ID")
 	public QueryGrouping getLeftGrouping() {
 		return leftGrouping;
 	}
@@ -46,13 +54,15 @@ public class QueryGroupingGrouping {
 		this.leftGrouping = leftGrouping;
 	}
 	
-	public JoinType getJoinToNextFilter() {
+	@Column(name = "JOIN_TO_NEXT_FILTER")
+	public String getJoinToNextFilter() {
 		return joinToNextFilter;
 	}
-	public void setJoinToNextFilter(JoinType joinToNextFilter) {
+	public void setJoinToNextFilter(String joinToNextFilter) {
 		this.joinToNextFilter = joinToNextFilter;
 	}
 	
+	@Column(name = "PRECEDENCE")
 	public Long getPrecedence() {
 		return precedence;
 	}

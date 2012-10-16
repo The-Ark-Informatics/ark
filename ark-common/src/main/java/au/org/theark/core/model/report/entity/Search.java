@@ -2,11 +2,16 @@ package au.org.theark.core.model.report.entity;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -44,6 +49,7 @@ public class Search {
 		this.id = id;
 	}
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "demographicField")
 	public Set<DemographicFieldSearch> getDemographicFieldsToReturn() {
 		return demographicFieldsToReturn;
 	}
@@ -51,6 +57,7 @@ public class Search {
 		this.demographicFieldsToReturn = demographicFieldsToReturn;
 	}
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
 	public Set<CustomFieldDisplaySearch> getCustomFieldsToReturn() {
 		return customFieldsToReturn;
 	}
@@ -73,6 +80,8 @@ public class Search {
 		this.name = name;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TOP_LEVEL_GROUPING_ID")
 	public QueryGrouping getTopLevelQueryGrouping() {
 		return topLevelQueryGrouping;
 	}
