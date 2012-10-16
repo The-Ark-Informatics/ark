@@ -259,7 +259,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			getSession().delete(collection);
 		}
 		else {
-			throw new EntityCannotBeRemoved("The Collection: " + collection.getName() + " has data associated and cannot be removed.");
+			throw new EntityCannotBeRemoved("The Data Set: " + collection.getName() + " has data associated and cannot be removed.");
 		}
 	}
 /*
