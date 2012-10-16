@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 
 import au.org.theark.core.model.Constants;
 
@@ -20,7 +22,7 @@ public class QueryGroupingGrouping {
 	private QueryGrouping 	parentGrouping;
 	private QueryGrouping	leftGrouping;
 	// Actually JoinType
-	private String 		joinToNextFilter;
+	private JoinType 		joinToNextFilter;
 	private Long			precedence; //or order...but didn't want to confuse with order by
 
 
@@ -54,11 +56,12 @@ public class QueryGroupingGrouping {
 		this.leftGrouping = leftGrouping;
 	}
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "JOIN_TO_NEXT_FILTER")
-	public String getJoinToNextFilter() {
+	public JoinType getJoinToNextFilter() {
 		return joinToNextFilter;
 	}
-	public void setJoinToNextFilter(String joinToNextFilter) {
+	public void setJoinToNextFilter(JoinType joinToNextFilter) {
 		this.joinToNextFilter = joinToNextFilter;
 	}
 	
