@@ -1022,7 +1022,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 				PhenoCollection phenoCollection = (PhenoCollection) iterator.next();
 
 				Criteria criteria = getSession().createCriteria(PhenoData.class);
-				criteria.add(Restrictions.eq("collection", phenoCollection));
+				criteria.add(Restrictions.eq("phenCollection", phenoCollection));
 				ProjectionList projList = Projections.projectionList();
 				projList.add(Projections.countDistinct("collection"));
 				criteria.setProjection(projList);
@@ -1105,7 +1105,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 
 		if (phenoCollectionVo.getFieldData().getCollection() != null) {
-			criteria.add(Restrictions.eq("collection", phenoCollectionVo.getFieldData().getCollection()));
+			criteria.add(Restrictions.eq("phenoCollection", phenoCollectionVo.getFieldData().getCollection()));
 		}
 
 		if (phenoCollectionVo.getFieldData().getLinkSubjectStudy() != null && phenoCollectionVo.getFieldData().getLinkSubjectStudy().getSubjectUID() != null) {
@@ -1157,7 +1157,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Criteria criteria = getSession().createCriteria(PhenoCollectionUpload.class);
 
 		if (phenoCollection != null) {
-			criteria.add(Restrictions.eq("collection", phenoCollection));
+			criteria.add(Restrictions.eq("phenoCollection", phenoCollection));
 		}
 
 		java.util.List<PhenoCollectionUpload> uploadCollection = criteria.list();
@@ -1204,7 +1204,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Criteria criteria = getSession().createCriteria(PhenoData.class);
 
 		if (phenoCollection != null) {
-			criteria.add(Restrictions.eq("PhenoCollection", phenoCollection));
+			criteria.add(Restrictions.eq("phenoCollection", phenoCollection));
 		}
 
 		return criteria.list().size() > 0;
