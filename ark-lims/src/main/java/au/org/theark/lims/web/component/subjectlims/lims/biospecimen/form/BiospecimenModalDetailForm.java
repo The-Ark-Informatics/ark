@@ -65,6 +65,7 @@ import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
 import au.org.theark.core.model.lims.entity.BiospecimenGrade;
+import au.org.theark.core.model.lims.entity.BiospecimenProtocol;
 import au.org.theark.core.model.lims.entity.BiospecimenQuality;
 import au.org.theark.core.model.lims.entity.BiospecimenStatus;
 import au.org.theark.core.model.lims.entity.BiospecimenStorage;
@@ -128,6 +129,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private DropDownChoice<BiospecimenAnticoagulant>	anticoagDdc;
 	private DropDownChoice<BiospecimenStatus>				statusDdc;
 	private DropDownChoice<BiospecimenQuality>			qualityDdc;
+	private DropDownChoice<BiospecimenProtocol>			biospecimenProtocol;
+	private TextField<Number>									purity;
 
 	private Label													quantityLbl;
 	private Label													quantityNoteLbl;
@@ -504,6 +507,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		initAnticoagDdc();
 		initStatusDdc();
 		initQualityDdc();
+		initBiospecimenProtocol();
+		purity = new TextField<Number>("biospecimen.purity");
 
 		barcodedChkBox = new CheckBox("biospecimen.barcoded");
 		barcodedChkBox.setVisible(true);
@@ -521,6 +526,13 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		// Focus on Sample Type
 		sampleTypeDdc.add(new ArkDefaultFormFocusBehavior());
+	}
+
+	private void initBiospecimenProtocol() {
+		List<BiospecimenProtocol> list = iLimsService.getBiospecimenProtocolList();
+		ChoiceRenderer<BiospecimenProtocol> choiceRenderer = new ChoiceRenderer<BiospecimenProtocol>(Constants.NAME, Constants.ID);
+		biospecimenProtocol = new DropDownChoice<BiospecimenProtocol>("biospecimen.biospecimenProtocol", list, choiceRenderer);
+		biospecimenProtocol.setNullValid(false);
 	}
 
 	private void initialiseBarcodeImage() {
@@ -654,7 +666,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(anticoagDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(statusDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(qualityDdc);
-
+		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenProtocol);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(purity);
+		
 		// Quantity label depends on new/existing Biospecimen
 		bioTransactionDetailWmc.addOrReplace(quantityNoteLbl);
 		bioTransactionDetailWmc.addOrReplace(quantityLbl);
