@@ -2,7 +2,7 @@ DROP TABLE `reporting`.`query_grouping` ;
 
 CREATE  TABLE `reporting`.`query_grouping` (
   `ID` INT NOT NULL ,
-  `NAME` VARCHAR(45) NULL ,
+  `NAME` VARCHAR(255) NULL ,
   PRIMARY KEY (`ID`) )
 ENGINE = InnoDB ;
 
@@ -62,10 +62,10 @@ ENGINE = InnoDB ;
 DROP  TABLE `reporting`.`demographic_field_search`;
 CREATE TABLE `reporting`.`demographic_field_search` (   
 	`ID` int(11) NOT NULL,   
-	`CUSTOM_FIELD_DISPLAY_ID` int(11) DEFAULT NULL,   
+	`DEMOGRAPHIC_FIELD_ID` int(11) DEFAULT NULL,   
 	`SEARCH_ID` int(11) DEFAULT NULL,   
 	PRIMARY KEY (`ID`),   
-	KEY `fk_dfs_custom_field_display` (`CUSTOM_FIELD_DISPLAY_ID`),
+	KEY `fk_dfs_demographic_field` (`DEMOGRAPHIC_FIELD_ID`),
    	KEY `fk_dfs_search` (`SEARCH_ID`) ) 
 ENGINE = InnoDB 
 COMMENT='many2many join demographic_field and search';
@@ -109,20 +109,20 @@ ALTER TABLE `reporting`.`query_filter`
 DROP  TABLE `reporting`.`query_filter_grouping`;
 CREATE  TABLE `reporting`.`query_filter_grouping` (
   `ID` INT NOT NULL ,
-  `PARENT_GROUPING` INT NOT NULL ,
-  `LEFT_FILTER` INT NOT NULL ,
+  `PARENT_GROUPING_ID` INT NOT NULL ,
+  `LEFT_FILTER_ID` INT NOT NULL ,
   `JOIN_TO_NEXT_FILTER` VARCHAR(56) NULL ,
   `PRECEDENCE` INT NULL ,
   PRIMARY KEY (`ID`) ,
-  INDEX `fk_qfg_qg_idx` (`PARENT_GROUPING` ASC) ,
-  INDEX `fk_qfg_qf_idx` (`LEFT_FILTER` ASC) ,
+  INDEX `fk_qfg_qg_idx` (`PARENT_GROUPING_ID` ASC) ,
+  INDEX `fk_qfg_qf_idx` (`LEFT_FILTER_ID` ASC) ,
   CONSTRAINT `fk_qfg_qg`
-    FOREIGN KEY (`PARENT_GROUPING` )
+    FOREIGN KEY (`PARENT_GROUPING_ID` )
     REFERENCES `reporting`.`query_grouping` (`ID` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_qfg_qf`
-    FOREIGN KEY (`LEFT_FILTER` )
+    FOREIGN KEY (`LEFT_FILTER_ID` )
     REFERENCES `reporting`.`query_filter` (`ID` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -130,11 +130,11 @@ ENGINE = InnoDB;
 # TODO analyse whether we want cascade.
 
 
-
+DROP TABLE  `reporting`.`query_grouping_grouping`;
 CREATE  TABLE `reporting`.`query_grouping_grouping` (
   `ID` INT NOT NULL ,
-  `PARENT_GROUPING` INT NOT NULL ,
-  `LEFT_GROUPING` INT NOT NULL ,
+  `PARENT_GROUPING_ID` INT NOT NULL ,
+  `LEFT_GROUPING_ID` INT NOT NULL ,
   `JOIN_TO_NEXT_FILTER` VARCHAR(56) NULL ,
   `PRECEDENCE` INT NULL ,
   PRIMARY KEY (`ID`) ,
