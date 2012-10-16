@@ -147,6 +147,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
              // Enable getData button when customFieldGroup actually selected
              getDataButton.setEnabled(customFieldGroupDdc.getValue() != null && !customFieldGroupDdc.getValue().isEmpty());
              target.add(getDataButton);
+             target.add(feedbackPanel);
          }
      });
 		
@@ -260,6 +261,11 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		getDataButton = new AjaxButton("getData") {
 
 			private static final long	serialVersionUID	= 1L;
+			
+			@Override
+			public boolean isEnabled() {
+				return (true);
+			}
 
 			@Override
 			public boolean isVisible() {
@@ -273,30 +279,35 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getPhenoCollection().getLinkSubjectStudy();
-				
-				List<CustomFieldGroup> customFieldGroups = new ArrayList<CustomFieldGroup>(0);
-				CustomFieldGroup cfg = iPhenotypicService.getCustomFieldGroupById(new Long(customFieldGroupDdc.getValue()));
-				customFieldGroups.add(cfg);
-				
-				List<CustomField> customFields = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(cfg);
-				List<String> subjectUids = new ArrayList<String>(0);
-				subjectUids.add(linkSubjectStudy.getSubjectUID());
-				List<List<String>> dataSet = iPhenotypicService.getPhenoDataAsMatrix(linkSubjectStudy.getStudy(), subjectUids, customFields, customFieldGroups);
-				
-				phenoDataView = new DataTablePanel("phenoDataView", dataSet);
-				PhenoCollectionListForm.this.addOrReplace(phenoDataView);
-				target.add(phenoDataView);
+				if(customFieldGroupDdc.getValue().isEmpty()) {
+					error("Please select a Data Set");	
+				}
+				else {
+					LinkSubjectStudy linkSubjectStudy = cpModel.getObject().getPhenoCollection().getLinkSubjectStudy();
+					
+					List<CustomFieldGroup> customFieldGroups = new ArrayList<CustomFieldGroup>(0);
+					CustomFieldGroup cfg = iPhenotypicService.getCustomFieldGroupById(new Long(customFieldGroupDdc.getValue()));
+					customFieldGroups.add(cfg);
+					
+					List<CustomField> customFields = iPhenotypicService.getCustomFieldsLinkedToCustomFieldGroup(cfg);
+					List<String> subjectUids = new ArrayList<String>(0);
+					subjectUids.add(linkSubjectStudy.getSubjectUID());
+					List<List<String>> dataSet = iPhenotypicService.getPhenoDataAsMatrix(linkSubjectStudy.getStudy(), subjectUids, customFields, customFieldGroups);
+					
+					phenoDataView = new DataTablePanel("phenoDataView", dataSet);
+					PhenoCollectionListForm.this.addOrReplace(phenoDataView);
+					target.add(phenoDataView);
+				}
+				target.add(feedbackPanel);
 			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				this.error("Unexpected error: Unable to proceed with New");
+				target.add(feedbackPanel);
 			}
 		};
 		getDataButton.setDefaultFormProcessing(false);
-		getDataButton.setEnabled(customFieldGroupDdc.getValue() != null && (!customFieldGroupDdc.getValue().isEmpty()));
-
 		add(getDataButton);
 	}
 
@@ -407,6 +418,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 		modalWindow.setTitle("Subject Dataset Details");
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);
+		modalWindow.repaintComponent(getDataButton);
 	}
 
 	/**
