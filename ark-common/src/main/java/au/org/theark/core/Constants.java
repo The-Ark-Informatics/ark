@@ -424,4 +424,8 @@ public class Constants {
 	//Security permission types
 	public static final String PERMISSION_UPDATE="UPDATE";
 	public static final String	ENCODED_VALUES_PATTERN	= "(-?[0-9]+=[^;]+;)+";
+	public static final String SEARCH_ID = "search.id";
+	public static final String SEARCH_NAME = "search.name";
+
+
 }
