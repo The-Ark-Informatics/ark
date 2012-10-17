@@ -65,47 +65,41 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 /**
  * CustomField's DetailForm
  * 
- * Follows a slightly different abstraction model again trying to improve
- * on top of the existing CRUD abstraction classes.  Of note:
- * - Receive a (compound property) model instead of the container form, 
- * which should make it lighter than passing the container form in.
- * - We do not have to pass in the container form's model/VO, but instead
- * this can use an independent model for an independent VO.
+ * Follows a slightly different abstraction model again trying to improve on top of the existing CRUD abstraction classes. Of note: - Receive a
+ * (compound property) model instead of the container form, which should make it lighter than passing the container form in. - We do not have to pass
+ * in the container form's model/VO, but instead this can use an independent model for an independent VO.
  * 
  * @auther elam
  * 
- * Does not use the containerForm under the revised abstraction.
+ *         Does not use the containerForm under the revised abstraction.
  */
-@SuppressWarnings({ "serial", "unchecked", "unused" })
+@SuppressWarnings( { "serial", "unchecked", "unused" })
 public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>			iArkCommonService;
+	private IArkCommonService<Void>				iArkCommonService;
 
-	private int										mode;
+	private int											mode;
 
-	private TextField<String>					fieldIdTxtFld;
-	private TextField<String>					fieldNameTxtFld;
-	private DropDownChoice<FieldType>		fieldTypeDdc;
+	private TextField<String>						fieldIdTxtFld;
+	private TextField<String>						fieldNameTxtFld;
+	private DropDownChoice<FieldType>			fieldTypeDdc;
 
-	private TextArea<String>					fieldDescriptionTxtAreaFld;
-	private DropDownChoice<UnitType>			fieldUnitTypeDdc;
-//	private TextField<String>					fieldMinValueTxtFld;
-//	private TextField<String>					fieldMaxValueTxtFld;
-	private TextArea<String>					fieldEncodedValuesTxtFld;
-	private TextField<String>					fieldMissingValueTxtFld;
-	
-	private TextArea<String>					fieldLabelTxtAreaFld;
-	private CheckBox							fieldDisplayRequiredChkBox;
-	private CheckBox							fieldAllowMultiselectChkBox;
-//	private TextArea<String>					fieldDisplayRequireMsgTxtAreaFld;
+	private TextArea<String>						fieldDescriptionTxtAreaFld;
+	private DropDownChoice<UnitType>				fieldUnitTypeDdc;
+	private TextArea<String>						fieldEncodedValuesTxtFld;
+	private TextField<String>						fieldMissingValueTxtFld;
+
+	private TextArea<String>						fieldLabelTxtAreaFld;
+	private CheckBox									fieldDisplayRequiredChkBox;
+	private CheckBox									fieldAllowMultiselectChkBox;
 	private DropDownChoice<CustomFieldGroup>	fieldDisplayFieldGroupDdc;
-	
-	protected WebMarkupContainer 				customFieldDetailWMC;
-	protected WebMarkupContainer				minMaxValueEntryWMC;
-	protected WebMarkupContainer				customFieldDisplayDetailWMC;
-	protected Panel			 					customFieldDisplayPositionPanel;
-	protected Panel								minValueEntryPnl;
-	protected Panel								maxValueEntryPnl;
+
+	protected WebMarkupContainer					customFieldDetailWMC;
+	protected WebMarkupContainer					minMaxValueEntryWMC;
+	protected WebMarkupContainer					customFieldDisplayDetailWMC;
+	protected Panel									customFieldDisplayPositionPanel;
+	protected Panel									minValueEntryPnl;
+	protected Panel									maxValueEntryPnl;
 
 	protected IModel<List<CustomFieldGroup>>	cfGroupDdcListModel;
 
@@ -121,16 +115,16 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
 		// Initialise the model to be empty for now
 		cfGroupDdcListModel = new ListModel<CustomFieldGroup>();
-		
+
 		refreshEntityFromBackend();
 	}
-	
+
 	protected void refreshEntityFromBackend() {
 		// Refresh the entity from the backend
 		if (getModelObject().getCustomField().getId() != null) {
 			CustomField cfFromBackend = iArkCommonService.getCustomField(getModelObject().getCustomField().getId());
 			getModelObject().setCustomField(cfFromBackend);
-			
+
 			CustomFieldDisplay cfdFromBackend;
 			cfdFromBackend = iArkCommonService.getCustomFieldDisplayByCustomField(cfFromBackend);
 			getModelObject().setCustomFieldDisplay(cfdFromBackend);
@@ -149,7 +143,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		fieldTypeDdc = new DropDownChoice<FieldType>(Constants.FIELDVO_CUSTOMFIELD_FIELD_TYPE, fieldTypeCollection, fieldTypeRenderer) {
 			@Override
 			protected void onBeforeRender() {
-				if(!isNew()) {
+				if (!isNew()) {
 					boolean hasData = iArkCommonService.customFieldHasData(cpModel.getObject().getCustomField());
 					// Disable fieldType if data exists for the field
 					setEnabled(!hasData);
@@ -178,11 +172,19 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			fieldAllowMultiselectChkBox.setEnabled(true);
 		}
 		else {
+			// Forcibly reset encoded values and allow multi when NUMBER or DATE
+			String encVals = fieldEncodedValuesTxtFld.getDefaultModelObjectAsString();
+			if (!encVals.isEmpty()) {
+				fieldEncodedValuesTxtFld.setDefaultModelObject(null);
+			}
 			fieldEncodedValuesTxtFld.setEnabled(false);
+			if(fieldAllowMultiselectChkBox.getDefaultModelObject() != null) {
+				fieldAllowMultiselectChkBox.setDefaultModelObject(false);
+			}
 			fieldAllowMultiselectChkBox.setEnabled(false);
 		}
 	}
-	
+
 	private void updateUnitTypeDdc() {
 		FieldType fieldType = getModelObject().getCustomField().getFieldType();
 		if (fieldType != null && !fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
@@ -210,7 +212,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 
 				public void detach() {
 				}
-				
+
 			};
 			minValueEntryPnl = new TextDataEntryPanel("minValueEntryPanel", dummyModel, new Model<String>("MinValue"));
 			minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
@@ -219,7 +221,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			maxValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 			maxValueEntryPnl.setEnabled(false);
 		}
-//	Not supporting min and max value for CHARACTER fieldTypes 
+		// Not supporting min and max value for CHARACTER fieldTypes
 		else if (fieldType.getName().equals(Constants.NUMBER_FIELD_TYPE_NAME)) {
 			// NUMBER fieldType
 			IModel<Double> minValueMdl = new PropertyModel<Double>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
@@ -231,12 +233,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		}
 		else if (fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
 			// DATE fieldType
-			IModel<Date> minValueMdl = new StringDateModel(
-														new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE),
-														au.org.theark.core.Constants.DD_MM_YYYY);
-			IModel<Date> maxValueMdl = new StringDateModel(
-														new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE),
-														au.org.theark.core.Constants.DD_MM_YYYY);
+			IModel<Date> minValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
+			IModel<Date> maxValueMdl = new StringDateModel(new PropertyModel<String>(getModelObject(), Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE), au.org.theark.core.Constants.DD_MM_YYYY);
 			minValueEntryPnl = new DateDataEntryPanel("minValueEntryPanel", minValueMdl, new Model<String>("MinValue"));
 			minValueEntryPnl.setOutputMarkupPlaceholderTag(true);
 			maxValueEntryPnl = new DateDataEntryPanel("maxValueEntryPanel", maxValueMdl, new Model<String>("MaxValue"));
@@ -245,20 +243,19 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		minMaxValueEntryWMC.addOrReplace(minValueEntryPnl);
 		minMaxValueEntryWMC.addOrReplace(maxValueEntryPnl);
 	}
-	
+
 	private void initUnitTypeDdc() {
 		UnitType unitTypeCriteria = new UnitType();
 		unitTypeCriteria.setArkFunction(cpModel.getObject().getCustomField().getArkFunction());
 		List<UnitType> unitTypeList = iArkCommonService.getUnitTypes(unitTypeCriteria);
-		// assumes that if the unit.name will appear within the unit.description 
-		
+		// assumes that if the unit.name will appear within the unit.description
+
 		ChoiceRenderer unitTypeRenderer = new ChoiceRenderer(Constants.UNITTYPE_DESCRIPTION, Constants.UNITTYPE_ID);
-		//ChoiceRenderer unitTypeRenderer = new ChoiceRenderer(Constants.UNITTYPE_DESCRIPTION );
 		fieldUnitTypeDdc = new DropDownChoice<UnitType>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE, unitTypeList, unitTypeRenderer);
-		fieldUnitTypeDdc.setNullValid(true);	// null is ok for units
-		fieldUnitTypeDdc.setOutputMarkupId(true);	// unitTypeDdc can be enabled/disabled
+		fieldUnitTypeDdc.setNullValid(true); // null is ok for units
+		fieldUnitTypeDdc.setOutputMarkupId(true); // unitTypeDdc can be enabled/disabled
 	}
-	
+
 	/**
 	 * Call this after the constructor is finished
 	 */
@@ -266,37 +263,49 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		fieldIdTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_ID);
 		fieldNameTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_NAME);
 		fieldNameTxtFld.add(new ArkDefaultFormFocusBehavior());
-		
 		fieldDescriptionTxtAreaFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELD_DESCRIPTION);
 		fieldLabelTxtAreaFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELD_FIELD_LABEL);
-//		fieldMinValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
-//		fieldMaxValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE);
-		
 		fieldMissingValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MISSING_VALUE);
 		fieldDisplayRequiredChkBox = new CheckBox(Constants.FIELDVO_CUSTOMFIELDDISPLAY_REQUIRED);
-		fieldAllowMultiselectChkBox = new CheckBox(Constants.FIELDVO_CUSTOMFIELD_ALLOW_MULTISELECT);
-//		fieldDisplayRequireMsgTxtAreaFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELDDISPLAY_REQUIRED_MSG);
-		
+		fieldAllowMultiselectChkBox = new CheckBox(Constants.FIELDVO_CUSTOMFIELD_ALLOW_MULTISELECT) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public boolean isEnabled() {
+				return (fieldEncodedValuesTxtFld.getModelObject() != null);
+			}
+		};
+
 		if (getModelObject().isUseCustomFieldDisplay()) {
-			//TODO: Have not implemented position support right now
+			// TODO: Have not implemented position support right now
 			customFieldDisplayPositionPanel = new EmptyPanel("customFieldDisplayPositionPanel");
 		}
 		else {
-			customFieldDisplayPositionPanel = new EmptyPanel("customFieldDisplayPositionPanel");		
+			customFieldDisplayPositionPanel = new EmptyPanel("customFieldDisplayPositionPanel");
 		}
-		
+
 		// Initialise Drop Down Choices
 		initFieldTypeDdc();
 		initUnitTypeDdc();
-		
+
 		// Min and Max Value panels rely on fieldTypeDdc being already established
 		minMaxValueEntryWMC = new WebMarkupContainer("minMaxValueEntryWMC");
 		minMaxValueEntryWMC.setOutputMarkupPlaceholderTag(true);
 		initMinMaxValuePnls();
-		
+
 		// unitType and encodedValues rely on fieldTypeDdc being already established
 		fieldEncodedValuesTxtFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELD_ENCODED_VALUES);
 		fieldEncodedValuesTxtFld.setOutputMarkupId(true);
+		fieldEncodedValuesTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				target.add(fieldAllowMultiselectChkBox);
+			}
+		});
+
 		updateEncodedValueFld();
 		updateUnitTypeDdc();
 
@@ -312,11 +321,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		// Enforce particular characters for fieldName
 		fieldNameTxtFld.add(new PatternValidator("[a-zA-Z0-9_-]+"));
 		fieldTypeDdc.setRequired(true);
-		
+
 		fieldLabelTxtAreaFld.add(StringValidator.maximumLength(255));
-		
-		//TODO : perhaps some validation on min max etc
-		
+
+		// TODO : perhaps some validation on min max etc
+
 		// TODO: Add correct validator, possibly custom with better validation message
 		fieldEncodedValuesTxtFld.add(new PatternValidator(au.org.theark.core.Constants.ENCODED_VALUES_PATTERN)).setLabel(
 				new StringResourceModel("customField.encodedValues.validation", this, new Model<String>("Encoded Value definition")));
@@ -329,8 +338,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			// Save the Field
 			try {
 				iArkCommonService.createCustomField(getModelObject());
-				this.info(new StringResourceModel("info.createSuccessMsg", this, null, 
-						new Object[] { getModelObject().getCustomField().getName() }).getString());
+				this.info(new StringResourceModel("info.createSuccessMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
@@ -338,8 +346,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				e.printStackTrace();
 			}
 			catch (ArkUniqueException e) {
-				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, 
-												new Object[] { getModelObject().getCustomField().getName() }).getString());
+				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
 				e.printStackTrace();
 			}
 			processErrors(target);
@@ -348,8 +355,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			// Update the Field
 			try {
 				iArkCommonService.updateCustomField(getModelObject());
-				this.info(new StringResourceModel("info.updateSuccessMsg", this, null, 
-												new Object[] { getModelObject().getCustomField().getName() }).getString());
+				this.info(new StringResourceModel("info.updateSuccessMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
 				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
@@ -357,8 +363,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				e.printStackTrace();
 			}
 			catch (ArkUniqueException e) {
-				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, 
-												new Object[] { getModelObject().getCustomField().getName() }).getString());
+				this.error(new StringResourceModel("error.nonUniqueCFMsg", this, null, new Object[] { getModelObject().getCustomField().getName() }).getString());
 				e.printStackTrace();
 			}
 			processErrors(target);
@@ -373,7 +378,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	protected void processErrors(AjaxRequestTarget target) {
 		target.add(feedBackPanel);
 	}
-
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
@@ -395,7 +399,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
 
 		// Move focus back to Search form
-		editCancelProcess(target);	//this ends up calling onCancel(target)
+		editCancelProcess(target); // this ends up calling onCancel(target)
 	}
 
 	/*
@@ -413,20 +417,22 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		}
 
 	}
-	
+
 	// Allow the model for the CustomFieldGroups to be assessed (but not allow it be to be set)
 	public IModel<List<CustomFieldGroup>> getCfGroupDdcListModel() {
 		return cfGroupDdcListModel;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#addDetailFormComponents()
 	 */
 	@Override
 	protected void addDetailFormComponents() {
 		customFieldDetailWMC = new WebMarkupContainer("customFieldDetailWMC");
 		customFieldDetailWMC.setOutputMarkupPlaceholderTag(true);
-		customFieldDetailWMC.add(fieldIdTxtFld.setEnabled(false));	// Disable ID field editing
+		customFieldDetailWMC.add(fieldIdTxtFld.setEnabled(false)); // Disable ID field editing
 		customFieldDetailWMC.add(fieldNameTxtFld);
 		customFieldDetailWMC.add(fieldDescriptionTxtAreaFld);
 		customFieldDetailWMC.add(fieldTypeDdc);
@@ -435,23 +441,23 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		customFieldDetailWMC.add(fieldEncodedValuesTxtFld);
 		customFieldDetailWMC.add(fieldMissingValueTxtFld);
 		customFieldDetailWMC.add(fieldLabelTxtAreaFld);
-		
+
 		customFieldDisplayDetailWMC = new WebMarkupContainer("customFieldDisplayDetailWMC");
 		customFieldDisplayDetailWMC.add(customFieldDisplayPositionPanel);
 		customFieldDisplayDetailWMC.add(fieldDisplayRequiredChkBox);
 		customFieldDisplayDetailWMC.add(fieldAllowMultiselectChkBox);
-//		customFieldDisplayDetailWMC.add(fieldDisplayRequireMsgTxtAreaFld);
+		// customFieldDisplayDetailWMC.add(fieldDisplayRequireMsgTxtAreaFld);
 		// Only show these fields if necessary...
 		if (getModelObject().isUseCustomFieldDisplay() == false) {
 			customFieldDisplayDetailWMC.setVisible(false);
 		}
-		
-		// TODO: This 'addOrReplace' (instead of just 'add') is a temporary workaround due to the 
-		// detailPanelFormContainer being initialised only once at the top-level container panel. 
+
+		// TODO: This 'addOrReplace' (instead of just 'add') is a temporary workaround due to the
+		// detailPanelFormContainer being initialised only once at the top-level container panel.
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldDetailWMC);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(customFieldDisplayDetailWMC);
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
-		
+
 	}
 
 }
