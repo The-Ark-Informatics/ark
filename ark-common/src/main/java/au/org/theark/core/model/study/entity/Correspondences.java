@@ -30,12 +30,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.worktracking.entity.BillableItem;
 
 @Entity
 @Table(name = "correspondences", schema = Constants.STUDY_SCHEMA)
@@ -56,6 +58,8 @@ public class Correspondences implements Serializable {
 	private String comments;
 	private String attachmentFilename;
 	private byte[] attachmentPayload;
+	
+	private BillableItem billableItem; 
 
 	@Id
 	@SequenceGenerator(name = "correspondences_generator", sequenceName = "CORRESPONDENCES_SEQUENCE")
@@ -195,6 +199,16 @@ public class Correspondences implements Serializable {
 
 	public void setAttachmentPayload(byte[] attachmentPayload) {
 		this.attachmentPayload = attachmentPayload;
+	}
+
+	@OneToOne
+	@JoinColumn(name = "BILLABLE_ITEM_ID")
+	public BillableItem getBillableItem() {
+		return billableItem;
+	}
+
+	public void setBillableItem(BillableItem billableItem) {
+		this.billableItem = billableItem;
 	}
 
 }
