@@ -41,6 +41,9 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.study.entity.ConsentOption;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.DataConversionAndManipulationHelper;
@@ -455,6 +458,9 @@ public class SubjectUploadValidator {
 			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study); // TODO evaluate data in future to know if should get
 																																// all id's in the csv, rather than getting all id's
 																																// in study to compre
+			List<ConsentStatus> consentStatusList = iArkCommonService.getConsentStatus();
+			List<ConsentType> consentTypeList = iArkCommonService.getConsentType();
+			List<ConsentOption> consentOptionList = iArkCommonService.getConsentOptionList();
 
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
@@ -616,6 +622,107 @@ public class SubjectUploadValidator {
 						catch (ParseException pex) {
 							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not in the valid date format of: "
 									+ Constants.DD_MM_YYYY.toLowerCase());
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+					
+					
+					if (csvReader.getIndex("CONSENT_STATUS") > 0) {
+						boolean validData = true;
+						col = csvReader.getIndex("CONSENT_STATUS");
+						cellValue = csvReader.get("CONSENT_STATUS");
+						for(ConsentStatus cs : consentStatusList){
+							if(cellValue.equalsIgnoreCase(cs.getName())) {
+								validData = true;
+								break;
+							}
+							else {
+								validData = false;
+							}
+						}
+						
+						if(!validData) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+					
+					if (csvReader.getIndex("CONSENT_TYPE") > 0) {
+						boolean validData = true;
+						col = csvReader.getIndex("CONSENT_TYPE");
+						cellValue = csvReader.get("CONSENT_TYPE");
+						for(ConsentType ct : consentTypeList){
+							if(cellValue.equalsIgnoreCase(ct.getName())) {
+								validData = true;
+								break;
+							}
+							else {
+								validData = false;
+							}
+						}
+						
+						if(!validData) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+					
+					if (csvReader.getIndex("CONSENT_TO_PASSIVE_DATA_GATHERING") > 0) {
+						boolean validData = true;
+						col = csvReader.getIndex("CONSENT_TO_PASSIVE_DATA_GATHERING");
+						cellValue = csvReader.get("CONSENT_TO_PASSIVE_DATA_GATHERING");
+						for(ConsentOption co : consentOptionList){
+							if(cellValue.equalsIgnoreCase(co.getName())) {
+								validData = true;
+								break;
+							}
+							else {
+								validData = false;
+							}
+						}
+						
+						if(!validData) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+					
+					if (csvReader.getIndex("CONSENT_TO_ACTIVE_CONTACT") > 0) {
+						boolean validData = true;
+						col = csvReader.getIndex("CONSENT_TO_ACTIVE_CONTACT");
+						cellValue = csvReader.get("CONSENT_TO_ACTIVE_CONTACT");
+						for(ConsentOption co : consentOptionList){
+							if(cellValue.equalsIgnoreCase(co.getName())) {
+								validData = true;
+								break;
+							}
+							else {
+								validData = false;
+							}
+						}
+						
+						if(!validData) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+					
+					if (csvReader.getIndex("CONSENT_TO_USE_DATA") > 0) {
+						boolean validData = true;
+						col = csvReader.getIndex("CONSENT_TO_USE_DATA");
+						cellValue = csvReader.get("CONSENT_TO_USE_DATA");
+						for(ConsentOption co : consentOptionList){
+							if(cellValue.equalsIgnoreCase(co.getName())) {
+								validData = true;
+								break;
+							}
+							else {
+								validData = false;
+							}
+						}
+						
+						if(!validData) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
 							errorCells.add(new ArkGridCell(col, row));
 						}
 					}
