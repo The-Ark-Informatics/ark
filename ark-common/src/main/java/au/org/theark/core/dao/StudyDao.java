@@ -54,6 +54,7 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -1520,5 +1521,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (YesNo)criteria.uniqueResult();		
 	}
 	
+	//TODO maybe a query/report/etc dao?
+	//TODO ASAP
+	public List<Search> getSearchesForThisStudy(Study study){
+		Criteria criteria = getSession().createCriteria(Search.class);
+		//THIS NEEDS TO BE STUDY OWNED!!!  criteria.add(Restrictions.eq("s.parentStudy", study));
+		//criteria.add(Restrictions.ne("s.id", study.getId()));
+		
+		return criteria.list();
+	}
 
 }

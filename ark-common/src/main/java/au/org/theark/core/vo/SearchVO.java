@@ -19,16 +19,19 @@
 package au.org.theark.core.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import au.org.theark.core.model.report.entity.Search;
 
 /**
- * @author cellis
+ * @author cellis and travis
  * 
  */
 @SuppressWarnings("serial")
 public class SearchVO implements Serializable {
 	private Search search;
-	
+	private List<Search> listOfSearchesForResultList = new ArrayList<Search>();
 	
 	public SearchVO() {
 
@@ -42,6 +45,17 @@ public class SearchVO implements Serializable {
 
 	public void setSearch(Search search) {
 		this.search = search;
+	}
+
+
+	public List<Search> getListOfSearchesForResultList() {
+		return listOfSearchesForResultList;
+	}
+
+
+	public void setListOfSearchesForResultList(
+			List<Search> listOfSearchesForResultList) {
+		this.listOfSearchesForResultList = listOfSearchesForResultList;
 	}
 
 	

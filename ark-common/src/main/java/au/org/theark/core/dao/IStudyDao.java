@@ -32,6 +32,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -643,5 +644,7 @@ public interface IStudyDao {
 
 	public List<EmailStatus> getAllEmailStatuses();
 	
-	public List<Upload> searchUploadsForBiospecimen(Upload uploadCriteria, List studyListForUser);	
+	public List<Upload> searchUploadsForBiospecimen(Upload uploadCriteria, List studyListForUser);
+
+	public List<Search> getSearchesForThisStudy(Study study);	
 }
