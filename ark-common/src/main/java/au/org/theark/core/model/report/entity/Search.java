@@ -16,6 +16,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
+import au.org.theark.core.model.study.entity.Study;
 
 /**
  * 
@@ -34,6 +35,7 @@ public class Search {
 	private Set<CustomFieldDisplaySearch>  customFieldsToReturn;
 	private Set<DemographicFieldSearch>  demographicFieldsToReturn;
 	private QueryGrouping topLevelQueryGrouping;
+	private Study study;
 
 
 	@Id
@@ -81,7 +83,16 @@ public class Search {
 	public void setTopLevelQueryGrouping(QueryGrouping topLevelQueryGrouping) {
 		this.topLevelQueryGrouping = topLevelQueryGrouping;
 	}
-	
-	
+
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDY_ID")
+	public Study getStudy() {
+		return study;
+	}
+	public void setStudy(Study study) {
+		this.study = study;
+	}
+
 	
 }

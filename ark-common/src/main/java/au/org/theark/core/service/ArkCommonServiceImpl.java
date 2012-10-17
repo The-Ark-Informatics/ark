@@ -71,6 +71,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -1241,4 +1242,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<Upload> searchUploadsForBiospecimen(Upload uploadCriteria, List studyListForUser) {
 		return studyDao.searchUploadsForBiospecimen(uploadCriteria, studyListForUser);
 	}
+
+	public List<Search> getSearchesForThisStudy(Study study){
+		return studyDao.getSearchesForThisStudy(study);
+	}
+
 }

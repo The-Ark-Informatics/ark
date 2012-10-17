@@ -40,6 +40,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -731,4 +732,7 @@ public interface IArkCommonService<T> {
 	public String getPreviousLastname(Person person);
 
 	public List<Upload> searchUploadsForBiospecimen(Upload studyUpload, List<Study> studyListForUser);
+
+	public List<Search> getSearchesForThisStudy(Study study);
+	
 }
