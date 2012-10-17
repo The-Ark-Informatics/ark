@@ -278,7 +278,7 @@ INSERT INTO lims.bio_sampletype (name, sampletype, samplesubtype)
 SELECT DISTINCT CONCAT(sampletype, ' / ', samplesubtype), sampletype, samplesubtype FROM wagerlab.IX_BIOSPECIMEN
 WHERE (sampletype, samplesubtype) NOT IN (SELECT sampletype, samplesubtype FROM lims.bio_sampletype);
 
--- TODO: HANDLE FOR STORED_IN
+-- TODO: HANDLE FOR STORED_IN / GRADE / 
 
 /*
 -- Any Treatment types not already matched
@@ -294,6 +294,18 @@ SET b.units = NVL((SELECT min(bt.unit) FROM wagerlab.IX_BIO_TRANSACTIONS bt WHER
 WHERE b.UNITS IS NULL
 AND STUDYKEY=274
 */
+
+INSERT INTO `lims`.`biospecimen_protocol` (NAME) 
+SELECT DISTINCT protocol FROM wagerlab.IX_BIOSPECIMEN WHERE protocol IS NOT NULL
+AND protocol NOT IN (SELECT NAME FROM lims.biospecimen_protocol);
+
+INSERT INTO `lims`.`biospecimen_grade` (NAME) 
+SELECT DISTINCT GRADE FROM wagerlab.IX_BIOSPECIMEN WHERE GRADE IS NOT NULL
+AND grade NOT IN (SELECT NAME FROM lims.biospecimen_grade);
+
+INSERT INTO `lims`.`biospecimen_storage` (NAME) 
+SELECT DISTINCT STORED_IN FROM wagerlab.IX_BIOSPECIMEN WHERE STORED_IN IS NOT NULL
+AND STORED_IN NOT IN (SELECT NAME FROM lims.biospecimen_storage);
 
 INSERT INTO lims.unit (NAME)
 SELECT DISTINCT unit
@@ -330,7 +342,12 @@ INSERT INTO `lims`.`biospecimen`
 `QUANTITY`,
 `TREATMENT_TYPE_ID`,
 `BARCODED`,
-`UNIT_ID`
+`UNIT_ID`,
+`PURITY`,
+`BIOSPECIMEN_PROTOCOL_ID`
+`BIOSPECIMEN_GRADE_ID`,
+`BIOSPECIMEN_STORAGE_ID`,
+`CONCENTRATION`
 )
 SELECT 
     `b`.`BIOSPECIMENID` as `biospecimen_uid`,
@@ -357,8 +374,13 @@ SELECT
     `b`.`COMMENTS`,
     (`b`.`QTY_COLLECTED` + (IF(`b`.`QTY_REMOVED` IS NULL, 0, `b`.`QTY_REMOVED`))) as `quantity`,
     IFNULL((SELECT id FROM lims.treatment_type tt WHERE UPPER(tt.name) = UPPER(b.TREATMENT)),1) as `treatment_type_id`,
-    0 as `barcoded`,
-    IFNULL((SELECT id FROM lims.unit WHERE name = b.UNITS), 0) as `UNIT_ID`
+    1 as `barcoded`,
+    IFNULL((SELECT id FROM lims.unit WHERE name = b.UNITS), 0) as `UNIT_ID`,
+    `b`.`PURITY`,
+    (SELECT max(id) FROM lims.biospecimen_protocol WHERE name = b.PROTOCOL) as `BIOSPECIMEN_PROTOCOL_ID`,
+    (SELECT max(id) FROM lims.biospecimen_grade WHERE name = b.GRADE) as `BIOSPECIMEN_GRADE_ID`,
+    (SELECT max(id) FROM lims.biospecimen_storage WHERE name = b.STORED_IN) as `BIOSPECIMEN_STORAGE_ID`,
+    b.DNACONC as `CONCENTRATION`
 FROM
     wagerlab.`IX_BIOSPECIMEN` `b`,
     zeus.SUBJECT s,
