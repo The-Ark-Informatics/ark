@@ -13,9 +13,9 @@
 
 				<div class="fldLabel">
 					<div class="label">
-						<label for="componentId">
-							<wicket:message key="study.component.id">
-								Component Id:
+						<label for="searchId">
+							<wicket:message key="search.id">
+								Search Id:
 							</wicket:message>
 						</label>
 					</div>
@@ -24,7 +24,7 @@
 				<div class="fldControl">
 					<div class="label">
 						<!--	this will change to ID -->
-						<input wicket:id="studyComponent.id"	type="text" />
+						<input wicket:id="search.id"	type="text" />
 					</div>
 				</div>
 
@@ -34,8 +34,8 @@
 
 				<div class="fldLabel">
 					<div class="label">
-						<label for="componentId">
-							<wicket:message key="study.component.name">
+						<label for="searchName">
+							<wicket:message key="search.name">
 								Name:
 							</wicket:message>
 						</label>
@@ -44,14 +44,14 @@
 
 				<div class="fldControl">
 					<div class="label">
-						<input wicket:id="studyComponent.name"	type="text" />
+						<input wicket:id="search.name"	type="text" />
 					</div>
 				</div>
 
 				<div class="searchPanelBreaker">
 					&nbsp;
 				</div>
-
+<!-- 
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
@@ -91,7 +91,7 @@
 				<div class="searchPanelBreaker">
 					&nbsp;
 				</div>
-
+-->
 				<!--	Defines the location for buttons -->
 				<div class="actionButtons">
 					<input wicket:id="search" type="submit" wicket:message="value:page.search" />

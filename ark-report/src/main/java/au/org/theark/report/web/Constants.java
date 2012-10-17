@@ -24,7 +24,9 @@ public class Constants {
 	public static final String	REPORT_DETAIL							= "Reports";
 	public static final String	TAB_MODULE_REPORT_DETAIL				= "tab.module.report.detail";
 	public static final String	REPORT_SUBMENU							= "ReportSubMenus";
-
+	public static final String	DATA_EXTRACTION 						= "Data Extraction";
+	public static final String	TAB_MODULE_DATA_EXTRACTION				= "tab.module.report.advanced";
+	
 	public static final String	LOAD_BUTTON								= "load";
 	public static final String	GENERATE_BUTTON							= "generate";
 	public static final String	REPORT_DROP_DOWN_CHOICE					= "report.reportChoice";

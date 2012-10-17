@@ -18,13 +18,21 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.dataextraction;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
-import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.SearchVO;
+import au.org.theark.core.web.component.ArkCRUDHelper;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.report.web.component.dataextraction.form.ContainerForm;
 
 public class SearchResultListPanel extends Panel {
@@ -39,12 +47,12 @@ public class SearchResultListPanel extends Panel {
 	 * 
 	 * @param id
 	 * @param crudContainerVO
-	 * @param studyCompContainerForm
+	 * @param searchContainerForm
 	 */
-	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm studyCompContainerForm) {
+	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm searchContainerForm) {
 		super(id);
 		arkCrudContainerVO = crudContainerVO;
-		containerForm = studyCompContainerForm;
+		containerForm = searchContainerForm;
 	}
 
 	/**
@@ -53,47 +61,46 @@ public class SearchResultListPanel extends Panel {
 	 * @param searchContainer
 	 * @return
 	 */
-	public PageableListView<StudyComp> buildPageableListView(IModel iModel) {
+	public PageableListView<Search> buildPageableListView(IModel iModel) {
 
-		PageableListView<StudyComp> sitePageableListView = new PageableListView<StudyComp>("studyCompList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<Search> sitePageableListView = new PageableListView<Search>("searchList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void populateItem(final ListItem<StudyComp> item) {
-/*
-				StudyComp studyComponent = item.getModelObject();
+			protected void populateItem(final ListItem<Search> item) {
 
-				/* The Component ID *
-				if (studyComponent.getId() != null) {
+				Search search = item.getModelObject();
+
+				/* The Search ID */
+				if (search.getId() != null) {
 					// Add the study Component Key here
-					item.add(new Label("studyComponent.id", studyComponent.getId().toString()));
+					item.add(new Label("search.id", search.getId().toString()));
 				}
 				else {
-					item.add(new Label("studyComponent.id", ""));
+					item.add(new Label("search.id", ""));
 				}
-				/* Component Name Link *
-				item.add(buildLink(studyComponent));
+				/* Search Name Link */
+				item.add(buildLink(search));
 
+				/* The Search Name
+				if (search.getName() != null) {
+					item.add(new Label("search.name", search.getName()));
+				}
+				else {
+					item.add(new Label("search.name", "no name given"));
+				} */
+				
 				// TODO when displaying text escape any special characters
 				/* Description *
-				if (studyComponent.getDescription() != null) {
-					item.add(new Label("studyComponent.description", studyComponent.getDescription()));// the ID here must match the ones in mark-up
+				if (search.getDescription() != null) {
+					item.add(new Label("search.description", search.getDescription()));// the ID here must match the ones in mark-up
 				}
 				else {
-					item.add(new Label("studyComponent.description", ""));// the ID here must match the ones in mark-up
-				}
+					item.add(new Label("search.description", ""));// the ID here must match the ones in mark-up
+				}*/
 
-				/* Add the Keyword *
-				// TODO when displaying text escape any special characters
-				if (studyComponent.getKeyword() != null) {
-					item.add(new Label("studyComponent.keyword", studyComponent.getKeyword()));// the ID here must match the ones in mark-up
-				}
-				else {
-					item.add(new Label("studyComponent.keyword", ""));// the ID here must match the ones in mark-up
-				}
-
-				/* For the alternative stripes *
+				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					private static final long	serialVersionUID	= 1L;
 
@@ -103,23 +110,23 @@ public class SearchResultListPanel extends Panel {
 					}
 				}));
 
-		*/	}
+			}
 		
 		};
 		return sitePageableListView;
 	}
-/*
-	@SuppressWarnings( { "unchecked", "serial" })
-	private AjaxLink buildLink(final StudyComp studyComponent) {
 
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("studyComponent.name") {
+	@SuppressWarnings( { "unchecked", "serial" })
+	private AjaxLink buildLink(final Search search) {
+
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("search.name") {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 
-				SearchVO studyCompVo = containerForm.getModelObject();
-				studyCompVo.setMode(Constants.MODE_EDIT);
-				studyCompVo.setStudyComponent(studyComponent);// Sets the selected object into the model
+				SearchVO searchVo = containerForm.getModelObject();
+				//searchVo.setMode(Constants.MODE_EDIT);
+				//searchVo.setStudyComponent(search);// Sets the selected object into the model
 				// Render the UI
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 
@@ -127,10 +134,10 @@ public class SearchResultListPanel extends Panel {
 		};
 
 		// Add the label for the link
-		Label nameLinkLabel = new Label("nameLbl", studyComponent.getName());
+		Label nameLinkLabel = new Label("nameLbl", search.getName());
 		link.add(nameLinkLabel);
 		return link;
 
 	}
-*/
+
 }

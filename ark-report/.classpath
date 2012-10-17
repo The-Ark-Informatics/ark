@@ -5,5 +5,13 @@
 	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/travis/.m2/repository/org/apache/shiro/shiro-core/1.2.0/shiro-core-1.2.0.jar" sourcepath="/home/travis/.m2/repository/org/apache/shiro/shiro-core/1.2.0/shiro-core-1.2.0-sources.jar">
+		<attributes>
+			<attribute name="maven.groupId" value="org.apache.shiro"/>
+			<attribute name="maven.artifactId" value="shiro-core"/>
+			<attribute name="maven.version" value="1.2.0"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

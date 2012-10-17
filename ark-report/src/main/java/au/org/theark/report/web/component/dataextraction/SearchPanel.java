@@ -24,7 +24,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.report.web.component.dataextraction.form.ContainerForm;
@@ -37,7 +37,7 @@ public class SearchPanel extends Panel {
 
 	private ArkCrudContainerVO				arkCrudContainerVO;
 	private FeedbackPanel					feedBackPanel;
-	private PageableListView<StudyComp>	listView;
+	private PageableListView<Search>	listView;
 
 	/**
 	 * 
@@ -47,17 +47,17 @@ public class SearchPanel extends Panel {
 	 * @param containerForm
 	 * @param listView
 	 */
-	public SearchPanel(String id, ArkCrudContainerVO crudContainerVO, FeedbackPanel feedBackPanel, ContainerForm containerForm, PageableListView<StudyComp> listView) {
+	public SearchPanel(String id, ArkCrudContainerVO crudContainerVO, FeedbackPanel feedBackPanel, ContainerForm containerForm, PageableListView<Search> listView) {
 		super(id);
 		arkCrudContainerVO = crudContainerVO;
 		this.feedBackPanel = feedBackPanel;
 		this.listView = listView;
 	}
 
-	public void initialisePanel(CompoundPropertyModel<SearchVO> studyCompCpm) {
+	public void initialisePanel(CompoundPropertyModel<SearchVO> searchVOCPM) {
 
-		SearchForm searchStudyCompForm = new SearchForm( Constants.SEARCH_FORM, studyCompCpm, arkCrudContainerVO, feedBackPanel, listView);
-		add(searchStudyCompForm);
+		SearchForm searchSearchVOForm = new SearchForm( Constants.SEARCH_FORM, searchVOCPM, arkCrudContainerVO, feedBackPanel, listView);
+		add(searchSearchVOForm);
 	}
 
 }
