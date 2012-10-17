@@ -19,6 +19,12 @@ ENGINE = InnoDB ;
 ALTER TABLE `reporting`.`search` 
 ADD INDEX `fk_search_query_grouping` (`TOP_LEVEL_GROUPING_ID` ASC) ;
 
+ALTER TABLE `reporting`.`search` ADD COLUMN `STUDY_ID` INT NOT NULL  AFTER `TOP_LEVEL_GROUPING_ID` ;
+
+ALTER TABLE `reporting`.`search` 
+	ADD CONSTRAINT `fk_search_study`
+    FOREIGN KEY (`STUDY_ID` )
+    REFERENCES `study`.`study` (`ID` );
 
 DROP  TABLE `reporting`.`custom_field_display_search`;
 CREATE  TABLE `reporting`.`custom_field_display_search` (
