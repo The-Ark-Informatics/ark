@@ -181,12 +181,18 @@ public class SearchResultListPanel extends Panel {
 				else{
 					arkCrudContainerVO.getEditButtonContainer().get(au.org.theark.core.Constants.SAVE).setEnabled(true);
 				}
+				
+				if(billableItemVo.getBillableItem().getAttachmentFilename() !=null){
+					arkCrudContainerVO.getDetailPanelFormContainer().get("deleteButton").setVisible(true);
+				}
+				else{
+					arkCrudContainerVO.getDetailPanelFormContainer().get("deleteButton").setVisible(false);
+				}
 			}
 		};
 		Label nameLinkLabel = new Label("nameLbl", billableItem.getDescription());
 		link.add(nameLinkLabel);
 		return link;
-
 	}
 	
 	private AjaxButton buildDownloadButton(final BillableItem billableItem) {
