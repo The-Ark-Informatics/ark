@@ -80,17 +80,13 @@ public class DataExtractionContainerPanel extends AbstractContainerPanel<SearchV
 
 			@Override
 			protected Object load() {
-				try {
-					Long studySessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-					if (isActionPermitted()){// && studySessionId != null) {
-						Study studyInContext = iArkCommonService.getStudy(studySessionId);
-						containerForm.getModelObject().setListOfSearchesForResultList(iArkCommonService.getSearchesForThisStudy(studyInContext));
-					}
-					throw new ArkSystemException();
+			
+				Long studySessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				if (isActionPermitted()){// && studySessionId != null) {
+					Study studyInContext = iArkCommonService.getStudy(studySessionId);
+					containerForm.getModelObject().setListOfSearchesForResultList(iArkCommonService.getSearchesForThisStudy(studyInContext));
 				}
-				catch (ArkSystemException e) {
-					containerForm.error("A System Exception has occured please contact Support");
-				}
+			
 				pageableListView.removeAll();
 				return containerForm.getModelObject().getListOfSearchesForResultList(); //.getStudyCompList();
 			}
