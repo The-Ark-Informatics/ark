@@ -17,6 +17,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldGroupVO;
@@ -85,7 +86,18 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 		customFieldDisplayIdTxtFld.setEnabled(false);
 		customFieldNameTxtFld = new TextField<String>("customFieldDisplay.customField.name");
 		requiredFieldCb = new CheckBox("customFieldDisplay.required");
-		allowMultiselectCb = new CheckBox("customFieldDisplay.allowMultiselect");
+		allowMultiselectCb = new CheckBox("customFieldDisplay.allowMultiselect") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public boolean isEnabled() {
+				CustomField cf = CustomFieldDisplayForm.this.getModelObject().getCustomFieldDisplay().getCustomField();
+				return (cf.getEncodedValues() !=null && !cf.getEncodedValues().isEmpty());
+			}
+		};
 		
 		saveButton = new AjaxButton(Constants.SAVE) {
 
