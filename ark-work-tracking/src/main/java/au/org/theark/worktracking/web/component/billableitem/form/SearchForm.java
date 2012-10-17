@@ -285,6 +285,7 @@ public class SearchForm  extends AbstractSearchForm<BillableItemVo> {
 		getModelObject().getBillableItem().setCommenceDate(new Date());
 		preProcessDetailPanel(target);
 		arkCrudContainerVO.getEditButtonContainer().get(au.org.theark.core.Constants.SAVE).setEnabled(true);
+		arkCrudContainerVO.getDetailPanelFormContainer().get("deleteButton").setVisible(false);
 	}
 
 	/*
