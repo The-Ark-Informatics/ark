@@ -18,23 +18,23 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.dataextraction;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.shiro.SecurityUtils;
 
-import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.report.web.component.dataextraction.form.ContainerForm;
 
-public class StudyComponentContainerPanel extends AbstractContainerPanel<SearchVO> {
+public class DataExtractionContainerPanel extends AbstractContainerPanel<SearchVO> {
 
 	private static final long				serialVersionUID	= 1L;
 
@@ -43,17 +43,14 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<SearchV
 	private SearchResultListPanel			searchResultPanel;
 	private DetailPanel						detailsPanel;
 
-	private PageableListView<StudyComp>	pageableListView;
+	private PageableListView<Search>	pageableListView;
 
 	private ContainerForm					containerForm;
-
-//	@SpringBean(name = Constants.STUDY_SERVICE)
-//	private IStudyService					studyService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
 
-	public StudyComponentContainerPanel(String id) {
+	public DataExtractionContainerPanel(String id) {
 		super(id);
 
 		/* Initialise the CPM */
@@ -83,22 +80,19 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<SearchV
 
 			@Override
 			protected Object load() {
-/*
 				try {
 					Long studySessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-					if (isActionPermitted() && studySessionId != null) {
+					if (isActionPermitted()){// && studySessionId != null) {
 						Study studyInContext = iArkCommonService.getStudy(studySessionId);
-						containerForm.getModelObject().getStudyComponent().setStudy(studyInContext);
-						containerForm.getModelObject().setStudyCompList(studyService.searchStudyComp(containerForm.getModelObject().getStudyComponent()));
+						containerForm.getModelObject().setListOfSearchesForResultList(iArkCommonService.getSearchesForThisStudy(studyInContext));
 					}
-
+					throw new ArkSystemException();
 				}
 				catch (ArkSystemException e) {
 					containerForm.error("A System Exception has occured please contact Support");
 				}
 				pageableListView.removeAll();
-*/
-				return containerForm.getModelObject(); //.getStudyCompList();
+				return containerForm.getModelObject().getListOfSearchesForResultList(); //.getStudyCompList();
 			}
 		};
 
@@ -119,22 +113,6 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<SearchV
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
-		SearchVO searchVO = new SearchVO();
-/*
-		// Get a result-set by default
-		List<StudyComp> resultList = new ArrayList<StudyComp>();
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		try {
-			if (sessionStudyId != null && sessionStudyId > 0) {
-				resultList = studyService.searchStudyComp(searchVO.getStudyComponent());
-			}
-		}
-		catch (ArkSystemException e) {
-			this.error("A System error occured  while initializing Search Panel");
-		}
-*/
-		List<SearchVO> searchThatWouldUltimatelyComeFromSomeQuery = new ArrayList<SearchVO>();
-		//cpModel.getObject().setSearch(searchThatWouldUltimatelyComeFromSomeQuery);//(resultList);
 		searchComponentPanel = new SearchPanel("searchComponentPanel", arkCrudContainerVO, feedBackPanel, containerForm, pageableListView);
 		searchComponentPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchComponentPanel);

@@ -4,6 +4,20 @@
 	<table width="100%" cellspacing="0" class="dataview" border="0">
 		<tr>
 			<th width="2%">&nbsp;</th>
+			
+			<th width="5%">
+				<label for="searchId">
+					<wicket:message	key="search.id">search ID:</wicket:message>
+				</label>
+			</th>
+			
+			<th width="91%">
+				<label for="searchName">
+					<wicket:message	key="search.name">search ID:</wicket:message>
+				</label>
+			</th>
+		<!-- 
+			<th width="2%">&nbsp;</th>
 			<th width="5%">
 				<label for="studyComponentId">
 					<wicket:message	key="study.component.id">Component ID:</wicket:message>
@@ -23,26 +37,28 @@
 				<label for="studyCompKeyword">
 					<wicket:message	key="study.component.keyword">Keyword:</wicket:message>
 				</label>
-			</th>
+			</th>-->
 			<th width="2%">&nbsp;</th>			
 		</tr>
 		<!--  The Data Result Set -->
-		<tr wicket:id="studyCompList">
+		<tr wicket:id="searchList">
 			<td width="2%">&nbsp;</td>
 			<td width="5%">
-				<span wicket:id="studyComponent.id">100</span>
+				<span wicket:id="search.id">100</span>
 			</td>
-			<td width="15%">
-			  <a href="#"wicket:id="studyComponent.name">
+			<td width="91%">
+			  <a href="#"wicket:id="search.name">
 			  	<span wicket:id="nameLbl">Name</span>
 			  </a>
 			</td>
-			<td width="25%">
-				<span wicket:id="studyComponent.description">Description</span>
-			</td>
-			<td width="20%">
-				<span wicket:id="studyComponent.keyword">Keywords</span>
-			</td>
+			<!-- 
+				<td width="25%">
+					<span wicket:id="studyComponent.description">Description</span>
+				</td>
+				<td width="20%">
+					<span wicket:id="studyComponent.keyword">Keywords</span>
+				</td>
+			-->
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<tfoot>

@@ -29,6 +29,7 @@ import org.apache.wicket.model.Model;
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.report.web.Constants;
+import au.org.theark.report.web.component.dataextraction.DataExtractionContainerPanel;
 import au.org.theark.report.web.component.viewReport.ReportContainerPanel;
 
 public class ReportSubMenuTab extends Panel {
@@ -47,15 +48,18 @@ public class ReportSubMenuTab extends Panel {
 
 		// This way we can get the menus from the back-end. We should source this data from a table in the backend and wrap it up in a class like this
 		MenuModule menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.REPORT_DETAIL);
+		menuModule.setModuleName(Constants.REPORT_DETAIL);  //these are functions and not so much "modules" as they are referened in the ark system
 		menuModule.setResourceKey(Constants.TAB_MODULE_REPORT_DETAIL);
 		moduleTabs.add(menuModule);
+		
+		MenuModule advancedMenuModule = new MenuModule();
+		advancedMenuModule.setModuleName(Constants.DATA_EXTRACTION);  //these are functions and not so much "modules" as they are referened in the ark system
+		advancedMenuModule.setResourceKey(Constants.TAB_MODULE_DATA_EXTRACTION);
+		moduleTabs.add(advancedMenuModule);
 
 		for (final MenuModule moduleName : moduleTabs) {
 			moduleSubTabsList.add(new AbstractTab(new Model<String>(getLocalizer().getString(moduleName.getResourceKey(), ReportSubMenuTab.this, moduleName.getModuleName()))) {
-				/**
-				 * 
-				 */
+
 				private static final long	serialVersionUID	= -7414890128705025350L;
 
 				public boolean isVisible() {
@@ -71,6 +75,11 @@ public class ReportSubMenuTab extends Panel {
 						ReportContainerPanel reportContainerPanel = new ReportContainerPanel(panelId);
 						reportContainerPanel.initialisePanel();
 						panelToReturn = reportContainerPanel;
+					}
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.DATA_EXTRACTION)) {
+						DataExtractionContainerPanel dataExtractionContainerPanel = new DataExtractionContainerPanel(panelId);
+						//dataExtractionContainerPanel.initialiseSearchPanel();   THESE ARE PROTECTED...BUT DO I REALLY NEED TO DO THEM NOW ANYWAY?
+						panelToReturn = dataExtractionContainerPanel;
 					}
 
 					return panelToReturn;

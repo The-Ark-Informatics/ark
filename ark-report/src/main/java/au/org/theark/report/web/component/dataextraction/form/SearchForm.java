@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.dataextraction.form;
 
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -25,7 +27,11 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import au.org.theark.core.model.study.entity.StudyComp;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+
+import au.org.theark.core.Constants;
+import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
@@ -37,17 +43,14 @@ import au.org.theark.core.web.form.AbstractSearchForm;
 public class SearchForm extends AbstractSearchForm<SearchVO> {
 
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService				iArkCommonService;
+	
 	private static final long				serialVersionUID	= 1L;
 	private ArkCrudContainerVO				arkCrudContainerVO;
-	private TextField<String>				studyCompIdTxtFld;
-	private TextField<String>				compNameTxtFld;
-
-//	private TextArea<String>				descriptionTxtArea;
-	private TextArea<String>				keywordTxtArea;
-	private PageableListView<StudyComp>	listView;
-
-//	@SpringBean(name = Constants.STUDY_SERVICE)
-//	private IStudyService					studyService;
+	private TextField<String>				searchIdTxtFld;
+	private TextField<String>				searchNameTxtFld;
+	private PageableListView<Search>		listView;
 
 	/**
 	 * 
@@ -57,7 +60,7 @@ public class SearchForm extends AbstractSearchForm<SearchVO> {
 	 * @param feedBackPanel
 	 * @param listView
 	 */
-	public SearchForm(String id, CompoundPropertyModel<SearchVO> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<StudyComp> listView) {
+	public SearchForm(String id, CompoundPropertyModel<SearchVO> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<Search> listView) {
 
 		super(id, cpmModel, feedBackPanel, arkCrudContainerVO);
 		this.arkCrudContainerVO = arkCrudContainerVO;
@@ -71,15 +74,14 @@ public class SearchForm extends AbstractSearchForm<SearchVO> {
 	}
 
 	protected void addSearchComponentsToForm() {
-		add(studyCompIdTxtFld);
-		add(compNameTxtFld);
-		add(keywordTxtArea);
+		add(searchIdTxtFld);
+		add(searchNameTxtFld);
 	}
 
 	protected void initialiseSearchForm() {
 
-//		studyCompIdTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_ID);
-//		compNameTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_NAME);
+		searchIdTxtFld = new TextField<String>(Constants.SEARCH_ID);
+		searchNameTxtFld = new TextField<String>(Constants.SEARCH_NAME);
 	//	descriptionTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_DESCRIPTION);
 //		keywordTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_KEYWORD);
 	}
@@ -105,24 +107,24 @@ public class SearchForm extends AbstractSearchForm<SearchVO> {
 	protected void onSearch(AjaxRequestTarget target) {
 
 		target.add(feedbackPanel);
-		/*try {
+	//	try {
 
-			List<StudyComp> resultList = studyService.searchStudyComp(getModelObject().getStudyComponent());
+			List<Search> resultList = iArkCommonService.getSearchesForThisStudy(getModelObject().getSearch().getStudy());
 
 			if (resultList != null && resultList.size() == 0) {
 				this.info("Study Component with the specified criteria does not exist in the system.");
 				target.add(feedbackPanel);
 			}
 
-			getModelObject().setStudyCompList(resultList);
+			getModelObject().setListOfSearchesForResultList(resultList);
 			listView.removeAll();
 
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-		}
-		catch (ArkSystemException arkEx) {
-			this.error("A system error has occured. Please try after sometime.");
-		}*/
+	//	}
+	//	catch (ArkSystemException arkEx) {
+	//		this.error("A system error has occured. Please try after sometime.");
+	//	}
 
 	}
 

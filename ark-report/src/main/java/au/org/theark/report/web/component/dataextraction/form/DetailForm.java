@@ -27,9 +27,12 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import au.org.theark.core.model.study.entity.Study;
+
+import au.org.theark.core.Constants;
+import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SearchVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractDetailForm;
 
 /**
@@ -45,15 +48,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 //	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 //	private IArkCommonService	iArkCommonService;
 
-//	@SpringBean(name = Constants.STUDY_SERVICE)
-//	private IStudyService		iStudyService;
-	private Study					study;
-
-	private TextField<String>	componentIdTxtFld;
-	private TextField<String>	componentNameTxtFld;
-	private TextArea<String>	componentDescription;
-	private TextArea<String>	keywordTxtArea;
-
+	private TextField<String>	searchIdTxtFld;
+	private TextField<String>	searchNameTxtFld;
 	private FeedbackPanel		feedBackPanel;
 
 	/**
@@ -71,18 +67,24 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	public void onBeforeRender() {
 		super.onBeforeRender();
-/*		SearchVO studyComponent = containerForm.getModelObject();
-		StudyComp component = studyComponent.getStudyComponent();
-		;
-		if (component != null && component.getId() != null && iStudyService.isStudyComponentHasAttachments(component)) {
+		SearchVO searchVO = containerForm.getModelObject();
+		Search search = searchVO.getSearch();
+//  studyComponent = containerForm.getModelObject();
+		//StudyComp component = studyComponent.getStudyComponent();
+		//;
+		if (search != null && search.getId() != null ) {
 			deleteButton.setEnabled(false);
 		}
 		// If the given component is attached to a file/consents then disable the delete button
-*/
+
 	}
 
 	public void initialiseDetailForm() {
 
+		searchIdTxtFld = new TextField<String>(Constants.SEARCH_ID);
+		searchIdTxtFld.setEnabled(false);
+		searchNameTxtFld = new TextField<String>(Constants.SEARCH_NAME);
+		searchNameTxtFld.add(new ArkDefaultFormFocusBehavior());
 	/*	componentIdTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_ID);
 		componentIdTxtFld.setEnabled(false);
 		componentNameTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_NAME);
@@ -96,10 +98,10 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	}
 
 	public void addDetailFormComponents() {
-		arkCrudContainerVO.getDetailPanelFormContainer().add(componentIdTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(componentNameTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(componentDescription);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(keywordTxtArea);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(searchIdTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(searchNameTxtFld);
+	//	arkCrudContainerVO.getDetailPanelFormContainer().add(componentDescription);
+	//	arkCrudContainerVO.getDetailPanelFormContainer().add(keywordTxtArea);
 	}
 
 	/*
@@ -109,11 +111,11 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	 */
 	@Override
 	protected void attachValidators() {
-		componentNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.component.name.required", componentNameTxtFld, new Model<String>("Study Component Name")));
-		componentNameTxtFld.add(StringValidator.lengthBetween(3, 100)).setLabel(
-				new StringResourceModel("error.study.component.name.length", componentNameTxtFld, new Model<String>("Study Component Name")));
-		componentDescription.add(StringValidator.lengthBetween(5, 500)).setLabel(new StringResourceModel("error.study.component.description.length", this, new Model<String>("Description")));
-		keywordTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("error.study.component.keywords.length", this, new Model<String>("Keywords")));
+		searchNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.search.name.required", searchNameTxtFld, new Model<String>("Search Name")));
+		searchNameTxtFld.add(StringValidator.lengthBetween(1, 255)).setLabel(
+				new StringResourceModel("error.search.name.length", searchNameTxtFld, new Model<String>("Search Name")));
+		//componentDescription.add(StringValidator.lengthBetween(5, 500)).setLabel(new StringResourceModel("error.study.component.description.length", this, new Model<String>("Description")));
+		//keywordTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("error.study.component.keywords.length", this, new Model<String>("Keywords")));
 	}
 
 	/*
@@ -124,8 +126,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
 
-		SearchVO studyCompVo = new SearchVO();
-		containerForm.setModelObject(studyCompVo);
+		SearchVO searchVO = new SearchVO();
+		containerForm.setModelObject(searchVO);
 	}
 
 	/*
