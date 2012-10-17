@@ -12,6 +12,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -62,6 +63,9 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	private DropDownChoice<String>							billableItemInvoiceStatuses;
 	
 	private FileUploadField									subjectsUploadField;
+	private AjaxButton										clearButton;
+	private AjaxButton										deleteButton;
+	private Label											fileNameLbl;
 	
 	private Label							    			researcherLbl;
 	private Label											workRequestLbl;
@@ -143,7 +147,44 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		
 		gstLbl =new Label(Constants.BILLABLE_ITEM_GST);
 		gstLbl.setOutputMarkupId(true);                       
-		gstLbl.setVisible(true);                              
+		gstLbl.setVisible(true);  
+		
+		clearButton = new AjaxButton("clearButton") {			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				subjectsUploadField.clearInput();
+				target.add(subjectsUploadField);
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				subjectsUploadField.clearInput();
+				target.add(subjectsUploadField);
+			}
+		};
+		
+		deleteButton = new AjaxButton("deleteButton") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				BillableItem billableItem=getFormModelObject().getBillableItem();
+				billableItem.setAttachmentPayload(null);
+				billableItem.setAttachmentFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLbl);
+				target.add(this);
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				BillableItem billableItem=getFormModelObject().getBillableItem();
+				billableItem.setAttachmentPayload(null);
+				billableItem.setAttachmentFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLbl);
+				target.add(this);
+			}
+		};
+		deleteButton.setVisible(false);
 		
 		billableItemItemCostTxtField =  new TextField<String>(Constants.BILLABLE_ITEM_ITEM_COST);
 		billableItemItemCostTxtField.add(new AjaxFormComponentUpdatingBehavior("onkeyup"){
@@ -165,6 +206,10 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 				target.add(totalCostLbl);
 			}
 		});
+		
+		fileNameLbl=new Label("billableItem.attachmentFilename");
+		fileNameLbl.setOutputMarkupId(true);                       
+		fileNameLbl.setVisible(true);     
 		
 		initWorkRequestDropDown();
 		initBillableItemTypeDropDown();
@@ -314,7 +359,9 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemItemCostTxtField);
 		
 		arkCrudContainerVO.getDetailPanelFormContainer().add(gstLbl);
-		
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileNameLbl);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(clearButton);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(deleteButton);
 	}
 	
 	/*
@@ -429,6 +476,13 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		if(Constants.Y.equalsIgnoreCase(billableItemVo.getBillableItem().getInvoice())){
 			AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("save");
 			ajaxButton.setEnabled(false);
+		}
+		
+		if(billableItemVo.getBillableItem().getAttachmentFilename() !=null){
+			arkCrudContainerVO.getDetailPanelFormContainer().get("deleteButton").setVisible(true);
+		}
+		else{
+			arkCrudContainerVO.getDetailPanelFormContainer().get("deleteButton").setVisible(false);
 		}
 	}
 
