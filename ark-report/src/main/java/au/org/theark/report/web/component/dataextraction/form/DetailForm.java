@@ -41,12 +41,7 @@ import au.org.theark.core.web.form.AbstractDetailForm;
  */
 public class DetailForm extends AbstractDetailForm<SearchVO> {
 
-
 	private static final long	serialVersionUID	= -8267651986631341353L;
-
-	@SuppressWarnings("unchecked")
-//	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-//	private IArkCommonService	iArkCommonService;
 
 	private TextField<String>	searchIdTxtFld;
 	private TextField<String>	searchNameTxtFld;
@@ -95,6 +90,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		attachValidators();
 		
 		*/
+		addDetailFormComponents();
+		attachValidators();
 	}
 
 	public void addDetailFormComponents() {
