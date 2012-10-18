@@ -690,6 +690,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			// Force uppercase and replace erroneous characters
 			customFieldVO.getCustomField().getName().toUpperCase();
 			customFieldVO.getCustomField().getName().replaceAll(" ", "_");
+
+			// Remove any encoded values if DATE or NUMBER
+			if(customFieldVO.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) || 
+					customFieldVO.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+				customFieldVO.getCustomField().setEncodedValues(null);
+			}
 			
 			// Field can not have data yet (since it's new)
 			customFieldVO.getCustomField().setCustomFieldHasData(false);
@@ -742,6 +748,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			throw new ArkUniqueException("A Custom Field of this name already exists.");
 		}
 		try {
+			// Remove any encoded values if DATE or NUMBER
+			if(customFieldVO.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) || 
+					customFieldVO.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+				customFieldVO.getCustomField().setEncodedValues(null);
+			}
 
 			customFieldDao.updateCustomField(customFieldVO.getCustomField());
 			// Custom Field History
