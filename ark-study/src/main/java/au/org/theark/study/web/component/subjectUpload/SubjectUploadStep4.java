@@ -35,6 +35,7 @@ import au.org.theark.study.job.SubjectCustomDataUploadExecutor;
 import au.org.theark.study.job.StudyDataUploadExecutor;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.util.SubjectUploadReport;
+import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
 public class SubjectUploadStep4 extends AbstractWizardStepPanel {
@@ -91,12 +92,12 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 			Subject currentUser = SecurityUtils.getSubject();
 			Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")){
+			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.SUBJECT_DEMOGRAPHIC_DATA)){
 				StudyDataUploadExecutor task = new StudyDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
 							studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
 				task.run();
 			}
-			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")){
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.STUDY_SPECIFIC_CUSTOM_DATA)){
 				SubjectCustomDataUploadExecutor task = new SubjectCustomDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
 							studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
 				task.run();
