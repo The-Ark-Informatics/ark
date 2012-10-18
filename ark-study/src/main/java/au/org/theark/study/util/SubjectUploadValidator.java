@@ -762,7 +762,7 @@ public class SubjectUploadValidator {
 
 		for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
 			Integer i = (Integer) iterator.next();
-			dataValidationMessages.add("Warning:  Data on row " + i.intValue() + " exists, please confirm you wish to update and existing Subject.");
+			dataValidationMessages.add("Warning:  Data on row " + i.intValue() + " exists, please confirm you wish to update an existing Subject.");
 		}
 
 		return dataValidationMessages;
