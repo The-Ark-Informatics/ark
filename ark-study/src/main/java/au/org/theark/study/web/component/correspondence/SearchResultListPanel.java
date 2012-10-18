@@ -154,6 +154,15 @@ public class SearchResultListPanel extends Panel {
 				target.add(containerForm);
 				
 				arkCrudContainerVO.getDetailPanelFormContainer().get("worktrackingcontainer").setVisible(false);
+				AjaxButton ajaxButton = (AjaxButton)arkCrudContainerVO.getEditButtonContainer().get("delete");
+				
+				if(correspondence.getBillableItem()!=null){
+					ajaxButton.setEnabled(false);
+				}
+				else{
+					ajaxButton.setEnabled(true);
+				}
+				
 			}
 		};
 

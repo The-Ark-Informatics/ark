@@ -25,8 +25,10 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -52,6 +54,7 @@ import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
 import au.org.theark.core.model.worktracking.entity.BillableItemTypeStatus;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
+import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CorrespondenceVO;
@@ -89,6 +92,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	private DropDownChoice<WorkRequest>		 				billableItemWorkRequests;
 	private DropDownChoice<BillableItemType>		 		billableItemItemTypes;
 	
+	private Label 													billableItemLbl;
+	
 	private WebMarkupContainer workTrackingContainer;
 	
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
@@ -111,6 +116,10 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		reasonTxtArea = new TextArea<String>("correspondence.reason");
 		detailsTxtArea = new TextArea<String>("correspondence.details");
 		commentsTxtArea = new TextArea<String>("correspondence.comments");
+		
+		billableItemLbl = new Label("billableItemDescription");
+		billableItemLbl.setOutputMarkupId(true);                       
+		billableItemLbl.setVisible(true);     
 
 		// fileUploadField = new FileUploadField("correspondence.attachmentFilename", new Model<List<FileUpload>>());
 		fileUploadField = new FileUploadField("correspondence.attachmentFilename");
@@ -182,6 +191,13 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		WorkRequest workRequest =new WorkRequest();
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		workRequest.setStudyId(studyId);
+		List<WorkRequestStatus> requestStatusList=iWorkTrackingService.getWorkRequestStatuses();
+		for(WorkRequestStatus status:requestStatusList){
+			if("Commenced".equalsIgnoreCase(status.getName())){
+				workRequest.setRequestStatus(status);
+				break;
+			}
+		}
 		List<WorkRequest>								workRequestList = iWorkTrackingService.searchWorkRequest(workRequest);
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(au.org.theark.worktracking.util.Constants.NAME, Constants.ID);
 		billableItemWorkRequests = new DropDownChoice("workRequest",  workRequestList, defaultChoiceRenderer);
@@ -198,6 +214,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(detailsTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemLbl);
 		
 		workTrackingContainer.add(billableItemWorkRequests);
 		workTrackingContainer.add(billableItemItemTypes);
@@ -235,6 +252,26 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	@Override
 	protected void onSave(Form<CorrespondenceVO> containerForm, AjaxRequestTarget target) {
 
+		CorrespondenceVO correspondenceVO= containerForm.getModelObject();
+		
+		if(correspondenceVO.getCorrespondence().getId() == null
+				&&
+				((correspondenceVO.getWorkRequest()==null &&
+				correspondenceVO.getBillableItemType()!=null)
+				||
+				(correspondenceVO.getWorkRequest()!=null &&
+						correspondenceVO.getBillableItemType()==null))){
+			this.error("Cannot create correspondence with Individual work request or billable item type");
+			processErrors(target);
+			return;
+		}
+		
+		if(containerForm.getModelObject().getWorkRequest()!=null &&
+				containerForm.getModelObject().getBillableItemType()!=null){
+			BillableItem billableItem = createAutomatedBillableItem();
+			containerForm.getModelObject().getCorrespondence().setBillableItem(billableItem);
+		}
+		
 		Long personSessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 
 		// get the person and set it on the correspondence object
@@ -275,10 +312,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 			}
 			// invoke backend to persist the correspondence
 			
-			if(containerForm.getModelObject().getWorkRequest()!=null &&
-					containerForm.getModelObject().getBillableItemType()!=null){
-				createAutomatedBillableItem();
-			}
+			
 			workTrackingContainer.setVisible(false);
 			onSavePostProcess(target);
 		}
@@ -290,10 +324,20 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		}
 	}
 	
+	@Override
+	protected void onSavePostProcess(AjaxRequestTarget target) {
+		// TODO Auto-generated method stub
+		super.onSavePostProcess(target);
+		if(containerForm.getModelObject().getCorrespondence().getBillableItem() !=null){
+			AjaxButton ajaxButton = (AjaxButton)arkCrudContainerVO.getEditButtonContainer().get("delete");
+			ajaxButton.setEnabled(false);
+		}
+	}
+	
 	/**
 	 * Create the automated billable item when user has selected the work request and billable item type. 
 	 */
-	private void createAutomatedBillableItem(){
+	private BillableItem createAutomatedBillableItem(){
 		//Create new billable Item
 		BillableItem billableItem =new BillableItem();
 		billableItem.setType(au.org.theark.worktracking.util.Constants.BILLABLE_ITEM_AUTOMATED);
@@ -314,7 +358,9 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		
 		//reset workrequest and billable item type
 		containerForm.getModelObject().setWorkRequest(null);
-		containerForm.getModelObject().setBillableItemType(null);	
+		containerForm.getModelObject().setBillableItemType(null);
+		
+		return billableItem;
 	}
 
 	@Override
