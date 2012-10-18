@@ -144,9 +144,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			@Override
 			protected void onBeforeRender() {
 				if (!isNew()) {
-					boolean hasData = iArkCommonService.customFieldHasData(cpModel.getObject().getCustomField());
 					// Disable fieldType if data exists for the field
-					setEnabled(!hasData);
+					setEnabled(!cpModel.getObject().getCustomField().getCustomFieldHasData());
 				}
 				super.onBeforeRender();
 			}
