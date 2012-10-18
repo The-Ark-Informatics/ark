@@ -126,7 +126,7 @@ public class SearchResultListPanel extends Panel {
 
 				SearchVO searchVo = containerForm.getModelObject();
 				//searchVo.setMode(Constants.MODE_EDIT);
-				//searchVo.setStudyComponent(search);// Sets the selected object into the model
+				searchVo.setSearch(search);// Sets the selected object into the model
 				// Render the UI
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 
