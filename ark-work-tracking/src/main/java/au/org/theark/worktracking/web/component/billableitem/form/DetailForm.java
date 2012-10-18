@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -162,6 +163,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 				target.add(subjectsUploadField);
 			}
 		};
+		clearButton.add(new AttributeModifier("title", new Model<String>("Clear Attachment")));
 		
 		deleteButton = new AjaxButton("deleteButton") {
 			@Override
@@ -184,6 +186,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 				target.add(this);
 			}
 		};
+		deleteButton.add(new AttributeModifier("title", new Model<String>("Delete Attachment")));
 		deleteButton.setVisible(false);
 		
 		billableItemItemCostTxtField =  new TextField<String>(Constants.BILLABLE_ITEM_ITEM_COST);
