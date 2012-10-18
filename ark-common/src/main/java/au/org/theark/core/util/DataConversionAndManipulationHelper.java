@@ -28,7 +28,7 @@ public class DataConversionAndManipulationHelper {
 	 * @return
 	 */
 	public static boolean isSomethingLikeTrue(String stringLooselyResemblingBoolean) {
-		if(stringLooselyResemblingBoolean!=null & !stringLooselyResemblingBoolean.isEmpty()){
+		if(stringLooselyResemblingBoolean!=null && !stringLooselyResemblingBoolean.isEmpty()){
 			if(	stringLooselyResemblingBoolean.equalsIgnoreCase("true") ||
 				stringLooselyResemblingBoolean.equalsIgnoreCase("yes") ||
 				stringLooselyResemblingBoolean.equalsIgnoreCase("1") ||
@@ -48,7 +48,7 @@ public class DataConversionAndManipulationHelper {
 	 * @return
 	 */
 	public static boolean isSomethingLikeABoolean(String stringLooselyResemblingBoolean) {
-		if(stringLooselyResemblingBoolean!=null & !stringLooselyResemblingBoolean.isEmpty()){
+		if(stringLooselyResemblingBoolean!=null && !stringLooselyResemblingBoolean.isEmpty()){
 			if(	stringLooselyResemblingBoolean.equalsIgnoreCase("true") ||
 				stringLooselyResemblingBoolean.equalsIgnoreCase("yes") ||
 				stringLooselyResemblingBoolean.equalsIgnoreCase("1") ||
