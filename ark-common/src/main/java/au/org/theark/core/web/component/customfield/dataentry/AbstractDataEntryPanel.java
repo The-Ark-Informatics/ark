@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield.dataentry;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -71,6 +72,7 @@ public abstract class AbstractDataEntryPanel<T> extends Panel {
 
 		errorDataLabelModel = new Model<String>("");
 		errorValueLbl = new Label("errorValueLabel", errorDataLabelModel);
+		errorValueLbl.add(new AttributeModifier("style", new Model<String>("color:red;")));
 		errorValueLbl.setOutputMarkupId(true);
 
 		this.add(errorValueLbl);
