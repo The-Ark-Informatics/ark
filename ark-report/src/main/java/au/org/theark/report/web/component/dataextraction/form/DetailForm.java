@@ -97,8 +97,6 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchNameTxtFld);
-	//	arkCrudContainerVO.getDetailPanelFormContainer().add(componentDescription);
-	//	arkCrudContainerVO.getDetailPanelFormContainer().add(keywordTxtArea);
 	}
 
 	/*
@@ -111,8 +109,6 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		searchNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.search.name.required", searchNameTxtFld, new Model<String>("Search Name")));
 		searchNameTxtFld.add(StringValidator.lengthBetween(1, 255)).setLabel(
 				new StringResourceModel("error.search.name.length", searchNameTxtFld, new Model<String>("Search Name")));
-		//componentDescription.add(StringValidator.lengthBetween(5, 500)).setLabel(new StringResourceModel("error.study.component.description.length", this, new Model<String>("Description")));
-		//keywordTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("error.study.component.keywords.length", this, new Model<String>("Keywords")));
 	}
 
 	/*
@@ -213,8 +209,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	@Override
 	protected boolean isNew() {
-		// TODO Auto-generated method stub
-		return false;
+		return containerForm.getModelObject().getSearch().getId()==null;
 	}
 
 	/*
