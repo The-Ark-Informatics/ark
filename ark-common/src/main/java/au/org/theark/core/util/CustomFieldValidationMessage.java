@@ -270,5 +270,24 @@ public class CustomFieldValidationMessage {
 		stringBuffer.append("*NB: Please remember to end each encoding with ';', i.e. even the last one");
 		return (stringBuffer.toString());
 	}
+	
+	public static String nonConformingAllowMultipleSelect(String fieldName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(fieldName);
+		stringBuffer.append(" requires a valid ENCODED_VALUES value. ");
+		return (stringBuffer.toString());
+	}
+
+	public static String invalidOption(String fieldName, String columnName) {
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(fieldName);
+		stringBuffer.append(" has an invalid option for the column ");
+		stringBuffer.append(columnName);
+		return (stringBuffer.toString());
+	}
 
 }
