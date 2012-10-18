@@ -80,16 +80,6 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		searchIdTxtFld.setEnabled(false);
 		searchNameTxtFld = new TextField<String>(Constants.SEARCH_NAME);
 		searchNameTxtFld.add(new ArkDefaultFormFocusBehavior());
-	/*	componentIdTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_ID);
-		componentIdTxtFld.setEnabled(false);
-		componentNameTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_NAME);
-		componentNameTxtFld.add(new ArkDefaultFormFocusBehavior());
-		componentDescription = new TextArea<String>(Constants.STUDY_COMPONENT_DESCRIPTION);
-		keywordTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_KEYWORD);
-		addDetailFormComponents();
-		attachValidators();
-		
-		*/
 		addDetailFormComponents();
 		attachValidators();
 	}
@@ -209,7 +199,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	@Override
 	protected boolean isNew() {
-		return containerForm.getModelObject().getSearch().getId()==null;
+		return (containerForm.getModelObject().getSearch().getId()==null);
 	}
 
 	/*
