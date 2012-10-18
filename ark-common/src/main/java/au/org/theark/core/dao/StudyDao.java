@@ -1117,9 +1117,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public void updateUpload(Upload studyUpload) {
-		Subject currentUser = SecurityUtils.getSubject();
-		String userId = (String) currentUser.getPrincipal();
-		studyUpload.setUserId(userId);
 		getSession().update(studyUpload);
 	}
 
