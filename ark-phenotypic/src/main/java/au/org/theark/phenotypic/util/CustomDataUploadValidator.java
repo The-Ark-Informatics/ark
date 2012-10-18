@@ -823,7 +823,7 @@ public class CustomDataUploadValidator {
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" value ");
 		stringBuffer.append(value);
-		stringBuffer.append(isMultiSelect?" has value(s) not in the expected encoded values":" is not in the expected encoded values: ");
+		stringBuffer.append(isMultiSelect?" has value(s) not in the expected encoded values: ":" is not in the expected encoded values: ");
 		stringBuffer.append(field.getEncodedValues().replace('\n', ' '));
 		return (stringBuffer.toString());
 	}
