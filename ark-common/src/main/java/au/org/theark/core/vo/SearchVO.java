@@ -28,13 +28,16 @@ import au.org.theark.core.model.report.entity.Search;
  * @author cellis and travis
  * 
  */
-@SuppressWarnings("serial")
 public class SearchVO implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Search search;
 	private List<Search> listOfSearchesForResultList = new ArrayList<Search>();
 	
 	public SearchVO() {
-
+		search = new Search();
 	}
 
 
