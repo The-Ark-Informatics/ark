@@ -37,6 +37,7 @@ import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.study.util.CustomFieldUploadValidator;
 import au.org.theark.study.util.SubjectUploadValidator;
+import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
 /**
@@ -102,12 +103,12 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
 				throw new FileFormatException();
 			}
-																									//TODO: remove hardcode
-			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")){
+
+			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.SUBJECT_DEMOGRAPHIC_DATA)){
 				SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 				validationMessages = subjectUploadValidator.validateSubjectFileFormat(containerForm.getModelObject());				
 			}
-			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")){
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.STUDY_SPECIFIC_CUSTOM_DATA)){
 				//TODO : custom field validation
 				CustomFieldUploadValidator customFieldUploadValidator = new CustomFieldUploadValidator(iArkCommonService);
 				validationMessages = customFieldUploadValidator.validateCustomFieldFileFormat(containerForm.getModelObject());			

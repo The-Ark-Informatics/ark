@@ -42,6 +42,7 @@ import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.study.util.CustomFieldUploadValidator;
 import au.org.theark.study.util.SubjectUploadValidator;
+import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
 public class SubjectUploadStep3 extends AbstractWizardStepPanel {
@@ -155,16 +156,16 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
 
 			//this is not the best way to do this fix TODO
-			List<String> listOfUidsToUpdate = new ArrayList<String>();				//TODO remove hardcoding
-			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Subject Demographic Data")){
+			List<String> listOfUidsToUpdate = new ArrayList<String>();
+			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.SUBJECT_DEMOGRAPHIC_DATA)){
 				SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 				validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject(), listOfUidsToUpdate);
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				insertRows = subjectUploadValidator.getInsertRows();
 				updateRows = subjectUploadValidator.getUpdateRows();
 				errorCells = subjectUploadValidator.getErrorCells();
-			}																												//TODO remove hardcoding
-			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")){
+			}
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.STUDY_SPECIFIC_CUSTOM_DATA)){
 				CustomFieldUploadValidator customFieldUploadValidator = new CustomFieldUploadValidator(iArkCommonService);
 				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate);
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
@@ -194,8 +195,8 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			// Repaint
 			target.add(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
 			target.add(form.getWizardPanelFormContainer());
-																															//TODO remove hardcoding
-			if (updateRows.isEmpty() || containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")) {
+
+			if (updateRows.isEmpty() || containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.STUDY_SPECIFIC_CUSTOM_DATA)) {
 				updateExistingDataContainer.setVisible(false);
 				target.add(updateExistingDataContainer);
 				
@@ -208,7 +209,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 				target.add(form.getWizardButtonContainer());
 				
 				//TODO: consider invalid custom data to be warning cells rather than error cells
-				continueDespiteBadDataContainer.setVisible(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data"));
+				continueDespiteBadDataContainer.setVisible(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.STUDY_SPECIFIC_CUSTOM_DATA));
 				target.add(continueDespiteBadDataContainer);
 
 				this.containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.study.web.Constants.UPLOAD_STATUS_OF_ERROR_IN_DATA_VALIDATION));
