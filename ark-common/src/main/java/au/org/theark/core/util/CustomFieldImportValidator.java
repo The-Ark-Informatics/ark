@@ -397,6 +397,8 @@ public class CustomFieldImportValidator {
 						}
 					}*/
 					
+					
+					
 					field.setMinValue(csvReader.get("MINIMUM_VALUE"));
 					field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
 					field.setMissingValue(csvReader.get("MISSING_VALUE"));
@@ -439,12 +441,32 @@ public class CustomFieldImportValidator {
 						}
 					}
 
+					boolean validForMultiSelect = false;
+					String allowMultiple = (csvReader.get("ALLOW_MULTIPLE_SELECTIONS"));
 					if (field.getEncodedValues() != null && !field.getEncodedValues().isEmpty()) {
 						gridCell = new ArkGridCell(csvReader.getIndex("ENCODED_VALUES"), rowIdx);
 						// Validate encoded values not a date type
 						if (!CustomFieldImportValidator.validateEncodedValues(field, dataValidationMessages)) {
 							errorCells.add(gridCell);
 						}
+						else {
+							validForMultiSelect = true;
+							if(!DataConversionAndManipulationHelper.isSomethingLikeABoolean(allowMultiple) && !allowMultiple.isEmpty()){
+								gridCell = new ArkGridCell(csvReader.getIndex("ALLOW_MULTIPLE_SELECTIONS"), rowIdx);
+								dataValidationMessages.add(CustomFieldValidationMessage.invalidOption(field.getName(), "ALLOW_MULTIPLE_SELECTIONS"));
+								errorCells.add(gridCell);
+							}
+							else if(!validForMultiSelect){
+								gridCell = new ArkGridCell(csvReader.getIndex("ALLOW_MULTIPLE_SELECTIONS"), rowIdx);
+								dataValidationMessages.add(CustomFieldValidationMessage.nonConformingAllowMultipleSelect(field.getName()));
+								errorCells.add(gridCell);
+							}
+						}
+						
+					} else if (!allowMultiple.isEmpty()) {
+						gridCell = new ArkGridCell(csvReader.getIndex("ALLOW_MULTIPLE_SELECTIONS"), rowIdx);
+						dataValidationMessages.add(CustomFieldValidationMessage.nonConformingAllowMultipleSelect(field.getName()));
+						errorCells.add(gridCell);
 					}
 
 					if (field.getMinValue() != null && !field.getMinValue().isEmpty()) {
@@ -470,7 +492,13 @@ public class CustomFieldImportValidator {
 							errorCells.add(gridCell);
 						}
 					}
-
+					
+					if(!DataConversionAndManipulationHelper.isSomethingLikeABoolean(csvReader.get("REQUIRED"))){
+						gridCell = new ArkGridCell(csvReader.getIndex("REQUIRED"), rowIdx);
+						dataValidationMessages.add(CustomFieldValidationMessage.invalidOption(field.getName(), "REQUIRED"));
+						errorCells.add(gridCell);
+					}
+					
 					fieldCount++;
 					rowIdx++;
 				}
