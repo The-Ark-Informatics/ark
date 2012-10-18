@@ -198,6 +198,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			if (updateRows.isEmpty() || containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Study-specific (custom) Data")) {
 				updateExistingDataContainer.setVisible(false);
 				target.add(updateExistingDataContainer);
+				
 			}
 
 			if (!errorCells.isEmpty()) {
@@ -215,6 +216,9 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 				iArkCommonService.updateUpload(this.containerForm.getModelObject().getUpload());
 			}
 			else{
+				continueDespiteBadDataContainer.setVisible(false);
+				target.add(continueDespiteBadDataContainer);
+				
 				this.containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusFor(au.org.theark.study.web.Constants.UPLOAD_STATUS_OF_VALIDATED));
 				this.containerForm.getModelObject().getUpload().setFilename(filename);//have to reset this because the container has the file name...luckily it never changes 
 				iArkCommonService.updateUpload(this.containerForm.getModelObject().getUpload());
