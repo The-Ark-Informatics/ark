@@ -42,6 +42,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -141,7 +142,10 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		
 		commentsTxtAreaFld = new TextArea<String>("bioCollection.comments");
 		collectionDateTxtFld = new DateTextField("bioCollection.collectionDate", au.org.theark.core.Constants.DD_MM_YYYY);
-
+		ArkDatePicker datePicker = new ArkDatePicker();
+		datePicker.bind(collectionDateTxtFld);
+		collectionDateTxtFld.add(datePicker); 
+		
 		initialiseBioCollectionCFDataEntry();
 		
 		BioCollection bioCollection = cpModel.getObject().getBioCollection();
