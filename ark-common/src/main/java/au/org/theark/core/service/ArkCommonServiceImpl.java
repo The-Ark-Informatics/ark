@@ -64,6 +64,7 @@ import au.org.theark.core.dao.ReCaptchaContextSource;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
@@ -71,6 +72,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -124,6 +126,7 @@ import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -1258,4 +1261,37 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getSearchesForThisStudy(study);
 	}
 
+	public boolean create(Search search) throws EntityExistsException{
+
+		return studyDao.create(search);
+	}
+
+	public boolean update(Search search) throws EntityExistsException{
+
+		return studyDao.update(search);
+	}
+
+	public Collection<DemographicField> getAllDemographicFields(){
+
+		return studyDao.getAllDemographicFields();
+	}
+
+	@Override
+	public boolean create(SearchVO search) throws EntityExistsException {
+		return studyDao.create(search);
+	}
+
+	@Override
+	public boolean update(SearchVO search) throws EntityExistsException {
+
+		return studyDao.update(search);
+	}
+	
+	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search){
+		return studyDao.getSelectedDemographicFieldsForSearch(search);
+	}
+
+	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean readOnly){
+		return studyDao.getSelectedDemographicFieldsForSearch(search, readOnly);
+	}
 }

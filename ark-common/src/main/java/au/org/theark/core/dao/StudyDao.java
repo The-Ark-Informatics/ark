@@ -44,6 +44,7 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.lims.entity.BioCollection;
@@ -54,6 +55,8 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.report.entity.DemographicField;
+import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -103,6 +106,7 @@ import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.util.CsvListReader;
+import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -1522,10 +1526,163 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	//TODO ASAP
 	public List<Search> getSearchesForThisStudy(Study study){
 		Criteria criteria = getSession().createCriteria(Search.class);
-		//THIS NEEDS TO BE STUDY OWNED!!!  criteria.add(Restrictions.eq("s.parentStudy", study));
-		//criteria.add(Restrictions.ne("s.id", study.getId()));
+		criteria.add(Restrictions.eq("study", study));
+		List<Search> searchList = criteria.list();
+		for(Search search : searchList){
+			log.info(search.getName() + search.getId());
+		}
+		return searchList;
+	}
+
+	public boolean create(Search search) throws EntityExistsException{
+		boolean success = true;
+		if(isSearchNameTaken(search.getName(), search.getStudy(), null)){
+			throw new EntityExistsException("Search name '" + search.getName() + "' is already taken.  Please select a unique name");
+		}
+		getSession().save(search);
+		return success;
+	}
+
+	public boolean update(Search search) throws EntityExistsException{
+		boolean success = true;
+		if(isSearchNameTaken(search.getName(), search.getStudy(), search.getId())){
+			throw new EntityExistsException("Search name '" + search.getName() + "' is already taken.  Please select a unique name");
+		}
+		getSession().update(search);
+		return success;
+	}
+
+
+	public boolean create(SearchVO searchVO) throws EntityExistsException{
+		boolean success = true;
+		if(isSearchNameTaken(searchVO.getSearch().getName(), searchVO.getSearch().getStudy(), null)){
+			throw new EntityExistsException("Search name '" + searchVO.getSearch().getName() + "' is already taken.  Please select a unique name");
+		}
+		getSession().save(searchVO.getSearch());
+		getSession().refresh(searchVO.getSearch());
+
+		for(DemographicField field : searchVO.getSelectedDemographicFields()){
+			DemographicFieldSearch dfs = new DemographicFieldSearch(field, searchVO.getSearch());
+			getSession().save(dfs);
+		}
 		
+		return success;
+	}
+
+	public boolean update(SearchVO searchVO) throws EntityExistsException{
+		boolean success = true;
+		Search search = searchVO.getSearch();
+		if(isSearchNameTaken(search.getName(), search.getStudy(), search.getId())){
+			throw new EntityExistsException("Search name '" + search.getName() + "' is already taken.  Please select a unique name");
+		}
+		getSession().update(search);
+		//getSession().refresh(search);
+
+		Collection<DemographicField> listOfDemographicFieldsFromVO = searchVO.getSelectedDemographicFields();
+		List<DemographicFieldSearch> nonPoppableDFS = new ArrayList<DemographicFieldSearch>();
+		nonPoppableDFS.addAll(search.getDemographicFieldsToReturn());
+		List<DemographicField> nonPoppableFieldsFromVO = new ArrayList<DemographicField>();
+		nonPoppableFieldsFromVO.addAll(listOfDemographicFieldsFromVO);
+		
+		for(DemographicFieldSearch dfs : nonPoppableDFS){
+			log.info("fields to return=" + search.getDemographicFieldsToReturn().size());
+			boolean toBeDeleted = true; //if we find no match along the way, conclude that it has been deleted.
+
+			for(DemographicField field : nonPoppableFieldsFromVO){
+				if(dfs.getDemographicField().getId().equals(field.getId())){
+					toBeDeleted=false;
+					log.info("listOfDemographicFieldsFromVO.size()" + listOfDemographicFieldsFromVO.size());
+					listOfDemographicFieldsFromVO.remove(field);//we found it, therefore remove it from the list that will ultimately be added as DFS's
+					log.info("after removal listOfDemographicFieldsFromVO.size()" + listOfDemographicFieldsFromVO.size());
+				}
+			}
+			if(toBeDeleted){
+				log.info("before delete");
+				search.getDemographicFieldsToReturn().remove(dfs);
+				getSession().update(search);
+				getSession().delete(dfs);
+				//setDemographicFieldsToReturn(getDemographicFieldsToReturn());
+				getSession().flush();
+				getSession().refresh(search);				
+				log.info("after delete" + search.getDemographicFieldsToReturn().size());
+			}
+		}
+		
+		for(DemographicField field : listOfDemographicFieldsFromVO){
+			DemographicFieldSearch dfs = new DemographicFieldSearch(field, search);
+			getSession().save(dfs);
+		}
+		return success;
+	}
+
+	private List<DemographicFieldSearch> getCurrentDemographicFieldSearches(Search search) {/*
+		Criteria criteria = getSession().createCriteria(Search.class);
+		criteria.add(Restrictions.eq("name", searchName));
+		
+		if(anIdToExcludeFromResults != null){
+			criteria.add(Restrictions.ne("id", anIdToExcludeFromResults));
+		}
+		return (criteria.list().size() > 0);*/
+
+		String queryString = "select dfs " +
+		" from DemographicFieldSearch dfs " +
+		" where dfs.search=:search ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
+		return query.list();
+	}
+
+	/**
+	 * 
+	 * @param searchName
+	 * @param anIdToExcludeFromResults : This is if you want to exclude id, the most obvious case being 
+	 * 			where we want to exclude the current search itself in the case of an update
+	 * @return
+	 */
+	public boolean isSearchNameTaken(String searchName, Study study, Long anIdToExcludeFromResults) {
+		Criteria criteria = getSession().createCriteria(Search.class);
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("name", searchName));
+		
+		if(anIdToExcludeFromResults != null){
+			criteria.add(Restrictions.ne("id", anIdToExcludeFromResults));
+		}
+		return (criteria.list().size() > 0);
+	}
+	
+	public Collection<DemographicField> getAllDemographicFields(){
+		Criteria criteria = getSession().createCriteria(DemographicField.class);
 		return criteria.list();
+	}
+
+	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search) {
+
+		String queryString = "select dfs.demographicField " +
+		" from DemographicFieldSearch dfs " +
+		" where dfs.search=:search ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
+		
+		return query.list();
+		
+	}
+	
+	/**
+	 * 
+	 * @param search
+	 * @param explicitReadOnly - if true, will try to set to readonly ELSE false 
+	 * @return
+	 */
+	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean explicitReadOnly) {
+
+		String queryString = "select dfs.demographicField " +
+		" from DemographicFieldSearch dfs " +
+		" where dfs.search=:search ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
+		query.setReadOnly(explicitReadOnly);
+		
+		return query.list();
 	}
 
 }

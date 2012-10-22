@@ -18,25 +18,19 @@
  ******************************************************************************/
 package au.org.theark.core.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import jxl.Cell;
-import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.util.file.Files;
-import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

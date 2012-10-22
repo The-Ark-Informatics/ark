@@ -75,7 +75,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	protected CompoundPropertyModel<T> cpModel;
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>			iArkCommonService;
+	protected IArkCommonService<Void>			iArkCommonService;
 	
 	@SpringBean(name = "lobUtil")
 	protected LobUtil							lobUtil;
