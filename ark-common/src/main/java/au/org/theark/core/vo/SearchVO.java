@@ -20,8 +20,10 @@ package au.org.theark.core.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 
 /**
@@ -29,12 +31,17 @@ import au.org.theark.core.model.report.entity.Search;
  * 
  */
 public class SearchVO implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Search search;
 	private List<Search> listOfSearchesForResultList = new ArrayList<Search>();
+	
+
+
+	private Collection<DemographicField>	availableDemographicFields = new ArrayList<DemographicField>();
+// would be better if pallette could point to search.getDemographicFieldsToReturn 
+	private Collection<DemographicField>	selectedDemographicFields = new ArrayList<DemographicField>();
+	
 	
 	public SearchVO() {
 		search = new Search();
@@ -59,6 +66,28 @@ public class SearchVO implements Serializable {
 	public void setListOfSearchesForResultList(
 			List<Search> listOfSearchesForResultList) {
 		this.listOfSearchesForResultList = listOfSearchesForResultList;
+	}
+
+
+	public Collection<DemographicField> getAvailableDemographicFields() {
+		return availableDemographicFields;
+	}
+
+
+	public void setAvailableDemographicFields(
+			Collection<DemographicField> availableDemographicFields) {
+		this.availableDemographicFields = availableDemographicFields;
+	}
+
+
+	public Collection<DemographicField> getSelectedDemographicFields() {
+		return selectedDemographicFields;
+	}
+
+
+	public void setSelectedDemographicFields(
+			Collection<DemographicField> selectedDemographicFields) {
+		this.selectedDemographicFields = selectedDemographicFields;
 	}
 
 	
