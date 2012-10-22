@@ -1,5 +1,7 @@
 package au.org.theark.core.model.report.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,9 +14,13 @@ import au.org.theark.core.model.Constants;
 
 @Entity
 @Table(name = "guery_grouping", schema = Constants.REPORT_SCHEMA)
-public class QueryGrouping {
+public class QueryGrouping  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String name;
+	/* 
+	 * TODO : set of children...
+	 */
 
 	@Id
 	@SequenceGenerator(name = "query_grouping_generator", sequenceName = "QUERY_GROUPING_SEQ")
