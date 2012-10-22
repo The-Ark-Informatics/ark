@@ -99,7 +99,6 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.Constants;
-import au.org.theark.study.util.LinkSubjectStudyConsentHistoryComparator;
 
 @Repository("studyDao")
 public class StudyDao extends HibernateSessionDao implements IStudyDao {
