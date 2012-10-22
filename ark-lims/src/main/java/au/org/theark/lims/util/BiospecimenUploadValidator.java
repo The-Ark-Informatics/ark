@@ -18,12 +18,9 @@
  ******************************************************************************/
 package au.org.theark.lims.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,12 +28,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import jxl.Cell;
-import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
-import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
