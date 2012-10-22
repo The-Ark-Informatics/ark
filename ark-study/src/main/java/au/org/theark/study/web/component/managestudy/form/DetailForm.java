@@ -1095,6 +1095,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 				log.error(e.getMessage());
 			}
 		}
+		
 	}
 
 	private boolean validateEstYearOfComp(Long yearOfCompletion, Date dateOfApplication, String message, AjaxRequestTarget target) {
