@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
@@ -32,6 +33,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -75,6 +77,7 @@ import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
+import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -647,4 +650,21 @@ public interface IStudyDao {
 	public List<Upload> searchUploadsForBiospecimen(Upload uploadCriteria, List studyListForUser);
 
 	public List<Search> getSearchesForThisStudy(Study study);	
+
+	public boolean create(Search search) throws EntityExistsException;
+
+	public boolean update(Search search) throws EntityExistsException;
+	
+	public boolean create(SearchVO search) throws EntityExistsException;
+
+	public boolean update(SearchVO search) throws EntityExistsException;
+
+	public Collection<DemographicField> getAllDemographicFields();
+
+	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search);
+
+
+	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean explicitReadOnly);
+
+
 }

@@ -27,10 +27,7 @@ public class DataSourceFactory {
 	public Connection getConnection() throws SQLException {
 		Connection connection = null;
 		try {
-			if (connection != null) {
-				log.error("Cant create a New Connection");
-			}
-			else {
+			if (connection == null) {
 				connection = bdSource.getConnection();
 				log.info("Connection Done successfully");
 			}
