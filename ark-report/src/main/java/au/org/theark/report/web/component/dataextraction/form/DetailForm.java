@@ -18,21 +18,33 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.dataextraction.form;
 
+import java.util.Collection;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.StringValidator;
-
+import org.apache.shiro.*;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SearchVO;
+import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractDetailForm;
 
 /**
@@ -42,11 +54,13 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	private static final long	serialVersionUID	= -8267651986631341353L;
-
+	public static final int	PALETTE_ROWS		= 5;
 	private TextField<String>	searchIdTxtFld;
 	private TextField<String>	searchNameTxtFld;
 	private FeedbackPanel		feedBackPanel;
 
+	private Palette<DemographicField>	demographicFieldsToReturnPalette;
+	
 	/**
 	 * 
 	 * @param id
@@ -80,6 +94,9 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		searchIdTxtFld.setEnabled(false);
 		searchNameTxtFld = new TextField<String>(Constants.SEARCH_NAME);
 		searchNameTxtFld.add(new ArkDefaultFormFocusBehavior());
+
+		initDemographicFieldsModulePalette();
+		
 		addDetailFormComponents();
 		attachValidators();
 	}
@@ -87,6 +104,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(demographicFieldsToReturnPalette);
 	}
 
 	/*
@@ -122,24 +140,25 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	protected void onSave(Form<SearchVO> containerForm, AjaxRequestTarget target) {
 
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
-		/*
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(studyId);
+		
 		try {
 
-			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-			study = iArkCommonService.getStudy(studyId);
-			containerForm.getModelObject().getStudyComponent().setStudy(study);
+			containerForm.getModelObject().getSearch().setStudy(study);
 
-			if (containerForm.getModelObject().getStudyComponent().getId() == null) {
+			if (containerForm.getModelObject().getSearch().getId() == null) {
 
-				iStudyService.create(containerForm.getModelObject().getStudyComponent());
-				this.info("Study Component " + containerForm.getModelObject().getStudyComponent().getName() + " was created successfully");
+				iArkCommonService.create(containerForm.getModelObject());
+				this.info("Search " + containerForm.getModelObject().getSearch().getName() +
+						" was created successfully");
 				processErrors(target);
 
 			}
 			else {
 
-				iStudyService.update(containerForm.getModelObject().getStudyComponent());
-				this.info("Study Component " + containerForm.getModelObject().getStudyComponent().getName() + " was updated successfully");
+				iArkCommonService.update(containerForm.getModelObject());
+				this.info("Search " + containerForm.getModelObject().getSearch().getName() + " was updated successfully");
 				processErrors(target);
 
 			}
@@ -151,14 +170,6 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 			this.error("A Study Component with the same name already exists for this study.");
 			processErrors(target);
 		}
-		catch (UnAuthorizedOperation e) {
-			this.error("You are not authorised to manage study components for the given study " + study.getName());
-			processErrors(target);
-		}
-		catch (ArkSystemException e) {
-			this.error("A System error occured, we will have someone contact you.");
-			processErrors(target);
-		}*/
 
 	}
 
@@ -201,21 +212,28 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	protected boolean isNew() {
 		return (containerForm.getModelObject().getSearch().getId()==null);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
-	 *
-	@Override
-	protected boolean isNew() {
-		if (containerForm.getModelObject().getId() == null) {
-			return true;
-		}
-		else {
-			return false;
-		}
-
-	}*/
+	
+	@SuppressWarnings("unchecked")
+	private void initDemographicFieldsModulePalette() {
+		
+		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("publicFieldName", "id");
+		
+		PropertyModel<Collection<DemographicField>> selectedDemographicFieldsPm = new PropertyModel<Collection<DemographicField>>(searchCPM, "selectedDemographicFields");//"selectedDemographicFields");
+		Collection<DemographicField> availableDemographicFields = iArkCommonService.getAllDemographicFields();
+		containerForm.getModelObject().setAvailableDemographicFields(availableDemographicFields);
+		
+		
+		PropertyModel<Collection<DemographicField>> availableDemographicFieldsPm = new PropertyModel<Collection<DemographicField>>(searchCPM, "availableDemographicFields");
+		demographicFieldsToReturnPalette = new ArkPalette("selectedDemographicFields", selectedDemographicFieldsPm, availableDemographicFieldsPm, renderer, PALETTE_ROWS, false){
+			private static final long	serialVersionUID	= 1L;
+			/*@Override
+			protected Recorder newRecorderComponent() {
+				Recorder rec = super.newRecorderComponent();
+				rec.setRequired(true).setLabel(new StringResourceModel("error..required", this, new Model<String>("Modules")));
+				return rec;
+			}*/
+		};
+	}
 
 }

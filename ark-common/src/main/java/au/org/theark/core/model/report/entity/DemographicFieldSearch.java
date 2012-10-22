@@ -1,5 +1,7 @@
 package au.org.theark.core.model.report.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,11 +17,20 @@ import au.org.theark.core.model.Constants;
 
 @Entity
 @Table(name = "demographic_field_search", schema = Constants.REPORT_SCHEMA)
-public class DemographicFieldSearch {
+public class DemographicFieldSearch  implements Serializable  {
+
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private DemographicField demographicField;
 	private Search search;
 
+	public DemographicFieldSearch(){
+	}
+
+	public DemographicFieldSearch(DemographicField field, Search searchRef){
+		demographicField = field;
+		search = searchRef;
+	}
 
 	@Id
 	@SequenceGenerator(name = "demographic_field_search_generator", sequenceName = "DEMOGRAPHIC_FIELD_SEARCH_SEQ")
@@ -50,4 +61,5 @@ public class DemographicFieldSearch {
 	public void setDemographicField(DemographicField demographicField) {
 		this.demographicField = demographicField;
 	}
+	
 }

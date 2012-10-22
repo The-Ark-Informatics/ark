@@ -1,5 +1,7 @@
 package au.org.theark.core.model.report.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,7 +18,9 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
 @Entity
 @Table(name = "custom_field_display_search", schema = Constants.REPORT_SCHEMA)
-public class CustomFieldDisplaySearch {
+public class CustomFieldDisplaySearch  implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private CustomFieldDisplay customFieldDisplay;
 	private Search search;
@@ -42,7 +46,7 @@ public class CustomFieldDisplaySearch {
 		this.customFieldDisplay = customFieldDisplay;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SEARCH_ID")
 	public Search getSearch() {
 		return search;
