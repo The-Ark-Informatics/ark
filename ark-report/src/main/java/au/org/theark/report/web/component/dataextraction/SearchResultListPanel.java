@@ -18,6 +18,10 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.dataextraction;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -27,8 +31,13 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.report.entity.DemographicField;
+import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
@@ -43,6 +52,9 @@ public class SearchResultListPanel extends Panel {
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService				iArkCommonService;
+	
 	/**
 	 * 
 	 * @param id
@@ -127,9 +139,13 @@ public class SearchResultListPanel extends Panel {
 				SearchVO searchVo = containerForm.getModelObject();
 				//searchVo.setMode(Constants.MODE_EDIT);
 				searchVo.setSearch(search);// Sets the selected object into the model
+				Collection<DemographicField> availableDemographicFields = iArkCommonService.getAllDemographicFields();
+				containerForm.getModelObject().setAvailableDemographicFields(availableDemographicFields);
+				Collection<DemographicField> selectedDemographicFields =iArkCommonService.getSelectedDemographicFieldsForSearch(search, true);
+				containerForm.getModelObject().setSelectedDemographicFields(selectedDemographicFields);
+
 				// Render the UI
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-
 			}
 		};
 

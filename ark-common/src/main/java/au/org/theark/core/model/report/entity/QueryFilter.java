@@ -1,5 +1,7 @@
 package au.org.theark.core.model.report.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,8 +20,12 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
 @Entity
 @Table(name = "guery_filter", schema = Constants.REPORT_SCHEMA)
-public class QueryFilter {
-//	QueryFilter leftQueryFilter;	//potentially link to another query to combine rules on...its more explicit than relying on brackets.
+public class QueryFilter  implements Serializable {
+
+
+	private static final long serialVersionUID = 1L;
+
+	//	QueryFilter leftQueryFilter;	//potentially link to another query to combine rules on...its more explicit than relying on brackets.
 //	QueryFilter rightQueryFilter;	//potentially link to another query to combine rules on...its more explicit than relying on brackets.
 //	JoinType filterJoin; //AND OR  
     @Id
@@ -37,6 +43,7 @@ public class QueryFilter {
 	private CustomFieldDisplay customFieldDisplay;
 	private String value;
 	private String secondValue; // for between and similar operators
+	//private String valueForMultiselectComponentLookup;    -- will be compared to demographicfield.fieldForDisplay
 	private Operator operator;
 	private Prefix prefix; //eg NOT, IN,
 

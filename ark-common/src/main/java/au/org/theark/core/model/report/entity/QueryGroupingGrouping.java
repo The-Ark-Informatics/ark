@@ -1,5 +1,7 @@
 package au.org.theark.core.model.report.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,7 +19,8 @@ import au.org.theark.core.model.Constants;
 
 @Entity
 @Table(name = "guery_grouping_grouping", schema = Constants.REPORT_SCHEMA)
-public class QueryGroupingGrouping {
+public class QueryGroupingGrouping  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private	Long id;
 	private QueryGrouping 	parentGrouping;
 	private QueryGrouping	leftGrouping;

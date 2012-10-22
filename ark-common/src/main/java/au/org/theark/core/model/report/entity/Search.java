@@ -1,5 +1,6 @@
 package au.org.theark.core.model.report.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -30,14 +31,11 @@ import au.org.theark.core.model.study.entity.Study;
 @Table(name = "search", schema = Constants.REPORT_SCHEMA)
 public class Search  implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String name;
-	private Set<CustomFieldDisplaySearch>  customFieldsToReturn;
-	private Set<DemographicFieldSearch>  demographicFieldsToReturn;
+	private Set<CustomFieldDisplaySearch>  	customFieldsToReturn = new HashSet<CustomFieldDisplaySearch>();
+	private Set<DemographicFieldSearch>  	demographicFieldsToReturn = new HashSet<DemographicFieldSearch>();
 	private QueryGrouping topLevelQueryGrouping;
 	private Study study;
 
@@ -54,7 +52,7 @@ public class Search  implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "demographicField")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "search")
 	public Set<DemographicFieldSearch> getDemographicFieldsToReturn() {
 		return demographicFieldsToReturn;
 	}
@@ -62,7 +60,7 @@ public class Search  implements java.io.Serializable {
 		this.demographicFieldsToReturn = demographicFieldsToReturn;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "search")
 	public Set<CustomFieldDisplaySearch> getCustomFieldsToReturn() {
 		return customFieldsToReturn;
 	}
