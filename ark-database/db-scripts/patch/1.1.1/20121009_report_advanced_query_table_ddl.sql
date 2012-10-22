@@ -1,7 +1,7 @@
 DROP TABLE `reporting`.`query_grouping` ;
 
 CREATE  TABLE `reporting`.`query_grouping` (
-  `ID` INT NOT NULL ,
+  `ID` INT  NOT NULL AUTO_INCREMENT ,
   `NAME` VARCHAR(255) NULL ,
   PRIMARY KEY (`ID`) )
 ENGINE = InnoDB ;
@@ -10,7 +10,7 @@ ENGINE = InnoDB ;
 
 DROP  TABLE `reporting`.`search` ;
 CREATE  TABLE `reporting`.`search` (
-  `ID` INT NOT NULL ,
+  `ID` INT  NOT NULL AUTO_INCREMENT  ,
   `NAME` VARCHAR(255) NULL ,
   `TOP_LEVEL_GROUPING_ID` INT NULL ,
   PRIMARY KEY (`ID`) )
@@ -26,9 +26,13 @@ ALTER TABLE `reporting`.`search`
     FOREIGN KEY (`STUDY_ID` )
     REFERENCES `study`.`study` (`ID` );
 
+ALTER TABLE `reporting`.`search` CHANGE COLUMN `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT  ;
+
+
+
 DROP  TABLE `reporting`.`custom_field_display_search`;
 CREATE  TABLE `reporting`.`custom_field_display_search` (
-  `ID` INT NOT NULL ,
+  `ID` INT  NOT NULL AUTO_INCREMENT  ,
   `CUSTOM_FIELD_DISPLAY_ID` INT NULL ,
   `SEARCH_ID` INT NULL ,
   PRIMARY KEY (`ID`) ,
@@ -50,7 +54,7 @@ ENGINE = InnoDB ;
 
 DROP  TABLE `reporting`.`demographic_field` ;
 CREATE  TABLE `reporting`.`demographic_field` (
-  `ID` INT NOT NULL ,
+  `ID` INT NOT NULL AUTO_INCREMENT  ,
   `ENTITY` VARCHAR(255) NULL ,
   `FIELD_NAME` VARCHAR(255) NULL ,
   `PUBLIC_FIELD_NAME` VARCHAR(255) NULL ,
@@ -67,7 +71,7 @@ ENGINE = InnoDB ;
 
 DROP  TABLE `reporting`.`demographic_field_search`;
 CREATE TABLE `reporting`.`demographic_field_search` (   
-	`ID` int(11) NOT NULL,   
+	`ID` int(11)  NOT NULL AUTO_INCREMENT ,   
 	`DEMOGRAPHIC_FIELD_ID` int(11) DEFAULT NULL,   
 	`SEARCH_ID` int(11) DEFAULT NULL,   
 	PRIMARY KEY (`ID`),   
@@ -80,7 +84,7 @@ COMMENT='many2many join demographic_field and search';
 
 DROP  TABLE `reporting`.`query_filter` ;
 CREATE  TABLE `reporting`.`query_filter` (
-  `ID` INT NOT NULL ,
+  `ID` INT NOT NULL AUTO_INCREMENT ,
   `DEMOGRAPHIC_FIELD_ID` INT NULL ,
   `CUSTOM_FIELD_DISPLAY_ID` INT NULL ,
   `VALUE` VARCHAR(512) NULL ,
@@ -114,7 +118,7 @@ ALTER TABLE `reporting`.`query_filter`
 
 DROP  TABLE `reporting`.`query_filter_grouping`;
 CREATE  TABLE `reporting`.`query_filter_grouping` (
-  `ID` INT NOT NULL ,
+  `ID` INT  NOT NULL AUTO_INCREMENT ,
   `PARENT_GROUPING_ID` INT NOT NULL ,
   `LEFT_FILTER_ID` INT NOT NULL ,
   `JOIN_TO_NEXT_FILTER` VARCHAR(56) NULL ,
@@ -138,26 +142,31 @@ ENGINE = InnoDB;
 
 DROP TABLE  `reporting`.`query_grouping_grouping`;
 CREATE  TABLE `reporting`.`query_grouping_grouping` (
-  `ID` INT NOT NULL ,
+  `ID` INT NOT NULL AUTO_INCREMENT  ,
   `PARENT_GROUPING_ID` INT NOT NULL ,
   `LEFT_GROUPING_ID` INT NOT NULL ,
   `JOIN_TO_NEXT_FILTER` VARCHAR(56) NULL ,
   `PRECEDENCE` INT NULL ,
   PRIMARY KEY (`ID`) ,
-  INDEX `fk_qgg_parent_grouping_idx` (`PARENT_GROUPING` ASC) ,
-  INDEX `fk_qgg_left_grouping_idx` (`LEFT_GROUPING` ASC) ,
+  INDEX `fk_qgg_parent_grouping_idx` (`PARENT_GROUPING_ID` ASC) ,
+  INDEX `fk_qgg_left_grouping_idx` (`LEFT_GROUPING_ID` ASC) ,
   CONSTRAINT `fk_qgg_parent_grouping`
-    FOREIGN KEY (`PARENT_GROUPING` )
+    FOREIGN KEY (`PARENT_GROUPING_ID` )
     REFERENCES `reporting`.`query_grouping` (`ID` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_qgg_left_grouping`
-    FOREIGN KEY (`LEFT_GROUPING` )
+    FOREIGN KEY (`LEFT_GROUPING_ID` )
     REFERENCES `reporting`.`query_grouping` (`ID` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 # TODO analyse whether we want cascade.
 
+
+INSERT INTO `reporting`.`demographic_field` (`ENTITY`, `FIELD_NAME`, `PUBLIC_FIELD_NAME`, `FIELD_TYPE_ID`, `ID`) 
+VALUES ('LinkSubjectStudy', 'consentDate', 'Subject Constent Date', '3', '0');
+INSERT INTO `reporting`.`demographic_field` (`ENTITY`, `FIELD_NAME`, `PUBLIC_FIELD_NAME`, `FIELD_TYPE_ID`, `ID`) 
+VALUES ('LinkSubjectStudy', 'subjectUID', 'Subject UID', '1', '1');
 
 
 
