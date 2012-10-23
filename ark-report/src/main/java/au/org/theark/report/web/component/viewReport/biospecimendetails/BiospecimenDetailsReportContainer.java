@@ -1,26 +1,29 @@
-package au.org.theark.report.web.component.viewReport.biospecimensummary;
+package au.org.theark.report.web.component.viewReport.biospecimendetails;
 
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.model.report.entity.ReportTemplate;
-import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
+import au.org.theark.report.model.vo.BiospecimenDetailsReportVO;
 import au.org.theark.report.web.component.viewReport.AbstractSelectedReportContainer;
 import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
 
+public class BiospecimenDetailsReportContainer extends AbstractSelectedReportContainer<BiospecimenDetailsReportVO>{
 
-public class BiospecimenSummaryReportContainer extends
-		AbstractSelectedReportContainer<BiospecimenSummaryReportVO> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-	public BiospecimenSummaryReportContainer(String id) {
+	public BiospecimenDetailsReportContainer(String id) {
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void initialiseCPModel() {
-		BiospecimenSummaryReportVO grvVO = new BiospecimenSummaryReportVO();
-		cpModel = new CompoundPropertyModel<BiospecimenSummaryReportVO>(grvVO);		
+		BiospecimenDetailsReportVO grvVO = new BiospecimenDetailsReportVO();
+		cpModel = new CompoundPropertyModel<BiospecimenDetailsReportVO>(grvVO);
 	}
 	
 	public void initialisePanel(FeedbackPanel feedbackPanel, ReportTemplate reportTemplate) {
