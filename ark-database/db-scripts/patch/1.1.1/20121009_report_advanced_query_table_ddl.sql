@@ -51,6 +51,9 @@ CREATE  TABLE `reporting`.`custom_field_display_search` (
 COMMENT = 'many2many join custom_field_display and search'
 ENGINE = InnoDB ;
 
+ALTER TABLE `reporting`.`custom_field_display_search` 
+ADD UNIQUE INDEX `uq_cfds_cfd_search` (`CUSTOM_FIELD_DISPLAY_ID` ASC, `SEARCH_ID` ASC) ;
+
 
 DROP  TABLE `reporting`.`demographic_field` ;
 CREATE  TABLE `reporting`.`demographic_field` (
