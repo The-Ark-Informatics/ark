@@ -356,13 +356,12 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	 */
 	public Long getBillableItemCount(BillableItem billableItem){
 		Long count = new Long(0);
-		Criteria criteria = getSession().createCriteria(BillableItem.class, "bi");
-		criteria.createAlias("workRequest", "wr", JoinType.LEFT_OUTER_JOIN);
+		Criteria criteria = getSession().createCriteria(BillableItem.class);
 		if(billableItem.getId()!=null){
-			criteria.add(Restrictions.not(Restrictions.eq("bi.id", billableItem.getId())));
+			criteria.add(Restrictions.not(Restrictions.eq("id", billableItem.getId())));
 		}
-		criteria.add(Restrictions.eq("bi.workRequest", billableItem.getWorkRequest()));
-		criteria.add(Restrictions.eq("bi.description", billableItem.getDescription()));
+		criteria.add(Restrictions.eq("workRequest", billableItem.getWorkRequest()));
+		criteria.add(Restrictions.eq("description", billableItem.getDescription()));
 		criteria.setProjection(Projections.rowCount());
 		count= (Long)criteria.uniqueResult();
 		return count;
