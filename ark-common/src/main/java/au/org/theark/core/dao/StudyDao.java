@@ -1576,7 +1576,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			throw new EntityExistsException("Search name '" + search.getName() + "' is already taken.  Please select a unique name");
 		}
 		getSession().update(search);
-		//getSession().refresh(search);
+		getSession().refresh(search);
 
 		Collection<DemographicField> listOfDemographicFieldsFromVO = searchVO.getSelectedDemographicFields();
 		List<DemographicFieldSearch> nonPoppableDFS = new ArrayList<DemographicFieldSearch>();
@@ -1612,6 +1612,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			DemographicFieldSearch dfs = new DemographicFieldSearch(field, search);
 			getSession().save(dfs);
 		}
+		searchVO.setSelectedDemographicFields(nonPoppableFieldsFromVO);
 		return success;
 	}
 
