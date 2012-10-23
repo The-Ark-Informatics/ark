@@ -27,6 +27,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -101,10 +102,39 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		prerenderContextCheck();
 		add(containerForm);
 	}
+	
+	/**
+	 * Create a SubjectContainerPanel, when used by a differing function tab, other than LIMS (eg Subject)
+	 * @param id
+	 * @param tabTitle
+	 */
+	public SubjectContainerPanel(String id, String tabTitle) {
+		super(id);
+		/* Initialise the CPM */
+		cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
+		containerForm = new ContainerForm("containerForm", cpModel);
+		
+		// Added to handle for odd bug in Wicket 1.5.1...shouldn't be needed!
+		containerForm.setMultiPart(true);
 
-	protected void prerenderContextCheck() {
+		// Set study list user should see
+		containerForm.getModelObject().setStudyList(containerForm.getStudyListForUser());
+
+		containerForm.add(initialiseFeedBackPanel());
+		containerForm.add(arkCrudContainerVO.getSearchPanelContainer().add(new EmptyPanel("searchComponentPanel")));
+		arkCrudContainerVO.getSearchResultPanelContainer().add(new EmptyPanel("searchResults"));
+		containerForm.add(arkCrudContainerVO.getSearchResultPanelContainer());
+		containerForm.add(initialiseDetailPanel());
+		if(!prerenderContextCheck()) {
+			error("A study and subject in context are required to proceed.");
+		}
+		add(containerForm);
+	}
+
+	protected boolean prerenderContextCheck() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+		boolean contextLoaded = false;
 		
 		// Force clearing of Cache to re-load roles for the user for the study
 		arkLdapRealm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
@@ -113,7 +143,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
 			LinkSubjectStudy subjectFromBackend = new LinkSubjectStudy();
 			Study study = null;
-			boolean contextLoaded = false;
+			
 			
 			study = iArkCommonService.getStudy(sessionStudyId);
 			
@@ -149,6 +179,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 			}
 		}
+		return contextLoaded;
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
