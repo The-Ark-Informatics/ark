@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BiospecimenSummaryReport" pageWidth="1224" pageHeight="865" whenNoDataType="AllSectionsNoDetail" columnWidth="1184" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="studyName" class="java.lang.String"/>
+	<parameter name="baseDir" class="java.io.File"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="biospecimenId" class="java.lang.Long">
+		<fieldDescription><![CDATA[biospecimenId]]></fieldDescription>
+	</field>
+	<field name="initialStatus" class="java.lang.String">
+		<fieldDescription><![CDATA[initialStatus]]></fieldDescription>
+	</field>
+	<field name="parentId" class="java.lang.String">
+		<fieldDescription><![CDATA[parentId]]></fieldDescription>
+	</field>
+	<field name="quantity" class="java.lang.Double">
+		<fieldDescription><![CDATA[quantity]]></fieldDescription>
+	</field>
+	<field name="sampleType" class="java.lang.String">
+		<fieldDescription><![CDATA[sampleType]]></fieldDescription>
+	</field>
+	<field name="studyName" class="java.lang.String">
+		<fieldDescription><![CDATA[studyName]]></fieldDescription>
+	</field>
+	<field name="subjectUId" class="java.lang.String">
+		<fieldDescription><![CDATA[subjectUId]]></fieldDescription>
+	</field>
+	<field name="site" class="java.lang.String"/>
+	<field name="freezer" class="java.lang.String"/>
+	<field name="rack" class="java.lang.String"/>
+	<field name="box" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="50">
+			<textField>
+				<reportElement mode="Transparent" x="0" y="0" width="1026" height="49"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="22" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Biospecimen Detail Report for "+$P{studyName}+" Study"]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement mode="Transparent" x="1026" y="0" width="158" height="49"/>
+				<imageExpression class="java.io.File"><![CDATA[new File($P{baseDir}, "product_image.gif")]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="28">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="181" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Study Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="181" y="0" width="161" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Subject UID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="450" y="0" width="135" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Biospecimen Parent ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="585" y="0" width="144" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sample Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="729" y="0" width="78" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="340" y="0" width="110" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Biospecimen ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="807" y="0" width="112" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Initial Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="919" y="0" width="265" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Biospecimen Location]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="24">
+			<textField>
+				<reportElement mode="Transparent" x="0" y="0" width="181" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{studyName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="181" y="0" width="161" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{subjectUId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Transparent" x="342" y="0" width="110" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{biospecimenId}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="452" y="0" width="135" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{parentId}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="587" y="0" width="142" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{sampleType}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="729" y="0" width="78" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="807" y="0" width="112" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{initialStatus}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="919" y="0" width="258" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{site} !=null ? $F{site}:"NS")+ "->"+
+($F{freezer} != null?$F{freezer}:"NS")+"->"+
+($F{rack} !=null ?$F{rack}:"NS")+"->"+
+($F{box} !=null ?$F{box}:"NS")]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="22">
+			<staticText>
+				<reportElement mode="Transparent" x="919" y="0" width="258" height="20"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NS = Not Specified]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
