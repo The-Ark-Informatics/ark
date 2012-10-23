@@ -172,4 +172,13 @@ public interface IWorkTrackingService {
 	 */
 	public Long getBillableItemCount(WorkRequest workRequest);
 	
+	/**
+	 * @pre workRequest != null
+	 * 
+	 * Get the billable item count related to given work request item with similar description.
+	 * @param billableItem
+	 * @return billable item count
+	 */
+	public Long getBillableItemCount(final BillableItem billableItem);
+	
 }

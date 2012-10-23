@@ -410,9 +410,20 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	@Override
 	protected void onSave(Form<BillableItemVo> containerForm, AjaxRequestTarget target) {
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
-		if(!isCommencedWorkRequest(target)){
+		if(!isCommencedWorkRequest()){
+			this.error("Selected work request has to be commenced state");
+			processErrors(target);
 			return;
 		}
+		
+		long existingItemCount=iWorkTrackingService.getBillableItemCount(containerForm.getModelObject().getBillableItem());
+		if(existingItemCount>0)
+		{
+			this.error("Work summary has to be unique for selected work request");
+			processErrors(target);
+			return;
+		}
+		
 		try {
 			
 			if (subjectsUploadField != null && subjectsUploadField.getFileUpload() != null) {
@@ -451,12 +462,10 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 
 	}
 	
-	private boolean isCommencedWorkRequest(final AjaxRequestTarget target){
+	private boolean isCommencedWorkRequest(){
 		boolean result=true;
 		WorkRequest workRequest= containerForm.getModelObject().getBillableItem().getWorkRequest();
 		if(!"Commenced".equalsIgnoreCase(workRequest.getRequestStatus().getName())){
-			this.error("Selected work request has to be commenced state");
-			processErrors(target);
 			result=false;
 		}
 		return result;
