@@ -272,7 +272,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 				boolean isVisible = true;
 
 				String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-				isVisible = (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW) && sessionSubjectUID != null);
+				isVisible = (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH) && sessionSubjectUID != null);
 
 				return isVisible;
 			}
