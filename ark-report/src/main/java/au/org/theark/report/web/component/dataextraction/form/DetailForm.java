@@ -139,7 +139,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	@Override
 	protected void onSave(Form<SearchVO> containerForm, AjaxRequestTarget target) {
 
-		target.add(arkCrudContainerVO.getDetailPanelContainer());
+		//target.add(arkCrudContainerVO.getDetailPanelContainer());
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
 		
@@ -163,6 +163,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 			}
 
+			//target.add(demographicFieldsToReturnPalette);
 			onSavePostProcess(target);
 
 		}
@@ -223,17 +224,15 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		Collection<DemographicField> availableDemographicFields = iArkCommonService.getAllDemographicFields();
 		containerForm.getModelObject().setAvailableDemographicFields(availableDemographicFields);
 		
-		
 		PropertyModel<Collection<DemographicField>> availableDemographicFieldsPm = new PropertyModel<Collection<DemographicField>>(searchCPM, "availableDemographicFields");
 		demographicFieldsToReturnPalette = new ArkPalette("selectedDemographicFields", selectedDemographicFieldsPm, availableDemographicFieldsPm, renderer, PALETTE_ROWS, false){
 			private static final long	serialVersionUID	= 1L;
 			/*@Override
-			protected Recorder newRecorderComponent() {
-				Recorder rec = super.newRecorderComponent();
-				rec.setRequired(true).setLabel(new StringResourceModel("error..required", this, new Model<String>("Modules")));
-				return rec;
+			protected Recorder newRecorderComponent() { Recorder rec = super.newRecorderComponent();
+				rec.setRequired(true).setLabel(new StringResourceModel("error..required", this, new Model<String>("Modules"))); return rec;
 			}*/
 		};
+		demographicFieldsToReturnPalette.setOutputMarkupId(true);
 	}
 
 }
