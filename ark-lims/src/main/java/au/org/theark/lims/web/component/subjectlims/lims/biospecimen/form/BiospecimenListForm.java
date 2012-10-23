@@ -23,6 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -498,7 +501,11 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					};
 					
 					public boolean isVisible() {
-						return (item.getModelObject().getQuantity() != null && item.getModelObject().getQuantity() > 0);
+						SecurityManager securityManager = ThreadContext.getSecurityManager();
+						Subject currentUser = SecurityUtils.getSubject();
+						boolean canCreate = ArkPermissionHelper.hasNewPermission(securityManager, currentUser);
+						boolean validQuantity = (item.getModelObject().getQuantity() != null && item.getModelObject().getQuantity() > 0);
+						return (canCreate && validQuantity);
 					};
 					
 				}.setDefaultFormProcessing(false));
