@@ -80,6 +80,9 @@ CREATE TABLE `reporting`.`demographic_field_search` (
 ENGINE = InnoDB 
 COMMENT='many2many join demographic_field and search';
 
+ALTER TABLE `reporting`.`demographic_field_search` 
+ADD UNIQUE INDEX `uq_dfs_df_s` (`DEMOGRAPHIC_FIELD_ID` ASC, `SEARCH_ID` ASC) ;
+
 
 
 DROP  TABLE `reporting`.`query_filter` ;
