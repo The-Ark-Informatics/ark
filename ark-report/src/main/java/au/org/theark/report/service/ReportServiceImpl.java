@@ -49,11 +49,13 @@ import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.report.model.dao.IReportDao;
+import au.org.theark.report.model.vo.BiospecimenDetailsReportVO;
 import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.ResearcherCostResportVO;
+import au.org.theark.report.model.vo.report.BiospecimenDetailsDataRow;
 import au.org.theark.report.model.vo.report.BiospecimenSummaryDataRow;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
@@ -407,5 +409,13 @@ public class ReportServiceImpl implements IReportService {
 		// TODO Auto-generated method stub
 		return reportDao.getBiospecimenSummaryData(biospecimenSummaryReportVO);
 	}
+
+	public List<BiospecimenDetailsDataRow> getBiospecimenDetailsData(
+			BiospecimenDetailsReportVO biospecimenDetailReportVO) {
+		// TODO Auto-generated method stub
+		return reportDao.getBiospecimenDetailsData(biospecimenDetailReportVO);
+	}
+	
+	
 
 }

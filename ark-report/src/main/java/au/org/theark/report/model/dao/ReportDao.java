@@ -59,11 +59,13 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.report.model.vo.BiospecimenDetailsReportVO;
 import au.org.theark.report.model.vo.BiospecimenSummaryReportVO;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.CustomFieldDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.ResearcherCostResportVO;
+import au.org.theark.report.model.vo.report.BiospecimenDetailsDataRow;
 import au.org.theark.report.model.vo.report.BiospecimenSummaryDataRow;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
@@ -769,7 +771,54 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	
 		return results;
 	}
+
+	public List<BiospecimenDetailsDataRow> getBiospecimenDetailsData(BiospecimenDetailsReportVO biospecimenDetailReportVO) {
+		List<BiospecimenDetailsDataRow> results = new ArrayList<BiospecimenDetailsDataRow>();
+
+		Criteria criteria = getSession().createCriteria(BioTransaction.class, "bt");
+		
+		criteria.createAlias("status","bts",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("biospecimen","bs",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("bs.study", "st", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("bs.linkSubjectStudy", "lss", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("bs.sampleType", "sat", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("bs.invCell", "inc", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("inc.invBox", "inb", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("inb.invRack", "inr", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("inr.invFreezer", "inf", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("inf.invSite", "ins", JoinType.LEFT_OUTER_JOIN);
+		
+		criteria.add(Restrictions.eq("st.id", biospecimenDetailReportVO.getStudy().getId()));
+		if(biospecimenDetailReportVO.getSubjectUID() !=null){
+			criteria.add(Restrictions.eq("lss.subjectUID", biospecimenDetailReportVO.getSubjectUID()));
+		}
 	
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.min("bt.id"));
+		projectionList.add(Projections.groupProperty("bs.id"));
+		
+		projectionList.add(Projections.property("st.name"), "studyName");
+		projectionList.add(Projections.property("lss.subjectUID"), "subjectUId");
+		projectionList.add(Projections.property("bs.id"), "biospecimenId");
+		projectionList.add(Projections.property("bs.parentUid"), "parentId");
+		projectionList.add(Projections.property("sat.name"), "sampleType");
+		projectionList.add(Projections.property("bs.quantity"), "quantity");
+		projectionList.add(Projections.property("bts.name"), "initialStatus");
+
+		projectionList.add(Projections.property("inb.name"), "box");
+		projectionList.add(Projections.property("inr.name"), "rack");
+		projectionList.add(Projections.property("inf.name"), "freezer");
+		projectionList.add(Projections.property("ins.name"), "site");
+	
+		criteria.setProjection(projectionList);
+		criteria.setResultTransformer(Transformers.aliasToBean(BiospecimenDetailsDataRow.class));
+		criteria.addOrder(Order.asc("lss.subjectUID"));
+		criteria.addOrder(Order.asc("bs.id"));
+		results=criteria.list();
+	
+		return results;
+	}
+
 	
 	
 }
