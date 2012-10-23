@@ -32,7 +32,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.admin.web.menu.AdminTabProviderImpl;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
@@ -42,14 +41,15 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
-import au.org.theark.lims.web.menu.LimsTabProviderImpl;
-import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
-import au.org.theark.report.web.menu.ReportTabProviderImpl;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.menu.MainTabProviderImpl;
+import au.org.theark.web.menu.AdminTabProviderImpl;
+import au.org.theark.web.menu.LimsTabProviderImpl;
+import au.org.theark.web.menu.MainTabProviderImpl;
+import au.org.theark.web.menu.PhenotypicTabProviderImpl;
+import au.org.theark.web.menu.ReportTabProviderImpl;
+import au.org.theark.web.menu.WorkTrackingTabProviderImpl;
 import au.org.theark.web.pages.login.LoginPage;
-import au.org.theark.worktracking.web.menu.WorkTrackingTabProviderImpl;
 
 /**
  * <p>
@@ -208,6 +208,15 @@ public class HomePage extends BasePage {
 					}
 				}
 				
+				if(arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_WORKTRACKING)){
+					//  Work
+					WorkTrackingTabProviderImpl workTrackingTabProvider=new WorkTrackingTabProviderImpl(arkModule.getName());
+					List<ITab> workTabList = workTrackingTabProvider.buildTabs();
+					for (ITab tab : workTabList) {
+						moduleTabsList.add(tab);
+					}
+				}
+				
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_REPORTING)) {
 					// Reporting
 					ReportTabProviderImpl reportTabProvider = new ReportTabProviderImpl(arkModule.getName());
@@ -222,15 +231,6 @@ public class HomePage extends BasePage {
 					AdminTabProviderImpl adminTabProvider = new AdminTabProviderImpl(arkModule.getName());
 					List<ITab> adminTabList = adminTabProvider.buildTabs();
 					for (ITab tab : adminTabList) {
-						moduleTabsList.add(tab);
-					}
-				}
-				
-				if(arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_WORKTRACKING)){
-					//  Work
-					WorkTrackingTabProviderImpl workTrackingTabProvider=new WorkTrackingTabProviderImpl(arkModule.getName());
-					List<ITab> workTabList = workTrackingTabProvider.buildTabs();
-					for (ITab tab : workTabList) {
 						moduleTabsList.add(tab);
 					}
 				}
