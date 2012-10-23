@@ -231,7 +231,13 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 		// TODO Auto-generated method stub
 		return workTrackingDao.searchBillableItem(billableItemVo);
 	}
-	
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Long getBillableItemCount(BillableItem billableItem) {
+		// TODO Auto-generated method stub
+		return workTrackingDao.getBillableItemCount(billableItem);
+	}
 
 }
