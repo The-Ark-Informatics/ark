@@ -81,7 +81,7 @@ public class DataExtractionContainerPanel extends AbstractContainerPanel<SearchV
 			protected Object load() {
 			
 				Long studySessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				if (isActionPermitted()){// && studySessionId != null) {
+				if (isActionPermitted() && studySessionId != null) {
 					Study studyInContext = iArkCommonService.getStudy(studySessionId);
 					containerForm.getModelObject().setListOfSearchesForResultList(iArkCommonService.getSearchesForThisStudy(studyInContext));
 				}
