@@ -60,6 +60,9 @@ public class BiospecimenDetailsReportDataSource implements Serializable,
 		else if ("box".equalsIgnoreCase(fieldName)) {
 			value = data.get(index).getBox();
 		}
+		else if ("biospecimenUid".equalsIgnoreCase(fieldName)) {
+			value = data.get(index).getBiospecimenUid();
+		}
 		return value;
 	}
 

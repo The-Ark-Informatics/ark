@@ -758,6 +758,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		projectionList.add(Projections.property("st.name"), "studyName");
 		projectionList.add(Projections.property("lss.subjectUID"), "subjectUId");
 		projectionList.add(Projections.property("bs.id"), "biospecimenId");
+		projectionList.add(Projections.property("bs.biospecimenUid"), "biospecimenUid");
 		projectionList.add(Projections.property("bs.parentUid"), "parentId");
 		projectionList.add(Projections.property("sat.name"), "sampleType");
 		projectionList.add(Projections.property("bs.quantity"), "quantity");
@@ -766,7 +767,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.setProjection(projectionList);
 		criteria.setResultTransformer(Transformers.aliasToBean(BiospecimenSummaryDataRow.class));
 		criteria.addOrder(Order.asc("lss.subjectUID"));
-		criteria.addOrder(Order.asc("bs.id"));
+		criteria.addOrder(Order.asc("bs.biospecimenUid"));
 		results=criteria.list();
 	
 		return results;
@@ -800,6 +801,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		projectionList.add(Projections.property("st.name"), "studyName");
 		projectionList.add(Projections.property("lss.subjectUID"), "subjectUId");
 		projectionList.add(Projections.property("bs.id"), "biospecimenId");
+		projectionList.add(Projections.property("bs.biospecimenUid"), "biospecimenUid");
 		projectionList.add(Projections.property("bs.parentUid"), "parentId");
 		projectionList.add(Projections.property("sat.name"), "sampleType");
 		projectionList.add(Projections.property("bs.quantity"), "quantity");
@@ -813,7 +815,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.setProjection(projectionList);
 		criteria.setResultTransformer(Transformers.aliasToBean(BiospecimenDetailsDataRow.class));
 		criteria.addOrder(Order.asc("lss.subjectUID"));
-		criteria.addOrder(Order.asc("bs.id"));
+		criteria.addOrder(Order.asc("bs.biospecimenUid"));
 		results=criteria.list();
 	
 		return results;
