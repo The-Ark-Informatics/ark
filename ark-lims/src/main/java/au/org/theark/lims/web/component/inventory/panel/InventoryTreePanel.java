@@ -47,10 +47,7 @@ public class InventoryTreePanel extends Panel {
 		this.containerForm = containerForm;
 
 		tree = new InventoryLinkTree("tree", feedbackPanel, detailContainer, containerForm);
-		tree.setRootLess(true);	
-		
-		// Automatically expand all nodes on render. May be enough to resolve ARK-813 ??
-		tree.getTreeState().expandAll();
+		tree.setRootLess(true);
 		
 		setOutputMarkupPlaceholderTag(true);
 		initialiseButtons();
