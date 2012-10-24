@@ -143,7 +143,7 @@ CREATE  TABLE `reporting`.`query_filter_grouping` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-# TODO analyse whether we want cascade.
+-- TODO analyse whether we want cascade.
 
 
 DROP TABLE  `reporting`.`query_grouping_grouping`;
@@ -166,7 +166,7 @@ CREATE  TABLE `reporting`.`query_grouping_grouping` (
     REFERENCES `reporting`.`query_grouping` (`ID` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
-# TODO analyse whether we want cascade.
+-- TODO analyse whether we want cascade.
 
 
 INSERT INTO `reporting`.`demographic_field` (`ENTITY`, `FIELD_NAME`, `PUBLIC_FIELD_NAME`, `FIELD_TYPE_ID`, `ID`) 
