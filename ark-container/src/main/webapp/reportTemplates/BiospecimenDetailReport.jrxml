@@ -33,6 +33,7 @@
 	<field name="freezer" class="java.lang.String"/>
 	<field name="rack" class="java.lang.String"/>
 	<field name="box" class="java.lang.String"/>
+	<field name="biospecimenUid" class="java.lang.String"/>
 	<background>
 		<band/>
 	</background>
@@ -72,7 +73,7 @@
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Biospecimen Parent ID]]></text>
+				<text><![CDATA[Parent UID]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="585" y="0" width="144" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
@@ -93,7 +94,7 @@
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Biospecimen ID]]></text>
+				<text><![CDATA[Biospecimen UID]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="807" y="0" width="112" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
@@ -126,7 +127,7 @@
 			<textField>
 				<reportElement mode="Transparent" x="342" y="0" width="110" height="20"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.Long"><![CDATA[$F{biospecimenId}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{biospecimenUid}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="452" y="0" width="135" height="20"/>

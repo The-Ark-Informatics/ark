@@ -29,6 +29,7 @@
 	<field name="subjectUId" class="java.lang.String">
 		<fieldDescription><![CDATA[subjectUId]]></fieldDescription>
 	</field>
+	<field name="biospecimenUid" class="java.lang.String"/>
 	<background>
 		<band/>
 	</background>
@@ -68,14 +69,14 @@
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Biospecimen ID]]></text>
+				<text><![CDATA[Biospecimen UID]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="560" y="0" width="135" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Biospecimen Parent ID]]></text>
+				<text><![CDATA[Parent UID]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="695" y="0" width="221" height="20" forecolor="#FFFFFF" backcolor="#333333"/>
@@ -115,7 +116,7 @@
 			<textField>
 				<reportElement mode="Transparent" x="450" y="0" width="110" height="20"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.Long"><![CDATA[$F{biospecimenId}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{biospecimenUid}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement mode="Transparent" x="560" y="0" width="135" height="20"/>
