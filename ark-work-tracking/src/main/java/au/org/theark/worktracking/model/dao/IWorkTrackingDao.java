@@ -12,6 +12,7 @@ import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
 import au.org.theark.worktracking.model.vo.BillableItemVo;
+import au.org.theark.worktracking.model.vo.WorkRequestBillableItemVo;
 
 public interface IWorkTrackingDao {
 
@@ -181,5 +182,14 @@ public interface IWorkTrackingDao {
 	 * @return billable item count
 	 */
 	public Long getBillableItemCount(BillableItem billableItem);
+	
+	/**
+	 * @pre workRequest != null
+	 * 
+	 * Get the billable item count for given work request and assigned GST properties.
+	 * @param workRequest
+	 * @return WorkRequestBillableItemVo object
+	 */
+	public WorkRequestBillableItemVo getWorkRequestBillableItem(WorkRequest workRequest);
 	
 }

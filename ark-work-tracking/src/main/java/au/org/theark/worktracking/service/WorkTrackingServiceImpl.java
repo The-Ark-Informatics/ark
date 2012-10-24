@@ -18,6 +18,7 @@ import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
 import au.org.theark.worktracking.model.dao.IWorkTrackingDao;
 import au.org.theark.worktracking.model.vo.BillableItemVo;
+import au.org.theark.worktracking.model.vo.WorkRequestBillableItemVo;
 import au.org.theark.worktracking.util.Constants;
 
 @Transactional
@@ -239,5 +240,16 @@ public class WorkTrackingServiceImpl implements IWorkTrackingService{
 		// TODO Auto-generated method stub
 		return workTrackingDao.getBillableItemCount(billableItem);
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public WorkRequestBillableItemVo getWorkRequestBillableItem(
+			WorkRequest workRequest) {
+		// TODO Auto-generated method stub
+		return workTrackingDao.getWorkRequestBillableItem(workRequest);
+	}
+	
+	
 
 }
