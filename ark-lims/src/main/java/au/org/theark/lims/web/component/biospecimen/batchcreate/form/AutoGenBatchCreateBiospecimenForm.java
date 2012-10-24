@@ -371,7 +371,7 @@ public class AutoGenBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> 
 		try {
 			cpModel.getObject().setBioCollectionList(iLimsService.searchBioCollection(bioCollection));
 
-			ChoiceRenderer<BioCollection> choiceRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
+			ChoiceRenderer<BioCollection> choiceRenderer = new ChoiceRenderer<BioCollection>("biocollectionUid", Constants.ID);
 			bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", new PropertyModel(item.getModelObject(), "biospecimen.bioCollection"), cpModel.getObject().getBioCollectionList(), choiceRenderer);
 		}
 		catch (ArkSystemException e) {
