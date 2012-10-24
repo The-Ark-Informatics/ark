@@ -5,9 +5,11 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -23,6 +25,7 @@ import au.org.theark.core.model.worktracking.entity.ResearcherStatus;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
 import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
 import au.org.theark.worktracking.model.vo.BillableItemVo;
+import au.org.theark.worktracking.model.vo.WorkRequestBillableItemVo;
 import au.org.theark.worktracking.util.Constants;
 
 @Repository(Constants.WORK_TRACKING_DAO)
@@ -199,7 +202,8 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 	 * {@inheritDoc}
 	 */
 	public void updateWorkRequest(WorkRequest workRequest){
-		getSession().update(workRequest);
+//		getSession().update(workRequest);
+		getSession().merge(workRequest);
 	}
 
 	/**
@@ -401,6 +405,25 @@ public class WorkTrackingDao extends HibernateSessionDao implements
 		criteria.setProjection(Projections.rowCount());
 		count= (Long)criteria.uniqueResult();
 		return count;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public WorkRequestBillableItemVo getWorkRequestBillableItem(WorkRequest workRequest){
+		WorkRequestBillableItemVo object=null;
+		Criteria criteria = getSession().createCriteria(BillableItem.class,"bi");
+		criteria.createAlias("workRequest", "wr", JoinType.LEFT_OUTER_JOIN);
+		criteria.add(Restrictions.eq("wr.id", workRequest.getId()));
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.count("id"), "billableItemCount");
+		projectionList.add(Projections.groupProperty("workRequest"));
+		projectionList.add(Projections.property("wr.gstAllow"), "gstAllow");
+		projectionList.add(Projections.property("wr.gst"), "gst");
+		criteria.setProjection(projectionList);
+		criteria.setResultTransformer(Transformers.aliasToBean(WorkRequestBillableItemVo.class));
+		object=(WorkRequestBillableItemVo)criteria.uniqueResult();
+		return object;
 	}
 	
 }

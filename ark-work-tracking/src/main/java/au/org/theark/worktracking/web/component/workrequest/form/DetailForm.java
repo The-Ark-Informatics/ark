@@ -4,6 +4,7 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
@@ -30,6 +31,7 @@ import au.org.theark.core.model.worktracking.entity.WorkRequestStatus;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.worktracking.model.vo.WorkRequestBillableItemVo;
 import au.org.theark.worktracking.model.vo.WorkRequestVo;
 import au.org.theark.worktracking.service.IWorkTrackingService;
 import au.org.theark.worktracking.util.Constants;
@@ -210,19 +212,33 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 	protected void onSave(Form<WorkRequestVo> containerForm, AjaxRequestTarget target) {
 
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
+
 		if(isWorkRequestHasvalidDateValues(target)){
+		
+		WorkRequest workRequest = containerForm.getModelObject().getWorkRequest();
+			
 		try {
 			
-			if (containerForm.getModelObject().getWorkRequest().getId() == null) {
+			if (workRequest.getId() == null) {
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				containerForm.getModelObject().getWorkRequest().setStudyId(studyId);
+				workRequest.setStudyId(studyId);
 				
 				
-				iWorkTrackingService.createWorkRequest(containerForm.getModelObject().getWorkRequest());
-				this.info("Work Request " + containerForm.getModelObject().getWorkRequest().getName()  + " was created successfully");
+				iWorkTrackingService.createWorkRequest(workRequest);
+				this.info("Work Request " + workRequest.getName()  + " was created successfully");
 				processErrors(target);
 			}
 			else {
+				WorkRequestBillableItemVo workBillableItemVo = iWorkTrackingService.getWorkRequestBillableItem(workRequest);
+				if(workBillableItemVo !=null 
+						&& workBillableItemVo.getBillableItemCount() > 0
+						&& (!ObjectUtils.equals(workBillableItemVo.getGstAllow(), workRequest.getGstAllow())
+						|| !ObjectUtils.equals(workBillableItemVo.getGst(), workRequest.getGst()))){
+					this.error("This work request already assigned for a Billable Item. Cannot change the GST properties");
+					processErrors(target);
+					return ;	
+				}
+				
 				iWorkTrackingService.updateWorkRequest(containerForm.getModelObject().getWorkRequest());
 				this.info("Work Request " +  containerForm.getModelObject().getWorkRequest().getName() + " was updated successfully");
 				processErrors(target);
@@ -288,13 +304,13 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 			}
 			else if(commenceDate != null  
 					&& commenceDate.compareTo(requestedDate)<0){
-					this.error("Commenced date shoud be same or later than the requested date");
+					this.error("Commenced date should be same or later than the requested date");
 					processErrors(target);
 					return false;	
 			}
 			else if(completedDate != null 
 					&& completedDate.compareTo(commenceDate)<0){
-					this.error("Completed date shoud be same or later than the commenced date");
+					this.error("Completed date should be same or later than the commenced date");
 					processErrors(target);
 					return false;
 			}
