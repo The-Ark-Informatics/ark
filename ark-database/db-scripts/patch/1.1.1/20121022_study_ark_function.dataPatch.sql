@@ -1,0 +1,27 @@
+-- ARK-848 Move functions to differing modules.
+USE study;
+-- Remove previous functions from study, subject and pheno
+DELETE FROM `ark_module_function` WHERE ark_module_id IN (1,2);
+DELETE FROM `ark_module_function` WHERE ark_module_id= 3 AND ark_function_id =15;
+
+-- Add back in the rearranged functions
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (2,24,1);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (2,25,2);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (2,5,3);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (2,34,4);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (2,6,5);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (2,7,6);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (2,8,7);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (2,9,8);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (2,21,9);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (2,10,10);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (2,15,11);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (2,17,12);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (1,23,1);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (1,1,2);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (1,2,3);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (1,4,4);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (1,11,5);
+INSERT INTO `ark_module_function` (`ARK_MODULE_ID`,`ARK_FUNCTION_ID`,`FUNCTION_SEQUENCE`) VALUES (1,50,6);
+
+ 
