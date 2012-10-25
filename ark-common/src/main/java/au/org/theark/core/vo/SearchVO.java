@@ -25,6 +25,7 @@ import java.util.List;
 
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
 /**
  * @author cellis and travis
@@ -38,9 +39,12 @@ public class SearchVO implements Serializable {
 	
 
 
+	// would be better if pallette could point to search.getDemographicFieldsToReturn 
 	private Collection<DemographicField>	availableDemographicFields = new ArrayList<DemographicField>();
-// would be better if pallette could point to search.getDemographicFieldsToReturn 
 	private Collection<DemographicField>	selectedDemographicFields = new ArrayList<DemographicField>();
+
+	private Collection<CustomFieldDisplay>	availablePhenoCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
+	private Collection<CustomFieldDisplay>	selectedPhenoCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
 	
 	
 	public SearchVO() {
@@ -88,6 +92,28 @@ public class SearchVO implements Serializable {
 	public void setSelectedDemographicFields(
 			Collection<DemographicField> selectedDemographicFields) {
 		this.selectedDemographicFields = selectedDemographicFields;
+	}
+
+
+	public Collection<CustomFieldDisplay> getAvailablePhenoCustomFieldDisplays() {
+		return availablePhenoCustomFieldDisplays;
+	}
+
+
+	public void setAvailablePhenoCustomFieldDisplays(
+			Collection<CustomFieldDisplay> availablePhenoCustomFieldDisplays) {
+		this.availablePhenoCustomFieldDisplays = availablePhenoCustomFieldDisplays;
+	}
+
+
+	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplays() {
+		return selectedPhenoCustomFieldDisplays;
+	}
+
+
+	public void setSelectedPhenoCustomFieldDisplays(
+			Collection<CustomFieldDisplay> selectedPhenoCustomFieldDisplays) {
+		this.selectedPhenoCustomFieldDisplays = selectedPhenoCustomFieldDisplays;
 	}
 
 	

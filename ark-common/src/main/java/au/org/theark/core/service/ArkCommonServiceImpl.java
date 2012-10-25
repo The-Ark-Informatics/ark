@@ -1200,6 +1200,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction){
 			return studyDao.getCustomFieldDisplaysIn(fieldNameCollection, study, arkFunction);
 	}
+	
+	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(Study study, ArkFunction arkFunction){
+			return studyDao.getCustomFieldDisplaysIn(study, arkFunction);
+	}
 
 	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded) {
 		return studyDao.getCustomFieldDataFor(customFieldDisplaysThatWeNeed, subjectUIDsToBeIncluded);
@@ -1294,4 +1298,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean readOnly){
 		return studyDao.getSelectedDemographicFieldsForSearch(search, readOnly);
 	}
+
+	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search){
+		return studyDao.getSelectedPhenoCustomFieldDisplaysForSearch(search);		
+	}
+	
 }

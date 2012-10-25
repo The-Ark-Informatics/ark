@@ -666,5 +666,9 @@ public interface IStudyDao {
 
 	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean explicitReadOnly);
 
+	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search);
+
+	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(Study study, ArkFunction arkFunction);
+
 
 }

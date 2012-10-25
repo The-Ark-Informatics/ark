@@ -1352,6 +1352,25 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
+
+	@SuppressWarnings("unchecked")
+	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(Study study, ArkFunction arkFunction){
+	
+		List<String> lowerCaseNames = new ArrayList<String>();
+		String queryString = "select cfd " +
+				" from CustomFieldDisplay cfd " +
+				" where customField.id in ( " +
+					" SELECT id from CustomField cf " +
+					" where cf.study =:study " +
+					" and cf.arkFunction =:arkFunction )";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("study", study);
+		query.setParameter("arkFunction", arkFunction);
+		return query.list();
+	
+	}
+
+	
 	/**
 	 * based on sql concept of;
 	 * select id from custom_field_display 
@@ -1682,6 +1701,23 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Query query =  getSession().createQuery(queryString);
 		query.setParameter("search", search);
 		query.setReadOnly(explicitReadOnly);
+		
+		return query.list();
+	}
+
+	/**
+	 * 
+	 * 
+	 * TODO ASAP   : THis must start using arkfunction
+	 * 
+	 */
+	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search){
+
+		String queryString = "select cfds.customFieldDisplay " +
+		" from CustomFieldDisplaySearch cfds " +
+		" where cfds.search=:search ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
 		
 		return query.list();
 	}
