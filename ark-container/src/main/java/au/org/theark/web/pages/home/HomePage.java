@@ -177,27 +177,6 @@ public class HomePage extends BasePage {
 						moduleTabsList.add(itab);
 					}
 				}
-				/* Removed Dependency on Geno 
-				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_GENOTYPIC)) {
-					// Genotypic
-					GenoTabProviderImpl genoTabs = new GenoTabProviderImpl(arkModule.getName());
-					List<ITab> genoTabsList = genoTabs.buildTabs();
-					for (ITab itab : genoTabsList) {
-						moduleTabsList.add(itab);
-					}
-				}
-				*/
-				
-				/* Removed Dependency on Registry 
-				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_REGISTRY)) {
-					// Registry
-					RegistryTabProviderImpl registryTabProvider = new RegistryTabProviderImpl(arkModule.getName());
-					List<ITab> registryTabList = registryTabProvider.buildTabs();
-					for (ITab tab : registryTabList) {
-						moduleTabsList.add(tab);
-					}
-				}
-				*/
 
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_LIMS)) {
 					// LIMS
@@ -216,27 +195,25 @@ public class HomePage extends BasePage {
 						moduleTabsList.add(tab);
 					}
 				}
-				
-				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_REPORTING)) {
-					// Reporting
-					ReportTabProviderImpl reportTabProvider = new ReportTabProviderImpl(arkModule.getName());
-					List<ITab> reportTabList = reportTabProvider.buildTabs();
-					for (ITab tab : reportTabList) {
-						moduleTabsList.add(tab);
-					}
-				}
-				
-				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_ADMIN)) {
-					// Admin
-					AdminTabProviderImpl adminTabProvider = new AdminTabProviderImpl(arkModule.getName());
-					List<ITab> adminTabList = adminTabProvider.buildTabs();
-					for (ITab tab : adminTabList) {
-						moduleTabsList.add(tab);
-					}
-				}
 			}
 			
+			// Reporting always displayed, but data extraction function requires role/permisssion 
+			ReportTabProviderImpl reportTabProvider = new ReportTabProviderImpl((au.org.theark.core.Constants.ARK_MODULE_REPORTING));
+			List<ITab> reportTabList = reportTabProvider.buildTabs();
+			for (ITab tab : reportTabList) {
+				moduleTabsList.add(tab);
+			}
 			
+			// Only display admin tab for the super user
+			ArkModule arkModule = iArkCommonService.getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_ADMIN);
+			if (arkModuleList.contains(arkModule)) {
+				// Admin
+				AdminTabProviderImpl adminTabProvider = new AdminTabProviderImpl(arkModule.getName());
+				List<ITab> adminTabList = adminTabProvider.buildTabs();
+				for (ITab tab : adminTabList) {
+					moduleTabsList.add(tab);
+				}
+			}
 		}
 		catch (EntityNotFoundException e) {
 			log.error("ArkUser [" + ldapUserName + "] was not found!");
