@@ -25,6 +25,14 @@ public class CustomFieldDisplaySearch  implements Serializable {
 	private CustomFieldDisplay customFieldDisplay;
 	private Search search;
 
+	public CustomFieldDisplaySearch() {
+	}
+
+	public CustomFieldDisplaySearch(CustomFieldDisplay cfd, Search search2) {
+		search = search2;
+		customFieldDisplay = cfd;
+	}
+
 	@Id
 	@SequenceGenerator(name = "custom_field_display_search_generator", sequenceName = "CUSTOM_FIELD_DISPLAY_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "custom_field_display_search_generator")
