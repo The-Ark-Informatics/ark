@@ -202,7 +202,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		availableArkModules = iArkCommonService.getEntityList(ArkModule.class);
 		// Hide Admin and Reporting modules from "Available" view
 		availableArkModules.remove(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_ADMIN));
-		availableArkModules.remove(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_REPORTING));
+		//availableArkModules.remove(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_REPORTING));
 
 		containerForm.getModelObject().setAvailableArkModules(availableArkModules);// ArkModule from database not LDAP.
 
