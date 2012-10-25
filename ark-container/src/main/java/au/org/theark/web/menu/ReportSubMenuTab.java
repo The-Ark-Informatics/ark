@@ -25,17 +25,22 @@ import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.MenuModule;
+import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.dataextraction.DataExtractionContainerPanel;
 import au.org.theark.report.web.component.viewReport.ReportContainerPanel;
 
-public class ReportSubMenuTab extends Panel {
+public class ReportSubMenuTab extends AbstractArkTabPanel {
 
 	private static final long	serialVersionUID	= -3695404298701886701L;
 	private List<ITab>			moduleSubTabsList;
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	public IArkCommonService<Void>	iArkCommonService;
 
 	public ReportSubMenuTab(String id) {
 		super(id);
@@ -77,6 +82,9 @@ public class ReportSubMenuTab extends Panel {
 						panelToReturn = reportContainerPanel;
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.DATA_EXTRACTION)) {
+						
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_REPORTING, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_EXTRACTION));
+						
 						DataExtractionContainerPanel dataExtractionContainerPanel = new DataExtractionContainerPanel(panelId);
 						//dataExtractionContainerPanel.initialiseSearchPanel();   THESE ARE PROTECTED...BUT DO I REALLY NEED TO DO THEM NOW ANYWAY?
 						panelToReturn = dataExtractionContainerPanel;
