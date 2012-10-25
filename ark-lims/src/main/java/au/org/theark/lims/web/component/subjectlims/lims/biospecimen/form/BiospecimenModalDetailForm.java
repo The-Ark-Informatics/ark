@@ -51,6 +51,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.util.convert.converter.BigDecimalConverter;
 import org.apache.wicket.util.convert.converter.DoubleConverter;
 import org.apache.wicket.validation.validator.MinimumValidator;
 import org.slf4j.Logger;
@@ -437,9 +438,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			@SuppressWarnings("unchecked")
 			@Override
 			public <C> IConverter<C> getConverter(Class<C> type) {
-				DoubleConverter doubleConverter = new DoubleConverter();
+				BigDecimalConverter doubleConverter = new BigDecimalConverter();
 				NumberFormat numberFormat = NumberFormat.getInstance();
 				numberFormat.setMinimumFractionDigits(1);
+				numberFormat.setMaximumFractionDigits(10);
 				doubleConverter.setNumberFormat(getLocale(), numberFormat);
 				return (IConverter<C>) doubleConverter;
 			}
@@ -453,9 +455,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			@SuppressWarnings("unchecked")
 			@Override
 			public <C> IConverter<C> getConverter(Class<C> type) {
-				DoubleConverter doubleConverter = new DoubleConverter();
+				BigDecimalConverter doubleConverter = new BigDecimalConverter();
 				NumberFormat numberFormat = NumberFormat.getInstance();
 				numberFormat.setMinimumFractionDigits(1);
+				numberFormat.setMaximumFractionDigits(10);
 				doubleConverter.setNumberFormat(getLocale(), numberFormat);
 				return (IConverter<C>) doubleConverter;
 			}
