@@ -55,6 +55,7 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.report.entity.CustomFieldDisplaySearch;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.Search;
@@ -1600,14 +1601,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Collection<DemographicField> listOfDemographicFieldsFromVO = searchVO.getSelectedDemographicFields();
 		List<DemographicFieldSearch> nonPoppableDFS = new ArrayList<DemographicFieldSearch>();
 		nonPoppableDFS.addAll(search.getDemographicFieldsToReturn());
-		List<DemographicField> nonPoppableFieldsFromVO = new ArrayList<DemographicField>();
-		nonPoppableFieldsFromVO.addAll(listOfDemographicFieldsFromVO);
+		List<DemographicField> nonPoppableDemographicFieldsFromVO = new ArrayList<DemographicField>();
+		nonPoppableDemographicFieldsFromVO.addAll(listOfDemographicFieldsFromVO);
 		
 		for(DemographicFieldSearch dfs : nonPoppableDFS){
 			log.info("fields to return=" + search.getDemographicFieldsToReturn().size());
 			boolean toBeDeleted = true; //if we find no match along the way, conclude that it has been deleted.
 
-			for(DemographicField field : nonPoppableFieldsFromVO){
+			for(DemographicField field : nonPoppableDemographicFieldsFromVO){
 				if(dfs.getDemographicField().getId().equals(field.getId())){
 					toBeDeleted=false;
 					log.info("listOfDemographicFieldsFromVO.size()" + listOfDemographicFieldsFromVO.size());
@@ -1631,7 +1632,58 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			DemographicFieldSearch dfs = new DemographicFieldSearch(field, search);
 			getSession().save(dfs);
 		}
-		searchVO.setSelectedDemographicFields(nonPoppableFieldsFromVO);
+		searchVO.setSelectedDemographicFields(nonPoppableDemographicFieldsFromVO);
+		
+		
+		
+		
+
+		Collection<CustomFieldDisplay> listOfCustomFieldDisplaysFromVO = searchVO.getSelectedPhenoCustomFieldDisplays();
+		//Collection<CustomFieldDisplay> listOfCustomFieldDisplaysFromVO = searchVO.getSelectedCustomFieldDisplays();we really can add them all here and add to one collections
+		//Collection<CustomFieldDisplay> listOfCustomFieldDisplaysFromVO = searchVO.getSelectedCustomFieldDisplays();
+		//Collection<CustomFieldDisplay> listOfCustomFieldDisplaysFromVO = searchVO.getSelectedCustomFieldDisplays();
+		
+		
+		List<CustomFieldDisplaySearch> nonPoppablePhenoCFDs = new ArrayList<CustomFieldDisplaySearch>();
+		nonPoppablePhenoCFDs.addAll(search.getCustomFieldsToReturn());
+		List<CustomFieldDisplay> nonPoppableCustomFieldsFromVO = new ArrayList<CustomFieldDisplay>();
+		nonPoppableCustomFieldsFromVO.addAll(listOfCustomFieldDisplaysFromVO);
+		
+		for(CustomFieldDisplaySearch cfds : nonPoppablePhenoCFDs){
+			log.info("fields to return=" + search.getCustomFieldsToReturn().size());
+			boolean toBeDeleted = true; //if we find no match along the way, conclude that it has been deleted.
+
+			for(CustomFieldDisplay field : nonPoppableCustomFieldsFromVO){
+				if(cfds.getCustomFieldDisplay().getId().equals(field.getId())){
+					toBeDeleted=false;
+					log.info("listOfCustomFieldDisplaysFromVO.size()" + listOfCustomFieldDisplaysFromVO.size());
+					listOfCustomFieldDisplaysFromVO.remove(field);//we found it, therefore remove it from the list that will ultimately be added as DFS's
+					log.info("after removal listOfCustomFieldDisplaysFromVO.size()" + listOfCustomFieldDisplaysFromVO.size());
+				}
+			}
+			if(toBeDeleted){
+				log.info("before delete");
+				search.getCustomFieldsToReturn().remove(cfds);
+				getSession().update(search);
+				getSession().delete(cfds);
+				//setCustomFieldDisplaysToReturn(getCustomFieldDisplaysToReturn());
+				getSession().flush();
+				getSession().refresh(search);				
+				log.info("after delete" + search.getCustomFieldsToReturn().size());
+			}
+		}
+		
+		for(CustomFieldDisplay field : listOfCustomFieldDisplaysFromVO){
+			CustomFieldDisplaySearch cfds = new CustomFieldDisplaySearch(field, search);
+			getSession().save(cfds);
+		}
+		searchVO.setSelectedPhenoCustomFieldDisplays(nonPoppableCustomFieldsFromVO);
+
+		
+		
+		
+		
+		
 		return success;
 	}
 
