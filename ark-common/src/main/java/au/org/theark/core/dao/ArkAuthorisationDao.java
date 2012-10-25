@@ -490,7 +490,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class);
 
 		criteria.add(Restrictions.eq("study", study));
-		criteria.add(Restrictions.ne("arkModule", arkModuleToExclude));
+		//criteria.add(Restrictions.ne("arkModule", arkModuleToExclude));
 		criteria.createAlias("arkModule", "module");
 		criteria.addOrder(Order.asc("module.id"));
 
@@ -1052,7 +1052,6 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			// Restrict by user if NOT Super Administrator
 			if (!isUserAdminHelper(arkUser.getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 				criteria.add(Restrictions.eq("arkUser", arkUser));
-				arkModule = getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_REPORTING);
 			}
 		}
 		catch (EntityNotFoundException e) {
@@ -1068,14 +1067,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.setProjection(projectionList);
 		criteria.addOrder(Order.asc("arkModule.id"));
 
-		// This was added since non-super admin users need access to Reporting Module Tab. In manager user module we do not list the Reporting Module
-		// and hence we cannot map a user based on his role to access this module.
-		List<ArkModule> list = criteria.list();
-		if (arkModule != null) {
-			list.add(arkModule);
-		}
-
-		return list;
+		return criteria.list();
 	}
 
 	public Boolean isArkUserLinkedToStudies(ArkUser arkUser) {
