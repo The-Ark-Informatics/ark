@@ -38,7 +38,9 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SearchVO;
@@ -60,6 +62,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	private FeedbackPanel		feedBackPanel;
 
 	private Palette<DemographicField>	demographicFieldsToReturnPalette;
+	private Palette<CustomFieldDisplay>	phenoCustomFieldDisplaysToReturnPalette;
 	
 	/**
 	 * 
@@ -96,6 +99,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		searchNameTxtFld.add(new ArkDefaultFormFocusBehavior());
 
 		initDemographicFieldsModulePalette();
+		initPhenoCustomFieldDisplaysModulePalette();
 		
 		addDetailFormComponents();
 		attachValidators();
@@ -105,6 +109,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(demographicFieldsToReturnPalette);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(phenoCustomFieldDisplaysToReturnPalette);
 	}
 
 	/*
@@ -139,7 +144,6 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	@Override
 	protected void onSave(Form<SearchVO> containerForm, AjaxRequestTarget target) {
 
-		//target.add(arkCrudContainerVO.getDetailPanelContainer());
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
 		
@@ -163,7 +167,6 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 			}
 
-			//target.add(demographicFieldsToReturnPalette);
 			onSavePostProcess(target);
 
 		}
@@ -216,23 +219,36 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	
 	@SuppressWarnings("unchecked")
 	private void initDemographicFieldsModulePalette() {
-		
 		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("publicFieldName", "id");
-		
 		PropertyModel<Collection<DemographicField>> selectedDemographicFieldsPm = new PropertyModel<Collection<DemographicField>>(searchCPM, "selectedDemographicFields");//"selectedDemographicFields");
+
 		Collection<DemographicField> availableDemographicFields = iArkCommonService.getAllDemographicFields();
 		containerForm.getModelObject().setAvailableDemographicFields(availableDemographicFields);
 		
 		PropertyModel<Collection<DemographicField>> availableDemographicFieldsPm = new PropertyModel<Collection<DemographicField>>(searchCPM, "availableDemographicFields");
-		demographicFieldsToReturnPalette = new ArkPalette("selectedDemographicFields", selectedDemographicFieldsPm, availableDemographicFieldsPm, renderer, PALETTE_ROWS, false){
-			private static final long	serialVersionUID	= 1L;
-			/*@Override
-			protected Recorder newRecorderComponent() { Recorder rec = super.newRecorderComponent();
-				rec.setRequired(true).setLabel(new StringResourceModel("error..required", this, new Model<String>("Modules"))); return rec;
-			}*/
-		};
+		demographicFieldsToReturnPalette = new ArkPalette("selectedDemographicFields", selectedDemographicFieldsPm, availableDemographicFieldsPm, renderer, PALETTE_ROWS, false);
 		demographicFieldsToReturnPalette.setOutputMarkupId(true);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void initPhenoCustomFieldDisplaysModulePalette() {
+		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
+	//	IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("customField.name", "id");
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("descriptiveNameIncludingCFGName", "id");
+		
+		PropertyModel<Collection<CustomFieldDisplay>> selectedPhenoCustomFieldDisplaysPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "selectedPhenoCustomFieldDisplays");//"selectedDemographicFields");
+
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(studyId);   //	Long arkFunctionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
+		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+		
+		Collection<CustomFieldDisplay> availablePhenoCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysIn(study, arkFunction);
+		containerForm.getModelObject().setAvailablePhenoCustomFieldDisplays(availablePhenoCustomFieldDisplays);
+		
+		PropertyModel<Collection<CustomFieldDisplay>> availablePhenoCustomFieldDisplayPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "availablePhenoCustomFieldDisplays");
+		phenoCustomFieldDisplaysToReturnPalette = new ArkPalette("selectedPhenoCustomFieldDisplays", selectedPhenoCustomFieldDisplaysPm, availablePhenoCustomFieldDisplayPm, renderer, PALETTE_ROWS, false);
+		phenoCustomFieldDisplaysToReturnPalette.setOutputMarkupId(true);
 	}
 
 }
