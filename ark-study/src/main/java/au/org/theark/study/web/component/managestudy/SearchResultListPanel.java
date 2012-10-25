@@ -239,7 +239,7 @@ public class SearchResultListPanel extends Panel {
 				Collection<ArkModule> availableArkModules = iArkCommonService.getEntityList(ArkModule.class);
 				// Hide Admin and Reporting modules from "Available" view
 				availableArkModules.remove(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_ADMIN));
-				availableArkModules.remove(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_REPORTING));
+				//availableArkModules.remove(iArkCommonService.getArkModuleByName(ModuleConstants.ARK_MODULE_REPORTING));
 
 				// Get the Modules for the Study from database
 				Collection<ArkModule> arkModulesLinkedToStudy = iArkCommonService.getArkModulesLinkedWithStudy(searchStudy);
