@@ -34,6 +34,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
@@ -62,6 +63,7 @@ public class CustomFieldDisplay implements Serializable {
 	private Set<BioCollectionCustomFieldData> bioCollectionCustomFieldData = new HashSet<BioCollectionCustomFieldData>();
 	private Set<BiospecimenCustomFieldData> biospecimenCustomFieldData = new HashSet<BiospecimenCustomFieldData>();
 	private Set<PhenoData> phenoData = new HashSet<PhenoData>();
+	protected String descriptiveNameIncludingCFGName;
 
 	public CustomFieldDisplay() {
 //		this.allowMultiselect = Boolean.FALSE;
@@ -174,4 +176,17 @@ public class CustomFieldDisplay implements Serializable {
 		this.allowMultiselect = allowMultiselect;
 	}
 
+	@Transient
+	public String getDescriptiveNameIncludingCFGName() {
+		//descriptiveNameIncludingCFGName.charAt(1);
+		StringBuilder displayExpression = new StringBuilder();
+		displayExpression.append(customFieldGroup==null?"UNKNOWN":customFieldGroup.getName());
+		displayExpression.append(" > ");
+		displayExpression.append(customField==null?"UNKNOWN":customField.getName());
+		return displayExpression.toString();
+	}
+	public void setDescriptiveNameIncludingCFGName(
+			String descriptiveNameIncludingCFGName) {
+		this.descriptiveNameIncludingCFGName = descriptiveNameIncludingCFGName;
+	}
 }

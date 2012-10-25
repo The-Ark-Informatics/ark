@@ -749,6 +749,11 @@ public interface IArkCommonService<T> {
 	public Collection<DemographicField> getAllDemographicFields();
 
 	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search);
+	
 	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean readOnly);
+
+	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search);
+
+	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(Study study, ArkFunction arkFunction);
 	
 }
