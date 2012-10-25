@@ -95,6 +95,7 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 		List<BioTransactionStatus> list = iLimsService.getBioTransactionStatusChoices();		
 		ChoiceRenderer<BioTransactionStatus> choiceRenderer = new ChoiceRenderer<BioTransactionStatus>(Constants.NAME, Constants.ID);
 		status = new DropDownChoice<BioTransactionStatus>("bioTransaction.status", list, choiceRenderer);
+		status.setRequired(true);
 	}
 	
 	private void initAccessRequest() {
@@ -129,7 +130,8 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 					// Make quantity minus if positive and Aliquoted or Processed
 					String status = cpModel.getObject().getBioTransaction().getStatus().getName();
 					if(status != null && (status.equalsIgnoreCase("Aliquoted") || status.equalsIgnoreCase("Processed")) && txnQuantity != null && txnQuantity > 0) {
-						cpModel.getObject().getBioTransaction().setQuantity(-1 * txnQuantity);
+						txnQuantity = (-1 * txnQuantity);
+						cpModel.getObject().getBioTransaction().setQuantity(txnQuantity);
 					}
 					
 					// Check that quantity specified not greater than available
