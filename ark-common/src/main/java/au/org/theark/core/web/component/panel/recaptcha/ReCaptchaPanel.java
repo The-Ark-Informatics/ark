@@ -21,7 +21,8 @@ import au.org.theark.core.service.IArkCommonService;
  * https://www.google.com/recaptcha/admin/create <br>
  * More details about recaptcha API: http://code.google.com/apis/recaptcha/intro.html
  * 
- * @author cellis
+ * @author Alex Objelean
+ * As referenced: http://alexo-web.blogspot.com.au/2011/02/integrating-recaptcha-in-wicket.html
  */
 public class ReCaptchaPanel extends Panel {
 
@@ -31,7 +32,6 @@ public class ReCaptchaPanel extends Panel {
 	
 	public ReCaptchaPanel(final String id) {
 		super(id);
-		final ReCaptcha recaptcha = ReCaptchaFactory.newReCaptcha(iArkCommonService.getRecaptchaContextSource().getReCaptchaPublicKey(), iArkCommonService.getRecaptchaContextSource().getReCaptchaPrivateKey(), false);
 
 		FormComponent<Void> formComponent = new FormComponent<Void>("captcha") {
 		
@@ -39,6 +39,7 @@ public class ReCaptchaPanel extends Panel {
 
 			@Override
 			public void onComponentTagBody(final MarkupStream markupStream, final ComponentTag openTag) {
+				ReCaptcha recaptcha = ReCaptchaFactory.newReCaptcha(iArkCommonService.getRecaptchaContextSource().getReCaptchaPublicKey(), iArkCommonService.getRecaptchaContextSource().getReCaptchaPrivateKey(), false);
 				replaceComponentTagBody(markupStream, openTag, recaptcha.createRecaptchaHtml(null, null));
 			}
 
