@@ -1638,16 +1638,27 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 		
 
-		Collection<CustomFieldDisplay> listOfCustomFieldDisplaysFromVO = searchVO.getSelectedPhenoCustomFieldDisplays();
-		//Collection<CustomFieldDisplay> listOfCustomFieldDisplaysFromVO = searchVO.getSelectedCustomFieldDisplays();we really can add them all here and add to one collections
-		//Collection<CustomFieldDisplay> listOfCustomFieldDisplaysFromVO = searchVO.getSelectedCustomFieldDisplays();
-		//Collection<CustomFieldDisplay> listOfCustomFieldDisplaysFromVO = searchVO.getSelectedCustomFieldDisplays();
+		Collection<CustomFieldDisplay> listOfPhenoCustomFieldDisplaysFromVO = searchVO.getSelectedPhenoCustomFieldDisplays();
+		Collection<CustomFieldDisplay> listOfSubjectCustomFieldDisplaysFromVO = searchVO.getSelectedSubjectCustomFieldDisplays();
+		Collection<CustomFieldDisplay> listOfBiospecimenCustomFieldDisplaysFromVO = searchVO.getSelectedBiospecimenCustomFieldDisplays();
+		Collection<CustomFieldDisplay> listOfBiocollectionCustomFieldDisplaysFromVO = searchVO.getSelectedBiocollectionCustomFieldDisplays();//we really can add them all here and add to one collections
 		
-		
+
 		List<CustomFieldDisplaySearch> nonPoppablePhenoCFDs = new ArrayList<CustomFieldDisplaySearch>();
+		//List<CustomFieldDisplaySearch> nonPoppableSubjectCFDs = new ArrayList<CustomFieldDisplaySearch>();
 		nonPoppablePhenoCFDs.addAll(search.getCustomFieldsToReturn());
 		List<CustomFieldDisplay> nonPoppableCustomFieldsFromVO = new ArrayList<CustomFieldDisplay>();
-		nonPoppableCustomFieldsFromVO.addAll(listOfCustomFieldDisplaysFromVO);
+		nonPoppableCustomFieldsFromVO.addAll(listOfPhenoCustomFieldDisplaysFromVO);
+		nonPoppableCustomFieldsFromVO.addAll(listOfSubjectCustomFieldDisplaysFromVO);
+		nonPoppableCustomFieldsFromVO.addAll(listOfBiospecimenCustomFieldDisplaysFromVO);
+		nonPoppableCustomFieldsFromVO.addAll(listOfBiocollectionCustomFieldDisplaysFromVO);
+		
+
+		List<CustomFieldDisplay> poppableCustomFieldsFromVO = new ArrayList<CustomFieldDisplay>();
+		poppableCustomFieldsFromVO.addAll(listOfPhenoCustomFieldDisplaysFromVO);
+		poppableCustomFieldsFromVO.addAll(listOfSubjectCustomFieldDisplaysFromVO);
+		poppableCustomFieldsFromVO.addAll(listOfBiospecimenCustomFieldDisplaysFromVO);
+		poppableCustomFieldsFromVO.addAll(listOfBiocollectionCustomFieldDisplaysFromVO);
 		
 		for(CustomFieldDisplaySearch cfds : nonPoppablePhenoCFDs){
 			log.info("fields to return=" + search.getCustomFieldsToReturn().size());
@@ -1656,9 +1667,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			for(CustomFieldDisplay field : nonPoppableCustomFieldsFromVO){
 				if(cfds.getCustomFieldDisplay().getId().equals(field.getId())){
 					toBeDeleted=false;
-					log.info("listOfCustomFieldDisplaysFromVO.size()" + listOfCustomFieldDisplaysFromVO.size());
-					listOfCustomFieldDisplaysFromVO.remove(field);//we found it, therefore remove it from the list that will ultimately be added as DFS's
-					log.info("after removal listOfCustomFieldDisplaysFromVO.size()" + listOfCustomFieldDisplaysFromVO.size());
+					/*log.info("listOfCustomFieldDisplaysFromVO.size()" + listOfPhenoCustomFieldDisplaysFromVO.size());
+					listOfPhenoCustomFieldDisplaysFromVO.remove(field);//we found it, therefore remove it from the list that will ultimately be added as DFS's
+					log.info("after removal listOfCustomFieldDisplaysFromVO.size()" + listOfPhenoCustomFieldDisplaysFromVO.size());*/
+					log.info("poppableCustomFieldsFromVO.size()" + poppableCustomFieldsFromVO.size());
+					poppableCustomFieldsFromVO.remove(field);//we found it, therefore remove it from the list that will ultimately be added as DFS's
+					log.info("after removal poppableCustomFieldsFromVO.size()" + poppableCustomFieldsFromVO.size());
+					
 				}
 			}
 			if(toBeDeleted){
@@ -1673,11 +1688,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 		}
 		
-		for(CustomFieldDisplay field : listOfCustomFieldDisplaysFromVO){
+		for(CustomFieldDisplay field : poppableCustomFieldsFromVO){ 					//listOfPhenoCustomFieldDisplaysFromVO){
 			CustomFieldDisplaySearch cfds = new CustomFieldDisplaySearch(field, search);
 			getSession().save(cfds);
 		}
-		searchVO.setSelectedPhenoCustomFieldDisplays(nonPoppableCustomFieldsFromVO);
+		
+//is all of this necessary now...investigate		searchVO.setSelectedPhenoCustomFieldDisplays(nonPoppableCustomFieldsFromVO);
 
 		
 		
@@ -1767,11 +1783,54 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		String queryString = "select cfds.customFieldDisplay " +
 		" from CustomFieldDisplaySearch cfds " +
-		" where cfds.search=:search ";
+		" where cfds.search=:search "+
+		" and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
 		Query query =  getSession().createQuery(queryString);
 		query.setParameter("search", search);
+		query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
 		
 		return query.list();
 	}
 
+	public Collection<CustomFieldDisplay> getSelectedSubjectCustomFieldDisplaysForSearch(Search search){
+		
+		String queryString = "select cfds.customFieldDisplay " +
+		" from CustomFieldDisplaySearch cfds " +
+		" where cfds.search=:search " +
+		" and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
+		query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
+		
+		return query.list();
+	}
+
+
+	public Collection<CustomFieldDisplay> getSelectedBiospecimenCustomFieldDisplaysForSearch(Search search){
+		
+		String queryString = "select cfds.customFieldDisplay " +
+		" from CustomFieldDisplaySearch cfds " +
+		" where cfds.search=:search " +
+		" and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
+		query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
+		
+		return query.list();
+	}
+
+
+	public Collection<CustomFieldDisplay> getSelectedBiocollectionCustomFieldDisplaysForSearch(Search search){
+		
+		String queryString = "select cfds.customFieldDisplay " +
+		" from CustomFieldDisplaySearch cfds " +
+		" where cfds.search=:search " +
+		" and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
+		query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
+		
+		return query.list();
+	}
+	
 }
