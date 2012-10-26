@@ -7,7 +7,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -23,6 +22,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ArkUserPasswordGenerator;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.component.panel.recaptcha.ReCaptchaPanel;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.web.pages.login.LoginPage;
 
@@ -66,8 +66,8 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 		userName.setOutputMarkupId(true);
 
 		// TODO: Possibly reimplement reCAPTCHA
-		//reCaptchaPanel = new ReCaptchaPanel("reCaptchaPanel");
-		reCaptchaPanel = new EmptyPanel("reCaptchaPanel");
+		reCaptchaPanel = new ReCaptchaPanel("reCaptchaPanel");
+		//reCaptchaPanel = new EmptyPanel("reCaptchaPanel");
 		reCaptchaPanel.setOutputMarkupId(true);
 
 		resetButton = new AjaxButton("resetButton") {
