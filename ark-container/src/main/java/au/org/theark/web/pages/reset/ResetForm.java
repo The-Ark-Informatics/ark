@@ -65,9 +65,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 		userName.setRequired(true);
 		userName.setOutputMarkupId(true);
 
-		// TODO: Possibly reimplement reCAPTCHA
 		reCaptchaPanel = new ReCaptchaPanel("reCaptchaPanel");
-		//reCaptchaPanel = new EmptyPanel("reCaptchaPanel");
 		reCaptchaPanel.setOutputMarkupId(true);
 
 		resetButton = new AjaxButton("resetButton") {
