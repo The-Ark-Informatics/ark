@@ -44,6 +44,7 @@ INSERT INTO study.study(
 `SUBJECTUID_TOKEN_ID`,
 `SUBJECTUID_PADCHAR_ID`,
 `PARENT_ID`,
+`AUTO_GENERATE_BIOSPECIMENUID`,
 `AUTO_GENERATE_BIOCOLLECTIONUID`)
 SELECT (CASE UPPER(ss.substudy_name) WHEN 'WARTN' THEN 274 ELSE ss.substudykey END) as ID, 
 ss.substudy_name AS NAME, 
@@ -58,10 +59,12 @@ s.AUTO_CONSENT as AUTO_CONSENT,
 1 as SUBJECTUID_TOKEN_ID,
 8 as SUBJECTUID_PADCHAR_ID,
 s.studykey as PARENT_ID,
+1 as AUTO_GENERATE_BIOSPECIMENUID,
 1 as AUTO_GENERATE_BIOCOLLECTIONUID
 FROM zeus.STUDY s, zeus.ZE_SUBSTUDY ss
 WHERE s.studykey= ss.studykey
-AND s.studyname='WARTN';
+AND s.studyname='WARTN'
+ORDER BY ID;
 
 -- Add missed titles
 INSERT INTO study.title_type (ID, NAME)
@@ -226,7 +229,9 @@ AND `adm`.`DELETED` = 0
 -- Insert admissions/bioCollection
 -- Based on particular sub-study, if sub-study (collectiongroupkey) is incorrect, collections will be missed
 INSERT INTO `lims`.`biocollection`
-(`NAME`,
+(
+`BIOCOLLECTION_UID`,
+`NAME`,
 `LINK_SUBJECT_STUDY_ID`,
 `STUDY_ID`,
 `COLLECTIONDATE`,
@@ -242,6 +247,7 @@ INSERT INTO `lims`.`biocollection`
 `HOSPITAL_UR`,
 `DIAG_DATE`)
 SELECT 
+    `adm`.`admissionid` as `BIOCOLLECTION_UID`,
     `adm`.`admissionid` as `NAME`,
     `lss`.`id` as `LINK_SUBJECT_STUDY_ID`,
     `lss`.`study_id`,
@@ -271,8 +277,6 @@ AND `adm`.collectiongroupkey = ss.substudykey
 AND ss.studykey = 274
 AND `adm`.`DELETED` = 0;
 
-
-
 -- Insert biospecimen sampletypes that may not exist
 INSERT INTO lims.bio_sampletype (name, sampletype, samplesubtype)
 SELECT DISTINCT CONCAT(sampletype, ' / ', samplesubtype), sampletype, samplesubtype FROM wagerlab.IX_BIOSPECIMEN
@@ -288,11 +292,17 @@ WHERE UPPER(tt.name) NOT IN (SELECT DISTINCT UPPER(b.TREATMENT) FROM wagerlab.IX
 */
 
 -- Any Units not already matched
-/* NOTE: RUN THIS ON ORACLE COPY FIRST
-UPDATE WAGERLAB.IX_BIOSPECIMEN B 
-SET b.units = NVL((SELECT min(bt.unit) FROM wagerlab.IX_BIO_TRANSACTIONS bt WHERE bt.BIOSPECIMENKEY = b.BIOSPECIMENKEY), 'unit')
-WHERE b.UNITS IS NULL
-AND STUDYKEY=274
+/* NOTE: COULD RUN THIS ON ORACLE COPY FIRST
+UPDATE wagerlab.IX_BIOSPECIMEN b
+INNER JOIN 
+(
+SELECT bt.biospecimenkey, IFNULL(MIN(bt.unit), 'unit') as units
+FROM wagerlab.IX_BIO_TRANSACTIONS bt, wagerlab.IX_BIOSPECIMEN b
+WHERE b.studykey=274
+AND bt.biospecimenkey = b.biospecimenkey
+GROUP BY bt.biospecimenkey
+) bt ON b.biospecimenkey = bt.biospecimenkey
+SET b.units = bt.units;
 */
 
 INSERT INTO `lims`.`biospecimen_protocol` (NAME) 
@@ -344,7 +354,7 @@ INSERT INTO `lims`.`biospecimen`
 `BARCODED`,
 `UNIT_ID`,
 `PURITY`,
-`BIOSPECIMEN_PROTOCOL_ID`
+`BIOSPECIMEN_PROTOCOL_ID`,
 `BIOSPECIMEN_GRADE_ID`,
 `BIOSPECIMEN_STORAGE_ID`,
 `CONCENTRATION`
@@ -394,6 +404,20 @@ AND `b`.substudykey = ss.substudykey
 AND ss.studykey = 274
 AND `b`.`DELETED` = 0;
 
+-- Update parent/child mapping
+UPDATE lims.biospecimen b
+INNER JOIN
+(
+SELECT b.id, b.oldparent_id, b.old_id, 
+(SELECT id FROM lims.biospecimen p WHERE p.old_id = b.oldparent_id) as parent_id, 
+(SELECT biospecimen_uid FROM lims.biospecimen p WHERE p.old_id = b.oldparent_id) as parentid
+FROM lims.biospecimen b
+WHERE oldparent_id IS NOT NULL
+AND oldparent_id > -1
+ORDER BY oldparent_id
+) p ON b.id = p.id
+SET b.parent_id = p.parent_id, b.parentid = p.parentid;
+
 -- Insert bio_transactions
 INSERT INTO `lims`.`bio_transaction`
 (`BIOSPECIMEN_ID`,
@@ -401,10 +425,10 @@ INSERT INTO `lims`.`bio_transaction`
 `QUANTITY`,
 `RECORDER`,
 `REASON`)
-SELECT biospecimen.id, bt.transactiondate, bt.quantity, bt.recorder, bt.reason
-FROM wagerlab.IX_BIO_TRANSACTIONS bt, lims.biospecimen
-WHERE bt.biospecimenkey = biospecimen.old_id
-AND bt.studykey=274
+SELECT b.id, bt.transactiondate, bt.quantity, bt.recorder, bt.reason
+FROM wagerlab.IX_BIO_TRANSACTIONS bt, lims.biospecimen b
+WHERE bt.biospecimenkey = b.old_id
+AND b.study_id IN (SELECT id FROM study.study WHERE parent_id = 274)
 AND bt.DELETED = 0;
 
 -- SITES
