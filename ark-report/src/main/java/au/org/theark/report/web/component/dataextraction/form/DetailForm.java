@@ -63,6 +63,9 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	private Palette<DemographicField>	demographicFieldsToReturnPalette;
 	private Palette<CustomFieldDisplay>	phenoCustomFieldDisplaysToReturnPalette;
+	private Palette<CustomFieldDisplay>	subjectCustomFieldDisplaysToReturnPalette;
+	private Palette<CustomFieldDisplay>	biospecimenCustomFieldDisplaysToReturnPalette;
+	private Palette<CustomFieldDisplay>	biocollectionCustomFieldDisplaysToReturnPalette;
 	
 	/**
 	 * 
@@ -100,16 +103,22 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 		initDemographicFieldsModulePalette();
 		initPhenoCustomFieldDisplaysModulePalette();
+		initSubjectCustomFieldDisplaysModulePalette();
+		initBiospecimenCustomFieldDisplaysModulePalette();
+		initBiocollectionCustomFieldDisplaysModulePalette();
 		
 		addDetailFormComponents();
 		attachValidators();
 	}
-
+																																																																																																																									
 	public void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(demographicFieldsToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(phenoCustomFieldDisplaysToReturnPalette);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectCustomFieldDisplaysToReturnPalette);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(biospecimenCustomFieldDisplaysToReturnPalette);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(biocollectionCustomFieldDisplaysToReturnPalette																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									);
 	}
 
 	/*
@@ -249,6 +258,74 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		PropertyModel<Collection<CustomFieldDisplay>> availablePhenoCustomFieldDisplayPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "availablePhenoCustomFieldDisplays");
 		phenoCustomFieldDisplaysToReturnPalette = new ArkPalette("selectedPhenoCustomFieldDisplays", selectedPhenoCustomFieldDisplaysPm, availablePhenoCustomFieldDisplayPm, renderer, PALETTE_ROWS, false);
 		phenoCustomFieldDisplaysToReturnPalette.setOutputMarkupId(true);
+
 	}
+
+	
+	@SuppressWarnings("unchecked")
+	private void initSubjectCustomFieldDisplaysModulePalette() {
+		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
+	//	IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("customField.name", "id");
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("customField.name", "id");
+		
+		PropertyModel<Collection<CustomFieldDisplay>> selectedSubjectCustomFieldDisplaysPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "selectedSubjectCustomFieldDisplays");//"selectedDemographicFields");
+
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(studyId);   //	Long arkFunctionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
+		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+		
+		Collection<CustomFieldDisplay> availableSubjectCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysIn(study, arkFunction);
+		containerForm.getModelObject().setAvailableSubjectCustomFieldDisplays(availableSubjectCustomFieldDisplays);
+		
+		PropertyModel<Collection<CustomFieldDisplay>> availableSubjectCustomFieldDisplayPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "availableSubjectCustomFieldDisplays");
+		subjectCustomFieldDisplaysToReturnPalette = new ArkPalette("selectedSubjectCustomFieldDisplays", selectedSubjectCustomFieldDisplaysPm, availableSubjectCustomFieldDisplayPm, renderer, PALETTE_ROWS, false);
+		subjectCustomFieldDisplaysToReturnPalette.setOutputMarkupId(true);
+
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	private void initBiospecimenCustomFieldDisplaysModulePalette() {
+		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("customField.name", "id");
+		
+		PropertyModel<Collection<CustomFieldDisplay>> selectedBiospecimenCustomFieldDisplaysPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "selectedBiospecimenCustomFieldDisplays");//"selectedDemographicFields");
+
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(studyId);   //	Long arkFunctionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
+		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN);
+		
+		Collection<CustomFieldDisplay> availableBiospecimenCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysIn(study, arkFunction);
+		containerForm.getModelObject().setAvailableBiospecimenCustomFieldDisplays(availableBiospecimenCustomFieldDisplays);
+		
+		PropertyModel<Collection<CustomFieldDisplay>> availableBiospecimenCustomFieldDisplayPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "availableBiospecimenCustomFieldDisplays");
+		biospecimenCustomFieldDisplaysToReturnPalette = new ArkPalette("selectedBiospecimenCustomFieldDisplays", selectedBiospecimenCustomFieldDisplaysPm, availableBiospecimenCustomFieldDisplayPm, renderer, PALETTE_ROWS, false);
+		biospecimenCustomFieldDisplaysToReturnPalette.setOutputMarkupId(true);
+
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	private void initBiocollectionCustomFieldDisplaysModulePalette() {
+		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("customField.name", "id");
+	//	IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("descriptiveNameIncludingCFGName", "id");
+		
+		PropertyModel<Collection<CustomFieldDisplay>> selectedBiocollectionCustomFieldDisplaysPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "selectedBiocollectionCustomFieldDisplays");//"selectedDemographicFields");
+
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(studyId);   //	Long arkFunctionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
+		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+		
+		Collection<CustomFieldDisplay> availableBiocollectionCustomFieldDisplays = iArkCommonService.getCustomFieldDisplaysIn(study, arkFunction);
+		containerForm.getModelObject().setAvailableBiocollectionCustomFieldDisplays(availableBiocollectionCustomFieldDisplays);
+		
+		PropertyModel<Collection<CustomFieldDisplay>> availableBiocollectionCustomFieldDisplayPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "availableBiocollectionCustomFieldDisplays");
+		biocollectionCustomFieldDisplaysToReturnPalette = new ArkPalette("selectedBiocollectionCustomFieldDisplays", selectedBiocollectionCustomFieldDisplaysPm, availableBiocollectionCustomFieldDisplayPm, renderer, PALETTE_ROWS, false);
+		biocollectionCustomFieldDisplaysToReturnPalette.setOutputMarkupId(true);
+
+	}
+
+	
 
 }
