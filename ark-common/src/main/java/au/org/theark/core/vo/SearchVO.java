@@ -42,6 +42,24 @@ public class SearchVO implements Serializable {
 	// would be better if pallette could point to search.getDemographicFieldsToReturn 
 	private Collection<DemographicField>	availableDemographicFields = new ArrayList<DemographicField>();
 	private Collection<DemographicField>	selectedDemographicFields = new ArrayList<DemographicField>();
+/*
+ * same concept but for standard biospec and biocoll fields
+	private Collection<DemographicField>	availableDemographicFields = new ArrayList<DemographicField>();
+	private Collection<DemographicField>	selectedDemographicFields = new ArrayList<DemographicField>();
+
+	private Collection<DemographicField>	availableDemographicFields = new ArrayList<DemographicField>();
+	private Collection<DemographicField>	selectedDemographicFields = new ArrayList<DemographicField>();
+*
+**
+***/
+	private Collection<CustomFieldDisplay>	availableBiospecimenCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
+	private Collection<CustomFieldDisplay>	selectedBiospecimenCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
+
+	private Collection<CustomFieldDisplay>	availableSubjectCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
+	private Collection<CustomFieldDisplay>	selectedSubjectCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
+
+	private Collection<CustomFieldDisplay>	availableBiocollectionCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
+	private Collection<CustomFieldDisplay>	selectedBiocollectionCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
 
 	private Collection<CustomFieldDisplay>	availablePhenoCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
 	private Collection<CustomFieldDisplay>	selectedPhenoCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
@@ -114,6 +132,72 @@ public class SearchVO implements Serializable {
 	public void setSelectedPhenoCustomFieldDisplays(
 			Collection<CustomFieldDisplay> selectedPhenoCustomFieldDisplays) {
 		this.selectedPhenoCustomFieldDisplays = selectedPhenoCustomFieldDisplays;
+	}
+
+
+	public Collection<CustomFieldDisplay> getAvailableBiospecimenCustomFieldDisplays() {
+		return availableBiospecimenCustomFieldDisplays;
+	}
+
+
+	public void setAvailableBiospecimenCustomFieldDisplays(
+			Collection<CustomFieldDisplay> availableBiospecimenCustomFieldDisplays) {
+		this.availableBiospecimenCustomFieldDisplays = availableBiospecimenCustomFieldDisplays;
+	}
+
+
+	public Collection<CustomFieldDisplay> getSelectedBiospecimenCustomFieldDisplays() {
+		return selectedBiospecimenCustomFieldDisplays;
+	}
+
+
+	public void setSelectedBiospecimenCustomFieldDisplays(
+			Collection<CustomFieldDisplay> selectedBiospecimenCustomFieldDisplays) {
+		this.selectedBiospecimenCustomFieldDisplays = selectedBiospecimenCustomFieldDisplays;
+	}
+
+
+	public Collection<CustomFieldDisplay> getAvailableSubjectCustomFieldDisplays() {
+		return availableSubjectCustomFieldDisplays;
+	}
+
+
+	public void setAvailableSubjectCustomFieldDisplays(
+			Collection<CustomFieldDisplay> availableSubjectCustomFieldDisplays) {
+		this.availableSubjectCustomFieldDisplays = availableSubjectCustomFieldDisplays;
+	}
+
+
+	public Collection<CustomFieldDisplay> getSelectedSubjectCustomFieldDisplays() {
+		return selectedSubjectCustomFieldDisplays;
+	}
+
+
+	public void setSelectedSubjectCustomFieldDisplays(
+			Collection<CustomFieldDisplay> selectedSubjectCustomFieldDisplays) {
+		this.selectedSubjectCustomFieldDisplays = selectedSubjectCustomFieldDisplays;
+	}
+
+
+	public Collection<CustomFieldDisplay> getAvailableBiocollectionCustomFieldDisplays() {
+		return availableBiocollectionCustomFieldDisplays;
+	}
+
+
+	public void setAvailableBiocollectionCustomFieldDisplays(
+			Collection<CustomFieldDisplay> availableBiocollectionCustomFieldDisplays) {
+		this.availableBiocollectionCustomFieldDisplays = availableBiocollectionCustomFieldDisplays;
+	}
+
+
+	public Collection<CustomFieldDisplay> getSelectedBiocollectionCustomFieldDisplays() {
+		return selectedBiocollectionCustomFieldDisplays;
+	}
+
+
+	public void setSelectedBiocollectionCustomFieldDisplays(
+			Collection<CustomFieldDisplay> selectedBiocollectionCustomFieldDisplays) {
+		this.selectedBiocollectionCustomFieldDisplays = selectedBiocollectionCustomFieldDisplays;
 	}
 
 	

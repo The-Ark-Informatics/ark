@@ -1302,5 +1302,20 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search){
 		return studyDao.getSelectedPhenoCustomFieldDisplaysForSearch(search);		
 	}
+
+	public Collection<CustomFieldDisplay> getSelectedSubjectCustomFieldDisplaysForSearch(Search search){
+		return studyDao.getSelectedSubjectCustomFieldDisplaysForSearch(search);
+		
+	}
+
+	public Collection<CustomFieldDisplay> getSelectedBiospecimenCustomFieldDisplaysForSearch(Search search){
+		return studyDao.getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
+		
+	}
+
+	public Collection<CustomFieldDisplay> getSelectedBiocollectionCustomFieldDisplaysForSearch(Search search){
+		return studyDao.getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
+		
+	}
 	
 }
