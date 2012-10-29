@@ -431,6 +431,9 @@ WHERE bt.biospecimenkey = b.old_id
 AND b.study_id IN (SELECT id FROM study.study WHERE parent_id = 274)
 AND bt.DELETED = 0;
 
+-- Update status if initial quantity (where possible)
+UPDATE lims.bio_transaction SET status_id = 1 WHERE reason like 'Initia%' AND status_id IS NULL;
+
 -- SITES
 INSERT INTO `lims`.`inv_site`
 (
