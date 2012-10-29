@@ -32,11 +32,13 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1141,40 +1143,49 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException {
 
-		Criteria criteria = getSession().createCriteria(Correspondences.class);
+		Criteria criteria = getSession().createCriteria(Correspondences.class,"co");
+		criteria.createAlias("person","pe",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("study","st",JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("st.parentStudy","pstudy",JoinType.LEFT_OUTER_JOIN);
 
 		if (personId != null) {
-			criteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
+			criteria.add(Restrictions.eq("pe.id", personId));
 		}
-
+		
 		if (correspondence != null) {
-
+			
+			//Check context study is match with correspondence study or it's parent study
+			if(correspondence.getStudy()!=null){
+				criteria.add(Restrictions.disjunction().
+						add(Restrictions.eq("st.id", correspondence.getStudy().getId())).
+						add(Restrictions.eq("pstudy.id", correspondence.getStudy().getId())));			
+			}
 			if (correspondence.getCorrespondenceDirectionType() != null) {
-				criteria.add(Restrictions.eq("correspondenceDirectionType", correspondence.getCorrespondenceDirectionType()));
+				criteria.add(Restrictions.eq("co.correspondenceDirectionType", correspondence.getCorrespondenceDirectionType()));
 			}
 			if (correspondence.getCorrespondenceModeType() != null) {
-				criteria.add(Restrictions.eq("correspondenceModeType", correspondence.getCorrespondenceModeType()));
+				criteria.add(Restrictions.eq("co.correspondenceModeType", correspondence.getCorrespondenceModeType()));
 			}
 			if (correspondence.getCorrespondenceOutcomeType() != null) {
-				criteria.add(Restrictions.eq("correspondenceOutcomeType", correspondence.getCorrespondenceOutcomeType()));
+				criteria.add(Restrictions.eq("co.correspondenceOutcomeType", correspondence.getCorrespondenceOutcomeType()));
 			}
 			if (correspondence.getDate() != null) {
-				criteria.add(Restrictions.eq("date", correspondence.getDate()));
+				criteria.add(Restrictions.eq("co.date", correspondence.getDate()));
 			}
 			if (correspondence.getTime() != null) {
-				criteria.add(Restrictions.eq("time", correspondence.getTime()));
+				criteria.add(Restrictions.eq("co.time", correspondence.getTime()));
 			}
 			if (correspondence.getDetails() != null) {
-				criteria.add(Restrictions.ilike("details", correspondence.getDetails(), MatchMode.ANYWHERE));
+				criteria.add(Restrictions.ilike("co.details", correspondence.getDetails(), MatchMode.ANYWHERE));
 			}
 			if (correspondence.getReason() != null) {
-				criteria.add(Restrictions.ilike("reason", correspondence.getDetails(), MatchMode.ANYWHERE));
+				criteria.add(Restrictions.ilike("co.reason", correspondence.getDetails(), MatchMode.ANYWHERE));
 			}
 			if (correspondence.getComments() != null) {
-				criteria.add(Restrictions.ilike("comments", correspondence.getComments(), MatchMode.ANYWHERE));
+				criteria.add(Restrictions.ilike("co.comments", correspondence.getComments(), MatchMode.ANYWHERE));
 			}
 			if (correspondence.getOperator() != null) {
-				criteria.add(Restrictions.eq("operator", correspondence.getOperator()));
+				criteria.add(Restrictions.eq("co.operator", correspondence.getOperator()));
 			}
 		}
 

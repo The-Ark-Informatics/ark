@@ -93,6 +93,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	private DropDownChoice<BillableItemType>		 		billableItemItemTypes;
 	
 	private Label 													billableItemLbl;
+	private Label													studyNameLbl;
 	
 	private WebMarkupContainer workTrackingContainer;
 	
@@ -119,8 +120,12 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		
 		billableItemLbl = new Label("billableItemDescription");
 		billableItemLbl.setOutputMarkupId(true);                       
-		billableItemLbl.setVisible(true);     
-
+		billableItemLbl.setVisible(true); 
+		
+		studyNameLbl = new Label("studyName");
+		studyNameLbl.setOutputMarkupId(true);        
+		studyNameLbl.setVisible(true);
+		
 		// fileUploadField = new FileUploadField("correspondence.attachmentFilename", new Model<List<FileUpload>>());
 		fileUploadField = new FileUploadField("correspondence.attachmentFilename");
 		setMaxSize(Bytes.kilobytes(2048));
@@ -215,6 +220,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemLbl);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(studyNameLbl);
 		
 		workTrackingContainer.add(billableItemWorkRequests);
 		workTrackingContainer.add(billableItemItemTypes);
