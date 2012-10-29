@@ -163,8 +163,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	protected void onSearch(AjaxRequestTarget target) {
 
 		target.add(feedbackPanel);
-		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);		
 		try {
 			Correspondences correspondence = getModelObject().getCorrespondence();
 			correspondence.setPerson(studyService.getPerson(sessionPersonId));

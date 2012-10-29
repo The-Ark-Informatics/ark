@@ -33,6 +33,8 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CorrespondenceVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.service.IStudyService;
@@ -45,6 +47,9 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService							studyService;
+	
+	@SpringBean(name = Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService						commonService;
 
 	// container form
 	private ContainerForm							containerForm;
@@ -87,10 +92,15 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 
 		try {
 			// initialize the correspondence list
+			
+			Long studyId=(Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study=commonService.getStudy(studyId);
+			
 			Collection<Correspondences> personCorrespondenceList = new ArrayList<Correspondences>();
 			// can be a subject or contact
 			if (sessionPersonId != null) {
 				containerForm.getModelObject().getCorrespondence().setPerson(studyService.getPerson(sessionPersonId));
+				containerForm.getModelObject().getCorrespondence().setStudy(study);
 				personCorrespondenceList = studyService.getPersonCorrespondenceList(sessionPersonId, containerForm.getModelObject().getCorrespondence());
 			}
 
@@ -129,10 +139,14 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 				// get the personId in session and get the correspondenceList from the backend
 				Collection<Correspondences> correspondenceList = new ArrayList<Correspondences>();
 				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-
+				
+				Long studyId=(Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				Study study=commonService.getStudy(studyId);
+				
 				try {
 					if (isActionPermitted()) {
 						if (sessionPersonId != null) {
+							containerForm.getModelObject().getCorrespondence().setStudy(study);
 							correspondenceList = studyService.getPersonCorrespondenceList(sessionPersonId, containerForm.getModelObject().getCorrespondence());
 						}
 					}
