@@ -83,7 +83,7 @@ public class Correspondences implements Serializable {
 		this.person = person;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return study;
