@@ -36,7 +36,8 @@ public class CorrespondenceVO implements Serializable {
 	private WorkRequest			workRequest;
 	private BillableItemType 	billableItemType;
 	
-	private String billableItemDescription; 
+	private String billableItemDescription;
+	private String studyName;
 
 	public CorrespondenceVO() {
 		correspondence = new Correspondences();
@@ -82,4 +83,13 @@ public class CorrespondenceVO implements Serializable {
 		}
 		return description;
 	}
+
+	public String getStudyName() {
+		String studyName=null;
+		if(correspondence.getStudy()!=null){
+			studyName= this.correspondence.getStudy().getName();
+		}
+		return studyName;
+	}
+
 }
