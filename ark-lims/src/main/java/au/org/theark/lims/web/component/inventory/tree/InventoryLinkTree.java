@@ -72,13 +72,20 @@ public class InventoryLinkTree extends LinkTree {
 	private WebMarkupContainer detailContainer;
 	private ContainerForm containerForm;
 
+	public InventoryLinkTree(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, DefaultTreeModel treeModel) {
+		super(id, new WicketTreeModel());
+		this.feedbackPanel = feedbackPanel;
+		this.detailContainer = detailContainer;
+		this.containerForm = containerForm;
+		setModelObject(treeModel);
+	}
+	
 	public InventoryLinkTree(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm) {
 		super(id, new WicketTreeModel());
 		this.feedbackPanel = feedbackPanel;
 		this.detailContainer = detailContainer;
 		this.containerForm = containerForm;
 		setModelObject(createTreeModel());
-		
 	}
 	
 	/**
@@ -180,16 +187,6 @@ public class InventoryLinkTree extends LinkTree {
 		
 		this.updateTree(target);
 	}
-	
-	@Override
-	protected void onNodeLinkClicked(Object node, BaseTree tree,
-			AjaxRequestTarget target) {
-		// TODO Auto-generated method stub
-		//This method do not execute when select a node.
-	}
-	
-	
-	
 
 	@SuppressWarnings("unchecked")
 	@Override
