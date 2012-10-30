@@ -334,6 +334,9 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 			else{
 				containerForm.getModelObject().getAddress().setOtherState(null);
 			}
+//			otherStateInvalidError.setVisible(false);
+			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.STATE_SELECTOR_WMC);
+			Label otherStateInvalidError = (Label) wmcStateSelector.get("address.otherStateInvalidError");
 			otherStateInvalidError.setVisible(false);
 			
 			containerForm.getModelObject().getAddress().setPerson(person);
@@ -385,6 +388,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 */
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
+		target.add(otherStateInvalidError);
 		target.add(feedBackPanel);
 
 	}

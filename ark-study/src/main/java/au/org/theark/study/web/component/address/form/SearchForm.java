@@ -271,7 +271,10 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 			detailStateSelector.setChoices(stateList);
 			detailStateSelector.setVisible(true);
 			otherState.setVisible(false);
-			if(otherState.getModelObject()!=null && !otherState.getModelObject().isEmpty()){
+			//ARK-748 
+			//Ignore the new Address objects from state validation and hide the other state validation label
+			if(getModelObject().getAddress().getId() !=null  
+					&& otherState.getModelObject()!=null && !otherState.getModelObject().isEmpty()){
 				//alert the user
 				otherStateInvalidError =new Label("address.otherStateInvalidError", "Previously uploaded value " + otherState.getModelObject() + " was invalid.");
 				otherStateInvalidError.add(new Behavior(){
@@ -288,11 +291,15 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 				});
 				wmcStateSelector.addOrReplace(otherStateInvalidError);
 			}
+			else{
+				otherStateInvalidError.setVisible(false);
+			}
 		}
 		else {
 			// hide it
 			detailStateSelector.setVisible(false);
 			otherState.setVisible(true);
+			otherStateInvalidError.setVisible(false);
 		}
 	}
 }
