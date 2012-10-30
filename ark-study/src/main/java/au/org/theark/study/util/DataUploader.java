@@ -1260,8 +1260,6 @@ public class DataUploader {
 	}
 
 	private SubjectCustomFieldData setValue(CustomField customField, CustomFieldDisplay customFieldDisplay, SubjectCustomFieldData data, String theDataAsString) {
-		// log.warn("cf=" + customField + "\ndata=" + data+ "dataAsString=" + theDataAsString);
-
 		// Rerun the validation check to determine if "invalid" data was in fact ignored and forcibly set to be loaded in
 		boolean isValidData = CustomFieldUploadValidator.validateFieldData(customField, theDataAsString, "", new ArrayList<String>(0), customFieldDisplay.getAllowMultiselect());
 		
