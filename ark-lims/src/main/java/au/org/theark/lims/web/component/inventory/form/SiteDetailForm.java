@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -59,6 +60,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.inventory.tree.InventoryLinkTree;
+import au.org.theark.lims.web.component.inventory.tree.MutableTreeNode;
 
 /**
  * @author cellis
@@ -168,6 +170,10 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			iInventoryService.createInvSite(containerForm.getModelObject());
 			this.info("Site " + containerForm.getModelObject().getInvSite().getName() + " was created successfully");
 			processErrors(target);
+			node = (new DefaultMutableTreeNode(containerForm.getModelObject().getInvSite()));
+			DefaultTreeModel model = (DefaultTreeModel)tree.getModelObject();
+			((MutableTreeNode)tree.getModelObject().getRoot()).add(node);
+			model.reload();			
 		}
 		else {
 			// Update

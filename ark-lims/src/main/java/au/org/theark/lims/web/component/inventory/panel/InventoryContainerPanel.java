@@ -3,6 +3,8 @@ package au.org.theark.lims.web.component.inventory.panel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.tree.DefaultTreeModel;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -30,10 +32,11 @@ public class InventoryContainerPanel extends AbstractInventoryPanel<LimsVO> {
 	private ContainerForm				containerForm;
 	private InventoryTreePanel			treePanel;
 	private EmptyPanel					detailPanel;
+	private DefaultTreeModel 			treeModel;
 
-	public InventoryContainerPanel(String id) {
+	public InventoryContainerPanel(String id, DefaultTreeModel treeModel) {
 		super(id);
-
+		this.treeModel = treeModel;
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 		setUserStudyList();
@@ -73,7 +76,7 @@ public class InventoryContainerPanel extends AbstractInventoryPanel<LimsVO> {
 	 * @return
 	 */
 	protected WebMarkupContainer initialiseTreeContainer() {
-		treePanel = new InventoryTreePanel("treePanel", feedbackPanel, detailContainer, containerForm);
+		treePanel = new InventoryTreePanel("treePanel", feedbackPanel, detailContainer, containerForm, treeModel);
 		treeContainer.addOrReplace(treePanel);
 		return treeContainer;
 	}

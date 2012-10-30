@@ -21,6 +21,8 @@ package au.org.theark.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.tree.DefaultTreeModel;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
@@ -41,6 +43,7 @@ import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.customfieldupload.CustomFieldUploadContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
+import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.barcodelabel.BarcodeLabelContainerPanel;
 import au.org.theark.lims.web.component.barcodeprinter.BarcodePrinterContainerPanel;
@@ -51,6 +54,7 @@ import au.org.theark.lims.web.component.biospecimenuidtemplate.BiospecimenUidTem
 import au.org.theark.lims.web.component.biospecimenupload.BiospecimenUploadContainerPanel;
 import au.org.theark.lims.web.component.bioupload.BioUploadContainerPanel;
 import au.org.theark.lims.web.component.inventory.panel.InventoryContainerPanel;
+import au.org.theark.lims.web.component.inventory.tree.TreeModel;
 import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.SubjectContainerPanel;
 
@@ -66,9 +70,13 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
+	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
+	private IInventoryService					iInventoryService;
+	
 	private WebMarkupContainer			arkContextMarkup;
 	private WebMarkupContainer			studyNameMarkup;
 	private WebMarkupContainer			studyLogoMarkup;
+	private DefaultTreeModel 			treeModel = new TreeModel(iArkCommonService, iInventoryService).createTreeModel();
 
 	public LimsSubMenuTab(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id);
@@ -142,7 +150,7 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup);// Note the constructor
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_INVENTORY)) {
-			panelToReturn = new InventoryContainerPanel(panelId);
+			panelToReturn = new InventoryContainerPanel(panelId, treeModel);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD)) {
 			panelToReturn = new BiospecimenUploadContainerPanel(panelId, arkFunction);
