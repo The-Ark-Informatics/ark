@@ -55,6 +55,8 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.report.entity.BiocollectionField;
+import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.CustomFieldDisplaySearch;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.DemographicFieldSearch;
@@ -1773,6 +1775,44 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return query.list();
 	}
 
+	
+	/**
+	 * 
+	 * @param search
+	 * @param explicitReadOnly - if true, will try to set to readonly ELSE false 
+	 * @return
+	 */
+	public Collection<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search, boolean explicitReadOnly) {
+
+		String queryString = "select dfs.BiospecimenField " +
+		" from BiospecimenFieldSearch dfs " +
+		" where dfs.search=:search ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
+		query.setReadOnly(explicitReadOnly);
+		
+		return query.list();
+	}
+
+	
+	/**
+	 * 
+	 * @param search
+	 * @param explicitReadOnly - if true, will try to set to readonly ELSE false 
+	 * @return
+	 */
+	public Collection<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search, boolean explicitReadOnly) {
+
+		String queryString = "select dfs.BiocollectionField " +
+		" from BiocollectionFieldSearch dfs " +
+		" where dfs.search=:search ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
+		query.setReadOnly(explicitReadOnly);
+		
+		return query.list();
+	}
+
 	/**
 	 * 
 	 * 
@@ -1784,7 +1824,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		String queryString = "select cfds.customFieldDisplay " +
 		" from CustomFieldDisplaySearch cfds " +
 		" where cfds.search=:search "+
-		" and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
+		" and cfds.customFieldDisplay.customField.arkFunction=:arkFunction ";// +
+	//	" order by cfds.customFieldDisplay.customFieldGroup.name ";
 		Query query =  getSession().createQuery(queryString);
 		query.setParameter("search", search);
 		query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION));
