@@ -135,6 +135,6 @@ public class SearchResultListPanel extends Panel {
 	
 	private void enableAndRequiredTextField(final TextField textField, final boolean value){
 		textField.setEnabled(value);
-		textField.setRequired(value);
+//		textField.setRequired(value);
 	}
 }

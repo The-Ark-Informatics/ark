@@ -411,7 +411,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	protected void onSave(Form<BillableItemVo> containerForm, AjaxRequestTarget target) {
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
 		if(!isCommencedWorkRequest()){
-			this.error("Selected work request has to be commenced state");
+			this.error("Selected work request has not yet commenced");
 			processErrors(target);
 			return;
 		}
@@ -419,7 +419,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 		long existingItemCount=iWorkTrackingService.getBillableItemCount(containerForm.getModelObject().getBillableItem());
 		if(existingItemCount>0)
 		{
-			this.error("Work summary has to be unique for selected work request");
+			this.error("Work summary must be unique within each work request");
 			processErrors(target);
 			return;
 		}

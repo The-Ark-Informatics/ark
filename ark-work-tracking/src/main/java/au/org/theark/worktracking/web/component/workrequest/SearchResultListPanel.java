@@ -11,6 +11,7 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
@@ -18,6 +19,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.worktracking.model.vo.WorkRequestVo;
+import au.org.theark.worktracking.service.IWorkTrackingService;
 import au.org.theark.worktracking.util.Constants;
 import au.org.theark.worktracking.web.component.workrequest.form.ContainerForm;
 
@@ -27,6 +29,9 @@ public class SearchResultListPanel extends Panel {
 
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
+	
+	@SpringBean(name = Constants.WORK_TRACKING_SERVICE)
+	private IWorkTrackingService iWorkTrackingService; 
 
 	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm workRequestContainerForm) {
 		super(id);
@@ -116,11 +121,18 @@ public class SearchResultListPanel extends Panel {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.WORK_REQUEST_ITEM_NAME) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-
 				WorkRequestVo workRequestVo = containerForm.getModelObject();
 				workRequestVo.setMode(Constants.MODE_EDIT);
 				workRequestVo.setWorkRequest(workRequest);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
+				long count =iWorkTrackingService.getBillableItemCount(workRequest);
+				if(count > 0){
+					arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WORK_REQUEST_GST_ALLOW).setEnabled(false);
+					arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WORK_REQUEST_GST).setEnabled(false);
+				}else{
+					arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WORK_REQUEST_GST_ALLOW).setEnabled(true);
+					arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WORK_REQUEST_GST).setEnabled(true);
+				}
 			}
 		};
 		Label nameLinkLabel = new Label("nameLbl", workRequest.getName());

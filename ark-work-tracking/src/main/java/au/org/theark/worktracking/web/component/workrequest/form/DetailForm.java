@@ -234,7 +234,7 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 						&& workBillableItemVo.getBillableItemCount() > 0
 						&& (!ObjectUtils.equals(workBillableItemVo.getGstAllow(), workRequest.getGstAllow())
 						|| !ObjectUtils.equals(workBillableItemVo.getGst(), workRequest.getGst()))){
-					this.error("This work request already assigned for a Billable Item. Cannot change the GST properties");
+					this.error("Cannot change GST value since a billable item has been recorded for this work request.");
 					processErrors(target);
 					return ;	
 				}
@@ -278,18 +278,18 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 
 		if("Not Commenced".equalsIgnoreCase(status.getName())
 				&& requestedDate==null){
-			this.error("When Status is Not Commenced requested date cannot be empty");
+			this.error("Request date is mandatory when status is not commenced");
 			processErrors(target);
 			return false;
 		}
 		else if("Commenced".equalsIgnoreCase(status.getName())
 				&& (requestedDate==null || commenceDate ==null)){
-			this.error("When Status is Commenced requested date and commence date cannot be empty");
+			this.error("Request date and commence date are mandatory when status is commenced");
 			processErrors(target);
 			return false;
 		}else if("Completed".equalsIgnoreCase(status.getName())
 				&& (requestedDate==null || commenceDate ==null || completedDate==null)){
-			this.error("When Status is Completed requested date, commence date and completed date cannot be empty");
+			this.error("Request date, commence date and completed date are mandatory when status is completed");
 			processErrors(target);
 			return false;
 		}
@@ -298,19 +298,19 @@ public class DetailForm extends AbstractDetailForm<WorkRequestVo> {
 				|| completedDate != null) {
 			if(commenceDate ==null 
 					&& completedDate !=null){
-				this.error("Update the commence date before update the completed date");
+				this.error("Update the commence date before update the complete date");
 				processErrors(target);
 				return false;
 			}
 			else if(commenceDate != null  
 					&& commenceDate.compareTo(requestedDate)<0){
-					this.error("Commenced date should be same or later than the requested date");
+					this.error("Commence date should be same or later than the request date");
 					processErrors(target);
 					return false;	
 			}
 			else if(completedDate != null 
 					&& completedDate.compareTo(commenceDate)<0){
-					this.error("Completed date should be same or later than the commenced date");
+					this.error("Complete date should be same or later than the commence date");
 					processErrors(target);
 					return false;
 			}
