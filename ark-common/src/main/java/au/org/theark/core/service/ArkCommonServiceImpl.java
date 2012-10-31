@@ -72,6 +72,8 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.report.entity.BiocollectionField;
+import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -1280,6 +1282,19 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getAllDemographicFields();
 	}
 
+
+	public Collection<BiospecimenField> getAllBiospecimenFields(){
+
+		return studyDao.getAllBiospecimenFields();
+	}
+
+
+	public Collection<BiocollectionField> getAllBiocollectionFields(){
+
+		return studyDao.getAllBiocollectionFields();
+	}
+
+	
 	@Override
 	public boolean create(SearchVO search) throws EntityExistsException {
 		return studyDao.create(search);
@@ -1295,9 +1310,19 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getSelectedDemographicFieldsForSearch(search);
 	}
 
+	
+	public Collection<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search){
+		return studyDao.getSelectedBiospecimenFieldsForSearch(search);
+	}
+
+	
+	public Collection<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search){
+		return studyDao.getSelectedBiocollectionFieldsForSearch(search);
+	}
+/*
 	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean readOnly){
 		return studyDao.getSelectedDemographicFieldsForSearch(search, readOnly);
-	}
+	}*/
 
 	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search){
 		return studyDao.getSelectedPhenoCustomFieldDisplaysForSearch(search);		

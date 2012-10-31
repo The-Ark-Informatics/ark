@@ -35,6 +35,8 @@ public class Search  implements java.io.Serializable {
 	private Long id;
 	private String name;
 	private Set<CustomFieldDisplaySearch>  	customFieldsToReturn = new HashSet<CustomFieldDisplaySearch>();
+	private Set<BiospecimenFieldSearch>  	biospecimenFieldsToReturn = new HashSet<BiospecimenFieldSearch>();
+	private Set<BiocollectionFieldSearch>  	biocollectionFieldsToReturn = new HashSet<BiocollectionFieldSearch>();
 	private Set<DemographicFieldSearch>  	demographicFieldsToReturn = new HashSet<DemographicFieldSearch>();
 	private QueryGrouping topLevelQueryGrouping;
 	private Study study;
@@ -58,6 +60,24 @@ public class Search  implements java.io.Serializable {
 	}
 	public void setDemographicFieldsToReturn(Set<DemographicFieldSearch> demographicFieldsToReturn) {
 		this.demographicFieldsToReturn = demographicFieldsToReturn;
+	}
+
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "search")
+	public Set<BiocollectionFieldSearch> getBiocollectionFieldsToReturn() {
+		return biocollectionFieldsToReturn;
+	}
+	public void setBiocollectionFieldsToReturn(Set<BiocollectionFieldSearch> biocollectionFieldsToReturn) {
+		this.biocollectionFieldsToReturn = biocollectionFieldsToReturn;
+	}
+
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "search")
+	public Set<BiospecimenFieldSearch> getBiospecimenFieldsToReturn() {
+		return biospecimenFieldsToReturn;
+	}
+	public void setBiospecimenFieldsToReturn(Set<BiospecimenFieldSearch> biospecimenFieldsToReturn) {
+		this.biospecimenFieldsToReturn = biospecimenFieldsToReturn;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "search")

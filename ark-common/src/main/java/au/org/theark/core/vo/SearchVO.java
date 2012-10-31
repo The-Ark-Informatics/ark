@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.model.report.entity.BiocollectionField;
+import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -42,16 +44,13 @@ public class SearchVO implements Serializable {
 	// would be better if pallette could point to search.getDemographicFieldsToReturn 
 	private Collection<DemographicField>	availableDemographicFields = new ArrayList<DemographicField>();
 	private Collection<DemographicField>	selectedDemographicFields = new ArrayList<DemographicField>();
-/*
- * same concept but for standard biospec and biocoll fields
-	private Collection<DemographicField>	availableDemographicFields = new ArrayList<DemographicField>();
-	private Collection<DemographicField>	selectedDemographicFields = new ArrayList<DemographicField>();
+/*  same concept but for standard biospec and biocoll fields */
+	private Collection<BiospecimenField>	availableBiospecimenFields = new ArrayList<BiospecimenField>();
+	private Collection<BiospecimenField>	selectedBiospecimenFields = new ArrayList<BiospecimenField>();
 
-	private Collection<DemographicField>	availableDemographicFields = new ArrayList<DemographicField>();
-	private Collection<DemographicField>	selectedDemographicFields = new ArrayList<DemographicField>();
-*
-**
-***/
+	private Collection<BiocollectionField>	availableBiocollectionFields = new ArrayList<BiocollectionField>();
+	private Collection<BiocollectionField>	selectedBiocollectionFields = new ArrayList<BiocollectionField>();
+
 	private Collection<CustomFieldDisplay>	availableBiospecimenCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
 	private Collection<CustomFieldDisplay>	selectedBiospecimenCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
 
@@ -101,6 +100,26 @@ public class SearchVO implements Serializable {
 		this.availableDemographicFields = availableDemographicFields;
 	}
 
+	public Collection<BiospecimenField> getAvailableBiospecimenFields() {
+		return availableBiospecimenFields;
+	}
+
+
+	public void setAvailableBiospecimenFields(
+			Collection<BiospecimenField> availableBiospecimenFields) {
+		this.availableBiospecimenFields = availableBiospecimenFields;
+	}
+
+	public Collection<BiocollectionField> getAvailableBiocollectionFields() {
+		return availableBiocollectionFields;
+	}
+
+
+	public void setAvailableBiocollectionFields(
+			Collection<BiocollectionField> availableBiocollectionFields) {
+		this.availableBiocollectionFields = availableBiocollectionFields;
+	}
+
 
 	public Collection<DemographicField> getSelectedDemographicFields() {
 		return selectedDemographicFields;
@@ -111,6 +130,28 @@ public class SearchVO implements Serializable {
 			Collection<DemographicField> selectedDemographicFields) {
 		this.selectedDemographicFields = selectedDemographicFields;
 	}
+
+	public Collection<BiocollectionField> getSelectedBiocollectionFields() {
+		return selectedBiocollectionFields;
+	}
+
+
+	public void setSelectedBiocollectionFields(
+			Collection<BiocollectionField> selectedBiocollectionFields) {
+		this.selectedBiocollectionFields = selectedBiocollectionFields;
+	}
+
+
+	public Collection<BiospecimenField> getSelectedBiospecimenFields() {
+		return selectedBiospecimenFields;
+	}
+
+
+	public void setSelectedBiospecimenFields(
+			Collection<BiospecimenField> selectedBiospecimenFields) {
+		this.selectedBiospecimenFields = selectedBiospecimenFields;
+	}
+
 
 
 	public Collection<CustomFieldDisplay> getAvailablePhenoCustomFieldDisplays() {

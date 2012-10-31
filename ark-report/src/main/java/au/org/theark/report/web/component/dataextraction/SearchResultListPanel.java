@@ -35,6 +35,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.report.entity.BiocollectionField;
+import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.Search;
@@ -143,10 +145,24 @@ public class SearchResultListPanel extends Panel {
 				SearchVO searchVo = containerForm.getModelObject();
 				//searchVo.setMode(Constants.MODE_EDIT);
 				searchVo.setSearch(search);// Sets the selected object into the model
+				
 				Collection<DemographicField> availableDemographicFields = iArkCommonService.getAllDemographicFields();
 				containerForm.getModelObject().setAvailableDemographicFields(availableDemographicFields);
 				Collection<DemographicField> selectedDemographicFields =iArkCommonService.getSelectedDemographicFieldsForSearch(search);//, true);
 				containerForm.getModelObject().setSelectedDemographicFields(selectedDemographicFields);
+
+
+				Collection<BiospecimenField> availableBiospecimenFields = iArkCommonService.getAllBiospecimenFields();
+				containerForm.getModelObject().setAvailableBiospecimenFields(availableBiospecimenFields);
+				Collection<BiospecimenField> selectedBiospecimenFields =iArkCommonService.getSelectedBiospecimenFieldsForSearch(search);//, true);
+				containerForm.getModelObject().setSelectedBiospecimenFields(selectedBiospecimenFields);
+				
+				Collection<BiocollectionField> availableBiocollectionFields = iArkCommonService.getAllBiocollectionFields();
+				containerForm.getModelObject().setAvailableBiocollectionFields(availableBiocollectionFields);
+				Collection<BiocollectionField> selectedBiocollectionFields =iArkCommonService.getSelectedBiocollectionFieldsForSearch(search);//, true);
+				containerForm.getModelObject().setSelectedBiocollectionFields(selectedBiocollectionFields);
+
+				
 
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				Study study = iArkCommonService.getStudy(studyId); 
