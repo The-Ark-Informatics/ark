@@ -260,16 +260,21 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 		CorrespondenceVO correspondenceVO= containerForm.getModelObject();
 		
-		if(correspondenceVO.getCorrespondence().getId() == null
-				&&
-				((correspondenceVO.getWorkRequest()==null &&
-				correspondenceVO.getBillableItemType()!=null)
-				||
-				(correspondenceVO.getWorkRequest()!=null &&
-						correspondenceVO.getBillableItemType()==null))){
-			this.error("Cannot create correspondence with Individual work request or billable item type");
-			processErrors(target);
-			return;
+		if(correspondenceVO.getCorrespondence().getId() == null){
+			
+				if((correspondenceVO.getWorkRequest()==null 
+						&& correspondenceVO.getBillableItemType()!=null)){
+					this.error("Work request must be set if a billable item type is specified");
+					processErrors(target);
+					return;
+				}
+
+				if(correspondenceVO.getWorkRequest()!=null 
+						&& correspondenceVO.getBillableItemType()==null){
+						this.error("Billable item type must be set if a work request is specified");
+						processErrors(target);
+						return;
+				}
 		}
 		
 		if(containerForm.getModelObject().getWorkRequest()!=null &&
