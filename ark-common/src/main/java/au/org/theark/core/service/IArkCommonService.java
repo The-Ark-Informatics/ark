@@ -41,6 +41,8 @@ import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.report.entity.BiocollectionField;
+import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -748,9 +750,19 @@ public interface IArkCommonService<T> {
 
 	public Collection<DemographicField> getAllDemographicFields();
 
+	public Collection<BiospecimenField> getAllBiospecimenFields();
+
+	public Collection<BiocollectionField> getAllBiocollectionFields();
+
 	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search);
+
+
+	public Collection<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search);
+
+
+	public Collection<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search);
 	
-	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean readOnly);
+//	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean readOnly);
 
 	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search);
 
@@ -761,6 +773,7 @@ public interface IArkCommonService<T> {
 	public Collection<CustomFieldDisplay> getSelectedBiospecimenCustomFieldDisplaysForSearch(Search search);
 
 	public Collection<CustomFieldDisplay> getSelectedBiocollectionCustomFieldDisplaysForSearch(Search search);
+
 	
 	
 }

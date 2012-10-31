@@ -36,6 +36,8 @@ import org.apache.shiro.*;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.model.report.entity.BiocollectionField;
+import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -62,6 +64,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	private FeedbackPanel		feedBackPanel;
 
 	private Palette<DemographicField>	demographicFieldsToReturnPalette;
+	private Palette<BiospecimenField>	biospecimenFieldsToReturnPalette;
+	private Palette<BiocollectionField>	biocollectionFieldsToReturnPalette;
 	private Palette<CustomFieldDisplay>	phenoCustomFieldDisplaysToReturnPalette;
 	private Palette<CustomFieldDisplay>	subjectCustomFieldDisplaysToReturnPalette;
 	private Palette<CustomFieldDisplay>	biospecimenCustomFieldDisplaysToReturnPalette;
@@ -102,6 +106,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		searchNameTxtFld.add(new ArkDefaultFormFocusBehavior());
 
 		initDemographicFieldsModulePalette();
+		initBiospecimenFieldsModulePalette();
+		initBiocollectionFieldsModulePalette();
 		initPhenoCustomFieldDisplaysModulePalette();
 		initSubjectCustomFieldDisplaysModulePalette();
 		initBiospecimenCustomFieldDisplaysModulePalette();
@@ -115,6 +121,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(demographicFieldsToReturnPalette);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(biocollectionFieldsToReturnPalette);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(biospecimenFieldsToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(phenoCustomFieldDisplaysToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectCustomFieldDisplaysToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(biospecimenCustomFieldDisplaysToReturnPalette);
@@ -238,6 +246,64 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		PropertyModel<Collection<DemographicField>> availableDemographicFieldsPm = new PropertyModel<Collection<DemographicField>>(searchCPM, "availableDemographicFields");
 		demographicFieldsToReturnPalette = new ArkPalette("selectedDemographicFields", selectedDemographicFieldsPm, availableDemographicFieldsPm, renderer, PALETTE_ROWS, false);
 		demographicFieldsToReturnPalette.setOutputMarkupId(true);
+	}
+
+	/*
+	@SuppressWarnings("unchecked")
+	private void initBiocollectionFieldsModulePalette() {
+		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("publicFieldName", "id");
+		PropertyModel<Collection<BiocollectionField>> selectedBiocollectionFieldsPm = new PropertyModel<Collection<BiocollectionField>>(searchCPM, "selectedBiocollectionFields");//"selectedBiocollectionFields");
+
+		Collection<BiocollectionField> availableBiocollectionFields = iArkCommonService.getAllBiocollectionFields();
+		containerForm.getModelObject().setAvailableBiocollectionFields(availableBiocollectionFields);
+		
+		PropertyModel<Collection<BiocollectionField>> availableBiocollectionFieldsPm = new PropertyModel<Collection<BiocollectionField>>(searchCPM, "availableBiocollectionFields");
+		biocollectionFieldsToReturnPalette = new ArkPalette("selectedBiocollectionFields", selectedBiocollectionFieldsPm, availableBiocollectionFieldsPm, renderer, PALETTE_ROWS, false);
+		biocollectionFieldsToReturnPalette.setOutputMarkupId(true);
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	private void initBiospecimenFieldsModulePalette() {
+		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("publicFieldName", "id");
+		PropertyModel<Collection<BiospecimenField>> selectedBiospecimenFieldsPm = new PropertyModel<Collection<BiospecimenField>>(searchCPM, "selectedBiospecimenFields");//"selectedBiospecimenFields");
+
+		Collection<BiospecimenField> availableBiospecimenFields = iArkCommonService.getAllBiospecimenFields();
+		containerForm.getModelObject().setAvailableBiospecimenFields(availableBiospecimenFields);
+		
+		PropertyModel<Collection<BiospecimenField>> availableBiospecimenFieldsPm = new PropertyModel<Collection<BiospecimenField>>(searchCPM, "availableBiospecimenFields");
+		biospecimenFieldsToReturnPalette = new ArkPalette("selectedBiospecimenFields", selectedBiospecimenFieldsPm, availableBiospecimenFieldsPm, renderer, PALETTE_ROWS, false);
+		biospecimenFieldsToReturnPalette.setOutputMarkupId(true);
+	}
+	*/
+	@SuppressWarnings("unchecked")
+	private void initBiocollectionFieldsModulePalette() {
+		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("publicFieldName", "id");
+		PropertyModel<Collection<BiocollectionField>> selectedBiocollectionFieldsPm = new PropertyModel<Collection<BiocollectionField>>(searchCPM, "selectedBiocollectionFields");//"selectedBiocollectionFields");
+
+		Collection<BiocollectionField> availableBiocollectionFields = iArkCommonService.getAllBiocollectionFields();
+		containerForm.getModelObject().setAvailableBiocollectionFields(availableBiocollectionFields);
+		
+		PropertyModel<Collection<BiocollectionField>> availableBiocollectionFieldsPm = new PropertyModel<Collection<BiocollectionField>>(searchCPM, "availableBiocollectionFields");
+		biocollectionFieldsToReturnPalette = new ArkPalette("selectedBiocollectionFields", selectedBiocollectionFieldsPm, availableBiocollectionFieldsPm, renderer, PALETTE_ROWS, false);
+		biocollectionFieldsToReturnPalette.setOutputMarkupId(true);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void initBiospecimenFieldsModulePalette() {
+		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("publicFieldName", "id");
+		PropertyModel<Collection<BiospecimenField>> selectedBiospecimenFieldsPm = new PropertyModel<Collection<BiospecimenField>>(searchCPM, "selectedBiospecimenFields");//"selectedBiospecimenFields");
+
+		Collection<BiospecimenField> availableBiospecimenFields = iArkCommonService.getAllBiospecimenFields();
+		containerForm.getModelObject().setAvailableBiospecimenFields(availableBiospecimenFields);
+		
+		PropertyModel<Collection<BiospecimenField>> availableBiospecimenFieldsPm = new PropertyModel<Collection<BiospecimenField>>(searchCPM, "availableBiospecimenFields");
+		biospecimenFieldsToReturnPalette = new ArkPalette("selectedBiospecimenFields", selectedBiospecimenFieldsPm, availableBiospecimenFieldsPm, renderer, PALETTE_ROWS, false);
+		biospecimenFieldsToReturnPalette.setOutputMarkupId(true);
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -1359,7 +1359,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	@SuppressWarnings("unchecked")
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(Study study, ArkFunction arkFunction){
 	
-		List<String> lowerCaseNames = new ArrayList<String>();
 		String queryString = "select cfd " +
 				" from CustomFieldDisplay cfd " +
 				" where customField.id in ( " +
@@ -1704,7 +1703,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 		return success;
 	}
-
+/*
 	private List<DemographicFieldSearch> getCurrentDemographicFieldSearches(Search search) {/*
 		Criteria criteria = getSession().createCriteria(Search.class);
 		criteria.add(Restrictions.eq("name", searchName));
@@ -1712,7 +1711,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		if(anIdToExcludeFromResults != null){
 			criteria.add(Restrictions.ne("id", anIdToExcludeFromResults));
 		}
-		return (criteria.list().size() > 0);*/
+		return (criteria.list().size() > 0);*
 
 		String queryString = "select dfs " +
 		" from DemographicFieldSearch dfs " +
@@ -1721,7 +1720,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		query.setParameter("search", search);
 		return query.list();
 	}
-
+*/
 	/**
 	 * 
 	 * @param searchName
@@ -1745,11 +1744,49 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
+	
+	public Collection<BiospecimenField> getAllBiospecimenFields(){
+		Criteria criteria = getSession().createCriteria(BiospecimenField.class);
+		return criteria.list();
+	}
+
+	
+	public Collection<BiocollectionField> getAllBiocollectionFields(){
+		Criteria criteria = getSession().createCriteria(BiocollectionField.class);
+		return criteria.list();
+	}
+
 	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search) {
 
 		String queryString = "select dfs.demographicField " +
-		" from DemographicFieldSearch dfs " +
-		" where dfs.search=:search ";
+							" from DemographicFieldSearch dfs " +
+							" where dfs.search=:search ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
+		
+		return query.list();
+		
+	}
+
+
+	public Collection<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search) {
+
+		String queryString = "select bsfs.biospecimenField " +
+							" from BiospecimenFieldSearch bsfs " +
+							" where bsfs.search=:search ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
+		
+		return query.list();
+		
+	}
+
+
+	public Collection<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search) {
+										//biocollectionField
+		String queryString = "select bcfs.biocollectionField " +
+							" from BiocollectionFieldSearch bcfs " +
+							" where bcfs.search=:search ";
 		Query query =  getSession().createQuery(queryString);
 		query.setParameter("search", search);
 		
@@ -1762,7 +1799,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @param search
 	 * @param explicitReadOnly - if true, will try to set to readonly ELSE false 
 	 * @return
-	 */
+	 *
 	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean explicitReadOnly) {
 
 		String queryString = "select dfs.demographicField " +
@@ -1773,7 +1810,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		query.setReadOnly(explicitReadOnly);
 		
 		return query.list();
-	}
+	}*/
 
 	
 	/**
@@ -1781,7 +1818,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @param search
 	 * @param explicitReadOnly - if true, will try to set to readonly ELSE false 
 	 * @return
-	 */
+	 *
 	public Collection<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search, boolean explicitReadOnly) {
 
 		String queryString = "select dfs.BiospecimenField " +
@@ -1792,7 +1829,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		query.setReadOnly(explicitReadOnly);
 		
 		return query.list();
-	}
+	}*/
 
 	
 	/**
@@ -1800,7 +1837,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @param search
 	 * @param explicitReadOnly - if true, will try to set to readonly ELSE false 
 	 * @return
-	 */
+	 *
 	public Collection<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search, boolean explicitReadOnly) {
 
 		String queryString = "select dfs.BiocollectionField " +
@@ -1811,7 +1848,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		query.setReadOnly(explicitReadOnly);
 		
 		return query.list();
-	}
+	}*/
 
 	/**
 	 * 

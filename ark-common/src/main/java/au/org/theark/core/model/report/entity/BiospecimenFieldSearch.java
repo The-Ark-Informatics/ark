@@ -53,6 +53,7 @@ public class BiospecimenFieldSearch  implements Serializable  {
 		this.search = search;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BIOSPECIMEN_FIELD_ID")
 	public BiospecimenField getBiospecimenField() {
 		return biospecimenField;
