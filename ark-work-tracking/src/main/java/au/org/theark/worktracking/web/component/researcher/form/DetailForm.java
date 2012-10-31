@@ -307,9 +307,10 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 				new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_ACCOUNTNAME_LENGTH, resercherAccountNameTxtFld, new Model<String>(Constants.RESEARCHER_ACCOUNT_NAME_TAG)));
 		resercherEmailTxtFld.add(EmailAddressValidator.getInstance());
 		titleTypes.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_WORK_RESEARCHER_TITLE_TYPE_REQUIRED, researcherStatuses, new Model<String>(Constants.RESEARCHER_TITLE_TYPE_TAG)));
-	
+		
 	}
 	
+	/*
 	@Override
 	public void process(IFormSubmitter submittingComponent) {
 		Researcher researcher=getFormModel().getResearcher();
@@ -331,7 +332,8 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		}
 		super.process(submittingComponent);
 	}
-
+	*/
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -352,6 +354,11 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 	protected void onSave(Form<ResearcherVo> containerForm, AjaxRequestTarget target) {
 
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
+		if(checkBillingDetails()>0){
+			processErrors(target);
+			return;
+		}
+		
 		try {
 			
 			if (containerForm.getModelObject().getResearcher().getId() == null) {
@@ -373,6 +380,36 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 			this.error("A System error occured, we will have someone contact you.");
 			processErrors(target);
 		}
+	}
+	
+	private int checkBillingDetails(){
+		int  count=0;
+		Researcher researcher=getFormModel().getResearcher();
+		
+		if(researcher.getBillingType() !=null &&
+				"EFT".equalsIgnoreCase(researcher.getBillingType().getName())){
+			if(researcher.getAccountName() ==null 
+					|| researcher.getAccountName().trim().length() < 1){
+				this.error("Field 'Account Name' is required.");
+				++count;
+			}
+			if(researcher.getBank() ==null 
+					|| researcher.getBank().trim().length() < 1){
+				this.error("Field 'Bank' is required.");
+				++count;
+			}
+			if(researcher.getBsb() ==null 
+					|| researcher.getBsb().trim().length() < 1){
+				this.error("Field 'BSB' is required.");
+				++count;
+			}
+			if(researcher.getAccountNumber() == null 
+					|| researcher.getAccountNumber().trim().length() < 1){
+				this.error("Field 'Account Number' is required.");
+				++count;
+			}	
+		}
+		return count;
 	}
 
 	/*
@@ -413,10 +450,10 @@ public class DetailForm extends AbstractDetailForm<ResearcherVo> {
 		resercherBSBTxtFld.setEnabled(enabled);
 		resercherAccountNameTxtFld.setEnabled(enabled);
 		
-		resercherAccountNameTxtFld.setRequired(false);
-		resercherBankTxtFld.setRequired(false);
-		resercherBSBTxtFld.setRequired(false);
-		resercherAccountNumberTxtFld.setRequired(false);
+//		resercherAccountNameTxtFld.setRequired(false);
+//		resercherBankTxtFld.setRequired(false);
+//		resercherBSBTxtFld.setRequired(false);
+//		resercherAccountNumberTxtFld.setRequired(false);
 		
 		target.add(resercherAccountNumberTxtFld,resercherBankTxtFld,resercherBSBTxtFld,resercherAccountNameTxtFld);
 
