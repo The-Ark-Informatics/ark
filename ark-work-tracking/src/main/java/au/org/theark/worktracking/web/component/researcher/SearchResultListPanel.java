@@ -103,8 +103,9 @@ public class SearchResultListPanel extends Panel {
 				researcherVo.setMode(Constants.MODE_EDIT);
 				researcherVo.setResearcher(researcher);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-				if(researcher.getBillingType()!=null 
-						&& !"EFT".equalsIgnoreCase(researcher.getBillingType().getName())){					
+				if(researcher.getBillingType()==null 
+						|| (researcher.getBillingType()!=null 
+							&& !"EFT".equalsIgnoreCase(researcher.getBillingType().getName()))){					
 					enableResearcherBankDetailFields(false);
 				}
 				else{
