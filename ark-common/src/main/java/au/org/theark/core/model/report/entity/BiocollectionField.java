@@ -89,7 +89,6 @@ public class BiocollectionField implements Serializable {
 		this.publicFieldName = publicFieldName;
 	}
 
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FIELD_TYPE_ID")
 	public FieldType getFieldType() {
@@ -98,7 +97,7 @@ public class BiocollectionField implements Serializable {
 	public void setFieldType(FieldType fieldType) {
 		this.fieldType = fieldType;
 	}
-
+	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "biocollectionField")
 	public Set<BiocollectionFieldSearch> getBiocollectionFieldSearchesUsingThisField() {
 		return biocollectionFieldSearchesUsingThisField;
