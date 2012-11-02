@@ -1342,5 +1342,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
 		
 	}
-	
+
+
+	public void runSearch(Long searchId){
+		//String report = studyDao.runSearch();
+		studyDao.runSearch(searchId); //I guess it can even capture issues and reports and doesn't need a return
+		
+	}
 }
