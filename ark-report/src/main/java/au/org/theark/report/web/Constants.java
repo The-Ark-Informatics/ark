@@ -72,5 +72,6 @@ public class Constants {
 	
 	public static final String	ERROR_BIOSPECIMEN_SUMMARY_REPORT_STUDY_REQUIRED 	= "error.biospecimensummaryreport.study.required";
 	public static final String	BIOSPECIMEN_SUMMARY_REPORT_STUDY_TAG 				= "Study";
+	public static final String 	RUN_BATCH_QUERY 									= "runBatchQuery";
 	
 }
