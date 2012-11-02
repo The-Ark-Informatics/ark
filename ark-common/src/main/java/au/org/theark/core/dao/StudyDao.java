@@ -19,6 +19,7 @@
 package au.org.theark.core.dao;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -60,6 +61,7 @@ import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.CustomFieldDisplaySearch;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.DemographicFieldSearch;
+import au.org.theark.core.model.report.entity.Entity;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -109,6 +111,8 @@ import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.util.CsvListReader;
+import au.org.theark.core.vo.DataExtractionVO;
+import au.org.theark.core.vo.SubjectExtractionVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
 
@@ -1898,6 +1902,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 
+	public Collection<CustomFieldDisplay> getAllSelectedCustomFieldDisplaysForSearch(Search search){
+		
+		String queryString = "select cfds.customFieldDisplay " +
+		" from CustomFieldDisplaySearch cfds " +
+		" where cfds.search=:search ";
+//		" and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
+//		query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
+		
+		return query.list();
+	}
+
+
 	public Collection<CustomFieldDisplay> getSelectedBiocollectionCustomFieldDisplaysForSearch(Search search){
 		
 		String queryString = "select cfds.customFieldDisplay " +
@@ -1910,5 +1928,235 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 		return query.list();
 	}
+
+	public void runSearch(Long searchId){
+		DataExtractionVO allTheData = new DataExtractionVO();
+		Search search = (Search) getSession().get(Search.class, searchId);
+		if(search == null){
+			//TODO errors and reports
+		}
+		else{
+			/* do i need fields or just run a mass query?*/
+			Collection<DemographicField> dfs = getSelectedDemographicFieldsForSearch(search);
+			Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
+			Collection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
+			//Collection<CustomFieldDisplay> cfds = getAllSelectedCustomFieldDisplaysForSearch(search);
+			Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
+			Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
+			Collection<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
+			//save PHENO for later Collection<CustomFieldDisplay> pcfds = getSelectedPhenoCustomFieldDisplaysForSearch(search);
+			/* SAVE FILTERS FOR LATER */
+			/* Making this stuff into an xml document THEN converting it generically to xls/csv/pdf/etc might be an option */
+			
+			/*** the options
+			 * 
+			 * 1 get each of these and apply a filter every time
+			 * 2 a megaquery to get EVERYTHING FOR EVERYONE into our "report object/model"
+			 * 3 use the filters to create a set of subjectUIDs and maybe apply that, though may also needs a set of pheno_data_id, subj_custom_ids, etc
+			 * 
+			 */
+			
+			/*get demographic data    
+			if(hasPersonFields(dfs)){
+				Query personQuery = getSession().createQuery("Select person from Person person ");
+				
+				//then get some fields and put it in our "report model"
+			}
+			if(hasLSSFields(dfs)){
+				//or a query that forces the join of person and lss if they both exist
+				Query lssQuery = getSession().createQuery("Select lss from LinkSubjectStudy lss ");	
+				//then get some fields and put it in our "report model"
+			}*/	
+			if(hasDemographicFieldsOrFilters(dfs)){ //i guess it always should as there is always a representation of WHO
+				//constructDemographicQuery(dfs);
+				//DemographicExtractionVO
+			}
+			
+			
+
+			addDataFromMegaDemographicQuery(allTheData, dfs, search);
+			
+			
+		}
+	}
+/*
+	private String constructDemographicQuery(Collection<DemographicField> dfs){
+		StringBuffer sb = new StringBuffer();
+		StringBuffer personFieldsString = new StringBuffer(); 
+		StringBuffer lssFieldsString = new StringBuffer(); 
+		StringBuffer emailFieldsString = new StringBuffer(); 
+		StringBuffer addressFieldsString = new StringBuffer(); 
+		StringBuffer personFiltersString = new StringBuffer(); 
+		StringBuffer lssFiltersString = new StringBuffer(); 
+		StringBuffer emailFiltersString = new StringBuffer(); 
+		StringBuffer addressFiltersString = new StringBuffer(); 
+		//consent etc etc
+		
+		for(DemographicField field : dfs){
+
+			switch(field.getEntity()){
+			
+				case Person:{
+					personFieldsString.append("person." + field.getFieldName());
+					personFieldsString.append(field.getFieldName());
+					personFieldsString.append(", ");
+					break;
+				}
+				
+				case LinkSubjectStudy:{
+					lssFieldsString.append("lss." + field.getFieldName());
+					lssFieldsString.append(field.getFieldName());
+					lssFieldsString.append(", ");
+					break;
+				}
+				
+				case Email:{
+					emailFieldsString.append("email." + field.getFieldName());
+					emailFieldsString.append(field.getFieldName());
+					emailFieldsString.append(", ");
+					break;
+				}
+				
+				case Address:{
+					addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
+					addressFieldsString.append(field.getFieldName());
+					addressFieldsString.append(", ");
+					break;
+				}
+				
+				/*case Entity.Person:{
+					personFieldsString.append("person." + field.getFieldName());
+					personFieldsString.append(field.getFieldName());
+					personFieldsString.append(", ");
+					break;
+				}*
+				default: {
+					log.error("NEVER SHOULD HAVE A ENTITY WE DONT KNOW ABOUT!!!!!!!!!!!!!!!!"); //TODO asap enums and constraints to ensure
+				}
+				
+			}
+			if(!lssFieldsString.toString().isEmpty()){
+				
+			}
+			/**
+			 * TODO:   NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO
+			 *
+			
+		
+		}
+		return ""; 
+	}
+*/
+	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> dfs, Search search){
+		if(hasLSSFields(dfs) && hasPersonFields(dfs) && hasAddressFields(dfs) && hasAddressFields(dfs)){
+			String queryString = "select lss " + //, address, lss, email " + 
+					" from LinkSubjectStudy lss" +
+					" left join fetch lss.person person where lss.person.firstName like 'Travis%' " + //, link_subject_study lss " +
+					" " +
+					getPersonFilters(search);
+			//TODO ADD THE REST
+			
+			List<LinkSubjectStudy> subjects = getSession().createQuery(queryString).list();
+			log.info("size=" + subjects.size());
+			for(LinkSubjectStudy lss : subjects){
+				log.info(lss.getConsentDate() + lss.getPerson().getFirstName() + lss.getPerson().getId());
+			}
+					
+					//" where p.id = lss.person_id	and a.person_id = p.id  and lss.person_id = a.person_id";
+		}
+	}
 	
+
+	private boolean hasAddressFields(Collection<DemographicField> dfs) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	private void addAddressData(DataExtractionVO allTheData, Collection<DemographicField> dfs){
+		//consent etc etc
+		
+		
+		for(DemographicField field : dfs){
+	
+			if(field.getEntity().equals(Entity.Address)){
+//			addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
+//				addressFieldsString.append(field.getFieldName());
+				break;
+			}
+			
+			
+			/**
+			 * TODO:   NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO
+			 */
+		
+		}
+ 
+	}
+
+	private void addLSSData(DataExtractionVO allTheData, Collection<DemographicField> dfs){
+		//consent etc etc
+		
+		
+		for(DemographicField field : dfs){
+	
+			if(field.getEntity().equals(Entity.Address)){
+//				addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
+//				addressFieldsString.append(field.getFieldName());
+				break;
+			}
+			LinkSubjectStudy lss = new LinkSubjectStudy();
+			//Field fieldFromDB = lss.getClass().getField(field.getFieldName()); didn't know if using reflection was best I fear I may be stuck with hardcoding
+	//		lss.get
+			
+			/**
+			 * TODO:   NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO
+			 */
+		
+		}
+ 
+	}
+
+	private void addPersonData(DataExtractionVO allTheData, Collection<DemographicField> dfs){
+		//consent etc etc
+		
+		
+		for(DemographicField field : dfs){
+	
+			if(field.getEntity().equals(Entity.Address)){
+//				addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
+//				addressFieldsString.append(field.getFieldName());
+				break;
+			}
+			
+			/**
+			 * TODO:   NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO
+			 */
+		
+		}
+ 
+	}
+
+	private boolean hasDemographicFieldsOrFilters(
+			Collection<DemographicField> dfs) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean hasLSSFields(Collection<DemographicField> dfs) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	private boolean hasPersonFields(Collection<DemographicField> dfs) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	private boolean hasPersonFilters(Search search) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	private String getPersonFilters(Search search) {
+		// TODO Auto-generated method stub
+		return hasPersonFilters(search)?" WITH person.firstName='Travis1' ":" ";  //TODO ASAP with not allow on fetch!!!
+	}
 }

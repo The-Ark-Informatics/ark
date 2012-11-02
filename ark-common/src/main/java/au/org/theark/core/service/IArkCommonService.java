@@ -774,6 +774,8 @@ public interface IArkCommonService<T> {
 
 	public Collection<CustomFieldDisplay> getSelectedBiocollectionCustomFieldDisplaysForSearch(Search search);
 
+	public void runSearch(Long searchId);
+
 	
 	
 }

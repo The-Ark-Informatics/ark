@@ -26,7 +26,9 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -42,8 +44,11 @@ import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
@@ -100,6 +105,8 @@ public class SearchResultListPanel extends Panel {
 				}
 				/* Search Name Link */
 				item.add(buildLink(search));
+
+				item.add(buildRunSearchButton(search));
 
 				/* The Search Name
 				if (search.getName() != null) {
@@ -204,6 +211,37 @@ public class SearchResultListPanel extends Panel {
 		link.add(nameLinkLabel);
 		return link;
 
+	}
+
+	private AjaxButton buildRunSearchButton(final Search search) {
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.report.web.Constants.RUN_BATCH_QUERY) {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				//TODO ASAP : this will be replaced by call to job
+				iArkCommonService.runSearch(search.getId());
+//				byte[] data = payload.getPayload();
+//				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Could not process download request");
+			};
+		};
+
+		ajaxButton.setVisible(true);
+		ajaxButton.setDefaultFormProcessing(false);
+		//log.warn("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n how many times is this run?");
+
+		//TODO move back
+		//if (upload.getPayload() == null)
+		//if (data == null)
+		//ajaxButton.setVisible(false);
+
+		return ajaxButton;
 	}
 
 }
