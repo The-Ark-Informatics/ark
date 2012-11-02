@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,7 +33,7 @@ public class DemographicField implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	//I almost wonder if I should state what the BASE entity is we start from, ALSO? as some start from LSS some start from PERSON
-	private String entity;					//eg; person.genderType															
+	private au.org.theark.core.model.report.entity.Entity entity;					//eg; person.genderType															
 	private String fieldName;				//eg; name     the 'name' field of the gender type table 					
 //	private String additionalHQLConstraint; //eg; "address.addressType = 'Residential'"
 	//could potentially store table name and table field name too.  But first attempt will be at using hql and entities.
@@ -67,11 +69,12 @@ public class DemographicField implements Serializable {
 		this.id = id;
 	}
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "ENTITY", length = 255)
-	public String getEntity() {
+	public au.org.theark.core.model.report.entity.Entity getEntity() {
 		return entity;
 	}
-	public void setEntity(String entity) {
+	public void setEntity(au.org.theark.core.model.report.entity.Entity entity) {
 		this.entity = entity;
 	}
 

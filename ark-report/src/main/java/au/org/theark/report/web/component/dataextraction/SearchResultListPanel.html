@@ -11,10 +11,13 @@
 				</label>
 			</th>
 			
-			<th width="91%">
+			<th width="51%">
 				<label for="searchName">
-					<wicket:message	key="search.name">search ID:</wicket:message>
+					<wicket:message	key="search.name">search name:</wicket:message>
 				</label>
+			</th>
+			<th width="40%">
+				&nbsp;
 			</th>
 		<!-- 
 			<th width="2%">&nbsp;</th>
@@ -51,14 +54,11 @@
 			  	<span wicket:id="nameLbl">Name</span>
 			  </a>
 			</td>
-			<!-- 
-				<td width="25%">
-					<span wicket:id="studyComponent.description">Description</span>
-				</td>
-				<td width="20%">
-					<span wicket:id="studyComponent.keyword">Keywords</span>
-				</td>
-			-->
+			<!-- -->
+			<td width="25%">
+		  		<input wicket:id="runBatchQuery" type="submit" wicket:message="value:button.runBatchQuery" />&nbsp;
+			</td>
+			<!--  -->
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<tfoot>

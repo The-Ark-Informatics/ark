@@ -687,5 +687,7 @@ public interface IStudyDao {
 
 	public Collection<CustomFieldDisplay> getSelectedBiocollectionCustomFieldDisplaysForSearch(Search search);
 
+	public void runSearch(Long searchId);
+
 
 }
