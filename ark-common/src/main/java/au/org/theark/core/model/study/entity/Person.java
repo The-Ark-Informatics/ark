@@ -67,20 +67,14 @@ public class Person implements java.io.Serializable {
 	private EmailStatus otherEmailStatus;
 	private Date dateLastKnownAlive;
 
-	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(
-			0);
+	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(0);
 	private Set<Address> addresses = new HashSet<Address>(0);
 	private Set<Phone> phones = new HashSet<Phone>(0);
-	private Set<LinkSubjectStudycomp> linkSubjectStudycomps = new HashSet<LinkSubjectStudycomp>(
-			0);
-	private Set<LinkSubjectContact> linkSubjectContactsForContactKey = new HashSet<LinkSubjectContact>(
-			0);
-	private Set<LinkSiteContact> linkSiteContacts = new HashSet<LinkSiteContact>(
-			0);
-	private Set<LinkSubjectContact> linkSubjectContactsForSubjectKey = new HashSet<LinkSubjectContact>(
-			0);
-	private Set<PersonLastnameHistory> personLastnameHistory = new HashSet<PersonLastnameHistory>(
-			0);
+	private Set<LinkSubjectStudycomp> linkSubjectStudycomps = new HashSet<LinkSubjectStudycomp>(0);
+	private Set<LinkSubjectContact> linkSubjectContactsForContactKey = new HashSet<LinkSubjectContact>(0);
+	private Set<LinkSiteContact> linkSiteContacts = new HashSet<LinkSiteContact>(0);
+	private Set<LinkSubjectContact> linkSubjectContactsForSubjectKey = new HashSet<LinkSubjectContact>(0);
+	private Set<PersonLastnameHistory> personLastnameHistory = new HashSet<PersonLastnameHistory>(0);
 
 	public Person() {
 	}
