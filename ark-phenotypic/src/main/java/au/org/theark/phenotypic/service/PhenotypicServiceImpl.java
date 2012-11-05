@@ -92,7 +92,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		phenotypicDao.createPhenoCollection(col);
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created Pheno Collection " + col.getName());
+		ah.setComment("Created Pheno Collection " + col.getDescription());
 		ah.setEntityId(col.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);
@@ -160,7 +160,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Pheno Collection " + colEntity.getName());
+		ah.setComment("Updated Pheno Collection " + colEntity.getDescription());
 		ah.setEntityId(colEntity.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);
@@ -179,7 +179,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted Pheno Collection " + collection.getName());
+		ah.setComment("Deleted Pheno Collection " + collection.getDescription());
 		ah.setEntityId(collection.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);
@@ -808,7 +808,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created PhenoCollection " + phenoCollection.getName());
+		ah.setComment("Created PhenoCollection " + phenoCollection.getDescription());
 		ah.setEntityId(phenoCollection.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);
@@ -819,7 +819,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated PhenoCollection " + phenoCollection.getName());
+		ah.setComment("Updated PhenoCollection " + phenoCollection.getDescription());
 		ah.setEntityId(phenoCollection.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);
@@ -830,7 +830,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted PhenoCollection " + phenoCollection.getName());
+		ah.setComment("Deleted PhenoCollection " + phenoCollection.getDescription());
 		ah.setEntityId(phenoCollection.getId());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
 		iArkCommonService.createAuditHistory(ah);

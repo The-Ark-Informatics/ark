@@ -85,7 +85,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 	private Label												idLbl;
 	private Label												questionnaireLbl;
-	private Label												nameLbl;
+//	private Label												nameLbl;
 	private Label												descriptionLbl;
 	private Label												recordDateLbl;
 	private Label												reviewedDateLbl;
@@ -345,7 +345,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 				};
 				link.add(questionnaireLbl);
 				
-				nameLbl = new Label("PhenoCollection.name", PhenoCollection.getName());
+//				nameLbl = new Label("PhenoCollection.name", PhenoCollection.getName());
 				descriptionLbl = new Label("PhenoCollection.description", PhenoCollection.getDescription());
 				statusLbl = new Label("PhenoCollection.status", PhenoCollection.getStatus().getName());
 				
@@ -362,7 +362,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 				item.add(idLbl);
 				item.add(link);
-				item.add(nameLbl);
+//				item.add(nameLbl);
 				item.add(descriptionLbl);
 				item.add(statusLbl);
 				item.add(recordDateLbl);
