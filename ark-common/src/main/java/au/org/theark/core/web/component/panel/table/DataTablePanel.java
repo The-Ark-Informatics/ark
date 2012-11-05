@@ -114,7 +114,9 @@ public class DataTablePanel extends Panel {
 
 					@Override
 					protected void populateItem(ListItem<String> item) {
-						item.add(new Label("value", row.get(item.getIndex()).toString()));
+						if(row.size()>item.getIndex()){
+							item.add(new Label("value", row.get(item.getIndex()).toString()));
+						}
 					}
 				});
 			}
