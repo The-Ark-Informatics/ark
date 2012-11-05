@@ -150,7 +150,7 @@ public class CustomDataUploader {
 				PhenoCollection phenoCollectionIntoDB = new PhenoCollection();
 				phenoCollectionIntoDB.setDescription(phenoCollection.getDescription());
 				phenoCollectionIntoDB.setLinkSubjectStudy(subject);
-				phenoCollectionIntoDB.setName(phenoCollection.getName());
+//				phenoCollectionIntoDB.setName(phenoCollection.getName());
 				phenoCollectionIntoDB.setQuestionnaire(customFieldGroup);
 				phenoCollectionIntoDB.setRecordDate(phenoCollection.getRecordDate()==null?new Date():phenoCollection.getRecordDate());
 				phenoCollectionIntoDB.setStatus(uploadingStatus); //TODO for this to be UPLOADED TYPE STATUS

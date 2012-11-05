@@ -61,7 +61,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 //	private DropDownChoice<UploadType>		uploadTypeDdc;
 	private WizardForm						wizardForm;
 	private DropDownChoice<CustomFieldGroup>	customFieldGroupDdc;
-	private TextField<String>				phenoCollectionName;
+//	private TextField<String>				phenoCollectionName;
 	private TextField<String>				phenoCollectionDescription;
 	
 	public CustomDataUploadStep1(String id) {
@@ -114,7 +114,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 	public void initialiseDetailForm() {
 		// uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleUploadForm);
 		fileUploadField = new FileUploadField(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME);
-		phenoCollectionName = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENOCOLLECTION_NAME);
+//		phenoCollectionName = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENOCOLLECTION_NAME);
 		phenoCollectionDescription = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENOCOLLECTION_DESCRIPTION);
 		initialiseDropDownChoices();
 		attachValidators();
@@ -135,7 +135,7 @@ public class CustomDataUploadStep1 extends AbstractWizardStepPanel {
 		add(delimiterTypeDdc);
 		//add(uploadTypeDdc);
 		add(customFieldGroupDdc);
-		add(phenoCollectionName);
+//		add(phenoCollectionName);
 		add(phenoCollectionDescription);
 	}
 
