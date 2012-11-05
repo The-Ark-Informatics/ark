@@ -1597,12 +1597,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public boolean update(SearchVO searchVO) throws EntityExistsException{
 		boolean success = true;
 		Search search = searchVO.getSearch();
+		log.info("search name" + search.getName());
 		if(isSearchNameTaken(search.getName(), search.getStudy(), search.getId())){
 			throw new EntityExistsException("Search name '" + search.getName() + "' is already taken.  Please select a unique name");
 		}
+//		log.info("search name" + search.getName());
 		getSession().update(search);
+		getSession().flush();
+//		log.info("search name" + search.getName());
 		getSession().refresh(search);
-
+//		log.info("search name" + search.getName());
+		
 		Collection<DemographicField> listOfDemographicFieldsFromVO = searchVO.getSelectedDemographicFields();
 		List<DemographicFieldSearch> nonPoppableDFS = new ArrayList<DemographicFieldSearch>();
 		nonPoppableDFS.addAll(search.getDemographicFieldsToReturn());
@@ -1787,7 +1792,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 
 	public Collection<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search) {
-										//biocollectionField
+
 		String queryString = "select bcfs.biocollectionField " +
 							" from BiocollectionFieldSearch bcfs " +
 							" where bcfs.search=:search ";
@@ -2048,21 +2053,39 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 */
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> dfs, Search search){
-		if(hasLSSFields(dfs) && hasPersonFields(dfs) && hasAddressFields(dfs) && hasAddressFields(dfs)){
+		if(hasLSSFields(dfs) && hasPersonFields(dfs) && !hasAddressFields(dfs) && !hasAddressFields(dfs)){  //TODO Also needs to cionisider filtering??
 			String queryString = "select lss " + //, address, lss, email " + 
 					" from LinkSubjectStudy lss" +
-					" left join fetch lss.person person where lss.person.firstName like 'Travis%' " + //, link_subject_study lss " +
-					" " +
+					" left join fetch lss.person person " + 
+					//" left join fetch person.addresses a " +
+					" where lss.person.firstName like 'Travis%' " + //, link_subject_study lss " +
 					getPersonFilters(search);
 			//TODO ADD THE REST
 			
 			List<LinkSubjectStudy> subjects = getSession().createQuery(queryString).list();
 			log.info("size=" + subjects.size());
 			for(LinkSubjectStudy lss : subjects){
-				log.info(lss.getConsentDate() + lss.getPerson().getFirstName() + lss.getPerson().getId());
+				log.info(" person " + lss.getPerson().getId() + lss.getSubjectUID() + lss.getPerson().getFirstName());
+			//	log.info(" addresses size " + lss.getPerson().getAddresses().size());	
 			}
-					
-					//" where p.id = lss.person_id	and a.person_id = p.id  and lss.person_id = a.person_id";
+		}
+		if(hasLSSFields(dfs) && hasPersonFields(dfs) && hasAddressFields(dfs) && hasAddressFields(dfs)){//TODO Also needs to cionisider filtering???
+			String queryString = "select distinct lss " + //, address, lss, email " + 
+					" from LinkSubjectStudy lss" +
+					" left join fetch lss.person person " +
+					" left join fetch person.addresses a " + //TODO FIX
+					" where lss.person.firstName like 'Travis%' " + //, link_subject_study lss " +
+					getPersonFilters(search);
+			//TODO ADD THE REST
+			//final ResultTransformer trans;// = new DistinctRootEntityResultTransformer();
+			//qry.setResultTransformer(trans);
+			Query query = getSession().createQuery(queryString);
+			List<LinkSubjectStudy> subjects = query.list();
+			log.info("size=" + subjects.size());
+			for(LinkSubjectStudy lss : subjects){
+				log.info(" person " + lss.getPerson().getId() + lss.getSubjectUID() + lss.getPerson().getFirstName());
+				log.info(" addresses size " + lss.getPerson().getAddresses().size());
+			}
 		}
 	}
 	
@@ -2074,8 +2097,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	private void addAddressData(DataExtractionVO allTheData, Collection<DemographicField> dfs){
 		//consent etc etc
-		
-		
 		for(DemographicField field : dfs){
 	
 			if(field.getEntity().equals(Entity.Address)){
