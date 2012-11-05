@@ -36,7 +36,7 @@ public class PhenoCollection implements Serializable{
 	private static final long	serialVersionUID	= 1L;
 
 	private Long id;
-	private String name;
+//	private String name;
 	private String description;
 	private LinkSubjectStudy linkSubjectStudy;
 	private Date recordDate;
@@ -49,8 +49,7 @@ public class PhenoCollection implements Serializable{
 
 
 	
-	public  PhenoCollection(){
-		
+	public  PhenoCollection(){		
 	}
 	
 	@Id																			
@@ -64,15 +63,15 @@ public class PhenoCollection implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	@Column(name = "NAME", length = 255)
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+//
+//	@Column(name = "NAME", length = 255)
+//	public String getName() {
+//		return name;
+//	}
+//
+//	public void setName(String name) {
+//		this.name = name;
+//	}
 
 	@Column(name = "DESCRIPTION", length = 500)
 	public String getDescription() {
