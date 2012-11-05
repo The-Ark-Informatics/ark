@@ -1,6 +1,4 @@
-
-
-DROP  TABLE `reporting`.`biocollection_field` ;
+DROP  TABLE IF EXISTS `reporting`.`biocollection_field`;
 CREATE  TABLE `reporting`.`biocollection_field` (
   `ID` INT NOT NULL AUTO_INCREMENT  ,
   `ENTITY` VARCHAR(255) NULL ,
@@ -17,7 +15,7 @@ CREATE  TABLE `reporting`.`biocollection_field` (
 ENGINE = InnoDB ;
 
 
-DROP  TABLE `reporting`.`biocollection_field_search`;
+DROP  TABLE IF EXISTS `reporting`.`biocollection_field_search`;
 CREATE TABLE `reporting`.`biocollection_field_search` (   
 	`ID` int(11)  NOT NULL AUTO_INCREMENT ,   
 	`BIOCOLLECTION_FIELD_ID` int(11) DEFAULT NULL,   
@@ -34,7 +32,7 @@ ADD UNIQUE INDEX `uq_dfs_df_s` (`BIOCOLLECTION_FIELD_ID` ASC, `SEARCH_ID` ASC) ;
 
 
 
-DROP  TABLE `reporting`.`biospecimen_field` ;
+DROP  TABLE IF EXISTS `reporting`.`biospecimen_field` ;
 CREATE  TABLE `reporting`.`biospecimen_field` (
   `ID` INT NOT NULL AUTO_INCREMENT  ,
   `ENTITY` VARCHAR(255) NULL ,
@@ -51,7 +49,7 @@ CREATE  TABLE `reporting`.`biospecimen_field` (
 ENGINE = InnoDB ;
 
 
-DROP  TABLE `reporting`.`biospecimen_field_search`;
+DROP  TABLE IF EXISTS `reporting`.`biospecimen_field_search`;
 CREATE TABLE `reporting`.`biospecimen_field_search` (   
 	`ID` int(11)  NOT NULL AUTO_INCREMENT ,   
 	`BIOSPECIMEN_FIELD_ID` int(11) DEFAULT NULL,   
@@ -75,10 +73,3 @@ INSERT INTO `reporting`.`demographic_field` (`ENTITY`, `FIELD_NAME`, `PUBLIC_FIE
 VALUES ('LinkSubjectStudy', 'consentDate', 'Subject Constent Date', '3');
 INSERT INTO `reporting`.`demographic_field` (`ENTITY`, `FIELD_NAME`, `PUBLIC_FIELD_NAME`, `FIELD_TYPE_ID`) 
 VALUES ('LinkSubjectStudy', 'subjectUID', 'Subject UID', '1');
-
-
-
-
-
-
-
