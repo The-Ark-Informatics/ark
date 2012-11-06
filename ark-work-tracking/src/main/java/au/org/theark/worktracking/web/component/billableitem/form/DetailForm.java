@@ -410,9 +410,7 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 	@Override
 	protected void onSave(Form<BillableItemVo> containerForm, AjaxRequestTarget target) {
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
-		if(!isCommencedWorkRequest()){
-			this.error("Selected work request has not yet commenced");
-			processErrors(target);
+		if(!isCommencedWorkRequest(target)){		
 			return;
 		}
 		
@@ -462,10 +460,17 @@ public class DetailForm extends AbstractDetailForm<BillableItemVo> {
 
 	}
 	
-	private boolean isCommencedWorkRequest(){
+	private boolean isCommencedWorkRequest(AjaxRequestTarget target){
 		boolean result=true;
 		WorkRequest workRequest= containerForm.getModelObject().getBillableItem().getWorkRequest();
-		if(!"Commenced".equalsIgnoreCase(workRequest.getRequestStatus().getName())){
+		if("Not Commenced".equalsIgnoreCase(workRequest.getRequestStatus().getName())){
+			this.error("Selected work request has not yet commenced");
+			processErrors(target);
+			result=false;
+		}
+		else if("Completed".equalsIgnoreCase(workRequest.getRequestStatus().getName())){
+			this.error("Selected work request has completed");
+			processErrors(target);
 			result=false;
 		}
 		return result;
