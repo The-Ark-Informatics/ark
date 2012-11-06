@@ -1765,11 +1765,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
-	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search) {
+	public List<DemographicField> getSelectedDemographicFieldsForSearch(Search search) {
 
 		String queryString = "select dfs.demographicField " +
 							" from DemographicFieldSearch dfs " +
-							" where dfs.search=:search ";
+							" where dfs.search=:search " +
+							" order by dfs.demographicField.entity ";
 		Query query =  getSession().createQuery(queryString);
 		query.setParameter("search", search);
 		
@@ -1778,7 +1779,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 
-	public Collection<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search) {
+	public List<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search) {
 
 		String queryString = "select bsfs.biospecimenField " +
 							" from BiospecimenFieldSearch bsfs " +
@@ -1791,7 +1792,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 
-	public Collection<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search) {
+	public List<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search) {
 
 		String queryString = "select bcfs.biocollectionField " +
 							" from BiocollectionFieldSearch bcfs " +
@@ -2053,14 +2054,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 */
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> dfs, Search search){
-		if(hasLSSFields(dfs) && hasPersonFields(dfs) && !hasAddressFields(dfs) && !hasAddressFields(dfs)){  //TODO Also needs to cionisider filtering??
+		if(hasLSSFields(dfs) && hasPersonFields(dfs) 
+				&& !hasAddressFields(dfs) && !hasEmailFields(dfs) & !hasPhoneFields(dfs)){  //TODO Also needs to cionisider filtering??
 			String queryString = "select lss " + //, address, lss, email " + 
 					" from LinkSubjectStudy lss" +
 					" left join fetch lss.person person " + 
 					//" left join fetch person.addresses a " +
 					" where lss.person.firstName like 'Travis%' " + //, link_subject_study lss " +
 					getPersonFilters(search);
-			//TODO ADD THE REST
 			
 			List<LinkSubjectStudy> subjects = getSession().createQuery(queryString).list();
 			log.info("size=" + subjects.size());
@@ -2069,12 +2070,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//	log.info(" addresses size " + lss.getPerson().getAddresses().size());	
 			}
 		}
-		if(hasLSSFields(dfs) && hasPersonFields(dfs) && hasAddressFields(dfs) && hasAddressFields(dfs)){//TODO Also needs to cionisider filtering???
+		
+		if(hasLSSFields(dfs) && hasPersonFields(dfs) && hasAddressFields(dfs) && hasAddressFields(dfs)){//TODO Also needs to consider filtering???
 			String queryString = "select distinct lss " + //, address, lss, email " + 
 					" from LinkSubjectStudy lss" +
 					" left join fetch lss.person person " +
 					" left join fetch person.addresses a " + //TODO FIX
-					" where lss.person.firstName like 'Travis%' " + //, link_subject_study lss " +
+					//" where lss.person.firstName like 'Travis%' " + //, link_subject_study lss " +
 					getPersonFilters(search);
 			//TODO ADD THE REST
 			//final ResultTransformer trans;// = new DistinctRootEntityResultTransformer();
@@ -2088,11 +2090,34 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 		}
 	}
-	
 
-	private boolean hasAddressFields(Collection<DemographicField> dfs) {
-		// TODO Auto-generated method stub
-		return true;
+
+	private boolean hasEmailFields(Collection<DemographicField> demographicFields) {
+		for(DemographicField demographicField : demographicFields){
+			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Email)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	private boolean hasPhoneFields(Collection<DemographicField> demographicFields) {
+		for(DemographicField demographicField : demographicFields){
+			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Phone)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean hasAddressFields(Collection<DemographicField> demographicFields) {
+		for(DemographicField demographicField : demographicFields){
+			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Address)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void addAddressData(DataExtractionVO allTheData, Collection<DemographicField> dfs){
@@ -2115,11 +2140,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	private void addLSSData(DataExtractionVO allTheData, Collection<DemographicField> dfs){
-		//consent etc etc
-		
-		
 		for(DemographicField field : dfs){
-	
 			if(field.getEntity().equals(Entity.Address)){
 //				addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
 //				addressFieldsString.append(field.getFieldName());
@@ -2136,41 +2157,29 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
  
 	}
-
-	private void addPersonData(DataExtractionVO allTheData, Collection<DemographicField> dfs){
-		//consent etc etc
-		
-		
-		for(DemographicField field : dfs){
 	
-			if(field.getEntity().equals(Entity.Address)){
-//				addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
-//				addressFieldsString.append(field.getFieldName());
-				break;
-			}
-			
-			/**
-			 * TODO:   NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO
-			 */
-		
-		}
- 
-	}
-
 	private boolean hasDemographicFieldsOrFilters(
 			Collection<DemographicField> dfs) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	private boolean hasLSSFields(Collection<DemographicField> dfs) {
-		// TODO Auto-generated method stub
-		return true;
+	private boolean hasLSSFields(Collection<DemographicField> demographicFields) {
+		for(DemographicField demographicField : demographicFields){
+			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.LinkSubjectStudy)){
+				return true;
+			}
+		}
+		return false;
 	}
 
-	private boolean hasPersonFields(Collection<DemographicField> dfs) {
-		// TODO Auto-generated method stub
-		return true;
+	private boolean hasPersonFields(Collection<DemographicField> demographicFields) {
+		for(DemographicField demographicField : demographicFields){
+			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Person)){
+				return true;
+			}
+		}
+		return false;
 	}
 	private boolean hasPersonFilters(Search search) {
 		// TODO Auto-generated method stub
