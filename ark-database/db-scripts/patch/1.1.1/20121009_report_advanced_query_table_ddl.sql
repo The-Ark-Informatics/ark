@@ -169,12 +169,6 @@ CREATE  TABLE `reporting`.`query_grouping_grouping` (
 -- TODO analyse whether we want cascade.
 
 
-INSERT INTO `reporting`.`demographic_field` (`ENTITY`, `FIELD_NAME`, `PUBLIC_FIELD_NAME`, `FIELD_TYPE_ID`) 
-VALUES ('LinkSubjectStudy', 'consentDate', 'Subject Constent Date', '3');
-INSERT INTO `reporting`.`demographic_field` (`ENTITY`, `FIELD_NAME`, `PUBLIC_FIELD_NAME`, `FIELD_TYPE_ID`) 
-VALUES ('LinkSubjectStudy', 'subjectUID', 'Subject UID', '1');
-
-
 
 
 

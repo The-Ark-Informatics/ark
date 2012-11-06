@@ -69,7 +69,15 @@ ADD UNIQUE INDEX `uq_dfs_df_s` (`BIOSPECIMEN_FIELD_ID` ASC, `SEARCH_ID` ASC) ;
 
 
 
+
 INSERT INTO `reporting`.`demographic_field` (`ENTITY`, `FIELD_NAME`, `PUBLIC_FIELD_NAME`, `FIELD_TYPE_ID`) 
 VALUES ('LinkSubjectStudy', 'consentDate', 'Subject Constent Date', '3');
 INSERT INTO `reporting`.`demographic_field` (`ENTITY`, `FIELD_NAME`, `PUBLIC_FIELD_NAME`, `FIELD_TYPE_ID`) 
 VALUES ('LinkSubjectStudy', 'subjectUID', 'Subject UID', '1');
+INSERT INTO `reporting`.`demographic_field` (`ENTITY`, `FIELD_NAME`, `PUBLIC_FIELD_NAME`, `FIELD_TYPE_ID`) 
+VALUES ('Person', 'firstName', 'First Name', '1');
+INSERT INTO `reporting`.`demographic_field` (`ENTITY`, `FIELD_NAME`, `PUBLIC_FIELD_NAME`, `FIELD_TYPE_ID`) 
+VALUES ('Address', 'postCode', 'Post Code', '1');
+
+
+
