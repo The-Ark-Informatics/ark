@@ -669,13 +669,13 @@ public interface IStudyDao {
 
 
 
-	public Collection<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search);
+	public List<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search);
 
 
-	public Collection<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search);
+	public List<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search);
 
 
-	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search);
+	public List<DemographicField> getSelectedDemographicFieldsForSearch(Search search);
 
 	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search);
 

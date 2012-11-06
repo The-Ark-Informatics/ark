@@ -2,8 +2,8 @@ package au.org.theark.core.vo;
 
 public class SubjectExtractionVO {
 //	private String subjectId;//keeping it a bit stupid and ignorant of entities for rapid moves to other formats
-	private String studyId;
-	private java.util.HashMap<String, String> keyValue;
+	//private String studyId;
+	private java.util.HashMap<String, String> keyValues;
 	
 	/*public String getSubjectId() {
 		return subjectId;
@@ -11,8 +11,7 @@ public class SubjectExtractionVO {
 	
 	public void setSubjectId(String subjectId) {
 		this.subjectId = subjectId;
-	}*/
-	
+	}
 	public String getStudyId() {
 		return studyId;
 	}
@@ -20,12 +19,12 @@ public class SubjectExtractionVO {
 	public void setStudyId(String studyId) {
 		this.studyId = studyId;
 	}
-	
-	public java.util.HashMap<String, String> getKeyValue() {
-		return keyValue;
+	*/
+	public java.util.HashMap<String, String> getKeyValues() {
+		return keyValues;
 	}
-	public void setKeyValue(java.util.HashMap<String, String> keyValue) {
-		this.keyValue = keyValue;
+	public void setKeyValues(java.util.HashMap<String, String> keyValues) {
+		this.keyValues = keyValues;
 	}
 	
 	
