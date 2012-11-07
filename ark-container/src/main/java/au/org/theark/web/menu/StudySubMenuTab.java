@@ -28,7 +28,6 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -39,7 +38,6 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.customfieldupload.CustomFieldUploadContainerPanel;
@@ -48,8 +46,6 @@ import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.study.web.component.managestudy.StudyContainerPanel;
 import au.org.theark.study.web.component.manageuser.UserContainerPanel;
 import au.org.theark.study.web.component.studycomponent.StudyComponentContainerPanel;
-import au.org.theark.study.web.component.subjectUpload.SubjectUploadContainerPanel;
-import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataContainerPanel;
 
 /**
  * <p>
