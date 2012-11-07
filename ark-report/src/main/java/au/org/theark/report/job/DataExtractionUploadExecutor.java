@@ -23,17 +23,13 @@ import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-import java.io.InputStream;
 import java.util.Date;
-import java.util.List;
-
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
 import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdSchedulerFactory;
 
-import au.org.theark.core.Constants;
 import au.org.theark.core.service.IArkCommonService;
 
 public class DataExtractionUploadExecutor {
