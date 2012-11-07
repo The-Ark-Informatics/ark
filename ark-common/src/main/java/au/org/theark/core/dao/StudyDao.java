@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -62,6 +63,7 @@ import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.Entity;
 import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -112,6 +114,7 @@ import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.util.CsvListReader;
 import au.org.theark.core.vo.DataExtractionVO;
 import au.org.theark.core.vo.SearchVO;
+import au.org.theark.core.vo.SubjectExtractionVO;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -1776,6 +1779,21 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 	}
 
+	public List<DemographicField> getSelectedDemographicFieldsForSearch(Search search, Entity entityEnumToRestrictOn) {
+
+		String queryString = "select dfs.demographicField " +
+							" from DemographicFieldSearch dfs " +
+							" where dfs.search=:search " +
+							" and dfs.demographicField.entity=:entityEnumToRestrictOn ";
+		Query query =  getSession().createQuery(queryString);
+		query.setParameter("search", search);
+		query.setParameter("entityEnumToRestrictOn", entityEnumToRestrictOn);
+		
+		return query.list();
+		
+	}
+
+
 
 	public List<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search) {
 
@@ -1941,7 +1959,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		else{
 			/* do i need fields or just run a mass query?*/
-			Collection<DemographicField> dfs = getSelectedDemographicFieldsForSearch(search);
+			//Collection<DemographicField> dfs = getSelectedDemographicFieldsForSearch(search);
+			Collection<DemographicField> addressDFs = getSelectedDemographicFieldsForSearch(search, Entity.Address);
+			Collection<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
+			Collection<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
+			Collection<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
 			Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
 			Collection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
 			//Collection<CustomFieldDisplay> cfds = getAllSelectedCustomFieldDisplaysForSearch(search);
@@ -1971,19 +1993,203 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				Query lssQuery = getSession().createQuery("Select lss from LinkSubjectStudy lss ");	
 				//then get some fields and put it in our "report model"
 			}*/	
-			if(hasDemographicFieldsOrFilters(dfs)){ //i guess it always should as there is always a representation of WHO
+		//	if(hasDemographicFieldsOrFilters(dfs)){ //i guess it always should as there is always a representation of WHO
 				//constructDemographicQuery(dfs);
 				//DemographicExtractionVO
-			}
+		//	}
 			
 			
 
-			addDataFromMegaDemographicQuery(allTheData, dfs, search);
+			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, search);
 			
 			
 		}
 	}
-/*
+
+	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData,
+			 Collection<DemographicField> personFields, 
+			 Collection<DemographicField> lssFields, 
+			 Collection<DemographicField> addressFields, 
+			 Collection<DemographicField> phoneFields, Search search){
+		if(!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() ){  // hasEmailFields(dfs) || TODO Also needs to consider filtering??
+			String queryString = "select distinct lss " + //, address, lss, email " + 
+					" from LinkSubjectStudy lss " +
+					((!personFields.isEmpty())?" left join fetch lss.person person ":"") + 
+					((!addressFields.isEmpty())?" left join fetch person.addresses a ":"") +
+					((!phoneFields.isEmpty())?" left join fetch person.phones p ":"") +		//(hasEmailFields(dfs)?" left join fetch person.emails e ":"") +
+					//" where lss.person.firstName like 'Travis%' " + //, link_subject_study lss " +
+					getPersonFilters(search);
+			
+			List<LinkSubjectStudy> subjects = getSession().createQuery(queryString).list();
+			log.info("size=" + subjects.size());
+
+			//DataExtractionVO devo; = new DataExtractionVO();
+			HashMap<String, SubjectExtractionVO> hashOfSubjectsWithData = allTheData.getSubjectAndData();
+			
+			for(LinkSubjectStudy lss : subjects){
+				SubjectExtractionVO sev = new SubjectExtractionVO();
+				sev.setKeyValues(constructKeyValueHashmap(lss, personFields, lssFields, addressFields, phoneFields));
+				//	log.info(" person " + lss.getPerson().getId() + lss.getSubjectUID() + lss.getPerson().getFirstName());
+				//	log.info(" addresses size " + lss.getPerson().getAddresses().size());	
+				hashOfSubjectsWithData.put(lss.getSubjectUID(), sev);
+			}
+			
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithData);
+			
+		}
+																																			/*
+																																			if(hasLSSFields(dfs) && hasPersonFields(dfs) && hasAddressFields(dfs) && hasAddressFields(dfs)){//TODO Also needs to consider filtering???
+																																				String queryString = "select distinct lss " + //, address, lss, email " + 
+																																						" from LinkSubjectStudy lss" +
+																																						" left join fetch lss.person person " +
+																																						" left join fetch person.addresses a " + //TODO FIX
+																																						//" where lss.person.firstName like 'Travis%' " + //, link_subject_study lss " +
+																																						getPersonFilters(search);
+																																				//TODO ADD THE REST
+																																				//final ResultTransformer trans;// = new DistinctRootEntityResultTransformer();
+																																				//qry.setResultTransformer(trans);
+																																				Query query = getSession().createQuery(queryString);
+																																				List<LinkSubjectStudy> subjects = query.list();
+																																				log.info("size=" + subjects.size());
+																																				for(LinkSubjectStudy lss : subjects){
+																																					log.info(" person " + lss.getPerson().getId() + lss.getSubjectUID() + lss.getPerson().getFirstName());
+																																					log.info(" addresses size " + lss.getPerson().getAddresses().size());
+																																				}
+																																			}*/
+	}
+
+private void prettyLoggingOfWhatIsInOurMegaObject(HashMap<String, SubjectExtractionVO> hashOfSubjectsWithData) {
+	log.info("\n\n\n\n\n\n\n ok so we have " + hashOfSubjectsWithData.size() + " entries\n\n\n\n\n\n\n\n\n");
+	for(String subjectUID : hashOfSubjectsWithData.keySet()){
+		HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
+		log.info(subjectUID + " has " + keyValues.size() + "demo fields"); //remove(subjectUID).getKeyValues().size() + "demo fields"); 
+		for(String key : keyValues.keySet()){
+			log.info("     key=" + key + "\t   value=" + keyValues.get(key));
+		}
+	}
+		
+	}
+
+private HashMap<String, String> constructKeyValueHashmap(
+			LinkSubjectStudy lss,
+			Collection<DemographicField> personFields,
+			Collection<DemographicField> lssFields,
+			Collection<DemographicField> addressFields,
+			Collection<DemographicField> phoneFields) {
+		HashMap map = new HashMap<String, String>();
+		for(DemographicField field : personFields){
+			//TODO: Analyse performance cost of using reflection instead...would be CLEANER code...one/two lines
+			if(field.getFieldName().equalsIgnoreCase("firstName")){
+				map.put(field.getPublicFieldName(), lss.getPerson().getFirstName());
+			}
+			else if(field.getFieldName().equalsIgnoreCase("lastName")){
+				map.put(field.getPublicFieldName(), lss.getPerson().getLastName());
+			}
+			//etc
+		}
+		for(DemographicField field : lssFields){
+			if(field.getFieldName().equalsIgnoreCase("consentDate")){
+				map.put(field.getPublicFieldName(), lss.getConsentDate()==null?"":lss.getConsentDate().toString());
+			}
+			else if(field.getFieldName().equalsIgnoreCase("subjectUID")){
+				map.put(field.getPublicFieldName(), lss.getSubjectUID());
+			}
+			//etc
+		}
+		for(DemographicField field : addressFields){
+			int count = 0;
+			//assume they have filtered type/status in hql sql statement
+			for(Address a : lss.getPerson().getAddresses()){
+				count++;
+				if(field.getFieldName().equalsIgnoreCase("postCode")){
+					map.put((field.getPublicFieldName() + ((count>1)?("_"+count):"")), a.getPostCode());
+				}
+				//etc
+			}
+		}
+		for(DemographicField field : phoneFields){
+			int count = 0;
+			//assume they have filtered type/status in hql sql statement
+			for(Phone phone : lss.getPerson().getPhones()){
+				count++;
+				if(field.getFieldName().equalsIgnoreCase("phoneNumber")){
+					map.put((field.getPublicFieldName() + ((count>1)?("_"+count):"")), phone.getPhoneNumber());
+				}
+				//etc
+			}
+		}
+		return map;
+	}
+
+	/*
+	private boolean hasEmailFields(Collection<DemographicField> demographicFields) {
+		for(DemographicField demographicField : demographicFields){
+			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Email)){
+				return true;
+			}
+		}
+		return false;
+	}
+	private boolean hasPhoneFields(Collection<DemographicField> demographicFields) {
+		for(DemographicField demographicField : demographicFields){
+			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Phone)){
+				return true;
+			}
+		}
+		return false;
+	}
+	private boolean hasAddressFields(Collection<DemographicField> demographicFields) {
+		for(DemographicField demographicField : demographicFields){
+			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Address)){
+				return true;
+			}
+		}
+		return false;
+	}
+	private void addAddressData(DataExtractionVO allTheData, Collection<DemographicField> dfs){
+		//consent etc etc
+		for(DemographicField field : dfs){
+			if(field.getEntity().equals(Entity.Address)){
+//			addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
+//				addressFieldsString.append(field.getFieldName());
+				break;
+			}
+		} 
+	}
+	private void addLSSData(DataExtractionVO allTheData, Collection<DemographicField> dfs){
+		for(DemographicField field : dfs){
+			if(field.getEntity().equals(Entity.Address)){
+//				addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
+//				addressFieldsString.append(field.getFieldName());
+				break;
+			}
+			LinkSubjectStudy lss = new LinkSubjectStudy();
+			//Field fieldFromDB = lss.getClass().getField(field.getFieldName()); didn't know if using reflection was best I fear I may be stuck with hardcoding
+		}
+	}	
+	private boolean hasDemographicFieldsOrFilters(
+			Collection<DemographicField> dfs) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	private boolean hasLSSFields(Collection<DemographicField> demographicFields) {
+		for(DemographicField demographicField : demographicFields){
+			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.LinkSubjectStudy)){
+				return true;
+			}
+		}
+		return false;
+	}
+	private boolean hasPersonFields(Collection<DemographicField> demographicFields) {
+		for(DemographicField demographicField : demographicFields){
+			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Person)){
+				return true;
+			}
+		}
+		return false;
+	}
+	*/
+	/*
 	private String constructDemographicQuery(Collection<DemographicField> dfs){
 		StringBuffer sb = new StringBuffer();
 		StringBuffer personFieldsString = new StringBuffer(); 
@@ -1997,37 +2203,30 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		//consent etc etc
 		
 		for(DemographicField field : dfs){
-
-			switch(field.getEntity()){
-			
+			switch(field.getEntity()){			
 				case Person:{
 					personFieldsString.append("person." + field.getFieldName());
 					personFieldsString.append(field.getFieldName());
 					personFieldsString.append(", ");
 					break;
-				}
-				
+				}				
 				case LinkSubjectStudy:{
 					lssFieldsString.append("lss." + field.getFieldName());
 					lssFieldsString.append(field.getFieldName());
 					lssFieldsString.append(", ");
 					break;
-				}
-				
+				}				
 				case Email:{
 					emailFieldsString.append("email." + field.getFieldName());
 					emailFieldsString.append(field.getFieldName());
 					emailFieldsString.append(", ");
 					break;
-				}
-				
+				}				
 				case Address:{
 					addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
 					addressFieldsString.append(field.getFieldName());
 					addressFieldsString.append(", ");
-					break;
-				}
-				
+					break;				}
 				/*case Entity.Person:{
 					personFieldsString.append("person." + field.getFieldName());
 					personFieldsString.append(field.getFieldName());
@@ -2036,155 +2235,22 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}*
 				default: {
 					log.error("NEVER SHOULD HAVE A ENTITY WE DONT KNOW ABOUT!!!!!!!!!!!!!!!!"); //TODO asap enums and constraints to ensure
-				}
-				
+				}				
 			}
-			if(!lssFieldsString.toString().isEmpty()){
-				
+			if(!lssFieldsString.toString().isEmpty()){			
 			}
 			/**
-			 * TODO:   NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO
-			 *
-			
-		
+			 * TODO:   NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO			 *		
 		}
 		return ""; 
 	}
 */
-	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> dfs, Search search){
-		if(hasLSSFields(dfs) && hasPersonFields(dfs) 
-				&& !hasAddressFields(dfs) && !hasEmailFields(dfs) & !hasPhoneFields(dfs)){  //TODO Also needs to cionisider filtering??
-			String queryString = "select lss " + //, address, lss, email " + 
-					" from LinkSubjectStudy lss" +
-					" left join fetch lss.person person " + 
-					//" left join fetch person.addresses a " +
-					" where lss.person.firstName like 'Travis%' " + //, link_subject_study lss " +
-					getPersonFilters(search);
-			
-			List<LinkSubjectStudy> subjects = getSession().createQuery(queryString).list();
-			log.info("size=" + subjects.size());
-			for(LinkSubjectStudy lss : subjects){
-				log.info(" person " + lss.getPerson().getId() + lss.getSubjectUID() + lss.getPerson().getFirstName());
-			//	log.info(" addresses size " + lss.getPerson().getAddresses().size());	
-			}
-		}
-		
-		if(hasLSSFields(dfs) && hasPersonFields(dfs) && hasAddressFields(dfs) && hasAddressFields(dfs)){//TODO Also needs to consider filtering???
-			String queryString = "select distinct lss " + //, address, lss, email " + 
-					" from LinkSubjectStudy lss" +
-					" left join fetch lss.person person " +
-					" left join fetch person.addresses a " + //TODO FIX
-					//" where lss.person.firstName like 'Travis%' " + //, link_subject_study lss " +
-					getPersonFilters(search);
-			//TODO ADD THE REST
-			//final ResultTransformer trans;// = new DistinctRootEntityResultTransformer();
-			//qry.setResultTransformer(trans);
-			Query query = getSession().createQuery(queryString);
-			List<LinkSubjectStudy> subjects = query.list();
-			log.info("size=" + subjects.size());
-			for(LinkSubjectStudy lss : subjects){
-				log.info(" person " + lss.getPerson().getId() + lss.getSubjectUID() + lss.getPerson().getFirstName());
-				log.info(" addresses size " + lss.getPerson().getAddresses().size());
-			}
-		}
-	}
-
-
-	private boolean hasEmailFields(Collection<DemographicField> demographicFields) {
-		for(DemographicField demographicField : demographicFields){
-			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Email)){
-				return true;
-			}
-		}
-		return false;
-	}
-
-
-	private boolean hasPhoneFields(Collection<DemographicField> demographicFields) {
-		for(DemographicField demographicField : demographicFields){
-			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Phone)){
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean hasAddressFields(Collection<DemographicField> demographicFields) {
-		for(DemographicField demographicField : demographicFields){
-			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Address)){
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private void addAddressData(DataExtractionVO allTheData, Collection<DemographicField> dfs){
-		//consent etc etc
-		for(DemographicField field : dfs){
-	
-			if(field.getEntity().equals(Entity.Address)){
-//			addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
-//				addressFieldsString.append(field.getFieldName());
-				break;
-			}
-			
-			
-			/**
-			 * TODO:   NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO
-			 */
-		
-		}
- 
-	}
-
-	private void addLSSData(DataExtractionVO allTheData, Collection<DemographicField> dfs){
-		for(DemographicField field : dfs){
-			if(field.getEntity().equals(Entity.Address)){
-//				addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
-//				addressFieldsString.append(field.getFieldName());
-				break;
-			}
-			LinkSubjectStudy lss = new LinkSubjectStudy();
-			//Field fieldFromDB = lss.getClass().getField(field.getFieldName()); didn't know if using reflection was best I fear I may be stuck with hardcoding
-	//		lss.get
-			
-			/**
-			 * TODO:   NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO
-			 */
-		
-		}
- 
-	}
-	
-	private boolean hasDemographicFieldsOrFilters(
-			Collection<DemographicField> dfs) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	private boolean hasLSSFields(Collection<DemographicField> demographicFields) {
-		for(DemographicField demographicField : demographicFields){
-			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.LinkSubjectStudy)){
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean hasPersonFields(Collection<DemographicField> demographicFields) {
-		for(DemographicField demographicField : demographicFields){
-			if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Person)){
-				return true;
-			}
-		}
-		return false;
-	}
 	private boolean hasPersonFilters(Search search) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	private String getPersonFilters(Search search) {
 		// TODO Auto-generated method stub
-		return hasPersonFilters(search)?" WITH person.firstName='Travis1' ":" ";  //TODO ASAP with not allow on fetch!!!
+		return hasPersonFilters(search)?"  where lss.person.firstName like 'Travis%' ":" ";  //TODO ASAP with not allow on fetch!!!
 	}
 }
