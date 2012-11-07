@@ -18,10 +18,6 @@
  ******************************************************************************/
 package au.org.theark.report.job;
 
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -29,8 +25,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 
-import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
 
 /**
