@@ -18,10 +18,7 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.dataextraction;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -34,21 +31,16 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
-import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;

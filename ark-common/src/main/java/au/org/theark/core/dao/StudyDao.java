@@ -19,7 +19,6 @@
 package au.org.theark.core.dao;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -112,7 +111,6 @@ import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.util.CsvListReader;
 import au.org.theark.core.vo.DataExtractionVO;
-import au.org.theark.core.vo.SubjectExtractionVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
 
