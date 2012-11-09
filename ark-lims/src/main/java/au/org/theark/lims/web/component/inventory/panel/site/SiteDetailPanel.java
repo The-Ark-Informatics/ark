@@ -20,16 +20,20 @@ package au.org.theark.lims.web.component.inventory.panel.site;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.form.SiteDetailForm;
@@ -45,6 +49,8 @@ public class SiteDetailPanel extends Panel {
 	private InventoryLinkTree			tree;
 	private DefaultMutableTreeNode	node;
 	private AjaxButton					addFreezer;
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>	iArkCommonService;
 
 	public SiteDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, InventoryLinkTree tree, DefaultMutableTreeNode node) {
 		super(id);
@@ -57,7 +63,17 @@ public class SiteDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		detailForm = new SiteDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
+		detailForm = new SiteDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node){
+			@Override
+			public boolean isEnabled() {
+				try {
+					return iArkCommonService.isSuperAdministrator(SecurityUtils.getSubject().getPrincipal().toString());
+				}
+				catch (EntityNotFoundException e) {
+					return false;	
+				}
+			}
+		};
 		detailForm.initialiseDetailForm();
 		
 		addFreezer = new ArkBusyAjaxButton("addFreezer") {
