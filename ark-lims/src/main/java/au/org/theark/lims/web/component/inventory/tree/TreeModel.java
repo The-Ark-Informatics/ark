@@ -46,6 +46,12 @@ public class TreeModel {
 	 */
 	public DefaultTreeModel createTreeModel() {
 		InvSite invSite = new InvSite();
+		Study study = new Study();
+		// Test Study in context restriction
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if (sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+		}
 		
 		List<Study> studyListForUser = new ArrayList<Study>(0);
 		try {
@@ -64,6 +70,10 @@ public class TreeModel {
 		}
 		
 		try {
+			if(study != null && sessionStudyId != null) {
+				studyListForUser.clear();
+				studyListForUser.add(study);
+			}
 			invSites = iInventoryService.searchInvSite(invSite, studyListForUser);
 		}
 		catch (ArkSystemException e) {
