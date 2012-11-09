@@ -80,7 +80,7 @@ public class BarcodeLabelContainerPanel extends AbstractContainerPanel<BarcodeLa
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		BarcodeLabel barcodeLabel = new BarcodeLabel();
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SESSION_STUDY_KEY);
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if(sessionStudyId != null) {
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			barcodeLabel.setStudy(study);

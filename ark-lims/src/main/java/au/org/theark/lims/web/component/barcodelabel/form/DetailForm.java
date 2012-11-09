@@ -395,25 +395,17 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	}
 
 	/**
-	 * Returns a list of Studies the user is permitted to access
+	 * Returns study in context
 	 * 
 	 * @return
 	 */
 	private List<Study> getStudyListForUser() {
 		List<Study> studyListForUser = new ArrayList<Study>(0);
-		try {
-			Subject currentUser = SecurityUtils.getSubject();
-			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
-			ArkUserVO arkUserVo = new ArkUserVO();
-			arkUserVo.setArkUserEntity(arkUser);
-
-			Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
-			ArkModule arkModule = null;
-			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
-			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
-		}
-		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = null;
+		if(sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+			studyListForUser.add(study);
 		}
 		return studyListForUser;
 	}
