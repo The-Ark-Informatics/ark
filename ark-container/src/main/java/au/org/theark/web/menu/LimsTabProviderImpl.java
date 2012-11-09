@@ -21,6 +21,9 @@ package au.org.theark.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.tree.DefaultTreeModel;
+
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -29,9 +32,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
+import au.org.theark.lims.service.IInventoryService;
+import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.inventory.tree.TreeModel;
 
 public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 
@@ -42,19 +49,24 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 	private WebMarkupContainer			studyLogoMarkup;
 	private List<ITab>					moduleTabsList;
 	boolean visible;
-	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
+	
+	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
+	private IInventoryService					iInventoryService;
+	
+	public DefaultTreeModel 	treeModel = new TreeModel(iArkCommonService, iInventoryService).createTreeModel();
 
 	public LimsTabProviderImpl(String panelId) {
 		super(panelId);
-		visible = iArkCommonService.getCountOfStudies() > 0;
+		//visible = iArkCommonService.getCountOfStudies() > 0;
 		moduleTabsList = new ArrayList<ITab>();
 	}
 	
 	@Override
 	public boolean isVisible() {
-		return visible;
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		return sessionStudyId != null;
 	}
 
 	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
@@ -77,7 +89,7 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 			@Override
 			public Panel getPanel(String pid) {
 				// The sub menu(s)
-				return new LimsSubMenuTab(pid, arkContextPanelMarkup, studyNameMarkup, studyLogoMarkup);
+				return new LimsSubMenuTab(pid, arkContextPanelMarkup, studyNameMarkup, studyLogoMarkup, treeModel);
 			}
 
 			public boolean isAccessible() {
@@ -85,7 +97,7 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 			}
 
 			public boolean isVisible() {
-				return true;
+				return ArkPermissionHelper.isModuleAccessPermitted(au.org.theark.core.Constants.ARK_MODULE_LIMS);
 			}
 		};
 	}
