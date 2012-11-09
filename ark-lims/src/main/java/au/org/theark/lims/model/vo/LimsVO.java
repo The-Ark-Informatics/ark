@@ -22,6 +22,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.tree.DefaultTreeModel;
+
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
@@ -70,6 +72,7 @@ public class LimsVO implements Serializable {
 	protected List<BatchBiospecimenVO> batchBiospecimenList;
 	
 	private List<Study>			selectedStudies;
+	private DefaultTreeModel 			treeModel;
 
 	public LimsVO() {
 		this.study = new Study();
@@ -353,5 +356,19 @@ public class LimsVO implements Serializable {
 	 */
 	public List<Study> getSelectedStudies() {
 		return selectedStudies;
+	}
+
+	/**
+	 * @param treeModel the treeModel to set
+	 */
+	public void setTreeModel(DefaultTreeModel treeModel) {
+		this.treeModel = treeModel;
+	}
+
+	/**
+	 * @return the treeModel
+	 */
+	public DefaultTreeModel getTreeModel() {
+		return treeModel;
 	}
 }
