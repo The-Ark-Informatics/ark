@@ -542,10 +542,10 @@ public class BiospecimenUploadValidator {
 							errorString.append(row);
 							errorString.append(": SubjectUID: ");
 							errorString.append(subjectUID);
-							errorString.append(": BIOSPECIMENUID: ");
+							errorString.append(": BiospecimenUID: ");
 							errorString.append(biospecimenUID);
-							errorString.append(".  You have specified an existing biospecimen UID.  This uploader created new " +
-									"biospecimens, but does not update existing biospecimens.  Please remove this row");
+							errorString.append(". You have specified an existing BiospecimenUID. This uploader creates new " +
+									"biospecimens, but does not update existing biospecimens. Please remove this row");
 							dataValidationMessages.add(errorString.toString());
 							errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
 							insertThisRow = false;//drop out also?
