@@ -137,7 +137,14 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 			Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
 			ArkModule arkModule = null;
 			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
-			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+			//studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+			
+			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study = null;
+			if(sessionStudyId != null) {
+				study = iArkCommonService.getStudy(sessionStudyId);
+				studyListForUser.add(study);
+			}
 		}
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
