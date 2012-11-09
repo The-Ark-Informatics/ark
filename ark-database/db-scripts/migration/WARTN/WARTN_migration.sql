@@ -989,3 +989,6 @@ FROM study.study s, study.ark_module a
 WHERE s.parent_id = 274
 AND a.name IN ('Study', 'Subject', 'Phenotypic', 'LIMS')
 ORDER BY s.id, a.id;
+
+-- SET starting subject increment
+UPDATE `study`.`subjectuid_sequence` SET `UID_SEQUENCE`=(SELECT TRIM('0' FROM TRIM(LEADING 'WTN-' FROM (SELECT max(subject_uid) maxid FROM link_subject_study WHERE study_id=274)))) WHERE `STUDY_NAME_ID`='WARTN';
