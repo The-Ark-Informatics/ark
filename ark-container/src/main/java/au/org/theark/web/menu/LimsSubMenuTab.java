@@ -28,6 +28,7 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -38,7 +39,9 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.customfieldupload.CustomFieldUploadContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
@@ -76,19 +79,26 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 	private WebMarkupContainer			arkContextMarkup;
 	private WebMarkupContainer			studyNameMarkup;
 	private WebMarkupContainer			studyLogoMarkup;
-	private DefaultTreeModel 			treeModel = new TreeModel(iArkCommonService, iInventoryService).createTreeModel();
+	private DefaultTreeModel 			treeModel;
+	private Study							study;
 
-	public LimsSubMenuTab(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
+	public LimsSubMenuTab(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, DefaultTreeModel treeModel) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
+		this.treeModel = new TreeModel(iArkCommonService, iInventoryService).createTreeModel();
 		buildTabs();
 		
 		// Applet used for barcode printing
 		PrintAppletPanel printAppletPanel = new PrintAppletPanel("printAppletPanel", "zebra");
 		printAppletPanel.add(new AttributeModifier("class", "floatLeft"));
 		this.add(printAppletPanel);
+		
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if(sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+		}
 	}
 
 	public void buildTabs() {
@@ -112,13 +122,18 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 				@Override
 				public boolean isVisible() {
 					boolean flag = true;
-					if(menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.biospecimenuidtemplate") || 
+					SecurityManager securityManager = ThreadContext.getSecurityManager();
+					Subject currentUser = SecurityUtils.getSubject();
+					
+					if(menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.barcodeprinter")) {
+						// Barcode printer redundant
+						flag = false;
+					}
+					else if(menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.biospecimenuidtemplate") || 
 							menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.barcodeprinter") || 
 							menuArkFunction.getResourceKey().equalsIgnoreCase("tab.module.lims.barcodelabel")) {
-						SecurityManager securityManager = ThreadContext.getSecurityManager();
-						Subject currentUser = SecurityUtils.getSubject();
 
-						// Only a Super Admisntrator or LIMS Administrator can see the biospecimenuidtemplate/barcodeprinter/barcodelabel tabs
+						// Only a Super Administrator or LIMS Administrator can see the biospecimenuidtemplate/barcodeprinter/barcodelabel tabs
 						if (securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR) ||
 								securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_LIMS_ADMINISTATOR)) {
 							flag = currentUser.isAuthenticated();
@@ -141,13 +156,11 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS, arkFunction);
 
 		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)) {
-			panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup);// Note the constructor
+			panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup, treeModel);
 		}
-//		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
-//			panelToReturn = new BioCollectionContainerPanel(panelId, arkContextMarkup);// Note the constructor
-//		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)) {
-			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup);// Note the constructor
+			clearSubjectContext();
+			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_INVENTORY)) {
 			panelToReturn = new InventoryContainerPanel(panelId, treeModel);
@@ -190,9 +203,18 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = new BioUploadContainerPanel(panelId, arkFunction);
 		}
 		else {
-			//TODO: This shouldn't happen when all functions have been implemented
+			// This shouldn't happen when all functions have been implemented
 			panelToReturn = new EmptyPanel(panelId);
 		}
 		return panelToReturn;
+	}
+	
+	private void clearSubjectContext() {
+		// Clear context objects
+		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.SUBJECTUID);
+		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		ContextHelper contextHelper = new ContextHelper();
+		contextHelper.resetContextLabel(AjaxRequestTarget.get(), arkContextMarkup);
+		contextHelper.setStudyContextLabel(study.getName(), arkContextMarkup);
 	}
 }
