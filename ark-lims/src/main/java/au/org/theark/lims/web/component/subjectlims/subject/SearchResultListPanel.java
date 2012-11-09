@@ -20,6 +20,8 @@ package au.org.theark.lims.web.component.subjectlims.subject;
 
 import java.text.SimpleDateFormat;
 
+import javax.swing.tree.DefaultTreeModel;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -39,6 +41,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.security.AAFRealm;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.session.ArkSession;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.StudyCrudContainerVO;
@@ -47,7 +50,9 @@ import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.inventory.tree.TreeModel;
 import au.org.theark.lims.web.component.subjectlims.lims.LimsContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subjectlims.subject.form.DetailForm;
@@ -68,9 +73,13 @@ public class SearchResultListPanel extends Panel {
 	private WebMarkupContainer		studyLogoMarkup;
 	private ContainerForm			containerForm;
 	private transient StudyHelper	studyHelper;
+	private DefaultTreeModel treeModel;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
+	
+	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
+	private IInventoryService					iInventoryService;
 
 	@SpringBean(name = "arkLdapRealm")
 	private ArkLdapRealm				arkLdapRealm;
@@ -78,13 +87,14 @@ public class SearchResultListPanel extends Panel {
 	@SpringBean(name = "aafRealm")
 	private AAFRealm					aafRealm;
 
-	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
+	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, DefaultTreeModel treeModel) {
 		super(id);
 		this.containerForm = containerForm;
 		this.arkContextMarkup = arkContextMarkup;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
+		this.treeModel = treeModel;
 	}
 
 	public DataView<LinkSubjectStudy> buildDataView(ArkDataProvider2<LimsVO, LinkSubjectStudy> subjectProvider) {

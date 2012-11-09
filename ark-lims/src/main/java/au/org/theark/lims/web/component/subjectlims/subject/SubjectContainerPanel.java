@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.tree.DefaultTreeModel;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
@@ -73,21 +75,30 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 
 	private DataView<LinkSubjectStudy>						dataView;
 	private ArkDataProvider2<LimsVO, LinkSubjectStudy>	subjectProvider;
-
+	private DefaultTreeModel treeModel;
+	
 	/**
 	 * 
 	 * @param id
 	 * @param arkContextMarkup
 	 */
-	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
+	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, DefaultTreeModel treeModel) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
+		this.treeModel = treeModel;
 		
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
+		cpModel.getObject().setTreeModel(treeModel);
 		containerForm = new ContainerForm("containerForm", cpModel);
+		
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if (sessionStudyId != null) {
+			Study study = iArkCommonService.getStudy(sessionStudyId);
+			containerForm.getModelObject().setStudy(study);
+		}
 		
 		// Added to handle for odd bug in Wicket 1.5.1...shouldn't be needed!
 		containerForm.setMultiPart(true);
@@ -99,7 +110,6 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 		containerForm.add(initialiseDetailPanel());
-		prerenderContextCheck();
 		add(containerForm);
 	}
 	
@@ -139,13 +149,14 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		// Force clearing of Cache to re-load roles for the user for the study
 		arkLdapRealm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
 		aafRealm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
+		
+		Study study = null;
+		if(sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+		}
 
 		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
 			LinkSubjectStudy subjectFromBackend = new LinkSubjectStudy();
-			Study study = null;
-			
-			
-			study = iArkCommonService.getStudy(sessionStudyId);
 			
 			try {
 				subjectFromBackend = iArkCommonService.getSubjectByUID(sessionSubjectUID, study);
@@ -162,10 +173,12 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 			}
 
 			if (study != null && subjectFromBackend != null) {
+				// Study and subject in context
 				contextLoaded = true;
 				LimsVO limsVo = new LimsVO();
 				limsVo.setLinkSubjectStudy(subjectFromBackend);
 				limsVo.setStudy(subjectFromBackend.getStudy());
+				limsVo.setTreeModel(treeModel);
 				containerForm.setModelObject(limsVo);
 			}
 
@@ -178,6 +191,9 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 				//arkCrudContainerVO.getViewButtonContainer().setVisible(true);
 				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 			}
+		}
+		else if (sessionStudyId != null) {
+			containerForm.getModelObject().setStudy(study);
 		}
 		return contextLoaded;
 	}
@@ -197,7 +213,8 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	}
 
 	protected WebMarkupContainer initialiseSearchResults() {
-		searchResultListPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup);
+		searchResultListPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup, treeModel);
+		
 		subjectProvider = new ArkDataProvider2<LimsVO, LinkSubjectStudy>() {
 
 			private static final long	serialVersionUID	= 1L;
