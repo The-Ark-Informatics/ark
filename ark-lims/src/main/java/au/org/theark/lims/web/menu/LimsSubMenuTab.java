@@ -59,7 +59,7 @@ import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.SubjectContainerPanel;
 
 /**
- * 
+ * @deprecated All menu tabsa have been moved to the ark-container projects
  * @author cellis
  *
  */
@@ -142,13 +142,13 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS, arkFunction);
 
 		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)) {
-			panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup);// Note the constructor
+			panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup, treeModel);// Note the constructor
 		}
 //		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
 //			panelToReturn = new BioCollectionContainerPanel(panelId, arkContextMarkup);// Note the constructor
 //		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)) {
-			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup);// Note the constructor
+			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup);// Note the constructor
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_INVENTORY)) {
 			panelToReturn = new InventoryContainerPanel(panelId, treeModel);
