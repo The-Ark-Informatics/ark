@@ -66,6 +66,14 @@ public class BiospecimenUploadContainerPanel extends AbstractContainerPanel<Uplo
 		this.arkFunction = arkFunction;
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
+		
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = null;
+		if(sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+		}
+		cpModel.getObject().getUpload().setStudy(study);
+		
 		containerForm.add(initialiseFeedBackPanel());
 		// containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseWizardPanel());
@@ -93,29 +101,19 @@ public class BiospecimenUploadContainerPanel extends AbstractContainerPanel<Uplo
 
 			@Override
 			protected Object load() {
-				// Return all Uploads for the Studies the user has access to
+				// Return all Uploads for the Study in context
 				java.util.Collection<Upload> studyUploads = new ArrayList<Upload>();
 				if (isActionPermitted()) {
 					Upload studyUpload = new Upload();
-					
 					List<Study> studyListForUser = new ArrayList<Study>(0);
-					try {
-						Subject currentUser = SecurityUtils.getSubject();
-						ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
-						ArkUserVO arkUserVo = new ArkUserVO();
-						arkUserVo.setArkUserEntity(arkUser);
-						
-						Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
-						ArkModule arkModule = null;
-						arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
-						studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
-						
-						studyUpload.setStudy(containerForm.getModelObject().getUpload().getStudy());
+					Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					Study study = null;
+					if(sessionStudyId != null) {
+						study = iArkCommonService.getStudy(sessionStudyId);
+						studyUpload.setStudy(study);
 						studyUpload.setArkFunction(arkFunction);
+						studyListForUser.add(study);
 						studyUploads = iArkCommonService.searchUploadsForBiospecimen(studyUpload, studyListForUser);
-						
-					}
-					catch (EntityNotFoundException e) {
 					}
 				}
 				listView.removeAll();
