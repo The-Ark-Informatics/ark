@@ -117,16 +117,7 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 		List<Study> studyListForUser = new ArrayList<Study>(0);
 		studyListForUser = getStudyListForUser();
 		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
-		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer) {
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onBeforeRender() {
-				super.onBeforeRender();
-				this.setChoices(getStudyListForUser());
-			}
-		};
+		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer);
 	}
 
 	/**
@@ -136,19 +127,11 @@ public class SearchForm extends AbstractSearchForm<BarcodeLabel> {
 	 */
 	private List<Study> getStudyListForUser() {
 		List<Study> studyListForUser = new ArrayList<Study>(0);
-		try {
-			Subject currentUser = SecurityUtils.getSubject();
-			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
-			ArkUserVO arkUserVo = new ArkUserVO();
-			arkUserVo.setArkUserEntity(arkUser);
-
-			Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
-			ArkModule arkModule = null;
-			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
-			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
-		}
-		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = null;
+		if(sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+			studyListForUser.add(study);
 		}
 		return studyListForUser;
 	}
