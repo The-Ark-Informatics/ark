@@ -30,7 +30,9 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -91,22 +93,15 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
 		
 		List<Study> studyListForUser = new ArrayList<Study>(0);
-		try {
-			Subject currentUser = SecurityUtils.getSubject();
-			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
-			ArkUserVO arkUserVo = new ArkUserVO();
-			arkUserVo.setArkUserEntity(arkUser);
-			
-			Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
-			ArkModule arkModule = null;
-			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
-			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
-		}
-		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = null;
+		if(sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+			studyListForUser.add(study);
 		}
 		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
-		studyDdc = new DropDownChoice<Study>(Constants.UPLOADVO_UPLOAD_STUDY, (List<Study>) studyListForUser, studyRenderer);
+		PropertyModel<Study> pModel = new PropertyModel<Study>(containerForm.getModelObject(), "upload.study");
+		studyDdc = new DropDownChoice<Study>(Constants.UPLOADVO_UPLOAD_STUDY, pModel, (List<Study>) studyListForUser, studyRenderer);
 	}
 
 	public void initialiseDetailForm() {
