@@ -19,6 +19,7 @@
 package au.org.theark.lims.web.component.biospecimen;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -35,11 +36,17 @@ public class BiospecimenListPanel extends Panel {
 
 	protected FeedbackPanel							feedbackPanel;
 	private BiospecimenListForm					listDetailForm;
+	private WebMarkupContainer arkContextMarkup;
+	private WebMarkupContainer		studyNameMarkup;
+	private WebMarkupContainer		studyLogoMarkup;
 
-	public BiospecimenListPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<LimsVO> cpModel) {
+	public BiospecimenListPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<LimsVO> cpModel, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id);
 		this.feedbackPanel = feedbackPanel;
 		this.cpModel = cpModel;
+		this.arkContextMarkup = arkContextMarkup;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 		initialisePanel();
 		setOutputMarkupPlaceholderTag(true);
 	}
@@ -57,7 +64,7 @@ public class BiospecimenListPanel extends Panel {
 			}
 
 		};
-		listDetailForm = new BiospecimenListForm("biospecimenListForm", feedbackPanel, modalWindow, cpModel);
+		listDetailForm = new BiospecimenListForm("biospecimenListForm", feedbackPanel, modalWindow, cpModel, arkContextMarkup, studyNameMarkup, studyLogoMarkup);
 		listDetailForm.initialiseForm();
 		add(listDetailForm);
 	}

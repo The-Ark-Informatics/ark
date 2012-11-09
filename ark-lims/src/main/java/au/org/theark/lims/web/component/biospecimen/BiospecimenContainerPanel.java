@@ -48,10 +48,14 @@ public class BiospecimenContainerPanel extends Panel {
 	protected WebMarkupContainer					arkContextMarkup;
 	protected ContainerForm							containerForm;
 	protected Panel									biospecimenListPanel;
+	private WebMarkupContainer		studyNameMarkup;
+	private WebMarkupContainer		studyLogoMarkup;
 
-	public BiospecimenContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
+	public BiospecimenContainerPanel(String id, WebMarkupContainer arkContextMarkup, 	WebMarkupContainer studyNameMarkup, 	WebMarkupContainer	studyLogoMarkup) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 		cpModel = new CompoundPropertyModel<LimsVO>(limsVO);
 		arkCrudContainerVO = new ArkCrudContainerVO();
 		
@@ -89,7 +93,7 @@ public class BiospecimenContainerPanel extends Panel {
 		WebMarkupContainer resultListContainer = arkCrudContainerVO.getSearchResultPanelContainer();
 		resultListContainer.setOutputMarkupPlaceholderTag(true);
 		
-		BiospecimenListPanel biospecimenListPanel = new BiospecimenListPanel("biospecimenListPanel", feedbackPanel, cpModel);
+		BiospecimenListPanel biospecimenListPanel = new BiospecimenListPanel("biospecimenListPanel", feedbackPanel, cpModel, arkContextMarkup, studyNameMarkup, studyLogoMarkup);
 		this.biospecimenListPanel = biospecimenListPanel;
 		resultListContainer.add(biospecimenListPanel);
 		return resultListContainer;
