@@ -19,6 +19,7 @@
 package au.org.theark.lims.web.component.inventory.tree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -27,9 +28,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.lims.entity.InvBox;
-import au.org.theark.core.model.lims.entity.InvFreezer;
-import au.org.theark.core.model.lims.entity.InvRack;
-import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.session.ArkSession;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
@@ -47,10 +45,8 @@ public abstract class AllocationLinkTree extends InventoryLinkTree {
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService					iInventoryService;
 
-	public AllocationLinkTree(String id) {
-		super(id, null, null, null);
-		// No need to store node in session for allocation
-		ArkSession.get().setNodeObject(null);
+	public AllocationLinkTree(String id, DefaultTreeModel defaultTreeModel) {
+		super(id, null, null, null, defaultTreeModel);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -83,33 +79,36 @@ public abstract class AllocationLinkTree extends InventoryLinkTree {
 				// Handle node clicked (highlight)
 				tree.getTreeState().selectNode(node, true);
 				tree.updateTree(target);
+				
+				//Add the selected node to session
+				ArkSession.get().setNodeObject(node);
 			}
 		};
 		return panel;
 	}
 	
-	@Override
-	protected void onJunctionLinkClicked(AjaxRequestTarget target, Object node) {
-		
-		final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node;
-		parentNode.removeAllChildren();
-		if (parentNode.getUserObject() instanceof InvSite) {
-			InvSite invSite = (InvSite) parentNode.getUserObject();
-			invSite = iInventoryService.getInvSite(invSite.getId());
-			addFreezers(parentNode, invSite.getInvFreezers());
-		}
-		if (parentNode.getUserObject() instanceof InvFreezer) {
-			InvFreezer invFreezer = (InvFreezer) parentNode.getUserObject();
-			invFreezer = iInventoryService.getInvFreezer(invFreezer.getId());
-			addRacks(parentNode, invFreezer.getInvRacks());
-		}
-		if (parentNode.getUserObject() instanceof InvRack) {
-			InvRack invRack = (InvRack) parentNode.getUserObject();
-			invRack = iInventoryService.getInvRack(invRack.getId());
-			addBoxes(parentNode, invRack.getInvBoxes());
-		}
-		this.updateTree(target);
-	}
+//	@Override
+//	protected void onJunctionLinkClicked(AjaxRequestTarget target, Object node) {
+//		super.onJunctionLinkClicked(target, node);
+//		final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node;
+//		parentNode.removeAllChildren();
+//		if (parentNode.getUserObject() instanceof InvSite) {
+//			InvSite invSite = (InvSite) parentNode.getUserObject();
+//			invSite = iInventoryService.getInvSite(invSite.getId());
+//			addFreezers(parentNode, invSite.getInvFreezers());
+//		}
+//		if (parentNode.getUserObject() instanceof InvFreezer) {
+//			InvFreezer invFreezer = (InvFreezer) parentNode.getUserObject();
+//			invFreezer = iInventoryService.getInvFreezer(invFreezer.getId());
+//			addRacks(parentNode, invFreezer.getInvRacks());
+//		}
+//		if (parentNode.getUserObject() instanceof InvRack) {
+//			InvRack invRack = (InvRack) parentNode.getUserObject();
+//			invRack = iInventoryService.getInvRack(invRack.getId());
+//			addBoxes(parentNode, invRack.getInvBoxes());
+//		}
+//		this.updateTree(target);
+//	}
 
 	public abstract void boxNodeClicked(AjaxRequestTarget target, InvBox invBox);
 }
