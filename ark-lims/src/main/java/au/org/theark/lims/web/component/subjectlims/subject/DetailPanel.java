@@ -59,7 +59,7 @@ public class DetailPanel extends Panel {
 		limsContainerWMC = new WebMarkupContainer("limsContainerWMC");
 		limsContainerWMC.setOutputMarkupPlaceholderTag(true);
 
-		limsContainerPanel = new LimsContainerPanel("limsContainerPanel");
+		limsContainerPanel = new LimsContainerPanel("limsContainerPanel", containerForm.getModel());
 		limsContainerWMC.add(limsContainerPanel);
 		this.add(limsContainerWMC);
 	}
