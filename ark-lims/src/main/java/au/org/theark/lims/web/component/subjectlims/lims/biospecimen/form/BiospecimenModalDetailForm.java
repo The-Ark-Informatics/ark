@@ -52,6 +52,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.BigDecimalConverter;
+import org.apache.wicket.util.convert.converter.DoubleConverter;
 import org.apache.wicket.validation.validator.MinimumValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -437,7 +438,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			@SuppressWarnings("unchecked")
 			@Override
 			public <C> IConverter<C> getConverter(Class<C> type) {
-				BigDecimalConverter doubleConverter = new BigDecimalConverter();
+				DoubleConverter doubleConverter = new DoubleConverter();
 				NumberFormat numberFormat = NumberFormat.getInstance();
 				numberFormat.setMinimumFractionDigits(1);
 				numberFormat.setMaximumFractionDigits(10);
@@ -454,7 +455,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			@SuppressWarnings("unchecked")
 			@Override
 			public <C> IConverter<C> getConverter(Class<C> type) {
-				BigDecimalConverter doubleConverter = new BigDecimalConverter();
+				DoubleConverter doubleConverter = new DoubleConverter();
 				NumberFormat numberFormat = NumberFormat.getInstance();
 				numberFormat.setMinimumFractionDigits(1);
 				numberFormat.setMaximumFractionDigits(10);
@@ -894,6 +895,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
+		target.focusComponent(null);
 	}
 
 	/*
