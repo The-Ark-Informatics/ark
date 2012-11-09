@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionListPanel;
@@ -56,6 +57,12 @@ public class LimsContainerPanel extends Panel {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		cpModel = new CompoundPropertyModel<LimsVO>(limsVO);
+		initialisePanel();
+	}
+
+	public LimsContainerPanel(String id, IModel<LimsVO> model) {
+		super(id);
+		cpModel = new CompoundPropertyModel<LimsVO>(model.getObject());
 		initialisePanel();
 	}
 
