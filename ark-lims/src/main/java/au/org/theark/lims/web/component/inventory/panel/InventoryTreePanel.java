@@ -7,6 +7,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
@@ -22,6 +26,7 @@ import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.session.ArkSession;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -42,6 +47,10 @@ public class InventoryTreePanel extends Panel {
 	
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService					iInventoryService;
+	
+	@SuppressWarnings("unused")
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>						iArkCommonService;
 	
 	private Form<Void>				treeForm				= new Form<Void>("treeForm");
 	private FeedbackPanel			feedbackPanel;
@@ -92,7 +101,6 @@ public class InventoryTreePanel extends Panel {
 				}
 			}
 			
-			// Even this is correctly assigned, the tree.updateTree(); still doesn't seem to actually do what was programatically specified
 			tree.getTreeState().selectNode(prevSelectedNode, true);
 			tree.updateTree();
 			
@@ -176,7 +184,9 @@ public class InventoryTreePanel extends Panel {
 
 			@Override
 			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+				SecurityManager securityManager = ThreadContext.getSecurityManager();
+				Subject currentUser = SecurityUtils.getSubject();
+				return securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
 			}
 
 			@Override
