@@ -76,6 +76,9 @@ public class InventoryLinkTree extends LinkTree {
 		this.feedbackPanel = feedbackPanel;
 		this.detailContainer = detailContainer;
 		this.containerForm = containerForm;
+		if(treeModel == null) {
+			treeModel = new TreeModel(iArkCommonService, iInventoryService).createTreeModel();
+		}
 		setModelObject(treeModel);
 	}
 	

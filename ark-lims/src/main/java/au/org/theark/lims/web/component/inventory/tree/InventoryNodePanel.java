@@ -391,4 +391,9 @@ public class InventoryNodePanel extends LinkIconPanel {
 		percentUsed = Math.round(percentUsed);
 		return percentUsed;
 	}
+	
+	@Override
+	public boolean isVisible() {
+		return true;
+	}
 }
