@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -52,8 +53,13 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.security.AAFRealm;
+import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ContextHelper;
+import au.org.theark.core.vo.StudyCrudContainerVO;
+import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
@@ -88,10 +94,17 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService								iInventoryService;
+	
+	@SpringBean(name = "arkLdapRealm")
+	private ArkLdapRealm				arkLdapRealm;
+	
+	@SpringBean(name = "aafRealm")
+	private AAFRealm					aafRealm;
 
 	protected CompoundPropertyModel<LimsVO>			cpModel;
 	protected FeedbackPanel									feedbackPanel;
 	protected AbstractDetailModalWindow					modalWindow;
+	private WebMarkupContainer arkContextMarkup;
 
 	private Label												idLblFld;
 	private Label												nameLblFld;
@@ -110,17 +123,29 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	protected WebMarkupContainer							dataViewListWMC;
 	private DataView<Biospecimen>							dataView;
 	private ArkDataProvider2<LimsVO, Biospecimen>	biospecimenProvider;
+	private WebMarkupContainer		studyNameMarkup;
+	private WebMarkupContainer		studyLogoMarkup;
 
-	public BiospecimenListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
+	public BiospecimenListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id, cpModel);
 		this.cpModel = cpModel;
 		this.feedbackPanel = feedbackPanel;
 		this.modalWindow = modalWindow;
+		this.arkContextMarkup = arkContextMarkup;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 	}
 
 	public void initialiseForm() {
 		modalContentPanel = new EmptyPanel("content");
-
+		
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = null;
+		if(sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+			cpModel.getObject().setStudy(study);
+		}
+		
 		initialiseDataView();
 		initialiseNewButton();
 
@@ -247,8 +272,29 @@ public class BiospecimenListForm extends Form<LimsVO> {
 							biospecimenFromDB.setStudy(study);
 							biospecimenFromDB.setLinkSubjectStudy(linkSubjectStudy);
 							
+							// Set Study/SubjectUID into context
+							SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, linkSubjectStudy.getStudy().getId());
+							SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, linkSubjectStudy.getSubjectUID());
+							
+							ContextHelper contextHelper = new ContextHelper();
+							contextHelper.resetContextLabel(AjaxRequestTarget.get(), arkContextMarkup);
+							contextHelper.setStudyContextLabel(target, linkSubjectStudy.getStudy().getName(), arkContextMarkup);
+							contextHelper.setSubjectContextLabel(target, linkSubjectStudy.getSubjectUID(), arkContextMarkup);
+							
+							// Set Study Logo
+							StudyHelper studyHelper = new StudyHelper();
+							StudyCrudContainerVO studyCrudContainerVO = new StudyCrudContainerVO();
+							studyCrudContainerVO.setStudyNameMarkup(studyNameMarkup);
+							studyCrudContainerVO.setStudyLogoMarkup(studyLogoMarkup);
+							studyHelper.setStudyLogo(linkSubjectStudy.getStudy(), target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
+							
+							// Force clearing of Cache to re-load roles for the user for the study
+							arkLdapRealm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
+							aafRealm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
+							
 							newModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
 							newModel.getObject().setBiospecimen(biospecimenFromDB);
+							newModel.getObject().setTreeModel(cpModel.getObject().getTreeModel());
 							showModalWindow(target, newModel);
 						}
 						catch (EntityNotFoundException e) {
