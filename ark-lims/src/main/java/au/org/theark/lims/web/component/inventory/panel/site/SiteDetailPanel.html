@@ -35,12 +35,14 @@
 				</div>
 
 				<div class="fldControl">
-					<wicket:message	key="invSite.studies">
-						Studies:
-					</wicket:message>
-					<span wicket:id="selectedStudies">
-						[Palette]
-					</span>
+					<wicket:enclosure child="selectedStudies">
+						<wicket:message	key="invSite.studies">
+							Studies:
+						</wicket:message>
+						<span wicket:id="selectedStudies">
+							[Palette]
+						</span>
+					</wicket:enclosure>
 				</div>
 				
 				<div class="detailPanelBreaker">

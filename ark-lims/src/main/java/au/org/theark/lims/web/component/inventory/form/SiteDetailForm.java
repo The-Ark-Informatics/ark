@@ -25,7 +25,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
@@ -146,6 +148,13 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
               rec.setRequired(true).setLabel(new StringResourceModel("error.invSite.studies.required", this, new Model<String>("Studies")));
               return rec;
           }
+			 
+			@Override
+			public boolean isVisible() {
+				SecurityManager securityManager = ThreadContext.getSecurityManager();
+				Subject currentUser = SecurityUtils.getSubject();
+				return securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
+			}
 		};
 	}
 
