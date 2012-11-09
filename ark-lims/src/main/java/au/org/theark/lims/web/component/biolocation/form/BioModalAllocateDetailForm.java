@@ -18,6 +18,9 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biolocation.form;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -26,6 +29,7 @@ import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.model.lims.entity.InvBox;
+import au.org.theark.core.session.ArkSession;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -60,7 +64,7 @@ public class BioModalAllocateDetailForm extends Form<LimsVO> {
 		this.cpModel = cpModel;
 		this.modalWindow = modalWindow;
 
-		tree = new AllocationLinkTree("tree") {
+		tree = new AllocationLinkTree("tree", cpModel.getObject().getTreeModel()) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -70,11 +74,45 @@ public class BioModalAllocateDetailForm extends Form<LimsVO> {
 				repaintGridBoxPanel(target);
 			}
 		};
-		tree.getTreeState().collapseAll();
+		//tree.getTreeState().collapseAll();
 		tree.setRootLess(true);
 
 		gridBoxPanel = new GridBoxPanel("gridBoxPanel", cpModel.getObject(), modalWindow, true);
 		gridBoxPanel.setVisible(false);
+		
+		checkForSelectedNode();
+	}
+	
+	private void checkForSelectedNode() {
+		// Check session has contained a node and highlight the node.
+		Object prevSelectedNode=ArkSession.get().getNodeObject();
+		DefaultMutableTreeNode prevNode = ((DefaultMutableTreeNode) prevSelectedNode);
+		if(prevSelectedNode!=null){
+			// Added to logically expand/select the node in session
+			TreeNode[] nodes = prevNode.getPath();
+			for (int i = 0; i < nodes.length; i++) {
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) nodes[i];
+				if (!node.isLeaf()) {
+					if (tree.getTreeState().isNodeExpanded(node)) {
+						tree.getTreeState().collapseNode(node);
+					}
+					else {
+						tree.getTreeState().expandNode(node);
+					}
+				}
+			}
+			
+			tree.getTreeState().selectNode(prevSelectedNode, true);
+			tree.updateTree();
+			
+			DefaultMutableTreeNode node = prevNode;
+			if (node.getUserObject() instanceof InvBox) {
+				cpModel.getObject().setInvBox((InvBox) node.getUserObject());
+				gridBoxPanel = new GridBoxPanel("gridBoxPanel", cpModel.getObject(), modalWindow, true);
+				gridBoxPanel.setVisible(true);
+				addOrReplace(gridBoxPanel);
+			}
+		}
 	}
 
 	public void initialiseDetailForm() {
