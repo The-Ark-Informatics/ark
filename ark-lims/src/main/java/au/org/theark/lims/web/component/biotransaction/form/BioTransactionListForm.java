@@ -95,7 +95,6 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 		List<BioTransactionStatus> list = iLimsService.getBioTransactionStatusChoices();		
 		ChoiceRenderer<BioTransactionStatus> choiceRenderer = new ChoiceRenderer<BioTransactionStatus>(Constants.NAME, Constants.ID);
 		status = new DropDownChoice<BioTransactionStatus>("bioTransaction.status", list, choiceRenderer);
-		status.setRequired(true);
 	}
 	
 	private void initAccessRequest() {
@@ -124,6 +123,10 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 				
 				if(txnQuantity == null) {
 					error("Field 'Quantity' is required");
+					target.add(feedbackPanel);
+				}
+				else if (cpModel.getObject().getBioTransaction().getStatus() == null){
+					error("Field 'Status' is required");
 					target.add(feedbackPanel);
 				}
 				else {
