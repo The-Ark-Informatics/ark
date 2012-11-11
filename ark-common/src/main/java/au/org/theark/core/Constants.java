@@ -38,6 +38,7 @@ public class Constants {
 	public static final String PERSON_CONTEXT_TYPE_CONTACT = "contact";
 	public static final String PERSON_CONTEXT_CONSENT_ID = "consentId";
 	public static final String MODULE_CONTEXT_NAME = "moduleName";
+	public static final String	COPY												= "copy";
 
 	/* Menu tabs */
 	public static final String MENU_SUBJECT_SUBMENU = "subjectSubMenus";
@@ -309,8 +310,13 @@ public class Constants {
 			"MINIMUM_VALUE", "MAXIMUM_VALUE", "MISSING_VALUE", "REQUIRED", "ALLOW_MULTIPLE_SELECTIONS"  };
 
 	public static final String NAME = "name";
+	public static final String CUSTOM_FIELD_DOT_NAME = "customField.name";
+	public static final String PUBLIC_FIELD_NAME = "publicFieldName";
 	public static final String ID = "id";
 
+	public static final String	CLASS												= "class";
+	public static final String	EVEN												= "even";
+	public static final String	ODD												= "odd";
 	/* Ark Session Details */
 	public static final String ARK_SESSION_ID = "ARK_SESSION_ID";
 	public static final String ARK_USERID = "ARK_USERID";
@@ -427,4 +433,5 @@ public class Constants {
 	public static final String	ENCODED_VALUES_PATTERN	= "(-?[0-9]+=[^;]+;)+";
 	public static final String SEARCH_ID = "search.id";
 	public static final String SEARCH_NAME = "search.name";
+	public static final String	SAVEANDCLOSE									= "saveAndClose";
 }
