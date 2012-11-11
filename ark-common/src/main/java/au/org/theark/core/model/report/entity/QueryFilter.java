@@ -38,7 +38,9 @@ public class QueryFilter  implements Serializable {
 //	int numberOfLeftBracketsAfterPrecursor;
 //	int numberOfRightBracketsBeforeJoin;
 //	int numberOfRightBracketsAfterJoin;
-	
+
+	private BiospecimenField biospecimenField;	
+	private BiocollectionField biocollectionField;	
 	private DemographicField demographicField;	
 	private CustomFieldDisplay customFieldDisplay;
 	private String value;
@@ -117,6 +119,28 @@ public class QueryFilter  implements Serializable {
 
 	public void setPrefix(Prefix prefix) {
 		this.prefix = prefix;
+	}
+
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BIOSPECIMEN_FIELD_ID")
+	public BiospecimenField getBiospecimenField() {
+		return biospecimenField;
+	}
+
+	public void setBiospecimenField(BiospecimenField biospecimenField) {
+		this.biospecimenField = biospecimenField;
+	}
+
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BIOCOLLECTION_FIELD_ID")
+	public BiocollectionField getBiocollectionField() {
+		return biocollectionField;
+	}
+
+	public void setBiocollectionField(BiocollectionField biocollectionField) {
+		this.biocollectionField = biocollectionField;
 	}
 
 }

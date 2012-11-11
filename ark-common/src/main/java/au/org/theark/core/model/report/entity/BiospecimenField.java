@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,13 +24,13 @@ import au.org.theark.core.model.study.entity.FieldType;
 
 @Entity
 @Table(name = "biospecimen_field", schema = Constants.REPORT_SCHEMA)
-public class BiospecimenField implements Serializable {
+public class BiospecimenField  extends AbstractFieldEntity implements Serializable  {
 	//the alternative being to hit the mysql system tables somehow with a defined list of which fields in certain tables
 	
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	//I almost wonder if I should state what the BASE entity is we start from, ALSO? as some start from LSS some start from PERSON
-	private String entity;					//eg; person.genderType															
+	private au.org.theark.core.model.report.entity.Entity entity;					//eg; person.genderType															
 	private String fieldName;				//eg; name     the 'name' field of the gender type table 					
 //	private String additionalHQLConstraint; //eg; "address.addressType = 'Residential'"
 	//could potentially store table name and table field name too.  But first attempt will be at using hql and entities.
@@ -64,11 +66,13 @@ public class BiospecimenField implements Serializable {
 		this.id = id;
 	}
 
+
+	@Enumerated(EnumType.STRING)
 	@Column(name = "ENTITY", length = 255)
-	public String getEntity() {
+	public au.org.theark.core.model.report.entity.Entity getEntity() {
 		return entity;
 	}
-	public void setEntity(String entity) {
+	public void setEntity( au.org.theark.core.model.report.entity.Entity entity) {
 		this.entity = entity;
 	}
 
@@ -106,5 +110,6 @@ public class BiospecimenField implements Serializable {
 	public void setBiospecimenFieldSearchesUsingThisField(Set<BiospecimenFieldSearch> biospecimenFieldSearchesUsingThisField) {
 		this.biospecimenFieldSearchesUsingThisField = biospecimenFieldSearchesUsingThisField;
 	}
+
 
 }
