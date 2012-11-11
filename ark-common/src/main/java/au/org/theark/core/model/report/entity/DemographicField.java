@@ -24,7 +24,7 @@ import au.org.theark.core.model.study.entity.FieldType;
 
 @Entity
 @Table(name = "demographic_field", schema = Constants.REPORT_SCHEMA)
-public class DemographicField implements Serializable {
+public class DemographicField extends AbstractFieldEntity implements Serializable {
 	//the alternative being to hit the mysql system tables somehow with a defined list of which fields in certain tables
 	
 	/**
