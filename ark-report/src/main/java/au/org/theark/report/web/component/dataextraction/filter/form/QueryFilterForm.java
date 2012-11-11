@@ -52,10 +52,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.lims.entity.BioTransaction;
-import au.org.theark.core.model.lims.entity.BioTransactionStatus;
-import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.FieldCategory;
 import au.org.theark.core.model.report.entity.QueryFilter;
@@ -225,7 +221,6 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 
 			private static final long	serialVersionUID	= 1L;
 
-			@SuppressWarnings("serial")
 			@Override
 			protected void onPopulateItem(final ListItem<QueryFilterVO> item) {
 				item.setOutputMarkupId(true);
@@ -433,9 +428,11 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					}
 					/*
 					DEMOGRAPHIC_FIELD, 
+					BIOCOLLECTION_CFD, 
+					
+					
 					BIOSPECIMEN_FIELD, 
 					BIOCOLLECTION_FIELD, 
-					BIOCOLLECTION_CFD, 
 					BIOSPECIMEN_CFD, 
 					SUBJECT_CFD, 
 					PHENO_CFD, */
