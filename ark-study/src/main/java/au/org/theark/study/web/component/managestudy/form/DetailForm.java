@@ -31,6 +31,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
@@ -140,7 +141,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private Palette<ArkModule>								arkModulePalette;
 	private NonCachingImage									studyLogoImage;
 	// Study logo uploader
-	private FileUploadField									logoFileUploadField;
+	private FileUploadField									fileUploadField;
+	private AjaxButton										clearLogoButton;
 
 	@SpringBean(name = "lobUtil")
 	private LobUtil			util;
@@ -326,8 +328,25 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		studyCrudVO.getStudyLogoUploadContainer().setOutputMarkupPlaceholderTag(true);
 
 		// fileUpload for logo
-		logoFileUploadField = new FileUploadField(Constants.STUDY_FILENAME);
-		studyCrudVO.getStudyLogoUploadContainer().add(logoFileUploadField);
+		fileUploadField = new FileUploadField(Constants.STUDY_FILENAME);
+		clearLogoButton = new AjaxButton("clearLogoButton") {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				fileUploadField.clearInput();
+				target.add(fileUploadField);
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				fileUploadField.clearInput();
+				target.add(fileUploadField);
+			}
+		};
+		clearLogoButton.add(new AttributeModifier("title", new Model<String>("Clear Attachment")));
+		studyCrudVO.getStudyLogoUploadContainer().add(fileUploadField);
+		studyCrudVO.getStudyLogoUploadContainer().add(clearLogoButton);
 
 		initStudyLogo();
 
@@ -1079,7 +1098,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		// selectedApplicationsLmc.setRequired(true).setLabel( new StringResourceModel("error.study.selected.app", this, null));
 		subjectUidStartTxtFld.add(new RangeValidator<Integer>(1, Integer.MAX_VALUE)).setLabel(new StringResourceModel("error.study.subject.key.prefix", this, null));
 		// file image validator, checking size, type etc
-		logoFileUploadField.add(new StudyLogoValidator());
+		fileUploadField.add(new StudyLogoValidator());
 		
 		// Make parentStudy drop-down required for Study Administrators and study in context
 		Subject currentUser = SecurityUtils.getSubject();
@@ -1127,9 +1146,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			}
 
 			// Store Study logo image
-			if (logoFileUploadField != null && logoFileUploadField.getFileUpload() != null) {
+			if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
 				// Retrieve file and store as Blob in databasse
-				FileUpload fileUpload = logoFileUploadField.getFileUpload();
+				FileUpload fileUpload = fileUploadField.getFileUpload();
 
 				// Copy file to Blob object
 				Blob payload = util.createBlob(fileUpload.getInputStream(), fileUpload.getSize());
@@ -1267,8 +1286,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		logoFileUploadField.clearInput();
-		target.add(logoFileUploadField);
+		fileUploadField.clearInput();
+		target.add(fileUploadField);
 		target.add(feedBackPanel);
 	}
 
