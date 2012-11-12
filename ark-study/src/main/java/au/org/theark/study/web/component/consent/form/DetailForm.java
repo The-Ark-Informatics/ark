@@ -24,8 +24,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -105,7 +107,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	protected WebMarkupContainer					wmcCompleted;
 	protected DropDownChoice<YesNo>				consentDownloadedDdc;
 	protected CollapsiblePanel						consentHistoryPanel;
-	protected FileUploadField						fileSubjectFileField;
+	protected FileUploadField						fileUploadField;
+	private AjaxButton										clearButton;
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
@@ -156,7 +159,21 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		commentTxtArea = new TextArea<String>(Constants.CONSENT_CONSENT_COMMENT);
 		
 		// fileSubjectFile for consent file payload (attached to filename key)
-		fileSubjectFileField = new FileUploadField(au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME);
+		fileUploadField = new FileUploadField(au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME);
+		clearButton = new AjaxButton("clearButton") {			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				fileUploadField.clearInput();
+				target.add(fileUploadField);
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				fileUploadField.clearInput();
+				target.add(fileUploadField);
+			}
+		};
+		clearButton.add(new AttributeModifier("title", new Model<String>("Clear Attachment")));
 		
 		initStudyComponentChoice();
 		initConsentTypeChoice();
@@ -321,7 +338,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDownloadedDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(consentHistoryPanel);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fileSubjectFileField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(clearButton);
 	}
 
 	/*
@@ -407,7 +425,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 				}
 				else {
 					
-					boolean consentFile=fileSubjectFileField.getFileUpload()!=null;
+					boolean consentFile=fileUploadField.getFileUpload()!=null;
 					iStudyService.update(containerForm.getModelObject().getConsent(),consentFile);
 					
 					createConsentFile();
@@ -436,7 +454,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	}
 
 	private void createConsentFile() throws ArkSystemException {
-		FileUpload fileSubjectFile = fileSubjectFileField.getFileUpload();
+		FileUpload fileSubjectFile = fileUploadField.getFileUpload();
 
 		if(fileSubjectFile != null) {
 			LinkSubjectStudy linkSubjectStudy = null;
