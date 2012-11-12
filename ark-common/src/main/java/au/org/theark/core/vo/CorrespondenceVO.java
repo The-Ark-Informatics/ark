@@ -36,6 +36,7 @@ public class CorrespondenceVO implements Serializable {
 	private WorkRequest			workRequest;
 	private BillableItemType 	billableItemType;
 	
+	private String file;
 	private String billableItemDescription;
 	private String studyName;
 
@@ -90,6 +91,20 @@ public class CorrespondenceVO implements Serializable {
 			studyName= this.correspondence.getStudy().getName();
 		}
 		return studyName;
+	}
+
+	/**
+	 * @return the file
+	 */
+	public String getFile() {
+		return file;
+	}
+
+	/**
+	 * @param file the file to set
+	 */
+	public void setFile(String file) {
+		this.file = file;
 	}
 
 }
