@@ -62,6 +62,20 @@ public class ResultListPanel extends Panel {
 	}
 
 	/**
+	 * @return the feedbackPanel
+	 */
+	public FeedbackPanel getFeedbackPanel() {
+		return feedbackPanel;
+	}
+
+	/**
+	 * @param feedbackPanel the feedbackPanel to set
+	 */
+	public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
+		this.feedbackPanel = feedbackPanel;
+	}
+
+	/**
 	 * @return the listDetailForm
 	 */
 	public PhenoCollectionListForm getListDetailForm() {

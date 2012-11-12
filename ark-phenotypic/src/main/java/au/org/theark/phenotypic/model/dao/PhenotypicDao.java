@@ -46,7 +46,6 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
@@ -254,13 +253,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	 *           if(selectedField.equals(existingField)) { fieldListToRemove.add(existingField); } } } } }
 	 */
 
-	public void deletePhenoCollection(PhenoCollection collection) throws ArkSystemException, EntityCannotBeRemoved {
-		if (!phenoCollectionHasData(collection)) {
-			getSession().delete(collection);
-		}
-		else {
-			throw new EntityCannotBeRemoved("The Data Set: " + collection.getDescription() + " has data associated and cannot be removed.");
-		}
+	public void deletePhenoCollection(PhenoCollection collection) {
+		getSession().delete(collection);
 	}
 /*
 	public void deletePhenoCollection(PhenoCollectionVO collectionVo) {
