@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
@@ -37,6 +38,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
@@ -68,15 +70,15 @@ import au.org.theark.worktracking.util.BillableItemCostCalculator;
 public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 	private static final long										serialVersionUID	= 2900999695563378447L;
-	
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	protected IArkCommonService<Void>							iArkCommonService;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService											studyService;
-	
+
 	@SpringBean(name = au.org.theark.worktracking.util.Constants.WORK_TRACKING_SERVICE)
-	private IWorkTrackingService iWorkTrackingService;
+	private IWorkTrackingService									iWorkTrackingService;
 
 	private DropDownChoice<ArkUser>								operatorChoice;
 	private DateTextField											dateFld;
@@ -88,15 +90,18 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	private TextArea<String>										detailsTxtArea;
 	private TextArea<String>										commentsTxtArea;
 	private FileUploadField											fileUploadField;
-	
-	private DropDownChoice<WorkRequest>		 				billableItemWorkRequests;
-	private DropDownChoice<BillableItemType>		 		billableItemItemTypes;
-	
-	private Label 													billableItemLbl;
-	private Label													studyNameLbl;
-	
-	private WebMarkupContainer workTrackingContainer;
-	
+
+	private DropDownChoice<WorkRequest>							billableItemWorkRequests;
+	private DropDownChoice<BillableItemType>					billableItemItemTypes;
+
+	private Label														billableItemLbl;
+	private Label														studyNameLbl;
+	private AjaxButton												clearButton;
+	private AjaxButton												deleteButton;
+	private Label														fileNameLbl;
+
+	private WebMarkupContainer										workTrackingContainer;
+
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		setMultiPart(true);
@@ -117,22 +122,69 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		reasonTxtArea = new TextArea<String>("correspondence.reason");
 		detailsTxtArea = new TextArea<String>("correspondence.details");
 		commentsTxtArea = new TextArea<String>("correspondence.comments");
-		
+
 		billableItemLbl = new Label("billableItemDescription");
-		billableItemLbl.setOutputMarkupId(true);                       
-		billableItemLbl.setVisible(true); 
-		
+		billableItemLbl.setOutputMarkupId(true);
+		billableItemLbl.setVisible(true);
+
 		studyNameLbl = new Label("studyName");
-		studyNameLbl.setOutputMarkupId(true);        
+		studyNameLbl.setOutputMarkupId(true);
 		studyNameLbl.setVisible(true);
-		
+
 		// fileUploadField = new FileUploadField("correspondence.attachmentFilename", new Model<List<FileUpload>>());
-		fileUploadField = new FileUploadField("correspondence.attachmentFilename");
+		fileUploadField = new FileUploadField("file");
 		setMaxSize(Bytes.kilobytes(2048));
+
+		fileNameLbl = new Label("correspondence.attachmentFilename");
+		fileNameLbl.setOutputMarkupId(true);
+		
+		clearButton = new AjaxButton("clearButton") {
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				fileUploadField.clearInput();
+				target.add(fileUploadField);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				fileUploadField.clearInput();
+				target.add(fileUploadField);
+			}
+		};
+		clearButton.add(new AttributeModifier("title", new Model<String>("Clear Attachment")));
+		
+		deleteButton = new AjaxButton("deleteButton") {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				containerForm.getModelObject().getCorrespondence().setAttachmentPayload(null);
+				containerForm.getModelObject().getCorrespondence().setAttachmentFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLbl);
+				target.add(this);
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				containerForm.getModelObject().getCorrespondence().setAttachmentPayload(null);
+				containerForm.getModelObject().getCorrespondence().setAttachmentFilename(null);
+				this.setVisible(false);
+				target.add(fileNameLbl);
+				target.add(this);
+			}
+			
+			@Override
+			public boolean isVisible() {
+				return (containerForm.getModelObject().getCorrespondence().getAttachmentFilename() != null) && !containerForm.getModelObject().getCorrespondence().getAttachmentFilename().isEmpty();
+			}
+		};
+		deleteButton.add(new AttributeModifier("title", new Model<String>("Delete Attachment")));
+		deleteButton.setOutputMarkupId(true);
 		
 		workTrackingContainer = new WebMarkupContainer("worktrackingcontainer");
 		workTrackingContainer.setVisible(false);
-		
+
 		initBillableItemTypeDropDown();
 		initWorkRequestDropDown();
 
@@ -172,40 +224,40 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		ChoiceRenderer<CorrespondenceOutcomeType> defaultRenderer = new ChoiceRenderer<CorrespondenceOutcomeType>("name", "id");
 		outcomeTypeChoice = new DropDownChoice<CorrespondenceOutcomeType>("correspondence.correspondenceOutcomeType", list, defaultRenderer);
 	}
-	
+
 	private void initBillableItemTypeDropDown() {
-		
-		BillableItemType billableItemType=new BillableItemType();
+
+		BillableItemType billableItemType = new BillableItemType();
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		billableItemType.setStudyId(studyId);
 		List<BillableItemTypeStatus> billableItemTypeStatusses = iWorkTrackingService.getBillableItemTypeStatuses();
-		
-		for(BillableItemTypeStatus status:billableItemTypeStatusses){
-			if(au.org.theark.worktracking.util.Constants.BILLABLE_ITEM_TYPE_ACTIVE.equalsIgnoreCase(status.getName())){
+
+		for (BillableItemTypeStatus status : billableItemTypeStatusses) {
+			if (au.org.theark.worktracking.util.Constants.BILLABLE_ITEM_TYPE_ACTIVE.equalsIgnoreCase(status.getName())) {
 				billableItemType.setBillableItemTypeStatus(status);
 				break;
 			}
 		}
-		
-		List<BillableItemType>				billableItemTypeList = iWorkTrackingService.searchBillableItemType(billableItemType);
+
+		List<BillableItemType> billableItemTypeList = iWorkTrackingService.searchBillableItemType(billableItemType);
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(au.org.theark.worktracking.util.Constants.BIT_ITEM_NAME, Constants.ID);
-		billableItemItemTypes = new DropDownChoice("billableItemType",  billableItemTypeList, defaultChoiceRenderer);
+		billableItemItemTypes = new DropDownChoice("billableItemType", billableItemTypeList, defaultChoiceRenderer);
 	}
 
 	private void initWorkRequestDropDown() {
-		WorkRequest workRequest =new WorkRequest();
+		WorkRequest workRequest = new WorkRequest();
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		workRequest.setStudyId(studyId);
-		List<WorkRequestStatus> requestStatusList=iWorkTrackingService.getWorkRequestStatuses();
-		for(WorkRequestStatus status:requestStatusList){
-			if("Commenced".equalsIgnoreCase(status.getName())){
+		List<WorkRequestStatus> requestStatusList = iWorkTrackingService.getWorkRequestStatuses();
+		for (WorkRequestStatus status : requestStatusList) {
+			if ("Commenced".equalsIgnoreCase(status.getName())) {
 				workRequest.setRequestStatus(status);
 				break;
 			}
 		}
-		List<WorkRequest>								workRequestList = iWorkTrackingService.searchWorkRequest(workRequest);
+		List<WorkRequest> workRequestList = iWorkTrackingService.searchWorkRequest(workRequest);
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(au.org.theark.worktracking.util.Constants.NAME, Constants.ID);
-		billableItemWorkRequests = new DropDownChoice("workRequest",  workRequestList, defaultChoiceRenderer);
+		billableItemWorkRequests = new DropDownChoice("workRequest", workRequestList, defaultChoiceRenderer);
 	}
 
 	public void addDetailFormComponents() {
@@ -221,11 +273,14 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(billableItemLbl);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(studyNameLbl);
-		
+
 		workTrackingContainer.add(billableItemWorkRequests);
 		workTrackingContainer.add(billableItemItemTypes);
-		
+
 		arkCrudContainerVO.getDetailPanelFormContainer().add(workTrackingContainer);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(clearButton);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileNameLbl);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(deleteButton);
 	}
 
 	protected void attachValidators() {
@@ -258,31 +313,28 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	@Override
 	protected void onSave(Form<CorrespondenceVO> containerForm, AjaxRequestTarget target) {
 
-		CorrespondenceVO correspondenceVO= containerForm.getModelObject();
-		
-		if(correspondenceVO.getCorrespondence().getId() == null){
-			
-				if((correspondenceVO.getWorkRequest()==null 
-						&& correspondenceVO.getBillableItemType()!=null)){
-					this.error("Work request must be set if a billable item type is specified");
-					processErrors(target);
-					return;
-				}
+		CorrespondenceVO correspondenceVO = containerForm.getModelObject();
 
-				if(correspondenceVO.getWorkRequest()!=null 
-						&& correspondenceVO.getBillableItemType()==null){
-						this.error("Billable item type must be set if a work request is specified");
-						processErrors(target);
-						return;
-				}
+		if (correspondenceVO.getCorrespondence().getId() == null) {
+
+			if ((correspondenceVO.getWorkRequest() == null && correspondenceVO.getBillableItemType() != null)) {
+				this.error("Work request must be set if a billable item type is specified");
+				processErrors(target);
+				return;
+			}
+
+			if (correspondenceVO.getWorkRequest() != null && correspondenceVO.getBillableItemType() == null) {
+				this.error("Billable item type must be set if a work request is specified");
+				processErrors(target);
+				return;
+			}
 		}
-		
-		if(containerForm.getModelObject().getWorkRequest()!=null &&
-				containerForm.getModelObject().getBillableItemType()!=null){
+
+		if (containerForm.getModelObject().getWorkRequest() != null && containerForm.getModelObject().getBillableItemType() != null) {
 			BillableItem billableItem = createAutomatedBillableItem();
 			containerForm.getModelObject().getCorrespondence().setBillableItem(billableItem);
 		}
-		
+
 		Long personSessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 
 		// get the person and set it on the correspondence object
@@ -304,7 +356,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 				}
 
 				// save
-				studyService.create(containerForm.getModelObject().getCorrespondence());				
+				studyService.create(containerForm.getModelObject().getCorrespondence());
 				this.info("Correspondence was successfully added and linked to subject: " + person.getFirstName() + " " + person.getLastName());
 				processErrors(target);
 			}
@@ -322,8 +374,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 				processErrors(target);
 			}
 			// invoke backend to persist the correspondence
-			
-			
+
 			workTrackingContainer.setVisible(false);
 			onSavePostProcess(target);
 		}
@@ -334,23 +385,23 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	protected void onSavePostProcess(AjaxRequestTarget target) {
 		// TODO Auto-generated method stub
 		super.onSavePostProcess(target);
-		if(containerForm.getModelObject().getCorrespondence().getBillableItem() !=null){
-			AjaxButton ajaxButton = (AjaxButton)arkCrudContainerVO.getEditButtonContainer().get("delete");
+		if (containerForm.getModelObject().getCorrespondence().getBillableItem() != null) {
+			AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
 			ajaxButton.setEnabled(false);
 		}
 	}
-	
+
 	/**
-	 * Create the automated billable item when user has selected the work request and billable item type. 
+	 * Create the automated billable item when user has selected the work request and billable item type.
 	 */
-	private BillableItem createAutomatedBillableItem(){
-		//Create new billable Item
-		BillableItem billableItem =new BillableItem();
+	private BillableItem createAutomatedBillableItem() {
+		// Create new billable Item
+		BillableItem billableItem = new BillableItem();
 		billableItem.setType(au.org.theark.worktracking.util.Constants.BILLABLE_ITEM_AUTOMATED);
 		billableItem.setWorkRequest(containerForm.getModelObject().getWorkRequest());
 		billableItem.setBillableItemType(containerForm.getModelObject().getBillableItemType());
@@ -359,18 +410,18 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		billableItem.setQuantity(1d);
 		billableItem.setItemCost(containerForm.getModelObject().getBillableItemType().getUnitPrice());
 		billableItem.setTotalCost(BillableItemCostCalculator.calculateItemCost(billableItem));
-		
-		String subjectId= SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID).toString();		
-		billableItem.setDescription("Automated - Subject Id "+subjectId);
+
+		String subjectId = SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID).toString();
+		billableItem.setDescription("Automated - Subject Id " + subjectId);
 		billableItem.setInvoice(au.org.theark.worktracking.util.Constants.N);
 		billableItem.setCommenceDate(containerForm.getModelObject().getCorrespondence().getDate());
-		//Save newly created object
+		// Save newly created object
 		iWorkTrackingService.createBillableItem(billableItem);
-		
-		//reset workrequest and billable item type
+
+		// reset workrequest and billable item type
 		containerForm.getModelObject().setWorkRequest(null);
 		containerForm.getModelObject().setBillableItemType(null);
-		
+
 		return billableItem;
 	}
 
