@@ -54,15 +54,11 @@ public class BiospecimenListPanel extends Panel {
 	public void initialisePanel() {
 		final BiospecimenListPanel panelToRepaint = this;
 		AbstractDetailModalWindow modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
-
-
 			private static final long	serialVersionUID	= 1L;
-
 			@Override
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
 				target.add(panelToRepaint);
 			}
-
 		};
 		listDetailForm = new BiospecimenListForm("biospecimenListForm", feedbackPanel, modalWindow, cpModel, arkContextMarkup, studyNameMarkup, studyLogoMarkup);
 		listDetailForm.initialiseForm();
