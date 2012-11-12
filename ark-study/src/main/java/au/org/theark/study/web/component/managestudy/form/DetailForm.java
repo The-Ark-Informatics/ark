@@ -851,8 +851,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			studyLogoImage = new NonCachingImage("study.studyLogoImage", new Model<String>("images/no_study_logo.gif"));
 		}
 
-		// Fix to handle quirk in Wicket 1.5.1 where image is hidden when parent component is not enabled
-		studyLogoImage.setVisible(studyCrudVO.getDetailPanelFormContainer().isEnabled());
+		studyLogoImage.setVisible(true);
 		studyLogoImage.setOutputMarkupPlaceholderTag(true);
 		studyCrudVO.getDetailPanelFormContainer().addOrReplace(studyLogoImage);
 	}
