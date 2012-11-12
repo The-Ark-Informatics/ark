@@ -29,6 +29,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -37,7 +39,6 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -382,21 +383,24 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 	 * perform this after initfieldcategoryddc
 	 * @param item
 	 */
-	private void initFieldDdc(ListItem item){
+	private void initFieldDdc(ListItem<QueryFilterVO> item){
 		Collection<DemographicField> demographicFieldCategoryList = iArkCommonService.getAllDemographicFields();
 		ChoiceRenderer<DemographicField> choiceRenderer = new ChoiceRenderer<DemographicField>(Constants.PUBLIC_FIELD_NAME, Constants.ID);
-		fieldDdc = new DropDownChoice<DemographicField>("fieldCategory", 
+		fieldDdc = new DropDownChoice<DemographicField>("queryFilter.field", 
 				new PropertyModel(item.getModelObject(), "queryFilter.demographicField"), 
 				(List<DemographicField>) demographicFieldCategoryList, choiceRenderer);
+
+		fieldDdc.setOutputMarkupId(true);
+		item.add(fieldDdc);
 	}
 	
 	private void initFieldCategoryDdc(final ListItem<QueryFilterVO> item) {
-		
+	//	FieldCategory fc = FieldCategory.BIOCOLLECTION_CFD;
 		List<FieldCategory> fieldCategoryList = Arrays.asList(FieldCategory.values()); //iArkCommonService.getFieldCategories();
-		ChoiceRenderer<FieldCategory> choiceRenderer = new ChoiceRenderer<FieldCategory>(Constants.NAME, Constants.ID);
+		//ChoiceRenderer<FieldCategory> choiceRenderer = new ChoiceRenderer<FieldCategory>(Constants.NAME, Constants.NAME);
 		fieldCategoryDdc = new DropDownChoice<FieldCategory>("fieldCategory", 
 				new PropertyModel(item.getModelObject(), "fieldCategory"), 
-				(List<FieldCategory>) fieldCategoryList, choiceRenderer);
+				(List<FieldCategory>) fieldCategoryList, new EnumChoiceRenderer<FieldCategory>(QueryFilterForm.this));
 		fieldCategoryDdc.setNullValid(false);
 		fieldCategoryDdc.setDefaultModelObject(FieldCategory.DEMOGRAPHIC_FIELD);
 		fieldCategoryDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
@@ -413,7 +417,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						
 						List<CustomFieldDisplay> fieldCategoryList = iArkCommonService.getCustomFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
 						ChoiceRenderer<CustomFieldDisplay> choiceRenderer = new ChoiceRenderer<CustomFieldDisplay>(Constants.CUSTOM_FIELD_DOT_NAME, Constants.ID);
-						fieldDdc = new DropDownChoice<CustomFieldDisplay>("fieldCategory", 
+						fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 								new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 								(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
 						break;
@@ -421,11 +425,12 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					case DEMOGRAPHIC_FIELD:{					
 						Collection<DemographicField> demographicFieldCategoryList = iArkCommonService.getAllDemographicFields();
 						ChoiceRenderer<DemographicField> choiceRenderer = new ChoiceRenderer<DemographicField>(Constants.PUBLIC_FIELD_NAME, Constants.ID);
-						fieldDdc = new DropDownChoice<DemographicField>("fieldCategory", 
+						fieldDdc = new DropDownChoice<DemographicField>("queryFilter.field", 
 								new PropertyModel(item.getModelObject(), "queryFilter.demographicField"), 
 								(List<DemographicField>) demographicFieldCategoryList, choiceRenderer);
 						break;
 					}
+
 					/*
 					DEMOGRAPHIC_FIELD, 
 					BIOCOLLECTION_CFD, 
@@ -437,10 +442,18 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					SUBJECT_CFD, 
 					PHENO_CFD, */
 				}
-				addOrReplace(fieldDdc);
-			
+
+				fieldDdc.setOutputMarkupId(true);
+				item.addOrReplace(fieldDdc);
+				target.add(item);
+
+				item.setOutputMarkupId(true);
+				item.addOrReplace(fieldDdc);
+				target.add(item);
+							
 		    } 
 		});
+		item.add(fieldCategoryDdc);
 				
 	}
 	
@@ -478,7 +491,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			message.append(" simple filters ");
 			
 			if(!filterList.isEmpty()) {
-				info("Batch aliquots created:");
+				info("Query Filters created:");
 				log.info("Attempting to create " + getModelObject().getQueryFilterVOs().size() + " filters");
 			//TODO ASAP	iArkCommonService.createFilters(filterList);
 			}

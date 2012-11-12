@@ -20,19 +20,23 @@ package au.org.theark.report.web.component.dataextraction.form;
 
 import java.util.Collection;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.apache.shiro.*;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityExistsException;
@@ -44,10 +48,14 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.QueryFilterListVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.report.web.component.dataextraction.filter.QueryFilterPanel;
+
 
 /**
  * @author nivedann
@@ -61,6 +69,10 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	private TextField<String>	searchNameTxtFld;
 	private FeedbackPanel		feedBackPanel;
 
+//	protected FeedbackPanel									feedbackPanel;
+	private Panel										modalContentPanel;
+	protected AbstractDetailModalWindow					modalWindow;
+	
 	private Palette<DemographicField>	demographicFieldsToReturnPalette;
 	private Palette<BiospecimenField>	biospecimenFieldsToReturnPalette;
 	private Palette<BiocollectionField>	biocollectionFieldsToReturnPalette;
@@ -75,11 +87,13 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVO
 	 * @param containerForm
+	 * @param modalWindow2 
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm, AbstractDetailModalWindow modalWindow) {
 		//super()
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
+		this.modalWindow = modalWindow;
 	}
 
 	public void onBeforeRender() {
@@ -98,11 +112,13 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	public void initialiseDetailForm() {
 
+		arkCrudContainerVO.getDetailPanelFormContainer().add(modalWindow);
 		searchIdTxtFld = new TextField<String>(Constants.SEARCH_ID);
 		searchIdTxtFld.setEnabled(false);
 		searchNameTxtFld = new TextField<String>(Constants.SEARCH_NAME);
 		searchNameTxtFld.add(new ArkDefaultFormFocusBehavior());
 
+		modalContentPanel = new EmptyPanel("content");
 		initDemographicFieldsModulePalette();
 		initBiospecimenFieldsModulePalette();
 		initBiocollectionFieldsModulePalette();
@@ -110,12 +126,55 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		initSubjectCustomFieldDisplaysModulePalette();
 		initBiospecimenCustomFieldDisplaysModulePalette();
 		initBiocollectionCustomFieldDisplaysModulePalette();
-		
+
 		addDetailFormComponents();
 		attachValidators();
 	}
-																																																																																																																									
+
+	private void onCreateFilters(AjaxRequestTarget target, SearchVO searchVO) {
+		IModel model = new Model<QueryFilterListVO>(new QueryFilterListVO(searchVO));
+		
+		// handles for auto-gen biospecimenUid or manual entry
+		modalContentPanel = new QueryFilterPanel("content", feedBackPanel, model, modalWindow);
+			
+		// Set the modalWindow title and content
+		modalWindow.setTitle("Create Basic Filters");
+		modalWindow.setContent(modalContentPanel);
+		modalWindow.show(target);
+		// refresh the feedback messages
+		target.add(feedBackPanel);
+	}
+																																																																																																																										
 	public void addDetailFormComponents() {
+		arkCrudContainerVO.getDetailPanelFormContainer().add(new AjaxButton("createFilters"){
+
+			private static final long	serialVersionUID	= 1L;
+			
+			protected void onSubmit(AjaxRequestTarget target, org.apache.wicket.markup.html.form.Form<?> form) {
+				onCreateFilters(target, containerForm.getModelObject());
+				target.add(feedBackPanel);
+			};
+			
+			protected void onError(AjaxRequestTarget target, org.apache.wicket.markup.html.form.Form<?> form) {
+				target.add(feedBackPanel);
+			};
+			
+			public boolean isVisible() {
+				return true;
+			};
+			
+		}.setDefaultFormProcessing(false));
+		
+/*
+		item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public String getObject() {
+				return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
+			}
+		}));*/
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(demographicFieldsToReturnPalette);
