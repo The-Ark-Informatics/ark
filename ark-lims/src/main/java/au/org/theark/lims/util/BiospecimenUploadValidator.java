@@ -625,13 +625,44 @@ public class BiospecimenUploadValidator {
 					}
 				}
 				
-
-				
-				/***
-				 * TODO ASAP : ADD CONCENTRATION HERE
-				 */
-				
-
+				if (csvReader.getIndex("QUANTITY") > 0) {
+					String quantityString = csvReader.get("QUANTITY");
+					if (quantityString.isEmpty()) {
+						StringBuilder errorString = new StringBuilder();
+						errorString.append("Error: Row ");
+						errorString.append(row);
+						errorString.append(": SubjectUID: ");
+						errorString.append(subjectUID);
+						errorString.append(" The quantity ");
+						errorString.append(" of BiospecimenUID: ");
+						errorString.append(biospecimenUID);
+						errorString.append(" is required.");
+						errorString.append(" Please enter a valid number.");
+						dataValidationMessages.add(errorString.toString());
+						errorCells.add(new ArkGridCell(csvReader.getIndex("QUANTITY"), row));
+						insertThisRow = false;//drop out also?
+					}
+					else {
+						try{
+							Double.parseDouble(quantityString);
+						}
+						catch(NumberFormatException ne){
+							StringBuilder errorString = new StringBuilder();
+							errorString.append("Error: Row ");
+							errorString.append(row);
+							errorString.append(": SubjectUID: ");
+							errorString.append(subjectUID);
+							errorString.append(" The quantity ");
+							errorString.append(quantityString);
+							errorString.append(" of BiospecimenUID: ");
+							errorString.append(biospecimenUID);
+							errorString.append(" is not a valid number.");
+							dataValidationMessages.add(errorString.toString());
+							errorCells.add(new ArkGridCell(csvReader.getIndex("QUANTITY"), row));
+							insertThisRow = false;//drop out also?
+						}
+					}
+				}
 				
 				if (csvReader.getIndex("CONCENTRATION") > 0) {
 					String concentrationString = csvReader.get("CONCENTRATION");
@@ -650,7 +681,7 @@ public class BiospecimenUploadValidator {
 							errorString.append(concentrationString);
 							errorString.append(" of BiospecimenUID: ");
 							errorString.append(biospecimenUID);
-							errorString.append(" is not a valid number");
+							errorString.append(" is not a valid number.");
 							dataValidationMessages.add(errorString.toString());
 							errorCells.add(new ArkGridCell(csvReader.getIndex("CONCENTRATION"), row));
 							insertThisRow = false;//drop out also?
@@ -659,7 +690,6 @@ public class BiospecimenUploadValidator {
 					}
 				}
 
-				
 				if (csvReader.getIndex("UNITS") > 0) {
 					String name = csvReader.get("UNITS");
 					Unit unit = iLimsService.getUnitByName(name);
