@@ -174,7 +174,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		return phenotypicDao.getPhenoCollectionByStudy(study);
 	}
 
-	public void deleteCollection(PhenoCollection collection) throws ArkSystemException, EntityCannotBeRemoved {
+	public void deleteCollection(PhenoCollection collection){
 		phenotypicDao.createPhenoCollection(collection);
 
 		AuditHistory ah = new AuditHistory();
@@ -825,7 +825,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public void deletePhenoCollection(PhenoCollection phenoCollection) throws ArkSystemException, EntityCannotBeRemoved {
+	public void deletePhenoCollection(PhenoCollection phenoCollection) {
 		phenotypicDao.deletePhenoCollection(phenoCollection);
 
 		AuditHistory ah = new AuditHistory();

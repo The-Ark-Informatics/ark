@@ -39,8 +39,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.QuestionnaireStatus;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -53,7 +51,9 @@ import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.Constants;
+import au.org.theark.phenotypic.web.component.phenodataentry.PhenoCollectionDataEntryContainerPanel;
 import au.org.theark.phenotypic.web.component.phenodataentry.PhenoDataDataViewPanel;
+import au.org.theark.phenotypic.web.component.phenodataentry.ResultListPanel;
 
 /**
  * Detail form for Phenotypic Collection, as displayed within a modal window
@@ -268,17 +268,13 @@ public class PhenoDataEntryModalDetailForm extends AbstractModalDetailForm<Pheno
 
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
-		try {
-			iPhenotypicService.deletePhenoCollection(cpModel.getObject().getPhenoCollection());
-			this.info("Subject Dataset " + cpModel.getObject().getPhenoCollection().getId() + " was deleted successfully");
-			onClose(target);
-		}
-		catch (ArkSystemException e) {
-			log.error(e.getMessage());
-		}
-		catch (EntityCannotBeRemoved e) {
-			error(e.getMessage());
-		}
+		iPhenotypicService.deletePhenoCollection(cpModel.getObject().getPhenoCollection());
+
+		// Base containerForm for pheno data entry unfortunately way up the chain...thus a lot of getParent() calls. Not the neatest method by any means		
+		PhenoCollectionDataEntryContainerPanel containerPanel = (PhenoCollectionDataEntryContainerPanel) this.getParent().getParent().getParent().getParent().getParent().getParent();
+		containerPanel.info("Subject Dataset " + cpModel.getObject().getPhenoCollection().getQuestionnaire().getName() + " was deleted successfully");
+		target.add(containerPanel.getFeedbackPanel());
+		onClose(target);
 		processErrors(target);
 	}
 
