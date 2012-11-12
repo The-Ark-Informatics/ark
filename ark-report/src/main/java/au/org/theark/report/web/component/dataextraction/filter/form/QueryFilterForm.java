@@ -81,10 +81,12 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 	private IArkCommonService										iArkCommonService;
 
 	// Add a visitor class for required field marking/validation/highlighting
-	protected ArkFormVisitor		formVisitor			= new ArkFormVisitor();
+	protected ArkFormVisitor					formVisitor	= new ArkFormVisitor();
 	
-	protected FeedbackPanel								feedbackPanel;
+	protected FeedbackPanel						feedbackPanel;
 	private AbstractListEditor<QueryFilterVO>	listEditor;
+	
+	private TextField<String>					valueTxtFld;
 	
 /*	private Label										parentQtyLbl;
 	private TextField<String>							biospecimenUidTxtFld;
@@ -109,15 +111,6 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 	}
 
 	public void initialiseForm() {
-/*		numberToCreateTxtFld = new TextField<Number>("numberToCreate", new PropertyModel(getModelObject(), "numberToCreate")){
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			public boolean isVisible() {
-				// Only visible on first instantation of form, once entered and saved, hidden by enclosure
-				return getModelObject() == null;
-			}
-		};*/
 		/*
 		add(numberToCreateTxtFld);
 		add(new AjaxButton("numberToCreateButton") {
@@ -214,7 +207,6 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 	}
 
 	/**
-	 * 
 	 * @return the listEditor of Biospecimens to aliquot
 	 */
 	public AbstractListEditor<QueryFilterVO> buildListEditor() {
@@ -225,7 +217,6 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			@Override
 			protected void onPopulateItem(final ListItem<QueryFilterVO> item) {
 				item.setOutputMarkupId(true);
-				
 				initFieldCategoryDdc(item);
 				initFieldDdc(item);
 				
@@ -273,11 +264,14 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				};
 				*/
 			//	initTreatmentTypeDdc(item);
-				/*concentrationTxtFld = new TextField<Number>("concentration", new PropertyModel(item.getModelObject(), "concentration"));
+				valueTxtFld = new TextField<String>("value", new PropertyModel(item.getModelObject(), "queryFilter.value"));
 
-				item.add(biospecimenUidTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				item.add(valueTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 				    @Override
 				    protected void onUpdate(AjaxRequestTarget target) {
+				    	/* we may want to perform some live validation based on the type of field we are selecting
+				    	 * 
+				    	 * 
 				   	if(!item.getModelObject().getStudy().getAutoGenerateBiospecimenUid()) {
 					   	 // Check BiospecimenUID is unique
 							String biospecimenUid = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
@@ -286,11 +280,12 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 								error("Biospecimen UID must be unique. Please try again.");
 								target.focusComponent(getComponent());
 							}
-				   	}
-				   	target.add(feedbackPanel);
+				   	}*/
+				    	log.info("onchange of VALUE");
+				    	target.add(feedbackPanel);
 				    } 
 				}));
-				
+				/*
 				item.add(quantityTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 				    @Override
 				    protected void onUpdate(AjaxRequestTarget target) {
