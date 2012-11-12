@@ -403,4 +403,5 @@ public class Constants {
 	public static final String			PASSWORD_PATTERN												= "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_\\-\\+\\=\\{\\}\\[\\]:;\\\"<>|]).{6,20})";
 	public static final String			SUBJECT_DEMOGRAPHIC_DATA = 	"Subject Demographic Data";
 	public static final String			STUDY_SPECIFIC_CUSTOM_DATA = "Study-specific (custom) Data";
+	public static final String			FILENAME	= "fileName";
 }
