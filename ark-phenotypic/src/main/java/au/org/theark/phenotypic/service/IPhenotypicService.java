@@ -55,7 +55,7 @@ public interface IPhenotypicService {
 
 	//public void updateCollection(PhenoCollectionVO colVo);
 
-	public void deleteCollection(PhenoCollection col) throws ArkSystemException, EntityCannotBeRemoved;
+	public void deleteCollection(PhenoCollection col);
 
 	//public void deleteCollection(PhenoCollectionVO colVo);
 
@@ -147,8 +147,7 @@ public interface IPhenotypicService {
 
 	public void updatePhenoCollection(PhenoCollection phenoCollection);
 
-//	public void deletePhenoCollection(PhenoCollection phenoCollection);
-	public void deletePhenoCollection(PhenoCollection phenoCollection) throws ArkSystemException, EntityCannotBeRemoved;
+	public void deletePhenoCollection(PhenoCollection phenoCollection);
 	
 	public List<QuestionnaireStatus> getPhenoCollectionStatusList();
 	

@@ -53,6 +53,8 @@ public class PhenoCollectionDataEntryContainerPanel extends Panel {
 	protected CompoundPropertyModel<PhenoDataCollectionVO> cpModel;
 
 	protected FeedbackPanel feedbackPanel;
+
+
 	protected WebMarkupContainer resultListWMC;
 	protected WebMarkupContainer detailWMC;
 
@@ -150,4 +152,18 @@ public class PhenoCollectionDataEntryContainerPanel extends Panel {
 		return contextLoaded;
 	}
 
+	/**
+	 * @return the feedbackPanel
+	 */
+	public FeedbackPanel getFeedbackPanel() {
+		return feedbackPanel;
+	}
+
+	/**
+	 * @param feedbackPanel the feedbackPanel to set
+	 */
+	public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
+		this.feedbackPanel = feedbackPanel;
+	}
+	
 }

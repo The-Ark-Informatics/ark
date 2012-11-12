@@ -63,7 +63,7 @@ public interface IPhenotypicDao {
 
 	//public void updatePhenoCollection(PhenoCollectionVO collectionVo);
 
-	public void deletePhenoCollection(PhenoCollection collection) throws ArkSystemException, EntityCannotBeRemoved;
+	public void deletePhenoCollection(PhenoCollection collection);
 
 	//public void deletePhenoCollection(PhenoCollectionVO collectionVo);
 
