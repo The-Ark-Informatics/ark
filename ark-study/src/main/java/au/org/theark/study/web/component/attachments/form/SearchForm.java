@@ -160,6 +160,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
+		target.add(feedbackPanel);
 		getModelObject().getSubjectFile().setId(null);
 		preProcessDetailPanel(target);
 	}
