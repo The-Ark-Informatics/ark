@@ -689,5 +689,8 @@ public interface IStudyDao {
 
 	public void runSearch(Long searchId);
 
+	@SuppressWarnings("unchecked")
+	public void createQueryFilters(List filterList) throws ArkSystemException;
+
 
 }
