@@ -19,7 +19,7 @@ import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
 @Entity
-@Table(name = "guery_filter", schema = Constants.REPORT_SCHEMA)
+@Table(name = "query_filter", schema = Constants.REPORT_SCHEMA)
 public class QueryFilter  implements Serializable {
 
 

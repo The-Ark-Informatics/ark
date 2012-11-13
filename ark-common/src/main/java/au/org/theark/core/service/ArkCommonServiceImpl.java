@@ -75,6 +75,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
+import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -1346,7 +1347,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public void runSearch(Long searchId){
 		//String report = studyDao.runSearch();
-		studyDao.runSearch(searchId); //I guess it can even capture issues and reports and doesn't need a return
-		
+		studyDao.runSearch(searchId); //I guess it can even capture issues and reports and doesn't need a return	
 	}
+	
+
+	public void createQueryFilters(List filterList) throws ArkSystemException{
+		studyDao.createQueryFilters(filterList);
+	}
+
 }

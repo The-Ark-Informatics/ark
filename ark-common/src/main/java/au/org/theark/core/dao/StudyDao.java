@@ -62,6 +62,7 @@ import au.org.theark.core.model.report.entity.CustomFieldDisplaySearch;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.Entity;
+import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -2253,4 +2254,26 @@ private HashMap<String, String> constructKeyValueHashmap(
 		// TODO Auto-generated method stub
 		return hasPersonFilters(search)?"  where lss.person.firstName like 'Travis%' ":" ";  //TODO ASAP with not allow on fetch!!!
 	}
+
+	@SuppressWarnings("unchecked")
+	public void createQueryFilters(List filterList) throws ArkSystemException{
+		List<QueryFilter> queryFilterList=(List<QueryFilter>)filterList;
+		
+		if(validateQueryFilters(queryFilterList)){
+			
+			for(QueryFilter filter : queryFilterList ){
+				getSession().save(filter);
+			}
+		}
+	}
+
+	public boolean validateQueryFilters(List<QueryFilter> queryFilterList) {
+		for(QueryFilter filter : queryFilterList ){
+			//TODO ASAP validate type, operator and value are compatible
+		}
+		return true;
+	}
+
+
+
 }
