@@ -54,7 +54,6 @@ public class FieldUploadContainerPanel extends AbstractContainerPanel<PhenoField
 
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<PhenoFieldUploadVO>(new PhenoFieldUploadVO());
-		System.out.println("arkfun = " + arkFunction.getName());//TODO ASAP remove
 		cpModel.getObject().getUpload().setArkFunction(arkFunction);	//set the relevant arkFunction  
 
 		/* Bind the CPM to the Form */
