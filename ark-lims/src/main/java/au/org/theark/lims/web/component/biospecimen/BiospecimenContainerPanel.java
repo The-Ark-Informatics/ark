@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biospecimen;
 
+import javax.swing.tree.DefaultTreeModel;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -51,11 +53,12 @@ public class BiospecimenContainerPanel extends Panel {
 	private WebMarkupContainer		studyNameMarkup;
 	private WebMarkupContainer		studyLogoMarkup;
 
-	public BiospecimenContainerPanel(String id, WebMarkupContainer arkContextMarkup, 	WebMarkupContainer studyNameMarkup, 	WebMarkupContainer	studyLogoMarkup) {
+	public BiospecimenContainerPanel(String id, WebMarkupContainer arkContextMarkup, 	WebMarkupContainer studyNameMarkup, 	WebMarkupContainer	studyLogoMarkup, DefaultTreeModel treeModel) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
+		limsVO.setTreeModel(treeModel);
 		cpModel = new CompoundPropertyModel<LimsVO>(limsVO);
 		arkCrudContainerVO = new ArkCrudContainerVO();
 		
