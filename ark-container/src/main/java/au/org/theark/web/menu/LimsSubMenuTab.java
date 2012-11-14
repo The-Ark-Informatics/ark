@@ -160,7 +160,7 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)) {
 			clearSubjectContext();
-			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup);
+			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup, treeModel);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_INVENTORY)) {
 			panelToReturn = new InventoryContainerPanel(panelId, treeModel);
