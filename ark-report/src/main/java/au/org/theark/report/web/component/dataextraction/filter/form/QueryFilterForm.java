@@ -397,7 +397,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				}
 				secondValueTxtFld.setOutputMarkupId(true);
 				item.addOrReplace(secondValueTxtFld);
-				target.add(item);
+				target.add(secondValueTxtFld);
 			}
 			
 		});
