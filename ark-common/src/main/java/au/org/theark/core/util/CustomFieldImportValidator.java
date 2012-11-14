@@ -320,6 +320,11 @@ public class CustomFieldImportValidator {
 		 */
 		CustomField field = new CustomField();
 		field.setStudy(study);
+		
+		//these fields must be available for phenocollection...therefore we are to save / update / get by that ark function...ideally this should be by ark module
+		if(arkFunction.getName().equals(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY) || arkFunction.getName().equals(Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD)){
+			arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+		}
 
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
@@ -493,10 +498,13 @@ public class CustomFieldImportValidator {
 						}
 					}
 					
-					if(!DataConversionAndManipulationHelper.isSomethingLikeABoolean(csvReader.get("REQUIRED"))){
-						gridCell = new ArkGridCell(csvReader.getIndex("REQUIRED"), rowIdx);
-						dataValidationMessages.add(CustomFieldValidationMessage.invalidOption(field.getName(), "REQUIRED"));
-						errorCells.add(gridCell);
+					// Required column only relevant to specific custom field data (eg subject custom field)
+					if(csvReader.getIndex("REQUIRED") > 0) {
+						if(!DataConversionAndManipulationHelper.isSomethingLikeABoolean(csvReader.get("REQUIRED"))){
+							gridCell = new ArkGridCell(csvReader.getIndex("REQUIRED"), rowIdx);
+							dataValidationMessages.add(CustomFieldValidationMessage.invalidOption(field.getName(), "REQUIRED"));
+							errorCells.add(gridCell);
+						}
 					}
 					
 					fieldCount++;
