@@ -434,6 +434,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 							try {
 								biospecimenLocationVo = iInventoryService.getBiospecimenLocation(biospecimen);
 								newModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
+								newModel.getObject().setTreeModel(cpModel.getObject().getTreeModel());
 								BioLocationPanel bioLocationPanel = new BioLocationPanel("content", newModel) {
 									/**
 									 * 
@@ -567,6 +568,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			newModel.getObject().setStudy(cpModel.getObject().getStudy());
 			newModel.getObject().getBiospecimen().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 			newModel.getObject().getBiospecimen().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
+			newModel.getObject().setTreeModel(cpModel.getObject().getTreeModel());
 			//TODO ASAP handle this newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
 			if(getModelObject().getLinkSubjectStudy().getStudy().getAutoGenerateBiospecimenUid()){
 				newModel.getObject().getBiospecimen().setBiospecimenUid(Constants.AUTO_GENERATED);
