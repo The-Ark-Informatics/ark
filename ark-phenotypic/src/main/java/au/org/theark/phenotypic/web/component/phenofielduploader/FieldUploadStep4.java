@@ -117,8 +117,7 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 		Subject currentUser = SecurityUtils.getSubject();
 		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
-		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD);
-		CustomFieldImporter fieldImporter = new CustomFieldImporter(study, arkFunction, iArkCommonService, fileFormat, delimiterChar);
+		CustomFieldImporter fieldImporter = new CustomFieldImporter(study, containerForm.getModelObject().getUpload().getArkFunction(), iArkCommonService, fileFormat, delimiterChar);
 
 		try {
 			log.info("Uploading data dictionary file");
@@ -179,8 +178,6 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 
 			containerForm.getModelObject().getUpload().setPayload(payload);
 			containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
-			ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD);
-			containerForm.getModelObject().getUpload().setArkFunction(arkFunction);
 			containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForUploaded());		
 			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 			Collection<CustomFieldUpload> cfUploadLinks = containerForm.getModelObject().getCustomFieldUploadCollection();
