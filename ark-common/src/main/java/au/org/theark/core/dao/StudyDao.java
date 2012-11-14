@@ -2270,6 +2270,7 @@ private HashMap<String, String> constructKeyValueHashmap(
 	public boolean validateQueryFilters(List<QueryFilter> queryFilterList) {
 		for(QueryFilter filter : queryFilterList ){
 			//TODO ASAP validate type, operator and value are compatible
+			//if(filter.getValue()==null) i guess null or empty is valid for string
 		}
 		return true;
 	}
