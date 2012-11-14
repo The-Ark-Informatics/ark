@@ -48,6 +48,7 @@ public class QueryFilter  implements Serializable {
 	//private String valueForMultiselectComponentLookup;    -- will be compared to demographicfield.fieldForDisplay
 	private Operator operator;
 	private Prefix prefix; //eg NOT, IN,
+	private Search search;//was going to make this reusable...but think that might just be a neusance
 
 	@Id
 	@SequenceGenerator(name = "query_filter_generator", sequenceName = "QUERY_FILTER_SEQ")
@@ -141,6 +142,16 @@ public class QueryFilter  implements Serializable {
 
 	public void setBiocollectionField(BiocollectionField biocollectionField) {
 		this.biocollectionField = biocollectionField;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SEARCH_ID")
+	public Search getSearch() {
+		return search;
+	}
+
+	public void setSearch(Search search) {
+		this.search = search;
 	}
 
 }
