@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -63,6 +64,7 @@ import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.Entity;
 import au.org.theark.core.model.report.entity.FieldCategory;
+import au.org.theark.core.model.report.entity.Operator;
 import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.Address;
@@ -2343,8 +2345,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			Collection<DemographicField> phoneFields) {
 		HashMap map = new HashMap<String, String>();
 		for (DemographicField field : personFields) {
-			// TODO: Analyse performance cost of using reflection
-			// instead...would be CLEANER code...one/two lines
+			// TODO: Analyse performance cost of using reflection instead...would be CLEANER code...maybe dangerous/slow
 			if (field.getFieldName().equalsIgnoreCase("firstName")) {
 				map.put(field.getPublicFieldName(), lss.getPerson()
 						.getFirstName());
@@ -2472,9 +2473,63 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	private String getPersonFilters(Search search) {
-		// TODO Auto-generated method stub
-		return hasPersonFilters(search) ? "  where lss.person.firstName like 'Travis%' "
-				: " "; // TODO ASAP with not allow on fetch!!!
+		String filterClause = "";
+		Set<QueryFilter> filters = search.getQueryFilters();//or we could run query to just get demographic ones
+		for(QueryFilter filter : filters){
+			DemographicField demoField = filter.getDemographicField();
+			if((demoField!=null)){
+				if(demoField.getEntity()!=null && demoField.getEntity().equals(Entity.Person)){
+					String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+					if(filter.getOperator().equals(Operator.BETWEEN)){
+						nextFilterLine += (" AND " + filter.getSecondValue());
+					}
+					if(filterClause.isEmpty()){
+						filterClause = " where lss.person." +  nextFilterLine;						
+					}
+					else{
+						filterClause = " and lss.person." +  nextFilterLine;
+					}
+				}
+			}
+		}
+		log.info("\n\n\n\n\n filterClause = " + filterClause);
+		return filterClause;
+	}
+	
+/**
+ * 
+ * @param operator
+ * @return the string representing that operator in HQL WITH some white space surrounding it
+ */
+	private String getHQLForOperator(Operator operator) {
+		switch(operator){
+	
+			case BETWEEN:{
+				return " BETWEEN ";
+			}
+			case EQUAL:{
+				return " = ";
+			}
+			case GREATER_THAN:{
+				return " > ";
+			}
+			case GREATER_THAN_OR_EQUAL:{
+				return " >= ";
+			}
+			case LESS_THAN:{
+				return " < ";
+			}
+			case LESS_THAN_OR_EQUAL:{
+				return " > ";
+			}
+			case LIKE:{
+				return " like ";
+			}
+			case NOT_EQUAL:{
+				return " <> ";
+			}
+		}
+		return " = ";
 	}
 
 	@SuppressWarnings("unchecked")
