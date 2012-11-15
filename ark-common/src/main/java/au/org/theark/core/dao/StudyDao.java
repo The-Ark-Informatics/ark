@@ -62,6 +62,7 @@ import au.org.theark.core.model.report.entity.CustomFieldDisplaySearch;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.Entity;
+import au.org.theark.core.model.report.entity.FieldCategory;
 import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.Address;
@@ -114,6 +115,7 @@ import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.util.CsvListReader;
 import au.org.theark.core.vo.DataExtractionVO;
+import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectExtractionVO;
 import au.org.theark.core.vo.SubjectVO;
@@ -2496,4 +2498,45 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return true;
 	}
 
+	public List<QueryFilterVO> getQueryFilterVOs(Search search){
+
+		Criteria criteria = getSession().createCriteria(QueryFilter.class);
+		criteria.add(Restrictions.eq("search", search));
+		List<QueryFilter> filters = criteria.list();
+		List<QueryFilterVO> filterVOs = new ArrayList<QueryFilterVO>();
+		for(QueryFilter filter : filters){
+			QueryFilterVO filterVO = new QueryFilterVO();
+			filterVO.setQueryFilter(filter);
+			if(filter.getDemographicField()!=null){
+				filterVO.setFieldCategory(FieldCategory.DEMOGRAPHIC_FIELD);
+			}
+			else if(filter.getBiocollectionField()!=null){
+				filterVO.setFieldCategory(FieldCategory.BIOCOLLECTION_FIELD);
+			}
+			else if(filter.getBiospecimenField()!=null){
+				filterVO.setFieldCategory(FieldCategory.BIOSPECIMEN_FIELD);
+			}
+			else if(filter.getCustomFieldDisplay()!=null){
+				filterVO.setFieldCategory(getFieldCategoryFor(filter.getCustomFieldDisplay().getCustomField().getArkFunction()));
+			}
+			filterVOs.add(filterVO);
+		}
+		return filterVOs;	
+	}
+
+
+	private FieldCategory getFieldCategoryFor(ArkFunction arkFunction) {
+		if(arkFunction.getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)){
+			return FieldCategory.SUBJECT_CFD;
+		}
+		else if(arkFunction.getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION)){
+			return FieldCategory.PHENO_CFD;
+		}
+		else if(arkFunction.getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)){
+			return FieldCategory.BIOCOLLECTION_CFD;
+		}
+		else{//should really have a default! TODO
+			return FieldCategory.BIOSPECIMEN_CFD;
+		}
+	}
 }

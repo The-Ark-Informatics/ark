@@ -79,6 +79,7 @@ import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
+import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
 
@@ -668,9 +669,7 @@ public interface IStudyDao {
 	public Collection<BiospecimenField> getAllBiospecimenFields();
 
 
-
 	public List<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search);
-
 
 	public List<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search);
 
@@ -691,6 +690,8 @@ public interface IStudyDao {
 
 	@SuppressWarnings("unchecked")
 	public void createQueryFilters(List filterList) throws ArkSystemException;
+
+	public List<QueryFilterVO> getQueryFilterVOs(Search search);
 
 
 }

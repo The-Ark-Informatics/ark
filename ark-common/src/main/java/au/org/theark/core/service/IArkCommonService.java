@@ -97,6 +97,7 @@ import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
 
@@ -778,6 +779,8 @@ public interface IArkCommonService<T> {
 	public void runSearch(Long searchId);
 
 	public void createQueryFilters(List filterList) throws ArkSystemException;
+
+	public List<QueryFilterVO> getQueryFilterVOs(Search search);
 
 	
 	
