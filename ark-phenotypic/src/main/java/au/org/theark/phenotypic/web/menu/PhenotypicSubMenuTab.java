@@ -41,10 +41,10 @@ import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.customdataupload.CustomDataUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.customfieldgroup.CustomFieldGroupContainerPanel;
 import au.org.theark.phenotypic.web.component.phenodataentry.PhenoCollectionDataEntryContainerPanel;
-//import au.org.theark.phenotypic.web.component.phenodatauploader.PhenoDataUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.phenofielduploader.FieldUploadContainerPanel;
 
 @SuppressWarnings({ "serial", "unused" })
+@Deprecated
 public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
