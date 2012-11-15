@@ -616,7 +616,7 @@ public class SubjectUploadValidator {
 						cellValue = csvReader.get("CONSENT_DATE");
 						try {
 							dateStr = cellValue;
-							if (dateStr != null && dateStr.length() > 0)
+							if (dateStr != null && !dateStr.isEmpty())
 								simpleDateFormat.parse(dateStr);
 						}
 						catch (ParseException pex) {
@@ -631,19 +631,22 @@ public class SubjectUploadValidator {
 						boolean validData = true;
 						col = csvReader.getIndex("CONSENT_STATUS");
 						cellValue = csvReader.get("CONSENT_STATUS");
-						for(ConsentStatus cs : consentStatusList){
-							if(cellValue.equalsIgnoreCase(cs.getName())) {
-								validData = true;
-								break;
-							}
-							else {
-								validData = false;
-							}
-						}
 						
-						if(!validData) {
-							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
-							errorCells.add(new ArkGridCell(col, row));
+						if(!cellValue.isEmpty()) {
+							for(ConsentStatus cs : consentStatusList){
+								if(cellValue.equalsIgnoreCase(cs.getName())) {
+									validData = true;
+									break;
+								}
+								else {
+									validData = false;
+								}
+							}
+							
+							if(!validData) {
+								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
+								errorCells.add(new ArkGridCell(col, row));
+							}
 						}
 					}
 					
@@ -651,19 +654,22 @@ public class SubjectUploadValidator {
 						boolean validData = true;
 						col = csvReader.getIndex("CONSENT_TYPE");
 						cellValue = csvReader.get("CONSENT_TYPE");
-						for(ConsentType ct : consentTypeList){
-							if(cellValue.equalsIgnoreCase(ct.getName())) {
-								validData = true;
-								break;
-							}
-							else {
-								validData = false;
-							}
-						}
 						
-						if(!validData) {
-							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
-							errorCells.add(new ArkGridCell(col, row));
+						if(!cellValue.isEmpty()) {
+							for(ConsentType ct : consentTypeList){
+								if(cellValue.equalsIgnoreCase(ct.getName())) {
+									validData = true;
+									break;
+								}
+								else {
+									validData = false;
+								}
+							}
+							
+							if(!validData) {
+								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
+								errorCells.add(new ArkGridCell(col, row));
+							}
 						}
 					}
 					
@@ -671,19 +677,22 @@ public class SubjectUploadValidator {
 						boolean validData = true;
 						col = csvReader.getIndex("CONSENT_TO_PASSIVE_DATA_GATHERING");
 						cellValue = csvReader.get("CONSENT_TO_PASSIVE_DATA_GATHERING");
-						for(ConsentOption co : consentOptionList){
-							if(cellValue.equalsIgnoreCase(co.getName())) {
-								validData = true;
-								break;
-							}
-							else {
-								validData = false;
-							}
-						}
 						
-						if(!validData) {
-							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
-							errorCells.add(new ArkGridCell(col, row));
+						if(!cellValue.isEmpty()) {
+							for(ConsentOption co : consentOptionList){
+								if(cellValue.equalsIgnoreCase(co.getName())) {
+									validData = true;
+									break;
+								}
+								else {
+									validData = false;
+								}
+							}
+							
+							if(!validData) {
+								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
+								errorCells.add(new ArkGridCell(col, row));
+							}
 						}
 					}
 					
@@ -691,19 +700,22 @@ public class SubjectUploadValidator {
 						boolean validData = true;
 						col = csvReader.getIndex("CONSENT_TO_ACTIVE_CONTACT");
 						cellValue = csvReader.get("CONSENT_TO_ACTIVE_CONTACT");
-						for(ConsentOption co : consentOptionList){
-							if(cellValue.equalsIgnoreCase(co.getName())) {
-								validData = true;
-								break;
-							}
-							else {
-								validData = false;
-							}
-						}
 						
-						if(!validData) {
-							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
-							errorCells.add(new ArkGridCell(col, row));
+						if(!cellValue.isEmpty()) {
+							for(ConsentOption co : consentOptionList){
+								if(cellValue.equalsIgnoreCase(co.getName())) {
+									validData = true;
+									break;
+								}
+								else {
+									validData = false;
+								}
+							}
+							
+							if(!validData) {
+								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
+								errorCells.add(new ArkGridCell(col, row));
+							}
 						}
 					}
 					
@@ -711,19 +723,21 @@ public class SubjectUploadValidator {
 						boolean validData = true;
 						col = csvReader.getIndex("CONSENT_TO_USE_DATA");
 						cellValue = csvReader.get("CONSENT_TO_USE_DATA");
-						for(ConsentOption co : consentOptionList){
-							if(cellValue.equalsIgnoreCase(co.getName())) {
-								validData = true;
-								break;
+						if(!cellValue.isEmpty()) {
+							for(ConsentOption co : consentOptionList){
+								if(cellValue.equalsIgnoreCase(co.getName())) {
+									validData = true;
+									break;
+								}
+								else {
+									validData = false;
+								}
 							}
-							else {
-								validData = false;
+							
+							if(!validData) {
+								dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
+								errorCells.add(new ArkGridCell(col, row));
 							}
-						}
-						
-						if(!validData) {
-							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + cellValue + " is not a valid option");
-							errorCells.add(new ArkGridCell(col, row));
 						}
 					}
 
