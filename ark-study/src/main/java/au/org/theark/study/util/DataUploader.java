@@ -379,7 +379,7 @@ public class DataUploader {
 					if (lastNameIndex > 0) {
 						String lastnameFromFile = stringLineArray[lastNameIndex];
 
-						if (thisSubjectAlreadyExists && lastnameFromFile != null && !lastnameFromFile.equalsIgnoreCase(person.getLastName())) {
+						if (thisSubjectAlreadyExists && lastnameFromFile != null && !lastnameFromFile.isEmpty() && !lastnameFromFile.equalsIgnoreCase(person.getLastName()) && person.getLastName() != null) {
 							PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
 							personLastNameHistory.setPerson(person);
 							personLastNameHistory.setLastName(person.getLastName());
@@ -569,6 +569,7 @@ public class DataUploader {
 					}
 					
 					// if the study is autoconsent...then there are some defaults we have to set TODO get rid of hardcoding
+					subject.setUpdateConsent(false);
 					if (autoConsent && subject.getSubjectStatus().getName().equalsIgnoreCase("Subject")) {
 						subject.setConsentDate(new Date());
 						subject.setConsentStatus(consentStatusOfConsented);
