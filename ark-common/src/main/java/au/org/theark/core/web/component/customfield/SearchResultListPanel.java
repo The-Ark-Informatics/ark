@@ -196,7 +196,7 @@ public class SearchResultListPanel extends Panel {
 		headers.add("DESCRIPTION");
 		headers.add("QUESTION");
 		headers.add("UNITS");
-		headers.add("ENCDODED_VALUES");
+		headers.add("ENCODED_VALUES");
 		headers.add("MINIMUM_VALUE");
 		headers.add("MAXIMUM_VALUE");
 		headers.add("MISSING_VALUE");
