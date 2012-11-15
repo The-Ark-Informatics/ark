@@ -22,9 +22,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 
 import jxl.Cell;
+import jxl.DateCell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.format.Colour;
@@ -53,6 +56,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.util.ArkSheetMetaData;
 
@@ -113,6 +117,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 																				tag.put("style", "background: lightgreen;");
 																			};
 																		};
+	private SimpleDateFormat sdf = new SimpleDateFormat(Constants.DD_MM_YYYY);
 
 	public ArkExcelWorkSheetAsGrid(String id) {
 		super(id);
@@ -348,6 +353,13 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 								@Override
 								public Serializable getObject() {
 									Cell cell = sheet.getCell(col, row);
+									
+									if(cell instanceof DateCell) {
+										DateCell dc = (DateCell) cell;
+									   Date d = dc.getDate();
+									   return (sdf.format(d));
+									}
+									
 									return cell.getContents();
 								}
 							};
