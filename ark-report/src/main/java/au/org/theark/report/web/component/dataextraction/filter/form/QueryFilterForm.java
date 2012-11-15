@@ -101,6 +101,9 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 		Long studySessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		final Study study = iArkCommonService.getStudy(studySessionId);
 		model.getObject().setStudy(study);
+		model.getObject().setQueryFilterVOs(iArkCommonService.getQueryFilterVOs(model.getObject().getSearch()));
+		
+		//model.getObject().setQueryFilterVOs(iArkCommonService.getQueryFilter(search));
 		this.feedbackPanel = new FeedbackPanel("feedback");
 		feedbackPanel.setOutputMarkupId(true);
 		setMultiPart(true);
@@ -216,9 +219,6 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			@Override
 			protected void onPopulateItem(final ListItem<QueryFilterVO> item) {
 				item.setOutputMarkupId(true);
-				initFieldCategoryDdc(item);
-				initFieldDdc(item);
-				initOperatorDdc(item);
 				
 
 				valueTxtFld = new TextField<String>("value", new PropertyModel(item.getModelObject(), "queryFilter.value"));
@@ -228,22 +228,32 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				    protected void onUpdate(AjaxRequestTarget target) {
 				    	/* we may want to perform some live validation based on the type of field we are selecting
 				    	 * 
-				   	if(!item.getModelObject().getStudy().getAutoGenerateBiospecimenUid()) {
-					   	 // Check BiospecimenUID is unique
-							String biospecimenUid = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
-							Biospecimen biospecimen = iArkCommonService.getBiospecimenByUid(biospecimenUid, item.getModelObject().getStudy());
-							if (biospecimen != null && biospecimen.getId() != null) {
-								error("Biospecimen UID must be unique. Please try again.");
-								target.focusComponent(getComponent());
-							}
-				   	}*/
+					   	if(!item.getModelObject().getStudy().getAutoGenerateBiospecimenUid()) {
+						   	 // Check BiospecimenUID is unique
+								String biospecimenUid = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
+								Biospecimen biospecimen = iArkCommonService.getBiospecimenByUid(biospecimenUid, item.getModelObject().getStudy());
+								if (biospecimen != null && biospecimen.getId() != null) {
+									error("Biospecimen UID must be unique. Please try again.");
+									target.focusComponent(getComponent());
+								}
+					   	}*/
 				    	log.info("onchange of VALUE");
 				    	target.add(feedbackPanel);
 				    } 
 				}));
 				
 				
-				secondValueTxtFld = new TextField<String>("secondValue", new PropertyModel(item.getModelObject(), "queryFilter.secondValue"));
+				secondValueTxtFld = new TextField<String>("secondValue", new PropertyModel(item.getModelObject(), "queryFilter.secondValue")) {
+					@Override
+					public boolean isVisible() {
+						boolean visible = (item.getModelObject().getQueryFilter()!=null && item.getModelObject().getQueryFilter().getOperator() != null) 
+								&& item.getModelObject().getQueryFilter().getOperator().equals(Operator.BETWEEN);
+						return visible;
+					}
+				};
+
+				secondValueTxtFld.setOutputMarkupId(true);
+				
 				item.add(secondValueTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 				    @Override
 				    protected void onUpdate(AjaxRequestTarget target) {
@@ -333,6 +343,10 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						target.add(form);
 					}
 				}.setDefaultFormProcessing(false).setVisible(item.getIndex()>0));
+
+				initFieldCategoryDdc(item);
+				initFieldDdc(item);
+				initOperatorDdc(item);
 				
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 
@@ -344,6 +358,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					}
 				}));
 			
+				
 				}
 
 		};
@@ -357,12 +372,93 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 	 * @param item
 	 */
 	private void initFieldDdc(ListItem<QueryFilterVO> item){
-		Collection<DemographicField> demographicFieldCategoryList = iArkCommonService.getAllDemographicFields();
-		ChoiceRenderer<DemographicField> choiceRenderer = new ChoiceRenderer<DemographicField>(Constants.PUBLIC_FIELD_NAME, Constants.ID);
-		fieldDdc = new DropDownChoice<DemographicField>("queryFilter.field", 
-				new PropertyModel(item.getModelObject(), "queryFilter.demographicField"), 
-				(List<DemographicField>) demographicFieldCategoryList, choiceRenderer);
-
+		if(item.getModelObject()!=null && item.getModelObject().getFieldCategory()!=null){
+		
+			FieldCategory catFromItem = item.getModelObject().getFieldCategory();
+			
+			switch (catFromItem){
+	
+				case DEMOGRAPHIC_FIELD:{					
+					Collection<DemographicField> demographicFieldCategoryList = iArkCommonService.getAllDemographicFields();
+					ChoiceRenderer<DemographicField> choiceRenderer = new ChoiceRenderer<DemographicField>(Constants.PUBLIC_FIELD_NAME, Constants.ID);
+					fieldDdc = new DropDownChoice<DemographicField>("queryFilter.field", 
+							new PropertyModel(item.getModelObject(), "queryFilter.demographicField"), 
+							(List<DemographicField>) demographicFieldCategoryList, choiceRenderer);
+					break;
+				}
+	
+				case BIOSPECIMEN_FIELD:{					
+					Collection<BiospecimenField> BiospecimenFieldCategoryList = iArkCommonService.getAllBiospecimenFields();
+					ChoiceRenderer<BiospecimenField> choiceRenderer = new ChoiceRenderer<BiospecimenField>(Constants.PUBLIC_FIELD_NAME, Constants.ID);
+					fieldDdc = new DropDownChoice<BiospecimenField>("queryFilter.field", 
+							new PropertyModel(item.getModelObject(), "queryFilter.biospecimenField"), 
+							(List<BiospecimenField>) BiospecimenFieldCategoryList, choiceRenderer);
+					break;
+				}
+	
+				case BIOCOLLECTION_FIELD:{					
+					Collection<BiocollectionField> biocollectionFieldCategoryList = iArkCommonService.getAllBiocollectionFields();
+					ChoiceRenderer<BiocollectionField> choiceRenderer = new ChoiceRenderer<BiocollectionField>(Constants.PUBLIC_FIELD_NAME, Constants.ID);
+					fieldDdc = new DropDownChoice<BiocollectionField>("queryFilter.field", 
+							new PropertyModel(item.getModelObject(), "queryFilter.biocollectionField"), 
+							(List<BiocollectionField>) biocollectionFieldCategoryList, choiceRenderer);
+					break;
+				}
+				
+				case SUBJECT_CFD:{		
+					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
+					
+					List<CustomFieldDisplay> fieldCategoryList = iArkCommonService.getCustomFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
+					ChoiceRenderer<CustomFieldDisplay> choiceRenderer = new ChoiceRenderer<CustomFieldDisplay>(Constants.CUSTOM_FIELD_DOT_NAME, Constants.ID);
+					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
+							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
+							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					break;
+				}
+	
+				case PHENO_CFD:{
+					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+					
+					List<CustomFieldDisplay> fieldCategoryList = iArkCommonService.getCustomFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
+					ChoiceRenderer<CustomFieldDisplay> choiceRenderer = new ChoiceRenderer<CustomFieldDisplay>(Constants.CUSTOM_FIELD_DOT_NAME, Constants.ID);
+					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
+							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
+							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					break;
+				}
+	
+				case BIOCOLLECTION_CFD:{
+					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
+					
+					List<CustomFieldDisplay> fieldCategoryList = iArkCommonService.getCustomFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
+					ChoiceRenderer<CustomFieldDisplay> choiceRenderer = new ChoiceRenderer<CustomFieldDisplay>(Constants.CUSTOM_FIELD_DOT_NAME, Constants.ID);
+					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
+							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
+							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					break;
+				}
+				
+				case BIOSPECIMEN_CFD:{		
+					ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN);
+					
+					List<CustomFieldDisplay> fieldCategoryList = iArkCommonService.getCustomFieldDisplaysIn(getModelObject().getStudy(), arkFunction);
+					ChoiceRenderer<CustomFieldDisplay> choiceRenderer = new ChoiceRenderer<CustomFieldDisplay>(Constants.CUSTOM_FIELD_DOT_NAME, Constants.ID);
+					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
+							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
+							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					break;
+				}
+	
+			}
+		}
+		else{ //this is a new item - set to default		
+			Collection<DemographicField> demographicFieldCategoryList = iArkCommonService.getAllDemographicFields();
+			ChoiceRenderer<DemographicField> choiceRenderer = new ChoiceRenderer<DemographicField>(Constants.PUBLIC_FIELD_NAME, Constants.ID);
+			fieldDdc = new DropDownChoice<DemographicField>("queryFilter.field", 
+					new PropertyModel(item.getModelObject(), "queryFilter.demographicField"), 
+					(List<DemographicField>) demographicFieldCategoryList, choiceRenderer);
+	
+		}
 		fieldDdc.setOutputMarkupId(true);
 		item.add(fieldDdc);
 	}
@@ -376,12 +472,16 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 
 		operatorDdc.setOutputMarkupId(true);
 		item.add(operatorDdc);
+
+		secondValueTxtFld.setOutputMarkupId(true);
+		item.add(secondValueTxtFld);
+		
 		operatorDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 			private static final long serialVersionUID = 1L;
 
 			@Override
 		    protected void onUpdate(AjaxRequestTarget target) {
-				Operator operatorFromDDC = item.getModelObject().getQueryFilter().getOperator();
+				/*Operator operatorFromDDC = item.getModelObject().getQueryFilter().getOperator();
 				
 				switch (operatorFromDDC){
 
@@ -394,9 +494,8 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						secondValueTxtFld.setVisible(false);
 						break;
 					}
-				}
-				secondValueTxtFld.setOutputMarkupId(true);
-				item.addOrReplace(secondValueTxtFld);
+				}*/
+				//item.addOrReplace(secondValueTxtFld);
 				target.add(secondValueTxtFld);
 			}
 			
@@ -405,14 +504,16 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 	}
 	
 	private void initFieldCategoryDdc(final ListItem<QueryFilterVO> item) {
-	//	FieldCategory fc = FieldCategory.BIOCOLLECTION_CFD;
-		List<FieldCategory> fieldCategoryList = Arrays.asList(FieldCategory.values()); //iArkCommonService.getFieldCategories();
-		//ChoiceRenderer<FieldCategory> choiceRenderer = new ChoiceRenderer<FieldCategory>(Constants.NAME, Constants.NAME);
+
+
+		List<FieldCategory> fieldCategoryList = Arrays.asList(FieldCategory.values()); 
 		fieldCategoryDdc = new DropDownChoice<FieldCategory>("fieldCategory", 
 				new PropertyModel(item.getModelObject(), "fieldCategory"), 
 				(List<FieldCategory>) fieldCategoryList, new EnumChoiceRenderer<FieldCategory>(QueryFilterForm.this));
 		fieldCategoryDdc.setNullValid(false);
-		fieldCategoryDdc.setDefaultModelObject(FieldCategory.DEMOGRAPHIC_FIELD);
+		if(item.getModelObject()==null || item.getModelObject().getFieldCategory()==null){
+			fieldCategoryDdc.setDefaultModelObject(FieldCategory.DEMOGRAPHIC_FIELD);
+		}
 		fieldCategoryDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 			private static final long serialVersionUID = 1L;
 
