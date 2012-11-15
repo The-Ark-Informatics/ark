@@ -129,6 +129,7 @@ import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
 
@@ -1355,4 +1356,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		studyDao.createQueryFilters(filterList);
 	}
 
+
+	public List<QueryFilterVO> getQueryFilterVOs(Search search){
+		return studyDao.getQueryFilterVOs(search);
+	}
+	
 }
