@@ -7,11 +7,10 @@ import au.org.theark.core.model.report.entity.QueryFilter;
 
 public class QueryFilterVO implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1239326388214334966L;
+	
 	private FieldCategory fieldCategory;
+	
 	private QueryFilter queryFilter;
 	
 	public FieldCategory getFieldCategory() {

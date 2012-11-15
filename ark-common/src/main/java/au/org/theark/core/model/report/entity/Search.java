@@ -34,6 +34,7 @@ public class Search  implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String name;
+	private Set<QueryFilter>  				queryFilters = new HashSet<QueryFilter>();
 	private Set<CustomFieldDisplaySearch>  	customFieldsToReturn = new HashSet<CustomFieldDisplaySearch>();
 	private Set<BiospecimenFieldSearch>  	biospecimenFieldsToReturn = new HashSet<BiospecimenFieldSearch>();
 	private Set<BiocollectionFieldSearch>  	biocollectionFieldsToReturn = new HashSet<BiocollectionFieldSearch>();
@@ -114,6 +115,16 @@ public class Search  implements java.io.Serializable {
 	}
 	public void setStudy(Study study) {
 		this.study = study;
+	}
+
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "search")
+	public Set<QueryFilter> getQueryFilters() {
+		return queryFilters;
+	}
+
+	public void setQueryFilters(Set<QueryFilter> queryFilters) {
+		this.queryFilters = queryFilters;
 	}
 
 	
