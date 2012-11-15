@@ -23,12 +23,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import jxl.Cell;
+import jxl.DateCell;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.write.biff.DateRecord;
 
 import org.apache.wicket.util.io.ByteArrayOutputStream;
+
+import au.org.theark.core.Constants;
 
 public class XLStoCSV {
 	char delimiterCharacter = ',';
@@ -44,6 +50,7 @@ public class XLStoCSV {
 	 */
 	public InputStream convertXlsToCsv(Workbook w) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DD_MM_YYYY);
 		try {
 			OutputStreamWriter osw = new OutputStreamWriter(out);
 			// Gets first sheet from workbook
@@ -57,13 +64,27 @@ public class XLStoCSV {
 					osw.write(row[0].getContents());
 					for (int j = 1; j < row.length; j++) {
 						osw.write(delimiterCharacter);
-						
+						Cell cell = row[j];
 						if (row[j].getContents().contains(",")) {  
 							osw.write('"');  
-							osw.write(row[j].getContents());  
+							if(cell instanceof DateCell) {
+								DateCell dc = (DateCell) cell;
+							   Date d = dc.getDate();
+							   osw.write(sdf.format(d));
+							}
+							else {
+								osw.write(cell.getContents());
+							}
 							osw.write('"');  
-						} else {  
-               	   osw.write(row[j].getContents());  
+						} else {
+							if(cell instanceof DateCell) {
+								DateCell dc = (DateCell) cell;
+							   Date d = dc.getDate();
+							   osw.write(sdf.format(d));
+							}
+							else {
+								osw.write(cell.getContents());
+							}
 						}
 					}
 				}
