@@ -1612,7 +1612,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	@SuppressWarnings("unchecked")
 	public List<SubjectCustomFieldData> getCustomFieldDataFor(
-			List customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded) {
+			Collection customFieldDisplaysThatWeNeed, List subjectUIDsToBeIncluded) {
 		if (customFieldDisplaysThatWeNeed == null
 				|| customFieldDisplaysThatWeNeed.isEmpty()
 				|| subjectUIDsToBeIncluded == null
@@ -2242,8 +2242,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// }
 
 			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs,
-					addressDFs, phoneDFs, search);
-
+					addressDFs, phoneDFs,scfds, search);
+			
 		}
 	}
 
@@ -2251,7 +2251,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			Collection<DemographicField> personFields,
 			Collection<DemographicField> lssFields,
 			Collection<DemographicField> addressFields,
-			Collection<DemographicField> phoneFields, Search search) {
+			Collection<DemographicField> phoneFields, 
+			Collection<CustomFieldDisplay> subjectCFDs,
+			Search search) {
 		if (!lssFields.isEmpty() || !personFields.isEmpty()
 				|| !addressFields.isEmpty() || !phoneFields.isEmpty()) { // hasEmailFields(dfs)
 																			// ||
@@ -2298,6 +2300,25 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				hashOfSubjectsWithTheirDemographicData.put(lss.getSubjectUID(), sev);
 			}
 
+			/**
+			 * 
+			 * 
+			 * TODO :  CHris, I am doing an example get off subject custom data here, but do it however and WHERE you see most efficient
+			 * 						or for that matter start with where its easiest to get working...then do more efficient after that
+			 * 
+			 */
+			
+			List<SubjectCustomFieldData> scfData = getCustomFieldDataFor(subjectCFDs, subjects); //todo add orderby SUBJECT... or alterative method with order by to help us keeping track of subjects
+			log.info("we got " + scfData.size() );
+			
+			for (SubjectCustomFieldData data : scfData) {
+				//TODO construct this just like the demographic data...but instead put in DataExtraction.subjectCustomData
+				
+			}
+
+			
+			
+			
 			/**
 			 * this is just logging to see if things work
 			 */
