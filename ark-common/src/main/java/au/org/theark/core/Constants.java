@@ -375,18 +375,18 @@ public class Constants {
 	public static final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_\\-\\+\\=\\{\\}\\[\\]:;\\\"<>|]).{6,20})";
 
 	public static final String[] BIOSPECIMEN_TEMPLATE_HEADER = { "SUBJECTUID",
-			"BIOSPECIMENUID", "BIOCOLLECTION", "SAMPLETYPE", "QUANTITY",
+			"BIOSPECIMENUID", "BIOCOLLECTIONUID", "SAMPLETYPE", "QUANTITY",
 			"UNITS", "TREATMENT", "SITE", "FREEZER", "RACK", "BOX", "ROW",
 			"COLUMN" };
 	public static final String[][] BIOSPECIMEN_TEMPLATE_CELLS = {
-			{ "", "SUBJECTUID", "BIOSPECIMENUID", "BIOCOLLECTION",
+			{ "", "SUBJECTUID", "BIOSPECIMENUID", "BIOCOLLECTIONUID",
 					"SAMPLETYPE", "QUANTITY", "UNITS", "TREATMENT", "SITE",
 					"FREEZER", "RACK", "BOX", "ROW", "COLUMN" },
 			{
 					"DESCRIPTION",
 					"The unique identifier assigned for this subject.",
 					"The unique identifier of the biospecimen",
-					"The collection to which the biospecimen is assoicated with",
+					"The unique identifier of collection to which the biospecimen is assoicated with",
 					"The sample type of the biospecimen",
 					"The quantity of the bispecimen", 
 					"The units of quanity",
