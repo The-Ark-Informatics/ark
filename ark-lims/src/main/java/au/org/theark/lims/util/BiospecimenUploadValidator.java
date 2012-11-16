@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -50,6 +51,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
+import au.org.theark.lims.model.dao.BioPersonDao;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 
@@ -432,6 +434,9 @@ public class BiospecimenUploadValidator {
 			ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
+		
+		HashMap<String, String> uniqueSubjectBiocollections = new HashMap<String, String>();
+		HashSet<String> uniqueSubjectBiospecimens = new HashSet<String>();
 
 		row = 1;
 
@@ -440,6 +445,7 @@ public class BiospecimenUploadValidator {
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+			
 			String[] stringLineArray;
 
 			srcLength = inLength;
@@ -456,18 +462,16 @@ public class BiospecimenUploadValidator {
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 
 			String[] fieldNameArray = csvReader.getHeaders();
-
+			
 			// Loop through all rows in file
 			while (csvReader.readRecord()) {
 				boolean insertThisRow = true;
 				stringLineArray = csvReader.getValues();
-				// First/0th column should be the SubjectUID
-				String subjectUID = stringLineArray[0];
-				// next should be BiospecimenUid -- TODO:  These assumptions is not tested earlier!!!;
-				String biospecimenUID = stringLineArray[1]; // io think something like this might be betteR?  csvReader.getIndex("BIOSPECIMENUID")
-				String biocollectionUID = stringLineArray[2];
+				
+				String subjectUID = csvReader.get("SUBJECTUID");
+				String biospecimenUID = csvReader.get("BIOSPECIMENUID");
+				String biocollectionUID = csvReader.get("BIOCOLLECTIONUID");
 
-			
 				LinkSubjectStudy linkSubjectStudy = (iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study));
 				if(linkSubjectStudy==null){
 					StringBuilder errorString = new StringBuilder();
@@ -499,6 +503,25 @@ public class BiospecimenUploadValidator {
 				 * ....once we pass all tests THEN if(rowIsOK) THEN insertRows.add(row)
 				 * */	
 				
+				
+				// Check for unique BiospecimenUIDs
+				if(!study.getAutoGenerateBiospecimenUid()){
+					if(!uniqueSubjectBiospecimens.contains(biospecimenUID)) {
+						uniqueSubjectBiospecimens.add(biospecimenUID);
+					}
+					else {
+						StringBuilder errorString = new StringBuilder();
+						errorString.append("Error: Row ");
+						errorString.append(row);
+						errorString.append(": SubjectUID: ");
+						errorString.append(subjectUID);
+						errorString.append(".  BiospecimeUIDs must be unique. Please check the file and try again.");
+						dataValidationMessages.add(errorString.toString());
+						errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
+						insertThisRow = false;//drop out also?
+					}
+				}
+				
 				if (biospecimenUID == null || biospecimenUID.isEmpty() ) {
 					if(study.getAutoGenerateBiospecimenUid()){
 						//insertRows.add(row);								
@@ -509,8 +532,8 @@ public class BiospecimenUploadValidator {
 						errorString.append(row);
 						errorString.append(": SubjectUID: ");
 						errorString.append(subjectUID);
-						errorString.append(".  You have not specified a biospecimen UID, yet your study is not set up" +
-								" to auto generate biospecimen UIDs.  Please specify a unique ID.");
+						errorString.append(".  You have not specified a Biospecimen UID, yet your study is not set up" +
+								" to auto generate Biospecimen UIDs.  Please specify a unique ID.");
 						dataValidationMessages.add(errorString.toString());
 						errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
 						insertThisRow = false;//drop out also?
@@ -525,8 +548,8 @@ public class BiospecimenUploadValidator {
 						errorString.append(subjectUID);
 						errorString.append(": BIOSPECIMENUID: ");
 						errorString.append(biospecimenUID);
-						errorString.append(".  You have specified a biospecimen UID, yet your study is set up" +
-								" to auto generate biospecimen UIDs.");
+						errorString.append(".  You have specified a Biospecimen UID, yet your study is set up" +
+								" to auto generate Biospecimen UIDs.");
 						dataValidationMessages.add(errorString.toString());
 						errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
 						insertThisRow = false;//drop out also?
@@ -545,7 +568,7 @@ public class BiospecimenUploadValidator {
 							errorString.append(": BiospecimenUID: ");
 							errorString.append(biospecimenUID);
 							errorString.append(". You have specified an existing BiospecimenUID. This uploader creates new " +
-									"biospecimens, but does not update existing biospecimens. Please remove this row");
+									"Biospecimens, but does not update existing Biospecimens. Please remove this row");
 							dataValidationMessages.add(errorString.toString());
 							errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
 							insertThisRow = false;//drop out also?
@@ -553,6 +576,29 @@ public class BiospecimenUploadValidator {
 					}
 				}
 				
+				// Check for unique BiospecimenUIDs
+				if(study.getAutoGenerateBiospecimenUid()){
+					if(uniqueSubjectBiocollections.get(biocollectionUID) == null) {
+						uniqueSubjectBiocollections.put(biocollectionUID, subjectUID);
+					}
+						else {
+						if(!uniqueSubjectBiocollections.get(biocollectionUID).equals(subjectUID)) {
+							StringBuilder errorString = new StringBuilder();
+							errorString.append("Error: Row ");
+							errorString.append(row);
+							errorString.append(": SubjectUID: ");
+							errorString.append(subjectUID);
+							errorString.append(": Bicollection UID: ");
+							errorString.append(biocollectionUID);
+							errorString.append(". Is already assigned to SubjectUID: ");
+							errorString.append(uniqueSubjectBiocollections.get(biocollectionUID));
+							errorString.append(" Please amend the file and try again.");
+							dataValidationMessages.add(errorString.toString());
+							errorCells.add(new ArkGridCell(csvReader.getIndex("BIOCOLLECTIONUID"), row));
+							insertThisRow = false;//drop out also?
+						}
+					}
+				}
 				
 				if (biocollectionUID == null  || biocollectionUID.isEmpty() ) {
 					if(study.getAutoGenerateBiocollectionUid()){
@@ -572,7 +618,7 @@ public class BiospecimenUploadValidator {
 					}
 				}
 				else {
-					biocollection = iLimsService.getBioCollectionByUID(biocollectionUID,study.getId());
+					biocollection = iLimsService.getBioCollectionByUID(biocollectionUID,study.getId(), subjectUID);
 					if(study.getAutoGenerateBiocollectionUid()){//ie; auto gen, id supplied.
 						if(biocollection==null){
 							StringBuilder errorString = new StringBuilder();
@@ -580,11 +626,11 @@ public class BiospecimenUploadValidator {
 							errorString.append(row);
 							errorString.append(": SubjectUID: ");
 							errorString.append(subjectUID);
-							errorString.append(": BIOCOLLECTIONUID: ");
+							errorString.append(": BiocollectionUID: ");
 							errorString.append(biocollectionUID);
-							errorString.append(".  You have specified a non-existant biocollection UID, yet your study is set up" +
-									" to auto generate biocollection UIDs.  Check the biocollectionUID if you intended to relate it " +
-									"to a collection, otherwise remove the biocollectionid if you wish to generate a new biocollection");
+							errorString.append(".  You have specified a non-existant Biocollection UID, yet your study is set up" +
+									" to auto generate biocollection UIDs.  Check the Biocollection UID if you intended to relate it " +
+									"to a Biocollection, otherwise remove the Biocollection UID if you wish to generate a new Biocollection");
 							dataValidationMessages.add(errorString.toString());
 							errorCells.add(new ArkGridCell(csvReader.getIndex("BIOCOLLECTIONUID"), row));
 							insertThisRow = false;//drop out also?
@@ -596,7 +642,19 @@ public class BiospecimenUploadValidator {
 					else{//ie; not auto gen, id supplied.
 						
 						if(biocollection == null){
-							//insertRows.add(row);	//this instance will need biocol created							
+							//insertRows.add(row);	//this instance will need biocol created		
+							StringBuilder errorString = new StringBuilder();
+							errorString.append("Error: Row ");
+							errorString.append(row);
+							errorString.append(": SubjectUID: ");
+							errorString.append(subjectUID);
+							errorString.append(": BiocollectionUID: ");
+							errorString.append(biocollectionUID);
+							errorString.append(".  You have specified a BiocollectionUID that is already associated with another SubjectUID." +
+									" Please check the file and try again.");
+							dataValidationMessages.add(errorString.toString());
+							errorCells.add(new ArkGridCell(csvReader.getIndex("BIOCOLLECTIONUID"), row));
+							insertThisRow = false;//drop out also?
 						}
 						else{
 							//insertRows.add(row);  //this istance will use the provided biocol.

@@ -799,8 +799,8 @@ public class LimsServiceImpl implements ILimsService {
 		return uploadReport;
 	}
 
-	public BioCollection getBioCollectionByUID(String biocollectionUid,Long studyId) {
-		return iBioCollectionDao.getBioCollectionByUID(biocollectionUid,studyId);
+	public BioCollection getBioCollectionByUID(String biocollectionUid,Long studyId, String subjectUID) {
+		return iBioCollectionDao.getBioCollectionByUID(biocollectionUid,studyId, subjectUID);
 	}
 
 	public Unit getUnitByName(String name) {
