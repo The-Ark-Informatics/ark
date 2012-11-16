@@ -473,6 +473,19 @@ public class ManualBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 		boolean unitError = false;
 		boolean treatmentTypeError = false;
 		
+		
+		List<String> biospecimenUids = new ArrayList<String>(0);
+		// Check for any repeated BiospecimenUIDs
+		for (BatchBiospecimenVO batchBiospecimenVO: batchBiospecimenList) {
+			biospecimenUids.add(batchBiospecimenVO.getBiospecimen().getBiospecimenUid());
+		}
+		Set<String> uniqueSet = new HashSet<String>(biospecimenUids);
+		
+		if(uniqueSet.size() != biospecimenUids.size()) {
+			error("Field 'Biospecimen UID' must be unique.");
+			ok = false;
+		}
+		
 		// Check for any empty required fields in list
 		for (BatchBiospecimenVO batchBiospecimenVO: batchBiospecimenList) {
 			biospecimenUidError = (batchBiospecimenVO.getBiospecimen().getBiospecimenUid() == null || batchBiospecimenVO.getBiospecimen().getBiospecimenUid().isEmpty());	
