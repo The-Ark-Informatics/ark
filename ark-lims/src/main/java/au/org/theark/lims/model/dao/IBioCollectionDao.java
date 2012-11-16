@@ -125,7 +125,7 @@ public interface IBioCollectionDao {
 	
 	public BioCollectionCustomFieldData getBioCollectionCustomFieldData(BioCollection bioCollectionCriteria, ArkFunction arkFunction, String customFieldName);
 
-	public BioCollection getBioCollectionByUID(String biocollectionUid,Long studyId);
+	public BioCollection getBioCollectionByUID(String biocollectionUid,Long studyId, String subjectUID);
 
 	public List<String> getAllBiocollectionUIDs(Study study);
 

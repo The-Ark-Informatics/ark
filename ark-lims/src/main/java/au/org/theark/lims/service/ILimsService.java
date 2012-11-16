@@ -354,7 +354,7 @@ public interface ILimsService {
 
 	public void batchUpdateInvCells(List<InvCell> updateInvCells);
 
-	public BioCollection getBioCollectionByUID(String biocollectionUid,Long studyId);
+	public BioCollection getBioCollectionByUID(String biocollectionUid,Long studyId, String subjectUID);
 
 	public Unit getUnitByName(String name);
 
