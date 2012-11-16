@@ -119,7 +119,7 @@ import au.org.theark.core.util.CsvListReader;
 import au.org.theark.core.vo.DataExtractionVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
-import au.org.theark.core.vo.SubjectExtractionVO;
+import au.org.theark.core.vo.ExtractionVO;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -2217,14 +2217,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			 */
 
 			/***
-			 * the options
-			 * 
-			 * 1 get each of these and apply a filter every time 2 a megaquery
-			 * to get EVERYTHING FOR EVERYONE into our "report object/model" 3
-			 * use the filters to create a set of subjectUIDs and maybe apply
-			 * that, though may also needs a set of pheno_data_id,
-			 * subj_custom_ids, etc
-			 * 
+			 * some of the options
+			 * 	  	1 get each of these and apply a filter every time 
+			 * 		2 a megaquery to get EVERYTHING FOR EVERYONE into our "report object/model" 
+			 * 		3 use the filters to create a set of subjectUIDs and maybe apply
+			 *		 that, though may also needs a set of pheno_data_id, subj_custom_ids, etc
 			 */
 
 			/*
@@ -2264,6 +2261,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 																			// to
 																			// consider
 																			// filtering??
+			String personFilters = getPersonFilters(search, null);
+			String lssAndPersonFilters = getLSSFilters(search, personFilters);
 			String queryString = "select distinct lss "
 					+ // , address, lss, email " +
 					" from LinkSubjectStudy lss "
@@ -2272,32 +2271,37 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					+ ((!addressFields.isEmpty()) ? " left join fetch person.addresses a "
 							: "")
 					+ ((!phoneFields.isEmpty()) ? " left join fetch person.phones p "
-							: "") + // (hasEmailFields(dfs)?" left join fetch person.emails e ":"")
-									// +
-					// " where lss.person.firstName like 'Travis%' " + //,
-					// link_subject_study lss " +
-					getPersonFilters(search);
+							: "") + lssAndPersonFilters;
+			//TODO : getLSSFilters
+			//TODO : getAddress
+			//TODO : getPhone
+			//TODO : getBiospecCustomFilters
+			//TODO : getBiocollectionCustomFilters
+			//TODO : getSubjectCustomFilters
+			//TODO : getPhenoCustomFilters
+			
 
 			List<LinkSubjectStudy> subjects = getSession().createQuery(
 					queryString).list();
 			log.info("size=" + subjects.size());
 
 			// DataExtractionVO devo; = new DataExtractionVO();
-			HashMap<String, SubjectExtractionVO> hashOfSubjectsWithData = allTheData
-					.getSubjectAndData();
+			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirDemographicData = allTheData.getDemographicData();
 
+			/**
+			 * this is putting the data we extracted into a generic kind of VO doc that will be converted to an appopriate format later (such as csv/xls/pdf/xml/etc)
+			 */
 			for (LinkSubjectStudy lss : subjects) {
-				SubjectExtractionVO sev = new SubjectExtractionVO();
+				ExtractionVO sev = new ExtractionVO();
 				sev.setKeyValues(constructKeyValueHashmap(lss, personFields,
 						lssFields, addressFields, phoneFields));
-				// log.info(" person " + lss.getPerson().getId() +
-				// lss.getSubjectUID() + lss.getPerson().getFirstName());
-				// log.info(" addresses size " +
-				// lss.getPerson().getAddresses().size());
-				hashOfSubjectsWithData.put(lss.getSubjectUID(), sev);
+				hashOfSubjectsWithTheirDemographicData.put(lss.getSubjectUID(), sev);
 			}
 
-			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithData);
+			/**
+			 * this is just logging to see if things work
+			 */
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirDemographicData);
 
 		}
 		/*
@@ -2322,7 +2326,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	private void prettyLoggingOfWhatIsInOurMegaObject(
-			HashMap<String, SubjectExtractionVO> hashOfSubjectsWithData) {
+			HashMap<String, ExtractionVO> hashOfSubjectsWithData) {
 		log.info("\n\n\n\n\n\n\n ok so we have "
 				+ hashOfSubjectsWithData.size() + " entries\n\n\n\n\n\n\n\n\n");
 		for (String subjectUID : hashOfSubjectsWithData.keySet()) {
@@ -2467,13 +2471,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * if(!lssFieldsString.toString().isEmpty()){ } /** TODO: NOW RUN
 	 * CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO * } return ""; }
 	 */
-	private boolean hasPersonFilters(Search search) {
-		// TODO Auto-generated method stub
-		return true;
-	}
 
-	private String getPersonFilters(Search search) {
-		String filterClause = "";
+	private String getPersonFilters(Search search, String filterThusFar) {
+		String filterClause = filterThusFar;
 		Set<QueryFilter> filters = search.getQueryFilters();//or we could run query to just get demographic ones
 		for(QueryFilter filter : filters){
 			DemographicField demoField = filter.getDemographicField();
@@ -2483,11 +2483,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					if(filter.getOperator().equals(Operator.BETWEEN)){
 						nextFilterLine += (" AND " + filter.getSecondValue());
 					}
-					if(filterClause.isEmpty()){
+					if(filterClause == null || filterClause.isEmpty()){
 						filterClause = " where lss.person." +  nextFilterLine;						
 					}
 					else{
-						filterClause = " and lss.person." +  nextFilterLine;
+						filterClause = filterClause + " and lss.person." +  nextFilterLine;
 					}
 				}
 			}
@@ -2495,7 +2495,31 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		log.info("\n\n\n\n\n filterClause = " + filterClause);
 		return filterClause;
 	}
-	
+
+
+	private String getLSSFilters(Search search, String personFilters) {
+		String filterClause = personFilters;
+		Set<QueryFilter> filters = search.getQueryFilters();//or we could run query to just get demographic ones
+		for(QueryFilter filter : filters){
+			DemographicField demoField = filter.getDemographicField();
+			if((demoField!=null)){
+				if(demoField.getEntity()!=null && demoField.getEntity().equals(Entity.LinkSubjectStudy)){
+					String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+					if(filter.getOperator().equals(Operator.BETWEEN)){
+						nextFilterLine += (" AND " + filter.getSecondValue());
+					}
+					if(filterClause == null || filterClause.isEmpty()){
+						filterClause = " where lss." +  nextFilterLine;						
+					}
+					else{
+						filterClause = filterClause + " and lss." +  nextFilterLine;
+					}
+				}
+			}
+		}
+		log.info("\n\n\n\n\n filterClauseAfterLSS FILTERS = " + filterClause);
+		return filterClause;
+	}
 /**
  * 
  * @param operator
