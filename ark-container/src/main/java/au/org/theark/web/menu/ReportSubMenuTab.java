@@ -21,6 +21,7 @@ package au.org.theark.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -68,7 +69,12 @@ public class ReportSubMenuTab extends AbstractArkTabPanel {
 				private static final long	serialVersionUID	= -7414890128705025350L;
 
 				public boolean isVisible() {
-					// Reporting tab always visible
+					// Data extraction tab requires study in context
+					if(moduleName.getModuleName().equalsIgnoreCase(Constants.DATA_EXTRACTION)) {
+						Long studySessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+						return studySessionId != null;
+					}
+					// Reports tab always shown
 					return true;
 				}
 
