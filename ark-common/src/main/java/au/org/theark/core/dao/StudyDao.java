@@ -2363,6 +2363,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	}
 
+	/**
+	 * TODO : Chris, please note that we have to complete the hardcoding below after Thileana finishes his insert statements for demographic field.
+	 * 			Alternatively you have reflection to deal with which may be a bit of a nightmare but less lines of code...but completely your call.
+	 * 
+	 * @param lss
+	 * @param personFields
+	 * @param lssFields
+	 * @param addressFields
+	 * @param phoneFields
+	 * @return
+	 */
 	private HashMap<String, String> constructKeyValueHashmap(
 			LinkSubjectStudy lss, Collection<DemographicField> personFields,
 			Collection<DemographicField> lssFields,
