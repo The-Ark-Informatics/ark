@@ -220,10 +220,12 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			protected void onPopulateItem(final ListItem<QueryFilterVO> item) {
 				item.setOutputMarkupId(true);
 				
-
+				initFieldCategoryDdc(item);
+				initFieldDdc(item);
+				initOperatorDdc(item);
+				
 				valueTxtFld = new TextField<String>("value", new PropertyModel(item.getModelObject(), "queryFilter.value"));
-
-				item.add(valueTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				valueTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 				    @Override
 				    protected void onUpdate(AjaxRequestTarget target) {
 				    	/* we may want to perform some live validation based on the type of field we are selecting
@@ -240,39 +242,11 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				    	log.info("onchange of VALUE");
 				    	target.add(feedbackPanel);
 				    } 
-				}));
-				
-				
-				secondValueTxtFld = new TextField<String>("secondValue", new PropertyModel(item.getModelObject(), "queryFilter.secondValue")) {
-					@Override
-					public boolean isVisible() {
-						boolean visible = (item.getModelObject().getQueryFilter()!=null && item.getModelObject().getQueryFilter().getOperator() != null) 
-								&& item.getModelObject().getQueryFilter().getOperator().equals(Operator.BETWEEN);
-						return visible;
-					}
-				};
+				});
 
-				secondValueTxtFld.setOutputMarkupId(true);
+				item.add(valueTxtFld);
 				
-				item.add(secondValueTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
-				    @Override
-				    protected void onUpdate(AjaxRequestTarget target) {
-				    	/* we may want to perform some live validation based on the type of field we are selecting
-				    	 * 
-				    	 * 
-				   	if(!item.getModelObject().getStudy().getAutoGenerateBiospecimenUid()) {
-					   	 // Check BiospecimenUID is unique
-							String biospecimenUid = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
-							Biospecimen biospecimen = iArkCommonService.getBiospecimenByUid(biospecimenUid, item.getModelObject().getStudy());
-							if (biospecimen != null && biospecimen.getId() != null) {
-								error("Biospecimen UID must be unique. Please try again.");
-								target.focusComponent(getComponent());
-							}
-				   	}*/
-				    	log.info("onchange of SECOND VALUE");
-				    	target.add(feedbackPanel);
-				    } 
-				}));
+				
 				/*
 				item.add(quantityTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 				    @Override
@@ -344,9 +318,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					}
 				}.setDefaultFormProcessing(false).setVisible(item.getIndex()>0));
 
-				initFieldCategoryDdc(item);
-				initFieldDdc(item);
-				initOperatorDdc(item);
+
 				
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 
@@ -471,36 +443,41 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				(List<Operator>) operatorList, new EnumChoiceRenderer<Operator>(QueryFilterForm.this));
 
 		operatorDdc.setOutputMarkupId(true);
-		item.add(operatorDdc);
-
-		secondValueTxtFld.setOutputMarkupId(true);
-		item.add(secondValueTxtFld);
-		
 		operatorDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 			private static final long serialVersionUID = 1L;
 
 			@Override
 		    protected void onUpdate(AjaxRequestTarget target) {
-				/*Operator operatorFromDDC = item.getModelObject().getQueryFilter().getOperator();
-				
-				switch (operatorFromDDC){
-
-					case BETWEEN:{
-						secondValueTxtFld.setVisible(true);
-						break;
-					}
-					
-					default:{
-						secondValueTxtFld.setVisible(false);
-						break;
-					}
-				}*/
-				//item.addOrReplace(secondValueTxtFld);
-				target.add(secondValueTxtFld);
+				Operator operatorFromDDC = item.getModelObject().getQueryFilter().getOperator();
+				item.get("secondValue").setEnabled(operatorFromDDC.equals(Operator.BETWEEN));
+				target.add(item.get("secondValue"));
 			}
-			
 		});
-
+		item.add(operatorDdc);
+		
+		secondValueTxtFld = new TextField<String>("secondValue", new PropertyModel(item.getModelObject(), "queryFilter.secondValue"));
+		secondValueTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+		    @Override
+		    protected void onUpdate(AjaxRequestTarget target) {
+		    	/* we may want to perform some live validation based on the type of field we are selecting
+		    	 * 
+		    	 * 
+		   	if(!item.getModelObject().getStudy().getAutoGenerateBiospecimenUid()) {
+			   	 // Check BiospecimenUID is unique
+					String biospecimenUid = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
+					Biospecimen biospecimen = iArkCommonService.getBiospecimenByUid(biospecimenUid, item.getModelObject().getStudy());
+					if (biospecimen != null && biospecimen.getId() != null) {
+						error("Biospecimen UID must be unique. Please try again.");
+						target.focusComponent(getComponent());
+					}
+		   	}*/
+		    	log.info("onchange of SECOND VALUE");
+		    	target.add(feedbackPanel);
+		    }
+		});
+		secondValueTxtFld.setOutputMarkupPlaceholderTag(true);
+		secondValueTxtFld.setEnabled(false);
+		item.add(secondValueTxtFld);
 	}
 	
 	private void initFieldCategoryDdc(final ListItem<QueryFilterVO> item) {
@@ -618,7 +595,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			for (QueryFilterVO queryFilterVO: getModelObject().getQueryFilterVOs()) {
 
 				QueryFilter queryfilter = queryFilterVO.getQueryFilter();
-
+				queryfilter.setSearch(getModelObject().getSearch());
 				filterList.add(queryfilter);
 /*
 				QueryFilter queryfilter = queryFilterVO.getQueryFilter();
