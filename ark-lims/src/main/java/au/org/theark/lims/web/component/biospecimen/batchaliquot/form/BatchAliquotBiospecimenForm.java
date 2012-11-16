@@ -183,6 +183,11 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				target.add(feedbackPanel);
 			}
+			
+			@Override
+			public boolean isVisible() {
+				return false;
+			}
 		});
 		
 		add(new AjaxButton(Constants.SAVEANDCLOSE) {
@@ -461,6 +466,17 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 		boolean quantityError = false;
 		boolean treatmentTypeError = false;
 		boolean concentrationError = false;
+		List<String> biospecimenUids = new ArrayList<String>(0);
+		// Check for any repeated BiospecimenUIDs
+		for (Biospecimen biospecimen: getModelObject().getAliquots()) {
+			biospecimenUids.add(biospecimen.getBiospecimenUid());
+		}
+		Set<String> uniqueSet = new HashSet<String>(biospecimenUids);
+		
+		if(uniqueSet.size() != biospecimenUids.size()) {
+			error("Field 'Biospecimen UID' must be unique.");
+			ok = false;
+		}
 		
 		// Check for any empty required fields in list
 		for (Biospecimen biospecimen: getModelObject().getAliquots()) {
