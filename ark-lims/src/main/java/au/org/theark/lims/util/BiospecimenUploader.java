@@ -178,7 +178,7 @@ public class BiospecimenUploader {
 				
 				if (csvReader.getIndex("BIOCOLLECTION") > 0) {
 					String biocollectionUid = csvReader.get("BIOCOLLECTION");
-					BioCollection bioCollection = iLimsService.getBioCollectionByUID(biocollectionUid,this.study.getId());
+					BioCollection bioCollection = iLimsService.getBioCollectionByUID(biocollectionUid,this.study.getId(), subjectUID);
 					if(bioCollection == null){
 						bioCollection = new BioCollection();
 						bioCollection.setLinkSubjectStudy(linkSubjectStudy);

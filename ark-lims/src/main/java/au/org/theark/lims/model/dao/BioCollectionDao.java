@@ -54,8 +54,7 @@ import au.org.theark.lims.util.UniqueIdGenerator;
 @Repository("bioCollectionDao")
 public class BioCollectionDao extends HibernateSessionDao implements IBioCollectionDao {
 	private static Logger		log	= LoggerFactory.getLogger(BioCollection.class);
-	private final static String GET_BIO_COLLECTION_BY_UID_AND_STUDY_ID="select bio from BioCollection as bio left outer join bio.linkSubjectStudy as linkStudy left outer join linkStudy.study as study where bio.biocollectionUid=:biocollectionUid and study.id=:studyId";
-	
+
 	private BioCollectionUidGenerator bioCollectionUidGenerator;
 
 	@Autowired
@@ -476,10 +475,18 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		return count;
 	}
 
-	public BioCollection getBioCollectionByUID(final String biocollectionUid, final Long studyId) {
-		Query query=getSession().createQuery(BioCollectionDao.GET_BIO_COLLECTION_BY_UID_AND_STUDY_ID);
+	public BioCollection getBioCollectionByUID(final String biocollectionUid, final Long studyId, final String subjectUID) {
+		String GET_BIO_COLLECTION_BY_UID_AND_STUDY_ID_AND_SUBJECTUID=
+				"select bio from BioCollection as bio " +
+				"left outer join bio.linkSubjectStudy as linkStudy " +
+				"left outer join linkStudy.study as study " +
+				"where bio.biocollectionUid = :biocollectionUid " +
+				"and study.id = :studyId " +
+				" and linkStudy.subjectUID = :subjectUID";
+		Query query=getSession().createQuery(GET_BIO_COLLECTION_BY_UID_AND_STUDY_ID_AND_SUBJECTUID);
 		query.setString("biocollectionUid", biocollectionUid);
-		query.setLong("studyId", studyId);		
+		query.setLong("studyId", studyId);
+		query.setString("subjectUID", subjectUID);
 		BioCollection bioCollection = (BioCollection)query.uniqueResult();
 		return bioCollection;
 	}
