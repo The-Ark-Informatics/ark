@@ -25,6 +25,7 @@ import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvFreezer;
 import au.org.theark.core.model.lims.entity.InvRack;
 import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.session.ArkSession;
@@ -74,6 +75,14 @@ public class InventoryTreePanel extends Panel {
 
 		tree = new InventoryLinkTree("tree", feedbackPanel, detailContainer, containerForm, treeModel);
 		tree.setRootLess(true);
+		
+	// Study in context
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = null;
+		if(sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+			containerForm.getModelObject().setStudy(study);
+		}
 		
 		setOutputMarkupPlaceholderTag(true);
 		initialiseButtons();
@@ -319,6 +328,14 @@ public class InventoryTreePanel extends Panel {
 	 */
 	public void resetModel() {
 		LimsVO limsVo = new LimsVO();
+		
+		// Study in context
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = null;
+		if(sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+			limsVo.setStudy(study);
+		}
 		containerForm.setModelObject(limsVo);
 	}
 
