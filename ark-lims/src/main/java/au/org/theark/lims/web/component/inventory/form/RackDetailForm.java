@@ -141,6 +141,8 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		List<InvFreezer> invFreezerList = new ArrayList<InvFreezer>(0);
 		
 		List<Study> studyListForUser = new ArrayList<Study>(0);
+		studyListForUser.add(containerForm.getModelObject().getStudy());
+		/*
 		try {
 			Subject currentUser = SecurityUtils.getSubject();
 			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
@@ -155,6 +157,7 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
 		}
+		*/
 		
 		try {
 			invFreezerList = iInventoryService.searchInvFreezer(new InvFreezer(), studyListForUser);

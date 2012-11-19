@@ -39,6 +39,15 @@ public class InventoryContainerPanel extends AbstractInventoryPanel<LimsVO> {
 		this.treeModel = treeModel;
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
+		
+		// Study in context
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = null;
+		if(sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+			cpModel.getObject().setStudy(study);
+		}
+		
 		setUserStudyList();
 
 		/* Bind the CPM to the Form */
