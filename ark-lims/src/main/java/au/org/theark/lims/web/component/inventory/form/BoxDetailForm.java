@@ -209,6 +209,8 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		List<InvRack> invTankList = new ArrayList<InvRack>(0);
 		
 		List<Study> studyListForUser = new ArrayList<Study>(0);
+		studyListForUser.add(containerForm.getModelObject().getStudy());
+		/*
 		try {
 			Subject currentUser = SecurityUtils.getSubject();
 			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
@@ -223,7 +225,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
 		}
-		
+		*/
 		try {
 			invTankList = iInventoryService.searchInvRack(new InvRack(), studyListForUser);
 		}

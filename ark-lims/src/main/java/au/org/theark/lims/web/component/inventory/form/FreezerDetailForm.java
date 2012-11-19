@@ -168,7 +168,8 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		InvSite invSite = new InvSite();
 		
 		List<Study> studyListForUser = new ArrayList<Study>(0);
-		try {
+		studyListForUser.add(containerForm.getModelObject().getStudy());
+		/*try {
 			Subject currentUser = SecurityUtils.getSubject();
 			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
 			ArkUserVO arkUserVo = new ArkUserVO();
@@ -181,7 +182,7 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		}
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
-		}
+		}*/
 
 		try {
 			invSiteList = iInventoryService.searchInvSite(invSite, studyListForUser);
