@@ -78,8 +78,19 @@ public class SearchResultListPanel extends Panel {
 			}
 
 		};
+		ArkDownloadTemplateButton downloadConsentFieldTemplateButton = new ArkDownloadTemplateButton("downloadConsentFieldTemplate", "SubjectConsentFieldUpload", au.org.theark.study.web.Constants.SUBJECT_CONSENT_FIELD_TEMPLATE_CELLS) {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Could not proceed with download of the template.");
+			}
+
+		};		
+		
 		add(downloadTemplateButton);
 		add(downloadCustomFieldTemplateButton);
+		add(downloadConsentFieldTemplateButton);
 	}
 
 	/**

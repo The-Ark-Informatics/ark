@@ -628,10 +628,11 @@ public class StudyServiceImpl implements IStudyService {
 	}
 	
 	public void update(Consent consent,boolean consentFile) throws ArkSystemException, EntityNotFoundException {
-	
+
 		ConsentHistoryComparator comparator=new ConsentHistoryComparator();
 		if(consentFile ||
 				comparator.compare(iStudyDao.getConsent(consent.getId()), consent)!=0){
+			
 			createConsentHistory(consent);
 		}
 		iStudyDao.update(consent);
@@ -927,6 +928,23 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		return uploadReport;
 	}
+
+	public StringBuffer uploadAndReportSubjectConsentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId){
+		StringBuffer uploadReport = null;
+		Study study = iArkCommonService.getStudy(studyId);
+		DataUploader dataUploader = new DataUploader(study, iArkCommonService, this);
+		try {
+			//log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
+			uploadReport = dataUploader.uploadAndReportSubjectConsentDataFile(inputStream, size, fileFormat, delimChar);
+		}
+		catch (FileFormatException ffe) {
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe) {
+			log.error(Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return uploadReport;
+	}
 	
 	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
@@ -978,6 +996,19 @@ public class StudyServiceImpl implements IStudyService {
 	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert){
 		iStudyDao.processFieldsBatch(fieldsToUpdate, study, fieldsToInsert);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void processSubjectConsentBatch(List<Consent> updateConsentList, List<Consent> insertConsentList) throws ArkSystemException,EntityNotFoundException{
+		for(Consent updateConsent : updateConsentList){
+			update(updateConsent,false);
+		}
+		for(Consent insertConsent : insertConsentList){
+			create(insertConsent);
+		}
+	}
+	
 	/*
 	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList, Study study) throws ArkUniqueException, ArkSubjectInsertException {
 		iStudyDao.batchInsertSubjects(subjectList, study);

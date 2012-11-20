@@ -20,6 +20,7 @@ package au.org.theark.study.web.component.subjectUpload;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -36,6 +37,7 @@ import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.study.util.CustomFieldUploadValidator;
+import au.org.theark.study.util.SubjectConsentUploadValidator;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
@@ -112,6 +114,10 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 				//TODO : custom field validation
 				CustomFieldUploadValidator customFieldUploadValidator = new CustomFieldUploadValidator(iArkCommonService);
 				validationMessages = customFieldUploadValidator.validateCustomFieldFileFormat(containerForm.getModelObject());			
+			}
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.SUBJECT_CONSENT_DATA)){
+				SubjectConsentUploadValidator subjectConsentUploadValidator=new SubjectConsentUploadValidator();
+				validationMessages = subjectConsentUploadValidator.validateSubjectConsentFileFormat(containerForm.getModelObject());
 			}
 			else{
 				//TODO : Throw error back to user
