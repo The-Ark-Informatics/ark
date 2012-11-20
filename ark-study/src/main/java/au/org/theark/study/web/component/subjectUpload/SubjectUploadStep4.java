@@ -31,6 +31,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.study.job.SubjectConsentDataUploadExecutor;
 import au.org.theark.study.job.SubjectCustomDataUploadExecutor;
 import au.org.theark.study.job.StudyDataUploadExecutor;
 import au.org.theark.study.service.IStudyService;
@@ -83,7 +84,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 		try {			
 			List<String> uidsToUpload = containerForm.getModelObject().getUidsToUpload();
-//log.info("________________________________________________________" + "about to try passing list of uids is of size " + uidsToUpload.size() );
+			//log.info("________________________________________________________" + "about to try passing list of uids is of size " + uidsToUpload.size() );
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			long size = containerForm.getModelObject().getFileUpload().getSize();
 			Long uploadId = containerForm.getModelObject().getUpload().getId();
@@ -100,6 +101,11 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.STUDY_SPECIFIC_CUSTOM_DATA)){
 				SubjectCustomDataUploadExecutor task = new SubjectCustomDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId, //null user
 							studyId, fileFormat, delimiterChar, size, report, uidsToUpload);
+				task.run();
+			}
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.SUBJECT_CONSENT_DATA)){
+				SubjectConsentDataUploadExecutor task=new SubjectConsentDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId,
+							studyId, fileFormat, delimiterChar, size, report);
 				task.run();
 			}
 			

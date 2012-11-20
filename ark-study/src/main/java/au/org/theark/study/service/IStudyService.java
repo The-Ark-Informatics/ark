@@ -376,6 +376,15 @@ public interface IStudyService {
 	public void processBatch(List<LinkSubjectStudy> subjectsToInsert, Study study, List<LinkSubjectStudy> subjectsToUpdate);
 
 	public void processFieldsBatch(List<SubjectCustomFieldData> fieldDataList, Study study, List<SubjectCustomFieldData> fieldDataToInsert);
+	
+	/**
+	 * Process the given {@link Consent} lists separately and persist the changes to the table. 
+	 * @param updateConsentList
+	 * @param insertConsentList
+	 * @throws ArkSystemException
+	 * @throws EntityNotFoundException
+	 */
+	public void processSubjectConsentBatch(List<Consent> updateConsentList, List<Consent> insertConsentList) throws ArkSystemException,EntityNotFoundException;
 
 	public AddressType getDefaultAddressType();
 
@@ -392,4 +401,6 @@ public interface IStudyService {
 	public List<ConsentStatus> getConsentStatus();
 
 	public List<ConsentType> getConsentType();
+	
+	public StringBuffer uploadAndReportSubjectConsentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId);
 }
