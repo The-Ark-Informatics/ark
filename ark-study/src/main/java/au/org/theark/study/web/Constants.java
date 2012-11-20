@@ -349,6 +349,9 @@ public class Constants {
 			"PREVIOUS_LAST_NAME", "OTHER_EMAIL", "HEARD_ABOUT_STUDY" , "COMMENTS", "EMAIL_STATUS", "OTHER_EMAIL_STATUS", "EMAIL_STATUS",
 			"CONSENT_DATE", "CONSENT_STATUS", "CONSENT_TYPE", "CONSENT_TO_PASSIVE_DATA_GATHERING", "CONSENT_TO_ACTIVE_CONTACT", "CONSENT_TO_USE_DATA"		
 	};
+	
+	public static final String[] SUBJECT_CONSENT_TEMPLATE_HEADER = {"SUBJECTUID", "STUDY_COMPONENT", "STUDY_COMPONENT_STATUS","COMPLETED_DATE" ,"CONSENT_TYPE","CONSENT_STATUS",
+		"CONSENT_DOWNLOADED","CONSENTED_BY","CONSENT_DATE","COMMENT"};
 
 	
 	//TODO this is all for validation and templates.  maybe we need some form of validation mapping to db, entities or something like that as this will not be maintainable for long
@@ -356,6 +359,11 @@ public class Constants {
 			{ "", "SUBJECTUID", "YOUR_FIRST_CUSTOM_FIELD_NAME_HERE", "YOUR_SECOND_CUSTOM_FIELD_NAME_HERE", "AND SO ON"},
 			{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "Value for first custom field","Value for second field", "AND SO ON" },
 			{ "NOTE: Removed this first column, and replace row 2 with your actual custom field names (the headers only appear once, row 3 will have your next subject and his/her values", "", "" , "", "" } };
+
+	public static final String[][]	SUBJECT_CONSENT_FIELD_TEMPLATE_CELLS										= {
+		{ "", "SUBJECTUID", "STUDY_COMPONENT", "STUDY_COMPONENT_STATUS", "COMPLETED_DATE","CONSENT_TYPE","CONSENT_STATUS","CONSENT_DOWNLOADED","CONSENTED_BY","CONSENT_DATE","COMMENT"},
+		{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "Valid study componenet name","Valid study component Status","If status is completed then (dd/mm/yyyy)","Valid consent type","Valid consent status","Yes/No","","dd/mm/yyyy","" },
+		{ "NOTE: Removed this first column", "", "" , "", "","","","" ,"","",""} };
 
 	
 	//TODO this is all for validation and templates.  maybe we need some form of validation mapping to db, entities or something like that as this will not be maintainable for long
@@ -402,6 +410,7 @@ public class Constants {
 	// 1 digit, 1 lower, 1 upper, 1 symbol "~!@#$%^&*()_-+={}[]:;\"<>|", from 6 to 20
 	public static final String			PASSWORD_PATTERN												= "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*()_\\-\\+\\=\\{\\}\\[\\]:;\\\"<>|]).{6,20})";
 	public static final String			SUBJECT_DEMOGRAPHIC_DATA = 	"Subject Demographic Data";
+	public static final String			SUBJECT_CONSENT_DATA = 	"Subject Consent Data";
 	public static final String			STUDY_SPECIFIC_CUSTOM_DATA = "Study-specific (custom) Data";
 	public static final String			FILENAME	= "fileName";
 }

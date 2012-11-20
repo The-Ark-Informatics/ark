@@ -41,6 +41,7 @@ import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.study.util.CustomFieldUploadValidator;
+import au.org.theark.study.util.SubjectConsentUploadValidator;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
@@ -174,6 +175,14 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 				updateRows = customFieldUploadValidator.getUpdateRows();
 				errorCells = customFieldUploadValidator.getErrorCells();
 
+			}
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.SUBJECT_CONSENT_DATA)){
+				SubjectConsentUploadValidator subjectConsentUploadValidator=new SubjectConsentUploadValidator(iArkCommonService);
+				validationMessages = subjectConsentUploadValidator.validateSubjectConsentFileData(containerForm.getModelObject(), listOfUidsToUpdate);
+				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
+				insertRows = subjectConsentUploadValidator.getInsertRows();
+				updateRows = subjectConsentUploadValidator.getUpdateRows();
+				errorCells = subjectConsentUploadValidator.getErrorCells();
 			}
 			else{
 				//TODO : Throw error back to user

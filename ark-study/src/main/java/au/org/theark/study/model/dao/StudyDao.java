@@ -198,7 +198,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		session.flush();
 		session.clear();
 	}
-
+	
 	public void create(Study study, ArkUserVO arkUserVo, Collection<ArkModule> selectedModules) {
 		Session session = getSession();
 		session.save(study);
@@ -1211,7 +1211,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public Consent getConsent(Long id) throws ArkSystemException {
-		Consent consent = (Consent) getSession().get(Consent.class, id);
+		Session session=openSession();		
+		Consent consent = (Consent) session.get(Consent.class, id);
 		return consent;
 	}
 
@@ -1996,5 +1997,5 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public List<ConsentType> getConsentType() {
 		Criteria criteria = getSession().createCriteria(ConsentType.class);
 		return criteria.list();
-	}
+	} 
 }
