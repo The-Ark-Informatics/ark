@@ -207,4 +207,19 @@ public class Consent implements Serializable {
 	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
 		this.linkSubjectStudy = linkSubjectStudy;
 	}
+
+	@Override
+	public String toString() {
+		return "Consent [id=" + id + ", study=" + study.getName() + ", linkSubjectStudy="
+				+ linkSubjectStudy.getId() + ", studyComp=" + studyComp.getName()
+				+ ", studyComponentStatus=" + studyComponentStatus.getName()
+				+ ", consentStatus=" + consentStatus.getName() + ", consentType="
+				+ consentType.getName() + ", consentDate=" + consentDate
+				+ ", consentedBy=" + consentedBy + ", comments=" + comments
+				+ ", requestedDate=" + requestedDate + ", receivedDate="
+				+ receivedDate + ", completedDate=" + completedDate
+				+ ", consentDownloaded=" + consentDownloaded.getName() + "]";
+	}
+	
+	
 }
