@@ -19,6 +19,7 @@ import jxl.read.biff.BiffException;
 import org.apache.commons.collections.ListUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.util.collections.MultiMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -198,6 +199,7 @@ public class SubjectConsentUploadValidator {
 			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
 			
 			ArrayList<String> consentStudyComponentList = new ArrayList<String>();
+			MultiMap<String,String> consentUidStudyComponentMultiMap = new MultiMap<String, String>(); //= new ArrayList<String>();
 			
 			List<StudyComp> studyComList = iArkCommonService.getStudyComponentByStudy(study);
 			Map<String,StudyComp > studyCompMap = new HashMap<String,StudyComp>();
@@ -238,7 +240,7 @@ public class SubjectConsentUploadValidator {
 					errorCells.add(new ArkGridCell(0, row));
 				}
 				else{					
-					this.validateRequiredConsentField(studyCompMap,consentStudyComponentList, csvReader.getIndex("STUDY_COMPONENT"), csvReader.get("STUDY_COMPONENT"), "STUDY_COMPONENT");
+					this.validateRequiredConsentField(studyCompMap,consentUidStudyComponentMultiMap,subjectUID,csvReader.getIndex("STUDY_COMPONENT"), csvReader.get("STUDY_COMPONENT"), "STUDY_COMPONENT");
 					this.validateRequiredConsentField(studyCompStatusMap, csvReader.getIndex("STUDY_COMPONENT_STATUS"), csvReader.get("STUDY_COMPONENT_STATUS"), "STUDY_COMPONENT_STATUS");
 					this.validateRequiredConsentField(consentTypeMap, csvReader.getIndex("CONSENT_TYPE"), csvReader.get("CONSENT_TYPE"), "CONSENT_TYPE");
 					this.validateRequiredConsentField(consentStatusMap, csvReader.getIndex("CONSENT_STATUS"), csvReader.get("CONSENT_STATUS"), "CONSENT_STATUS");
@@ -301,15 +303,16 @@ public class SubjectConsentUploadValidator {
 		return dataValidationMessages;
 	}
 	
-	private void validateRequiredConsentField(final Map<String,?> map,final List<String> existingItemlist,final int col, final String cellValue, final String field){
+	private void validateRequiredConsentField(final Map<String,?> map, final MultiMap<String, String> existingItemMap, final String uid, final int col, final String cellValue, final String field){
 		if(cellValue != null && cellValue.trim().length()>0){	
 			if(map.get(cellValue.toUpperCase().trim())!=null){
-				if(existingItemlist.contains(cellValue)){
+				List<String>  values = existingItemMap.get(uid);
+				if( values != null && values.contains(cellValue.toUpperCase().trim())){
 					errorCells.add(new ArkGridCell(col, row));
 					dataValidationMessages.add(cellValue +" is already exist in the uploading list");
 				}
 				else{
-					existingItemlist.add(cellValue);
+					existingItemMap.addValue(uid, cellValue.toUpperCase().trim());
 				}
 			}else{
 				errorCells.add(new ArkGridCell(col, row));
