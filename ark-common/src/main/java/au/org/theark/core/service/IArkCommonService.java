@@ -782,6 +782,8 @@ public interface IArkCommonService<T> {
 
 	public List<QueryFilterVO> getQueryFilterVOs(Search search);
 
+	public void deleteQueryFilter(QueryFilter queryFilter);
+
 	
 	
 }

@@ -1360,5 +1360,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<QueryFilterVO> getQueryFilterVOs(Search search){
 		return studyDao.getQueryFilterVOs(search);
 	}
+
+	@Override
+	public void deleteQueryFilter(QueryFilter queryFilter) {
+		studyDao.deleteQueryFilter(queryFilter);
+	}
 	
 }

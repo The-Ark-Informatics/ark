@@ -36,6 +36,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
+import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -692,6 +693,8 @@ public interface IStudyDao {
 	public void createQueryFilters(List filterList) throws ArkSystemException;
 
 	public List<QueryFilterVO> getQueryFilterVOs(Search search);
+
+	public void deleteQueryFilter(QueryFilter queryFilter);
 
 
 }
