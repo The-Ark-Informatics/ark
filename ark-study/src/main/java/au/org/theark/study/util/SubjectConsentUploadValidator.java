@@ -191,15 +191,10 @@ public class SubjectConsentUploadValidator {
 
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			csvReader.readHeaders();
-			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	//TODO evaluate data in future to know if should get all id's in the csv, rather than getting all id's in study to compre
-			//uidsToUpdateReference = subjectUIDsAlreadyExisting;
-			List<String> fieldNameCollection = Arrays.asList(csvReader.getHeaders());
-			ArkFunction subjectCustomFieldArkFunction = iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD);
-																							//remove if not subjectuid, enforce fetch of customField to save another query each
-			List<CustomFieldDisplay> cfdsThatWeNeed = iArkCommonService.getCustomFieldDisplaysIn(fieldNameCollection, study, subjectCustomFieldArkFunction);
+
+			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);
 			
-			ArrayList<String> consentStudyComponentList = new ArrayList<String>();
-			MultiMap<String,String> consentUidStudyComponentMultiMap = new MultiMap<String, String>(); //= new ArrayList<String>();
+			MultiMap<String,String> consentUidStudyComponentMultiMap = new MultiMap<String, String>();
 			
 			List<StudyComp> studyComList = iArkCommonService.getStudyComponentByStudy(study);
 			Map<String,StudyComp > studyCompMap = new HashMap<String,StudyComp>();
