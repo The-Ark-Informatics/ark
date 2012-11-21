@@ -313,6 +313,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 
 					@Override
 					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+						iArkCommonService.deleteQueryFilter(item.getModelObject().getQueryFilter());
 						listEditor.removeItem(item);
 						target.add(form);
 					}
