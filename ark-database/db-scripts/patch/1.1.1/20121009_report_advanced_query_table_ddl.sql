@@ -1,4 +1,4 @@
-DROP TABLE `reporting`.`query_grouping` ;
+DROP TABLE IF EXISTS `reporting`.`query_grouping` ;
 
 CREATE  TABLE `reporting`.`query_grouping` (
   `ID` INT  NOT NULL AUTO_INCREMENT ,
@@ -8,7 +8,7 @@ ENGINE = InnoDB ;
 
 
 
-DROP  TABLE `reporting`.`search` ;
+DROP  TABLE IF EXISTS `reporting`.`search` ;
 CREATE  TABLE `reporting`.`search` (
   `ID` INT  NOT NULL AUTO_INCREMENT  ,
   `NAME` VARCHAR(255) NULL ,
@@ -30,7 +30,7 @@ ALTER TABLE `reporting`.`search` CHANGE COLUMN `ID` `ID` INT(11) NOT NULL AUTO_I
 
 
 
-DROP  TABLE `reporting`.`custom_field_display_search`;
+DROP  TABLE IF EXISTS `reporting`.`custom_field_display_search`;
 CREATE  TABLE `reporting`.`custom_field_display_search` (
   `ID` INT  NOT NULL AUTO_INCREMENT  ,
   `CUSTOM_FIELD_DISPLAY_ID` INT NULL ,
@@ -55,7 +55,7 @@ ALTER TABLE `reporting`.`custom_field_display_search`
 ADD UNIQUE INDEX `uq_cfds_cfd_search` (`CUSTOM_FIELD_DISPLAY_ID` ASC, `SEARCH_ID` ASC) ;
 
 
-DROP  TABLE `reporting`.`demographic_field` ;
+DROP  TABLE IF EXISTS `reporting`.`demographic_field` ;
 CREATE  TABLE `reporting`.`demographic_field` (
   `ID` INT NOT NULL AUTO_INCREMENT  ,
   `ENTITY` VARCHAR(255) NULL ,
@@ -72,7 +72,7 @@ CREATE  TABLE `reporting`.`demographic_field` (
 ENGINE = InnoDB ;
 
 
-DROP  TABLE `reporting`.`demographic_field_search`;
+DROP  TABLE IF EXISTS `reporting`.`demographic_field_search`;
 CREATE TABLE `reporting`.`demographic_field_search` (   
 	`ID` int(11)  NOT NULL AUTO_INCREMENT ,   
 	`DEMOGRAPHIC_FIELD_ID` int(11) DEFAULT NULL,   
@@ -87,8 +87,7 @@ ALTER TABLE `reporting`.`demographic_field_search`
 ADD UNIQUE INDEX `uq_dfs_df_s` (`DEMOGRAPHIC_FIELD_ID` ASC, `SEARCH_ID` ASC) ;
 
 
-
-DROP  TABLE `reporting`.`query_filter` ;
+DROP  TABLE IF EXISTS `reporting`.`query_filter` ;
 CREATE  TABLE `reporting`.`query_filter` (
   `ID` INT NOT NULL AUTO_INCREMENT ,
   `DEMOGRAPHIC_FIELD_ID` INT NULL ,
@@ -122,7 +121,7 @@ ALTER TABLE `reporting`.`query_filter`
 
 
 
-DROP  TABLE `reporting`.`query_filter_grouping`;
+DROP  TABLE IF EXISTS `reporting`.`query_filter_grouping`;
 CREATE  TABLE `reporting`.`query_filter_grouping` (
   `ID` INT  NOT NULL AUTO_INCREMENT ,
   `PARENT_GROUPING_ID` INT NOT NULL ,
@@ -146,7 +145,7 @@ ENGINE = InnoDB;
 -- TODO analyse whether we want cascade.
 
 
-DROP TABLE  `reporting`.`query_grouping_grouping`;
+DROP TABLE  IF EXISTS `reporting`.`query_grouping_grouping`;
 CREATE  TABLE `reporting`.`query_grouping_grouping` (
   `ID` INT NOT NULL AUTO_INCREMENT  ,
   `PARENT_GROUPING_ID` INT NOT NULL ,
