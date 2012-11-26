@@ -1,6 +1,10 @@
 USE `study`;
 
-DELETE FROM `upload_type`; 
+DELETE FROM `upload_type`;
+
+-- Only execute if upload_type table does not specify PK or AI 
+ALTER TABLE `study`.`upload_type` CHANGE COLUMN `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT  
+, ADD PRIMARY KEY (`ID`) ; 
 
 INSERT INTO `upload_type` (`NAME`,`DESCRIPTION`,`ARK_MODULE_ID`) VALUES 
 ('Biospecimen Custom Data','Custom Data to be associated with a biospecimen',(select id from ark_module where name = 'LIMS')),
