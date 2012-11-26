@@ -642,19 +642,7 @@ public class BiospecimenUploadValidator {
 					else{//ie; not auto gen, id supplied.
 						
 						if(biocollection == null){
-							//insertRows.add(row);	//this instance will need biocol created		
-							StringBuilder errorString = new StringBuilder();
-							errorString.append("Error: Row ");
-							errorString.append(row);
-							errorString.append(": SubjectUID: ");
-							errorString.append(subjectUID);
-							errorString.append(": BiocollectionUID: ");
-							errorString.append(biocollectionUID);
-							errorString.append(".  You have specified a BiocollectionUID that is already associated with another SubjectUID." +
-									" Please check the file and try again.");
-							dataValidationMessages.add(errorString.toString());
-							errorCells.add(new ArkGridCell(csvReader.getIndex("BIOCOLLECTIONUID"), row));
-							insertThisRow = false;//drop out also?
+							//insertRows.add(row);	//this instance will need biocol created
 						}
 						else{
 							//insertRows.add(row);  //this istance will use the provided biocol.
