@@ -64,7 +64,7 @@ drop table `admin`.`billable_item_status`;
 
 drop table `admin`.`link_billable_item_subject`;
 
---Change update type to CASCADE in fk_researcher_billing_type_id constraint
+-- Change update type to CASCADE in fk_researcher_billing_type_id constraint
 ALTER TABLE `admin`.`researcher` DROP FOREIGN KEY `fk_researcher_billing_type_id` ;
 ALTER TABLE `admin`.`researcher` 
   ADD CONSTRAINT `fk_researcher_billing_type_id`

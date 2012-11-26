@@ -6,11 +6,12 @@ from INFORMATION_SCHEMA.KEY_COLUMN_USAGE
 where REFERENCED_TABLE_NAME = 'ark_module'
 
 
---Update foreign key reference to on update cascade in following tables
+-- Update foreign key reference to on update cascade in following tables
 
 -- ark_module_function table
  ALTER TABLE `study`.`ark_module_function` DROP FOREIGN KEY `FK_ARK_MODULE_FUNCTION_ARK_MODULE_ID` ;
- ALTER TABLE `study`.`ark_module_function` 
+ 
+ALTER TABLE `study`.`ark_module_function` 
   ADD CONSTRAINT `FK_ARK_MODULE_FUNCTION_ARK_MODULE_ID`
   FOREIGN KEY (`ARK_MODULE_ID` )
   REFERENCES `study`.`ark_module` (`ID` )
@@ -75,13 +76,13 @@ ALTER TABLE `reporting`.`report_template`
  -- Rename the Work module to Work Tracking
 UPDATE `study`.`ark_module` SET `NAME`='Work Tracking' WHERE `NAME`='Work'; 
   
---Initialize the work module id
+-- Initialize the work module id
 SET @work_module_id =0; 
 
---Assign work module id
+-- Assign work module id
 select @work_module_id:=id from study.ark_module where name='Work Tracking';
 
---Increment the work module id
+-- Increment the work module id
 -- Update the Admin modue id with incremented work module id
 update study.ark_module
 set id=(@work_module_id+1)
