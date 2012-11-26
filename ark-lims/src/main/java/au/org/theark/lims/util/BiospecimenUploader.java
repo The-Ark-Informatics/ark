@@ -29,6 +29,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+
 import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +51,7 @@ import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 
@@ -124,6 +128,24 @@ public class BiospecimenUploader {
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		
+		// If Excel, convert to CSV for validation
+		if (inFileFormat.equalsIgnoreCase("XLS")) {
+			Workbook w;
+			try {
+				w = Workbook.getWorkbook(fileInputStream);
+				delimiterCharacter = ',';
+				XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+				fileInputStream = xlsToCsv.convertXlsToCsv(w);
+				fileInputStream.reset();
+			}
+			catch (BiffException e) {
+				log.error(e.getMessage());
+			}
+			catch (IOException e) {
+				log.error(e.getMessage());
+			}
+		}
 
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
@@ -176,8 +198,8 @@ public class BiospecimenUploader {
 				}
 				biospecimen.setLinkSubjectStudy(linkSubjectStudy);
 				
-				if (csvReader.getIndex("BIOCOLLECTION") > 0) {
-					String biocollectionUid = csvReader.get("BIOCOLLECTION");
+				if (csvReader.getIndex("BIOCOLLECTIONUID") > 0) {
+					String biocollectionUid = csvReader.get("BIOCOLLECTIONUID");
 					BioCollection bioCollection = iLimsService.getBioCollectionByUID(biocollectionUid,this.study.getId(), subjectUID);
 					if(bioCollection == null){
 						bioCollection = new BioCollection();
