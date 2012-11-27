@@ -428,7 +428,7 @@ public class SubjectConsentUploadValidator {
 				fileValidationMessages.add(sb.toString());
 				for(String diffColumn:diffColumnList){
 					if(requiredheaderColumnList.contains(diffColumn)){
-						fileValidationMessages.add("Error: the column name " + diffColumn + " is not specified as valid column name.");
+						fileValidationMessages.add("Error: the column name " + diffColumn + " is not specified.");
 					}
 					else{
 						fileValidationMessages.add("Error: the column name " + diffColumn + " is not a valid column name.");
