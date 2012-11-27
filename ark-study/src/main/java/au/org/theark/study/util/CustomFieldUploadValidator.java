@@ -673,8 +673,6 @@ public class CustomFieldUploadValidator {
 			try {
 				StringTokenizer tokenSpacestringTokenizer = new StringTokenizer(value, Constants.ENCODED_VALUES_FROM_TELEFORMS_TOKEN_SPACE);
 				if(isMultiSelect){
-//					StringTokenizer stringTokenizer = new StringTokenizer(value, Constants.ENCODED_VALUES_FROM_TELEFORMS_TOKEN_SPACE);
-					
 					// Iterate through all discrete defined values and compare to field data value
 					while (tokenSpacestringTokenizer.hasMoreTokens()) {
 						String encodedValueToken = tokenSpacestringTokenizer.nextToken();
