@@ -671,17 +671,22 @@ public class CustomFieldUploadValidator {
 			List<String> allMyValues = new ArrayList<String>();
 			
 			try {
+				StringTokenizer tokenSpacestringTokenizer = new StringTokenizer(value, Constants.ENCODED_VALUES_FROM_TELEFORMS_TOKEN_SPACE);
 				if(isMultiSelect){
-					StringTokenizer stringTokenizer = new StringTokenizer(value, Constants.ENCODED_VALUES_FROM_TELEFORMS_TOKEN_SPACE);
+//					StringTokenizer stringTokenizer = new StringTokenizer(value, Constants.ENCODED_VALUES_FROM_TELEFORMS_TOKEN_SPACE);
 					
 					// Iterate through all discrete defined values and compare to field data value
-					while (stringTokenizer.hasMoreTokens()) {
-						String encodedValueToken = stringTokenizer.nextToken();
+					while (tokenSpacestringTokenizer.hasMoreTokens()) {
+						String encodedValueToken = tokenSpacestringTokenizer.nextToken();
 	
 						log.info("envoded:" + encodedValueToken);
 						allMyValues.add(encodedValueToken);
 					}
-
+				}
+				else if(!isMultiSelect 
+						&& tokenSpacestringTokenizer.countTokens()>1){
+					errorMessages.add(fieldDataDoesNotAllowMultiSelectedEncodedValue(customField, value, subjectUID));
+					return false;
 				}
 				else{
 					allMyValues.add(value);
@@ -823,6 +828,25 @@ public class CustomFieldUploadValidator {
 		stringBuffer.append(value);
 		stringBuffer.append(isMultiSelect?" has value(s) not in the expected encoded values":" is not in the expected encoded values: ");
 		stringBuffer.append(field.getEncodedValues().replace('\n', ' '));
+		return (stringBuffer.toString());
+	}
+	
+	/**
+	 * Returns field doesn't allow multiselect values
+	 * @param field
+	 * @param value
+	 * @param subjectUID
+	 * @return String
+	 */
+	public static String fieldDataDoesNotAllowMultiSelectedEncodedValue(CustomField field, String value, String subjectUID) {
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("Subject UID: ");
+		stringBuffer.append(subjectUID);
+		stringBuffer.append(": ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" trying to load multiple selections into a field which doesn't allow multiselect values. Select one value from ");
+		stringBuffer.append(value);
 		return (stringBuffer.toString());
 	}
 
