@@ -35,9 +35,11 @@ public class BiospecimenListPanel extends Panel {
 
 	protected FeedbackPanel							feedbackPanel;
 	private BiospecimenListForm					listDetailForm;
+	public AbstractDetailModalWindow modalWindow;
 
-	public BiospecimenListPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<LimsVO> cpModel) {
+	public BiospecimenListPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<LimsVO> cpModel, AbstractDetailModalWindow modalWindow) {
 		super(id);
+		this.modalWindow = modalWindow;
 		this.feedbackPanel = feedbackPanel;
 		this.cpModel = cpModel;
 		initialisePanel();
@@ -45,18 +47,6 @@ public class BiospecimenListPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		final BiospecimenListPanel panelToRepaint = this;
-		AbstractDetailModalWindow modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
-
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onCloseModalWindow(AjaxRequestTarget target) {
-				target.add(panelToRepaint);
-			}
-
-		};
 		listDetailForm = new BiospecimenListForm("biospecimenListForm", feedbackPanel, modalWindow, cpModel);
 		listDetailForm.initialiseForm();
 		add(listDetailForm);

@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.swing.tree.DefaultTreeModel;
 
+import wickettree.AbstractTree;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
@@ -73,6 +74,14 @@ public class LimsVO implements Serializable {
 	
 	private List<Study>			selectedStudies;
 	private DefaultTreeModel 			treeModel;
+	protected AbstractTree<Biospecimen> tree;
+
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
 	public LimsVO() {
 		this.study = new Study();
@@ -370,5 +379,19 @@ public class LimsVO implements Serializable {
 	 */
 	public DefaultTreeModel getTreeModel() {
 		return treeModel;
+	}
+	
+	/**
+	 * @return the tree
+	 */
+	public AbstractTree<Biospecimen> getTree() {
+		return tree;
+	}
+
+	/**
+	 * @param tree the tree to set
+	 */
+	public void setTree(AbstractTree<Biospecimen> tree) {
+		this.tree = tree;
 	}
 }

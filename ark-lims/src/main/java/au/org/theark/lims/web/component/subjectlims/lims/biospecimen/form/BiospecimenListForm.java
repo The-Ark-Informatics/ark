@@ -133,7 +133,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		initialiseNewButton();
 		initialiseBatchCreateButton();
 
-		add(modalWindow);
+		//add(modalWindow);
 	}
 
 	@Override

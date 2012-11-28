@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 import wickettree.ITreeProvider;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 
 /**
@@ -21,6 +23,7 @@ public class BiospecimenProvider implements ITreeProvider<Biospecimen>
 
 	private static final long serialVersionUID = 1L;
 	private ILimsService iLimsService;
+	private CompoundPropertyModel<LimsVO> cpModel;
 
 	/**
 	 * All root {@link Biospecimen}s.
@@ -28,13 +31,10 @@ public class BiospecimenProvider implements ITreeProvider<Biospecimen>
 	private static List<Biospecimen> roots = new ArrayList<Biospecimen>();
 
 
-	public BiospecimenProvider(ILimsService iLimsService)
+	public BiospecimenProvider(ILimsService iLimsService, CompoundPropertyModel<LimsVO> cpModel)
 	{
 		this.iLimsService = iLimsService;
-		Biospecimen biospecimen = new Biospecimen();
-		biospecimen.setBiospecimenUid("SLP#21");
-		biospecimen.setParent(null);
-		roots = iLimsService.searchPageableBiospecimens(biospecimen, 0, 10);
+		this.cpModel = cpModel;
 	}
 
 	/**
@@ -46,12 +46,17 @@ public class BiospecimenProvider implements ITreeProvider<Biospecimen>
 
 	public Iterator<Biospecimen> getRoots()
 	{
+		Biospecimen b =cpModel.getObject().getBiospecimen();
+		b.setLinkSubjectStudy(cpModel.getObject().getLinkSubjectStudy());
+		b.setParent(null);
+		b.setParentUid(null);
+		roots = iLimsService.searchPageableBiospecimens(b, 0, Integer.MAX_VALUE);
 		return roots.iterator();
 	}
 
-	public boolean hasChildren(Biospecimen Biospecimen)
+	public boolean hasChildren(Biospecimen biospecimen)
 	{
-		return Biospecimen.getParent() == null || !Biospecimen.getChildren().isEmpty();
+		return biospecimen.getParent() == null || !biospecimen.getChildren().isEmpty();
 	}
 
 	public Iterator<Biospecimen> getChildren(final Biospecimen biospecimen)

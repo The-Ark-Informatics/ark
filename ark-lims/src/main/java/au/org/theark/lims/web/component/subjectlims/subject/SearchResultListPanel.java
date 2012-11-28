@@ -41,7 +41,6 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.security.AAFRealm;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.session.ArkSession;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.StudyCrudContainerVO;
@@ -52,7 +51,6 @@ import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.inventory.tree.TreeModel;
 import au.org.theark.lims.web.component.subjectlims.lims.LimsContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subjectlims.subject.form.DetailForm;
@@ -209,10 +207,12 @@ public class SearchResultListPanel extends Panel {
 
 				// Refresh the contextUpdateTarget (add)
 				if (containerForm.getContextUpdateLimsWMC() != null) {
-					Panel limsContainerPanel = new LimsContainerPanel("limsContainerPanel", arkContextMarkup);
+					Panel limsContainerPanel = new LimsContainerPanel("limsContainerPanel", arkContextMarkup, containerForm.getModel());
 					containerForm.getContextUpdateLimsWMC().setVisible(true);
 					containerForm.getContextUpdateLimsWMC().addOrReplace(limsContainerPanel);
-					target.add(containerForm.getContextUpdateLimsWMC());
+					//details.limsContainerPanel.replaceWith(limsContainerPanel);
+					details.addOrReplace(containerForm.getContextUpdateLimsWMC());
+					target.add(details);
 				}
 				
 				// Set Study Logo
