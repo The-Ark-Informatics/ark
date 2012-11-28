@@ -48,13 +48,15 @@ public class ContainerForm extends AbstractContainerForm<LimsVO> {
 	private static final long		serialVersionUID		= -3683292162832430593L;
 	private static final Logger	log						= LoggerFactory.getLogger(ContainerForm.class);
 
-	protected WebMarkupContainer	contextUpdateLimsWMC	= null;
+	protected WebMarkupContainer	contextUpdateLimsWMC;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>		iArkCommonService;
 
 	public ContainerForm(String id, CompoundPropertyModel<LimsVO> model) {
 		super(id, model);
+		contextUpdateLimsWMC	= new WebMarkupContainer("limsContainerWMC");
+		contextUpdateLimsWMC.setOutputMarkupId(true);
 	}
 
 	public WebMarkupContainer getContextUpdateLimsWMC() {

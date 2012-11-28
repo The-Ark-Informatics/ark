@@ -106,7 +106,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		initialiseDataView();
 		initialiseNewButton();
 
-		add(modalWindow);
+		//add(modalWindow);
 	}
 
 	@Override

@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims.biocollection;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -35,30 +34,19 @@ public class BioCollectionListPanel extends Panel {
 
 	protected FeedbackPanel							feedbackPanel;
 	protected BioCollectionListForm				bioCollectionListForm;
+	public AbstractDetailModalWindow modalWindow;
 
-	public BioCollectionListPanel(String id, FeedbackPanel feedbackPanel, /* AbstractDetailModalWindow modalWindow, */CompoundPropertyModel<LimsVO> cpModel) {
+	public BioCollectionListPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<LimsVO> cpModel, AbstractDetailModalWindow modalWindow) {
 		super(id);
 		this.feedbackPanel = feedbackPanel;
 		this.cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
+		this.modalWindow = modalWindow;
 
 		initialisePanel();
 		setOutputMarkupPlaceholderTag(true);
 	}
 
 	public void initialisePanel() {
-		final BioCollectionListPanel panelToRepaint = this;
-		AbstractDetailModalWindow modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
-
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onCloseModalWindow(AjaxRequestTarget target) {
-				target.add(panelToRepaint);
-			}
-
-		};
-
 		bioCollectionListForm = new BioCollectionListForm("collectionListForm", feedbackPanel, modalWindow, cpModel);
 		bioCollectionListForm.initialiseForm();
 

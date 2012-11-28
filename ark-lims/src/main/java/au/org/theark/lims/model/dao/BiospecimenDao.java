@@ -29,6 +29,7 @@ import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -186,6 +187,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		Criteria criteria = buildBiospecimenCriteria(biospecimenCriteria);
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
+		criteria.addOrder(Order.asc("id"));
 		List<Biospecimen> list = criteria.list();
 		return list;
 	}
@@ -216,6 +218,9 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		
 		if(biospecimen.getParent() != null) {
 			criteria.add(Restrictions.eq("parent", biospecimen.getParent()));
+		}
+		else {
+			criteria.add(Restrictions.isNull("parent"));
 		}
 
 		return criteria;

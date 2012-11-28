@@ -19,11 +19,11 @@
 package au.org.theark.lims.web.component.subjectlims.subject;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.lims.web.component.subjectlims.lims.LimsContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subjectlims.subject.form.DetailForm;
 
@@ -39,8 +39,8 @@ public class DetailPanel extends Panel {
 	private WebMarkupContainer	arkContextContainer;
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
-	private WebMarkupContainer	limsContainerWMC;
-	private Panel					limsContainerPanel;
+	public WebMarkupContainer	limsContainerWMC;
+	public Panel					limsContainerPanel;
 
 	public DetailPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
@@ -48,6 +48,7 @@ public class DetailPanel extends Panel {
 		this.arkContextContainer = arkContextContainer;
 		this.containerForm = containerForm;
 		this.arkCrudContainerVO = arkCrudContainerVO;
+		setOutputMarkupId(true);
 	}
 
 	public void initialisePanel() {
@@ -59,7 +60,8 @@ public class DetailPanel extends Panel {
 		limsContainerWMC = new WebMarkupContainer("limsContainerWMC");
 		limsContainerWMC.setOutputMarkupPlaceholderTag(true);
 
-		limsContainerPanel = new LimsContainerPanel("limsContainerPanel", containerForm.getModel());
+		//limsContainerPanel = new LimsContainerPanel("limsContainerPanel", containerForm.getModel());
+		limsContainerPanel = new EmptyPanel("limsContainerPanel");
 		limsContainerWMC.add(limsContainerPanel);
 		this.add(limsContainerWMC);
 	}
@@ -70,5 +72,33 @@ public class DetailPanel extends Panel {
 
 	public void setDetailsForm(DetailForm detailsForm) {
 		this.detailsForm = detailsForm;
+	}
+
+	/**
+	 * @return the limsContainerWMC
+	 */
+	public WebMarkupContainer getLimsContainerWMC() {
+		return limsContainerWMC;
+	}
+
+	/**
+	 * @param limsContainerWMC the limsContainerWMC to set
+	 */
+	public void setLimsContainerWMC(WebMarkupContainer limsContainerWMC) {
+		this.limsContainerWMC = limsContainerWMC;
+	}
+
+	/**
+	 * @return the limsContainerPanel
+	 */
+	public Panel getLimsContainerPanel() {
+		return limsContainerPanel;
+	}
+
+	/**
+	 * @param limsContainerPanel the limsContainerPanel to set
+	 */
+	public void setLimsContainerPanel(Panel limsContainerPanel) {
+		this.limsContainerPanel = limsContainerPanel;
 	}
 }
