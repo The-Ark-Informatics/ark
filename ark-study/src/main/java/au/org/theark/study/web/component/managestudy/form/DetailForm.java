@@ -428,6 +428,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 					containerForm.getModelObject().setBiospecimenUidTemplate(new BiospecimenUidTemplate());
 					initBiospecimenUid();
 				}
+				
+				
+				study.setAutoGenerateBiocollectionUid(parentStudy.getAutoGenerateBiocollectionUid());
+				study.setAutoGenerateBiospecimenUid(parentStudy.getAutoGenerateBiospecimenUid());
 
 				autoGenSubIdChkBox.setEnabled(false);
 				autoGenBiocollectionIdChkBox.setEnabled(false);
