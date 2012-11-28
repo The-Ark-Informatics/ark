@@ -41,6 +41,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.session.ArkSession;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.customfieldupload.CustomFieldUploadContainerPanel;
@@ -88,6 +89,7 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
 		this.treeModel = new TreeModel(iArkCommonService, iInventoryService).createTreeModel();
+		ArkSession.get().setNodeObject(null);
 		buildTabs();
 		
 		// Applet used for barcode printing
