@@ -30,6 +30,7 @@ import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -45,6 +46,7 @@ import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsSubjectService;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.subjectlims.lims.LimsContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
 
 /**
@@ -190,6 +192,16 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
 				//arkCrudContainerVO.getViewButtonContainer().setVisible(true);
 				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
+				
+				if (containerForm.getContextUpdateLimsWMC() != null) {
+					Panel limsContainerPanel = new LimsContainerPanel("limsContainerPanel", arkContextMarkup, containerForm.getModel());
+					containerForm.getContextUpdateLimsWMC().setVisible(true);
+					
+					detailsPanel.addOrReplace(containerForm.getContextUpdateLimsWMC());
+					containerForm.getContextUpdateLimsWMC().addOrReplace(limsContainerPanel);
+					AjaxRequestTarget target = AjaxRequestTarget.get();
+					target.add(detailsPanel);
+				}
 			}
 		}
 		else if (sessionStudyId != null) {
