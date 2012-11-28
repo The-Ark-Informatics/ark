@@ -21,6 +21,8 @@ package au.org.theark.core.model.lims.entity;
 // Generated 15/06/2011 1:22:58 PM by Hibernate Tools 3.3.0.GA
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,6 +32,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -70,6 +74,7 @@ public class BioCollection implements java.io.Serializable {
 	private String					tissuetype;
 	private String					tissueclass;
 	private String					pathlabno;
+	private Set<Biospecimen>	biospecimens = new HashSet<Biospecimen>(0);
 
 	public BioCollection() {
 	}
@@ -297,6 +302,16 @@ public class BioCollection implements java.io.Serializable {
 
 	public void setPathlabno(String pathlabno) {
 		this.pathlabno = pathlabno;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "bioCollection")
+	@OrderBy("id")
+	public Set<Biospecimen> getBiospecimens() {
+		return this.biospecimens;
+	}
+
+	public void setBiospecimens(Set<Biospecimen> biospecimens) {
+		this.biospecimens = biospecimens;
 	}
 
 	@Override
