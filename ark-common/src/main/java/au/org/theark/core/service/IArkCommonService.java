@@ -784,6 +784,6 @@ public interface IArkCommonService<T> {
 
 	public void deleteQueryFilter(QueryFilter queryFilter);
 
-	
+	public List<Study> getParentAndChildStudies(Long id);
 	
 }

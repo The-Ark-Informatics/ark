@@ -1365,5 +1365,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void deleteQueryFilter(QueryFilter queryFilter) {
 		studyDao.deleteQueryFilter(queryFilter);
 	}
+
+	@Override
+	public List getParentAndChildStudies(Long id) {
+		return studyDao.getParentAndChildStudies(id);
+	}
 	
 }

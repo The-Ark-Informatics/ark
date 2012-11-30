@@ -2389,4 +2389,41 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			getSession().delete(queryFilter);
 		}
 	}
+
+	@Override
+	public List<Study> getParentAndChildStudies(Long id) {
+		Criteria studyCriteria = getSession().createCriteria(Study.class);
+		Study study = getStudy(id);
+
+		if (study.getStudyStatus() != null) {
+			studyCriteria.add(Restrictions.eq(Constants.STUDY_STATUS, study.getStudyStatus()));
+			try {
+				StudyStatus status = getStudyStatus("Archive");
+				studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
+			}
+			catch (StatusNotAvailableException notAvailable) {
+				log.error("Cannot look up and filter on archive status. Reference data could be missing");
+			}
+		}
+		else {
+			try {
+				StudyStatus status = getStudyStatus("Archive");
+				studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
+			}
+			catch (StatusNotAvailableException notAvailable) {
+				log.error("Cannot look up and filter on archive status. Reference data could be missing");
+			}
+
+		}
+		
+		if(study.getParentStudy() != null && !study.getParentStudy().equals(study)) {
+			studyCriteria.add(Restrictions.or(Restrictions.idEq(id), Restrictions.eq("parentStudy", study.getParentStudy())));
+		}
+		else {
+			studyCriteria.add(Restrictions.or(Restrictions.idEq(id), Restrictions.eq("parentStudy", study)));
+		}
+		
+		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
+		return studyCriteria.list();
+	}
 }
