@@ -696,5 +696,7 @@ public interface IStudyDao {
 
 	public void deleteQueryFilter(QueryFilter queryFilter);
 
+	public List getParentAndChildStudies(Long id);
+
 
 }
