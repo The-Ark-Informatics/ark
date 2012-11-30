@@ -99,7 +99,7 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if(sessionStudyId != null) {
-			study = iArkCommonService.getStudy(sessionStudyId);
+			//study = iArkCommonService.getStudy(sessionStudyId);
 		}
 	}
 
@@ -161,7 +161,6 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup, treeModel);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)) {
-			clearSubjectContext();
 			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup, treeModel);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_INVENTORY)) {
