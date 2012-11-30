@@ -186,6 +186,8 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 			visible = (iArkCommonService.isSuperAdministrator(currentUsername) || 
 							(containerForm.getModelObject().getUserName() != null && containerForm.getModelObject().getUserName().equals(currentUsername)) || 
 								isNew());
+			userPasswordField.setRequired(isNew());
+			confirmPasswordField.setRequired(isNew());
 		}
 		catch (EntityNotFoundException e) {
 			// Shouldn't actually ever get here...
@@ -232,8 +234,8 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		emailTxtField.add(EmailAddressValidator.getInstance()).setLabel(new StringResourceModel("email.incorrectpattern", this, null));
 		emailTxtField.setRequired(true).setLabel(new StringResourceModel("email", this, null));
 
-		userPasswordField.setRequired(false);
-		confirmPasswordField.setRequired(false);
+		userPasswordField.setRequired(isNew());
+		confirmPasswordField.setRequired(isNew());
 
 		// Set the confirm password with a password pattern
 		userPasswordField.setLabel(Model.of("Password"));
