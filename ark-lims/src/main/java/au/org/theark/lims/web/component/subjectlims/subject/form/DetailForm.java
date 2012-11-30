@@ -278,7 +278,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		if(sessionStudyId != null) {
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			LimsVO limsVo = new LimsVO();
-			limsVo.setStudy(study);
+			//limsVo.setStudy(study);
 			containerForm.setModelObject(limsVo);
 
 			// Refresh the contextUpdateTarget (remove)
