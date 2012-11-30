@@ -190,13 +190,14 @@ public class SearchResultListPanel extends Panel {
 
 				LimsVO limsVo = new LimsVO();
 				limsVo.setLinkSubjectStudy(subjectFromBackend);
-				limsVo.setStudy(subjectFromBackend.getStudy());
+				//limsVo.setStudy(subjectFromBackend.getStudy());
 				containerForm.setModelObject(limsVo);
 
 				// Set context items
 				ContextHelper contextHelper = new ContextHelper();
-				contextHelper.setStudyContextLabel(target, subjectFromBackend.getStudy().getName(), arkContextMarkup);
-				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getSubjectUID(), arkContextMarkup);
+				//contextHelper.setStudyContextLabel(target, subjectFromBackend.getStudy().getName(), arkContextMarkup);
+				//contextHelper.setSubjectContextLabel(target, subjectFromBackend.getSubjectUID(), arkContextMarkup);
+				
 				// Always disable subjectUID
 				DetailPanel details = (DetailPanel) arkCrudContainerVO.getDetailPanelContainer().get("detailsPanel");
 				DetailForm detailsForm = (DetailForm) details.get("detailsForm");

@@ -96,12 +96,6 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		cpModel.getObject().setTreeModel(treeModel);
 		containerForm = new ContainerForm("containerForm", cpModel);
 		
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		if (sessionStudyId != null) {
-			Study study = iArkCommonService.getStudy(sessionStudyId);
-			containerForm.getModelObject().setStudy(study);
-		}
-		
 		// Added to handle for odd bug in Wicket 1.5.1...shouldn't be needed!
 		containerForm.setMultiPart(true);
 
@@ -112,6 +106,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 		containerForm.add(initialiseDetailPanel());
+		//prerenderContextCheck();
 		add(containerForm);
 	}
 	
@@ -204,9 +199,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 				}
 			}
 		}
-		else if (sessionStudyId != null) {
-			containerForm.getModelObject().setStudy(study);
-		}
+		
 		return contextLoaded;
 	}
 
@@ -232,16 +225,28 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				List<Study> studyList = new ArrayList<Study>(0);
 
-				// Restrict search if Study selected in Search form
-				if (criteriaModel.getObject().getStudy() != null && criteriaModel.getObject().getStudy().getId() != null) {
-					studyList.add(criteriaModel.getObject().getStudy());
-				}
-				else {
-					studyList = criteriaModel.getObject().getStudyList();
-					if (studyList.isEmpty()) {
-						studyList = containerForm.getStudyListForUser();
+			// Restrict search if Study selected in Search form
+				List<Study> studyList = new ArrayList<Study>(0);
+				
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				if(sessionStudyId != null) {
+					Study study = iArkCommonService.getStudy(sessionStudyId);
+				
+					if (criteriaModel.getObject().getStudy() != null && criteriaModel.getObject().getStudy().getId() != null) {
+						// Restrict search to study in drop-down
+						studyList.add(criteriaModel.getObject().getStudy());
+					}
+					else {
+						if(study.getParentStudy() !=null && study.getParentStudy().equals(study)) {
+							studyList = criteriaModel.getObject().getStudyList();
+							if (studyList.isEmpty()) {
+								studyList = containerForm.getStudyListForUser();
+							}
+						}
+						else {
+							studyList.add(study);
+						}
 					}
 				}
 
@@ -253,13 +258,25 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 
 				// Restrict search if Study selected in Search form
 				List<Study> studyList = new ArrayList<Study>(0);
-				if (criteriaModel.getObject().getStudy() != null && criteriaModel.getObject().getStudy().getId() != null) {
-					studyList.add(criteriaModel.getObject().getStudy());
-				}
-				else {
-					studyList = criteriaModel.getObject().getStudyList();
-					if (studyList.isEmpty()) {
-						studyList = containerForm.getStudyListForUser();
+				
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				if(sessionStudyId != null) {
+					Study study = iArkCommonService.getStudy(sessionStudyId);
+				
+					if (criteriaModel.getObject().getStudy() != null && criteriaModel.getObject().getStudy().getId() != null) {
+						// Restrict search to study in drop-down
+						studyList.add(criteriaModel.getObject().getStudy());
+					}
+					else {
+						if(study.getParentStudy() !=null && study.getParentStudy().equals(study)) {
+							studyList = criteriaModel.getObject().getStudyList();
+							if (studyList.isEmpty()) {
+								studyList = containerForm.getStudyListForUser();
+							}
+						}
+						else {
+							studyList.add(study);
+						}
 					}
 				}
 

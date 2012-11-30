@@ -138,14 +138,6 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 	public void initialiseForm() {
 		modalContentPanel = new EmptyPanel("content");
-		
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = null;
-		if(sessionStudyId != null) {
-			study = iArkCommonService.getStudy(sessionStudyId);
-			cpModel.getObject().setStudy(study);
-		}
-		
 		initialiseDataView();
 		initialiseNewButton();
 
@@ -271,26 +263,6 @@ public class BiospecimenListForm extends Form<LimsVO> {
 							LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUID(biospecimenFromDB.getLinkSubjectStudy().getSubjectUID(), study); 
 							biospecimenFromDB.setStudy(study);
 							biospecimenFromDB.setLinkSubjectStudy(linkSubjectStudy);
-							
-							// Set Study/SubjectUID into context
-							SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, linkSubjectStudy.getStudy().getId());
-							SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, linkSubjectStudy.getSubjectUID());
-							
-							ContextHelper contextHelper = new ContextHelper();
-							contextHelper.resetContextLabel(AjaxRequestTarget.get(), arkContextMarkup);
-							contextHelper.setStudyContextLabel(target, linkSubjectStudy.getStudy().getName(), arkContextMarkup);
-							contextHelper.setSubjectContextLabel(target, linkSubjectStudy.getSubjectUID(), arkContextMarkup);
-							
-							// Set Study Logo
-							StudyHelper studyHelper = new StudyHelper();
-							StudyCrudContainerVO studyCrudContainerVO = new StudyCrudContainerVO();
-							studyCrudContainerVO.setStudyNameMarkup(studyNameMarkup);
-							studyCrudContainerVO.setStudyLogoMarkup(studyLogoMarkup);
-							studyHelper.setStudyLogo(linkSubjectStudy.getStudy(), target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
-							
-							// Force clearing of Cache to re-load roles for the user for the study
-							arkLdapRealm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
-							aafRealm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
 							
 							newModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
 							newModel.getObject().setBiospecimen(biospecimenFromDB);
