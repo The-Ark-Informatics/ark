@@ -84,6 +84,14 @@ public class ContainerForm extends AbstractContainerForm<LimsVO> {
 			ArkModule arkModule = null;
 			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
 			studyList = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study = null;
+			if(sessionStudyId != null) {
+				study = iArkCommonService.getStudy(sessionStudyId);
+				//studyListForUser.add(study);
+				studyList = iArkCommonService.getParentAndChildStudies(sessionStudyId);
+				getModelObject().setStudyList(studyList);
+			}
 		}
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
