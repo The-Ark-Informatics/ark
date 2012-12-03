@@ -135,7 +135,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 		if (study.getParentStudy() != null && study.getParentStudy() == study) {
 			availableChildStudies = iStudyService.getChildStudyListOfParent(study);
 		}
-
+		containerForm.getModelObject().setStudy(study);
 		containerForm.getModelObject().setAvailableChildStudies(availableChildStudies);
 	}
 
