@@ -156,11 +156,13 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	@SuppressWarnings("unchecked")
 	private void initChildStudyPalette() {
 		assignedChildStudiesLabel = new Label("assignedChildStudiesLabel", "Assigned Child Studies:");
+		assignedChildStudiesLabel.setVisible(false);
 		CompoundPropertyModel<ArkUserVO> sm = (CompoundPropertyModel<ArkUserVO>) containerForm.getModel();
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "name");
 		PropertyModel<List<Study>> availableChildStudiesPm = new PropertyModel<List<Study>>(sm, "availableChildStudies");
 		PropertyModel<List<Study>> selectedChildStudiesPm = new PropertyModel<List<Study>>(sm, "selectedChildStudies");
 		assignedChildStudiesPalette = new ArkPalette("assignedChildStudiesPalette", selectedChildStudiesPm, availableChildStudiesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false);
+		assignedChildStudiesPalette.setVisible(false);
 		assignedChildStudiesNote = new Label("assignedChildStudiesNote", "Note: Child studies will have the same roles as the parent study");
 	}
 
@@ -172,11 +174,11 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		else {
 			userNameTxtField.setEnabled(true);
 		}
-		
+		Study study = containerForm.getModelObject().getStudy();
 		boolean hasChildStudies = (!containerForm.getModelObject().getAvailableChildStudies().isEmpty());
-		assignedChildStudiesLabel.setVisible(hasChildStudies);
-		assignedChildStudiesPalette.setVisible(hasChildStudies);
-		assignedChildStudiesNote.setVisible(hasChildStudies);
+		assignedChildStudiesLabel.setVisible(false);
+		assignedChildStudiesPalette.setVisible(false);
+		assignedChildStudiesNote.setVisible(study.getParentStudy() != null && !study.getParentStudy().equals(study));
 		
 		boolean visible = false;
 		try {
@@ -258,6 +260,31 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		if (containerForm.getModelObject().getMode() == Constants.MODE_NEW) {
 			try {
 				iUserService.createArkUser(containerForm.getModelObject());
+				
+			// Delete ArkUser for all unassigned child studies
+				List<Study> availableChildStudies = null;
+				availableChildStudies = iStudyService.getChildStudyListOfParent(study);
+				for (Study childStudy : availableChildStudies) {
+					iUserService.deleteArkUserRolesForStudy(childStudy, containerForm.getModelObject().getArkUserEntity());
+				}
+
+				// Update ArkUser for all child studies
+				List<Study> childStudies =availableChildStudies;
+					//containerForm.getModelObject().getSelectedChildStudies();
+				for (Study childStudy : childStudies) {
+					for (ArkUserRole parentArkUserRole : containerForm.getModelObject().getArkUserRoleList()) {
+						// Only create roles where selected
+						if (parentArkUserRole.getArkRole() != null) {
+							ArkUserRole arkUserRole = new ArkUserRole();
+							arkUserRole.setArkUser(containerForm.getModelObject().getArkUserEntity());
+							arkUserRole.setArkRole(parentArkUserRole.getArkRole());
+							arkUserRole.setArkModule(parentArkUserRole.getArkModule());
+							arkUserRole.setStudy(childStudy);
+							iUserService.createArkUserRole(arkUserRole);
+						}
+					}
+				}
+				
 				containerForm.getModelObject().setArkUserPresentInDatabase(true);
 				containerForm.getModelObject().setMode(Constants.MODE_EDIT);
 				userNameTxtField.setEnabled(false);
@@ -287,8 +314,9 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 					iUserService.deleteArkUserRolesForStudy(childStudy, containerForm.getModelObject().getArkUserEntity());
 				}
 
-				// Update ArkUser for all assigned child studies
-				List<Study> childStudies = containerForm.getModelObject().getSelectedChildStudies();
+				// Update ArkUser for all child studies
+				List<Study> childStudies =availableChildStudies;
+					//containerForm.getModelObject().getSelectedChildStudies();
 				for (Study childStudy : childStudies) {
 					for (ArkUserRole parentArkUserRole : containerForm.getModelObject().getArkUserRoleList()) {
 						// Only create roles where selected
@@ -315,7 +343,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 				this.error(new StringResourceModel("ark.system.error", this, null).getString());
 			}
 		}
-
+		target.add(this);
 		target.add(feedBackPanel);
 	}
 
