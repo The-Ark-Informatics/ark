@@ -146,6 +146,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 		areaCodeTxtFld.add(StringValidator.maximumLength(10));
 		phoneTypeChoice.setRequired(true).setLabel((new StringResourceModel("phone.phoneType.required", this, new Model<String>("Phone Type"))));
 		phoneNumberTxtFld.setRequired(true).setLabel((new StringResourceModel("phone.phoneNumber.required", this, new Model<String>("Phone Number"))));
+		phoneStatusChoice.setRequired(true).setLabel((new StringResourceModel("phone.phoneStatus.required", this, new Model<String>("Phone Status"))));
 		phoneNumberTxtFld.add(StringValidator.maximumLength(20));
 		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("phone.dateReceived.DateValidator.maximum", this, null));
 	}
