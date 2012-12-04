@@ -70,6 +70,7 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.consenthistory.LinkSubjectStudyConsentHistoryPanel;
 import au.org.theark.study.web.component.subject.ChildStudyPalettePanel;
+import au.org.theark.study.web.component.subject.ChildStudySubjectPanel;
 
 /**
  * @author nivedann
@@ -135,7 +136,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	protected WebMarkupContainer							wmcDeathDetailsContainer;
 
 	protected ChildStudyPalettePanel<SubjectVO>		childStudyPalettePanel;
-
+	protected ChildStudySubjectPanel		childStudySubjectPanel;
 	protected Study											study;
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
@@ -148,6 +149,10 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	public void onBeforeRender() {
 		childStudyPalettePanel = new ChildStudyPalettePanel<SubjectVO>("childStudyPalette", containerForm.getModel());
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(childStudyPalettePanel);
+		
+		childStudySubjectPanel = new ChildStudySubjectPanel("childStudySubjectPanel", containerForm.getModel(), arkContextMarkupContainer, (ContainerForm) containerForm, arkCrudContainerVO);
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(childStudySubjectPanel);
+		
 		consentHistoryPanel.setVisible(!isNew());
 		super.onBeforeRender();
 	}
