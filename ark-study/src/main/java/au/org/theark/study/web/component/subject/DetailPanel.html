@@ -654,9 +654,21 @@
 					&nbsp;
 				</div>
 
-				<div wicket:id="childStudyPalette">
-					[Child Study Palette]
-				</div>
+				<wicket:enclosure child="childStudyPalette">
+					<div class="customPanelBorder">
+						<div class="floatLeft50">
+							<div wicket:id="childStudyPalette">
+								[Child Study Palette]
+							</div>
+						</div>
+						
+						<div class="floatRight50">
+							<div wicket:id="childStudySubjectPanel">
+								[Child Study Subject Palette]
+							</div>
+						</div>
+					</div>
+				</wicket:enclosure>
 			</div>
 			<!-- End detailFormContainer -->
 
