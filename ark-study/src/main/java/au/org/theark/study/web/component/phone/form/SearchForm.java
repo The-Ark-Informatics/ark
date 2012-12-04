@@ -141,5 +141,6 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 		// ARK-108:: no longer do full reset to VO
 		getModelObject().getPhone().setId(null); // only reset ID (not user definable)
 		preProcessDetailPanel(target);
+		target.add(feedbackPanel);
 	}
 }
