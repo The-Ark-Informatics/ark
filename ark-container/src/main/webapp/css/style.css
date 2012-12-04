@@ -641,6 +641,24 @@ float:left;
 float:right;
 }
 
-input, button, textarea, select { font-size: 9pt; }
+input, button, textarea, select { font-size: 8pt; }
 
+.quarterLeft {
+	float:left;
+	width:24%;
+}
+.threeQuarterRight {
+	float:right;
+	width:75%;
+}
+
+.floatLeft50 {
+	float:left;
+	width:50%;
+}
+
+.floatRight50 {
+	float:right;
+	width:50%;
+}
 
