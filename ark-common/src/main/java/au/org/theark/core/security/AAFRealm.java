@@ -18,17 +18,24 @@
  ******************************************************************************/
 package au.org.theark.core.security;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.WebRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,7 +152,15 @@ public class AAFRealm extends AuthorizingRealm {
 					throw new UnknownAccountException(UNKNOWN_ACCOUNT);
 				}
 
-				sai = new SimpleAuthenticationInfo(token.getPrincipal(), token.getCredentials(), getName());
+				final WebRequest webRequest = (WebRequest) RequestCycle.get().getRequest();
+			   final HttpServletRequest httpReq = (HttpServletRequest) webRequest.getContainerRequest();
+			   
+			   String userName = httpReq.getHeader("AJP_mail");
+			   String password = httpReq.getHeader("AJP_Shib-Session-ID");
+			   
+			   if(userName !=null && password !=null) {
+			   	sai = new SimpleAuthenticationInfo(token.getPrincipal(), token.getCredentials(), getName());	
+			   }
 			}
 		}
 		catch (ArkSystemException e) {
@@ -161,4 +176,8 @@ public class AAFRealm extends AuthorizingRealm {
 	public void clearCachedAuthorizationInfo(PrincipalCollection principals) {
 		super.clearCachedAuthorizationInfo(principals);
 	}
+	
+	protected void assertCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) throws AuthenticationException {
+		
+  }
 }
