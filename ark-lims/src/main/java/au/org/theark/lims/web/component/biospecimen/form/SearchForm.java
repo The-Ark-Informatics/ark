@@ -75,6 +75,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	
 	private TextField<String>					idTxtFld;
 	private TextField<String>					biospecimenUidTxtFld;
+	private TextField<String>					bioCollectionUidTxtFld;
 	private DateTextField						sampleDateTxtFld;
 	private DropDownChoice<BioSampletype>	sampleTypeDdc;
 	
@@ -113,6 +114,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		idTxtFld = new TextField<String>("biospecimen.id");
 		
 		biospecimenUidTxtFld = new TextField<String>("biospecimen.biospecimenUid");
+		bioCollectionUidTxtFld = new TextField<String>("bioCollection.biocollectionUid");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
 
 		ArkDatePicker startDatePicker = new ArkDatePicker();
@@ -164,6 +166,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	private void addFieldComponents() {
 		add(studyDdc);
 		add(idTxtFld);
+		add(bioCollectionUidTxtFld);
 		add(biospecimenUidTxtFld);
 		add(sampleDateTxtFld);
 		add(sampleTypeDdc);
