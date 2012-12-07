@@ -2001,7 +2001,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					+ ((!subjectCFDs.isEmpty()) ? " left join fetch lss.subjectCustomFieldDataSet scfd " : "") 
 					// Force restriction on Study of search
 					+ " where lss.study.id = " + search.getStudy().getId()
-					+ lssAndPersonFilters
+					+ lssAndPersonFilters + " "
 					+ subjectCustomFieldFilters;
 			// TODO : getLSSFilters
 			// TODO : getAddress
@@ -2035,30 +2035,39 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			 * 
 			 */
 
+			// TODO TAKES TOO LONG!!!
 			//List<SubjectCustomFieldData> scfData = getCustomFieldDataFor(subjectCFDs, subjects); // todo add orderby SUBJECT... or alterative method with
-																																// order by to help us keeping track of subjects
+																
+			List<SubjectCustomFieldData> scfData = new ArrayList<SubjectCustomFieldData>(0);
+			// order by to help us keeping track of subjects
 			//log.info("we got " + scfData.size());
 			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirSubjectCustomData = allTheData.getSubjectCustomData();
 
 			for (LinkSubjectStudy lss : subjects) {
 				ExtractionVO sev = new ExtractionVO();
-				List<LinkSubjectStudy> subject = new ArrayList<LinkSubjectStudy>();
-				subject.add(lss);
 				HashMap<String, String> map = new HashMap<String, String>();
-				for (SubjectCustomFieldData data : getCustomFieldDataFor(subjectCFDs, subject)) {
-					// Determine field type and assign key value accordingly
-					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+				for (SubjectCustomFieldData data : scfData) {
+					
+					if(data.getLinkSubjectStudy().equals(lss)){
+						
+						// if any error value, then just use that
+						if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
+							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+						}
+						else {
+							// Determine field type and assign key value accordingly
+							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+							}
+							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+							}
+							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+							}
+						}
+						sev.setKeyValues(map);
 					}
-					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
-					}
-					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
-					}
-
-					sev.setKeyValues(map);
-
 				}
 				hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			}
@@ -2213,7 +2222,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 		}
 		log.info("\n\n\n\n\n filterClause = " + filterClause);
-		return filterClause;
+		return (filterClause == null ? "" : filterClause);
 	}
 
 	private String getLSSFilters(Search search, String personFilters) {
@@ -2237,7 +2246,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 		}
 		log.info("\n\n\n\n\n filterClauseAfterLSS FILTERS = " + filterClause);
-		return filterClause;
+		return (filterClause == null ? "" : filterClause);
 	}
 
 	private String getSubjectCustomFieldFilters(Search search, String subjectCustomFieldFilters) {
