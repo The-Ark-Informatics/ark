@@ -277,6 +277,14 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
 		}
+		
+		try {
+			bioCollection = iBioCollectionDao.getBioCollection(bioCollection.getId());
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		
 		String subjectUid = linkSubjectStudy.getSubjectUID();
 
 		ArkFunction arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION);
@@ -289,6 +297,8 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		bioCollectionCustomFieldData = iBioCollectionDao.getBioCollectionCustomFieldData(bioCollection, arkFunction, "ASRBNO");
 		String asrbno = bioCollectionCustomFieldData.getTextDataValue();
 
+
+		
 		String collectionDate = new String();
 		if (bioCollection.getCollectionDate() != null) {
 			collectionDate = simpleDateFormat.format(bioCollection.getCollectionDate());
