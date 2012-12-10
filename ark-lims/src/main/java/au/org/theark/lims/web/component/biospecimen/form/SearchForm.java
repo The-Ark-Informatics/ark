@@ -151,7 +151,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 			log.error(e.getMessage());
 		}
 		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
-		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer);	
+		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer);
 	}
 
 	private void initSampleTypeDdc() {
