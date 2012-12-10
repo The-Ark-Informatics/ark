@@ -2432,6 +2432,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			studyCriteria.add(Restrictions.or(Restrictions.idEq(id), Restrictions.eq("parentStudy", study)));
 		}
 		
+		studyCriteria.addOrder(Order.asc("id"));	
 		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
 		return studyCriteria.list();
 	}
