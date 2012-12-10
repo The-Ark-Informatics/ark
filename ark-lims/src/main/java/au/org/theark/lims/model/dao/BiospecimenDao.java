@@ -249,7 +249,13 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		
 		// If study chosen, restrict otherwise restrict on users' studyList
 		if(limsVo.getStudy() != null && limsVo.getStudy().getId() != null) {
-			criteria.add(Restrictions.eq("study", limsVo.getStudy()));
+			if(limsVo.getStudy().isParentStudy()) {
+				// If parent study, show all children as well
+				criteria.add(Restrictions.in("study", limsVo.getStudyList()));	
+			}
+			else {
+				criteria.add(Restrictions.eq("study", limsVo.getStudy()));
+			}
 		}
 		else {
 			criteria.add(Restrictions.in("study", limsVo.getStudyList()));	
