@@ -44,6 +44,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.HomePageMapper;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,6 @@ import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
-import au.org.theark.core.vo.StudyCrudContainerVO;
 import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
@@ -264,6 +264,8 @@ public class BiospecimenListForm extends Form<LimsVO> {
 							biospecimenFromDB.setStudy(study);
 							biospecimenFromDB.setLinkSubjectStudy(linkSubjectStudy);
 							
+							setContextItems(target, linkSubjectStudy);
+							
 							newModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
 							newModel.getObject().setBiospecimen(biospecimenFromDB);
 							newModel.getObject().setTreeModel(cpModel.getObject().getTreeModel());
@@ -273,6 +275,8 @@ public class BiospecimenListForm extends Form<LimsVO> {
 							log.error(e.getMessage());
 						}
 					}
+
+					
 				};
 
 				idLblFld = new Label("biospecimen.id", String.valueOf(biospecimen.getId()));
@@ -481,6 +485,22 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		modalWindow.show(target);
 		// refresh the feedback messages
 		target.add(feedbackPanel);
+	}
+	
+	
+	private void setContextItems(AjaxRequestTarget target, LinkSubjectStudy linkSubjectStudy) {
+		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, linkSubjectStudy.getStudy().getId());
+		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, linkSubjectStudy.getPerson().getId());
+		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
+		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, linkSubjectStudy.getSubjectUID());
+		
+		ContextHelper contextHelper = new ContextHelper();
+		contextHelper.setStudyContextLabel(target, linkSubjectStudy.getStudy().getName(), arkContextMarkup);
+		contextHelper.setSubjectContextLabel(target, linkSubjectStudy.getSubjectUID(), arkContextMarkup);
+		
+		// Set Study Logo
+		StudyHelper studyHelper = new StudyHelper();
+		studyHelper.setStudyLogo(linkSubjectStudy.getStudy(), target,  studyNameMarkup, studyLogoMarkup);
 	}
 
 	/**
