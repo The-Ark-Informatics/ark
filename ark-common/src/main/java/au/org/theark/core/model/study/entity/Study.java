@@ -37,6 +37,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import au.org.theark.core.Constants;
@@ -494,6 +495,11 @@ public class Study implements java.io.Serializable {
 	public void setAutoGenerateBiocollectionUid(
 			Boolean autoGenerateBiocollectionUid) {
 		this.autoGenerateBiocollectionUid = autoGenerateBiocollectionUid;
+	}
+
+	@Transient
+	public boolean isParentStudy() {
+		return (parentStudy != null && parentStudy.equals(this));
 	}
 
 
