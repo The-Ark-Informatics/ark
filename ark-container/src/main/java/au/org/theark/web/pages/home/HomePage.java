@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -41,6 +42,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
+import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.web.menu.AdminTabProviderImpl;
@@ -89,6 +91,11 @@ public class HomePage extends BasePage {
 		else {
 			setResponsePage(LoginPage.class);
 		}
+		
+		// Applet used for barcode printing
+		PrintAppletPanel printAppletPanel = new PrintAppletPanel("printAppletPanel", "zebra");
+		printAppletPanel.add(new AttributeModifier("class", "floatLeft"));
+		this.add(printAppletPanel);
 	}
 
 	public void onBeforeRender(){
