@@ -151,7 +151,15 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 			log.error(e.getMessage());
 		}
 		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
-		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer);
+		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer){ 
+			@Override
+			protected void onBeforeRender() {
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				Study study = iArkCommonService.getStudy(sessionStudyId);
+				cpmModel.getObject().setStudy(study);
+				super.onBeforeRender();
+			};
+		};
 	}
 
 	private void initSampleTypeDdc() {
