@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -30,6 +31,7 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
+import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
 
 /**
  * The main class that implements the common service IMainTabProvider.This contributes the Tab menu which forms the entry point into Study module. As
@@ -56,6 +58,8 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider {
 	public MainTabProviderImpl(String panelId) {
 		super(panelId);
 		moduleTabsList = new ArrayList<ITab>();
+		
+
 	}
 
 	/**
@@ -202,7 +206,7 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider {
 			panelToReturn = new StudySubMenuTab(pid, studyNameMarkup, studyLogoMarkup, arkContextMarkup, this);// The sub menus for Study
 		}
 		else if (tabName.equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_SUBJECT)) {
-			panelToReturn = new SubjectSubMenuTab(pid, arkContextMarkup);
+			panelToReturn = new SubjectSubMenuTab(pid, arkContextMarkup, studyNameMarkup, studyLogoMarkup);
 		}
 		return panelToReturn;
 	}
