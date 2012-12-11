@@ -92,10 +92,7 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		ArkSession.get().setNodeObject(null);
 		buildTabs();
 		
-		// Applet used for barcode printing
-		PrintAppletPanel printAppletPanel = new PrintAppletPanel("printAppletPanel", "zebra");
-		printAppletPanel.add(new AttributeModifier("class", "floatLeft"));
-		this.add(printAppletPanel);
+
 		
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if(sessionStudyId != null) {

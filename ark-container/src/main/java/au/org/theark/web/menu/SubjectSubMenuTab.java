@@ -36,6 +36,9 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
+import au.org.theark.lims.service.IInventoryService;
+import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
+import au.org.theark.lims.web.component.inventory.tree.TreeModel;
 import au.org.theark.phenotypic.web.component.phenodataentry.PhenoCollectionDataEntryContainerPanel;
 import au.org.theark.study.web.component.address.AddressContainerPanel;
 import au.org.theark.study.web.component.attachments.AttachmentsContainerPanel;
@@ -59,7 +62,8 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
 
-
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
+	private IInventoryService					iInventoryService;
 
 	private WebMarkupContainer	studyNameMarkup;
 	private WebMarkupContainer	studyLogoMarkup;
@@ -69,9 +73,11 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 	/**
 	 * @param id
 	 */
-	public SubjectSubMenuTab(String id, WebMarkupContainer arkContextMarkup) {
+	public SubjectSubMenuTab(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 		buildTabs();
 		
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -131,6 +137,11 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 						// Clear cache to determine permissions
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC, arkFunction);
 						panelToReturn = new PhenoCollectionDataEntryContainerPanel(panelId).initialisePanel();
+					}
+					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)) {
+						// Clear cache to determine permissions
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS, arkFunction);
+						panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup, new TreeModel(iArkCommonService, iInventoryService).createTreeModel());
 					}
 					return panelToReturn;
 				}
