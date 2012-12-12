@@ -62,6 +62,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.panel.collapsiblepanel.CollapsiblePanel;
@@ -448,11 +449,20 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		subjectUIDTxtFld.setEnabled(true);
 		SubjectVO subjectVO = new SubjectVO();
 
-		// Set study in conext
+		// Set study in context
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		subjectVO.getLinkSubjectStudy().setStudy(study);
+		subjectVO.setStudyList(containerForm.getModelObject().getStudyList());
 		containerForm.setModelObject(subjectVO);
+		
+		// Clear subject in context
+		ContextHelper contextHelper = new ContextHelper();
+		contextHelper.resetContextLabel(target, arkContextMarkupContainer);
+		contextHelper.setStudyContextLabel(target, study.getName(), arkContextMarkupContainer);
+		
+		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, null);
+		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, null);
 	}
 
 	/*
