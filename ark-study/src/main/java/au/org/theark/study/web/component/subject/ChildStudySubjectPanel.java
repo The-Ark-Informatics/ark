@@ -33,13 +33,16 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.palette.ArkPalette;
@@ -135,7 +138,8 @@ public class ChildStudySubjectPanel extends Panel {
 	}
 	
 	private void setSubjectIntoContext(AjaxRequestTarget target, final SubjectVO subject) {
-		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, subject.getLinkSubjectStudy().getStudy().getId());
+		Study study = subject.getLinkSubjectStudy().getStudy();
+		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, study.getId());
 
 		// We specify the type of person here as Subject
 		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getLinkSubjectStudy().getPerson().getId());
@@ -152,9 +156,21 @@ public class ChildStudySubjectPanel extends Panel {
 		List<Study> availableChildStudies = new ArrayList<Study>(0);
 		List<Study> selectedChildStudies = new ArrayList<Study>(0);
 
-		if (subject.getLinkSubjectStudy().getStudy().getParentStudy() != null) {
-			availableChildStudies = iStudyService.getChildStudyListOfParent(subject.getLinkSubjectStudy().getStudy());
-			selectedChildStudies = iArkCommonService.getAssignedChildStudyListForPerson(subject.getLinkSubjectStudy().getStudy(), subjectFromBackend.getLinkSubjectStudy().getPerson());
+		if (study.getParentStudy() != null) {
+			availableChildStudies = iStudyService.getChildStudyListOfParent(study);
+			Person person = null;
+			try {
+				person = iStudyService.getPerson(subject.getLinkSubjectStudy().getPerson().getId());
+			}
+			catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (ArkSystemException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			selectedChildStudies = iArkCommonService.getAssignedChildStudyListForPerson(study, person);
 		}
 
 		ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
@@ -166,7 +182,15 @@ public class ChildStudySubjectPanel extends Panel {
 		// Set SubjectUID into context
 		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getLinkSubjectStudy().getSubjectUID());
 		ContextHelper contextHelper = new ContextHelper();
-		contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
-		contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
+		contextHelper.setStudyContextLabel(target, study.getName(), arkContextMarkup);
+		contextHelper.setSubjectContextLabel(target, subject.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
+		
+		// Set Study Logo
+		StudyHelper studyHelper = new StudyHelper();
+		WebMarkupContainer wmc = (WebMarkupContainer) getParent();
+		au.org.theark.study.web.component.subject.form.DetailForm detailForm = (au.org.theark.study.web.component.subject.form.DetailForm) wmc.getParent();
+		au.org.theark.study.web.component.subject.DetailPanel detailPanel = (au.org.theark.study.web.component.subject.DetailPanel) detailForm.getParent();
+		
+		studyHelper.setStudyLogo(study, target, detailPanel.studyNameMarkup, detailPanel.studyLogoMarkup);
 	}
 }

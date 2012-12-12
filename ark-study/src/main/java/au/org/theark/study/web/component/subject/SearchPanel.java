@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subject;
 
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -40,6 +41,9 @@ public class SearchPanel extends Panel {
 	private FeedbackPanel					feedBackPanel;
 	private PageableListView<SubjectVO>	listView;
 	private ArkCrudContainerVO				arkCrudContainerVO;
+	protected WebMarkupContainer arkContextMarkup;
+	protected WebMarkupContainer studyNameMarkup;
+	protected WebMarkupContainer studyLogoMarkup; 
 
 	/**
 	 * Constructor
@@ -49,16 +53,22 @@ public class SearchPanel extends Panel {
 	 * @param listView
 	 * @param arkCrudContainerVO
 	 * @param containerForm
+	 * @param studyLogoMarkup 
+	 * @param studyNameMarkup 
+	 * @param studyLogoMarkup2 
 	 */
-	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<SubjectVO> listView, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<SubjectVO> listView, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id);
 		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;
+		this.arkContextMarkup = arkContextMarkup;
 		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 	}
 
 	public void initialisePanel(CompoundPropertyModel<SubjectVO> subjectVoCpm) {
-		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, subjectVoCpm, listView, feedBackPanel, arkCrudContainerVO);
+		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, subjectVoCpm, listView, feedBackPanel, arkCrudContainerVO, arkContextMarkup, studyNameMarkup, studyLogoMarkup);
 		add(searchStudyCompForm);
 	}
 }
