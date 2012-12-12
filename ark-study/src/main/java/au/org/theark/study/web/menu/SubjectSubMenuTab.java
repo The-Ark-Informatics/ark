@@ -52,6 +52,7 @@ import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataCont
  * @author cellis
  * 
  */
+@Deprecated
 public class SubjectSubMenuTab extends AbstractArkTabPanel {
 
 	private static final long	serialVersionUID	= -467105983288558903L;
@@ -93,7 +94,7 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 					Panel panelToReturn = null;// Set
 					if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT)) {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
-						panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup);// Note the constructor
+						panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup, null, null);// Note the constructor
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHONE)) {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);

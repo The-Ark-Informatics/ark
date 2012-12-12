@@ -80,24 +80,33 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	private ArkDataProvider<SubjectVO, IArkCommonService>	subjectProvider;
 	private Long														sessionStudyId;
 	private Study														study = new Study();
+	protected WebMarkupContainer studyNameMarkup;
+	protected WebMarkupContainer studyLogoMarkup;
 
 	/**
 	 * @param id
+	 * @param studyLogoMarkup 
+	 * @param studyNameMarkup 
 	 */
-	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
+	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
-		
-		// Restrict to subjects in current study in session
-		sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		if (sessionStudyId != null) {
-			study = iArkCommonService.getStudy(sessionStudyId);
-		}
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 		
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<SubjectVO>(new SubjectVO());
-		containerForm = new ContainerForm("containerForm", cpModel);
+		
+		
+	// Restrict to subjects in current study in session
+		sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if (sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+			List<Study> studyListForUser = iArkCommonService.getParentAndChildStudies(sessionStudyId);
+			cpModel.getObject().setStudyList(studyListForUser);
+		}
 
+		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchResults());
@@ -124,6 +133,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 					subjectVO.getLinkSubjectStudy().setPerson(person); // must have Person
 					subjectVO.getLinkSubjectStudy().setStudy(study); // must have Study
 					List<SubjectVO> subjectList = (List<SubjectVO>) iArkCommonService.getSubject(subjectVO);
+					subjectList.get(0).setStudyList(cpModel.getObject().getStudyList());
 					containerForm.setModelObject(subjectList.get(0));
 					contextLoaded = true;
 				}
@@ -162,7 +172,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	protected WebMarkupContainer initialiseSearchPanel() {
 		containerForm.getModelObject().getLinkSubjectStudy().setStudy(study);
 
-		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView, arkCrudContainerVO, containerForm);
+		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView, arkCrudContainerVO, containerForm, arkContextMarkup, studyNameMarkup, studyLogoMarkup);
 
 		searchPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
@@ -170,7 +180,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailPanel = new DetailPanel("detailPanel", feedBackPanel, arkContextMarkup, containerForm, arkCrudContainerVO);
+		detailPanel = new DetailPanel("detailPanel", feedBackPanel, arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup);
 		detailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
@@ -178,12 +188,12 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
 	@SuppressWarnings("unchecked")
 	protected WebMarkupContainer initialiseSearchResults() {
-		searchResultsPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO);
+		searchResultsPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup);
 
 		if (sessionStudyId != null) {
 			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 			linkSubjectStudy.setStudy(study);
-			containerForm.getModelObject().setLinkSubjectStudy(linkSubjectStudy);
+			//containerForm.getModelObject().setLinkSubjectStudy(linkSubjectStudy);
 		}
 
 		// Data providor to paginate resultList
