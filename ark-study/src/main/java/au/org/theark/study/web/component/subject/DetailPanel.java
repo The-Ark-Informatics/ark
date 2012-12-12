@@ -38,6 +38,8 @@ public class DetailPanel extends Panel {
 	private WebMarkupContainer	arkContextContainer;
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
+	protected WebMarkupContainer studyNameMarkup;
+	protected WebMarkupContainer studyLogoMarkup;
 
 	public DetailPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
@@ -45,6 +47,17 @@ public class DetailPanel extends Panel {
 		this.arkContextContainer = arkContextContainer;
 		this.containerForm = containerForm;
 		this.arkCrudContainerVO = arkCrudContainerVO;
+	}
+
+	public DetailPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO,
+			WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
+		super(id);
+		this.feedBackPanel = feedBackPanel;
+		this.arkContextContainer = arkContextContainer;
+		this.containerForm = containerForm;
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 	}
 
 	public void initialisePanel() {

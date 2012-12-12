@@ -44,6 +44,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
@@ -67,13 +68,17 @@ public class SearchResultListPanel extends Panel {
 	private IArkCommonService	iArkCommonService;
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService		iStudyService;
+	private WebMarkupContainer studyNameMarkup;
+	private WebMarkupContainer studyLogoMarkup;
 
-	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 
 		super(id);
 		this.subjectContainerForm = containerForm;
 		this.arkContextMarkup = arkContextMarkup;
 		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 	}
 
 	public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider) {
@@ -176,9 +181,10 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				subject.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
+				//subject.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 
 				// We specify the type of person here as Subject
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, subject.getLinkSubjectStudy().getStudy().getId());
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getLinkSubjectStudy().getPerson().getId());
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 
@@ -193,13 +199,13 @@ public class SearchResultListPanel extends Panel {
 				List<Study> availableChildStudies = new ArrayList<Study>(0);
 				List<Study> selectedChildStudies = new ArrayList<Study>(0);
 
-				if (subject.getLinkSubjectStudy().getStudy().getParentStudy() != null) {
-					availableChildStudies = iStudyService.getChildStudyListOfParent(subject.getLinkSubjectStudy().getStudy());
-					selectedChildStudies = iArkCommonService.getAssignedChildStudyListForPerson(subject.getLinkSubjectStudy().getStudy(), subjectFromBackend.getLinkSubjectStudy().getPerson());
+				if (subjectFromBackend.getLinkSubjectStudy().getStudy().getParentStudy() != null) {
+					availableChildStudies = iStudyService.getChildStudyListOfParent(subjectFromBackend.getLinkSubjectStudy().getStudy());
+					selectedChildStudies = iArkCommonService.getAssignedChildStudyListForPerson(subjectFromBackend.getLinkSubjectStudy().getStudy(), subjectFromBackend.getLinkSubjectStudy().getPerson());
 				}
 
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-
+				subjectFromBackend.setStudyList(subjectContainerForm.getModelObject().getStudyList());
 				subjectContainerForm.setModelObject(subjectFromBackend);
 				subjectContainerForm.getModelObject().setAvailableChildStudies(availableChildStudies);
 				subjectContainerForm.getModelObject().setSelectedChildStudies(selectedChildStudies);
@@ -209,6 +215,10 @@ public class SearchResultListPanel extends Panel {
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
 				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
+				
+				// Set Study Logo
+				StudyHelper studyHelper = new StudyHelper();
+				studyHelper.setStudyLogo(subjectFromBackend.getLinkSubjectStudy().getStudy(), target, studyNameMarkup, studyLogoMarkup);
 			}
 		};
 		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getLinkSubjectStudy().getSubjectUID());
