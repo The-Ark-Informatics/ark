@@ -23,8 +23,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -33,7 +36,11 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
@@ -41,8 +48,11 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
@@ -53,16 +63,20 @@ import au.org.theark.study.web.Constants;
  * 
  */
 public class SearchForm extends AbstractSearchForm<SubjectVO> {
-
-
 	private static final long						serialVersionUID	= 1L;
+	protected static final Logger				log					= LoggerFactory.getLogger(SearchForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
 
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService							iStudyService;
+	
+	protected WebMarkupContainer arkContextMarkup;
+	protected WebMarkupContainer studyNameMarkup;
+	protected WebMarkupContainer studyLogoMarkup;
 
+	private DropDownChoice<Study>					studyDdc;
 	private TextField<String>						subjectUIDTxtFld;
 	private TextField<String>						firstNameTxtFld;
 	private TextField<String>						middleNameTxtFld;
@@ -79,13 +93,20 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	/**
 	 * @param id
 	 * @param cpmModel
+	 * @param arkContextMarkup 
+	 * @param studyNameMarkup s
+	 * @param studyLogoMarkup
 	 */
-	public SearchForm(String id, CompoundPropertyModel<SubjectVO> cpmModel, PageableListView<SubjectVO> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchForm(String id, CompoundPropertyModel<SubjectVO> cpmModel, PageableListView<SubjectVO> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		// super(id, cpmModel);
 		super(id, cpmModel, feedBackPanel, arkCrudContainerVO);
 
 		this.cpmModel = cpmModel;
 		//this.listView = listView;
+		this.arkContextMarkup = arkContextMarkup;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
+		
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -93,6 +114,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	}
 
 	protected void addSearchComponentsToForm() {
+		add(studyDdc);
 		add(subjectUIDTxtFld);
 		add(firstNameTxtFld);
 		add(middleNameTxtFld);
@@ -104,6 +126,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	}
 
 	protected void initialiseSearchForm() {
+		initStudyDdc();
 		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
@@ -116,6 +139,54 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		ArkDatePicker dobDatePicker = new ArkDatePicker();
 		dobDatePicker.bind(dateOfBirthTxtFld);
 		dateOfBirthTxtFld.add(dobDatePicker);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void initStudyDdc() {
+		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
+		PropertyModel<Study> studyPm = new PropertyModel<Study>(subjectCpm, "linkSubjectStudy.study");
+		ChoiceRenderer choiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		List<Study> studyListForUser = new ArrayList<Study>(0);
+		try {
+			Subject currentUser = SecurityUtils.getSubject();
+			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+			
+			//Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+			//ArkModule arkModule = null;
+			//arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
+			//studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+			
+			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			if(sessionStudyId != null) {
+				studyListForUser = iArkCommonService.getParentAndChildStudies(sessionStudyId);
+				cpmModel.getObject().setStudyList(studyListForUser);
+			}
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
+		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer);
+		studyDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, studyDdc.getModelObject().getId());
+				ContextHelper contextHelper = new ContextHelper();
+				contextHelper.resetContextLabel(target, arkContextMarkup);
+				contextHelper.setStudyContextLabel(target, studyDdc.getModelObject().getName(), arkContextMarkup);
+				StudyHelper studyHelper = new StudyHelper();
+				studyHelper.setStudyLogo(studyDdc.getModelObject(), target, studyNameMarkup, studyLogoMarkup);
+				target.add(SearchForm.this);
+			}
+		});
 	}
 
 	@SuppressWarnings("unchecked")
@@ -180,7 +251,9 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
+		//getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
+		
+		getModelObject().getLinkSubjectStudy().getStudy();
 
 		long count = iArkCommonService.getStudySubjectCount(cpmModel.getObject());
 		if (count == 0L) {
@@ -195,6 +268,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	protected void onBeforeRender() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
+		cpmModel.getObject().getLinkSubjectStudy().setStudy(study);
 		boolean parentStudy = (study.getParentStudy() == null || (study.getParentStudy() == study));
 		newButton.setEnabled(parentStudy);
 		super.onBeforeRender();
