@@ -61,7 +61,7 @@ public class SubjectVO implements Serializable {
 	private List<Study>			availableChildStudies;
 	private List<Study>			selectedChildStudies;
 
-
+	private List<Study>			studyList;
 
 	
 	public SubjectVO() {
@@ -74,6 +74,7 @@ public class SubjectVO implements Serializable {
 		subjectPreviousLastname = new String();
 		availableChildStudies = new ArrayList<Study>();
 		selectedChildStudies  = new ArrayList<Study>();
+		studyList = new ArrayList<Study>();
 	}
 
 	public String getSubjectFullName() {
@@ -231,5 +232,20 @@ public class SubjectVO implements Serializable {
 	 */
 	public List<Study> getSelectedChildStudies() {
 		return selectedChildStudies;
+	}
+	
+	/**
+	 * @return the studyList
+	 */
+	public List<Study> getStudyList() {
+		return studyList;
+	}
+
+	/**
+	 * @param studyList
+	 *           the studyList to set
+	 */
+	public void setStudyList(List<Study> studyList) {
+		this.studyList = studyList;
 	}
 }
