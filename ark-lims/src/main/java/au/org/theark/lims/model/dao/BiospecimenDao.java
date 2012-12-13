@@ -714,4 +714,12 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		List<BiospecimenProtocol> list = criteria.list();
 		return list;
 	}
+
+	public List<Biospecimen> getRootBiospecimensForBiocollection(BioCollection bc) {
+		Criteria criteria = getSession().createCriteria(Biospecimen.class);
+		criteria.add(Restrictions.eq("bioCollection", bc));
+		criteria.add(Restrictions.isNull("parent"));
+		List<Biospecimen> list = criteria.list();
+		return list;
+	}
 }

@@ -369,4 +369,6 @@ public interface ILimsService {
 	public void batchAliquotBiospecimens(List<Biospecimen> biospecimenList);
 
 	public List<BiospecimenProtocol> getBiospecimenProtocolList();
+
+	public List<Biospecimen> getRootBiospecimensForBiocollection(BioCollection bc);
 }
