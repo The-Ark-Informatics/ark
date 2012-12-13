@@ -830,4 +830,8 @@ public class LimsServiceImpl implements ILimsService {
 	public List<BiospecimenProtocol> getBiospecimenProtocolList() {
 		return iBiospecimenDao.getBiospecimenProtocolList();
 	}
+
+	public List<Biospecimen> getRootBiospecimensForBiocollection(BioCollection bc) {
+		return iBiospecimenDao.getRootBiospecimensForBiocollection(bc);
+	}
 }
