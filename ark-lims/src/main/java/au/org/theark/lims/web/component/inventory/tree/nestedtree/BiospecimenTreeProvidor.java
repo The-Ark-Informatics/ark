@@ -42,7 +42,7 @@ public class BiospecimenTreeProvidor implements ITreeProvider<Object> {
 		}
 		if(obj instanceof BioCollection) {
 			BioCollection bc = (BioCollection)obj;
-			return bc.getBiospecimens().iterator();
+			return iLimsService.getRootBiospecimensForBiocollection(bc).iterator();
 		}
 		else if (obj instanceof Biospecimen) {
 			Biospecimen childBiospecimen = new Biospecimen();
