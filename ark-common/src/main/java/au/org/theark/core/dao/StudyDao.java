@@ -59,6 +59,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
+import au.org.theark.core.model.report.entity.BiospecimenFieldSearch;
 import au.org.theark.core.model.report.entity.CustomFieldDisplaySearch;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.DemographicFieldSearch;
@@ -1601,25 +1602,27 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public boolean update(SearchVO searchVO) throws EntityExistsException {
+		//start save basic search info
 		boolean success = true;
 		Search search = searchVO.getSearch();
 		log.info("search name" + search.getName());
 		if (isSearchNameTaken(search.getName(), search.getStudy(), search.getId())) {
 			throw new EntityExistsException("Search name '" + search.getName() + "' is already taken.  Please select a unique name");
 		}
-		// log.info("search name" + search.getName());
 		getSession().update(search);
 		getSession().flush();
-		// log.info("search name" + search.getName());
 		getSession().refresh(search);
-		// log.info("search name" + search.getName());
+//end save basic search info
+	
+		
 
+		
+//start save demographic fields
 		Collection<DemographicField> listOfDemographicFieldsFromVO = searchVO.getSelectedDemographicFields();
 		List<DemographicFieldSearch> nonPoppableDFS = new ArrayList<DemographicFieldSearch>();
 		nonPoppableDFS.addAll(search.getDemographicFieldsToReturn());
 		List<DemographicField> nonPoppableDemographicFieldsFromVO = new ArrayList<DemographicField>();
 		nonPoppableDemographicFieldsFromVO.addAll(listOfDemographicFieldsFromVO);
-
 		for (DemographicFieldSearch dfs : nonPoppableDFS) {
 			log.info("fields to return=" + search.getDemographicFieldsToReturn().size());
 			boolean toBeDeleted = true; // if we find no match along the way,
@@ -1629,14 +1632,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				if (dfs.getDemographicField().getId().equals(field.getId())) {
 					toBeDeleted = false;
 					log.info("listOfDemographicFieldsFromVO.size()" + listOfDemographicFieldsFromVO.size());
-					listOfDemographicFieldsFromVO.remove(field);// we found it,
-					// therefore
-					// remove it
-					// from the list
-					// that will
-					// ultimately be
-					// added as
-					// DFS's
+					listOfDemographicFieldsFromVO.remove(field);
+					// we found it, therefore  remove it  from the list that will ultimately be added as DFS's
 					log.info("after removal listOfDemographicFieldsFromVO.size()" + listOfDemographicFieldsFromVO.size());
 				}
 			}
@@ -1657,21 +1654,69 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			getSession().save(dfs);
 		}
 		searchVO.setSelectedDemographicFields(nonPoppableDemographicFieldsFromVO);
+//end save demographic fields
+		
+				
+					
+		
+		
+		
+		
+		
+		
+		
+		
+//start save biospecimen fields
+		Collection<BiospecimenField> listOfBiospecimenFieldsFromVO = searchVO.getSelectedBiospecimenFields();
+		List<BiospecimenFieldSearch> nonPoppableBiospecimenFS = new ArrayList<BiospecimenFieldSearch>();
+		nonPoppableBiospecimenFS.addAll(search.getBiospecimenFieldsToReturn());
+		List<BiospecimenField> nonPoppableBiospecimenFieldsFromVO = new ArrayList<BiospecimenField>();
+		nonPoppableBiospecimenFieldsFromVO.addAll(listOfBiospecimenFieldsFromVO);
+		for (BiospecimenFieldSearch bfs : nonPoppableBiospecimenFS) {
+			log.info("fields to return=" + search.getBiospecimenFieldsToReturn().size());
+			boolean toBeDeleted = true; // if we find no match along the way,
+			// conclude that it has been deleted.
 
+			for (BiospecimenField field : nonPoppableBiospecimenFieldsFromVO) {
+				if (bfs.getBiospecimenField().getId().equals(field.getId())) {
+					toBeDeleted = false;
+					log.info("listOfBiospecimenFieldsFromVO.size()" + listOfBiospecimenFieldsFromVO.size());
+					listOfBiospecimenFieldsFromVO.remove(field);
+					// we found it, therefore  remove it  from the list that will ultimately be added as DFS's
+					log.info("after removal listOfBiospecimenFieldsFromVO.size()" + listOfBiospecimenFieldsFromVO.size());
+				}
+			}
+			if (toBeDeleted) {
+				log.info("before delete");
+				search.getBiospecimenFieldsToReturn().remove(bfs);
+				getSession().update(search);
+				getSession().delete(bfs);
+				// setBiospecimenFieldsToReturn(getBiospecimenFieldsToReturn());
+				getSession().flush();
+				getSession().refresh(search);
+				log.info("after delete" + search.getBiospecimenFieldsToReturn().size());
+			}
+		}
+
+		for (BiospecimenField field : listOfBiospecimenFieldsFromVO) {
+			BiospecimenFieldSearch bfs = new BiospecimenFieldSearch(field, search);
+			getSession().save(bfs);
+		}
+		searchVO.setSelectedBiospecimenFields(nonPoppableBiospecimenFieldsFromVO);
+//end save biospecimen fields
+		
+		
+		
+//start saving all custom display fields		
 		Collection<CustomFieldDisplay> listOfPhenoCustomFieldDisplaysFromVO = searchVO.getSelectedPhenoCustomFieldDisplays();
 		Collection<CustomFieldDisplay> listOfSubjectCustomFieldDisplaysFromVO = searchVO.getSelectedSubjectCustomFieldDisplays();
 		Collection<CustomFieldDisplay> listOfBiospecimenCustomFieldDisplaysFromVO = searchVO.getSelectedBiospecimenCustomFieldDisplays();
 		Collection<CustomFieldDisplay> listOfBiocollectionCustomFieldDisplaysFromVO = searchVO.getSelectedBiocollectionCustomFieldDisplays();// we
 																																															// really
 																																															// can
-		// add them all
-		// here and add
-		// to one
-		// collections
-
+		// add them all here and add to one collections
 		List<CustomFieldDisplaySearch> nonPoppablePhenoCFDs = new ArrayList<CustomFieldDisplaySearch>();
-		// List<CustomFieldDisplaySearch> nonPoppableSubjectCFDs = new
-		// ArrayList<CustomFieldDisplaySearch>();
+		// List<CustomFieldDisplaySearch> nonPoppableSubjectCFDs = new ArrayList<CustomFieldDisplaySearch>();
 		nonPoppablePhenoCFDs.addAll(search.getCustomFieldsToReturn());
 		List<CustomFieldDisplay> nonPoppableCustomFieldsFromVO = new ArrayList<CustomFieldDisplay>();
 		nonPoppableCustomFieldsFromVO.addAll(listOfPhenoCustomFieldDisplaysFromVO);
@@ -1693,22 +1738,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			for (CustomFieldDisplay field : nonPoppableCustomFieldsFromVO) {
 				if (cfds.getCustomFieldDisplay().getId().equals(field.getId())) {
 					toBeDeleted = false;
-					/*
-					 * log.info("listOfCustomFieldDisplaysFromVO.size()" + listOfPhenoCustomFieldDisplaysFromVO.size());
+					/* log.info("listOfCustomFieldDisplaysFromVO.size()" + listOfPhenoCustomFieldDisplaysFromVO.size());
 					 * listOfPhenoCustomFieldDisplaysFromVO.remove(field);//we found it, therefore remove it from the list that will ultimately be added as
 					 * DFS's log.info( "after removal listOfCustomFieldDisplaysFromVO.size()" + listOfPhenoCustomFieldDisplaysFromVO.size());
 					 */
 					log.info("poppableCustomFieldsFromVO.size()" + poppableCustomFieldsFromVO.size());
 					poppableCustomFieldsFromVO.remove(field);// we found it,
-					// therefore
-					// remove it
-					// from the list
-					// that will
-					// ultimately be
-					// added as
-					// DFS's
+					// therefore remove it from the list that will ultimately be added as DFS's
 					log.info("after removal poppableCustomFieldsFromVO.size()" + poppableCustomFieldsFromVO.size());
-
 				}
 			}
 			if (toBeDeleted) {
@@ -1727,10 +1764,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			CustomFieldDisplaySearch cfds = new CustomFieldDisplaySearch(field, search);
 			getSession().save(cfds);
 		}
-
 		// is all of this necessary now...investigate
 		// searchVO.setSelectedPhenoCustomFieldDisplays(nonPoppableCustomFieldsFromVO);
-
+//end save all custom field displays
+		
 		return success;
 	}
 
