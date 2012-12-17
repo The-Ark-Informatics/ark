@@ -2153,8 +2153,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			/**
 			 * this is just logging to see if things work
 			 */
-			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirDemographicData);
-			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirSubjectCustomData);
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirSubjectCustomData, FieldCategory.SUBJECT_CFD);
 
 		}
 		/*
@@ -2169,13 +2169,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		 */
 	}
 
-	private void prettyLoggingOfWhatIsInOurMegaObject(HashMap<String, ExtractionVO> hashOfSubjectsWithData) {
-		log.info("\n\n\n\n\n\n\n ok so we have " + hashOfSubjectsWithData.size() + " entries\n\n\n\n\n\n\n\n\n");
+	private void prettyLoggingOfWhatIsInOurMegaObject(HashMap<String, ExtractionVO> hashOfSubjectsWithData, FieldCategory fieldCategory) {
+		log.info("\n\n\n ok so we have " + hashOfSubjectsWithData.size() + " entries for category '" + fieldCategory + "'\n\n\n");
 		for (String subjectUID : hashOfSubjectsWithData.keySet()) {
 			HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
-			log.info(subjectUID + " has " + keyValues.size() + "demo fields"); // remove(subjectUID).getKeyValues().size()
-			// +
-			// "demo fields");
+			log.info(subjectUID + " has " + keyValues.size() + "demo fields"); 
+			// remove(subjectUID).getKeyValues().size() + "demo fields");
 			for (String key : keyValues.keySet()) {
 				log.info("     key=" + key + "\t   value=" + keyValues.get(key));
 			}
@@ -2224,7 +2223,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				if (field.getFieldName().equalsIgnoreCase("postCode")) {
 					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getPostCode());
 				}
-				// etc
+				//etc
+
 			}
 		}
 		for (DemographicField field : phoneFields) {
@@ -2299,7 +2299,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 		}
-		log.info("\n\n\n\n\n filterClause = " + filterClause);
+		log.info("\n\n filterClause = " + filterClause);
 		return (filterClause == null ? "" : filterClause);
 	}
 
@@ -2367,7 +2367,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 		}
-		log.info("\n\n\n\n\n filterClauseAfterSubjectCustomField FILTERS = " + filterClause);
+		log.info("\n\n\filterClauseAfterSubjectCustomField FILTERS = " + filterClause);
 		filterClause = "";
 		return filterClause;
 	}
