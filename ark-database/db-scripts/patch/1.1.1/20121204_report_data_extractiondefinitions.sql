@@ -37,3 +37,10 @@ VALUES
         ('Biospecimen','quantity','Quantity','1'),
         ('Biospecimen','concentration','Concentration','1'),
         ('Biospecimen','purity','Purity','1');
+
+INSERT INTO `reporting`.`biocollection_field` (`ENTITY`,`FIELD_NAME`,`PUBLIC_FIELD_NAME`,`FIELD_TYPE_ID`)
+VALUES
+        ('BioCollection','biocollectionUid','Biocollection UID','1'),
+        ('BioCollection','comments','Comments','1');
+
+/* more biocollection and others to come...but for now... here is a start */
