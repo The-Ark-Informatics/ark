@@ -58,6 +58,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.report.entity.BiocollectionField;
+import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.BiospecimenFieldSearch;
 import au.org.theark.core.model.report.entity.CustomFieldDisplaySearch;
@@ -1657,15 +1658,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 //end save demographic fields
 		
 				
-					
+
 		
 		
 		
-		
-		
-		
-		
-		
+
+
+
+
+
 //start save biospecimen fields
 		Collection<BiospecimenField> listOfBiospecimenFieldsFromVO = searchVO.getSelectedBiospecimenFields();
 		List<BiospecimenFieldSearch> nonPoppableBiospecimenFS = new ArrayList<BiospecimenFieldSearch>();
@@ -1705,8 +1706,48 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		searchVO.setSelectedBiospecimenFields(nonPoppableBiospecimenFieldsFromVO);
 //end save biospecimen fields
 		
-		
-		
+
+//start save biocollection fields
+		Collection<BiocollectionField> listOfBiocollectionFieldsFromVO = searchVO.getSelectedBiocollectionFields();
+		List<BiocollectionFieldSearch> nonPoppableBiocollectionFS = new ArrayList<BiocollectionFieldSearch>();
+		nonPoppableBiocollectionFS.addAll(search.getBiocollectionFieldsToReturn());
+		List<BiocollectionField> nonPoppableBiocollectionFieldsFromVO = new ArrayList<BiocollectionField>();
+		nonPoppableBiocollectionFieldsFromVO.addAll(listOfBiocollectionFieldsFromVO);
+		for (BiocollectionFieldSearch bfs : nonPoppableBiocollectionFS) {
+			log.info("fields to return=" + search.getBiocollectionFieldsToReturn().size());
+			boolean toBeDeleted = true; // if we find no match along the way,
+			// conclude that it has been deleted.
+
+			for (BiocollectionField field : nonPoppableBiocollectionFieldsFromVO) {
+				if (bfs.getBiocollectionField().getId().equals(field.getId())) {
+					toBeDeleted = false;
+					log.info("listOfBiocollectionFieldsFromVO.size()" + listOfBiocollectionFieldsFromVO.size());
+					listOfBiocollectionFieldsFromVO.remove(field);
+					// we found it, therefore  remove it  from the list that will ultimately be added as DFS's
+					log.info("after removal listOfBiocollectionFieldsFromVO.size()" + listOfBiocollectionFieldsFromVO.size());
+				}
+			}
+			if (toBeDeleted) {
+				log.info("before delete");
+				search.getBiocollectionFieldsToReturn().remove(bfs);
+				getSession().update(search);
+				getSession().delete(bfs);
+				// setBiocollectionFieldsToReturn(getBiocollectionFieldsToReturn());
+				getSession().flush();
+				getSession().refresh(search);
+				log.info("after delete" + search.getBiocollectionFieldsToReturn().size());
+			}
+		}
+
+		for (BiocollectionField field : listOfBiocollectionFieldsFromVO) {
+			BiocollectionFieldSearch bfs = new BiocollectionFieldSearch(field, search);
+			getSession().save(bfs);
+		}
+		searchVO.setSelectedBiocollectionFields(nonPoppableBiocollectionFieldsFromVO);
+//end save biocollection fields
+						
+						
+						
 //start saving all custom display fields		
 		Collection<CustomFieldDisplay> listOfPhenoCustomFieldDisplaysFromVO = searchVO.getSelectedPhenoCustomFieldDisplays();
 		Collection<CustomFieldDisplay> listOfSubjectCustomFieldDisplaysFromVO = searchVO.getSelectedSubjectCustomFieldDisplays();
