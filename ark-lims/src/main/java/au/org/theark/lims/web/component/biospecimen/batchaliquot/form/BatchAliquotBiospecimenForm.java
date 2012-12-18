@@ -445,14 +445,14 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 
 	private boolean totalQuantityLessThanParentQuantity() {
 		boolean ok = true;
-		Double totalQuantity = new Double(0);
+		double totalQuantity = new Double(0);
 		for (Biospecimen biospecimen: getModelObject().getAliquots()) {
 			if(biospecimen.getQuantity() != null) {
-				totalQuantity = totalQuantity + biospecimen.getQuantity();
+				totalQuantity += biospecimen.getQuantity().doubleValue();
 			}
 		}
 		
-		if(totalQuantity > getModelObject().getParentBiospecimen().getQuantity()) {
+		if(totalQuantity > getModelObject().getParentBiospecimen().getQuantity().doubleValue()) {
 			error("You cannot aliquot more than the parent's total amount of " + getModelObject().getParentBiospecimen().getQuantity() + getModelObject().getParentBiospecimen().getUnit().getName());
 			ok = false;
 		}
@@ -472,10 +472,14 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 			biospecimenUids.add(biospecimen.getBiospecimenUid());
 		}
 		Set<String> uniqueSet = new HashSet<String>(biospecimenUids);
-		
+				
 		if(uniqueSet.size() != biospecimenUids.size()) {
-			error("Field 'Biospecimen UID' must be unique.");
-			ok = false;
+			// Ignore auto-generated ids
+			if(!getModelObject().getParentBiospecimen().getStudy().getAutoGenerateBiospecimenUid())
+			{
+				error("Field 'Biospecimen UID' must be unique.");
+				ok = false;
+			}
 		}
 		
 		// Check for any empty required fields in list
