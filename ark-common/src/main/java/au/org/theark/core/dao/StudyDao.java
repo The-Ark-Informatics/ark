@@ -2068,19 +2068,19 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// filtering??
 			String personFilters = getPersonFilters(search, null);
 			String lssAndPersonFilters = getLSSFilters(search, personFilters);
-			String subjectCustomFieldFilters = getSubjectCustomFieldFilters(search, lssAndPersonFilters);
+		//	String subjectCustomFieldFilters = getSubjectCustomFieldFilters(search, lssAndPersonFilters);
 			
 			String queryString = "select distinct lss "
 					+ // , address, lss, email " +
 					" from LinkSubjectStudy lss " 
 					+ ((!personFields.isEmpty()) ? " left join fetch lss.person person " : "") 
-					+ ((!addressFields.isEmpty()) ? " left join fetch person.addresses a " : "")
-					+ ((!phoneFields.isEmpty()) ? " left join fetch person.phones p " : "")
-					+ ((!subjectCFDs.isEmpty()) ? " left join fetch lss.subjectCustomFieldDataSet scfd " : "") 
+					+ ((!addressFields.isEmpty()) ? " left join lss.person.addresses a " : "")
+					+ ((!phoneFields.isEmpty()) ? " left join lss.person.phones p " : "")
+					//+ ((!subjectCFDs.isEmpty()) ? " left join fetch lss.subjectCustomFieldDataSet scfd " : "") 
 					// Force restriction on Study of search
 					+ " where lss.study.id = " + search.getStudy().getId()
-					+ lssAndPersonFilters + " "
-					+ subjectCustomFieldFilters;
+					+ lssAndPersonFilters + " ";
+			//		+ subjectCustomFieldFilters;
 			// TODO : getLSSFilters
 			// TODO : getAddress
 			// TODO : getPhone
@@ -2368,7 +2368,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 		}
 		log.info("\n\n\filterClauseAfterSubjectCustomField FILTERS = " + filterClause);
-		filterClause = "";
+		//filterClause = "";
 		return filterClause;
 	}
 
