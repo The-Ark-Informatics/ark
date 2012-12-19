@@ -2201,9 +2201,58 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			if (field.getFieldName().equalsIgnoreCase("firstName")) {
 				map.put(field.getPublicFieldName(), lss.getPerson().getFirstName());
 			}
+			else if (field.getFieldName().equalsIgnoreCase("middleName")) {
+				map.put(field.getPublicFieldName(), lss.getPerson().getMiddleName());
+			}
 			else if (field.getFieldName().equalsIgnoreCase("lastName")) {
 				map.put(field.getPublicFieldName(), lss.getPerson().getLastName());
 			}
+			else if (field.getFieldName().equalsIgnoreCase("preferredName")) {
+				map.put(field.getPublicFieldName(), lss.getPerson().getPreferredName());
+			}
+			else if (field.getFieldName().equalsIgnoreCase("dateOfBirth")) {
+				map.put(field.getPublicFieldName(), lss.getPerson().getDateOfBirth());
+			}
+			else if (field.getFieldName().equalsIgnoreCase("dateOfDeath")) {
+				map.put(field.getPublicFieldName(), lss.getPerson().getDateOfDeath());
+			}
+			else if (field.getFieldName().equalsIgnoreCase("causeOfDeath")) {
+				map.put(field.getPublicFieldName(), lss.getPerson().getCauseOfDeath());
+			}
+			else if (field.getFieldName().equalsIgnoreCase("preferredEmail")) {
+				map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmail());
+			}
+			else if (field.getFieldName().equalsIgnoreCase("preferredEmailStatus")) {
+				map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmailStatus());
+			}
+			else if (field.getFieldName().equalsIgnoreCase("otherEmail")) {
+				map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmail());
+			}
+			else if (field.getFieldName().equalsIgnoreCase("otherEmailStatus")) {
+				map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmailStatus());
+			}
+			else if (field.getFieldName().equalsIgnoreCase("dateLastKnownAlive")) {
+				map.put(field.getPublicFieldName(), lss.getPerson().getDateLastKnownAlive());
+			}
+			/*	private Long id;
+				private String firstName;
+				private String middleName;
+				private String lastName;
+				private String preferredName;
+			private GenderType genderType;
+			private VitalStatus vitalStatus;
+			private TitleType titleType;
+			private MaritalStatus maritalStatus;
+				private Date dateOfBirth;
+				private Date dateOfDeath;
+				private String causeOfDeath;
+			private PersonContactMethod personContactMethod;
+				private String preferredEmail;
+				private String otherEmail;
+				private EmailStatus preferredEmailStatus;
+				private EmailStatus otherEmailStatus;
+				private Date dateLastKnownAlive;
+			*/
 			// etc
 		}
 		for (DemographicField field : lssFields) {
