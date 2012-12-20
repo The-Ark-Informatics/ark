@@ -132,9 +132,12 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private DropDownChoice<BiospecimenProtocol>			biospecimenProtocol;
 	private TextField<Number>									purity;
 
+	private Label													parentQuantityLbl;
+	private Label													parentQuantityMaxLbl;
 	private Label													quantityLbl;
 	private Label													quantityNoteLbl;
 	private TextField<Double>									quantityTxtFld;
+	private TextField<Double>									parentQuantityTxtFld;
 	private TextField<Double>									bioTransactionQuantityTxtFld;
 	private DropDownChoice<Unit>								unitDdc;
 	private DropDownChoice<TreatmentType>					treatmentTypeDdc;
@@ -192,10 +195,16 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	 */
 	private void enableQuantityTreatment(AjaxRequestTarget target) {
 		setQuantityLabel();
-
+		
+		String parentQuantityMax = cpModel.getObject().getParentBiospecimen().getQuantity() + cpModel.getObject().getParentBiospecimen().getUnit().getName();
+		parentQuantityMaxLbl = new Label("parentBiospecimen.quantity.max", "(" + parentQuantityMax + ")");
+		bioTransactionDetailWmc.addOrReplace(parentQuantityMaxLbl);
+		
+		parentQuantityTxtFld.setVisible(cpModel.getObject().getBiospecimenProcessing().equalsIgnoreCase(au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_PROCESSING));
 		treatmentTypeDdc.setEnabled(true);
 		bioTransactionDetailWmc.setEnabled(true);
 
+		target.add(parentQuantityTxtFld);
 		target.add(treatmentTypeDdc);
 		target.add(bioTransactionDetailWmc);
 	}
@@ -240,7 +249,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			@Override
 			public void onClone(AjaxRequestTarget target) {
 				onCloneBiospecimen(target);
-				
+
 				// Go straight into edit mode
 				onViewEdit(target, BiospecimenModalDetailForm.this);
 			}
@@ -445,6 +454,24 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				return (IConverter<C>) doubleConverter;
 			}
 		};
+		parentQuantityTxtFld = new TextField<Double>("parentBiospecimen.quantity") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public <C> IConverter<C> getConverter(Class<C> type) {
+				DoubleConverter doubleConverter = new DoubleConverter();
+				NumberFormat numberFormat = NumberFormat.getInstance();
+				numberFormat.setMinimumFractionDigits(1);
+				numberFormat.setMaximumFractionDigits(10);
+				doubleConverter.setNumberFormat(getLocale(), numberFormat);
+				return (IConverter<C>) doubleConverter;
+			}
+		};
+		parentQuantityTxtFld.setVisible(cpModel.getObject().getBiospecimenProcessing().equalsIgnoreCase(au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_PROCESSING));
+		parentQuantityTxtFld.setOutputMarkupId(true);
 
 		quantityTxtFld.setEnabled(false);
 		bioTransactionQuantityTxtFld = new TextField<Double>("bioTransaction.quantity") {
@@ -546,11 +573,17 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	 */
 	private void setQuantityLabel() {
 		if (cpModel.getObject().getBiospecimen().getId() == null) {
-			quantityLbl = new Label("biospecimen.quantity.label", new ResourceModel("bioTransaction.quantity"));
+			quantityLbl = new Label("biospecimen.quantity.label", new ResourceModel("bioTransaction.initialQuantity"));
 		}
 		else {
 			quantityLbl = new Label("biospecimen.quantity.label", new ResourceModel("biospecimen.quantity"));
 		}
+
+		parentQuantityLbl = new Label("parentBiospecimen.quantity.label", new ResourceModel("parentBiospecimen.quantity"));
+		parentQuantityLbl.setVisible(cpModel.getObject().getBiospecimenProcessing().equalsIgnoreCase(au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_PROCESSING));
+		
+		//String parentQuantityMax = cpModel.getObject().getParentBiospecimen().getQuantity() + cpModel.getObject().getParentBiospecimen().getUnit().getName();
+		parentQuantityMaxLbl = new Label("parentBiospecimen.quantity.max", "");
 
 		quantityNoteLbl = new Label("biospecimen.quantity.note", new ResourceModel("biospecimen.quantity.note"));
 		quantityNoteLbl.setVisible(getModelObject().getBiospecimen().getId() != null);
@@ -558,6 +591,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		quantityTxtFld.setVisible(getModelObject().getBiospecimen().getId() != null);
 		bioTransactionQuantityTxtFld.setVisible(getModelObject().getBiospecimen().getId() == null);
 
+		bioTransactionDetailWmc.addOrReplace(parentQuantityLbl);
+		bioTransactionDetailWmc.addOrReplace(parentQuantityMaxLbl);
 		bioTransactionDetailWmc.addOrReplace(quantityNoteLbl);
 		bioTransactionDetailWmc.addOrReplace(quantityLbl);
 	}
@@ -640,6 +675,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		sampleTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.sampleType.required", this, new Model<String>("Name")));
 		bioCollectionDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.bioCollection.required", this, new Model<String>("Name")));
 
+		// Processing qty
+		parentQuantityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.parentBiospecimen.quantity.required", this, new Model<String>("ParentQty")));
+		
 		// Initial BioTransaction detail
 		bioTransactionQuantityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioTransaction.quantity.required", this, new Model<String>("Name")));
 		MinimumValidator<Double> minQuantityValidator = new MinimumValidator<Double>(new Double(0.0));
@@ -670,8 +708,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(qualityDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenProtocol);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(purity);
-		
+
 		// Quantity label depends on new/existing Biospecimen
+		bioTransactionDetailWmc.addOrReplace(parentQuantityLbl);
+		bioTransactionDetailWmc.addOrReplace(parentQuantityMaxLbl);
+		bioTransactionDetailWmc.addOrReplace(parentQuantityTxtFld);
 		bioTransactionDetailWmc.addOrReplace(quantityNoteLbl);
 		bioTransactionDetailWmc.addOrReplace(quantityLbl);
 		// initial BioTransaction detail
@@ -723,8 +764,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 						Biospecimen biospecimen = limsVo.getBiospecimen();
 						BioTransaction bioTransaction = limsVo.getBioTransaction();
 						Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParent().getId());
-
-						if (bioTransaction.getQuantity() > parentBiospecimen.getQuantity()) {
+						double qtyUsedFromParent = limsVo.getParentBiospecimen().getQuantity();
+						
+						if (qtyUsedFromParent > parentBiospecimen.getQuantity()) {
 							StringBuffer errorMessage = new StringBuffer();
 
 							errorMessage.append("Cannot process more than ");
@@ -745,12 +787,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 							parentLimsVo.getBioTransaction().setId(null);
 							parentLimsVo.getBioTransaction().setBiospecimen(parentBiospecimen);
 							parentLimsVo.getBioTransaction().setTransactionDate(Calendar.getInstance().getTime());
-							parentLimsVo.getBioTransaction().setQuantity(bioTransaction.getQuantity());
 							parentLimsVo.getBioTransaction().setReason("Processed for: " + biospecimen.getBiospecimenUid());
 							parentLimsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
 
 							// NOTE: Removing from parent is negative-value transaction
-							parentLimsVo.getBioTransaction().setQuantity(bioTransaction.getQuantity() * -1);
+							parentLimsVo.getBioTransaction().setQuantity(qtyUsedFromParent * -1);
 							BioTransactionStatus bioTransactionStatus = iLimsService.getBioTransactionStatusByName("Processed");
 							parentLimsVo.getBioTransaction().setStatus(bioTransactionStatus);
 							iLimsService.createBioTransaction(parentLimsVo);
@@ -868,6 +909,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 				target.add(biospecimenbuttonsPanel);
 
+				cpModel.getObject().setBiospecimenProcessing("");
+				parentQuantityTxtFld.setVisible(false);
+				target.add(parentQuantityTxtFld);
 				onSavePostProcess(target);
 			}
 		}
@@ -913,6 +957,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 	/**
 	 * Takes all details of a biospecimen, copies to a new Biospecimen, then allows editing of details before save
+	 * 
 	 * @param target
 	 */
 	protected void onCloneBiospecimen(AjaxRequestTarget target) {
@@ -935,14 +980,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			}
 
 			// Cloning not a child biospecimen
-			//biospecimen.setParent(clonedBiospecimen);
-			//biospecimen.setParentUid(clonedBiospecimen.getBiospecimenUid());
-			
+			// biospecimen.setParent(clonedBiospecimen);
+			// biospecimen.setParentUid(clonedBiospecimen.getBiospecimenUid());
+
 			biospecimen.setSampleType(clonedBiospecimen.getSampleType());
 			biospecimen.setBioCollection(clonedBiospecimen.getBioCollection());
 			biospecimen.setQuantity(null);
 			biospecimen.setUnit(clonedBiospecimen.getUnit());
-			biospecimen.setComments("Clone of " +  clonedBiospecimenUid);
+			biospecimen.setComments("Clone of " + clonedBiospecimenUid);
 			biospecimen.setBarcoded(false);
 			biospecimen.setQuantity(clonedBiospecimen.getQuantity());
 			biospecimen.setUnit(clonedBiospecimen.getUnit());
@@ -998,9 +1043,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	}
 
 	/**
-	 * Handle processing or aliquoting of a parent biospecimen.
-	 * Process essentially changing the type of a parent biospecimen.
-	 * Aliquot essentially taking an amount from a parent biospecimen.
+	 * Handle processing or aliquoting of a parent biospecimen. Process essentially changing the type of a parent biospecimen. Aliquot essentially
+	 * taking an amount from a parent biospecimen.
 	 * 
 	 * @param target
 	 *           AjxaxRequestTarget
@@ -1014,6 +1058,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		final String parentBiospecimenUid = parentBiospecimen.getBiospecimenUid();
 		final Biospecimen biospecimen = new Biospecimen();
 
+		cpModel.getObject().setParentBiospecimen(parentBiospecimen);
+		
 		try {
 			// Copy parent biospecimen details to new biospecimen
 			PropertyUtils.copyProperties(biospecimen, parentBiospecimen);
