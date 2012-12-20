@@ -2211,10 +2211,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				map.put(field.getPublicFieldName(), lss.getPerson().getPreferredName());
 			}
 			else if (field.getFieldName().equalsIgnoreCase("dateOfBirth")) {
-				map.put(field.getPublicFieldName(), lss.getPerson().getDateOfBirth());
+				if(lss.getPerson().getDateOfBirth()!=null){
+					map.put(field.getPublicFieldName(), lss.getPerson().getDateOfBirth().toString());
+				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("dateOfDeath")) {
-				map.put(field.getPublicFieldName(), lss.getPerson().getDateOfDeath());
+				if(lss.getPerson().getDateOfDeath()!=null){
+					map.put(field.getPublicFieldName(), lss.getPerson().getDateOfDeath().toString());
+				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("causeOfDeath")) {
 				map.put(field.getPublicFieldName(), lss.getPerson().getCauseOfDeath());
@@ -2223,16 +2227,22 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmail());
 			}
 			else if (field.getFieldName().equalsIgnoreCase("preferredEmailStatus")) {
-				map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmailStatus());
+				if(lss.getPerson().getPreferredEmailStatus()!=null){
+					map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmailStatus().toString());
+				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("otherEmail")) {
 				map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmail());
 			}
 			else if (field.getFieldName().equalsIgnoreCase("otherEmailStatus")) {
-				map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmailStatus());
+				if(lss.getPerson().getOtherEmailStatus()!=null){
+					map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmailStatus().toString());
+				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("dateLastKnownAlive")) {
-				map.put(field.getPublicFieldName(), lss.getPerson().getDateLastKnownAlive());
+				if(lss.getPerson().getDateLastKnownAlive()!=null){
+					map.put(field.getPublicFieldName(), lss.getPerson().getDateLastKnownAlive().toString());					
+				}
 			}
 			/*	private Long id;
 				private String firstName;
@@ -2257,7 +2267,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		for (DemographicField field : lssFields) {
 			if (field.getFieldName().equalsIgnoreCase("consentDate")) {
-				map.put(field.getPublicFieldName(), lss.getConsentDate() == null ? "" : lss.getConsentDate().toString());
+				if(lss.getConsentDate()!=null){
+					map.put(field.getPublicFieldName(), lss.getConsentDate() == null ? "" : lss.getConsentDate().toString());
+				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("subjectUID")) {
 				map.put(field.getPublicFieldName(), lss.getSubjectUID());
@@ -2372,7 +2384,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 		}
-		log.info("\n\n\n\n\n filterClauseAfterLSS FILTERS = " + filterClause);
+		log.info("\n\n\n filterClauseAfterLSS FILTERS = " + filterClause);
 		return (filterClause == null ? "" : filterClause);
 	}
 
