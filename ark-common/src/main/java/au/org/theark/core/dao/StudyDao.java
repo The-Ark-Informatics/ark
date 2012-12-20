@@ -2068,7 +2068,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// filtering??
 			String personFilters = getPersonFilters(search, null);
 			String lssAndPersonFilters = getLSSFilters(search, personFilters);
-		//	String subjectCustomFieldFilters = getSubjectCustomFieldFilters(search, lssAndPersonFilters);
+			String subjectCustomFieldFilters = getSubjectCustomFieldFilters(search, lssAndPersonFilters);
 			
 			String queryString = "select distinct lss "
 					+ // , address, lss, email " +
@@ -2076,11 +2076,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					+ ((!personFields.isEmpty()) ? " left join fetch lss.person person " : "") 
 					+ ((!addressFields.isEmpty()) ? " left join lss.person.addresses a " : "")
 					+ ((!phoneFields.isEmpty()) ? " left join lss.person.phones p " : "")
-					//+ ((!subjectCFDs.isEmpty()) ? " left join fetch lss.subjectCustomFieldDataSet scfd " : "") 
+					+ ((!subjectCFDs.isEmpty()) ? " left join fetch lss.subjectCustomFieldDataSet scfd " : "") 
 					// Force restriction on Study of search
 					+ " where lss.study.id = " + search.getStudy().getId()
-					+ lssAndPersonFilters + " ";
-			//		+ subjectCustomFieldFilters;
+					+ lssAndPersonFilters + " "
+					+ subjectCustomFieldFilters ;
 			// TODO : getLSSFilters
 			// TODO : getAddress
 			// TODO : getPhone
@@ -2199,16 +2199,23 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		for (DemographicField field : personFields) {
 			// TODO: Analyse performance cost of using reflection instead...would be CLEANER code...maybe dangerous/slow
 			if (field.getFieldName().equalsIgnoreCase("firstName")) {
-				map.put(field.getPublicFieldName(), lss.getPerson().getFirstName());
+				if(lss.getPerson().getFirstName()==null){
+					map.put(field.getPublicFieldName(), lss.getPerson().getFirstName());
+				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("middleName")) {
-				map.put(field.getPublicFieldName(), lss.getPerson().getMiddleName());
+				if(lss.getPerson().getMiddleName()==null){
+					map.put(field.getPublicFieldName(), lss.getPerson().getMiddleName());
+				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("lastName")) {
-				map.put(field.getPublicFieldName(), lss.getPerson().getLastName());
+				if(lss.getPerson().getLastName()==null){
+					map.put(field.getPublicFieldName(), lss.getPerson().getLastName());
+				}	
 			}
 			else if (field.getFieldName().equalsIgnoreCase("preferredName")) {
-				map.put(field.getPublicFieldName(), lss.getPerson().getPreferredName());
+				if(lss.getPerson().getPreferredName()==null)
+					map.put(field.getPublicFieldName(), lss.getPerson().getPreferredName());
 			}
 			else if (field.getFieldName().equalsIgnoreCase("dateOfBirth")) {
 				if(lss.getPerson().getDateOfBirth()!=null){
@@ -2221,10 +2228,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("causeOfDeath")) {
-				map.put(field.getPublicFieldName(), lss.getPerson().getCauseOfDeath());
+				if(lss.getPerson().getCauseOfDeath()!=null){
+					map.put(field.getPublicFieldName(), lss.getPerson().getCauseOfDeath());
+				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("preferredEmail")) {
-				map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmail());
+				if(lss.getPerson().getPreferredEmail()!=null){
+					map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmail());
+				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("preferredEmailStatus")) {
 				if(lss.getPerson().getPreferredEmailStatus()!=null){
@@ -2232,7 +2243,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("otherEmail")) {
-				map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmail());
+				if(lss.getPerson().getOtherEmail()!=null){
+					map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmail());
+				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("otherEmailStatus")) {
 				if(lss.getPerson().getOtherEmailStatus()!=null){
@@ -2241,7 +2254,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("dateLastKnownAlive")) {
 				if(lss.getPerson().getDateLastKnownAlive()!=null){
-					map.put(field.getPublicFieldName(), lss.getPerson().getDateLastKnownAlive().toString());					
+			 		map.put(field.getPublicFieldName(), lss.getPerson().getDateLastKnownAlive().toString());					
 				}
 			}
 			/*	private Long id;
@@ -2272,7 +2285,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("subjectUID")) {
-				map.put(field.getPublicFieldName(), lss.getSubjectUID());
+				if(lss.getSubjectCustomFieldDataSet()==null){
+					map.put(field.getPublicFieldName(), lss.getSubjectUID());
+				}
 			}
 			// etc
 		}
