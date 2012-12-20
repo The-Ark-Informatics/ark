@@ -430,6 +430,29 @@
 							<div class="panelContentLeft">
 								&nbsp;
 							</div>
+							
+							<wicket:enclosure child="parentBiospecimen.quantity">
+								<div class="fldLabel">
+									<span wicket:id="parentBiospecimen.quantity.label">
+										[Parent Quantity]
+									</span>
+									<span wicket:id="parentBiospecimen.quantity.max">
+										[Parent Quantity max]
+									</span>
+								</div>
+								
+								<div class="fldControl">
+									<input wicket:id="parentBiospecimen.quantity" type="text" maxLength="10" size="5"/>
+								</div>
+							</wicket:enclosure>
+							
+							<div class="detailPanelBreaker">
+								&nbsp;
+							</div>
+		
+							<div class="panelContentLeft">
+								&nbsp;
+							</div>
 
 							<div class="fldLabel">
 								<span wicket:id="biospecimen.quantity.label">

@@ -43,6 +43,7 @@ public class LimsVO implements Serializable {
 	protected LinkSubjectStudy		linkSubjectStudy;
 	protected BioCollection			bioCollection;
 	protected Biospecimen				biospecimen;
+	protected Biospecimen				parentBiospecimen;
 	protected BioTransaction			bioTransaction;
 	protected InvSite					invSite;
 	protected InvFreezer				invFreezer;
@@ -88,6 +89,7 @@ public class LimsVO implements Serializable {
 		this.linkSubjectStudy = new LinkSubjectStudy();
 		this.bioCollection = new BioCollection();
 		this.biospecimen = new Biospecimen();
+		this.parentBiospecimen = new Biospecimen();
 		this.bioTransaction = new BioTransaction();
 		this.invSite = new InvSite();
 		this.invFreezer = new InvFreezer();
@@ -160,10 +162,25 @@ public class LimsVO implements Serializable {
 	 * @param biospecimen
 	 *           the biospecimen to set
 	 */
+	public void setParentBiospecimen(Biospecimen biospecimen) {
+		this.parentBiospecimen = biospecimen;
+	}
+
+	/**
+	 * @return the biospecimen
+	 */
+	public Biospecimen getParentBiospecimen() {
+		return parentBiospecimen;
+	}
+
+	/**
+	 * @param biospecimen
+	 *           the biospecimen to set
+	 */
 	public void setBiospecimen(Biospecimen biospecimen) {
 		this.biospecimen = biospecimen;
 	}
-
+	
 	/**
 	 * @return the bioTransaction
 	 */
