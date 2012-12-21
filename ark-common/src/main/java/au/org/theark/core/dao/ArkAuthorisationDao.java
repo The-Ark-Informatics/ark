@@ -351,11 +351,18 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	}
 
 	public ArkFunction getArkFunctionById(Long functionId) {
+		return (ArkFunction)getSession().get(ArkFunction.class, functionId);
+		
+		/*
 		Criteria criteria = getSession().createCriteria(ArkFunction.class);
 		criteria.add(Restrictions.eq("id", functionId));
 		criteria.setMaxResults(1);
+		log.info("functionid=" + functionId);
+		log.info("instanceoflong?  " + (functionId instanceof Long));
+		log.info("criteria.list().size()=" + criteria.list().size());
+		
 		ArkFunction arkFunction = (ArkFunction) criteria.uniqueResult();
-		return arkFunction;
+		return arkFunction;*/
 	}
 
 	public ArkModule getArkModuleByName(String moduleName) {
