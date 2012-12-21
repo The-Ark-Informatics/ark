@@ -119,6 +119,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 
 			@Override
 			public boolean isVisible() {
+				log.info("SecurityUtils.getSubject()" + SecurityUtils.getSubject().getPrincipal().toString());				
 				return SecurityUtils.getSubject().hasRole(RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
 			}
 
