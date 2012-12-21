@@ -497,10 +497,10 @@ public class Study implements java.io.Serializable {
 		this.autoGenerateBiocollectionUid = autoGenerateBiocollectionUid;
 	}
 
-	@Transient
+	/*@Transient
 	public boolean isParentStudy() {
 		return (parentStudy != null && parentStudy.equals(this));
 	}
-
+*/
 
 }
