@@ -152,7 +152,7 @@ public class LdapUserDao implements ILdapUserDao {
 			ModificationItem itemGivenName = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, givenName);
 			ModificationItem itemEmail = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, email);
 
-			if (userVO.getPassword() != null && userVO.getPassword().length() > 0) {
+			if (userVO.getPassword() != null && userVO.getPassword().length() > 0 && userVO.isChangePassword()) {
 				BasicAttribute userPassword = new BasicAttribute("userPassword", new Sha256Hash(userVO.getPassword()).toHex());
 				ModificationItem itemPassword = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, userPassword);
 				ldapDataContextSource.getLdapTemplate().modifyAttributes(ldapName, new ModificationItem[] { itemSn, itemGivenName, itemEmail, itemPassword });
