@@ -180,21 +180,23 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		assignedChildStudiesPalette.setVisible(false);
 		assignedChildStudiesNote.setVisible(study.getParentStudy() != null && !study.getParentStudy().equals(study));
 		
-		boolean visible = false;
+		boolean okToChangePassword = false;
 		try {
 			// Super adminstrator can update any user's password
 			// Current user can update their own, but the Study Administrator can also create a new user (gets access to New button on search form)
 			String currentUsername = SecurityUtils.getSubject().getPrincipal().toString();
-			visible = (iArkCommonService.isSuperAdministrator(currentUsername) || 
+			okToChangePassword = (iArkCommonService.isSuperAdministrator(currentUsername) || 
 							(containerForm.getModelObject().getUserName() != null && containerForm.getModelObject().getUserName().equals(currentUsername)) || 
 								isNew());
 			userPasswordField.setRequired(isNew());
 			confirmPasswordField.setRequired(isNew());
+			
 		}
 		catch (EntityNotFoundException e) {
 			// Shouldn't actually ever get here...
 		}
-		groupPasswordContainer.setVisible(visible);
+		groupPasswordContainer.setVisible(okToChangePassword);
+		containerForm.getModelObject().setChangePassword(okToChangePassword);
 		super.onBeforeRender();
 	}
 
