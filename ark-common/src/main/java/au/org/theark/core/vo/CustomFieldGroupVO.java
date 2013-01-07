@@ -21,7 +21,7 @@ public class CustomFieldGroupVO implements Serializable{
 	private Collection<CustomField> availableCustomFields;
 	private CustomFieldDisplay customFieldDisplay;
 	private String		customFieldFileUploadField;
-	
+	private String     multiSelectLabel;
 
 
 	
@@ -30,6 +30,7 @@ public class CustomFieldGroupVO implements Serializable{
 		customFieldGroup = new CustomFieldGroup();
 		selectedCustomFields = new ArrayList<CustomField>();
 		availableCustomFields = new ArrayList<CustomField>();
+		multiSelectLabel = "Allow multiple selections:";
 	}
 
 	public CustomFieldGroup getCustomFieldGroup() {
@@ -71,4 +72,9 @@ public class CustomFieldGroupVO implements Serializable{
 	public void setcustomFieldFileUploadField(String customFieldFileUploadField) {
 		this.customFieldFileUploadField = customFieldFileUploadField;
 	}
+
+	public String getMultiSelectLabel() {
+		return multiSelectLabel;
+	}
+	
 }
