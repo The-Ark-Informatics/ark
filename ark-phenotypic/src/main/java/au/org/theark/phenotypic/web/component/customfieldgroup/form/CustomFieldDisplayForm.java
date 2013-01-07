@@ -8,6 +8,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -40,8 +41,10 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 	protected AjaxButton												cancelButton;
 	protected FeedbackPanel											feedbackPanel;
 	protected ModalWindow											modalWindow;
+	protected Label 												multiSelectLabel;
 	private Boolean													flag;
 	protected WebMarkupContainer									cfdMarkupContainer;
+	
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService										iArkCommonService;
@@ -86,16 +89,37 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 		customFieldDisplayIdTxtFld.setEnabled(false);
 		customFieldNameTxtFld = new TextField<String>("customFieldDisplay.customField.name");
 		requiredFieldCb = new CheckBox("customFieldDisplay.required");
+		
+		multiSelectLabel = new Label("multiSelectLabel"){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isVisible() {
+				return isMultiSelectVisible();
+			}
+		};
+		multiSelectLabel.setOutputMarkupId(true);
+		
+		
 		allowMultiselectCb = new CheckBox("customFieldDisplay.allowMultiselect") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
 
+			//ARK-861 Hide the visibility rather than disable
+//			@Override
+//			public boolean isEnabled() {
+//				CustomField cf = CustomFieldDisplayForm.this.getModelObject().getCustomFieldDisplay().getCustomField();
+//				return (cf.getEncodedValues() !=null && !cf.getEncodedValues().isEmpty());
+//			}
+			
 			@Override
-			public boolean isEnabled() {
-				CustomField cf = CustomFieldDisplayForm.this.getModelObject().getCustomFieldDisplay().getCustomField();
-				return (cf.getEncodedValues() !=null && !cf.getEncodedValues().isEmpty());
+			public boolean isVisible() {
+				return isMultiSelectVisible();
 			}
 		};
 		
@@ -142,6 +166,11 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 
 		customFieldNameTxtFld.setEnabled(false);
 	}
+	
+	protected final boolean isMultiSelectVisible(){
+		CustomField cf = CustomFieldDisplayForm.this.getModelObject().getCustomFieldDisplay().getCustomField();
+		return (cf.getEncodedValues() !=null && !cf.getEncodedValues().isEmpty());
+	}
 
 	protected void onSave(AjaxRequestTarget target) throws ArkSystemException {
 		iArkCommonService.updateCustomFieldDisplay(getModelObject().getCustomFieldDisplay());
@@ -154,7 +183,7 @@ public class CustomFieldDisplayForm extends Form<CustomFieldGroupVO> {
 		cfdMarkupContainer.add(customFieldDisplayIdTxtFld);
 		cfdMarkupContainer.add(customFieldNameTxtFld);
 		cfdMarkupContainer.add(requiredFieldCb);
-
+		cfdMarkupContainer.add(multiSelectLabel);
 		cfdMarkupContainer.add(allowMultiselectCb);
 
 		add(saveButton);
