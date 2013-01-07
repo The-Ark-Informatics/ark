@@ -146,6 +146,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 
 		containerForm.getModelObject().getUpload().setUploadStatus(iArkCommonService.getUploadStatusForAwaitingValidation());		
 		
-		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
+		//Move to step 2 to add the file type validation 
+//		iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 	}
 }

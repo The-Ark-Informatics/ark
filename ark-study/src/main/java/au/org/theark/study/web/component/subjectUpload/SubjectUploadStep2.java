@@ -105,6 +105,9 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
 				throw new FileFormatException();
 			}
+			
+			//Create Upload
+			iArkCommonService.createUpload(containerForm.getModelObject().getUpload());
 
 			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.SUBJECT_DEMOGRAPHIC_DATA)){
 				SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
