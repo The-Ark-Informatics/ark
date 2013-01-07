@@ -275,6 +275,7 @@ public class FreezerDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 		// Move focus back to Search form
 		LimsVO limsVo = new LimsVO();
+		limsVo.setStudy(containerForm.getModelObject().getStudy());
 		containerForm.setModelObject(limsVo);
 	}
 
