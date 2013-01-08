@@ -2018,12 +2018,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			Collection<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
 			Collection<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
 			Collection<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
-			Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
-			Collection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
-			// Collection<CustomFieldDisplay> cfds =
-			// getAllSelectedCustomFieldDisplaysForSearch(search);
-			Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
-			Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
+//			Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
+//			Collection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
+			// Collection<CustomFieldDisplay> cfds = getAllSelectedCustomFieldDisplaysForSearch(search);
+//			Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
+//			Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
 			Collection<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
 			// save PHENO for later Collection<CustomFieldDisplay> pcfds =
 			// getSelectedPhenoCustomFieldDisplaysForSearch(search);
@@ -2051,11 +2050,67 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// DemographicExtractionVO
 			// }
 
-			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search);
-
+			//addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search);
+			List<Long> uidsFromDemographic = applyDemographicFilters(search);
+			for(Long uid : uidsFromDemographic){
+				log.info("got " + uid);
+			}
+			
+		/*applyBiospecimenFilters(search, uidsFromDemographic);	//change will be applied to referenced object
+			for(Long uid : uidsFromDemographic){
+				log.info("got " + uid);
+			}
+			*/
+			
 		}
 	}
 
+	private List<Long> applyDemographicFilters(Search search){
+		List subjectUIDs = new ArrayList<Long>();
+		//TODO ASAP  Apply external list of subjectUID as a restriction
+		String personFilters = getPersonFilters(search, null);
+		String lssAndPersonFilters = getLSSFilters(search, personFilters);
+		
+		/**
+		 * note that this is ID not subject_uid being selected
+		 */
+		String queryString = "select distinct lss.id from LinkSubjectStudy lss " 
+				//TODO also add filters for phone and address 
+				+ " where lss.study.id = " + search.getStudy().getId()
+				+ lssAndPersonFilters + " ";
+		subjectUIDs = getSession().createQuery(queryString).list();
+		log.info("size=" + subjectUIDs.size());
+
+		return subjectUIDs;
+	}
+
+	private List<Long> applyBiospecimenFilters(Search search, List<Long> uidsToInclude){
+		List subjectUIDs = new ArrayList<Long>();
+		//TODO ASAP  Apply external list of subjectUID as a restriction
+		String biospecimenFilters = getBiospecimenFilters(search, null);
+		
+		String queryString = "select biospecimen from Biospecimen biospecimen " 
+				//TODO also add filters for phone and address 
+				+ " where biospecimen.study.id = " + search.getStudy().getId()
+				+ biospecimenFilters  + "biospecimen.link_subject_study_id in (:uidList) ";
+		
+		Query query = getSession().createQuery(queryString);
+		
+		List<Biospecimen> biospecimens = query.list();
+		
+		
+		//TODO now just go and remove anything which didn't have biospecimens matching the filters if there were filters
+		
+		for(Biospecimen biospecimen : biospecimens){
+			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
+			
+		}
+		
+		log.info("size=" + subjectUIDs.size());
+
+		return subjectUIDs;
+	}
+	
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
 			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search) {
 		if (!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty()) { // hasEmailFields(dfs)
@@ -2068,7 +2123,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// filtering??
 			String personFilters = getPersonFilters(search, null);
 			String lssAndPersonFilters = getLSSFilters(search, personFilters);
-			String subjectCustomFieldFilters = getSubjectCustomFieldFilters(search, lssAndPersonFilters);
+//			String subjectCustomFieldFilters = getSubjectCustomFieldFilters(search, lssAndPersonFilters);
 			
 			String queryString = "select distinct lss "
 					+ // , address, lss, email " +
@@ -2076,11 +2131,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					+ ((!personFields.isEmpty()) ? " left join fetch lss.person person " : "") 
 					+ ((!addressFields.isEmpty()) ? " left join lss.person.addresses a " : "")
 					+ ((!phoneFields.isEmpty()) ? " left join lss.person.phones p " : "")
-					+ ((!subjectCFDs.isEmpty()) ? " left join fetch lss.subjectCustomFieldDataSet scfd " : "") 
+//					+ ((!subjectCFDs.isEmpty()) ? " left join fetch lss.subjectCustomFieldDataSet scfd " : "") 
 					// Force restriction on Study of search
 					+ " where lss.study.id = " + search.getStudy().getId()
-					+ lssAndPersonFilters + " "
-					+ subjectCustomFieldFilters ;
+					+ lssAndPersonFilters + " ";
+//					+ subjectCustomFieldFilters ;
 			// TODO : getLSSFilters
 			// TODO : getAddress
 			// TODO : getPhone
@@ -2390,12 +2445,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					if (filter.getOperator().equals(Operator.BETWEEN)) {
 						nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
 					}
-					if (filterClause == null || filterClause.isEmpty()) {
-						filterClause = " and lss." + nextFilterLine;
-					}
-					else {
-						filterClause = filterClause + " and lss." + nextFilterLine;
-					}
+					
+					filterClause = filterClause + " and lss." + nextFilterLine; // there will always be something before it so the and part is ok (study restrictions etc)
 				}
 			}
 		}
@@ -2403,6 +2454,28 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (filterClause == null ? "" : filterClause);
 	}
 
+	private String getBiospecimenFilters(Search search, String filterThusFar) {
+		String filterClause = filterThusFar;
+		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
+		for (QueryFilter filter : filters) {
+			BiospecimenField biospecimenField = filter.getBiospecimenField();
+			if ((biospecimenField != null)) {
+				if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.Biospecimen)) {
+					String nextFilterLine = (biospecimenField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+					if (filter.getOperator().equals(Operator.BETWEEN)) {
+						nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+					}
+					
+					filterClause = " and biospecimen." + nextFilterLine;
+					
+				}
+			}
+		}
+		log.info("\n\n filterClause = " + filterClause);
+		return (filterClause == null ? "" : filterClause);
+	}
+
+	
 	private String getSubjectCustomFieldFilters(Search search, String subjectCustomFieldFilters) {
 		// Currently cannot add filters to the custom field data!
 		// The current longitudinal format does not allow concatenated filters as we are actually attempting a "row filter" as opposed to a "column = value" type filter
@@ -2421,7 +2494,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						private Double numberDataValue;
 				 */
 				
-			// Determine field type and assign key value accordingly
+				// Determine field type and assign key value accordingly
+				
 				if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
 					nextFilterLine = ("scfd.customFieldDisplay.id=" + customFieldDisplay.getId() + " AND scfd.dateDataValue " + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
 				}
