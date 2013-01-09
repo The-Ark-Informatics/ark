@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -2052,15 +2053,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 			//addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search);
 			List<Long> uidsFromDemographic = applyDemographicFilters(search);
+			/*for(Long uid : uidsFromDemographic){
+				log.info("got " + uid);
+			}
+			*/
+			List<Long> uidsAfterBiospecimen = applyBiospecimenFilters(allTheData, search, uidsFromDemographic);	//change will be applied to referenced object
+			
+			//now filter previous data from the further filtering steps each time.  First time not necessary just assign uids
 			for(Long uid : uidsFromDemographic){
 				log.info("got " + uid);
 			}
 			
-		/*applyBiospecimenFilters(search, uidsFromDemographic);	//change will be applied to referenced object
-			for(Long uid : uidsFromDemographic){
-				log.info("got " + uid);
-			}
-			*/
 			
 		}
 	}
@@ -2084,31 +2087,47 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return subjectUIDs;
 	}
 
-	private List<Long> applyBiospecimenFilters(Search search, List<Long> uidsToInclude){
-		List subjectUIDs = new ArrayList<Long>();
-		//TODO ASAP  Apply external list of subjectUID as a restriction
-		String biospecimenFilters = getBiospecimenFilters(search, null);
-		
-		String queryString = "select biospecimen from Biospecimen biospecimen " 
-				//TODO also add filters for phone and address 
-				+ " where biospecimen.study.id = " + search.getStudy().getId()
-				+ biospecimenFilters  + "biospecimen.link_subject_study_id in (:uidList) ";
-		
-		Query query = getSession().createQuery(queryString);
-		
-		List<Biospecimen> biospecimens = query.list();
-		
-		
-		//TODO now just go and remove anything which didn't have biospecimens matching the filters if there were filters
-		
-		for(Biospecimen biospecimen : biospecimens){
-			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
+	/**
+	 * 
+	 * @param allTheData
+	 * @param search
+	 * @param uidsToInclude
+	 * @return the updated list of uids that are still left after the filtering.
+	 */
+	private List<Long> applyBiospecimenFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
+		//Set updatedListOfSubjectUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the biospecimen.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
+		String biospecimenFilters = getBiospecimenFilters(search);
+		if(biospecimenFilters != null && !biospecimenFilters.isEmpty()){
+			String queryString = "select biospecimen from Biospecimen biospecimen " 
+								+ " where biospecimen.study.id = " + search.getStudy().getId()
+								+ biospecimenFilters  
+								+ " and  biospecimen.linkSubjectStudy.id in (:uidList) ";
+			Query query = getSession().createQuery(queryString);
+			query.setParameterList("uidList", uidsToInclude);
+			 query.list(); 	
+			List<Biospecimen> biospecimens = query.list(); 	
+	
+			String queryString2 = "select distinct biospecimen.linkSubjectStudy.id from Biospecimen biospecimen " 
+								+ " where biospecimen.study.id = " + search.getStudy().getId()
+								+ biospecimenFilters  
+								+ " and biospecimen.linkSubjectStudy.id in (:uidList) ";
+			Query query2 = getSession().createQuery(queryString2);
+			query2.setParameterList("uidList", uidsToInclude);
+			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
 			
-		}
-		
-		log.info("size=" + subjectUIDs.size());
+			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
+			allTheData.setBiospecimens(biospecimens);
 
-		return subjectUIDs;
+			log.info("sizeofbiospecs=" + biospecimens.size());
+			for(Biospecimen b : biospecimens){
+				log.info("biospecimen = " + b.getBiospecimenUid() + "     belongs to " + b.getLinkSubjectStudy().getSubjectUID());
+			}
+			log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
+			return updatedListOfSubjectUIDs;
+		}
+		else{
+			return uidsToInclude;
+		}
 	}
 	
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
@@ -2116,11 +2135,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		if (!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty()) { // hasEmailFields(dfs)
 			// ||
 			// TODO
-			// Also
-			// needs
-			// to
-			// consider
-			// filtering??
+			// Also  needs  to  consider  filtering??
 			String personFilters = getPersonFilters(search, null);
 			String lssAndPersonFilters = getLSSFilters(search, personFilters);
 //			String subjectCustomFieldFilters = getSubjectCustomFieldFilters(search, lssAndPersonFilters);
@@ -2454,8 +2469,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (filterClause == null ? "" : filterClause);
 	}
 
-	private String getBiospecimenFilters(Search search, String filterThusFar) {
-		String filterClause = filterThusFar;
+	private String getBiospecimenFilters(Search search){//, String filterThusFar) {
+		String filterClause = "";// filterThusFar;
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
 		for (QueryFilter filter : filters) {
 			BiospecimenField biospecimenField = filter.getBiospecimenField();
@@ -2465,14 +2480,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					if (filter.getOperator().equals(Operator.BETWEEN)) {
 						nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
 					}
-					
 					filterClause = " and biospecimen." + nextFilterLine;
-					
 				}
+				//we only have biospecimen fields right now
 			}
 		}
 		log.info("\n\n filterClause = " + filterClause);
-		return (filterClause == null ? "" : filterClause);
+		return filterClause;
 	}
 
 	
