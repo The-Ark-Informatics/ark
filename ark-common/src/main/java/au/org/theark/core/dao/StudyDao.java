@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -2060,10 +2059,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			List<Long> uidsAfterBiospecimen = applyBiospecimenFilters(allTheData, search, uidsFromDemographic);	//change will be applied to referenced object
 			
 			//now filter previous data from the further filtering steps each time.  First time not necessary just assign uids
-			for(Long uid : uidsFromDemographic){
-				log.info("got " + uid);
-			}
-			
+
 			
 		}
 	}
