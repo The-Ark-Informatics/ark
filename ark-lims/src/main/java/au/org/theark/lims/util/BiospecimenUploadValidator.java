@@ -481,7 +481,7 @@ public class BiospecimenUploadValidator {
 					errorString.append(subjectUID);
 					errorString.append(" does not exist.  Please check this Subject UID and try again.");
 					dataValidationMessages.add(errorString.toString());
-					errorCells.add(new ArkGridCell(csvReader.getIndex("BIOSPECIMENUID"), row));
+					errorCells.add(new ArkGridCell(csvReader.getIndex("SUBJECTUID"), row));
 					insertThisRow = false;//drop out also?
 					recordCount++;
 					row++;
