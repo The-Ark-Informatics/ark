@@ -1764,11 +1764,14 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		List<String> header = new ArrayList<String>(0);
 		
 		//stringBuffer.append("SELECT data.* FROM (\n");
-		dataHQLquery.append("SELECT lss.subjectUID, pc.recordDate, pc.description, \n"); 
+		//ARK-799
+//		dataHQLquery.append("SELECT lss.subjectUID, pc.recordDate, pc.description, \n"); 
+		dataHQLquery.append("SELECT lss.subjectUID, pc.recordDate, \n"); 
 		noDataHQLquery.append("SELECT lss.subjectUID, cast(null as char) AS recordDate, cast(null as char) AS name, \n"); 
 		header.add("SUBJECTUID");
 		header.add("RECORD_DATE");
-		header.add("COLLECTION");
+		//ARK-799
+//		header.add("COLLECTION");
 		
 		// Loop for all custom goups
 		for(CustomFieldGroup cfg : customFieldGroups) {
