@@ -68,7 +68,7 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 	private WebMarkupContainer	studyNameMarkup;
 	private WebMarkupContainer	studyLogoMarkup;
 	private WebMarkupContainer	arkContextMarkup;
-	boolean childStudy;
+//	boolean childStudy;
 
 	/**
 	 * @param id
@@ -80,9 +80,9 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 		this.studyLogoMarkup = studyLogoMarkup;
 		buildTabs();
 		
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(sessionStudyId);
-		childStudy = study.getParentStudy() != null  && (study != study.getParentStudy());
+//		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+//		Study study = iArkCommonService.getStudy(sessionStudyId);
+//		childStudy = study.getParentStudy() != null  && (study != study.getParentStudy());
 	}
 
 	@SuppressWarnings( { "serial", "unchecked" })
@@ -122,10 +122,11 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE)) {
 						panelToReturn = new CorrespondenceContainerPanel(panelId);
 					}
+					/* Moved these three tabs into study sub-menu
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)) {
 						panelToReturn = new SubjectUploadContainerPanel(panelId, arkFunction);
 					}
-					/* Moved these two tabs into study sub-menu
+					
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)) {
 						// useCustomFieldDisplay = true
 						panelToReturn = new CustomFieldContainerPanel(panelId, true, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
@@ -149,10 +150,13 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 				@Override
 				public boolean isVisible() {
 					// Subject Upload only visible to parent studies 
+					/* Moved this validation into study sub-menu  
 					if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)) {
 						return (!childStudy);
 					}
-					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT )) {
+					else
+					*/ 
+					if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT )) {
 						// hide this tab for now, added below with differing title to that in LIMS
 						return false;
 					}
