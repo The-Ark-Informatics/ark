@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 
 public class DataExtractionVO {
 	private HashMap<String, ExtractionVO> demographicData = new HashMap<String, ExtractionVO>();
+	private List<BioCollection> biocollections = new ArrayList<BioCollection>();
 	private List<Biospecimen> biospecimens = new ArrayList<Biospecimen>();//maybe it needs something more like above
-																//but if we just order/broup by subject uid its should be fine
+																//but if we just order/group by subject uid its should be fine
 
 	public HashMap<String, ExtractionVO> getDemographicData() {
 		return demographicData;
@@ -37,6 +39,16 @@ public class DataExtractionVO {
 	public List<Biospecimen> getBiospecimens() {
 		return this.biospecimens;
 	}
+
+
+	public void setBiocollections(List<BioCollection> biocollections) {
+		this.biocollections = biocollections;
+	}
+
+	public List<BioCollection> getBiocollections() {
+		return this.biocollections;
+	}
+
 	
 	
 }
