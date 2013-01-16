@@ -1428,7 +1428,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			String queryString = "select cfd " + "from CustomFieldDisplay cfd " + "where cfd.customFieldGroup =:customFieldGroup " + "and  customField.id in ( " + " SELECT id from CustomField cf "
 					+ " where cf.study =:study " + " and lower(cf.name) in (:names) " + " and cf.arkFunction =:arkFunction )";
-			Query query = getSession().createQuery(queryString);
+			Query query = getSession().createQuery(queryString); 
 			query.setParameter("study", study);
 			// query.setParameterList("names", fieldNameCollection);
 			query.setParameterList("names", lowerCaseNames);
@@ -2014,16 +2014,16 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			/* do i need fields or just run a mass query? */
 			// Collection<DemographicField> dfs =
 			// getSelectedDemographicFieldsForSearch(search);
-			Collection<DemographicField> addressDFs = getSelectedDemographicFieldsForSearch(search, Entity.Address);
-			Collection<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
-			Collection<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
-			Collection<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
+//			Collection<DemographicField> addressDFs = getSelectedDemographicFieldsForSearch(search, Entity.Address);
+//			Collection<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
+//			Collection<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
+//			Collection<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
 //			Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
 //			Collection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
 			// Collection<CustomFieldDisplay> cfds = getAllSelectedCustomFieldDisplaysForSearch(search);
 //			Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
 //			Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
-			Collection<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
+//			Collection<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
 			// save PHENO for later Collection<CustomFieldDisplay> pcfds =
 			// getSelectedPhenoCustomFieldDisplaysForSearch(search);
 			/* SAVE FILTERS FOR LATER */
@@ -2051,12 +2051,21 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// }
 
 			//addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search);
-			List<Long> uidsFromDemographic = applyDemographicFilters(search);
+			List<Long> uidsafterFiltering = applyDemographicFilters(search);
 			/*for(Long uid : uidsFromDemographic){
 				log.info("got " + uid);
 			}
 			*/
-			List<Long> uidsAfterBiospecimen = applyBiospecimenFilters(allTheData, search, uidsFromDemographic);	//change will be applied to referenced object
+			uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+//			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+//			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+//			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+//			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+//			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+//			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+//			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+
 			
 			//now filter previous data from the further filtering steps each time.  First time not necessary just assign uids
 
@@ -2084,7 +2093,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	/**
-	 * 
 	 * @param allTheData
 	 * @param search
 	 * @param uidsToInclude
@@ -2125,6 +2133,64 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return uidsToInclude;
 		}
 	}
+
+
+	/**
+	 * @param allTheData
+	 * @param search
+	 * @param uidsToInclude
+	 * @return the updated list of uids that are still left after the filtering.
+	 */
+	private List<Long> applyBiocollectionFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
+		//Set updatedListOfSubjectUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the biocollection.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
+		String biocollectionFilters = getBiocollectionFilters(search);
+		if(biocollectionFilters != null && !biocollectionFilters.isEmpty()){
+			String queryString = "select biocollection from BioCollection biocollection " 
+								+ " where biocollection.study.id = " + search.getStudy().getId()
+								+ biocollectionFilters  
+								+ " and  biocollection.linkSubjectStudy.id in (:uidList) ";
+			Query query = getSession().createQuery(queryString);
+			query.setParameterList("uidList", uidsToInclude);
+			 query.list(); 	
+			List<BioCollection> biocollections = query.list(); 	
+	
+			String queryString2 = "select distinct biocollection.linkSubjectStudy.id from BioCollection biocollection " 
+								+ " where biocollection.study.id = " + search.getStudy().getId()
+								+ biocollectionFilters  
+								+ " and biocollection.linkSubjectStudy.id in (:uidList) ";
+			Query query2 = getSession().createQuery(queryString2);
+			query2.setParameterList("uidList", uidsToInclude);
+			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
+			
+			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
+			allTheData.setBiocollections(biocollections);
+
+			log.info("sizeofbiospecs=" + biocollections.size());
+			for(BioCollection b : biocollections){
+				log.info("biocollection = " + b.getBiocollectionUid() + "     belongs to " + b.getLinkSubjectStudy().getSubjectUID());
+			}
+			log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
+			return updatedListOfSubjectUIDs;
+		}
+		else{
+			return uidsToInclude;
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
 			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search) {
@@ -2236,7 +2302,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	private void prettyLoggingOfWhatIsInOurMegaObject(HashMap<String, ExtractionVO> hashOfSubjectsWithData, FieldCategory fieldCategory) {
-		log.info("\n\n\n ok so we have " + hashOfSubjectsWithData.size() + " entries for category '" + fieldCategory + "'\n\n\n");
+		log.info(" we have " + hashOfSubjectsWithData.size() + " entries for category '" + fieldCategory + "'");
 		for (String subjectUID : hashOfSubjectsWithData.keySet()) {
 			HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
 			log.info(subjectUID + " has " + keyValues.size() + "demo fields"); 
@@ -2441,7 +2507,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 		}
-		log.info("\n\n filterClause = " + filterClause);
+		log.info("filterClause = " + filterClause);
 		return (filterClause == null ? "" : filterClause);
 	}
 
@@ -2461,7 +2527,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 		}
-		log.info("\n\n\n filterClauseAfterLSS FILTERS = " + filterClause);
+		log.info(" filterClauseAfterLSS FILTERS = " + filterClause);
 		return (filterClause == null ? "" : filterClause);
 	}
 
@@ -2481,7 +2547,28 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				//we only have biospecimen fields right now
 			}
 		}
-		log.info("\n\n filterClause = " + filterClause);
+		log.info("biospecimen filterClause = " + filterClause);
+		return filterClause;
+	}
+
+
+	private String getBiocollectionFilters(Search search){//, String filterThusFar) {
+		String filterClause = "";// filterThusFar;
+		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
+		for (QueryFilter filter : filters) {
+			BiocollectionField biocollectionField = filter.getBiocollectionField();
+			if ((biocollectionField != null)) {
+				if (biocollectionField.getEntity() != null && biocollectionField.getEntity().equals(Entity.BioCollection)) {
+					String nextFilterLine = (biocollectionField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+					if (filter.getOperator().equals(Operator.BETWEEN)) {
+						nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+					}
+					filterClause = " and biocollection." + nextFilterLine;
+				}
+				//we only have biocollection fields right now
+			}
+		}
+		log.info("biocollection filterClause = " + filterClause);
 		return filterClause;
 	}
 
@@ -2527,7 +2614,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 		}
-		log.info("\n\n\filterClauseAfterSubjectCustomField FILTERS = " + filterClause);
+		log.info("filterClauseAfterSubjectCustomField FILTERS = " + filterClause);
 		//filterClause = "";
 		return filterClause;
 	}
