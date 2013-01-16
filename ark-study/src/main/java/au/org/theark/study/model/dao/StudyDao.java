@@ -278,7 +278,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public void updateStudy(Study study, Collection<ArkModule> selectedApplications) throws CannotRemoveArkModuleException {
 		Session session = getSession();
-		session.update(study);
+		
+//		session.update(study);
+		//execute merge method instead of update to avoid org.hibernate.NonUniqueObjectException
+		session.merge(study);
 
 		Collection<LinkStudyArkModule> linkStudyArkModulesToAdd = getModulesToAddList(study, selectedApplications);
 		// Determine Removal List here
@@ -1910,6 +1913,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public void update(LinkSubjectStudy linkSubjectStudy) {
 		getSession().update(linkSubjectStudy);
+	}
+	
+	public void delete(LinkSubjectStudy linkSubjectStudy) {
+		getSession().delete(linkSubjectStudy);
 	}
 
 	public Upload refreshUpload(Upload upload) {
