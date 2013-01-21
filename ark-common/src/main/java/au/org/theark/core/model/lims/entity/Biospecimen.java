@@ -137,10 +137,13 @@ public class Biospecimen implements java.io.Serializable {
 		return this.invCell;
 	}
 
+	
 	public void setInvCell(InvCell invCell) {
 		this.invCell = invCell;
 	}
 
+	
+	//TODO:  evaluate EAGER vs LAZY
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "BIOCOLLECTION_ID")
 	public BioCollection getBioCollection() {
