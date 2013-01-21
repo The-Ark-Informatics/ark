@@ -2056,8 +2056,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				log.info("got " + uid);
 			}
 			*/
+			//TODO ASAP need a differenciating between needing filters and needing to select fields independantly
 			uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+
 //			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 //			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 //			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
@@ -2101,23 +2103,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	private List<Long> applyBiospecimenFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
 		//Set updatedListOfSubjectUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the biospecimen.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
 		String biospecimenFilters = getBiospecimenFilters(search);
-		if(biospecimenFilters != null && !biospecimenFilters.isEmpty()){
+
+		//only bother with the query and data IF biospecimen fields are needed
+		if (!getSelectedBiocollectionFieldsForSearch(search).isEmpty()){
 			String queryString = "select biospecimen from Biospecimen biospecimen " 
 								+ " where biospecimen.study.id = " + search.getStudy().getId()
-								+ biospecimenFilters  
+								+ biospecimenFilters
 								+ " and  biospecimen.linkSubjectStudy.id in (:uidList) ";
 			Query query = getSession().createQuery(queryString);
 			query.setParameterList("uidList", uidsToInclude);
-			 query.list(); 	
+			//query.list(); 	
 			List<Biospecimen> biospecimens = query.list(); 	
-	
-			String queryString2 = "select distinct biospecimen.linkSubjectStudy.id from Biospecimen biospecimen " 
-								+ " where biospecimen.study.id = " + search.getStudy().getId()
-								+ biospecimenFilters  
-								+ " and biospecimen.linkSubjectStudy.id in (:uidList) ";
-			Query query2 = getSession().createQuery(queryString2);
-			query2.setParameterList("uidList", uidsToInclude);
-			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
 			
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
 			allTheData.setBiospecimens(biospecimens);
@@ -2126,6 +2122,77 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			for(Biospecimen b : biospecimens){
 				log.info("biospecimen = " + b.getBiospecimenUid() + "     belongs to " + b.getLinkSubjectStudy().getSubjectUID());
 			}
+		}
+
+		//only bother with restricting IF biospecimen filters exist
+		if(!biospecimenFilters.isEmpty()){
+
+			String queryString2 = "select distinct biospecimen.linkSubjectStudy.id from Biospecimen biospecimen " 
+								+ " where biospecimen.study.id = " + search.getStudy().getId()
+								+ biospecimenFilters  
+								+ " and biospecimen.linkSubjectStudy.id in (:uidList) ";
+			Query query2 = getSession().createQuery(queryString2);
+			query2.setParameterList("uidList", uidsToInclude);
+			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
+			
+			//TODO ASAP in addtion to this it is now time to wipe the old data which is no longer to be included due to latest filter
+			// if we don't want to garauntee order of wiping data, etc do this outside this method, in the calling method
+			
+
+			log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
+			return updatedListOfSubjectUIDs;
+		}
+		else{
+			return uidsToInclude;
+		}
+	}
+
+
+	/**
+	 * @param allTheDataz
+	 * @param search
+	 * @param uidsToInclude
+	 * @return the updated list of uids that are still left after the filtering.
+	 */
+	private List<Long> applyBiocollectionFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
+		//Set updatedListOfSubjectUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the biocollection.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
+		String biocollectionFilters = getBiocollectionFilters(search);
+
+		//only bother with the query and data IF biocollection fields are needed
+		if (!getSelectedBiocollectionFieldsForSearch(search).isEmpty()){
+			String queryString = "select biocollection from BioCollection biocollection " 
+								+ " where biocollection.study.id = " + search.getStudy().getId()
+								+ biocollectionFilters
+								+ " and  biocollection.linkSubjectStudy.id in (:uidList) ";
+			Query query = getSession().createQuery(queryString);
+			query.setParameterList("uidList", uidsToInclude);
+			//query.list(); 	
+			List<BioCollection> biocollections = query.list(); 	
+			
+			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
+			allTheData.setBiocollections(biocollections);
+
+			log.info("sizeofbioCOLs=" + biocollections.size());
+			for(BioCollection b : biocollections){
+				log.info("biocollection = " + b.getBiocollectionUid() + "     belongs to " + b.getLinkSubjectStudy().getSubjectUID());
+			}
+		}
+
+		//only bother with restricting IF biocollection filters exist
+		if(!biocollectionFilters.isEmpty()){
+
+			String queryString2 = "select distinct biocollection.linkSubjectStudy.id from BioCollection biocollection " 
+								+ " where biocollection.study.id = " + search.getStudy().getId()
+								+ biocollectionFilters  
+								+ " and biocollection.linkSubjectStudy.id in (:uidList) ";
+			Query query2 = getSession().createQuery(queryString2);
+			query2.setParameterList("uidList", uidsToInclude);
+			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
+			
+			//TODO ASAP in addtion to this it is now time to wipe the old data which is no longer to be included due to latest filter
+			// if we don't want to garauntee order of wiping data, etc do this outside this method, in the calling method
+			
+
 			log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
 			return updatedListOfSubjectUIDs;
 		}
@@ -2140,7 +2207,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @param search
 	 * @param uidsToInclude
 	 * @return the updated list of uids that are still left after the filtering.
-	 */
+	 *
 	private List<Long> applyBiocollectionFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
 		//Set updatedListOfSubjectUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the biocollection.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
 		String biocollectionFilters = getBiocollectionFilters(search);
@@ -2175,145 +2242,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		else{
 			return uidsToInclude;
 		}
-	}
+	}*/
 	
 	
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
-			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search) {
-		if (!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty()) { // hasEmailFields(dfs)
-			// ||
-			// TODO
-			// Also  needs  to  consider  filtering??
-			String personFilters = getPersonFilters(search, null);
-			String lssAndPersonFilters = getLSSFilters(search, personFilters);
-//			String subjectCustomFieldFilters = getSubjectCustomFieldFilters(search, lssAndPersonFilters);
-			
-			String queryString = "select distinct lss "
-					+ // , address, lss, email " +
-					" from LinkSubjectStudy lss " 
-					+ ((!personFields.isEmpty()) ? " left join fetch lss.person person " : "") 
-					+ ((!addressFields.isEmpty()) ? " left join lss.person.addresses a " : "")
-					+ ((!phoneFields.isEmpty()) ? " left join lss.person.phones p " : "")
-//					+ ((!subjectCFDs.isEmpty()) ? " left join fetch lss.subjectCustomFieldDataSet scfd " : "") 
-					// Force restriction on Study of search
-					+ " where lss.study.id = " + search.getStudy().getId()
-					+ lssAndPersonFilters + " ";
-//					+ subjectCustomFieldFilters ;
-			// TODO : getLSSFilters
-			// TODO : getAddress
-			// TODO : getPhone
-			// TODO : getBiospecCustomFilters
-			// TODO : getBiocollectionCustomFilters
-			// TODO : getSubjectCustomFilters
-			// TODO : getPhenoCustomFilters
-
-			List<LinkSubjectStudy> subjects = getSession().createQuery(queryString).list();
-			log.info("size=" + subjects.size());
-
-			// DataExtractionVO devo; = new DataExtractionVO();
-			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirDemographicData = allTheData.getDemographicData();
-
-			/**
-			 * this is putting the data we extracted into a generic kind of VO doc that will be converted to an appopriate format later (such as
-			 * csv/xls/pdf/xml/etc)
-			 */
-			for (LinkSubjectStudy lss : subjects) {
-				ExtractionVO sev = new ExtractionVO();
-				sev.setKeyValues(constructKeyValueHashmap(lss, personFields, lssFields, addressFields, phoneFields));
-				hashOfSubjectsWithTheirDemographicData.put(lss.getSubjectUID(), sev);
-			}
-
-			/**
-			 * 
-			 * 
-			 * TODO : CHris, I am doing an example get off subject custom data here, but do it however and WHERE you see most efficient or for that
-			 * matter start with where its easiest to get working...then do more efficient after that
-			 * 
-			 */
-
-			// TODO TAKES TOO LONG!!!
-			//List<SubjectCustomFieldData> scfData = getCustomFieldDataFor(subjectCFDs, subjects); // todo add orderby SUBJECT... or alterative method with
-																
-			List<SubjectCustomFieldData> scfData = new ArrayList<SubjectCustomFieldData>(0);
-			// order by to help us keeping track of subjects
-			//log.info("we got " + scfData.size());
-			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirSubjectCustomData = allTheData.getSubjectCustomData();
-
-			for (LinkSubjectStudy lss : subjects) {
-				ExtractionVO sev = new ExtractionVO();
-				HashMap<String, String> map = new HashMap<String, String>();
-				for (SubjectCustomFieldData data : scfData) {
-					
-					if(data.getLinkSubjectStudy().equals(lss)){
-						
-						// if any error value, then just use that
-						if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
-							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
-						}
-						else {
-							// Determine field type and assign key value accordingly
-							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
-							}
-							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
-							}
-							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
-							}
-						}
-						sev.setKeyValues(map);
-					}
-				}
-				hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
-			}
-
-			/**
-			 * this is just logging to see if things work
-			 */
-			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
-			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirSubjectCustomData, FieldCategory.SUBJECT_CFD);
-
-		}
-		/*
-		 * if(hasLSSFields(dfs) && hasPersonFields(dfs) && hasAddressFields(dfs) && hasAddressFields(dfs)){//TODO Also needs to consider filtering???
-		 * String queryString = "select distinct lss " + //, address, lss, email " + " from LinkSubjectStudy lss" +
-		 * " left join fetch lss.person person " + " left join fetch person.addresses a " + //TODO FIX //" where lss.person.firstName like 'Travis%' " +
-		 * //, link_subject_study lss " + getPersonFilters(search); //TODO ADD THE REST //final ResultTransformer trans;// = new
-		 * DistinctRootEntityResultTransformer(); //qry.setResultTransformer(trans); Query query = getSession().createQuery(queryString);
-		 * List<LinkSubjectStudy> subjects = query.list(); log.info("size=" + subjects.size()); for(LinkSubjectStudy lss : subjects){
-		 * log.info(" person " + lss.getPerson().getId() + lss.getSubjectUID() + lss.getPerson().getFirstName()); log.info(" addresses size " +
-		 * lss.getPerson().getAddresses().size()); } }
-		 */
-	}
-
-	private void prettyLoggingOfWhatIsInOurMegaObject(HashMap<String, ExtractionVO> hashOfSubjectsWithData, FieldCategory fieldCategory) {
-		log.info(" we have " + hashOfSubjectsWithData.size() + " entries for category '" + fieldCategory + "'");
-		for (String subjectUID : hashOfSubjectsWithData.keySet()) {
-			HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
-			log.info(subjectUID + " has " + keyValues.size() + "demo fields"); 
-			// remove(subjectUID).getKeyValues().size() + "demo fields");
-			for (String key : keyValues.keySet()) {
-				log.info("     key=" + key + "\t   value=" + keyValues.get(key));
-			}
-		}
-
-	}
-
 	/**
 	 * TODO : Chris, please note that we have to complete the hardcoding below after Thileana finishes his insert statements for demographic field.
 	 * Alternatively you have reflection to deal with which may be a bit of a nightmare but less lines of code...but completely your call.
@@ -2390,8 +2325,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 			/*	private Long id;
-				private String firstName;
-				private String middleName;
+			 * private String firstName;
+			 * private String middleName;
 				private String lastName;
 				private String preferredName;
 			private GenderType genderType;
@@ -2406,9 +2341,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				private String otherEmail;
 				private EmailStatus preferredEmailStatus;
 				private EmailStatus otherEmailStatus;
-				private Date dateLastKnownAlive;
-			*/
-			// etc
+				private Date dateLastKnownAlive;*/
 		}
 		for (DemographicField field : lssFields) {
 			if (field.getFieldName().equalsIgnoreCase("consentDate")) {
@@ -2448,45 +2381,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		return map;
 	}
-
-	/*
-	 * private boolean hasEmailFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
-	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Email)){ return true; } } return false; } private boolean
-	 * hasPhoneFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
-	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Phone)){ return true; } } return false; } private boolean
-	 * hasAddressFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
-	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Address)){ return true; } } return false; } private void
-	 * addAddressData(DataExtractionVO allTheData, Collection<DemographicField> dfs){ //consent etc etc for(DemographicField field : dfs){
-	 * if(field.getEntity().equals(Entity.Address)){ // addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" +
-	 * getFieldName() // addressFieldsString.append(field.getFieldName()); break; } } } private void addLSSData(DataExtractionVO allTheData,
-	 * Collection<DemographicField> dfs){ for(DemographicField field : dfs){ if(field.getEntity().equals(Entity.Address)){ //
-	 * addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName() //
-	 * addressFieldsString.append(field.getFieldName()); break; } LinkSubjectStudy lss = new LinkSubjectStudy(); //Field fieldFromDB =
-	 * lss.getClass().getField(field.getFieldName()); didn't know if using reflection was best I fear I may be stuck with hardcoding } } private
-	 * boolean hasDemographicFieldsOrFilters( Collection<DemographicField> dfs) { // TODO Auto-generated method stub return false; } private boolean
-	 * hasLSSFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
-	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.LinkSubjectStudy)){ return true; } } return false; } private
-	 * boolean hasPersonFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
-	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Person)){ return true; } } return false; }
-	 */
-	/*
-	 * private String constructDemographicQuery(Collection<DemographicField> dfs){ StringBuffer sb = new StringBuffer(); StringBuffer
-	 * personFieldsString = new StringBuffer(); StringBuffer lssFieldsString = new StringBuffer(); StringBuffer emailFieldsString = new StringBuffer();
-	 * StringBuffer addressFieldsString = new StringBuffer(); StringBuffer personFiltersString = new StringBuffer(); StringBuffer lssFiltersString =
-	 * new StringBuffer(); StringBuffer emailFiltersString = new StringBuffer(); StringBuffer addressFiltersString = new StringBuffer(); //consent etc
-	 * etc
-	 * 
-	 * for(DemographicField field : dfs){ switch(field.getEntity()){ case Person:{ personFieldsString.append("person." + field.getFieldName());
-	 * personFieldsString.append(field.getFieldName()); personFieldsString.append(", "); break; } case LinkSubjectStudy:{ lssFieldsString.append("lss."
-	 * + field.getFieldName()); lssFieldsString.append(field.getFieldName()); lssFieldsString.append(", "); break; } case Email:{
-	 * emailFieldsString.append("email." + field.getFieldName()); emailFieldsString.append(field.getFieldName()); emailFieldsString.append(", ");
-	 * break; } case Address:{ addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
-	 * addressFieldsString.append(field.getFieldName()); addressFieldsString.append(", "); break; } /*case Entity.Person:{
-	 * personFieldsString.append("person." + field.getFieldName()); personFieldsString.append(field.getFieldName()); personFieldsString.append(", ");
-	 * break; }* default: { log.error("NEVER SHOULD HAVE A ENTITY WE DONT KNOW ABOUT!!!!!!!!!!!!!!!!" ); //TODO asap enums and constraints to ensure }
-	 * } if(!lssFieldsString.toString().isEmpty()){ } /** TODO: NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO * } return ""; }
-	 */
-
 	private String getPersonFilters(Search search, String filterThusFar) {
 		String filterClause = filterThusFar;
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
@@ -2544,7 +2438,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					}
 					filterClause = " and biospecimen." + nextFilterLine;
 				}
-				//we only have biospecimen fields right now
 			}
 		}
 		log.info("biospecimen filterClause = " + filterClause);
@@ -2565,7 +2458,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					}
 					filterClause = " and biocollection." + nextFilterLine;
 				}
-				//we only have biocollection fields right now
 			}
 		}
 		log.info("biocollection filterClause = " + filterClause);
@@ -2760,5 +2652,175 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		studyCriteria.addOrder(Order.asc("id"));	
 		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
 		return studyCriteria.list();
+	}	
+	
+	
+	
+	
+	
+	
+	
+	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
+			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search) {
+		if (!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty()) { // hasEmailFields(dfs)
+			// ||
+			// TODO
+			// Also  needs  to  consider  filtering??
+			String personFilters = getPersonFilters(search, null);
+			String lssAndPersonFilters = getLSSFilters(search, personFilters);
+//			String subjectCustomFieldFilters = getSubjectCustomFieldFilters(search, lssAndPersonFilters);
+			
+			String queryString = "select distinct lss "
+					+ // , address, lss, email " +
+					" from LinkSubjectStudy lss " 
+					+ ((!personFields.isEmpty()) ? " left join fetch lss.person person " : "") 
+					+ ((!addressFields.isEmpty()) ? " left join lss.person.addresses a " : "")
+					+ ((!phoneFields.isEmpty()) ? " left join lss.person.phones p " : "")
+//					+ ((!subjectCFDs.isEmpty()) ? " left join fetch lss.subjectCustomFieldDataSet scfd " : "") 
+					// Force restriction on Study of search
+					+ " where lss.study.id = " + search.getStudy().getId()
+					+ lssAndPersonFilters + " ";
+//					+ subjectCustomFieldFilters ;
+			// TODO : getLSSFilters
+			// TODO : getAddress
+			// TODO : getPhone
+			// TODO : getBiospecCustomFilters
+			// TODO : getBiocollectionCustomFilters
+			// TODO : getSubjectCustomFilters
+			// TODO : getPhenoCustomFilters
+
+			List<LinkSubjectStudy> subjects = getSession().createQuery(queryString).list();
+			log.info("size=" + subjects.size());
+
+			// DataExtractionVO devo; = new DataExtractionVO();
+			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirDemographicData = allTheData.getDemographicData();
+
+			/**
+			 * this is putting the data we extracted into a generic kind of VO doc that will be converted to an appopriate format later (such as
+			 * csv/xls/pdf/xml/etc)
+			 */
+			for (LinkSubjectStudy lss : subjects) {
+				ExtractionVO sev = new ExtractionVO();
+				sev.setKeyValues(constructKeyValueHashmap(lss, personFields, lssFields, addressFields, phoneFields));
+				hashOfSubjectsWithTheirDemographicData.put(lss.getSubjectUID(), sev);
+			}
+
+			/**
+			 * 
+			 * 
+			 * TODO : CHris, I am doing an example get off subject custom data here, but do it however and WHERE you see most efficient or for that
+			 * matter start with where its easiest to get working...then do more efficient after that
+			 * 
+			 */
+
+			// TODO TAKES TOO LONG!!!
+			//List<SubjectCustomFieldData> scfData = getCustomFieldDataFor(subjectCFDs, subjects); // todo add orderby SUBJECT... or alterative method with
+																
+			List<SubjectCustomFieldData> scfData = new ArrayList<SubjectCustomFieldData>(0);
+			// order by to help us keeping track of subjects
+			//log.info("we got " + scfData.size());
+			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirSubjectCustomData = allTheData.getSubjectCustomData();
+
+			for (LinkSubjectStudy lss : subjects) {
+				ExtractionVO sev = new ExtractionVO();
+				HashMap<String, String> map = new HashMap<String, String>();
+				for (SubjectCustomFieldData data : scfData) {
+					
+					if(data.getLinkSubjectStudy().equals(lss)){
+						
+						// if any error value, then just use that
+						if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
+							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+						}
+						else {
+							// Determine field type and assign key value accordingly
+							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+							}
+							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+							}
+							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+							}
+						}
+						sev.setKeyValues(map);
+					}
+				}
+				hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
+			}
+
+			/**
+			 * this is just logging to see if things work
+			 */
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirSubjectCustomData, FieldCategory.SUBJECT_CFD);
+
+		}
+		/*
+		 * if(hasLSSFields(dfs) && hasPersonFields(dfs) && hasAddressFields(dfs) && hasAddressFields(dfs)){//TODO Also needs to consider filtering???
+		 * String queryString = "select distinct lss " + //, address, lss, email " + " from LinkSubjectStudy lss" +
+		 * " left join fetch lss.person person " + " left join fetch person.addresses a " + //TODO FIX //" where lss.person.firstName like 'Travis%' " +
+		 * //, link_subject_study lss " + getPersonFilters(search); //TODO ADD THE REST //final ResultTransformer trans;// = new
+		 * DistinctRootEntityResultTransformer(); //qry.setResultTransformer(trans); Query query = getSession().createQuery(queryString);
+		 * List<LinkSubjectStudy> subjects = query.list(); log.info("size=" + subjects.size()); for(LinkSubjectStudy lss : subjects){
+		 * log.info(" person " + lss.getPerson().getId() + lss.getSubjectUID() + lss.getPerson().getFirstName()); log.info(" addresses size " +
+		 * lss.getPerson().getAddresses().size()); } }
+		 */
 	}
+
+	
+	
+	private void prettyLoggingOfWhatIsInOurMegaObject(HashMap<String, ExtractionVO> hashOfSubjectsWithData, FieldCategory fieldCategory) {
+		log.info(" we have " + hashOfSubjectsWithData.size() + " entries for category '" + fieldCategory + "'");
+		for (String subjectUID : hashOfSubjectsWithData.keySet()) {
+			HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
+			log.info(subjectUID + " has " + keyValues.size() + "demo fields"); 
+			// remove(subjectUID).getKeyValues().size() + "demo fields");
+			for (String key : keyValues.keySet()) {
+				log.info("     key=" + key + "\t   value=" + keyValues.get(key));
+			}
+		}
+	}
+
+
+	/*
+	 * private boolean hasEmailFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
+	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Email)){ return true; } } return false; } private boolean
+	 * hasPhoneFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
+	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Phone)){ return true; } } return false; } private boolean
+	 * hasAddressFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
+	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Address)){ return true; } } return false; } private void
+	 * addAddressData(DataExtractionVO allTheData, Collection<DemographicField> dfs){ //consent etc etc for(DemographicField field : dfs){
+	 * if(field.getEntity().equals(Entity.Address)){ // addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" +
+	 * getFieldName() // addressFieldsString.append(field.getFieldName()); break; } } } private void addLSSData(DataExtractionVO allTheData,
+	 * Collection<DemographicField> dfs){ for(DemographicField field : dfs){ if(field.getEntity().equals(Entity.Address)){ //
+	 * addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName() //
+	 * addressFieldsString.append(field.getFieldName()); break; } LinkSubjectStudy lss = new LinkSubjectStudy(); //Field fieldFromDB =
+	 * lss.getClass().getField(field.getFieldName()); didn't know if using reflection was best I fear I may be stuck with hardcoding } } private
+	 * boolean hasDemographicFieldsOrFilters( Collection<DemographicField> dfs) { // TODO Auto-generated method stub return false; } private boolean
+	 * hasLSSFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
+	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.LinkSubjectStudy)){ return true; } } return false; } private
+	 * boolean hasPersonFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
+	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Person)){ return true; } } return false; }
+	 */
+	/*
+	 * private String constructDemographicQuery(Collection<DemographicField> dfs){ StringBuffer sb = new StringBuffer(); StringBuffer
+	 * personFieldsString = new StringBuffer(); StringBuffer lssFieldsString = new StringBuffer(); StringBuffer emailFieldsString = new StringBuffer();
+	 * StringBuffer addressFieldsString = new StringBuffer(); StringBuffer personFiltersString = new StringBuffer(); StringBuffer lssFiltersString =
+	 * new StringBuffer(); StringBuffer emailFiltersString = new StringBuffer(); StringBuffer addressFiltersString = new StringBuffer(); //consent etc
+	 * etc
+	 * 
+	 * for(DemographicField field : dfs){ switch(field.getEntity()){ case Person:{ personFieldsString.append("person." + field.getFieldName());
+	 * personFieldsString.append(field.getFieldName()); personFieldsString.append(", "); break; } case LinkSubjectStudy:{ lssFieldsString.append("lss."
+	 * + field.getFieldName()); lssFieldsString.append(field.getFieldName()); lssFieldsString.append(", "); break; } case Email:{
+	 * emailFieldsString.append("email." + field.getFieldName()); emailFieldsString.append(field.getFieldName()); emailFieldsString.append(", ");
+	 * break; } case Address:{ addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
+	 * addressFieldsString.append(field.getFieldName()); addressFieldsString.append(", "); break; } /*case Entity.Person:{
+	 * personFieldsString.append("person." + field.getFieldName()); personFieldsString.append(field.getFieldName()); personFieldsString.append(", ");
+	 * break; }* default: { log.error("NEVER SHOULD HAVE A ENTITY WE DONT KNOW ABOUT!!!!!!!!!!!!!!!!" ); //TODO asap enums and constraints to ensure }
+	 * } if(!lssFieldsString.toString().isEmpty()){ } /** TODO: NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO * } return ""; }
+	 */
+
+
 }
