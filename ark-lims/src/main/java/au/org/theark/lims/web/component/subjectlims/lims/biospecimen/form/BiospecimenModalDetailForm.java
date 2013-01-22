@@ -72,6 +72,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -387,7 +388,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				cpModel.getObject().getBiospecimen().setSampleDate(cpModel.getObject().getBiospecimen().getBioCollection().getCollectionDate());
+				
+				BioCollection selectedBioCollection=cpModel.getObject().getBioCollection();
+				cpModel.getObject().getBiospecimen().setSampleDate(selectedBioCollection.getCollectionDate());
 				target.add(sampleDateTxtFld);
 			}
 		};
@@ -613,6 +616,16 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			// Amended renderer to display BiocollectionUID rather than name
 			ChoiceRenderer<BioCollection> choiceRenderer = new ChoiceRenderer<BioCollection>("biocollectionUid", Constants.ID);
 			bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", cpModel.getObject().getBioCollectionList(), choiceRenderer);
+			bioCollectionDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+
+				private static final long	serialVersionUID	= 1L;
+				
+				@Override
+				protected void onUpdate(AjaxRequestTarget target) {
+					BioCollection selectedBioCollection=(BioCollection)getComponent().getDefaultModelObject();
+					cpModel.getObject().setBioCollection(selectedBioCollection);
+				}
+			});
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
