@@ -2023,11 +2023,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			Collection<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
 			Collection<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
 			Collection<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
-			Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
-			Collection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
-			 Collection<CustomFieldDisplay> cfds = getAllSelectedCustomFieldDisplaysForSearch(search);
-			Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
-			Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
+			//Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
+			//ollection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
+			 //Collection<CustomFieldDisplay> cfds = getAllSelectedCustomFieldDisplaysForSearch(search);
+			//Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
+			//Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
 			Collection<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
 			// save PHENO for later Collection<CustomFieldDisplay> pcfds =
 			// getSelectedPhenoCustomFieldDisplaysForSearch(search);
