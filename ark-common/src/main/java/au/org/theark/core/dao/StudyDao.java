@@ -2059,7 +2059,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//TODO ASAP need a differenciating between needing filters and needing to select fields independantly
 			uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
-
+			uidsafterFiltering = applySubjectCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			
 //			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 //			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 //			uidsafterFiltering = applyBioCollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
@@ -2172,7 +2173,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
 			allTheData.setBiocollections(biocollections);
 
-			log.info("sizeofbioCOLs=" + biocollections.size());
+			log.info("after applying biocollection filters : sizeofbioCOLs=" + biocollections.size());
 			for(BioCollection b : biocollections){
 				log.info("biocollection = " + b.getBiocollectionUid() + "     belongs to " + b.getLinkSubjectStudy().getSubjectUID());
 			}
@@ -2185,6 +2186,130 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 								+ " where biocollection.study.id = " + search.getStudy().getId()
 								+ biocollectionFilters  
 								+ " and biocollection.linkSubjectStudy.id in (:uidList) ";
+			Query query2 = getSession().createQuery(queryString2);
+			query2.setParameterList("uidList", uidsToInclude);
+			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
+			
+			//TODO ASAP in addtion to this it is now time to wipe the old data which is no longer to be included due to latest filter
+			// if we don't want to garauntee order of wiping data, etc do this outside this method, in the calling method
+			
+
+			log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
+			return updatedListOfSubjectUIDs;
+		}
+		else{
+			return uidsToInclude;
+		}
+	}
+
+
+
+
+	/**
+	 * @param allTheDataz
+	 * @param search
+	 * @param uidsToInclude
+	 * @return the updated list of uids that are still left after the filtering.
+	 */
+	private List<Long> applySubjectCustomFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
+		//Set updatedListOfSubjectUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the data.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
+		String dataFilters = getSubjectCustomFieldFilters(search);
+
+		//only bother with the query and data IF data fields are needed
+		if (!getSubjectCustomFieldFilters(search).isEmpty()){
+			String queryString = "select data from SubjectCustomFieldData data " 
+								+ " where data.study.id = " + search.getStudy().getId()
+								+ dataFilters
+								+ " and  data.linkSubjectStudy.id in (:uidList) ";
+			Query query = getSession().createQuery(queryString);
+			query.setParameterList("uidList", uidsToInclude);
+			//query.list(); 	
+			List<SubjectCustomFieldData> scfData = query.list(); 	
+			
+			
+			/******************************
+			 * 
+			 * START PROCESSING
+			 * 
+			 */
+			// order by to help us keeping track of subjects
+			//log.info("we got " + scfData.size());
+			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirSubjectCustomData = allTheData.getSubjectCustomData();
+
+			ExtractionVO valuesForThisLss = new ExtractionVO();
+			HashMap<String, String> map = null;
+			LinkSubjectStudy previousLss = null;
+			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
+			for (SubjectCustomFieldData data : scfData) {
+				
+				if(previousLss==null){
+					map = new HashMap<String, String>();
+					previousLss = data.getLinkSubjectStudy();
+				}
+				else if(data.getLinkSubjectStudy().equals(previousLss)){
+					//then just put the data in
+				}
+				else{	//if its a new LSS finalize previous map, etc
+					valuesForThisLss.setKeyValues(map);
+					previousLss = data.getLinkSubjectStudy();
+					hashOfSubjectsWithTheirSubjectCustomData.put(previousLss.getSubjectUID(), valuesForThisLss);	
+
+					map = new HashMap<String, String>();//reset
+					
+				}
+
+				//if any error value, then just use that - though, yet again I really question the acceptance of error data
+				if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
+					map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+				}
+				else {
+					// Determine field type and assign key value accordingly
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+					}
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+					}
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+					}
+				}
+			
+			
+			}
+			//finalize the last entered key value sets/extraction VOs
+			if(map!=null && previousLss!=null){
+				valuesForThisLss.setKeyValues(map);
+				hashOfSubjectsWithTheirSubjectCustomData.put(previousLss.getSubjectUID(), valuesForThisLss);
+
+			}
+			
+			/******************************
+			 * 
+			 * END PROCESSING
+			 * 
+			 */
+			
+			
+			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
+			allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
+
+			/*** lets log this to test
+			 * log.info("sizeofbioCOLs=" + datas.size());
+			 *
+			for(SubjectCustomFieldDisplay b : datas){
+				log.info("data = " + b.getSubjectCustomUid() + "     belongs to " + b.getLinkSubjectStudy().getSubjectUID());
+			}
+			**/
+		}
+
+		//only bother with restricting IF data filters exist
+		if(!dataFilters.isEmpty()){
+
+			String queryString2 = "select distinct data.linkSubjectStudy.id from SubjectCustomFieldData data " 
+								+ " where data.study.id = " + search.getStudy().getId()
+								+ dataFilters  
+								+ " and data.linkSubjectStudy.id in (:uidList) ";
 			Query query2 = getSession().createQuery(queryString2);
 			query2.setParameterList("uidList", uidsToInclude);
 			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
@@ -2465,49 +2590,46 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	
-	private String getSubjectCustomFieldFilters(Search search, String subjectCustomFieldFilters) {
+	private String getSubjectCustomFieldFilters(Search search) {
 		// Currently cannot add filters to the custom field data!
 		// The current longitudinal format does not allow concatenated filters as we are actually attempting a "row filter" as opposed to a "column = value" type filter
 		
-		String filterClause = subjectCustomFieldFilters;
+		String filterClause = "";
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
 		for (QueryFilter filter : filters) {
 			CustomFieldDisplay customFieldDisplay = filter.getCustomFieldDisplay();
 			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)) {
+				
+				log.info("what is this filter? " + filter.getId());
+				
 				String nextFilterLine = new String();
-				
-				/*
-				 * 	private String textDataValue;
-						private Date dateDataValue;
-						private String errorDataValue;
-						private Double numberDataValue;
-				 */
-				
+
 				// Determine field type and assign key value accordingly
-				
+				//TODO evaluate date entry/validation
 				if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-					nextFilterLine = ("scfd.customFieldDisplay.id=" + customFieldDisplay.getId() + " AND scfd.dateDataValue " + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+					nextFilterLine = (" data.customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND data.dateDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
 				}
-				if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-					nextFilterLine = ("scfd.customFieldDisplay.id=" + customFieldDisplay.getId() + " AND scfd.numberDataValue " + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+					nextFilterLine = (" data.customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND data.numberDataValue " + getHQLForOperator(filter.getOperator()) + " " + filter.getValue() + " ");
 				}
-				if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-					nextFilterLine = ("scfd.customFieldDisplay.id=" + customFieldDisplay.getId() + " AND scfd.textDataValue " + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+					nextFilterLine = (" data.customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND data.textDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
 				}
 				
+				//TODO ASAP i think all of these might need to start thinking about is null or is not null?
 				if (filter.getOperator().equals(Operator.BETWEEN)) {
 					nextFilterLine += (" AND " + filter.getSecondValue());
 				}
-				if (filterClause == null || filterClause.isEmpty()) {
-					filterClause = " where lss." + nextFilterLine;
-				}
-				else {
-					filterClause = filterClause + " and (" + nextFilterLine + ")";
-				}
+				
+				filterClause = filterClause + " and (" + nextFilterLine + ")";
+				
 			}
 		}
 		log.info("filterClauseAfterSubjectCustomField FILTERS = " + filterClause);
-		//filterClause = "";
+
 		return filterClause;
 	}
 
@@ -2653,6 +2775,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
 		return studyCriteria.list();
 	}	
+	
 	
 	
 	
