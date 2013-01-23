@@ -2216,7 +2216,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		String dataFilters = getSubjectCustomFieldFilters(search);
 
 		//only bother with the query and data IF data fields are needed
-		if (!getSubjectCustomFieldFilters(search).isEmpty()){
+		if (!getSelectedSubjectCustomFieldDisplaysForSearch(search).isEmpty()){
 			String queryString = "select data from SubjectCustomFieldData data " 
 								+ " where data.study.id = " + search.getStudy().getId()
 								+ dataFilters
