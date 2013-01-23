@@ -6,8 +6,10 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IDetachable;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -18,6 +20,8 @@ import wickettree.AbstractTree;
 import wickettree.ITreeProvider;
 import wickettree.NestedTree;
 import wickettree.content.StyledLinkLabel;
+import wickettree.util.InverseSet;
+import wickettree.util.ProviderSubset;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.Biospecimen;
@@ -39,29 +43,18 @@ public class BiospecimenNestedTreePanel extends Panel {
 	protected CompoundPropertyModel<LimsVO>	cpModel;
 	private ITreeProvider<Object> provider;
 	private IModel<Set<Object>> state;
-	protected AbstractTree<Object> tree;
+	public AbstractTree<Object> tree;
 	protected AbstractDetailModalWindow modalWindow;
 
-	public BiospecimenNestedTreePanel(String id, CompoundPropertyModel<LimsVO>	cpModel, ITreeProvider<Object> provider, IModel<Set<Object>> state) {
+	public BiospecimenNestedTreePanel(String id, CompoundPropertyModel<LimsVO>	cpModel, ITreeProvider<Object> provider, final IModel<Set<Object>> state, AbstractDetailModalWindow modalWindow) {
 		super(id);
 		setOutputMarkupId(true);
 		this.cpModel = cpModel;
 		this.provider = provider;
 		this.state = state;
 		tree = createTree();
-		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
-
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onCloseModalWindow(AjaxRequestTarget target) {
-				target.add(BiospecimenNestedTreePanel.this);
-			}
-
-		};
+		this.modalWindow = modalWindow;
 		add(tree);
-		add(modalWindow);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -100,17 +93,6 @@ public class BiospecimenNestedTreePanel extends Panel {
 								modalWindow.setTitle("Biocollection Detail");
 								modalWindow.setContent(modalContentPanel);
 								modalWindow.show(target);
-								modalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback()
-								{
-									/**
-									 * 
-									 */
-									private static final long	serialVersionUID	= 1L;
-
-									public void onClose(AjaxRequestTarget target)
-						         {
-						         }
-								});
 								
 							}
 							catch (EntityNotFoundException e) {
@@ -128,6 +110,7 @@ public class BiospecimenNestedTreePanel extends Panel {
 				}
 				else if (model.getObject() instanceof Biospecimen) {
 					final Biospecimen b = (Biospecimen) model.getObject();
+					
 					StyledLinkLabel<String> styledLink = new StyledLinkLabel<String>(id, new Model<String>(b.getBiospecimenUid())) {
 						private static final long	serialVersionUID	= 1L;
 
@@ -151,17 +134,6 @@ public class BiospecimenNestedTreePanel extends Panel {
 								modalWindow.setTitle("Biospecimen Detail");
 								modalWindow.setContent(modalContentPanel);
 								modalWindow.show(target);
-								modalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback()
-								{
-									/**
-									 * 
-									 */
-									private static final long	serialVersionUID	= 1L;
-
-									public void onClose(AjaxRequestTarget target)
-						         {
-						         }
-								});
 								
 							}
 							catch (EntityNotFoundException e) {
