@@ -383,6 +383,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 						try {
 							Biospecimen biospecimenFromDB = iLimsService.getBiospecimen(biospecimen.getId());
 							newModel.getObject().setBiospecimen(biospecimenFromDB);
+							newModel.getObject().setBioCollection(biospecimenFromDB.getBioCollection());
 							newModel.getObject().setTreeModel(cpModel.getObject().getTreeModel());
 							showModalWindow(target, newModel);
 						}
