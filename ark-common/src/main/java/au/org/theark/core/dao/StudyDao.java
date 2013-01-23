@@ -2996,7 +2996,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				csv.write(subjectUID);
 				
 				for (DemographicFieldSearch dfs : search.getDemographicFieldsToReturn()) {
-					csv.write(dfs.getDemographicField().getPublicFieldName());
 					HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
 					csv.write(keyValues.get(dfs.getDemographicField().getPublicFieldName()));
 				}
