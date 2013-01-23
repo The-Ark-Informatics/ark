@@ -18,7 +18,11 @@
  ******************************************************************************/
 package au.org.theark.core.dao;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -118,6 +122,7 @@ import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.util.CsvListReader;
+import au.org.theark.core.util.CsvWriter;
 import au.org.theark.core.vo.DataExtractionVO;
 import au.org.theark.core.vo.ExtractionVO;
 import au.org.theark.core.vo.QueryFilterVO;
@@ -2012,18 +2017,18 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		else {
 			/* do i need fields or just run a mass query? */
-			// Collection<DemographicField> dfs =
-			// getSelectedDemographicFieldsForSearch(search);
-//			Collection<DemographicField> addressDFs = getSelectedDemographicFieldsForSearch(search, Entity.Address);
-//			Collection<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
-//			Collection<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
-//			Collection<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
-//			Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
-//			Collection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
-			// Collection<CustomFieldDisplay> cfds = getAllSelectedCustomFieldDisplaysForSearch(search);
-//			Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
-//			Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
-//			Collection<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
+			 Collection<DemographicField> dfs =
+			 getSelectedDemographicFieldsForSearch(search);
+			Collection<DemographicField> addressDFs = getSelectedDemographicFieldsForSearch(search, Entity.Address);
+			Collection<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
+			Collection<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
+			Collection<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
+			Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
+			Collection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
+			 Collection<CustomFieldDisplay> cfds = getAllSelectedCustomFieldDisplaysForSearch(search);
+			Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
+			Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
+			Collection<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
 			// save PHENO for later Collection<CustomFieldDisplay> pcfds =
 			// getSelectedPhenoCustomFieldDisplaysForSearch(search);
 			/* SAVE FILTERS FOR LATER */
@@ -2050,7 +2055,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// DemographicExtractionVO
 			// }
 
-			//addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search);
+			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search);
 			List<Long> uidsafterFiltering = applyDemographicFilters(search);
 			/*for(Long uid : uidsFromDemographic){
 				log.info("got " + uid);
@@ -2391,22 +2396,22 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		for (DemographicField field : personFields) {
 			// TODO: Analyse performance cost of using reflection instead...would be CLEANER code...maybe dangerous/slow
 			if (field.getFieldName().equalsIgnoreCase("firstName")) {
-				if(lss.getPerson().getFirstName()==null){
+				if(lss.getPerson().getFirstName()!=null){
 					map.put(field.getPublicFieldName(), lss.getPerson().getFirstName());
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("middleName")) {
-				if(lss.getPerson().getMiddleName()==null){
+				if(lss.getPerson().getMiddleName()!=null){
 					map.put(field.getPublicFieldName(), lss.getPerson().getMiddleName());
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("lastName")) {
-				if(lss.getPerson().getLastName()==null){
+				if(lss.getPerson().getLastName()!=null){
 					map.put(field.getPublicFieldName(), lss.getPerson().getLastName());
 				}	
 			}
 			else if (field.getFieldName().equalsIgnoreCase("preferredName")) {
-				if(lss.getPerson().getPreferredName()==null)
+				if(lss.getPerson().getPreferredName()!=null)
 					map.put(field.getPublicFieldName(), lss.getPerson().getPreferredName());
 			}
 			else if (field.getFieldName().equalsIgnoreCase("dateOfBirth")) {
@@ -2878,6 +2883,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			 */
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirSubjectCustomData, FieldCategory.SUBJECT_CFD);
+			
+			createCSV(search, hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
 
 		}
 		/*
@@ -2945,5 +2952,59 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * } if(!lssFieldsString.toString().isEmpty()){ } /** TODO: NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO * } return ""; }
 	 */
 
+	/*
+	 * 	private void prettyLoggingOfWhatIsInOurMegaObject(HashMap<String, ExtractionVO> hashOfSubjectsWithData, FieldCategory fieldCategory) {
+		log.info(" we have " + hashOfSubjectsWithData.size() + " entries for category '" + fieldCategory + "'");
+		for (String subjectUID : hashOfSubjectsWithData.keySet()) {
+			HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
+			log.info(subjectUID + " has " + keyValues.size() + "demo fields"); 
+			// remove(subjectUID).getKeyValues().size() + "demo fields");
+			for (String key : keyValues.keySet()) {
+				log.info("     key=" + key + "\t   value=" + keyValues.get(key));
+			}
+		}
+	}
+	 */
+	
+	/**
+	 * Simple export to CSV as first cut
+	 */
+	private File createCSV(Search search, HashMap<String, ExtractionVO> hashOfSubjectsWithData, FieldCategory fieldCategory) {
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		String filename = new String("test.csv");
+		final java.io.File file = new File(tempDir, filename);
+		if(filename == null || filename.isEmpty()) {
+			filename = "exportcsv.csv";
+		}
+		OutputStream outputStream;
+		try {
+			outputStream = new FileOutputStream(file);
+			CsvWriter csv = new CsvWriter(outputStream);
+
+			// Header
+			csv.write("SUBJECTUID");
+			for (DemographicFieldSearch dfs : search.getDemographicFieldsToReturn()) {
+				csv.write(dfs.getDemographicField().getPublicFieldName());
+			}
+			csv.endLine();
+			
+			for (String subjectUID : hashOfSubjectsWithData.keySet()) {
+				csv.write(subjectUID);
+				
+				for (DemographicFieldSearch dfs : search.getDemographicFieldsToReturn()) {
+					csv.write(dfs.getDemographicField().getPublicFieldName());
+					HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
+					csv.write(keyValues.get(dfs.getDemographicField().getPublicFieldName()));
+				}
+				csv.endLine();
+			}
+			csv.close();
+		}
+		catch (FileNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		
+		return file;
+	}
 
 }
