@@ -130,7 +130,7 @@ public class LimsContainerPanel extends Panel {
 		
 		provider = new BiospecimenTreeProvidor(iLimsService, cpModel);
 		state = new ProviderSubset<Object>(provider);
-		bioTreePanel = new BiospecimenNestedTreePanel("tree", cpModel, provider, newStateModel());
+		bioTreePanel = new BiospecimenNestedTreePanel("tree", cpModel, provider, newStateModel(), modalWindow);
 		
 		containerForm.add(bioTreePanel);
 		containerForm.add(modalWindow);
