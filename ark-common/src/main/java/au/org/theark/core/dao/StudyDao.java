@@ -2223,9 +2223,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		//only bother with the query and data IF data fields are needed
 		if (!getSelectedSubjectCustomFieldDisplaysForSearch(search).isEmpty()){
 			String queryString = "select data from SubjectCustomFieldData data " 
-								+ " where data.study.id = " + search.getStudy().getId()
-								+ dataFilters
-								+ " and  data.linkSubjectStudy.id in (:uidList) ";
+			//					+ " where data.study.id = " + search.getStudy().getId()
+								+ " where "
+								+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
+								" data.linkSubjectStudy.id in (:uidList) ";
 			Query query = getSession().createQuery(queryString);
 			query.setParameterList("uidList", uidsToInclude);
 			//query.list(); 	
@@ -2310,11 +2311,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		//only bother with restricting IF data filters exist
 		if(!dataFilters.isEmpty()){
-
-			String queryString2 = "select distinct data.linkSubjectStudy.id from SubjectCustomFieldData data " 
-								+ " where data.study.id = " + search.getStudy().getId()
-								+ dataFilters  
-								+ " and data.linkSubjectStudy.id in (:uidList) ";
+			
+			String queryString2 = "select data.linkSubjectStudy.id from SubjectCustomFieldData data " 
+					//					+ " where data.study.id = " + search.getStudy().getId()
+										+ " where "
+										+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
+										" data.linkSubjectStudy.id in (:uidList) ";
 			Query query2 = getSession().createQuery(queryString2);
 			query2.setParameterList("uidList", uidsToInclude);
 			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
@@ -2322,7 +2324,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//TODO ASAP in addtion to this it is now time to wipe the old data which is no longer to be included due to latest filter
 			// if we don't want to garauntee order of wiping data, etc do this outside this method, in the calling method
 			
-
 			log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
 			return updatedListOfSubjectUIDs;
 		}
@@ -2628,9 +2629,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				if (filter.getOperator().equals(Operator.BETWEEN)) {
 					nextFilterLine += (" AND " + filter.getSecondValue());
 				}
-				
-				filterClause = filterClause + " and (" + nextFilterLine + ")";
-				
+				if(filterClause.isEmpty()){
+					filterClause =  nextFilterLine ;
+				}
+				else{
+					filterClause = filterClause + " and (" + nextFilterLine + ")";
+				}
 			}
 		}
 		log.info("filterClauseAfterSubjectCustomField FILTERS = " + filterClause);
