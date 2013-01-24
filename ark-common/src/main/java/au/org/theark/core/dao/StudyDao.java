@@ -2229,17 +2229,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 								" data.linkSubjectStudy.id in (:uidList) ";
 			Query query = getSession().createQuery(queryString);
 			query.setParameterList("uidList", uidsToInclude);
-			//query.list(); 	
 			List<SubjectCustomFieldData> scfData = query.list(); 	
 			
-			
-			/******************************
-			 * 
-			 * START PROCESSING
-			 * 
-			 */
-			// order by to help us keeping track of subjects
-			//log.info("we got " + scfData.size());
 			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirSubjectCustomData = allTheData.getSubjectCustomData();
 
 			ExtractionVO valuesForThisLss = new ExtractionVO();
@@ -2290,23 +2281,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 			}
 			
-			/******************************
-			 * 
-			 * END PROCESSING
-			 * 
-			 */
-			
-			
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
 			allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
 
-			/*** lets log this to test
-			 * log.info("sizeofbioCOLs=" + datas.size());
-			 *
-			for(SubjectCustomFieldDisplay b : datas){
-				log.info("data = " + b.getSubjectCustomUid() + "     belongs to " + b.getLinkSubjectStudy().getSubjectUID());
-			}
-			**/
 		}
 
 		//only bother with restricting IF data filters exist
@@ -2330,53 +2307,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		else{
 			return uidsToInclude;
 		}
-	}
-
-
-	/**
-	 * @param allTheData
-	 * @param search
-	 * @param uidsToInclude
-	 * @return the updated list of uids that are still left after the filtering.
-	 *
-	private List<Long> applyBiocollectionFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
-		//Set updatedListOfSubjectUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the biocollection.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
-		String biocollectionFilters = getBiocollectionFilters(search);
-		if(biocollectionFilters != null && !biocollectionFilters.isEmpty()){
-			String queryString = "select biocollection from BioCollection biocollection " 
-								+ " where biocollection.study.id = " + search.getStudy().getId()
-								+ biocollectionFilters  
-								+ " and  biocollection.linkSubjectStudy.id in (:uidList) ";
-			Query query = getSession().createQuery(queryString);
-			query.setParameterList("uidList", uidsToInclude);
-			 query.list(); 	
-			List<BioCollection> biocollections = query.list(); 	
-	
-			String queryString2 = "select distinct biocollection.linkSubjectStudy.id from BioCollection biocollection " 
-								+ " where biocollection.study.id = " + search.getStudy().getId()
-								+ biocollectionFilters  
-								+ " and biocollection.linkSubjectStudy.id in (:uidList) ";
-			Query query2 = getSession().createQuery(queryString2);
-			query2.setParameterList("uidList", uidsToInclude);
-			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
-			
-			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
-			allTheData.setBiocollections(biocollections);
-
-			log.info("sizeofbiospecs=" + biocollections.size());
-			for(BioCollection b : biocollections){
-				log.info("biocollection = " + b.getBiocollectionUid() + "     belongs to " + b.getLinkSubjectStudy().getSubjectUID());
-			}
-			log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
-			return updatedListOfSubjectUIDs;
-		}
-		else{
-			return uidsToInclude;
-		}
-	}*/
-	
-	
-	
+	}	
 	
 	
 	
