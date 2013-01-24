@@ -54,6 +54,7 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
@@ -2071,6 +2072,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//TODO wipe the old data which doesn't still match the ID list
 			uidsafterFiltering = applyBiospecimenCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			//TODO wipe the old data which doesn't still match the ID list
+			uidsafterFiltering = applyBiocollectionCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			//TODO wipe the old data which doesn't still match the ID list
 			
 
 			
@@ -2387,7 +2390,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		//only bother with restricting IF data filters exist
 		if(!dataFilters.isEmpty()){
-			String queryString2 = "select data.linkSubjectStudy.id from BiospecimenCustomFieldData data " 
+			String queryString2 = "select data.biospecimen.linkSubjectStudy.id from BiospecimenCustomFieldData data " 
 					//					+ " where data.study.id = " + search.getStudy().getId()
 										+ " where "
 										+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
@@ -2401,6 +2404,109 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			log.info("updated size of UIDs=" + updatedListOfBiospecimenUIDs.size());
 			return updatedListOfBiospecimenUIDs;
+		}
+		else{
+			return uidsToInclude;
+		}
+	}	
+	
+	
+	
+
+	
+	/**
+	 * @param allTheDataz
+	 * @param search
+	 * @param uidsToInclude
+	 * @return the updated list of uids that are still left after the filtering.
+	 */
+	private List<Long> applyBiocollectionCustomFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
+		//Set updatedListOfBiocollectionUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the data.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
+		String dataFilters = getBiocollectionCustomFieldFilters(search);
+
+		//only bother with the query and data IF data fields are needed
+		if (!getSelectedBiocollectionCustomFieldDisplaysForSearch(search).isEmpty()){
+			String queryString = "select data from BioCollectionCustomFieldData data " 
+			//					+ " where data.study.id = " + search.getStudy().getId()
+								+ " where "
+								+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
+								" data.bioCollection.linkSubjectStudy.id in (:uidList) "; //TODO group and order by biocollection (uid?)!
+			Query query = getSession().createQuery(queryString);
+			query.setParameterList("uidList", uidsToInclude);
+			List<BioCollectionCustomFieldData> scfData = query.list(); 	
+			
+			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirBiocollectionCustomData = allTheData.getBiocollectionCustomData();
+
+			ExtractionVO valuesForThisLss = new ExtractionVO();
+			HashMap<String, String> map = null;
+			String previousBiocollectionUID = null;
+			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
+			for (BioCollectionCustomFieldData data : scfData) {
+				
+				if(previousBiocollectionUID==null){
+					map = new HashMap<String, String>();
+					previousBiocollectionUID = data.getBioCollection().getBiocollectionUid();
+					//given it is first time ensure map has a record of the subjectUID
+					map.put("subjectUID", data.getBioCollection().getLinkSubjectStudy().getSubjectUID());
+				}
+				else if(data.getBioCollection().getBiocollectionUid().equals(previousBiocollectionUID)){
+					//then just put the data in
+				}
+				else{	//if its a new LSS finalize previous map, etc
+					valuesForThisLss.setKeyValues(map);
+					previousBiocollectionUID = data.getBioCollection().getBiocollectionUid();
+					hashOfSubjectsWithTheirBiocollectionCustomData.put(previousBiocollectionUID, valuesForThisLss);	
+
+					map = new HashMap<String, String>();//reset
+					
+				}
+
+				//if any error value, then just use that - though, yet again I really question the acceptance of error data
+				if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
+					map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+				}
+				else {
+					// Determine field type and assign key value accordingly
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+					}
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+					}
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+					}
+				}
+			
+			
+			}
+			//finalize the last entered key value sets/extraction VOs
+			if(map!=null && previousBiocollectionUID!=null){
+				valuesForThisLss.setKeyValues(map);
+				hashOfSubjectsWithTheirBiocollectionCustomData.put(previousBiocollectionUID, valuesForThisLss);
+				//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
+				allTheData.setBiocollectionCustomData(hashOfSubjectsWithTheirBiocollectionCustomData);
+			}
+			//else no data, leave the set of biocollection custom data as it was
+
+		}
+
+		//only bother with restricting IF data filters exist
+		if(!dataFilters.isEmpty()){
+			String queryString2 = "select data.bioCollection.linkSubjectStudy.id from BioCollectionCustomFieldData data " 
+					//					+ " where data.study.id = " + search.getStudy().getId()
+										+ " where "
+										+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
+										" data.bioCollection.linkSubjectStudy.id in (:uidList) ";
+			Query query2 = getSession().createQuery(queryString2);
+			query2.setParameterList("uidList", uidsToInclude);
+			List<Long> updatedListOfBiocollectionUIDs = query2.list(); 	
+			
+			//TODO ASAP in addtion to this it is now time to wipe the old data which is no longer to be included due to latest filter
+				// if we don't want to garauntee order of wiping data, etc do this outside this method, in the calling method
+			
+			log.info("updated size of UIDs=" + updatedListOfBiocollectionUIDs.size());
+			return updatedListOfBiocollectionUIDs;
 		}
 		else{
 			return uidsToInclude;
@@ -2682,7 +2788,53 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
 		for (QueryFilter filter : filters) {
 			CustomFieldDisplay customFieldDisplay = filter.getCustomFieldDisplay();
-			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD)) {
+			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)) {
+				
+				log.info("what is this filter? " + filter.getId());
+				String nextFilterLine = new String();
+
+				// Determine field type and assign key value accordingly
+				//TODO evaluate date entry/validation
+				if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+					nextFilterLine = (" data.customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND data.dateDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+				}
+				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+					nextFilterLine = (" data.customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND data.numberDataValue " + getHQLForOperator(filter.getOperator()) + " " + filter.getValue() + " ");
+				}
+				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+					nextFilterLine = (" data.customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND data.textDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+				}
+				
+				//TODO ASAP i think all of these might need to start thinking about is null or is not null?
+				if (filter.getOperator().equals(Operator.BETWEEN)) {
+					nextFilterLine += (" AND " + filter.getSecondValue());
+				}
+				if(filterClause.isEmpty()){
+					filterClause =  nextFilterLine ;
+				}
+				else{
+					filterClause = filterClause + " and (" + nextFilterLine + ")";
+				}
+			}
+		}
+		log.info("filterClauseAfterBiospecimenCustomField FILTERS = " + filterClause);
+
+		return filterClause;
+	}
+
+	
+	private String getBiocollectionCustomFieldFilters(Search search) {
+		// Currently cannot add filters to the custom field data!
+		// The current longitudinal format does not allow concatenated filters as we are actually attempting a "row filter" as opposed to a "column = value" type filter
+		
+		String filterClause = "";
+		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
+		for (QueryFilter filter : filters) {
+			CustomFieldDisplay customFieldDisplay = filter.getCustomFieldDisplay();
+			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
 				
 				log.info("what is this filter? " + filter.getId());
 				
@@ -2715,7 +2867,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 		}
-		log.info("filterClauseAfterBiospecimenCustomField FILTERS = " + filterClause);
+		log.info("filterClauseAfterBiocollectionCustomField FILTERS = " + filterClause);
 
 		return filterClause;
 	}
