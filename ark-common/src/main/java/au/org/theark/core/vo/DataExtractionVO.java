@@ -49,6 +49,18 @@ public class DataExtractionVO {
 		return this.biocollections;
 	}
 
+
+	/* I guess the key to each of these is infact a biospecimen uid and not a subject uid, and subjectUID is just a key value pair?  i am open to suggestions */
+	private HashMap<String, ExtractionVO> biospecimenCustomData = new HashMap<String, ExtractionVO>();
+
+	public HashMap<String, ExtractionVO> getBiospecimenCustomData() {
+		return biospecimenCustomData;
+	}
+
+	public void setBiospecimenCustomData(HashMap<String, ExtractionVO> biospecimenCustomData) {
+		this.biospecimenCustomData = biospecimenCustomData;
+	}
+
 	
 	
 }
