@@ -2322,7 +2322,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return the updated list of uids that are still left after the filtering.
 	 */
 	private List<Long> applyBiospecimenCustomFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
-		//Set updatedListOfBiospecimenUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the data.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
+
 		String dataFilters = getBiospecimenCustomFieldFilters(search);
 
 		//only bother with the query and data IF data fields are needed
@@ -2401,13 +2401,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 										" data.biospecimen.linkSubjectStudy.id in (:uidList) ";
 			Query query2 = getSession().createQuery(queryString2);
 			query2.setParameterList("uidList", uidsToInclude);
-			List<Long> updatedListOfBiospecimenUIDs = query2.list(); 	
+			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
 			
 			//TODO ASAP in addtion to this it is now time to wipe the old data which is no longer to be included due to latest filter
 				// if we don't want to garauntee order of wiping data, etc do this outside this method, in the calling method
 			
-			log.info("updated size of UIDs=" + updatedListOfBiospecimenUIDs.size());
-			return updatedListOfBiospecimenUIDs;
+			log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
+			return updatedListOfSubjectUIDs;
 		}
 		else{
 			return uidsToInclude;
@@ -2426,7 +2426,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return the updated list of uids that are still left after the filtering.
 	 */
 	private List<Long> applyBiocollectionCustomFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
-		//Set updatedListOfBiocollectionUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the data.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
+
 		String dataFilters = getBiocollectionCustomFieldFilters(search);
 
 		//only bother with the query and data IF data fields are needed
@@ -2505,13 +2505,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 										" data.bioCollection.linkSubjectStudy.id in (:uidList) ";
 			Query query2 = getSession().createQuery(queryString2);
 			query2.setParameterList("uidList", uidsToInclude);
-			List<Long> updatedListOfBiocollectionUIDs = query2.list(); 	
+			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
 			
 			//TODO ASAP in addtion to this it is now time to wipe the old data which is no longer to be included due to latest filter
 				// if we don't want to garauntee order of wiping data, etc do this outside this method, in the calling method
 			
-			log.info("updated size of UIDs=" + updatedListOfBiocollectionUIDs.size());
-			return updatedListOfBiocollectionUIDs;
+			log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
+			return updatedListOfSubjectUIDs;
 		}
 		else{
 			return uidsToInclude;
@@ -2530,7 +2530,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return the updated list of uids that are still left after the filtering.
 	 */
 	private List<Long> applyPhenoCustomFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
-		//Set updatedListOfBiocollectionUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the data.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
+
 		String dataFilters = getPhenoFilters(search);
 
 		//only bother with the query and data IF data fields are needed
@@ -2539,12 +2539,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//					+ " where data.study.id = " + search.getStudy().getId()
 								+ " where "
 								+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
-								" data.bioCollection.linkSubjectStudy.id in (:uidList) "; //TODO group and order by biocollection (uid?)!
+								" data.phenoCollection.linkSubjectStudy.id in (:uidList) "; //TODO group and order by phenocollection (uid?)!
 			Query query = getSession().createQuery(queryString);
 			query.setParameterList("uidList", uidsToInclude);
 			List<PhenoData> scfData = query.list(); 	
 			
-			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirBiocollectionCustomData = allTheData.getBiocollectionCustomData();
+			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirPhenoCustomData = allTheData.getPhenoCustomData();
 
 			ExtractionVO valuesForThisLss = new ExtractionVO();
 			HashMap<String, String> map = null;
@@ -2564,7 +2564,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				else{	//if its a new LSS finalize previous map, etc
 					valuesForThisLss.setKeyValues(map);
 					phenoCollectionId = data.getPhenoCollection().getId();
-					hashOfSubjectsWithTheirBiocollectionCustomData.put(("" + phenoCollectionId), valuesForThisLss);	
+					hashOfSubjectsWithTheirPhenoCustomData.put(("" + phenoCollectionId), valuesForThisLss);	
 
 					map = new HashMap<String, String>();//reset
 					
@@ -2592,9 +2592,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//finalize the last entered key value sets/extraction VOs
 			if(map!=null && phenoCollectionId==-1){
 				valuesForThisLss.setKeyValues(map);
-				hashOfSubjectsWithTheirBiocollectionCustomData.put(("" + phenoCollectionId), valuesForThisLss);
+				hashOfSubjectsWithTheirPhenoCustomData.put(("" + phenoCollectionId), valuesForThisLss);
 				//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
-				allTheData.setBiocollectionCustomData(hashOfSubjectsWithTheirBiocollectionCustomData);
+				allTheData.setPhenoCustomData(hashOfSubjectsWithTheirPhenoCustomData);
 			}
 			//else no data, leave the set of biocollection custom data as it was
 
@@ -2602,20 +2602,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		//only bother with restricting IF data filters exist
 		if(!dataFilters.isEmpty()){
-			String queryString2 = "select data.bioCollection.linkSubjectStudy.id from PhenoData data " 
+			String queryString2 = "select data.phenoCollection.linkSubjectStudy.id from PhenoData data " 
 					//					+ " where data.study.id = " + search.getStudy().getId()
 										+ " where "
 										+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
-										" data.bioCollection.linkSubjectStudy.id in (:uidList) ";
+										" data.phenoCollection.linkSubjectStudy.id in (:uidList) ";
 			Query query2 = getSession().createQuery(queryString2);
 			query2.setParameterList("uidList", uidsToInclude);
-			List<Long> updatedListOfBiocollectionUIDs = query2.list(); 	
+			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
 			
 			//TODO ASAP in addtion to this it is now time to wipe the old data which is no longer to be included due to latest filter
 				// if we don't want to garauntee order of wiping data, etc do this outside this method, in the calling method
 			
-			log.info("updated size of UIDs=" + updatedListOfBiocollectionUIDs.size());
-			return updatedListOfBiocollectionUIDs;
+			log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
+			return updatedListOfSubjectUIDs;
 		}
 		else{
 			return uidsToInclude;
