@@ -71,6 +71,18 @@ public class DataExtractionVO {
 	public void setBiocollectionCustomData(HashMap<String, ExtractionVO> biocollectionCustomData) {
 		this.biocollectionCustomData = biocollectionCustomData;
 	}
+	
+	
+	/* I guess the key to each of these is infact a pheno id and not a subject uid, and subjectUID is just a key value pair?  i am open to suggestions */
+	private HashMap<String, ExtractionVO> phenoCustomData = new HashMap<String, ExtractionVO>();
+
+	public HashMap<String, ExtractionVO> getPhenoCustomData() {
+		return phenoCustomData;
+	}
+
+	public void setPhenoCustomData(HashMap<String, ExtractionVO> phenoCustomData) {
+		this.phenoCustomData = phenoCustomData;
+	}
 
 	
 	
