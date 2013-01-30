@@ -63,6 +63,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
@@ -2533,7 +2534,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		String dataFilters = getPhenoFilters(search);
 
 		//only bother with the query and data IF data fields are needed
-		if (!getSelectedPhenoDisplaysForSearch(search).isEmpty()){
+		if (!getSelectedPhenoCustomFieldDisplaysForSearch(search).isEmpty()){
 			String queryString = "select data from PhenoData data " 
 			//					+ " where data.study.id = " + search.getStudy().getId()
 								+ " where "
@@ -2547,23 +2548,23 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 			ExtractionVO valuesForThisLss = new ExtractionVO();
 			HashMap<String, String> map = null;
-			String previousBiocollectionUID = null;
+			long phenoCollectionId = -1L;
 			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
 			for (PhenoData data : scfData) {
 				
-				if(previousBiocollectionUID==null){
+				if(phenoCollectionId==-1){
 					map = new HashMap<String, String>();
-					previousBiocollectionUID = data.getBioCollection().getBiocollectionUid();
+					phenoCollectionId = data.getPhenoCollection().getId();
 					//given it is first time ensure map has a record of the subjectUID
-					map.put("subjectUID", data.getBioCollection().getLinkSubjectStudy().getSubjectUID());
+					map.put("subjectUID", data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
 				}
-				else if(data.getBioCollection().getBiocollectionUid().equals(previousBiocollectionUID)){
+				else if(data.getPhenoCollection().getId().equals(phenoCollectionId)){
 					//then just put the data in
 				}
 				else{	//if its a new LSS finalize previous map, etc
 					valuesForThisLss.setKeyValues(map);
-					previousBiocollectionUID = data.getBioCollection().getBiocollectionUid();
-					hashOfSubjectsWithTheirBiocollectionCustomData.put(previousBiocollectionUID, valuesForThisLss);	
+					phenoCollectionId = data.getPhenoCollection().getId();
+					hashOfSubjectsWithTheirBiocollectionCustomData.put(("" + phenoCollectionId), valuesForThisLss);	
 
 					map = new HashMap<String, String>();//reset
 					
@@ -2589,9 +2590,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			}
 			//finalize the last entered key value sets/extraction VOs
-			if(map!=null && previousBiocollectionUID!=null){
+			if(map!=null && phenoCollectionId==-1){
 				valuesForThisLss.setKeyValues(map);
-				hashOfSubjectsWithTheirBiocollectionCustomData.put(previousBiocollectionUID, valuesForThisLss);
+				hashOfSubjectsWithTheirBiocollectionCustomData.put(("" + phenoCollectionId), valuesForThisLss);
 				//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
 				allTheData.setBiocollectionCustomData(hashOfSubjectsWithTheirBiocollectionCustomData);
 			}
