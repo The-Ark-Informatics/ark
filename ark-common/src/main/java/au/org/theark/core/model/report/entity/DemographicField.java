@@ -53,7 +53,7 @@ public class DemographicField extends AbstractFieldEntity implements Serializabl
 	 
 		private boolean hasDropDown  		//EG;TRUE
 		private fieldForDisplay				//eg;addressType - will be compared to queryfilter.valueForMultiselectComponentLookup
-		private hqlForDropDown/Multichoice	//eg;
+		private hqlForDropDown/Multichoice	//eg;	
 	*/
 
 
