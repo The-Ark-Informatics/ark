@@ -20,12 +20,18 @@ package au.org.theark.study.web.component.subject;
 
 import java.util.List;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.resource.ResourceReference;
+
+
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.web.component.palette.ArkPalette;
@@ -59,7 +65,18 @@ public class ChildStudyPalettePanel<SubjectVO> extends Panel {
 		PropertyModel<List<Study>> selectedChildStudiesPm = new PropertyModel<List<Study>>(getDefaultModelObject(), "selectedChildStudies");
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "name");
 
-		assignedChildStudiesPalette = new ArkPalette("assignedChildStudiesPalette", selectedChildStudiesPm, availableChildStudiesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false);
+		assignedChildStudiesPalette = new ArkPalette("assignedChildStudiesPalette", selectedChildStudiesPm, availableChildStudiesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false){
+			 private Button removeButton; 
+			
+			 /** {@inheritDoc} */
+          @Override
+          protected Component newRemoveComponent() {
+         	 removeButton = new Button("removeButton");
+             removeButton.setOutputMarkupId(true);
+             removeButton.setVisible(false);
+             return removeButton;
+          } 
+		};
 		assignedChildStudiesNote = new Label("assignedChildStudiesNote", "");
 
 		setVisible(!availableChildStudiesPm.getObject().isEmpty());
@@ -70,4 +87,9 @@ public class ChildStudyPalettePanel<SubjectVO> extends Panel {
 		add(assignedChildStudiesPalette);
 		add(assignedChildStudiesNote);
 	}
+
+	public ArkPalette<Study> getAssignedChildStudiesPalette() {
+		return assignedChildStudiesPalette;
+	}
+	
 }
