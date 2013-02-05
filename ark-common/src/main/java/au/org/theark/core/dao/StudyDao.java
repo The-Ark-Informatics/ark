@@ -3391,5 +3391,89 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 		return file;
 	}
+	
+	/**
+	 * 
+	 * Simple export to CSV as Biocollection Data
+	 * 
+	 */
+	private File createBiocollectionCSV(Search search, HashMap<String, ExtractionVO> hashOfBiocollectionsWithData, FieldCategory fieldCategory) {
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		String filename = new String("test.csv");
+		final java.io.File file = new File(tempDir, filename);
+		if(filename == null || filename.isEmpty()) {
+			filename = "exportBiocollectioncsv.csv";
+		}
+		OutputStream outputStream;
+		try {
+			outputStream = new FileOutputStream(file);
+			CsvWriter csv = new CsvWriter(outputStream);
+
+			// Header
+			csv.write("SUBJECTUID");
+			for (BiocollectionFieldSearch bcfs : search.getBiocollectionFieldsToReturn()) {
+				csv.write(bcfs.getBiocollectionField().getPublicFieldName());
+			}
+			csv.endLine();
+			
+			for (String subjectUID : hashOfBiocollectionsWithData.keySet()) {
+				csv.write(subjectUID);
+				
+				for (BiocollectionFieldSearch bcfs : search.getBiocollectionFieldsToReturn()) {
+					HashMap<String, String> keyValues = hashOfBiocollectionsWithData.get(subjectUID).getKeyValues();
+					csv.write(keyValues.get(bcfs.getBiocollectionField().getPublicFieldName()));
+				}
+				csv.endLine();
+			}
+			csv.close();
+		}
+		catch (FileNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		
+		return file;
+	}
+	
+	/**
+	 * 
+	 * Simple export to CSV as Biospecimen Data
+	 * 
+	 */
+	private File createBiospecimenCSV(Search search, HashMap<String, ExtractionVO> hashOfBiospecimensWithData, FieldCategory fieldCategory) {
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		String filename = new String("test.csv");
+		final java.io.File file = new File(tempDir, filename);
+		if(filename == null || filename.isEmpty()) {
+			filename = "exportBiospecimencsv.csv";
+		}
+		OutputStream outputStream;
+		try {
+			outputStream = new FileOutputStream(file);
+			CsvWriter csv = new CsvWriter(outputStream);
+
+			// Header
+			csv.write("SUBJECTUID");
+			for (BiospecimenFieldSearch bsfs : search.getBiospecimenFieldsToReturn()) {
+				csv.write(bsfs.getBiospecimenField().getPublicFieldName());
+			}
+			csv.endLine();
+			
+			for (String subjectUID : hashOfBiospecimensWithData.keySet()) {
+				csv.write(subjectUID);
+				
+				for (BiospecimenFieldSearch bsfs : search.getBiospecimenFieldsToReturn()) {
+					HashMap<String, String> keyValues = hashOfBiospecimensWithData.get(subjectUID).getKeyValues();
+					csv.write(keyValues.get(bsfs.getBiospecimenField().getPublicFieldName()));
+				}
+				csv.endLine();
+			}
+			csv.close();
+		}
+		catch (FileNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		
+		return file;
+	}
 
 }
