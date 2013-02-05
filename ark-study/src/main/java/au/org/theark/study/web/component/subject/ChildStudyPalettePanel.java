@@ -21,7 +21,6 @@ package au.org.theark.study.web.component.subject;
 import java.util.List;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -29,9 +28,6 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.request.resource.ResourceReference;
-
-
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.web.component.palette.ArkPalette;
@@ -87,9 +83,4 @@ public class ChildStudyPalettePanel<SubjectVO> extends Panel {
 		add(assignedChildStudiesPalette);
 		add(assignedChildStudiesNote);
 	}
-
-	public ArkPalette<Study> getAssignedChildStudiesPalette() {
-		return assignedChildStudiesPalette;
-	}
-	
 }
