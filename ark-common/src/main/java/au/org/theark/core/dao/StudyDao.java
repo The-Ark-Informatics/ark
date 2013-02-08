@@ -2117,7 +2117,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		String biospecimenFilters = getBiospecimenFilters(search);
 
 		//only bother with the query and data IF biospecimen fields are needed
-		if (!getSelectedBiocollectionFieldsForSearch(search).isEmpty()){
+		if (!getSelectedBiocollectionFieldsForSearch(search).isEmpty() &&
+				uidsToInclude != null && !uidsToInclude.isEmpty()){
 			String queryString = "select biospecimen from Biospecimen biospecimen " 
 								+ " where biospecimen.study.id = " + search.getStudy().getId()
 								+ biospecimenFilters
@@ -2137,7 +2138,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 
 		//only bother with restricting IF biospecimen filters exist
-		if(!biospecimenFilters.isEmpty()){
+		if(!biospecimenFilters.isEmpty() &&
+				uidsToInclude != null && !uidsToInclude.isEmpty()){
 
 			String queryString2 = "select distinct biospecimen.linkSubjectStudy.id from Biospecimen biospecimen " 
 								+ " where biospecimen.study.id = " + search.getStudy().getId()
@@ -2171,7 +2173,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		String biocollectionFilters = getBiocollectionFilters(search);
 
 		//only bother with the query and data IF biocollection fields are needed
-		if (!getSelectedBiocollectionFieldsForSearch(search).isEmpty()){
+		if (!getSelectedBiocollectionFieldsForSearch(search).isEmpty() &&
+				uidsToInclude != null && !uidsToInclude.isEmpty()){
 			String queryString = "select biocollection from BioCollection biocollection " 
 								+ " where biocollection.study.id = " + search.getStudy().getId()
 								+ biocollectionFilters
@@ -2191,7 +2194,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 
 		//only bother with restricting IF biocollection filters exist
-		if(!biocollectionFilters.isEmpty()){
+		if(!biocollectionFilters.isEmpty() &&
+				uidsToInclude != null && !uidsToInclude.isEmpty()){
 
 			String queryString2 = "select distinct biocollection.linkSubjectStudy.id from BioCollection biocollection " 
 								+ " where biocollection.study.id = " + search.getStudy().getId()
@@ -2227,7 +2231,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		String dataFilters = getSubjectCustomFieldFilters(search);
 
 		//only bother with the query and data IF data fields are needed
-		if (!getSelectedSubjectCustomFieldDisplaysForSearch(search).isEmpty()){
+		if (!getSelectedSubjectCustomFieldDisplaysForSearch(search).isEmpty() &&
+				uidsToInclude != null && !uidsToInclude.isEmpty()){
 			String queryString = "select data from SubjectCustomFieldData data " 
 			//					+ " where data.study.id = " + search.getStudy().getId()
 								+ " where "
@@ -2293,7 +2298,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 
 		//only bother with restricting IF data filters exist
-		if(!dataFilters.isEmpty()){
+		if(!dataFilters.isEmpty() &&
+				uidsToInclude != null && !uidsToInclude.isEmpty()){
 			
 			String queryString2 = "select data.linkSubjectStudy.id from SubjectCustomFieldData data " 
 					//					+ " where data.study.id = " + search.getStudy().getId()
@@ -2326,7 +2332,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		String dataFilters = getBiospecimenCustomFieldFilters(search);
 
 		//only bother with the query and data IF data fields are needed
-		if (!getSelectedBiospecimenCustomFieldDisplaysForSearch(search).isEmpty()){
+		if (!getSelectedBiospecimenCustomFieldDisplaysForSearch(search).isEmpty() &&
+				uidsToInclude != null && !uidsToInclude.isEmpty()
+				){
 			String queryString = "select data from BiospecimenCustomFieldData data " 
 			//					+ " where data.study.id = " + search.getStudy().getId()
 								+ " where "
@@ -2393,7 +2401,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 
 		//only bother with restricting IF data filters exist
-		if(!dataFilters.isEmpty()){
+		if(!dataFilters.isEmpty() &&
+				uidsToInclude != null && !uidsToInclude.isEmpty()){
 			String queryString2 = "select data.biospecimen.linkSubjectStudy.id from BiospecimenCustomFieldData data " 
 					//					+ " where data.study.id = " + search.getStudy().getId()
 										+ " where "
@@ -2430,7 +2439,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		String dataFilters = getBiocollectionCustomFieldFilters(search);
 
 		//only bother with the query and data IF data fields are needed
-		if (!getSelectedBiocollectionCustomFieldDisplaysForSearch(search).isEmpty()){
+		if (!getSelectedBiocollectionCustomFieldDisplaysForSearch(search).isEmpty() &&
+				uidsToInclude != null && !uidsToInclude.isEmpty()){
 			String queryString = "select data from BioCollectionCustomFieldData data " 
 			//					+ " where data.study.id = " + search.getStudy().getId()
 								+ " where "
@@ -2497,7 +2507,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 
 		//only bother with restricting IF data filters exist
-		if(!dataFilters.isEmpty()){
+		if(!dataFilters.isEmpty() &&
+				uidsToInclude != null && !uidsToInclude.isEmpty()){
 			String queryString2 = "select data.bioCollection.linkSubjectStudy.id from BioCollectionCustomFieldData data " 
 					//					+ " where data.study.id = " + search.getStudy().getId()
 										+ " where "
@@ -2534,7 +2545,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		String dataFilters = getPhenoFilters(search);
 
 		//only bother with the query and data IF data fields are needed
-		if (!getSelectedPhenoCustomFieldDisplaysForSearch(search).isEmpty()){
+		if (!getSelectedPhenoCustomFieldDisplaysForSearch(search).isEmpty() &&
+				uidsToInclude != null && !uidsToInclude.isEmpty()){
 			String queryString = "select data from PhenoData data " 
 			//					+ " where data.study.id = " + search.getStudy().getId()
 								+ " where "
@@ -2601,7 +2613,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 
 		//only bother with restricting IF data filters exist
-		if(!dataFilters.isEmpty()){
+		if(!dataFilters.isEmpty() &&
+				uidsToInclude != null && !uidsToInclude.isEmpty()){
 			String queryString2 = "select data.phenoCollection.linkSubjectStudy.id from PhenoData data " 
 					//					+ " where data.study.id = " + search.getStudy().getId()
 										+ " where "
