@@ -1653,7 +1653,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				getSession().delete(dfs);
 				// setDemographicFieldsToReturn(getDemographicFieldsToReturn());
 				getSession().flush();
-				getSession().refresh(search);
+			 	getSession().refresh(search);
 				log.info("after delete" + search.getDemographicFieldsToReturn().size());
 			}
 		}
@@ -1661,16 +1661,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		for (DemographicField field : listOfDemographicFieldsFromVO) {
 			DemographicFieldSearch dfs = new DemographicFieldSearch(field, search);
 			getSession().save(dfs);
-		}
+		} 
 		searchVO.setSelectedDemographicFields(nonPoppableDemographicFieldsFromVO);
 //end save demographic fields
-		
-				
-
-		
-		
-		
-
 
 
 
@@ -2020,8 +2013,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		else {
 			/* do i need fields or just run a mass query? */
-			 Collection<DemographicField> dfs =
-			 getSelectedDemographicFieldsForSearch(search);
+			 Collection<DemographicField> dfs = getSelectedDemographicFieldsForSearch(search);
 			Collection<DemographicField> addressDFs = getSelectedDemographicFieldsForSearch(search, Entity.Address);
 			Collection<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
 			Collection<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
