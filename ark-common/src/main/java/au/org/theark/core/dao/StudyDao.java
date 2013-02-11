@@ -2018,11 +2018,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			Collection<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
 			Collection<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
 			Collection<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
-			//Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
-			//ollection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
+			Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
+			Collection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
 			 //Collection<CustomFieldDisplay> cfds = getAllSelectedCustomFieldDisplaysForSearch(search);
-			//Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
-			//Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
+			Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
+			Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
 			Collection<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
 			// save PHENO for later Collection<CustomFieldDisplay> pcfds =
 			// getSelectedPhenoCustomFieldDisplaysForSearch(search);
@@ -2059,6 +2059,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//TODO ASAP need a differenciating between needing filters and needing to select fields independantly
 			uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			//TODO wipe the old data which doesn't still match the ID list
+			addDataFromMegaBioCollectionQuery(allTheData, bcfs, bccfds, search);
 			uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			//TODO wipe the old data which doesn't still match the ID list
 			uidsafterFiltering = applySubjectCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
@@ -2762,6 +2763,121 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		return map;
 	}
+	
+	
+	private HashMap<String, String> constructKeyValueHashmap(BioCollection bioCollection, Collection<BiocollectionField> bioCollectionFields) {
+		HashMap map = new HashMap<String, String>();
+				
+		for (BiocollectionField field : bioCollectionFields) {
+			// TODO: Analyse performance cost of using reflection instead...would be CLEANER code...maybe dangerous/slow
+			if (field.getFieldName().equalsIgnoreCase("name")) {
+				if(bioCollection.getName() !=null){
+					map.put(field.getPublicFieldName(), bioCollection.getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("collectionDate")) {
+				if(bioCollection.getCollectionDate()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getCollectionDate());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("deleted")) {
+				if(bioCollection.getDeleted()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getDeleted());
+				}
+			}			
+			else if (field.getFieldName().equalsIgnoreCase("timestamp")) {
+				if(bioCollection.getTimestamp()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getTimestamp());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("comments")) {
+				if(bioCollection.getComments()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getComments());
+				}
+			}			
+			else if (field.getFieldName().equalsIgnoreCase("hospital")) {
+				if(bioCollection.getHospital()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getHospital());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("surgeryDate")) {
+				if(bioCollection.getSurgeryDate()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getSurgeryDate());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("diagCategory")) {
+				if(bioCollection.getDiagCategory()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getDiagCategory());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("refDoctor")) {
+				if(bioCollection.getRefDoctor()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getRefDoctor());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("patientage")) {
+				if(bioCollection.getPatientage()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getPatientage());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("dischargeDate")) {
+				if(bioCollection.getDischargeDate()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getDischargeDate());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("hospitalUr")) {
+				if(bioCollection.getHospitalUr()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getHospitalUr());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("diagDate")) {
+				if(bioCollection.getDiagDate()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getDiagDate());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("collectiongroupId")) {
+				if(bioCollection.getCollectiongroupId()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getCollectiongroupId());
+				}
+			}			
+			else if (field.getFieldName().equalsIgnoreCase("episodeNum")) {
+				if(bioCollection.getEpisodeNum()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getEpisodeNum());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("episodeDesc")) {
+				if(bioCollection.getEpisodeDesc()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getEpisodeDesc());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("collectiongroup")) {
+				if(bioCollection.getCollectiongroup()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getCollectiongroup());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("tissuetype")) {
+				if(bioCollection.getTissuetype()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getTissuetype());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("tissueclass")) {
+				if(bioCollection.getTissueclass()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getTissueclass());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("pathlabno")) {
+				if(bioCollection.getPathlabno()!=null){
+					map.put(field.getPublicFieldName(), bioCollection.getPathlabno());
+				}
+			}
+			
+		}
+		
+		
+		return map;
+		
+	}
+	
 	private String getPersonFilters(Search search, String filterThusFar) {
 		String filterClause = filterThusFar;
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
@@ -3289,6 +3405,60 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		 * lss.getPerson().getAddresses().size()); } }
 		 */
 	}
+	
+	
+	private void addDataFromMegaBioCollectionQuery(DataExtractionVO allTheData,Collection<BiocollectionField> biocollectionFields,Collection<CustomFieldDisplay> collectionCFDs, Search search ){
+		if(!biocollectionFields.isEmpty() || !collectionCFDs.isEmpty()){
+			
+			Criteria criteria = getSession().createCriteria(BioCollection.class);
+			criteria.add(Restrictions.eq("study", search.getStudy()));
+			
+			Collection<BioCollection> bioCollectionList=criteria.list();
+			
+			HashMap<String, ExtractionVO> hashOfBiocollectionData = allTheData.getBiocollectionData();
+			
+			for (BioCollection bioCollection : bioCollectionList) {
+				ExtractionVO sev = new ExtractionVO();
+				sev.setKeyValues(constructKeyValueHashmap(bioCollection,biocollectionFields));
+				hashOfBiocollectionData.put(bioCollection.getBiocollectionUid(), sev);
+			}
+			
+			
+			//TODO Seems we are not printing the custom fields to the csv
+			List<BioCollectionCustomFieldData> bccfData = new ArrayList<BioCollectionCustomFieldData>(0);
+
+			HashMap<String, ExtractionVO> hashOfBioCollectionCustomData = allTheData.getBiocollectionCustomData();
+
+			for (BioCollection bioCollection : bioCollectionList) {
+				ExtractionVO sev = new ExtractionVO();
+				HashMap<String, String> map = new HashMap<String, String>();
+				for (BioCollectionCustomFieldData data : bccfData) {
+					
+					if(data.getBioCollection()  .equals(bioCollection)){						
+						// if any error value, then just use that
+						if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
+							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+						}
+						else {
+							// Determine field type and assign key value accordingly
+							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+							}
+							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+							}
+							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+							}
+						}
+						sev.setKeyValues(map);
+					}
+				}
+				hashOfBioCollectionCustomData.put(bioCollection.getBiocollectionUid(), sev);
+			}
+			createBiocollectionCSV(search, hashOfBiocollectionData, FieldCategory.BIOCOLLECTION_FIELD);
+		}
+	}
 
 	
 	
@@ -3404,7 +3574,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 */
 	private File createBiocollectionCSV(Search search, HashMap<String, ExtractionVO> hashOfBiocollectionsWithData, FieldCategory fieldCategory) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
-		String filename = new String("test.csv");
+		String filename = new String("BIOCOLLECTION.csv");
 		final java.io.File file = new File(tempDir, filename);
 		if(filename == null || filename.isEmpty()) {
 			filename = "exportBiocollectioncsv.csv";
@@ -3415,7 +3585,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			CsvWriter csv = new CsvWriter(outputStream);
 
 			// Header
-			csv.write("SUBJECTUID");
+			csv.write("BIOCOLLECTIONUID");
 			for (BiocollectionFieldSearch bcfs : search.getBiocollectionFieldsToReturn()) {
 				csv.write(bcfs.getBiocollectionField().getPublicFieldName());
 			}
