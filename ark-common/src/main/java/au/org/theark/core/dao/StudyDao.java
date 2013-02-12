@@ -58,11 +58,22 @@ import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
+import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.lims.entity.BiospecimenGrade;
+import au.org.theark.core.model.lims.entity.BiospecimenProtocol;
+import au.org.theark.core.model.lims.entity.BiospecimenQuality;
+import au.org.theark.core.model.lims.entity.BiospecimenSpecies;
+import au.org.theark.core.model.lims.entity.BiospecimenStatus;
+import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
+import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.lims.entity.TreatmentType;
+import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
@@ -2057,6 +2068,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			*/
 			//TODO ASAP need a differenciating between needing filters and needing to select fields independantly
+			addDataFromMegaBioSpecimenQuery(allTheData, bsfs, bscfds, search);
 			uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			//TODO wipe the old data which doesn't still match the ID list
 			addDataFromMegaBioCollectionQuery(allTheData, bcfs, bccfds, search);
@@ -2766,7 +2778,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 	
 	private HashMap<String, String> constructKeyValueHashmap(BioCollection bioCollection, Collection<BiocollectionField> bioCollectionFields) {
-		HashMap map = new HashMap<String, String>();
+		HashMap<String,String> map = new HashMap<String, String>();
 				
 		for (BiocollectionField field : bioCollectionFields) {
 			// TODO: Analyse performance cost of using reflection instead...would be CLEANER code...maybe dangerous/slow
@@ -2777,12 +2789,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("collectionDate")) {
 				if(bioCollection.getCollectionDate()!=null){
-					map.put(field.getPublicFieldName(), bioCollection.getCollectionDate());
+					map.put(field.getPublicFieldName(), bioCollection.getCollectionDate()!=null?bioCollection.getCollectionDate().toString():"");
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("deleted")) {
 				if(bioCollection.getDeleted()!=null){
-					map.put(field.getPublicFieldName(), bioCollection.getDeleted());
+					map.put(field.getPublicFieldName(), bioCollection.getDeleted()!=null?bioCollection.getDeleted().toString():"");
 				}
 			}			
 			else if (field.getFieldName().equalsIgnoreCase("timestamp")) {
@@ -2802,7 +2814,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("surgeryDate")) {
 				if(bioCollection.getSurgeryDate()!=null){
-					map.put(field.getPublicFieldName(), bioCollection.getSurgeryDate());
+					map.put(field.getPublicFieldName(), bioCollection.getSurgeryDate()!=null?bioCollection.getSurgeryDate().toString():"");
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("diagCategory")) {
@@ -2817,12 +2829,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("patientage")) {
 				if(bioCollection.getPatientage()!=null){
-					map.put(field.getPublicFieldName(), bioCollection.getPatientage());
+					map.put(field.getPublicFieldName(), bioCollection.getPatientage()!=null?bioCollection.getPatientage().toString():"");
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("dischargeDate")) {
 				if(bioCollection.getDischargeDate()!=null){
-					map.put(field.getPublicFieldName(), bioCollection.getDischargeDate());
+					map.put(field.getPublicFieldName(), bioCollection.getDischargeDate()!=null?bioCollection.getDischargeDate().toString():"");
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("hospitalUr")) {
@@ -2832,12 +2844,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("diagDate")) {
 				if(bioCollection.getDiagDate()!=null){
-					map.put(field.getPublicFieldName(), bioCollection.getDiagDate());
+					map.put(field.getPublicFieldName(), bioCollection.getDiagDate()!=null?bioCollection.getDiagDate().toString():"");
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("collectiongroupId")) {
 				if(bioCollection.getCollectiongroupId()!=null){
-					map.put(field.getPublicFieldName(), bioCollection.getCollectiongroupId());
+					map.put(field.getPublicFieldName(), bioCollection.getCollectiongroupId()!=null?bioCollection.getCollectiongroupId().toString():"");
 				}
 			}			
 			else if (field.getFieldName().equalsIgnoreCase("episodeNum")) {
@@ -2876,6 +2888,164 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 		return map;
 		
+	}
+		
+	private HashMap<String, String> constructKeyValueHashmap(Biospecimen biospecimen, Collection<BiospecimenField> biospecimenFields) {
+		HashMap<String,String> map = new HashMap<String, String>();
+		
+		for (BiospecimenField field : biospecimenFields) {
+			if (field.getFieldName().equalsIgnoreCase("sampleType")) {
+				if(biospecimen.getSampleType() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getSampleType().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("invCell")) {
+				if(biospecimen.getInvCell()!=null){
+					map.put(field.getPublicFieldName(), "Col: "+biospecimen.getInvCell().getColno()+" Row: "+biospecimen.getInvCell().getRowno());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("parentUid")) {
+				if(biospecimen.getParentUid() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getParentUid());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("oldId")) {
+				if(biospecimen.getOldId() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getOldId()!=null?biospecimen.getOldId().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("deleted")) {
+				if(biospecimen.getDeleted() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getDeleted()!=null?biospecimen.getDeleted().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("timestamp")) {
+				if(biospecimen.getTimestamp() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getTimestamp());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("otherid")) {
+				if(biospecimen.getOtherid() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getOtherid());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("storedIn")) {
+				if(biospecimen.getStoredIn() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getStoredIn().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("depth")) {
+				if(biospecimen.getDepth() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getDepth()!=null ?biospecimen.getDepth().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("grade")) {
+				if(biospecimen.getGrade() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getGrade().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("sampleDate")) {
+				if(biospecimen.getSampleDate() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getSampleDate()!=null?biospecimen.getSampleDate().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("sampleTime")) {
+				if(biospecimen.getSampleTime() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getSampleTime()!=null?biospecimen.getSampleTime().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("processedDate")) {
+				if(biospecimen.getProcessedDate() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getProcessedDate()!=null?biospecimen.getProcessedDate().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("processedTime")) {
+				if(biospecimen.getExtractedTime() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getExtractedTime()!=null?biospecimen.getExtractedTime().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("species")) {
+				if(biospecimen.getSpecies() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getSpecies().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("qtyCollected")) {
+				if(biospecimen.getQuantity() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getQuantity()!=null ?biospecimen.getQuantity().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("qtyCollected")) {
+				if(biospecimen.getQtyCollected() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getQtyCollected()!=null?biospecimen.getQtyCollected().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("qtyRemoved")) {
+				if(biospecimen.getQtyRemoved() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getQtyRemoved()!=null?biospecimen.getQtyRemoved().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("comments")) {
+				if(biospecimen.getComments() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getComments());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("quantity")) {
+				if(biospecimen.getQuantity() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getQuantity()!=null?biospecimen.getQuantity().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("unit")) {
+				if(biospecimen.getUnit() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getUnit().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("treatmentType")) {
+				if(biospecimen.getTreatmentType() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getTreatmentType().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("barcoded")) {
+				if(biospecimen.getBarcoded() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getBarcoded()!=null?biospecimen.getBarcoded().toString():"" );
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("quality")) {
+				if(biospecimen.getQuality() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getQuality().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("anticoag")) {
+				if(biospecimen.getAnticoag() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getAnticoag().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("status")) {
+				if(biospecimen.getStatus() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getStatus().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("concentration")) {
+				if(biospecimen.getConcentration() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getConcentration()!=null ? biospecimen.getConcentration().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("amount")) {
+				if(biospecimen.getAmount() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getAmount()!=null?biospecimen.getAmount().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("biospecimenProtocol")) {
+				if(biospecimen.getBiospecimenProtocol() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getBiospecimenProtocol().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("purity")) {
+				if(biospecimen.getPurity() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getPurity()!=null?biospecimen.getPurity().toString():"");
+				}
+			}
+		}
+		return map;
 	}
 	
 	private String getPersonFilters(Search search, String filterThusFar) {
@@ -3290,11 +3460,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 	
 	
-	
-	
-	
-	
-	
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
 			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search) {
 		if (!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty()) { // hasEmailFields(dfs)
@@ -3456,11 +3621,82 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 				hashOfBioCollectionCustomData.put(bioCollection.getBiocollectionUid(), sev);
 			}
+			
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiocollectionData, FieldCategory.BIOCOLLECTION_FIELD);
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfBioCollectionCustomData, FieldCategory.BIOCOLLECTION_FIELD);
+			
 			createBiocollectionCSV(search, hashOfBiocollectionData, FieldCategory.BIOCOLLECTION_FIELD);
 		}
 	}
 
-	
+
+	private void addDataFromMegaBioSpecimenQuery(DataExtractionVO allTheData,Collection<BiospecimenField> biospecimenFields,Collection<CustomFieldDisplay> specimenCFDs, Search search ){
+		if(!biospecimenFields.isEmpty() || !specimenCFDs.isEmpty()){
+									
+			StringBuffer queryBuffer =new StringBuffer("select distinct biospecimen ");
+			queryBuffer.append("from Biospecimen biospecimen " );
+			queryBuffer.append(	" 	left join fetch biospecimen.sampleType sampleType ");
+			queryBuffer.append(	"	left join fetch biospecimen.invCell invCell " );
+			queryBuffer.append(	"	left join fetch biospecimen.storedIn storedIn " );
+			queryBuffer.append(	"	left join fetch biospecimen.grade grade " );
+			queryBuffer.append(	"	left join fetch biospecimen.species species " );
+			queryBuffer.append(	"	left join fetch biospecimen.unit unit " );
+			queryBuffer.append(	"	left join fetch biospecimen.treatmentType treatmentType ");
+			queryBuffer.append(	"	left join fetch biospecimen.quality quality ");
+			queryBuffer.append(	"	left join fetch biospecimen.anticoag anticoag ");
+			queryBuffer.append(	"	left join fetch biospecimen.status status " );
+			queryBuffer.append(	"	left join fetch biospecimen.biospecimenProtocol biospecimenProtocol ");
+			queryBuffer.append(	" where biospecimen.study.id = " + search.getStudy().getId());
+
+			Collection<Biospecimen> biospecimenList=getSession().createQuery(queryBuffer.toString()).list();
+			
+			HashMap<String, ExtractionVO> hashOfBiospecimenData = allTheData.getBiospecimenData();
+			
+			for (Biospecimen biospecimen : biospecimenList) {
+				ExtractionVO sev = new ExtractionVO();
+				sev.setKeyValues(constructKeyValueHashmap(biospecimen,biospecimenFields));
+				hashOfBiospecimenData.put(biospecimen.getBiospecimenUid(), sev);
+			}			
+			
+			//TODO Seems we are not printing the custom fields to the csv
+			List<BiospecimenCustomFieldData> bscfData = new ArrayList<BiospecimenCustomFieldData>(0);
+
+			HashMap<String, ExtractionVO> hashOfBiospecimenCustomData = allTheData.getBiocollectionCustomData();
+
+			for (Biospecimen biospecimen : biospecimenList) {
+				ExtractionVO sev = new ExtractionVO();
+				HashMap<String, String> map = new HashMap<String, String>();
+				for (BiospecimenCustomFieldData data : bscfData) {
+					
+					if(data.getBiospecimen()  .equals(biospecimen)){						
+						// if any error value, then just use that
+						if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
+							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+						}
+						else {
+							// Determine field type and assign key value accordingly
+							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+							}
+							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+							}
+							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+							}
+						}
+						sev.setKeyValues(map);
+					}
+				}
+				hashOfBiospecimenCustomData.put(biospecimen.getBiospecimenUid(), sev);
+			}
+			
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenData, FieldCategory.BIOSPECIMEN_FIELD);
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenCustomData, FieldCategory.BIOSPECIMEN_FIELD);
+			createBiospecimenCSV(search, hashOfBiospecimenData, FieldCategory.BIOSPECIMEN_FIELD);
+		}
+	}
+
 	
 	private void prettyLoggingOfWhatIsInOurMegaObject(HashMap<String, ExtractionVO> hashOfSubjectsWithData, FieldCategory fieldCategory) {
 		log.info(" we have " + hashOfSubjectsWithData.size() + " entries for category '" + fieldCategory + "'");
@@ -3591,11 +3827,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			csv.endLine();
 			
-			for (String subjectUID : hashOfBiocollectionsWithData.keySet()) {
-				csv.write(subjectUID);
+			for (String biocollectionUID : hashOfBiocollectionsWithData.keySet()) {
+				csv.write(biocollectionUID);
 				
 				for (BiocollectionFieldSearch bcfs : search.getBiocollectionFieldsToReturn()) {
-					HashMap<String, String> keyValues = hashOfBiocollectionsWithData.get(subjectUID).getKeyValues();
+					HashMap<String, String> keyValues = hashOfBiocollectionsWithData.get(biocollectionUID).getKeyValues();
 					csv.write(keyValues.get(bcfs.getBiocollectionField().getPublicFieldName()));
 				}
 				csv.endLine();
@@ -3616,7 +3852,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 */
 	private File createBiospecimenCSV(Search search, HashMap<String, ExtractionVO> hashOfBiospecimensWithData, FieldCategory fieldCategory) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
-		String filename = new String("test.csv");
+		String filename = new String("BIOSPECIMEN.csv");
 		final java.io.File file = new File(tempDir, filename);
 		if(filename == null || filename.isEmpty()) {
 			filename = "exportBiospecimencsv.csv";
@@ -3627,17 +3863,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			CsvWriter csv = new CsvWriter(outputStream);
 
 			// Header
-			csv.write("SUBJECTUID");
+			csv.write("BIOSPECIMENUID");
 			for (BiospecimenFieldSearch bsfs : search.getBiospecimenFieldsToReturn()) {
 				csv.write(bsfs.getBiospecimenField().getPublicFieldName());
 			}
 			csv.endLine();
 			
-			for (String subjectUID : hashOfBiospecimensWithData.keySet()) {
-				csv.write(subjectUID);
+			for (String biospecimenUID : hashOfBiospecimensWithData.keySet()) {
+				csv.write(biospecimenUID);
 				
 				for (BiospecimenFieldSearch bsfs : search.getBiospecimenFieldsToReturn()) {
-					HashMap<String, String> keyValues = hashOfBiospecimensWithData.get(subjectUID).getKeyValues();
+					HashMap<String, String> keyValues = hashOfBiospecimensWithData.get(biospecimenUID).getKeyValues();
 					csv.write(keyValues.get(bsfs.getBiospecimenField().getPublicFieldName()));
 				}
 				csv.endLine();
