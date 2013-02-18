@@ -31,7 +31,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DateTimeField;
+import org.apache.wicket.extensions.yui.calendar.TimeField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -72,7 +72,6 @@ import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.worktracking.entity.BillableItem;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -116,9 +115,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private DropDownChoice<BioCollection>					bioCollectionDdc;
 
 	private DateTextField										sampleDateTxtFld;
-	private DateTimeField										sampleTimeTxtFld;
+	private TimeField												sampleTimeTxtFld;
 	private DateTextField										processedDateTxtFld;
-	private DateTimeField										processedTimeTxtFld;
+	private TimeField												processedTimeTxtFld;
 
 	private TextArea<String>									commentsTxtAreaFld;
 
@@ -196,11 +195,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	 */
 	private void enableQuantityTreatment(AjaxRequestTarget target) {
 		setQuantityLabel();
-		
+
 		String parentQuantityMax = cpModel.getObject().getParentBiospecimen().getQuantity() + cpModel.getObject().getParentBiospecimen().getUnit().getName();
 		parentQuantityMaxLbl = new Label("parentBiospecimen.quantity.max", "(" + parentQuantityMax + ")");
 		bioTransactionDetailWmc.addOrReplace(parentQuantityMaxLbl);
-		
+
 		parentQuantityTxtFld.setVisible(cpModel.getObject().getBiospecimenProcessing().equalsIgnoreCase(au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_PROCESSING));
 		treatmentTypeDdc.setEnabled(true);
 		bioTransactionDetailWmc.setEnabled(true);
@@ -388,14 +387,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				
-				BioCollection selectedBioCollection=cpModel.getObject().getBioCollection();
+
+				BioCollection selectedBioCollection = cpModel.getObject().getBioCollection();
 				cpModel.getObject().getBiospecimen().setSampleDate(selectedBioCollection.getCollectionDate());
 				target.add(sampleDateTxtFld);
 			}
 		};
 
-		sampleTimeTxtFld = new DateTimeField("biospecimen.sampleTime") {
+		sampleTimeTxtFld = new TimeField("biospecimen.sampleTime") {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -415,7 +414,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		};
 
 		processedDateTxtFld = new DateTextField("biospecimen.processedDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		processedTimeTxtFld = new DateTimeField("biospecimen.processedTime") {
+		processedTimeTxtFld = new TimeField("biospecimen.processedTime") {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -463,6 +462,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			 */
 			private static final long	serialVersionUID	= 1L;
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public <C> IConverter<C> getConverter(Class<C> type) {
 				DoubleConverter doubleConverter = new DoubleConverter();
@@ -584,8 +584,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		parentQuantityLbl = new Label("parentBiospecimen.quantity.label", new ResourceModel("parentBiospecimen.quantity"));
 		parentQuantityLbl.setVisible(cpModel.getObject().getBiospecimenProcessing().equalsIgnoreCase(au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_PROCESSING));
-		
-		//String parentQuantityMax = cpModel.getObject().getParentBiospecimen().getQuantity() + cpModel.getObject().getParentBiospecimen().getUnit().getName();
+
+		// String parentQuantityMax = cpModel.getObject().getParentBiospecimen().getQuantity() +
+		// cpModel.getObject().getParentBiospecimen().getUnit().getName();
 		parentQuantityMaxLbl = new Label("parentBiospecimen.quantity.max", "");
 
 		quantityNoteLbl = new Label("biospecimen.quantity.note", new ResourceModel("biospecimen.quantity.note"));
@@ -619,10 +620,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			bioCollectionDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
 				private static final long	serialVersionUID	= 1L;
-				
+
 				@Override
 				protected void onUpdate(AjaxRequestTarget target) {
-					BioCollection selectedBioCollection=(BioCollection)getComponent().getDefaultModelObject();
+					BioCollection selectedBioCollection = (BioCollection) getComponent().getDefaultModelObject();
 					cpModel.getObject().setBioCollection(selectedBioCollection);
 				}
 			});
@@ -690,7 +691,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		// Processing qty
 		parentQuantityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.parentBiospecimen.quantity.required", this, new Model<String>("ParentQty")));
-		
+
 		// Initial BioTransaction detail
 		bioTransactionQuantityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioTransaction.quantity.required", this, new Model<String>("Name")));
 		MinimumValidator<Double> minQuantityValidator = new MinimumValidator<Double>(new Double(0.0));
@@ -775,10 +776,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 					try {
 						LimsVO limsVo = cpModel.getObject();
 						Biospecimen biospecimen = limsVo.getBiospecimen();
-						BioTransaction bioTransaction = limsVo.getBioTransaction();
 						Biospecimen parentBiospecimen = iLimsService.getBiospecimen(biospecimen.getParent().getId());
 						double qtyUsedFromParent = limsVo.getParentBiospecimen().getQuantity();
-						
+
 						if (qtyUsedFromParent > parentBiospecimen.getQuantity()) {
 							StringBuffer errorMessage = new StringBuffer();
 
@@ -1072,7 +1072,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		final Biospecimen biospecimen = new Biospecimen();
 
 		cpModel.getObject().setParentBiospecimen(parentBiospecimen);
-		
+
 		try {
 			// Copy parent biospecimen details to new biospecimen
 			PropertyUtils.copyProperties(biospecimen, parentBiospecimen);
