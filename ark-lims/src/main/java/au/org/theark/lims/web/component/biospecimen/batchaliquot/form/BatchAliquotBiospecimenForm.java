@@ -86,8 +86,9 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 	private TextField<Double>								quantityTxtFld;
 	private DropDownChoice<TreatmentType>				treatmentTypeDdc;
 	private TextField<Number>								concentrationTxtFld;
-	
 	protected ModalWindow 									modalWindow;
+	private boolean											copyBiospecimen = false;
+	protected Biospecimen									biospecimenToCopy = new Biospecimen();
 
 	public BatchAliquotBiospecimenForm(String id, IModel<BatchBiospecimenAliquotsVO> model, ModalWindow modalWindow) {
 		super(id, model);
@@ -165,6 +166,7 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				Biospecimen biospecimen= new Biospecimen();
+				copyBiospecimen = false;
 				listEditor.addItem(biospecimen);
 				target.add(form);
 			}
@@ -249,11 +251,20 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 				catch (NoSuchMethodException e1) {
 					log.error(e1.getMessage());
 				}
-				item.getModelObject().setParent(parentBiospecimen);
-				item.getModelObject().setParentUid(parentBiospecimen.getBiospecimenUid());
-				item.getModelObject().setQuantity(null);
-				item.getModelObject().setConcentration(null);
 				
+				if(copyBiospecimen) {
+					item.getModelObject().setParent(parentBiospecimen);
+					item.getModelObject().setParentUid(parentBiospecimen.getBiospecimenUid());
+					item.getModelObject().setQuantity(biospecimenToCopy.getQuantity());
+					item.getModelObject().setTreatmentType(biospecimenToCopy.getTreatmentType());
+					item.getModelObject().setConcentration(biospecimenToCopy.getConcentration());
+				}
+				else {
+					item.getModelObject().setParent(parentBiospecimen);
+					item.getModelObject().setParentUid(parentBiospecimen.getBiospecimenUid());
+					item.getModelObject().setQuantity(null);
+					item.getModelObject().setConcentration(null);	
+				}
 				
 				biospecimenUidTxtFld = new TextField<String>("biospecimenUid", new PropertyModel(item.getModelObject(), "biospecimenUid"));
 				if(parentBiospecimen.getStudy().getAutoGenerateBiospecimenUid()) {
@@ -294,6 +305,7 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 							}
 				   	}
 				   	target.add(feedbackPanel);
+				   	biospecimenToCopy.setBiospecimenUid(getComponent().getDefaultModelObject().toString());
 				    } 
 				}));
 				
@@ -304,6 +316,8 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 				   		 target.focusComponent(getComponent());
 				   	 }
 				   	 target.add(feedbackPanel);
+				   	 biospecimenToCopy.setQuantity((Double) getComponent().getDefaultModelObject());
+				   	 item.getModelObject().setQuantity((Double) getComponent().getDefaultModelObject());
 				    } 
 				    
 				    @Override
@@ -314,11 +328,15 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 				item.add(treatmentTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 				    @Override
 				    protected void onUpdate(AjaxRequestTarget target) {
+				   	 biospecimenToCopy.setTreatmentType((TreatmentType) getComponent().getDefaultModelObject());
+				   	 item.getModelObject().setTreatmentType((TreatmentType) getComponent().getDefaultModelObject());
 				    } 
 				}));
 				item.add(concentrationTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 				    @Override
 				    protected void onUpdate(AjaxRequestTarget target) {
+				   	 biospecimenToCopy.setConcentration((Double) getComponent().getDefaultModelObject());
+				   	 item.getModelObject().setConcentration((Double) getComponent().getDefaultModelObject());
 				    } 
 				}));
 
@@ -334,8 +352,10 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 					@Override
 					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 						Biospecimen biospecimen = new Biospecimen();
+						copyBiospecimen = true;
 						try {
-							PropertyUtils.copyProperties(biospecimen, item.getModelObject());
+							PropertyUtils.copyProperties(biospecimen, getItem().getModelObject());
+							PropertyUtils.copyProperties(biospecimenToCopy, getItem().getModelObject());
 							listEditor.addItem(biospecimen);
 							target.add(form);
 						}
