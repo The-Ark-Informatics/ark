@@ -2024,7 +2024,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		else {
 			/* do i need fields or just run a mass query? */
-			 Collection<DemographicField> dfs = getSelectedDemographicFieldsForSearch(search);
+			Collection<DemographicField> dfs = getSelectedDemographicFieldsForSearch(search);
 			Collection<DemographicField> addressDFs = getSelectedDemographicFieldsForSearch(search, Entity.Address);
 			Collection<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
 			Collection<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
@@ -2063,25 +2063,31 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search);
 			List<Long> uidsafterFiltering = applyDemographicFilters(search);
-			/*for(Long uid : uidsFromDemographic){
-				log.info("got " + uid);
-			}
-			*/
+			/*for(Long uid : uidsFromDemographic){				log.info("got " + uid);	}			*/
+
+			log.info("uidsafterFilteringdemo=" + uidsafterFiltering.size());
 			//TODO ASAP need a differenciating between needing filters and needing to select fields independantly
 			addDataFromMegaBioSpecimenQuery(allTheData, bsfs, bscfds, search);
 			uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFilteringbiospec=" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 			addDataFromMegaBioCollectionQuery(allTheData, bcfs, bccfds, search);
+			log.info("uidsafterFiltering doing the construction of megaobject=" + uidsafterFiltering.size());
 			uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering biocol=" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 			uidsafterFiltering = applySubjectCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering SUBJECT cust=" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 			uidsafterFiltering = applyBiospecimenCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering=Biospec cust" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 			uidsafterFiltering = applyBiocollectionCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering biocol cust=" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 			
 			uidsafterFiltering = applyPhenoCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering pheno cust=" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 			
 
@@ -2233,16 +2239,41 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 */
 	private List<Long> applySubjectCustomFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
 		//Set updatedListOfSubjectUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the data.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
-		String dataFilters = getSubjectCustomFieldFilters(search);
+		String dataFilters = getSubjectCustomFieldQuery(search, uidsToInclude);
+		Collection<CustomFieldDisplay> cfdsToReturn = getSelectedSubjectCustomFieldDisplaysForSearch(search);
+		
+		log.info("about to APPLY subjectcustom filters.  UIDs size =" + uidsToInclude.size() + 
+				" query string = " + dataFilters + 
+				" cfd to return size = " + cfdsToReturn.size()
+				);
+		
 
+		Query query = getSession().createQuery(dataFilters);
+		//query.setParameterList("uidList", uidsToInclude);
+		List<SubjectCustomFieldData> scfData = query.list(); 	
+		log.info("rows returned = " + scfData.size());
+		return new ArrayList<Long>();
+		/*
 		//only bother with the query and data IF data fields are needed
-		if (!getSelectedSubjectCustomFieldDisplaysForSearch(search).isEmpty() &&
+		if (!cfdsToReturn.isEmpty() &&
 				uidsToInclude != null && !uidsToInclude.isEmpty()){
+			
+
+			log.info("INSIDE IF STATEM<ENT to APPLY subjectcustom filters.  UIDs size =" + uidsToInclude.size() + 
+					" filter string = " + dataFilters + 
+					" cfd to return size = " + cfdsToReturn.size()
+					);
+			
+			
+			
+			
+			
 			String queryString = "select data from SubjectCustomFieldData data " 
 			//					+ " where data.study.id = " + search.getStudy().getId()
 								+ " where "
 								+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
-								" data.linkSubjectStudy.id in (:uidList) ";
+								" data.linkSubjectStudy.id in (:uidList) " + 
+								(dataFilters.isEmpty()?"":" ) ") ;
 			Query query = getSession().createQuery(queryString);
 			query.setParameterList("uidList", uidsToInclude);
 			List<SubjectCustomFieldData> scfData = query.list(); 	
@@ -2301,6 +2332,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
 
 		}
+		else{
+			log.info("failed if statemewnt\n\n\n\n\n");
+		}
 
 		//only bother with restricting IF data filters exist
 		if(!dataFilters.isEmpty() &&
@@ -2310,7 +2344,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					//					+ " where data.study.id = " + search.getStudy().getId()
 										+ " where "
 										+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
-										" data.linkSubjectStudy.id in (:uidList) ";
+										" data.linkSubjectStudy.id in (:uidList) " + 
+										(dataFilters.isEmpty()?"":" ) ") ;
 			Query query2 = getSession().createQuery(queryString2);
 			query2.setParameterList("uidList", uidsToInclude);
 			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
@@ -2323,7 +2358,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		else{
 			return uidsToInclude;
-		}
+		}*/
 	}	
 	
 	/**
@@ -2898,7 +2933,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				if(biospecimen.getSampleType() !=null){
 					map.put(field.getPublicFieldName(), biospecimen.getSampleType().getName());
 				}
-			}
+			}  //TODO : this is really going to need to be expanded out.
 			else if (field.getFieldName().equalsIgnoreCase("invCell")) {
 				if(biospecimen.getInvCell()!=null){
 					map.put(field.getPublicFieldName(), "Col: "+biospecimen.getInvCell().getColno()+" Row: "+biospecimen.getInvCell().getRowno());
@@ -3131,50 +3166,69 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return filterClause;
 	}
 
-	
-	private String getSubjectCustomFieldFilters(Search search) {
+	/**
+	 * 
+	 * @param search
+	 * @param uidsToInclude 
+	 * @return a list of subject id's which match the filter we put together.
+	 */
+	private String getSubjectCustomFieldQuery(Search search, List<Long> uidsToInclude) {
 
-		
-		String filterClause = "";
+		int count = 0;
+		String selectComponent = " Select data0.linkSubjectStudy.id ";
+		String fromComponent = " from SubjectCustomFieldData data0 ";
+		String whereClause = "";
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
 		for (QueryFilter filter : filters) {
 			CustomFieldDisplay customFieldDisplay = filter.getCustomFieldDisplay();
 			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)) {
 				
-				log.info("what is this filter? " + filter.getId());
+				String tablePrefix = "data" + count++;
+				log.info("what is this SUBJECT CUSTOM filter? " + filter.getId() + "     for data row? " + tablePrefix );
 				
-				String nextFilterLine = new String();
+				String nextFilterLine =  "";
 
 				// Determine field type and assign key value accordingly
+				// ( data.customFieldDisplay.id=99 AND data.numberDataValue  >  0  )  and ( ( data.customFieldDisplay.id=112 AND data.numberDataValue  >=  0 ) ) 
+
 				//TODO evaluate date entry/validation
 				if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-					nextFilterLine = (" data.customFieldDisplay.id=" + customFieldDisplay.getId() + 
-							" AND data.dateDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND " + tablePrefix + ".dateDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
 				}
 				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-					nextFilterLine = (" data.customFieldDisplay.id=" + customFieldDisplay.getId() + 
-							" AND data.numberDataValue " + getHQLForOperator(filter.getOperator()) + " " + filter.getValue() + " ");
+					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND " + tablePrefix + ".numberDataValue " + getHQLForOperator(filter.getOperator()) + " " + filter.getValue() + " ");
 				}
 				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-					nextFilterLine = (" data.customFieldDisplay.id=" + customFieldDisplay.getId() + 
-							" AND data.textDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND " + tablePrefix + ".textDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
 				}
-				
+				else{
+					count--;
+				}
 				//TODO ASAP i think all of these might need to start thinking about is null or is not null?
 				if (filter.getOperator().equals(Operator.BETWEEN)) {
 					nextFilterLine += (" AND " + filter.getSecondValue());
 				}
-				if(filterClause.isEmpty()){
-					filterClause =  nextFilterLine ;
+
+				if(whereClause.isEmpty()){
+					whereClause = " where " + nextFilterLine + " ) ";
 				}
 				else{
-					filterClause = filterClause + " and (" + nextFilterLine + ")";
+					fromComponent += ",  SubjectCustomFieldData " + tablePrefix ;
+					whereClause = whereClause + " and " + nextFilterLine + " )  " +
+							" and data0.linkSubjectStudy.id = " + tablePrefix +  ".linkSubjectStudy.id ";
 				}
 			}
 		}
-		log.info("filterClauseAfterSubjectCustomField FILTERS = " + filterClause);
+//		whereClause += " and data0.linkSubjectStudy.id in (:uidList) ";
+		log.info("filterClauseAfterSubjectCustomField FILTERS = " + whereClause);
 
-		return filterClause;
+		if(count>0){
+			return selectComponent + fromComponent + whereClause;
+		}
+		return whereClause;
 	}
 
 
