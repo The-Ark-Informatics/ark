@@ -2242,10 +2242,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		String dataFilters = getSubjectCustomFieldQuery(search, uidsToInclude);
 		Collection<CustomFieldDisplay> cfdsToReturn = getSelectedSubjectCustomFieldDisplaysForSearch(search);
 		
-		log.info("about to APPLY subjectcustom filters.  UIDs size =" + uidsToInclude.size() + 
-				" query string = " + dataFilters + 
-				" cfd to return size = " + cfdsToReturn.size()
-				);
+		log.info("about to APPLY subjectcustom filters.  UIDs size =" + uidsToInclude.size() + " query string = " + dataFilters + " cfd to return size = " + cfdsToReturn.size());
 		
 
 		Query query = getSession().createQuery(dataFilters);
@@ -2253,9 +2250,81 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		List<Long> scfSubjectIDs = query.list(); 	
 		log.info("rows returned = " + scfSubjectIDs.size());
 		
-		/* TODO : now bring back all the rows*/
 		
+		/* now have eliminated unused IDs.  
+		 * 	TODO: wipe them from old data - or do it from outside this method?
+		 */
+			
+			
+		/* 
+		 * now write this data to the file
+		 */
+		/* now bring back all the custom data rows */
+		if(scfSubjectIDs!=null && !scfSubjectIDs.isEmpty()){
+			String queryString = "select data from SubjectCustomFieldData data  " +
+					" left join fetch data.linkSubjectStudy "  +
+					" left join fetch data.customFieldDisplay custFieldDisplay "  +
+					" left join fetch custFieldDisplay																													.customField custField "  +
+					" where data.linkSubjectStudy.id in (:idList)" +
+					" order by data.linkSubjectStudy " ;
+			Query query2 = getSession().createQuery(queryString);
+			query2.setParameterList("idList", scfSubjectIDs);
 		
+			List<SubjectCustomFieldData> scfData = query2.list(); 	
+			
+			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirSubjectCustomData = allTheData.getSubjectCustomData();
+
+			ExtractionVO valuesForThisLss = new ExtractionVO();
+			HashMap<String, String> map = null;
+			LinkSubjectStudy previousLss = null;
+			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
+			for (SubjectCustomFieldData data : scfData) {
+				
+				if(previousLss==null){
+					map = new HashMap<String, String>();
+					previousLss = data.getLinkSubjectStudy();
+				}
+				else if(data.getLinkSubjectStudy().getId().equals(previousLss.getId())){
+					//then just put the data in
+				}
+				else{	//if its a new LSS finalize previous map, etc
+					valuesForThisLss.setKeyValues(map);
+					previousLss = data.getLinkSubjectStudy();
+					hashOfSubjectsWithTheirSubjectCustomData.put(previousLss.getSubjectUID(), valuesForThisLss);	
+
+					map = new HashMap<String, String>();//reset
+					
+				}
+
+				//if any error value, then just use that - though, yet again I really question the acceptance of error data
+				if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
+					map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+				}
+				else {
+					// Determine field type and assign key value accordingly
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+					}
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+					}
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+					}
+				}
+			
+			
+			}
+			//finalize the last entered key value sets/extraction VOs
+			if(map!=null && previousLss!=null){
+				valuesForThisLss.setKeyValues(map);
+				hashOfSubjectsWithTheirSubjectCustomData.put(previousLss.getSubjectUID(), valuesForThisLss);
+
+			}
+			
+			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
+			allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
+		}
 		
 		return scfSubjectIDs;
 		/*
