@@ -2250,9 +2250,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		Query query = getSession().createQuery(dataFilters);
 		//query.setParameterList("uidList", uidsToInclude);
-		List<SubjectCustomFieldData> scfData = query.list(); 	
-		log.info("rows returned = " + scfData.size());
-		return new ArrayList<Long>();
+		List<Long> scfSubjectIDs = query.list(); 	
+		log.info("rows returned = " + scfSubjectIDs.size());
+		
+		/* TODO : now bring back all the rows*/
+		
+		
+		
+		return scfSubjectIDs;
 		/*
 		//only bother with the query and data IF data fields are needed
 		if (!cfdsToReturn.isEmpty() &&
