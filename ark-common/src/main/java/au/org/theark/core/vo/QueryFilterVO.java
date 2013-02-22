@@ -13,6 +13,17 @@ public class QueryFilterVO implements Serializable {
 	
 	private QueryFilter queryFilter;
 	
+	public QueryFilterVO() {
+		this.fieldCategory = FieldCategory.DEMOGRAPHIC_FIELD;
+		this.queryFilter = new QueryFilter();
+	}
+	
+	public QueryFilterVO(FieldCategory fieldCategory, QueryFilter queryFilter) {
+		super();
+		this.fieldCategory = fieldCategory;
+		this.queryFilter = queryFilter;
+	}
+	
 	public FieldCategory getFieldCategory() {
 		return fieldCategory;
 	}
