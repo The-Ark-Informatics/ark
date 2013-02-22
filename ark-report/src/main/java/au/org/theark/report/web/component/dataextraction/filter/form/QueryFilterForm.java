@@ -92,6 +92,8 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 	*/private DropDownChoice<FieldCategory>				fieldCategoryDdc;
 	private DropDownChoice								fieldDdc;
 	private DropDownChoice								operatorDdc;
+	private QueryFilterVO								queryFilterVoToCopy = new QueryFilterVO();
+	private Boolean										copyQueryFilter = false;
 	//private TextField<Number>							concentrationTxtFld;
 	
 	protected ModalWindow 									modalWindow;
@@ -155,6 +157,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				QueryFilterVO filter= new QueryFilterVO();
+				copyQueryFilter = false;
 				listEditor.addItem(filter);
 				target.add(form);
 			}
@@ -219,6 +222,13 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			@Override
 			protected void onPopulateItem(final ListItem<QueryFilterVO> item) {
 				item.setOutputMarkupId(true);
+				
+				if(copyQueryFilter) {
+					item.getModelObject().setFieldCategory(queryFilterVoToCopy.getFieldCategory());
+					item.getModelObject().setQueryFilter(queryFilterVoToCopy.getQueryFilter());
+					item.getModelObject().getQueryFilter().setValue(queryFilterVoToCopy.getQueryFilter().getValue());
+					item.getModelObject().getQueryFilter().setSecondValue(queryFilterVoToCopy.getQueryFilter().getSecondValue());
+				}
 				
 				initFieldCategoryDdc(item);
 				initFieldDdc(item);
@@ -288,7 +298,11 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						QueryFilterVO queryFilterVO = new QueryFilterVO();
 						
 						try {
-							PropertyUtils.copyProperties(queryFilterVO, item.getModelObject());
+							PropertyUtils.copyProperties(queryFilterVO, getItem().getModelObject());
+							PropertyUtils.copyProperties(queryFilterVoToCopy, getItem().getModelObject());
+							queryFilterVoToCopy.getQueryFilter().setId(null);
+							queryFilterVO.getQueryFilter().setId(null);
+							copyQueryFilter = true;
 							listEditor.addItem(queryFilterVO);
 							target.add(form);
 						}
@@ -332,6 +346,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				}));
 			
 				
+				
 				}
 
 		};
@@ -357,6 +372,18 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<DemographicField>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.demographicField"), 
 							(List<DemographicField>) demographicFieldCategoryList, choiceRenderer);
+					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+						/**
+						 * 
+						 */
+						private static final long	serialVersionUID	= 1L;
+
+						@Override
+						protected void onUpdate(AjaxRequestTarget target) {
+							queryFilterVoToCopy.getQueryFilter().setDemographicField((DemographicField) getComponent().getDefaultModelObject());
+						}
+					});
 					break;
 				}
 	
@@ -366,6 +393,18 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<BiospecimenField>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.biospecimenField"), 
 							(List<BiospecimenField>) BiospecimenFieldCategoryList, choiceRenderer);
+					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+						/**
+						 * 
+						 */
+						private static final long	serialVersionUID	= 1L;
+
+						@Override
+						protected void onUpdate(AjaxRequestTarget target) {
+							queryFilterVoToCopy.getQueryFilter().setBiospecimenField((BiospecimenField) getComponent().getDefaultModelObject());
+						}
+					});
 					break;
 				}
 	
@@ -375,6 +414,18 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<BiocollectionField>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.biocollectionField"), 
 							(List<BiocollectionField>) biocollectionFieldCategoryList, choiceRenderer);
+					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+						/**
+						 * 
+						 */
+						private static final long	serialVersionUID	= 1L;
+
+						@Override
+						protected void onUpdate(AjaxRequestTarget target) {
+							queryFilterVoToCopy.getQueryFilter().setBiocollectionField((BiocollectionField) getComponent().getDefaultModelObject());
+						}
+					});
 					break;
 				}
 				
@@ -386,6 +437,18 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+						/**
+						 * 
+						 */
+						private static final long	serialVersionUID	= 1L;
+
+						@Override
+						protected void onUpdate(AjaxRequestTarget target) {
+							queryFilterVoToCopy.getQueryFilter().setCustomFieldDisplay((CustomFieldDisplay) getComponent().getDefaultModelObject());
+						}
+					});
 					break;
 				}
 	
@@ -397,6 +460,18 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+						/**
+						 * 
+						 */
+						private static final long	serialVersionUID	= 1L;
+
+						@Override
+						protected void onUpdate(AjaxRequestTarget target) {
+							queryFilterVoToCopy.getQueryFilter().setCustomFieldDisplay((CustomFieldDisplay) getComponent().getDefaultModelObject());
+						}
+					});
 					break;
 				}
 	
@@ -408,6 +483,18 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+						/**
+						 * 
+						 */
+						private static final long	serialVersionUID	= 1L;
+
+						@Override
+						protected void onUpdate(AjaxRequestTarget target) {
+							queryFilterVoToCopy.getQueryFilter().setCustomFieldDisplay((CustomFieldDisplay) getComponent().getDefaultModelObject());
+						}
+					});
 					break;
 				}
 				
@@ -419,6 +506,18 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+						/**
+						 * 
+						 */
+						private static final long	serialVersionUID	= 1L;
+
+						@Override
+						protected void onUpdate(AjaxRequestTarget target) {
+							queryFilterVoToCopy.getQueryFilter().setCustomFieldDisplay((CustomFieldDisplay) getComponent().getDefaultModelObject());
+						}
+					});
 					break;
 				}
 	
@@ -430,9 +529,23 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			fieldDdc = new DropDownChoice<DemographicField>("queryFilter.field", 
 					new PropertyModel(item.getModelObject(), "queryFilter.demographicField"), 
 					(List<DemographicField>) demographicFieldCategoryList, choiceRenderer);
+			fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+				/**
+				 * 
+				 */
+				private static final long	serialVersionUID	= 1L;
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target) {
+					queryFilterVoToCopy.getQueryFilter().setDemographicField((DemographicField) getComponent().getDefaultModelObject());
+				}
+				
+			});
 	
 		}
 		fieldDdc.setOutputMarkupId(true);
+	
 		item.add(fieldDdc);
 	}
 	
@@ -575,6 +688,22 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				}
 
 				fieldDdc.setOutputMarkupId(true);
+				fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+				    /**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
+
+					@Override
+				    protected void onUpdate(AjaxRequestTarget target) {
+				   	 log.debug("Change of fieldDDc");
+				    } 
+				    
+				    @Override
+				   protected void onError(AjaxRequestTarget target, RuntimeException e) {
+				   	target.add(feedbackPanel);
+				   }
+				});
 				item.addOrReplace(fieldDdc);
 				target.add(item);
 
@@ -624,7 +753,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			if(!filterList.isEmpty()) {
 				try {
 					iArkCommonService.createQueryFilters(filterList);
-					info("Query Filters created:");
+					info("Query Filters created: " + getModelObject().getQueryFilterVOs().size());
 					log.info("Attempting to create " + getModelObject().getQueryFilterVOs().size() + " filters");
 				//TODO ASAP	iArkCommonService.createFilters(filterList);
 				} catch (ArkSystemException e) {
