@@ -1399,10 +1399,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List<String> fieldNameCollection, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup) {
-		/*
-		 * log.warn("fieldnamecollection size=" + fieldNameCollection.size() + "\nstudy=" + study.getName() + " with id=" + study.getId() +
-		 * "\narkFunctionid=" + arkFunction.getId());
-		 */
 
 		if (fieldNameCollection == null || fieldNameCollection.isEmpty()) {
 			return new ArrayList<CustomFieldDisplay>();
@@ -1412,8 +1408,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			for (String name : fieldNameCollection) {
 				lowerCaseNames.add(name.toLowerCase());
 			}
-			String queryString = "select cfd " + "from CustomFieldDisplay cfd " + "where cfd.customFieldGroup =:customFieldGroup " + "and  customField.id in ( " + " SELECT id from CustomField cf "
-					+ " where cf.study =:study " + " and lower(cf.name) in (:names) " + " and cf.arkFunction =:arkFunction )";
+			String queryString = "select cfd from CustomFieldDisplay cfd " + 
+				" where cfd.customFieldGroup =:customFieldGroup and customField.id in ( " + 
+					" SELECT id from CustomField cf " + 
+					" where cf.study =:study " + " and lower(cf.name) in (:names) " + " and cf.arkFunction =:arkFunction )";
 			Query query = getSession().createQuery(queryString); 
 			query.setParameter("study", study);
 			// query.setParameterList("names", fieldNameCollection);
@@ -1468,8 +1466,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	public Payload getPayloadForUpload(Upload upload) {
 		getSession().refresh(upload);// bit paranoid but the code calling this
-		// may be from wicket and not be
-		// attached?
+		// may be from wicket and not be attached?
 		return upload.getPayload();
 	}
 
@@ -2201,23 +2198,27 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	/**
 	 * @param allTheDataz
 	 * @param search
-	 * @param uidsToInclude
+	 * @param idsToInclude
 	 * @return the updated list of uids that are still left after the filtering.
 	 */
-	private List<Long> applySubjectCustomFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
-
-		String dataFilters = getSubjectCustomFieldQuery(search, uidsToInclude);
-		Collection<CustomFieldDisplay> cfdsToReturn = getSelectedSubjectCustomFieldDisplaysForSearch(search);
-		
-		log.info("about to APPLY subjectcustom filters.  UIDs size =" + uidsToInclude.size() + " query string = " + dataFilters + " cfd to return size = " + cfdsToReturn.size());
-		
-
-		Query query = getSession().createQuery(dataFilters);
-		//query.setParameterList("uidList", uidsToInclude);
-		List<Long> scfSubjectIDs = query.list(); 	
-		log.info("rows returned = " + scfSubjectIDs.size());
-		
-		
+	private List<Long> applySubjectCustomFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude){
+		if(idsToInclude!=null && !idsToInclude.isEmpty()){
+			String queryToFilterSubjectIDs = getSubjectCustomFieldQuery(search);
+			Collection<CustomFieldDisplay> cfdsToReturn = getSelectedSubjectCustomFieldDisplaysForSearch(search);
+			
+			log.info("about to APPLY subjectcustom filters.  UIDs size =" + idsToInclude.size() + 
+					" query string = " + queryToFilterSubjectIDs + " cfd to return size = " + cfdsToReturn.size());
+			if(!queryToFilterSubjectIDs.isEmpty()){
+				Query query = getSession().createQuery(queryToFilterSubjectIDs);
+				query.setParameterList("idList", idsToInclude);
+				idsToInclude = query.list(); 	
+				log.info("rows returned = " + idsToInclude.size());
+			}
+			else{
+				//else no filtering to do, there, no restrictions, keep id list as is.
+			}
+		}
+			
 		/* now have eliminated unused IDs.  
 		 * 	TODO: wipe them from old data - or do it from outside this method?
 		 */
@@ -2227,7 +2228,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		 * now write this data to the file
 		 */
 		/* now bring back all the custom data rows */
-		if(scfSubjectIDs!=null && !scfSubjectIDs.isEmpty()){
+		if(idsToInclude!=null && !idsToInclude.isEmpty()){
 			String queryString = "select data from SubjectCustomFieldData data  " +
 					" left join fetch data.linkSubjectStudy "  +
 					" left join fetch data.customFieldDisplay custFieldDisplay "  +
@@ -2235,7 +2236,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					" where data.linkSubjectStudy.id in (:idList)" +
 					" order by data.linkSubjectStudy " ;
 			Query query2 = getSession().createQuery(queryString);
-			query2.setParameterList("idList", scfSubjectIDs);
+			query2.setParameterList("idList", idsToInclude);
 		
 			List<SubjectCustomFieldData> scfData = query2.list(); 	
 			
@@ -2292,7 +2293,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
 		}
 		
-		return scfSubjectIDs;
+		return idsToInclude;
 		/*
 		//only bother with the query and data IF data fields are needed
 		if (!cfdsToReturn.isEmpty() &&
@@ -3209,10 +3210,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	/**
 	 * 
 	 * @param search
-	 * @param uidsToInclude 
+	 * @param idsToInclude 
 	 * @return a list of subject id's which match the filter we put together.
 	 */
-	private String getSubjectCustomFieldQuery(Search search, List<Long> uidsToInclude) {
+	private String getSubjectCustomFieldQuery(Search search) {
 
 		int count = 0;
 		String selectComponent = " Select data0.linkSubjectStudy.id ";
@@ -3262,20 +3263,21 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 		}
-//		whereClause += " and data0.linkSubjectStudy.id in (:uidList) ";
+		whereClause += " and data0.linkSubjectStudy.id in (:idList) ";//count>0?"":
 		log.info("filterClauseAfterSubjectCustomField FILTERS = " + whereClause);
 
 		if(count>0){
 			return selectComponent + fromComponent + whereClause;
 		}
-		return whereClause;
+		else{
+			return "";
+		}
 	}
 
 
 	
 	private String getBiospecimenCustomFieldFilters(Search search) {
 
-		
 		String filterClause = "";
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
 		for (QueryFilter filter : filters) {
@@ -3321,7 +3323,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 	private String getBiocollectionCustomFieldFilters(Search search) {
 
-		
 		String filterClause = "";
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
 		for (QueryFilter filter : filters) {
