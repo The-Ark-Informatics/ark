@@ -2238,7 +2238,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return the updated list of uids that are still left after the filtering.
 	 */
 	private List<Long> applySubjectCustomFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
-		//Set updatedListOfSubjectUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the data.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
+
 		String dataFilters = getSubjectCustomFieldQuery(search, uidsToInclude);
 		Collection<CustomFieldDisplay> cfdsToReturn = getSelectedSubjectCustomFieldDisplaysForSearch(search);
 		
@@ -2312,7 +2312,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
 					}
 				}
-			
 			
 			}
 			//finalize the last entered key value sets/extraction VOs
