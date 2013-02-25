@@ -1017,48 +1017,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public UploadType getDefaultUploadType() {
-		return (UploadType) (getSession().get(UploadType.class, 1L));// TODO:
-		// maybe
-		// fix
-		// ALL
-		// such
-		// entities
-		// by
-		// adding
-		// isDefault
-		// boolean
-		// to
-		// table?
+		return (UploadType) (getSession().get(UploadType.class, 1L));// TODO: maybe// fix// ALL// such// entities// by// adding// isDefault// boolean// to// table?
 	}
 
 	public UploadType getDefaultUploadTypeForLims() {
-		return (UploadType) (getSession().get(UploadType.class, 4L));// TODO:
-		// maybe
-		// fix
-		// ALL
-		// such
-		// entities
-		// by
-		// adding
-		// isDefault
-		// boolean
-		// to
-		// table?
+		return (UploadType) (getSession().get(UploadType.class, 4L));// TODO: maybe// fix// ALL// such// entities// by// adding// isDefault// boolean// to// table?
 	}
 
 	public UploadType getCustomFieldDataUploadType() {
-		return (UploadType) (getSession().get(UploadType.class, 3L));// TODO:
-		// maybe
-		// fix
-		// ALL
-		// such
-		// entities
-		// by
-		// adding
-		// isDefault
-		// boolean
-		// to
-		// table?
+		return (UploadType) (getSession().get(UploadType.class, 3L));// TODO: maybe// fix// ALL// such// entities// by// adding// isDefault// boolean// to// table?
 	}
 
 	public List<Upload> searchUploads(Upload uploadCriteria) {
@@ -1102,7 +1069,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	public List<Upload> searchUploadsForBio(Upload uploadCriteria) {
 		Criteria criteria = getSession().createCriteria(Upload.class);
-		// - due tonature of table design...we need to specify it like this
+		// - due to nature of table design...we need to specify it like this
 		// ideally we might want to just have arkmodule in the upload table?
 		// criteria.add(Restrictions.eq("arkFunction",
 		// uploadCriteria.getArkFunction()));
@@ -1144,7 +1111,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	public List<Upload> searchUploadsForBiospecimen(Upload uploadCriteria, List studyListForUser) {
 		Criteria criteria = getSession().createCriteria(Upload.class);
-		// - due tonature of table design...we need to specify it like this
+		// - due to nature of table design...we need to specify it like this
 		// ideally we might want to just have arkmodule in the upload table?
 		// criteria.add(Restrictions.eq("arkFunction",
 		// uploadCriteria.getArkFunction()));
