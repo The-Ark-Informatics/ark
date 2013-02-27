@@ -2232,7 +2232,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			String queryString = "select data from SubjectCustomFieldData data  " +
 					" left join fetch data.linkSubjectStudy "  +
 					" left join fetch data.customFieldDisplay custFieldDisplay "  +
-					" left join fetch custFieldDisplay																													.customField custField "  +
+					" left join fetch custFieldDisplay.customField custField "  +
 					" where data.linkSubjectStudy.id in (:idList)" +
 					" order by data.linkSubjectStudy " ;
 			Query query2 = getSession().createQuery(queryString);
