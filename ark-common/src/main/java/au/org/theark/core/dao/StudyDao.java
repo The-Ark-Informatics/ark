@@ -2206,8 +2206,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			String queryToFilterSubjectIDs = getSubjectCustomFieldQuery(search);
 			Collection<CustomFieldDisplay> cfdsToReturn = getSelectedSubjectCustomFieldDisplaysForSearch(search);
 			
-			log.info("about to APPLY subjectcustom filters.  UIDs size =" + idsToInclude.size() + 
-					" query string = " + queryToFilterSubjectIDs + " cfd to return size = " + cfdsToReturn.size());
+			log.info("about to APPLY subjectcustom filters.  UIDs size =" + idsToInclude.size() + " query string = " + queryToFilterSubjectIDs + " cfd to return size = " + cfdsToReturn.size());
 			if(!queryToFilterSubjectIDs.isEmpty()){
 				Query query = getSession().createQuery(queryToFilterSubjectIDs);
 				query.setParameterList("idList", idsToInclude);
@@ -2215,18 +2214,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				log.info("rows returned = " + idsToInclude.size());
 			}
 			else{
-				//else no filtering to do, there, no restrictions, keep id list as is.
+				log.info("there were no subject custom data filters, therefore don't run filter query");
 			}
 		}
-			
-		/* now have eliminated unused IDs.  
-		 * 	TODO: wipe them from old data - or do it from outside this method?
-		 */
-			
-			
-		/* 
-		 * now write this data to the file
-		 */
+		else{
+			log.info("there are no id's to filter.  therefore won't run filtering query");
+		}
+
+		/* now write this data to the file */
 		/* now bring back all the custom data rows */
 		if(idsToInclude!=null && !idsToInclude.isEmpty()){
 			String queryString = "select data from SubjectCustomFieldData data  " +
