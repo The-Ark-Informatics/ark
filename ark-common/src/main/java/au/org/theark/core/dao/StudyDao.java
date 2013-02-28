@@ -2285,8 +2285,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
 		}		
 		return idsToInclude;
-
 	}	
+	
+	
+	
 	
 	/**
 	 * @param allTheDataz
