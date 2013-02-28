@@ -2193,7 +2193,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 
-
 	/**
 	 * @param allTheDataz
 	 * @param search
@@ -2220,16 +2219,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			log.info("there are no id's to filter.  therefore won't run filtering query");
 		}
 
-		/* We have the list of subjects, and therefore the list of subjectcustomdata - now bring back all the custom data rows */
-		if(idsToInclude!=null && !idsToInclude.isEmpty()){
+		Collection<CustomFieldDisplay> customFieldToGet = getSelectedSubjectCustomFieldDisplaysForSearch(search);
+		
+		/* We have the list of subjects, and therefore the list of subjectcustomdata - now bring back all the custom data rows IF they have any data they need */
+		if(idsToInclude!=null && !idsToInclude.isEmpty() && !customFieldToGet.isEmpty()){
 			String queryString = "select data from SubjectCustomFieldData data  " +
 					" left join fetch data.linkSubjectStudy "  +
 					" left join fetch data.customFieldDisplay custFieldDisplay "  +
 					" left join fetch custFieldDisplay.customField custField "  +
 					" where data.linkSubjectStudy.id in (:idList)" +
+					" and data.customFieldDisplay in (:customFieldsList)" + 
 					" order by data.linkSubjectStudy " ;
 			Query query2 = getSession().createQuery(queryString);
 			query2.setParameterList("idList", idsToInclude);
+			query2.setParameterList("customFieldsList", customFieldToGet);
 		
 			List<SubjectCustomFieldData> scfData = query2.list();
 			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirSubjectCustomData = allTheData.getSubjectCustomData();
@@ -2350,8 +2353,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
 					}
 				}
-			
-			
+
 			}
 			//finalize the last entered key value sets/extraction VOs
 			if(map!=null && previousBiospecimenUID!=null){
