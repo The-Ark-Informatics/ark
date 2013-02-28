@@ -2194,7 +2194,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 
 
-
 	/**
 	 * @param allTheDataz
 	 * @param search
@@ -2221,8 +2220,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			log.info("there are no id's to filter.  therefore won't run filtering query");
 		}
 
-		/* now write this data to the file */
-		/* now bring back all the custom data rows */
+		/* We have the list of subjects, and therefore the list of subjectcustomdata - now bring back all the custom data rows */
 		if(idsToInclude!=null && !idsToInclude.isEmpty()){
 			String queryString = "select data from SubjectCustomFieldData data  " +
 					" left join fetch data.linkSubjectStudy "  +
@@ -2233,8 +2231,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			Query query2 = getSession().createQuery(queryString);
 			query2.setParameterList("idList", idsToInclude);
 		
-			List<SubjectCustomFieldData> scfData = query2.list(); 	
-			
+			List<SubjectCustomFieldData> scfData = query2.list();
 			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirSubjectCustomData = allTheData.getSubjectCustomData();
 
 			ExtractionVO valuesForThisLss = new ExtractionVO();
@@ -2254,9 +2251,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					valuesForThisLss.setKeyValues(map);
 					previousLss = data.getLinkSubjectStudy();
 					hashOfSubjectsWithTheirSubjectCustomData.put(previousLss.getSubjectUID(), valuesForThisLss);	
-
 					map = new HashMap<String, String>();//reset
-					
 				}
 
 				//if any error value, then just use that - though, yet again I really question the acceptance of error data
@@ -2274,127 +2269,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
 						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
 					}
-				}
-			
+				}			
 			}
+			
 			//finalize the last entered key value sets/extraction VOs
 			if(map!=null && previousLss!=null){
 				valuesForThisLss.setKeyValues(map);
 				hashOfSubjectsWithTheirSubjectCustomData.put(previousLss.getSubjectUID(), valuesForThisLss);
-
 			}
 			
-			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
+			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
 			allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
-		}
-		
+		}		
 		return idsToInclude;
-		/*
-		//only bother with the query and data IF data fields are needed
-		if (!cfdsToReturn.isEmpty() &&
-				uidsToInclude != null && !uidsToInclude.isEmpty()){
-			
 
-			log.info("INSIDE IF STATEM<ENT to APPLY subjectcustom filters.  UIDs size =" + uidsToInclude.size() + 
-					" filter string = " + dataFilters + 
-					" cfd to return size = " + cfdsToReturn.size()
-					);
-			
-			
-			
-			
-			
-			String queryString = "select data from SubjectCustomFieldData data " 
-			//					+ " where data.study.id = " + search.getStudy().getId()
-								+ " where "
-								+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
-								" data.linkSubjectStudy.id in (:uidList) " + 
-								(dataFilters.isEmpty()?"":" ) ") ;
-			Query query = getSession().createQuery(queryString);
-			query.setParameterList("uidList", uidsToInclude);
-			List<SubjectCustomFieldData> scfData = query.list(); 	
-			
-			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirSubjectCustomData = allTheData.getSubjectCustomData();
-
-			ExtractionVO valuesForThisLss = new ExtractionVO();
-			HashMap<String, String> map = null;
-			LinkSubjectStudy previousLss = null;
-			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
-			for (SubjectCustomFieldData data : scfData) {
-				
-				if(previousLss==null){
-					map = new HashMap<String, String>();
-					previousLss = data.getLinkSubjectStudy();
-				}
-				else if(data.getLinkSubjectStudy().equals(previousLss)){
-					//then just put the data in
-				}
-				else{	//if its a new LSS finalize previous map, etc
-					valuesForThisLss.setKeyValues(map);
-					previousLss = data.getLinkSubjectStudy();
-					hashOfSubjectsWithTheirSubjectCustomData.put(previousLss.getSubjectUID(), valuesForThisLss);	
-
-					map = new HashMap<String, String>();//reset
-					
-				}
-
-				//if any error value, then just use that - though, yet again I really question the acceptance of error data
-				if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
-					map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
-				}
-				else {
-					// Determine field type and assign key value accordingly
-					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
-					}
-					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
-					}
-					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
-					}
-				}
-			
-			
-			}
-			//finalize the last entered key value sets/extraction VOs
-			if(map!=null && previousLss!=null){
-				valuesForThisLss.setKeyValues(map);
-				hashOfSubjectsWithTheirSubjectCustomData.put(previousLss.getSubjectUID(), valuesForThisLss);
-
-			}
-			
-			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
-			allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
-
-		}
-		else{
-			log.info("failed if statemewnt\n\n\n\n\n");
-		}
-
-		//only bother with restricting IF data filters exist
-		if(!dataFilters.isEmpty() &&
-				uidsToInclude != null && !uidsToInclude.isEmpty()){
-			
-			String queryString2 = "select data.linkSubjectStudy.id from SubjectCustomFieldData data " 
-					//					+ " where data.study.id = " + search.getStudy().getId()
-										+ " where "
-										+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
-										" data.linkSubjectStudy.id in (:uidList) " + 
-										(dataFilters.isEmpty()?"":" ) ") ;
-			Query query2 = getSession().createQuery(queryString2);
-			query2.setParameterList("uidList", uidsToInclude);
-			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
-			
-			//TODO ASAP in addtion to this it is now time to wipe the old data which is no longer to be included due to latest filter
-				// if we don't want to garauntee order of wiping data, etc do this outside this method, in the calling method
-			
-			log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
-			return updatedListOfSubjectUIDs;
-		}
-		else{
-			return uidsToInclude;
-		}*/
 	}	
 	
 	/**
