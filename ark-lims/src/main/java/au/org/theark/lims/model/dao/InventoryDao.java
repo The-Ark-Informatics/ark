@@ -605,4 +605,13 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 			session.save(studyInvSite);
 		}
 	}
+
+	public void unallocateBox(InvBox invBox) {
+		Session session = getSession();
+		for(InvCell invCell : invBox.getInvCells()) {
+			invCell.setBiospecimen(null);
+			session.update(invCell);
+		}
+		session.refresh(invBox);
+	}
 }

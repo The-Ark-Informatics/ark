@@ -295,4 +295,6 @@ public interface IInventoryDao {
 	public void deleteStudyInvSite(StudyInvSite studyInvSite);
 
 	public void updateInvSite(LimsVO modelObject);
+
+	public void unallocateBox(InvBox invBox);
 }
