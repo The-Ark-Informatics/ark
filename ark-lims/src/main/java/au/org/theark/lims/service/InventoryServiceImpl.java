@@ -398,4 +398,8 @@ public class InventoryServiceImpl implements IInventoryService {
 	public List<InvSite> searchInvSite(InvSite invSite, List<Study> studyList) throws ArkSystemException {
 		return iInventoryDao.searchInvSite(invSite, studyList);
 	}
+	
+	public void unallocateBox(InvBox invBox) {
+		iInventoryDao.unallocateBox(invBox);
+	}
 }
