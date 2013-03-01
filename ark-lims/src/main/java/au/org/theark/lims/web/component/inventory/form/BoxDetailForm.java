@@ -23,8 +23,6 @@ import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -44,15 +42,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvRack;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
@@ -86,6 +81,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private DropDownChoice<InvColRowType>	rowNoTypeDdc;
 	private DropDownChoice<InvRack>			invTrayDdc;
 	private AjaxButton 							batchAllocate;
+	private AjaxButton 							emptyBox;
 	private BoxAllocationPanel 				boxAllocationPanel;
 	
 	/**
@@ -183,6 +179,30 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 			}
 		};
 		batchAllocate.setDefaultFormProcessing(false);
+		
+		
+		emptyBox = new AjaxDeleteButton("emptyBox", new StringResourceModel("emptyBoxConfirm", this, null), new StringResourceModel("emptyBox", this, null)) {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				iInventoryService.unallocateBox(containerForm.getModelObject().getInvBox());
+				// Refresh entire detail panel 
+				target.add(detailContainer);
+			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+			}
+			
+			@Override
+			protected void onBeforeRender() {
+				setEnabled(!isNew() && containerForm.getModelObject().getInvBox().getAvailable() > 0);
+				super.onBeforeRender();
+			}
+		};
+		emptyBox.setDefaultFormProcessing(false);
 
 		attachValidators();
 		addComponents();
@@ -275,6 +295,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		add(detailFormContainer);
 		
 		add(batchAllocate);
+		add(emptyBox);
 	}
 
 	@Override
