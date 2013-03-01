@@ -2194,9 +2194,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 
 	/**
-	 * @param allTheDataz
-	 * @param search
-	 * @param idsToInclude
+	 * @param allTheData - reference to the object containing our data collected so far, this is to be updated as we continue our refinement.
+	 * @param search 
+	 * @param idsToInclude - the constantly refined list of ID's passed from the previous extraction step
+	 * 
 	 * @return the updated list of uids that are still left after the filtering.
 	 */
 	private List<Long> applySubjectCustomFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude){
