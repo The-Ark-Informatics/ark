@@ -46,6 +46,7 @@ import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.XLStoCSV;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
 import com.csvreader.CsvReader;
@@ -98,6 +99,15 @@ public class CustomDataUploader {
 		
 		delimiterCharacter = delimChar;
 		uploadReport = new StringBuffer();
+		
+		InputStream convertedInputStream;
+		if(fileFormat.equalsIgnoreCase(Constants.FileFormat.XLS.toString())){
+			XLStoCSV xlsToCSV = new XLStoCSV(delimiterCharacter);
+			convertedInputStream = xlsToCSV.convertXlsInputStreamToCsv(inputStream);
+		}
+		else {
+			convertedInputStream = inputStream;
+		}
 
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
@@ -108,7 +118,7 @@ public class CustomDataUploader {
 		long insertFieldsCount = 0L;
 		long emptyDataCount = 0L;
 		try {
-			inputStreamReader = new InputStreamReader(inputStream);
+			inputStreamReader = new InputStreamReader(convertedInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			String[] stringLineArray;
 
@@ -231,11 +241,11 @@ public class CustomDataUploader {
 		uploadReport.append("\n");
 		uploadReport.append("Inserted ");
 		uploadReport.append(insertFieldsCount);
-		uploadReport.append(" subjects.");
+		uploadReport.append(" rows of data.");
 		uploadReport.append("\n");
 		uploadReport.append("Updated ");
 		uploadReport.append(updateFieldsCount);
-		uploadReport.append(" subjects.");
+		uploadReport.append(" rows of data.");
 		uploadReport.append("\n");
 
 		//TODO better exceptionhandling

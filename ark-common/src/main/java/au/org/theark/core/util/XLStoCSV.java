@@ -30,13 +30,16 @@ import jxl.Cell;
 import jxl.DateCell;
 import jxl.Sheet;
 import jxl.Workbook;
-import jxl.write.biff.DateRecord;
+import jxl.read.biff.BiffException;
 
 import org.apache.wicket.util.io.ByteArrayOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 
 public class XLStoCSV {
+	private static final Logger	log						= LoggerFactory.getLogger(XLStoCSV.class);
 	char delimiterCharacter = ',';
 	
 	public XLStoCSV(char delimiterCharacter){
@@ -104,5 +107,28 @@ public class XLStoCSV {
 			System.err.println(e.toString());
 		}
 		return new ByteArrayInputStream(out.toByteArray());
+	}
+	
+	/**
+	 * Converts an XLS inputStream to a CSV file
+	 * 
+	 * @param inputStream
+	 */
+	public InputStream convertXlsInputStreamToCsv(InputStream inputStream) {
+		Workbook w;
+		try {
+			w = Workbook.getWorkbook(inputStream);
+			delimiterCharacter = ',';
+			XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+			inputStream = xlsToCsv.convertXlsToCsv(w);
+			inputStream.reset();
+		}
+		catch (BiffException e) {
+			log.error(e.getMessage());
+		}
+		catch (IOException e) {
+			log.error(e.getMessage());
+		}
+		return inputStream;
 	}
 }
