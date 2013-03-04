@@ -308,12 +308,12 @@ public class Biospecimen implements java.io.Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "PROCESSED_TIME", length = 19)
-	public Date getExtractedTime() {
+	public Date getProcessedTime() {
 		return this.processedTime;
 	}
 
-	public void setExtractedTime(Date extractedTime) {
-		this.processedTime = extractedTime;
+	public void setProcessedTime(Date processedTime) {
+		this.processedTime = processedTime;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
