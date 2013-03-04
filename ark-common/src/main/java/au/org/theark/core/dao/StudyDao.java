@@ -58,22 +58,11 @@ import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
-import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.model.lims.entity.BiospecimenAnticoagulant;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
-import au.org.theark.core.model.lims.entity.BiospecimenGrade;
-import au.org.theark.core.model.lims.entity.BiospecimenProtocol;
-import au.org.theark.core.model.lims.entity.BiospecimenQuality;
-import au.org.theark.core.model.lims.entity.BiospecimenSpecies;
-import au.org.theark.core.model.lims.entity.BiospecimenStatus;
-import au.org.theark.core.model.lims.entity.BiospecimenStorage;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
-import au.org.theark.core.model.lims.entity.InvCell;
-import au.org.theark.core.model.lims.entity.TreatmentType;
-import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.pheno.entity.PhenoData;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
@@ -314,6 +303,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<EmailStatus> getAllEmailStatuses() {
 		Example example = Example.create(new EmailStatus());
 		Criteria criteria = getSession().createCriteria(EmailStatus.class).add(example);
@@ -1436,7 +1426,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public List<String> getAllSubjectUIDs(Study study) {
 		String queryString = "select subject.subjectUID " + "from LinkSubjectStudy subject " + "where study =:study " + "order by subjectUID ";
 		Query query = getSession().createQuery(queryString);
-		query.setParameter("study", study);
+		query.setParameter("study", study);	
 
 		return query.list();
 	}
@@ -2092,7 +2082,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		String biospecimenFilters = getBiospecimenFilters(search);
 
 		//only bother with the query and data IF biospecimen fields are needed
-		if (!getSelectedBiocollectionFieldsForSearch(search).isEmpty() &&
+		if (!getSelectedBiospecimenFieldsForSearch(search).isEmpty() &&
 				uidsToInclude != null && !uidsToInclude.isEmpty()){
 			String queryString = "select biospecimen from Biospecimen biospecimen " 
 								+ " where biospecimen.study.id = " + search.getStudy().getId()
@@ -2924,8 +2914,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("processedTime")) {
-				if(biospecimen.getExtractedTime() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getExtractedTime()!=null?biospecimen.getExtractedTime().toString():"");
+				if(biospecimen.getProcessedTime() !=null){
+					map.put(field.getPublicFieldName(), biospecimen.getProcessedTime()!=null?biospecimen.getProcessedTime().toString():"");
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("species")) {
@@ -3509,7 +3499,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				HashMap<String, String> map = new HashMap<String, String>();
 				for (SubjectCustomFieldData data : scfData) {
 					
-					if(data.getLinkSubjectStudy().equals(lss)){
+					if(data.getLinkSubjectStudy().getId().equals(lss.getId())){
 						
 						// if any error value, then just use that
 						if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
@@ -3539,7 +3529,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirSubjectCustomData, FieldCategory.SUBJECT_CFD);
 			
-			createCSV(search, hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
+			createSubjectDemographicCSV(search, hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
 
 		}
 		/*
@@ -3582,7 +3572,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				HashMap<String, String> map = new HashMap<String, String>();
 				for (BioCollectionCustomFieldData data : bccfData) {
 					
-					if(data.getBioCollection()  .equals(bioCollection)){						
+					if(data.getBioCollection().getId().equals(bioCollection.getId())){						
 						// if any error value, then just use that
 						if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
 							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
@@ -3651,7 +3641,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				HashMap<String, String> map = new HashMap<String, String>();
 				for (BiospecimenCustomFieldData data : bscfData) {
 					
-					if(data.getBiospecimen()  .equals(biospecimen)){						
+					if(data.getBiospecimen().getId().equals(biospecimen.getId())){						
 						// if any error value, then just use that
 						if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
 							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
@@ -3676,7 +3666,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenData, FieldCategory.BIOSPECIMEN_FIELD);
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenCustomData, FieldCategory.BIOSPECIMEN_FIELD);
-			createBiospecimenCSV(search, hashOfBiospecimenData, FieldCategory.BIOSPECIMEN_FIELD);
+			
+			createSubjectDemographicCSV(search, allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
+			createBiospecimenCSV(search, allTheData.getBiospecimenData(), FieldCategory.BIOSPECIMEN_FIELD);
+			createBiocollectionCSV(search, allTheData.getBiocollectionData(), FieldCategory.BIOCOLLECTION_FIELD);
 		}
 	}
 
@@ -3749,9 +3742,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	/**
 	 * Simple export to CSV as first cut
 	 */
-	private File createCSV(Search search, HashMap<String, ExtractionVO> hashOfSubjectsWithData, FieldCategory fieldCategory) {
+	private File createSubjectDemographicCSV(Search search, HashMap<String, ExtractionVO> hashOfSubjectsWithData, FieldCategory fieldCategory) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
-		String filename = new String("test.csv");
+		String filename = new String("SUBJECTDEMOGRAPHICS.csv");
 		final java.io.File file = new File(tempDir, filename);
 		if(filename == null || filename.isEmpty()) {
 			filename = "exportcsv.csv";
