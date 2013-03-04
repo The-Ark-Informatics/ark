@@ -1822,99 +1822,65 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public List<DemographicField> getSelectedDemographicFieldsForSearch(Search search) {
-
 		String queryString = "select dfs.demographicField " + " from DemographicFieldSearch dfs " + " where dfs.search=:search " + " order by dfs.demographicField.entity ";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("search", search);
-
 		return query.list();
-
 	}
 
 	public List<DemographicField> getSelectedDemographicFieldsForSearch(Search search, Entity entityEnumToRestrictOn) {
-
-		String queryString = "select dfs.demographicField " + " from DemographicFieldSearch dfs " + " where dfs.search=:search " + " and dfs.demographicField.entity=:entityEnumToRestrictOn ";
+		String queryString = "select dfs.demographicField from DemographicFieldSearch dfs where dfs.search=:search " + " and dfs.demographicField.entity=:entityEnumToRestrictOn ";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("search", search);
 		query.setParameter("entityEnumToRestrictOn", entityEnumToRestrictOn);
-
 		return query.list();
-
 	}
 
 	public List<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search) {
-
-		String queryString = "select bsfs.biospecimenField " + " from BiospecimenFieldSearch bsfs " + " where bsfs.search=:search ";
+		String queryString = "select bsfs.biospecimenField from BiospecimenFieldSearch bsfs " + 
+						" where bsfs.search=:search ";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("search", search);
-
 		return query.list();
-
 	}
 
 	public List<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search) {
-
 		String queryString = "select bcfs.biocollectionField " + " from BiocollectionFieldSearch bcfs " + " where bcfs.search=:search ";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("search", search);
-
 		return query.list();
-
 	}
 
-	/**
-	 * 
+	/*
 	 * @param search
-	 * @param explicitReadOnly
-	 *           - if true, will try to set to readonly ELSE false
+	 * @param explicitReadOnly    - if true, will try to set to readonly ELSE false
 	 * @return
-	 * 
 	 *         public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean explicitReadOnly) {
-	 * 
 	 *         String queryString = "select dfs.demographicField " + " from DemographicFieldSearch dfs " + " where dfs.search=:search "; Query query =
 	 *         getSession().createQuery(queryString); query.setParameter("search", search); query.setReadOnly(explicitReadOnly);
-	 * 
 	 *         return query.list(); }
 	 */
-
-	/**
-	 * 
+	/*
 	 * @param search
-	 * @param explicitReadOnly
-	 *           - if true, will try to set to readonly ELSE false
+	 * @param explicitReadOnly- if true, will try to set to readonly ELSE false
 	 * @return
-	 * 
 	 *         public Collection<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search, boolean explicitReadOnly) {
-	 * 
 	 *         String queryString = "select dfs.BiospecimenField " + " from BiospecimenFieldSearch dfs " + " where dfs.search=:search "; Query query =
 	 *         getSession().createQuery(queryString); query.setParameter("search", search); query.setReadOnly(explicitReadOnly);
-	 * 
 	 *         return query.list(); }
 	 */
-
-	/**
-	 * 
+	/*
 	 * @param search
-	 * @param explicitReadOnly
-	 *           - if true, will try to set to readonly ELSE false
+	 * @param explicitReadOnly - if true, will try to set to readonly ELSE false
 	 * @return
-	 * 
 	 *         public Collection<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search, boolean explicitReadOnly) {
-	 * 
 	 *         String queryString = "select dfs.BiocollectionField " + " from BiocollectionFieldSearch dfs " + " where dfs.search=:search "; Query
 	 *         query = getSession().createQuery(queryString); query.setParameter("search", search); query.setReadOnly(explicitReadOnly);
-	 * 
 	 *         return query.list(); }
 	 */
 
-	/**
-	 * 
-	 * 
-	 * TODO ASAP : THis must start using arkfunction
-	 * 
-	 */
-	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search) {
 
+	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search) {
 		String queryString = "select cfds.customFieldDisplay " + " from CustomFieldDisplaySearch cfds " + " where cfds.search=:search "
 				+ " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction ";// +
 		// " order by cfds.customFieldDisplay.customFieldGroup.name ";
@@ -1926,47 +1892,36 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public Collection<CustomFieldDisplay> getSelectedSubjectCustomFieldDisplaysForSearch(Search search) {
-
 		String queryString = "select cfds.customFieldDisplay " + " from CustomFieldDisplaySearch cfds " + " where cfds.search=:search "
 				+ " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("search", search);
 		query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD));
-
 		return query.list();
 	}
 
 	public Collection<CustomFieldDisplay> getSelectedBiospecimenCustomFieldDisplaysForSearch(Search search) {
-
 		String queryString = "select cfds.customFieldDisplay " + " from CustomFieldDisplaySearch cfds " + " where cfds.search=:search "
 				+ " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("search", search);
 		query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
-
 		return query.list();
 	}
 
 	public Collection<CustomFieldDisplay> getAllSelectedCustomFieldDisplaysForSearch(Search search) {
-
 		String queryString = "select cfds.customFieldDisplay " + " from CustomFieldDisplaySearch cfds " + " where cfds.search=:search ";
-		// " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("search", search);
-		// query.setParameter("arkFunction",
-		// getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
-
 		return query.list();
 	}
 
 	public Collection<CustomFieldDisplay> getSelectedBiocollectionCustomFieldDisplaysForSearch(Search search) {
-
 		String queryString = "select cfds.customFieldDisplay " + " from CustomFieldDisplaySearch cfds " + " where cfds.search=:search "
 				+ " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("search", search);
 		query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
-
 		return query.list();
 	}
 
@@ -1989,22 +1944,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
 			Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
 			Collection<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
-			// save PHENO for later Collection<CustomFieldDisplay> pcfds =
-			// getSelectedPhenoCustomFieldDisplaysForSearch(search);
-			/* SAVE FILTERS FOR LATER */
-			/*
+			// save PHENO for later Collection<CustomFieldDisplay> pcfds = getSelectedPhenoCustomFieldDisplaysForSearch(search);
+			/* SAVE FILTERS FOR LATER 
 			 * Making this stuff into an xml document THEN converting it generically to xls/csv/pdf/etc might be an option
 			 */
 
 			/***
 			 * some of the options 1 get each of these and apply a filter every time 2 a megaquery to get EVERYTHING FOR EVERYONE into our
-			 * "report object/model" 3 use the filters to create a set of subjectUIDs and maybe apply that, though may also needs a set of pheno_data_id,
-			 * subj_custom_ids, etc
+			 * "report object/model" 3 use the filters to create a set of subjectUIDs and maybe apply that, though may also needs a set of pheno_data_id, subj_custom_ids, etc
 			 */
 
-			/*
-			 * get demographic data if(hasPersonFields(dfs)){ Query personQuery = getSession().createQuery("Select person from Person person ");
-			 * 
+			/*get demographic data if(hasPersonFields(dfs)){ Query personQuery = getSession().createQuery("Select person from Person person ");
 			 * //then get some fields and put it in our "report model" } if(hasLSSFields(dfs)){ //or a query that forces the join of person and lss if
 			 * they both exist Query lssQuery = getSession().createQuery ("Select lss from LinkSubjectStudy lss "); //then get some fields and put it in
 			 * our "report model" }
@@ -2021,11 +1971,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 			log.info("uidsafterFilteringdemo=" + uidsafterFiltering.size());
 			//TODO ASAP need a differenciating between needing filters and needing to select fields independantly
-			addDataFromMegaBioSpecimenQuery(allTheData, bsfs, bscfds, search);
+			addDataFromMegaBiospecimenQuery(allTheData, bsfs, bscfds, search);
 			uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFilteringbiospec=" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
-			addDataFromMegaBioCollectionQuery(allTheData, bcfs, bccfds, search);
+			addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search);
 			log.info("uidsafterFiltering doing the construction of megaobject=" + uidsafterFiltering.size());
 			uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol=" + uidsafterFiltering.size());
@@ -2280,13 +2230,113 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 	
 	
+
+
+
+	/**
+	 * @param allTheData - reference to the object containing our data collected so far, this is to be updated as we continue our refinement.
+	 * @param search 
+	 * @param biospecimenIdsToInclude - the constantly refined list of ID's passed from the previous extraction step
+	 * 
+	 * @return the updated list of uids that are still left after the filtering.
+	 */
+	private List<Long> applyBiospecimenCustomFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude){
+		List<Long> biospecimenIdsToInclude = new ArrayList<Long>();
+		if(idsToInclude!=null && !idsToInclude.isEmpty()){
+			String queryToFilterBiospecimenIDs = getBiospecimenDataCustomFieldIdQuery(search);
+			//Collection<CustomFieldDisplay> cfdsToReturn = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
+			//log.info("about to APPLY subject  filters.  UIDs size =" + idsToInclude.size() + " query string = " + queryToFilterSubjectIDs + " cfd to return size = " + cfdsToReturn.size());
+			if(!queryToFilterBiospecimenIDs.isEmpty()){
+				Query query = getSession().createQuery(queryToFilterBiospecimenIDs);
+				query.setParameterList("idList", idsToInclude);
+				biospecimenIdsToInclude = query.list(); 	
+				log.info("rows returned = " + biospecimenIdsToInclude.size());
+				idsToInclude = getSubjectIdsForBiospecimenIds(biospecimenIdsToInclude);	
+			}
+			else{
+				log.info("there were no subject custom data filters, therefore don't run filter query");
+			}
+		}
+		else{
+			log.info("there are no id's to filter.  therefore won't run filtering query");
+		}
+
+		Collection<CustomFieldDisplay> customFieldToGet = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
+		/* We have the list of biospecimens, and therefore the list of biospecimen custom data - now bring back all the custom data rows IF they have any data they need */
+		if(biospecimenIdsToInclude!=null && !biospecimenIdsToInclude.isEmpty() && !customFieldToGet.isEmpty()){
+			String queryString = "select data from BiospecimenCustomFieldData data  " +
+					" left join fetch data.biospecimen "  +
+					" left join fetch data.customFieldDisplay custFieldDisplay "  +
+					" left join fetch custFieldDisplay.customField custField "  +
+					" where data.biospecimen.id in (:biospecimenIdsToInclude)" +
+					" and data.customFieldDisplay in (:customFieldsList)" + 
+					" order by data.biospecimen.id " ;
+			Query query2 = getSession().createQuery(queryString);
+			query2.setParameterList("biospecimenIdsToInclude", biospecimenIdsToInclude);
+			query2.setParameterList("customFieldsList", customFieldToGet);
+		
+			List<BiospecimenCustomFieldData> scfData = query2.list();
+			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirBiospecimenCustomData = allTheData.getBiospecimenCustomData();
+
+			ExtractionVO valuesForThisLss = new ExtractionVO();
+			HashMap<String, String> map = null;
+			Long previousBiospecimenId = null;
+			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
+			for (BiospecimenCustomFieldData data : scfData) {
+				
+				if(previousBiospecimenId==null){
+					map = new HashMap<String, String>();
+					previousBiospecimenId = data.getBiospecimen().getId();
+				}
+				else if(data.getBiospecimen().getId().equals(previousBiospecimenId)){
+					//then just put the data in
+				}
+				else{	//if its a new LSS finalize previous map, etc
+					valuesForThisLss.setKeyValues(map);
+					previousBiospecimenId = data.getBiospecimen().getId();
+					hashOfSubjectsWithTheirBiospecimenCustomData.put(previousBiospecimenId.toString(), valuesForThisLss);	
+					map = new HashMap<String, String>();//reset
+				}
+
+				//if any error value, then just use that - though, yet again I really question the acceptance of error data
+				if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
+					map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+				}
+				else {
+					// Determine field type and assign key value accordingly
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+					}
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+					}
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+					}
+				}			
+			}
+			
+			//finalize the last entered key value sets/extraction VOs
+			if(map!=null && previousBiospecimenId!=null){
+				valuesForThisLss.setKeyValues(map);
+				hashOfSubjectsWithTheirBiospecimenCustomData.put(previousBiospecimenId.toString(), valuesForThisLss);
+			}
+			
+			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
+			allTheData.setBiospecimenCustomData(hashOfSubjectsWithTheirBiospecimenCustomData);
+		}		
+		return idsToInclude;
+	}	
+	
+	
+	
 	
 	/**
 	 * @param allTheDataz
 	 * @param search
 	 * @param uidsToInclude
 	 * @return the updated list of uids that are still left after the filtering.
-	 */
+	 *
 	private List<Long> applyBiospecimenCustomFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
 
 		String dataFilters = getBiospecimenCustomFieldFilters(search);
@@ -2382,11 +2432,19 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}	
 	
-	
+	*/
 	
 	
 
 	
+	private List<Long> getSubjectIdsForBiospecimenIds(List<Long> biospecimenIdsToInclude) {
+		String queryString = "select bio.linkSubjectStudy.id from Biospecimen bio " 
+							+ " where bio.id in (:biospecimenIdsToInclude) ";
+		Query query = getSession().createQuery(queryString);
+		query.setParameterList("biospecimenIdsToInclude", biospecimenIdsToInclude);
+		return query.list();
+	}
+
 	/**
 	 * @param allTheDataz
 	 * @param search
@@ -2451,7 +2509,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
 					}
 				}
-			
 			
 			}
 			//finalize the last entered key value sets/extraction VOs
@@ -3086,7 +3143,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	/**
-	 * 
 	 * @param search
 	 * @param idsToInclude 
 	 * @return a list of subject id's which match the filter we put together.
@@ -3151,6 +3207,74 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return "";
 		}
 	}
+
+
+	/**
+	 * @param search
+	 * @param idsToInclude 
+	 * @return a query string to attain the updated list of bioscpecimens.
+	 */
+	private String getBiospecimenDataCustomFieldIdQuery(Search search) {
+
+		int count = 0;
+		String selectComponent = " Select data0.linkSubjectStudy.id ";
+		String fromComponent = " from BiospecimenCustomFieldData data0 ";
+		String whereClause = "";
+		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
+		for (QueryFilter filter : filters) {
+			CustomFieldDisplay customFieldDisplay = filter.getCustomFieldDisplay();
+			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)) {
+				
+				String tablePrefix = "data" + count++;
+				log.info("what is this BIOSPECIMEN CUSTOM filter? " + filter.getId() + "     for data row? " + tablePrefix );
+				
+				String nextFilterLine =  "";
+
+				// Determine field type and assign key value accordingly
+				// ( data.customFieldDisplay.id=99 AND data.numberDataValue  >  0  )  and ( ( data.customFieldDisplay.id=112 AND data.numberDataValue  >=  0 ) ) 
+
+				//TODO evaluate date entry/validation
+				if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND " + tablePrefix + ".dateDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+				}
+				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND " + tablePrefix + ".numberDataValue " + getHQLForOperator(filter.getOperator()) + " " + filter.getValue() + " ");
+				}
+				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND " + tablePrefix + ".textDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+				}
+				else{
+					count--;
+				}
+				//TODO ASAP i think all of these might need to start thinking about is null or is not null?
+				if (filter.getOperator().equals(Operator.BETWEEN)) {
+					nextFilterLine += (" AND " + filter.getSecondValue());
+				}
+
+				if(whereClause.isEmpty()){
+					whereClause = " where " + nextFilterLine + " ) ";
+				}
+				else{
+					fromComponent += ",  BiospecimenCustomFieldData " + tablePrefix ;
+					whereClause = whereClause + " and " + nextFilterLine + " )  " +
+							" and data0.linkSubjectStudy.id = " + tablePrefix +  ".linkSubjectStudy.id ";
+				}
+			}
+		}
+		whereClause += " and data0.linkSubjectStudy.id in (:idList) ";//count>0?"":
+		log.info("filterClauseAfterBiospecimenCustomField FILTERS = " + whereClause);
+
+		if(count>0){
+			return selectComponent + fromComponent + whereClause;
+		}
+		else{
+			return "";
+		}
+	}
+
 
 
 	
@@ -3545,7 +3669,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	
-	private void addDataFromMegaBioCollectionQuery(DataExtractionVO allTheData,Collection<BiocollectionField> biocollectionFields,Collection<CustomFieldDisplay> collectionCFDs, Search search ){
+	private void addDataFromMegaBiocollectionQuery(DataExtractionVO allTheData,Collection<BiocollectionField> biocollectionFields,Collection<CustomFieldDisplay> collectionCFDs, Search search ){
 		if(!biocollectionFields.isEmpty() || !collectionCFDs.isEmpty()){
 			
 			Criteria criteria = getSession().createCriteria(BioCollection.class);
@@ -3603,7 +3727,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 
-	private void addDataFromMegaBioSpecimenQuery(DataExtractionVO allTheData,Collection<BiospecimenField> biospecimenFields,Collection<CustomFieldDisplay> specimenCFDs, Search search ){
+	private void addDataFromMegaBiospecimenQuery(DataExtractionVO allTheData,Collection<BiospecimenField> biospecimenFields,Collection<CustomFieldDisplay> specimenCFDs, Search search ){
 		if(!biospecimenFields.isEmpty() || !specimenCFDs.isEmpty()){
 									
 			StringBuffer queryBuffer =new StringBuffer("select distinct biospecimen ");
