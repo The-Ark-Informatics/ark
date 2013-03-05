@@ -275,7 +275,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		
 		if(limsVo.getBioCollection() != null && limsVo.getBioCollection().getBiocollectionUid() != null) {
 			criteria.createAlias("bioCollection", "bc");
-			criteria.add(Restrictions.eq("bc.biocollectionUid", limsVo.getBioCollection().getBiocollectionUid()));
+			criteria.add(Restrictions.ilike("bc.biocollectionUid", "%" + limsVo.getBioCollection().getBiocollectionUid(), MatchMode.ANYWHERE));
 		}
 		
 		if (biospecimen.getId() != null) {
