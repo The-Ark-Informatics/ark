@@ -86,8 +86,6 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		
 		// Override New button, disabling
 		newButton = new ArkBusyAjaxButton(Constants.NEW) {
-
-
 			private static final long	serialVersionUID	= 4695227309689500914L;
 
 			@Override
