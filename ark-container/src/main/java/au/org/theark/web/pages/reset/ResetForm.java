@@ -146,6 +146,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 			if(!iArkCommonService.isSuperAdministrator(arkUserVo.getUserName())){
 				// Set new password
 				arkUserVo.setPassword(password);
+				arkUserVo.setChangePassword(true);
 				setModelObject(arkUserVo);
 	
 				// Send an email. If send failed (eg no smtp access, password not reset)
