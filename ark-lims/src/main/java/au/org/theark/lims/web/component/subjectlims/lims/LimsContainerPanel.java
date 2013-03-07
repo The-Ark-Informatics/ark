@@ -33,6 +33,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import wickettree.AbstractTree;
 import wickettree.ITreeProvider;
+import wickettree.util.InverseSet;
 import wickettree.util.ProviderSubset;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -130,6 +131,8 @@ public class LimsContainerPanel extends Panel {
 		
 		provider = new BiospecimenTreeProvidor(iLimsService, cpModel);
 		state = new ProviderSubset<Object>(provider);
+		((IDetachable)state).detach();
+		state = new InverseSet<Object>(new ProviderSubset<Object>(provider));
 		bioTreePanel = new BiospecimenNestedTreePanel("tree", cpModel, provider, newStateModel(), modalWindow);
 		
 		containerForm.add(bioTreePanel);
