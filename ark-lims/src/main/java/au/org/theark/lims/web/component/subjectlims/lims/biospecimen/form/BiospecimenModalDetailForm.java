@@ -20,6 +20,7 @@ package au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -195,10 +196,12 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	 */
 	private void enableQuantityTreatment(AjaxRequestTarget target) {
 		setQuantityLabel();
-
-		String parentQuantityMax = cpModel.getObject().getParentBiospecimen().getQuantity() + cpModel.getObject().getParentBiospecimen().getUnit().getName();
-		parentQuantityMaxLbl = new Label("parentBiospecimen.quantity.max", "(" + parentQuantityMax + ")");
-		bioTransactionDetailWmc.addOrReplace(parentQuantityMaxLbl);
+		
+		if(cpModel.getObject().getParentBiospecimen().getQuantity() != null && cpModel.getObject().getParentBiospecimen().getUnit() != null) {
+			String parentQuantityMax = cpModel.getObject().getParentBiospecimen().getQuantity() + cpModel.getObject().getParentBiospecimen().getUnit().getName();
+			parentQuantityMaxLbl = new Label("parentBiospecimen.quantity.max", "(" + parentQuantityMax + ")");
+			bioTransactionDetailWmc.addOrReplace(parentQuantityMaxLbl);
+		}
 
 		parentQuantityTxtFld.setVisible(cpModel.getObject().getBiospecimenProcessing().equalsIgnoreCase(au.org.theark.lims.web.Constants.BIOSPECIMEN_PROCESSING_PROCESSING));
 		treatmentTypeDdc.setEnabled(true);
@@ -842,7 +845,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 							// Add parent transaction
 							LimsVO parentLimsVo = new LimsVO();
-							parentLimsVo.setBiospecimen(parentBiospecimen);
+							//parentLimsVo.setBiospecimen(parentBiospecimen);
 							parentLimsVo.getBioTransaction().setId(null);
 							parentLimsVo.getBioTransaction().setBiospecimen(parentBiospecimen);
 							parentLimsVo.getBioTransaction().setTransactionDate(Calendar.getInstance().getTime());
@@ -1005,6 +1008,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			biospecimen.setQuantity(clonedBiospecimen.getQuantity());
 			biospecimen.setUnit(clonedBiospecimen.getUnit());
 			biospecimen.setTreatmentType(clonedBiospecimen.getTreatmentType());
+			biospecimen.setChildren(new ArrayList<Biospecimen>(0));
 
 			Study studyFromClone = clonedBiospecimen.getStudy();
 			// There should be a study and only then do the rest of the code here
@@ -1094,6 +1098,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			biospecimen.setBarcoded(false);
 			biospecimen.setUnit(parentBiospecimen.getUnit());
 			biospecimen.setTreatmentType(parentBiospecimen.getTreatmentType());
+			biospecimen.setChildren(new ArrayList<Biospecimen>(0));
 
 			Study studyFromParent = parentBiospecimen.getStudy();
 			// There should be a study and only then do the rest of the code here
