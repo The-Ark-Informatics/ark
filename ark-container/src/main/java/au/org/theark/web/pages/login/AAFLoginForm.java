@@ -100,7 +100,9 @@ public class AAFLoginForm extends LoginForm {
 		   }	
 	   }
 	   else {
-	   	throw new AuthenticationException();
+	   	this.error("There was an issue with AAF Authentication. Please contact your system administrator");
+	   	//throw new AuthenticationException();
+
 	   }
 	}
 }
