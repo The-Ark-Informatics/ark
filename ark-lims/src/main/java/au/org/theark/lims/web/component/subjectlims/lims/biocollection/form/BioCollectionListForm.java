@@ -63,7 +63,7 @@ import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollec
  * @author elam
  * 
  */
-@SuppressWarnings({ "unchecked"})
+@SuppressWarnings( { "unchecked" })
 public class BioCollectionListForm extends Form<LimsVO> {
 
 	private static final long										serialVersionUID	= 1L;
@@ -106,7 +106,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		initialiseDataView();
 		initialiseNewButton();
 
-		//add(modalWindow);
+		// add(modalWindow);
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return (int)service.getBioCollectionCount(model.getObject());
+				return (int) service.getBioCollectionCount(model.getObject());
 			}
 
 			public Iterator<BioCollection> iterator(int first, int count) {
@@ -305,17 +305,17 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		// Set new BioCollection into model, then show modalWindow to save
 		CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 		Study study = getModelObject().getLinkSubjectStudy().getStudy();
-		
-		if(study!=null && !study.getAutoGenerateBiocollectionUid()){
+
+		if (study != null && !study.getAutoGenerateBiocollectionUid()) {
 			newModel.getObject().getBioCollection().setBiocollectionUid("");
 		}
-		else{
+		else {
 			newModel.getObject().getBioCollection().setBiocollectionUid(Constants.AUTO_GENERATED);
 		}
-		
+
 		newModel.getObject().getBioCollection().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 		newModel.getObject().getBioCollection().setStudy(study);
-		
+
 		showModalWindow(target, newModel);
 	}
 
@@ -326,18 +326,16 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		modalWindow.setTitle("Collection Detail");
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);
-		modalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback()
-		{
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1L;
-
-			public void onClose(AjaxRequestTarget target)
-         {
-				// Refresh the list form whenever the modalwindow is closed
-         	target.add(BioCollectionListForm.this);	
-         }
-		});
+//		modalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+//			/**
+//			 * 
+//			 */
+//			private static final long	serialVersionUID	= 1L;
+//
+//			public void onClose(AjaxRequestTarget target) {
+//				// Refresh the list form whenever the modalwindow is closed
+//				target.add(BioCollectionListForm.this);
+//			}
+//		});
 	}
 }
