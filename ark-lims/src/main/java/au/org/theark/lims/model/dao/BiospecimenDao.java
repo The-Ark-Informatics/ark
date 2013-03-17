@@ -511,7 +511,8 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		
 		// handle for a null BiospecimenUID
 		if(biospecimenUid == null || biospecimenUid.length() == 0){
-			String uid = UniqueIdGenerator.generateUniqueId();
+			//String uid = UniqueIdGenerator.generateUniqueId();
+			String uid = "" + getNextUidSequence(studyToUse);
 			biospecimenUid = new StringBuilder();
 			biospecimenUid.append(uid);
 			log.error("Biospecimen Template is not defined for the Study: " + studyToUse.getName());
