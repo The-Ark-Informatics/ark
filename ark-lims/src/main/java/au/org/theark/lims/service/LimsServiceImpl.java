@@ -259,6 +259,7 @@ public class LimsServiceImpl implements ILimsService {
 		// update quantity
 		biospecimen.setQuantity(getQuantityAvailable(biospecimen));
 		iBiospecimenDao.updateBiospecimen(biospecimen);
+		
 	}
 
 	/*
