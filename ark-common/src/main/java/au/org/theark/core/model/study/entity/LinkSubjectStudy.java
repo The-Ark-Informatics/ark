@@ -270,29 +270,29 @@ public class LinkSubjectStudy implements java.io.Serializable {
 				* result
 				+ ((consentDownloaded == null) ? 0 : consentDownloaded
 						.hashCode());
-		result = prime * result
-				+ ((consentStatus == null) ? 0 : consentStatus.hashCode());
-		result = prime
-				* result
-				+ ((consentToActiveContact == null) ? 0
-						: consentToActiveContact.hashCode());
-		result = prime
-				* result
-				+ ((consentToPassiveDataGathering == null) ? 0
-						: consentToPassiveDataGathering.hashCode());
-		result = prime
-				* result
-				+ ((consentToUseData == null) ? 0 : consentToUseData.hashCode());
-		result = prime * result
-				+ ((consentType == null) ? 0 : consentType.hashCode());
-		result = prime * result
-				+ ((consents == null) ? 0 : consents.hashCode());
+//		result = prime * result
+//				+ ((consentStatus == null) ? 0 : consentStatus.hashCode());
+//		result = prime
+//				* result
+//				+ ((consentToActiveContact == null) ? 0
+//						: consentToActiveContact.hashCode());
+//		result = prime
+//				* result
+//				+ ((consentToPassiveDataGathering == null) ? 0
+//						: consentToPassiveDataGathering.hashCode());
+//		result = prime
+//				* result
+//				+ ((consentToUseData == null) ? 0 : consentToUseData.hashCode());
+//		result = prime * result
+//				+ ((consentType == null) ? 0 : consentType.hashCode());
+//		result = prime * result
+//				+ ((consents == null) ? 0 : consents.hashCode());
 		result = prime * result
 				+ ((heardAboutStudy == null) ? 0 : heardAboutStudy.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((person == null) ? 0 : person.hashCode());
-		result = prime * result
-				+ ((subjectStatus == null) ? 0 : subjectStatus.hashCode());
+//		result = prime * result + ((person == null) ? 0 : person.hashCode());
+//		result = prime * result
+//				+ ((subjectStatus == null) ? 0 : subjectStatus.hashCode());
 		result = prime * result
 				+ ((subjectUID == null) ? 0 : subjectUID.hashCode());
 		return result;
@@ -322,11 +322,11 @@ public class LinkSubjectStudy implements java.io.Serializable {
 				return false;
 		} else if (!consentDownloaded.equals(other.consentDownloaded))
 			return false;
-		if (consentStatus == null) {
-			if (other.consentStatus != null)
-				return false;
-		} else if (!consentStatus.equals(other.consentStatus))
-			return false;
+//		if (consentStatus == null) {
+//			if (other.consentStatus != null)
+//				return false;
+//		} else if (!consentStatus.equals(other.consentStatus))
+//			return false;
 		if (consentToActiveContact == null) {
 			if (other.consentToActiveContact != null)
 				return false;
@@ -343,16 +343,16 @@ public class LinkSubjectStudy implements java.io.Serializable {
 				return false;
 		} else if (!consentToUseData.equals(other.consentToUseData))
 			return false;
-		if (consentType == null) {
-			if (other.consentType != null)
-				return false;
-		} else if (!consentType.equals(other.consentType))
-			return false;
-		if (consents == null) {
-			if (other.consents != null)
-				return false;
-		} else if (!consents.equals(other.consents))
-			return false;
+//		if (consentType == null) {
+//			if (other.consentType != null)
+//				return false;
+//		} else if (!consentType.equals(other.consentType))
+//			return false;
+//		if (consents == null) {
+//			if (other.consents != null)
+//				return false;
+//		} else if (!consents.equals(other.consents))
+//			return false;
 		if (heardAboutStudy == null) {
 			if (other.heardAboutStudy != null)
 				return false;
