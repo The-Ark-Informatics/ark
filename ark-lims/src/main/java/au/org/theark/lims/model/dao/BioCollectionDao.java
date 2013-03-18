@@ -182,7 +182,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		
 		// handle for a null BiospecimenUID
 		if(biospecimenUid == null || biospecimenUid.length() == 0){
-			String uid = UniqueIdGenerator.generateUniqueId();
+			String uid = "" + getNextUidSequence(studyToUse); //UniqueIdGenerator.generateUniqueId();
 			biospecimenUid = new StringBuilder();
 			biospecimenUid.append(uid);
 			log.error("Biocollection Template is not defined for the Study: " + studyToUse.getName());
