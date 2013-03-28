@@ -88,7 +88,9 @@ public class ChildStudySubjectPanel extends Panel {
 		for (Iterator<Study> iterator = studies.iterator(); iterator.hasNext();) {
 			Study study = (Study) iterator.next();
 			try {
-				childSubjectIds.add(iArkCommonService.getSubject(lss.getPerson().getId(), study));
+				if(!lss.getSubjectStatus().getName().equalsIgnoreCase("Archive")) {
+					childSubjectIds.add(iArkCommonService.getSubject(lss.getPerson().getId(), study));
+				}
 			}
 			catch (EntityNotFoundException e) {
 				e.printStackTrace();
@@ -146,11 +148,7 @@ public class ChildStudySubjectPanel extends Panel {
 		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 
 		SubjectVO subjectFromBackend = new SubjectVO();
-		Collection<SubjectVO> subjects = iArkCommonService.getSubject(subject);
-		for (SubjectVO subjectVO2 : subjects) {
-			subjectFromBackend = subjectVO2;
-			break;
-		}
+		subjectFromBackend.setLinkSubjectStudy(subject.getLinkSubjectStudy());
 
 		// Available/assigned child studies
 		List<Study> availableChildStudies = new ArrayList<Study>(0);
