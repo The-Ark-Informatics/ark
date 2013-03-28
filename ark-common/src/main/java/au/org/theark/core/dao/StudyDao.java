@@ -1285,7 +1285,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("person", person));
 		criteria.add(Restrictions.eq("s.parentStudy", study));
 		criteria.add(Restrictions.ne("s.id", study.getId()));
-
+		criteria.add(Restrictions.ne("subjectStatus", getSubjectStatus("Archive")));
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.groupProperty("study"), "study");
 		criteria.setProjection(projectionList);
