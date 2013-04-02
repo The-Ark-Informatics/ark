@@ -76,6 +76,8 @@ import au.org.theark.core.model.report.entity.FieldCategory;
 import au.org.theark.core.model.report.entity.Operator;
 import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.model.report.entity.SearchPayload;
+import au.org.theark.core.model.report.entity.SearchResult;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -3789,11 +3791,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenData, FieldCategory.BIOSPECIMEN_FIELD);
-			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenCustomData, FieldCategory.BIOSPECIMEN_FIELD);
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenCustomData, FieldCategory.BIOSPECIMEN_CFD);
 			
 			createSubjectDemographicCSV(search, allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
 			createBiospecimenCSV(search, allTheData.getBiospecimenData(), FieldCategory.BIOSPECIMEN_FIELD);
 			createBiocollectionCSV(search, allTheData.getBiocollectionData(), FieldCategory.BIOCOLLECTION_FIELD);
+			createBiospecimenDataCustomCSV(search, hashOfBiospecimenCustomData, FieldCategory.BIOSPECIMEN_CFD);
 		}
 	}
 
@@ -3986,5 +3989,60 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 		return file;
 	}
+	
+	private File createBiospecimenDataCustomCSV(Search search, HashMap<String, ExtractionVO> hashOfBiospecimenCustomData, FieldCategory fieldCategory) {
+		log.info(" writing out biospecimenCustomData " + hashOfBiospecimenCustomData.size() + " entries for category '" + fieldCategory + "'");
+		
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		String filename = new String("BIOSPECIMENCUSTOMDATA.csv");
+		final java.io.File file = new File(tempDir, filename);
+		if(filename == null || filename.isEmpty()) {
+			filename = "exportBiospecimenCustomcsv.csv";
+		}
+		OutputStream outputStream;
+		try {
+			outputStream = new FileOutputStream(file);
+			CsvWriter csv = new CsvWriter(outputStream);
 
+			csv.write("SUBJECTUID");
+			
+			// Header
+			
+			for (String key : hashOfBiospecimenCustomData.keySet()) {
+				HashMap<String, String> keyValues = hashOfBiospecimenCustomData.get(key).getKeyValues();
+				for(String key2 : keyValues.keySet()){
+					csv.write(key2);
+				}
+				break;
+			}
+			csv.endLine();
+			
+			for (String subjectUID : hashOfBiospecimenCustomData.keySet()) {
+				HashMap<String, String> keyValues = hashOfBiospecimenCustomData.get(subjectUID).getKeyValues();
+				for (String key : keyValues.keySet()) {
+					csv.write(keyValues.get(keyValues.get(key)));
+				}
+				csv.endLine();
+			}
+			csv.close();
+		}
+		catch (FileNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		
+		return file;
+	}
+
+	@Override
+	public SearchPayload getSearchPayloadForSearchResult(SearchResult searchResult) {
+		getSession().refresh(searchResult);
+		return searchResult.getSearchPayload();
+	}
+
+	@Override
+	public List<SearchResult> getSearchResultList(Long searchResultId) {
+		Criteria criteria = getSession().createCriteria(SearchResult.class);
+		criteria.add(Restrictions.eq("id",searchResultId));
+		return criteria.list();
+	}
 }
