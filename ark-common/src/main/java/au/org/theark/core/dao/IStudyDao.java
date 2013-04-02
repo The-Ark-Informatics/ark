@@ -38,6 +38,8 @@ import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
+import au.org.theark.core.model.report.entity.SearchPayload;
+import au.org.theark.core.model.report.entity.SearchResult;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -70,12 +72,12 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
@@ -698,5 +700,7 @@ public interface IStudyDao {
 
 	public List getParentAndChildStudies(Long id);
 
+	public SearchPayload getSearchPayloadForSearchResult(SearchResult searchResult);
 
+	public List<SearchResult> getSearchResultList(Long searchResultId);
 }
