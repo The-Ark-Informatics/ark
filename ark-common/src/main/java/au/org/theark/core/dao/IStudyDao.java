@@ -703,4 +703,6 @@ public interface IStudyDao {
 	public SearchPayload getSearchPayloadForSearchResult(SearchResult searchResult);
 
 	public List<SearchResult> getSearchResultList(Long searchResultId);
+	
+	public SearchPayload createSearchPayload(byte[] bytes);
 }

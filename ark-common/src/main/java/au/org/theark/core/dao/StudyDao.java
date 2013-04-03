@@ -19,19 +19,16 @@
 package au.org.theark.core.dao;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -47,7 +44,9 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.DigestUtils;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
@@ -128,7 +127,6 @@ import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.util.CsvListReader;
-import au.org.theark.core.util.CsvWriter;
 import au.org.theark.core.vo.DataExtractionVO;
 import au.org.theark.core.vo.ExtractionVO;
 import au.org.theark.core.vo.QueryFilterVO;
@@ -144,6 +142,23 @@ import au.org.theark.core.vo.SubjectVO;
 public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	private static Logger	log	= LoggerFactory.getLogger(StudyDao.class);
+	protected static final String			HEXES					= "0123456789ABCDEF";
+	private IDataExtractionDao iDataExtractionDao;
+
+	/**
+	 * @return the iDataExtractionDao
+	 */
+	public IDataExtractionDao getiDataExtractionDao() {
+		return iDataExtractionDao;
+	}
+
+	/**
+	 * @param iDataExtractionDao the iDataExtractionDao to set
+	 */
+	@Autowired
+	public void setiDataExtractionDao(IDataExtractionDao iDataExtractionDao) {
+		this.iDataExtractionDao = iDataExtractionDao;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -1165,6 +1180,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		delimiterTypeName = (String) criteria.uniqueResult();
 		return delimiterTypeName;
 	}
+	
+	public DelimiterType getDelimiterTypeByDelimiterChar(char delimiterCharacter) {
+		Criteria criteria = getSession().createCriteria(DelimiterType.class);
+		criteria.add(Restrictions.eq("delimiterCharacter", delimiterCharacter));
+		return (DelimiterType) criteria.uniqueResult();
+	}
 
 	public void createCustomFieldUpload(CustomFieldUpload cfUpload) {
 		getSession().save(cfUpload);
@@ -1904,9 +1925,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public Collection<CustomFieldDisplay> getSelectedBiospecimenCustomFieldDisplaysForSearch(Search search) {
-		String queryString = "select cfds.customFieldDisplay from CustomFieldDisplaySearch cfds " + 
-							" where cfds.search=:search "
-							+ " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
+		String queryString = "select cfds.customFieldDisplay " + " from CustomFieldDisplaySearch cfds " + " where cfds.search=:search "
+				+ " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("search", search);
 		query.setParameter("arkFunction", getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
@@ -1975,22 +1995,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 			log.info("uidsafterFilteringdemo=" + uidsafterFiltering.size());
 			//TODO ASAP need a differenciating between needing filters and needing to select fields independantly
-			
+			addDataFromMegaBiospecimenQuery(allTheData, bsfs, bscfds, search);
+			uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFilteringbiospec=" + uidsafterFiltering.size());
+			//TODO wipe the old data which doesn't still match the ID list
 			addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search);
 			log.info("uidsafterFiltering doing the construction of megaobject=" + uidsafterFiltering.size());
-			//NOW just use thilina method above but make sure it FILTERS!!! 	uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol=" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 			uidsafterFiltering = applySubjectCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering SUBJECT cust=" + uidsafterFiltering.size());
-			
-			
-			addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, uidsafterFiltering);
-			//NOW just use thilina method above but make sure it FILTERS!!! 
-			//uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFilteringbiospec=" + uidsafterFiltering.size());
-			//TODO wipe the old data which doesn't still match the ID list
-			
 			//TODO wipe the old data which doesn't still match the ID list
 			uidsafterFiltering = applyBiospecimenCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering=Biospec cust" + uidsafterFiltering.size());
@@ -2003,13 +2018,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			log.info("uidsafterFiltering pheno cust=" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 			
+
 			
 			//now filter previous data from the further filtering steps each time.  First time not necessary just assign uids
-
-
-			//TODO  call all of the create CSV type stuff now
-			
-			
+			// CREATE CSVs
+			createSearchResult(search, iDataExtractionDao.createSubjectDemographicCSV(search, allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD));
+			createSearchResult(search, iDataExtractionDao.createBiospecimenCSV(search, allTheData.getBiospecimenData(), FieldCategory.BIOSPECIMEN_FIELD));
+			createSearchResult(search, iDataExtractionDao.createBiocollectionCSV(search, allTheData.getBiocollectionData(), FieldCategory.BIOCOLLECTION_FIELD));
+			createSearchResult(search, iDataExtractionDao.createBiospecimenDataCustomCSV(search, allTheData.getBiospecimenCustomData(), FieldCategory.BIOSPECIMEN_CFD));
 		}
 	}
 
@@ -2037,7 +2053,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @param search
 	 * @param uidsToInclude
 	 * @return the updated list of uids that are still left after the filtering.
-	 *
+	 */
 	private List<Long> applyBiospecimenFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
 		//Set updatedListOfSubjectUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the biospecimen.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
 		String biospecimenFilters = getBiospecimenFilters(search);
@@ -2055,7 +2071,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			List<Biospecimen> biospecimens = query.list(); 	
 			
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
-			allTheData.setBiospecimens(biospecimens);
+			//allTheData.setBiospecimens(biospecimens);
 
 			log.info("sizeofbiospecs=" + biospecimens.size());
 			for(Biospecimen b : biospecimens){
@@ -2085,7 +2101,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		else{
 			return uidsToInclude;
 		}
-	}*/
+	}
 
 
 	/**
@@ -2093,7 +2109,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @param search
 	 * @param uidsToInclude
 	 * @return the updated list of uids that are still left after the filtering.
-	 
+	 */
 	private List<Long> applyBiocollectionFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
 		//Set updatedListOfSubjectUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the biocollection.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
 		String biocollectionFilters = getBiocollectionFilters(search);
@@ -2111,7 +2127,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			List<BioCollection> biocollections = query.list(); 	
 			
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
-			allTheData.setBiocollections(biocollections);
+			//allTheData.setBiocollections(biocollections);
 
 			log.info("after applying biocollection filters : sizeofbioCOLs=" + biocollections.size());
 			for(BioCollection b : biocollections){
@@ -2142,7 +2158,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return uidsToInclude;
 		}
 	}
-*/
+
 
 	/**
 	 * @param allTheData - reference to the object containing our data collected so far, this is to be updated as we continue our refinement.
@@ -2239,6 +2255,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return idsToInclude;
 	}	
 	
+	
+	
 
 
 
@@ -2257,15 +2275,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//log.info("about to APPLY subject  filters.  UIDs size =" + idsToInclude.size() + " query string = " + queryToFilterSubjectIDs + " cfd to return size = " + cfdsToReturn.size());
 			if(!queryToFilterBiospecimenIDs.isEmpty()){
 				Query query = getSession().createQuery(queryToFilterBiospecimenIDs);
-				query.setParameterList("idList", idsToInclude);//TODO ASAP...this should be biospecimen list and not subjuid list now
+				query.setParameterList("idList", idsToInclude);
 				biospecimenIdsToInclude = query.list(); 	
 				log.info("rows returned = " + biospecimenIdsToInclude.size());
-				if(biospecimenIdsToInclude.isEmpty()){
-					idsToInclude = new ArrayList<Long>();
-				}
-				else{
-					idsToInclude = getSubjectIdsForBiospecimenIds(biospecimenIdsToInclude);
-				}
+				idsToInclude = getSubjectIdsForBiospecimenIds(biospecimenIdsToInclude);	
 			}
 			else{
 				log.info("there were no subject custom data filters, therefore don't run filter query");
@@ -2341,6 +2354,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}		
 		return idsToInclude;
 	}	
+	
 	
 	
 	
@@ -2444,7 +2458,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return uidsToInclude;
 		}
 	}	
-	*/	
+	
+	*/
+	
 	
 
 	
@@ -2558,6 +2574,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 	
 		
+	
+
+	
 	/**
 	 * @param allTheDataz
 	 * @param search
@@ -2658,6 +2677,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return uidsToInclude;
 		}
 	}	
+	
 	
 	
 	
@@ -2902,6 +2922,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			
 		}
+		
 		
 		return map;
 		
@@ -3169,7 +3190,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				
 				String nextFilterLine =  "";
 
-				// Determine field type and assign key value accordingly    //( data.customFieldDisplay.id=99 AND data.numberDataValue  >  0  )  and ( ( data.customFieldDisplay.id=112 AND data.numberDataValue  >=  0 ) ) 
+				// Determine field type and assign key value accordingly
+				// ( data.customFieldDisplay.id=99 AND data.numberDataValue  >  0  )  and ( ( data.customFieldDisplay.id=112 AND data.numberDataValue  >=  0 ) ) 
 
 				//TODO evaluate date entry/validation
 				if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
@@ -3222,7 +3244,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	private String getBiospecimenDataCustomFieldIdQuery(Search search) {
 
 		int count = 0;
-		String selectComponent = " Select data0.biospecimen.id ";
+		String selectComponent = " Select data0.linkSubjectStudy.id ";
 		String fromComponent = " from BiospecimenCustomFieldData data0 ";
 		String whereClause = "";
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
@@ -3265,11 +3287,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				else{
 					fromComponent += ",  BiospecimenCustomFieldData " + tablePrefix ;
 					whereClause = whereClause + " and " + nextFilterLine + " )  " +
-							" and data0.biospecimen.id = " + tablePrefix +  ".biospecimen.id ";
+							" and data0.linkSubjectStudy.id = " + tablePrefix +  ".linkSubjectStudy.id ";
 				}
 			}
 		}
-		whereClause += " and data0.biospecimen.id in (:idList) ";//count>0?"":
+		whereClause += " and data0.linkSubjectStudy.id in (:idList) ";//count>0?"":
 		log.info("filterClauseAfterBiospecimenCustomField FILTERS = " + whereClause);
 
 		if(count>0){
@@ -3280,7 +3302,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
-/*
+
+
+	
 	private String getBiospecimenCustomFieldFilters(Search search) {
 
 		String filterClause = "";
@@ -3307,7 +3331,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 							" AND data.textDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
 				}
 				
-				//e
+				//TODO ASAP i think all of these might need to start thinking about is null or is not null?
 				if (filter.getOperator().equals(Operator.BETWEEN)) {
 					nextFilterLine += (" AND " + filter.getSecondValue());
 				}
@@ -3323,7 +3347,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		return filterClause;
 	}
-*/
+
 
 	
 	private String getBiocollectionCustomFieldFilters(Search search) {
@@ -3558,10 +3582,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return studyCriteria.list();
 	}	
 	
-	 
+	
 	
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
 			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search) {
+		log.info("in addDataFromMegaDemographicQuery");
 		if (!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty()) { // hasEmailFields(dfs)
 			// ||
 			// TODO
@@ -3656,7 +3681,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirSubjectCustomData, FieldCategory.SUBJECT_CFD);
 			
-			createSubjectDemographicCSV(search, hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
+			//iDataExtractionDao.createSubjectDemographicCSV(search, hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
 
 		}
 		/*
@@ -3723,17 +3748,18 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiocollectionData, FieldCategory.BIOCOLLECTION_FIELD);
-			prettyLoggingOfWhatIsInOurMegaObject(hashOfBioCollectionCustomData, FieldCategory.BIOCOLLECTION_FIELD);
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfBioCollectionCustomData, FieldCategory.BIOCOLLECTION_CFD);
 			
-			createBiocollectionCSV(search, hashOfBiocollectionData, FieldCategory.BIOCOLLECTION_FIELD);
+			iDataExtractionDao.createBiocollectionCSV(search, hashOfBiocollectionData, FieldCategory.BIOCOLLECTION_FIELD);
 		}
 	}
 
 
-	private void addDataFromMegaBiospecimenQuery(DataExtractionVO allTheData,Collection<BiospecimenField> biospecimenFields, //Collection<CustomFieldDisplay> specimenCFDs, 
-			Search search, List<Long> idsToInclude){
-		if(!biospecimenFields.isEmpty() && !idsToInclude.isEmpty()){
-			String biospecimenFilters = getBiospecimenFilters(search);
+	private void addDataFromMegaBiospecimenQuery(DataExtractionVO allTheData,Collection<BiospecimenField> biospecimenFields,Collection<CustomFieldDisplay> specimenCFDs, Search search ){
+		log.info("in addDataFromMegaBiospecimenQuery");
+		
+		if(!biospecimenFields.isEmpty() || !specimenCFDs.isEmpty()){
+									
 			StringBuffer queryBuffer =new StringBuffer("select distinct biospecimen ");
 			queryBuffer.append("from Biospecimen biospecimen " );
 			queryBuffer.append(	" 	left join fetch biospecimen.sampleType sampleType ");
@@ -3748,26 +3774,18 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			queryBuffer.append(	"	left join fetch biospecimen.status status " );
 			queryBuffer.append(	"	left join fetch biospecimen.biospecimenProtocol biospecimenProtocol ");
 			queryBuffer.append(	" where biospecimen.study.id = " + search.getStudy().getId());
-			queryBuffer.append(biospecimenFilters);
-			queryBuffer.append( "  and biospecimen.linkSubjectStudy.id in (:idsToInclude) ");
 
-			Query query = getSession().createQuery(queryBuffer.toString());
-			query.setParameterList("idsToInclude", idsToInclude);
-			Collection<Biospecimen> biospecimenList=query.list();
-			HashSet uniqueSubjectIDs = new HashSet<Long>();
+			Collection<Biospecimen> biospecimenList=getSession().createQuery(queryBuffer.toString()).list();
+			
 			HashMap<String, ExtractionVO> hashOfBiospecimenData = allTheData.getBiospecimenData();
 			
 			for (Biospecimen biospecimen : biospecimenList) {
 				ExtractionVO sev = new ExtractionVO();
 				sev.setKeyValues(constructKeyValueHashmap(biospecimen,biospecimenFields));
 				hashOfBiospecimenData.put(biospecimen.getBiospecimenUid(), sev);
-				uniqueSubjectIDs.add(biospecimen.getLinkSubjectStudy().getId());
 			}			
 			
-			//maintaining list of subject IDs for filtering past results
-			idsToInclude = new ArrayList(uniqueSubjectIDs);
-			
-/*			//TODO Seems we are not printing the custom fields to the csv
+			//TODO Seems we are not printing the custom fields to the csv
 			List<BiospecimenCustomFieldData> bscfData = new ArrayList<BiospecimenCustomFieldData>(0);
 
 			HashMap<String, ExtractionVO> hashOfBiospecimenCustomData = allTheData.getBiocollectionCustomData();
@@ -3799,15 +3817,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 				hashOfBiospecimenCustomData.put(biospecimen.getBiospecimenUid(), sev);
 			}
-	*/		
+			
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenData, FieldCategory.BIOSPECIMEN_FIELD);
-		//	prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenCustomData, FieldCategory.BIOSPECIMEN_CFD);
-		
-			//ALL CSV CREATION WILL OCCUR AFTER the finalization of all data collection and once our big file is finalized as filtering happens in between
-	//		createSubjectDemographicCSV(search, allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
-	//		createBiospecimenCSV(search, allTheData.getBiospecimenData(), FieldCategory.BIOSPECIMEN_FIELD);
-	//		createBiocollectionCSV(search, allTheData.getBiocollectionData(), FieldCategory.BIOCOLLECTION_FIELD);
-	//		createBiospecimenDataCustomCSV(search, hashOfBiospecimenCustomData, FieldCategory.BIOSPECIMEN_CFD);
+			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenCustomData, FieldCategory.BIOSPECIMEN_CFD);
+			
+			//iDataExtractionDao.createSubjectDemographicCSV(search, allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
+			//iDataExtractionDao.createBiospecimenCSV(search, allTheData.getBiospecimenData(), FieldCategory.BIOSPECIMEN_FIELD);
+			//iDataExtractionDao.createBiocollectionCSV(search, allTheData.getBiocollectionData(), FieldCategory.BIOCOLLECTION_FIELD);
+			//iDataExtractionDao.createBiospecimenDataCustomCSV(search, hashOfBiospecimenCustomData, FieldCategory.BIOSPECIMEN_CFD);
 		}
 	}
 
@@ -3876,184 +3893,61 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 	 */
-	
-	/**
-	 * Simple export to CSV as first cut
-	 */
-	private File createSubjectDemographicCSV(Search search, HashMap<String, ExtractionVO> hashOfSubjectsWithData, FieldCategory fieldCategory) {
-		final String tempDir = System.getProperty("java.io.tmpdir");
-		String filename = new String("SUBJECTDEMOGRAPHICS.csv");
-		final java.io.File file = new File(tempDir, filename);
-		if(filename == null || filename.isEmpty()) {
-			filename = "exportcsv.csv";
-		}
-		OutputStream outputStream;
-		try {
-			outputStream = new FileOutputStream(file);
-			CsvWriter csv = new CsvWriter(outputStream);
-
-			// Header
-			csv.write("SUBJECTUID");
-			for (DemographicFieldSearch dfs : search.getDemographicFieldsToReturn()) {
-				csv.write(dfs.getDemographicField().getPublicFieldName());
-			}
-			csv.endLine();
-			
-			for (String subjectUID : hashOfSubjectsWithData.keySet()) {
-				csv.write(subjectUID);
-				
-				for (DemographicFieldSearch dfs : search.getDemographicFieldsToReturn()) {
-					HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
-					csv.write(keyValues.get(dfs.getDemographicField().getPublicFieldName()));
-				}
-				csv.endLine();
-			}
-			csv.close();
-		}
-		catch (FileNotFoundException e) {
-			log.error(e.getMessage());
-		}
-		
-		return file;
+	public SearchPayload createSearchPayload(byte[] bytes) {
+		SearchPayload payload = new SearchPayload(bytes);
+		getSession().save(payload);
+		getSession().flush();
+		getSession().refresh(payload);
+		return payload;
 	}
 	
-	/**
-	 * 
-	 * Simple export to CSV as Biocollection Data
-	 * 
-	 */
-	private File createBiocollectionCSV(Search search, HashMap<String, ExtractionVO> hashOfBiocollectionsWithData, FieldCategory fieldCategory) {
-		final String tempDir = System.getProperty("java.io.tmpdir");
-		String filename = new String("BIOCOLLECTION.csv");
-		final java.io.File file = new File(tempDir, filename);
-		if(filename == null || filename.isEmpty()) {
-			filename = "exportBiocollectioncsv.csv";
-		}
-		OutputStream outputStream;
-		try {
-			outputStream = new FileOutputStream(file);
-			CsvWriter csv = new CsvWriter(outputStream);
-
-			// Header
-			csv.write("BIOCOLLECTIONUID");
-			for (BiocollectionFieldSearch bcfs : search.getBiocollectionFieldsToReturn()) {
-				csv.write(bcfs.getBiocollectionField().getPublicFieldName());
-			}
-			csv.endLine();
-			
-			for (String biocollectionUID : hashOfBiocollectionsWithData.keySet()) {
-				csv.write(biocollectionUID);
-				
-				for (BiocollectionFieldSearch bcfs : search.getBiocollectionFieldsToReturn()) {
-					HashMap<String, String> keyValues = hashOfBiocollectionsWithData.get(biocollectionUID).getKeyValues();
-					csv.write(keyValues.get(bcfs.getBiocollectionField().getPublicFieldName()));
-				}
-				csv.endLine();
-			}
-			csv.close();
-		}
-		catch (FileNotFoundException e) {
-			log.error(e.getMessage());
-		}
-		
-		return file;
-	}
-	
-	/**
-	 * 
-	 * Simple export to CSV as Biospecimen Data
-	 * 
-	 */
-	private File createBiospecimenCSV(Search search, HashMap<String, ExtractionVO> hashOfBiospecimensWithData, FieldCategory fieldCategory) {
-		final String tempDir = System.getProperty("java.io.tmpdir");
-		String filename = new String("BIOSPECIMEN.csv");
-		final java.io.File file = new File(tempDir, filename);
-		if(filename == null || filename.isEmpty()) {
-			filename = "exportBiospecimencsv.csv";
-		}
-		OutputStream outputStream;
-		try {
-			outputStream = new FileOutputStream(file);
-			CsvWriter csv = new CsvWriter(outputStream);
-
-			// Header
-			csv.write("BIOSPECIMENUID");
-			for (BiospecimenFieldSearch bsfs : search.getBiospecimenFieldsToReturn()) {
-				csv.write(bsfs.getBiospecimenField().getPublicFieldName());
-			}
-			csv.endLine();
-			
-			for (String biospecimenUID : hashOfBiospecimensWithData.keySet()) {
-				csv.write(biospecimenUID);
-				
-				for (BiospecimenFieldSearch bsfs : search.getBiospecimenFieldsToReturn()) {
-					HashMap<String, String> keyValues = hashOfBiospecimensWithData.get(biospecimenUID).getKeyValues();
-					csv.write(keyValues.get(bsfs.getBiospecimenField().getPublicFieldName()));
-				}
-				csv.endLine();
-			}
-			csv.close();
-		}
-		catch (FileNotFoundException e) {
-			log.error(e.getMessage());
-		}
-		
-		return file;
-	}
-	
-	private File createBiospecimenDataCustomCSV(Search search, HashMap<String, ExtractionVO> hashOfBiospecimenCustomData, FieldCategory fieldCategory) {
-		log.info(" writing out biospecimenCustomData " + hashOfBiospecimenCustomData.size() + " entries for category '" + fieldCategory + "'");
-		
-		final String tempDir = System.getProperty("java.io.tmpdir");
-		String filename = new String("BIOSPECIMENCUSTOMDATA.csv");
-		final java.io.File file = new File(tempDir, filename);
-		if(filename == null || filename.isEmpty()) {
-			filename = "exportBiospecimenCustomcsv.csv";
-		}
-		OutputStream outputStream;
-		try {
-			outputStream = new FileOutputStream(file);
-			CsvWriter csv = new CsvWriter(outputStream);
-
-			csv.write("SUBJECTUID");
-			
-			// Header
-			
-			for (String key : hashOfBiospecimenCustomData.keySet()) {
-				HashMap<String, String> keyValues = hashOfBiospecimenCustomData.get(key).getKeyValues();
-				for(String key2 : keyValues.keySet()){
-					csv.write(key2);
-				}
-				break;
-			}
-			csv.endLine();
-			
-			for (String subjectUID : hashOfBiospecimenCustomData.keySet()) {
-				HashMap<String, String> keyValues = hashOfBiospecimenCustomData.get(subjectUID).getKeyValues();
-				for (String key : keyValues.keySet()) {
-					csv.write(keyValues.get(keyValues.get(key)));
-				}
-				csv.endLine();
-			}
-			csv.close();
-		}
-		catch (FileNotFoundException e) {
-			log.error(e.getMessage());
-		}
-		
-		return file;
-	}
-
-	@Override
 	public SearchPayload getSearchPayloadForSearchResult(SearchResult searchResult) {
 		getSession().refresh(searchResult);
 		return searchResult.getSearchPayload();
 	}
 
-	@Override
 	public List<SearchResult> getSearchResultList(Long searchResultId) {
 		Criteria criteria = getSession().createCriteria(SearchResult.class);
-		criteria.add(Restrictions.eq("id",searchResultId));
+		criteria.add(Restrictions.eq("search.id",searchResultId));
 		return criteria.list();
+	}
+	
+	public void createSearchResult(SearchResult searchResult) {
+		getSession().saveOrUpdate(searchResult);
+	}
+	
+	public void createSearchResult(Search search, File file) {
+		try {
+			SearchResult sr = new SearchResult();
+			sr.setSearch(search);
+			sr.setFilename(file.getName());
+			String fileFormatName = file.getName().substring(file.getName().lastIndexOf('.') + 1).toUpperCase();
+			sr.setFileFormat(getFileFormatByName(fileFormatName));
+			sr.setStartTime(new Date(System.currentTimeMillis()));
+			sr.setDelimiterType(getDelimiterTypeByDelimiterChar(','));
+			byte[] bytes = org.apache.commons.io.FileUtils.readFileToByteArray(file);
+			sr.setChecksum(DigestUtils.md5DigestAsHex(bytes));
+			sr.setSearchPayload(createSearchPayload(bytes));
+			sr.setUserId(SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString());
+			createSearchResult(sr);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void deleteSearchResult(SearchResult searchResult) {
+		getSession().delete(searchResult);
+	}
+	
+	public static String getHex(byte[] raw) {
+		if (raw == null) {
+			return null;
+		}
+		final StringBuilder hex = new StringBuilder(2 * raw.length);
+		for (final byte b : raw) {
+			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+		}
+		return hex.toString();
 	}
 }
