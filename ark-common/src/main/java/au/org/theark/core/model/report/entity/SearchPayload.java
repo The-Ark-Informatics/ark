@@ -26,13 +26,14 @@ import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import au.org.theark.core.Constants;
+import au.org.theark.core.model.Constants;
+
 
 /**
  * Person entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "SEARCH_PAYLOAD", schema = Constants.STUDY_SCHEMA)
+@Table(name = "SEARCH_PAYLOAD", schema = Constants.REPORT_SCHEMA)
 public class SearchPayload implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
