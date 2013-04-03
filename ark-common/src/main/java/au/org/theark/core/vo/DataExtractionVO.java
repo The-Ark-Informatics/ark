@@ -1,27 +1,22 @@
 package au.org.theark.core.vo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import au.org.theark.core.model.lims.entity.BioCollection;
-import au.org.theark.core.model.lims.entity.Biospecimen;
 
 public class DataExtractionVO {
 	private HashMap<String, ExtractionVO> demographicData = new HashMap<String, ExtractionVO>();
 	private HashMap<String, ExtractionVO> biocollectionData = new HashMap<String, ExtractionVO>();
 	private HashMap<String, ExtractionVO> biospecimenData = new HashMap<String, ExtractionVO>();
-	private List<BioCollection> biocollections = new ArrayList<BioCollection>();
-	private List<Biospecimen> biospecimens = new ArrayList<Biospecimen>();
+//	private List<BioCollection> biocollections = new ArrayList<BioCollection>();
+//	private List<Biospecimen> biospecimens = new ArrayList<Biospecimen>();
 	//maybe it needs something more like above
 																//but if we just order/group by subject uid its should be fine
 
 	public HashMap<String, ExtractionVO> getDemographicData() {
-		return biospecimenData;
+		return demographicData;
 	}
 
 	public void setDemographicData(HashMap<String, ExtractionVO> subjectAndData) {
-		this.biospecimenData = subjectAndData;
+		this.demographicData = subjectAndData;
 	}
 	
 
@@ -33,23 +28,6 @@ public class DataExtractionVO {
 
 	public void setSubjectCustomData(HashMap<String, ExtractionVO> subjectCustomData) {
 		this.subjectCustomData = subjectCustomData;
-	}
-
-	public void setBiospecimens(List<Biospecimen> biospecimens) {
-		this.biospecimens = biospecimens;
-	}
-
-	public List<Biospecimen> getBiospecimens() {
-		return this.biospecimens;
-	}
-
-
-	public void setBiocollections(List<BioCollection> biocollections) {
-		this.biocollections = biocollections;
-	}
-
-	public List<BioCollection> getBiocollections() {
-		return this.biocollections;
 	}
 
 	public HashMap<String, ExtractionVO> getBiocollectionData() {
