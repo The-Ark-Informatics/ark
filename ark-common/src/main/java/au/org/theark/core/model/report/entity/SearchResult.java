@@ -42,14 +42,6 @@ public class SearchResult  implements java.io.Serializable {
 	private Date startTime;
 	private Date finishTime;
 	private SearchPayload searchPayload;
-	
-	public SearchResult(Long id, FileFormat fileFormat, DelimiterType delimiterType,
-			String filename, byte[] uploadReport, ArkFunction arkFunction) {
-		this.id = id;
-		this.fileFormat = fileFormat;
-		this.delimiterType = delimiterType;
-		this.filename = filename;
-	}
 
 	@Id
 	@SequenceGenerator(name = "SearchResult_Gen", sequenceName = "SEARCH_RESULT_SEQ")
@@ -73,6 +65,8 @@ public class SearchResult  implements java.io.Serializable {
 	/**
 	 * @return the search
 	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SEARCH_ID", nullable = false)
 	public Search getSearch() {
 		return search;
 	}
