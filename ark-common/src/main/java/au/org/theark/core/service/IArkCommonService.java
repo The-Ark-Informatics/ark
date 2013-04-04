@@ -80,6 +80,7 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -791,5 +792,7 @@ public interface IArkCommonService<T> {
 	public SearchPayload getSearchPayloadForSearchResult(SearchResult searchResult);
 
 	public List<SearchResult> getSearchResultList(Long searchResultId);
+	
+	public List<Relationship> getFamilyRelationships();
 	
 }

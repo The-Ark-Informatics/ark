@@ -111,6 +111,7 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -1379,5 +1380,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Override
 	public List<SearchResult> getSearchResultList(Long searchResultId) {
 		return studyDao.getSearchResultList(searchResultId);
+	}
+	
+	public List<Relationship> getFamilyRelationships(){
+		return studyDao.getFamilyRelationships();
 	}
 }

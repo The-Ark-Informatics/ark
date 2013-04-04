@@ -82,6 +82,7 @@ import au.org.theark.core.model.study.entity.UploadStatus;
 import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
+import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
@@ -705,4 +706,6 @@ public interface IStudyDao {
 	public List<SearchResult> getSearchResultList(Long searchResultId);
 	
 	public SearchPayload createSearchPayload(byte[] bytes);
+
+	public List<Relationship> getFamilyRelationships();
 }
