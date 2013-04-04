@@ -2028,10 +2028,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			//now filter previous data from the further filtering steps each time.  First time not necessary just assign uids
 			// CREATE CSVs
-			createSearchResult(search, iDataExtractionDao.createSubjectDemographicCSV(search, allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD));
-			createSearchResult(search, iDataExtractionDao.createBiospecimenCSV(search, allTheData.getBiospecimenData(), FieldCategory.BIOSPECIMEN_FIELD));
-			createSearchResult(search, iDataExtractionDao.createBiocollectionCSV(search, allTheData.getBiocollectionData(), FieldCategory.BIOCOLLECTION_FIELD));
-			createSearchResult(search, iDataExtractionDao.createBiospecimenDataCustomCSV(search, allTheData.getBiospecimenCustomData(), FieldCategory.BIOSPECIMEN_CFD));
+			
+			SearchResult searchResult = new SearchResult();
+			searchResult.setSearch(search);
+			Criteria criteria = getSession().createCriteria(SearchResult.class);
+			criteria.add(Restrictions.eq("search", search));
+			List<SearchResult> searchResults = criteria.list();
+			for (SearchResult sr : searchResults) {
+				deleteSearchResult(sr);
+			}
+			
+			createSearchResult(search, iDataExtractionDao.createSubjectDemographicCSV(search, allTheData, scfds, FieldCategory.DEMOGRAPHIC_FIELD));
+			createSearchResult(search, iDataExtractionDao.createBiospecimenCSV(search, allTheData, bscfds, FieldCategory.BIOSPECIMEN_FIELD));
+			createSearchResult(search, iDataExtractionDao.createBiocollectionCSV(search, allTheData, bccfds, FieldCategory.BIOCOLLECTION_FIELD));
+			//createSearchResult(search, iDataExtractionDao.createBiospecimenDataCustomCSV(search, allTheData, FieldCategory.BIOSPECIMEN_CFD));
 		}
 	}
 
@@ -3650,6 +3660,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//List<SubjectCustomFieldData> scfData = getCustomFieldDataFor(subjectCFDs, subjects); // todo add orderby SUBJECT... or alterative method with
 																
 			List<SubjectCustomFieldData> scfData = new ArrayList<SubjectCustomFieldData>(0);
+				scfData = getCustomFieldDataFor(subjectCFDs, subjects);
+			
 			// order by to help us keeping track of subjects
 			//log.info("we got " + scfData.size());
 			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirSubjectCustomData = allTheData.getSubjectCustomData();
@@ -3687,6 +3699,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			 * this is just logging to see if things work
 			 */
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
+
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirSubjectCustomData, FieldCategory.SUBJECT_CFD);
 			
 			//iDataExtractionDao.createSubjectDemographicCSV(search, hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
@@ -3757,8 +3770,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			//prettyLoggingOfWhatIsInOurMegaObject(hashOfBiocollectionData, FieldCategory.BIOCOLLECTION_FIELD);
 			//prettyLoggingOfWhatIsInOurMegaObject(hashOfBioCollectionCustomData, FieldCategory.BIOCOLLECTION_CFD);
-			
-			//iDataExtractionDao.createBiocollectionCSV(search, hashOfBiocollectionData, FieldCategory.BIOCOLLECTION_FIELD);
+
 		}
 	}
 
@@ -3931,6 +3943,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public void createSearchResult(Search search, File file) {
+		
+		
 		try {
 			SearchResult sr = new SearchResult();
 			sr.setSearch(search);
