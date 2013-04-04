@@ -1877,35 +1877,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return query.list();
 	}
 
-	/*
-	 * @param search
-	 * @param explicitReadOnly    - if true, will try to set to readonly ELSE false
-	 * @return
-	 *         public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean explicitReadOnly) {
-	 *         String queryString = "select dfs.demographicField " + " from DemographicFieldSearch dfs " + " where dfs.search=:search "; Query query =
-	 *         getSession().createQuery(queryString); query.setParameter("search", search); query.setReadOnly(explicitReadOnly);
-	 *         return query.list(); }
-	 */
-	/*
-	 * @param search
-	 * @param explicitReadOnly- if true, will try to set to readonly ELSE false
-	 * @return
-	 *         public Collection<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search, boolean explicitReadOnly) {
-	 *         String queryString = "select dfs.BiospecimenField " + " from BiospecimenFieldSearch dfs " + " where dfs.search=:search "; Query query =
-	 *         getSession().createQuery(queryString); query.setParameter("search", search); query.setReadOnly(explicitReadOnly);
-	 *         return query.list(); }
-	 */
-	/*
-	 * @param search
-	 * @param explicitReadOnly - if true, will try to set to readonly ELSE false
-	 * @return
-	 *         public Collection<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search, boolean explicitReadOnly) {
-	 *         String queryString = "select dfs.BiocollectionField " + " from BiocollectionFieldSearch dfs " + " where dfs.search=:search "; Query
-	 *         query = getSession().createQuery(queryString); query.setParameter("search", search); query.setReadOnly(explicitReadOnly);
-	 *         return query.list(); }
-	 */
-
-
 	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search) {
 		String queryString = "select cfds.customFieldDisplay " + " from CustomFieldDisplaySearch cfds " + " where cfds.search=:search "
 				+ " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction ";// +
@@ -2272,11 +2243,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return idsToInclude;
 	}	
 	
-	
-	
-
-
-
 	/**
 	 * @param allTheData - reference to the object containing our data collected so far, this is to be updated as we continue our refinement.
 	 * @param search 
@@ -2376,9 +2342,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}		
 		return idsToInclude;
 	}	
-	
-	
-	
+
 	
 	/**
 	 * @param allTheDataz
@@ -2480,10 +2444,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return uidsToInclude;
 		}
 	}	
-	
 	*/
-	
-	
+
 
 	
 	private List<Long> getSubjectIdsForBiospecimenIds(List<Long> biospecimenIdsToInclude) {
@@ -2592,11 +2554,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		else{
 			return uidsToInclude;
 		}
-	}	
-	
-	
-		
-	
+	}
 
 	
 	/**
@@ -2663,8 +2621,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
 					}
 				}
-			
-			
+					
 			}
 			//finalize the last entered key value sets/extraction VOs
 			if(map!=null && phenoCollectionId==-1){
@@ -2700,9 +2657,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}	
 	
-	
-	
-	
+
 	/**
 	 * TODO : Chris, please note that we have to complete the hardcoding below after Thileana finishes his insert statements for demographic field.
 	 * Alternatively you have reflection to deal with which may be a bit of a nightmare but less lines of code...but completely your call.
