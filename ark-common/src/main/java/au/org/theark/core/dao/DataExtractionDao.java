@@ -26,6 +26,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.slf4j.Logger;
@@ -90,22 +91,36 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 					csv.write(keyValues.get(dfs.getDemographicField().getPublicFieldName()));
 				}
 				
+				/**
+				 * for (String subjectUID : hashOfSubjectsWithData.keySet()) {
+					HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
+					log.info(subjectUID + " has " + keyValues.size() + "demo fields"); 
+					// remove(subjectUID).getKeyValues().size() + "demo fields");
+					for (String key : keyValues.keySet()) {
+						log.info("     key=" + key + "\t   value=" + keyValues.get(key));
+					}
+				}
+				 */
+				ExtractionVO evo = hashOfSubjectCustomData.get(subjectUID);
+				HashMap<String, String> keyValues = evo.getKeyValues();
 				for(CustomFieldDisplay cfd : cfds) {
-					HashMap<String, String> keyValues = hashOfSubjectCustomData.get(subjectUID).getKeyValues();
-					if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+					
+					String valueResult = keyValues.get(cfd.getCustomField().getName());
+					if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
 						DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 						dateFormat.setLenient(false);
 						try {
-							String date = dateFormat.format(dateFormat.parse(keyValues.get(cfd.getCustomField().getName())));
+							String date = dateFormat.format(dateFormat.parse(valueResult));
+							Date date2 = dateFormat.parse(valueResult);
 							csv.write(date);
 						}
 						catch (ParseException e) {
-							csv.write(keyValues.get(cfd.getCustomField().getName()));
+							csv.write(valueResult);
 						}
-						csv.write(keyValues.get(cfd.getCustomField().getName()));
+						//csv.write(keyValue);
 					}
 					else {
-						csv.write(keyValues.get(cfd.getCustomField().getName()));
+						csv.write(valueResult);
 					}
 				}
 				
@@ -161,20 +176,21 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 				
 				for(CustomFieldDisplay cfd : cfds) {
 					HashMap<String, String> keyValues = hashOfBiocollectionCustomData.get(biocollectionUID).getKeyValues();
-					if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+					String keyValue = keyValues.get(cfd.getCustomField().getName());
+					if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && keyValue != null) {
 						DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 						dateFormat.setLenient(false);
 						try {
-							String date = dateFormat.format(dateFormat.parse(keyValues.get(cfd.getCustomField().getName())));
+							String date = dateFormat.format(dateFormat.parse(keyValue));
 							csv.write(date);
 						}
 						catch (ParseException e) {
-							csv.write(keyValues.get(cfd.getCustomField().getName()));
+							csv.write(keyValue);
 						}
-						csv.write(keyValues.get(cfd.getCustomField().getName()));
+						csv.write(keyValue);
 					}
 					else {
-						csv.write(keyValues.get(cfd.getCustomField().getName()));
+						csv.write(keyValue);
 					}
 				}
 				csv.endLine();
@@ -226,20 +242,21 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 				for(CustomFieldDisplay cfd : cfds) {
 					HashMap<String, String> keyValues = hashOfBiospecimensWithData.get(biospecimenUID).getKeyValues();
 					
-					if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+					String keyValue = keyValues.get(cfd.getCustomField().getName());
+					if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && keyValue != null) {
 						DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 						dateFormat.setLenient(false);
 						try {
-							String date = dateFormat.format(dateFormat.parse(keyValues.get(cfd.getCustomField().getName())));
+							String date = dateFormat.format(dateFormat.parse(keyValue));
 							csv.write(date);
 						}
 						catch (ParseException e) {
-							csv.write(keyValues.get(cfd.getCustomField().getName()));
+							csv.write(keyValue);
 						}
-						csv.write(keyValues.get(cfd.getCustomField().getName()));
+						csv.write(keyValue);
 					}
 					else {
-						csv.write(keyValues.get(cfd.getCustomField().getName()));
+						csv.write(keyValue);
 					}
 				}
 				csv.endLine();
