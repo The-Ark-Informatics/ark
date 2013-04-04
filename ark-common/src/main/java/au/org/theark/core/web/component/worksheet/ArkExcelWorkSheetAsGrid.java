@@ -147,6 +147,23 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		initialiseGrid();
 		initialiseGridKey(fileUpload, uploadType);
 	}
+	
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, int rowsToDisplay, UploadType uploadType,boolean header) {
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.updateRows = new HashSet<Integer>();
+		this.insertRows = new HashSet<Integer>();
+		this.insertCells = new HashSet<ArkGridCell>();
+		this.updateCells = new HashSet<ArkGridCell>();
+		this.warningCells = new HashSet<ArkGridCell>();
+		this.errorCells = new HashSet<ArkGridCell>();
+		this.fileFormat = fileFormat;
+		this.rowsToDisplay = rowsToDisplay;
+		this.uploadType = uploadType;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid(header);
+		initialiseGridKey(fileUpload, uploadType);
+	}
 
 	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> updateRows, HashSet<ArkGridCell> errorCells, UploadType uploadType) {
 		super(id);
@@ -282,6 +299,16 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		add(createHeadings());
 		add(createMainGrid());
 	}
+	
+	private void initialiseGrid(boolean header) {
+		add(new Label("rowsToDisplay", rowsToDisplay + " rows of file"));
+		if(header){
+			add(createHeadings());
+		}else{
+			add(createEmptyHeadings());
+		}
+		add(createMainGrid(header));
+	}
 
 	@SuppressWarnings( { "unchecked" })
 	private Loop createHeadings() {
@@ -311,6 +338,34 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 			}
 		};
 	}
+	
+	private Loop createEmptyHeadings(){
+		return new Loop("heading", new PropertyModel(sheetMetaData, "cols")) {
+
+
+			private static final long	serialVersionUID	= -7027878243061138904L;
+
+			public void populateItem(LoopItem item) {
+//				final int col = item.getIndex();
+
+				/*
+				 * this model used for Label component gets data from cell instance Because we are interacting directly with the sheet instance which gets
+				 * updated each time we upload a new Excel File, the value for each cell is automatically updated
+				 */
+//				IModel<Object> model = new Model() {
+//					private static final long	serialVersionUID	= 1144128566137457199L;
+//
+//					@Override
+//					public Serializable getObject() {
+//						Cell cell = sheet.getCell(col, 0);
+//						return cell.getContents();
+//					}
+//				};
+				Label cellData = new Label("cellHead", "");
+				item.add(cellData);
+			}
+		};
+	}
 
 	/*
 	 * generating rows using the Loop class and the PropertyModel with SheetMetaData instance works magicWe bound the numbers of rows stored in
@@ -332,6 +387,106 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 				}
 
 				if (row > 0 && row <= rowsToDisplay) {
+					// creates the row numbers
+					item.add(new Label("rowNo", new Model(String.valueOf(row))));
+
+					// We create an inner Loop instance and uses PropertyModel to bind the Loop iteration to ExcelMetaData "cols" value
+					item.add(new Loop("cols", new PropertyModel<Integer>(sheetMetaData, "cols")) {
+						@Override
+						public void populateItem(LoopItem item) {
+							final int col = item.getIndex();
+							/*
+							 * this model used for Label component gets data from cell instance Because we are interacting directly with the sheet instance
+							 * which gets updated each time we upload a new Excel File, the value for each cell is automatically updated
+							 */
+							IModel<Object> model = new Model() {
+								/**
+								 * 
+								 */
+								private static final long	serialVersionUID	= 1144128566137457199L;
+
+								@Override
+								public Serializable getObject() {
+									Cell cell = sheet.getCell(col, row);
+									
+									if(cell instanceof DateCell) {
+										DateCell dc = (DateCell) cell;
+									   Date d = dc.getDate();
+									   return (sdf.format(d));
+									}
+									
+									return cell.getContents();
+								}
+							};
+							Label cellData = new Label("cellData", model);
+							item.add(cellData);
+
+							ArkGridCell cell = new ArkGridCell(col, row);
+							if (errorCells.contains(cell)) {
+								item.add(errorCellBehavior);
+							}
+							else if (warningCells.contains(cell)) {
+								item.add(warningCellBehavior);
+							}
+							else if (updateCells.contains(cell)) {
+								item.add(updateCellBehavior);
+							}
+							else if (insertCells.contains(cell)) {
+								item.add(insertCellBehavior);
+							}
+						}
+					});
+				}
+				else {
+					item.add(new Label("rowNo", new Model("")));
+					item.setVisible(false);
+					item.add(new Loop("cols", new PropertyModel(sheetMetaData, "cols")) {
+						@Override
+						protected void populateItem(LoopItem item) {
+							Label cellData = new Label("cellData", new Model(""));
+							item.add(cellData);
+							
+						}
+					});
+					item.setVisible(false);
+				}
+			}
+
+			/**
+			 * Determines whether row data is an insert or an update and amends the css of the 
+			 * accordingly
+			 * <tr>
+			 * @param cell
+			 */
+			private void setRowCssStyle(Integer row, LoopItem item) {
+				if (updateRows.contains(row)) {
+					item.add(updateCellBehavior);
+				}
+				else {
+					item.add(insertCellBehavior);
+				}
+
+			}
+		};
+	}
+	
+	@SuppressWarnings( { "serial", "unchecked" })
+	private Loop createMainGrid(final boolean header) {
+		
+		// We create a Loop instance and uses PropertyModel to bind the Loop iteration to ExcelMetaData "rows" value
+		return new Loop("rows", new PropertyModel(sheetMetaData, "rows")) {
+			
+			@Override
+			public void populateItem(LoopItem item) {
+				
+				final int row = item.getIndex();
+
+				if (!insertRows.isEmpty() || !updateRows.isEmpty()) {
+					setRowCssStyle(row, item);
+				}
+
+				if ((header && row > 0 && row <= rowsToDisplay)
+						|| (!header && row <= rowsToDisplay)) {
 					// creates the row numbers
 					item.add(new Label("rowNo", new Model(String.valueOf(row))));
 
