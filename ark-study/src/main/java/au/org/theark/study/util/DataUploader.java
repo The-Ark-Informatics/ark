@@ -57,6 +57,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
@@ -65,6 +66,7 @@ import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -1540,6 +1542,126 @@ public class DataUploader {
 				
 		try{
 			iStudyService.processSubjectConsentBatch(consentFieldsToUpdate, consentFieldsToInsert);
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new ArkSystemException(e.getMessage());
+		}
+	
+		return uploadReport;
+	}
+	
+	
+	public StringBuffer uploadAndReportPedigreeDataFile(InputStream inputStream, long size, String fileFormat, char delimChar) throws FileFormatException,ArkSystemException {
+		uploadReport = new StringBuffer();
+		long rowCount = 0;
+		long insertFieldsCount=0;
+		long updateFieldsCount=0;
+		
+		List<LinkSubjectPedigree> relationships = new ArrayList<LinkSubjectPedigree>();
+		
+		delimiterCharacter = delimChar;
+		
+		InputStreamReader inputStreamReader = null;
+		CsvReader csvReader = null;
+		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		
+		try{
+			inputStreamReader = new InputStreamReader(inputStream);
+			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+//			csvReader.readHeaders();
+			String[] stringLineArray;
+			
+			List<Relationship> familyRelationships = iArkCommonService.getFamilyRelationships();
+			HashMap<String,Relationship> relationshipMap = new HashMap<String, Relationship>();
+			for(Relationship relationship : familyRelationships){
+				relationshipMap.put(relationship.getName(), relationship);
+			}
+			
+			while (csvReader.readRecord()) {	
+				++rowCount;
+				int index =0;
+				stringLineArray = csvReader.getValues();
+				String familyId   = stringLineArray[index++];
+				String subjectUID = stringLineArray[index++];
+				String fatherUID = stringLineArray[index++];
+				String motherUID = stringLineArray[index++];		
+				
+				LinkSubjectStudy subjectUser = iArkCommonService.getSubjectByUID(subjectUID, study);
+				int parentCount = 0;
+				
+				if(fatherUID != null && !fatherUID.equalsIgnoreCase("0") ){
+					LinkSubjectPedigree father = new LinkSubjectPedigree();
+					father.setFamilyId(Integer.parseInt(familyId));
+					father.setSubject(subjectUser);
+					father.setRelationship(relationshipMap.get("Father"));
+					LinkSubjectStudy fatherUser = iArkCommonService.getSubjectByUID(fatherUID, study);
+					father.setRelative(fatherUser);
+					relationships.add(father);
+					++parentCount;
+				}
+				
+				if(motherUID !=null && !motherUID.equalsIgnoreCase("0")){
+					LinkSubjectPedigree mother = new LinkSubjectPedigree();
+					mother.setFamilyId(Integer.parseInt(familyId));
+					mother.setSubject(subjectUser);
+					mother.setRelationship(relationshipMap.get("Mother"));
+					LinkSubjectStudy motherUser = iArkCommonService.getSubjectByUID(motherUID, study);
+					mother.setRelative(motherUser);
+					relationships.add(mother);
+					++parentCount;
+				}
+				
+				if(parentCount == 0){
+					LinkSubjectPedigree parent = new LinkSubjectPedigree();
+					parent.setFamilyId(Integer.parseInt(familyId));
+					parent.setSubject(subjectUser);
+					parent.setRelationship(null);
+					parent.setRelative(null);
+					relationships.add(parent);
+				}
+			}	
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new ArkSystemException(e.getMessage());
+		}
+		finally{
+			uploadReport.append("Total file size: ");
+			uploadReport.append(decimalFormat.format(size / 1024.0 / 1024.0));
+			uploadReport.append(" MB");
+			uploadReport.append("\n");
+
+			if (csvReader != null) {
+				try {
+					csvReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}
+			}
+		}
+
+		uploadReport.append("Process ");
+		uploadReport.append(rowCount);
+		uploadReport.append(" rows of data");
+		uploadReport.append("\n");
+
+		uploadReport.append(insertFieldsCount);
+		uploadReport.append(" fields were inserted.");
+		uploadReport.append("\n");
+		uploadReport.append(updateFieldsCount);
+		uploadReport.append(" fields were updated.");
+		uploadReport.append("\n");
+				
+		try{
+			iStudyService.processPedigreeBatch(relationships);
 		}catch(Exception e){
 			e.printStackTrace();
 			throw new ArkSystemException(e.getMessage());

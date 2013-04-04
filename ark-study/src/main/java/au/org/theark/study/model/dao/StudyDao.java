@@ -78,6 +78,7 @@ import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
+import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
@@ -197,6 +198,27 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		session.flush();
 		session.clear();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void processPedigreeBatch(List<LinkSubjectPedigree> fieldsToInsert) {
+		Session session = getSession();
+		int count = 0;
+		for(LinkSubjectPedigree dataToInsert : fieldsToInsert){
+			session.save(dataToInsert);
+			count++;
+			//based on recommended hibernate practice of	<prop key="hibernate.jdbc.batch_size">50</prop>
+			if(count%50==0){	
+				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
+				session.flush();
+				session.clear();
+			}
+		}
+		session.flush();
+		session.clear();
+		
 	}
 	
 	public void create(Study study, ArkUserVO arkUserVo, Collection<ArkModule> selectedModules) {
