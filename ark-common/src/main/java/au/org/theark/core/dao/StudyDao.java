@@ -2291,7 +2291,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			query2.setParameterList("customFieldsList", customFieldToGet);
 		
 			List<BiospecimenCustomFieldData> scfData = query2.list();
-			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirBiospecimenCustomData = allTheData.getBiospecimenCustomData();
+			HashMap<String, ExtractionVO> hashOfBiospecimensWithTheirBiospecimenCustomData = allTheData.getBiospecimenCustomData();
 
 			ExtractionVO valuesForThisLss = new ExtractionVO();
 			HashMap<String, String> map = null;
@@ -2309,7 +2309,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				else{	//if its a new LSS finalize previous map, etc
 					valuesForThisLss.setKeyValues(map);
 					previousBiospecimenId = data.getBiospecimen().getId();
-					hashOfSubjectsWithTheirBiospecimenCustomData.put(previousBiospecimenId.toString(), valuesForThisLss);	
+					hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenId.toString(), valuesForThisLss);	
 					map = new HashMap<String, String>();//reset
 				}
 
@@ -2334,11 +2334,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//finalize the last entered key value sets/extraction VOs
 			if(map!=null && previousBiospecimenId!=null){
 				valuesForThisLss.setKeyValues(map);
-				hashOfSubjectsWithTheirBiospecimenCustomData.put(previousBiospecimenId.toString(), valuesForThisLss);
+				hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenId.toString(), valuesForThisLss);
 			}
 			
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
-			allTheData.setBiospecimenCustomData(hashOfSubjectsWithTheirBiospecimenCustomData);
+			allTheData.setBiospecimenCustomData(hashOfBiospecimensWithTheirBiospecimenCustomData);
 		}		
 		return idsToInclude;
 	}	
@@ -2896,13 +2896,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				if(bioCollection.getPathlabno()!=null){
 					map.put(field.getPublicFieldName(), bioCollection.getPathlabno());
 				}
-			}
-			
+			}			
 		}
-		
-		
-		return map;
-		
+		return map;		
 	}
 		
 	private HashMap<String, String> constructKeyValueHashmap(Biospecimen biospecimen, Collection<BiospecimenField> biospecimenFields) {
