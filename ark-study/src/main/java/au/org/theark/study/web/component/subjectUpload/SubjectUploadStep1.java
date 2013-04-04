@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -72,7 +73,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 
 	@SuppressWarnings( { "unchecked" })
 	private void initialiseDropDownChoices() {
-		java.util.Collection<DelimiterType> delimiterTypeCollection = iArkCommonService.getDelimiterTypes();
+		final java.util.Collection<DelimiterType> delimiterTypeCollection = iArkCommonService.getDelimiterTypes();
 		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.study.web.Constants.DELIMITER_TYPE_ID);
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
 		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
@@ -80,6 +81,34 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		java.util.Collection<UploadType> uploadTypeCollection = iArkCommonService.getUploadTypesForSubject();
 		ChoiceRenderer uploadTypeRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.UPLOAD_TYPE_NAME, au.org.theark.study.web.Constants.UPLOAD_TYPE_ID);
 		uploadTypeDdc = new DropDownChoice<UploadType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_UPLOAD_TYPE, (List) uploadTypeCollection, uploadTypeRenderer);
+		uploadTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+		    @Override
+		    protected void onUpdate(AjaxRequestTarget target) {
+		   	UploadType uploadType = uploadTypeDdc.getModelObject();
+		   	
+		   	DelimiterType tabtype =null;
+		   	DelimiterType commatype =null;
+		   	for(DelimiterType type : delimiterTypeCollection){
+		   		if("TAB".equalsIgnoreCase(type.getName())){
+		   			tabtype=type;
+		   		}
+		   		else if("COMMA".equalsIgnoreCase(type.getName())){
+		   			commatype=type;
+		   		}
+		   	}
+		    	if (uploadType != null && 
+		    			au.org.theark.study.web.Constants.PEDIGREE_DATA.equals(uploadType.getName())) {
+		    		
+		    		delimiterTypeDdc.setModelObject(tabtype);
+		    		delimiterTypeDdc.setEnabled(false);
+		    		
+		    	}else {
+		    		delimiterTypeDdc.setModelObject(commatype);
+		    		delimiterTypeDdc.setEnabled(true);
+		    	}
+		    	target.add(delimiterTypeDdc);
+		    }
+		});
 		containerForm.getModelObject().getUpload().setUploadType(iArkCommonService.getDefaultUploadType());
 	}
 
@@ -93,7 +122,8 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 
 	protected void attachValidators() {
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
-		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
+		//Default Comma is selected
+//		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 		uploadTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.uploadType.required", this, new Model<String>("Upload")));
 	}
 

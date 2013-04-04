@@ -184,6 +184,9 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 				updateRows = subjectConsentUploadValidator.getUpdateRows();
 				errorCells = subjectConsentUploadValidator.getErrorCells();
 			}
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.PEDIGREE_DATA)){
+				
+			}
 			else{
 				//TODO : Throw error back to user
 			}
@@ -194,8 +197,17 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 
 
 			// Show file data (and key reference)
-			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
-																		containerForm.getModelObject().getFileUpload(), insertRows, updateRows, errorCells, containerForm.getModelObject().getUpload().getUploadType());
+//			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
+//																		containerForm.getModelObject().getFileUpload(), insertRows, updateRows, errorCells, containerForm.getModelObject().getUpload().getUploadType());
+			
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid=null; 
+			if(Constants.PEDIGREE_DATA.equalsIgnoreCase(containerForm.getModelObject().getUpload().getUploadType().getName())){
+				arkExcelWorkSheetAsGrid= new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
+						containerForm.getModelObject().getFileUpload(), au.org.theark.core.Constants.ROWS_PER_PAGE, containerForm.getModelObject().getUpload().getUploadType(),false);
+			}else{
+				arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, 
+						containerForm.getModelObject().getFileUpload(), au.org.theark.core.Constants.ROWS_PER_PAGE, containerForm.getModelObject().getUpload().getUploadType());
+			}
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);

@@ -71,6 +71,7 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
+import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
@@ -946,6 +947,23 @@ public class StudyServiceImpl implements IStudyService {
 		return uploadReport;
 	}
 	
+	public StringBuffer uploadAndReportPedigreeDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId) {
+		StringBuffer uploadReport = null;
+		Study study = iArkCommonService.getStudy(studyId);
+		DataUploader dataUploader = new DataUploader(study, iArkCommonService, this);
+		try {
+			//log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
+			uploadReport = dataUploader.uploadAndReportPedigreeDataFile(inputStream, size, fileFormat, delimChar);
+		}
+		catch (FileFormatException ffe) {
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe) {
+			log.error(Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return uploadReport;
+	}
+	
 	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 		try {
@@ -1007,6 +1025,14 @@ public class StudyServiceImpl implements IStudyService {
 		for(Consent insertConsent : insertConsentList){
 			create(insertConsent);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void processPedigreeBatch(List<LinkSubjectPedigree> insertPedigreeList) throws ArkSystemException, EntityNotFoundException {
+		iStudyDao.processPedigreeBatch(insertPedigreeList);
+		
 	}
 	
 	/*
