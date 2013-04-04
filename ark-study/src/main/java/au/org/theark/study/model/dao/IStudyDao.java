@@ -47,6 +47,7 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
+import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
@@ -85,6 +86,13 @@ public interface IStudyDao {
 	 * @param subjectsToUpdate
 	 */
 	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert);
+	
+	/**
+	 * Perform all pedigree inserts as an atomic unit.
+	 * @param fieldsToInsert
+	 */
+	public void processPedigreeBatch(List<LinkSubjectPedigree> fieldsToInsert);
+	
 
 	/**
 	 * This will take a list of detached LinkSubjectStudies (whcih will contain associated Persons, etc and insert them.

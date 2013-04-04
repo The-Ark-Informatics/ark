@@ -52,6 +52,7 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
+import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
@@ -385,6 +386,14 @@ public interface IStudyService {
 	 * @throws EntityNotFoundException
 	 */
 	public void processSubjectConsentBatch(List<Consent> updateConsentList, List<Consent> insertConsentList) throws ArkSystemException,EntityNotFoundException;
+	
+	/**
+	 * Insert the given {@link LinkSubjectPedigree} list. 
+	 * @param insertPedigreeList
+	 * @throws ArkSystemException
+	 * @throws EntityNotFoundException
+	 */
+	public void processPedigreeBatch(List<LinkSubjectPedigree> insertPedigreeList) throws ArkSystemException,EntityNotFoundException;
 
 	public AddressType getDefaultAddressType();
 
@@ -403,4 +412,6 @@ public interface IStudyService {
 	public List<ConsentType> getConsentType();
 	
 	public StringBuffer uploadAndReportSubjectConsentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId);
+	
+	public StringBuffer uploadAndReportPedigreeDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId);
 }

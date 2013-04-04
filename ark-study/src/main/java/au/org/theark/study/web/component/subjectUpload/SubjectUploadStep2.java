@@ -37,6 +37,7 @@ import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.study.util.CustomFieldUploadValidator;
+import au.org.theark.study.util.PedigreeUploadValidator;
 import au.org.theark.study.util.SubjectConsentUploadValidator;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.Constants;
@@ -101,8 +102,8 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 
-			// Only allow csv, txt or xls  TODO : if we are hardcoding things like this, why do we fetch file formats from db and store as a fk reference?
-			if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS"))) {
+			// Only allow csv, txt, xls Or ped  TODO : if we are hardcoding things like this, why do we fetch file formats from db and store as a fk reference?
+			if (!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS") || fileFormat.equalsIgnoreCase("PED"))) {
 				throw new FileFormatException();
 			}
 			
@@ -122,12 +123,22 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 				SubjectConsentUploadValidator subjectConsentUploadValidator=new SubjectConsentUploadValidator();
 				validationMessages = subjectConsentUploadValidator.validateSubjectConsentFileFormat(containerForm.getModelObject());
 			}
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.PEDIGREE_DATA)){
+				PedigreeUploadValidator subjectConsentUploadValidator=new PedigreeUploadValidator();
+				validationMessages = subjectConsentUploadValidator.validatePedigreeFileFormat(containerForm.getModelObject());
+			}
 			else{
 				//TODO : Throw error back to user
 			}
 
-			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, 
-					fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE, containerForm.getModelObject().getUpload().getUploadType());
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid=null; 
+			if(Constants.PEDIGREE_DATA.equalsIgnoreCase(containerForm.getModelObject().getUpload().getUploadType().getName())){
+				arkExcelWorkSheetAsGrid= new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, 
+					fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE, containerForm.getModelObject().getUpload().getUploadType(),false);
+			}else{
+				arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, 
+						fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE, containerForm.getModelObject().getUpload().getUploadType());
+			}
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			WebMarkupContainer wizardDataGridKeyContainer = new WebMarkupContainer("wizardDataGridKeyContainer");
 			wizardDataGridKeyContainer.setVisible(false);
