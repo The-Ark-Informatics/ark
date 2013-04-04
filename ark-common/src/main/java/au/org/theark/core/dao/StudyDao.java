@@ -1963,9 +1963,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// }
 
 			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search);
-			List<Long> uidsafterFiltering = applyDemographicFilters(search);
-			/*for(Long uid : uidsFromDemographic){				log.info("got " + uid);	}			*/
+			List<Long> uidsafterFiltering = applyDemographicFilters(search);  //necesito?
 
+			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
+
+			
+			//TODO wipe the old data which doesn't still match the ID list
+			uidsafterFiltering = applySubjectCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering SUBJECT cust=" + uidsafterFiltering.size());
+
+			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
+			
 			log.info("uidsafterFilteringdemo=" + uidsafterFiltering.size());
 			//TODO ASAP need a differenciating between needing filters and needing to select fields independantly
 			
@@ -1973,9 +1981,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			log.info("uidsafterFiltering doing the construction of megaobject=" + uidsafterFiltering.size());
 			//NOW just use thilina method above but make sure it FILTERS!!! 	uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol=" + uidsafterFiltering.size());
-			//TODO wipe the old data which doesn't still match the ID list
-			uidsafterFiltering = applySubjectCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFiltering SUBJECT cust=" + uidsafterFiltering.size());
+
 			
 			
 			addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, uidsafterFiltering);
@@ -2156,6 +2162,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return the updated list of uids that are still left after the filtering.
 	 */
 	private List<Long> applySubjectCustomFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude){
+				
 		if(idsToInclude!=null && !idsToInclude.isEmpty()){
 			String queryToFilterSubjectIDs = getSubjectCustomFieldQuery(search);
 			Collection<CustomFieldDisplay> cfdsToReturn = getSelectedSubjectCustomFieldDisplaysForSearch(search);
@@ -2174,10 +2181,46 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		else{
 			log.info("there are no id's to filter.  therefore won't run filtering query");
 		}
-/*
+
 		Collection<CustomFieldDisplay> customFieldToGet = getSelectedSubjectCustomFieldDisplaysForSearch(search);
 		
-		/ * We have the list of subjects, and therefore the list of subjectcustomdata - now bring back all the custom data rows IF they have any data they need * /
+/*List<SubjectCustomFieldData> scfData = new ArrayList<SubjectCustomFieldData>(0);
+scfData = getCustomFieldDataFor(subjectCFDs, subjects);
+
+// order by to help us keeping track of subjects
+//log.info("we got " + scfData.size());
+HashMap<String, ExtractionVO> hashOfSubjectsWithTheirSubjectCustomData = allTheData.getSubjectCustomData();
+
+for (LinkSubjectStudy lss : subjects) {
+ExtractionVO sev = new ExtractionVO();
+HashMap<String, String> map = new HashMap<String, String>();
+for (SubjectCustomFieldData data : scfData) {
+
+if(data.getLinkSubjectStudy().getId().equals(lss.getId())){
+
+// if any error value, then just use that
+if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
+map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+}
+else {
+// Determine field type and assign key value accordingly
+if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+}
+if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+}
+if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+}
+}
+sev.setKeyValues(map);
+}
+}
+hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
+}
+*/
+		/* We have the list of subjects, and therefore the list of subjectcustomdata - now bring back all the custom data rows IF they have any data they need */
 		if(idsToInclude!=null && !idsToInclude.isEmpty() && !customFieldToGet.isEmpty()){
 			String queryString = "select data from SubjectCustomFieldData data  " +
 					" left join fetch data.linkSubjectStudy "  +
@@ -2198,6 +2241,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			LinkSubjectStudy previousLss = null;
 			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
 			for (SubjectCustomFieldData data : scfData) {
+				log.info("\t\tprev='" + ((previousLss==null)?"null":previousLss.getSubjectUID()) + 
+						"\tsub='" + data.getLinkSubjectStudy().getSubjectUID() + 
+						"\terr=" + data.getErrorDataValue() + "\tdate=" + 
+						data.getDateDataValue() + "\tnum=" 
+						+ data.getNumberDataValue() + "\tstr=" + data.getTextDataValue() );
 				
 				if(previousLss==null){
 					map = new HashMap<String, String>();
@@ -2208,9 +2256,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 				else{	//if its a new LSS finalize previous map, etc
 					valuesForThisLss.setKeyValues(map);
-					previousLss = data.getLinkSubjectStudy();
 					hashOfSubjectsWithTheirSubjectCustomData.put(previousLss.getSubjectUID(), valuesForThisLss);	
+					previousLss = data.getLinkSubjectStudy();
 					map = new HashMap<String, String>();//reset
+					valuesForThisLss = new ExtractionVO();
 				}
 
 				//if any error value, then just use that - though, yet again I really question the acceptance of error data
@@ -2240,7 +2289,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
 			allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
 		}
-		*/
+		
 		return idsToInclude;
 	}	
 	
@@ -2702,7 +2751,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			else if (field.getFieldName().equalsIgnoreCase("dateOfDeath")) {
 				if(lss.getPerson().getDateOfDeath()!=null){
 					map.put(field.getPublicFieldName(), lss.getPerson().getDateOfDeath().toString());
-				}
+				} 
 			}
 			else if (field.getFieldName().equalsIgnoreCase("causeOfDeath")) {
 				if(lss.getPerson().getCauseOfDeath()!=null){
@@ -3612,8 +3661,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// TODO TAKES TOO LONG!!!
 			//List<SubjectCustomFieldData> scfData = getCustomFieldDataFor(subjectCFDs, subjects); // todo add orderby SUBJECT... or alterative method with
 																
-			List<SubjectCustomFieldData> scfData = new ArrayList<SubjectCustomFieldData>(0);
-				scfData = getCustomFieldDataFor(subjectCFDs, subjects);
+			/*List<SubjectCustomFieldData> scfData = new ArrayList<SubjectCustomFieldData>(0);
+			scfData = getCustomFieldDataFor(subjectCFDs, subjects);
 			
 			// order by to help us keeping track of subjects
 			//log.info("we got " + scfData.size());
@@ -3647,14 +3696,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 				hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			}
-
+*/
 			/**
 			 * this is just logging to see if things work
 			 */
-			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
 
-			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirSubjectCustomData, FieldCategory.SUBJECT_CFD);
-			allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
+	//		prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirSubjectCustomData, FieldCategory.SUBJECT_CFD);
+		//	allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
 			//iDataExtractionDao.createSubjectDemographicCSV(search, hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
 
 		}
