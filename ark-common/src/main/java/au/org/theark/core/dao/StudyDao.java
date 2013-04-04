@@ -2174,10 +2174,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		else{
 			log.info("there are no id's to filter.  therefore won't run filtering query");
 		}
-
+/*
 		Collection<CustomFieldDisplay> customFieldToGet = getSelectedSubjectCustomFieldDisplaysForSearch(search);
 		
-		/* We have the list of subjects, and therefore the list of subjectcustomdata - now bring back all the custom data rows IF they have any data they need */
+		/ * We have the list of subjects, and therefore the list of subjectcustomdata - now bring back all the custom data rows IF they have any data they need * /
 		if(idsToInclude!=null && !idsToInclude.isEmpty() && !customFieldToGet.isEmpty()){
 			String queryString = "select data from SubjectCustomFieldData data  " +
 					" left join fetch data.linkSubjectStudy "  +
@@ -2239,7 +2239,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
 			allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
-		}		
+		}
+		*/
 		return idsToInclude;
 	}	
 	
@@ -3574,7 +3575,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 //					+ ((!subjectCFDs.isEmpty()) ? " left join fetch lss.subjectCustomFieldDataSet scfd " : "") 
 					// Force restriction on Study of search
 					+ " where lss.study.id = " + search.getStudy().getId()
-					+ lssAndPersonFilters + " ";
+					+ lssAndPersonFilters + " order by lss.subjectUID";
 //					+ subjectCustomFieldFilters ;
 			// TODO : getLSSFilters
 			// TODO : getAddress
@@ -3653,7 +3654,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
 
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirSubjectCustomData, FieldCategory.SUBJECT_CFD);
-			
+			allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
 			//iDataExtractionDao.createSubjectDemographicCSV(search, hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
 
 		}
