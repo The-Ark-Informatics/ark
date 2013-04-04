@@ -112,6 +112,7 @@ import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -3977,5 +3978,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
 		}
 		return hex.toString();
+	}
+	
+	public List<Relationship> getFamilyRelationships() {
+		Criteria criteria = getSession().createCriteria(Relationship.class);
+		return criteria.list();
 	}
 }
