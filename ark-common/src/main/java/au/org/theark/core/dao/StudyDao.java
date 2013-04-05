@@ -28,8 +28,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -1797,22 +1795,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			CustomFieldDisplaySearch cfds = new CustomFieldDisplaySearch(field, search);
 			getSession().save(cfds);
 		}
-		// is all of this necessary now...investigate
-		// searchVO.setSelectedPhenoCustomFieldDisplays(nonPoppableCustomFieldsFromVO);
-//end save all custom field displays
+		// is all of this necessary now...investigate// searchVO.setSelectedPhenoCustomFieldDisplays(nonPoppableCustomFieldsFromVO);
+		//end save all custom field displays
 		
 		return success;
 	}
 
-	/*
-	 * private List<DemographicFieldSearch> getCurrentDemographicFieldSearches(Search search) {/* Criteria criteria =
-	 * getSession().createCriteria(Search.class); criteria.add(Restrictions.eq("name", searchName));
-	 * 
-	 * if(anIdToExcludeFromResults != null){ criteria.add(Restrictions.ne("id", anIdToExcludeFromResults)); } return (criteria.list().size() > 0);*
-	 * 
-	 * String queryString = "select dfs " + " from DemographicFieldSearch dfs " + " where dfs.search=:search "; Query query =
-	 * getSession().createQuery(queryString); query.setParameter("search", search); return query.list(); }
-	 */
 	/**
 	 * 
 	 * @param searchName
@@ -1960,7 +1948,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// constructDemographicQuery(dfs);
 			// DemographicExtractionVO
 			// }
-			
 			
 			
 
@@ -2545,8 +2532,8 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 				}
 				else{	//if its a new LSS finalize previous map, etc
 					valuesForThisLss.setKeyValues(map);
-					previousBiocollectionUID = data.getBioCollection().getBiocollectionUid();
 					hashOfSubjectsWithTheirBiocollectionCustomData.put(previousBiocollectionUID, valuesForThisLss);	
+					previousBiocollectionUID = data.getBioCollection().getBiocollectionUid();
 
 					map = new HashMap<String, String>();//reset
 					
@@ -3170,7 +3157,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		return filterClause;
 	}
 
-
+/*
 	private String getBiocollectionFilters(Search search){//, String filterThusFar) {
 		String filterClause = "";// filterThusFar;
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
@@ -3189,7 +3176,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		log.info("biocollection filterClause = " + filterClause);
 		return filterClause;
 	}
-
+*/
 	/**
 	 * @param search
 	 * @param idsToInclude 
