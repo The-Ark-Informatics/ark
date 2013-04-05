@@ -113,7 +113,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 				PedigreeDataUploadExecutor task=new PedigreeDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId,
 						studyId, fileFormat, delimiterChar, size, report);
 				task.run();
-		}
+			}
 			
 		}
 		catch (Exception e1) {
