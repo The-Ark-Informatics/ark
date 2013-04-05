@@ -346,21 +346,6 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 			private static final long	serialVersionUID	= -7027878243061138904L;
 
 			public void populateItem(LoopItem item) {
-//				final int col = item.getIndex();
-
-				/*
-				 * this model used for Label component gets data from cell instance Because we are interacting directly with the sheet instance which gets
-				 * updated each time we upload a new Excel File, the value for each cell is automatically updated
-				 */
-//				IModel<Object> model = new Model() {
-//					private static final long	serialVersionUID	= 1144128566137457199L;
-//
-//					@Override
-//					public Serializable getObject() {
-//						Cell cell = sheet.getCell(col, 0);
-//						return cell.getContents();
-//					}
-//				};
 				Label cellData = new Label("cellHead", "");
 				item.add(cellData);
 			}
