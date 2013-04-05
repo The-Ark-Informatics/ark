@@ -1847,7 +1847,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
-	public List<DemographicField> getSelectedDemographicFieldsForSearch(Search search) {
+	public List<DemographicField> getSelectedDemographicFieldsForSearch (Search search) {
 		String queryString = "select dfs.demographicField " + " from DemographicFieldSearch dfs " + " where dfs.search=:search " + " order by dfs.demographicField.entity ";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("search", search);
@@ -1962,20 +1962,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// DemographicExtractionVO
 			// }
 
-			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search);
-			List<Long> uidsafterFiltering = applyDemographicFilters(search);  //necesito?
-
-			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
-
-			
-			//TODO wipe the old data which doesn't still match the ID list
-			uidsafterFiltering = applySubjectCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFiltering SUBJECT cust=" + uidsafterFiltering.size());
-
-			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
-			
+			List<Long> uidsafterFiltering = applyDemographicFilters(search);  //from here we need to add 
+		
 			log.info("uidsafterFilteringdemo=" + uidsafterFiltering.size());
-			//TODO ASAP need a differenciating between needing filters and needing to select fields independantly
 			
 			addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search);
 			log.info("uidsafterFiltering doing the construction of megaobject=" + uidsafterFiltering.size());
@@ -2002,6 +1991,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			log.info("uidsafterFiltering pheno cust=" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 			
+
+			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search);//This must go last, as the number of joining tables is going to affect performance
+			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
+			uidsafterFiltering = applySubjectCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering SUBJECT cust=" + uidsafterFiltering.size());
+
+			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
 
 			
 			//now filter previous data from the further filtering steps each time.  First time not necessary just assign uids
@@ -3611,8 +3607,8 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			// ||
 			// TODO
 			// Also  needs  to  consider  filtering??
-			String personFilters = getPersonFilters(search, null);
-			String lssAndPersonFilters = getLSSFilters(search, personFilters);
+		//	String personFilters = getPersonFilters(search, null);
+		//	String lssAndPersonFilters = getLSSFilters(search, personFilters);
 //			String subjectCustomFieldFilters = getSubjectCustomFieldFilters(search, lssAndPersonFilters);
 			
 			String queryString = "select distinct lss "
@@ -3624,7 +3620,8 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 //					+ ((!subjectCFDs.isEmpty()) ? " left join fetch lss.subjectCustomFieldDataSet scfd " : "") 
 					// Force restriction on Study of search
 					+ " where lss.study.id = " + search.getStudy().getId()
-					+ lssAndPersonFilters + " order by lss.subjectUID";
+				//	+ lssAndPersonFilters 
+					+ " order by lss.subjectUID";
 //					+ subjectCustomFieldFilters ;
 			// TODO : getLSSFilters
 			// TODO : getAddress
