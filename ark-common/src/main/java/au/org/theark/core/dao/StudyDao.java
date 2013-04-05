@@ -1937,7 +1937,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			Collection<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
 			Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
 			Collection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
-			 //Collection<CustomFieldDisplay> cfds = getAllSelectedCustomFieldDisplaysForSearch(search);
 			Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
 			Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
 			Collection<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
@@ -1961,28 +1960,30 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// constructDemographicQuery(dfs);
 			// DemographicExtractionVO
 			// }
+			
+			
+			
 
 			List<Long> uidsafterFiltering = applyDemographicFilters(search);  //from here we need to add 
-		
 			log.info("uidsafterFilteringdemo=" + uidsafterFiltering.size());
-			
-			addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search);
-			log.info("uidsafterFiltering doing the construction of megaobject=" + uidsafterFiltering.size());
-			//NOW just use thilina method above but make sure it FILTERS!!! 	uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFiltering biocol=" + uidsafterFiltering.size());
-
-			
-			
-			addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, uidsafterFiltering);
+	
+			List<Long> biospecimenIdsAfterFiltering = new ArrayList<Long>();
+			addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, uidsafterFiltering, biospecimenIdsAfterFiltering);
 			//NOW just use thilina method above but make sure it FILTERS!!! 
 			//uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFilteringbiospec=" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
-			
-			//TODO wipe the old data which doesn't still match the ID list
-			uidsafterFiltering = applyBiospecimenCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			uidsafterFiltering = applyBiospecimenCustomFilters(allTheData, search, uidsafterFiltering, biospecimenIdsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering=Biospec cust" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
+
+			
+			
+			
+			addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search);
+			log.info("uidsafterFiltering doing the construction of megaobject=" + uidsafterFiltering.size());
+			//NOW just use thilina method above but make sure it FILTERS!!! 	uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering biocol=" + uidsafterFiltering.size());		
 			uidsafterFiltering = applyBiocollectionCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol cust=" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
@@ -2296,22 +2297,23 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	 * 
 	 * @return the updated list of uids that are still left after the filtering.
 	 */
-	private List<Long> applyBiospecimenCustomFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude){
-		List<Long> biospecimenIdsToInclude = new ArrayList<Long>();
+	private List<Long> applyBiospecimenCustomFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude, List<Long> biospecimenIdsAfterFiltering){
+//		List<Long> biospecimenIdsToInclude = new ArrayList<Long>();
 		if(idsToInclude!=null && !idsToInclude.isEmpty()){
 			String queryToFilterBiospecimenIDs = getBiospecimenDataCustomFieldIdQuery(search);
+			
 			//Collection<CustomFieldDisplay> cfdsToReturn = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
 			//log.info("about to APPLY subject  filters.  UIDs size =" + idsToInclude.size() + " query string = " + queryToFilterSubjectIDs + " cfd to return size = " + cfdsToReturn.size());
 			if(!queryToFilterBiospecimenIDs.isEmpty()){
 				Query query = getSession().createQuery(queryToFilterBiospecimenIDs);
-				query.setParameterList("idList", idsToInclude);//TODO ASAP...this should be biospecimen list and not subjuid list now
-				biospecimenIdsToInclude = query.list(); 	
-				log.info("rows returned = " + biospecimenIdsToInclude.size());
-				if(biospecimenIdsToInclude.isEmpty()){
+				query.setParameterList("idList", biospecimenIdsAfterFiltering);//TODO ASAP...this should be biospecimen list and not subjuid list now
+				biospecimenIdsAfterFiltering = query.list(); 	
+				log.info("rows returned = " + biospecimenIdsAfterFiltering.size());
+				if(biospecimenIdsAfterFiltering.isEmpty()){
 					idsToInclude = new ArrayList<Long>();
 				}
 				else{
-					idsToInclude = getSubjectIdsForBiospecimenIds(biospecimenIdsToInclude);
+					idsToInclude = getSubjectIdsForBiospecimenIds(biospecimenIdsAfterFiltering);
 				}
 			}
 			else{
@@ -2324,7 +2326,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 
 		Collection<CustomFieldDisplay> customFieldToGet = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
 		/* We have the list of biospecimens, and therefore the list of biospecimen custom data - now bring back all the custom data rows IF they have any data they need */
-		if(biospecimenIdsToInclude!=null && !biospecimenIdsToInclude.isEmpty() && !customFieldToGet.isEmpty()){
+		if(biospecimenIdsAfterFiltering!=null && !biospecimenIdsAfterFiltering.isEmpty() && !customFieldToGet.isEmpty()){
 			String queryString = "select data from BiospecimenCustomFieldData data  " +
 					" left join fetch data.biospecimen "  +
 					" left join fetch data.customFieldDisplay custFieldDisplay "  +
@@ -2333,7 +2335,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 					" and data.customFieldDisplay in (:customFieldsList)" + 
 					" order by data.biospecimen.id " ;
 			Query query2 = getSession().createQuery(queryString);
-			query2.setParameterList("biospecimenIdsToInclude", biospecimenIdsToInclude);
+			query2.setParameterList("biospecimenIdsToInclude", biospecimenIdsAfterFiltering);
 			query2.setParameterList("customFieldsList", customFieldToGet);
 		
 			List<BiospecimenCustomFieldData> scfData = query2.list();
@@ -3604,32 +3606,17 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search) {
 		log.info("in addDataFromMegaDemographicQuery");
 		if (!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty()) { // hasEmailFields(dfs)
-			// ||
-			// TODO
-			// Also  needs  to  consider  filtering??
-		//	String personFilters = getPersonFilters(search, null);
-		//	String lssAndPersonFilters = getLSSFilters(search, personFilters);
-//			String subjectCustomFieldFilters = getSubjectCustomFieldFilters(search, lssAndPersonFilters);
-			
+			//note.  filtering is happening previously...we then do the fetch when we have narrowed down the list of subjects to save a lot of processing
 			String queryString = "select distinct lss "
 					+ // , address, lss, email " +
 					" from LinkSubjectStudy lss " 
 					+ ((!personFields.isEmpty()) ? " left join fetch lss.person person " : "") 
 					+ ((!addressFields.isEmpty()) ? " left join lss.person.addresses a " : "")
-					+ ((!phoneFields.isEmpty()) ? " left join lss.person.phones p " : "")
-//					+ ((!subjectCFDs.isEmpty()) ? " left join fetch lss.subjectCustomFieldDataSet scfd " : "") 
+					+ ((!phoneFields.isEmpty()) ? " left join lss.person.phones p " : "") 
 					// Force restriction on Study of search
 					+ " where lss.study.id = " + search.getStudy().getId()
-				//	+ lssAndPersonFilters 
 					+ " order by lss.subjectUID";
-//					+ subjectCustomFieldFilters ;
-			// TODO : getLSSFilters
-			// TODO : getAddress
-			// TODO : getPhone
-			// TODO : getBiospecCustomFilters
-			// TODO : getBiocollectionCustomFilters
-			// TODO : getSubjectCustomFilters
-			// TODO : getPhenoCustomFilters
+
 
 			List<LinkSubjectStudy> subjects = getSession().createQuery(queryString).list();
 			log.info("size=" + subjects.size());
@@ -3774,7 +3761,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 
 
 	private void addDataFromMegaBiospecimenQuery(DataExtractionVO allTheData,Collection<BiospecimenField> biospecimenFields, //Collection<CustomFieldDisplay> specimenCFDs, 
-			Search search, List<Long> idsToInclude){
+			Search search, List<Long> idsToInclude, List<Long> biospecimenIdsAfterFiltering){
 		if(!biospecimenFields.isEmpty() && !idsToInclude.isEmpty()){
 			String biospecimenFilters = getBiospecimenFilters(search);
 			StringBuffer queryBuffer =new StringBuffer("select distinct biospecimen ");
@@ -3805,6 +3792,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 				sev.setKeyValues(constructKeyValueHashmap(biospecimen,biospecimenFields));
 				hashOfBiospecimenData.put(biospecimen.getBiospecimenUid(), sev);
 				uniqueSubjectIDs.add(biospecimen.getLinkSubjectStudy().getId());
+				biospecimenIdsAfterFiltering.add(biospecimen.getId());
 			}			
 			
 			//maintaining list of subject IDs for filtering past results
