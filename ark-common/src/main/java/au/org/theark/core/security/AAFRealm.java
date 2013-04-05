@@ -24,12 +24,9 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -140,8 +137,12 @@ public class AAFRealm extends AuthorizingRealm {
 		SimpleAuthenticationInfo sai = null;
 		ArkUserVO userVO = null;
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
+		log.info("IN AAFRealm.doGetAuthenticationInfo");
+		log.info("authToken: " + authcToken.getPrincipal().toString());
+		log.info("token username: " + token.getUsername());
 		
 		try {
+			log.info("checking user");
 			userVO = iArkCommonService.getUser(token.getUsername().trim());
 			if (userVO != null) {
 				// Check if the user is in the Ark Database
@@ -155,10 +156,12 @@ public class AAFRealm extends AuthorizingRealm {
 				final WebRequest webRequest = (WebRequest) RequestCycle.get().getRequest();
 			   final HttpServletRequest httpReq = (HttpServletRequest) webRequest.getContainerRequest();
 			   
+			   log.info("checking shib headers");
 			   String userName = httpReq.getHeader("AJP_mail");
 			   String password = httpReq.getHeader("AJP_Shib-Session-ID");
 			   
 			   if(userName !=null && password !=null) {
+			   	log.info("creating SimpleAuthenticationInfo");
 			   	sai = new SimpleAuthenticationInfo(token.getPrincipal(), token.getCredentials(), getName());	
 			   }
 			}
