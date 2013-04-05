@@ -2354,8 +2354,8 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 				}
 				else{	//if its a new LSS finalize previous map, etc
 					valuesForThisLss.setKeyValues(map);
-					previousBiospecimenId = data.getBiospecimen().getId();
 					hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenId.toString(), valuesForThisLss);	
+					previousBiospecimenId = data.getBiospecimen().getId();
 					map = new HashMap<String, String>();//reset
 				}
 
