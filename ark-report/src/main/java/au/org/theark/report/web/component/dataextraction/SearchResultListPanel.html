@@ -11,36 +11,17 @@
 				</label>
 			</th>
 			
-			<th width="51%">
+			<th width="50%">
 				<label for="searchName">
 					<wicket:message	key="search.name">search name:</wicket:message>
 				</label>
 			</th>
-			<th width="40%">
+			<th width="15%">
 				&nbsp;
 			</th>
-		<!-- 
-			<th width="2%">&nbsp;</th>
-			<th width="5%">
-				<label for="studyComponentId">
-					<wicket:message	key="study.component.id">Component ID:</wicket:message>
-				</label>
-			</th>
 			<th width="15%">
-				<label for="studyCompName">
-					<wicket:message	key="study.component.name">Component Name:</wicket:message>
-				</label>
+				&nbsp;
 			</th>
-			<th width="25%">
-				<label for="studyCompDescription">
-					<wicket:message	key="study.component.description">Description:</wicket:message>
-				</label>
-			</th>
-			<th width="20%">
-				<label for="studyCompKeyword">
-					<wicket:message	key="study.component.keyword">Keyword:</wicket:message>
-				</label>
-			</th>-->
 			<th width="2%">&nbsp;</th>			
 		</tr>
 		<!--  The Data Result Set -->
@@ -49,13 +30,16 @@
 			<td width="5%">
 				<span wicket:id="search.id">100</span>
 			</td>
-			<td width="91%">
+			<td width="50%">
 			  <a href="#"wicket:id="search.name">
 			  	<span wicket:id="nameLbl">Name</span>
 			  </a>
 			</td>
+			<td width="15%">
+			  <input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadResult" />&nbsp;
+			</td>
 			<!-- -->
-			<td width="25%">
+			<td width="15%">
 		  		<input wicket:id="runBatchQuery" type="submit" wicket:message="value:button.runBatchQuery" />&nbsp;
 			</td>
 			<!--  -->
@@ -64,10 +48,11 @@
 		<tfoot>
 			<tr>
 				<td width="2%">&nbsp;</td>
-				<td colspan="3"><span wicket:id="navigator" class="a"></span></td>
+				<td colspan="4"><span wicket:id="navigator" class="a"></span></td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>
 	</table>
 	<table width="0%" cellspacing="0"></table>
+	<div wicket:id="detailModalWindow">&nbsp;</div>
 </wicket:panel>

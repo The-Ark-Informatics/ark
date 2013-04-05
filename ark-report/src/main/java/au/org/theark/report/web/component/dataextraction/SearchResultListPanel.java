@@ -19,6 +19,7 @@
 package au.org.theark.report.web.component.dataextraction;
 
 import java.util.Collection;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -28,11 +29,15 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
@@ -43,9 +48,11 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SearchVO;
+import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.report.web.component.dataextraction.form.ContainerForm;
+import au.org.theark.report.web.component.searchresult.SearchResultPanel;
 
 public class SearchResultListPanel extends Panel {
 
@@ -54,6 +61,7 @@ public class SearchResultListPanel extends Panel {
 
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
+	private AbstractDetailModalWindow modalWindow; 
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
@@ -68,6 +76,16 @@ public class SearchResultListPanel extends Panel {
 		super(id);
 		arkCrudContainerVO = crudContainerVO;
 		containerForm = searchContainerForm;
+		
+		modalWindow= new AbstractDetailModalWindow("detailModalWindow") {
+
+			private static final long	serialVersionUID	= 1L;
+			@Override
+			protected void onCloseModalWindow(AjaxRequestTarget target) {
+				// what to do when modal closed
+			}
+		};
+		add(modalWindow);
 	}
 
 	/**
@@ -98,6 +116,8 @@ public class SearchResultListPanel extends Panel {
 				/* Search Name Link */
 				item.add(buildLink(search));
 
+				item.add(buildDownloadButton(search));
+				
 				item.add(buildRunSearchButton(search));
 
 				/* The Search Name
@@ -203,6 +223,34 @@ public class SearchResultListPanel extends Panel {
 		link.add(nameLinkLabel);
 		return link;
 
+	}
+	
+	private AjaxButton buildDownloadButton(final Search search) {
+		AjaxButton ajaxButton = new AjaxButton(Constants.DOWNLOAD_FILE) {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// Set the modalWindow title and content
+				modalWindow.setTitle("Search Results");
+				
+				SearchResultPanel srp = new SearchResultPanel("content", search.getId());
+				modalWindow.setContent(srp);
+				//modalWindow.setContent(new EmptyPanel("content"));
+				modalWindow.show(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Could not process download request");
+			};
+		};
+
+		ajaxButton.setVisible(true);
+		ajaxButton.setDefaultFormProcessing(false);
+
+		return ajaxButton;
 	}
 
 	private AjaxButton buildRunSearchButton(final Search search) {
