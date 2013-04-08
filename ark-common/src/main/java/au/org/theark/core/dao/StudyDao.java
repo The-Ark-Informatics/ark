@@ -2083,7 +2083,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 
 	/**
-	 * @param allTheDataz
+	 * @param allTheData
 	 * @param search
 	 * @param uidsToInclude
 	 * @return the updated list of uids that are still left after the filtering.
@@ -2380,7 +2380,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 
 	
 	/**
-	 * @param allTheDataz
+	 * @param allTheData
 	 * @param search
 	 * @param uidsToInclude
 	 * @return the updated list of uids that are still left after the filtering.
@@ -2492,7 +2492,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	}
 
 	/**
-	 * @param allTheDataz
+	 * @param allTheData
 	 * @param search
 	 * @param uidsToInclude
 	 * @return the updated list of uids that are still left after the filtering.
@@ -2591,7 +2591,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 
 	
 	/**
-	 * @param allTheDataz
+	 * @param allTheData
 	 * @param search
 	 * @param uidsToInclude
 	 * @return the updated list of uids that are still left after the filtering.
@@ -2766,24 +2766,13 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			 		map.put(field.getPublicFieldName(), lss.getPerson().getDateLastKnownAlive().toString());					
 				}
 			}
-			/*	private Long id;
-			 * private String firstName;
-			 * private String middleName;
-				private String lastName;
-				private String preferredName;
+			/*TODO  all of these relationships...enums would be much easier to deal with
+			private Long id;
 			private GenderType genderType;
 			private VitalStatus vitalStatus;
 			private TitleType titleType;
 			private MaritalStatus maritalStatus;
-				private Date dateOfBirth;
-				private Date dateOfDeath;
-				private String causeOfDeath;
-			private PersonContactMethod personContactMethod;
-				private String preferredEmail;
-				private String otherEmail;
-				private EmailStatus preferredEmailStatus;
-				private EmailStatus otherEmailStatus;
-				private Date dateLastKnownAlive;*/
+			private PersonContactMethod personContactMethod;*/
 		}
 		for (DemographicField field : lssFields) {
 			if (field.getFieldName().equalsIgnoreCase("consentDate")) {
