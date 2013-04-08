@@ -2631,8 +2631,8 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 				}
 				else{	//if its a new LSS finalize previous map, etc
 					valuesForThisLss.setKeyValues(map);
-					phenoCollectionId = data.getPhenoCollection().getId();
 					hashOfSubjectsWithTheirPhenoCustomData.put(("" + phenoCollectionId), valuesForThisLss);	
+					phenoCollectionId = data.getPhenoCollection().getId();
 
 					map = new HashMap<String, String>();//reset
 					
