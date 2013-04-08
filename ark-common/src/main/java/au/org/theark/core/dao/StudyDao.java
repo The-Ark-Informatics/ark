@@ -1964,14 +1964,16 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			log.info("uidsafterFiltering=Biospec cust" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 
+
+			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getBiospecimenCustomData(), FieldCategory.BIOSPECIMEN_FIELD);
 			
-			
-			
-			addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search);
+
+			List<Long> bioCollectionIdsAfterFiltering = new ArrayList<Long>();
+			addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search, uidsafterFiltering, bioCollectionIdsAfterFiltering);
 			log.info("uidsafterFiltering doing the construction of megaobject=" + uidsafterFiltering.size());
 			//NOW just use thilina method above but make sure it FILTERS!!! 	uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol=" + uidsafterFiltering.size());		
-			uidsafterFiltering = applyBiocollectionCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
+			uidsafterFiltering = applyBioCollectionCustomFilters(allTheData, search, uidsafterFiltering, bioCollectionIdsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol cust=" + uidsafterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 			
@@ -2086,7 +2088,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @param allTheData
 	 * @param search
 	 * @param uidsToInclude
-	 * @return the updated list of uids that are still left after the filtering.
+	 * @return the updated list of uids that are still left after the filtering.*
 	 
 	private List<Long> applyBiocollectionFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
 		//Set updatedListOfSubjectUIDs = new LinkedHashSet<Long>(); //rather than add each uid from the biocollection.getlss.getid...just get it back as one query...otherwise hibernate will fetch each row
@@ -2330,21 +2332,128 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 
 			ExtractionVO valuesForThisLss = new ExtractionVO();
 			HashMap<String, String> map = null;
-			Long previousBiospecimenId = null;
+			String previousBiospecimenUid = null;
 			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
 			for (BiospecimenCustomFieldData data : scfData) {
 				
-				if(previousBiospecimenId==null){
+				if(previousBiospecimenUid==null){
 					map = new HashMap<String, String>();
-					previousBiospecimenId = data.getBiospecimen().getId();
+					previousBiospecimenUid = data.getBiospecimen().getBiospecimenUid();
 				}
-				else if(data.getBiospecimen().getId().equals(previousBiospecimenId)){
+				else if(data.getBiospecimen().getBiospecimenUid().equals(previousBiospecimenUid)){
 					//then just put the data in
 				}
 				else{	//if its a new LSS finalize previous map, etc
 					valuesForThisLss.setKeyValues(map);
-					hashOfBiospecimensWithTheirBiospecimenCustomData.put(data.getBiospecimen().getBiospecimenUid(), valuesForThisLss);	
-					previousBiospecimenId = data.getBiospecimen().getId();
+					hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenUid, valuesForThisLss);	
+					previousBiospecimenUid = data.getBiospecimen().getBiospecimenUid();
+					map = new HashMap<String, String>();//reset
+					valuesForThisLss = new ExtractionVO();
+				}
+
+				//if any error value, then just use that - though, yet again I really question the acceptance of error data
+				if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
+					map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+				}
+				else {
+					// Determine field type and assign key value accordingly
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+					}
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+					}
+					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+					}
+				}			
+			}
+			
+			//finalize the last entered key value sets/extraction VOs
+			if(map!=null && previousBiospecimenUid!=null){
+				
+				valuesForThisLss.setKeyValues(map);
+				hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenUid, valuesForThisLss);
+			}
+			
+			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
+			allTheData.setBiospecimenCustomData(hashOfBiospecimensWithTheirBiospecimenCustomData);
+		}		
+		return idsToInclude;
+	}	
+
+
+
+
+	
+	/**
+	 * @param allTheData - reference to the object containing our data collected so far, this is to be updated as we continue our refinement.
+	 * @param search 
+	 * @param bioCollectionIdsToInclude - the constantly refined list of ID's passed from the previous extraction step
+	 * 
+	 * @return the updated list of uids that are still left after the filtering.
+	 */
+	private List<Long> applyBioCollectionCustomFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude, List<Long> bioCollectionIdsAfterFiltering){
+//		List<Long> bioCollectionIdsToInclude = new ArrayList<Long>();
+		if(idsToInclude!=null && !idsToInclude.isEmpty()){
+			String queryToFilterBioCollectionIDs = getBioCollectionDataCustomFieldIdQuery(search);
+			
+			//Collection<CustomFieldDisplay> cfdsToReturn = getSelectedBioCollectionCustomFieldDisplaysForSearch(search);
+			//log.info("about to APPLY subject  filters.  UIDs size =" + idsToInclude.size() + " query string = " + queryToFilterSubjectIDs + " cfd to return size = " + cfdsToReturn.size());
+			if(!queryToFilterBioCollectionIDs.isEmpty()){
+				Query query = getSession().createQuery(queryToFilterBioCollectionIDs);
+				query.setParameterList("idList", bioCollectionIdsAfterFiltering);//TODO ASAP...this should be bioCollection list and not subjuid list now
+				bioCollectionIdsAfterFiltering = query.list(); 	
+				log.info("rows returned = " + bioCollectionIdsAfterFiltering.size());
+				if(bioCollectionIdsAfterFiltering.isEmpty()){
+					idsToInclude = new ArrayList<Long>();
+				}
+				else{
+					idsToInclude = getSubjectIdsForBioCollectionIds(bioCollectionIdsAfterFiltering);
+				}
+			}
+			else{
+				log.info("there were no subject custom data filters, therefore don't run filter query");
+			}
+		}
+		else{
+			log.info("there are no id's to filter.  therefore won't run filtering query");
+		}
+
+		Collection<CustomFieldDisplay> customFieldToGet = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
+		/* We have the list of bioCollections, and therefore the list of bioCollection custom data - now bring back all the custom data rows IF they have any data they need */
+		if(bioCollectionIdsAfterFiltering!=null && !bioCollectionIdsAfterFiltering.isEmpty() && !customFieldToGet.isEmpty()){
+			String queryString = "select data from BioCollectionCustomFieldData data  " +
+					" left join fetch data.bioCollection "  +
+					" left join fetch data.customFieldDisplay custFieldDisplay "  +
+					" left join fetch custFieldDisplay.customField custField "  +
+					" where data.bioCollection.id in (:bioCollectionIdsToInclude)" +
+					" and data.customFieldDisplay in (:customFieldsList)" + 
+					" order by data.bioCollection.id " ;
+			Query query2 = getSession().createQuery(queryString);
+			query2.setParameterList("bioCollectionIdsToInclude", bioCollectionIdsAfterFiltering);
+			query2.setParameterList("customFieldsList", customFieldToGet);
+		
+			List<BioCollectionCustomFieldData> scfData = query2.list();
+			HashMap<String, ExtractionVO> hashOfBioCollectionsWithTheirBioCollectionCustomData = allTheData.getBiocollectionCustomData();
+
+			ExtractionVO valuesForThisLss = new ExtractionVO();
+			HashMap<String, String> map = null;
+			Long previousBioCollectionId = null;
+			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
+			for (BioCollectionCustomFieldData data : scfData) {
+				
+				if(previousBioCollectionId==null){
+					map = new HashMap<String, String>();
+					previousBioCollectionId = data.getBioCollection().getId();
+				}
+				else if(data.getBioCollection().getId().equals(previousBioCollectionId)){
+					//then just put the data in
+				}
+				else{	//if its a new LSS finalize previous map, etc
+					valuesForThisLss.setKeyValues(map);
+					hashOfBioCollectionsWithTheirBioCollectionCustomData.put(data.getBioCollection().getBiocollectionUid(), valuesForThisLss);	
+					previousBioCollectionId = data.getBioCollection().getId();
 					map = new HashMap<String, String>();//reset
 				}
 
@@ -2367,21 +2476,22 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			}
 			
 			//finalize the last entered key value sets/extraction VOs
-			if(map!=null && previousBiospecimenId!=null){
+			if(map!=null && previousBioCollectionId!=null){
 				
-				Biospecimen b = (Biospecimen) getSession().get(Biospecimen.class, previousBiospecimenId);
+				BioCollection b = (BioCollection) getSession().get(BioCollection.class, previousBioCollectionId);
 				
 				valuesForThisLss.setKeyValues(map);
-				hashOfBiospecimensWithTheirBiospecimenCustomData.put(b.getBiospecimenUid(), valuesForThisLss);
+				hashOfBioCollectionsWithTheirBioCollectionCustomData.put(b.getBiocollectionUid(), valuesForThisLss);
 			}
 			
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
-			allTheData.setBiospecimenCustomData(hashOfBiospecimensWithTheirBiospecimenCustomData);
+			allTheData.setBiocollectionCustomData(hashOfBioCollectionsWithTheirBioCollectionCustomData);
 		}		
 		return idsToInclude;
 	}	
 
-	
+
+
 	/**
 	 * @param allTheData
 	 * @param search
@@ -2493,13 +2603,21 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		query.setParameterList("biospecimenIdsToInclude", biospecimenIdsToInclude);
 		return query.list();
 	}
+	
+	private List<Long> getSubjectIdsForBioCollectionIds(List<Long> bioCollectionIdsToInclude) {
+		String queryString = "select bio.linkSubjectStudy.id from BioCollection bio " 
+							+ " where bio.id in (:bioCollectionIdsToInclude) ";
+		Query query = getSession().createQuery(queryString);
+		query.setParameterList("bioCollectionIdsToInclude", bioCollectionIdsToInclude);
+		return query.list();
+	}
 
-	/**
+	/*************** commenting this out as we want to base what we have on existing biospeciemen query style
 	 * @param allTheData
 	 * @param search
 	 * @param uidsToInclude
 	 * @return the updated list of uids that are still left after the filtering.
-	 */
+	 
 	private List<Long> applyBiocollectionCustomFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
 
 		String dataFilters = getBiocollectionCustomFieldFilters(search);
@@ -2590,7 +2708,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		else{
 			return uidsToInclude;
 		}
-	}
+	}*/
 
 	
 	/**
@@ -3147,7 +3265,6 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		return filterClause;
 	}
 
-/*
 	private String getBiocollectionFilters(Search search){//, String filterThusFar) {
 		String filterClause = "";// filterThusFar;
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
@@ -3166,7 +3283,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		log.info("biocollection filterClause = " + filterClause);
 		return filterClause;
 	}
-*/
+
 	/**
 	 * @param search
 	 * @param idsToInclude 
@@ -3247,7 +3364,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
 		for (QueryFilter filter : filters) {
 			CustomFieldDisplay customFieldDisplay = filter.getCustomFieldDisplay();
-			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)) {
+			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)) {
 				
 				String tablePrefix = "data" + count++;
 				log.info("what is this BIOSPECIMEN CUSTOM filter? " + filter.getId() + "     for data row? " + tablePrefix );
@@ -3290,6 +3407,74 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		}
 		whereClause += " and data0.biospecimen.id in (:idList) ";//count>0?"":
 		log.info("filterClauseAfterBiospecimenCustomField FILTERS = " + whereClause);
+
+		if(count>0){
+			return selectComponent + fromComponent + whereClause;
+		}
+		else{
+			return "";
+		}
+	}
+
+
+
+	/**
+	 * @param search
+	 * @param idsToInclude 
+	 * @return a query string to attain the updated list of bioscpecimens.
+	 */
+	private String getBioCollectionDataCustomFieldIdQuery(Search search) {
+
+		int count = 0;
+		String selectComponent = " Select data0.bioCollection.id ";
+		String fromComponent = " from BioCollectionCustomFieldData data0 ";
+		String whereClause = "";
+		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
+		for (QueryFilter filter : filters) {
+			CustomFieldDisplay customFieldDisplay = filter.getCustomFieldDisplay();
+			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
+				
+				String tablePrefix = "data" + count++;
+				log.info("what is this BIOSPECIMEN CUSTOM filter? " + filter.getId() + "     for data row? " + tablePrefix );
+				
+				String nextFilterLine =  "";
+
+				// Determine field type and assign key value accordingly
+				// ( data.customFieldDisplay.id=99 AND data.numberDataValue  >  0  )  and ( ( data.customFieldDisplay.id=112 AND data.numberDataValue  >=  0 ) ) 
+
+				//TODO evaluate date entry/validation
+				if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND " + tablePrefix + ".dateDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+				}
+				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND " + tablePrefix + ".numberDataValue " + getHQLForOperator(filter.getOperator()) + " " + filter.getValue() + " ");
+				}
+				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+							" AND " + tablePrefix + ".textDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+				}
+				else{
+					count--;
+				}
+				//TODO ASAP i think all of these might need to start thinking about is null or is not null?
+				if (filter.getOperator().equals(Operator.BETWEEN)) {
+					nextFilterLine += (" AND " + filter.getSecondValue());
+				}
+
+				if(whereClause.isEmpty()){
+					whereClause = " where " + nextFilterLine + " ) ";
+				}
+				else{
+					fromComponent += ",  BioCollectionCustomFieldData " + tablePrefix ;
+					whereClause = whereClause + " and " + nextFilterLine + " )  " +
+							" and data0.bioCollection.id = " + tablePrefix +  ".bioCollection.id ";
+				}
+			}
+		}
+		whereClause += " and data0.bioCollection.id in (:idList) ";//count>0?"":
+		log.info("filterClauseAfterBioCollectionCustomField FILTERS = " + whereClause);
 
 		if(count>0){
 			return selectComponent + fromComponent + whereClause;
@@ -3342,7 +3527,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 
 		return filterClause;
 	}
-*/
+
 
 	
 	private String getBiocollectionCustomFieldFilters(Search search) {
@@ -3389,6 +3574,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		return filterClause;
 	}
 
+*/
 	
 	private String getPhenoFilters(Search search) {
 
@@ -3680,13 +3866,48 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	}
 	
 	
-	private void addDataFromMegaBiocollectionQuery(DataExtractionVO allTheData,Collection<BiocollectionField> biocollectionFields,Collection<CustomFieldDisplay> collectionCFDs, Search search ){
+	private void addDataFromMegaBiocollectionQuery(DataExtractionVO allTheData,Collection<BiocollectionField> biocollectionFields,Collection<CustomFieldDisplay> collectionCFDs,
+			Search search, List<Long> idsToInclude, List<Long> biocollectionIdsAfterFiltering ){
 		if(!biocollectionFields.isEmpty() || !collectionCFDs.isEmpty()){
+			String bioCollectionFilters = getBiocollectionFilters(search);
+			StringBuffer queryBuffer =new StringBuffer("select distinct biocollection ");
+			queryBuffer.append("from BioCollection biocollection " );
+/* TODO:  improve preformance by prefetch
+ * 			queryBuffer.append(	" 	left join fetch biospecimen.sampleType sampleType ");
+			queryBuffer.append(	"	left join fetch biospecimen.invCell invCell " );	//Not lookup compatible
+			queryBuffer.append(	"	left join fetch biospecimen.storedIn storedIn " );
+			queryBuffer.append(	"	left join fetch biospecimen.grade grade " );
+			queryBuffer.append(	"	left join fetch biospecimen.species species " );
+			queryBuffer.append(	"	left join fetch biospecimen.unit unit " );
+			queryBuffer.append(	"	left join fetch biospecimen.treatmentType treatmentType ");
+			queryBuffer.append(	"	left join fetch biospecimen.quality quality ");
+			queryBuffer.append(	"	left join fetch biospecimen.anticoag anticoag ");
+			queryBuffer.append(	"	left join fetch biospecimen.status status " );
+			queryBuffer.append(	"	left join fetch bioCollection.bioCollectionProtocol bioCollectionProtocol ");*/
 			
-			Criteria criteria = getSession().createCriteria(BioCollection.class);
-			criteria.add(Restrictions.eq("study", search.getStudy()));
+			queryBuffer.append(	" where biocollection.study.id = " + search.getStudy().getId());
+			queryBuffer.append(bioCollectionFilters);
+			queryBuffer.append( "  and biocollection.linkSubjectStudy.id in (:idsToInclude) ");
 			
-			Collection<BioCollection> bioCollectionList=criteria.list();
+			Query query = getSession().createQuery(queryBuffer.toString());
+			query.setParameterList("idsToInclude", idsToInclude);
+			Collection<BioCollection> bioCollectionList=query.list();
+			HashSet uniqueSubjectIDs = new HashSet<Long>();
+			HashMap<String, ExtractionVO> hashOfBioCollectionData = allTheData.getBiocollectionData();
+			
+			for (BioCollection bioCollection : bioCollectionList) {
+				ExtractionVO sev = new ExtractionVO();
+				sev.setKeyValues(constructKeyValueHashmap(bioCollection,biocollectionFields));
+				hashOfBioCollectionData.put(bioCollection.getBiocollectionUid(), sev);
+				uniqueSubjectIDs.add(bioCollection.getLinkSubjectStudy().getId());
+				biocollectionIdsAfterFiltering.add(bioCollection.getId());
+			}			
+			
+			//maintaining list of subject IDs for filtering past results
+			idsToInclude = new ArrayList(uniqueSubjectIDs);
+			
+			
+			/*old methodsCollection<BioCollection> bioCollectionList=criteria.list();
 			
 			HashMap<String, ExtractionVO> hashOfBiocollectionData = allTheData.getBiocollectionData();
 			
@@ -3694,45 +3915,8 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 				ExtractionVO sev = new ExtractionVO();
 				sev.setKeyValues(constructKeyValueHashmap(bioCollection,biocollectionFields));
 				hashOfBiocollectionData.put(bioCollection.getBiocollectionUid(), sev);
-			}
+			}*/
 			
-			
-			//TODO Seems we are not printing the custom fields to the csv
-			List<BioCollectionCustomFieldData> bccfData = new ArrayList<BioCollectionCustomFieldData>(0);
-
-			HashMap<String, ExtractionVO> hashOfBioCollectionCustomData = allTheData.getBiocollectionCustomData();
-
-			for (BioCollection bioCollection : bioCollectionList) {
-				ExtractionVO sev = new ExtractionVO();
-				HashMap<String, String> map = new HashMap<String, String>();
-				for (BioCollectionCustomFieldData data : bccfData) {
-					
-					if(data.getBioCollection().getId().equals(bioCollection.getId())){						
-						// if any error value, then just use that
-						if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
-							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
-						}
-						else {
-							// Determine field type and assign key value accordingly
-							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
-							}
-							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
-							}
-							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
-							}
-						}
-						sev.setKeyValues(map);
-					}
-				}
-				hashOfBioCollectionCustomData.put(bioCollection.getBiocollectionUid(), sev);
-			}
-			
-			//prettyLoggingOfWhatIsInOurMegaObject(hashOfBiocollectionData, FieldCategory.BIOCOLLECTION_FIELD);
-			//prettyLoggingOfWhatIsInOurMegaObject(hashOfBioCollectionCustomData, FieldCategory.BIOCOLLECTION_CFD);
-			allTheData.setBiocollectionCustomData(hashOfBioCollectionCustomData);
 		}
 	}
 
@@ -3744,7 +3928,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			StringBuffer queryBuffer =new StringBuffer("select distinct biospecimen ");
 			queryBuffer.append("from Biospecimen biospecimen " );
 			queryBuffer.append(	" 	left join fetch biospecimen.sampleType sampleType ");
-			queryBuffer.append(	"	left join fetch biospecimen.invCell invCell " );
+			queryBuffer.append(	"	left join fetch biospecimen.invCell invCell " );	//Not lookup compatible
 			queryBuffer.append(	"	left join fetch biospecimen.storedIn storedIn " );
 			queryBuffer.append(	"	left join fetch biospecimen.grade grade " );
 			queryBuffer.append(	"	left join fetch biospecimen.species species " );
