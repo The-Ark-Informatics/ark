@@ -30,7 +30,7 @@ public class BiospecimenField  extends AbstractFieldEntity implements Serializab
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	//I almost wonder if I should state what the BASE entity is we start from, ALSO? as some start from LSS some start from PERSON
-	private au.org.theark.core.model.report.entity.Entity entity;					//eg; person.genderType															
+	private au.org.theark.core.model.report.entity.Entity entity;		//eg; person.genderType		||  biospecimen.treatmentType													
 	private String fieldName;				//eg; name     the 'name' field of the gender type table 					
 //	private String additionalHQLConstraint; //eg; "address.addressType = 'Residential'"
 	//could potentially store table name and table field name too.  But first attempt will be at using hql and entities.
