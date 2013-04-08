@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
+import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.BiospecimenFieldSearch;
 import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.FieldCategory;
@@ -57,7 +59,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 	/**
 	 * Simple export to CSV as first cut
 	 */
-	public File createSubjectDemographicCSV(Search search, DataExtractionVO devo, Collection<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
+	public File createSubjectDemographicCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("SUBJECTDEMOGRAPHICS.csv");
 		final java.io.File file = new File(tempDir, filename);
@@ -148,7 +150,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 	 * Simple export to CSV as Biocollection Data
 	 * 
 	 */
-	public File createBiocollectionCSV(Search search, DataExtractionVO devo, Collection<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
+	public File createBiocollectionCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("BIOCOLLECTION.csv");
 		final java.io.File file = new File(tempDir, filename);
@@ -247,7 +249,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 	 * Simple export to CSV as Biospecimen Data
 	 * 
 	 */
-	public File createBiospecimenCSV(Search search, DataExtractionVO devo, Collection<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
+	public File createBiospecimenCSV(Search search, DataExtractionVO devo, List<BiospecimenField> bsfs, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("BIOSPECIMEN.csv");
 		final java.io.File file = new File(tempDir, filename);
@@ -264,20 +266,25 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 
 			// Header
 			csv.write("BIOSPECIMENUID");
-			for (BiospecimenFieldSearch bsfs : search.getBiospecimenFieldsToReturn()) {
-				csv.write(bsfs.getBiospecimenField().getPublicFieldName());
+			for (BiospecimenField bsf : bsfs) {
+				if(!bsf.getPublicFieldName().equalsIgnoreCase("biospecimenUid"))
+					csv.write(bsf.getPublicFieldName());
+			}
+			for(CustomFieldDisplay cfd : cfds) {
+				csv.write(cfd.getCustomField().getName());
 			}
 			csv.endLine();
 			
 			for (String biospecimenUID : hashOfBiospecimensWithData.keySet()) {
 				csv.write(biospecimenUID);
 				
-				for (BiospecimenFieldSearch bsfs : search.getBiospecimenFieldsToReturn()) {
+				for (BiospecimenField bsf : bsfs) {
 					HashMap<String, String> keyValues = hashOfBiospecimensWithData.get(biospecimenUID).getKeyValues();
-					csv.write(keyValues.get(bsfs.getBiospecimenField().getPublicFieldName()));
+					csv.write(keyValues.get(bsf.getPublicFieldName()));
 				}
 				
-				ExtractionVO evo = hashOfBiospecimenCustomData.get(biospecimenUID);
+				ExtractionVO evo = new ExtractionVO();
+				evo = hashOfBiospecimenCustomData.get(biospecimenUID);
 				if(evo != null) {
 					HashMap<String, String> keyValues = evo.getKeyValues();
 					for(CustomFieldDisplay cfd : cfds) {
@@ -316,7 +323,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		return file;
 	}
 	
-	public File createBiospecimenDataCustomCSV(Search search, DataExtractionVO devo, Collection<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
+	public File createBiospecimenDataCustomCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
 		HashMap<String, ExtractionVO> hashOfBiospecimenCustomData = devo.getBiospecimenCustomData();
 		log.info(" writing out biospecimenCustomData " + hashOfBiospecimenCustomData.size() + " entries for category '" + fieldCategory + "'");
 		
