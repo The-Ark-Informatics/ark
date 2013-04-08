@@ -64,6 +64,7 @@ public class Constants {
 	/* General date format, as used by ArkDatePicker */
 	public static final String DD_MM_YYYY = "dd/MM/yyyy";
 	public static final String DD_MM_YYYY_HH_MM_SS = "dd/MM/yyyy hh:mm:ss";
+	public static final String	yyyy_MM_dd_hh_mm_ss_S	= "yyyy-MM-dd hh:mm:ss.S";
 
 	/* Phenotypic data file column names */
 	public static final String SUBJECTUID = "SUBJECTUID";
@@ -434,5 +435,6 @@ public class Constants {
 	public static final String SEARCH_ID = "search.id";
 	public static final String SEARCH_NAME = "search.name";
 	public static final String	SAVEANDCLOSE									= "saveAndClose";
+
 	public enum FileFormat {CSV, XLS, PDF, TXT, DOC, XML}
 }
