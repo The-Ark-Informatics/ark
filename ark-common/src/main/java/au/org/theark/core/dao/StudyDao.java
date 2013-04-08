@@ -2343,7 +2343,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 				}
 				else{	//if its a new LSS finalize previous map, etc
 					valuesForThisLss.setKeyValues(map);
-					hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenId.toString(), valuesForThisLss);	
+					hashOfBiospecimensWithTheirBiospecimenCustomData.put(data.getBiospecimen().getBiospecimenUid(), valuesForThisLss);	
 					previousBiospecimenId = data.getBiospecimen().getId();
 					map = new HashMap<String, String>();//reset
 				}
@@ -2368,8 +2368,11 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			
 			//finalize the last entered key value sets/extraction VOs
 			if(map!=null && previousBiospecimenId!=null){
+				
+				Biospecimen b = (Biospecimen) getSession().get(Biospecimen.class, previousBiospecimenId);
+				
 				valuesForThisLss.setKeyValues(map);
-				hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenId.toString(), valuesForThisLss);
+				hashOfBiospecimensWithTheirBiospecimenCustomData.put(b.getBiospecimenUid(), valuesForThisLss);
 			}
 			
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
@@ -3729,7 +3732,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			
 			//prettyLoggingOfWhatIsInOurMegaObject(hashOfBiocollectionData, FieldCategory.BIOCOLLECTION_FIELD);
 			//prettyLoggingOfWhatIsInOurMegaObject(hashOfBioCollectionCustomData, FieldCategory.BIOCOLLECTION_CFD);
-
+			allTheData.setBiocollectionCustomData(hashOfBioCollectionCustomData);
 		}
 	}
 
