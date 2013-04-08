@@ -16,7 +16,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import au.org.theark.core.model.Constants;
-import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 
@@ -32,6 +31,7 @@ import au.org.theark.core.model.study.entity.FileFormat;
 @Table(name = "SEARCH_RESULT", schema = Constants.REPORT_SCHEMA)
 public class SearchResult  implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private Search search;
 	private FileFormat fileFormat;
