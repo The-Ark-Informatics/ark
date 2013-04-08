@@ -2330,7 +2330,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			List<BiospecimenCustomFieldData> scfData = query2.list();
 			HashMap<String, ExtractionVO> hashOfBiospecimensWithTheirBiospecimenCustomData = allTheData.getBiospecimenCustomData();
 
-			ExtractionVO valuesForThisLss = new ExtractionVO();
+			ExtractionVO valuesForThisBiospecimen = new ExtractionVO();
 			HashMap<String, String> map = null;
 			String previousBiospecimenUid = null;
 			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
@@ -2344,11 +2344,11 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 					//then just put the data in
 				}
 				else{	//if its a new LSS finalize previous map, etc
-					valuesForThisLss.setKeyValues(map);
-					hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenUid, valuesForThisLss);	
+					valuesForThisBiospecimen.setKeyValues(map);
+					hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenUid, valuesForThisBiospecimen);	
 					previousBiospecimenUid = data.getBiospecimen().getBiospecimenUid();
 					map = new HashMap<String, String>();//reset
-					valuesForThisLss = new ExtractionVO();
+					valuesForThisBiospecimen = new ExtractionVO();
 				}
 
 				//if any error value, then just use that - though, yet again I really question the acceptance of error data
@@ -2372,8 +2372,8 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			//finalize the last entered key value sets/extraction VOs
 			if(map!=null && previousBiospecimenUid!=null){
 				
-				valuesForThisLss.setKeyValues(map);
-				hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenUid, valuesForThisLss);
+				valuesForThisBiospecimen.setKeyValues(map);
+				hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenUid, valuesForThisBiospecimen);
 			}
 			
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
@@ -2437,7 +2437,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			List<BioCollectionCustomFieldData> scfData = query2.list();
 			HashMap<String, ExtractionVO> hashOfBioCollectionsWithTheirBioCollectionCustomData = allTheData.getBiocollectionCustomData();
 
-			ExtractionVO valuesForThisLss = new ExtractionVO();
+			ExtractionVO valuesForThisBiocollection = new ExtractionVO();
 			HashMap<String, String> map = null;
 			Long previousBioCollectionId = null;
 			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
@@ -2451,10 +2451,11 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 					//then just put the data in
 				}
 				else{	//if its a new LSS finalize previous map, etc
-					valuesForThisLss.setKeyValues(map);
-					hashOfBioCollectionsWithTheirBioCollectionCustomData.put(data.getBioCollection().getBiocollectionUid(), valuesForThisLss);	
+					valuesForThisBiocollection.setKeyValues(map);
+					hashOfBioCollectionsWithTheirBioCollectionCustomData.put(data.getBioCollection().getBiocollectionUid(), valuesForThisBiocollection);	
 					previousBioCollectionId = data.getBioCollection().getId();
 					map = new HashMap<String, String>();//reset
+					valuesForThisBiocollection = new ExtractionVO();
 				}
 
 				//if any error value, then just use that - though, yet again I really question the acceptance of error data
@@ -2480,8 +2481,8 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 				
 				BioCollection b = (BioCollection) getSession().get(BioCollection.class, previousBioCollectionId);
 				
-				valuesForThisLss.setKeyValues(map);
-				hashOfBioCollectionsWithTheirBioCollectionCustomData.put(b.getBiocollectionUid(), valuesForThisLss);
+				valuesForThisBiocollection.setKeyValues(map);
+				hashOfBioCollectionsWithTheirBioCollectionCustomData.put(b.getBiocollectionUid(), valuesForThisBiocollection);
 			}
 			
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
