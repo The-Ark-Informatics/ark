@@ -36,19 +36,17 @@ public class DataExtractionUploadExecutor {
 	
 	private IArkCommonService<Void>	iArkCommonService			= null;
 	private Long							searchId;
-	private Long							studyId;
+//	private Long							studyId;
 	/**
 	 * DataExtractionUploadExecutor constructor
 	 * @param iArkCommonService
 	 * @param searchId
-	 * @param studyId 
 	 */
 	public DataExtractionUploadExecutor(IArkCommonService iArkCommonService,
-											Long searchId,
-											Long studyId
+											Long searchId
 											) {
 		this.iArkCommonService = iArkCommonService;
-		this.studyId = studyId;
+	//	this.studyId = studyId;
 		this.searchId = searchId;
 	}
 
@@ -59,7 +57,7 @@ public class DataExtractionUploadExecutor {
 		// pass initialization parameters into the job
 		studyUploadJob.getJobDataMap().put(DataExtractionUploadJob.IARKCOMMONSERVICE, iArkCommonService);
 		studyUploadJob.getJobDataMap().put(DataExtractionUploadJob.SEARCH_ID, searchId);
-		studyUploadJob.getJobDataMap().put(DataExtractionUploadJob.STUDY_ID, studyId);
+		//studyUploadJob.getJobDataMap().put(DataExtractionUploadJob.STUDY_ID, studyId);
 		Date startTime = nextGivenSecondDate(null, 1);
 		SimpleTrigger trigger1 = newTrigger().withIdentity("DataExtractionUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
 		sched.scheduleJob(studyUploadJob, trigger1);

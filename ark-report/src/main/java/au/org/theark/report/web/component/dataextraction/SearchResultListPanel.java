@@ -51,6 +51,7 @@ import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
+import au.org.theark.report.job.DataExtractionUploadExecutor;
 import au.org.theark.report.web.component.dataextraction.form.ContainerForm;
 import au.org.theark.report.web.component.searchresult.SearchResultPanel;
 
@@ -261,9 +262,16 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				//TODO ASAP : this will be replaced by call to job
-				iArkCommonService.runSearch(search.getId());
-//				byte[] data = payload.getPayload();
-//				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
+				//iArkCommonService.runSearch(search.getId());
+				DataExtractionUploadExecutor task = new DataExtractionUploadExecutor(iArkCommonService, search.getId());//, studyId);
+				try {
+					task.run();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					System.out.println("TODO: decent logging and handling" + e.getMessage());
+					e.printStackTrace();
+				}
+			
 			}
 
 			@Override
