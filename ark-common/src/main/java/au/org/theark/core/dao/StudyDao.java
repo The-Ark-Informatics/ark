@@ -1876,7 +1876,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return query.list();
 	}
 
-	public Collection<CustomFieldDisplay> getSelectedSubjectCustomFieldDisplaysForSearch(Search search) {
+	public List<CustomFieldDisplay> getSelectedSubjectCustomFieldDisplaysForSearch(Search search) {
 		String queryString = "select cfds.customFieldDisplay " + " from CustomFieldDisplaySearch cfds " + " where cfds.search=:search "
 				+ " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
 		Query query = getSession().createQuery(queryString);
@@ -1885,7 +1885,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return query.list();
 	}
 
-	public Collection<CustomFieldDisplay> getSelectedBiospecimenCustomFieldDisplaysForSearch(Search search) {
+	public List<CustomFieldDisplay> getSelectedBiospecimenCustomFieldDisplaysForSearch(Search search) {
 		String queryString = "select cfds.customFieldDisplay " + " from CustomFieldDisplaySearch cfds " + " where cfds.search=:search "
 				+ " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
 		Query query = getSession().createQuery(queryString);
@@ -1894,14 +1894,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return query.list();
 	}
 
-	public Collection<CustomFieldDisplay> getAllSelectedCustomFieldDisplaysForSearch(Search search) {
+	public List<CustomFieldDisplay> getAllSelectedCustomFieldDisplaysForSearch(Search search) {
 		String queryString = "select cfds.customFieldDisplay " + " from CustomFieldDisplaySearch cfds " + " where cfds.search=:search ";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("search", search);
 		return query.list();
 	}
 
-	public Collection<CustomFieldDisplay> getSelectedBiocollectionCustomFieldDisplaysForSearch(Search search) {
+	public List<CustomFieldDisplay> getSelectedBiocollectionCustomFieldDisplaysForSearch(Search search) {
 		String queryString = "select cfds.customFieldDisplay " + " from CustomFieldDisplaySearch cfds " + " where cfds.search=:search "
 				+ " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction";
 		Query query = getSession().createQuery(queryString);
@@ -1918,16 +1918,16 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		else {
 			/* do i need fields or just run a mass query? */
-			Collection<DemographicField> dfs = getSelectedDemographicFieldsForSearch(search);
-			Collection<DemographicField> addressDFs = getSelectedDemographicFieldsForSearch(search, Entity.Address);
-			Collection<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
-			Collection<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
-			Collection<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
-			Collection<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
-			Collection<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
-			Collection<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
-			Collection<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
-			Collection<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
+			List<DemographicField> dfs = getSelectedDemographicFieldsForSearch(search);
+			List<DemographicField> addressDFs = getSelectedDemographicFieldsForSearch(search, Entity.Address);
+			List<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
+			List<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
+			List<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
+			List<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
+			List<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
+			List<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
+			List<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
+			List<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
 			// save PHENO for later Collection<CustomFieldDisplay> pcfds = getSelectedPhenoCustomFieldDisplaysForSearch(search);
 			/* SAVE FILTERS FOR LATER 
 			 * Making this stuff into an xml document THEN converting it generically to xls/csv/pdf/etc might be an option
@@ -2003,7 +2003,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			
 			createSearchResult(search, iDataExtractionDao.createSubjectDemographicCSV(search, allTheData, scfds, FieldCategory.DEMOGRAPHIC_FIELD));
-			createSearchResult(search, iDataExtractionDao.createBiospecimenCSV(search, allTheData, bscfds, FieldCategory.BIOSPECIMEN_FIELD));
+			createSearchResult(search, iDataExtractionDao.createBiospecimenCSV(search, allTheData, bsfs, bscfds, FieldCategory.BIOSPECIMEN_FIELD));
 			createSearchResult(search, iDataExtractionDao.createBiocollectionCSV(search, allTheData, bccfds, FieldCategory.BIOCOLLECTION_FIELD));
 			//createSearchResult(search, iDataExtractionDao.createBiospecimenDataCustomCSV(search, allTheData, FieldCategory.BIOSPECIMEN_CFD));
 		}
