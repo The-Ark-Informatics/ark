@@ -43,9 +43,7 @@ public class ConsentStatus implements Serializable {
 	private String name;
 	private String description;
 
-	/**
-	 * Constructor no-arg
-	 */
+
 	public ConsentStatus() {
 
 	}
