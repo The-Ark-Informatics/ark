@@ -2555,7 +2555,6 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
 					}
 				}
-			
 			}
 			//finalize the last entered key value sets/extraction VOs
 			if(map!=null && previousBiocollectionUID!=null){
@@ -2565,7 +2564,6 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 				allTheData.setBiocollectionCustomData(hashOfSubjectsWithTheirBiocollectionCustomData);
 			}
 			//else no data, leave the set of biocollection custom data as it was
-
 		}
 
 		//only bother with restricting IF data filters exist
