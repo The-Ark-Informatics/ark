@@ -39,6 +39,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.BiospecimenFieldSearch;
+import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.FieldCategory;
 import au.org.theark.core.model.report.entity.Search;
@@ -59,7 +60,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 	/**
 	 * Simple export to CSV as first cut
 	 */
-	public File createSubjectDemographicCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
+	public File createSubjectDemographicCSV(Search search, DataExtractionVO devo, List<DemographicField> allSubjectFields, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("SUBJECTDEMOGRAPHICS.csv");
 		final java.io.File file = new File(tempDir, filename);
@@ -77,8 +78,8 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 
 			// Header
 			csv.write("SUBJECTUID");
-			for (DemographicFieldSearch dfs : search.getDemographicFieldsToReturn()) {
-				csv.write(dfs.getDemographicField().getPublicFieldName());
+			for (DemographicField df : allSubjectFields) {
+				csv.write(df.getPublicFieldName());
 			}
 			for(CustomFieldDisplay cfd : cfds) {
 				csv.write(cfd.getCustomField().getName());
@@ -89,9 +90,9 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			for (String subjectUID : hashOfSubjectsWithData.keySet()) {
 				csv.write(subjectUID);
 				
-				for (DemographicFieldSearch dfs : search.getDemographicFieldsToReturn()) {
+				for (DemographicField df : allSubjectFields) {
 					HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
-					csv.write(keyValues.get(dfs.getDemographicField().getPublicFieldName()));
+					csv.write(keyValues.get(df.getPublicFieldName()));
 				}
 				
 				/**
