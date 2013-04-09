@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.dataextraction;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
@@ -29,12 +30,9 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
@@ -66,6 +64,7 @@ public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
+	private SimpleDateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
 	
 	/**
 	 * 
@@ -87,6 +86,26 @@ public class SearchResultListPanel extends Panel {
 			}
 		};
 		add(modalWindow);
+		
+		AjaxButton ajaxButton = new AjaxButton("refresh") {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				target.add(SearchResultListPanel.this);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Could not process download request");
+			};
+		};
+
+		ajaxButton.setVisible(true);
+		ajaxButton.setDefaultFormProcessing(false);
+		add(ajaxButton);
+		setOutputMarkupId(true);
 	}
 
 	/**
@@ -114,6 +133,29 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label("search.id", ""));
 				}
+				
+				if (search.getStatus() != null) {
+					// Add the study Component Key here
+					item.add(new Label("search.status", search.getStatus()));
+				}
+				else {
+					item.add(new Label("search.status", ""));
+				}
+				
+				if (search.getStartTime() != null) {
+					item.add(new Label("search.startTime", dateFormat.format(search.getStartTime())));
+				}
+				else {
+					item.add(new Label("search.startTime", ""));
+				}
+				
+				if (search.getFinishTime() != null) {
+					item.add(new Label("search.finishTime", dateFormat.format(search.getFinishTime())));
+				}
+				else {
+					item.add(new Label("search.finishTime", ""));
+				}
+				
 				/* Search Name Link */
 				item.add(buildLink(search));
 
@@ -246,6 +288,11 @@ public class SearchResultListPanel extends Panel {
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				this.error("Unexpected Error: Could not process download request");
 			};
+			
+			@Override
+			public boolean isVisible() {
+				return search.getStatus() != null && search.getStatus().equalsIgnoreCase("FINISHED");
+			}
 		};
 
 		ajaxButton.setVisible(true);
@@ -263,13 +310,18 @@ public class SearchResultListPanel extends Panel {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				//TODO ASAP : this will be replaced by call to job
 				//iArkCommonService.runSearch(search.getId());
-				DataExtractionUploadExecutor task = new DataExtractionUploadExecutor(iArkCommonService, search.getId());//, studyId);
 				try {
+					search.setStartTime(new java.util.Date(System.currentTimeMillis()));
+					search.setStatus("RUNNING");
+					iArkCommonService.update(search);
+					DataExtractionUploadExecutor task = new DataExtractionUploadExecutor(iArkCommonService, search.getId());//, studyId);
 					task.run();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					System.out.println("TODO: decent logging and handling" + e.getMessage());
 					e.printStackTrace();
+				}
+				finally {
 				}
 			
 			}
