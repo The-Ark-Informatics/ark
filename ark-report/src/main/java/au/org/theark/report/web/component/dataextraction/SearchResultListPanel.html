@@ -11,13 +11,22 @@
 				</label>
 			</th>
 			
-			<th width="50%">
+			<th width="30%">
 				<label for="searchName">
 					<wicket:message	key="search.name">search name:</wicket:message>
 				</label>
 			</th>
+			<th width="20%">
+				<wicket:message	key="search.status">search status:</wicket:message>
+			</th>
+			<th width="20%">
+				<wicket:message	key="search.startTime">start:</wicket:message>
+			</th>
+			<th width="20%">
+				<wicket:message	key="search.finishTime">finish:</wicket:message>
+			</th>
 			<th width="15%">
-				&nbsp;
+				<input wicket:id="refresh" type="submit" wicket:message="value:button.refresh" />&nbsp;
 			</th>
 			<th width="15%">
 				&nbsp;
@@ -30,10 +39,19 @@
 			<td width="5%">
 				<span wicket:id="search.id">100</span>
 			</td>
-			<td width="50%">
+			<td width="30%">
 			  <a href="#"wicket:id="search.name">
 			  	<span wicket:id="nameLbl">Name</span>
 			  </a>
+			</td>
+			<td width="20%">
+			  <span wicket:id="search.status">Status</span>
+			</td>
+			<td width="5%">
+			  <span wicket:id="search.startTime">Start</span>
+			</td>
+			<td width="5%">
+			  <span wicket:id="search.finishTime">Finish</span>
 			</td>
 			<td width="15%">
 			  <input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadResult" />&nbsp;
@@ -48,7 +66,7 @@
 		<tfoot>
 			<tr>
 				<td width="2%">&nbsp;</td>
-				<td colspan="4"><span wicket:id="navigator" class="a"></span></td>
+				<td colspan="7"><span wicket:id="navigator" class="a"></span></td>
 				<td width="2%">&nbsp;</td>
 			</tr>
 		</tfoot>
