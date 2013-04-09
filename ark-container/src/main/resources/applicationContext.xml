@@ -58,16 +58,15 @@
 	</bean>
 
 	<!-- SMTP Configuration -->
-	<!--
+	<!--   
 		NOTE: host will now use "ark-smtp" mapping as defined in the host
 		file.
 	-->
 	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="ark-smtp" />
 		<!-- Parameters for SMTP AUTH Using Google-->
-		<property name="username" value="theark.org.au@gmail.com"/>
-		<property name="password" value="v@Tym4np[]" />
-		<property name="port" value="465"/>
+		<property name="username" value="usernam@gmail.com"/>
+		<property name="password" value="#insert-ultra-secure-password-here#" />
 		<property name="javaMailProperties">
 			<props>
 				<prop key="mail.smtp.auth">true</prop>
@@ -96,7 +95,8 @@
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://ark-database:3306?rewriteBatchedStatements=true" />
+		<property name="url"
+			value="jdbc:mysql://ark-database:3306?rewriteBatchedStatements=true" />
 		<property name="username" value="arkadmin" />
 		<property name="password" value="v@Tym4np[]" />
 	</bean>
