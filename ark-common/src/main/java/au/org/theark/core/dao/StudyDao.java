@@ -1951,17 +1951,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			
 
-			List<Long> uidsafterFiltering = applyDemographicFilters(search);  //from here we need to add 
-			log.info("uidsafterFilteringdemo=" + uidsafterFiltering.size());
+			List<Long> idsAfterFiltering = applyDemographicFilters(search);  //from here we need to add 
+			log.info("uidsafterFilteringdemo=" + idsAfterFiltering.size());
 	
 			List<Long> biospecimenIdsAfterFiltering = new ArrayList<Long>();
-			addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, uidsafterFiltering, biospecimenIdsAfterFiltering);
+			addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, idsAfterFiltering, biospecimenIdsAfterFiltering);
 			//NOW just use thilina method above but make sure it FILTERS!!! 
 			//uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFilteringbiospec=" + uidsafterFiltering.size());
+			log.info("uidsafterFilteringbiospec=" + idsAfterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
-			uidsafterFiltering = applyBiospecimenCustomFilters(allTheData, search, uidsafterFiltering, biospecimenIdsAfterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFiltering=Biospec cust" + uidsafterFiltering.size());
+			idsAfterFiltering = applyBiospecimenCustomFilters(allTheData, search, idsAfterFiltering, biospecimenIdsAfterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering=Biospec cust" + idsAfterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 
 
@@ -1969,23 +1969,23 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 
 			List<Long> bioCollectionIdsAfterFiltering = new ArrayList<Long>();
-			addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search, uidsafterFiltering, bioCollectionIdsAfterFiltering);
-			log.info("uidsafterFiltering doing the construction of megaobject=" + uidsafterFiltering.size());
+			addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);
+			log.info("uidsafterFiltering doing the construction of megaobject=" + idsAfterFiltering.size());
 			//NOW just use thilina method above but make sure it FILTERS!!! 	uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFiltering biocol=" + uidsafterFiltering.size());		
-			uidsafterFiltering = applyBioCollectionCustomFilters(allTheData, search, uidsafterFiltering, bioCollectionIdsAfterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFiltering biocol cust=" + uidsafterFiltering.size());
+			log.info("uidsafterFiltering biocol=" + idsAfterFiltering.size());		
+			idsAfterFiltering = applyBioCollectionCustomFilters(allTheData, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering biocol cust=" + idsAfterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 			
-			uidsafterFiltering = applyPhenoCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFiltering pheno cust=" + uidsafterFiltering.size());
+			idsAfterFiltering = applyPhenoCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering pheno cust=" + idsAfterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 			
 
-			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search);//This must go last, as the number of joining tables is going to affect performance
+			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
-			uidsafterFiltering = applySubjectCustomFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFiltering SUBJECT cust=" + uidsafterFiltering.size());
+			idsAfterFiltering = applySubjectCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering SUBJECT cust=" + idsAfterFiltering.size());
 
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
 
@@ -2288,7 +2288,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	 */
 	private List<Long> applyBiospecimenCustomFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude, List<Long> biospecimenIdsAfterFiltering){
 //		List<Long> biospecimenIdsToInclude = new ArrayList<Long>();
-		if(idsToInclude!=null && !idsToInclude.isEmpty()){
+		if(idsToInclude!=null && !idsToInclude.isEmpty() && biospecimenIdsAfterFiltering!=null && !biospecimenIdsAfterFiltering.isEmpty()){
 			String queryToFilterBiospecimenIDs = getBiospecimenDataCustomFieldIdQuery(search);
 			
 			//Collection<CustomFieldDisplay> cfdsToReturn = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
@@ -3765,9 +3765,9 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	
 	
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
-			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search) {
-		log.info("in addDataFromMegaDemographicQuery");
-		if (!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty()) { // hasEmailFields(dfs)
+			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search, List<Long> idsAfterFiltering) {
+		log.info("in addDataFromMegaDemographicQuery");																						//if no id's, no need to run this
+		if (!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty() && !idsAfterFiltering.isEmpty()) { // hasEmailFields(dfs)
 			//note.  filtering is happening previously...we then do the fetch when we have narrowed down the list of subjects to save a lot of processing
 			String queryString = "select distinct lss "
 					+ // , address, lss, email " +
@@ -3777,10 +3777,12 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 					+ ((!phoneFields.isEmpty()) ? " left join lss.person.phones p " : "") 
 					// Force restriction on Study of search
 					+ " where lss.study.id = " + search.getStudy().getId()
+					+ " and lss.id in (:idsToInclude) "
 					+ " order by lss.subjectUID";
 
-
-			List<LinkSubjectStudy> subjects = getSession().createQuery(queryString).list();
+			Query query = getSession().createQuery(queryString);
+			query.setParameterList("idsToInclude", idsAfterFiltering);
+			List<LinkSubjectStudy> subjects = query.list();
 			log.info("size=" + subjects.size());
 
 			// DataExtractionVO devo; = new DataExtractionVO();
@@ -3796,72 +3798,9 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 				hashOfSubjectsWithTheirDemographicData.put(lss.getSubjectUID(), sev);
 			}
 
-			/**
-			 * 
-			 * 
-			 * TODO : CHris, I am doing an example get off subject custom data here, but do it however and WHERE you see most efficient or for that
-			 * matter start with where its easiest to get working...then do more efficient after that
-			 * 
-			 */
-
-			// TODO TAKES TOO LONG!!!
-			//List<SubjectCustomFieldData> scfData = getCustomFieldDataFor(subjectCFDs, subjects); // todo add orderby SUBJECT... or alterative method with
-																
-			/*List<SubjectCustomFieldData> scfData = new ArrayList<SubjectCustomFieldData>(0);
-			scfData = getCustomFieldDataFor(subjectCFDs, subjects);
-			
-			// order by to help us keeping track of subjects
-			//log.info("we got " + scfData.size());
-			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirSubjectCustomData = allTheData.getSubjectCustomData();
-
-			for (LinkSubjectStudy lss : subjects) {
-				ExtractionVO sev = new ExtractionVO();
-				HashMap<String, String> map = new HashMap<String, String>();
-				for (SubjectCustomFieldData data : scfData) {
-					
-					if(data.getLinkSubjectStudy().getId().equals(lss.getId())){
-						
-						// if any error value, then just use that
-						if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
-							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
-						}
-						else {
-							// Determine field type and assign key value accordingly
-							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
-							}
-							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
-							}
-							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
-							}
-						}
-						sev.setKeyValues(map);
-					}
-				}
-				hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
-			}
-*/
-			/**
-			 * this is just logging to see if things work
-			 */
-
 	//		prettyLoggingOfWhatIsInOurMegaObject(hashOfSubjectsWithTheirSubjectCustomData, FieldCategory.SUBJECT_CFD);
-		//	allTheData.setSubjectCustomData(hashOfSubjectsWithTheirSubjectCustomData);
-			//iDataExtractionDao.createSubjectDemographicCSV(search, hashOfSubjectsWithTheirDemographicData, FieldCategory.DEMOGRAPHIC_FIELD);
 
 		}
-		/*
-		 * if(hasLSSFields(dfs) && hasPersonFields(dfs) && hasAddressFields(dfs) && hasAddressFields(dfs)){//TODO Also needs to consider filtering???
-		 * String queryString = "select distinct lss " + //, address, lss, email " + " from LinkSubjectStudy lss" +
-		 * " left join fetch lss.person person " + " left join fetch person.addresses a " + //TODO FIX //" where lss.person.firstName like 'Travis%' " +
-		 * //, link_subject_study lss " + getPersonFilters(search); //TODO ADD THE REST //final ResultTransformer trans;// = new
-		 * DistinctRootEntityResultTransformer(); //qry.setResultTransformer(trans); Query query = getSession().createQuery(queryString);
-		 * List<LinkSubjectStudy> subjects = query.list(); log.info("size=" + subjects.size()); for(LinkSubjectStudy lss : subjects){
-		 * log.info(" person " + lss.getPerson().getId() + lss.getSubjectUID() + lss.getPerson().getFirstName()); log.info(" addresses size " +
-		 * lss.getPerson().getAddresses().size()); } }
-		 */
 	}
 	
 	
