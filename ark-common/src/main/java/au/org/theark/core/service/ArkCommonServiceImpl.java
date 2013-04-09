@@ -1300,12 +1300,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	
-	@Override
 	public boolean create(SearchVO search) throws EntityExistsException {
 		return studyDao.create(search);
 	}
 
-	@Override
 	public boolean update(SearchVO search) throws EntityExistsException {
 
 		return studyDao.update(search);
@@ -1364,7 +1362,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getQueryFilterVOs(search);
 	}
 
-	@Override
 	public void deleteQueryFilter(QueryFilter queryFilter) {
 		studyDao.deleteQueryFilter(queryFilter);
 	}
@@ -1377,7 +1374,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getSearchPayloadForSearchResult(searchResult);
 	}
 
-	@Override
 	public List<SearchResult> getSearchResultList(Long searchResultId) {
 		return studyDao.getSearchResultList(searchResultId);
 	}

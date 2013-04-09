@@ -33,7 +33,6 @@ public class SessionAttributeListener implements HttpSessionAttributeListener, S
 		return activeUsers;
 	}
 
-	@Override
 	public void attributeAdded(HttpSessionBindingEvent event) {
 		if (event.getName().equals(au.org.theark.core.Constants.ARK_USERID)) {
 			Subject subject = SecurityUtils.getSubject();
@@ -48,7 +47,6 @@ public class SessionAttributeListener implements HttpSessionAttributeListener, S
 		}
 	}
 
-	@Override
 	public void attributeRemoved(HttpSessionBindingEvent event) {
 		Subject subject = SecurityUtils.getSubject();
 		String currentUser = subject.getPrincipal().toString();
@@ -70,7 +68,6 @@ public class SessionAttributeListener implements HttpSessionAttributeListener, S
 		}
 	}
 
-	@Override
 	public void attributeReplaced(HttpSessionBindingEvent event) {
 		String sessionId = SecurityUtils.getSubject().getSession().getId().toString();
 		ArkSubjectSessionVO arkSubjectVo = new ArkSubjectSessionVO(sessionId);
