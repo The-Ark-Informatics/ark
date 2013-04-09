@@ -3719,14 +3719,12 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		}
 	}
 
-	@Override
 	public void deleteQueryFilter(QueryFilter queryFilter) {
 		if(queryFilter != null) {
 			getSession().delete(queryFilter);
 		}
 	}
 
-	@Override
 	public List<Study> getParentAndChildStudies(Long id) {
 		Criteria studyCriteria = getSession().createCriteria(Study.class);
 		Study study = getStudy(id);
