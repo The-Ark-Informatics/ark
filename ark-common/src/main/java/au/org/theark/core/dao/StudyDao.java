@@ -3824,25 +3824,19 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	
 	private void addDataFromMegaBiocollectionQuery(DataExtractionVO allTheData,Collection<BiocollectionField> biocollectionFields,Collection<CustomFieldDisplay> collectionCFDs,
 			Search search, List<Long> idsToInclude, List<Long> biocollectionIdsAfterFiltering ){
-		if(!biocollectionFields.isEmpty() || !collectionCFDs.isEmpty()){
-			String bioCollectionFilters = getBiocollectionFilters(search);
+		String bioCollectionFilters = getBiocollectionFilters(search);
+		
+		if(!idsToInclude.isEmpty() && (!bioCollectionFilters.isEmpty() || !biocollectionFields.isEmpty())){
+			
 			StringBuffer queryBuffer =new StringBuffer("select distinct biocollection ");
 			queryBuffer.append("from BioCollection biocollection " );
-/* TODO:  improve preformance by prefetch
- * 			queryBuffer.append(	" 	left join fetch biospecimen.sampleType sampleType ");
-			queryBuffer.append(	"	left join fetch biospecimen.invCell invCell " );	//Not lookup compatible
-			queryBuffer.append(	"	left join fetch biospecimen.storedIn storedIn " );
-			queryBuffer.append(	"	left join fetch biospecimen.grade grade " );
-			queryBuffer.append(	"	left join fetch biospecimen.species species " );
-			queryBuffer.append(	"	left join fetch biospecimen.unit unit " );
-			queryBuffer.append(	"	left join fetch biospecimen.treatmentType treatmentType ");
-			queryBuffer.append(	"	left join fetch biospecimen.quality quality ");
-			queryBuffer.append(	"	left join fetch biospecimen.anticoag anticoag ");
-			queryBuffer.append(	"	left join fetch biospecimen.status status " );
-			queryBuffer.append(	"	left join fetch bioCollection.bioCollectionProtocol bioCollectionProtocol ");*/
+			//	TODO:  improve preformance by prefetch
 			
 			queryBuffer.append(	" where biocollection.study.id = " + search.getStudy().getId());
-			queryBuffer.append(bioCollectionFilters);
+			
+			if(!bioCollectionFilters.isEmpty()){
+				queryBuffer.append(bioCollectionFilters);
+			}
 			queryBuffer.append( "  and biocollection.linkSubjectStudy.id in (:idsToInclude) ");
 			
 			Query query = getSession().createQuery(queryBuffer.toString());
@@ -3860,8 +3854,9 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			}			
 			
 			//maintaining list of subject IDs for filtering past results
-			idsToInclude = new ArrayList(uniqueSubjectIDs);
-			
+			if(!bioCollectionFilters.isEmpty()) {
+				idsToInclude = new ArrayList(uniqueSubjectIDs);
+			}
 			
 			/*old methodsCollection<BioCollection> bioCollectionList=criteria.list();
 			

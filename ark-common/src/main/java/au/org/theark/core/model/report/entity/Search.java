@@ -1,5 +1,6 @@
 package au.org.theark.core.model.report.entity;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,7 +42,9 @@ public class Search  implements java.io.Serializable {
 	private Set<DemographicFieldSearch>  	demographicFieldsToReturn = new HashSet<DemographicFieldSearch>();
 	private QueryGrouping topLevelQueryGrouping;
 	private Study study;
-
+	private String status;
+	private Date startTime;
+	private Date finishTime;
 
 	@Id
 	@SequenceGenerator(name = "search_generator", sequenceName = "SEARCH_SEQ")
@@ -127,5 +130,48 @@ public class Search  implements java.io.Serializable {
 		this.queryFilters = queryFilters;
 	}
 
-	
+	/**
+	 * @return the status
+	 */
+	public String getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status the status to set
+	 */
+	@Column(name = "STATUS", length = 255)
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	/**
+	 * @return the startTime
+	 */
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	/**
+	 * @param startTime the startTime to set
+	 */
+	@Column(name = "STARTTIME")
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	/**
+	 * @return the finishTime
+	 */
+	public Date getFinishTime() {
+		return finishTime;
+	}
+
+	/**
+	 * @param finishTime the finishTime to set
+	 */
+	@Column(name = "FINISHTIME")
+	public void setFinishTime(Date finishTime) {
+		this.finishTime = finishTime;
+	}
 }
