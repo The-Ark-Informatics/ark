@@ -1923,6 +1923,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			List<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
 			List<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
 			List<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
+			
+			List<DemographicField> allSubjectFields = new ArrayList<DemographicField>();
+			//allSubjectFields.addAll(dfs);
+			allSubjectFields.addAll(addressDFs);
+			allSubjectFields.addAll(lssDFs);
+			allSubjectFields.addAll(personDFs);
+			allSubjectFields.addAll(phoneDFs);
+			
 			List<BiospecimenField> bsfs = getSelectedBiospecimenFieldsForSearch(search);
 			List<BiocollectionField> bcfs = getSelectedBiocollectionFieldsForSearch(search);
 			List<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
@@ -2002,10 +2010,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				deleteSearchResult(sr);
 			}
 			
-			createSearchResult(search, iDataExtractionDao.createSubjectDemographicCSV(search, allTheData, scfds, FieldCategory.DEMOGRAPHIC_FIELD));
+			createSearchResult(search, iDataExtractionDao.createSubjectDemographicCSV(search, allTheData, allSubjectFields, scfds, FieldCategory.DEMOGRAPHIC_FIELD));
 			createSearchResult(search, iDataExtractionDao.createBiospecimenCSV(search, allTheData, bsfs, bscfds, FieldCategory.BIOSPECIMEN_FIELD));
 			createSearchResult(search, iDataExtractionDao.createBiocollectionCSV(search, allTheData, bccfds, FieldCategory.BIOCOLLECTION_FIELD));
 			//createSearchResult(search, iDataExtractionDao.createBiospecimenDataCustomCSV(search, allTheData, FieldCategory.BIOSPECIMEN_CFD));
+			
+			try {
+				search.setFinishTime(new java.util.Date(System.currentTimeMillis()));
+				search.setStatus("FINISHED");
+				update(search);
+			}
+			catch (EntityExistsException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -3861,8 +3879,10 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 
 	private void addDataFromMegaBiospecimenQuery(DataExtractionVO allTheData,Collection<BiospecimenField> biospecimenFields, //Collection<CustomFieldDisplay> specimenCFDs, 
 			Search search, List<Long> idsToInclude, List<Long> biospecimenIdsAfterFiltering){
-		if(!biospecimenFields.isEmpty() && !idsToInclude.isEmpty()){
-			String biospecimenFilters = getBiospecimenFilters(search);
+		
+		String biospecimenFilters = getBiospecimenFilters(search);
+		if((!biospecimenFields.isEmpty() || !biospecimenFilters.isEmpty()) && !idsToInclude.isEmpty()){
+			
 			StringBuffer queryBuffer =new StringBuffer("select distinct biospecimen ");
 			queryBuffer.append("from Biospecimen biospecimen " );
 			queryBuffer.append(	" 	left join fetch biospecimen.sampleType sampleType ");
@@ -3877,7 +3897,8 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			queryBuffer.append(	"	left join fetch biospecimen.status status " );
 			queryBuffer.append(	"	left join fetch biospecimen.biospecimenProtocol biospecimenProtocol ");
 			queryBuffer.append(	" where biospecimen.study.id = " + search.getStudy().getId());
-			queryBuffer.append(biospecimenFilters);
+			if(!biospecimenFilters.isEmpty())
+				queryBuffer.append(biospecimenFilters);
 			queryBuffer.append( "  and biospecimen.linkSubjectStudy.id in (:idsToInclude) ");
 
 			Query query = getSession().createQuery(queryBuffer.toString());
@@ -3895,7 +3916,8 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			}			
 			
 			//maintaining list of subject IDs for filtering past results
-			idsToInclude = new ArrayList(uniqueSubjectIDs);
+			if(!biospecimenFilters.isEmpty())
+				idsToInclude = new ArrayList(uniqueSubjectIDs);
 			
 /*			//TODO Seems we are not printing the custom fields to the csv
 			List<BiospecimenCustomFieldData> bscfData = new ArrayList<BiospecimenCustomFieldData>(0);
