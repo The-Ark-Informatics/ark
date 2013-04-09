@@ -238,17 +238,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				valueTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 				    @Override
 				    protected void onUpdate(AjaxRequestTarget target) {
-				    	/* we may want to perform some live validation based on the type of field we are selecting
-				    	 * 
-					   	if(!item.getModelObject().getStudy().getAutoGenerateBiospecimenUid()) {
-						   	 // Check BiospecimenUID is unique
-								String biospecimenUid = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
-								Biospecimen biospecimen = iArkCommonService.getBiospecimenByUid(biospecimenUid, item.getModelObject().getStudy());
-								if (biospecimen != null && biospecimen.getId() != null) {
-									error("Biospecimen UID must be unique. Please try again.");
-									target.focusComponent(getComponent());
-								}
-					   	}*/
+				    	/* we may want to perform some live validation based on the type of field we are selecting */
 				    	log.info("onchange of VALUE");
 				    	target.add(feedbackPanel);
 				    } 
@@ -256,34 +246,6 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 
 				item.add(valueTxtFld);
 				
-				
-				/*
-				item.add(quantityTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
-				    @Override
-				    protected void onUpdate(AjaxRequestTarget target) {
-				   	 if(!totalQuantityLessThanParentQuantity()) {
-				   		 target.focusComponent(getComponent());
-				   	 }
-				   	 target.add(feedbackPanel);
-				    } 
-				    
-				    @Override
-				   protected void onError(AjaxRequestTarget target, RuntimeException e) {
-				   	target.add(feedbackPanel);
-				   }
-				}));
-				item.add(treatmentTypeDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
-				    @Override
-				    protected void onUpdate(AjaxRequestTarget target) {
-				    } 
-				}));
-				item.add(concentrationTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
-				    @Override
-				    protected void onUpdate(AjaxRequestTarget target) {
-				    } 
-				}));
-
-				*/
 				// Copy button allows entire row details to be copied
 				item.add(new AjaxEditorButton(Constants.COPY) {
 					private static final long	serialVersionUID	= 1L;
@@ -372,6 +334,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<DemographicField>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.demographicField"), 
 							(List<DemographicField>) demographicFieldCategoryList, choiceRenderer);
+					fieldDdc.setRequired(true);
 					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 						/**
@@ -393,6 +356,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<BiospecimenField>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.biospecimenField"), 
 							(List<BiospecimenField>) BiospecimenFieldCategoryList, choiceRenderer);
+					fieldDdc.setRequired(true);
 					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 						/**
@@ -414,6 +378,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<BiocollectionField>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.biocollectionField"), 
 							(List<BiocollectionField>) biocollectionFieldCategoryList, choiceRenderer);
+					fieldDdc.setRequired(true);
 					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 						/**
@@ -437,6 +402,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					fieldDdc.setRequired(true);
 					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 						/**
@@ -460,6 +426,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					fieldDdc.setRequired(true);
 					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 						/**
@@ -483,6 +450,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					fieldDdc.setRequired(true);
 					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 						/**
@@ -506,6 +474,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 							new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 							(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+					fieldDdc.setRequired(true);
 					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 						/**
@@ -529,6 +498,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			fieldDdc = new DropDownChoice<DemographicField>("queryFilter.field", 
 					new PropertyModel(item.getModelObject(), "queryFilter.demographicField"), 
 					(List<DemographicField>) demographicFieldCategoryList, choiceRenderer);
+			fieldDdc.setRequired(true);
 			fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 				/**
@@ -545,6 +515,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 	
 		}
 		fieldDdc.setOutputMarkupId(true);
+		fieldDdc.setRequired(true);
 	
 		item.add(fieldDdc);
 	}
@@ -573,18 +544,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 		secondValueTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 		    @Override
 		    protected void onUpdate(AjaxRequestTarget target) {
-		    	/* we may want to perform some live validation based on the type of field we are selecting
-		    	 * 
-		    	 * 
-		   	if(!item.getModelObject().getStudy().getAutoGenerateBiospecimenUid()) {
-			   	 // Check BiospecimenUID is unique
-					String biospecimenUid = (getComponent().getDefaultModelObject().toString() != null ? getComponent().getDefaultModelObject().toString() : new String());
-					Biospecimen biospecimen = iArkCommonService.getBiospecimenByUid(biospecimenUid, item.getModelObject().getStudy());
-					if (biospecimen != null && biospecimen.getId() != null) {
-						error("Biospecimen UID must be unique. Please try again.");
-						target.focusComponent(getComponent());
-					}
-		   	}*/
+		    	/* we may want to perform some live validation based on the type of field we are selecting*/
 		    	log.info("onchange of SECOND VALUE");
 		    	target.add(feedbackPanel);
 		    }
@@ -620,6 +580,12 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						fieldDdc = new DropDownChoice<DemographicField>("queryFilter.field", 
 								new PropertyModel(item.getModelObject(), "queryFilter.demographicField"), 
 								(List<DemographicField>) demographicFieldCategoryList, choiceRenderer);
+						fieldDdc.setRequired(true);
+						item.getModelObject().getQueryFilter().setBiospecimenField(null);
+						item.getModelObject().getQueryFilter().setBiocollectionField(null);
+						item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
+	//					item.getModelObject().getQueryFilter().setDemographicField(null);
+						
 						break;
 					}
 
@@ -629,7 +595,13 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						fieldDdc = new DropDownChoice<BiospecimenField>("queryFilter.field", 
 								new PropertyModel(item.getModelObject(), "queryFilter.biospecimenField"), 
 								(List<BiospecimenField>) BiospecimenFieldCategoryList, choiceRenderer);
+						fieldDdc.setRequired(true);
+						//item.getModelObject().getQueryFilter().setBiospecimenField(null);
+						item.getModelObject().getQueryFilter().setBiocollectionField(null);
+						item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
+						item.getModelObject().getQueryFilter().setDemographicField(null);
 						break;
+
 					}
 
 					case BIOCOLLECTION_FIELD:{					
@@ -638,6 +610,11 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						fieldDdc = new DropDownChoice<BiocollectionField>("queryFilter.field", 
 								new PropertyModel(item.getModelObject(), "queryFilter.biocollectionField"), 
 								(List<BiocollectionField>) biocollectionFieldCategoryList, choiceRenderer);
+						fieldDdc.setRequired(true);
+						item.getModelObject().getQueryFilter().setBiospecimenField(null);
+						//item.getModelObject().getQueryFilter().setBiocollectionField(null);
+						item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
+						item.getModelObject().getQueryFilter().setDemographicField(null);
 						break;
 					}
 					
@@ -649,6 +626,11 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 								new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 								(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+						fieldDdc.setRequired(true);
+						item.getModelObject().getQueryFilter().setBiospecimenField(null);
+						item.getModelObject().getQueryFilter().setBiocollectionField(null);
+						//item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
+						item.getModelObject().getQueryFilter().setDemographicField(null);
 						break;
 					}
 
@@ -660,6 +642,11 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 								new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 								(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+						fieldDdc.setRequired(true);
+						item.getModelObject().getQueryFilter().setBiospecimenField(null);
+						item.getModelObject().getQueryFilter().setBiocollectionField(null);
+						//item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
+						item.getModelObject().getQueryFilter().setDemographicField(null);
 						break;
 					}
 
@@ -671,6 +658,11 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 								new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 								(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+						fieldDdc.setRequired(true);
+						item.getModelObject().getQueryFilter().setBiospecimenField(null);
+						item.getModelObject().getQueryFilter().setBiocollectionField(null);
+						//item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
+						item.getModelObject().getQueryFilter().setDemographicField(null);
 						break;
 					}
 					
@@ -682,12 +674,18 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						fieldDdc = new DropDownChoice<CustomFieldDisplay>("queryFilter.field", 
 								new PropertyModel(item.getModelObject(), "queryFilter.customFieldDisplay"), 
 								(List<CustomFieldDisplay>) fieldCategoryList, choiceRenderer);
+						fieldDdc.setRequired(true);
+						item.getModelObject().getQueryFilter().setBiospecimenField(null);
+						item.getModelObject().getQueryFilter().setBiocollectionField(null);
+						//item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
+						item.getModelObject().getQueryFilter().setDemographicField(null);
 						break;
 					}
 
 				}
 
 				fieldDdc.setOutputMarkupId(true);
+				fieldDdc.setRequired(true);
 				fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 				    /**
 					 * 
