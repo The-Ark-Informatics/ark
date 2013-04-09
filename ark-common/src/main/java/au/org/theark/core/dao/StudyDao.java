@@ -1980,7 +1980,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);
 			log.info("uidsafterFiltering doing the construction of megaobject=" + idsAfterFiltering.size());
 			//NOW just use thilina method above but make sure it FILTERS!!! 	uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFiltering biocol=" + idsAfterFiltering.size());		
+			log.info("uidsafterFiltering biocol=" + idsAfterFiltering.size());
 			idsAfterFiltering = applyBioCollectionCustomFilters(allTheData, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol cust=" + idsAfterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
