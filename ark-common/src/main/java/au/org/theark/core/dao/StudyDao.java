@@ -3706,27 +3706,30 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	}
 
 	public List<QueryFilterVO> getQueryFilterVOs(Search search) {
-
-		Criteria criteria = getSession().createCriteria(QueryFilter.class);
-		criteria.add(Restrictions.eq("search", search));
-		List<QueryFilter> filters = criteria.list();
 		List<QueryFilterVO> filterVOs = new ArrayList<QueryFilterVO>();
-		for (QueryFilter filter : filters) {
-			QueryFilterVO filterVO = new QueryFilterVO();
-			filterVO.setQueryFilter(filter);
-			if (filter.getDemographicField() != null) {
-				filterVO.setFieldCategory(FieldCategory.DEMOGRAPHIC_FIELD);
+		Criteria criteria = getSession().createCriteria(QueryFilter.class);
+		
+		if(search !=null && search.getId() !=null) {
+			criteria.add(Restrictions.eq("search", search));
+			List<QueryFilter> filters = criteria.list();
+			
+			for (QueryFilter filter : filters) {
+				QueryFilterVO filterVO = new QueryFilterVO();
+				filterVO.setQueryFilter(filter);
+				if (filter.getDemographicField() != null) {
+					filterVO.setFieldCategory(FieldCategory.DEMOGRAPHIC_FIELD);
+				}
+				else if (filter.getBiocollectionField() != null) {
+					filterVO.setFieldCategory(FieldCategory.BIOCOLLECTION_FIELD);
+				}
+				else if (filter.getBiospecimenField() != null) {
+					filterVO.setFieldCategory(FieldCategory.BIOSPECIMEN_FIELD);
+				}
+				else if (filter.getCustomFieldDisplay() != null) {
+					filterVO.setFieldCategory(getFieldCategoryFor(filter.getCustomFieldDisplay().getCustomField().getArkFunction()));
+				}
+				filterVOs.add(filterVO);
 			}
-			else if (filter.getBiocollectionField() != null) {
-				filterVO.setFieldCategory(FieldCategory.BIOCOLLECTION_FIELD);
-			}
-			else if (filter.getBiospecimenField() != null) {
-				filterVO.setFieldCategory(FieldCategory.BIOSPECIMEN_FIELD);
-			}
-			else if (filter.getCustomFieldDisplay() != null) {
-				filterVO.setFieldCategory(getFieldCategoryFor(filter.getCustomFieldDisplay().getCustomField().getArkFunction()));
-			}
-			filterVOs.add(filterVO);
 		}
 		return filterVOs;
 	}

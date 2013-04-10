@@ -25,10 +25,11 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
@@ -38,9 +39,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
-import au.org.theark.core.model.report.entity.BiospecimenFieldSearch;
 import au.org.theark.core.model.report.entity.DemographicField;
-import au.org.theark.core.model.report.entity.DemographicFieldSearch;
 import au.org.theark.core.model.report.entity.FieldCategory;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -261,6 +260,10 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		HashMap<String, ExtractionVO> hashOfBiospecimensWithData = devo.getBiospecimenData();
 		HashMap<String, ExtractionVO> hashOfBiospecimenCustomData = devo.getBiospecimenCustomData();
 		
+		Set<String> biospecimens = new HashSet<String>();
+		biospecimens.addAll(hashOfBiospecimensWithData.keySet());
+		biospecimens.addAll(hashOfBiospecimenCustomData.keySet());
+		
 		try {
 			outputStream = new FileOutputStream(file);
 			CsvWriter csv = new CsvWriter(outputStream);
@@ -276,12 +279,13 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			}
 			csv.endLine();
 			
-			for (String biospecimenUID : hashOfBiospecimensWithData.keySet()) {
+			for (String biospecimenUID : biospecimens) {
 				csv.write(biospecimenUID);
 				
 				for (BiospecimenField bsf : bsfs) {
 					HashMap<String, String> keyValues = hashOfBiospecimensWithData.get(biospecimenUID).getKeyValues();
-					csv.write(keyValues.get(bsf.getPublicFieldName()));
+					if(!bsf.getPublicFieldName().equalsIgnoreCase("biospecimenUid"))
+						csv.write(keyValues.get(bsf.getPublicFieldName()));
 				}
 				
 				ExtractionVO evo = new ExtractionVO();
