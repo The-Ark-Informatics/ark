@@ -1963,7 +1963,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			log.info("uidsafterFilteringdemo=" + idsAfterFiltering.size());
 	
 			List<Long> biospecimenIdsAfterFiltering = new ArrayList<Long>();
-			addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, idsAfterFiltering, biospecimenIdsAfterFiltering);
+			biospecimenIdsAfterFiltering = addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, idsAfterFiltering, biospecimenIdsAfterFiltering);
+			log.info("biospecimenIdsAfterFiltering size: " + biospecimenIdsAfterFiltering.size());
 			//NOW just use thilina method above but make sure it FILTERS!!! 
 			//uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFilteringbiospec=" + idsAfterFiltering.size());
@@ -2620,6 +2621,14 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 							+ " where bio.id in (:biospecimenIdsToInclude) ";
 		Query query = getSession().createQuery(queryString);
 		query.setParameterList("biospecimenIdsToInclude", biospecimenIdsToInclude);
+		return query.list();
+	}
+	
+	private List<Long> getBiospecimenIdForSubjectIds(List<Long> subjectIds) {
+		String queryString = "select bio.id from Biospecimen bio " 
+							+ " where bio.linkSubjectStudy.id in (:subjectIds) ";
+		Query query = getSession().createQuery(queryString);
+		query.setParameterList("subjectIds", subjectIds);
 		return query.list();
 	}
 	
@@ -3872,11 +3881,20 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	}
 
 
-	private void addDataFromMegaBiospecimenQuery(DataExtractionVO allTheData,Collection<BiospecimenField> biospecimenFields, //Collection<CustomFieldDisplay> specimenCFDs, 
+	private List<Long> addDataFromMegaBiospecimenQuery(DataExtractionVO allTheData,Collection<BiospecimenField> biospecimenFields, //Collection<CustomFieldDisplay> specimenCFDs, 
 			Search search, List<Long> idsToInclude, List<Long> biospecimenIdsAfterFiltering){
 		
 		String biospecimenFilters = getBiospecimenFilters(search);
-		if((!biospecimenFields.isEmpty() || !biospecimenFilters.isEmpty()) && !idsToInclude.isEmpty()){
+		
+		if((biospecimenFields.isEmpty() && biospecimenFilters.isEmpty())){
+			if(idsToInclude.isEmpty()) {
+				// no need
+			}
+			else {
+				biospecimenIdsAfterFiltering = getBiospecimenIdForSubjectIds(idsToInclude);
+			}
+		}
+		else if((!biospecimenFields.isEmpty() || !biospecimenFilters.isEmpty()) && !idsToInclude.isEmpty()){
 			
 			StringBuffer queryBuffer =new StringBuffer("select distinct biospecimen ");
 			queryBuffer.append("from Biospecimen biospecimen " );
@@ -3914,47 +3932,10 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			if(!biospecimenFilters.isEmpty())
 				idsToInclude = new ArrayList(uniqueSubjectIDs);
 			
-/*			//TODO Seems we are not printing the custom fields to the csv
-			List<BiospecimenCustomFieldData> bscfData = new ArrayList<BiospecimenCustomFieldData>(0);
-
-			HashMap<String, ExtractionVO> hashOfBiospecimenCustomData = allTheData.getBiocollectionCustomData();
-
-			for (Biospecimen biospecimen : biospecimenList) {
-				ExtractionVO sev = new ExtractionVO();
-				HashMap<String, String> map = new HashMap<String, String>();
-				for (BiospecimenCustomFieldData data : bscfData) {
-					
-					if(data.getBiospecimen().getId().equals(biospecimen.getId())){						
-						// if any error value, then just use that
-						if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
-							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
-						}
-						else {
-							// Determine field type and assign key value accordingly
-							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
-							}
-							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
-							}
-							if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-								map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
-							}
-						}
-						sev.setKeyValues(map);
-					}
-				}
-				hashOfBiospecimenCustomData.put(biospecimen.getBiospecimenUid(), sev);
-			}
-			*/
 			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenData, FieldCategory.BIOSPECIMEN_FIELD);
-			//prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenCustomData, FieldCategory.BIOSPECIMEN_CFD);
-			
-			//iDataExtractionDao.createSubjectDemographicCSV(search, allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
-			//iDataExtractionDao.createBiospecimenCSV(search, allTheData.getBiospecimenData(), FieldCategory.BIOSPECIMEN_FIELD);
-			//iDataExtractionDao.createBiocollectionCSV(search, allTheData.getBiocollectionData(), FieldCategory.BIOCOLLECTION_FIELD);
-			//iDataExtractionDao.createBiospecimenDataCustomCSV(search, hashOfBiospecimenCustomData, FieldCategory.BIOSPECIMEN_CFD);
 		}
+		log.info("addDataFromMegaBiospecimenQuery.biospecimenIdsAfterFiltering: " + biospecimenIdsAfterFiltering.size());
+		return biospecimenIdsAfterFiltering;
 	}
 
 	
