@@ -519,12 +519,18 @@ public class Biospecimen implements java.io.Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Biospecimen other = (Biospecimen) obj;
-		if (bioCollection == null) {
+		/*if (bioCollection == null) {
 			if (other.bioCollection != null)
 				return false;
 		}
 		else if (!bioCollection.equals(other.bioCollection))
 			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		}
+		else*/ 
+		
 		if (id == null) {
 			if (other.id != null)
 				return false;
