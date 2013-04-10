@@ -53,13 +53,13 @@ public class DataExtractionUploadExecutor {
 	public void run() throws Exception {
 		SchedulerFactory sf = new StdSchedulerFactory();
 		Scheduler sched = sf.getScheduler();
-		JobDetail studyUploadJob = newJob(DataExtractionUploadJob.class).withIdentity("DataExtractionUploadJob", "group1").build();
+		JobDetail studyUploadJob = newJob(DataExtractionUploadJob.class).withIdentity("DataExtractionUploadJob"+searchId, "group1").build();
 		// pass initialization parameters into the job
 		studyUploadJob.getJobDataMap().put(DataExtractionUploadJob.IARKCOMMONSERVICE, iArkCommonService);
 		studyUploadJob.getJobDataMap().put(DataExtractionUploadJob.SEARCH_ID, searchId);
 		//studyUploadJob.getJobDataMap().put(DataExtractionUploadJob.STUDY_ID, studyId);
 		Date startTime = nextGivenSecondDate(null, 1);
-		SimpleTrigger trigger1 = newTrigger().withIdentity("DataExtractionUploadJobTrigger", "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
+		SimpleTrigger trigger1 = newTrigger().withIdentity("DataExtractionUploadJobTrigger"+searchId, "group1").startAt(startTime).withSchedule(simpleSchedule()).build();
 		sched.scheduleJob(studyUploadJob, trigger1);
 		//		log.warn(studyUploadJob.getKey() + " will run at: " + scheduleTime1 + " and repeat: " + trigger1.getRepeatCount() + " times, every " + trigger1.getRepeatInterval() / 1000 + " seconds");
 		// All of the jobs have been added to the scheduler, but none of the jobs will run until the scheduler has been started
