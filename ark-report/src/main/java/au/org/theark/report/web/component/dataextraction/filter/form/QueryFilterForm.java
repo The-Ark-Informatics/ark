@@ -697,7 +697,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				   	 log.debug("Change of fieldDDc");
 				    } 
 				    
-				    @Override
+				    @Override 
 				   protected void onError(AjaxRequestTarget target, RuntimeException e) {
 				   	target.add(feedbackPanel);
 				   }
