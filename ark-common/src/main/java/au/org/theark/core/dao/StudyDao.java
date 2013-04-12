@@ -1383,8 +1383,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			for (String name : fieldNameCollection) {
 				lowerCaseNames.add(name.toLowerCase());
 			}
-			String queryString = "select cfd " + "from CustomFieldDisplay cfd " + "where customField.id in ( " + " SELECT id from CustomField cf " + " where cf.study =:study "
-					+ " and lower(cf.name) in (:names) " + " and cf.arkFunction =:arkFunction )";
+			String queryString = "select cfd " + 
+								"from CustomFieldDisplay cfd " + 
+								"where customField.id in ( " + " SELECT id from CustomField cf " + 
+																" where cf.study =:study "
+																+ " and lower(cf.name) in (:names) " + " and cf.arkFunction =:arkFunction )";
 			Query query = getSession().createQuery(queryString);
 			query.setParameter("study", study);
 			// query.setParameterList("names", fieldNameCollection);
@@ -1397,8 +1400,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	@SuppressWarnings("unchecked")
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(Study study, ArkFunction arkFunction) {
 
-		String queryString = "select cfd " + " from CustomFieldDisplay cfd " + " where customField.id in ( " + " SELECT id from CustomField cf " + " where cf.study =:study "
-				+ " and cf.arkFunction =:arkFunction )";
+		String queryString = "select cfd " + " from CustomFieldDisplay cfd " + 
+							" where customField.id in ( " + " SELECT id from CustomField cf " + 
+															" where cf.study =:study "
+															+ " and cf.arkFunction =:arkFunction )";
 		Query query = getSession().createQuery(queryString);
 		query.setParameter("study", study);
 		query.setParameter("arkFunction", arkFunction);
@@ -2428,7 +2433,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	 * @return the updated list of uids that are still left after the filtering.
 	 */
 	private List<Long> applyBioCollectionCustomFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude, List<Long> bioCollectionIdsAfterFiltering){
-//		List<Long> bioCollectionIdsToInclude = new ArrayList<Long>();
+
 		if(idsToInclude!=null && !idsToInclude.isEmpty() && !bioCollectionIdsAfterFiltering.isEmpty()){
 			String queryToFilterBioCollectionIDs = getBioCollectionDataCustomFieldIdQuery(search);
 			
@@ -2639,6 +2644,15 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		query.setParameterList("biospecimenIdsToInclude", biospecimenIdsToInclude);
 		return query.list();
 	}
+
+	
+	private List<Long> getSubjectIdsForPhenoDataIds(List<Long> phenoDataIdsToInclude) {
+		String queryString = "select pheno.phenoCollection.linkSubjectStudy.id from PhenoData pheno " 
+							+ " where pheno.id in (:phenoDataIdsToInclude) ";
+		Query query = getSession().createQuery(queryString);
+		query.setParameterList("phenoDataIdsToInclude", phenoDataIdsToInclude);
+		return query.list();
+	}
 	
 	private List<Long> getBiospecimenIdForSubjectIds(List<Long> subjectIds) {
 		String queryString = "select bio.id from Biospecimen bio " 
@@ -2764,105 +2778,253 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 
 	
 	/**
+	 * This will get all the pheno data for the given subjects FOR THIS ONE CustomFieldGroup aka questionaire (aka data set)
+	 * 
 	 * @param allTheData
 	 * @param search
 	 * @param uidsToInclude
-	 * @return the updated list of uids that are still left after the filtering.
+	 * @return the updated list of uids that are still left after the filtering. 
 	 */
-	private List<Long> applyPhenoCustomFilters(DataExtractionVO allTheData, Search search, List<Long> uidsToInclude){
+	private List<Long> applyPhenoCustomFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude){
 
-		String dataFilters = getPhenoFilters(search);
-
-		//only bother with the query and data IF data fields are needed
-		if (!getSelectedPhenoCustomFieldDisplaysForSearch(search).isEmpty() &&
-				uidsToInclude != null && !uidsToInclude.isEmpty()){
-			String queryString = "select data from PhenoData data " 
-			//					+ " where data.study.id = " + search.getStudy().getId()
-								+ " where "
-								+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
-								" data.phenoCollection.linkSubjectStudy.id in (:uidList) "; //TODO group and order by phenocollection (uid?)!
-			Query query = getSession().createQuery(queryString);
-			query.setParameterList("uidList", uidsToInclude);
-			List<PhenoData> scfData = query.list(); 	
-			
-			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirPhenoCustomData = allTheData.getPhenoCustomData();
-
-			ExtractionVO valuesForThisLss = new ExtractionVO();
-			HashMap<String, String> map = null;
-			long phenoCollectionId = -1L;
-			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
-			for (PhenoData data : scfData) {
+		Set<QueryFilter> filters = search.getQueryFilters();
+		
+		Collection<CustomFieldGroup> cfgsWithFilters = getCustomFieldGroupsForPhenoFilters(search, filters);
+		List<Long> phenoCollectionIdsSoFar = new ArrayList<Long>();
+		
+		for(CustomFieldGroup customFieldGroup : cfgsWithFilters){
 				
-				if(phenoCollectionId==-1){
-					map = new HashMap<String, String>();
-					phenoCollectionId = data.getPhenoCollection().getId();
-					//given it is first time ensure map has a record of the subjectUID
-					map.put("subjectUID", data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
+			if(idsToInclude!=null && !idsToInclude.isEmpty()){
+				String queryToGetPhenoIdsForGivenSearchAndCFGFilters = getQueryForPhenoIdsForSearchAndCFGFilters(search, customFieldGroup);
+				
+				//Collection<CustomFieldDisplay> cfdsToReturn = getSelectedPhenoCustomFieldDisplaysForSearch(search);
+				//log.info("about to APPLY subject  filters.  UIDs size =" + idsToInclude.size() + " query string = " + queryToFilterSubjectIDs + " cfd to return size = " + cfdsToReturn.size());
+				if(!queryToGetPhenoIdsForGivenSearchAndCFGFilters.isEmpty()){
+					Query query = getSession().createQuery(queryToGetPhenoIdsForGivenSearchAndCFGFilters);
+					query.setParameterList("idList", idsToInclude);//TODO ASAP...this should be pheno list and not subjuid list now
+					List<Long> phenosForThisCFG = query.list(); 
+					phenoCollectionIdsSoFar.addAll(phenosForThisCFG);
+					log.info("rows returned = " + phenoCollectionIdsSoFar.size());
 				}
-				else if(data.getPhenoCollection().getId().equals(phenoCollectionId)){
-					//then just put the data in
+				else{
+					log.info("there were no subject custom data filters, therefore don't run filter query");
 				}
-				else{	//if its a new LSS finalize previous map, etc
-					valuesForThisLss.setKeyValues(map);
-					hashOfSubjectsWithTheirPhenoCustomData.put(("" + phenoCollectionId), valuesForThisLss);	
-					phenoCollectionId = data.getPhenoCollection().getId();
-
-					map = new HashMap<String, String>();//reset
-					
-				}
-
-				//if any error value, then just use that - though, yet again I really question the acceptance of error data
-				if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
-					map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
-				}
-				else {
-					// Determine field type and assign key value accordingly
-					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
-					}
-					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
-					}
-					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
-					}
-				}
-					
 			}
-			//finalize the last entered key value sets/extraction VOs
-			if(map!=null && phenoCollectionId==-1){
-				valuesForThisLss.setKeyValues(map);
-				hashOfSubjectsWithTheirPhenoCustomData.put(("" + phenoCollectionId), valuesForThisLss);
-				//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
-				allTheData.setPhenoCustomData(hashOfSubjectsWithTheirPhenoCustomData);
+			else{
+				log.info("there are no id's to filter.  therefore won't run filtering query");
 			}
-			//else no data, leave the set of biocollection custom data as it was
-
 		}
-
-		//only bother with restricting IF data filters exist
-		if(!dataFilters.isEmpty() &&
-				uidsToInclude != null && !uidsToInclude.isEmpty()){
-			String queryString2 = "select data.phenoCollection.linkSubjectStudy.id from PhenoData data " 
-					//					+ " where data.study.id = " + search.getStudy().getId()
-										+ " where "
-										+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
-										" data.phenoCollection.linkSubjectStudy.id in (:uidList) ";
-			Query query2 = getSession().createQuery(queryString2);
-			query2.setParameterList("uidList", uidsToInclude);
-			List<Long> updatedListOfSubjectUIDs = query2.list(); 	
-			
-			//TODO ASAP in addtion to this it is now time to wipe the old data which is no longer to be included due to latest filter
-				// if we don't want to garauntee order of wiping data, etc do this outside this method, in the calling method
-			
-			log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
-			return updatedListOfSubjectUIDs;
+		//now that we have all the phenoCollection IDs...get the updated list of subjects
+		if(phenoCollectionIdsSoFar.isEmpty()){
+			if(!cfgsWithFilters.isEmpty()){
+				//there were no phenocollectionid's returned because they were validly filtered.  leave idsToIncludeAsItWas
+				idsToInclude = new ArrayList<Long>();
+			}
+			else{
+				//there were no filters so just leave the list of subjects ias it was
+			}
 		}
 		else{
-			return uidsToInclude;
+			idsToInclude = getSubjectIdsForPhenoDataIds(phenoCollectionIdsSoFar);
 		}
+		
+
+		//now that we have the pheno collection id, we just find the data for the selected customfields
+		
+		
+			Collection<CustomFieldDisplay> customFieldToGet = getSelectedPhenoCustomFieldDisplaysForSearch(search);
+			// We have the list of phenos, and therefore the list of pheno custom data - now bring back all the custom data rows IF they have any data they need 
+			if(	(!phenoCollectionIdsSoFar.isEmpty() || (phenoCollectionIdsSoFar.isEmpty() && cfgsWithFilters.isEmpty())) 
+					&& !customFieldToGet.isEmpty()
+					){
+				String queryString = "select data from PhenoData data  " +
+						" left join fetch data.phenoCollection phenoCollection"  +
+						" left join fetch data.customFieldDisplay custFieldDisplay "  +
+						" left join fetch custFieldDisplay.customField custField "  		+(
+						( (phenoCollectionIdsSoFar.isEmpty() && cfgsWithFilters.isEmpty())			?(
+								" where data.phenoCollection.linkSubjectStudy.id in (:idsToInclude) "):(
+								" where data.phenoCollection.id in (:phenoIdsToInclude)" 			) ) )
+																							+
+						" and data.customFieldDisplay in (:customFieldsList)" + 
+						" order by data.phenoCollection.id " ;
+				Query query2 = getSession().createQuery(queryString);
+				if(phenoCollectionIdsSoFar.isEmpty() && cfgsWithFilters.isEmpty()){
+					query2.setParameterList("idsToInclude", idsToInclude);
+				}
+				else{
+					query2.setParameterList("phenoIdsToInclude", phenoCollectionIdsSoFar);
+				}
+				query2.setParameterList("customFieldsList", customFieldToGet);
+			
+				List<PhenoData> phenoData = query2.list();
+				
+				HashMap<String, ExtractionVO> hashOfPhenosWithTheirPhenoCustomData = allTheData.getPhenoCustomData();
+	
+				ExtractionVO valuesForThisPheno = new ExtractionVO();
+				HashMap<String, String> map = null;
+				Long previousPhenoId = null;
+				//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
+				for (PhenoData data : phenoData) {
+					
+					if(previousPhenoId==null){
+						map = new HashMap<String, String>();
+						previousPhenoId = data.getPhenoCollection().getId();
+						valuesForThisPheno.setSubjectUid(data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
+					}
+					else if(data.getPhenoCollection().getId().equals(previousPhenoId)){
+						//then just put the data in
+					}
+					else{	//if its a new LSS finalize previous map, etc
+						valuesForThisPheno.setKeyValues(map);
+						hashOfPhenosWithTheirPhenoCustomData.put(("" + previousPhenoId), valuesForThisPheno);	
+						previousPhenoId = data.getPhenoCollection().getId();
+						map = new HashMap<String, String>();//reset
+						valuesForThisPheno = new ExtractionVO();
+						valuesForThisPheno.setSubjectUid(data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
+					}
+	
+					//if any error value, then just use that - though, yet again I really question the acceptance of error data
+					if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+					}
+					else {
+						// Determine field type and assign key value accordingly
+						if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+						}
+						if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+						}
+						if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+						}
+					}			
+				}
+				
+				//finalize the last entered key value sets/extraction VOs
+				if(map!=null && previousPhenoId!=null){
+					
+					valuesForThisPheno.setKeyValues(map);
+					hashOfPhenosWithTheirPhenoCustomData.put("" + previousPhenoId, valuesForThisPheno);
+				}
+				
+				//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
+				allTheData.setPhenoCustomData(hashOfPhenosWithTheirPhenoCustomData);
+			}		
+			return idsToInclude;
+			
+	/*
+			//only bother with the query and data IF data fields are needed
+			if (!getSelectedPhenoCustomFieldDisplaysForSearch(search).isEmpty() &&
+					uidsToInclude != null && !uidsToInclude.isEmpty()){
+				String queryString = "select data from PhenoData data " 
+				//					+ " where data.study.id = " + search.getStudy().getId()
+									+ " where "
+									+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
+									" data.phenoCollection.linkSubjectStudy.id in (:uidList) "; //TODO group and order by phenocollection (uid?)!
+				Query query = getSession().createQuery(queryString);
+				query.setParameterList("uidList", uidsToInclude);
+				List<PhenoData> scfData = query.list(); 	
+				
+				HashMap<String, ExtractionVO> hashOfSubjectsWithTheirPhenoCustomData = allTheData.getPhenoCustomData();
+	
+				ExtractionVO valuesForThisLss = new ExtractionVO();
+				HashMap<String, String> map = null;
+				long phenoCollectionId = -1L;
+				//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
+				for (PhenoData data : scfData) {
+					
+					if(phenoCollectionId==-1){
+						map = new HashMap<String, String>();
+						phenoCollectionId = data.getPhenoCollection().getId();
+						//given it is first time ensure map has a record of the subjectUID
+						map.put("subjectUID", data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
+					}
+					else if(data.getPhenoCollection().getId().equals(phenoCollectionId)){
+						//then just put the data in
+					}
+					else{	//if its a new LSS finalize previous map, etc
+						valuesForThisLss.setKeyValues(map);
+						hashOfSubjectsWithTheirPhenoCustomData.put(("" + phenoCollectionId), valuesForThisLss);	
+						phenoCollectionId = data.getPhenoCollection().getId();
+	
+						map = new HashMap<String, String>();//reset
+						
+					}
+	
+					//if any error value, then just use that - though, yet again I really question the acceptance of error data
+					if(data.getErrorDataValue() !=null && !data.getErrorDataValue().isEmpty()) {
+						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getErrorDataValue());
+					}
+					else {
+						// Determine field type and assign key value accordingly
+						if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
+						}
+						if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
+						}
+						if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+							map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
+						}
+					}
+						
+				}
+				//finalize the last entered key value sets/extraction VOs
+				if(map!=null && phenoCollectionId==-1){
+					valuesForThisLss.setKeyValues(map);
+					hashOfSubjectsWithTheirPhenoCustomData.put(("" + phenoCollectionId), valuesForThisLss);
+					//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list.
+					allTheData.setPhenoCustomData(hashOfSubjectsWithTheirPhenoCustomData);
+				}
+				//else no data, leave the set of biocollection custom data as it was
+	
+			}
+	
+			//only bother with restricting IF data filters exist
+			if(!dataFilters.isEmpty() &&
+					uidsToInclude != null && !uidsToInclude.isEmpty()){
+				String queryString2 = "select data.phenoCollection.linkSubjectStudy.id from PhenoData data " 
+						//					+ " where data.study.id = " + search.getStudy().getId()
+											+ " where "
+											+ (dataFilters.isEmpty()?"":(dataFilters + " and ")) +
+											" data.phenoCollection.linkSubjectStudy.id in (:uidList) ";
+				Query query2 = getSession().createQuery(queryString2);
+				query2.setParameterList("uidList", uidsToInclude);
+				List<Long> updatedListOfSubjectUIDs = query2.list(); 	
+				
+				//TODO ASAP in addtion to this it is now time to wipe the old data which is no longer to be included due to latest filter
+					// if we don't want to garauntee order of wiping data, etc do this outside this method, in the calling method
+				
+				log.info("updated size of UIDs=" + updatedListOfSubjectUIDs.size());
+				return updatedListOfSubjectUIDs;
+			}
+			else{
+				return uidsToInclude;
+			}
+		}*/
+		//return uidsToInclude;
 	}	
 	
+
+	private Collection<CustomFieldGroup> getCustomFieldGroupsForPhenoFilters(Search search, Set<QueryFilter> filters) {
+		ArkFunction arkFunction = getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
+		List<CustomFieldDisplay> customFieldDisplaysForStudy = getCustomFieldDisplaysIn(search.getStudy(), arkFunction);
+		Set<CustomFieldGroup> customFieldGroupsToReturn = new HashSet<CustomFieldGroup>();
+		
+		
+		for(QueryFilter qf : filters){
+			if(qf.getCustomFieldDisplay()!=null && customFieldDisplaysForStudy.contains(qf.getCustomFieldDisplay())){
+				customFieldGroupsToReturn.add(qf.getCustomFieldDisplay().getCustomFieldGroup());
+			}
+		}/*
+		String queryString = " 	select distinct cfg C" +
+							"	from  CustomFieldGroup cfg " +
+							"	where cfg.id in ("
+							
+		return null;*/
+		return customFieldGroupsToReturn;
+	}
 
 	/**
 	 * TODO : Chris, please note that we have to complete the hardcoding below after Thileana finishes his insert statements for demographic field.
@@ -3627,9 +3789,73 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	}
 
 */
+	/**
+	 * get pheno filters  FOR THIS ONE CustomFieldGroup aka questionaire (aka data set)
+	 * @param search
+	 * @param THIS
+	 * @return
+	 */
+	private String getQueryForPhenoIdsForSearchAndCFGFilters(Search search, CustomFieldGroup customFieldGroup) {
+		
+		int count = 0;
+		String selectComponent = " Select data0.phenoCollection.id ";
+		String fromComponent = " from PhenoCustomFieldData data0 ";
+		String whereClause = "";
+		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
+		for (QueryFilter filter : filters) {
+			CustomFieldDisplay customFieldDisplay = filter.getCustomFieldDisplay();
+			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION)) {
+				if(customFieldDisplay.getCustomFieldGroup().equals(customFieldGroup)){
+					String tablePrefix = "data" + count++;
+					log.info("what is this PHENO CUSTOM filter? " + filter.getId() + "     for data row? " + tablePrefix );
+					
+					String nextFilterLine =  "";
 	
-	private String getPhenoFilters(Search search) {
+					// Determine field type and assign key value accordingly
+					// ( data.customFieldDisplay.id=99 AND data.numberDataValue  >  0  )  and ( ( data.customFieldDisplay.id=112 AND data.numberDataValue  >=  0 ) ) 
+	
+					//TODO evaluate date entry/validation
+					if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+						nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+								" AND " + tablePrefix + ".dateDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+					}
+					else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+						nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+								" AND " + tablePrefix + ".numberDataValue " + getHQLForOperator(filter.getOperator()) + " " + filter.getValue() + " ");
+					}
+					else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+						nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+								" AND " + tablePrefix + ".textDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+					}
+					else{ //TODO : if we go for new type of look up does it affect this
+						count--;
+					}
+					//TODO ASAP i think all of these might need to start thinking about is null or is not null?
+					if (filter.getOperator().equals(Operator.BETWEEN)) {
+						nextFilterLine += (" AND " + filter.getSecondValue());
+					}
+	
+					if(whereClause.isEmpty()){
+						whereClause = " where " + nextFilterLine + " ) ";
+					}
+					else{
+						fromComponent += ",  PhenoCustomFieldData " + tablePrefix ;
+						whereClause = whereClause + " and " + nextFilterLine + " )  " +
+								" and data0.pheno.id = " + tablePrefix +  ".pheno.id ";
+					}
+				}
+			}
+		}
+		whereClause += " and data0.pheno.id in (:idList) ";//count>0?"":
+		log.info("filterClauseAfterPhenoCustomField FILTERS = " + whereClause);
 
+		if(count>0){
+			return selectComponent + fromComponent + whereClause;
+		}
+		else{
+			return "";
+		}
+ /*
 		String filterClause = "";
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
 		for (QueryFilter filter : filters) {
@@ -3669,7 +3895,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		}
 		log.info("filterClauseAfterPheno FILTERS = " + filterClause);
 
-		return filterClause;
+		return filterClause;*/
 	}
 
 	/**
@@ -3720,11 +3946,55 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		}
 	}
 
-	public boolean validateQueryFilters(List<QueryFilter> queryFilterList) {
-		for (QueryFilter filter : queryFilterList) {
+	/**
+	 * 
+	 * We want as much of this in wicket as possible (the obvious things like null checks etc will save us a trip to the server I guess)
+	 * 
 			// TODO ASAP validate type, operator and value are compatible
 			// if(filter.getValue()==null) i guess null or empty is valid for
 			// string
+			 * 
+	 * @param queryFilterList - list of all fiolters we wish to apply
+	 * @return
+	 */
+	public boolean validateQueryFilters(List<QueryFilter> queryFilterList) {
+		
+		for (QueryFilter filter : queryFilterList) {
+			//all operators except IS NULL or ISNOTNULL need at least value1
+			//all ops need a field selected for any of the 7 (4) types)
+			
+			
+			if (filter.getOperator().equals(Operator.BETWEEN)) {
+				//then both values cant be null valueOne and Value2
+				//are certain values/fieldstypes valid for this operator?
+				//are values needed or should they be ignored?
+				
+				//if error i guess we return false and give back a list of errors?
+			}
+			else if (filter.getOperator().equals(Operator.LIKE) || filter.getOperator().equals(Operator.NOT_EQUAL)) {
+				//then both values cant be null
+				//are certain values/fieldstypes valid for this operator?
+				//are values needed or should they be ignored?
+			}
+			else if (filter.getOperator().equals(Operator.EQUAL)) {
+				//then both values cant be null
+				//are certain values/fieldstypes valid for this operator?
+				//are values needed or should they be ignored?
+			}
+			else if (filter.getOperator().equals(Operator.GREATER_THAN) || filter.getOperator().equals(Operator.GREATER_THAN_OR_EQUAL)) {
+				//then both values cant be null
+				//are certain values/fieldstypes valid for this operator?
+				//are values needed or should they be ignored?
+			}
+			else if (filter.getOperator().equals(Operator.LESS_THAN) || filter.getOperator().equals(Operator.LESS_THAN_OR_EQUAL)) {
+				//then both values cant be null
+				//are certain values/fieldstypes valid for this operator?
+				//are values needed or should they be ignored?
+			}
+			else{
+				log.info("different operator?  that can't happen - can it?  ");
+			}
+			
 		}
 		return true;
 	}
