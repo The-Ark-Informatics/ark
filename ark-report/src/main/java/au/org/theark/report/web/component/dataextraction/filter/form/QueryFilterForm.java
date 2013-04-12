@@ -528,6 +528,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				(List<Operator>) operatorList, new EnumChoiceRenderer<Operator>(QueryFilterForm.this));
 
 		operatorDdc.setOutputMarkupId(true);
+		operatorDdc.setRequired(true);
 		operatorDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 			private static final long serialVersionUID = 1L;
 
