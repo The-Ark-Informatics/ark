@@ -1,15 +1,12 @@
 package au.org.theark.core.vo;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class DataExtractionVO {
 	private HashMap<String, ExtractionVO> demographicData = new HashMap<String, ExtractionVO>();
 	private HashMap<String, ExtractionVO> biocollectionData = new HashMap<String, ExtractionVO>();
 	private HashMap<String, ExtractionVO> biospecimenData = new HashMap<String, ExtractionVO>();
-//	private List<BioCollection> biocollections = new ArrayList<BioCollection>();
-//	private List<Biospecimen> biospecimens = new ArrayList<Biospecimen>();
-	//maybe it needs something more like above
-																//but if we just order/group by subject uid its should be fine
 
 	public HashMap<String, ExtractionVO> getDemographicData() {
 		return demographicData;
@@ -46,7 +43,7 @@ public class DataExtractionVO {
 		this.biospecimenData = biospecimenData;
 	}
 
-	/* I guess the key to each of these is infact a biospecimen uid and not a subject uid, and subjectUID is just a key value pair?  i am open to suggestions */
+	/*the key to each of these is infact a biospecimen uid and not a subject uid, and subjectUID is just a key value pair?  i am open to suggestions */
 	private HashMap<String, ExtractionVO> biospecimenCustomData = new HashMap<String, ExtractionVO>();
 
 	public HashMap<String, ExtractionVO> getBiospecimenCustomData() {
@@ -57,7 +54,7 @@ public class DataExtractionVO {
 		this.biospecimenCustomData = biospecimenCustomData;
 	}
 
-	/* I guess the key to each of these is infact a biocollection uid and not a subject uid, and subjectUID is just a key value pair?  i am open to suggestions */
+	/* the key to each of these is infact a biocollection uid and not a subject uid, and subjectUID is just a key value pair?  i am open to suggestions */
 	private HashMap<String, ExtractionVO> biocollectionCustomData = new HashMap<String, ExtractionVO>();
 
 	public HashMap<String, ExtractionVO> getBiocollectionCustomData() {
@@ -69,8 +66,9 @@ public class DataExtractionVO {
 	}
 	
 	
-	/* I guess the key to each of these is infact a pheno id and not a subject uid, and subjectUID is just a key value pair?  i am open to suggestions */
-	private HashMap<String, ExtractionVO> phenoCustomData = new HashMap<String, ExtractionVO>();
+	/* the key to each of these is infact a phenoCollection id and not a subject uid, and subjectUID is just a key value pair?  i am open to suggestions */
+	//notethat the linked hash map this time.  this might help order by subject then phenocollectionid
+	private HashMap<String, ExtractionVO> phenoCustomData = new LinkedHashMap<String, ExtractionVO>();
 
 	public HashMap<String, ExtractionVO> getPhenoCustomData() {
 		return phenoCustomData;
