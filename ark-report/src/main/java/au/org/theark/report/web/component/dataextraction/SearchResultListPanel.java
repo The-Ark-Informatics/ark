@@ -24,6 +24,7 @@ import java.util.Collection;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
@@ -34,6 +35,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.time.Duration;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.report.entity.BiocollectionField;
@@ -106,6 +108,7 @@ public class SearchResultListPanel extends Panel {
 		ajaxButton.setDefaultFormProcessing(false);
 		add(ajaxButton);
 		setOutputMarkupId(true);
+		add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
 	}
 
 	/**
@@ -313,9 +316,12 @@ public class SearchResultListPanel extends Panel {
 				try {
 					search.setStartTime(new java.util.Date(System.currentTimeMillis()));
 					search.setStatus("RUNNING");
+					search.setFinishTime(null);
 					iArkCommonService.update(search);
 					DataExtractionUploadExecutor task = new DataExtractionUploadExecutor(iArkCommonService, search.getId());//, studyId);
 					task.run();
+					target.add(SearchResultListPanel.this);
+					target.appendJavaScript("alert('Data files are being created as a background job. You may download when complete.');");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					System.out.println("TODO: decent logging and handling" + e.getMessage());
@@ -330,6 +336,14 @@ public class SearchResultListPanel extends Panel {
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				this.error("Unexpected Error: Could not process download request");
 			};
+			
+			@Override
+			public boolean isVisible() {
+				//TODO return correct status
+				return search.getStatus() != null || !search.getStatus().equalsIgnoreCase("FINISHED");
+				//return search.getStatus() != null && search.getStatus().equalsIgnoreCase("READY TO RUN") || true;
+			}
+			
 		};
 
 		ajaxButton.setVisible(true);
