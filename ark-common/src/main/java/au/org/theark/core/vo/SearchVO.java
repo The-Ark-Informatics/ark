@@ -38,7 +38,7 @@ public class SearchVO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Search search;
 	private List<Search> listOfSearchesForResultList = new ArrayList<Search>();
-	
+	private String subjectFileUpload;
 
 
 	// would be better if pallette could point to search.getDemographicFieldsToReturn 
@@ -87,6 +87,22 @@ public class SearchVO implements Serializable {
 	public void setListOfSearchesForResultList(
 			List<Search> listOfSearchesForResultList) {
 		this.listOfSearchesForResultList = listOfSearchesForResultList;
+	}
+
+
+	/**
+	 * @return the subjectFileUpload
+	 */
+	public String getSubjectFileUpload() {
+		return subjectFileUpload;
+	}
+
+
+	/**
+	 * @param subjectFileUpload the subjectFileUpload to set
+	 */
+	public void setSubjectFileUpload(String subjectFileUpload) {
+		this.subjectFileUpload = subjectFileUpload;
 	}
 
 
