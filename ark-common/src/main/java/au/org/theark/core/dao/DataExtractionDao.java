@@ -55,7 +55,7 @@ import au.org.theark.core.vo.ExtractionVO;
 @Repository("dataExtractionDao")
 public class DataExtractionDao<T> extends HibernateSessionDao implements IDataExtractionDao {
 	private static Logger	log	= LoggerFactory.getLogger(DataExtractionDao.class);
-	
+
 	/**
 	 * Simple export to CSV as first cut
 	 */
@@ -63,13 +63,13 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("SUBJECTDEMOGRAPHICS.csv");
 		final java.io.File file = new File(tempDir, filename);
-		if(filename == null || filename.isEmpty()) {
+		if (filename == null || filename.isEmpty()) {
 			filename = "exportcsv.csv";
 		}
-		
+
 		HashMap<String, ExtractionVO> hashOfSubjectsWithData = devo.getDemographicData();
 		HashMap<String, ExtractionVO> hashOfSubjectCustomData = devo.getSubjectCustomData();
-		
+
 		OutputStream outputStream;
 		try {
 			outputStream = new FileOutputStream(file);
@@ -80,40 +80,36 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			for (DemographicField df : allSubjectFields) {
 				csv.write(df.getPublicFieldName());
 			}
-			for(CustomFieldDisplay cfd : cfds) {
+			for (CustomFieldDisplay cfd : cfds) {
 				csv.write(cfd.getCustomField().getName());
 			}
-			
+
 			csv.endLine();
-			
+
 			for (String subjectUID : hashOfSubjectsWithData.keySet()) {
 				csv.write(subjectUID);
-				
+
 				for (DemographicField df : allSubjectFields) {
 					HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
 					csv.write(keyValues.get(df.getPublicFieldName()));
 				}
-				
+
 				/**
-				 * for (String subjectUID : hashOfSubjectsWithData.keySet()) {
-					HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
-					log.info(subjectUID + " has " + keyValues.size() + "demo fields"); 
-					// remove(subjectUID).getKeyValues().size() + "demo fields");
-					for (String key : keyValues.keySet()) {
-						log.info("     key=" + key + "\t   value=" + keyValues.get(key));
-					}
-				}
+				 * for (String subjectUID : hashOfSubjectsWithData.keySet()) { HashMap<String, String> keyValues =
+				 * hashOfSubjectsWithData.get(subjectUID).getKeyValues(); log.info(subjectUID + " has " + keyValues.size() + "demo fields"); //
+				 * remove(subjectUID).getKeyValues().size() + "demo fields"); for (String key : keyValues.keySet()) { log.info("     key=" + key +
+				 * "\t   value=" + keyValues.get(key)); } }
 				 */
 				ExtractionVO evo = hashOfSubjectCustomData.get(subjectUID);
-				if(evo != null) {
+				if (evo != null) {
 					HashMap<String, String> keyValues = evo.getKeyValues();
-					for(CustomFieldDisplay cfd : cfds) {
-						
+					for (CustomFieldDisplay cfd : cfds) {
+
 						String valueResult = keyValues.get(cfd.getCustomField().getName());
 						if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
 							try {
 								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-								String[] dateFormats = {au.org.theark.core.Constants.DD_MM_YYYY,au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S}; 
+								String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
 								Date date = DateUtils.parseDate(valueResult, dateFormats);
 								csv.write(dateFormat.format(date));
 							}
@@ -128,12 +124,11 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 				}
 				else {
 					// Write out a line with no values (no data existed for subject in question
-					for(CustomFieldDisplay cfd : cfds) {
+					for (CustomFieldDisplay cfd : cfds) {
 						csv.write("");
 					}
 				}
-					
-				
+
 				csv.endLine();
 			}
 			csv.close();
@@ -141,10 +136,10 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		catch (FileNotFoundException e) {
 			log.error(e.getMessage());
 		}
-		
+
 		return file;
 	}
-	
+
 	/**
 	 * 
 	 * Simple export to CSV as Biocollection Data
@@ -154,12 +149,16 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("BIOCOLLECTION.csv");
 		final java.io.File file = new File(tempDir, filename);
-		if(filename == null || filename.isEmpty()) {
+		if (filename == null || filename.isEmpty()) {
 			filename = "exportBiocollectioncsv.csv";
 		}
 		HashMap<String, ExtractionVO> hashOfBiocollectionsWithData = devo.getBiocollectionData();
-		HashMap<String, ExtractionVO> hashOfBiocollectionCustomData = devo.getBiospecimenCustomData();
-		
+		HashMap<String, ExtractionVO> hashOfBiocollectionCustomData = devo.getBiocollectionCustomData();
+
+		Set<String> bioCollectionUids = new HashSet<String>();
+		bioCollectionUids.addAll(hashOfBiocollectionsWithData.keySet());
+		bioCollectionUids.addAll(hashOfBiocollectionCustomData.keySet());
+
 		OutputStream outputStream;
 		try {
 			outputStream = new FileOutputStream(file);
@@ -170,51 +169,38 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			for (BiocollectionFieldSearch bcfs : search.getBiocollectionFieldsToReturn()) {
 				csv.write(bcfs.getBiocollectionField().getPublicFieldName());
 			}
-			for(CustomFieldDisplay cfd : cfds) {
+			for (CustomFieldDisplay cfd : cfds) {
 				csv.write(cfd.getCustomField().getName());
 			}
-			
+
 			csv.endLine();
-			
-			for (String biocollectionUID : hashOfBiocollectionsWithData.keySet()) {
+
+			for (String biocollectionUID : bioCollectionUids) {
 				csv.write(biocollectionUID);
-				
+
 				for (BiocollectionFieldSearch bcfs : search.getBiocollectionFieldsToReturn()) {
 					HashMap<String, String> keyValues = hashOfBiocollectionsWithData.get(biocollectionUID).getKeyValues();
 					csv.write(keyValues.get(bcfs.getBiocollectionField().getPublicFieldName()));
 				}
 				/*
-				for(CustomFieldDisplay cfd : cfds) {
-					HashMap<String, String> keyValues = hashOfBiocollectionCustomData.get(biocollectionUID).getKeyValues();
-					String valueResult = keyValues.get(cfd.getCustomField().getName());
-					if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
-						DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-						dateFormat.setLenient(false);
-						try {
-							String date = dateFormat.format(dateFormat.parse(valueResult));
-							csv.write(date);
-						}
-						catch (ParseException e) {
-							csv.write(valueResult);
-						}
-						csv.write(valueResult);
-					}
-					else {
-						csv.write(valueResult);
-					}
-				}
-				csv.endLine();*/
-				
+				 * for(CustomFieldDisplay cfd : cfds) { HashMap<String, String> keyValues =
+				 * hashOfBiocollectionCustomData.get(biocollectionUID).getKeyValues(); String valueResult = keyValues.get(cfd.getCustomField().getName());
+				 * if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) { DateFormat
+				 * dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY); dateFormat.setLenient(false); try { String date =
+				 * dateFormat.format(dateFormat.parse(valueResult)); csv.write(date); } catch (ParseException e) { csv.write(valueResult); }
+				 * csv.write(valueResult); } else { csv.write(valueResult); } } csv.endLine();
+				 */
+
 				ExtractionVO evo = hashOfBiocollectionCustomData.get(biocollectionUID);
-				if(evo != null) {
+				if (evo != null) {
 					HashMap<String, String> keyValues = evo.getKeyValues();
-					for(CustomFieldDisplay cfd : cfds) {
-						
+					for (CustomFieldDisplay cfd : cfds) {
+
 						String valueResult = keyValues.get(cfd.getCustomField().getName());
 						if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
 							try {
 								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-								String[] dateFormats = {au.org.theark.core.Constants.DD_MM_YYYY,au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S}; 
+								String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
 								Date date = DateUtils.parseDate(valueResult, dateFormats);
 								csv.write(dateFormat.format(date));
 							}
@@ -229,7 +215,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 				}
 				else {
 					// Write out a line with no values (no data existed for subject in question
-					for(CustomFieldDisplay cfd : cfds) {
+					for (CustomFieldDisplay cfd : cfds) {
 						csv.write("");
 					}
 				}
@@ -240,10 +226,10 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		catch (FileNotFoundException e) {
 			log.error(e.getMessage());
 		}
-		
+
 		return file;
 	}
-	
+
 	/**
 	 * 
 	 * Simple export to CSV as Biospecimen Data
@@ -253,17 +239,17 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("BIOSPECIMEN.csv");
 		final java.io.File file = new File(tempDir, filename);
-		if(filename == null || filename.isEmpty()) {
+		if (filename == null || filename.isEmpty()) {
 			filename = "exportBiospecimencsv.csv";
 		}
 		OutputStream outputStream;
 		HashMap<String, ExtractionVO> hashOfBiospecimensWithData = devo.getBiospecimenData();
 		HashMap<String, ExtractionVO> hashOfBiospecimenCustomData = devo.getBiospecimenCustomData();
-		
+
 		Set<String> biospecimens = new HashSet<String>();
 		biospecimens.addAll(hashOfBiospecimensWithData.keySet());
 		biospecimens.addAll(hashOfBiospecimenCustomData.keySet());
-		
+
 		try {
 			outputStream = new FileOutputStream(file);
 			CsvWriter csv = new CsvWriter(outputStream);
@@ -271,34 +257,34 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			// Header
 			csv.write("BIOSPECIMENUID");
 			for (BiospecimenField bsf : bsfs) {
-				if(!bsf.getPublicFieldName().equalsIgnoreCase("biospecimenUid"))
+				if (!bsf.getPublicFieldName().equalsIgnoreCase("biospecimenUid"))
 					csv.write(bsf.getPublicFieldName());
 			}
-			for(CustomFieldDisplay cfd : cfds) {
+			for (CustomFieldDisplay cfd : cfds) {
 				csv.write(cfd.getCustomField().getName());
 			}
 			csv.endLine();
-			
+
 			for (String biospecimenUID : biospecimens) {
 				csv.write(biospecimenUID);
-				
+
 				for (BiospecimenField bsf : bsfs) {
 					HashMap<String, String> keyValues = hashOfBiospecimensWithData.get(biospecimenUID).getKeyValues();
-					if(!bsf.getPublicFieldName().equalsIgnoreCase("biospecimenUid"))
+					if (!bsf.getPublicFieldName().equalsIgnoreCase("biospecimenUid"))
 						csv.write(keyValues.get(bsf.getPublicFieldName()));
 				}
-				
+
 				ExtractionVO evo = new ExtractionVO();
 				evo = hashOfBiospecimenCustomData.get(biospecimenUID);
-				if(evo != null) {
+				if (evo != null) {
 					HashMap<String, String> keyValues = evo.getKeyValues();
-					for(CustomFieldDisplay cfd : cfds) {
-						
+					for (CustomFieldDisplay cfd : cfds) {
+
 						String valueResult = keyValues.get(cfd.getCustomField().getName());
 						if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
 							try {
 								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-								String[] dateFormats = {au.org.theark.core.Constants.DD_MM_YYYY,au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S}; 
+								String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
 								Date date = DateUtils.parseDate(valueResult, dateFormats);
 								csv.write(dateFormat.format(date));
 							}
@@ -313,7 +299,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 				}
 				else {
 					// Write out a line with no values (no data existed for subject in question
-					for(CustomFieldDisplay cfd : cfds) {
+					for (CustomFieldDisplay cfd : cfds) {
 						csv.write("");
 					}
 				}
@@ -324,18 +310,18 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		catch (FileNotFoundException e) {
 			log.error(e.getMessage());
 		}
-		
+
 		return file;
 	}
-	
+
 	public File createBiospecimenDataCustomCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
 		HashMap<String, ExtractionVO> hashOfBiospecimenCustomData = devo.getBiospecimenCustomData();
 		log.info(" writing out biospecimenCustomData " + hashOfBiospecimenCustomData.size() + " entries for category '" + fieldCategory + "'");
-		
+
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("BIOSPECIMENCUSTOMDATA.csv");
 		final java.io.File file = new File(tempDir, filename);
-		if(filename == null || filename.isEmpty()) {
+		if (filename == null || filename.isEmpty()) {
 			filename = "exportBiospecimenCustomcsv.csv";
 		}
 		OutputStream outputStream;
@@ -344,18 +330,18 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			CsvWriter csv = new CsvWriter(outputStream);
 
 			csv.write("SUBJECTUID");
-			
+
 			// Header
-			
+
 			for (String key : hashOfBiospecimenCustomData.keySet()) {
 				HashMap<String, String> keyValues = hashOfBiospecimenCustomData.get(key).getKeyValues();
-				for(String key2 : keyValues.keySet()){
+				for (String key2 : keyValues.keySet()) {
 					csv.write(key2);
 				}
 				break;
 			}
 			csv.endLine();
-			
+
 			for (String subjectUID : hashOfBiospecimenCustomData.keySet()) {
 				HashMap<String, String> keyValues = hashOfBiospecimenCustomData.get(subjectUID).getKeyValues();
 				for (String key : keyValues.keySet()) {
@@ -368,7 +354,28 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		catch (FileNotFoundException e) {
 			log.error(e.getMessage());
 		}
-		
+
+		return file;
+	}
+	
+	public File listToCSV(List<String> list) {
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		String filename = new String("tmp.csv");
+		final java.io.File file = new File(tempDir, filename);
+
+		OutputStream outputStream;
+		try {
+			outputStream = new FileOutputStream(file);
+			CsvWriter csv = new CsvWriter(outputStream);
+			
+			for (String value : list){
+				csv.write(value);
+				csv.endLine();
+			}
+		}
+		catch(FileNotFoundException fne){
+			
+		}
 		return file;
 	}
 }
