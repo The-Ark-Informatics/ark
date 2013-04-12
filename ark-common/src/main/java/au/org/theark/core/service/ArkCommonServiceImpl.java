@@ -79,6 +79,7 @@ import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.report.entity.SearchPayload;
 import au.org.theark.core.model.report.entity.SearchResult;
+import au.org.theark.core.model.report.entity.SearchSubject;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -1381,4 +1382,22 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<Relationship> getFamilyRelationships(){
 		return studyDao.getFamilyRelationships();
 	}
+
+	public List<SearchSubject> getSearchSubjects() {
+		return studyDao.getSearchSubjects();
+	}
+
+	public void createSearchSubjects(Search search, List subjectVos) {
+		List<SearchSubject> searchSubjects = new ArrayList<SearchSubject>();
+		
+		for (Iterator iterator = subjectVos.iterator(); iterator.hasNext();) {
+			SubjectVO subjectVo = (SubjectVO) iterator.next();	
+			SearchSubject searchSubject = new SearchSubject();
+			searchSubject.setSearch(search);
+			searchSubject.setLinkSubjectStudy(subjectVo.getLinkSubjectStudy());
+			searchSubjects.add(searchSubject);
+		}	
+		studyDao.createSearchSubjects(search, searchSubjects);
+	}
+	
 }
