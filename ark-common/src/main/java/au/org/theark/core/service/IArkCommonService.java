@@ -48,6 +48,7 @@ import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.report.entity.SearchPayload;
 import au.org.theark.core.model.report.entity.SearchResult;
+import au.org.theark.core.model.report.entity.SearchSubject;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -794,5 +795,8 @@ public interface IArkCommonService<T> {
 	public List<SearchResult> getSearchResultList(Long searchResultId);
 	
 	public List<Relationship> getFamilyRelationships();
+
+	public List<SearchSubject> getSearchSubjects();
 	
+	public void createSearchSubjects(Search search, List<SubjectVO> subjectVos);
 }
