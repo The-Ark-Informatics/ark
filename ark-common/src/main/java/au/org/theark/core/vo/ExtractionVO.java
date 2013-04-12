@@ -3,18 +3,21 @@ package au.org.theark.core.vo;
 import java.util.HashMap;
 
 public class ExtractionVO {
-//	private String subjectId;//keeping it a bit stupid and ignorant of entities for rapid moves to other formats
+	/*
+	 * This is only used in pheno now.  Maybe subclass/interface this later instead
+	 */
+	private String subjectUid;//keeping it a bit stupid and ignorant of entities for rapid moves to other formats
 	//private String studyId;
 	private HashMap<String, String> keyValues = new HashMap<String, String>();
 	
-	/*public String getSubjectId() {
-		return subjectId;
+	public String getSubjectUid() {
+		return subjectUid;
 	}
 	
-	public void setSubjectId(String subjectId) {
-		this.subjectId = subjectId;
+	public void setSubjectUid(String subjectUid) {
+		this.subjectUid = subjectUid;
 	}
-	public String getStudyId() {
+	/*public String getStudyId() {
 		return studyId;
 	}
 	

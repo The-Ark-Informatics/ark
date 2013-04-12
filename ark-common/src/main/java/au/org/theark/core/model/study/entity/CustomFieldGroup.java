@@ -127,5 +127,21 @@ public class CustomFieldGroup implements Serializable {
 	public void setArkFunction(ArkFunction arkFunction) {
 		this.arkFunction = arkFunction;
 	}
+	
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CustomFieldGroup other = (CustomFieldGroup) obj;
+		if(other.getId() == this.getId())
+			return true;
+		return false;
+	}
 
 }
