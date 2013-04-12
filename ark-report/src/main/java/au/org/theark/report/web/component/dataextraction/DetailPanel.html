@@ -2,45 +2,53 @@
 	&nbsp;
 	<form wicket:id="detailsForm">
 		<div class="detailsPanelBorder">
-		  <div wicket:id="detailFormContainer">
-			<div class="detailPanelBreaker">&nbsp;</div>
-			
-			<!-- Row 1 search ID and Name -->
-			
-			<div class="panelContentLeft">&nbsp;</div>
-			
-			<div class="fldLabel">
-				<div class="label">
-					<label for="search.id">
-						<wicket:message key="search.id">Search Id:</wicket:message>
-					</label>
+			<div wicket:id="detailFormContainer">
+				<div class="detailPanelBreaker">
+					&nbsp;
 				</div>
-			</div>
-			<div class="fldControl">
-				<div class="label">
-					<input wicket:id="search.id" type="text" />
+
+				<!-- Row 1 search ID and Name -->
+
+				<div class="panelContentLeft">
+					&nbsp;
 				</div>
-			</div>
-			
-			<div class="panelMargin">&nbsp;</div>
-			
-			<div class="fldLabel">
-				<div class="label">
-					<label for="searchName"><wicket:message	key="search.name">Name:</wicket:message></label>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="search.id">
+							<wicket:message key="search.id">
+								Search Id:
+							</wicket:message>
+						</label>
+					</div>
 				</div>
-			</div>
-			<div class="fldControl">
-				<div class="label">
-					<input wicket:id="search.name" type="text" /> 
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="search.id" type="text" />
+					</div>
 				</div>
-			</div>
-			
-			
-			
-			
-			
-	<!-- start row 2-->		
-			
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="searchName">
+							<wicket:message	key="search.name">
+								Name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<div class="label">
+						<input wicket:id="search.name" type="text" />
+					</div>
+				</div>
+
+				<!-- start row 2-->
+
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
@@ -65,10 +73,11 @@
 				<div class="fldControl">
 					&nbsp;
 				</div>
-			
-			
-			<div class="panelMargin">&nbsp;</div>
-			
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
 
 				<div class="fldLabel">
 					<div class="label">
@@ -86,17 +95,11 @@
 				<div class="fldControl">
 					&nbsp;
 				</div>
-			
-	<!--  end row2 -->		
-		
-			
-			
-			
-			
-			
-			
-	<!-- start row 3-->		
-			
+
+				<!--	end row2 -->
+
+				<!-- start row 3-->
+
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
@@ -104,15 +107,13 @@
 				<div class="panelContentLeft">
 					&nbsp;
 				</div>
-
-
 				<div class="fldLabel">
 					<div class="label">
 						<label for="applicationModules">
-							<wicket:message	key="search.biospecimenCustomFieldDisplaysToReturn">
-								biospecimen custom Fields To Return
+							<wicket:message	key="search.biocollectionFieldsToReturn">
+								Biocollection Fields To Return
 							</wicket:message>
-							<span wicket:id="selectedBiospecimenCustomFieldDisplays">
+							<span wicket:id="selectedBiocollectionFields">
 								[Palette]
 							</span>
 						</label>
@@ -122,9 +123,10 @@
 				<div class="fldControl">
 					&nbsp;
 				</div>
-			
-			<div class="panelMargin">&nbsp;</div>
-			
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
 
 				<div class="fldLabel">
 					<div class="label">
@@ -142,16 +144,11 @@
 				<div class="fldControl">
 					&nbsp;
 				</div>
-			
-	<!--  end row 3-->		
-		
-			
-			
-			
-			
-			
-	<!-- start row 4-->		
-			
+
+				<!--	end row 3-->
+
+				<!-- start row 4-->
+
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
@@ -163,49 +160,41 @@
 
 				<div class="fldLabel">
 					<div class="label">
-						<label for="applicationModules">
-							<wicket:message	key="search.biospecimenFieldsToReturn">
-								biospecimen Fields To Return
-							</wicket:message>
-							<span wicket:id="selectedBiospecimenFields">
-								[Palette]
-							</span>
-						</label>
+						<wicket:message	key="search.biospecimenFieldsToReturn">
+							biospecimen Fields To Return
+						</wicket:message>
+						<span wicket:id="selectedBiospecimenFields">
+							[Palette]
+						</span>
 					</div>
 				</div>
 
 				<div class="fldControl">
 					&nbsp;
 				</div>
-			
-			<div class="panelMargin">&nbsp;</div>
-			
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+
+				<!--	end row 4	-->
 
 				<div class="fldLabel">
 					<div class="label">
 						<label for="applicationModules">
-							<wicket:message	key="search.biocollectionFieldsToReturn">
-								Biocollection Fields To Return
+							<wicket:message	key="search.biospecimenCustomFieldDisplaysToReturn">
+								biospecimen custom Fields To Return
 							</wicket:message>
-							<span wicket:id="selectedBiocollectionFields">
+							<span wicket:id="selectedBiospecimenCustomFieldDisplays">
 								[Palette]
 							</span>
 						</label>
 					</div>
 				</div>
 
-				<div class="fldControl">
-					&nbsp;
-				</div>
-			
-	<!--  end row 4	-->		
-		
-			
-			
-			
-			
-	<!-- start row 5-->		
-			
+				<!-- start row 5-->
+
 				<div class="detailPanelBreaker">
 					&nbsp;
 				</div>
@@ -230,93 +219,93 @@
 				<div class="fldControl">
 					&nbsp;
 				</div>
-			
-			<div class="panelMargin">&nbsp;</div>
-			
-			
-			
-	
 
-				<div class="fldLabel">
-					<div class="label">	  	
-		  				<input wicket:id="createFilters" type="submit" value="Create Filters" />
-		  				
-			<div wicket:id="detailModalWindow">&nbsp;</div>
-					</div>
-				</div>
-				<!--  div class="fldLabel">
-					<div class="label">
-						<label for="applicationModules">
-							<wicket:message	key="search.phenoCustomFieldDisplaysToReturn">
-								pheno custom Fields To Return
-							</wicket:message>
-							<span wicket:id="selectedPhenoCustomFieldDisplays">
-								[Palette]
-							</span>
-						</label>
-					</div>
-				</div>
-
-				<div class="fldControl">
+				<div class="panelMargin">
 					&nbsp;
 				</div>
-			-->
-	<!--  end row 5-->		
-		
-		
-			<div class="detailPanelBreaker">&nbsp;</div>
-	
-	
-			
-			<!-- 
-			<div class="panelContentLeft">&nbsp;</div>
-			
-			<div class="fldLabel">
-				<div class="label">
-					<label for="studyKey">
-						<wicket:message key="study.component.description">Description:</wicket:message>
-					</label>
+
+				<div class="fldLabel">
+					<div class="label">
+						<input wicket:id="createFilters" type="submit" value="Create Filters" />
+
+						<div wicket:id="detailModalWindow">
+							&nbsp;
+						</div>
+					</div>
+
+					<br>
+
+					<div>
+						<wicket:message	key="subjectFileUploadLabel">
+							[Link Subjects from a list:]
+						</wicket:message>
+						<div class="note">
+							<wicket:message	key="subjectFileUploadLabel.note">
+								[Note replaced from properties]
+							</wicket:message>
+						</div>
+					</div>
+
+					<div class="fldControl">
+						<input wicket:id="subjectFileUpload" type="file" />
+					</div>
+					<span wicket:id="downloadSubjectList"></span>
 				</div>
-			</div>
-			<div class="fldControl">
-				<div class="label">
-					<textarea wicket:id="studyComponent.description" cols="25"></textarea> 
+				<!--
+					div class="fldLabel"> <div class="label"> <label for="applicationModules"> <wicket:message key="search.phenoCustomFieldDisplaysToReturn">
+					pheno custom Fields To Return </wicket:message> <span wicket:id="selectedPhenoCustomFieldDisplays"> [Palette] </span> </label> </div> </div>
+					<div class="fldControl"> &nbsp; </div>
+				-->
+				<!--	end row 5-->
+
+
+				<div class="detailPanelBreaker">
+					&nbsp;
 				</div>
-			</div>
-			
-			<div class="panelMargin">&nbsp;</div>
-			
-			<div class="fldLabel">
-				<div class="label">
-					<label for="componentKeyword"><wicket:message	key="study.component.keyword">Keyword:</wicket:message></label> 
+
+
+				<!--
+					<div class="panelContentLeft">&nbsp;</div> <div class="fldLabel"> <div class="label"> <label for="studyKey"> <wicket:message
+					key="study.component.description">Description:</wicket:message> </label> </div> </div> <div class="fldControl"> <div class="label">
+					<textarea wicket:id="studyComponent.description" cols="25"></textarea> </div> </div> <div class="panelMargin">&nbsp;</div> <div
+					class="fldLabel"> <div class="label"> <label for="componentKeyword"><wicket:message
+					key="study.component.keyword">Keyword:</wicket:message></label> </div> </div> <div class="fldControl"> <div class="label" > <textarea
+					wicket:id="studyComponent.keyword" cols="25"></textarea> </div> </div>
+				-->
+
+				<div class="detailPanelBreaker">
+					&nbsp;
 				</div>
+
 			</div>
-			<div class="fldControl">
-				<div class="label" >
-					<textarea wicket:id="studyComponent.keyword" cols="25"></textarea> 
-				</div>
-			</div>
-			
-			-->
-		
-			<div class="detailPanelBreaker">&nbsp;</div>
-				
-			</div>
-			
-			<!--  Row 2 Action Buttons -->
-			
+
+			<!--	Row 2 Action Buttons -->
+
 			<div wicket:id="editButtonContainer">
-				<div class="fldLabel">&nbsp;</div>
-				<div class="fldControl">&nbsp;</div>
-				<div class="panelMargin">&nbsp;</div>
-				<div class="actionButtons">&nbsp;
+				<div class="fldLabel">
+					&nbsp;
+				</div>
+				<div class="fldControl">
+					&nbsp;
+				</div>
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+				<div class="actionButtons">
+					&nbsp;
 					<div class="label">
-					  <input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
-					  <div class="panelMargin">&nbsp;</div>
-					  <input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />&nbsp;
-					  <div class="panelMargin">&nbsp;</div>
-					  <input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
-				  	</div>
+						<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+						&nbsp;
+						<div class="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+						&nbsp;
+						<div class="panelMargin">
+							&nbsp;
+						</div>
+						<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />
+					</div>
 				</div>
 			</div>
 		</div>

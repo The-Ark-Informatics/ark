@@ -19,15 +19,19 @@
 package au.org.theark.report.web.component.dataextraction.form;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -50,6 +54,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.QueryFilterListVO;
 import au.org.theark.core.vo.SearchVO;
+import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.palette.ArkPalette;
@@ -81,6 +86,9 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	private Palette<CustomFieldDisplay>	biospecimenCustomFieldDisplaysToReturnPalette;
 	private Palette<CustomFieldDisplay>	biocollectionCustomFieldDisplaysToReturnPalette;
 	
+	private FileUploadField		subjectListFileUploadField;
+	private String subjectFileUpload;
+	
 	/**
 	 * 
 	 * @param id
@@ -94,6 +102,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
 		this.modalWindow = modalWindow;
+		
+		subjectListFileUploadField = new FileUploadField("subjectFileUpload");
 	}
 
 	public void onBeforeRender() {
@@ -126,7 +136,16 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		initSubjectCustomFieldDisplaysModulePalette();
 		initBiospecimenCustomFieldDisplaysModulePalette();
 		initBiocollectionCustomFieldDisplaysModulePalette();
+		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectListFileUploadField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(new AjaxLink("downloadSubjectList"){
 
+			@Override
+			public void onClick(AjaxRequestTarget target) {
+				// TODO Auto-generated method stub
+				target.appendJavaScript("alert('Link clicked');");
+			}
+			
+		});
 		addDetailFormComponents();
 		attachValidators();
 	}
@@ -224,6 +243,12 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		try {
 
 			containerForm.getModelObject().getSearch().setStudy(study);
+			containerForm.getModelObject().getSearch().setStatus("READY TO RUN");
+			containerForm.getModelObject().getSearch().setFinishTime(null);
+			
+			FileUpload subjectFileUpload = subjectListFileUploadField.getFileUpload();
+			List<SubjectVO> selectedSubjects = iArkCommonService.matchSubjectsFromInputFile(subjectFileUpload, study);
+			iArkCommonService.createSearchSubjects(containerForm.getModelObject().getSearch(), selectedSubjects);
 
 			if (containerForm.getModelObject().getSearch().getId() == null) {
 
@@ -245,7 +270,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 		}
 		catch (EntityExistsException e) {
-			this.error("A Study Component with the same name already exists for this study.");
+			this.error("A search with the same name already exists for this study.");
 			processErrors(target);
 		}
 
