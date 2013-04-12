@@ -77,6 +77,7 @@ import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.report.entity.SearchPayload;
 import au.org.theark.core.model.report.entity.SearchResult;
+import au.org.theark.core.model.report.entity.SearchSubject;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -1276,29 +1277,31 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		List<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
 		List<String> subjectUidList = new ArrayList<String>(0);
 
-		try {
-			subjectUidList = CsvListReader.readColumnIntoList(subjectFileUpload.getInputStream());
-		}
-		catch (IOException e) {
-			log.error("Error in Subject list file");
-			return subjectVOList;
-		}
-
-		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
-		criteria.add(Restrictions.eq("study", study));
-		criteria.add(Restrictions.in("subjectUID", subjectUidList));
-		List<LinkSubjectStudy> subjectList = criteria.list();
-
-		for (Iterator<LinkSubjectStudy> iterator = subjectList.iterator(); iterator.hasNext();) {
-			LinkSubjectStudy linkSubjectStudy = (LinkSubjectStudy) iterator.next();
-			// Place the LinkSubjectStudy instance into a SubjectVO and add the
-			// SubjectVO into a List
-			SubjectVO subject = new SubjectVO();
-			subject.setSubjectUID(linkSubjectStudy.getSubjectUID());
-			subject.setLinkSubjectStudy(linkSubjectStudy);
-			Person person = subject.getLinkSubjectStudy().getPerson();
-			subject.setSubjectPreviousLastname(getPreviousLastname(person));
-			subjectVOList.add(subject);
+		if(subjectFileUpload != null) {
+			try {
+				subjectUidList = CsvListReader.readColumnIntoList(subjectFileUpload.getInputStream());
+			}
+			catch (IOException e) {
+				log.error("Error in Subject list file");
+				return subjectVOList;
+			}
+	
+			Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
+			criteria.add(Restrictions.eq("study", study));
+			criteria.add(Restrictions.in("subjectUID", subjectUidList));
+			List<LinkSubjectStudy> subjectList = criteria.list();
+	
+			for (Iterator<LinkSubjectStudy> iterator = subjectList.iterator(); iterator.hasNext();) {
+				LinkSubjectStudy linkSubjectStudy = (LinkSubjectStudy) iterator.next();
+				// Place the LinkSubjectStudy instance into a SubjectVO and add the
+				// SubjectVO into a List
+				SubjectVO subject = new SubjectVO();
+				subject.setSubjectUID(linkSubjectStudy.getSubjectUID());
+				subject.setLinkSubjectStudy(linkSubjectStudy);
+				//Person person = subject.getLinkSubjectStudy().getPerson();
+				//subject.setSubjectPreviousLastname(getPreviousLastname(person));
+				subjectVOList.add(subject);
+			}
 		}
 		return subjectVOList;
 	}
@@ -1560,7 +1563,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("study", study));
 		List<Search> searchList = criteria.list();
 		for (Search search : searchList) {
-			log.info(search.getName() + search.getId());
+			//log.info(search.getName() + search.getId());
 		}
 		return searchList;
 	}
@@ -1978,7 +1981,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 
 			List<Long> bioCollectionIdsAfterFiltering = new ArrayList<Long>();
-			addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);
+			bioCollectionIdsAfterFiltering = addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);
 			log.info("uidsafterFiltering doing the construction of megaobject=" + idsAfterFiltering.size());
 			//NOW just use thilina method above but make sure it FILTERS!!! 	uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol=" + idsAfterFiltering.size());
@@ -2033,15 +2036,27 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		//TODO ASAP  Apply external list of subjectUID as a restriction
 		String personFilters = getPersonFilters(search, null);
 		String lssAndPersonFilters = getLSSFilters(search, personFilters);
+		List<Long> subjectList = getSubjectIdsforSearch(search);
 		
 		/**
 		 * note that this is ID not subject_uid being selected
 		 */
-		String queryString = "select distinct lss.id from LinkSubjectStudy lss " 
+		String queryString = "select distinct lss.id from LinkSubjectStudy lss" 
 				//TODO also add filters for phone and address 
 				+ " where lss.study.id = " + search.getStudy().getId()
 				+ lssAndPersonFilters + " ";
-		subjectUIDs = getSession().createQuery(queryString).list();
+		
+		Query query = null;
+		if(subjectList.isEmpty()){
+			query = getSession().createQuery(queryString);
+		}
+		else{
+			queryString = queryString + " and lss.id in (:subjectIdList) ";
+			query = getSession().createQuery(queryString);
+			query.setParameterList("subjectIdList", subjectList);
+		}		
+		
+		subjectUIDs = query.list();
 		log.info("size=" + subjectUIDs.size());
 
 		return subjectUIDs;
@@ -2414,7 +2429,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	 */
 	private List<Long> applyBioCollectionCustomFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude, List<Long> bioCollectionIdsAfterFiltering){
 //		List<Long> bioCollectionIdsToInclude = new ArrayList<Long>();
-		if(idsToInclude!=null && !idsToInclude.isEmpty()){
+		if(idsToInclude!=null && !idsToInclude.isEmpty() && !bioCollectionIdsAfterFiltering.isEmpty()){
 			String queryToFilterBioCollectionIDs = getBioCollectionDataCustomFieldIdQuery(search);
 			
 			//Collection<CustomFieldDisplay> cfdsToReturn = getSelectedBioCollectionCustomFieldDisplaysForSearch(search);
@@ -2458,23 +2473,24 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 
 			ExtractionVO valuesForThisBiocollection = new ExtractionVO();
 			HashMap<String, String> map = null;
-			Long previousBioCollectionId = null;
+			String previousBioCollectionUid = null;
 			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
 			for (BioCollectionCustomFieldData data : scfData) {
 				
-				if(previousBioCollectionId==null){
+				if(previousBioCollectionUid==null){
 					map = new HashMap<String, String>();
-					previousBioCollectionId = data.getBioCollection().getId();
+					previousBioCollectionUid = data.getBioCollection().getBiocollectionUid();
 				}
-				else if(data.getBioCollection().getId().equals(previousBioCollectionId)){
+				else if(data.getBioCollection().getBiocollectionUid().equals(previousBioCollectionUid)){
 					//then just put the data in
 				}
 				else{	//if its a new LSS finalize previous map, etc
 					valuesForThisBiocollection.setKeyValues(map);
-					hashOfBioCollectionsWithTheirBioCollectionCustomData.put(data.getBioCollection().getBiocollectionUid(), valuesForThisBiocollection);	
-					previousBioCollectionId = data.getBioCollection().getId();
+					hashOfBioCollectionsWithTheirBioCollectionCustomData.put(previousBioCollectionUid, valuesForThisBiocollection);	
+					
 					map = new HashMap<String, String>();//reset
 					valuesForThisBiocollection = new ExtractionVO();
+					previousBioCollectionUid = data.getBioCollection().getBiocollectionUid();
 				}
 
 				//if any error value, then just use that - though, yet again I really question the acceptance of error data
@@ -2496,12 +2512,12 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 			}
 			
 			//finalize the last entered key value sets/extraction VOs
-			if(map!=null && previousBioCollectionId!=null){
+			if(map!=null && previousBioCollectionUid!=null){
 				
-				BioCollection b = (BioCollection) getSession().get(BioCollection.class, previousBioCollectionId);
+				//BioCollection b = (BioCollection) getSession().get(BioCollection.class, previousBioCollectionUid);
 				
 				valuesForThisBiocollection.setKeyValues(map);
-				hashOfBioCollectionsWithTheirBioCollectionCustomData.put(b.getBiocollectionUid(), valuesForThisBiocollection);
+				hashOfBioCollectionsWithTheirBioCollectionCustomData.put(previousBioCollectionUid, valuesForThisBiocollection);
 			}
 			
 			//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
@@ -2637,6 +2653,14 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 							+ " where bio.id in (:bioCollectionIdsToInclude) ";
 		Query query = getSession().createQuery(queryString);
 		query.setParameterList("bioCollectionIdsToInclude", bioCollectionIdsToInclude);
+		return query.list();
+	}
+	
+	private List<Long> getBioCollectionIdForSubjectIds(List<Long> subjectIds) {
+		String queryString = "select bc.id from BioCollection bc " 
+							+ " where bc.linkSubjectStudy.id in (:subjectIds) ";
+		Query query = getSession().createQuery(queryString);
+		query.setParameterList("subjectIds", subjectIds);
 		return query.list();
 	}
 
@@ -3797,7 +3821,7 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
 			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search, List<Long> idsAfterFiltering) {
 		log.info("in addDataFromMegaDemographicQuery");																						//if no id's, no need to run this
-		if (!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty() && !idsAfterFiltering.isEmpty()) { // hasEmailFields(dfs)
+		if ((!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty()) && !idsAfterFiltering.isEmpty()) { // hasEmailFields(dfs)
 			//note.  filtering is happening previously...we then do the fetch when we have narrowed down the list of subjects to save a lot of processing
 			String queryString = "select distinct lss "
 					+ // , address, lss, email " +
@@ -3834,9 +3858,18 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 	}
 	
 	
-	private void addDataFromMegaBiocollectionQuery(DataExtractionVO allTheData,Collection<BiocollectionField> biocollectionFields,Collection<CustomFieldDisplay> collectionCFDs,
+	private List<Long> addDataFromMegaBiocollectionQuery(DataExtractionVO allTheData,Collection<BiocollectionField> biocollectionFields,Collection<CustomFieldDisplay> collectionCFDs,
 			Search search, List<Long> idsToInclude, List<Long> biocollectionIdsAfterFiltering ){
 		String bioCollectionFilters = getBiocollectionFilters(search);
+		
+		if(biocollectionFields.isEmpty() && bioCollectionFilters.isEmpty() ) {
+			if(idsToInclude.isEmpty()) {
+				// no need
+			}
+			else {
+				biocollectionIdsAfterFiltering = getBioCollectionIdForSubjectIds(idsToInclude);
+			}
+		}
 		
 		if(!idsToInclude.isEmpty() && (!bioCollectionFilters.isEmpty() || !biocollectionFields.isEmpty())){
 			
@@ -3879,8 +3912,10 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 				sev.setKeyValues(constructKeyValueHashmap(bioCollection,biocollectionFields));
 				hashOfBiocollectionData.put(bioCollection.getBiocollectionUid(), sev);
 			}*/
+		
 			
 		}
+		return biocollectionIdsAfterFiltering;
 	}
 
 
@@ -4069,4 +4104,39 @@ hashOfSubjectsWithTheirSubjectCustomData.put(lss.getSubjectUID(), sev);
 		Criteria criteria = getSession().createCriteria(Relationship.class);
 		return criteria.list();
 	}
+	
+	public List<SearchSubject> getSearchSubjects() {
+		Criteria criteria = getSession().createCriteria(SearchSubject.class);
+		return criteria.list();
+	}
+	
+	public List<Long> getSubjectIdsforSearch(Search search) {
+		List<LinkSubjectStudy> subjects;
+		Criteria criteria = getSession().createCriteria(SearchSubject.class);
+		criteria.add(Restrictions.eq("search", search));
+		criteria.setProjection(Projections.property("linkSubjectStudy.id"));
+		return criteria.list();
+	}
+	
+	public void createSearchSubjects(Search search, List<SearchSubject> searchSubjects) {
+		Criteria criteria = getSession().createCriteria(SearchSubject.class);
+		criteria.add(Restrictions.eq("search", search));
+		List<SearchSubject> searchResults = criteria.list();
+		for (SearchSubject searchSubject : searchResults) {
+			deleteSearchSubject(searchSubject);
+		}
+		
+		
+		for (Iterator iterator = searchSubjects.iterator(); iterator.hasNext();) {
+			SearchSubject searchSubject = (SearchSubject) iterator.next();
+			getSession().save(searchSubject);
+		}
+	}
+
+	private void deleteSearchSubject(SearchSubject searchSubject) {
+		getSession().delete(searchSubject);
+	}
+
+
+	
 }
