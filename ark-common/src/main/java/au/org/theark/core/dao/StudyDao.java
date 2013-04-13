@@ -1976,11 +1976,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//NOW just use thilina method above but make sure it FILTERS!!! 
 			//uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFilteringbiospec=" + idsAfterFiltering.size());
-			//TODO wipe the old data which doesn't still match the ID list
 			idsAfterFiltering = applyBiospecimenCustomFilters(allTheData, search, idsAfterFiltering, biospecimenIdsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering=Biospec cust" + idsAfterFiltering.size());
+			
 			//TODO wipe the old data which doesn't still match the ID list
-
+			wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering);
 
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getBiospecimenCustomData(), FieldCategory.BIOSPECIMEN_FIELD);
 			
@@ -1993,11 +1993,16 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			idsAfterFiltering = applyBioCollectionCustomFilters(allTheData, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol cust=" + idsAfterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
-			
+			wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering);
+			wipeBiocollectionDataNotMatchThisList(allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering);
+
+
 			idsAfterFiltering = applyPhenoCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering pheno cust=" + idsAfterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
-			
+
+			wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering); //dont need to pass in pheno ids, because any filtering effective there will just be able to be used via the subject list.
+			wipeBiocollectionDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering,  idsAfterFiltering);
 
 			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
@@ -2034,6 +2039,23 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private void wipeBiocollectionDataNotMatchThisList(
+			DataExtractionVO allTheData,
+			List<Long> bioCollectionIdsAfterFiltering,
+			List<Long> idsAfterFiltering, List<Long> idsAfterFiltering2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void wipeBiospecimenDataNotMatchThisList(
+			DataExtractionVO allTheData,
+			List<Long> biospecimenIdsAfterFiltering,
+			List<Long> bioCollectionIdsAfterFiltering,
+			List<Long> idsAfterFiltering) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private List<Long> applyDemographicFilters(Search search){
