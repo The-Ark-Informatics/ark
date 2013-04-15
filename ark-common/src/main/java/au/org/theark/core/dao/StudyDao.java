@@ -2606,19 +2606,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	private Collection<CustomFieldGroup> getCustomFieldGroupsForPhenoFilters(Search search, Set<QueryFilter> filters) {
 		ArkFunction arkFunction = getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION);
 		List<CustomFieldDisplay> customFieldDisplaysForStudy = getCustomFieldDisplaysIn(search.getStudy(), arkFunction);
-		Set<CustomFieldGroup> customFieldGroupsToReturn = new HashSet<CustomFieldGroup>();
-		
+		Set<CustomFieldGroup> customFieldGroupsToReturn = new HashSet<CustomFieldGroup>();	
 		
 		for(QueryFilter qf : filters){
 			if(qf.getCustomFieldDisplay()!=null && customFieldDisplaysForStudy.contains(qf.getCustomFieldDisplay())){
 				customFieldGroupsToReturn.add(qf.getCustomFieldDisplay().getCustomFieldGroup());
 			}
-		}/*
-		String queryString = " 	select distinct cfg C" +
-							"	from  CustomFieldGroup cfg " +
-							"	where cfg.id in ("
-							
-		return null;*/
+		}
+
 		return customFieldGroupsToReturn;
 	}
 
