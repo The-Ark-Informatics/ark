@@ -2041,6 +2041,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
+	private void wipeBiospecimenDataNotMatchThisList(
+			DataExtractionVO allTheData, List<Long> biospecimenIdsAfterFiltering) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void wipeBiocollectionDataNotMatchThisList(
+			DataExtractionVO allTheData,
+			List<Long> bioCollectionIdsAfterFiltering,
+			List<Long> idsAfterFiltering) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void wipeBiocollectionDataNotMatchThisList(
 			DataExtractionVO allTheData,
 			List<Long> bioCollectionIdsAfterFiltering,
