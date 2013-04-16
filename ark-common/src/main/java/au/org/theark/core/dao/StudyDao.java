@@ -2033,13 +2033,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
+	
+	/*allthedata might not b as good as just the bit we want */
 	private void wipeBiospecimenDataNotMatchThisList(
 			DataExtractionVO allTheData, List<Long> biospecimenIdsAfterFiltering) {
 		// TODO Auto-generated method stub
 		/* something like this
 		HashMap = allTheData.getBiospecimenData()
-		for (; ) {
-			<#statements#>
+		for (; each biospecimen in data file / VO ) {
+			if it doesn't exist in the listofbiospecimens{
+				delete it from data
+			}
 		}
 		 */
 		
