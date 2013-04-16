@@ -1619,8 +1619,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		getSession().flush();
 		getSession().refresh(search);
 //end save basic search info
-	
-		
 
 		
 //start save demographic fields
@@ -1661,9 +1659,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		} 
 		searchVO.setSelectedDemographicFields(nonPoppableDemographicFieldsFromVO);
 //end save demographic fields
-
-
-
+		
 
 //start save biospecimen fields
 		Collection<BiospecimenField> listOfBiospecimenFieldsFromVO = searchVO.getSelectedBiospecimenFields();
@@ -1743,8 +1739,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		searchVO.setSelectedBiocollectionFields(nonPoppableBiocollectionFieldsFromVO);
 //end save biocollection fields
-						
-						
+
 						
 //start saving all custom display fields		
 		Collection<CustomFieldDisplay> listOfPhenoCustomFieldDisplaysFromVO = searchVO.getSelectedPhenoCustomFieldDisplays();
@@ -1964,8 +1959,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// constructDemographicQuery(dfs);
 			// DemographicExtractionVO
 			// }
-			
-			
+
 
 			List<Long> idsAfterFiltering = applyDemographicFilters(search);  //from here we need to add 
 			log.info("uidsafterFilteringdemo=" + idsAfterFiltering.size());
@@ -2012,9 +2006,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
 
 			
-			//now filter previous data from the further filtering steps each time.  First time not necessary just assign uids
-			// CREATE CSVs
-			
+			// CREATE CSVs - later will offer options xml, pdf, etc
 			SearchResult searchResult = new SearchResult();
 			searchResult.setSearch(search);
 			Criteria criteria = getSession().createCriteria(SearchResult.class);
@@ -2044,6 +2036,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	private void wipeBiospecimenDataNotMatchThisList(
 			DataExtractionVO allTheData, List<Long> biospecimenIdsAfterFiltering) {
 		// TODO Auto-generated method stub
+		/* something like this
+		HashMap = allTheData.getBiospecimenData()
+		for (; ) {
+			<#statements#>
+		}
+		 */
 		
 	}
 
