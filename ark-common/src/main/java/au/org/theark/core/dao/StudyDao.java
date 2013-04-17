@@ -1974,7 +1974,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			log.info("uidsafterFiltering=Biospec cust" + idsAfterFiltering.size());
 			
 			//TODO wipe the old data which doesn't still match the ID list
-			wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering);
+			wipeBiospecimenDataNotMatchingThisList(allTheData, biospecimenIdsAfterFiltering);
 
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getBiospecimenCustomData(), FieldCategory.BIOSPECIMEN_FIELD);
 			
@@ -2033,20 +2033,38 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
+	private List<String> getBiospecimenUIDsNotMatchingTheseBiospecimenIds(List<String> biospecimenUIDs, List<Long> biospecimenIds){
+	
+		Query query = null;
+		//if there is nothing to start with get out of here.
+		if(biospecimenUIDs.isEmpty()){
+			return new ArrayList<String>();
+		}
+		
+		//if there is nothing to reduce the list by...return original list.
+		if(biospecimenIds.isEmpty()){
+			return biospecimenUIDs;
+		}
+		else{
+			String queryString = 	" select distinct biospecimen.biospecimenUid " +
+									" from Biospecimen biospecimen " +
+									" where biospecimen.id not in (:idList) " +
+									" and biospecimen.uid in (:uidList) ";
+			query = getSession().createQuery(queryString);
+			query.setParameterList("idList", biospecimenIds);
+			query.setParameterList("uidList", biospecimenUIDs);
+			return query.list();
+		}		
+	}
 	
 	/*allthedata might not b as good as just the bit we want */
-	private void wipeBiospecimenDataNotMatchThisList(
-			DataExtractionVO allTheData, List<Long> biospecimenIdsAfterFiltering) {
-		// TODO Auto-generated method stub
-		/* something like this
-		HashMap = allTheData.getBiospecimenData()
-		for (; each biospecimen in data file / VO ) {
-			if it doesn't exist in the listofbiospecimens{
-				delete it from data
-			}
+	private void wipeBiospecimenDataNotMatchingThisList(DataExtractionVO allTheData, List<Long> biospecimenIdsAfterFiltering) {
+		HashMap<String, ExtractionVO> data = allTheData.getBiospecimenData();
+		List<String> uidsInData = (List<String>) data.keySet();
+		List<String> uidsToDelete = getBiospecimenUIDsNotMatchingTheseBiospecimenIds(uidsInData, biospecimenIdsAfterFiltering);
+		for(String uid : uidsToDelete){
+			data.remove(uid);
 		}
-		 */
-		
 	}
 
 	private void wipeBiocollectionDataNotMatchThisList(
@@ -2520,7 +2538,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		//now that we have the pheno collection id, we just find the data for the selected customfields
 		
-		
+		if(!idsToInclude.isEmpty()){
 			Collection<CustomFieldDisplay> customFieldToGet = getSelectedPhenoCustomFieldDisplaysForSearch(search);
 			// We have the list of phenos, and therefore the list of pheno custom data - now bring back all the custom data rows IF they have any data they need 
 			if(	(!phenoCollectionIdsSoFar.isEmpty() || (phenoCollectionIdsSoFar.isEmpty() && cfgsWithFilters.isEmpty())) 
@@ -2600,8 +2618,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
 				allTheData.setPhenoCustomData(hashOfPhenosWithTheirPhenoCustomData);
 			}		
-			return idsToInclude;
-			
+		
+		}
+		return idsToInclude;
+		
 	}	
 	
 
