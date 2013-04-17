@@ -2552,7 +2552,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 								" where data.phenoCollection.id in (:phenoIdsToInclude)" 			) ) )
 																							+
 						" and data.customFieldDisplay in (:customFieldsList)" + 
-						" order by data.phenoCollection.linkSubjectStudy.subjectUID" ;
+						" order by data.phenoCollection.id" ;
 				Query query2 = getSession().createQuery(queryString);
 				if(phenoCollectionIdsSoFar.isEmpty() && cfgsWithFilters.isEmpty()){
 					query2.setParameterList("idsToInclude", idsToInclude);
