@@ -378,4 +378,75 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		}
 		return file;
 	}
+	
+	public File createPhenotypicCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		String filename = new String("PHENOTYPIC.csv");
+		final java.io.File file = new File(tempDir, filename);
+		if (filename == null || filename.isEmpty()) {
+			filename = "exportcsv.csv";
+		}
+		
+		HashMap<String, ExtractionVO> hashOfSubjectsWithData = devo.getPhenoCustomData();
+
+		OutputStream outputStream;
+		try {
+			outputStream = new FileOutputStream(file);
+			CsvWriter csv = new CsvWriter(outputStream);
+
+			// Header
+			csv.write("SUBJECTUID");
+			csv.write("RECORD_DATE_TIME");
+			
+			for (CustomFieldDisplay cfd : cfds) {
+				csv.write(cfd.getCustomField().getName());
+			}
+
+			csv.endLine();
+
+			for (String phenoCollectionId : hashOfSubjectsWithData.keySet()) {
+				//csv.write(subjectUID);
+				
+				ExtractionVO evo = hashOfSubjectsWithData.get(phenoCollectionId);
+				csv.write(evo.getSubjectUid());
+				csv.write(evo.getRecordDate());
+				
+				if (evo != null) {
+					HashMap<String, String> keyValues = evo.getKeyValues();
+					for (CustomFieldDisplay cfd : cfds) {
+
+						String valueResult = keyValues.get(cfd.getCustomField().getName());
+						if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
+							try {
+								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+								String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
+								Date date = DateUtils.parseDate(valueResult, dateFormats);
+								csv.write(dateFormat.format(date));
+							}
+							catch (ParseException e) {
+								csv.write(valueResult);
+							}
+						}
+						else {
+							csv.write(valueResult);
+						}
+					}
+				}
+				else {
+					// Write out a line with no values (no data existed for subject in question
+					for (CustomFieldDisplay cfd : cfds) {
+						csv.write("");
+					}
+				}
+
+				csv.endLine();
+			}
+			csv.close();
+		}
+		catch (FileNotFoundException e) {
+			log.error(e.getMessage());
+		}
+
+		return file;
+	}
 }
