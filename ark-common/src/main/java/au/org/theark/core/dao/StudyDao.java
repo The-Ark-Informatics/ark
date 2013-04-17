@@ -1868,7 +1868,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return query.list();
 	}
 
-	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search) {
+	public List<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search) {
 		String queryString = "select cfds.customFieldDisplay " + " from CustomFieldDisplaySearch cfds " + " where cfds.search=:search "
 				+ " and cfds.customFieldDisplay.customField.arkFunction=:arkFunction ";// +
 		// " order by cfds.customFieldDisplay.customFieldGroup.name ";
@@ -1920,8 +1920,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// TODO errors and reports
 		}
 		else {
-			/* do i need fields or just run a mass query? */
-			List<DemographicField> dfs = getSelectedDemographicFieldsForSearch(search);
 			List<DemographicField> addressDFs = getSelectedDemographicFieldsForSearch(search, Entity.Address);
 			List<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
 			List<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
@@ -1939,7 +1937,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			List<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
 			List<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
 			List<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
-			// save PHENO for later Collection<CustomFieldDisplay> pcfds = getSelectedPhenoCustomFieldDisplaysForSearch(search);
+			// save PHENO for later 
+			List<CustomFieldDisplay> pcfds = getSelectedPhenoCustomFieldDisplaysForSearch(search);
 			/* SAVE FILTERS FOR LATER 
 			 * Making this stuff into an xml document THEN converting it generically to xls/csv/pdf/etc might be an option
 			 */
@@ -2019,7 +2018,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			createSearchResult(search, iDataExtractionDao.createSubjectDemographicCSV(search, allTheData, allSubjectFields, scfds, FieldCategory.DEMOGRAPHIC_FIELD));
 			createSearchResult(search, iDataExtractionDao.createBiospecimenCSV(search, allTheData, bsfs, bscfds, FieldCategory.BIOSPECIMEN_FIELD));
 			createSearchResult(search, iDataExtractionDao.createBiocollectionCSV(search, allTheData, bccfds, FieldCategory.BIOCOLLECTION_FIELD));
-			//createSearchResult(search, iDataExtractionDao.createBiospecimenDataCustomCSV(search, allTheData, FieldCategory.BIOSPECIMEN_CFD));
+			createSearchResult(search, iDataExtractionDao.createPhenotypicCSV(search, allTheData, pcfds, FieldCategory.PHENO_CFD));
 			
 			try {
 				search.setFinishTime(new java.util.Date(System.currentTimeMillis()));
@@ -2033,7 +2032,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
-	private List<String> getBiospecimenUIDsNotMatchingTheseBiospecimenIds(List<String> biospecimenUIDs, List<Long> biospecimenIds){
+	private Collection<String> getBiospecimenUIDsNotMatchingTheseBiospecimenIds(Collection<String> biospecimenUIDs, List<Long> biospecimenIds){
 	
 		Query query = null;
 		//if there is nothing to start with get out of here.
@@ -2060,8 +2059,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	/*allthedata might not b as good as just the bit we want */
 	private void wipeBiospecimenDataNotMatchingThisList(DataExtractionVO allTheData, List<Long> biospecimenIdsAfterFiltering) {
 		HashMap<String, ExtractionVO> data = allTheData.getBiospecimenData();
-		List<String> uidsInData = (List<String>) data.keySet();
-		List<String> uidsToDelete = getBiospecimenUIDsNotMatchingTheseBiospecimenIds(uidsInData, biospecimenIdsAfterFiltering);
+		Collection<String> uidsInData = data.keySet();
+		Collection<String> uidsToDelete = getBiospecimenUIDsNotMatchingTheseBiospecimenIds(uidsInData, biospecimenIdsAfterFiltering);
 		for(String uid : uidsToDelete){
 			data.remove(uid);
 		}
@@ -2553,7 +2552,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 								" where data.phenoCollection.id in (:phenoIdsToInclude)" 			) ) )
 																							+
 						" and data.customFieldDisplay in (:customFieldsList)" + 
-						" order by data.phenoCollection.id " ;
+						" order by data.phenoCollection.linkSubjectStudy.subjectUID" ;
 				Query query2 = getSession().createQuery(queryString);
 				if(phenoCollectionIdsSoFar.isEmpty() && cfgsWithFilters.isEmpty()){
 					query2.setParameterList("idsToInclude", idsToInclude);
@@ -2577,6 +2576,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						map = new HashMap<String, String>();
 						previousPhenoId = data.getPhenoCollection().getId();
 						valuesForThisPheno.setSubjectUid(data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
+						valuesForThisPheno.setRecordDate(data.getPhenoCollection().getRecordDate());
 					}
 					else if(data.getPhenoCollection().getId().equals(previousPhenoId)){
 						//then just put the data in
@@ -2588,6 +2588,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						map = new HashMap<String, String>();//reset
 						valuesForThisPheno = new ExtractionVO();
 						valuesForThisPheno.setSubjectUid(data.getPhenoCollection().getLinkSubjectStudy().getSubjectUID());
+						valuesForThisPheno.setRecordDate(data.getPhenoCollection().getRecordDate());
 					}
 	
 					//if any error value, then just use that - though, yet again I really question the acceptance of error data
@@ -3848,7 +3849,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public List<Long> getSubjectIdsforSearch(Search search) {
-		List<LinkSubjectStudy> subjects;
 		Criteria criteria = getSession().createCriteria(SearchSubject.class);
 		criteria.add(Restrictions.eq("search", search));
 		criteria.setProjection(Projections.property("linkSubjectStudy.id"));
