@@ -1487,13 +1487,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return upload.getPayload();
 	}
 
+	// TODO Constants? for all of the next methods
 	public UploadStatus getUploadStatusForUploaded() {
 		Criteria criteria = getSession().createCriteria(UploadStatus.class);
 		criteria.add(Restrictions.eq("name", "COMPLETED"));
 		return (UploadStatus) criteria.uniqueResult();
 	}
 
-	// TODO Constants?
 	public UploadStatus getUploadStatusForUndefined() {
 		Criteria criteria = getSession().createCriteria(UploadStatus.class);
 		criteria.add(Restrictions.eq("name", "STATUS_NOT_DEFINED"));
@@ -1556,15 +1556,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (YesNo) criteria.uniqueResult();
 	}
 
-	// TODO maybe a query/report/etc dao?
-	// TODO ASAP
 	public List<Search> getSearchesForThisStudy(Study study) {
 		Criteria criteria = getSession().createCriteria(Search.class);
 		criteria.add(Restrictions.eq("study", study));
 		List<Search> searchList = criteria.list();
-		//for (Search search : searchList) {
-			//log.info(search.getName() + search.getId());
-		//}
 		return searchList;
 	}
 
@@ -1967,8 +1962,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			idsAfterFiltering = applyBiospecimenCustomFilters(allTheData, search, idsAfterFiltering, biospecimenIdsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering=Biospec cust" + idsAfterFiltering.size());
 			
-			//TODO wipe the old data which doesn't still match the ID list
-			wipeBiospecimenDataNotMatchingThisList(allTheData, biospecimenIdsAfterFiltering);
 
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getBiospecimenCustomData(), FieldCategory.BIOSPECIMEN_FIELD);
 			
@@ -1981,7 +1974,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			idsAfterFiltering = applyBioCollectionCustomFilters(allTheData, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol cust=" + idsAfterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
-			wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering);
+			//this can be called further down
+			//wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering);
+
+			//TODO wipe the old data which doesn't still match the ID list 
+			wipeBiospecimenDataNotMatchingThisList(allTheData, biospecimenIdsAfterFiltering);
 			wipeBiocollectionDataNotMatchThisList(allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 
 
