@@ -1927,61 +1927,49 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			List<CustomFieldDisplay> bccfds = getSelectedBiocollectionCustomFieldDisplaysForSearch(search);
 			List<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
 			List<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
-			// save PHENO for later 
 			List<CustomFieldDisplay> pcfds = getSelectedPhenoCustomFieldDisplaysForSearch(search);
 			/* SAVE FILTERS FOR LATER 
 			 * Making this stuff into an xml document THEN converting it generically to xls/csv/pdf/etc might be an option
-			 */
-
-			/***
+			 */	/***
 			 * some of the options 1 get each of these and apply a filter every time 2 a megaquery to get EVERYTHING FOR EVERYONE into our
 			 * "report object/model" 3 use the filters to create a set of subjectUIDs and maybe apply that, though may also needs a set of pheno_data_id, subj_custom_ids, etc
-			 */
-
-			/*get demographic data if(hasPersonFields(dfs)){ Query personQuery = getSession().createQuery("Select person from Person person ");
+			 */	/*get demographic data if(hasPersonFields(dfs)){ Query personQuery = getSession().createQuery("Select person from Person person ");
 			 * //then get some fields and put it in our "report model" } if(hasLSSFields(dfs)){ //or a query that forces the join of person and lss if
 			 * they both exist Query lssQuery = getSession().createQuery ("Select lss from LinkSubjectStudy lss "); //then get some fields and put it in
 			 * our "report model" }
 			 */
-			// if(hasDemographicFieldsOrFilters(dfs)){ //i guess it always
-			// should as there is always a representation of WHO
-			// constructDemographicQuery(dfs);
-			// DemographicExtractionVO
-			// }
-
-
+//DEMOGRAPHIC
 			List<Long> idsAfterFiltering = applyDemographicFilters(search);  //from here we need to add 
 			log.info("uidsafterFilteringdemo=" + idsAfterFiltering.size());
 	
+//BIOSPECIMEN
 			List<Long> biospecimenIdsAfterFiltering = new ArrayList<Long>();
 			biospecimenIdsAfterFiltering = addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, idsAfterFiltering, biospecimenIdsAfterFiltering);
 			log.info("biospecimenIdsAfterFiltering size: " + biospecimenIdsAfterFiltering.size());
-			//NOW just use thilina method above but make sure it FILTERS!!! 
-			//uidsafterFiltering = applyBiospecimenFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFilteringbiospec=" + idsAfterFiltering.size());
+//BIOSPEC CUSTOM
 			idsAfterFiltering = applyBiospecimenCustomFilters(allTheData, search, idsAfterFiltering, biospecimenIdsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering=Biospec cust" + idsAfterFiltering.size());
+			log.info("biospecimenIdsAfterFiltering custom size: " + biospecimenIdsAfterFiltering.size());
+			//prettyLoggingOfWhatIsInOurMegaObject(allTheData.getBiospecimenCustomData(), FieldCategory.BIOSPECIMEN_FIELD);
 			
-
-			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getBiospecimenCustomData(), FieldCategory.BIOSPECIMEN_FIELD);
-			
-
+//BIOCOLLECTION
 			List<Long> bioCollectionIdsAfterFiltering = new ArrayList<Long>();
 			bioCollectionIdsAfterFiltering = addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);
 			log.info("uidsafterFiltering doing the construction of megaobject=" + idsAfterFiltering.size());
-			//NOW just use thilina method above but make sure it FILTERS!!! 	uidsafterFiltering = applyBiocollectionFilters(allTheData, search, uidsafterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol=" + idsAfterFiltering.size());
+//BIOCOL CUSTOM
 			idsAfterFiltering = applyBioCollectionCustomFilters(allTheData, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol cust=" + idsAfterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
-			//this can be called further down
-			//wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering);
+				//this can be called further down
+				//wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 
 			//TODO wipe the old data which doesn't still match the ID list 
 			wipeBiospecimenDataNotMatchingThisList(allTheData, biospecimenIdsAfterFiltering);
 			wipeBiocollectionDataNotMatchThisList(allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 
-
+//PHENO CUSTOM
 			idsAfterFiltering = applyPhenoCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering pheno cust=" + idsAfterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
