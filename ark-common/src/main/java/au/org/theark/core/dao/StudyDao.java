@@ -1293,8 +1293,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 			for (Iterator<LinkSubjectStudy> iterator = subjectList.iterator(); iterator.hasNext();) {
 				LinkSubjectStudy linkSubjectStudy = (LinkSubjectStudy) iterator.next();
-				// Place the LinkSubjectStudy instance into a SubjectVO and add the
-				// SubjectVO into a List
+				// Place the LinkSubjectStudy instance into a SubjectVO and add the SubjectVO into a List
 				SubjectVO subject = new SubjectVO();
 				subject.setSubjectUID(linkSubjectStudy.getSubjectUID());
 				subject.setLinkSubjectStudy(linkSubjectStudy);
@@ -1370,10 +1369,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List<String> fieldNameCollection, Study study, ArkFunction arkFunction) {
-		/*
-		 * log.warn("fieldnamecollection size=" + fieldNameCollection.size() +4 "\nstudy=" + study.getName() + " with id=" + study.getId() +
-		 * "\narkFunctionid=" + arkFunction.getId());
-		 */
 
 		if (fieldNameCollection == null || fieldNameCollection.isEmpty()) {
 			return new ArrayList<CustomFieldDisplay>();
@@ -1567,9 +1562,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(Search.class);
 		criteria.add(Restrictions.eq("study", study));
 		List<Search> searchList = criteria.list();
-		for (Search search : searchList) {
+		//for (Search search : searchList) {
 			//log.info(search.getName() + search.getId());
-		}
+		//}
 		return searchList;
 	}
 
@@ -2152,7 +2147,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 
 		Collection<CustomFieldDisplay> customFieldToGet = getSelectedSubjectCustomFieldDisplaysForSearch(search);
-		
 
 		/* We have the list of subjects, and therefore the list of subjectcustomdata - now bring back all the custom data rows IF they have any data they need */
 		if(idsToInclude!=null && !idsToInclude.isEmpty() && !customFieldToGet.isEmpty()){
@@ -2328,9 +2322,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			allTheData.setBiospecimenCustomData(hashOfBiospecimensWithTheirBiospecimenCustomData);
 		}		
 		return idsToInclude;
-	}	
-
-
+	}
 
 
 	
@@ -2427,9 +2419,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			//finalize the last entered key value sets/extraction VOs
 			if(map!=null && previousBioCollectionUid!=null){
-				
-				//BioCollection b = (BioCollection) getSession().get(BioCollection.class, previousBioCollectionUid);
-				
 				valuesForThisBiocollection.setKeyValues(map);
 				hashOfBioCollectionsWithTheirBioCollectionCustomData.put(previousBioCollectionUid, valuesForThisBiocollection);
 			}
