@@ -108,7 +108,7 @@ public class SearchResultListPanel extends Panel {
 		ajaxButton.setDefaultFormProcessing(false);
 		add(ajaxButton);
 		setOutputMarkupId(true);
-		add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
+		//add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(10)));
 	}
 
 	/**
