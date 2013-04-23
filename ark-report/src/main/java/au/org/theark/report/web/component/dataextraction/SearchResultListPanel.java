@@ -340,13 +340,13 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			public boolean isVisible() {
 				//TODO return correct status
-				return search.getStatus() != null || !search.getStatus().equalsIgnoreCase("FINISHED");
+				return search.getStatus() != null || !search.getStatus().equalsIgnoreCase("RUNNING");
 				//return search.getStatus() != null && search.getStatus().equalsIgnoreCase("READY TO RUN") || true;
 			}
 			
 		};
 
-		ajaxButton.setVisible(true);
+		//ajaxButton.setVisible(true);
 		ajaxButton.setDefaultFormProcessing(false);
 		//log.warn("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n how many times is this run?");
 
