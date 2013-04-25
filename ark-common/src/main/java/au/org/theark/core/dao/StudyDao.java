@@ -2161,11 +2161,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			LinkSubjectStudy previousLss = null;
 			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
 			for (SubjectCustomFieldData data : scfData) {
-				log.info("\t\tprev='" + ((previousLss==null)?"null":previousLss.getSubjectUID()) + 
+/*				log.info("\t\tprev='" + ((previousLss==null)?"null":previousLss.getSubjectUID()) + 
 						"\tsub='" + data.getLinkSubjectStudy().getSubjectUID() + 
 						"\terr=" + data.getErrorDataValue() + "\tdate=" + 
 						data.getDateDataValue() + "\tnum=" 
-						+ data.getNumberDataValue() + "\tstr=" + data.getTextDataValue() );
+						+ data.getNumberDataValue() + "\tstr=" + data.getTextDataValue() );*/
 				
 				if(previousLss==null){
 					map = new HashMap<String, String>();
