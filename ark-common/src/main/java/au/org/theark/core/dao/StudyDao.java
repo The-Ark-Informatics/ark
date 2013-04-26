@@ -2008,6 +2008,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			catch (EntityExistsException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				//TODO don't catch exceptions without doing something
+				log.error("Error while updating search with finish time.");
 			}
 		}
 	}
@@ -2049,6 +2051,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Collection<String> uidsInData = data.keySet();
 		Collection<String> uidsToDelete = getBiospecimenUIDsNotMatchingTheseBiospecimenIdsOrSubjectIds(uidsInData, biospecimenIdsAfterFiltering, subjectIds);
 		for(String uid : uidsToDelete){
+			log.info("wipeBiospecimenDataNotMatchingThisList:    removed suid = " + uid);
 			data.remove(uid);
 		}
 	}
