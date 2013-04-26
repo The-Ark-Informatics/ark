@@ -1967,7 +1967,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				//wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 
 			//TODO wipe the old data which doesn't still match the ID list 
-			wipeBiospecimenDataNotMatchingThisList(allTheData, biospecimenIdsAfterFiltering, idsAfterFiltering);
+			wipeBiospecimenDataNotMatchingThisList(search.getStudy(), allTheData, biospecimenIdsAfterFiltering, idsAfterFiltering);
 			wipeBiocollectionDataNotMatchThisList(allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 
 //PHENO CUSTOM
@@ -2015,7 +2015,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
-	private Collection<String> getBiospecimenUIDsNotMatchingTheseBiospecimenIdsOrSubjectIds(Collection<String> biospecimenUIDs, List<Long> biospecimenIds, List<Long> subjectIds){
+	private Collection<String> getBiospecimenUIDsNotMatchingTheseBiospecimenIdsOrSubjectIds(Study study, Collection<String> biospecimenUIDs, List<Long> biospecimenIds, List<Long> subjectIds){
 	
 		Query query = null;
 		//if there is nothing to start with get out of here.
@@ -2029,30 +2029,55 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return biospecimenUIDs;
 		}
 		else{
+			/**
+			 * delete from here...................................
+			 */
+			for(Long bio : biospecimenIds){
+				System.out.print(bio + ", ");
+			}
+
+			System.out.println(" \n ");
+			for(String uid : biospecimenUIDs){
+
+				System.out.print("'" + uid + "', ");
+			}
+
+
+			System.out.println(" \n ");
+			for(Long id : subjectIds){
+
+				System.out.print(id + ", ");
+			}
+			System.out.println(" \n");
+			/**
+			 * ...................................to here
+			 */
+			
 			String queryString = 	" select distinct biospecimen.biospecimenUid " +
 									" from Biospecimen biospecimen " +
 									" where " +
 									(biospecimenIds.isEmpty()?"":" biospecimen.id not in (:idList) and ") +
 									(subjectIds.isEmpty()?"":" biospecimen.linkSubjectStudy.id not in (:subjectIdList) and ") +
-									" biospecimen.biospecimenUid in (:uidList) ";
+									" biospecimen.biospecimenUid in (:uidList) " +
+									" and biospecimen.study =:study ";
 			query = getSession().createQuery(queryString);
 			if(!biospecimenIds.isEmpty())
 				query.setParameterList("idList", biospecimenIds);
 			if(!subjectIds.isEmpty())
 				query.setParameterList("subjectIdList", subjectIds);
-			
+			query.setParameter("study", study);
 			query.setParameterList("uidList", biospecimenUIDs);
 			return query.list();
 		}		
 	}
 	
 	/*allthedata might not b as good as just the bit we want */
-	private void wipeBiospecimenDataNotMatchingThisList(DataExtractionVO allTheData, List<Long> biospecimenIdsAfterFiltering, List<Long> subjectIds) {
+	private void wipeBiospecimenDataNotMatchingThisList(Study study, DataExtractionVO allTheData, List<Long> biospecimenIdsAfterFiltering, List<Long> subjectIds) {
 		HashMap<String, ExtractionVO> data = allTheData.getBiospecimenData();
 		Collection<String> uidsInData = data.keySet();
-		Collection<String> uidsToDelete = getBiospecimenUIDsNotMatchingTheseBiospecimenIdsOrSubjectIds(uidsInData, biospecimenIdsAfterFiltering, subjectIds);
+		Collection<String> uidsToDelete = getBiospecimenUIDsNotMatchingTheseBiospecimenIdsOrSubjectIds(study, uidsInData, biospecimenIdsAfterFiltering, subjectIds);
 		for(String uid : uidsToDelete){
-			log.info("wipeBiospecimenDataNotMatchingThisList:    removed suid = " + uid);
+			log.info("wipeBiospecimenDataNotMatchingThisList:    removed biospecimen uid = " + uid);
 			data.remove(uid);
 		}
 	}
