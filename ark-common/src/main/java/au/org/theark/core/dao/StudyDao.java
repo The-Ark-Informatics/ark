@@ -3788,8 +3788,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public void createSearchResult(Search search, File file) {
-		
-		
+
 		try {
 			SearchResult sr = new SearchResult();
 			sr.setSearch(search);
