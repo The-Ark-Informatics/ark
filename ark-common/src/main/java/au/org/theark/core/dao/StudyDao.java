@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -2699,26 +2700,94 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			 		map.put(field.getPublicFieldName(), lss.getPerson().getDateLastKnownAlive().toString());					
 				}
 			}
-			/*TODO  all of these relationships...enums would be much easier to deal with
-			private Long id;
-			private GenderType genderType;
-			private VitalStatus vitalStatus;
-			private TitleType titleType;
-			private MaritalStatus maritalStatus;
-			private PersonContactMethod personContactMethod;*/
+			
+			else if (field.getFieldName().equalsIgnoreCase("genderType")) {
+				if(lss.getPerson().getGenderType()!=null){
+			 		map.put(field.getPublicFieldName(), lss.getPerson().getGenderType().getName());					
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("title")) {
+				if(lss.getPerson().getTitleType()!=null){
+			 		map.put(field.getPublicFieldName(), lss.getPerson().getTitleType().getName());					
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("vitalStatus")) {
+				if(lss.getPerson().getVitalStatus()!=null){
+			 		map.put(field.getPublicFieldName(), lss.getPerson().getVitalStatus().getName());					
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("maritalStatus")) {
+				if(lss.getPerson().getMaritalStatus()!=null){
+			 		map.put(field.getPublicFieldName(), lss.getPerson().getMaritalStatus().getName());					
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("contactMethod")) {
+				if(lss.getPerson().getPersonContactMethod()!=null){
+			 		map.put(field.getPublicFieldName(), lss.getPerson().getPersonContactMethod().getName());					
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("preferredEmailStatus")) {
+				if(lss.getPerson().getPreferredEmailStatus()!=null){
+			 		map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmailStatus().getName());					
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("otherEmailStatus")) {
+				if(lss.getPerson().getOtherEmailStatus()!=null){
+			 		map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmailStatus().getName());					
+				}
+			}
 		}
 		for (DemographicField field : lssFields) {
-			if (field.getFieldName().equalsIgnoreCase("consentDate")) {
+			if (field.getFieldName().equalsIgnoreCase("subjectStatus")) {
+				if(lss.getSubjectStatus()!=null){
+					map.put(field.getPublicFieldName(), lss.getSubjectStatus().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("consentDate")) {
 				if(lss.getConsentDate()!=null){
 					map.put(field.getPublicFieldName(), lss.getConsentDate() == null ? "" : lss.getConsentDate().toString());
 				}
 			}
-			else if (field.getFieldName().equalsIgnoreCase("subjectUID")) {
-				if(lss.getSubjectCustomFieldDataSet()==null){
-					map.put(field.getPublicFieldName(), lss.getSubjectUID());
+			else if (field.getFieldName().equalsIgnoreCase("consentStatus")) {
+				if(lss.getConsentStatus()!=null){
+					map.put(field.getPublicFieldName(), lss.getConsentStatus().getName());
 				}
 			}
-			// etc
+			else if (field.getFieldName().equalsIgnoreCase("consentType")) {
+				if(lss.getConsentType()!=null){
+					map.put(field.getPublicFieldName(), lss.getConsentType().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("consentDownloaded")) {
+				if(lss.getConsentDownloaded()!=null){
+					map.put(field.getPublicFieldName(), lss.getConsentDownloaded().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("consentToPassiveDataGathering")) {
+				if(lss.getConsentToPassiveDataGathering()!=null){
+					map.put(field.getPublicFieldName(), lss.getConsentToPassiveDataGathering().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("consentToActiveContact")) {
+				if(lss.getConsentToActiveContact()!=null){
+					map.put(field.getPublicFieldName(), lss.getConsentToActiveContact().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("consentToUseData")) {
+				if(lss.getConsentToUseData()!=null){
+					map.put(field.getPublicFieldName(), lss.getConsentToUseData().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("heardAboutStudy")) {
+				if(lss.getHeardAboutStudy()!=null){
+					map.put(field.getPublicFieldName(), lss.getHeardAboutStudy());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("comments")) {
+				if(lss.getComment()!=null){
+					map.put(field.getPublicFieldName(), lss.getComment());
+				}
+			}
 		}
 		for (DemographicField field : addressFields) {
 			int count = 0;
@@ -2864,45 +2933,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				if(biospecimen.getSampleType() !=null){
 					map.put(field.getPublicFieldName(), biospecimen.getSampleType().getName());
 				}
-			}  //TODO : this is really going to need to be expanded out.
-			else if (field.getFieldName().equalsIgnoreCase("invCell")) {
-				if(biospecimen.getInvCell()!=null){
-					map.put(field.getPublicFieldName(), "Col: "+biospecimen.getInvCell().getColno()+" Row: "+biospecimen.getInvCell().getRowno());
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("parentUid")) {
-				if(biospecimen.getParentUid() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getParentUid());
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("oldId")) {
-				if(biospecimen.getOldId() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getOldId()!=null?biospecimen.getOldId().toString():"");
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("deleted")) {
-				if(biospecimen.getDeleted() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getDeleted()!=null?biospecimen.getDeleted().toString():"");
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("timestamp")) {
-				if(biospecimen.getTimestamp() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getTimestamp());
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("otherid")) {
-				if(biospecimen.getOtherid() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getOtherid());
-				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("storedIn")) {
 				if(biospecimen.getStoredIn() !=null){
 					map.put(field.getPublicFieldName(), biospecimen.getStoredIn().getName());
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("depth")) {
-				if(biospecimen.getDepth() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getDepth()!=null ?biospecimen.getDepth().toString():"");
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("grade")) {
@@ -2930,34 +2964,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					map.put(field.getPublicFieldName(), biospecimen.getProcessedTime()!=null?biospecimen.getProcessedTime().toString():"");
 				}
 			}
-			else if (field.getFieldName().equalsIgnoreCase("species")) {
-				if(biospecimen.getSpecies() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getSpecies().getName());
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("qtyCollected")) {
-				if(biospecimen.getQuantity() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getQuantity()!=null ?biospecimen.getQuantity().toString():"");
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("qtyCollected")) {
-				if(biospecimen.getQtyCollected() != null){
-					map.put(field.getPublicFieldName(), biospecimen.getQtyCollected()!=null?biospecimen.getQtyCollected().toString():"");
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("qtyRemoved")) {
-				if(biospecimen.getQtyRemoved() != null){
-					map.put(field.getPublicFieldName(), biospecimen.getQtyRemoved()!=null?biospecimen.getQtyRemoved().toString():"");
-				}
-			}
 			else if (field.getFieldName().equalsIgnoreCase("comments")) {
 				if(biospecimen.getComments() != null){
 					map.put(field.getPublicFieldName(), biospecimen.getComments());
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("quantity")) {
-				if(biospecimen.getQuantity() != null){
-					map.put(field.getPublicFieldName(), biospecimen.getQuantity()!=null?biospecimen.getQuantity().toString():"");
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("unit")) {
@@ -2973,11 +2982,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			else if (field.getFieldName().equalsIgnoreCase("barcoded")) {
 				if(biospecimen.getBarcoded() != null){
 					map.put(field.getPublicFieldName(), biospecimen.getBarcoded()!=null?biospecimen.getBarcoded().toString():"" );
-				}
-			}
-			else if (field.getFieldName().equalsIgnoreCase("quality")) {
-				if(biospecimen.getQuality() != null){
-					map.put(field.getPublicFieldName(), biospecimen.getQuality().getName());
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("anticoag")) {
@@ -3000,6 +3004,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					map.put(field.getPublicFieldName(), biospecimen.getAmount()!=null?biospecimen.getAmount().toString():"");
 				}
 			}
+			else if (field.getFieldName().equalsIgnoreCase("status")) {
+				if(biospecimen.getTreatmentType() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getStatus().getName());
+				}
+			}
 			else if (field.getFieldName().equalsIgnoreCase("biospecimenProtocol")) {
 				if(biospecimen.getBiospecimenProtocol() != null){
 					map.put(field.getPublicFieldName(), biospecimen.getBiospecimenProtocol().getName());
@@ -3008,6 +3017,64 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			else if (field.getFieldName().equalsIgnoreCase("purity")) {
 				if(biospecimen.getPurity() != null){
 					map.put(field.getPublicFieldName(), biospecimen.getPurity()!=null?biospecimen.getPurity().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("quality")) {
+				if(biospecimen.getQuality() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getQuality().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("quantity")) {
+				if(biospecimen.getQuantity() != null){
+					map.put(field.getPublicFieldName(), biospecimen.getQuantity()!=null?biospecimen.getQuantity().toString():"");
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("site")) {
+				if(biospecimen.getInvCell()!=null){
+					map.put(field.getPublicFieldName(), biospecimen.getInvCell().getInvBox().getInvRack().getInvFreezer().getInvSite().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("freezer")) {
+					if(biospecimen.getInvCell()!=null){		
+						map.put(field.getPublicFieldName(), biospecimen.getInvCell().getInvBox().getInvRack().getInvFreezer().getName());
+					}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("rack")) {
+				if(biospecimen.getInvCell()!=null){
+					map.put(field.getPublicFieldName(), biospecimen.getInvCell().getInvBox().getInvRack().getName());
+				}				
+			}
+			else if (field.getFieldName().equalsIgnoreCase("box")) {
+				if(biospecimen.getInvCell()!=null){
+					map.put(field.getPublicFieldName(), biospecimen.getInvCell().getInvBox().getName());
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("column")) {
+				if(biospecimen.getInvCell()!=null){
+					String colLabel = new String();
+					if (biospecimen.getInvCell().getInvBox().getColnotype().getName().equalsIgnoreCase("ALPHABET")) {
+						char character = (char) (biospecimen.getInvCell().getColno() + 64);
+						colLabel = new Character(character).toString();
+					}
+					else {
+						colLabel = new Integer(biospecimen.getInvCell().getColno().intValue()).toString();
+					}
+					
+					map.put(field.getPublicFieldName(), colLabel);
+				}
+			}
+			else if (field.getFieldName().equalsIgnoreCase("row")) {
+				if(biospecimen.getInvCell()!=null){		
+					String rowLabel = new String();
+					if (biospecimen.getInvCell().getInvBox().getRownotype().getName().equalsIgnoreCase("ALPHABET")) {
+						char character = (char) (biospecimen.getInvCell().getRowno() + 64);
+						rowLabel = new Character(character).toString();
+					}
+					else {
+						rowLabel = new Integer(biospecimen.getInvCell().getRowno().intValue()).toString();
+					}
+					
+					map.put(field.getPublicFieldName(), rowLabel);
 				}
 			}
 		}
