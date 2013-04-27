@@ -1968,7 +1968,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 			//TODO wipe the old data which doesn't still match the ID list 
 			wipeBiospecimenDataNotMatchingThisList(search.getStudy(), allTheData, biospecimenIdsAfterFiltering, idsAfterFiltering);
-			wipeBiocollectionDataNotMatchThisList(allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering);
+			wipeBiocollectionDataNotMatchThisList(search.getStudy(), allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 
 //PHENO CUSTOM
 			idsAfterFiltering = applyPhenoCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
@@ -2082,11 +2082,75 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
-	private void wipeBiocollectionDataNotMatchThisList(
-			DataExtractionVO allTheData,
-			List<Long> bioCollectionIdsAfterFiltering,
-			List<Long> idsAfterFiltering) {
-		// TODO Auto-generated method stub
+	private void wipeBiocollectionDataNotMatchThisList(Study study, DataExtractionVO allTheData, List<Long> bioCollectionIdsAfterFiltering, List<Long> subjectIds) {
+		
+		HashMap<String, ExtractionVO> data = allTheData.getBiocollectionData();
+		Collection<String> uidsInData = data.keySet();
+		Collection<String> uidsToDelete = getBioCollectionUIDsNotMatchingTheseBioCollectionIdsOrSubjectIds(study, uidsInData, bioCollectionIdsAfterFiltering, subjectIds);
+		for(String uid : uidsToDelete){
+			log.info("wipeBioCollectionDataNotMatchingThisList:    removed bioCollection uid = " + uid);
+			data.remove(uid);
+		}
+		
+		
+	}
+
+	private Collection<String> getBioCollectionUIDsNotMatchingTheseBioCollectionIdsOrSubjectIds(Study study, Collection<String> bioCollectionUIDs, List<Long> bioCollectionIds, List<Long> subjectIds){
+
+		
+		Query query = null;
+		//if there is nothing to start with get out of here.
+		if(bioCollectionUIDs.isEmpty()){
+			return new ArrayList<String>();
+		}
+
+		
+		//if there is nothing to reduce the list by...return original list.
+		if(bioCollectionIds.isEmpty() && subjectIds.isEmpty()){
+			return bioCollectionUIDs;
+		}
+		else{
+			/**
+			 * delete from here...................................
+			 */
+			for(Long bio : bioCollectionIds){
+				System.out.print(bio + ", ");
+			}
+
+			System.out.println(" \n ");
+			for(String uid : bioCollectionUIDs){
+
+				System.out.print("'" + uid + "', ");
+			}
+
+
+			System.out.println(" \n ");
+			for(Long id : subjectIds){
+
+				System.out.print(id + ", ");
+			}
+			System.out.println(" \n");
+			/**
+			 * ...................................to here
+			 */
+			
+			String queryString = 	" select distinct bioCollection.bioCollectionUid " +
+									" from BioCollection bioCollection " +
+									" where " +
+									(bioCollectionIds.isEmpty()?"":" bioCollection.id not in (:idList) and ") +
+									(subjectIds.isEmpty()?"":" bioCollection.linkSubjectStudy.id not in (:subjectIdList) and ") +
+									" bioCollection.bioCollectionUid in (:uidList) " +
+									" and bioCollection.study =:study ";
+			query = getSession().createQuery(queryString);
+			if(!bioCollectionIds.isEmpty())
+				query.setParameterList("idList", bioCollectionIds);
+			if(!subjectIds.isEmpty())
+				query.setParameterList("subjectIdList", subjectIds);
+			query.setParameter("study", study);
+			query.setParameterList("uidList", bioCollectionUIDs);
+			return query.list();
+		}		
+		
 		
 	}
 
