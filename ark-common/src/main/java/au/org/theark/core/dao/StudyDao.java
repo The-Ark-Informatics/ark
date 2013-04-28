@@ -2134,12 +2134,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			 * ...................................to here
 			 */
 			
-			String queryString = 	" select distinct bioCollection.bioCollectionUid " +
+			String queryString = 	" select distinct bioCollection.biocollectionUid " +
 									" from BioCollection bioCollection " +
 									" where " +
 									(bioCollectionIds.isEmpty()?"":" bioCollection.id not in (:idList) and ") +
 									(subjectIds.isEmpty()?"":" bioCollection.linkSubjectStudy.id not in (:subjectIdList) and ") +
-									" bioCollection.bioCollectionUid in (:uidList) " +
+									" bioCollection.biocollectionUid in (:uidList) " +
 									" and bioCollection.study =:study ";
 			query = getSession().createQuery(queryString);
 			if(!bioCollectionIds.isEmpty())
