@@ -1866,7 +1866,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// TODO errors and reports
 		}
 		else {
-			getMaxAddressesForTheseSubjects(null, null);
+			//getMaxAddressesForTheseSubjects(null, null); chris doesn't need this right now
 			List<DemographicField> addressDFs = getSelectedDemographicFieldsForSearch(search, Entity.Address);
 			List<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
 			List<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
