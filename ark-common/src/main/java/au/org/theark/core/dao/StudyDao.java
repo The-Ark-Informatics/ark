@@ -3095,9 +3095,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			if ((demoField != null)) {
 				if (demoField.getEntity() != null && demoField.getEntity().equals(Entity.Person)) {
 					if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
-						/*******************TODO LOOKUP TABLES
-						 * 
-						String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+						 
+						String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+						//TODO:  This wouldnt really be a compatible type would it...must do validation very soon.
 						if (filter.getOperator().equals(Operator.BETWEEN)) {
 							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
 						}
@@ -3107,9 +3107,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						else {
 							filterClause = filterClause + " and lss.person." + nextFilterLine;
 						}						
-						
-						
-						 */
+												
 					}
 					else{
 						String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
