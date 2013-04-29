@@ -1966,17 +1966,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				//this can be called further down
 				//wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 
-			//TODO wipe the old data which doesn't still match the ID list 
-			wipeBiospecimenDataNotMatchingThisList(search.getStudy(), allTheData, biospecimenIdsAfterFiltering, idsAfterFiltering);
-			wipeBiocollectionDataNotMatchThisList(search.getStudy(), allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 
 //PHENO CUSTOM
 			idsAfterFiltering = applyPhenoCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering pheno cust=" + idsAfterFiltering.size());
 			//TODO wipe the old data which doesn't still match the ID list
 
-			wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering); //dont need to pass in pheno ids, because any filtering effective there will just be able to be used via the subject list.
-			wipeBiocollectionDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering,  idsAfterFiltering);
+//			wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering); //dont need to pass in pheno ids, because any filtering effective there will just be able to be used via the subject list.
+//			wipeBiocollectionDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering,  idsAfterFiltering);
+			//TODO wipe the old data which doesn't still match the ID list 
+			wipeBiospecimenDataNotMatchingThisList(search.getStudy(), allTheData, biospecimenIdsAfterFiltering, idsAfterFiltering);
+			wipeBiocollectionDataNotMatchThisList(search.getStudy(), allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 
 			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
@@ -2031,7 +2031,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		else{
 			/**
 			 * delete from here...................................
-			 */
+			 
 			for(Long bio : biospecimenIds){
 				System.out.print(bio + ", ");
 			}
@@ -2049,7 +2049,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				System.out.print(id + ", ");
 			}
 			System.out.println(" \n");
-			/**
+			
 			 * ...................................to here
 			 */
 			
@@ -2112,7 +2112,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		else{
 			/**
 			 * delete from here...................................
-			 */
 			for(Long bio : bioCollectionIds){
 				System.out.print(bio + ", ");
 			}
@@ -2123,14 +2122,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				System.out.print("'" + uid + "', ");
 			}
 
-
 			System.out.println(" \n ");
 			for(Long id : subjectIds){
 
 				System.out.print(id + ", ");
 			}
 			System.out.println(" \n");
-			/**
 			 * ...................................to here
 			 */
 			
@@ -2151,23 +2148,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return query.list();
 		}		
 		
-		
-	}
-
-	private void wipeBiocollectionDataNotMatchThisList(
-			DataExtractionVO allTheData,
-			List<Long> bioCollectionIdsAfterFiltering,
-			List<Long> idsAfterFiltering, List<Long> idsAfterFiltering2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void wipeBiospecimenDataNotMatchThisList(
-			DataExtractionVO allTheData,
-			List<Long> biospecimenIdsAfterFiltering,
-			List<Long> bioCollectionIdsAfterFiltering,
-			List<Long> idsAfterFiltering) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -2254,11 +2234,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			LinkSubjectStudy previousLss = null;
 			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
 			for (SubjectCustomFieldData data : scfData) {
-/*				log.info("\t\tprev='" + ((previousLss==null)?"null":previousLss.getSubjectUID()) + 
-						"\tsub='" + data.getLinkSubjectStudy().getSubjectUID() + 
-						"\terr=" + data.getErrorDataValue() + "\tdate=" + 
-						data.getDateDataValue() + "\tnum=" 
-						+ data.getNumberDataValue() + "\tstr=" + data.getTextDataValue() );*/
+/*				log.info("\t\tprev='" + ((previousLss==null)?"null":previousLss.getSubjectUID()) + "\tsub='" + data.getLinkSubjectStudy().getSubjectUID() + "\terr=" + data.getErrorDataValue() + "\tdate=" + data.getDateDataValue() + "\tnum=" + data.getNumberDataValue() + "\tstr=" + data.getTextDataValue() );*/
 				
 				if(previousLss==null){
 					map = new HashMap<String, String>();
@@ -2685,7 +2661,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				
 				//finalize the last entered key value sets/extraction VOs
 				if(map!=null && previousPhenoId!=null){
-					
 					valuesForThisPheno.setKeyValues(map);
 					hashOfPhenosWithTheirPhenoCustomData.put("" + previousPhenoId, valuesForThisPheno);
 				}
