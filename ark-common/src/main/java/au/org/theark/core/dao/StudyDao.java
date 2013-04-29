@@ -1931,7 +1931,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getBiospecimenData(), FieldCategory.BIOSPECIMEN_FIELD);
 			
-			// CREATE CSVs - later will offer options xml, pdf, etc
+// CREATE CSVs - later will offer options xml, pdf, etc
 			SearchResult searchResult = new SearchResult();
 			searchResult.setSearch(search);
 			Criteria criteria = getSession().createCriteria(SearchResult.class);
@@ -3623,21 +3623,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
 		return studyCriteria.list();
 	}	
-	
-	
-	
+
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
 			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search, List<Long> idsAfterFiltering) {
 		log.info("in addDataFromMegaDemographicQuery");																						//if no id's, no need to run this
 		if ((!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty()) && !idsAfterFiltering.isEmpty()) { // hasEmailFields(dfs)
 			//note.  filtering is happening previously...we then do the fetch when we have narrowed down the list of subjects to save a lot of processing
-			String queryString = "select distinct lss "
-					+ // , address, lss, email " +
-					" from LinkSubjectStudy lss " 
+			String queryString = "select distinct lss " // , address, lss, email " +
+					+ " from LinkSubjectStudy lss " 
 					+ ((!personFields.isEmpty()) ? " left join fetch lss.person person " : "") 
 					+ ((!addressFields.isEmpty()) ? " left join lss.person.addresses a " : "")
 					+ ((!phoneFields.isEmpty()) ? " left join lss.person.phones p " : "") 
-					// Force restriction on Study of search
 					+ " where lss.study.id = " + search.getStudy().getId()
 					+ " and lss.id in (:idsToInclude) "
 					+ " order by lss.subjectUID";
@@ -3645,15 +3641,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			Query query = getSession().createQuery(queryString);
 			query.setParameterList("idsToInclude", idsAfterFiltering);
 			List<LinkSubjectStudy> subjects = query.list();
-			log.info("size=" + subjects.size());
 
 			// DataExtractionVO devo; = new DataExtractionVO();
 			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirDemographicData = allTheData.getDemographicData();
 
-			/**
-			 * this is putting the data we extracted into a generic kind of VO doc that will be converted to an appopriate format later (such as
-			 * csv/xls/pdf/xml/etc)
-			 */
+			/* this is putting the data we extracted into a generic kind of VO doc that will be converted to an appopriate format later (such as csv/xls/pdf/xml/etc) */
 			for (LinkSubjectStudy lss : subjects) {
 				ExtractionVO sev = new ExtractionVO();
 				sev.setKeyValues(constructKeyValueHashmap(lss, personFields, lssFields, addressFields, phoneFields));
@@ -3680,9 +3672,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		if(!idsToInclude.isEmpty() && (!bioCollectionFilters.isEmpty() || !biocollectionFields.isEmpty())){
 			
 			StringBuffer queryBuffer =new StringBuffer("select distinct biocollection ");
-			queryBuffer.append("from BioCollection biocollection " );
-			//	TODO:  improve preformance by prefetch
-			
+			queryBuffer.append("from BioCollection biocollection " );	//	TODO:  improve preformance by prefetch
 			queryBuffer.append(	" where biocollection.study.id = " + search.getStudy().getId());
 			
 			if(!bioCollectionFilters.isEmpty()){
