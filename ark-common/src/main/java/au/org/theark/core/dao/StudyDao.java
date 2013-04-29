@@ -2202,12 +2202,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
 						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getDateDataValue().toString());
 					}
-					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+					else if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getNumberDataValue().toString());
 					}
-					if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+					else if (data.getCustomFieldDisplay().getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
 						map.put(data.getCustomFieldDisplay().getCustomField().getName(), data.getTextDataValue());
-					}
+					}					
 				}			
 			}
 			
@@ -3094,15 +3094,34 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			DemographicField demoField = filter.getDemographicField();
 			if ((demoField != null)) {
 				if (demoField.getEntity() != null && demoField.getEntity().equals(Entity.Person)) {
-					String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
-					if (filter.getOperator().equals(Operator.BETWEEN)) {
-						nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+					if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
+						/*******************TODO LOOKUP TABLES
+						 * 
+						String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+						if (filter.getOperator().equals(Operator.BETWEEN)) {
+							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+						}
+						if (filterClause == null || filterClause.isEmpty()) {
+							filterClause = " and lss.person." + nextFilterLine;
+						}
+						else {
+							filterClause = filterClause + " and lss.person." + nextFilterLine;
+						}						
+						
+						
+						 */
 					}
-					if (filterClause == null || filterClause.isEmpty()) {
-						filterClause = " and lss.person." + nextFilterLine;
-					}
-					else {
-						filterClause = filterClause + " and lss.person." + nextFilterLine;
+					else{
+						String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+						if (filter.getOperator().equals(Operator.BETWEEN)) {
+							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+						}
+						if (filterClause == null || filterClause.isEmpty()) {
+							filterClause = " and lss.person." + nextFilterLine;
+						}
+						else {
+							filterClause = filterClause + " and lss.person." + nextFilterLine;
+						}
 					}
 				}
 			}
