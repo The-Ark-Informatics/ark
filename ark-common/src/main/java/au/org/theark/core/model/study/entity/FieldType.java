@@ -39,6 +39,7 @@ public class FieldType implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String name;
+	private boolean visible;
 
 	public FieldType() {
 	}
@@ -60,6 +61,16 @@ public class FieldType implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+
+	@Column(name = "VISIBLE", nullable = false, unique = true)
+	public boolean getVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 	@Override
