@@ -1685,21 +1685,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			for (BiocollectionField field : nonPoppableBiocollectionFieldsFromVO) {
 				if (bfs.getBiocollectionField().getId().equals(field.getId())) {
 					toBeDeleted = false;
-					log.info("listOfBiocollectionFieldsFromVO.size()" + listOfBiocollectionFieldsFromVO.size());
-					listOfBiocollectionFieldsFromVO.remove(field);
-					// we found it, therefore  remove it  from the list that will ultimately be added as DFS's
-					log.info("after removal listOfBiocollectionFieldsFromVO.size()" + listOfBiocollectionFieldsFromVO.size());
+					listOfBiocollectionFieldsFromVO.remove(field);// we found it, therefore  remove it  from the list that will ultimately be added as DFS's
 				}
 			}
 			if (toBeDeleted) {
-				log.info("before delete");
 				search.getBiocollectionFieldsToReturn().remove(bfs);
 				getSession().update(search);
 				getSession().delete(bfs);
-				// setBiocollectionFieldsToReturn(getBiocollectionFieldsToReturn());
 				getSession().flush();
 				getSession().refresh(search);
-				log.info("after delete" + search.getBiocollectionFieldsToReturn().size());
 			}
 		}
 
@@ -1722,7 +1716,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		nonPoppableCustomFieldsFromVO.addAll(listOfSubjectCustomFieldDisplaysFromVO);
 		nonPoppableCustomFieldsFromVO.addAll(listOfBiospecimenCustomFieldDisplaysFromVO);
 		nonPoppableCustomFieldsFromVO.addAll(listOfBiocollectionCustomFieldDisplaysFromVO);
-
 		List<CustomFieldDisplay> poppableCustomFieldsFromVO = new ArrayList<CustomFieldDisplay>();
 		poppableCustomFieldsFromVO.addAll(listOfPhenoCustomFieldDisplaysFromVO);
 		poppableCustomFieldsFromVO.addAll(listOfSubjectCustomFieldDisplaysFromVO);
@@ -1736,25 +1729,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			for (CustomFieldDisplay field : nonPoppableCustomFieldsFromVO) {
 				if (cfds.getCustomFieldDisplay().getId().equals(field.getId())) {
 					toBeDeleted = false;
-					/* log.info("listOfCustomFieldDisplaysFromVO.size()" + listOfPhenoCustomFieldDisplaysFromVO.size());
-					 * listOfPhenoCustomFieldDisplaysFromVO.remove(field);//we found it, therefore remove it from the list that will ultimately be added as
-					 * DFS's log.info( "after removal listOfCustomFieldDisplaysFromVO.size()" + listOfPhenoCustomFieldDisplaysFromVO.size());
-					 */
-					log.info("poppableCustomFieldsFromVO.size()" + poppableCustomFieldsFromVO.size());
-					poppableCustomFieldsFromVO.remove(field);// we found it,
-					// therefore remove it from the list that will ultimately be added as DFS's
-					log.info("after removal poppableCustomFieldsFromVO.size()" + poppableCustomFieldsFromVO.size());
+					poppableCustomFieldsFromVO.remove(field);// we found it, therefore remove it from the list that will ultimately be added as DFS's
 				}
 			}
 			if (toBeDeleted) {
-				log.info("before delete");
 				search.getCustomFieldsToReturn().remove(cfds);
 				getSession().update(search);
 				getSession().delete(cfds);
-				// setCustomFieldDisplaysToReturn(getCustomFieldDisplaysToReturn());
 				getSession().flush();
 				getSession().refresh(search);
-				log.info("after delete" + search.getCustomFieldsToReturn().size());
 			}
 		}
 
@@ -1890,7 +1873,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			List<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
 			
 			List<DemographicField> allSubjectFields = new ArrayList<DemographicField>();
-			//allSubjectFields.addAll(dfs);
 			allSubjectFields.addAll(addressDFs);
 			allSubjectFields.addAll(lssDFs);
 			allSubjectFields.addAll(personDFs);
@@ -1902,17 +1884,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			List<CustomFieldDisplay> bscfds = getSelectedBiospecimenCustomFieldDisplaysForSearch(search);
 			List<CustomFieldDisplay> scfds = getSelectedSubjectCustomFieldDisplaysForSearch(search);
 			List<CustomFieldDisplay> pcfds = getSelectedPhenoCustomFieldDisplaysForSearch(search);
-			/* SAVE FILTERS FOR LATER 
-			 * Making this stuff into an xml document THEN converting it generically to xls/csv/pdf/etc might be an option
-			 */	/***
-			 * some of the options 1 get each of these and apply a filter every time 2 a megaquery to get EVERYTHING FOR EVERYONE into our
-			 * "report object/model" 3 use the filters to create a set of subjectUIDs and maybe apply that, though may also needs a set of pheno_data_id, subj_custom_ids, etc
-			 */	/*get demographic data if(hasPersonFields(dfs)){ Query personQuery = getSession().createQuery("Select person from Person person ");
-			 * //then get some fields and put it in our "report model" } if(hasLSSFields(dfs)){ //or a query that forces the join of person and lss if
-			 * they both exist Query lssQuery = getSession().createQuery ("Select lss from LinkSubjectStudy lss "); //then get some fields and put it in
-			 * our "report model" }
+			/* Making this stuff into an xml document THEN converting it generically to xls/csv/pdf/etc might be an option
+			 * other options;
+			 *  1 get each of these and apply a filter every time 
+			 *  2 a megaquery to get EVERYTHING FOR EVERYONE into our "report/value object/model" 
+			 *  3 use the filters to create a set of subjectUIDs and maybe apply that, though may also needs a set of pheno_data_id, subj_custom_ids, etc
 			 */
-//DEMOGRAPHIC FILTERING/DATA
+			
+//DEMOGRAPHIC FILTERING - but not data
 			List<Long> idsAfterFiltering = applyDemographicFilters(search);  //from here we need to add 
 			log.info("uidsafterFilteringdemo=" + idsAfterFiltering.size());
 	
@@ -1939,22 +1918,19 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 //PHENO CUSTOM
 			idsAfterFiltering = applyPhenoCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering pheno cust=" + idsAfterFiltering.size());
-			//TODO wipe the old data which doesn't still match the ID list
 
-//			wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering); //dont need to pass in pheno ids, because any filtering effective there will just be able to be used via the subject list.
-//			wipeBiocollectionDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering,  idsAfterFiltering);
-			//TODO wipe the old data which doesn't still match the ID list 
-
+//DEMOGRAPHIC DATA
 			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
-			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
 			idsAfterFiltering = applySubjectCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering SUBJECT cust=" + idsAfterFiltering.size());
  
 			wipeBiospecimenDataNotMatchingThisList(search.getStudy(), allTheData, biospecimenIdsAfterFiltering, idsAfterFiltering);
 			wipeBiocollectionDataNotMatchThisList(search.getStudy(), allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 			
+			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
-
+			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getBiospecimenData(), FieldCategory.BIOSPECIMEN_FIELD);
+			
 			// CREATE CSVs - later will offer options xml, pdf, etc
 			SearchResult searchResult = new SearchResult();
 			searchResult.setSearch(search);
@@ -3329,7 +3305,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	/**
 	 * @param search
 	 * @param idsToInclude 
-	 * @return a query string to attain the updated list of bioscpecimens.
+	 * @return a query string to attain the updated list of biospecimens.
 	 */
 	private String getBioCollectionDataCustomFieldIdQuery(Search search) {
 
@@ -3790,14 +3766,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			if(!biospecimenFilters.isEmpty())
 				idsToInclude = new ArrayList(uniqueSubjectIDs);
 			
-			prettyLoggingOfWhatIsInOurMegaObject(hashOfBiospecimenData, FieldCategory.BIOSPECIMEN_FIELD);
 		}
 		allTheData.setBiospecimenData(hashOfBiospecimenData);//wouldnt think I need to set ht
-		log.info("addDataFromMegaBiospecimenQuery.biospecimenIdsAfterFiltering: " + biospecimenIdsAfterFiltering.size());
+		//log.info("addDataFromMegaBiospecimenQuery.biospecimenIdsAfterFiltering: " + biospecimenIdsAfterFiltering.size());
 		return biospecimenIdsAfterFiltering;
 	}
 
-	
 	private void prettyLoggingOfWhatIsInOurMegaObject(HashMap<String, ExtractionVO> hashOfSubjectsWithData, FieldCategory fieldCategory) {
 		log.info(" we have " + hashOfSubjectsWithData.size() + " entries for category '" + fieldCategory + "'");
 		for (String subjectUID : hashOfSubjectsWithData.keySet()) {
@@ -3809,7 +3783,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 		}
 	}
-
 
 	/*
 	 * private boolean hasEmailFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
@@ -3849,18 +3822,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * } if(!lssFieldsString.toString().isEmpty()){ } /** TODO: NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO * } return ""; }
 	 */
 
-/* 	private void prettyLoggingOfWhatIsInOurMegaObject(HashMap<String, ExtractionVO> hashOfSubjectsWithData, FieldCategory fieldCategory) {
-		log.info(" we have " + hashOfSubjectsWithData.size() + " entries for category '" + fieldCategory + "'");
-		for (String subjectUID : hashOfSubjectsWithData.keySet()) {
-			HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
-			log.info(subjectUID + " has " + keyValues.size() + "demo fields"); 
-			// remove(subjectUID).getKeyValues().size() + "demo fields");
-			for (String key : keyValues.keySet()) {
-				log.info("     key=" + key + "\t   value=" + keyValues.get(key));
-			}
-		}
-	}*/
-	
 	public SearchPayload createSearchPayload(byte[] bytes) {
 		SearchPayload payload = new SearchPayload(bytes);
 		getSession().save(payload);
@@ -3956,6 +3917,4 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		getSession().delete(searchSubject);
 	}
 
-
-	
 }
