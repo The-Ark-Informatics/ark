@@ -3907,14 +3907,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		getSession().delete(searchSubject);
 	}
 	
-	private void getMaxAddressesForTheseSubjects(List<String> subjectUIDs, Study study){
-		
 
-	/*	select max(mycount)
+	/*	private void getMaxAddressesForTheseSubjects(List<String> subjectUIDs, Study study){
+		
+	select max(mycount)
 		from (select count(a.person_id) mycount 
 		from address a
 		group by a.person_id) bnvnbv;
-		*/
+	
 		
 		String queryString = "	select max(mycount) " +
 				" from (select count(a.person_id) mycount " +
@@ -3926,7 +3926,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		Query query = getSession().createQuery(queryString);
 		//query.setParameterList("idsToInclude", idsAfterFiltering);
-		List<LinkSubjectStudy> subjects = query.list();
-	}
+		List<LinkSubjectStudy> subjects = query.list(); 	
+	}	*/
 
 }
