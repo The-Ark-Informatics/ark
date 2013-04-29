@@ -1599,10 +1599,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public boolean update(SearchVO searchVO) throws EntityExistsException {
-		//start save basic search info
+//start save basic search info
 		boolean success = true;
 		Search search = searchVO.getSearch();
-		log.info("search name" + search.getName());
 		if (isSearchNameTaken(search.getName(), search.getStudy(), search.getId())) {
 			throw new EntityExistsException("Search name '" + search.getName() + "' is already taken.  Please select a unique name");
 		}
@@ -1610,7 +1609,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		getSession().flush();
 		getSession().refresh(search);
 //end save basic search info
-
 		
 //start save demographic fields
 		Collection<DemographicField> listOfDemographicFieldsFromVO = searchVO.getSelectedDemographicFields();
@@ -1619,28 +1617,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		List<DemographicField> nonPoppableDemographicFieldsFromVO = new ArrayList<DemographicField>();
 		nonPoppableDemographicFieldsFromVO.addAll(listOfDemographicFieldsFromVO);
 		for (DemographicFieldSearch dfs : nonPoppableDFS) {
-			log.info("fields to return=" + search.getDemographicFieldsToReturn().size());
-			boolean toBeDeleted = true; // if we find no match along the way,
-			// conclude that it has been deleted.
+			boolean toBeDeleted = true; // if we find no match along the way, conclude that it has been deleted.
 
 			for (DemographicField field : nonPoppableDemographicFieldsFromVO) {
 				if (dfs.getDemographicField().getId().equals(field.getId())) {
 					toBeDeleted = false;
-					log.info("listOfDemographicFieldsFromVO.size()" + listOfDemographicFieldsFromVO.size());
-					listOfDemographicFieldsFromVO.remove(field);
-					// we found it, therefore  remove it  from the list that will ultimately be added as DFS's
-					log.info("after removal listOfDemographicFieldsFromVO.size()" + listOfDemographicFieldsFromVO.size());
+					listOfDemographicFieldsFromVO.remove(field); // we found it, therefore  remove it  from the list that will ultimately be added as DFS's
 				}
 			}
 			if (toBeDeleted) {
-				log.info("before delete");
 				search.getDemographicFieldsToReturn().remove(dfs);
 				getSession().update(search);
 				getSession().delete(dfs);
-				// setDemographicFieldsToReturn(getDemographicFieldsToReturn());
 				getSession().flush();
 			 	getSession().refresh(search);
-				log.info("after delete" + search.getDemographicFieldsToReturn().size());
 			}
 		}
 
@@ -1659,28 +1649,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		List<BiospecimenField> nonPoppableBiospecimenFieldsFromVO = new ArrayList<BiospecimenField>();
 		nonPoppableBiospecimenFieldsFromVO.addAll(listOfBiospecimenFieldsFromVO);
 		for (BiospecimenFieldSearch bfs : nonPoppableBiospecimenFS) {
-			log.info("fields to return=" + search.getBiospecimenFieldsToReturn().size());
-			boolean toBeDeleted = true; // if we find no match along the way,
-			// conclude that it has been deleted.
+			boolean toBeDeleted = true; // if we find no match along the way, conclude that it has been deleted.
 
 			for (BiospecimenField field : nonPoppableBiospecimenFieldsFromVO) {
 				if (bfs.getBiospecimenField().getId().equals(field.getId())) {
 					toBeDeleted = false;
-					log.info("listOfBiospecimenFieldsFromVO.size()" + listOfBiospecimenFieldsFromVO.size());
-					listOfBiospecimenFieldsFromVO.remove(field);
-					// we found it, therefore  remove it  from the list that will ultimately be added as DFS's
-					log.info("after removal listOfBiospecimenFieldsFromVO.size()" + listOfBiospecimenFieldsFromVO.size());
+					listOfBiospecimenFieldsFromVO.remove(field);// we found it, therefore  remove it  from the list that will ultimately be added as DFS's
 				}
 			}
 			if (toBeDeleted) {
-				log.info("before delete");
 				search.getBiospecimenFieldsToReturn().remove(bfs);
 				getSession().update(search);
 				getSession().delete(bfs);
-				// setBiospecimenFieldsToReturn(getBiospecimenFieldsToReturn());
 				getSession().flush();
 				getSession().refresh(search);
-				log.info("after delete" + search.getBiospecimenFieldsToReturn().size());
 			}
 		}
 
@@ -1691,7 +1673,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		searchVO.setSelectedBiospecimenFields(nonPoppableBiospecimenFieldsFromVO);
 //end save biospecimen fields
 		
-
 //start save biocollection fields
 		Collection<BiocollectionField> listOfBiocollectionFieldsFromVO = searchVO.getSelectedBiocollectionFields();
 		List<BiocollectionFieldSearch> nonPoppableBiocollectionFS = new ArrayList<BiocollectionFieldSearch>();
@@ -1699,9 +1680,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		List<BiocollectionField> nonPoppableBiocollectionFieldsFromVO = new ArrayList<BiocollectionField>();
 		nonPoppableBiocollectionFieldsFromVO.addAll(listOfBiocollectionFieldsFromVO);
 		for (BiocollectionFieldSearch bfs : nonPoppableBiocollectionFS) {
-			log.info("fields to return=" + search.getBiocollectionFieldsToReturn().size());
-			boolean toBeDeleted = true; // if we find no match along the way,
-			// conclude that it has been deleted.
+			boolean toBeDeleted = true; // if we find no match along the way, conclude that it has been deleted.
 
 			for (BiocollectionField field : nonPoppableBiocollectionFieldsFromVO) {
 				if (bfs.getBiocollectionField().getId().equals(field.getId())) {
@@ -1730,18 +1709,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		searchVO.setSelectedBiocollectionFields(nonPoppableBiocollectionFieldsFromVO);
 //end save biocollection fields
-
-						
+		
 //start saving all custom display fields		
 		Collection<CustomFieldDisplay> listOfPhenoCustomFieldDisplaysFromVO = searchVO.getSelectedPhenoCustomFieldDisplays();
 		Collection<CustomFieldDisplay> listOfSubjectCustomFieldDisplaysFromVO = searchVO.getSelectedSubjectCustomFieldDisplays();
 		Collection<CustomFieldDisplay> listOfBiospecimenCustomFieldDisplaysFromVO = searchVO.getSelectedBiospecimenCustomFieldDisplays();
-		Collection<CustomFieldDisplay> listOfBiocollectionCustomFieldDisplaysFromVO = searchVO.getSelectedBiocollectionCustomFieldDisplays();// we
-																																															// really
-																																															// can
-		// add them all here and add to one collections
+		Collection<CustomFieldDisplay> listOfBiocollectionCustomFieldDisplaysFromVO = searchVO.getSelectedBiocollectionCustomFieldDisplays();// we really can add them all here and add to one collections
 		List<CustomFieldDisplaySearch> nonPoppablePhenoCFDs = new ArrayList<CustomFieldDisplaySearch>();
-		// List<CustomFieldDisplaySearch> nonPoppableSubjectCFDs = new ArrayList<CustomFieldDisplaySearch>();
 		nonPoppablePhenoCFDs.addAll(search.getCustomFieldsToReturn());
 		List<CustomFieldDisplay> nonPoppableCustomFieldsFromVO = new ArrayList<CustomFieldDisplay>();
 		nonPoppableCustomFieldsFromVO.addAll(listOfPhenoCustomFieldDisplaysFromVO);
@@ -1757,8 +1731,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		for (CustomFieldDisplaySearch cfds : nonPoppablePhenoCFDs) {
 			log.info("fields to return=" + search.getCustomFieldsToReturn().size());
-			boolean toBeDeleted = true; // if we find no match along the way,
-			// conclude that it has been deleted.
+			boolean toBeDeleted = true; // if we find no match along the way, conclude that it has been deleted.
 
 			for (CustomFieldDisplay field : nonPoppableCustomFieldsFromVO) {
 				if (cfds.getCustomFieldDisplay().getId().equals(field.getId())) {
@@ -1948,24 +1921,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			biospecimenIdsAfterFiltering = addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, idsAfterFiltering, biospecimenIdsAfterFiltering);
 			log.info("biospecimenIdsAfterFiltering size: " + biospecimenIdsAfterFiltering.size());
 			log.info("uidsafterFilteringbiospec=" + idsAfterFiltering.size());
+			
 //BIOSPEC CUSTOM
 			idsAfterFiltering = applyBiospecimenCustomFilters(allTheData, search, idsAfterFiltering, biospecimenIdsAfterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFiltering=Biospec cust" + idsAfterFiltering.size());
-			log.info("biospecimenIdsAfterFiltering custom size: " + biospecimenIdsAfterFiltering.size());
-			//prettyLoggingOfWhatIsInOurMegaObject(allTheData.getBiospecimenCustomData(), FieldCategory.BIOSPECIMEN_FIELD);
+			log.info("uidsafterFiltering=Biospec cust" + idsAfterFiltering.size() + "biospecimenIdsAfterFiltering custom size: " + biospecimenIdsAfterFiltering.size());
 			
 //BIOCOLLECTION
 			List<Long> bioCollectionIdsAfterFiltering = new ArrayList<Long>();
 			bioCollectionIdsAfterFiltering = addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);
 			log.info("uidsafterFiltering doing the construction of megaobject=" + idsAfterFiltering.size());
 			log.info("uidsafterFiltering biocol=" + idsAfterFiltering.size());
+
 //BIOCOL CUSTOM
 			idsAfterFiltering = applyBioCollectionCustomFilters(allTheData, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol cust=" + idsAfterFiltering.size());
-			//TODO wipe the old data which doesn't still match the ID list
-				//this can be called further down
-				//wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering);
-
 
 //PHENO CUSTOM
 			idsAfterFiltering = applyPhenoCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
@@ -1975,17 +1944,17 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 //			wipeBiospecimenDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering); //dont need to pass in pheno ids, because any filtering effective there will just be able to be used via the subject list.
 //			wipeBiocollectionDataNotMatchThisList(allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering,  idsAfterFiltering);
 			//TODO wipe the old data which doesn't still match the ID list 
-			wipeBiospecimenDataNotMatchingThisList(search.getStudy(), allTheData, biospecimenIdsAfterFiltering, idsAfterFiltering);
-			wipeBiocollectionDataNotMatchThisList(search.getStudy(), allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 
 			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
 			idsAfterFiltering = applySubjectCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering SUBJECT cust=" + idsAfterFiltering.size());
-
+ 
+			wipeBiospecimenDataNotMatchingThisList(search.getStudy(), allTheData, biospecimenIdsAfterFiltering, idsAfterFiltering);
+			wipeBiocollectionDataNotMatchThisList(search.getStudy(), allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering);
+			
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
 
-			
 			// CREATE CSVs - later will offer options xml, pdf, etc
 			SearchResult searchResult = new SearchResult();
 			searchResult.setSearch(search);
@@ -2096,14 +2065,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	private Collection<String> getBioCollectionUIDsNotMatchingTheseBioCollectionIdsOrSubjectIds(Study study, Collection<String> bioCollectionUIDs, List<Long> bioCollectionIds, List<Long> subjectIds){
-
 		
 		Query query = null;
 		//if there is nothing to start with get out of here.
 		if(bioCollectionUIDs.isEmpty()){
 			return new ArrayList<String>();
 		}
-
 		
 		//if there is nothing to reduce the list by...return original list.
 		if(bioCollectionIds.isEmpty() && subjectIds.isEmpty()){
@@ -2147,7 +2114,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			query.setParameterList("uidList", bioCollectionUIDs);
 			return query.list();
 		}		
-		
 		
 	}
 
