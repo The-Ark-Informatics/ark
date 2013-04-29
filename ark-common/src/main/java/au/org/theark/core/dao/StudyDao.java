@@ -478,14 +478,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
-	// TODO
 	public Country getCountry(Long id) {
 		Criteria criteria = getSession().createCriteria(Country.class);
 		criteria.add(Restrictions.eq("id", id));
 		return (Country) criteria.list().get(0);
 	}
 
-	// TODO HARDCODING
+	// TODO FIX HARDCODING
 	public Country getCountry(String countryCode) {
 		Criteria criteria = getSession().createCriteria(Country.class);
 		criteria.add(Restrictions.eq("countryCode", countryCode));
@@ -1867,6 +1866,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// TODO errors and reports
 		}
 		else {
+			getMaxAddressesForTheseSubjects(null, null);
 			List<DemographicField> addressDFs = getSelectedDemographicFieldsForSearch(search, Entity.Address);
 			List<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
 			List<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
@@ -3905,6 +3905,28 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	private void deleteSearchSubject(SearchSubject searchSubject) {
 		getSession().delete(searchSubject);
+	}
+	
+	private void getMaxAddressesForTheseSubjects(List<String> subjectUIDs, Study study){
+		
+
+	/*	select max(mycount)
+		from (select count(a.person_id) mycount 
+		from address a
+		group by a.person_id) bnvnbv;
+		*/
+		
+		String queryString = "	select max(mycount) " +
+				" from (select count(a.person_id) mycount " +
+				" from Address a " +
+				" group by a.personId) blah";
+//				+ " where lss.study.id = " + search.getStudy().getId()
+//				+ " and lss.id in (:idsToInclude) "
+//				+ " order by lss.subjectUID";
+
+		Query query = getSession().createQuery(queryString);
+		//query.setParameterList("idsToInclude", idsAfterFiltering);
+		List<LinkSubjectStudy> subjects = query.list();
 	}
 
 }
