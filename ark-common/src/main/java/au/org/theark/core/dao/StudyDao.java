@@ -2881,7 +2881,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		for (DemographicField field : addressFields) {
 			int count = 0;
 			// assume they have filtered type/status in hql sql statement
-			for (Address a : lss.getPerson().getAddresses()) {
+			for (Address a : lss.getPerson().getAddresses()) {	//TODO : I would imagine switching these for loops would be more efficient
 				count++;
 				if (field.getFieldName().equalsIgnoreCase("postCode")) {
 					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getPostCode());
