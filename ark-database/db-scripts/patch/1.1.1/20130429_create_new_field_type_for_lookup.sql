@@ -36,3 +36,16 @@ UPDATE `reporting`.`demographic_field` SET `PUBLIC_FIELD_NAME`='Date Address Rec
 UPDATE `reporting`.`demographic_field` SET `PUBLIC_FIELD_NAME`='Building Name/Unit' WHERE `ID`='20';
 UPDATE `reporting`.`demographic_field` SET `PUBLIC_FIELD_NAME`='Subject Comments' WHERE `ID`='40';
 
+
+/**** add filterable column, as some of these fields really don't need to be filtered on and add to clutter ****/
+ALTER TABLE `reporting`.`biospecimen_field` ADD COLUMN `FILTERABLE` TINYINT NULL DEFAULT true  AFTER `FIELD_TYPE_ID` ;
+
+UPDATE `reporting`.`biospecimen_field` SET `FILTERABLE`='0' WHERE `ID`='10';
+UPDATE `reporting`.`biospecimen_field` SET `FILTERABLE`='0' WHERE `ID`='16';
+UPDATE `reporting`.`biospecimen_field` SET `FILTERABLE`='0' WHERE `ID`='17';
+UPDATE `reporting`.`biospecimen_field` SET `FILTERABLE`='0' WHERE `ID`='18';
+UPDATE `reporting`.`biospecimen_field` SET `FILTERABLE`='0' WHERE `ID`='19';
+UPDATE `reporting`.`biospecimen_field` SET `FILTERABLE`='0' WHERE `ID`='20';
+
+
+
