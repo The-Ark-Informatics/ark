@@ -438,7 +438,7 @@ public class Biospecimen implements java.io.Serializable {
 
 	@Transient
 	public Double getAmount() {
-		return amount;
+		return ((quantity == null) ? 0 : quantity) * ((concentration == null) ? 0 : concentration);
 	}
 	
 	@Column(name = "PURITY")
