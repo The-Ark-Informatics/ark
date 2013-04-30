@@ -28,4 +28,11 @@ UPDATE `reporting`.`demographic_field` SET `FIELD_TYPE_ID`='4' WHERE `ID`='27';
 UPDATE `reporting`.`demographic_field` SET `FIELD_TYPE_ID`='4' WHERE `ID`='51';
 UPDATE `reporting`.`demographic_field` SET `FIELD_TYPE_ID`='4' WHERE `ID`='46';
 
+UPDATE `reporting`.`demographic_field` SET `PUBLIC_FIELD_NAME`='Address Source' WHERE `ID`='45';
+UPDATE `reporting`.`demographic_field` SET `PUBLIC_FIELD_NAME`='Phone Comment' WHERE `ID`='52';
+UPDATE `reporting`.`demographic_field` SET `PUBLIC_FIELD_NAME`='Phone Source' WHERE `ID`='49';
+UPDATE `reporting`.`demographic_field` SET `PUBLIC_FIELD_NAME`='Address Comments' WHERE `ID`='44';
+UPDATE `reporting`.`demographic_field` SET `PUBLIC_FIELD_NAME`='Date Address Received' WHERE `ID`='43';
+UPDATE `reporting`.`demographic_field` SET `PUBLIC_FIELD_NAME`='Building Name/Unit' WHERE `ID`='20';
+UPDATE `reporting`.`demographic_field` SET `PUBLIC_FIELD_NAME`='Subject Comments' WHERE `ID`='40';
 
