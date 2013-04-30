@@ -985,10 +985,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		List<Address> personAddressList = criteria.list();
 
-		if (personAddressList.isEmpty()) {
+		//if (personAddressList.isEmpty()) {
 			// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
-			log.info("person " + personId + " does not have any addresses");
-		}
+		//	log.info("person " + personId + " does not have any addresses");
+		//}
 		return personAddressList;
 	}
 
