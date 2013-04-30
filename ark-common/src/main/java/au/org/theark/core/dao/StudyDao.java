@@ -2698,7 +2698,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("otherEmailStatus")) {
 				if(lss.getPerson().getOtherEmailStatus()!=null){
-					map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmailStatus().toString());
+					map.put(field.getPublicFieldName(), lss.getPerson().getOtherEmailStatus().getName());
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("dateLastKnownAlive")) {
@@ -2800,11 +2800,50 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			// assume they have filtered type/status in hql sql statement
 			for (Address a : lss.getPerson().getAddresses()) {	//TODO : I would imagine switching these for loops would be more efficient
 				count++;
-				if (field.getFieldName().equalsIgnoreCase("postCode")) {
+				if (field.getFieldName().equalsIgnoreCase("addressLine1")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getAddressLineOne());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("streetAddress")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getStreetAddress());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("city")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getCity());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("country")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getCountry().getName());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("state")) {
+					if(a.getState() != null) {
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getState().getName());
+					}
+					else{ 
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), "");
+					}
+				}
+				else if (field.getFieldName().equalsIgnoreCase("otherState")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getOtherState());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("addressStatus")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getAddressStatus().getName());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("addressType")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getAddressType().getName());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("postCode")) {
 					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getPostCode());
 				}
-				//etc
-
+				else if (field.getFieldName().equalsIgnoreCase("dateReceived")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getDateReceived());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("comments")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getComments());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("preferredMailingAddress")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getPreferredMailingAddress());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("source")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getSource());
+				}
 			}
 		}
 		for (DemographicField field : phoneFields) {
@@ -2815,7 +2854,27 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				if (field.getFieldName().equalsIgnoreCase("phoneNumber")) {
 					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), phone.getPhoneNumber());
 				}
-				// etc
+				else if (field.getFieldName().equalsIgnoreCase("phoneType")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), phone.getPhoneType().getName());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("areaCode")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), phone.getAreaCode());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("phoneStatus")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), phone.getPhoneStatus().getName());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("source")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), phone.getSource());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("dateReceived")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), phone.getDateReceived().toString());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("silentMode")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), phone.getSilentMode().getName());
+				}
+				else if (field.getFieldName().equalsIgnoreCase("comment")) {
+					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), phone.getComment());
+				}
 			}
 		}
 		return map;
