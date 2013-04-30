@@ -40,6 +40,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
+import au.org.theark.core.model.report.entity.Entity;
 import au.org.theark.core.model.report.entity.FieldCategory;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -77,21 +78,27 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 
 			// Header
 			csv.write("SUBJECTUID");
-			for (DemographicField df : allSubjectFields) {
-				csv.write(df.getPublicFieldName());
+			
+			Set<String> demofields = new HashSet<String>();
+			for (String subjectUID : hashOfSubjectsWithData.keySet()) {
+				HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
+				demofields.addAll((keyValues.keySet()));
+			}
+			for(String demoField : demofields) {
+				csv.write(demoField);
 			}
 			for (CustomFieldDisplay cfd : cfds) {
 				csv.write(cfd.getCustomField().getName());
 			}
-
 			csv.endLine();
 
 			for (String subjectUID : hashOfSubjectsWithData.keySet()) {
 				csv.write(subjectUID);
 
-				for (DemographicField df : allSubjectFields) {
+				for (String demoField : demofields) {
 					HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
-					csv.write(keyValues.get(df.getPublicFieldName()));
+					csv.write(keyValues.get(demoField));
+					
 				}
 
 				/**
