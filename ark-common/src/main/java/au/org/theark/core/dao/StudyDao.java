@@ -2095,7 +2095,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	private List<Long> applyDemographicFilters(Search search){
 		List subjectUIDs = new ArrayList<Long>();
-		//TODO ASAP  Apply external list of subjectUID as a restriction
+		
+
+		String addressJoinFilters = getAddressFilters(search);
+		
 		String personFilters = getPersonFilters(search, null);
 		String lssAndPersonFilters = getLSSFilters(search, personFilters);
 		List<Long> subjectList = getSubjectIdsforSearch(search);
@@ -2103,7 +2106,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		/**
 		 * note that this is ID not subject_uid being selected
 		 */
-		String queryString = "select distinct lss.id from LinkSubjectStudy lss" 
+		String queryString = "select distinct lss.id from LinkSubjectStudy lss " 
+				+ addressJoinFilters
 				//TODO also add filters for phone and address 
 				+ " where lss.study.id = " + search.getStudy().getId()
 				+ lssAndPersonFilters + " ";
@@ -2161,7 +2165,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					" left join fetch data.linkSubjectStudy "  +
 					" left join fetch data.customFieldDisplay custFieldDisplay "  +
 					" left join fetch custFieldDisplay.customField custField "  +
-					" where data.linkSubjectStudy.id in (:idList)" +
+					" where data.linkSubjectStudy.id in (:idList) " +
 					" and data.customFieldDisplay in (:customFieldsList)" + 
 					" order by data.linkSubjectStudy " ;
 			Query query2 = getSession().createQuery(queryString);
@@ -3185,6 +3189,66 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		log.info("filterClause = " + filterClause);
 		return (filterClause == null ? "" : filterClause);
+	}
+
+	
+	private String getAddressFilters(Search search) {
+		
+		String filterClause = null;
+		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
+		for (QueryFilter filter : filters) {
+			DemographicField demoField = filter.getDemographicField();
+			if ((demoField != null)) {
+				if (demoField.getEntity() != null && demoField.getEntity().equals(Entity.Address)) {
+					if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
+						 /*
+						  * hql document examle 3.3 
+						  * from Cat as cat
+    							left join cat.kittens as kitten
+       	 							with kitten.bodyWeight > 10.0  */
+						String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+						//TODO:  This wouldnt really be a compatible type would it...must do validation very soon.
+						if (filter.getOperator().equals(Operator.BETWEEN)) {
+							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+						}
+						if (filterClause == null || filterClause.isEmpty()) {
+							filterClause = " right join lss.person as person " +
+											" right join person.addresses as address " +
+											" right join address." + demoField.getFieldName() + " as " + demoField.getFieldName() + " with " + nextFilterLine;
+						}
+						else {//TODO:  does this work with the join???
+							//filterClause = filterClause + " and exists address." + nextFilterLine;
+						}						
+												
+					}
+					else{
+						String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+						if (filter.getOperator().equals(Operator.BETWEEN)) {
+							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+						}
+						if (filterClause == null || filterClause.isEmpty()) {
+							filterClause = " right join lss.person as person " +
+									" right join person.addresses as address with address." + nextFilterLine;
+						}
+						else {//TODO:  does this work with the join???
+							//filterClause = filterClause + " and address." + nextFilterLine;
+						}
+					}
+				}
+			}
+		}
+		log.info("filterClause = " + filterClause);
+		return (filterClause == null ? "" : filterClause);
+		
+		/* THIS WORKS
+		return 	" right join lss.person person " +
+				" right join person.addresses as address" +
+				" right join address.country as country with country.name like '%ust%' ";
+				//THIS WORKS!!!!!" left join lss.subjectCustomFieldDataSet as data with data.id > 0 ";
+																					//also try 
+																					//1 removing final where clause  2 add " as "  
+																					 
+																					 */
 	}
 
 	private String getLSSFilters(Search search, String personFilters) {
