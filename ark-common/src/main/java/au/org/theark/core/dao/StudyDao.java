@@ -2110,7 +2110,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				+ addressJoinFilters
 				//TODO also add filters for phone and address 
 				+ " where lss.study.id = " + search.getStudy().getId()
-				+ lssAndPersonFilters + " ";
+				+ lssAndPersonFilters;
 		
 		Query query = null;
 		if(subjectList.isEmpty()){
@@ -3270,6 +3270,47 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		log.info(" filterClauseAfterLSS FILTERS = " + filterClause);
 		return (filterClause == null ? "" : filterClause);
 	}
+	
+	private String getAddressFilters(Search search, String filterThusFar) {
+		String filterClause = filterThusFar;
+		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
+		for (QueryFilter filter : filters) {
+			DemographicField demoField = filter.getDemographicField();
+			if ((demoField != null)) {
+				if (demoField.getEntity() != null && demoField.getEntity().equals(Entity.Address)) {
+					if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
+						 
+						String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+						//TODO:  This wouldnt really be a compatible type would it...must do validation very soon.
+						if (filter.getOperator().equals(Operator.BETWEEN)) {
+							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+						}
+						if (filterClause == null || filterClause.isEmpty()) {
+							filterClause = " and lss.person.addresses." + nextFilterLine;
+						}
+						else {
+							filterClause = filterClause + " and lss.person.addresses." + nextFilterLine;
+						}						
+												
+					}
+					else{
+						String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+						if (filter.getOperator().equals(Operator.BETWEEN)) {
+							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+						}
+						if (filterClause == null || filterClause.isEmpty()) {
+							filterClause = " and lss.person.addresses." + nextFilterLine;
+						}
+						else {
+							filterClause = filterClause + " and lss.person.addresses." + nextFilterLine;
+						}
+					}
+				}
+			}
+		}
+		log.info("filterClause = " + filterClause);
+		return (filterClause == null ? "" : filterClause);
+	}
 
 	private String getBiospecimenFilters(Search search){//, String filterThusFar) {
 		String filterClause = "";// filterThusFar;
@@ -3600,7 +3641,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				return " < ";
 			}
 			case LESS_THAN_OR_EQUAL: {
-				return " > ";
+				return " <= ";
 			}
 			case LIKE: {
 				return " like ";
