@@ -62,6 +62,9 @@ UPDATE `reporting`.`demographic_field` SET `FILTERABLE`='0' WHERE `ID`='51';
 UPDATE `reporting`.`demographic_field` SET `FILTERABLE`='0' WHERE `ID`='52';
 
 
+UPDATE `reporting`.`biocollection_field` SET `ENTITY`='BioCollection' WHERE `ID`='5';
+INSERT INTO `reporting`.`biocollection_field` (`ID`, `ENTITY`, `FIELD_NAME`, `PUBLIC_FIELD_NAME`, `FIELD_TYPE_ID`) VALUES ('6', 'BioCollection', 'name', 'Collection Name', '1');
+
 
 
 
