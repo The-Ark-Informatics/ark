@@ -248,11 +248,11 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 			
 			FileUpload subjectFileUpload = subjectListFileUploadField.getFileUpload();
 			List<SubjectVO> selectedSubjects = iArkCommonService.matchSubjectsFromInputFile(subjectFileUpload, study);
-			iArkCommonService.createSearchSubjects(containerForm.getModelObject().getSearch(), selectedSubjects);
 
 			if (containerForm.getModelObject().getSearch().getId() == null) {
 
 				iArkCommonService.create(containerForm.getModelObject());
+				iArkCommonService.createSearchSubjects(containerForm.getModelObject().getSearch(), selectedSubjects);
 				this.info("Search " + containerForm.getModelObject().getSearch().getName() +
 						" was created successfully");
 				processErrors(target);
@@ -261,6 +261,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 			else {
 
 				iArkCommonService.update(containerForm.getModelObject());
+				iArkCommonService.createSearchSubjects(containerForm.getModelObject().getSearch(), selectedSubjects);
 				this.info("Search " + containerForm.getModelObject().getSearch().getName() + " was updated successfully");
 				processErrors(target);
 
