@@ -3146,6 +3146,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					map.put(field.getPublicFieldName(), rowLabel);
 				}
 			}
+			else if(field.getFieldName().equalsIgnoreCase("bioCollectionUid")){
+				map.put(field.getPublicFieldName(), biospecimen.getBioCollection().getBiocollectionUid());
+			}
+			else if(field.getFieldName().equalsIgnoreCase("name")){
+				map.put(field.getPublicFieldName(), biospecimen.getBioCollection().getName());
+			}
 		}
 		return map;
 	}
@@ -3324,6 +3330,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
 					}
 					filterClause = " and biospecimen." + nextFilterLine;
+				}
+				else if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.BioCollection)) {
+					String nextFilterLine = (biospecimenField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+					filterClause = " and biospecimen.bioCollection." + nextFilterLine;
 				}
 			}
 		}
@@ -3915,6 +3925,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			queryBuffer.append(	"	left join fetch biospecimen.anticoag anticoag ");
 			queryBuffer.append(	"	left join fetch biospecimen.status status " );
 			queryBuffer.append(	"	left join fetch biospecimen.biospecimenProtocol biospecimenProtocol ");
+//			queryBuffer.append(	"	left join fetch biospecimen.biocollection biocollection ");
 			queryBuffer.append(	" where biospecimen.study.id = " + search.getStudy().getId());
 			if(!biospecimenFilters.isEmpty())
 				queryBuffer.append(biospecimenFilters);
