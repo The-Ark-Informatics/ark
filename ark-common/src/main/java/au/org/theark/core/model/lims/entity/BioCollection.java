@@ -53,28 +53,28 @@ public class BioCollection implements java.io.Serializable {
 	private Long					id;
 	private String					biocollectionUid;
 	private String					name;
-	private LinkSubjectStudy	linkSubjectStudy;
+	private LinkSubjectStudy		linkSubjectStudy;
 	private Study					study;
 	private Date					collectionDate;
-	private Integer				deleted;
+	private Integer					deleted;
 	private String					timestamp;
 	private String					comments;
 	private String					hospital;
 	private Date					surgeryDate;
 	private String					diagCategory;
 	private String					refDoctor;
-	private Integer				patientage;
+	private Integer					patientage;
 	private Date					dischargeDate;
 	private String					hospitalUr;
 	private Date					diagDate;
-	private Integer				collectiongroupId;
+	private Integer					collectiongroupId;
 	private String					episodeNum;
 	private String					episodeDesc;
 	private String					collectiongroup;
 	private String					tissuetype;
 	private String					tissueclass;
 	private String					pathlabno;
-	private Set<Biospecimen>	biospecimens = new HashSet<Biospecimen>(0);
+	private Set<Biospecimen>		biospecimens = new HashSet<Biospecimen>(0);
 
 	public BioCollection() {
 	}
