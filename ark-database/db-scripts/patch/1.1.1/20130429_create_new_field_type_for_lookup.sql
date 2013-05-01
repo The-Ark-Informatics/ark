@@ -48,4 +48,21 @@ UPDATE `reporting`.`biospecimen_field` SET `FILTERABLE`='0' WHERE `ID`='19';
 UPDATE `reporting`.`biospecimen_field` SET `FILTERABLE`='0' WHERE `ID`='20';
 
 
+ALTER TABLE `reporting`.`demographic_field` ADD COLUMN `FILTERABLE` TINYINT NULL DEFAULT true  AFTER `FIELD_TYPE_ID` ;
+
+
+
+UPDATE `reporting`.`demographic_field` SET `FILTERABLE`='0' WHERE `ID`='28';
+UPDATE `reporting`.`demographic_field` SET `FILTERABLE`='0' WHERE `ID`='46';
+UPDATE `reporting`.`demographic_field` SET `FILTERABLE`='0' WHERE `ID`='47';
+UPDATE `reporting`.`demographic_field` SET `FILTERABLE`='0' WHERE `ID`='48';
+UPDATE `reporting`.`demographic_field` SET `FILTERABLE`='0' WHERE `ID`='49';
+UPDATE `reporting`.`demographic_field` SET `FILTERABLE`='0' WHERE `ID`='50';
+UPDATE `reporting`.`demographic_field` SET `FILTERABLE`='0' WHERE `ID`='51';
+UPDATE `reporting`.`demographic_field` SET `FILTERABLE`='0' WHERE `ID`='52';
+
+
+
+
+
 
