@@ -66,6 +66,9 @@ UPDATE `reporting`.`biocollection_field` SET `ENTITY`='BioCollection' WHERE `ID`
 INSERT INTO `reporting`.`biocollection_field` (`ID`, `ENTITY`, `FIELD_NAME`, `PUBLIC_FIELD_NAME`, `FIELD_TYPE_ID`) VALUES ('6', 'BioCollection', 'name', 'Collection Name', '1');
 
 
+UPDATE `reporting`.`biospecimen_field` SET `FIELD_TYPE_ID`='4' WHERE `ID`='2';
+
+
 
 
 

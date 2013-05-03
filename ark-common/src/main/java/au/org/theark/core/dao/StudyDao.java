@@ -3331,11 +3331,55 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			BiospecimenField biospecimenField = filter.getBiospecimenField();
 			if ((biospecimenField != null)) {
 				if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.Biospecimen)) {
-					String nextFilterLine = (biospecimenField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
-					if (filter.getOperator().equals(Operator.BETWEEN)) {
-						nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+	/*
+	 * 
+	 * 
+	 * 
+	 * 				if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
+						 
+						String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+						//TODO:  This wouldnt really be a compatible type would it...must do validation very soon.
+						if (filter.getOperator().equals(Operator.BETWEEN)) {
+							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+						}
+						if (filterClause == null || filterClause.isEmpty()) {
+							filterClause = " and lss.person.addresses." + nextFilterLine;
+						}
+						else {
+							filterClause = filterClause + " and lss.person.addresses." + nextFilterLine;
+						}						
+												
 					}
-					filterClause = " and biospecimen." + nextFilterLine;
+					else{
+						String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+						if (filter.getOperator().equals(Operator.BETWEEN)) {
+							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+						}
+						if (filterClause == null || filterClause.isEmpty()) {
+							filterClause = " and lss.person.addresses." + nextFilterLine;
+						}
+						else {
+							filterClause = filterClause + " and lss.person.addresses." + nextFilterLine;
+						}
+					}
+	 * 		
+	 * 
+	 * 			
+	 */
+					if(biospecimenField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
+						String nextFilterLine = (biospecimenField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+						if (filter.getOperator().equals(Operator.BETWEEN)) {
+							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+						}
+						filterClause = " and biospecimen." + nextFilterLine;
+					}
+					else{
+						String nextFilterLine = (biospecimenField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
+						if (filter.getOperator().equals(Operator.BETWEEN)) {
+							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
+						}
+						filterClause = " and biospecimen." + nextFilterLine;
+					}
 				}
 				else if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.BioCollection)) {
 					String nextFilterLine = (biospecimenField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
@@ -3447,7 +3491,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		for (QueryFilter filter : filters) {
 			CustomFieldDisplay customFieldDisplay = filter.getCustomFieldDisplay();
 			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)) {
-				
+
 				String tablePrefix = "data" + count++;
 				log.info("what is this BIOSPECIMEN CUSTOM filter? " + filter.getId() + "     for data row? " + tablePrefix );
 				
@@ -3951,9 +3995,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}			
 			
 			//maintaining list of subject IDs for filtering past results
-			if(!biospecimenFilters.isEmpty())
+			if(!biospecimenFilters.isEmpty()){
 				idsToInclude = new ArrayList(uniqueSubjectIDs);
-			
+				log.info("LATEST LIST OF IDS SIZE=" + idsToInclude.size());
+			}
 		}
 		allTheData.setBiospecimenData(hashOfBiospecimenData);//wouldnt think I need to set ht
 		//log.info("addDataFromMegaBiospecimenQuery.biospecimenIdsAfterFiltering: " + biospecimenIdsAfterFiltering.size());
