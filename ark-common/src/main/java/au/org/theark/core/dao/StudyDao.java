@@ -3298,7 +3298,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
 						}
 						if (filterClause == null || filterClause.isEmpty()) {
-							filterClause = " and lss.person.addresses." + nextFilterLine;
+							filterClause = filterClause + " and lss.person.addresses." + nextFilterLine;
 						}
 						else {
 							filterClause = filterClause + " and lss.person.addresses." + nextFilterLine;
@@ -3311,7 +3311,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
 						}
 						if (filterClause == null || filterClause.isEmpty()) {
-							filterClause = " and lss.person.addresses." + nextFilterLine;
+							filterClause = filterClause + " and lss.person.addresses." + nextFilterLine;
 						}
 						else {
 							filterClause = filterClause + " and lss.person.addresses." + nextFilterLine;
@@ -3331,59 +3331,24 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			BiospecimenField biospecimenField = filter.getBiospecimenField();
 			if ((biospecimenField != null)) {
 				if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.Biospecimen)) {
-	/*
-	 * 
-	 * 
-	 * 
-	 * 				if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
-						 
-						String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
-						//TODO:  This wouldnt really be a compatible type would it...must do validation very soon.
-						if (filter.getOperator().equals(Operator.BETWEEN)) {
-							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
-						}
-						if (filterClause == null || filterClause.isEmpty()) {
-							filterClause = " and lss.person.addresses." + nextFilterLine;
-						}
-						else {
-							filterClause = filterClause + " and lss.person.addresses." + nextFilterLine;
-						}						
-												
-					}
-					else{
-						String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
-						if (filter.getOperator().equals(Operator.BETWEEN)) {
-							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
-						}
-						if (filterClause == null || filterClause.isEmpty()) {
-							filterClause = " and lss.person.addresses." + nextFilterLine;
-						}
-						else {
-							filterClause = filterClause + " and lss.person.addresses." + nextFilterLine;
-						}
-					}
-	 * 		
-	 * 
-	 * 			
-	 */
 					if(biospecimenField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
 						String nextFilterLine = (biospecimenField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
 						if (filter.getOperator().equals(Operator.BETWEEN)) {
 							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
 						}
-						filterClause = " and biospecimen." + nextFilterLine;
+						filterClause = filterClause + " and biospecimen." + nextFilterLine;
 					}
 					else{
 						String nextFilterLine = (biospecimenField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
 						if (filter.getOperator().equals(Operator.BETWEEN)) {
 							nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
 						}
-						filterClause = " and biospecimen." + nextFilterLine;
+						filterClause = filterClause + " and biospecimen." + nextFilterLine;
 					}
 				}
 				else if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.BioCollection)) {
 					String nextFilterLine = (biospecimenField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + filter.getValue() + "' ");
-					filterClause = " and biospecimen.bioCollection." + nextFilterLine;
+					filterClause = filterClause + " and biospecimen.bioCollection." + nextFilterLine;
 				}
 			}
 		}
@@ -3402,7 +3367,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					if (filter.getOperator().equals(Operator.BETWEEN)) {
 						nextFilterLine += (" AND " + "'" + filter.getSecondValue() + "' ");
 					}
-					filterClause = " and biocollection." + nextFilterLine;
+					filterClause = filterClause + " and biocollection." + nextFilterLine;
 				}
 			}
 		}
@@ -4079,7 +4044,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public void createSearchResult(Search search, File file) {
-
 		try {
 			SearchResult sr = new SearchResult();
 			sr.setSearch(search);
