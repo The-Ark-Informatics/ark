@@ -1894,17 +1894,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 //DEMOGRAPHIC FILTERING - but not data
 			List<Long> idsAfterFiltering = applyDemographicFilters(search);  //from here we need to add 
 			log.info("uidsafterFilteringdemo=" + idsAfterFiltering.size());
-	
-//BIOSPECIMEN
-			List<Long> biospecimenIdsAfterFiltering = new ArrayList<Long>();
-			biospecimenIdsAfterFiltering = addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, idsAfterFiltering, biospecimenIdsAfterFiltering);
-			log.info("biospecimenIdsAfterFiltering size: " + biospecimenIdsAfterFiltering.size());
-			log.info("uidsafterFilteringbiospec=" + idsAfterFiltering.size());
-			
-//BIOSPEC CUSTOM
-			idsAfterFiltering = applyBiospecimenCustomFilters(allTheData, search, idsAfterFiltering, biospecimenIdsAfterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFiltering=Biospec cust" + idsAfterFiltering.size() + "biospecimenIdsAfterFiltering custom size: " + biospecimenIdsAfterFiltering.size());
-			
+
 //BIOCOLLECTION
 			List<Long> bioCollectionIdsAfterFiltering = new ArrayList<Long>();
 			bioCollectionIdsAfterFiltering = addDataFromMegaBiocollectionQuery(allTheData, bcfs, bccfds, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);
@@ -1914,6 +1904,16 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 //BIOCOL CUSTOM
 			idsAfterFiltering = applyBioCollectionCustomFilters(allTheData, search, idsAfterFiltering, bioCollectionIdsAfterFiltering);	//change will be applied to referenced object
 			log.info("uidsafterFiltering biocol cust=" + idsAfterFiltering.size());
+			
+//BIOSPECIMEN
+			List<Long> biospecimenIdsAfterFiltering = new ArrayList<Long>();
+			biospecimenIdsAfterFiltering = addDataFromMegaBiospecimenQuery(allTheData, bsfs, search, idsAfterFiltering, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering);
+			log.info("biospecimenIdsAfterFiltering size: " + biospecimenIdsAfterFiltering.size());
+			log.info("uidsafterFilteringbiospec=" + idsAfterFiltering.size());
+			
+//BIOSPEC CUSTOM
+			idsAfterFiltering = applyBiospecimenCustomFilters(allTheData, search, idsAfterFiltering, biospecimenIdsAfterFiltering);	//change will be applied to referenced object
+			log.info("uidsafterFiltering=Biospec cust" + idsAfterFiltering.size() + "biospecimenIdsAfterFiltering custom size: " + biospecimenIdsAfterFiltering.size());
 
 //PHENO CUSTOM
 			idsAfterFiltering = applyPhenoCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
@@ -3911,7 +3911,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 
 	private List<Long> addDataFromMegaBiospecimenQuery(DataExtractionVO allTheData,Collection<BiospecimenField> biospecimenFields, //Collection<CustomFieldDisplay> specimenCFDs, 
-			Search search, List<Long> idsToInclude, List<Long> biospecimenIdsAfterFiltering){
+			Search search, List<Long> idsToInclude, List<Long> biospecimenIdsAfterFiltering, List<Long> bioCollectionIdsAfterFiltering){
 		
 		String biospecimenFilters = getBiospecimenFilters(search);
 
@@ -3942,12 +3942,22 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			queryBuffer.append(	"	left join fetch biospecimen.biospecimenProtocol biospecimenProtocol ");
 //			queryBuffer.append(	"	left join fetch biospecimen.biocollection biocollection ");
 			queryBuffer.append(	" where biospecimen.study.id = " + search.getStudy().getId());
-			if(!biospecimenFilters.isEmpty())
+			if(!biospecimenFilters.isEmpty()){
 				queryBuffer.append(biospecimenFilters);
+			}
+				
 			queryBuffer.append( "  and biospecimen.linkSubjectStudy.id in (:idsToInclude) ");
+			
+			if(!bioCollectionIdsAfterFiltering.isEmpty()){
+				queryBuffer.append( "  and biospecimen.bioCollection.id in (:biocollectionsToFilter) ");
+			}
 
 			Query query = getSession().createQuery(queryBuffer.toString());
 			query.setParameterList("idsToInclude", idsToInclude);
+			if(!bioCollectionIdsAfterFiltering.isEmpty()){
+				query.setParameterList("biocollectionsToFilter", bioCollectionIdsAfterFiltering);
+			}
+			
 			Collection<Biospecimen> biospecimenList=query.list();
 			HashSet uniqueSubjectIDs = new HashSet<Long>();
 			
