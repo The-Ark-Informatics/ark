@@ -1,0 +1,1 @@
+DELETE FROM `lims`.`biospecimen_grade` WHERE `NAME`='Undiffrent';
