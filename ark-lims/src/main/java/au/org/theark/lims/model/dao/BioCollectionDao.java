@@ -26,6 +26,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
@@ -226,6 +227,7 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 
 	public List<BioSampletype> getSampleTypes() {
 		Criteria criteria = getStatelessSession().createCriteria(BioSampletype.class);
+		criteria.addOrder(Order.asc("orderId"));
 		List<BioSampletype> list = criteria.list();
 		return list;
 	}
