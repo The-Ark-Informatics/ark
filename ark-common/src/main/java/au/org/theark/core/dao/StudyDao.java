@@ -2261,7 +2261,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 			else{
-				log.info("there were no subject custom data filters, therefore don't run filter query");
+				log.info("there were no biospecimen custom data filters, therefore don't run filter query");
 			}
 		}
 		else{
@@ -2366,7 +2366,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 			else{
-				log.info("there were no subject custom data filters, therefore don't run filter query");
+				log.info("there were no biocol custom data filters, therefore don't run filter query");
 			}
 		}
 		else{
@@ -2515,7 +2515,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					log.info("rows returned = " + phenoCollectionIdsSoFar.size());
 				}
 				else{
-					log.info("there were no subject custom data filters, therefore don't run filter query");
+					log.info("there were no pheno custom data filters, therefore don't run filter query");
 				}
 			}
 			else{
