@@ -2023,8 +2023,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			List<QueryFilter> biospecimenQueryFilters) {
 		
 		HashMap<String, ExtractionVO> data = allTheData.getBiocollectionData();
-		Collection<String> uidsInData = data.keySet();
-	Collection<String> uidsToDelete = getBioCollectionUIDsNotMatchingTheseBioCollectionIdsOrSubjectIds(study, uidsInData, bioCollectionIdsAfterFiltering, subjectIds, biospecimenIds, biospecimenQueryFilters);
+		Collection<String> uidsInData = new HashSet(data.keySet());
+		Collection<String> uidsToDelete = (Collection<String>) new HashSet();
+		uidsToDelete =		getBioCollectionUIDsNotMatchingTheseBioCollectionIdsOrSubjectIds(study, uidsInData, bioCollectionIdsAfterFiltering, subjectIds, biospecimenIds, biospecimenQueryFilters);
 		for(String uid : uidsToDelete){
 			log.info("wipeBioCollectionDataNotMatchingThisList:    removed bioCollection uid = " + uid);
 			data.remove(uid);
