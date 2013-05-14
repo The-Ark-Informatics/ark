@@ -186,8 +186,11 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 				csv.write(biocollectionUID);
 
 				for (BiocollectionFieldSearch bcfs : search.getBiocollectionFieldsToReturn()) {
-					HashMap<String, String> keyValues = hashOfBiocollectionsWithData.get(biocollectionUID).getKeyValues();
-					csv.write(keyValues.get(bcfs.getBiocollectionField().getPublicFieldName()));
+					ExtractionVO hash = hashOfBiocollectionsWithData.get(biocollectionUID);
+					if(hash!=null){
+						HashMap<String, String> keyValues = hash.getKeyValues();
+						csv.write(keyValues.get(bcfs.getBiocollectionField().getPublicFieldName()));
+					}
 				}
 				/*
 				 * for(CustomFieldDisplay cfd : cfds) { HashMap<String, String> keyValues =
