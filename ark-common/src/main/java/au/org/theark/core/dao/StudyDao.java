@@ -2380,8 +2380,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			if(!queryToFilterBioCollectionIDs.isEmpty()){
 				Query query = getSession().createQuery(queryToFilterBioCollectionIDs);
 				query.setParameterList("idList", bioCollectionIdsAfterFiltering);//TODO ASAP...this should be bioCollection list and not subjuid list now
-				bioCollectionIdsAfterFiltering = query.list(); 	
+				//bioCollectionIdsAfterFiltering = query.list(); 	
 				log.info("rows returned = " + bioCollectionIdsAfterFiltering.size());
+				List<Long> bioCollList = query.list();
+				//bioCollectionIdsAfterFiltering = new ArrayList<Long>(bioCollectionIdsAfterFiltering);
+				bioCollectionIdsAfterFiltering.clear();
+				for (Object id : bioCollList) {
+					bioCollectionIdsAfterFiltering.add((Long) id);
+				}
+				
 				if(bioCollectionIdsAfterFiltering.isEmpty()){
 					idsToInclude = new ArrayList<Long>();
 				}
@@ -3306,16 +3313,35 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
 		for (QueryFilter filter : filters) {
 			DemographicField demoField = filter.getDemographicField();
-			if ((demoField != null)) {
-				if (demoField.getEntity() != null && demoField.getEntity().equals(Entity.LinkSubjectStudy)) {
-					String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
-					if (filter.getOperator().equals(Operator.BETWEEN)) {
-						nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
-					}
-					
-					filterClause = filterClause + " and lss." + nextFilterLine; // there will always be something before it so the and part is ok (study restrictions etc)
+			
+			if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
+				 
+				String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
+				//TODO:  This wouldnt really be a compatible type would it...must do validation very soon.
+				if (filter.getOperator().equals(Operator.BETWEEN)) {
+					nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
+				}
+				if (filterClause == null || filterClause.isEmpty()) {
+					filterClause = filterClause + " and lss." + nextFilterLine;
+				}
+				else {
+					filterClause = filterClause + " and lss." + nextFilterLine;
+				}						
+										
+			}
+			else{
+				String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
+				if (filter.getOperator().equals(Operator.BETWEEN)) {
+					nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
+				}
+				if (filterClause == null || filterClause.isEmpty()) {
+					filterClause = filterClause + " and lss." + nextFilterLine;
+				}
+				else {
+					filterClause = filterClause + " and lss." + nextFilterLine;
 				}
 			}
+			
 		}
 		log.info(" filterClauseAfterLSS FILTERS = " + filterClause);
 		return (filterClause == null ? "" : filterClause);
@@ -3477,7 +3503,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				//TODO evaluate date entry/validation
 				if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
 					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
-							" AND " + tablePrefix + ".dateDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+							" AND " + tablePrefix + ".dateDataValue " + getHQLForOperator(filter.getOperator()) + " '" + parseFilterValue(customFieldDisplay.getCustomField().getFieldType(),filter.getValue()) + "' ");
 				}
 				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
