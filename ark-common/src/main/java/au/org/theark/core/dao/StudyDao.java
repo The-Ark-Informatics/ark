@@ -1934,11 +1934,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			log.info("uidsafterFiltering SUBJECT cust=" + idsAfterFiltering.size());
  
 			wipeBiospecimenDataNotMatchingThisList(search.getStudy(), allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering);
-			wipeBiocollectionDataNotMatchThisList(search.getStudy(), allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering);
+			wipeBiocollectionDataNotMatchThisList(search.getStudy(), allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering, biospecimenIdsAfterFiltering,  getBiospecimenQueryFilters(search));
 			
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getBiospecimenData(), FieldCategory.BIOSPECIMEN_FIELD);
+			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getBiospecimenData(), FieldCategory.BIOCOLLECTION_FIELD);
 			
 // CREATE CSVs - later will offer options xml, pdf, etc
 			SearchResult searchResult = new SearchResult();
@@ -1983,35 +1984,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return biospecimenUIDs;
 		}
 		else{
-			/**
-			 * delete from here...................................
-			 
-			for(Long bio : biospecimenIds){
-				System.out.print(bio + ", ");
-			}
-
-			System.out.println(" \n ");
-			for(String uid : biospecimenUIDs){
-
-				System.out.print("'" + uid + "', ");
-			}
-
-
-			System.out.println(" \n ");
-			for(Long id : subjectIds){
-
-				System.out.print(id + ", ");
-			}
-			System.out.println(" \n");
-			
-			 * ...................................to here
-			 */
-			
 			String queryString = 	" select distinct biospecimen.biospecimenUid " +
 									" from Biospecimen biospecimen " +
 									" where " +
 									" ( " +
-										(biospecimenIds.isEmpty()?"":" biospecimen.id not in (:idList) or ") +
+										(biospecimenIds.isEmpty()?"":" biospecimen.id not in (:biospecidList) or ") +
 										(biocollectionIds.isEmpty()?"":" biospecimen.bioCollection.id not in (:biocollectionIds) or ") +
 										(subjectIds.isEmpty()?"":" biospecimen.linkSubjectStudy.id not in (:subjectIdList)  ") +
 									" ) " +
@@ -2019,7 +1996,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 									" and biospecimen.study =:study ";
 			query = getSession().createQuery(queryString);
 			if(!biospecimenIds.isEmpty())
-				query.setParameterList("idList", biospecimenIds);
+				query.setParameterList("biospecidList", biospecimenIds);
 			if(!biocollectionIds.isEmpty())
 				query.setParameterList("biocollectionIds", biocollectionIds);
 			if(!subjectIds.isEmpty())
@@ -2042,11 +2019,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
-	private void wipeBiocollectionDataNotMatchThisList(Study study, DataExtractionVO allTheData, List<Long> bioCollectionIdsAfterFiltering, List<Long> subjectIds) {
+	private void wipeBiocollectionDataNotMatchThisList(Study study, DataExtractionVO allTheData, List<Long> bioCollectionIdsAfterFiltering, List<Long> subjectIds, List<Long> biospecimenIds,
+			List<QueryFilter> biospecimenQueryFilters) {
 		
 		HashMap<String, ExtractionVO> data = allTheData.getBiocollectionData();
 		Collection<String> uidsInData = data.keySet();
-		Collection<String> uidsToDelete = getBioCollectionUIDsNotMatchingTheseBioCollectionIdsOrSubjectIds(study, uidsInData, bioCollectionIdsAfterFiltering, subjectIds);
+	Collection<String> uidsToDelete = getBioCollectionUIDsNotMatchingTheseBioCollectionIdsOrSubjectIds(study, uidsInData, bioCollectionIdsAfterFiltering, subjectIds, biospecimenIds, biospecimenQueryFilters);
 		for(String uid : uidsToDelete){
 			log.info("wipeBioCollectionDataNotMatchingThisList:    removed bioCollection uid = " + uid);
 			data.remove(uid);
@@ -2055,16 +2033,18 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 	}
 
-	private Collection<String> getBioCollectionUIDsNotMatchingTheseBioCollectionIdsOrSubjectIds(Study study, Collection<String> bioCollectionUIDs, List<Long> bioCollectionIds, List<Long> subjectIds){
-		
+	private Collection<String> getBioCollectionUIDsNotMatchingTheseBioCollectionIdsOrSubjectIds(Study study, Collection<String> bioCollectionUIDs, List<Long> bioCollectionIds,
+			List<Long> subjectIds, List<Long> biospecimenIds, List<QueryFilter> biospecimenFilters){
+
 		Query query = null;
+		Query query2 = null;
 		//if there is nothing to start with get out of here.
 		if(bioCollectionUIDs.isEmpty()){
 			return new ArrayList<String>();
 		}
 		
 		//if there is nothing to reduce the list by...return original list.
-		if(bioCollectionIds.isEmpty() && subjectIds.isEmpty()){
+		if((bioCollectionIds.isEmpty() && subjectIds.isEmpty())){
 			return bioCollectionUIDs;
 		}
 		else{
@@ -2103,7 +2083,41 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				query.setParameterList("subjectIdList", subjectIds);
 			query.setParameter("study", study);
 			query.setParameterList("uidList", bioCollectionUIDs);
-			return query.list();
+			List<String> collectionsToDelete = query.list();
+			
+
+			if(biospecimenIds.isEmpty()){
+				//if all biospecimens WERE filtered, then all biocollections deleted
+				if(!biospecimenFilters.isEmpty()){
+					return bioCollectionUIDs;
+				}
+				else{
+					//there were no biospec filters...continue as usual
+					return collectionsToDelete;
+				}
+			}
+			else{
+				if(!bioCollectionUIDs.isEmpty() && !subjectIds.isEmpty()){
+					String queryString2 = "Select distinct biospecimen.bioCollection.biocollectionUid  " +
+									  "from  Biospecimen biospecimen " +
+									  "where " +
+									  "( biospecimen.bioCollection.biocollectionUid in (:bioCollectionUIDs) " +
+									  " and biospecimen.id not in (:biospecimenIds) ) " +
+									  ((collectionsToDelete.isEmpty())?"":" or biospecimen.bioCollection.biocollectionUid in (:collectionsToDelete) ") +
+									  " and biospecimen.study =:study " +
+										" and biospecimen.bioCollection.study =:study " ;
+
+					query2 = getSession().createQuery(queryString2);
+					if(!collectionsToDelete.isEmpty())
+						query2.setParameterList("collectionsToDelete", collectionsToDelete);
+					query2.setParameter("study", study);
+					query2.setParameterList("bioCollectionUIDs", bioCollectionUIDs);
+					query2.setParameterList("biospecimenIds", biospecimenIds);
+					collectionsToDelete = query2.list();
+					log.info("collects to delete = " + collectionsToDelete);
+				}
+			}
+			return collectionsToDelete;
 		}		
 		
 	}
@@ -3347,6 +3361,24 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (filterClause == null ? "" : filterClause);
 	}
 
+
+
+	private List<QueryFilter> getBiospecimenQueryFilters(Search search){
+		List<QueryFilter> qfs = new ArrayList<QueryFilter>();
+		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
+		for (QueryFilter filter : filters) {
+			BiospecimenField biospecimenField = filter.getBiospecimenField();
+			if ((biospecimenField != null)) {
+				if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.Biospecimen)){
+//TODO or biospec custom					|| biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.)) {
+					qfs.add(filter);
+				}
+			}
+		}
+		return qfs;
+	}
+	
+	
 	private String getBiospecimenFilters(Search search){//, String filterThusFar) {
 		String filterClause = "";// filterThusFar;
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
@@ -4035,7 +4067,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		log.info(" we have " + hashOfSubjectsWithData.size() + " entries for category '" + fieldCategory + "'");
 		for (String subjectUID : hashOfSubjectsWithData.keySet()) {
 			HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
-			log.info(subjectUID + " has " + keyValues.size() + "demo fields"); 
+			log.info(subjectUID + " has " + keyValues.size() + " " + fieldCategory + " fields"); 
 			// remove(subjectUID).getKeyValues().size() + "demo fields");
 			for (String key : keyValues.keySet()) {
 				log.info("     key=" + key + "\t   value=" + keyValues.get(key));
