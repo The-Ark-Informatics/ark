@@ -3259,7 +3259,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				//THIS WORKS!!!!!" left join lss.subjectCustomFieldDataSet as data with data.id > 0 ";
 																					//also try 
 																					//1 removing final where clause  2 add " as "  
-																					 
 																					 */
 	}
 
@@ -3971,7 +3970,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			//maintaining list of subject IDs for filtering past results
 			if(!biospecimenFilters.isEmpty()){
-				idsToInclude = new ArrayList(uniqueSubjectIDs);
+				
+				idsToInclude.clear();
+				for(Object id : uniqueSubjectIDs){
+					idsToInclude.add((Long)id);
+				}
 				log.info("LATEST LIST OF IDS SIZE=" + idsToInclude.size());
 			}
 		}
