@@ -3409,7 +3409,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				parsedValue = (dt1.format(date));
 			}
 			catch (ParseException e) {
-				return parsedValue;
+				return value;
 			}
 		}
 		else {
