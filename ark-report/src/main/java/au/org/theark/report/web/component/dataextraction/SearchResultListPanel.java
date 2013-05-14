@@ -314,11 +314,13 @@ public class SearchResultListPanel extends Panel {
 				//TODO ASAP : this will be replaced by call to job
 				//iArkCommonService.runSearch(search.getId());
 				try {
+					SecurityUtils.getSubject();
 					search.setStartTime(new java.util.Date(System.currentTimeMillis()));
 					search.setStatus("RUNNING");
 					search.setFinishTime(null);
 					iArkCommonService.update(search);
-					DataExtractionUploadExecutor task = new DataExtractionUploadExecutor(iArkCommonService, search.getId());//, studyId);
+					String currentUser = SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString();
+					DataExtractionUploadExecutor task = new DataExtractionUploadExecutor(iArkCommonService, search.getId(), currentUser);//, studyId);
 					task.run();
 					target.add(SearchResultListPanel.this);
 					target.appendJavaScript("alert('Data files are being created as a background job. You may download when complete.');");

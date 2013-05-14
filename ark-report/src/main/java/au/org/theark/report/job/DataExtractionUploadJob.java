@@ -63,8 +63,8 @@ public class DataExtractionUploadJob implements Job {
 		iArkCommonService			= (IArkCommonService<Void>) data.get(IARKCOMMONSERVICE);
 		Long searchId 				= (Long) data.get(SEARCH_ID);
 	//	Long studyId 				= data.getLongValue(STUDY_ID);
-		
-		iArkCommonService.runSearch(searchId);
+		String currentUser		= data.getString(CURRENT_USER);
+		iArkCommonService.runSearch(searchId,currentUser);
 
 	}
 
