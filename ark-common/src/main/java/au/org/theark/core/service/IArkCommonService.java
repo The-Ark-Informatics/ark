@@ -799,4 +799,6 @@ public interface IArkCommonService<T> {
 	public List<SearchSubject> getSearchSubjects();
 	
 	public void createSearchSubjects(Search search, List<SubjectVO> subjectVos);
+
+	public void runSearch(Long searchId, String currentUser);
 }

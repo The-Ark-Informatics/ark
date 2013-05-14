@@ -1353,6 +1353,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		studyDao.runSearch(searchId); //I guess it can even capture issues and reports and doesn't need a return	
 	}
 	
+	public void runSearch(Long searchId, String currentUser){
+		//String report = studyDao.runSearch();
+		studyDao.runSearch(searchId, currentUser); //I guess it can even capture issues and reports and doesn't need a return	
+	}
+	
 
 	public void createQueryFilters(List filterList) throws ArkSystemException{
 		studyDao.createQueryFilters(filterList);
