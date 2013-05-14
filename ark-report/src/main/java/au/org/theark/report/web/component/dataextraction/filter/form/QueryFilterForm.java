@@ -293,7 +293,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						listEditor.removeItem(item);
 						target.add(form);
 					}
-				}.setDefaultFormProcessing(false).setVisible(item.getIndex()>0));
+				}.setDefaultFormProcessing(false).setVisible(item.getIndex()>=0));
 
 
 				
