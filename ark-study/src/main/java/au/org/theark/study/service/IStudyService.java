@@ -73,6 +73,7 @@ import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
+import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.util.SubjectUploadValidator;
 
 public interface IStudyService {
@@ -414,4 +415,6 @@ public interface IStudyService {
 	public StringBuffer uploadAndReportSubjectConsentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId);
 	
 	public StringBuffer uploadAndReportPedigreeDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId);
+	
+	public RelativeCapsule[] generateSubjectPedigree(final String subjectUID,final Long studyId);
 }
