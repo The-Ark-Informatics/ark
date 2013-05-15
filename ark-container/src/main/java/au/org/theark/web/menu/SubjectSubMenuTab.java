@@ -48,6 +48,7 @@ import au.org.theark.study.web.component.phone.PhoneContainerPanel;
 import au.org.theark.study.web.component.subject.SubjectContainerPanel;
 import au.org.theark.study.web.component.subjectUpload.SubjectUploadContainerPanel;
 import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataContainerPanel;
+import au.org.theark.study.web.component.pedigree.PedigreeContainerPanel;
 
 /**
  * @author nivedann
@@ -143,6 +144,10 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 						// Clear cache to determine permissions
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS, arkFunction);
 						panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup, new TreeModel(iArkCommonService, iInventoryService).createTreeModel());
+					}
+					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PEDIGREE)) {
+						// Clear cache to determine permissions
+						panelToReturn = new PedigreeContainerPanel(panelId);
 					}
 					return panelToReturn;
 				}
