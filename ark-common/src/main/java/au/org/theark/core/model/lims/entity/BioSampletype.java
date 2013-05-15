@@ -44,6 +44,7 @@ public class BioSampletype implements java.io.Serializable {
 	private String					name;
 	private String					sampletype;
 	private String					samplesubtype;
+	private Integer					orderId;
 
 	public BioSampletype() {
 	}
@@ -57,6 +58,17 @@ public class BioSampletype implements java.io.Serializable {
 		this.id = id;
 		this.sampletype = sampletype;
 		this.samplesubtype = samplesubtype;
+	}
+	
+	
+
+	public BioSampletype(Long id, String name, String sampletype,
+			String samplesubtype, Integer orderId) {
+		this.id = id;
+		this.name = name;
+		this.sampletype = sampletype;
+		this.samplesubtype = samplesubtype;
+		this.orderId = orderId;
 	}
 
 	@Id
@@ -104,6 +116,15 @@ public class BioSampletype implements java.io.Serializable {
 
 	public void setSamplesubtype(String samplesubtype) {
 		this.samplesubtype = samplesubtype;
+	}
+
+	@Column(name = "ORDER_ID")
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
 	}
 
 }
