@@ -67,6 +67,7 @@ import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.study.model.vo.RelationshipVo;
 
 public interface IStudyDao {
 	
@@ -420,5 +421,7 @@ public interface IStudyDao {
 	public List<ConsentStatus> getConsentStatus();
 
 	public List<ConsentType> getConsentType();
+	
+	public List<RelationshipVo> getSubjectRelatives(final String subjectUID,final Long studyId);
 	
 }

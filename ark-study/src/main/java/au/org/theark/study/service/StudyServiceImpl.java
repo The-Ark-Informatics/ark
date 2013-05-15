@@ -21,6 +21,7 @@ package au.org.theark.study.service;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -95,7 +96,9 @@ import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
+import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.dao.IStudyDao;
+import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.util.ConsentHistoryComparator;
 import au.org.theark.study.util.DataUploader;
 import au.org.theark.study.util.LinkSubjectStudyConsentHistoryComparator;
@@ -1291,4 +1294,88 @@ public class StudyServiceImpl implements IStudyService {
 	public List<ConsentType> getConsentType() {
 		return iStudyDao.getConsentType();
 	}
+
+	public RelativeCapsule[] generateSubjectPedigree(final String subjectUID,final Long studyId){
+		List<RelativeCapsule> relativeCapsules = new ArrayList<RelativeCapsule>();
+//		List<RelativeCapsule> parentCapsules = new ArrayList<RelativeCapsule>();
+		List<RelationshipVo> relationships =  iStudyDao.getSubjectRelatives(subjectUID,studyId);
+		
+		RelativeCapsule proband=null;
+		RelativeCapsule firstParent=null;
+		RelativeCapsule secondParent=null;
+		for(int i=0;i<relationships.size();++i){
+			if(i==0){
+				proband = createSubjectRelative(relationships.get(i));
+				firstParent = createSubjectParentRelative(relationships.get(i));
+			}
+			else{
+				secondParent = createSubjectParentRelative(relationships.get(i));
+			}
+		}
+		
+		if(relationships !=null && relationships.size() >1){
+			if("M".equalsIgnoreCase(firstParent.getGender())){
+				proband.setFather(firstParent.getIndividualId());
+				proband.setMother(secondParent.getIndividualId());
+			}else{
+				proband.setFather(secondParent.getIndividualId());
+				proband.setMother(firstParent.getIndividualId());
+			}
+			
+			relativeCapsules.add(firstParent);
+			relativeCapsules.add(secondParent);
+			relativeCapsules.add(proband);
+		}
+		
+		return relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]);
+	}
+	
+	private RelativeCapsule createSubjectRelative(RelationshipVo relationshipVo){
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy.MM.dd");
+		RelativeCapsule relative=new RelativeCapsule();
+		relative.setFamilyId(relationshipVo.getFamilyId().toString());
+		relative.setIndividualId(relationshipVo.getIndividualId());
+		if(relationshipVo.getGender() !=null && "Male".equalsIgnoreCase(relationshipVo.getGender())){
+			relative.setGender("M");
+		}else{
+			relative.setGender("F");
+		}
+		
+		try{
+			String dob=sdf.format(relationshipVo.getDob());
+			relative.setDob(dob);
+		}catch(Exception e){
+			
+		}
+		relative.setProband("Y");
+		if(relationshipVo.getDeceased() !=null && "Deceased".equalsIgnoreCase(relationshipVo.getDeceased())){
+			relative.setDeceased("Y");
+		}
+		return relative;
+	}
+	
+	private RelativeCapsule createSubjectParentRelative(RelationshipVo relationshipVo){
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy.MM.dd");
+		RelativeCapsule relative=new RelativeCapsule();
+		relative.setFamilyId(relationshipVo.getFamilyId().toString());
+		relative.setIndividualId(relationshipVo.getRelativeId());
+		if(relationshipVo.getRelativeGender() !=null && "Male".equalsIgnoreCase(relationshipVo.getRelativeGender())){
+			relative.setGender("M");
+		}else{
+			relative.setGender("F");
+		}
+		
+		try{
+			String dob=sdf.format(relationshipVo.getRelativeDob());
+			relative.setDob(dob);
+		}catch(Exception e){
+			
+		}
+		if(relationshipVo.getRelativeDeceased() !=null && "Deceased".equalsIgnoreCase(relationshipVo.getRelativeDeceased())){
+			relative.setDeceased("Y");
+		}
+		return relative;
+	}
+	 
+
 }

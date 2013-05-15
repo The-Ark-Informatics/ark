@@ -35,9 +35,11 @@ import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +102,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.service.Constants;
 
 @Repository("studyDao")
@@ -2026,5 +2029,43 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public List<ConsentType> getConsentType() {
 		Criteria criteria = getSession().createCriteria(ConsentType.class);
 		return criteria.list();
-	} 
+	}
+	
+	public List<RelationshipVo> getSubjectRelatives(final String subjectUID,final Long studyId){
+		List<RelationshipVo> relatives = new ArrayList<RelationshipVo>();
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class, "lsp");
+		criteria.createAlias("subject", "sub", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("sub.study", "substudy", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("relative", "rel", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("rel.study", "relstudy", JoinType.LEFT_OUTER_JOIN);		
+		criteria.createAlias("relationship", "type", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("sub.person", "subPerson", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("rel.person", "relPerson", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("subPerson.genderType", "subGender", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("relPerson.genderType", "relGender", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("subPerson.vitalStatus", "subVitStatus", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("relPerson.vitalStatus", "relVitStatus", JoinType.LEFT_OUTER_JOIN);
+		
+		criteria.add(Restrictions.eq("sub.subjectUID", subjectUID));
+		criteria.add(Restrictions.eq("substudy.id", studyId));
+		criteria.add(Restrictions.eq("relstudy.id", studyId));
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("lsp.familyId"), "familyId");
+		projectionList.add(Projections.property("sub.subjectUID"), "individualId");
+		projectionList.add(Projections.property("rel.subjectUID"), "relativeId");
+		projectionList.add(Projections.property("subGender.name"), "gender");
+		projectionList.add(Projections.property("relGender.name"), "relativeGender");
+		projectionList.add(Projections.property("subPerson.dateOfBirth"), "dob");
+		projectionList.add(Projections.property("relPerson.dateOfBirth"), "relativeDob");
+		projectionList.add(Projections.property("subVitStatus.name"), "deceased");
+		projectionList.add(Projections.property("relVitStatus.name"), "relativeDeceased");
+		
+		criteria.setProjection(projectionList); // only return fields required for report
+		criteria.setResultTransformer(Transformers.aliasToBean(RelationshipVo.class));
+		
+		relatives=criteria.list();
+		return relatives;
+	}
+
 }
