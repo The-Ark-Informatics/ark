@@ -17,6 +17,8 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.resource.DynamicImageResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.jni.MadelineArkProxy;
 import au.org.theark.study.model.capsule.RelativeCapsule;
@@ -32,6 +34,8 @@ public class PedigreeContainerPanel extends Panel{
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
+	
+	static Logger	log	= LoggerFactory.getLogger(PedigreeContainerPanel.class);
 	
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	IStudyService studyService;
@@ -62,7 +66,7 @@ public class PedigreeContainerPanel extends Panel{
 		
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		String sessionId=getSession().getId();
-//		System.out.println(subjectUID!=null ? "Subject UID -------- "+subjectUID.toString() + "-----------Session Id is -----"+sessionId:"---------------  Subject UID is null ----------------------");
+//		log.info(subjectUID!=null ? "Subject UID -------- "+subjectUID.toString() + "-----------Session Id is -----"+sessionId:"---------------  Subject UID is null ----------------------");
 		
 		String filePrefix = subjectUID.toString()+"_"+sessionId;
 		final StringBuffer sb = new StringBuffer();
@@ -154,15 +158,15 @@ public class PedigreeContainerPanel extends Panel{
 			}
 			
 			if(dataFile.delete()){
-	 			System.out.println(dataFile.getName() + " is deleted!");
+				log.info(dataFile.getName() + " is deleted!");
 	 		}else{
-	 			System.out.println(dataFile.getName() +" delete operation is failed.");
+	 			log.info(dataFile.getName() +" delete operation is failed.");
 	 		}
 			
 			if(pedFile.delete()){
-	 			System.out.println(pedFile.getName() + " is deleted!");
+				log.info(pedFile.getName() + " is deleted!");
 	 		}else{
-	 			System.out.println(pedFile.getName() +" delete operation is failed.");
+	 			log.info(pedFile.getName() +" delete operation is failed.");
 	 		}
 		
 		}else{
