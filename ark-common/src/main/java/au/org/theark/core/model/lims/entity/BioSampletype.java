@@ -40,6 +40,7 @@ public class BioSampletype implements java.io.Serializable {
 
 	private static final long	serialVersionUID	= -6857329961855700249L;
 	private Long					id;
+	private Long					orderId;
 	private String					name;
 	private String					sampletype;
 	private String					samplesubtype;
@@ -68,6 +69,16 @@ public class BioSampletype implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+	@Column(name = "ORDER_ID")
+	public Long getOrderId() {
+		return this.orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+
 
 	@Column(name = "NAME")
 	public String getName() {
