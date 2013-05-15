@@ -1,0 +1,5 @@
+IF(NOT BZIP2_FOUND)
+	ADD_SUBDIRECTORY( bzip2 )
+	MESSAGE(STATUS "=== NOTA BENE: === Madeline will use included bzip2")
+ENDIF(NOT BZIP2_FOUND)
+ADD_SUBDIRECTORY( unzip )
