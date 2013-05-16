@@ -204,6 +204,7 @@ public class Constants {
 	public static final String ENTITY_TYPE_INV_RACK = "InvRack";
 	public static final String ENTITY_TYPE_INV_BOX = "InvBox";
 	public static final String ENTITY_TYPE_INV_CELL = "InvCell";
+	public static final String	ENTITY_TYPE_SEARCH	= "Search";
 
 	/* Audit history actions */
 	public static final String ACTION_INSERT = "Insert";
@@ -437,6 +438,7 @@ public class Constants {
 	public static final String SEARCH_ID = "search.id";
 	public static final String SEARCH_NAME = "search.name";
 	public static final String	SAVEANDCLOSE									= "saveAndClose";
+
 
 	public enum FileFormat {CSV, XLS, PDF, TXT, DOC, XML}
 }
