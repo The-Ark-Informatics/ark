@@ -2021,16 +2021,18 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	private void wipeBiocollectionDataNotMatchThisList(Study study, DataExtractionVO allTheData, List<Long> bioCollectionIdsAfterFiltering, List<Long> subjectIds, List<Long> biospecimenIds,
 			List<QueryFilter> biospecimenQueryFilters) {
-		
+
 		HashMap<String, ExtractionVO> data = allTheData.getBiocollectionData();
+		HashMap<String, ExtractionVO> customData = allTheData.getBiocollectionCustomData();
 		Collection<String> uidsInData = new HashSet(data.keySet());
 		Collection<String> uidsToDelete = (Collection<String>) new HashSet();
 		uidsToDelete =		getBioCollectionUIDsNotMatchingTheseBioCollectionIdsOrSubjectIds(study, uidsInData, bioCollectionIdsAfterFiltering, subjectIds, biospecimenIds, biospecimenQueryFilters);
 		for(String uid : uidsToDelete){
 			log.info("wipeBioCollectionDataNotMatchingThisList:    removed bioCollection uid = " + uid);
 			data.remove(uid);
+			customData.remove(uid);
 		}
-		
+		log.info("what is left in data?" + data);
 		
 	}
 
@@ -2038,7 +2040,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			List<Long> subjectIds, List<Long> biospecimenIds, List<QueryFilter> biospecimenFilters){
 
 		Query query = null;
-		Query query2 = null;
+//		Query query2 = null;
 		//if there is nothing to start with get out of here.
 		if(bioCollectionUIDs.isEmpty()){
 			return new ArrayList<String>();
@@ -2099,7 +2101,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else{
 				if(!bioCollectionUIDs.isEmpty() && !subjectIds.isEmpty()){
-					String queryString2 = "Select biospecimen.bioCollection.biocollectionUid  " +
+/*					String queryString2 = "Select biospecimen.bioCollection.biocollectionUid  " +
 									  "from  Biospecimen biospecimen " +
 									  "where " +
 									  "( biospecimen.bioCollection.biocollectionUid in (:bioCollectionUIDs) " +
@@ -2107,7 +2109,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 									  ((collectionsToDelete.isEmpty())?"":" or biospecimen.bioCollection.biocollectionUid in (:collectionsToDelete) ") +
 									  " and biospecimen.study =:study " +
 										" and biospecimen.bioCollection.study =:study " ;
-
 					query2 = getSession().createQuery(queryString2);
 					if(!collectionsToDelete.isEmpty())
 						query2.setParameterList("collectionsToDelete", collectionsToDelete);
@@ -2115,11 +2116,50 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					query2.setParameterList("bioCollectionUIDs", bioCollectionUIDs);
 					query2.setParameterList("biospecimenIds", biospecimenIds);
 					collectionsToDelete = query2.list();
-					log.info("collects to delete = " + collectionsToDelete);
+					log.info("collects to delete = " + collectionsToDelete);*/
+					if(!biospecimenFilters.isEmpty()){
+						List<String> biocollectionsCorrespondingOurFilteredBiospecimens = getBiocollectionUIDsForTheseBiospecimens(biospecimenIds, collectionsToDelete, study);
+						for(String biocollectionUid : bioCollectionUIDs){
+							if(!biocollectionsCorrespondingOurFilteredBiospecimens.contains(biocollectionUid)){
+								collectionsToDelete.add(biocollectionUid);
+							}
+						}
+					}
 				}
 			}
 			return collectionsToDelete;
 		}		
+		
+	}
+
+	/**
+	 * 
+	 * @param biospecimenIds 
+	 * @param collectionsToExclude DO NOT RETURN ANY OF THESE
+	 * @return
+	 */
+	private List<String> getBiocollectionUIDsForTheseBiospecimens(
+			List<Long> biospecimenIds, List<String> collectionsToExclude, Study study) {
+		if(biospecimenIds == null){
+			return new ArrayList<String>();
+		}
+		else{
+			Query query2 = null;
+			String queryString2 = "Select distinct biospecimen.bioCollection.biocollectionUid  " +
+					" from  Biospecimen biospecimen " +
+					" where " +
+					" biospecimen.id in (:biospecimenIds)  " + 
+					"  and biospecimen.study =:study  ";// + 
+					// (collectionsToExclude.isEmpty()?"":" and biospecimen.bioCollection.biocollectionUid not in (:collectionsToExclude) ");
+			query2 = getSession().createQuery(queryString2);
+			query2.setParameterList("biospecimenIds", biospecimenIds);
+			query2.setParameter("study", study);
+			//if(!collectionsToExclude.isEmpty()){
+			//	query2.setParameterList("collectionsToExclude", collectionsToExclude);
+			//}
+			
+			return query2.list();
+		}
 		
 	}
 
