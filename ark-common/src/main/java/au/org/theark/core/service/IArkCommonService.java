@@ -801,4 +801,6 @@ public interface IArkCommonService<T> {
 	public void createSearchSubjects(Search search, List<SubjectVO> subjectVos);
 
 	public void runSearch(Long searchId, String currentUser);
+
+	public void delete(Search search);
 }

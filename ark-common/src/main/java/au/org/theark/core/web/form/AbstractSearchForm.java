@@ -66,6 +66,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 		clearInput();
 		updateFormComponentModels();
 		target.add(form);
+		target.add(feedbackPanel);
 	}
 
 	/**
