@@ -114,7 +114,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		//StudyComp component = studyComponent.getStudyComponent();
 		//;
 		if (search != null && search.getId() != null ) {
-			deleteButton.setEnabled(false);
+//			deleteButton.setEnabled(false);
 		}
 		// If the given component is attached to a file/consents then disable the delete button
 
@@ -289,6 +289,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	}
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
+		iArkCommonService.delete(containerForm.getModelObject().getSearch());
+		containerForm.info("The search was deleted successfully.");
 		/*
 		try {
 	//		iStudyService.delete(containerForm.getModelObject().getStudyComponent());
@@ -309,7 +311,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 			containerForm.error("A System Error has occured please contact support.");
 			processErrors(target);
 		}*/
-		
+		processErrors(target);
+		editCancelProcess(target);
 	}
 
 	@Override

@@ -2919,7 +2919,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getPostCode());
 				}
 				else if (field.getFieldName().equalsIgnoreCase("dateReceived")) {
-					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getDateReceived());
+					
+					if(a.getDateReceived() != null) {
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getDateReceived().toString());
+					}
+					else{
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), "");
+					}
 				}
 				else if (field.getFieldName().equalsIgnoreCase("comments")) {
 					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getComments());
@@ -3353,9 +3359,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
 		for (QueryFilter filter : filters) {
 			DemographicField demoField = filter.getDemographicField();
-			if(demoField!=null){
+			if ((demoField != null)) {
 				if (demoField.getEntity() != null && demoField.getEntity().equals(Entity.LinkSubjectStudy)) {
-					
 					if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
 						 
 						String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
@@ -3385,6 +3390,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					}
 				}
 			}
+			
 		}
 		log.info(" filterClauseAfterLSS FILTERS = " + filterClause);
 		return (filterClause == null ? "" : filterClause);
@@ -3819,6 +3825,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			case NOT_EQUAL: {
 				return " <> ";
 			}
+			case IS_EMPTY: {
+				return " IS NULL ";
+			}
+			case IS_NOT_EMPTY: {
+				return " IS NOT NULL ";
+			}
 		}
 		return " = ";
 	}
@@ -4140,7 +4152,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			log.info(subjectUID + " has " + keyValues.size() + " " + fieldCategory + " fields"); 
 			// remove(subjectUID).getKeyValues().size() + "demo fields");
 			for (String key : keyValues.keySet()) {
-				log.info("     key=" + key + "\t   value=" + keyValues.get(key));
+				//log.info("     key=" + key + "\t   value=" + keyValues.get(key));
 			}
 		}
 	}
@@ -4275,6 +4287,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	private void deleteSearchSubject(SearchSubject searchSubject) {
 		getSession().delete(searchSubject);
+	}
+
+	public void delete(Search search) {
+		getSession().delete(search);
 	}
 	
 

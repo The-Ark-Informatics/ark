@@ -34,6 +34,7 @@ import javax.naming.Name;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
@@ -1405,4 +1406,15 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		studyDao.createSearchSubjects(search, searchSubjects);
 	}
 	
+	public void delete(Search search) {
+	// Create Both CustomField and CustomFieldDisplay
+		AuditHistory ah = new AuditHistory();
+		// Custom Field History
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted Search " + search.getName());
+		ah.setEntityId(search.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SEARCH);
+		this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), search.getStudy());
+		studyDao.delete(search);
+	}
 }
