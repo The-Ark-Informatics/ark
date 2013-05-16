@@ -174,7 +174,7 @@ public class SearchForm extends AbstractSearchForm<SearchVO> {
 			List<Search> resultList = iArkCommonService.getSearchesForThisStudy(getModelObject().getSearch().getStudy());
 
 			if (resultList != null && resultList.size() == 0) {
-				this.info("Study Component with the specified criteria does not exist in the system.");
+				this.info("Searches with the specified criteria does not exist in the system.");
 				target.add(feedbackPanel);
 			}
 

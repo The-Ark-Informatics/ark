@@ -715,4 +715,6 @@ public interface IStudyDao {
 	public void createSearchSubjects(Search search, List<SearchSubject> searchSubjects);
 
 	public void runSearch(Long searchId, String currentUser);
+
+	public void delete(Search search);
 }
