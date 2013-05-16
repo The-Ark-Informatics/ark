@@ -1929,12 +1929,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			log.info("uidsafterFiltering pheno cust=" + idsAfterFiltering.size());
 
 //DEMOGRAPHIC DATA
-			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
 			idsAfterFiltering = applySubjectCustomFilters(allTheData, search, idsAfterFiltering);	//change will be applied to referenced object
-			log.info("uidsafterFiltering SUBJECT cust=" + idsAfterFiltering.size());
- 
+			
 			wipeBiospecimenDataNotMatchingThisList(search.getStudy(), allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 			wipeBiocollectionDataNotMatchThisList(search.getStudy(), allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering, biospecimenIdsAfterFiltering,  getBiospecimenQueryFilters(search));
+			
+			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
+
+			log.info("uidsafterFiltering SUBJECT cust=" + idsAfterFiltering.size());
 			
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
@@ -2216,7 +2218,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			if(!queryToFilterSubjectIDs.isEmpty()){
 				Query query = getSession().createQuery(queryToFilterSubjectIDs);
 				query.setParameterList("idList", idsToInclude);
-				idsToInclude = query.list(); 	
+				List<Long> returnedSubjectIds =query.list(); 
+				idsToInclude.clear();
+				for (Long id : returnedSubjectIds) {
+					idsToInclude.add(id);
+				}
+				
 				log.info("rows returned = " + idsToInclude.size());
 			}
 			else{
@@ -2315,13 +2322,23 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			if(!queryToFilterBiospecimenIDs.isEmpty()){
 				Query query = getSession().createQuery(queryToFilterBiospecimenIDs);
 				query.setParameterList("idList", biospecimenIdsAfterFiltering);//TODO ASAP...this should be biospecimen list and not subjuid list now
-				biospecimenIdsAfterFiltering = query.list(); 	
+				List<Long> biopecimenIds = query.list();
+				biospecimenIdsAfterFiltering.clear();
+				
+				for(Long id : biopecimenIds){
+					biospecimenIdsAfterFiltering.add(id);
+				}
+				
 				log.info("rows returned = " + biospecimenIdsAfterFiltering.size());
 				if(biospecimenIdsAfterFiltering.isEmpty()){
-					idsToInclude = new ArrayList<Long>();
+					idsToInclude.clear();
 				}
 				else{
-					idsToInclude = getSubjectIdsForBiospecimenIds(biospecimenIdsAfterFiltering);
+					List<Long> subjectListIds = getSubjectIdsForBiospecimenIds(biospecimenIdsAfterFiltering);
+					idsToInclude.clear();
+					for (Long id : subjectListIds){
+						idsToInclude.add(id);
+					}
 				}
 			}
 			else{
@@ -2769,7 +2786,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("preferredEmailStatus")) {
 				if(lss.getPerson().getPreferredEmailStatus()!=null){
-					map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmailStatus().toString());
+					map.put(field.getPublicFieldName(), lss.getPerson().getPreferredEmailStatus().getName());
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("otherEmail")) {
