@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.dao;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -2171,7 +2172,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		String addressJoinFilters = getAddressFilters(search);
 		
-		String personFilters = getPersonFilters(search, null);
+		String personFilters = getPersonFilters(search, "");
 		String lssAndPersonFilters = getLSSFilters(search, personFilters);
 		List<Long> subjectList = getSubjectIdsforSearch(search);
 		
@@ -3278,41 +3279,104 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			DemographicField demoField = filter.getDemographicField();
 			if ((demoField != null)) {
 				if (demoField.getEntity() != null && demoField.getEntity().equals(Entity.Person)) {
-					if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
-						
-						String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
-						//TODO:  This wouldnt really be a compatible type would it...must do validation very soon.
-						if (filter.getOperator().equals(Operator.BETWEEN)) {
-							nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
-						}
-						if (filterClause == null || filterClause.isEmpty()) {
-							filterClause = " and lss.person." + nextFilterLine;
-						}
-						else {
-							filterClause = filterClause + " and lss.person." + nextFilterLine;
-						}						
-												
-					}
-					else{
-						String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
-						if (filter.getOperator().equals(Operator.BETWEEN)) {
-							nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
-						}
-						if (filterClause == null || filterClause.isEmpty()) {
-							filterClause = " and lss.person." + nextFilterLine;
-						}
-						else {
-							filterClause = filterClause + " and lss.person." + nextFilterLine;
-						}
-					}
+					
+					//relationship should really come from a method getRelationshipText(entity)     ---- also there are some null assumptions that should be picked up in form saving logic
+					filterClause += makeLineFromOperatorAndValues(" and lss.person.", demoField.getFieldName(), filter.getOperator(), demoField.getFieldType(), filter.getValue(), filter.getSecondValue());
+
 				}
 			}
 		}
 		log.info("filterClause = " + filterClause);
-		return (filterClause == null ? "" : filterClause);
+		return (filterClause);
 	}
 
+	/**
+	 * This really can go a step further and  construct it all if we just make all fields inherit from something that has an abstract/contract getFieldType()
+	 */					/**
+	if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
 	
+	String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
+	//TODO:  This wouldnt really be a compatible type would it...must do validation very soon.
+	if (filter.getOperator().equals(Operator.BETWEEN)) {
+		nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
+	}
+	if (filterClause == null || filterClause.isEmpty()) {
+		filterClause = " and lss.person." + nextFilterLine;
+	}
+	else {
+		filterClause = filterClause + " and lss.person." + nextFilterLine;
+	}						
+							
+}
+else{
+	String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
+	if (filter.getOperator().equals(Operator.BETWEEN)) {
+		nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
+	}
+	if (filterClause == null || filterClause.isEmpty()) {
+		filterClause = " and lss.person." + nextFilterLine;
+	}
+	else {
+		filterClause = filterClause + " and lss.person." + nextFilterLine;
+	}
+}
+
+**/
+
+	private String makeLineFromOperatorAndValues(String relationship, String fieldName, Operator operator, FieldType fieldType, String value1, String value2){
+		String fieldNameText = fieldType.getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)?(fieldName + ".name"):(fieldName); //eg; firstName     //String relationText = relationship; //eg; "lss.person." kinda like saying fully classified table name i guess
+		String lineAfterFieldName = "";																								//eg; is not null...... or..... is like 'blah%'
+		try{
+			if(operator.equals(Operator.IS_EMPTY) || operator.equals(Operator.IS_NOT_EMPTY) ){
+				lineAfterFieldName = getHQLForOperator(operator);
+			}
+			else{
+				lineAfterFieldName = getHQLForOperator(operator) + "'" + parseFilterValue(fieldType, value1) + "' ";
+				if(operator.equals(Operator.BETWEEN)){
+					lineAfterFieldName += (" AND " + "'" + parseFilterValue(fieldType, value2) + "' ");
+				}
+			}
+			return relationship + fieldNameText + lineAfterFieldName;
+		}
+		catch(ParseException e){
+			return "";
+		}
+	}
+
+
+	private String makeLineFromOperatorAndValuesWithoutRelationship(String fieldName, Operator operator, FieldType fieldType, String value1, String value2){
+		String fieldNameText = fieldType.getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)?(fieldName + ".name"):(fieldName); //eg; firstName     //String relationText = relationship; //eg; "lss.person." kinda like saying fully classified table name i guess
+		String lineAfterFieldName = "";																								//eg; is not null...... or..... is like 'blah%'
+		try{
+			if(operator.equals(Operator.IS_EMPTY) || operator.equals(Operator.IS_NOT_EMPTY) ){
+				lineAfterFieldName = getHQLForOperator(operator);
+			}
+			else{
+				lineAfterFieldName = getHQLForOperator(operator) + "'" + parseFilterValue(fieldType, value1) + "' ";
+				if(operator.equals(Operator.BETWEEN)){
+					lineAfterFieldName += (" AND " + "'" + parseFilterValue(fieldType, value2) + "' ");
+				}
+			}
+			return fieldNameText + lineAfterFieldName;
+		}
+		catch(ParseException e){
+			return "";
+		}
+	}
+	
+	/**
+	 * dealing with multilevel and many to one and one to many issues
+	 * 
+	 * 
+	 *					
+						  * hql document examle 3.3 
+						  * from Cat as cat
+    							left join cat.kittens as kitten
+       	 							with kitten.bodyWeight > 10.0  
+	 *					
+	 * @param search
+	 * @return
+	 */
 	private String getAddressFilters(Search search) {
 		
 		String filterClause = null;
@@ -3321,38 +3385,30 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			DemographicField demoField = filter.getDemographicField();
 			if ((demoField != null)) {
 				if (demoField.getEntity() != null && demoField.getEntity().equals(Entity.Address)) {
-					if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
-						 /*
-						  * hql document examle 3.3 
-						  * from Cat as cat
-    							left join cat.kittens as kitten
-       	 							with kitten.bodyWeight > 10.0  */
-						String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
-						//TODO:  This wouldnt really be a compatible type would it...must do validation very soon.
-						if (filter.getOperator().equals(Operator.BETWEEN)) {
-							nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
+					String lineAfterRelationship = makeLineFromOperatorAndValuesWithoutRelationship(demoField.getFieldName(), filter.getOperator(), demoField.getFieldType(), filter.getValue(), filter.getSecondValue());
+					if(lineAfterRelationship!=null && !lineAfterRelationship.isEmpty()){
+						
+						if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
+							
+							if (filterClause == null || filterClause.isEmpty()) {
+								filterClause = " right join lss.person as person " +
+												" right join person.addresses as address " +
+												" right join address." + demoField.getFieldName() + " as " + demoField.getFieldName() + " with " + lineAfterRelationship;
+							}
+							else {//TODO:  does this work with the join???
+								//filterClause = filterClause + " and exists address." + nextFilterLine;
+								filterClause += " right join address." + demoField.getFieldName() + " as " + demoField.getFieldName() + " with " + lineAfterRelationship;
+							}						
+													
 						}
-						if (filterClause == null || filterClause.isEmpty()) {
-							filterClause = " right join lss.person as person " +
-											" right join person.addresses as address " +
-											" right join address." + demoField.getFieldName() + " as " + demoField.getFieldName() + " with " + nextFilterLine;
-						}
-						else {//TODO:  does this work with the join???
-							//filterClause = filterClause + " and exists address." + nextFilterLine;
-						}						
-												
-					}
-					else{
-						String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
-						if (filter.getOperator().equals(Operator.BETWEEN)) {
-							nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
-						}
-						if (filterClause == null || filterClause.isEmpty()) {
-							filterClause = " right join lss.person as person " +
-									" right join person.addresses as address with address." + nextFilterLine;
-						}
-						else {//TODO:  does this work with the join???
-							//filterClause = filterClause + " and address." + nextFilterLine;
+						else{
+							if (filterClause == null || filterClause.isEmpty()) {
+								filterClause = " right join lss.person as person " +
+										" right join person.addresses as address with address." + lineAfterRelationship;
+							}
+							else {//TODO:  does this work with the join???
+								filterClause += " and address." + lineAfterRelationship;
+							}
 						}
 					}
 				}
@@ -3360,15 +3416,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		log.info("filterClause = " + filterClause);
 		return (filterClause == null ? "" : filterClause);
-		
-		/* THIS WORKS
-		return 	" right join lss.person person " +
-				" right join person.addresses as address" +
-				" right join address.country as country with country.name like '%ust%' ";
-				//THIS WORKS!!!!!" left join lss.subjectCustomFieldDataSet as data with data.id > 0 ";
-																					//also try 
-																					//1 removing final where clause  2 add " as "  
-																					 */
 	}
 
 	private String getLSSFilters(Search search, String personFilters) {
@@ -3378,6 +3425,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			DemographicField demoField = filter.getDemographicField();
 			if ((demoField != null)) {
 				if (demoField.getEntity() != null && demoField.getEntity().equals(Entity.LinkSubjectStudy)) {
+					filterClause = filterClause + " and " + makeLineFromOperatorAndValues("lss.", demoField.getFieldName(), filter.getOperator(), demoField.getFieldType(), filter.getValue(), filter.getSecondValue());
+/*					
 					if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
 						 
 						String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
@@ -3404,7 +3453,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						else {
 							filterClause = filterClause + " and lss." + nextFilterLine;
 						}
-					}
+					}*/
 				}
 			}
 			
@@ -3412,7 +3461,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		log.info(" filterClauseAfterLSS FILTERS = " + filterClause);
 		return (filterClause == null ? "" : filterClause);
 	}
-	
+	/*
 	private String getAddressFilters(Search search, String filterThusFar) {
 		String filterClause = filterThusFar;
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
@@ -3453,7 +3502,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		log.info("filterClause = " + filterClause);
 		return (filterClause == null ? "" : filterClause);
 	}
-
+*/
 
 
 	private List<QueryFilter> getBiospecimenQueryFilters(Search search){
@@ -3479,6 +3528,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			BiospecimenField biospecimenField = filter.getBiospecimenField();
 			if ((biospecimenField != null) && filter.getValue() != null) {
 				if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.Biospecimen)) {
+					filterClause += " and " +  makeLineFromOperatorAndValues("biospecimen.", biospecimenField.getFieldName() , filter.getOperator(), biospecimenField.getFieldType(), filter.getValue(), filter.getSecondValue());
+					/*
 					if(biospecimenField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
 						String nextFilterLine = (biospecimenField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(biospecimenField.getFieldType(), filter.getValue()) + "' ");
 						if (filter.getOperator().equals(Operator.BETWEEN)) {
@@ -3492,11 +3543,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 							nextFilterLine += (" AND " + "'" + parseFilterValue(biospecimenField.getFieldType(), filter.getSecondValue()) + "' ");
 						}
 						filterClause = filterClause + " and biospecimen." + nextFilterLine;
-					}
+					}*/
 				}
 				else if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.BioCollection)) {
+					filterClause += makeLineFromOperatorAndValues("biospecimen.bioCollection", biospecimenField.getFieldName() , filter.getOperator(), biospecimenField.getFieldType(), filter.getValue(), filter.getSecondValue());
+					
+					/*
 					String nextFilterLine = (biospecimenField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(biospecimenField.getFieldType(), filter.getValue()) + "' ");
 					filterClause = filterClause + " and biospecimen.bioCollection." + nextFilterLine;
+					*/
 				}
 			}
 		}
@@ -3505,25 +3560,30 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 
 	private String getBiocollectionFilters(Search search){//, String filterThusFar) {
-		String filterClause = "";// filterThusFar;
-		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
-		for (QueryFilter filter : filters) {
-			BiocollectionField biocollectionField = filter.getBiocollectionField();
-			if ((biocollectionField != null)) {
-				if (biocollectionField.getEntity() != null && biocollectionField.getEntity().equals(Entity.BioCollection)) {
-					String nextFilterLine = (biocollectionField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(biocollectionField.getFieldType(), filter.getValue()) + "' ");
-					if (filter.getOperator().equals(Operator.BETWEEN)) {
-						nextFilterLine += (" AND " + "'" + parseFilterValue(biocollectionField.getFieldType(),filter.getSecondValue()) + "' ");
+			String filterClause = "";// filterThusFar;
+			Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
+			for (QueryFilter filter : filters) {
+				BiocollectionField biocollectionField = filter.getBiocollectionField();
+				if ((biocollectionField != null)) {
+					String nextLine = makeLineFromOperatorAndValues("biocollection.", biocollectionField.getFieldName(), filter.getOperator(), biocollectionField.getFieldType(), filter.getValue(), filter.getSecondValue());
+					if(!nextLine.isEmpty()){
+						filterClause = " and " + nextLine;
 					}
-					filterClause = filterClause + " and biocollection." + nextFilterLine;
+	/*				if (biocollectionField.getEntity() != null && biocollectionField.getEntity().equals(Entity.BioCollection)) {
+						String nextFilterLine = (biocollectionField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(biocollectionField.getFieldType(), filter.getValue()) + "' ");
+						if (filter.getOperator().equals(Operator.BETWEEN)) {
+							nextFilterLine += (" AND " + "'" + parseFilterValue(biocollectionField.getFieldType(),filter.getSecondValue()) + "' ");
+						}
+						filterClause = filterClause + " and biocollection." + nextFilterLine;
+					}
+	*/				
 				}
 			}
-		}
-		log.info("biocollection filterClause = " + filterClause);
-		return filterClause;
+			log.info("biocollection filterClause = " + filterClause);
+			return filterClause;
 	}
 
-	private String parseFilterValue(FieldType fieldType, String value) {
+	private String parseFilterValue(FieldType fieldType, String value) throws ParseException {
 		String parsedValue = null;
 		if(fieldType.getName().equalsIgnoreCase("DATE")) {
 			DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
@@ -3534,11 +3594,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				parsedValue = (dt1.format(date));
 			}
 			catch (ParseException e) {
-				return value;
+				log.error("exception parsing data " + value);
+				throw e;
 			}
 		}
 		else {
-			parsedValue = value;
+			parsedValue = value==null?"":value;
 		}
 		return parsedValue;
 	}
@@ -3558,42 +3619,46 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		for (QueryFilter filter : filters) {
 			CustomFieldDisplay customFieldDisplay = filter.getCustomFieldDisplay();
 			if ((customFieldDisplay != null) && customFieldDisplay.getCustomField().getArkFunction().getName().equalsIgnoreCase(Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)) {
-				
-				String tablePrefix = "data" + count++;
-				log.info("what is this SUBJECT CUSTOM filter? " + filter.getId() + "     for data row? " + tablePrefix );
-				
-				String nextFilterLine =  "";
-
-				// Determine field type and assign key value accordingly    //( data.customFieldDisplay.id=99 AND data.numberDataValue  >  0  )  and ( ( data.customFieldDisplay.id=112 AND data.numberDataValue  >=  0 ) ) 
-
-				//TODO evaluate date entry/validation
-				if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
-					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
-							" AND " + tablePrefix + ".dateDataValue " + getHQLForOperator(filter.getOperator()) + " '" + parseFilterValue(customFieldDisplay.getCustomField().getFieldType(),filter.getValue()) + "' ");
+				try{
+					String tablePrefix = "data" + count++;
+					log.info("what is this SUBJECT CUSTOM filter? " + filter.getId() + "     for data row? " + tablePrefix );
+					
+					String nextFilterLine =  "";
+	
+					// Determine field type and assign key value accordingly    //( data.customFieldDisplay.id=99 AND data.numberDataValue  >  0  )  and ( ( data.customFieldDisplay.id=112 AND data.numberDataValue  >=  0 ) ) 
+	
+					//TODO evaluate date entry/validation
+					if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
+						nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+								" AND " + tablePrefix + ".dateDataValue " + getHQLForOperator(filter.getOperator()) + " '" + parseFilterValue(customFieldDisplay.getCustomField().getFieldType(),filter.getValue()) + "' ");
+					}
+					else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
+						nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+								" AND " + tablePrefix + ".numberDataValue " + getHQLForOperator(filter.getOperator()) + " " + filter.getValue() + " ");
+					}
+					else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
+						nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
+								" AND " + tablePrefix + ".textDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
+					}
+					else{
+						count--;
+					}
+					//TODO ASAP i think all of these might need to start thinking about is null or is not null?
+					if (filter.getOperator().equals(Operator.BETWEEN)) {
+						nextFilterLine += (" AND " + filter.getSecondValue());
+					}
+	
+					if(whereClause.isEmpty()){
+						whereClause = " where " + nextFilterLine + " ) ";
+					}
+					else{
+						fromComponent += ",  SubjectCustomFieldData " + tablePrefix ;
+						whereClause = whereClause + " and " + nextFilterLine + " )  " +
+								" and data0.linkSubjectStudy.id = " + tablePrefix +  ".linkSubjectStudy.id ";
+					}
 				}
-				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
-					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
-							" AND " + tablePrefix + ".numberDataValue " + getHQLForOperator(filter.getOperator()) + " " + filter.getValue() + " ");
-				}
-				else if (customFieldDisplay.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER)) {
-					nextFilterLine = (" ( " + tablePrefix + ".customFieldDisplay.id=" + customFieldDisplay.getId() + 
-							" AND " + tablePrefix + ".textDataValue " + getHQLForOperator(filter.getOperator()) + " '" + filter.getValue() + "' ");
-				}
-				else{
-					count--;
-				}
-				//TODO ASAP i think all of these might need to start thinking about is null or is not null?
-				if (filter.getOperator().equals(Operator.BETWEEN)) {
-					nextFilterLine += (" AND " + filter.getSecondValue());
-				}
-
-				if(whereClause.isEmpty()){
-					whereClause = " where " + nextFilterLine + " ) ";
-				}
-				else{
-					fromComponent += ",  SubjectCustomFieldData " + tablePrefix ;
-					whereClause = whereClause + " and " + nextFilterLine + " )  " +
-							" and data0.linkSubjectStudy.id = " + tablePrefix +  ".linkSubjectStudy.id ";
+				catch(ParseException e){
+				//simply don't apply fornow...in future may wish to throw this up and recommend a fix	return "";
 				}
 			}
 		}
