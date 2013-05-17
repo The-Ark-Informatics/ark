@@ -1954,8 +1954,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			
 			createSearchResult(search, iDataExtractionDao.createSubjectDemographicCSV(search, allTheData, allSubjectFields, scfds, FieldCategory.DEMOGRAPHIC_FIELD), currentUser);
-			createSearchResult(search, iDataExtractionDao.createBiospecimenCSV(search, allTheData, bsfs, bscfds, FieldCategory.BIOSPECIMEN_FIELD), currentUser);
 			createSearchResult(search, iDataExtractionDao.createBiocollectionCSV(search, allTheData, bccfds, FieldCategory.BIOCOLLECTION_FIELD), currentUser);
+			createSearchResult(search, iDataExtractionDao.createBiospecimenCSV(search, allTheData, bsfs, bscfds, FieldCategory.BIOSPECIMEN_FIELD), currentUser);
 			createSearchResult(search, iDataExtractionDao.createPhenotypicCSV(search, allTheData, pcfds, FieldCategory.PHENO_CFD),currentUser);
 			
 			try {
