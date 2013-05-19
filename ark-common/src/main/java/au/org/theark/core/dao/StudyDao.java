@@ -3426,34 +3426,6 @@ else{
 			if ((demoField != null)) {
 				if (demoField.getEntity() != null && demoField.getEntity().equals(Entity.LinkSubjectStudy)) {
 					filterClause = filterClause + " and " + makeLineFromOperatorAndValues("lss.", demoField.getFieldName(), filter.getOperator(), demoField.getFieldType(), filter.getValue(), filter.getSecondValue());
-/*					
-					if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
-						 
-						String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
-						//TODO:  This wouldnt really be a compatible type would it...must do validation very soon.
-						if (filter.getOperator().equals(Operator.BETWEEN)) {
-							nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
-						}
-						if (filterClause == null || filterClause.isEmpty()) {
-							filterClause = filterClause + " and lss." + nextFilterLine;
-						}
-						else {
-							filterClause = filterClause + " and lss." + nextFilterLine;
-						}						
-												
-					}
-					else{
-						String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
-						if (filter.getOperator().equals(Operator.BETWEEN)) {
-							nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
-						}
-						if (filterClause == null || filterClause.isEmpty()) {
-							filterClause = filterClause + " and lss." + nextFilterLine;
-						}
-						else {
-							filterClause = filterClause + " and lss." + nextFilterLine;
-						}
-					}*/
 				}
 			}
 			
@@ -3529,29 +3501,11 @@ else{
 			if ((biospecimenField != null) && filter.getValue() != null) {
 				if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.Biospecimen)) {
 					filterClause += " and " +  makeLineFromOperatorAndValues("biospecimen.", biospecimenField.getFieldName() , filter.getOperator(), biospecimenField.getFieldType(), filter.getValue(), filter.getSecondValue());
-					/*
-					if(biospecimenField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
-						String nextFilterLine = (biospecimenField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(biospecimenField.getFieldType(), filter.getValue()) + "' ");
-						if (filter.getOperator().equals(Operator.BETWEEN)) {
-							nextFilterLine += (" AND " + "'" + parseFilterValue(biospecimenField.getFieldType(), filter.getSecondValue()) + "' ");
-						}
-						filterClause = filterClause + " and biospecimen." + nextFilterLine;
-					}
-					else{
-						String nextFilterLine = (biospecimenField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(biospecimenField.getFieldType(), filter.getValue()) + "' ");
-						if (filter.getOperator().equals(Operator.BETWEEN)) {
-							nextFilterLine += (" AND " + "'" + parseFilterValue(biospecimenField.getFieldType(), filter.getSecondValue()) + "' ");
-						}
-						filterClause = filterClause + " and biospecimen." + nextFilterLine;
-					}*/
+
 				}
 				else if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.BioCollection)) {
-					filterClause += makeLineFromOperatorAndValues("biospecimen.bioCollection", biospecimenField.getFieldName() , filter.getOperator(), biospecimenField.getFieldType(), filter.getValue(), filter.getSecondValue());
+					filterClause += " and " + makeLineFromOperatorAndValues("biospecimen.bioCollection", biospecimenField.getFieldName() , filter.getOperator(), biospecimenField.getFieldType(), filter.getValue(), filter.getSecondValue());
 					
-					/*
-					String nextFilterLine = (biospecimenField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(biospecimenField.getFieldType(), filter.getValue()) + "' ");
-					filterClause = filterClause + " and biospecimen.bioCollection." + nextFilterLine;
-					*/
 				}
 			}
 		}
@@ -3568,15 +3522,7 @@ else{
 					String nextLine = makeLineFromOperatorAndValues("biocollection.", biocollectionField.getFieldName(), filter.getOperator(), biocollectionField.getFieldType(), filter.getValue(), filter.getSecondValue());
 					if(!nextLine.isEmpty()){
 						filterClause = " and " + nextLine;
-					}
-	/*				if (biocollectionField.getEntity() != null && biocollectionField.getEntity().equals(Entity.BioCollection)) {
-						String nextFilterLine = (biocollectionField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(biocollectionField.getFieldType(), filter.getValue()) + "' ");
-						if (filter.getOperator().equals(Operator.BETWEEN)) {
-							nextFilterLine += (" AND " + "'" + parseFilterValue(biocollectionField.getFieldType(),filter.getSecondValue()) + "' ");
-						}
-						filterClause = filterClause + " and biocollection." + nextFilterLine;
-					}
-	*/				
+					}	
 				}
 			}
 			log.info("biocollection filterClause = " + filterClause);
@@ -4239,44 +4185,6 @@ else{
 		}
 	}
 
-	/*
-	 * private boolean hasEmailFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
-	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Email)){ return true; } } return false; } private boolean
-	 * hasPhoneFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
-	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Phone)){ return true; } } return false; } private boolean
-	 * hasAddressFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
-	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Address)){ return true; } } return false; } private void
-	 * addAddressData(DataExtractionVO allTheData, Collection<DemographicField> dfs){ //consent etc etc for(DemographicField field : dfs){
-	 * if(field.getEntity().equals(Entity.Address)){ // addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" +
-	 * getFieldName() // addressFieldsString.append(field.getFieldName()); break; } } } private void addLSSData(DataExtractionVO allTheData,
-	 * Collection<DemographicField> dfs){ for(DemographicField field : dfs){ if(field.getEntity().equals(Entity.Address)){ //
-	 * addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName() //
-	 * addressFieldsString.append(field.getFieldName()); break; } LinkSubjectStudy lss = new LinkSubjectStudy(); //Field fieldFromDB =
-	 * lss.getClass().getField(field.getFieldName()); didn't know if using reflection was best I fear I may be stuck with hardcoding } } private
-	 * boolean hasDemographicFieldsOrFilters( Collection<DemographicField> dfs) { // TODO Auto-generated method stub return false; } private boolean
-	 * hasLSSFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
-	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.LinkSubjectStudy)){ return true; } } return false; } private
-	 * boolean hasPersonFields(Collection<DemographicField> demographicFields) { for(DemographicField demographicField : demographicFields){
-	 * if(demographicField.getEntity()!=null && demographicField.getEntity().equals(Entity.Person)){ return true; } } return false; }
-	 */
-	/*
-	 * private String constructDemographicQuery(Collection<DemographicField> dfs){ StringBuffer sb = new StringBuffer(); StringBuffer
-	 * personFieldsString = new StringBuffer(); StringBuffer lssFieldsString = new StringBuffer(); StringBuffer emailFieldsString = new StringBuffer();
-	 * StringBuffer addressFieldsString = new StringBuffer(); StringBuffer personFiltersString = new StringBuffer(); StringBuffer lssFiltersString =
-	 * new StringBuffer(); StringBuffer emailFiltersString = new StringBuffer(); StringBuffer addressFiltersString = new StringBuffer(); //consent etc
-	 * etc
-	 * 
-	 * for(DemographicField field : dfs){ switch(field.getEntity()){ case Person:{ personFieldsString.append("person." + field.getFieldName());
-	 * personFieldsString.append(field.getFieldName()); personFieldsString.append(", "); break; } case LinkSubjectStudy:{ lssFieldsString.append("lss."
-	 * + field.getFieldName()); lssFieldsString.append(field.getFieldName()); lssFieldsString.append(", "); break; } case Email:{
-	 * emailFieldsString.append("email." + field.getFieldName()); emailFieldsString.append(field.getFieldName()); emailFieldsString.append(", ");
-	 * break; } case Address:{ addressFieldsString.append("address." + field.getFieldName()); // "AS \"ADDRESS_\" + getFieldName()
-	 * addressFieldsString.append(field.getFieldName()); addressFieldsString.append(", "); break; } /*case Entity.Person:{
-	 * personFieldsString.append("person." + field.getFieldName()); personFieldsString.append(field.getFieldName()); personFieldsString.append(", ");
-	 * break; }* default: { log.error("NEVER SHOULD HAVE A ENTITY WE DONT KNOW ABOUT!!!!!!!!!!!!!!!!" ); //TODO asap enums and constraints to ensure }
-	 * } if(!lssFieldsString.toString().isEmpty()){ } /** TODO: NOW RUN CONSTRAINTS RELATED TO DEMOGRAPHICS FIELDS TOO * } return ""; }
-	 */
-
 	public SearchPayload createSearchPayload(byte[] bytes) {
 		SearchPayload payload = new SearchPayload(bytes);
 		getSession().save(payload);
@@ -4360,7 +4268,6 @@ else{
 			deleteSearchSubject(searchSubject);
 		}
 		
-		
 		for (Iterator iterator = searchSubjects.iterator(); iterator.hasNext();) {
 			SearchSubject searchSubject = (SearchSubject) iterator.next();
 			getSession().save(searchSubject);
@@ -4374,27 +4281,4 @@ else{
 	public void delete(Search search) {
 		getSession().delete(search);
 	}
-	
-
-	/*	private void getMaxAddressesForTheseSubjects(List<String> subjectUIDs, Study study){
-		
-	select max(mycount)
-		from (select count(a.person_id) mycount 
-		from address a
-		group by a.person_id) bnvnbv;
-	
-		
-		String queryString = "	select max(mycount) " +
-				" from (select count(a.person_id) mycount " +
-				" from Address a " +
-				" group by a.personId) blah";
-//				+ " where lss.study.id = " + search.getStudy().getId()
-//				+ " and lss.id in (:idsToInclude) "
-//				+ " order by lss.subjectUID";
-
-		Query query = getSession().createQuery(queryString);
-		//query.setParameterList("idsToInclude", idsAfterFiltering);
-		List<LinkSubjectStudy> subjects = query.list(); 	
-	}	*/
-
 }
