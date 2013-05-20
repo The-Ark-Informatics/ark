@@ -438,6 +438,7 @@ public class Constants {
 	public static final String SEARCH_ID = "search.id";
 	public static final String SEARCH_NAME = "search.name";
 	public static final String	SAVEANDCLOSE									= "saveAndClose";
+	public static final String	yyyy_MM_dd	= "yyyy-MM-dd";
 
 
 	public enum FileFormat {CSV, XLS, PDF, TXT, DOC, XML}
