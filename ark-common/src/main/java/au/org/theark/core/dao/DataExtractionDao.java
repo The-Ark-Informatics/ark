@@ -172,7 +172,9 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			CsvWriter csv = new CsvWriter(outputStream);
 
 			// Header
+			csv.write("SUBJECTID");
 			csv.write("BIOCOLLECTIONUID");
+			
 			for (BiocollectionFieldSearch bcfs : search.getBiocollectionFieldsToReturn()) {
 				csv.write(bcfs.getBiocollectionField().getPublicFieldName());
 			}
@@ -183,13 +185,32 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			csv.endLine();
 
 			for (String biocollectionUID : bioCollectionUids) {
+				ExtractionVO hash = hashOfBiocollectionsWithData.get(biocollectionUID);
+				csv.write(hash.getSubjectUid());
 				csv.write(biocollectionUID);
-
+				
 				for (BiocollectionFieldSearch bcfs : search.getBiocollectionFieldsToReturn()) {
-					ExtractionVO hash = hashOfBiocollectionsWithData.get(biocollectionUID);
+					
 					if(hash!=null){
 						HashMap<String, String> keyValues = hash.getKeyValues();
-						csv.write(keyValues.get(bcfs.getBiocollectionField().getPublicFieldName()));
+						//csv.write(keyValues.get(bcfs.getBiocollectionField().getPublicFieldName()));
+						
+						String valueResult = keyValues.get(bcfs.getBiocollectionField().getPublicFieldName());
+						if (bcfs.getBiocollectionField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
+							try {
+								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+								String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
+								Date date = DateUtils.parseDate(valueResult, dateFormats);
+								csv.write(dateFormat.format(date));
+							}
+							catch (ParseException e) {
+								csv.write(valueResult);
+							}
+						}
+						else {
+							csv.write(valueResult);
+						}
+						
 					}
 				}
 				/*
@@ -265,6 +286,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			CsvWriter csv = new CsvWriter(outputStream);
 
 			// Header
+			csv.write("SUBJECTUID");
 			csv.write("BIOSPECIMENUID");
 			for (BiospecimenField bsf : bsfs) {
 				if (!bsf.getPublicFieldName().equalsIgnoreCase("biospecimenUid"))
@@ -276,19 +298,37 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			csv.endLine();
 
 			for (String biospecimenUID : biospecimens) {
+				ExtractionVO evo = hashOfBiospecimensWithData.get(biospecimenUID);
+				csv.write(evo.getSubjectUid());
 				csv.write(biospecimenUID);
-
+				
 				for (BiospecimenField bsf : bsfs) {
-					ExtractionVO evo = hashOfBiospecimensWithData.get(biospecimenUID);
+					
 					if(evo != null){
 						HashMap<String, String> keyValues = evo.getKeyValues();
 						if (!bsf.getPublicFieldName().equalsIgnoreCase("biospecimenUid")){
-							csv.write(keyValues.get(bsf.getPublicFieldName()));
+							String valueResult = keyValues.get(bsf.getPublicFieldName());
+							if (bsf.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
+								try {
+									DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+									String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
+									Date date = DateUtils.parseDate(valueResult, dateFormats);
+									csv.write(dateFormat.format(date));
+								}
+								catch (ParseException e) {
+									csv.write(valueResult);
+								}
+							}
+							else {
+								csv.write(valueResult);
+							}
 						}
+						
+						
 					}
 				}
 
-				ExtractionVO evo = new ExtractionVO();
+				evo = new ExtractionVO();
 				evo = hashOfBiospecimenCustomData.get(biospecimenUID);
 				if (evo != null) {
 					HashMap<String, String> keyValues = evo.getKeyValues();

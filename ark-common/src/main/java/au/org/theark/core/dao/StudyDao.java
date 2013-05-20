@@ -2777,12 +2777,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("dateOfBirth")) {
 				if(lss.getPerson().getDateOfBirth()!=null){
-					map.put(field.getPublicFieldName(), lss.getPerson().getDateOfBirth().toString());
+					map.put(field.getPublicFieldName(), formatDate(lss.getPerson().getDateOfBirth().toString()));
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("dateOfDeath")) {
 				if(lss.getPerson().getDateOfDeath()!=null){
-					map.put(field.getPublicFieldName(), lss.getPerson().getDateOfDeath().toString());
+					map.put(field.getPublicFieldName(), formatDate(lss.getPerson().getDateOfDeath().toString()));
 				} 
 			}
 			else if (field.getFieldName().equalsIgnoreCase("causeOfDeath")) {
@@ -2812,7 +2812,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("dateLastKnownAlive")) {
 				if(lss.getPerson().getDateLastKnownAlive()!=null){
-			 		map.put(field.getPublicFieldName(), lss.getPerson().getDateLastKnownAlive().toString());					
+			 		map.put(field.getPublicFieldName(), formatDate(lss.getPerson().getDateLastKnownAlive().toString()));					
 				}
 			}
 			
@@ -2860,7 +2860,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("consentDate")) {
 				if(lss.getConsentDate()!=null){
-					map.put(field.getPublicFieldName(), lss.getConsentDate() == null ? "" : lss.getConsentDate().toString());
+					map.put(field.getPublicFieldName(), lss.getConsentDate() == null ? "" : formatDate(lss.getConsentDate().toString()));
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("consentStatus")) {
@@ -2949,7 +2949,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				else if (field.getFieldName().equalsIgnoreCase("dateReceived")) {
 					
 					if(a.getDateReceived() != null) {
-						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), a.getDateReceived().toString());
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), formatDate(a.getDateReceived().toString()));
 					}
 					else{
 						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), "");
@@ -2988,7 +2988,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 				else if (field.getFieldName().equalsIgnoreCase("dateReceived")) {
 					if(phone.getDateReceived()!=null) {
-						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), phone.getDateReceived().toString());
+						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), formatDate(phone.getDateReceived().toString()));
 					}
 					else {
 						map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), "");
@@ -3010,6 +3010,18 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return map;
 	}
 	
+	private String formatDate(String valueResult) {
+		try {
+			DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+			String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S, au.org.theark.core.Constants.yyyy_MM_dd};
+			Date date = DateUtils.parseDate(valueResult, dateFormats);
+			return (dateFormat.format(date));
+		}
+		catch (ParseException e) {
+			return(valueResult);
+		}
+	}
+	
 	
 	private HashMap<String, String> constructKeyValueHashmap(BioCollection bioCollection, Collection<BiocollectionField> bioCollectionFields) {
 		HashMap<String,String> map = new HashMap<String, String>();
@@ -3023,7 +3035,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("collectionDate")) {
 				if(bioCollection.getCollectionDate()!=null){
-					map.put(field.getPublicFieldName(), bioCollection.getCollectionDate()!=null?bioCollection.getCollectionDate().toString():"");
+					map.put(field.getPublicFieldName(), bioCollection.getCollectionDate()!=null?formatDate(bioCollection.getCollectionDate().toString()):"");
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("deleted")) {
@@ -3146,7 +3158,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("sampleTime")) {
 				if(biospecimen.getSampleTime() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getSampleTime()!=null?biospecimen.getSampleTime().toString():"");
+					map.put(field.getPublicFieldName(), biospecimen.getSampleTime()!=null?biospecimen.getSampleTime().toString().substring(11):"");
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("processedDate")) {
@@ -3156,7 +3168,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("processedTime")) {
 				if(biospecimen.getProcessedTime() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getProcessedTime()!=null?biospecimen.getProcessedTime().toString():"");
+					map.put(field.getPublicFieldName(), biospecimen.getProcessedTime()!=null?biospecimen.getProcessedTime().toString().substring(11):"");
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("comments")) {
