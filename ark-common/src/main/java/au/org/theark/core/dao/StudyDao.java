@@ -2454,10 +2454,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 				
 				if(bioCollectionIdsAfterFiltering.isEmpty()){
-					idsToInclude = new ArrayList<Long>();
+					idsToInclude.clear();
 				}
 				else{
-					idsToInclude = getSubjectIdsForBioCollectionIds(bioCollectionIdsAfterFiltering);
+					List<Long> subjectIdsToInclude = getSubjectIdsForBioCollectionIds(bioCollectionIdsAfterFiltering);
+					idsToInclude.clear();
+					for(Long id : subjectIdsToInclude){
+						idsToInclude.add(id);	
+					}
+					
 				}
 			}
 			else{
