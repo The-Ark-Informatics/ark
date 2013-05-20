@@ -2269,6 +2269,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 				else{	//if its a new LSS finalize previous map, etc
 					valuesForThisLss.setKeyValues(map);
+					valuesForThisLss.setSubjectUid(previousLss.getSubjectUID());
 					hashOfSubjectsWithTheirSubjectCustomData.put(previousLss.getSubjectUID(), valuesForThisLss);	
 					previousLss = data.getLinkSubjectStudy();
 					map = new HashMap<String, String>();//reset
@@ -2296,6 +2297,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			//finalize the last entered key value sets/extraction VOs
 			if(map!=null && previousLss!=null){
 				valuesForThisLss.setKeyValues(map);
+				valuesForThisLss.setSubjectUid(previousLss.getSubjectUID());
 				hashOfSubjectsWithTheirSubjectCustomData.put(previousLss.getSubjectUID(), valuesForThisLss);
 			}
 			
@@ -2370,22 +2372,26 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			ExtractionVO valuesForThisBiospecimen = new ExtractionVO();
 			HashMap<String, String> map = null;
 			String previousBiospecimenUid = null;
+			String previousSubjectUid = null;
 			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
 			for (BiospecimenCustomFieldData data : scfData) {
 				
 				if(previousBiospecimenUid==null){
 					map = new HashMap<String, String>();
 					previousBiospecimenUid = data.getBiospecimen().getBiospecimenUid();
+					previousSubjectUid = data.getBiospecimen().getLinkSubjectStudy().getSubjectUID();
 				}
 				else if(data.getBiospecimen().getBiospecimenUid().equals(previousBiospecimenUid)){
 					//then just put the data in
 				}
 				else{	//if its a new LSS finalize previous map, etc
 					valuesForThisBiospecimen.setKeyValues(map);
+					valuesForThisBiospecimen.setSubjectUid(previousSubjectUid);
 					hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenUid, valuesForThisBiospecimen);	
 					previousBiospecimenUid = data.getBiospecimen().getBiospecimenUid();
 					map = new HashMap<String, String>();//reset
 					valuesForThisBiospecimen = new ExtractionVO();
+					previousSubjectUid = data.getBiospecimen().getLinkSubjectStudy().getSubjectUID();
 				}
 
 				//if any error value, then just use that - though, yet again I really question the acceptance of error data
@@ -2408,7 +2414,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			//finalize the last entered key value sets/extraction VOs
 			if(map!=null && previousBiospecimenUid!=null){
-				
+				valuesForThisBiospecimen.setSubjectUid(previousSubjectUid);
 				valuesForThisBiospecimen.setKeyValues(map);
 				hashOfBiospecimensWithTheirBiospecimenCustomData.put(previousBiospecimenUid, valuesForThisBiospecimen);
 			}
@@ -2482,12 +2488,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			ExtractionVO valuesForThisBiocollection = new ExtractionVO();
 			HashMap<String, String> map = null;
 			String previousBioCollectionUid = null;
+			String previousSubjectUid = null;
 			//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
 			for (BioCollectionCustomFieldData data : scfData) {
 				
 				if(previousBioCollectionUid==null){
 					map = new HashMap<String, String>();
 					previousBioCollectionUid = data.getBioCollection().getBiocollectionUid();
+					previousSubjectUid = data.getBioCollection().getLinkSubjectStudy().getSubjectUID();
 				}
 				else if(data.getBioCollection().getBiocollectionUid().equals(previousBioCollectionUid)){
 					//then just put the data in
@@ -2499,6 +2507,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					map = new HashMap<String, String>();//reset
 					valuesForThisBiocollection = new ExtractionVO();
 					previousBioCollectionUid = data.getBioCollection().getBiocollectionUid();
+					previousSubjectUid = data.getBioCollection().getLinkSubjectStudy().getSubjectUID();
 				}
 
 				//if any error value, then just use that - though, yet again I really question the acceptance of error data
@@ -2521,6 +2530,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			//finalize the last entered key value sets/extraction VOs
 			if(map!=null && previousBioCollectionUid!=null){
+				valuesForThisBiocollection.setSubjectUid(previousSubjectUid);
 				valuesForThisBiocollection.setKeyValues(map);
 				hashOfBioCollectionsWithTheirBioCollectionCustomData.put(previousBioCollectionUid, valuesForThisBiocollection);
 			}
@@ -4082,6 +4092,7 @@ else{
 				sev.setKeyValues(constructKeyValueHashmap(bioCollection,biocollectionFields));
 				hashOfBioCollectionData.put(bioCollection.getBiocollectionUid(), sev);
 				uniqueSubjectIDs.add(bioCollection.getLinkSubjectStudy().getId());
+				sev.setSubjectUid(bioCollection.getLinkSubjectStudy().getSubjectUID()); //TODO: mow that we haevb this probably need to fetch join to save us a bunch of hits to the db
 				biocollectionIdsAfterFiltering.add(bioCollection.getId());
 			}			
 			
@@ -4125,7 +4136,7 @@ else{
 			queryBuffer.append(	"	left join fetch biospecimen.anticoag anticoag ");
 			queryBuffer.append(	"	left join fetch biospecimen.status status " );
 			queryBuffer.append(	"	left join fetch biospecimen.biospecimenProtocol biospecimenProtocol ");
-//			queryBuffer.append(	"	left join fetch biospecimen.biocollection biocollection ");
+			queryBuffer.append(	"	left join fetch biospecimen.bioCollection biocollection ");
 			queryBuffer.append(	" where biospecimen.study.id = " + search.getStudy().getId());
 			if(!biospecimenFilters.isEmpty()){
 				queryBuffer.append(biospecimenFilters);
@@ -4153,6 +4164,7 @@ else{
 			for (Biospecimen biospecimen : biospecimenList) {
 				ExtractionVO sev = new ExtractionVO();
 				sev.setKeyValues(constructKeyValueHashmap(biospecimen,biospecimenFields));
+				sev.setSubjectUid(biospecimen.getLinkSubjectStudy().getSubjectUID());
 				hashOfBiospecimenData.put(biospecimen.getBiospecimenUid(), sev);
 				uniqueSubjectIDs.add(biospecimen.getLinkSubjectStudy().getId());
 				biospecimenIdsAfterFiltering.add(biospecimen.getId());
@@ -4179,9 +4191,9 @@ else{
 			HashMap<String, String> keyValues = hashOfSubjectsWithData.get(subjectUID).getKeyValues();
 			log.info(subjectUID + " has " + keyValues.size() + " " + fieldCategory + " fields"); 
 			// remove(subjectUID).getKeyValues().size() + "demo fields");
-			for (String key : keyValues.keySet()) {
+			//for (String key : keyValues.keySet()) {
 				//log.info("     key=" + key + "\t   value=" + keyValues.get(key));
-			}
+			//}
 		}
 	}
 
