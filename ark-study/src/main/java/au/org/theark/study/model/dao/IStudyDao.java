@@ -422,6 +422,8 @@ public interface IStudyDao {
 
 	public List<ConsentType> getConsentType();
 	
-	public List<RelationshipVo> getSubjectRelatives(final String subjectUID,final Long studyId);
+	public RelationshipVo getSubjectRelative(final String subjectUID,final Long studyId);
+	
+	public List<RelationshipVo> getSubjectParentRelatives(final String subjectUID,final Long studyId);
 	
 }

@@ -2030,8 +2030,35 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(ConsentType.class);
 		return criteria.list();
 	}
-	
-	public List<RelationshipVo> getSubjectRelatives(final String subjectUID,final Long studyId){
+
+	public RelationshipVo getSubjectRelative(final String subjectUID,final Long studyId){
+		List<RelationshipVo> relatives = new ArrayList<RelationshipVo>();
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class, "lsp");
+		criteria.createAlias("subject", "sub", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("sub.study", "substudy", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("sub.person", "subPerson", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("subPerson.genderType", "subGender", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("subPerson.vitalStatus", "subVitStatus", JoinType.LEFT_OUTER_JOIN);
+		
+		criteria.add(Restrictions.eq("sub.subjectUID", subjectUID));
+		criteria.add(Restrictions.eq("substudy.id", studyId));
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("lsp.familyId"), "familyId");
+		projectionList.add(Projections.property("sub.subjectUID"), "individualId");
+		projectionList.add(Projections.property("subGender.name"), "gender");
+		projectionList.add(Projections.property("subPerson.dateOfBirth"), "dob");
+		projectionList.add(Projections.property("subVitStatus.name"), "deceased");
+		
+		criteria.setProjection(projectionList); 
+		criteria.setResultTransformer(Transformers.aliasToBean(RelationshipVo.class));
+		
+		relatives=criteria.list();
+		
+		return relatives.size()>0 ? relatives.get(0):null;
+	}
+		
+	public List<RelationshipVo> getSubjectParentRelatives(final String subjectUID,final Long studyId){
 		List<RelationshipVo> relatives = new ArrayList<RelationshipVo>();
 		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class, "lsp");
 		criteria.createAlias("subject", "sub", JoinType.LEFT_OUTER_JOIN);
@@ -2039,11 +2066,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.createAlias("relative", "rel", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("rel.study", "relstudy", JoinType.LEFT_OUTER_JOIN);		
 		criteria.createAlias("relationship", "type", JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("sub.person", "subPerson", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("rel.person", "relPerson", JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("subPerson.genderType", "subGender", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("relPerson.genderType", "relGender", JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("subPerson.vitalStatus", "subVitStatus", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("relPerson.vitalStatus", "relVitStatus", JoinType.LEFT_OUTER_JOIN);
 		
 		criteria.add(Restrictions.eq("sub.subjectUID", subjectUID));
@@ -2052,16 +2076,12 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("lsp.familyId"), "familyId");
-		projectionList.add(Projections.property("sub.subjectUID"), "individualId");
-		projectionList.add(Projections.property("rel.subjectUID"), "relativeId");
-		projectionList.add(Projections.property("subGender.name"), "gender");
-		projectionList.add(Projections.property("relGender.name"), "relativeGender");
-		projectionList.add(Projections.property("subPerson.dateOfBirth"), "dob");
-		projectionList.add(Projections.property("relPerson.dateOfBirth"), "relativeDob");
-		projectionList.add(Projections.property("subVitStatus.name"), "deceased");
-		projectionList.add(Projections.property("relVitStatus.name"), "relativeDeceased");
+		projectionList.add(Projections.property("rel.subjectUID"), "individualId");
+		projectionList.add(Projections.property("relGender.name"), "gender");
+		projectionList.add(Projections.property("relPerson.dateOfBirth"), "dob");
+		projectionList.add(Projections.property("relVitStatus.name"), "deceased");
 		
-		criteria.setProjection(projectionList); // only return fields required for report
+		criteria.setProjection(projectionList); 
 		criteria.setResultTransformer(Transformers.aliasToBean(RelationshipVo.class));
 		
 		relatives=criteria.list();
