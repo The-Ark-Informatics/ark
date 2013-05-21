@@ -24,7 +24,9 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -1297,40 +1299,38 @@ public class StudyServiceImpl implements IStudyService {
 
 	public RelativeCapsule[] generateSubjectPedigree(final String subjectUID,final Long studyId){
 		List<RelativeCapsule> relativeCapsules = new ArrayList<RelativeCapsule>();
-//		List<RelativeCapsule> parentCapsules = new ArrayList<RelativeCapsule>();
-		List<RelationshipVo> relationships =  iStudyDao.getSubjectRelatives(subjectUID,studyId);
 		
-		RelativeCapsule proband=null;
-		RelativeCapsule firstParent=null;
-		RelativeCapsule secondParent=null;
-		for(int i=0;i<relationships.size();++i){
-			if(i==0){
-				proband = createSubjectRelative(relationships.get(i));
-				firstParent = createSubjectParentRelative(relationships.get(i));
-			}
-			else{
-				secondParent = createSubjectParentRelative(relationships.get(i));
-			}
-		}
+		RelationshipVo probandRelationship = iStudyDao.getSubjectRelative(subjectUID, studyId);
 		
-		if(relationships !=null && relationships.size() >1){
-			if("M".equalsIgnoreCase(firstParent.getGender())){
-				proband.setFather(firstParent.getIndividualId());
-				proband.setMother(secondParent.getIndividualId());
-			}else{
-				proband.setFather(secondParent.getIndividualId());
-				proband.setMother(firstParent.getIndividualId());
+		if(probandRelationship !=null){
+			
+			RelativeCapsule proband = createSubjectRelativeCapsule(probandRelationship);
+			proband.setProband("Y");
+			relativeCapsules.add(proband);
+			//Generate parent relationships
+			for( ListIterator< RelativeCapsule > it = relativeCapsules.listIterator(); it.hasNext() ;){
+				RelativeCapsule relativeCapule=it.next();
+				List<RelationshipVo> relationships =  iStudyDao.getSubjectParentRelatives(relativeCapule.getIndividualId(),studyId);
+							
+				for(RelationshipVo parentRelationshipVo : relationships){
+					RelativeCapsule parentCapsule = createSubjectRelativeCapsule(parentRelationshipVo); 
+					if("M".equalsIgnoreCase(parentCapsule.getGender())){
+						relativeCapule.setFather(parentCapsule.getIndividualId());
+					}
+					else{
+						relativeCapule.setMother(parentCapsule.getIndividualId());
+					}
+					it.add(parentCapsule);
+				}
 			}
 			
-			relativeCapsules.add(firstParent);
-			relativeCapsules.add(secondParent);
-			relativeCapsules.add(proband);
+			//Generate child relationships
+			
 		}
-		
-		return relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]);
+		return relativeCapsules.size() >2 ? relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]):new RelativeCapsule[0];
 	}
 	
-	private RelativeCapsule createSubjectRelative(RelationshipVo relationshipVo){
+	private RelativeCapsule createSubjectRelativeCapsule(RelationshipVo relationshipVo){
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy.MM.dd");
 		RelativeCapsule relative=new RelativeCapsule();
 		relative.setFamilyId(relationshipVo.getFamilyId().toString());
@@ -1347,35 +1347,10 @@ public class StudyServiceImpl implements IStudyService {
 		}catch(Exception e){
 			
 		}
-		relative.setProband("Y");
 		if(relationshipVo.getDeceased() !=null && "Deceased".equalsIgnoreCase(relationshipVo.getDeceased())){
 			relative.setDeceased("Y");
 		}
 		return relative;
-	}
-	
-	private RelativeCapsule createSubjectParentRelative(RelationshipVo relationshipVo){
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy.MM.dd");
-		RelativeCapsule relative=new RelativeCapsule();
-		relative.setFamilyId(relationshipVo.getFamilyId().toString());
-		relative.setIndividualId(relationshipVo.getRelativeId());
-		if(relationshipVo.getRelativeGender() !=null && "Male".equalsIgnoreCase(relationshipVo.getRelativeGender())){
-			relative.setGender("M");
-		}else{
-			relative.setGender("F");
-		}
-		
-		try{
-			String dob=sdf.format(relationshipVo.getRelativeDob());
-			relative.setDob(dob);
-		}catch(Exception e){
-			
-		}
-		if(relationshipVo.getRelativeDeceased() !=null && "Deceased".equalsIgnoreCase(relationshipVo.getRelativeDeceased())){
-			relative.setDeceased("Y");
-		}
-		return relative;
-	}
-	 
+	}	 
 
 }
