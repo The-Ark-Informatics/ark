@@ -3317,39 +3317,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (filterClause);
 	}
 
-	/**
-	 * This really can go a step further and  construct it all if we just make all fields inherit from something that has an abstract/contract getFieldType()
-	 */					/**
-	if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
-	
-	String nextFilterLine = (demoField.getFieldName() + ".name" + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
-	//TODO:  This wouldnt really be a compatible type would it...must do validation very soon.
-	if (filter.getOperator().equals(Operator.BETWEEN)) {
-		nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
-	}
-	if (filterClause == null || filterClause.isEmpty()) {
-		filterClause = " and lss.person." + nextFilterLine;
-	}
-	else {
-		filterClause = filterClause + " and lss.person." + nextFilterLine;
-	}						
-							
-}
-else{
-	String nextFilterLine = (demoField.getFieldName() + getHQLForOperator(filter.getOperator()) + "'" + parseFilterValue(demoField.getFieldType(), filter.getValue()) + "' ");
-	if (filter.getOperator().equals(Operator.BETWEEN)) {
-		nextFilterLine += (" AND " + "'" + parseFilterValue(demoField.getFieldType(), filter.getSecondValue()) + "' ");
-	}
-	if (filterClause == null || filterClause.isEmpty()) {
-		filterClause = " and lss.person." + nextFilterLine;
-	}
-	else {
-		filterClause = filterClause + " and lss.person." + nextFilterLine;
-	}
-}
-
-**/
-
 	private String makeLineFromOperatorAndValues(String relationship, String fieldName, Operator operator, FieldType fieldType, String value1, String value2){
 		String fieldNameText = fieldType.getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)?(fieldName + ".name"):(fieldName); //eg; firstName     //String relationText = relationship; //eg; "lss.person." kinda like saying fully classified table name i guess
 		String lineAfterFieldName = "";																								//eg; is not null...... or..... is like 'blah%'
@@ -3519,16 +3486,19 @@ else{
 		return qfs;
 	}
 	
-	
+	/**
+	 * TODO ASAP
+	 * @param search
+	 * @return
+	 */
 	private String getBiospecimenFilters(Search search){//, String filterThusFar) {
 		String filterClause = "";// filterThusFar;
 		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
 		for (QueryFilter filter : filters) {
 			BiospecimenField biospecimenField = filter.getBiospecimenField();
 			if ((biospecimenField != null) && filter.getValue() != null) {
-				if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.Biospecimen)) {
+				if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.Biospecimen)){
 					filterClause += " and " +  makeLineFromOperatorAndValues("biospecimen.", biospecimenField.getFieldName() , filter.getOperator(), biospecimenField.getFieldType(), filter.getValue(), filter.getSecondValue());
-
 				}
 				else if (biospecimenField.getEntity() != null && biospecimenField.getEntity().equals(Entity.BioCollection)) {
 					filterClause += " and " + makeLineFromOperatorAndValues("biospecimen.bioCollection", biospecimenField.getFieldName() , filter.getOperator(), biospecimenField.getFieldType(), filter.getValue(), filter.getSecondValue());
