@@ -1967,7 +1967,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			catch (EntityExistsException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				//TODO don't catch exceptions without doing something
+				//TODO don't catch exceptions without doing something - and for that matter we should really start having statuses on our extractions so people can know what happened
 				log.error("Error while updating search with finish time.");
 			}
 		}
@@ -2054,27 +2054,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return bioCollectionUIDs;
 		}
 		else{
-			/**
-			 * delete from here...................................
-			for(Long bio : bioCollectionIds){
-				System.out.print(bio + ", ");
-			}
-
-			System.out.println(" \n ");
-			for(String uid : bioCollectionUIDs){
-
-				System.out.print("'" + uid + "', ");
-			}
-
-			System.out.println(" \n ");
-			for(Long id : subjectIds){
-
-				System.out.print(id + ", ");
-			}
-			System.out.println(" \n");
-			 * ...................................to here
-			 */
-			
 			String queryString = 	" select distinct bioCollection.biocollectionUid " +
 									" from BioCollection bioCollection " +
 									" where " +
@@ -2104,22 +2083,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else{
 				if(!bioCollectionUIDs.isEmpty() && !subjectIds.isEmpty()){
-/*					String queryString2 = "Select biospecimen.bioCollection.biocollectionUid  " +
-									  "from  Biospecimen biospecimen " +
-									  "where " +
-									  "( biospecimen.bioCollection.biocollectionUid in (:bioCollectionUIDs) " +
-									  " and biospecimen.id not in (:biospecimenIds) ) " +
-									  ((collectionsToDelete.isEmpty())?"":" or biospecimen.bioCollection.biocollectionUid in (:collectionsToDelete) ") +
-									  " and biospecimen.study =:study " +
-										" and biospecimen.bioCollection.study =:study " ;
-					query2 = getSession().createQuery(queryString2);
-					if(!collectionsToDelete.isEmpty())
-						query2.setParameterList("collectionsToDelete", collectionsToDelete);
-					query2.setParameter("study", study);
-					query2.setParameterList("bioCollectionUIDs", bioCollectionUIDs);
-					query2.setParameterList("biospecimenIds", biospecimenIds);
-					collectionsToDelete = query2.list();
-					log.info("collects to delete = " + collectionsToDelete);*/
+
 					if(!biospecimenFilters.isEmpty()){
 						List<String> biocollectionsCorrespondingOurFilteredBiospecimens = getBiocollectionUIDsForTheseBiospecimens(biospecimenIds, collectionsToDelete, study);
 						for(String biocollectionUid : bioCollectionUIDs){
@@ -2152,14 +2116,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					" from  Biospecimen biospecimen " +
 					" where " +
 					" biospecimen.id in (:biospecimenIds)  " + 
-					"  and biospecimen.study =:study  ";// + 
-					// (collectionsToExclude.isEmpty()?"":" and biospecimen.bioCollection.biocollectionUid not in (:collectionsToExclude) ");
+					"  and biospecimen.study =:study  ";
 			query2 = getSession().createQuery(queryString2);
 			query2.setParameterList("biospecimenIds", biospecimenIds);
 			query2.setParameter("study", study);
-			//if(!collectionsToExclude.isEmpty()){
-			//	query2.setParameterList("collectionsToExclude", collectionsToExclude);
-			//}
 			
 			return query2.list();
 		}
@@ -2224,7 +2184,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				for (Long id : returnedSubjectIds) {
 					idsToInclude.add(id);
 				}
-				
 				log.info("rows returned = " + idsToInclude.size());
 			}
 			else{
@@ -3529,7 +3488,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	private String parseFilterValue(FieldType fieldType, String value) throws ParseException {
 		String parsedValue = null;
 		if(fieldType.getName().equalsIgnoreCase("DATE")) {
-			DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 			String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S, "yyyy-MM-dd"};
 			try {
 				Date date = DateUtils.parseDate(value, dateFormats);
