@@ -426,4 +426,6 @@ public interface IStudyDao {
 	
 	public List<RelationshipVo> getSubjectParentRelatives(final String subjectUID,final Long studyId);
 	
+	public List<RelationshipVo> getSubjectChildRelatives(final String subjectUID,final Long studyId);
+	
 }
