@@ -44,5 +44,32 @@ public class RelationshipVo implements Serializable {
 	}
 	public void setDob(Date dob) {
 		this.dob = dob;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((individualId == null) ? 0 : individualId.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RelationshipVo other = (RelationshipVo) obj;
+		if (individualId == null) {
+			if (other.individualId != null)
+				return false;
+		}
+		else if (!individualId.equals(other.individualId))
+			return false;
+		return true;
 	}	
+	
 }
