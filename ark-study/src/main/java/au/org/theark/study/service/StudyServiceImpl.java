@@ -24,12 +24,16 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Queue;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.util.collections.ArrayListStack;
 import org.apache.wicket.util.file.File;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -1299,34 +1303,94 @@ public class StudyServiceImpl implements IStudyService {
 
 	public RelativeCapsule[] generateSubjectPedigree(final String subjectUID,final Long studyId){
 		List<RelativeCapsule> relativeCapsules = new ArrayList<RelativeCapsule>();
-		
+		Queue<RelativeCapsule> relativeCapsuleQueue = new LinkedList<RelativeCapsule>();
 		RelationshipVo probandRelationship = iStudyDao.getSubjectRelative(subjectUID, studyId);
 		
 		if(probandRelationship !=null){
 			
 			RelativeCapsule proband = createSubjectRelativeCapsule(probandRelationship);
 			proband.setProband("Y");
-			relativeCapsules.add(proband);
+			relativeCapsuleQueue.add(proband);
+			
 			//Generate parent relationships
-			for( ListIterator< RelativeCapsule > it = relativeCapsules.listIterator(); it.hasNext() ;){
-				RelativeCapsule relativeCapule=it.next();
-				List<RelationshipVo> relationships =  iStudyDao.getSubjectParentRelatives(relativeCapule.getIndividualId(),studyId);
-							
+			RelativeCapsule relativeCapsule =null;
+			while((relativeCapsule = relativeCapsuleQueue.poll())!=null ){
+				List<RelationshipVo> relationships =  iStudyDao.getSubjectParentRelatives(relativeCapsule.getIndividualId(),studyId);
 				for(RelationshipVo parentRelationshipVo : relationships){
 					RelativeCapsule parentCapsule = createSubjectRelativeCapsule(parentRelationshipVo); 
 					if("M".equalsIgnoreCase(parentCapsule.getGender())){
-						relativeCapule.setFather(parentCapsule.getIndividualId());
+						relativeCapsule.setFather(parentCapsule.getIndividualId());
 					}
 					else{
-						relativeCapule.setMother(parentCapsule.getIndividualId());
+						relativeCapsule.setMother(parentCapsule.getIndividualId());
 					}
-					it.add(parentCapsule);
+					relativeCapsuleQueue.add(parentCapsule);
 				}
-			}
+				relativeCapsules.add(relativeCapsule);
+			}		
 			
 			//Generate child relationships
+//			for(ListIterator< RelativeCapsule > it = relativeCapsules.listIterator(); it.hasNext() ;){
+//				RelativeCapsule relativeCapule=it.next();
+//				List<RelationshipVo> relationships =  iStudyDao.getSubjectChildRelatives(relativeCapule.getIndividualId(),studyId);
+//				for(RelationshipVo childRelativeVo : relationships){
+//					RelativeCapsule childCapsule = createSubjectRelativeCapsule(childRelativeVo);
+//					if(relativeCapsules.contains(childCapsule)){
+//						RelativeCapsule prevCapsule = relativeCapsules.get(relativeCapsules.indexOf(childCapsule));
+//						if("M".equalsIgnoreCase(relativeCapule.getGender())){
+//							prevCapsule.setFather(relativeCapule.getIndividualId());
+//						}
+//						else{
+//							prevCapsule.setMother(relativeCapule.getIndividualId());
+//						}
+//					}
+//					else{
+//						if("M".equalsIgnoreCase(relativeCapule.getGender())){
+//							childCapsule.setFather(relativeCapule.getIndividualId());
+//						}
+//						else{
+//							childCapsule.setMother(relativeCapule.getIndividualId());
+//						}
+//						it.add(childCapsule);
+//					}
+//				}
+//			}
+			
+			//New Generate child relationships Implementation
+//			relativeCapsuleQueue.addAll(relativeCapsules);
+//
+//			while((relativeCapsule = relativeCapsuleQueue.poll())!=null ){
+//				List<RelationshipVo> relationships =  iStudyDao.getSubjectChildRelatives(relativeCapsule.getIndividualId(),studyId);
+//				for(RelationshipVo childRelativeVo : relationships){
+//					RelativeCapsule childCapsule = createSubjectRelativeCapsule(childRelativeVo);
+//					if(relativeCapsules.contains(childCapsule)){
+//						RelativeCapsule prevCapsule = relativeCapsules.get(relativeCapsules.indexOf(childCapsule));
+//						if("M".equalsIgnoreCase(relativeCapsule.getGender())){
+//							prevCapsule.setFather(relativeCapsule.getIndividualId());
+//						}
+//						else{
+//							prevCapsule.setMother(relativeCapsule.getIndividualId());
+//						}
+//					}
+//					else{
+//						if("M".equalsIgnoreCase(relativeCapsule.getGender())){
+//							childCapsule.setFather(relativeCapsule.getIndividualId());
+//						}
+//						else{
+//							childCapsule.setMother(relativeCapsule.getIndividualId());
+//						}
+//						relativeCapsuleQueue.add(childCapsule);
+//						relativeCapsules.add(childCapsule);
+//					}
+//				}
+//			}
+
+			
 			
 		}
+		
+		
+		
 		return relativeCapsules.size() >2 ? relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]):new RelativeCapsule[0];
 	}
 	
