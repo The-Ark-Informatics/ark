@@ -342,7 +342,7 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			public boolean isVisible() {
 				//TODO return correct status
-				return search.getStatus() != null || !search.getStatus().equalsIgnoreCase("RUNNING");
+				return search.getStatus() != null && !search.getStatus().equalsIgnoreCase("RUNNING");
 				//return search.getStatus() != null && search.getStatus().equalsIgnoreCase("READY TO RUN") || true;
 			}
 			
