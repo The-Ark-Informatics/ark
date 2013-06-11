@@ -165,6 +165,32 @@ public class RelativeCapsule implements DataCapsule,Serializable{
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((individualId == null) ? 0 : individualId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RelativeCapsule other = (RelativeCapsule) obj;
+		if (individualId == null) {
+			if (other.individualId != null)
+				return false;
+		}
+		else if (!individualId.equals(other.individualId))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		return "RelativeCapsule [familyId=" + familyId + ", individualId=" + individualId + ", gender=" + gender + ", father=" + father + ", mother=" + mother + ", deceased=" + deceased + ", proband="
 				+ proband + ", dob=" + dob + ", mzTwin=" + mzTwin + ", dzTwin=" + dzTwin + ", sampled=" + sampled + ", affected=" + affected + "]";

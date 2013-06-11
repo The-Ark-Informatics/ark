@@ -160,13 +160,13 @@ public class PedigreeContainerPanel extends Panel{
 			if(dataFile.delete()){
 				log.info(dataFile.getName() + " is deleted!");
 	 		}else{
-	 			log.info(dataFile.getName() +" delete operation is failed.");
+	 			log.error(dataFile.getName() +" delete operation is failed.");
 	 		}
 			
 			if(pedFile.delete()){
 				log.info(pedFile.getName() + " is deleted!");
 	 		}else{
-	 			log.info(pedFile.getName() +" delete operation is failed.");
+	 			log.error(pedFile.getName() +" delete operation is failed.");
 	 		}
 		
 		}else{
