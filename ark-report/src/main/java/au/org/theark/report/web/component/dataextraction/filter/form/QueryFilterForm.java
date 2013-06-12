@@ -31,6 +31,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
@@ -222,6 +223,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			@Override
 			protected void onPopulateItem(final ListItem<QueryFilterVO> item) {
 				item.setOutputMarkupId(true);
+				item.add(new Label("row", ""+item.getIndex()+1));
 				
 				if(copyQueryFilter) {
 					item.getModelObject().setFieldCategory(queryFilterVoToCopy.getFieldCategory());
@@ -239,7 +241,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 				    @Override
 				    protected void onUpdate(AjaxRequestTarget target) {
 				    	/* we may want to perform some live validation based on the type of field we are selecting */
-				    	log.info("onchange of VALUE");
+				   	log.info("onchange of VALUE");
 				    	target.add(feedbackPanel);
 				    } 
 				});
@@ -769,41 +771,69 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 	}
 
 	private boolean validatedList() {
-		boolean ok = true;/*
-		boolean biospecimenUidError = false;
-		boolean quantityError = false;
-		boolean treatmentTypeError = false;
-		boolean concentrationError = false;
-		
-		// Check for any empty required fields in list
-		for (Biospecimen biospecimen: getModelObject().getAliquots()) {
-			biospecimenUidError = (biospecimen.getBiospecimenUid() == null);
-			quantityError = (biospecimen.getQuantity() == null);
-			treatmentTypeError = (biospecimen.getTreatmentType() == null);
-			// Concentration required?
-			//concentrationError = (biospecimen.getConcentration() == null);
-			
-			if(biospecimenUidError || quantityError || treatmentTypeError || concentrationError) {
-				break;
-			}
+		boolean ok = true;
+		int filterRow = 0;
+		for (QueryFilterVO queryFilterVO: getModelObject().getQueryFilterVOs()) {
+				QueryFilter queryfilter = queryFilterVO.getQueryFilter();
+				filterRow++;
+				if (queryfilter.getOperator().equals(Operator.BETWEEN)) {
+					//then both values cant be null valueOne and Value2
+					//are certain values/fieldstypes valid for this operator?
+					//are values needed or should they be ignored?
+					
+					if (queryfilter.getValue() == null || queryfilter.getSecondValue() == null) {
+						error("Error on row " + filterRow + ": For values in a between range, Value and Value 2 is required");
+						ok = false;
+					}
+					
+					//if error i guess we return false and give back a list of errors?
+				}
+				else if (queryfilter.getOperator().equals(Operator.LIKE) || queryfilter.getOperator().equals(Operator.NOT_EQUAL)) {
+					//then both values cant be null
+					//are certain values/fieldstypes valid for this operator?
+					//are values needed or should they be ignored?
+					
+					if (queryfilter.getValue() == null) {
+						error("Error on row " + filterRow + ": A Value is required");
+						ok = false;
+					}
+				}
+				else if (queryfilter.getOperator().equals(Operator.EQUAL)) {
+					//then both values cant be null
+					//are certain values/fieldstypes valid for this operator?
+					//are values needed or should they be ignored?
+					if (queryfilter.getValue() == null) {
+						error("Error on row " + filterRow + ": A Value is required");
+						ok = false;
+					}
+					
+				}
+				else if (queryfilter.getOperator().equals(Operator.GREATER_THAN) || queryfilter.getOperator().equals(Operator.GREATER_THAN_OR_EQUAL)) {
+					//then both values cant be null
+					//are certain values/fieldstypes valid for this operator?
+					//are values needed or should they be ignored?
+					
+					if (queryfilter.getValue() == null) {
+						error("Error on row " + filterRow + ": A Value is required");
+						ok = false;
+					}
+				}
+				else if (queryfilter.getOperator().equals(Operator.LESS_THAN) || queryfilter.getOperator().equals(Operator.LESS_THAN_OR_EQUAL)) {
+					//then both values cant be null
+					//are certain values/fieldstypes valid for this operator?
+					//are values needed or should they be ignored?
+					
+					if (queryfilter.getValue() == null) {
+						error("Error on row " + filterRow + ": A Value is required");
+						ok = false;
+					}
+				}
+				else{
+					log.info("different operator?  that can't happen - can it?  ");
+				}
 		}
 		
-		if(biospecimenUidError) {
-			error("Field 'Biospecimen UID' is required.");
-			ok = false;
-		}
-		if(quantityError) {
-			error("Field 'Quantity' is required.");
-			ok = false;
-		}
-		if(treatmentTypeError) {
-			error("Field 'Treatment' is required.");
-			ok = false;
-		}
-		if(concentrationError) {
-			error("Field 'Concentration' is required.");
-			ok = false;
-		}*/
+				
 		return ok;
 	}
 }
