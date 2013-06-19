@@ -3378,7 +3378,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			DemographicField demoField = filter.getDemographicField();
 			if ((demoField != null)) {
 				if (demoField.getEntity() != null && demoField.getEntity().equals(Entity.LinkSubjectStudy)) {
-					filterClause = filterClause + " and " + makeLineFromOperatorAndValues("lss.", demoField.getFieldName(), filter.getOperator(), demoField.getFieldType(), filter.getValue(), filter.getSecondValue());
+					filterClause = filterClause + " and ";
+					String s = makeLineFromOperatorAndValues("lss.", demoField.getFieldName(), filter.getOperator(), demoField.getFieldType(), filter.getValue(), filter.getSecondValue());
+					filterClause = filterClause + s;
 				}
 			}
 			
@@ -3840,47 +3842,136 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			 * 
 	 * @param queryFilterList - list of all fiolters we wish to apply
 	 * @return
+	 * @throws ArkSystemException 
 	 */
-	public boolean validateQueryFilters(List<QueryFilter> queryFilterList) {
+	public boolean validateQueryFilters(List<QueryFilter> queryFilterList) throws ArkSystemException {
 		
-		for (QueryFilter filter : queryFilterList) {
-			//all operators except IS NULL or ISNOTNULL need at least value1
-			//all ops need a field selected for any of the 7 (4) types)
+		for (QueryFilter queryfilter: queryFilterList) {
 			
+			FieldType ft = getQueryFilterFieldType(queryfilter);
+			ft.getName();
 			
-			if (filter.getOperator().equals(Operator.BETWEEN)) {
+			if(ft.getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)){
+				// validate date format
+				if (queryfilter.getValue() != null) {
+					if (!validDateFormat(queryfilter.getValue()))
+					{
+						throw new ArkSystemException("Value is not a valid date");
+					}
+				}
+			}
+			
+			if (queryfilter.getOperator().equals(Operator.BETWEEN)) {
 				//then both values cant be null valueOne and Value2
 				//are certain values/fieldstypes valid for this operator?
 				//are values needed or should they be ignored?
 				
+				if (queryfilter.getValue() == null || queryfilter.getSecondValue() == null) {
+					throw new ArkSystemException("Value and Value 2 is required for range filters");
+				}
+				
 				//if error i guess we return false and give back a list of errors?
 			}
-			else if (filter.getOperator().equals(Operator.LIKE) || filter.getOperator().equals(Operator.NOT_EQUAL)) {
+			else if (queryfilter.getOperator().equals(Operator.LIKE) || queryfilter.getOperator().equals(Operator.NOT_EQUAL)) {
 				//then both values cant be null
 				//are certain values/fieldstypes valid for this operator?
 				//are values needed or should they be ignored?
+				
+				if (queryfilter.getValue() == null) {
+					throw new ArkSystemException("A Value is required");
+				}
 			}
-			else if (filter.getOperator().equals(Operator.EQUAL)) {
+			else if (queryfilter.getOperator().equals(Operator.EQUAL)) {
 				//then both values cant be null
 				//are certain values/fieldstypes valid for this operator?
 				//are values needed or should they be ignored?
+				if (queryfilter.getValue() == null) {
+					throw new ArkSystemException("A Value is required");
+				}
+				
 			}
-			else if (filter.getOperator().equals(Operator.GREATER_THAN) || filter.getOperator().equals(Operator.GREATER_THAN_OR_EQUAL)) {
+			else if (queryfilter.getOperator().equals(Operator.GREATER_THAN) || queryfilter.getOperator().equals(Operator.GREATER_THAN_OR_EQUAL)) {
 				//then both values cant be null
 				//are certain values/fieldstypes valid for this operator?
 				//are values needed or should they be ignored?
+				
+				if (queryfilter.getValue() == null) {
+					throw new ArkSystemException("A Value is required");
+				}
 			}
-			else if (filter.getOperator().equals(Operator.LESS_THAN) || filter.getOperator().equals(Operator.LESS_THAN_OR_EQUAL)) {
+			else if (queryfilter.getOperator().equals(Operator.LESS_THAN) || queryfilter.getOperator().equals(Operator.LESS_THAN_OR_EQUAL)) {
 				//then both values cant be null
 				//are certain values/fieldstypes valid for this operator?
 				//are values needed or should they be ignored?
+				
+				if (queryfilter.getValue() == null) {
+					throw new ArkSystemException("A Value is required");
+				}
 			}
 			else{
 				log.info("different operator?  that can't happen - can it?  ");
 			}
 			
 		}
+		
 		return true;
+	}
+
+	private boolean validDateFormat(String value) {
+		String[] formatStrings = {Constants.DD_MM_YYYY};
+      boolean isInvalidFormat = false;
+      
+      for (String formatString : formatStrings) {
+          try {
+         	 SimpleDateFormat sdf = (SimpleDateFormat) DateFormat.getDateInstance();
+              sdf.applyPattern(formatString);
+              sdf.setLenient(false);
+              sdf.parse(value);
+              
+              if(sdf.format(sdf.parse(value)).equals(value) && value.length() == sdf.toPattern().length()){
+            	  isInvalidFormat = true;
+              }
+          } catch (ParseException e) {
+              isInvalidFormat = false;
+          }
+      }
+      return isInvalidFormat;
+	}
+
+	/**
+	 * Determine the fieldtype for the queryfilter
+	 * @param queryfilter
+	 * @return fieldType
+	 */
+	private FieldType getQueryFilterFieldType(QueryFilter queryfilter) {
+		DemographicField df = queryfilter.getDemographicField();
+		if(df != null) {
+			getSession().refresh(df.getFieldType());
+			return df.getFieldType();
+		}
+		
+		BiospecimenField bf = queryfilter.getBiospecimenField();
+		if(bf != null) {
+			getSession().refresh(bf.getFieldType());
+			return bf.getFieldType();
+		}
+		
+		BiocollectionField bcf = queryfilter.getBiocollectionField();
+		if(bf != null) {
+			getSession().refresh(bcf.getFieldType());
+			return bf.getFieldType();
+		}
+		
+		CustomFieldDisplay cfd = queryfilter.getCustomFieldDisplay();
+		if(cfd != null) {
+			CustomField cf = cfd.getCustomField();
+			if(cf !=null) {
+				getSession().refresh(cf.getFieldType());
+				return cf.getFieldType();
+			}
+		}
+		
+		return null;
 	}
 
 	public List<QueryFilterVO> getQueryFilterVOs(Search search) {
