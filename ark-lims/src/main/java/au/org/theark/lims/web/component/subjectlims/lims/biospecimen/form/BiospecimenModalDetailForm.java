@@ -889,27 +889,28 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				setQuantityLabel();
 			}
 
-			// Allow the Biospecimen custom data to be saved any time save is performed
-			if (biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel) {
-				((BiospecimenCustomDataDataViewPanel) biospecimenCFDataEntryPanel).saveCustomData();
-			}
-
-			// refresh the custom field data entry panel (if necessary)
-			if (initialiseBiospecimenCFDataEntry()) {
-				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
-			}
-
-			// refresh the bio transactions (if necessary)
-			if (initialiseBioTransactionListPanel()) {
-				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
-			}
-
-			// refresh the location panel
-			if (initialiseBiospecimenLocationPanel()) {
-				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenLocationPanel);
-			}
-
 			if (saveOk) {
+				// Allow the Biospecimen custom data to be saved any time save is performed
+				if (biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel) {
+					((BiospecimenCustomDataDataViewPanel) biospecimenCFDataEntryPanel).saveCustomData();
+				}
+	
+				// refresh the custom field data entry panel (if necessary)
+				if (initialiseBiospecimenCFDataEntry()) {
+					arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
+				}
+	
+				// refresh the bio transactions (if necessary)
+				if (initialiseBioTransactionListPanel()) {
+					arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
+				}
+	
+				// refresh the location panel
+				if (initialiseBiospecimenLocationPanel()) {
+					arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenLocationPanel);
+				}
+
+			
 				// Disable initial transaction details, and hide inital quantity text box
 				bioTransactionDetailWmc.setEnabled(false);
 				bioTransactionQuantityTxtFld.setVisible(false);
@@ -1024,6 +1025,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				cpModel.getObject().getBioTransaction().setQuantity(null);
 
 				enableQuantityTreatment(target);
+				CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());
+				bioCFDataCpModel.getObject().setBiospecimen(biospecimen);
+				bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
+				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
+				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
 
 				// refresh the bioTransaction panel
 				initialiseBioTransactionListPanel();
@@ -1115,7 +1121,12 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				cpModel.getObject().getBioTransaction().setQuantity(null);
 
 				enableQuantityTreatment(target);
-
+				CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());
+				bioCFDataCpModel.getObject().setBiospecimen(biospecimen);
+				bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
+				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
+				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
+				
 				// refresh the bioTransaction panel
 				initialiseBioTransactionListPanel();
 				arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
