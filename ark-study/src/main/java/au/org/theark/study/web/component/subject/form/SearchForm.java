@@ -250,7 +250,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		//Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		//getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		
 		getModelObject().getLinkSubjectStudy().getStudy();

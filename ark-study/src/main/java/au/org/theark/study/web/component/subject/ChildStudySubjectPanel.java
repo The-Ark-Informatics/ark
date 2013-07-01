@@ -117,9 +117,6 @@ public class ChildStudySubjectPanel extends Panel {
 			protected void populateItem(final ListItem<LinkSubjectStudy> item) {
 				ArkBusyAjaxLink<String> link = new ArkBusyAjaxLink<String>("link") {
 
-					/**
-					 * 
-					 */
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
@@ -148,7 +145,10 @@ public class ChildStudySubjectPanel extends Panel {
 		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 
 		SubjectVO subjectFromBackend = new SubjectVO();
-		subjectFromBackend.setLinkSubjectStudy(subject.getLinkSubjectStudy());
+		
+		LinkSubjectStudy subjectRefreshed = iArkCommonService.getSubjectRefreshed(subject.getLinkSubjectStudy());
+		
+		subjectFromBackend.setLinkSubjectStudy(subjectRefreshed);
 
 		// Available/assigned child studies
 		List<Study> availableChildStudies = new ArrayList<Study>(0);
