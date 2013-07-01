@@ -203,6 +203,9 @@ public interface IStudyDao {
 	 */
 	public LinkSubjectStudy getSubjectByUID(String subjectUID, Study study) throws EntityNotFoundException;
 
+	public LinkSubjectStudy getSubjectRefreshed(LinkSubjectStudy subject);
+	
+	
 	/**
 	 * Get a list of Marital Status
 	 * 
