@@ -579,8 +579,8 @@ SELECT
     b.ID as BOX_ID,
     `c`.`DELETED`,
     `c`.`TIMESTAMP`,
-    `c`.`COLNO`,
     `c`.`ROWNO`,
+    `c`.`COLNO`,
 bio.id as biospecimen_id,
 `c`.`BIOSPECIMENKEY`,
     (CASE
