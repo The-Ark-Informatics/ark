@@ -282,14 +282,14 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		
 		// Restrict any addresses to the preferred mailing address
 		Criteria addressCriteria = criteria.createAlias("lss.person.addresses", "a", JoinType.LEFT_OUTER_JOIN);
-		addressCriteria.add(Restrictions.or(Restrictions.eq("a.preferredMailingAddress", true), Restrictions.isNull("a.preferredMailingAddress")));
+		addressCriteria.add(Restrictions.or(Restrictions.or(Restrictions.eq("a.preferredMailingAddress", true), Restrictions.isNull("a.preferredMailingAddress"),Restrictions.eq("a.preferredMailingAddress", false))));
 		
 		criteria.createAlias("lss.person.addresses.country", "c", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("lss.person.addresses.state", "state", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("lss.person.phones", "phone", JoinType.LEFT_OUTER_JOIN);
 		
 		//TODO: Get work phone returned as well
-		criteria.createAlias("lss.person.phones.phoneType", "phoneType", JoinType.LEFT_OUTER_JOIN).add(Restrictions.or(Restrictions.eq("phoneType.name", "Home"), Restrictions.isNull("phoneType.name")));
+		criteria.createAlias("lss.person.phones.phoneType", "phoneType", JoinType.LEFT_OUTER_JOIN).add(Restrictions.or(Restrictions.or(Restrictions.eq("phoneType.name", "Home"), Restrictions.isNull("phoneType.name"),Restrictions.eq("phoneType.name", "Mobile"))));
 		criteria.createAlias("lss.person.titleType", "title");
 		
 		ProjectionList projectionList = Projections.projectionList();
