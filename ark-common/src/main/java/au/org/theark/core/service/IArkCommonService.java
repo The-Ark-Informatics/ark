@@ -150,6 +150,8 @@ public interface IArkCommonService<T> {
 	 */
 	public LinkSubjectStudy getSubjectByUID(String subjectUID, Study study) throws EntityNotFoundException;
 
+	public LinkSubjectStudy getSubjectRefreshed(LinkSubjectStudy subject);
+
 	public Collection<MaritalStatus> getMaritalStatus();
 
 	public Collection<EmailStatus> getAllEmailStatuses();
