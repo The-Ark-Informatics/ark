@@ -107,11 +107,11 @@ public class ConsentStatus implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ConsentStatus other = (ConsentStatus) obj;
-		if (description == null) {
+		/*if (description == null) {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
-			return false;
+			return false;*/
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -122,6 +122,7 @@ public class ConsentStatus implements Serializable {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
+		
 		return true;
 	}
 	
