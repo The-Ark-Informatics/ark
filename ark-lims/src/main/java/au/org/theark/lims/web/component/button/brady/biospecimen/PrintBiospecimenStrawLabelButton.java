@@ -84,7 +84,7 @@ public abstract class PrintBiospecimenStrawLabelButton extends AjaxButton {
 		boolean barcodePrinterAvailable = true;
 
 		if (barcodeLabel == null || barcodeLabel.getBarcodePrinterName() == null || barcodeLabel.getBarcodePrinterName().isEmpty()) {
-			log.error("A Brady barcode label is currently not available. Please define the label and try again");
+			log.warn("A Brady barcode label is currently not available. Please define the label and try again");
 			barcodePrinterAvailable = false;
 		}
 
