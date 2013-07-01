@@ -457,6 +457,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
+	public LinkSubjectStudy getSubjectRefreshed(LinkSubjectStudy subject){
+		if(subject==null || subject.getId()==null){
+			return subject;
+		}
+		else{
+			getSession().refresh(subject);
+			/* then if we really need refresh all the gritty underlying details 
+			 * 
+			 * */
+			getSession().refresh(subject.getConsentStatus());
+			return subject;
+		}
+	}
+	
 	/**
 	 * returns a the subject (linksubjectystudy) IF there is one, else returns null
 	 * 
@@ -854,7 +868,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 
 		if (subjectVO.getLinkSubjectStudy().getSubjectUID() != null && subjectVO.getLinkSubjectStudy().getSubjectUID().length() > 0) {
-			criteria.add(Restrictions.eq("subjectUID", subjectVO.getLinkSubjectStudy().getSubjectUID()));
+			criteria.add(Restrictions.ilike("subjectUID", subjectVO.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
 		}
 
 		if (subjectVO.getLinkSubjectStudy().getSubjectStatus() != null) {
