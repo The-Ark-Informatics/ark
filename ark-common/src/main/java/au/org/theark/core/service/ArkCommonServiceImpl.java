@@ -381,6 +381,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getSubjectByUID(subjectUID, study);
 	}
 
+	public LinkSubjectStudy getSubjectRefreshed(LinkSubjectStudy subject){
+		return studyDao.getSubjectRefreshed(subject);
+	}
+
+	
 	/**
 	 * returns a the subject (linksubjectystudy) IF there is one, else returns null
 	 * @param subjectUID
