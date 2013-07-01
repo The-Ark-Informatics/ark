@@ -312,7 +312,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 				return false;
 		} else if (!comment.equals(other.comment))
 			return false;
-		if (consentDate == null) {
+/*		if (consentDate == null) {
 			if (other.consentDate != null)
 				return false;
 		} else if (!consentDate.equals(other.consentDate))
@@ -322,12 +322,13 @@ public class LinkSubjectStudy implements java.io.Serializable {
 				return false;
 		} else if (!consentDownloaded.equals(other.consentDownloaded))
 			return false;
-//		if (consentStatus == null) {
+*/
+		//		if (consentStatus == null) {
 //			if (other.consentStatus != null)
 //				return false;
 //		} else if (!consentStatus.equals(other.consentStatus))
 //			return false;
-		if (consentToActiveContact == null) {
+/*		if (consentToActiveContact == null) {
 			if (other.consentToActiveContact != null)
 				return false;
 		} else if (!consentToActiveContact.equals(other.consentToActiveContact))
@@ -343,7 +344,8 @@ public class LinkSubjectStudy implements java.io.Serializable {
 				return false;
 		} else if (!consentToUseData.equals(other.consentToUseData))
 			return false;
-//		if (consentType == null) {
+*/
+		//		if (consentType == null) {
 //			if (other.consentType != null)
 //				return false;
 //		} else if (!consentType.equals(other.consentType))
