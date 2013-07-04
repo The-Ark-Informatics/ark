@@ -309,6 +309,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		addOrReplace(biospecimenbuttonsPanel);
 	}
 
+	/***
+	 * TODO : Trav investigate how this happens on batch/allocate/process
+	 * @return
+	 */
 	private boolean initialiseBiospecimenCFDataEntry() {
 		boolean replacePanel = false;
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
@@ -364,9 +368,6 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		idTxtFld = new TextField<String>("biospecimen.id");
 		biospecimenUidTxtFld = new TextField<String>("biospecimen.biospecimenUid");
 		biospecimenUidTxtFld.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-			/**
-			 * 
-			 */
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -460,9 +461,6 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			}
 		};
 		parentQuantityTxtFld = new TextField<Double>("parentBiospecimen.quantity") {
-			/**
-			 * 
-			 */
 			private static final long	serialVersionUID	= 1L;
 
 			@SuppressWarnings("unchecked")
@@ -1083,7 +1081,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		cpModel.getObject().setParentBiospecimen(parentBiospecimen);
 
-		try {
+		try{
 			// Copy parent biospecimen details to new biospecimen
 			PropertyUtils.copyProperties(biospecimen, parentBiospecimen);
 
@@ -1093,7 +1091,16 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			if (biospecimen.getStudy().getAutoGenerateBiospecimenUid()) {
 				biospecimen.setBiospecimenUid(Constants.AUTO_GENERATED);
 			}
-
+			else {
+				biospecimen.setBiospecimenUid(null);
+			}
+			/***
+			 * TRAV TO INVESTIGATE ASAP
+			// Cloning not a child biospecimen
+			// biospecimen.setParent(clonedBiospecimen);
+			// biospecimen.setParentUid(clonedBiospecimen.getBiospecimenUid());
+**/		
+			
 			biospecimen.setParent(parentBiospecimen);
 			biospecimen.setParentUid(parentBiospecimen.getBiospecimenUid());
 			biospecimen.setSampleType(parentBiospecimen.getSampleType());
@@ -1102,7 +1109,6 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			biospecimen.setUnit(parentBiospecimen.getUnit());
 			biospecimen.setComments(comment + parentBiospecimenUid);
 			biospecimen.setBarcoded(false);
-			biospecimen.setUnit(parentBiospecimen.getUnit());
 			biospecimen.setTreatmentType(parentBiospecimen.getTreatmentType());
 			biospecimen.setChildren(new ArrayList<Biospecimen>(0));
 

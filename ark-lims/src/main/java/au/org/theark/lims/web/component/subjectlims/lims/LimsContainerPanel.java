@@ -109,17 +109,14 @@ public class LimsContainerPanel extends Panel {
 		};
 		modalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback()
 		{
-			/**
-			 * 
-			 */
 			private static final long	serialVersionUID	= 1L;
 
 			public void onClose(AjaxRequestTarget target)
-         {
+			{
 				target.add(bioTreePanel);
 				target.add(biocollectionListPanel);
 				target.add(bioSpecimenListPanel);
-         }
+			}
 		});
 		
 		biocollectionListPanel = new BioCollectionListPanel("biocollectionListPanel", feedbackPanel, cpModel, modalWindow);
