@@ -17,9 +17,6 @@ import au.org.theark.lims.service.ILimsService;
 
 public class BiospecimenTreeProvidor implements ITreeProvider<Object> {
 
-	/**
-	 * 
-	 */
 	private static final long	serialVersionUID	= 1L;
 	private static List<LinkSubjectStudy> roots = new ArrayList<LinkSubjectStudy>();
 	private ILimsService iLimsService;
