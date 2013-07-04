@@ -1,7 +1,9 @@
 package au.org.theark.study.model.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class RelationshipVo implements Serializable {
 
@@ -14,6 +16,12 @@ public class RelationshipVo implements Serializable {
 	private String gender;
 	private String deceased;
 	private Date dob;
+	
+	private String firstName;
+	private String lastName;
+	private String relationship;
+	private String twin;
+	
 	
 	public Integer getFamilyId() {
 		return familyId;
@@ -45,6 +53,34 @@ public class RelationshipVo implements Serializable {
 	public void setDob(Date dob) {
 		this.dob = dob;
 	}
+	public String getFirstName() {
+		return firstName;
+	}
+	
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getRelationship() {
+		return relationship;
+	}
+	public void setRelationship(String relationship) {
+		this.relationship = relationship;
+	}
+	
+	public String getTwin() {
+		return twin;
+	}
+	
+	public void setTwin(String twin) {
+		this.twin = twin;
+	}
 	
 	@Override
 	public int hashCode() {
@@ -70,6 +106,6 @@ public class RelationshipVo implements Serializable {
 		else if (!individualId.equals(other.individualId))
 			return false;
 		return true;
-	}	
+	}
 	
 }

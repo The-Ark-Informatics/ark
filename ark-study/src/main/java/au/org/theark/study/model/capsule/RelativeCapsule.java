@@ -23,6 +23,7 @@ public class RelativeCapsule implements DataCapsule,Serializable{
 	private String dzTwin;
 	private String sampled;
 	private String affected;
+	private String relationship;
 	
 	public RelativeCapsule(){
 		
@@ -140,6 +141,14 @@ public class RelativeCapsule implements DataCapsule,Serializable{
 
 	public void setAffected(String affected) {
 		this.affected = affected;
+	}
+
+	public String getRelationship() {
+		return relationship;
+	}
+
+	public void setRelationship(String relationship) {
+		this.relationship = relationship;
 	}
 
 	public String[] getExports() {

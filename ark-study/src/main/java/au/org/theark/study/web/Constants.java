@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.study.web;
 
+import java.util.Date;
+
 public class Constants {
 	public static final String			UPLOAD_STATUS_OF_AWAITING_VALIDATION				= "AWAITING_VALIDATION";
 	public static final String			UPLOAD_STATUS_OF_COMPLETED								= "COMPLETED";
@@ -414,4 +416,14 @@ public class Constants {
 	public static final String			PEDIGREE_DATA = 	"Pedigree Data";
 	public static final String			STUDY_SPECIFIC_CUSTOM_DATA = "Study-specific (custom) Data";
 	public static final String			FILENAME	= "fileName";
+	
+	public static final String PEDIGREE_INDIVIDUAL_ID="pedigree.individualId";
+	public static final String PEDIGREE_FIRST_NAME="pedigree.firstName";
+	public static final String PEDIGREE_LAST_NAME="pedigree.lastName";
+	public static final String PEDIGREE_DOB="pedigree.dob";
+	public static final String PEDIGREE_RELATIONSHIP="pedigree.relationship";
+	public static final String PEDIGREE_TWIN="pedigree.twin";
+	public static final String PEDIGREE_RELATIONSHIP_DELETE="pedigree.relationship.delete";
+
+	
 }
