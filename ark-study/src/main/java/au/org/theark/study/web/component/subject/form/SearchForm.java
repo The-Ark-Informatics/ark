@@ -253,7 +253,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		//Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		//getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		
-		getModelObject().getLinkSubjectStudy().getStudy();
+		//getModelObject().getLinkSubjectStudy().getStudy();
 
 		long count = iArkCommonService.getStudySubjectCount(cpmModel.getObject());
 		if (count == 0L) {
