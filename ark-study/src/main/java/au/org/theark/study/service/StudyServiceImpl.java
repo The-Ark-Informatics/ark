@@ -1310,6 +1310,7 @@ public class StudyServiceImpl implements IStudyService {
 			
 			RelativeCapsule proband = createSubjectRelativeCapsule(probandRelationship);
 			proband.setProband("Y");
+			proband.setRelationship("Proband");
 			relativeCapsuleQueue.add(proband);
 			
 			//Generate parent relationships

@@ -1,0 +1,97 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			<th width="25%">
+				<label for="subjectUid">
+					<wicket:message key="pedigree.subjectuid">
+						Subject UID:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="25%">
+				<label for="firstName">
+					<wicket:message key="pedigree.firstname">
+						First Name:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="25%">
+				<label for="lastName">
+					<wicket:message key="pedigree.lastname">
+						Last Name:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="25%">
+				<label for="relation">
+					<wicket:message key="pedigree.relation">
+						Relation:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="25%">
+				<label for="dob">
+					<wicket:message key="pedigree.dob">
+						DOB:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="25%">
+				<label for="twin">
+					<wicket:message key="pedigree.twin">
+						Twin:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="25%">
+				<label for="action">
+					<wicket:message key="pedigree.action">
+						Action:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="2%">&nbsp;</th>			
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="relationshipList">
+			<td width="2%">&nbsp;</td>
+			<td width="25%">
+				<a href="#" wicket:id="pedigree.individualId">
+			  		<span wicket:id="uidLbl">Name</span>
+			  	</a>
+			</td>
+			<td width="25%">
+				<span wicket:id="pedigree.firstName">First Name</span>
+			</td>
+			<td width="25%">
+				<span wicket:id="pedigree.lastName">Last Name</span>
+			</td>
+			<td width="25%">
+			  <span wicket:id="pedigree.relationship">relationship to proband</span>
+			</td>
+			<td width="25%">
+				<span wicket:id="pedigree.dob">DOB</span>
+			</td>
+			<td width="25%">
+				<span wicket:id="pedigree.twin"></span>
+			</td>
+			<td width="25%" valign="middle">
+				<a href="#" wicket:id="pedigree.relationship.delete">
+			  		<span wicket:id="unsetLbl">Name</span>
+			   </a>
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tfoot>
+			<tr>
+				<td width="2%">&nbsp;</td>
+				<td colspan="7"><span wicket:id="navigator" class="a"></span></td>
+				<td width="2%">&nbsp;</td>
+			</tr>
+		</tfoot>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>
