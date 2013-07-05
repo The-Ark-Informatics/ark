@@ -1306,9 +1306,13 @@ public class StudyServiceImpl implements IStudyService {
 		Queue<RelativeCapsule> relativeCapsuleQueue = new LinkedList<RelativeCapsule>();
 		RelationshipVo probandRelationship = iStudyDao.getSubjectRelative(subjectUID, studyId);
 		
+		String familyUID=null;
+		
 		if(probandRelationship !=null){
 			
-			RelativeCapsule proband = createSubjectRelativeCapsule(probandRelationship);
+			familyUID = "F"+probandRelationship.getIndividualId();
+			
+			RelativeCapsule proband = createSubjectRelativeCapsule(probandRelationship,familyUID);
 			proband.setProband("Y");
 			proband.setRelationship("Proband");
 			relativeCapsuleQueue.add(proband);
@@ -1318,7 +1322,7 @@ public class StudyServiceImpl implements IStudyService {
 			while((relativeCapsule = relativeCapsuleQueue.poll())!=null ){
 				List<RelationshipVo> relationships =  iStudyDao.getSubjectParentRelatives(relativeCapsule.getIndividualId(),studyId);
 				for(RelationshipVo parentRelationshipVo : relationships){
-					RelativeCapsule parentCapsule = createSubjectRelativeCapsule(parentRelationshipVo); 
+					RelativeCapsule parentCapsule = createSubjectRelativeCapsule(parentRelationshipVo,familyUID); 
 					if("M".equalsIgnoreCase(parentCapsule.getGender())){
 						relativeCapsule.setFather(parentCapsule.getIndividualId());
 					}
@@ -1336,7 +1340,7 @@ public class StudyServiceImpl implements IStudyService {
 			while((relativeCapsule = relativeCapsuleQueue.poll())!=null ){
 				List<RelationshipVo> relationships =  iStudyDao.getSubjectChildRelatives(relativeCapsule.getIndividualId(),studyId);
 				for(RelationshipVo childRelativeVo : relationships){
-					RelativeCapsule childCapsule = createSubjectRelativeCapsule(childRelativeVo);
+					RelativeCapsule childCapsule = createSubjectRelativeCapsule(childRelativeVo,familyUID);
 					if(relativeCapsules.contains(childCapsule)){
 						RelativeCapsule prevCapsule = relativeCapsules.get(relativeCapsules.indexOf(childCapsule));
 						if("M".equalsIgnoreCase(relativeCapsule.getGender())){
@@ -1363,10 +1367,103 @@ public class StudyServiceImpl implements IStudyService {
 		return relativeCapsules.size() >2 ? relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]):new RelativeCapsule[0];
 	}
 	
-	private RelativeCapsule createSubjectRelativeCapsule(RelationshipVo relationshipVo){
+	public List<RelationshipVo> generateSubjectPedigreeRelativeList(final String subjectUID,final Long studyId){
+		List<RelationshipVo> relativeSubjects = new ArrayList<RelationshipVo>();
+		Queue<RelationshipVo> relativeSubjectQueue = new LinkedList<RelationshipVo>();
+		RelationshipVo probandRelationship = iStudyDao.getSubjectRelative(subjectUID, studyId);
+		
+		
+		if(probandRelationship !=null){
+			
+			probandRelationship.setRelationship("Proband");
+			relativeSubjectQueue.add(probandRelationship);
+			
+			//Generate parent relationships
+			RelationshipVo relativeSubject =null;
+			while((relativeSubject = relativeSubjectQueue.poll())!=null ){
+				List<RelationshipVo> relationships =  iStudyDao.getSubjectParentRelatives(relativeSubject.getIndividualId(),studyId);
+				for(RelationshipVo parentRelationshipVo : relationships){ 
+					if("Male".equalsIgnoreCase(parentRelationshipVo.getGender())){
+						relativeSubject.setFatherId(parentRelationshipVo.getIndividualId());
+					}
+					else{
+						relativeSubject.setMotherId(parentRelationshipVo.getIndividualId());
+					}
+					relativeSubjectQueue.add(parentRelationshipVo);
+				}
+				relativeSubjects.add(relativeSubject);
+			}
+
+			relativeSubjectQueue.addAll(relativeSubjects);
+
+			//Generate the child relationships to parent relationships
+			while((relativeSubject = relativeSubjectQueue.poll())!=null ){
+				List<RelationshipVo> relationships =  iStudyDao.getSubjectChildRelatives(relativeSubject.getIndividualId(),studyId);
+				for(RelationshipVo childRelativeVo : relationships){
+					if(relativeSubjects.contains(childRelativeVo)){
+						RelationshipVo prevRelativeSubject = relativeSubjects.get(relativeSubjects.indexOf(childRelativeVo));
+						if("Male".equalsIgnoreCase(relativeSubject.getGender())){
+							prevRelativeSubject.setFatherId(relativeSubject.getIndividualId());
+						}
+						else{
+							prevRelativeSubject.setMotherId(relativeSubject.getIndividualId());
+						}
+					}
+					else{
+						if("Male".equalsIgnoreCase(relativeSubject.getGender())){
+							childRelativeVo.setFatherId(relativeSubject.getIndividualId());
+						}
+						else{
+							childRelativeVo.setMotherId(relativeSubject.getIndividualId());
+						}
+						relativeSubjectQueue.add(childRelativeVo);
+						relativeSubjects.add(childRelativeVo);
+					}
+				}
+			}
+			
+			
+			/**
+			 * Building the relationships around proband 
+			 */
+			
+			//Set parents
+			
+			RelationshipVo father=null;
+			RelationshipVo mother=null;
+			
+			//Paternal relationships
+			if(probandRelationship.getFatherId() != null){
+				//TODO
+			}
+			
+			//Maternal Relationships
+			if(probandRelationship.getMotherId() != null){
+				//TODO
+			}
+			
+		}
+		
+		return relativeSubjects;
+	}
+	
+	private int getRelativeIndex(String individualUID, List<RelationshipVo> relationshipList){
+		int index=-1;
+		
+		for(RelationshipVo obj:relationshipList ){
+			++index;
+			if(individualUID.equals(obj.getIndividualId())){
+				break;
+			}
+		}
+		return index;
+	}
+
+	
+	private RelativeCapsule createSubjectRelativeCapsule(RelationshipVo relationshipVo,String familyUID){
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy.MM.dd");
 		RelativeCapsule relative=new RelativeCapsule();
-		relative.setFamilyId(relationshipVo.getFamilyId().toString());
+		relative.setFamilyId(familyUID);
 		relative.setIndividualId(relationshipVo.getIndividualId());
 		if(relationshipVo.getGender() !=null && "Male".equalsIgnoreCase(relationshipVo.getGender())){
 			relative.setGender("M");
