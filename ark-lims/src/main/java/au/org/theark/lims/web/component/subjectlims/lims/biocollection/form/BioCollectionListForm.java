@@ -27,7 +27,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -84,8 +83,6 @@ public class BioCollectionListForm extends Form<LimsVO> {
 	private Label														nameLblFld;
 	private Label														commentsLblFld;
 	private Label														collectionDateLblFld;
-	private Label														surgeryDateLblFld;
-
 	private Panel														modalContentPanel;
 	protected ArkBusyAjaxButton									newButton;
 
@@ -268,10 +265,10 @@ public class BioCollectionListForm extends Form<LimsVO> {
 				}
 
 				if (bioCollection.getSurgeryDate() != null) {
-					surgeryDateLblFld = new Label("bioCollection.surgeryDate", simpleDateFormat.format(bioCollection.getSurgeryDate()));
+					new Label("bioCollection.surgeryDate", simpleDateFormat.format(bioCollection.getSurgeryDate()));
 				}
 				else {
-					surgeryDateLblFld = new Label("bioCollection.surgeryDate", "");
+					new Label("bioCollection.surgeryDate", "");
 				}
 
 				commentsLblFld = new Label("bioCollection.comments", bioCollection.getComments());
