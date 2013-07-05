@@ -35,6 +35,7 @@ import wickettree.AbstractTree;
 import wickettree.ITreeProvider;
 import wickettree.util.InverseSet;
 import wickettree.util.ProviderSubset;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
@@ -72,6 +73,9 @@ public class LimsContainerPanel extends Panel {
 	public BiospecimenNestedTreePanel bioTreePanel;
 	public BioCollectionListPanel biocollectionListPanel;
 	public BiospecimenListPanel bioSpecimenListPanel;
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 	
 	public LimsContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
@@ -102,6 +106,12 @@ public class LimsContainerPanel extends Panel {
 
 			@Override
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
+				provider = new BiospecimenTreeProvidor(iArkCommonService, iLimsService, cpModel);
+				state = new ProviderSubset<Object>(provider);
+				((IDetachable)state).detach();
+				state = new InverseSet<Object>(new ProviderSubset<Object>(provider));
+				bioTreePanel = new BiospecimenNestedTreePanel("tree", cpModel, provider, newStateModel(), modalWindow);
+				
 				target.add(bioTreePanel);
 				target.add(biocollectionListPanel);
 				target.add(bioSpecimenListPanel);
@@ -113,11 +123,19 @@ public class LimsContainerPanel extends Panel {
 
 			public void onClose(AjaxRequestTarget target)
 			{
+				provider = new BiospecimenTreeProvidor(iArkCommonService, iLimsService, cpModel);
+				state = new ProviderSubset<Object>(provider);
+				((IDetachable)state).detach();
+				state = new InverseSet<Object>(new ProviderSubset<Object>(provider));
+				bioTreePanel = new BiospecimenNestedTreePanel("tree", cpModel, provider, newStateModel(), modalWindow);
+				
+				containerForm.addOrReplace(bioTreePanel);
 				target.add(bioTreePanel);
 				target.add(biocollectionListPanel);
 				target.add(bioSpecimenListPanel);
 			}
 		});
+		
 		
 		biocollectionListPanel = new BioCollectionListPanel("biocollectionListPanel", feedbackPanel, cpModel, modalWindow);
 		collectionListPanel = biocollectionListPanel;
@@ -126,7 +144,7 @@ public class LimsContainerPanel extends Panel {
 		bioSpecimenListPanel = new BiospecimenListPanel("biospecimenListPanel", feedbackPanel, cpModel, modalWindow);
 		biospecimenListPanel = bioSpecimenListPanel;
 		
-		provider = new BiospecimenTreeProvidor(iLimsService, cpModel);
+		provider = new BiospecimenTreeProvidor(iArkCommonService, iLimsService, cpModel);
 		state = new ProviderSubset<Object>(provider);
 		((IDetachable)state).detach();
 		state = new InverseSet<Object>(new ProviderSubset<Object>(provider));
