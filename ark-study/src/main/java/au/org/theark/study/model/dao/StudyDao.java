@@ -2079,6 +2079,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		projectionList.add(Projections.property("rel.subjectUID"), "individualId");
 		projectionList.add(Projections.property("relGender.name"), "gender");
 		projectionList.add(Projections.property("relPerson.dateOfBirth"), "dob");
+		projectionList.add(Projections.property("relPerson.firstName"), "firstName");
+		projectionList.add(Projections.property("relPerson.lastName"), "lastName");
 		projectionList.add(Projections.property("relVitStatus.name"), "deceased");
 		
 		criteria.setProjection(projectionList); 
@@ -2109,6 +2111,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		projectionList.add(Projections.property("sub.subjectUID"), "individualId");
 		projectionList.add(Projections.property("subGender.name"), "gender");
 		projectionList.add(Projections.property("subPerson.dateOfBirth"), "dob");
+		projectionList.add(Projections.property("subPerson.firstName"), "firstName");
+		projectionList.add(Projections.property("subPerson.lastName"), "lastName");
 		projectionList.add(Projections.property("subVitStatus.name"), "deceased");
 		
 		criteria.setProjection(projectionList); 

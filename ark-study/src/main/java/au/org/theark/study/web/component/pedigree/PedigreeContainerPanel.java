@@ -1,5 +1,6 @@
 package au.org.theark.study.web.component.pedigree;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
@@ -60,9 +61,9 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 
 			@Override
 			protected Object load() {
-//				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-//				containerForm.getModelObject().getResearcher().setStudyId(studyId);
-//				containerForm.getModelObject().setResearcherList(iWorkTrackingService.searchResearcher(containerForm.getModelObject().getResearcher()));					
+				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				String subjectUID= (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);			
+				containerForm.getModelObject().setRelationshipList(studyService.generateSubjectPedigreeRelativeList(subjectUID,studyId));
 				pageableListView.removeAll();
 				return containerForm.getModelObject().getRelationshipList();
 			}
