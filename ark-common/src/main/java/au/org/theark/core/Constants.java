@@ -439,7 +439,12 @@ public class Constants {
 	public static final String SEARCH_NAME = "search.name";
 	public static final String	SAVEANDCLOSE									= "saveAndClose";
 	public static final String	yyyy_MM_dd	= "yyyy-MM-dd";
-
-
 	public enum FileFormat {CSV, XLS, PDF, TXT, DOC, XML}
+	
+	public static final String	FATHER	= "father";
+	public static final String	MOTHER	= "mother";
+	public static final String	TWIN	= "twin";
+	public static final String	VIEW	= "view";
+	public static final String	EXPORT	= "export";
+	
 }
