@@ -90,9 +90,6 @@ public class ActivityMonitorContainerPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	protected WebMarkupContainer initialiseSearchResults() {
 		List<ArkSubjectSessionVO> activeUsers = SessionAttributeListener.getActiveUsers();
-		for (ArkSubjectSessionVO arkSubjectVo : activeUsers) {
-			log.info("Active user: " + arkSubjectVo.getUserId());
-		}
 		form.getModelObject().setActiveUsers(activeUsers);
 		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", feedBackPanel);
 		listView = searchResultsPanel.buildPageableListView(new PropertyModel(form.getModelObject(), "activeUsers"));
