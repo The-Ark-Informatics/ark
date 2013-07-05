@@ -166,15 +166,15 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 				}
 			}
 			
-			@Override
-			public boolean isEnabled() {
-				Biospecimen b = cpModel.getObject().getBiospecimen();
-				if(b==null){
-					return false;
-				}
-				Double qa = iLimsService.getQuantityAvailable(b);
-				return (qa != null && qa > 0);
-			}
+//			@Override
+//			public boolean isEnabled() {
+//				Biospecimen b = cpModel.getObject().getBiospecimen();
+//				if(b==null){
+//					return false;
+//				}
+//				Double qa = iLimsService.getQuantityAvailable(b);
+//				return (qa != null && qa > 0);
+//			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
