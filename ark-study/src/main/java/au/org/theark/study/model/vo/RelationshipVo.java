@@ -22,6 +22,9 @@ public class RelationshipVo implements Serializable {
 	private String relationship;
 	private String twin;
 	
+	private String fatherId;
+	private String motherId;
+	
 	
 	public Integer getFamilyId() {
 		return familyId;
@@ -80,6 +83,22 @@ public class RelationshipVo implements Serializable {
 	
 	public void setTwin(String twin) {
 		this.twin = twin;
+	}
+	
+	public String getFatherId() {
+		return fatherId;
+	}
+	
+	public void setFatherId(String fatherId) {
+		this.fatherId = fatherId;
+	}
+	
+	public String getMotherId() {
+		return motherId;
+	}
+	
+	public void setMotherId(String motherId) {
+		this.motherId = motherId;
 	}
 	
 	@Override
