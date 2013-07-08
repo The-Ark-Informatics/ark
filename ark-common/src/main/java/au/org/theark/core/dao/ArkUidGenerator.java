@@ -54,14 +54,13 @@ public class ArkUidGenerator extends HibernateSessionDao {
 		criteria.add(Restrictions.eq("studyNameId", studyNameKy));
 		SubjectUidSequence seqData = (SubjectUidSequence) criteria.uniqueResult();
 		if(seqData==null){
-			log.error("sequence does not exist...creating");
+			//log.error("sequence does not exist...creating");
 			SubjectUidSequence seq = new SubjectUidSequence(studyNameKy, numToInsert, false);
 			getSession().persist(seq);
 			getSession().flush();
 			return new Integer(0);
 		}
 		else{
-			log.warn("so we hav a seq");
 			int currentSeqNumber = seqData.getUidSequence();
 			seqData.setUidSequence((currentSeqNumber + numToInsert));
 			getSession().update(seqData);

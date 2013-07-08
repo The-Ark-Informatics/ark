@@ -462,11 +462,14 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			return subject;
 		}
 		else{
-			getSession().refresh(subject);
+			if(subject.getId() != null){
+				getSession().refresh(subject);
+			}
 			/* then if we really need refresh all the gritty underlying details 
-			 * 
-			 * */
-			getSession().refresh(subject.getConsentStatus());
+			 */
+			if(subject.getConsentStatus()!=null){
+				getSession().refresh(subject.getConsentStatus());
+			}
 			return subject;
 		}
 	}

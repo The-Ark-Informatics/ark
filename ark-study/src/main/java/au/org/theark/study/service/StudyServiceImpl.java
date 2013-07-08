@@ -481,6 +481,7 @@ public class StudyServiceImpl implements IStudyService {
 		createLssConsentHistory(newLinkSubjectStudy);
 	}
 
+	/* TODO: This is updating twice on those that are selected...this is probably worth avoiding (particularly once we start auditing etc) */
 	private void assignChildStudies(SubjectVO subjectVO) {
 		// Archive LinkSubjectStudy for all unassigned child studies
 		List<Study> availableChildStudies = null;
@@ -492,8 +493,8 @@ public class StudyServiceImpl implements IStudyService {
 				linkSubjectStudy.setSubjectStatus(iArkCommonService.getSubjectStatus("Archive"));
 				iStudyDao.update(linkSubjectStudy);
 			}
-			catch (EntityNotFoundException e) {
-				log.error(e.getMessage());
+			catch (EntityNotFoundException e) { // TODO :probably dont need an exception here
+			//	log.error(e.getMessage());
 			}
 		}
 
