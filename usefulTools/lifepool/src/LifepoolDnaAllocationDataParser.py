@@ -50,8 +50,8 @@ for line in inputFile:
     parentId =  participantId[0:2].strip() +" " +participantId[2:].strip()+" "+specimenId.strip()
     
     #50
-    biospecimenUid = parentId +"-" +tokens[12]
-    output=output+biospecimenUid
+    subjectUid = parentId +"-" +tokens[12]
+    output=output+subjectUid
     freezer = insertNull(tokens[17])
     output=output+","+freezer
     rack = insertNull(tokens[18])
@@ -64,8 +64,8 @@ for line in inputFile:
     output=output+","+col+"\n"
     
     #51
-    biospecimenUid = parentId +"-" +tokens[22]
-    output=output+biospecimenUid
+    subjectUid = parentId +"-" +tokens[22]
+    output=output+subjectUid
     freezer = insertNull(tokens[25])
     output=output+","+freezer
     rack = insertNull(tokens[26])
@@ -78,8 +78,8 @@ for line in inputFile:
     output=output+","+col+"\n"
     
     #52
-    biospecimenUid = parentId +"-" +tokens[30]
-    output=output+biospecimenUid
+    subjectUid = parentId +"-" +tokens[30]
+    output=output+subjectUid
     freezer = insertNull(tokens[33])
     output=output+","+freezer
     rack = insertNull(tokens[34])
@@ -92,8 +92,8 @@ for line in inputFile:
     output=output+","+col+"\n"
     
     #53
-    biospecimenUid = parentId +"-" +tokens[38]
-    output=output+biospecimenUid
+    subjectUid = parentId +"-" +tokens[38]
+    output=output+subjectUid
     freezer = insertNull(tokens[41])
     output=output+","+freezer
     rack = insertNull(tokens[42])
@@ -106,8 +106,8 @@ for line in inputFile:
     output=output+","+col+"\n"
     
     #54
-    biospecimenUid = parentId +"-" +tokens[46]
-    output=output+biospecimenUid
+    subjectUid = parentId +"-" +tokens[46]
+    output=output+subjectUid
     freezer = insertNull(tokens[50])
     output=output+","+freezer
     rack = insertNull(tokens[51])
