@@ -1,0 +1,866 @@
+create schema lifepool;
+
+CREATE  TABLE `lifepool`.`tmp_biocollection` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `BIOCOLLECTION_UID` VARCHAR(50) NULL ,
+  `COLLECTIONDATE` DATETIME NULL ,
+  `SUBJECT_UID` VARCHAR(45) NULL ,
+  PRIMARY KEY (`id`) );
+
+
+LOAD DATA LOCAL INFILE 'COLLECTION.csv' INTO TABLE lifepool.tmp_biocollection   FIELDS TERMINATED BY ','   OPTIONALLY ENCLOSED BY '"'   LINES TERMINATED BY '\n' (SUBJECT_UID,BIOCOLLECTION_UID,COLLECTIONDATE);
+
+
+CREATE  TABLE `lifepool`.`tmp_biospecimen` (
+  `ID` INT NOT NULL ,
+  `SAMPLE_TYPE` VARCHAR(45) NULL ,
+  `SUBJECT_UID` VARCHAR(45) NULL ,
+  `SAMPLE_DATE` DATETIME NULL ,
+  `PROCESSED_DATE` DATETIME NULL ,
+  `VOLUME` INT NULL ,
+  `SAMPLE_UID` VARCHAR(45) NULL ,
+  PRIMARY KEY (`ID`) );
+
+
+LOAD DATA LOCAL INFILE 'SPECIMEN.csv' INTO TABLE lifepool.tmp_biospecimen   FIELDS TERMINATED BY ','   OPTIONALLY ENCLOSED BY '"'   LINES TERMINATED BY '\n' (SAMPLE_ID,SAMPLE_TYPE,SUBJECT_UID,SAMPLE_DATE,PROCESSED_DATE,VOLUME,SAMPLE_UID);
+
+
+insert into lims.biocollection (BIOCOLLECTION_UID,COLLECTIONDATE,LINK_SUBJECT_STUDY_ID,STUDY_ID)
+select tbio.BIOCOLLECTION_UID,tbio.COLLECTIONDATE,lss.ID,lss.study_id 
+    from lifepool.tmp_biocollection tbio
+        inner join study.link_subject_study lss on lss.SUBJECT_UID = tbio.SUBJECT_UID;
+
+
+insert into lims.biospecimen (BIOSPECIMEN_UID,STUDY_ID,LINK_SUBJECT_STUDY_ID,SAMPLETYPE_ID,
+                        BIOCOLLECTION_ID,SAMPLE_DATE, PROCESSED_DATE,QUANTITY,TREATMENT_TYPE_ID)
+select tbis.SAMPLE_UID, lss.study_id , lss.ID, 20,bc.ID
+    , tbis.SAMPLE_DATE, tbis.PROCESSED_DATE, tbis.volume,8 
+from lifepool.tmp_biospecimen tbis
+      inner join study.link_subject_study lss on lss.SUBJECT_UID = tbis.SUBJECT_UID 
+      inner join lims.biocollection bc on bc.LINK_SUBJECT_STUDY_ID = lss.id; 
+
+
+select sql to data upload via front end
+
+select lss.SUBJECT_UID,tbis.SAMPLE_UID,bc.BIOCOLLECTION_UID,'Blood / Whole Blood', tbis.volume, 'mL', 'Unprocessed' 
+from lifepool.tmp_biospecimen tbis
+      inner join study.link_subject_study lss on lss.SUBJECT_UID = tbis.SUBJECT_UID 
+      inner join lims.biocollection bc on bc.LINK_SUBJECT_STUDY_ID = lss.id; 
+
+
+CREATE  TABLE `lifepool`.`tmp_allocations` (
+  `ID` INT NOT NULL AUTO_INCREMENT ,
+  `SAMPLE_UID` VARCHAR(45) NULL ,
+  `FREEZER` VARCHAR(45) NULL ,
+  `RACK` VARCHAR(45) NULL ,
+  `BOX` VARCHAR(45) NULL ,
+  `LOCATION` VARCHAR(45) NULL ,
+  PRIMARY KEY (`ID`) );
+
+LOAD DATA LOCAL INFILE 'ALLOCATION.csv' INTO TABLE lifepool.tmp_allocations   FIELDS TERMINATED BY ','   OPTIONALLY ENCLOSED BY '"'   LINES TERMINATED BY '\n' (SAMPLE_UID,FREEZER,RACK,BOX,LOCATION);
+
+INSERT INTO `lims`.`treatment_type` (`NAME`) VALUES ('TRIS EDTA');
+
+INSERT INTO `lims`.`bio_sampletype` (`NAME`, `SAMPLETYPE`, `SAMPLESUBTYPE`) VALUES ('Blood / Peripheral Blood Lysed', 'Blood', 'Peripheral Blood Lysed');
+
+--Update dates
+
+UPDATE (select tb.*,lss.id as ln_subject_id from lifepool.tmp_biospecimen tb inner join study.link_subject_study lss on lss. SUBJECT_UID = tb.subject_uid) p, lims.biospecimen pp
+SET pp.SAMPLE_DATE = p.SAMPLE_DATE ,pp.PROCESSED_DATE=p.PROCESSED_DATE
+WHERE pp.LINK_SUBJECT_STUDY_ID = p.ln_subject_id;
+
+
+-- Original Biospecimen ID -  1234
+
+
+INSERT INTO lims.biospecimen (BIOSPECIMEN_UID,
+                              STUDY_ID,
+                              LINK_SUBJECT_STUDY_ID,
+                              SAMPLETYPE_ID,
+                              BIOCOLLECTION_ID,
+                              PARENT_ID,
+                              PARENTID,
+                              SAMPLE_DATE,
+                              PROCESSED_DATE,
+                              QUANTITY,
+                              UNIT_ID,
+                              TREATMENT_TYPE_ID,
+                              BARCODED,
+                              DELETED)
+
+select tpb.SAMPLE_UID, 
+        (select st.id from study.study st where st.name = 'Lifepool') as study_id,
+        lss.id as subject_id,
+        (select bst.id from lims.bio_sampletype bst where bst.name = 'Blood / Peripheral Blood Lysed') as sample_type_id,
+        bc.id as biocollection_id, 
+        bs.id as PARENT_ID,
+	bs.BIOSPECIMEN_UID as PARENTID, 
+        tpb.SAMPLE_DATE,
+        tpb.PROCESSED_DATE,
+        tpb.volume as quantity, 
+        (select un.id from lims.unit un where un.name='mL') as unit_id,
+        (select tt.id from lims.treatment_type tt where tt.name='TRIS EDTA') as treatment_type_id,
+        0 as BARCODED, 
+        0 as DELETED        
+from lifepool.tmp_processed_biospecimen tpb
+        inner join study.link_subject_study lss on lss.subject_uid = tpb.SUBJECT_UID
+        inner join lims.biocollection bc on bc.LINK_SUBJECT_STUDY_ID =  lss.id 
+        inner join lims.biospecimen bs on bs.BIOSPECIMEN_UID = tpb.parent_id
+
+
+
+-- Latest bio transactions --
+Last one = 468
+
+
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.id, NOW(),(bs.quantity), 'AFTER PROCESSED' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='Processed') as status_id 
+from lims.biospecimen bs where bs.parent_id is not null;
+
+
+Manual adjustment
+UPDATE `lims`.`bio_transaction` SET `QUANTITY`=4.5, `RECORDER`='' WHERE `ID`='1050';
+UPDATE `lims`.`bio_transaction` SET `QUANTITY`=4.5 WHERE `ID`='1051';
+UPDATE `lims`.`bio_transaction` SET `QUANTITY`=4.5 WHERE `ID`='1052';
+UPDATE `lims`.`bio_transaction` SET `QUANTITY`=4.5 WHERE `ID`='1053';
+
+
+--Last id after manual transactions -- 1449
+
+adding the minius values
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.parent_id, NOW(),(bs.quantity*-1) as quantity, 'Initial Quantity' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='Initial Quantity') as status_id 
+from lims.biospecimen bs where bs.parent_id is not null
+
+--Update the inv_cell biospecimen id 
+
+update 
+(
+select bis.id as biospecimen_id,ibx.id as box_id,tal.row_no as row_no,tal.col_no as col_no 
+from lifepool.tmp_allocations tal
+        inner join lims.inv_site ist on ist.name = 'Peter MAC'
+        inner join lims.inv_freezer ifz on ifz.site_id = ist.id and ifz.name = tal.freezer
+        inner join lims.inv_rack irc on irc.freezer_id = ifz.id and irc.name = tal.rack
+        inner join lims.inv_box ibx on ibx.rack_id = irc.id and ibx.name = tal.box
+        inner join lims.biospecimen bis on bis.BIOSPECIMEN_UID=tal.sample_uid) p, lims.inv_CELL pp
+set pp.biospecimen_id = p.biospecimen_id
+where p.box_id = pp.box_id
+    and p.row_no = pp.rowno
+    and p.col_no = pp.colno
+
+-- To check the duplicate entries
+
+select * from 
+(select count(id) as val,biospecimen_id 
+from  lims.inv_CELL 
+group by biospecimen_id) X
+where val > 1;
+
+
+--Update the missing fields
+
+update lims.biospecimen bs
+set bs.BIOSPECIMEN_QUALITY_ID = (select id from lims.biospecimen_quality bq where bq.name='Fresh')
+where bs.parentid is null
+
+
+INSERT INTO `lims`.`biospecimen_anticoagulant` (`NAME`) VALUES ('ACD');
+
+
+update lims.biospecimen bs
+set bs.BIOSPECIMEN_QUALITY_ID = (select bq.id from lims.biospecimen_quality bq where bq.name='Frozen long term (>6mths)')
+where bs.parentid is not null
+
+
+update lims.biospecimen bs
+set bs.BIOSPECIMEN_ANTICOAGULANT_ID = (select ba.id from lims.biospecimen_anticoagulant ba where ba.name='N/A')
+where bs.parentid is not null
+
+Create tmp_blood_dna_biospecimen
+
+CREATE TABLE `tmp_blood_dna_biospecimen` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subject_uid` varchar(45) DEFAULT NULL,
+  `biospecimen_uid` varchar(45) DEFAULT NULL,
+  `volume` double DEFAULT NULL,
+  `purity` double DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+ALTER TABLE `lifepool`.`tmp_blood_dna_biospecimen` ADD COLUMN `parent_uid` VARCHAR(45) NULL  AFTER `subject_uid` ;
+
+
+LOAD DATA LOCAL INFILE 'BLOOD_DNA_SPECIMEN.csv' INTO TABLE lifepool.tmp_blood_dna_biospecimen FIELDS TERMINATED BY ','   OPTIONALLY ENCLOSED BY '"'   LINES TERMINATED BY '\n' (subject_uid,parent_uid,biospecimen_uid,volume,purity);
+
+INSERT INTO `lims`.`bio_sampletype` (`NAME`, `SAMPLETYPE`) VALUES ('Blood / Peripheral Blood DNA', 'Blood');
+
+
+UPDATE `lims`.`bio_sampletype` SET `SAMPLESUBTYPE`='Peripheral Blood DNA' WHERE `ID`='84';
+
+
+
+select max(id) from lims.biospecimen;
+-- 2772
+
+
+INSERT INTO lims.biospecimen (BIOSPECIMEN_UID,
+                              STUDY_ID,
+                              LINK_SUBJECT_STUDY_ID,
+                              SAMPLETYPE_ID,
+                              BIOCOLLECTION_ID,
+                              PARENT_ID,
+                              PARENTID,
+                              QUANTITY,
+                              UNIT_ID,
+                              TREATMENT_TYPE_ID,
+                              BARCODED,
+                              DELETED,
+                              PURITY)
+select tpb.biospecimen_uid as BIOSPECIMEN_UID, 
+        (select st.id from study.study st where st.name = 'Lifepool') as study_id,
+        lss.id as subject_id,
+        (select bst.id from lims.bio_sampletype bst where bst.name = 'Blood / Peripheral Blood DNA') as sample_type_id,
+        bc.id as biocollection_id, 
+        bs.id as PARENT_ID,
+        bs.BIOSPECIMEN_UID as PARENTID, 
+        tpb.volume as quantity, 
+        (select un.id from lims.unit un where un.name='mL') as unit_id,
+        (select tt.id from lims.treatment_type tt where tt.name='TRIS EDTA') as treatment_type_id,
+        0 as BARCODED, 
+        0 as DELETED,
+        tpb.purity as purity
+
+from lifepool.tmp_blood_dna_biospecimen tpb
+        inner join study.link_subject_study lss on lss.subject_uid = tpb.SUBJECT_UID
+        inner join lims.biocollection bc on bc.LINK_SUBJECT_STUDY_ID =  lss.id 
+        inner join lims.biospecimen bs on bs.BIOSPECIMEN_UID = tpb.parent_uid;
+
+select max(id) from lims.biospecimen;
+-- 2832
+
+select max(id) from lims.bio_transaction
+-- 2011
+
+-- Initial DNA transaction
+
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.id, NOW(),(bs.quantity), 'INITIAL PROCESSED DNA' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='Processed') as status_id 
+from lifepool.tmp_blood_dna_biospecimen tpb
+       inner join lims.biospecimen bs on bs.BIOSPECIMEN_UID = tpb.biospecimen_uid
+
+select max(id) from lims.bio_transaction
+-- 2072
+
+-- Remove initial quantity
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.id, NOW(),(bs.quantity*-1),'PROCESSED BLOOD TO DNA' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='Processed') as status_id 
+from lifepool.tmp_blood_dna_biospecimen tpb
+	inner join lims.biospecimen bs on bs.BIOSPECIMEN_UID = tpb.parent_uid; 
+
+select max(id) from lims.bio_transaction
+-- 2135
+
+set initial blood quantity to 0
+
+update  lims.biospecimen obs, (select bs.id as id from lifepool.tmp_blood_dna_biospecimen tpb
+        inner join lims.biospecimen bs on bs.BIOSPECIMEN_UID = tpb.parent_uid) t
+set obs.quantity = 0
+where obs.id = t.id;
+
+
+CREATE  TABLE `lifepool`.`tmp_dna_dna_biospecimen` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `subject_uid` VARCHAR(45) NULL ,
+  `parent_uid` VARCHAR(45) NULL ,
+  `biospecimen_uid` VARCHAR(45) NULL ,
+  `volume` DOUBLE NULL ,
+  `concentration` DOUBLE NULL ,
+  PRIMARY KEY (`id`) );
+
+
+INSERT INTO `lims`.`bio_sampletype` (`NAME`, `SAMPLETYPE`, `SAMPLESUBTYPE`) VALUES ('DNA / DNA', 'DNA', 'DNA');
+
+
+SELECT max(id) FROM lims.biospecimen
+
+2832
+
+//Insert processed DNA samples
+INSERT INTO lims.biospecimen (BIOSPECIMEN_UID,
+                              STUDY_ID,
+                              LINK_SUBJECT_STUDY_ID,
+                              SAMPLETYPE_ID,
+                              BIOCOLLECTION_ID,
+                              PARENT_ID,
+                              PARENTID,
+                              QUANTITY,
+                              UNIT_ID,
+                              TREATMENT_TYPE_ID,
+                              BARCODED,
+                              DELETED,
+                              CONCENTRATION)
+select tpb.biospecimen_uid as BIOSPECIMEN_UID, 
+        (select st.id from study.study st where st.name = 'Lifepool') as study_id,
+        lss.id as subject_id,
+        (select bst.id from lims.bio_sampletype bst where bst.name = 'DNA / DNA') as sample_type_id,
+        bc.id as biocollection_id, 
+        bs.id as PARENT_ID,
+        bs.BIOSPECIMEN_UID as PARENTID, 
+        tpb.volume as quantity, 
+        (select un.id from lims.unit un where un.name='mL') as unit_id,
+        (select tt.id from lims.treatment_type tt where tt.name='TRIS EDTA') as treatment_type_id,
+        0 as BARCODED, 
+        0 as DELETED,
+        tpb.concentration as concentration
+
+from lifepool.tmp_dna_dna_biospecimen tpb
+        inner join study.link_subject_study lss on lss.subject_uid = tpb.SUBJECT_UID
+        inner join lims.biocollection bc on bc.LINK_SUBJECT_STUDY_ID =  lss.id 
+        inner join lims.biospecimen bs on bs.BIOSPECIMEN_UID = tpb.parent_uid;
+
+
+
+SELECT max(id) FROM lims.biospecimen
+
+3135
+
+
+select max(id) from lims.bio_transaction
+
+2135
+
+//Insert DNA-DNA transactions
+
+
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.id, NOW(),(bs.quantity), 'Aliquoted DNA' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='Processed') as status_id 
+from lifepool.tmp_dna_dna_biospecimen tpb
+       inner join lims.biospecimen bs on bs.BIOSPECIMEN_UID = tpb.biospecimen_uid
+
+
+select max(id) from lims.bio_transaction
+2438
+
+
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.id, NOW(),(tpb.volume*-1),'Aliquoted DNA' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='Processed') as status_id 
+from lifepool.tmp_blood_dna_biospecimen tpb
+	inner join lims.biospecimen bs on bs.BIOSPECIMEN_UID = tpb.biospecimen_uid;
+
+select max(id) from lims.bio_transaction
+3220
+
+update  lims.biospecimen obs, (select bs.id as id from lifepool.tmp_dna_dna_biospecimen tpb
+        inner join lims.biospecimen bs on bs.BIOSPECIMEN_UID = tpb.parent_uid) t
+set obs.quantity = 0
+where obs.id = t.id;
+
+CREATE  TABLE `lifepool`.`tmp_dna_allocation` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `biospecimen_uid` VARCHAR(45) NULL ,
+  `box` VARCHAR(45) NULL ,
+  `row_no` INT NULL ,
+  `col_no` INT NULL ,
+  PRIMARY KEY (`id`) );
+
+-- Allocate DNA samples
+update 
+(
+select bis.id as biospecimen_id,ibx.id as box_id,tal.row_no as row_no,tal.col_no as col_no 
+from lifepool.tmp_dna_allocation tal
+        inner join lims.inv_site ist on ist.name = 'Peter MAC'
+        inner join lims.inv_freezer ifz on ifz.site_id = ist.id and ifz.name = '10'
+        inner join lims.inv_rack irc on irc.freezer_id = ifz.id and irc.name = '1'
+        inner join lims.inv_box ibx on ibx.rack_id = irc.id and ibx.name = tal.box
+        inner join lims.biospecimen bis on bis.BIOSPECIMEN_UID=tal.biospecimen_uid) p, lims.inv_CELL pp
+set pp.biospecimen_id = p.biospecimen_id
+where p.box_id = pp.box_id
+    and p.row_no = pp.rowno
+    and p.col_no = pp.colno
+
+
+-- Un allocate processed Blood samples
+update (
+select bis.id as biospecimen_id,lc.box_id as box_id,lc.rowno as row_no,lc.colno as col_no 
+from lifepool.tmp_blood_dna_biospecimen bdb
+        inner join lims.biospecimen bis on bis.BIOSPECIMEN_UID=bdb.parent_uid
+        inner join lims.inv_CELL lc on lc.biospecimen_id = bis.id) p, lims.inv_CELL pp
+set pp.biospecimen_id = null
+where p.box_id = pp.box_id
+    and p.row_no = pp.rowno
+    and p.col_no = pp.colno
+
+-- 
+CREATE  TABLE `lifepool`.`tmp_blood_dna_custom_fields` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `biospecimen_uid` VARCHAR(45) NULL ,
+  `field_id` INT NULL ,
+  `value` VARCHAR(45) NULL ,
+  PRIMARY KEY (`id`) );
+
+LOAD DATA LOCAL INFILE 'BLOOD_DNA_CUSTOM_FIELD.csv' INTO TABLE lifepool.tmp_blood_dna_custom_fields   FIELDS TERMINATED BY ','   OPTIONALLY ENCLOSED BY '"'   LINES TERMINATED BY '\n' (BIOSPECIMEN_UID,FIELD_ID,VALUE);
+
+-- Insert Person customfield values
+
+INSERT INTO lims.biospecimen_custom_field_data (BIOSPECIMEN_ID,TEXT_DATA_VALUE,CUSTOM_FIELD_DISPLAY_ID)
+
+select bs.id,bdcf.value ,(select cfd.id from study.custom_field_display cfd 
+            inner join study.custom_field cf on cf.id= cfd.custom_field_id
+where cf.name='person') as display_id 
+from lifepool.tmp_blood_dna_custom_fields bdcf
+                inner join lims.biospecimen bs on bs.biospecimen_uid = bdcf.biospecimen_uid
+where bdcf.field_id=1
+
+-- Insert qubit custom field
+
+INSERT INTO lims.biospecimen_custom_field_data (BIOSPECIMEN_ID,NUMBER_DATA_VALUE,CUSTOM_FIELD_DISPLAY_ID)
+
+select bs.id,bdcf.value ,(select cfd.id from study.custom_field_display cfd 
+            inner join study.custom_field cf on cf.id= cfd.custom_field_id
+where cf.name='qubit') as display_id 
+from lifepool.tmp_blood_dna_custom_fields bdcf
+                inner join lims.biospecimen bs on bs.biospecimen_uid = bdcf.biospecimen_uid
+where bdcf.field_id=2
+
+-- Insert to nanodrop
+
+/** Remove and moved to purity
+INSERT INTO lims.biospecimen_custom_field_data (BIOSPECIMEN_ID,NUMBER_DATA_VALUE,CUSTOM_FIELD_DISPLAY_ID)
+
+select bs.id,bdcf.value ,(select cfd.id from study.custom_field_display cfd 
+            inner join study.custom_field cf on cf.id= cfd.custom_field_id
+where cf.name='nanodrop') as display_id 
+from lifepool.tmp_blood_dna_custom_fields bdcf
+                inner join lims.biospecimen bs on bs.biospecimen_uid = bdcf.biospecimen_uid
+where bdcf.field_id=3
+*/
+-- insert total yield
+
+INSERT INTO lims.biospecimen_custom_field_data (BIOSPECIMEN_ID,NUMBER_DATA_VALUE,CUSTOM_FIELD_DISPLAY_ID)
+
+select bs.id,bdcf.value ,(select cfd.id from study.custom_field_display cfd 
+            inner join study.custom_field cf on cf.id= cfd.custom_field_id
+where cf.name='totalYield') as display_id 
+from lifepool.tmp_blood_dna_custom_fields bdcf
+                inner join lims.biospecimen bs on bs.biospecimen_uid = bdcf.biospecimen_uid
+where bdcf.field_id=4
+
+
+-- Insert volumeofEluate
+
+INSERT INTO lims.biospecimen_custom_field_data (BIOSPECIMEN_ID,NUMBER_DATA_VALUE,CUSTOM_FIELD_DISPLAY_ID)
+
+select bs.id,bdcf.value ,(select cfd.id from study.custom_field_display cfd 
+            inner join study.custom_field cf on cf.id= cfd.custom_field_id
+where cf.name='volumeOfEluate') as display_id 
+from lifepool.tmp_blood_dna_custom_fields bdcf
+                inner join lims.biospecimen bs on bs.biospecimen_uid = bdcf.biospecimen_uid
+where bdcf.field_id=5
+
+
+-- Insert aeBufferToAdd
+
+INSERT INTO lims.biospecimen_custom_field_data (BIOSPECIMEN_ID,TEXT_DATA_VALUE,CUSTOM_FIELD_DISPLAY_ID)
+
+select bs.id,bdcf.value ,(select cfd.id from study.custom_field_display cfd 
+            inner join study.custom_field cf on cf.id= cfd.custom_field_id
+where cf.name='aeBufferToAdd') as display_id 
+from lifepool.tmp_blood_dna_custom_fields bdcf
+                inner join lims.biospecimen bs on bs.biospecimen_uid = bdcf.biospecimen_uid
+where bdcf.field_id=6
+
+
+ALTER TABLE `lifepool`.`tmp_dna_allocation` ADD COLUMN `freezer` VARCHAR(45) NULL  AFTER `biospecimen_uid` , ADD COLUMN `rack` VARCHAR(45) NULL  AFTER `freezer` ;
+
+LOAD DATA LOCAL INFILE 'DNA_ALLOCATION.csv' INTO TABLE lifepool.tmp_dna_allocation   FIELDS TERMINATED BY ','   OPTIONALLY ENCLOSED BY '"'   LINES TERMINATED BY '\n' (BIOSPECIMEN_UID,FREEZER,RACK,BOX,ROW_NO,COL_NO);
+
+update (
+select bis.id as biospecimen_id,lc.box_id as box_id,lc.rowno as row_no,lc.colno as col_no 
+from lifepool.tmp_dna_allocation bdb
+        inner join lims.biospecimen bis on bis.BIOSPECIMEN_UID=bdb.BIOSPECIMEN_UID
+        inner join lims.inv_CELL lc on lc.biospecimen_id = bis.id) p, lims.inv_CELL pp
+set pp.biospecimen_id = null
+where p.box_id = pp.box_id
+    and p.row_no = pp.rowno
+    and p.col_no = pp.colno
+
+
+
+update 
+(
+select bis.id as biospecimen_id,ibx.id as box_id,tal.row_no as row_no,tal.col_no as col_no 
+from lifepool.tmp_dna_allocation tal
+        inner join lims.inv_site ist on ist.name = 'Peter MAC'
+        inner join lims.inv_freezer ifz on ifz.site_id = ist.id and ifz.name = tal.freezer
+        inner join lims.inv_rack irc on irc.freezer_id = ifz.id and irc.name = tal.rack
+        inner join lims.inv_box ibx on ibx.rack_id = irc.id and ibx.name = tal.box
+        inner join lims.biospecimen bis on bis.BIOSPECIMEN_UID=tal.biospecimen_uid) p, lims.inv_CELL pp
+set pp.biospecimen_id = p.biospecimen_id
+where p.box_id = pp.box_id
+    and p.row_no = pp.rowno
+    and p.col_no = pp.colno
+
+-- Add the measurementMethod custom field to the blood-dna samples
+
+select max(id) from lims.biospecimen_custom_field_data;
+
+-- 49605
+
+INSERT INTO lims.biospecimen_custom_field_data (BIOSPECIMEN_ID,TEXT_DATA_VALUE,CUSTOM_FIELD_DISPLAY_ID)
+select bs.id,'0',(select cfd.id from study.custom_field_display cfd 
+            inner join study.custom_field cf on cf.id= cfd.custom_field_id
+where cf.name='measurementMethod') as display_id 
+from lifepool.tmp_blood_dna_biospecimen bdcf
+                inner join lims.biospecimen bs on bs.biospecimen_uid = bdcf.biospecimen_uid
+
+
+-- SALIVA Import process
+
+CREATE  TABLE `lifepool`.`tmp_saliva_biocollection` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `BIOCOLLECTION_UID` VARCHAR(50) NULL ,
+  `COLLECTIONDATE` DATETIME NULL ,
+  `SUBJECT_UID` VARCHAR(45) NULL ,
+  PRIMARY KEY (`id`) );
+
+LOAD DATA LOCAL INFILE 'SALIVA_COLLECTION_ALLOCATION.csv' INTO TABLE lifepool.tmp_saliva_biocollection   FIELDS TERMINATED BY ','   OPTIONALLY ENCLOSED BY '"'   LINES TERMINATED BY '\n' (SUBJECT_UID,BIOCOLLECTION_UID,COLLECTIONDATE);
+
+
+select max(id) from lims.biocollection;
+
+53568
+
+
+insert into lims.biocollection (BIOCOLLECTION_UID,COLLECTIONDATE,LINK_SUBJECT_STUDY_ID,STUDY_ID)
+select tbio.BIOCOLLECTION_UID,tbio.COLLECTIONDATE,lss.ID,lss.study_id 
+    from lifepool.tmp_saliva_biocollection tbio
+        inner join study.link_subject_study lss on lss.SUBJECT_UID = tbio.SUBJECT_UID
+        inner join study.study st on st.id= lss.study_id
+where st.name = 'lifepool';
+
+
+CREATE  TABLE `lifepool`.`tmp_initial_saliva_biospecimen` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `subject_uid` VARCHAR(45) NULL ,
+  `biospecimen_uid` VARCHAR(45) NULL ,
+  `collection_uid` VARCHAR(45) NULL ,
+  `sample_date` DATETIME NULL ,
+  `processed_Date` DATETIME NULL ,
+  `quantity` DECIMAL(16,10) NULL ,
+  PRIMARY KEY (`id`) );
+
+-- subjectUid+","+sampleUid+","+collectionUid+","+sampleDate+","+processedDate+","+str(quantity)
+
+LOAD DATA LOCAL INFILE 'SALIVA_INITIAL_BIOSPECIMEN.csv' INTO TABLE lifepool.tmp_initial_saliva_biospecimen   FIELDS TERMINATED BY ','   OPTIONALLY ENCLOSED BY '"'   LINES TERMINATED BY '\n' (subject_uid, biospecimen_uid,collection_uid,sample_date,processed_Date,quantity);
+
+set @sample_id = 0;
+
+set @treatment_id = 0;
+
+set @unit_id = 0;
+
+SELECT @sample_id := id from lims.bio_sampletype where name ='saliva';
+
+SELECT @treatment_id := id from lims.treatment_type where name ='unprocessed';
+
+SELECT @unit_id := id from lims.unit where name ='ml';
+
+insert into lims.biospecimen (BIOSPECIMEN_UID,STUDY_ID,LINK_SUBJECT_STUDY_ID,SAMPLETYPE_ID,
+                       BIOCOLLECTION_ID,SAMPLE_DATE, PROCESSED_DATE,QUANTITY,TREATMENT_TYPE_ID,UNIT_ID)
+select tbis.biospecimen_uid,st.id,lss.id, @sample_id, bc.id, tbis.sample_date, 
+        tbis.processed_date,tbis.quantity ,@treatment_id,@unit_id
+from lifepool.tmp_initial_saliva_biospecimen tbis
+      inner join study.link_subject_study lss on lss.SUBJECT_UID = tbis.SUBJECT_UID
+      inner join lifepool.tmp_saliva_biocollection tsb on tsb.BIOCOLLECTION_UID = tbis.collection_uid
+      inner join lims.biocollection bc on bc.BIOCOLLECTION_UID = tsb.BIOCOLLECTION_UID
+      inner join study.study st on st.id = bc.study_id
+where st.name='lifepool'; 
+
+-- Insert to the saliva initial  bio transactions
+
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.id, NOW(),(bs.quantity), 'Initial sample' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='Initial quantity') as status_id 
+from lifepool.tmp_initial_saliva_biospecimen tbis
+        inner join lims.biospecimen bs on bs.biospecimen_uid=tbis.biospecimen_uid
+        inner join study.study st on st.id = bs.study_id
+where st.name='lifepool';
+
+
+-- Insert processed saliva 
+
+CREATE  TABLE `lifepool`.`tmp_processed_saliva_biospecimen` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `subject_uid` VARCHAR(45) NULL ,
+  `biospecimen_uid` VARCHAR(45) NULL ,
+  `parent_uid` VARCHAR(45) NULL ,
+  `collection_uid` VARCHAR(45) NULL ,
+  `sample_date` DATETIME NULL ,
+  `processed_Date` DATETIME NULL ,
+  `quantity` DECIMAL(16,10) NULL ,
+  PRIMARY KEY (`id`) );
+
+-- Insert processed saliva samples
+set @sample_id = 0;
+
+set @treatment_id = 0;
+
+set @unit_id = 0;
+
+SELECT @sample_id := id from lims.bio_sampletype where name ='saliva';
+
+SELECT @treatment_id := id from lims.treatment_type where name ='unprocessed';
+
+SELECT @unit_id := id from lims.unit where name ='ml';
+
+
+INSERT INTO lims.biospecimen (BIOSPECIMEN_UID,
+                              STUDY_ID,
+                              LINK_SUBJECT_STUDY_ID,
+                              SAMPLETYPE_ID,
+                              BIOCOLLECTION_ID,
+                              PARENT_ID,
+                              PARENTID,
+                              SAMPLE_DATE,
+                              PROCESSED_DATE,
+                              QUANTITY,
+                              UNIT_ID,
+                              TREATMENT_TYPE_ID)
+select tpb.biospecimen_uid, 
+        st.id,
+        lss.id as subject_id,
+        @sample_id,
+        bc.id as biocollection_id, 
+        bs.id as PARENT_ID,
+	bs.BIOSPECIMEN_UID as PARENTID, 
+        tpb.SAMPLE_DATE,
+        tpb.PROCESSED_DATE,
+        tpb.quantity as quantity, 
+        @unit_id,
+        @treatment_id     
+from lifepool.tmp_processed_saliva_biospecimen tpb
+        inner join study.link_subject_study lss on lss.subject_uid = tpb.SUBJECT_UID
+        inner join lims.biocollection bc on bc.LINK_SUBJECT_STUDY_ID =  lss.id 
+        inner join lims.biospecimen bs on bs.BIOSPECIMEN_UID = tpb.parent_uid
+        inner join study.study st on st.id = bc.study_id
+where st.name='lifepool';
+
+--Insert processed saliva transactions
+
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.id, NOW(),(tbis.quantity), 'After processing' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='processed') as status_id 
+from lifepool.tmp_processed_saliva_biospecimen tbis
+        inner join lims.biospecimen bs on bs.biospecimen_uid=tbis.biospecimen_uid
+        inner join study.study st on st.id = bs.study_id
+where st.name='lifepool';
+
+
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.id, NOW(),(tbis.quantity*-1), 'After processing' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='processed') as status_id 
+from lifepool.tmp_processed_saliva_biospecimen tbis
+        inner join lims.biospecimen bs on bs.biospecimen_uid=tbis.parent_uid
+        inner join study.study st on st.id = bs.study_id
+where st.name='lifepool';
+
+CREATE  TABLE `lifepool`.`tmp_saliva_allocations` (
+  `ID` INT NOT NULL AUTO_INCREMENT ,
+  `SAMPLE_UID` VARCHAR(45) NULL ,
+  `FREEZER` VARCHAR(45) NULL ,
+  `RACK` VARCHAR(45) NULL ,
+  `BOX` VARCHAR(45) NULL ,
+  `ROW_NO` VARCHAR(5) NULL ,
+  `COL_NO` VARCHAR(5) NULL ,
+  PRIMARY KEY (`ID`) );
+
+-- SALIVA DNA biospecimen
+CREATE  TABLE `lifepool`.`tmp_saliva_dna_biospecimen` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `parent_uid` VARCHAR(45) NULL ,
+  `sample_uid` VARCHAR(45) NULL ,
+  `init_quantity` DECIMAL(16,10) NULL ,
+  `quantity` DECIMAL(16,10) NULL ,
+  PRIMARY KEY (`id`) );
+
+ALTER TABLE `lifepool`.`tmp_saliva_dna_biospecimen` ADD COLUMN `purity` DECIMAL(16,10) NULL  AFTER `quantity` , ADD COLUMN `concentration` DECIMAL(16,10) NULL  AFTER `purity` , ADD COLUMN `operator` VARCHAR(45) NULL  AFTER `concentration` , ADD COLUMN `qubit` DECIMAL(16,10) NULL  AFTER `operator` ;
+
+LOAD DATA LOCAL INFILE 'SALIVA_DNA_PROCESSED_BIOSPECIMEN.csv' INTO TABLE lifepool.tmp_saliva_dna_biospecimen  FIELDS TERMINATED BY ','   OPTIONALLY ENCLOSED BY '"'   LINES TERMINATED BY '\n' (parent_uid, sample_uid,init_quantity,quantity,purity,concentration,operator,qubit);
+
+
+-- Inserting Saliva DNA biospecimens
+
+set @sample_id = 0;
+
+set @treatment_id = 0;
+
+set @unit_id = 0;
+
+set @protocol_id= 0;
+
+SELECT @sample_id := id from lims.bio_sampletype where name ='Nucleic Acid / Saliva';
+
+SELECT @treatment_id := id from lims.treatment_type where name ='unprocessed';
+
+SELECT @unit_id := id from lims.unit where name ='ml';
+
+SELECT @protocol_id := id from lims.biospecimen_protocol where name ='Oragene';
+
+
+INSERT INTO lims.biospecimen (BIOSPECIMEN_UID,
+                              STUDY_ID,
+                              LINK_SUBJECT_STUDY_ID,
+                              SAMPLETYPE_ID,
+                              BIOCOLLECTION_ID,
+                              PARENT_ID,
+                              PARENTID,
+                              QUANTITY,
+                              UNIT_ID,
+                              TREATMENT_TYPE_ID,
+                              BIOSPECIMEN_PROTOCOL_ID,
+                              PURITY,
+                              CONCENTRATION)
+
+select tpb.sample_uid, 
+        st.id,
+        lss.id as subject_id,
+        @sample_id,
+        bc.id as biocollection_id, 
+        bs.id as PARENT_ID,
+        bs.BIOSPECIMEN_UID as PARENTID, 
+        tpb.quantity as quantity,
+        @unit_id,
+        @treatment_id,
+        @protocol_id,
+        (tpb.purity/1000),
+        (tpb.concentration/1000)
+from lifepool.tmp_saliva_dna_biospecimen tpb
+        inner join lims.biospecimen bs on bs.BIOSPECIMEN_UID = tpb.parent_uid
+        inner join study.link_subject_study lss on lss.id = bs.LINK_SUBJECT_STUDY_ID
+        inner join lims.biocollection bc on bc.id =  bs.biocollection_id 
+        inner join study.study st on st.id = bc.study_id
+where st.name='lifepool';
+
+
+-- Insert the transactions
+
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.id, NOW(),(tbis.quantity), 'DNA intermediary' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='processed') as status_id 
+from lifepool.tmp_saliva_dna_biospecimen tbis
+        inner join lims.biospecimen bs on bs.biospecimen_uid=tbis.sample_uid
+        inner join study.study st on st.id = bs.study_id
+where st.name='lifepool';
+
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.id, NOW(),(tbis.init_quantity*-1), 'DNA intermediary' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='processed') as status_id 
+from lifepool.tmp_saliva_dna_biospecimen tbis
+        inner join lims.biospecimen bs on bs.biospecimen_uid=tbis.parent_uid
+        inner join study.study st on st.id = bs.study_id
+where st.name='lifepool';
+
+--Insert qubit custom field
+
+INSERT INTO lims.biospecimen_custom_field_data (BIOSPECIMEN_ID,NUMBER_DATA_VALUE,CUSTOM_FIELD_DISPLAY_ID)
+
+select bs.id,bdcf.qubit ,(select cfd.id from study.custom_field_display cfd 
+            inner join study.custom_field cf on cf.id= cfd.custom_field_id
+where cf.name='qubit') as display_id 
+from lifepool.tmp_saliva_dna_biospecimen bdcf
+                inner join lims.biospecimen bs on bs.biospecimen_uid = bdcf.sample_uid
+
+--Insert person custom field
+INSERT INTO lims.biospecimen_custom_field_data (BIOSPECIMEN_ID,TEXT_DATA_VALUE,CUSTOM_FIELD_DISPLAY_ID)
+select bs.id,tp.value ,(select cfd.id from study.custom_field_display cfd 
+            inner join study.custom_field cf on cf.id= cfd.custom_field_id
+where cf.name='person') as display_id 
+from lifepool.tmp_saliva_dna_biospecimen bdcf
+                inner join lims.biospecimen bs on bs.biospecimen_uid = bdcf.sample_uid
+                inner join lifepool.tmp_person tp on tp.key=bdcf.operator
+
+
+
+CREATE  TABLE `lifepool`.`tmp_saliva_dna_aliquot_biospecimen` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `parent_uid` VARCHAR(45) NULL ,
+  `sample_uid` VARCHAR(45) NULL ,
+  `quantity` DECIMAL(16,10) NULL ,
+  `concentration` DECIMAL(16,10) NULL ,
+  PRIMARY KEY (`id`) );
+
+
+--Insert Saliva DNA Aliqutes
+
+set @sample_id = 0;
+
+set @treatment_id = 0;
+
+set @unit_id = 0;
+
+SELECT @sample_id := id from lims.bio_sampletype where name ='Nucleic Acid / Saliva';
+
+SELECT @treatment_id := id from lims.treatment_type where name ='unprocessed';
+
+SELECT @unit_id := id from lims.unit where name ='ml';
+
+
+INSERT INTO lims.biospecimen (BIOSPECIMEN_UID,
+                              STUDY_ID,
+                              LINK_SUBJECT_STUDY_ID,
+                              SAMPLETYPE_ID,
+                              BIOCOLLECTION_ID,
+                              PARENT_ID,
+                              PARENTID,
+                              QUANTITY,
+                              UNIT_ID,
+                              TREATMENT_TYPE_ID,
+                              CONCENTRATION)
+
+select tpb.sample_uid, 
+        st.id,
+        lss.id as subject_id,
+        @sample_id,
+        bc.id as biocollection_id, 
+        bs.id as PARENT_ID,
+        bs.BIOSPECIMEN_UID as PARENTID, 
+        tpb.quantity as quantity,
+        @unit_id,
+        @treatment_id,
+        (tpb.concentration/1000)
+from lifepool.tmp_saliva_dna_aliquot_biospecimen tpb
+        inner join lims.biospecimen bs on bs.BIOSPECIMEN_UID = tpb.parent_uid
+        inner join study.link_subject_study lss on lss.id = bs.LINK_SUBJECT_STUDY_ID
+        inner join lims.biocollection bc on bc.id =  bs.biocollection_id 
+        inner join study.study st on st.id = bc.study_id
+where st.name='lifepool';
+
+-- Saliva DNA Aliquote transactions
+
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.id, NOW(),(tbis.quantity), 'Aliquot' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='Aliquoted') as status_id 
+from lifepool.tmp_saliva_dna_aliquot_biospecimen tbis
+        inner join lims.biospecimen bs on bs.biospecimen_uid=tbis.sample_uid
+        inner join study.study st on st.id = bs.study_id
+where st.name='lifepool';
+
+INSERT INTO lims.bio_transaction(BIOSPECIMEN_ID,TRANSACTION_DATE,QUANTITY,REASON,STATUS_ID)
+select bs.id, NOW(),(tbis.quantity*-1), 'Aliquot' as reason , 
+(SELECT st.id FROM lims.bio_transaction_status st where st.name='Aliquoted') as status_id 
+from lifepool.tmp_saliva_dna_aliquot_biospecimen tbis
+        inner join lims.biospecimen bs on bs.biospecimen_uid=tbis.parent_uid
+        inner join study.study st on st.id = bs.study_id
+where st.name='lifepool';
+
+
+
+
+
+

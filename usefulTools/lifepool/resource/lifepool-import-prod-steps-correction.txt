@@ -1,0 +1,143 @@
+CREATE TABLE lims.tmp_biospecimen LIKE lims.biospecimen; 
+INSERT lims.tmp_biospecimen SELECT * FROM lims.biospecimen;
+
+
+CREATE TABLE lims.tmp_bio_transaction LIKE lims.bio_transaction;
+INSERT lims.tmp_bio_transaction SELECT * FROM lims.bio_transaction;
+
+--Update the initial processed sample to 0.5 ml
+-- In biospecimen table
+
+update 
+(select bs.* 
+ from lims.biospecimen bs
+    inner join lifepool.tmp_processed_biospecimen tpbs on tpbs.sample_uid=bs.biospecimen_uid)p, lims.biospecimen pp
+set pp.quantity = 0.5
+where p.id=pp.id
+
+-- In bio_transaction table
+
+update
+(select bt.* 
+ from lims.biospecimen bs
+    inner join lifepool.tmp_processed_biospecimen tpbs on tpbs.sample_uid=bs.biospecimen_uid
+    inner join lims.bio_transaction bt on bt.BIOSPECIMEN_ID=bs.id
+where bt.reason='AFTER PROCESSED')p, lims.bio_transaction pp
+set pp.quantity = 0.5
+where p.id = pp.id
+
+
+
+-- update blood to dna bio parent transactions
+
+update (
+select bt.* 
+from lims.biospecimen bs
+    inner join lifepool.tmp_blood_dna_biospecimen tbs on tbs.parent_uid = bs.BIOSPECIMEN_UID
+    inner join lims.bio_transaction bt on bt.BIOSPECIMEN_ID=bs.id
+where bt.reason='PROCESSED BLOOD TO DNA') p , lims.bio_transaction pp
+set pp.quantity = -0.5
+where pp.id=p.id  
+
+
+CREATE TABLE lims.tmp_biospecimen_custom_field_data LIKE lims.biospecimen_custom_field_data; 
+INSERT lims.tmp_biospecimen_custom_field_data SELECT * FROM lims.biospecimen_custom_field_data;
+
+
+delete 
+from lims.biospecimen_custom_field_data 
+where CUSTOM_FIELD_DISPLAY_ID in (
+select cfd.id from study.custom_field_display cfd 
+            inner join study.custom_field cf on cf.id= cfd.custom_field_id
+where cf.name='nanodrop')
+
+DELETE FROM `study`.`custom_field` WHERE `ID`='34';
+
+update lims.bio_transaction 
+set reason='After processing'
+where reason='AFTER PROCESSED';
+
+update lims.bio_transaction
+set reason='Initial quantity'
+where reason='Initial Quantity';
+
+update lims.bio_transaction 
+set reason='Initial processed DNA'
+where reason='INITIAL PROCESSED DNA';
+
+
+-- Apply Qubit customfield data to biospecimen concentration
+update 
+(
+select bcfd.* 
+from lims.biospecimen_custom_field_data bcfd
+        inner join study.custom_field_display cfd on cfd.id = bcfd.CUSTOM_FIELD_DISPLAY_ID
+        inner join study.custom_field cf on cf.id= cfd.custom_field_id
+where cf.name='qubit') p, lims.biospecimen pp
+set pp.CONCENTRATION = p.number_data_value
+where p.biospecimen_id = pp.id
+
+--Clean the existing data
+
+select cfd.id 
+from study.custom_field_display cfd
+	inner join study.custom_field as cf on cf.id= cfd.custom_field_id
+where cf.name='qubit'
+
+-- 33
+
+delete  
+from lims.biospecimen_custom_field_data
+where  CUSTOM_FIELD_DISPLAY_ID = 33;
+
+
+
+-- Rename the blood collection to "B-YYYYMMDD" format
+update (
+select bc.id as id,CONCAT('B-',tbc.SUBJECT_UID,'-',substring(tbc.biocollection_uid,1,8)) as collection_uid
+from lifepool.tmp_biocollection tbc
+        inner join lims.biocollection bc on tbc.BIOCOLLECTION_UID = bc.BIOCOLLECTION_UID
+)p, lims.biocollection pp
+set pp.BIOCOLLECTION_UID= p.collection_uid
+where pp.id=p.id
+
+
+
+
+CREATE  TABLE `lifepool`.`tmp_person` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `key` VARCHAR(45) NULL ,
+  `value` VARCHAR(45) NULL ,
+  PRIMARY KEY (`id`) );
+
+INSERT INTO `lifepool`.`tmp_person` (`key`, `value`) VALUES ('DC', '0');
+INSERT INTO `lifepool`.`tmp_person` (`key`, `value`) VALUES ('LD', '1');
+INSERT INTO `lifepool`.`tmp_person` (`key`, `value`) VALUES ('RH', '2');
+INSERT INTO `lifepool`.`tmp_person` (`key`, `value`) VALUES ('SR', '3');
+
+update(
+select bcfd.id, tp.value 
+from lims.biospecimen_custom_field_data bcfd
+        inner join study.custom_field_display cfd on cfd.id = bcfd.CUSTOM_FIELD_DISPLAY_ID
+        inner join study.custom_field cf on cf.id= cfd.custom_field_id
+        inner join study.study st on st.id = cf.study_id
+        inner join lifepool.tmp_person tp on tp.key=bcfd.text_data_value
+where cf.name='Person'
+        and st.name='lifepool'
+) pp , lims.biospecimen_custom_field_data p
+set p.text_data_value = pp.value
+where p.id=pp.id
+
+
+
+
+
+
+
+
+
+
+
+
+
+
