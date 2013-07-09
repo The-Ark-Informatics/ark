@@ -57,6 +57,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.time.Duration;
@@ -182,6 +183,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private Label												totalSubjectsLabel;
 	
 	private ArkBusyAjaxButton								newChildStudyButton;
+	private static final PackageResourceReference	NO_STUDY_LOGO		= new PackageResourceReference(DetailForm.class, "no_study_logo.gif");
 
 	/**
 	 * Constructor
@@ -871,7 +873,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			}
 		}
 		else {
-			studyLogoImage = new NonCachingImage("study.studyLogoImage", new Model<String>("images/no_study_logo.gif"));
+			studyLogoImage = new NonCachingImage("study.studyLogoImage", NO_STUDY_LOGO);
 		}
 
 		studyLogoImage.setVisible(true);
