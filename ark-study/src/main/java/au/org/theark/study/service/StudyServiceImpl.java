@@ -1432,23 +1432,136 @@ public class StudyServiceImpl implements IStudyService {
 			
 			RelationshipVo father=null;
 			RelationshipVo mother=null;
+			Queue<RelationshipVo> parentQueue = new LinkedList<RelationshipVo>();
 			
 			//Paternal relationships
 			if(probandRelationship.getFatherId() != null){
-				//TODO
+				int fatherIndex = getRelativePosition(probandRelationship.getFatherId(), relativeSubjects);
+				father = relativeSubjects.get(fatherIndex);
+				father.setRelationship("Father");
+					
+				parentQueue.add(father);
+				
+				while((relativeSubject = parentQueue.poll())!=null ){					
+					if(relativeSubject.getFatherId() !=null){
+						int relativeIndex = relativeSubject.getRelativeIndex();
+						int position = getRelativePosition(relativeSubject.getFatherId(), relativeSubjects);
+						RelationshipVo grandFather=relativeSubjects.get(position);
+						grandFather.setRelationship(createRelationship("Paternal",++relativeIndex,"GrandFather"));
+						grandFather.setRelativeIndex(relativeIndex);
+						parentQueue.add(grandFather);
+					}
+					if(relativeSubject.getMotherId() !=null){
+						int relativeIndex = relativeSubject.getRelativeIndex();
+						int position = getRelativePosition(relativeSubject.getMotherId(), relativeSubjects);
+						RelationshipVo grandMother=relativeSubjects.get(position);
+						grandMother.setRelationship(createRelationship("Paternal",++relativeIndex,"GrandMother"));
+						grandMother.setRelativeIndex(relativeIndex);
+						parentQueue.add(grandMother);
+					}
+				}
+				
+				
 			}
 			
 			//Maternal Relationships
 			if(probandRelationship.getMotherId() != null){
-				//TODO
+				int motherIndex = getRelativePosition(probandRelationship.getMotherId(), relativeSubjects);
+				mother = relativeSubjects.get(motherIndex);
+				mother.setRelationship("Mother");
+				parentQueue.add(mother);
+				
+				while((relativeSubject = parentQueue.poll())!=null ){					
+					if(relativeSubject.getFatherId() !=null){
+						int relativeIndex = relativeSubject.getRelativeIndex();
+						int position = getRelativePosition(relativeSubject.getFatherId(), relativeSubjects);
+						RelationshipVo grandFather=relativeSubjects.get(position);
+						grandFather.setRelationship(createRelationship("Maternal",++relativeIndex,"GrandFather"));
+						grandFather.setRelativeIndex(relativeIndex);
+						parentQueue.add(grandFather);
+					}
+					if(relativeSubject.getMotherId() !=null){
+						int relativeIndex = relativeSubject.getRelativeIndex();
+						int position = getRelativePosition(relativeSubject.getMotherId(), relativeSubjects);
+						RelationshipVo grandMother=relativeSubjects.get(position);
+						grandMother.setRelationship(createRelationship("Maternal",++relativeIndex,"GrandMother"));
+						grandMother.setRelativeIndex(relativeIndex);
+						parentQueue.add(grandMother);
+					}
+				}
+				
 			}
+			
+			//Siblings
+			for(int i=0;i<relativeSubjects.size();++i){
+				relativeSubject = relativeSubjects.get(i);
+				String fatherId=relativeSubject.getFatherId();
+				String motherId=relativeSubject.getMotherId();
+				if(!"Proband".equals(relativeSubject.getRelationship())  
+						&& ((father !=null && father.getIndividualId().equals(fatherId)) ||(mother !=null && mother.getIndividualId().equals(motherId)))){
+					if("Male".equalsIgnoreCase(relativeSubject.getGender())){
+						relativeSubject.setRelationship("Brother");
+					}else if("Female".equalsIgnoreCase(relativeSubject.getGender())){
+						relativeSubject.setRelationship("Sister");
+					}
+				}
+			}
+			
+			
+			//Children
+			Queue<RelationshipVo> childrenQueue = new LinkedList<RelationshipVo>();
+			
+			for(int i=0;i<relativeSubjects.size();++i){
+				relativeSubject = relativeSubjects.get(i);
+				String fatherId=relativeSubject.getFatherId();
+				String motherId=relativeSubject.getMotherId();
+				if((father !=null && probandRelationship.getIndividualId().equals(fatherId)) ||(mother !=null && probandRelationship.getIndividualId().equals(motherId))){
+					if("Male".equalsIgnoreCase(relativeSubject.getGender())){
+						relativeSubject.setRelationship("Son");
+						childrenQueue.add(relativeSubject);
+					}else if("Female".equalsIgnoreCase(relativeSubject.getGender())){
+						relativeSubject.setRelationship("Daughter");
+						childrenQueue.add(relativeSubject);
+					}
+				}
+			}
+			
+			//Grand Children
+			while((relativeSubject = childrenQueue.poll())!=null ){
+				for(RelationshipVo relative:relativeSubjects){
+					if("Male".equals(relativeSubject.getGender()) && relativeSubject.getIndividualId().equals(relative.getFatherId())){
+						int relativeIndex = relative.getRelativeIndex();
+						relative.setRelationship(createRelationship("",++relativeIndex,"GrandSon"));
+						relative.setRelativeIndex(relativeIndex);
+						childrenQueue.add(relative);
+					}
+					if("Female".equals(relativeSubject.getGender()) && relativeSubject.getIndividualId().equals(relative.getMotherId())){
+						int relativeIndex = relative.getRelativeIndex();
+						relative.setRelationship(createRelationship("",++relativeIndex,"GrandDaughter"));
+						relative.setRelativeIndex(relativeIndex);
+						childrenQueue.add(relative);
+					}
+					
+				}
+			}
+			
 			
 		}
 		
 		return relativeSubjects;
 	}
 	
-	private int getRelativeIndex(String individualUID, List<RelationshipVo> relationshipList){
+	private String createRelationship(String prefix,int count,String suffix){
+		String great=" ";
+		for (int i =1;i<count;++i){
+			great=great+"G ";
+		}
+		
+		return prefix +great+suffix;
+				
+	}
+	
+	private int getRelativePosition(String individualUID, List<RelationshipVo> relationshipList){
 		int index=-1;
 		
 		for(RelationshipVo obj:relationshipList ){
