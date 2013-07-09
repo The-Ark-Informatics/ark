@@ -24,8 +24,13 @@ public class RelationshipVo implements Serializable {
 	
 	private String fatherId;
 	private String motherId;
+	private int relativeIndex;
 	
 	
+	
+	public RelationshipVo() {
+		relationship = "--";
+	}
 	public Integer getFamilyId() {
 		return familyId;
 	}
@@ -101,6 +106,12 @@ public class RelationshipVo implements Serializable {
 		this.motherId = motherId;
 	}
 	
+	public int getRelativeIndex() {
+		return relativeIndex;
+	}
+	public void setRelativeIndex(int relativeIndex) {
+		this.relativeIndex = relativeIndex;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
