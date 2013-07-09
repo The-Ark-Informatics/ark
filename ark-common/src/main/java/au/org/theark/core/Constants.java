@@ -136,6 +136,11 @@ public class Constants {
 	public static final String FINISH = "finish";
 	public static final String DONE = "done";
 	public static final String REMOVE = "remove";
+	public static final String VIEW = "view";
+	public static final String FATHER = "father";
+	public static final String MOTHER = "mother";
+	public static final String TWIN = "twin";
+	public static final String EXPORT = "export";
 	/* Delete confirmation */
 	public static final String DELETE_CONFIRM_TITLE = "Delete confirmation";
 	public static final String DELETE_CONFIRM_MESSAGE = "Are you sure you want to delete?";
@@ -440,11 +445,5 @@ public class Constants {
 	public static final String	SAVEANDCLOSE									= "saveAndClose";
 	public static final String	yyyy_MM_dd	= "yyyy-MM-dd";
 	public enum FileFormat {CSV, XLS, PDF, TXT, DOC, XML}
-	
-	public static final String	FATHER	= "father";
-	public static final String	MOTHER	= "mother";
-	public static final String	TWIN	= "twin";
-	public static final String	VIEW	= "view";
-	public static final String	EXPORT	= "export";
 	
 }
