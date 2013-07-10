@@ -420,6 +420,25 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return results;
 	}
 
+	/**
+	 * obviously you need it attached and preferably prefetched or you may take an exponential hit to the DB
+	 * 
+	 * @param lss
+	 * @return
+	 */
+	public Address getBestAddressWithOutNewQueries(LinkSubjectStudy lss){
+		Address goodEnoughIfWeCantFindBetter = null;
+		for(Address a : lss.getPerson().getAddresses()){
+			if(a!=null && a.getPreferredMailingAddress()!=null && a.getPreferredMailingAddress()){
+				return a;
+			}
+			else if(goodEnoughIfWeCantFindBetter == null){
+				goodEnoughIfWeCantFindBetter = a;
+			}
+		}
+		return goodEnoughIfWeCantFindBetter;
+	}
+	
 	public Address getBestAddress(LinkSubjectStudy subject) {
 		Address result = null;
 		// Attempt to get the preferred address first
@@ -453,6 +472,26 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return result;
 	}
 
+
+	/**
+	 * obviously you need it attached an preferably prefetched or you may take an exponential hit to the DB
+	 * 
+	 * @param lss
+	 * @return
+	 */
+	public Phone getWorkPhoneWithoutExponentialQueries(LinkSubjectStudy lss){
+		Phone goodEnoughIfWeCantFindBetter = null;
+		for(Phone phone : lss.getPerson().getPhones()){
+			if(phone!=null && phone.getPhoneType()!=null && phone.getPhoneType().getName().equalsIgnoreCase("Work")){
+				return phone;
+			}
+			else if(goodEnoughIfWeCantFindBetter == null){
+				goodEnoughIfWeCantFindBetter = phone;
+			}
+		}
+		return goodEnoughIfWeCantFindBetter;
+	}
+	
 	public Phone getWorkPhone(LinkSubjectStudy subject) {
 		Phone result = null;
 		Criteria criteria = getSession().createCriteria(Phone.class);
@@ -472,7 +511,26 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		}
 		return result;
 	}
-
+	
+	/**
+	 * obviously you need it attached an preferably prefetched or you may take an exponential hit to the DB
+	 * 
+	 * @param lss
+	 * @return
+	 */
+	public Phone getHomePhoneWithoutExponentialQueries(LinkSubjectStudy lss){
+		Phone goodEnoughIfWeCantFindBetter = null;
+		for(Phone phone : lss.getPerson().getPhones()){
+			if(phone!=null && phone.getPhoneType()!=null && phone.getPhoneType().getName().equalsIgnoreCase("Home")){
+				return phone;
+			}
+			else if(goodEnoughIfWeCantFindBetter == null){
+				goodEnoughIfWeCantFindBetter = phone;
+			}
+		}
+		return goodEnoughIfWeCantFindBetter;
+	}
+	
 	public Phone getHomePhone(LinkSubjectStudy subject) {
 		Phone result = null;
 		Criteria criteria = getSession().createCriteria(Phone.class);
@@ -492,6 +550,49 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		}
 		return result;
 	}
+	
+
+
+	public List<LinkSubjectStudy> getSubjectsMatchingComponentConsent(ConsentDetailsReportVO cdrVO){
+		
+		String qs = " select lss from LinkSubjectStudy lss " +
+				"  left join fetch lss.person p " +
+				"  left join fetch p.addresses a " +
+				"  left join fetch p.phones ps " +
+				"  left join fetch lss.consents c " +
+				" where " +
+				" lss.study =:study ";
+
+		if (cdrVO.getLinkSubjectStudy().getSubjectUID() != null) {
+			qs = qs + " and lss.id =:id ";
+					
+		}
+		if (cdrVO.getLinkSubjectStudy().getSubjectStatus() != null) {
+			qs = qs + " and lss.subjectStatus=:subjectStatus " ;
+		}
+		
+
+		Query query = getSession().createQuery((qs + "order by lss.id "));
+		query.setParameter("study", cdrVO.getLinkSubjectStudy().getStudy());
+		
+		if (cdrVO.getLinkSubjectStudy().getSubjectUID() != null) {
+			query.setParameter("id", cdrVO.getLinkSubjectStudy().getId());
+		}
+		if (cdrVO.getLinkSubjectStudy().getSubjectStatus() != null) {
+			query.setParameter("subjectStatus", cdrVO.getLinkSubjectStudy().getSubjectStatus());
+		}
+/*		next stage...just prefetch for now
+  		if (cdrVO.getConsentStatus() != null){
+			q.setParameter("studyId", cdrVO.getLinkSubjectStudy().getStudy());	
+		}
+		if (cdrVO.getStudyComp() != null){
+			q.setParameter("studyId", cdrVO.getLinkSubjectStudy().getStudy());
+		}*/
+		
+		List<LinkSubjectStudy> results = query.list();
+		return results;
+	}
+	
 
 	public List<LinkSubjectStudy> getSubjects(ConsentDetailsReportVO cdrVO) {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
@@ -838,7 +939,5 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	
 		return results;
 	}
-
-	
 	
 }
