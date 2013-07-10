@@ -101,7 +101,7 @@ public class ReportSelectPanel extends Panel {
 			ArkUser arkUser = iArkCommonService.getArkUser(subject.getPrincipal().toString());
 			//TODO: Make this method work! :D
 			// List<ReportTemplate> resultList = reportService.getReportsAvailableList(arkUser, study);
-			List<ReportTemplate> resultList = reportService.getReportsAvailableList(null, null);
+			List<ReportTemplate> resultList = reportService.getReportsAvailableList(null, study);
 
 			if (resultList == null || (resultList != null && resultList.size() == 0)) {
 				this.info("No reports are available to you under your current role (NB: roles may depend on the study in context)");
