@@ -197,6 +197,24 @@ public class ReportServiceImpl implements IReportService {
 		return consentDetailsList;
 	}
 
+	private Consent getConsentMatchingSearchCriteria(LinkSubjectStudy lss, StudyComp studyCompFromSearch, ConsentStatus consentStatusFromSearch){
+		for(Consent consentForLSS : lss.getConsents()){
+			if(consentForLSS!=null && consentForLSS.getStudyComp() != null && studyCompFromSearch!=null){
+				
+				if(consentForLSS.getStudyComp().getName().equalsIgnoreCase(studyCompFromSearch.getName())){
+					if(consentStatusFromSearch==null){
+						return consentForLSS;
+					}
+					else if(consentForLSS.getConsentStatus() != null){
+						if(consentStatusFromSearch.getName().equalsIgnoreCase(consentForLSS.getConsentStatus().getName()));
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	
 	public List<ConsentDetailsDataRow> getStudyCompConsentDetailsList(ConsentDetailsReportVO cdrVO) {
 		// LinkedHashMap maintains insertion order
 		HashMap<Long, List<ConsentDetailsDataRow>> consentDetailsMap;
@@ -211,17 +229,20 @@ public class ReportServiceImpl implements IReportService {
 			// This means that we can't do a query with LinkSubjectStudy inner join Consent
 			// - so better to just iterate through the subjects that match the initial subject criteria
 			Study study = cdrVO.getLinkSubjectStudy().getStudy();
-			List<LinkSubjectStudy> subjectList = reportDao.getSubjects(cdrVO);
+			//List<LinkSubjectStudy> subjectList = reportDao.getSubjects(cdrVO);		//THIS GOES AND GETS ALL THE SUBJECTS REGARDLESS OF CONSENT
+			List<LinkSubjectStudy> subjectList = reportDao.getSubjectsMatchingComponentConsent(cdrVO);		//THIS GOES AND GETS ALL THE SUBJECTS REGARDLESS OF CONSENT
 
 			for (LinkSubjectStudy subject : subjectList) {
-				Consent consentCriteria = new Consent();
+				/*Consent consentCriteria = new Consent();
 				consentCriteria.setStudy(study);
 				consentCriteria.setLinkSubjectStudy(subject);
 				consentCriteria.setStudyComp(cdrVO.getStudyComp());
 				consentCriteria.setConsentDate(cdrVO.getConsentDate());
 				consentCriteria.setConsentStatus(cdrVO.getConsentStatus());
 				// reportDao.getStudyCompConsent(..) ignores consentDate and consentStatus
-				Consent consentResult = reportDao.getStudyCompConsent(consentCriteria);
+*/
+				//Consent consentResult = reportDao.getStudyCompConsent(consentCriteria);
+				Consent consentResult = getConsentMatchingSearchCriteria(subject, cdrVO.getStudyComp(), cdrVO.getConsentStatus());
 
 				ConsentDetailsDataRow cddr = new ConsentDetailsDataRow();
 				if (consentResult == null) {
@@ -274,14 +295,14 @@ public class ReportServiceImpl implements IReportService {
 			consentRow.setConsentStatus(consentStatus); // set ConsentStatus to Not Consented if not set
 		}
 
-		String streetAddress = "-NA-";
-		String suburb = "-NA-";
-		String state = "-NA-";
-		String postcode = "-NA-";
-		String country = "-NA-";
-		String workPhone = "-NA-";
-		String homePhone = "-NA-";
-		String email = "-NA-";
+		String streetAddress = "";//Please use uids with data extract module for further contact info";
+		String suburb = "";
+		String state = "";
+		String postcode = "";
+		String country = "";
+		String workPhone = "";
+		String homePhone = "";
+		String email = "";
 
 		try {
 			if (subject == null) {
@@ -300,14 +321,17 @@ public class ReportServiceImpl implements IReportService {
 			String subjectStatus = subject.getSubjectStatus().getName();
 			consentRow.setSubjectStatus(subjectStatus); // set SubjectStatus
 			Person p = subject.getPerson();
+			
 			String title = p.getTitleType().getName();
 			consentRow.setTitle(title); // set Title
+			
 			String firstName = p.getFirstName();
 			consentRow.setFirstName(firstName); // set FirstName
 			String lastName = p.getLastName();
 			consentRow.setLastName(lastName); // set LastName
-			Address a = reportDao.getBestAddress(subject);
-
+			//Address a = reportDao.getBestAddress(subject);
+			Address a = reportDao.getBestAddressWithOutNewQueries(subject);
+/*  */
 			if (p.getPreferredEmail() != null) {
 				email = p.getPreferredEmail();
 			}
@@ -327,13 +351,15 @@ public class ReportServiceImpl implements IReportService {
 				country = a.getCountry() == null ? country : a.getCountry().getCountryCode();
 			}
 
-			Phone aPhone = reportDao.getWorkPhone(subject);
+//			Phone aPhone = reportDao.getWorkPhone(subject);
+			Phone aPhone = reportDao.getWorkPhoneWithoutExponentialQueries(subject);
 			if (aPhone != null) {
 				workPhone = aPhone.getAreaCode() + " " + aPhone.getPhoneNumber();
 			}
-			aPhone = reportDao.getHomePhone(subject);
-			if (aPhone != null) {
-				homePhone = aPhone.getAreaCode() + " " + aPhone.getPhoneNumber();
+//			aPhone = reportDao.getHomePhone(subject);
+			Phone hPhone= reportDao.getHomePhoneWithoutExponentialQueries(subject);
+			if (hPhone != null) {
+				homePhone = hPhone.getAreaCode() + " " +hPhone.getPhoneNumber();
 			}
 		}
 		catch (EntityNotFoundException e) {
