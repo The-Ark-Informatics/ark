@@ -692,7 +692,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			arkUserRoleList = criteria.list();
 		}
 		catch (org.hibernate.TransientObjectException toe) {
-			log.error(toe.getMessage());
+			log.error(toe.getMessage(), toe);
 		}
 		return arkUserRoleList;
 	}
@@ -782,10 +782,10 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			}
 		}
 		catch (HibernateException e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 		}
 		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 		}
 
 		criteria.addOrder(Order.asc("arkModule"));
@@ -956,7 +956,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			}
 		}
 		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 		}
 
 		if (arkModule != null) {
@@ -1042,10 +1042,10 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			hasModuleAccess = (list.size() > 0);
 		}
 		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 		}
 		catch (NullPointerException e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 		}
 
 		return hasModuleAccess;
@@ -1062,10 +1062,10 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			}
 		}
 		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 		}
 		catch (NullPointerException e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 		}
 
 		ProjectionList projectionList = Projections.projectionList();
@@ -1116,7 +1116,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			studyCriteria.add(Restrictions.ne("studyStatus", status));
 		}
 		catch (StatusNotAvailableException e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 		}
 		
 		// Can only select studies with null parent, or where the study is a parent
@@ -1148,7 +1148,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			studyList = criteria.list();
 		}
 		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 		}
 		
 		return studyList;
