@@ -39,17 +39,16 @@ import au.org.theark.report.web.component.viewReport.ReportContainerPanel;
 public class ReportSubMenuTab extends AbstractArkTabPanel {
 
 	private static final long	serialVersionUID	= -3695404298701886701L;
-	private List<ITab>			moduleSubTabsList;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	public IArkCommonService<Void>	iArkCommonService;
 
 	public ReportSubMenuTab(String id) {
 		super(id);
-		moduleSubTabsList = new ArrayList<ITab>();
 		buildTabs();
 	}
 
 	public void buildTabs() {
+		List<ITab>			moduleSubTabsList = new ArrayList<ITab>();
 		List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
 
 		// This way we can get the menus from the back-end. We should source this data from a table in the backend and wrap it up in a class like this
@@ -64,7 +63,7 @@ public class ReportSubMenuTab extends AbstractArkTabPanel {
 		moduleTabs.add(advancedMenuModule);
 
 		for (final MenuModule moduleName : moduleTabs) {
-			moduleSubTabsList.add(new AbstractTab(new Model<String>(getLocalizer().getString(moduleName.getResourceKey(), ReportSubMenuTab.this, moduleName.getModuleName()))) {
+			moduleSubTabsList.add(new AbstractTab(new Model<String>(moduleName.getModuleName())) {
 
 				private static final long	serialVersionUID	= -7414890128705025350L;
 
