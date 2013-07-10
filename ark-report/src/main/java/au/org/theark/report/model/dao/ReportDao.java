@@ -281,15 +281,27 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.createAlias("lss.person.genderType", "genderType");
 		
 		// Restrict any addresses to the preferred mailing address
-		Criteria addressCriteria = criteria.createAlias("lss.person.addresses", "a", JoinType.LEFT_OUTER_JOIN);
-		addressCriteria.add(Restrictions.or(Restrictions.or(Restrictions.eq("a.preferredMailingAddress", true), Restrictions.isNull("a.preferredMailingAddress"),Restrictions.eq("a.preferredMailingAddress", false))));
+		//Criteria addressCriteria = 
+				criteria.createAlias("lss.person.addresses", "a", JoinType.LEFT_OUTER_JOIN);
+//		addressCriteria.setMaxResults(1);
+//		addressCriteria.add(Restrictions.or(Restrictions.or(Restrictions.eq("a.preferredMailingAddress", true), Restrictions.isNull("a.preferredMailingAddress"),Restrictions.eq("a.preferredMailingAddress", false))));
 		
 		criteria.createAlias("lss.person.addresses.country", "c", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("lss.person.addresses.state", "state", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("lss.person.phones", "phone", JoinType.LEFT_OUTER_JOIN);
 		
 		//TODO: Get work phone returned as well
-		criteria.createAlias("lss.person.phones.phoneType", "phoneType", JoinType.LEFT_OUTER_JOIN).add(Restrictions.or(Restrictions.or(Restrictions.eq("phoneType.name", "Home"), Restrictions.isNull("phoneType.name"),Restrictions.eq("phoneType.name", "Mobile"))));
+		//Criteria phoneCriteria = 
+		criteria.createAlias("lss.person.phones.phoneType", "phoneType", JoinType.LEFT_OUTER_JOIN);/*.add(
+				Restrictions.or(Restrictions.eq("phoneType.name", "Home"),
+									(
+										Restrictions.or(Restrictions.or(Restrictions.eq("phoneType.name", "Home"),
+														Restrictions.isNull("phoneType.name"),Restrictions.eq("phoneType.name", "Mobile")))
+								
+									)
+								)
+							));*/
+		//phoneCriteria.setMaxResults(1);
 		criteria.createAlias("lss.person.titleType", "title");
 		
 		ProjectionList projectionList = Projections.projectionList();
