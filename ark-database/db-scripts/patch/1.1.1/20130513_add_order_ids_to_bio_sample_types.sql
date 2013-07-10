@@ -3,6 +3,9 @@ use lims;
 select @orderId := 0;
 
 update bio_sampletype
+set order_id = @orderId; 
+
+update bio_sampletype
 set order_id = (select @orderId := @orderId + 1)
 where name = 'Blood / Whole Blood';
 
