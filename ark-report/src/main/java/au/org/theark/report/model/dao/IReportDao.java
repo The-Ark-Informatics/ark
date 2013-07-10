@@ -78,7 +78,13 @@ public interface IReportDao {
 
 	public Address getBestAddress(LinkSubjectStudy subject);
 
+	public Address getBestAddressWithOutNewQueries(LinkSubjectStudy lss);
+
 	public Phone getWorkPhone(LinkSubjectStudy subject);
+
+	public Phone getWorkPhoneWithoutExponentialQueries(LinkSubjectStudy subject);
+
+	public Phone getHomePhoneWithoutExponentialQueries(LinkSubjectStudy subject);
 
 	public Phone getHomePhone(LinkSubjectStudy subject);
 
@@ -89,6 +95,8 @@ public interface IReportDao {
 	 * @return
 	 */
 	public List<LinkSubjectStudy> getSubjects(ConsentDetailsReportVO cdrVO);
+
+	public List<LinkSubjectStudy> getSubjectsMatchingComponentConsent(ConsentDetailsReportVO cdrVO);
 
 	/**
 	 * Gets the consent record for a given subject and studyComp. Does NOT constrain against consentStatus or consentDate here, because we want to be
