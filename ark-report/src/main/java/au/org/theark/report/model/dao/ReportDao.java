@@ -19,6 +19,7 @@
 package au.org.theark.report.model.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,7 @@ import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -194,6 +196,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 
 	public List<ReportTemplate> getReportsForUser(ArkUser arkUser, Study study) {
 		Criteria criteria = getSession().createCriteria(ReportTemplate.class, "rt");
+		Collection<ArkModule> modules = iArkCommonService.getArkModulesLinkedWithStudy(study);
 		/*
 		 * TODO : Filter reports based on security criteria For now we will implement security upon the selection of a report
 		 * 
@@ -205,6 +208,9 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		 * functionCriteria.add(Restrictions.eq("aFn.arkFunctionType", reportArkFnType));
 		 * criteria.add(Subqueries.exists(functionCriteria.setProjection(Projections.property("arpt.id"))));
 		 */
+		if(modules.size() >0)
+			criteria.add(Restrictions.in("module", modules));
+		
 		List<ReportTemplate> reportsAvailListing = criteria.list();
 
 		return reportsAvailListing;
