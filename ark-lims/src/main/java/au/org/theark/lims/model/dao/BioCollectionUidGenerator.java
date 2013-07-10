@@ -58,7 +58,7 @@ public class BioCollectionUidGenerator extends HibernateSessionDao {
 		criteria.add(Restrictions.eq("studyNameId", studyNameKy));
 		BioCollectionUidSequence seqData = (BioCollectionUidSequence) criteria.uniqueResult();
 		if(seqData==null){
-			log.error("sequence does not exist...creating");
+			log.warn("sequence does not exist...creating");
 			BioCollectionUidSequence seq = new BioCollectionUidSequence();
 			seq.setInsertLock(false);
 			seq.setStudyNameId(studyNameKy);
@@ -68,7 +68,6 @@ public class BioCollectionUidGenerator extends HibernateSessionDao {
 			return new Integer(0);
 		}
 		else{
-			log.warn("so we hav a seq");
 			int currentSeqNumber = seqData.getUidSequence();
 			seqData.setUidSequence((currentSeqNumber + numToInsert));
 			getSession().update(seqData);
