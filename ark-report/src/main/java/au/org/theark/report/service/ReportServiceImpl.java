@@ -324,7 +324,7 @@ public class ReportServiceImpl implements IReportService {
 					state = a.getState().getName();
 				}
 				postcode = a.getPostCode();
-				country = a.getCountry().getCountryCode();
+				country = a.getCountry() == null ? country : a.getCountry().getCountryCode();
 			}
 
 			Phone aPhone = reportDao.getWorkPhone(subject);
