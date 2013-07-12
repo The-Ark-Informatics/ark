@@ -19,6 +19,7 @@
 package au.org.theark.study.web.component.subject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,12 +40,14 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.export.ExportToolbar;
 import au.org.theark.core.web.component.export.ExportableDateColumn;
@@ -80,8 +83,9 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	private ArkDataProvider<SubjectVO, IArkCommonService>	subjectProvider;
 	private Long														sessionStudyId;
 	private Study														study = new Study();
-	protected WebMarkupContainer studyNameMarkup;
-	protected WebMarkupContainer studyLogoMarkup;
+	protected WebMarkupContainer 								studyNameMarkup;
+	protected WebMarkupContainer 								studyLogoMarkup;
+	
 
 	/**
 	 * @param id
@@ -114,6 +118,41 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		
 		prerenderContextCheck();
 
+		add(containerForm);
+	}
+	
+	
+	/**
+	 * Re-use in pedigree panel
+	 * 
+	 * @param id
+	 * @param studyLogoMarkup 
+	 * @param studyNameMarkup 
+	 * @param modalWindow
+	 */
+	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup,AbstractDetailModalWindow modalWindow,String gender) {
+		super(id);
+		this.arkContextMarkup = arkContextMarkup;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
+		
+		/* Initialise the CPM */
+		cpModel = new CompoundPropertyModel<SubjectVO>(new SubjectVO());
+		
+		
+	// Restrict to subjects in current study in session
+		sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if (sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+			List<Study> studyListForUser = iArkCommonService.getParentAndChildStudies(sessionStudyId);
+			cpModel.getObject().setStudyList(studyListForUser);
+		}
+
+		containerForm = new ContainerForm("containerForm", cpModel);
+		containerForm.add(initialiseFeedBackPanel());
+		containerForm.add(initialiseSearchResults(modalWindow,gender));
+		containerForm.add(initialiseSearchPanel());
+		
 		add(containerForm);
 	}
 
@@ -252,4 +291,86 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
+	
+	@SuppressWarnings("unchecked")
+	protected WebMarkupContainer initialiseSearchResults(AbstractDetailModalWindow modalWindow,final String gender) {
+		searchResultsPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup);
+
+		if (sessionStudyId != null) {
+			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
+			linkSubjectStudy.setStudy(study);
+			//containerForm.getModelObject().setLinkSubjectStudy(linkSubjectStudy);
+		}
+
+		// Data providor to paginate resultList
+		subjectProvider = new ArkDataProvider<SubjectVO, IArkCommonService>(iArkCommonService) {
+
+			private static final long	serialVersionUID	= 1L;
+			
+			private GenderType genderType;
+			
+			{
+				Collection<GenderType> genderTypes = service.getGenderTypes();
+				for(GenderType type:genderTypes){
+					if(gender.equalsIgnoreCase(type.getName())){
+						this.genderType =type;
+						break;
+					}
+				}
+			}
+
+			public int size() {
+				model.getObject().getLinkSubjectStudy().getPerson().setGenderType(genderType);
+				return (int) service.getStudySubjectCount(model.getObject());
+			}
+
+			public Iterator<SubjectVO> iterator(int first, int count) {
+				List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
+				if (isActionPermitted()) {
+					model.getObject().getLinkSubjectStudy().getPerson().setGenderType(genderType);
+					listSubjects = iArkCommonService.searchPageableSubjects(model.getObject(), first, count);
+				}
+				return listSubjects.iterator();
+			}
+		};
+		subjectProvider.setModel(this.cpModel);
+
+		dataView = searchResultsPanel.buildDataView(subjectProvider,modalWindow);
+		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
+		searchResultsPanel.add(pageNavigator);
+
+		List<IColumn<SubjectVO>> columns = new ArrayList<IColumn<SubjectVO>>();
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("SubjectUID"), "subjectUID"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Full Name"), "subjectFullName"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Preferred Name"), "linkSubjectStudy.person.preferredName"));
+		columns.add(new ExportableDateColumn<SubjectVO>(Model.of("Date Of Birth"), "linkSubjectStudy.person.dateOfBirth", au.org.theark.core.Constants.DD_MM_YYYY));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Vital Status"), "linkSubjectStudy.person.vitalStatus.name"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Gender"), "linkSubjectStudy.person.genderType.name"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Subject Status"), "linkSubjectStudy.subjectStatus.name"));
+		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Consent Status"), "linkSubjectStudy.consentStatus.name"));
+
+		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), au.org.theark.core.Constants.ROWS_PER_PAGE);
+		List<String> headers = new ArrayList<String>(0);
+		headers.add("SubjectUID");
+		headers.add("Full Name");
+		headers.add("Preferred Name");
+		headers.add("Date of Birth");
+		headers.add("Vital Status");
+		headers.add("Gender");
+		headers.add("Subject Status");
+		headers.add("Consent Status");
+
+		String filename = study.getName() +"_subjects";
+		RepeatingView toolbars = new RepeatingView("toolbars");
+		ExportToolbar<String> exportToolBar = new ExportToolbar<String>(table, headers, filename);
+		toolbars.add(new Component[] { exportToolBar });
+		searchResultsPanel.add(toolbars);
+
+		searchResultsPanel.add(dataView);
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
+	}
+	
 }

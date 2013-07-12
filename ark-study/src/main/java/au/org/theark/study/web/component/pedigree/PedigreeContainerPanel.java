@@ -21,20 +21,31 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
+	
+	//Markups
+	
+	private WebMarkupContainer	 					arkContextMarkup;
+	protected WebMarkupContainer 				studyNameMarkup;
+	protected WebMarkupContainer 				studyLogoMarkup;
+	
 	// Panels
-	private SearchPanel						searchComponentPanel;
-	private SearchResultListPanel			searchResultPanel;
+	private SearchPanel								searchComponentPanel;
+	private SearchResultListPanel					searchResultPanel;
 
 	private PageableListView<RelationshipVo>	pageableListView;
 
-	private ContainerForm					containerForm;
+	private ContainerForm							containerForm;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	IStudyService studyService;
 	
 
-	public PedigreeContainerPanel(String id) {
+	public PedigreeContainerPanel(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id);
+		
+		this.arkContextMarkup = arkContextMarkup;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<PedigreeVo>(new PedigreeVo());
@@ -79,7 +90,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
-		searchComponentPanel = new SearchPanel("searchComponentPanel", arkCrudContainerVO, feedBackPanel, containerForm, pageableListView);
+		searchComponentPanel = new SearchPanel("searchComponentPanel",arkContextMarkup,studyNameMarkup,studyLogoMarkup ,arkCrudContainerVO, feedBackPanel, containerForm, pageableListView);
 		searchComponentPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchComponentPanel);
 		return arkCrudContainerVO.getSearchPanelContainer();
