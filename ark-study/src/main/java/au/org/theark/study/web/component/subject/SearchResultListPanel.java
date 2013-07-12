@@ -45,6 +45,7 @@ import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.StudyHelper;
+import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
@@ -131,6 +132,58 @@ public class SearchResultListPanel extends Panel {
 		};
 		return studyCompDataView;
 	}
+	
+	public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider,final AbstractDetailModalWindow modalWindow) {
+
+		DataView<SubjectVO> studyCompDataView = new DataView<SubjectVO>("subjectList", subjectProvider) {
+
+			@Override
+			protected void populateItem(final Item<SubjectVO> item) {
+				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
+				item.add(buildLink(item.getModelObject(),modalWindow));
+				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
+
+				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
+					item.add(new Label("linkSubjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
+				}
+				else {
+					item.add(new Label("linkSubjectStudy.person.preferredName", ""));
+				}
+
+				item.add(new Label("linkSubjectStudy.person.genderType.name", subject.getPerson().getGenderType().getName()));
+
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				String dateOfBirth = "";
+				if (subject != null && subject.getPerson() != null && subject.getPerson().getDateOfBirth() != null) {
+					dateOfBirth = simpleDateFormat.format(subject.getPerson().getDateOfBirth());
+					item.add(new Label("linkSubjectStudy.person.dateOfBirth", dateOfBirth));
+				}
+				else {
+					item.add(new Label("linkSubjectStudy.person.dateOfBirth", ""));
+				}
+
+				item.add(new Label("linkSubjectStudy.person.vitalStatus.name", subject.getPerson().getVitalStatus().getName()));
+
+				item.add(new Label("linkSubjectStudy.subjectStatus.name", subject.getSubjectStatus().getName()));
+
+				if (subject.getConsentStatus() != null) {
+					item.add(new Label("linkSubjectStudy.consentStatus.name", subject.getConsentStatus().getName()));
+				}
+				else {
+					item.add(new Label("linkSubjectStudy.consentStatus.name", ""));
+				}
+
+				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
+					}
+				}));
+			}
+		};
+		return studyCompDataView;
+	}
+
 
 	public PageableListView<SubjectVO> buildListView(IModel iModel) {
 
@@ -225,4 +278,56 @@ public class SearchResultListPanel extends Panel {
 		link.add(nameLinkLabel);
 		return link;
 	}
+	
+	private AjaxLink buildLink(final SubjectVO subject,final AbstractDetailModalWindow modalWindow) {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.SUBJECT_UID) {
+			@Override
+			public void onClick(AjaxRequestTarget target) {
+//				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+//				//subject.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
+//
+//				// We specify the type of person here as Subject
+//				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, subject.getLinkSubjectStudy().getStudy().getId());
+//				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getLinkSubjectStudy().getPerson().getId());
+//				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
+//
+//				SubjectVO subjectFromBackend = new SubjectVO();
+//				Collection<SubjectVO> subjects = iArkCommonService.getSubject(subject);
+//				for (SubjectVO subjectVO2 : subjects) {
+//					subjectFromBackend = subjectVO2;
+//					break;
+//				}
+//
+//				// Available/assigned child studies
+//				List<Study> availableChildStudies = new ArrayList<Study>(0);
+//				List<Study> selectedChildStudies = new ArrayList<Study>(0);
+//
+//				if (subjectFromBackend.getLinkSubjectStudy().getStudy().getParentStudy() != null) {
+//					availableChildStudies = iStudyService.getChildStudyListOfParent(subjectFromBackend.getLinkSubjectStudy().getStudy());
+//					selectedChildStudies = iArkCommonService.getAssignedChildStudyListForPerson(subjectFromBackend.getLinkSubjectStudy().getStudy(), subjectFromBackend.getLinkSubjectStudy().getPerson());
+//				}
+//
+//				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
+//				subjectFromBackend.setStudyList(subjectContainerForm.getModelObject().getStudyList());
+//				subjectContainerForm.setModelObject(subjectFromBackend);
+//				subjectContainerForm.getModelObject().setAvailableChildStudies(availableChildStudies);
+//				subjectContainerForm.getModelObject().setSelectedChildStudies(selectedChildStudies);
+//
+//				// Set SubjectUID into context
+//				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getLinkSubjectStudy().getSubjectUID());
+//				ContextHelper contextHelper = new ContextHelper();
+//				contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
+//				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
+//				
+//				// Set Study Logo
+//				StudyHelper studyHelper = new StudyHelper();
+//				studyHelper.setStudyLogo(subjectFromBackend.getLinkSubjectStudy().getStudy(), target, studyNameMarkup, studyLogoMarkup);
+				modalWindow.close(target);
+			}
+		};
+		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getLinkSubjectStudy().getSubjectUID());
+		link.add(nameLinkLabel);
+		return link;
+	}
+	
 }
