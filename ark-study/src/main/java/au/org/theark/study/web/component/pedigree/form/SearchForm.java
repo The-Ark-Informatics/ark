@@ -3,6 +3,7 @@ package au.org.theark.study.web.component.pedigree.form;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
@@ -10,9 +11,15 @@ import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.study.model.vo.PedigreeVo;
+import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.pedigree.PedigreeDisplayPanel;
+import au.org.theark.study.web.component.pedigree.PedigreeParentContainerPanel;
 
 public class SearchForm extends Form<PedigreeVo> {
+	
+	private WebMarkupContainer	 					arkContextMarkup;
+	protected WebMarkupContainer 				studyNameMarkup;
+	protected WebMarkupContainer 				studyLogoMarkup;
 	
 	protected FeedbackPanel			feedbackPanel;
 	
@@ -30,8 +37,13 @@ public class SearchForm extends Form<PedigreeVo> {
 	
 	protected AbstractDetailModalWindow modalWindow;
 
-	public SearchForm(String id, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
+	public SearchForm(String id,WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup , ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
 		super(id);
+		
+		this.arkContextMarkup = arkContextMarkup;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
+		
 		this.setMultiPart(true);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
@@ -68,7 +80,11 @@ public class SearchForm extends Form<PedigreeVo> {
 			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				//TODO
+				modalWindow.setTitle("Set Father");
+//				modalWindow.setInitialHeight(300);
+//				modalWindow.setInitialWidth(400);
+				modalWindow.setContent(new PedigreeParentContainerPanel("content",arkContextMarkup,studyNameMarkup,studyLogoMarkup,modalWindow,Constants.MALE));
+				modalWindow.show(target);
 			}						
 		};
 		
@@ -76,7 +92,11 @@ public class SearchForm extends Form<PedigreeVo> {
 			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				//TODO
+				modalWindow.setTitle("Set Mother");
+//				modalWindow.setInitialHeight(300);
+//				modalWindow.setInitialWidth(400);
+				modalWindow.setContent(new PedigreeParentContainerPanel("content",arkContextMarkup,studyNameMarkup,studyLogoMarkup,modalWindow,Constants.FEMALE));
+				modalWindow.show(target);
 			}						
 		};
 		
@@ -93,8 +113,8 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				modalWindow.setTitle("Pedigree View");
-				modalWindow.setInitialHeight(300);
-				modalWindow.setInitialWidth(400);
+//				modalWindow.setInitialHeight(300);
+//				modalWindow.setInitialWidth(400);
 				modalWindow.setContent(new PedigreeDisplayPanel("content"));
 				modalWindow.show(target);
 				
