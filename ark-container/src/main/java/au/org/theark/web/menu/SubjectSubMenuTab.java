@@ -147,7 +147,7 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 					}
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PEDIGREE)) {
 						// Clear cache to determine permissions
-						panelToReturn = new PedigreeContainerPanel(panelId);
+						panelToReturn = new PedigreeContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup);
 					}
 					return panelToReturn;
 				}
