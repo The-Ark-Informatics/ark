@@ -11,6 +11,9 @@ public class RelationshipVo implements Serializable {
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
+	
+	private Integer id;
+	
 	private Integer familyId;
 	private String individualId;
 	private String gender;
@@ -26,10 +29,14 @@ public class RelationshipVo implements Serializable {
 	private String motherId;
 	private int relativeIndex;
 	
-	
-	
 	public RelationshipVo() {
 		relationship = "--";
+	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	public Integer getFamilyId() {
 		return familyId;

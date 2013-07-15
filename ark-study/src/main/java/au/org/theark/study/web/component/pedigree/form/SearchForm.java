@@ -17,6 +17,11 @@ import au.org.theark.study.web.component.pedigree.PedigreeParentContainerPanel;
 
 public class SearchForm extends Form<PedigreeVo> {
 	
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+	
 	private WebMarkupContainer	 					arkContextMarkup;
 	protected WebMarkupContainer 				studyNameMarkup;
 	protected WebMarkupContainer 				studyLogoMarkup;
@@ -72,9 +77,11 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
 				// TODO Auto-generated method stub
+//				target.add(SearchForm.this);
 				
 			}
 		};
+		
 		
 		fatherButton = new AjaxButton(au.org.theark.core.Constants.FATHER){
 			

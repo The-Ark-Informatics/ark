@@ -2075,6 +2075,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("relstudy.id", studyId));
 		
 		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("lsp.id"), "id");
 		projectionList.add(Projections.property("lsp.familyId"), "familyId");
 		projectionList.add(Projections.property("rel.subjectUID"), "individualId");
 		projectionList.add(Projections.property("relGender.name"), "gender");
@@ -2107,6 +2108,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("relstudy.id", studyId));
 		
 		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("lsp.id"), "id");
 		projectionList.add(Projections.property("lsp.familyId"), "familyId");
 		projectionList.add(Projections.property("sub.subjectUID"), "individualId");
 		projectionList.add(Projections.property("subGender.name"), "gender");
