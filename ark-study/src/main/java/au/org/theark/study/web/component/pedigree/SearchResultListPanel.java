@@ -27,7 +27,7 @@ public class SearchResultListPanel extends Panel {
 	 */
 	private static final long	serialVersionUID	= 1L;
 	private ContainerForm		containerForm;
-	private ArkCrudContainerVO	arkCrudContainerVO;
+	private ArkCrudContainerVO	 arkCrudContainerVO;
 
 	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm workRequestContainerForm) {
 		super(id);
@@ -46,13 +46,6 @@ public class SearchResultListPanel extends Panel {
 
 				RelationshipVo relationshipVo = item.getModelObject();
 
-//				if (relationshipVo.getIndividualId() != null) {
-//					item.add(new Label(Constants.PEDIGREE_INDIVIDUAL_ID, relationshipVo.getIndividualId()));
-//				}
-//				else {
-//					item.add(new Label(Constants.PEDIGREE_INDIVIDUAL_ID, ""));
-//				}
-				
 				item.add(buildUidLink(relationshipVo));
 				
 				if (relationshipVo.getFirstName() != null) {
@@ -92,7 +85,23 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.PEDIGREE_TWIN, ""));
 				}
 				
-				item.add(buildUnsetLink(relationshipVo));
+				AjaxLink unsetLink= buildUnsetLink(relationshipVo);
+				item.add(unsetLink);
+				if(!("Father".equalsIgnoreCase(relationshipVo.getRelationship())
+						||
+						"Mother".equalsIgnoreCase(relationshipVo.getRelationship()))){
+					unsetLink.setVisible(false);
+				}
+				
+//				if("Father".equalsIgnoreCase(relationshipVo.getRelationship())){
+//					arkCrudContainerVO.getSearchPanelContainer().get("searchForm").get("father").setEnabled(false);
+//				}
+//				
+//				if("Mother".equalsIgnoreCase(relationshipVo.getRelationship())){
+//					arkCrudContainerVO.getSearchPanelContainer().get("searchForm").get("mother").setEnabled(false);
+//				}
+				
+				
 				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					private static final long	serialVersionUID	= 1L;
