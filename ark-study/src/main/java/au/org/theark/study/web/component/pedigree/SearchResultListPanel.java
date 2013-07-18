@@ -1,21 +1,31 @@
 package au.org.theark.study.web.component.pedigree;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
-import au.org.theark.study.model.vo.PedigreeVo;
 import au.org.theark.study.model.vo.RelationshipVo;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.pedigree.form.ContainerForm;
 
@@ -26,18 +36,39 @@ public class SearchResultListPanel extends Panel {
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
-	private ContainerForm		containerForm;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService	iArkCommonService;
+	
+	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
+	private IStudyService		iStudyService;
+	
 	private ArkCrudContainerVO	 arkCrudContainerVO;
 
-	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm workRequestContainerForm) {
+	private WebMarkupContainer	 					arkContextMarkup;
+	protected WebMarkupContainer 				studyNameMarkup;
+	protected WebMarkupContainer 				studyLogoMarkup;
+	
+	ContainerForm							containerForm;
+	
+	private PageableListView<RelationshipVo> sitePageableListView;
+	
+	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO,ContainerForm containerForm, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		super(id);
+		
+		this.arkContextMarkup = arkContextMarkup;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
+		
+		this.containerForm = containerForm;
+		
 		arkCrudContainerVO = crudContainerVO;
-		containerForm = workRequestContainerForm;
+
 	}
 
 	public PageableListView<RelationshipVo> buildPageableListView(IModel iModel) {
-
-		PageableListView<RelationshipVo> sitePageableListView = new PageableListView<RelationshipVo>("relationshipList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		
+		sitePageableListView = new PageableListView<RelationshipVo>("relationshipList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -122,7 +153,37 @@ public class SearchResultListPanel extends Panel {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.PEDIGREE_INDIVIDUAL_ID) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				//TODO: implement uid click event
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				
+				Study study = iArkCommonService.getStudy(sessionStudyId);
+				
+				SubjectVO subjectFromBackend = new SubjectVO();
+				subjectFromBackend.getLinkSubjectStudy().setStudy(study);
+				subjectFromBackend.getLinkSubjectStudy().setSubjectUID(relationshipVo.getIndividualId());
+				Collection<SubjectVO> subjects = iArkCommonService.getSubject(subjectFromBackend);
+				subjectFromBackend = subjects.iterator().next();
+				
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subjectFromBackend.getLinkSubjectStudy().getPerson().getId());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
+
+				// Set SubjectUID into context
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getLinkSubjectStudy().getSubjectUID());
+				ContextHelper contextHelper = new ContextHelper();
+				contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
+				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
+				
+				// Set Study Logo
+				StudyHelper studyHelper = new StudyHelper();
+				studyHelper.setStudyLogo(subjectFromBackend.getLinkSubjectStudy().getStudy(), target, studyNameMarkup, studyLogoMarkup);
+				
+				//Refresh relationship list
+				arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("father").setEnabled(true);
+				arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("mother").setEnabled(true);
+				sitePageableListView.removeAll();
+				containerForm.getModelObject().setRelationshipList(iStudyService.generateSubjectPedigreeRelativeList(subjectFromBackend.getLinkSubjectStudy().getSubjectUID(),sessionStudyId));
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVO.getSearchPanelContainer());
+				
 			}
 		};
 		Label nameLinkLabel = new Label("uidLbl", relationshipVo.getIndividualId());
@@ -136,7 +197,27 @@ public class SearchResultListPanel extends Panel {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.PEDIGREE_RELATIONSHIP_DELETE) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				///TODO: implement unset of relationship. Use a confirmDelete link?
+				LinkSubjectPedigree relationship=new LinkSubjectPedigree();
+				relationship.setId(relationshipVo.getId());
+				
+				iStudyService.deleteRelationship(relationship);
+				
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				
+				Study study = iArkCommonService.getStudy(sessionStudyId);
+				
+				SubjectVO subjectFromBackend = new SubjectVO();
+				subjectFromBackend.getLinkSubjectStudy().setStudy(study);
+				subjectFromBackend.getLinkSubjectStudy().setSubjectUID(relationshipVo.getIndividualId());
+				Collection<SubjectVO> subjects = iArkCommonService.getSubject(subjectFromBackend);
+				subjectFromBackend = subjects.iterator().next();
+				
+				arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("father").setEnabled(true);
+				arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("mother").setEnabled(true);
+				sitePageableListView.removeAll();
+				containerForm.getModelObject().setRelationshipList(iStudyService.generateSubjectPedigreeRelativeList(subjectFromBackend.getLinkSubjectStudy().getSubjectUID(),sessionStudyId));
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVO.getSearchPanelContainer());
 				
 			}
 		};

@@ -65,7 +65,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm);
+		searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm, arkContextMarkup,  studyNameMarkup,  studyLogoMarkup );
 
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
