@@ -420,4 +420,6 @@ public interface IStudyService {
 	public RelativeCapsule[] generateSubjectPedigree(final String subjectUID,final Long studyId);
 	
 	public List<RelationshipVo> generateSubjectPedigreeRelativeList(final String subjectUID,final Long studyId);
+	
+	public void deleteRelationship(final LinkSubjectPedigree relationship);
 }
