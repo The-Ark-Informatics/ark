@@ -20,7 +20,7 @@ for line in inputFile:
     tokens = line.split(",")
        
     parentUid =  tokens[1].strip()
-    specimenUid = parentUid[:-3]+"800"
+    specimenUid = parentUid+"-800"
     initQuantity = tokens[2].replace("OragenePurifier","").replace("ml","")
     quantity = tokens[4].strip()
     purity = tokens[6].strip()

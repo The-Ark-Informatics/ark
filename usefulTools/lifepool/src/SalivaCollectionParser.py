@@ -25,7 +25,7 @@ for line in inputFile:
     collectionDate = datetime.strptime(tokens[2],"%d/%m/%Y").strftime('%Y-%m-%d')  
     
     subjectUid = pids[0]+pids[1] 
-    collectionUid = "S-"+subjectUid+"-"+collectionDate
+    collectionUid = "S-"+subjectUid+"-"+datetime.strptime(tokens[2],"%d/%m/%Y").strftime('%Y%m%d')
     
     line=subjectUid+","+collectionUid+","+collectionDate
     print line
