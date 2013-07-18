@@ -93,13 +93,14 @@ public class SearchResultListPanel extends Panel {
 					unsetLink.setVisible(false);
 				}
 				
-//				if("Father".equalsIgnoreCase(relationshipVo.getRelationship())){
-//					arkCrudContainerVO.getSearchPanelContainer().get("searchForm").get("father").setEnabled(false);
-//				}
-//				
-//				if("Mother".equalsIgnoreCase(relationshipVo.getRelationship())){
-//					arkCrudContainerVO.getSearchPanelContainer().get("searchForm").get("mother").setEnabled(false);
-//				}
+				if("Father".equalsIgnoreCase(relationshipVo.getRelationship())){
+					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("father").setEnabled(false);
+					
+				}
+				
+				if("Mother".equalsIgnoreCase(relationshipVo.getRelationship())){
+					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("mother").setEnabled(false);
+				}
 				
 				
 				
@@ -121,8 +122,7 @@ public class SearchResultListPanel extends Panel {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.PEDIGREE_INDIVIDUAL_ID) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-
-				
+				//TODO: implement uid click event
 			}
 		};
 		Label nameLinkLabel = new Label("uidLbl", relationshipVo.getIndividualId());
@@ -136,7 +136,7 @@ public class SearchResultListPanel extends Panel {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.PEDIGREE_RELATIONSHIP_DELETE) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-
+				///TODO: implement unset of relationship. Use a confirmDelete link?
 				
 			}
 		};
