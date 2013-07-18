@@ -1596,5 +1596,9 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		return relative;
 	}	 
+	
+	public void deleteRelationship(final LinkSubjectPedigree relationship){
+		iStudyDao.deleteRelationship(relationship);
+	}
 
 }

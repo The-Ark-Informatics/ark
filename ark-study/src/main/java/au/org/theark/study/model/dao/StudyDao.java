@@ -2044,6 +2044,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("substudy.id", studyId));
 		
 		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("lsp.id"), "id");
 		projectionList.add(Projections.property("lsp.familyId"), "familyId");
 		projectionList.add(Projections.property("sub.subjectUID"), "individualId");
 		projectionList.add(Projections.property("subGender.name"), "gender");
@@ -2122,6 +2123,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 		relatives=criteria.list();
 		return relatives;
+	}
+	
+	public void deleteRelationship(final LinkSubjectPedigree relationship){
+		getSession().delete(relationship);
 	}
 
 }
