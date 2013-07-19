@@ -38,7 +38,9 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
@@ -283,45 +285,46 @@ public class SearchResultListPanel extends Panel {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.SUBJECT_UID) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-//				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-//				//subject.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
-//
-//				// We specify the type of person here as Subject
-//				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, subject.getLinkSubjectStudy().getStudy().getId());
-//				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getLinkSubjectStudy().getPerson().getId());
-//				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
-//
-//				SubjectVO subjectFromBackend = new SubjectVO();
-//				Collection<SubjectVO> subjects = iArkCommonService.getSubject(subject);
-//				for (SubjectVO subjectVO2 : subjects) {
-//					subjectFromBackend = subjectVO2;
-//					break;
-//				}
-//
-//				// Available/assigned child studies
-//				List<Study> availableChildStudies = new ArrayList<Study>(0);
-//				List<Study> selectedChildStudies = new ArrayList<Study>(0);
-//
-//				if (subjectFromBackend.getLinkSubjectStudy().getStudy().getParentStudy() != null) {
-//					availableChildStudies = iStudyService.getChildStudyListOfParent(subjectFromBackend.getLinkSubjectStudy().getStudy());
-//					selectedChildStudies = iArkCommonService.getAssignedChildStudyListForPerson(subjectFromBackend.getLinkSubjectStudy().getStudy(), subjectFromBackend.getLinkSubjectStudy().getPerson());
-//				}
-//
-//				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-//				subjectFromBackend.setStudyList(subjectContainerForm.getModelObject().getStudyList());
-//				subjectContainerForm.setModelObject(subjectFromBackend);
-//				subjectContainerForm.getModelObject().setAvailableChildStudies(availableChildStudies);
-//				subjectContainerForm.getModelObject().setSelectedChildStudies(selectedChildStudies);
-//
-//				// Set SubjectUID into context
-//				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getLinkSubjectStudy().getSubjectUID());
-//				ContextHelper contextHelper = new ContextHelper();
-//				contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
-//				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
-//				
-//				// Set Study Logo
-//				StudyHelper studyHelper = new StudyHelper();
-//				studyHelper.setStudyLogo(subjectFromBackend.getLinkSubjectStudy().getStudy(), target, studyNameMarkup, studyLogoMarkup);
+				
+				LinkSubjectPedigree pedigreeRelationship = new LinkSubjectPedigree();
+				pedigreeRelationship.setFamilyId(0);
+				
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				
+				Study study = iArkCommonService.getStudy(sessionStudyId);
+
+				String subjectUID = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+				
+				SubjectVO criteriaSubjectVo = new SubjectVO();
+				criteriaSubjectVo.getLinkSubjectStudy().setStudy(study);
+				criteriaSubjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
+				Collection<SubjectVO> subjects = iArkCommonService.getSubject(criteriaSubjectVo);
+				SubjectVO subjectVo = subjects.iterator().next();
+				pedigreeRelationship.setSubject(subjectVo.getLinkSubjectStudy());
+				
+				criteriaSubjectVo.getLinkSubjectStudy().setSubjectUID(subject.getLinkSubjectStudy().getSubjectUID());
+				subjects = iArkCommonService.getSubject(criteriaSubjectVo);
+				subjectVo = subjects.iterator().next();
+				pedigreeRelationship.setRelative(subjectVo.getLinkSubjectStudy());
+				
+				String gender = subject.getLinkSubjectStudy().getPerson().getGenderType().getName();
+				
+				List<Relationship> relationships=iArkCommonService.getFamilyRelationships();
+				for(Relationship relationship : relationships){
+					if("Male".equalsIgnoreCase(gender) 
+							&& "Father".equalsIgnoreCase(relationship.getName())){
+						pedigreeRelationship.setRelationship(relationship);
+						break;
+					}
+					
+					if("Female".equalsIgnoreCase(gender) 
+							&& "Mother".equalsIgnoreCase(relationship.getName())){
+						pedigreeRelationship.setRelationship(relationship);
+						break;
+					}	
+				}
+				
+				iStudyService.create(pedigreeRelationship);
 				modalWindow.close(target);
 			}
 		};

@@ -428,6 +428,8 @@ public interface IStudyDao {
 	
 	public List<RelationshipVo> getSubjectChildRelatives(final String subjectUID,final Long studyId);
 	
+	public void create(LinkSubjectPedigree pedigree);
+	
 	public void deleteRelationship(final LinkSubjectPedigree relationship);
 	
 }

@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -295,7 +297,8 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	@SuppressWarnings("unchecked")
 	protected WebMarkupContainer initialiseSearchResults(AbstractDetailModalWindow modalWindow,final String gender) {
 		searchResultsPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup);
-
+		searchResultsPanel.setOutputMarkupId(true);
+		
 		if (sessionStudyId != null) {
 			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 			linkSubjectStudy.setStudy(study);
@@ -338,7 +341,15 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		dataView = searchResultsPanel.buildDataView(subjectProvider,modalWindow);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
+		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView){
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onAjaxEvent(AjaxRequestTarget target) {
+				target.add(searchResultsPanel);
+			}
+		};
 		searchResultsPanel.add(pageNavigator);
 
 		List<IColumn<SubjectVO>> columns = new ArrayList<IColumn<SubjectVO>>();

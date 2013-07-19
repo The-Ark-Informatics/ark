@@ -422,4 +422,6 @@ public interface IStudyService {
 	public List<RelationshipVo> generateSubjectPedigreeRelativeList(final String subjectUID,final Long studyId);
 	
 	public void deleteRelationship(final LinkSubjectPedigree relationship);
+	
+	public void create(LinkSubjectPedigree pedigree);
 }

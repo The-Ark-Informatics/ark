@@ -1247,6 +1247,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void create(ConsentFile consentFile) {
 		getSession().save(consentFile);
 	}
+	
+	public void create(LinkSubjectPedigree pedigree){
+		getSession().save(pedigree);
+	}
 
 	public void update(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException {
 		Session session = getSession();
