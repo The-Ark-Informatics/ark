@@ -155,6 +155,8 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		containerForm.add(initialiseSearchResults(modalWindow,gender));
 		containerForm.add(initialiseSearchPanel());
 		
+		arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("genderType").setEnabled(false);
+		
 		add(containerForm);
 	}
 
