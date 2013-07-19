@@ -48,10 +48,8 @@ import org.apache.wicket.util.string.StringValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.BarcodeLabelData;
-import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
@@ -83,7 +81,6 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 
 	private TextField<Long>						idTxtFld;
 	private DropDownChoice<Study>				studyDdc;
-	private DropDownChoice<BarcodePrinter>	barcodePrinterDdc;
 	private TextField<String>					nameTxtFld;
 	private TextArea<String>					descriptionTxtArea;
 	private TextField<Number>					versionTxtFld;
@@ -127,7 +124,6 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 		};
 
 		initStudyDdc();
-		initBarcodePrinterDdc();
 		initBarcodeLabelTemplateDdc();
 		
 		barcodeLabelDataPanel = new EmptyPanel("barcodeLabelDataPanel");
@@ -197,31 +193,6 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				target.add(barcodeLabelTemplateDdc);
-			}
-		});
-	}
-
-	private void initBarcodePrinterDdc() {
-		ChoiceRenderer<BarcodePrinter> choiceRenderer = new ChoiceRenderer<BarcodePrinter>("uniqueName", Constants.ID);
-		barcodePrinterDdc = new DropDownChoice<BarcodePrinter>("barcodePrinter") {
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onBeforeRender() {
-				super.onBeforeRender();
-				List<BarcodePrinter> choices = iLimsAdminService.getBarcodePrintersByStudyList(getStudyListForUser());
-				this.setChoices(choices);
-			}
-		};
-		barcodePrinterDdc.setChoiceRenderer(choiceRenderer);
-		barcodePrinterDdc.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				containerForm.getModelObject().setStudy(barcodePrinterDdc.getModelObject().getStudy());
 			}
 		});
 	}
@@ -296,7 +267,6 @@ public class DetailForm extends AbstractDetailForm<BarcodeLabel> {
 	protected void attachValidators() {
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
 		studyDdc.setRequired(true).setLabel(new StringResourceModel("error.study.required", this, new Model<String>("Study")));
-		barcodePrinterDdc.setRequired(true).setLabel(new StringResourceModel("error.barcodePrinter.required", this, new Model<String>("BarcodePrinter")));
 		versionTxtFld.setRequired(true).setLabel(new StringResourceModel("error.version.required", this, new Model<String>("Version")));
 	}
 

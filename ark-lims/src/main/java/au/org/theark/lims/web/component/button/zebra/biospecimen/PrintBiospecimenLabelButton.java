@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
-import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.lims.service.ILimsAdminService;
 
@@ -47,7 +46,6 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 	private IModel<?>					numberModel;
 	private Number						barcodesToPrint;
 	private String						zplString;
-	private BarcodePrinter			barcodePrinter;
 	private BarcodeLabel				barcodeLabel;
 
 	/**
@@ -65,11 +63,6 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 		this.biospecimen = (Biospecimen) biospecimenModel.getObject();
 		this.numberModel = numberModel;
 		this.barcodesToPrint = (Number) numberModel.getObject();
-
-		barcodePrinter = new BarcodePrinter();
-		barcodePrinter.setStudy(biospecimen.getStudy());
-		barcodePrinter.setName("zebra");
-		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
 
 		barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setStudy(biospecimen.getStudy());

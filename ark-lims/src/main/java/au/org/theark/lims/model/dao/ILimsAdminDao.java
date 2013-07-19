@@ -4,20 +4,13 @@ import java.util.List;
 
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.BarcodeLabelData;
-import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.study.entity.Study;
 
 public interface ILimsAdminDao {
-	/**
-	 * Gets the barcodePrinter from the database
-	 * @param barcodePrinter
-	 * @return
-	 */
-	public BarcodePrinter searchBarcodePrinter(BarcodePrinter barcodePrinter);
-	
+
 	/**
 	 * Gets the barcodeLabel from the database
 	 * @param barcodeLabel
@@ -31,30 +24,6 @@ public interface ILimsAdminDao {
 	 * @return
 	 */
 	public BarcodeLabelData searchBarcodeLabelData(BarcodeLabelData barcodeLabelData);
-	
-	/**
-	 * Create a barcode printer based on the supplied BarcodePrinter
-	 * 
-	 * @param barcodePrinter
-	 *           the BarcodePrinter object
-	 */
-	public void createBarcodePrinter(BarcodePrinter barcodePrinter);
-	
-	/**
-	 * Update a barcode printer based on the supplied BarcodePrinter
-	 * 
-	 * @param barcodePrinter
-	 *           the BarcodePrinter object
-	 */
-	public void updateBarcodePrinter(BarcodePrinter barcodePrinter);
-	
-	/**
-	 * Delete a barcode printer based on the supplied BarcodePrinter
-	 * 
-	 * @param barcodePrinter
-	 *           the BarcodePrinter object
-	 */
-	public void deleteBarcodePrinter(BarcodePrinter barcodePrinter);
 	
 	/**
 	 * Create a barcode Label based on the supplied barcodeLabel
@@ -109,22 +78,6 @@ public interface ILimsAdminDao {
 	 * @param object
 	 * @return
 	 */
-	public long getBarcodePrinterCount(BarcodePrinter object);
-
-	/**
-	 * Search the entities, restricted by a pageable count
-	 * @param object
-	 * @param first
-	 * @param count
-	 * @return
-	 */
-	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count);
-	
-	/**
-	 * Get the total count of the entities
-	 * @param object
-	 * @return
-	 */
 	public long getBarcodeLabelCount(BarcodeLabel object);
 
 	/**
@@ -136,12 +89,6 @@ public interface ILimsAdminDao {
 	 */
 	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, int first, int count);
 	
-	/**
-	 * Gets the list of barcodePrinters for the spcified list of studies
-	 * @param studyListForUser
-	 * @return
-	 */
-	public List<BarcodePrinter> getBarcodePrinters(List<Study> studyListForUser);
 	
 	/**
 	 * Get the BiospeciemenUidTemplate for the specifies Study
@@ -185,19 +132,6 @@ public interface ILimsAdminDao {
 	public BiospecimenUidTemplate searchBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
 
 	/**
-	 * Gets the list of barcodePrinters for the specified study
-	 * @param study
-	 * @return
-	 */
-	public List<BarcodePrinter> getBarcodePrintersByStudy(Study study);
-
-	/**
-	 * Gets a list of Studys that are already assigned to barcodePrinters
-	 * @return
-	 */
-	public List<Study> getStudyListAssignedToBarcodePrinter();
-	
-	/**
 	 * Gets a list of Studys that are already assigned to barcodeLabels
 	 * @return
 	 */
@@ -229,25 +163,6 @@ public interface ILimsAdminDao {
 	 * @return
 	 */
 	public List<BarcodeLabel> getBarcodeLabelTemplates();
-
-	/**
-	 * Gets a list of Printers for the specified list of Studies
-	 * @param studyListForUser
-	 * @return
-	 */
-	public List<BarcodePrinter> getBarcodePrintersByStudyList(List<Study> studyListForUser);
-
-	/**
-	 * List of BarcodePrinter, for the specified list of studies
-	 * @param object
-	 * @param first
-	 * @param count
-	 * @param studyListForUser
-	 * @return
-	 */
-	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count, List<Study> studyListForUser);
-	
-	public Long getBarcodePrinterCount(BarcodePrinter object, List<Study> studyListForUser);
 	
 	public Long getBarcodeLabelCount(BarcodeLabel object, List<Study> studyListForUser);
 

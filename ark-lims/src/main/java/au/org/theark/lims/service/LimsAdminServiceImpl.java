@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.BarcodeLabelData;
-import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.Biospecimen;
@@ -97,17 +96,6 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		this.velocityEngine = velocityEngine;
 	}
 
-	public void createBarcodePrinter(BarcodePrinter barcodePrinter) {
-		iLimsAdminDao.createBarcodePrinter(barcodePrinter);
-	}
-
-	public void deleteBarcodePrinter(BarcodePrinter barcodePrinter) {
-		iLimsAdminDao.deleteBarcodePrinter(barcodePrinter);
-	}
-
-	public void updateBarcodePrinter(BarcodePrinter barcodePrinter) {
-		iLimsAdminDao.updateBarcodePrinter(barcodePrinter);
-	}
 
 	public void createBarcodeLabel(BarcodeLabel barcodeLabel) {
 		iLimsAdminDao.createBarcodeLabel(barcodeLabel);
@@ -153,10 +141,6 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 
 	public BarcodeLabelData searchBarcodeLabelData(BarcodeLabelData barcodeLabelData) {
 		return iLimsAdminDao.searchBarcodeLabelData(barcodeLabelData);
-	}
-
-	public BarcodePrinter searchBarcodePrinter(BarcodePrinter barcodePrinter) {
-		return iLimsAdminDao.searchBarcodePrinter(barcodePrinter);
 	}
 
 	public String createBioCollectionLabelTemplate(BioCollection bioCollection, BarcodeLabel barcodeLabel) {
@@ -417,20 +401,8 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		return iLimsAdminDao.getBarcodeLabelCount(object);
 	}
 
-	public long getBarcodePrinterCount(BarcodePrinter object) {
-		return iLimsAdminDao.getBarcodePrinterCount(object);
-	}
-
 	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, int first, int count) {
 		return iLimsAdminDao.searchPageableBarcodeLabels(object, first, count);
-	}
-
-	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count) {
-		return iLimsAdminDao.searchPageableBarcodePrinters(object, first, count);
-	}
-
-	public List<BarcodePrinter> getBarcodePrinters(List<Study> studyListForUser) {
-		return iLimsAdminDao.getBarcodePrinters(studyListForUser);
 	}
 
 	public void createBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate) {
@@ -469,14 +441,6 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		return iLimsAdminDao.searchPageableBiospecimenUidTemplates(object, first, count);
 	}
 
-	public List<BarcodePrinter> getBarcodePrintersByStudy(Study study) {
-		return iLimsAdminDao.getBarcodePrintersByStudy(study);
-	}
-
-	public List<Study> getStudyListAssignedToBarcodePrinter() {
-		return iLimsAdminDao.getStudyListAssignedToBarcodePrinter();
-	}
-
 	public List<Study> getStudyListAssignedToBarcodeLabel() {
 		return iLimsAdminDao.getStudyListAssignedToBarcodeLabel();
 	}
@@ -499,18 +463,6 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 
 	public List<BarcodeLabel> getBarcodeLabelTemplates() {
 		return iLimsAdminDao.getBarcodeLabelTemplates();
-	}
-
-	public List<BarcodePrinter> getBarcodePrintersByStudyList(List<Study> studyListForUser) {
-		return iLimsAdminDao.getBarcodePrintersByStudyList(studyListForUser);
-	}
-	
-	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count, List<Study> studyListForUser) {
-		return iLimsAdminDao.searchPageableBarcodePrinters(object, first, count, studyListForUser);
-	}
-
-	public Long getBarcodePrinterCount(BarcodePrinter object, List<Study> studyListForUser) {
-		return iLimsAdminDao.getBarcodePrinterCount(object, studyListForUser);
 	}
 
 	public Long getBarcodeLabelCount(BarcodeLabel object, List<Study> studyListForUser) {

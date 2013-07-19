@@ -15,7 +15,6 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
 import au.org.theark.core.model.lims.entity.BarcodeLabelData;
-import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.BiospecimenUidPadChar;
 import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
@@ -33,9 +32,6 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		getSession().save(barcodeLabelData);
 	}
 
-	public void createBarcodePrinter(BarcodePrinter barcodePrinter) {
-		getSession().save(barcodePrinter);
-	}
 
 	public void deleteBarcodeLabel(BarcodeLabel barcodeLabel) {
 		getSession().delete(barcodeLabel);
@@ -45,20 +41,12 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		getSession().delete(barcodeLabelData);
 	}
 
-	public void deleteBarcodePrinter(BarcodePrinter barcodePrinter) {
-		getSession().delete(barcodePrinter);
-	}
-
 	public void updateBarcodeLabel(BarcodeLabel barcodeLabel) {
 		getSession().update(barcodeLabel);
 	}
 
 	public void updateBarcodeLabelData(BarcodeLabelData barcodeLabelData) {
 		getSession().update(barcodeLabelData);
-	}
-
-	public void updateBarcodePrinter(BarcodePrinter barcodePrinter) {
-		getSession().update(barcodePrinter);
 	}
 
 	public BarcodeLabel searchBarcodeLabel(BarcodeLabel barcodeLabel) {
@@ -77,10 +65,10 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 				}
 			}
 			
-			if (barcodeLabel.getBarcodePrinter() != null && barcodeLabel.getBarcodePrinter().getId() != null) {
+/*			if (barcodeLabel.getBarcodePrinter() != null && barcodeLabel.getBarcodePrinter().getId() != null) {
 				criteria.add(Restrictions.eq("barcodePrinter", barcodeLabel.getBarcodePrinter()));
 			}
-			
+	*/		
 			if (barcodeLabel.getName() != null) {
 				criteria.add(Restrictions.eq("name", barcodeLabel.getName()));
 			}
@@ -117,43 +105,6 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		return result;
 	}
 
-	public BarcodePrinter searchBarcodePrinter(BarcodePrinter barcodePrinter) {
-		Criteria criteria = getSession().createCriteria(BarcodePrinter.class);
-		
-		if (barcodePrinter.getId() != null) {
-			criteria.add(Restrictions.eq("id", barcodePrinter.getId()));
-		}
-		
-		if (barcodePrinter.getStudy() != null) {
-			if(barcodePrinter.getStudy().getParentStudy() != null && barcodePrinter.getStudy().getParentStudy().getId() != null) {
-				// Use parent study
-				criteria.add(Restrictions.eq("study", barcodePrinter.getStudy().getParentStudy()));
-			}
-			else {	
-				criteria.add(Restrictions.eq("study", barcodePrinter.getStudy()));
-			}
-		}
-		
-		if(barcodePrinter.getName() != null) {
-			criteria.add(Restrictions.eq("name", barcodePrinter.getName()));
-		}
-		
-		if (barcodePrinter.getDescription() != null) {
-			criteria.add(Restrictions.ilike("description", barcodePrinter.getDescription(), MatchMode.ANYWHERE));
-		}
-		
-		if(barcodePrinter.getLocation() != null) {
-			criteria.add(Restrictions.eq("location", barcodePrinter.getLocation()));
-		}
-		
-		if(barcodePrinter.getHost() != null) {
-			criteria.add(Restrictions.eq("host", barcodePrinter.getHost()));
-		}
-
-		BarcodePrinter result = (BarcodePrinter) criteria.uniqueResult();
-		return result;
-	}
-
 	public long getBarcodeLabelCount(BarcodeLabel object) {
 		Criteria criteria = buildBarcodeLabelCriteria(object);
 		criteria.setProjection(Projections.rowCount());
@@ -161,12 +112,6 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		return totalCount;
 	}
 
-	public long getBarcodePrinterCount(BarcodePrinter object) {
-		Criteria criteria = buildBarcodePrinterCriteria(object);
-		criteria.setProjection(Projections.rowCount());
-		Long totalCount = (Long) criteria.uniqueResult();
-		return totalCount;
-	}
 
 	public List<BarcodeLabel> searchPageableBarcodeLabels(BarcodeLabel object, int first, int count) {
 		Criteria criteria = buildBarcodeLabelCriteria(object);
@@ -177,48 +122,6 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		return list;
 	}
 
-	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count) {
-		Criteria criteria = buildBarcodePrinterCriteria(object);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
-		List<BarcodePrinter> list = criteria.list();
-		return list;
-	}
-	
-	protected Criteria buildBarcodePrinterCriteria(BarcodePrinter object) {
-		Criteria criteria = getSession().createCriteria(BarcodePrinter.class);
-
-		if (object.getId() != null) {
-			criteria.add(Restrictions.eq("id", object.getId()));
-		}
-		
-		if(object.getStudy() != null) {
-			criteria.add(Restrictions.eq("study", object.getStudy()));
-		}
-
-		if (object.getName() != null) {
-			criteria.add(Restrictions.eq("name", object.getName()));
-		}
-
-		if (object.getDescription() != null) {
-			criteria.add(Restrictions.ilike("description", object.getDescription(), MatchMode.ANYWHERE));
-		}
-		
-		if (object.getLocation() != null) {
-			criteria.add(Restrictions.eq("location", object.getLocation()));
-		}
-		
-		if (object.getHost() != null) {
-			criteria.add(Restrictions.eq("host", object.getHost()));
-		}
-		
-		if (object.getPort() != null) {
-			criteria.add(Restrictions.eq("port", object.getPort()));
-		}
-
-		return criteria;
-	}
-	
 	protected Criteria buildBarcodeLabelCriteria(BarcodeLabel barcodeLabel) {
 		Criteria criteria = getSession().createCriteria(BarcodeLabel.class);
 		
@@ -230,9 +133,9 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 			criteria.add(Restrictions.eq("study", barcodeLabel.getStudy()));
 		}
 		
-		if(barcodeLabel.getBarcodePrinter() != null) {
+		/*if(barcodeLabel.getBarcodePrinter() != null) {
 			criteria.add(Restrictions.eq("barcodePrinter", barcodeLabel.getBarcodePrinter()));
-		}
+		}*/
 
 		if (barcodeLabel.getName() != null) {
 			criteria.add(Restrictions.eq("name", barcodeLabel.getName()));
@@ -243,14 +146,6 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		}
 		
 		return criteria;
-	}
-
-	public List<BarcodePrinter> getBarcodePrinters(List<Study> studyListForUser) {
-		Criteria criteria = getSession().createCriteria(BarcodePrinter.class);
-		if(!studyListForUser.isEmpty()) {
-			criteria.add(Restrictions.in("study", studyListForUser));
-		}
-		return criteria.list();
 	}
 	
 	public BiospecimenUidTemplate getBiospecimenUidTemplate(Study study) {
@@ -352,23 +247,6 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		return criteria;
 	}
 
-	public List<BarcodePrinter> getBarcodePrintersByStudy(Study study) {
-		List<BarcodePrinter> list = new ArrayList<BarcodePrinter>(0);
-		
-		if(study != null && study.getId() != null) {
-			Criteria criteria = getSession().createCriteria(BarcodePrinter.class);
-			criteria.add(Restrictions.eq("study", study));
-			list = criteria.list();
-		}
-		return list;
-	}
-
-	public List<Study> getStudyListAssignedToBarcodePrinter() {
-		Criteria criteria = getSession().createCriteria(BarcodePrinter.class);
-		criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("study")));
-		return criteria.list();
-	}
-	
 	public List<Study> getStudyListAssignedToBarcodeLabel() {
 		Criteria criteria = getSession().createCriteria(BarcodeLabel.class);
 		criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("study")));
@@ -414,16 +292,6 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		
 		return list;
 	}
-
-	public List<BarcodePrinter> getBarcodePrintersByStudyList(List<Study> studyListForUser) {
-		List<BarcodePrinter> list = new ArrayList<BarcodePrinter>(0);
-		
-		Criteria criteria = getSession().createCriteria(BarcodePrinter.class);
-		criteria.add(Restrictions.in("study", studyListForUser));
-		list = criteria.list();
-		
-		return list;
-	}
 	
 	public Long getMaxBarcodeVersion(BarcodeLabel barcodeLabel) {
 		Long maxVersion = new Long(1);
@@ -433,22 +301,6 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		return maxVersion;
 	}
 
-	public List<BarcodePrinter> searchPageableBarcodePrinters(BarcodePrinter object, int first, int count, List<Study> studyListForUser) {
-		Criteria criteria = buildBarcodePrinterCriteria(object);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
-		criteria.add(Restrictions.in("study", studyListForUser));
-		List<BarcodePrinter> list = criteria.list();
-		return list;
-	}
-
-	public Long getBarcodePrinterCount(BarcodePrinter object, List<Study> studyListForUser) {
-		Criteria criteria = buildBarcodePrinterCriteria(object);
-		criteria.add(Restrictions.in("study", studyListForUser));
-		criteria.setProjection(Projections.rowCount());
-		Long totalCount = (Long) criteria.uniqueResult();
-		return totalCount;
-	}
 
 	public Long getBarcodeLabelCount(BarcodeLabel object, List<Study> studyListForUser) {
 		Criteria criteria = buildBarcodeLabelCriteria(object);
@@ -466,4 +318,5 @@ public class LimsAdminDao extends HibernateSessionDao implements ILimsAdminDao {
 		List<BarcodeLabel> list = criteria.list();
 		return list;
 	}
+
 }
