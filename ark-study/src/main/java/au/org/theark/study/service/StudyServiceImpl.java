@@ -1545,7 +1545,8 @@ public class StudyServiceImpl implements IStudyService {
 				}
 			}
 			
-			
+			//Remove proband from the list
+			relativeSubjects.remove(0);
 		}
 		
 		return relativeSubjects;
@@ -1596,6 +1597,10 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		return relative;
 	}	 
+	
+	public void create(LinkSubjectPedigree pedigree){
+		iStudyDao.create(pedigree);
+	}
 	
 	public void deleteRelationship(final LinkSubjectPedigree relationship){
 		iStudyDao.deleteRelationship(relationship);

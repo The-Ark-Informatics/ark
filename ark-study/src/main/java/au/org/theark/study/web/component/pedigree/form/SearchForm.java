@@ -77,7 +77,8 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
 				// TODO Auto-generated method stub
-//				target.add(SearchForm.this);
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVO.getSearchPanelContainer());
 				
 			}
 		};

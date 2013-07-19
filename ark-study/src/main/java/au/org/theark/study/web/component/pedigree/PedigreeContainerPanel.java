@@ -66,7 +66,8 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 	protected WebMarkupContainer initialiseSearchResults() {
 
 		searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm, arkContextMarkup,  studyNameMarkup,  studyLogoMarkup );
-
+		searchResultPanel.setOutputMarkupId(true);
+		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
 
@@ -91,6 +92,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 
 	protected WebMarkupContainer initialiseSearchPanel() {
 		searchComponentPanel = new SearchPanel("searchComponentPanel",arkContextMarkup,studyNameMarkup,studyLogoMarkup ,arkCrudContainerVO, feedBackPanel, containerForm, pageableListView);
+		searchComponentPanel.setOutputMarkupId(true);
 		searchComponentPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchComponentPanel);
 		return arkCrudContainerVO.getSearchPanelContainer();
