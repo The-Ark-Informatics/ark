@@ -1,0 +1,24 @@
+drop table if exists lims.appointments	;
+drop table if exists lims.attachment	;
+drop table if exists lims.barcode_command	;
+drop table if exists lims.barcode_printer	;
+drop table if exists lims.barcodeformat	;
+drop table if exists lims.barcodeid_engine ;
+drop table if exists lims.biodata	;
+drop table if exists lims.biodata_field_group	;
+drop table if exists lims.biodata_field_lov	;
+drop table if exists lims.biodata_lov_list	;
+drop table if exists lims.biodata_type	;
+drop table if exists lims.biodata_unit	;
+drop table if exists lims.biodata_field	;
+drop table if exists lims.flag	;
+drop table if exists lims.group	;
+drop table if exists lims.inv_type	;
+drop table if exists lims.listofvalues	;
+drop table if exists lims.listofvalues_description	;
+drop table if exists lims.note	;
+drop table if exists lims.samplecode	;
+drop table if exists lims.biodata_group_criteria	;
+drop table if exists lims.biodata_criteria	;
+drop table if exists lims.biodata_group	;
+/* don't delete even though empty...this links to biotransaction...may be used?  drop table if exists lims.access_request; */
