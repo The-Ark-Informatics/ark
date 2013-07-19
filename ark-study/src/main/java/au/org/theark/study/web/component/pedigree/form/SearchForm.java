@@ -30,9 +30,6 @@ public class SearchForm extends Form<PedigreeVo> {
 	
 	protected ArkCrudContainerVO arkCrudContainerVO;
    
-//	private PageableListView<BillableItem>					listView;
-//	
-//	private CompoundPropertyModel<BillableItemVo>			cpmModel;
 	
 	protected AjaxButton fatherButton;
 	protected AjaxButton motherButton;
@@ -89,8 +86,6 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				modalWindow.setTitle("Set Father");
-//				modalWindow.setInitialHeight(300);
-//				modalWindow.setInitialWidth(400);
 				modalWindow.setContent(new PedigreeParentContainerPanel("content",arkContextMarkup,studyNameMarkup,studyLogoMarkup,modalWindow,Constants.MALE));
 				modalWindow.show(target);
 			}						
@@ -101,8 +96,6 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				modalWindow.setTitle("Set Mother");
-//				modalWindow.setInitialHeight(300);
-//				modalWindow.setInitialWidth(400);
 				modalWindow.setContent(new PedigreeParentContainerPanel("content",arkContextMarkup,studyNameMarkup,studyLogoMarkup,modalWindow,Constants.FEMALE));
 				modalWindow.show(target);
 			}						
@@ -121,8 +114,6 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				modalWindow.setTitle("Pedigree View");
-//				modalWindow.setInitialHeight(300);
-//				modalWindow.setInitialWidth(400);
 				modalWindow.setContent(new PedigreeDisplayPanel("content"));
 				modalWindow.show(target);
 				
