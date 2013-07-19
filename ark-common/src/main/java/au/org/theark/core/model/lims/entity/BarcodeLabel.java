@@ -50,7 +50,7 @@ public class BarcodeLabel implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long							id;
 	private Study							study;
-	private BarcodePrinter				barcodePrinter;
+//	private BarcodePrinter				barcodePrinter;
 	private String							name;
 	private String							description;
 	private String							labelPrefix;
@@ -68,11 +68,11 @@ public class BarcodeLabel implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public BarcodeLabel(Long id, Study study, BarcodePrinter barcodePrinter, String name, String description, String labelPrefix, String labelSuffix, List<BarcodeLabelData> barcodeLabelData) {
+	public BarcodeLabel(Long id, Study study, String name, String description, String labelPrefix, String labelSuffix, List<BarcodeLabelData> barcodeLabelData) {
 		super();
 		this.id = id;
 		this.study = study;
-		this.barcodePrinter = barcodePrinter;
+		//this.barcodePrinter = barcodePrinter;
 		this.name = name;
 		this.description = description;
 		this.labelPrefix = labelPrefix;
@@ -101,7 +101,7 @@ public class BarcodeLabel implements java.io.Serializable {
 	public void setStudy(Study study) {
 		this.study = study;
 	}
-
+/*
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BARCODE_PRINTER_ID", nullable = false)
 	public BarcodePrinter getBarcodePrinter() {
@@ -111,7 +111,7 @@ public class BarcodeLabel implements java.io.Serializable {
 	public void setBarcodePrinter(BarcodePrinter printer) {
 		this.barcodePrinter = printer;
 	}
-
+*/
 	@Column(name = "NAME", length = 50, nullable = false)
 	public String getName() {
 		return this.name;
