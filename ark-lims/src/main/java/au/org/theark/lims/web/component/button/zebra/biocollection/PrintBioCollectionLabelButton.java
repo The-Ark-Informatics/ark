@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BarcodeLabel;
-import au.org.theark.core.model.lims.entity.BarcodePrinter;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -55,7 +54,6 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 	private ILimsAdminService			iLimsAdminService;
 	private BioCollection				bioCollection;
 	private String							zplString;
-	private BarcodePrinter				barcodePrinter;
 	private BarcodeLabel					barcodeLabel;
 	private IModel<?>						numberModel;
 	private Number							barcodesToPrint;
@@ -86,10 +84,6 @@ public abstract class PrintBioCollectionLabelButton extends AjaxButton {
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
 		}
-		barcodePrinter = new BarcodePrinter();
-		barcodePrinter.setStudy(bioCollection.getStudy());
-		barcodePrinter.setName("zebra");
-		barcodePrinter = iLimsAdminService.searchBarcodePrinter(barcodePrinter);
 
 		barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setStudy(bioCollection.getStudy());
