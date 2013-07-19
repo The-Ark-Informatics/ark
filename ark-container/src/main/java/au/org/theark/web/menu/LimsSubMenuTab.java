@@ -27,8 +27,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -42,7 +40,6 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.session.ArkSession;
-import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.customfieldupload.CustomFieldUploadContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
@@ -50,17 +47,13 @@ import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.barcodelabel.BarcodeLabelContainerPanel;
-import au.org.theark.lims.web.component.barcodeprinter.BarcodePrinterContainerPanel;
 import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataContainerPanel;
-import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
 import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataContainerPanel;
 import au.org.theark.lims.web.component.biospecimenuidtemplate.BiospecimenUidTemplateContainerPanel;
 import au.org.theark.lims.web.component.biospecimenupload.BiospecimenUploadContainerPanel;
 import au.org.theark.lims.web.component.bioupload.BioUploadContainerPanel;
 import au.org.theark.lims.web.component.inventory.panel.InventoryContainerPanel;
 import au.org.theark.lims.web.component.inventory.tree.TreeModel;
-import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
-import au.org.theark.lims.web.component.subjectlims.subject.SubjectContainerPanel;
 
 /**
  * 
@@ -195,9 +188,6 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMENUID_TEMPLATE)) {
 			panelToReturn = new BiospecimenUidTemplateContainerPanel(panelId, arkContextMarkup);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BARCODE_PRINTER)) {
-			panelToReturn = new BarcodePrinterContainerPanel(panelId, arkContextMarkup);
-		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BARCODE_LABEL)) {
 			panelToReturn = new BarcodeLabelContainerPanel(panelId, arkContextMarkup);
 		}
@@ -210,13 +200,5 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		}
 		return panelToReturn;
 	}
-	
-	private void clearSubjectContext() {
-		// Clear context objects
-		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.SUBJECTUID);
-		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		ContextHelper contextHelper = new ContextHelper();
-		contextHelper.resetContextLabel(AjaxRequestTarget.get(), arkContextMarkup);
-		contextHelper.setStudyContextLabel(study.getName(), arkContextMarkup);
-	}
+
 }
