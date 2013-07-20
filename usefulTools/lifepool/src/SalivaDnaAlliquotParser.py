@@ -8,6 +8,12 @@ import re
  
 print "----------------------- SALIVA DNA BIOSPECIMEN ALLIQUOT --------------------------------"
 
+def getCorrectVolume(value):
+    volume = 0.0
+    if value  and  value.strip() not in "-" :
+        volume = float(value.strip())
+    return volume
+
 inputFile = open('../resource/DNA_SALIVA_SPECIMEN.csv', 'r')
 
 firstLine=True
@@ -20,21 +26,22 @@ for line in inputFile:
     tokens = line.split(",")
        
     superParentUid =  tokens[1].strip()
-    parentUid = superParentUid[:-3]+"800"
+    parentUid = superParentUid+"-800"
     
+    parentQuantity = float(tokens[4]) - getCorrectVolume(tokens[17])
     specimenUid1 = superParentUid+"-"+tokens[8].strip()
-    quantity1=tokens[9].strip()
-    concentration1 = tokens[10].strip()
+    quantity1=getCorrectVolume(tokens[9])
+    concentration1 = getCorrectVolume(tokens[10])/1000
     
     specimenUid2 = superParentUid+"-"+tokens[16].strip()
-    quantity2=tokens[17].strip()
-    concentration2 = tokens[18].strip()
+    quantity2=getCorrectVolume(tokens[17])
+    concentration2 = getCorrectVolume(tokens[18])/1000
     
     
     
-    line1=parentUid+","+specimenUid1+","+quantity1+","+concentration1
+    line1=parentUid+","+specimenUid1+","+str(quantity1)+","+str(concentration1)+","+str(parentQuantity)+",P"
     print line1
-    line2=parentUid+","+specimenUid2+","+quantity2+","+concentration2
+    line2=parentUid+","+specimenUid2+","+str(quantity2)+","+str(concentration2)+","+str(quantity2)+",A"
     print line2
     output=output+line1+"\n"+line2+"\n"
     
