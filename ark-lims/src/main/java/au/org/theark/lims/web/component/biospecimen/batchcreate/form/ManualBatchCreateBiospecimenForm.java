@@ -486,6 +486,17 @@ public class ManualBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> {
 			ok = false;
 		}
 		
+		// Check for any duplicated ids
+		for (BatchBiospecimenVO batchBiospecimenVOs: batchBiospecimenList) {
+			// Check BiospecimenUID is unique
+			String biospecimenUid = (batchBiospecimenVOs.getBiospecimen().getBiospecimenUid());
+			Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUid, batchBiospecimenVOs.getBiospecimen().getStudy());
+			if(biospecimen !=null && biospecimen.getId() != null) {
+				error("Field 'Biospecimen UID' must be unique.");
+				ok = false;
+			}
+  		} 
+		
 		// Check for any empty required fields in list
 		for (BatchBiospecimenVO batchBiospecimenVO: batchBiospecimenList) {
 			biospecimenUidError = (batchBiospecimenVO.getBiospecimen().getBiospecimenUid() == null || batchBiospecimenVO.getBiospecimen().getBiospecimenUid().isEmpty());	
