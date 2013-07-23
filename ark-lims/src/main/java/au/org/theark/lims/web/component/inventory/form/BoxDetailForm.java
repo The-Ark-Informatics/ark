@@ -349,13 +349,8 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target) {
 		iInventoryService.deleteInvBox(containerForm.getModelObject());
 		this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was deleted successfully");
-		log.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was deleted successfully");
 		// Display delete confirmation message
 		target.add(feedbackPanel);
-
-		// Move focus back to Search form
-		LimsVO limsVo = new LimsVO();
-		containerForm.setModelObject(limsVo);
 	}
 
 	/*
