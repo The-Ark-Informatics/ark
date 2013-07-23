@@ -58,6 +58,7 @@ import au.org.theark.core.web.component.listeditor.AjaxEditorButton;
 import au.org.theark.core.web.component.listeditor.ListItem;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.lims.model.vo.BatchBiospecimenAliquotsVO;
+import au.org.theark.lims.model.vo.BatchBiospecimenVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 
@@ -495,12 +496,23 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 				
 		if(uniqueSet.size() != biospecimenUids.size()) {
 			// Ignore auto-generated ids
-			if(!getModelObject().getParentBiospecimen().getStudy().getAutoGenerateBiospecimenUid())
-			{
+			if(!getModelObject().getParentBiospecimen().getStudy().getAutoGenerateBiospecimenUid()) {
 				error("Field 'Biospecimen UID' must be unique.");
 				ok = false;
 			}
 		}
+		
+	// Check for any duplicated ids
+		for (Biospecimen biospecimen: getModelObject().getAliquots()) {
+			// Check BiospecimenUID is unique
+			String biospecimenUid = (biospecimen.getBiospecimenUid());
+			Biospecimen b = iLimsService.getBiospecimenByUid(biospecimenUid, biospecimen.getStudy());
+			if(biospecimen !=null && biospecimen.getId() != null) {
+				error("Field 'Biospecimen UID' must be unique.");
+				ok = false;
+				break;
+			}
+  		} 
 		
 		// Check for any empty required fields in list
 		for (Biospecimen biospecimen: getModelObject().getAliquots()) {
