@@ -238,10 +238,6 @@ public class RackDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 		// Display delete confirmation message
 		target.add(feedbackPanel);
-
-		// Move focus back to Search form
-		LimsVO limsVo = new LimsVO();
-		containerForm.setModelObject(limsVo);
 	}
 
 	/*
