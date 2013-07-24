@@ -18,7 +18,9 @@
  ******************************************************************************/
 package au.org.theark.study.web;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Constants {
 	public static final String			UPLOAD_STATUS_OF_AWAITING_VALIDATION				= "AWAITING_VALIDATION";
@@ -54,6 +56,7 @@ public class Constants {
 	public static final String			ARCHIVE															= "archive";
 	public static final String			SEARCH_USER_FORM												= "searchUserForm";
 	public static final String			SEARCH_FORM														= "searchForm";
+	public static final String			SAVE_FORM														= "saveForm";
 	public static final String			SEARCH															= "search";
 	public static final String			NEW																= "new";
 	public static final String			RESET																= "reset";
@@ -427,6 +430,14 @@ public class Constants {
 	
 	public static final String MALE = "male";
 	public static final String FEMALE = "female";
+	
+	public static final List<String> TWIN_LIST = new ArrayList<String>(){
+			{
+				add("N/A");
+				add("MZ");
+				add("DZ");
+		   }
+	};
 
 	
 }
