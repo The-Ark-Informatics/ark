@@ -14,6 +14,7 @@ import au.org.theark.study.model.vo.PedigreeVo;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.pedigree.PedigreeDisplayPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeParentContainerPanel;
+import au.org.theark.study.web.component.pedigree.PedigreeTwinContainerPanel;
 
 public class SearchForm extends Form<PedigreeVo> {
 	
@@ -105,7 +106,9 @@ public class SearchForm extends Form<PedigreeVo> {
 			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				//TODO
+				modalWindow.setTitle("Set Twins");
+				modalWindow.setContent(new PedigreeTwinContainerPanel("content",modalWindow));
+				modalWindow.show(target);
 			}						
 		};
 		

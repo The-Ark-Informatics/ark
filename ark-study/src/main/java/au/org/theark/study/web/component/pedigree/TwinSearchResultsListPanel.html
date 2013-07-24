@@ -1,0 +1,75 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			<th width="15%">
+				<label for="subjectUid">
+					<wicket:message key="pedigree.subjectuid">
+						Subject UID:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="firstName">
+					<wicket:message key="pedigree.firstname">
+						First Name:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="lastName">
+					<wicket:message key="pedigree.lastname">
+						Last Name:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="dob">
+					<wicket:message key="pedigree.dob">
+						DOB:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="twin">
+					<wicket:message key="pedigree.twin">
+						Twin:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="2%">&nbsp;</th>			
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="relationshipList">
+			<td width="2%">&nbsp;</td>
+			<td width="15%">
+				<span wicket:id="pedigree.individualId">Individual Id</span>
+			</td>
+			<td width="15%">
+				<span wicket:id="pedigree.firstName">First Name</span>
+			</td>
+			<td width="15%">
+				<span wicket:id="pedigree.lastName">Last Name</span>
+			</td>
+			<td width="15%">
+				<span wicket:id="pedigree.dob">DOB</span>
+			</td>
+			<td width="15%">
+				&nbsp;
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<!--  
+		<tfoot>
+			<tr>
+				<td width="2%">&nbsp;</td>
+				<td colspan="4"><span wicket:id="navigator" class="a"></span></td>
+				<td width="2%">&nbsp;</td>
+			</tr>
+		</tfoot>
+		-->
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>
