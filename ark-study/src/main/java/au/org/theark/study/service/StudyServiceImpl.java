@@ -1606,4 +1606,9 @@ public class StudyServiceImpl implements IStudyService {
 		iStudyDao.deleteRelationship(relationship);
 	}
 
+	public List<RelationshipVo> getSubjectPedigreeTwinList(String subjectUID, Long studyId) {
+		// TODO Auto-generated method stub
+		return new ArrayList<RelationshipVo>();
+	}
+
 }
