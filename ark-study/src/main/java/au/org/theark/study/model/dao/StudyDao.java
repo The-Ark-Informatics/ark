@@ -2132,5 +2132,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void deleteRelationship(final LinkSubjectPedigree relationship){
 		getSession().delete(relationship);
 	}
+	
+	public List<RelationshipVo> getSubjectSiblings(final String subjectUID,final Long studyId){
+		List<RelationshipVo> siblings = new ArrayList<RelationshipVo>();
+//		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class, "lsp");
+//		criteria.createAlias("subject", "sub", JoinType.INNER_JOIN);
+//		criteria.createAlias("sub.study", "substudy", JoinType.INNER_JOIN);
+		
+		return siblings;
+	} 
 
 }

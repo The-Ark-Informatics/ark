@@ -39,6 +39,13 @@
 					</wicket:message>
 				</label>
 			</th>
+			<th width="15%">
+				<label for="twin">
+					<wicket:message key="pedigree.action">
+						Twin:
+					</wicket:message>
+				</label>
+			</th>
 			<th width="2%">&nbsp;</th>			
 		</tr>
 		<!--  The Data Result Set -->
@@ -57,7 +64,12 @@
 				<span wicket:id="pedigree.dob">DOB</span>
 			</td>
 			<td width="15%">
-				&nbsp;
+				<span wicket:id="pedigree.twin">Twin</span>
+			</td>
+			<td width="15%">
+			   <input wicket:id="pedigree.ntButton" type="submit" wicket:message="value:button.nt" />&nbsp;
+			   <input wicket:id="pedigree.mzButton" type="submit" wicket:message="value:button.mz" />&nbsp;
+			   <input wicket:id="pedigree.dzButton" type="submit" wicket:message="value:button.dz" />&nbsp;
 			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>

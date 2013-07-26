@@ -1,9 +1,7 @@
 package au.org.theark.study.model.vo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class RelationshipVo implements Serializable {
 
