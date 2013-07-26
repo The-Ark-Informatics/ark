@@ -432,4 +432,6 @@ public interface IStudyDao {
 	
 	public void deleteRelationship(final LinkSubjectPedigree relationship);
 	
+	public List<RelationshipVo> getSubjectSiblings(final String subjectUID,final Long studyId);
+	
 }

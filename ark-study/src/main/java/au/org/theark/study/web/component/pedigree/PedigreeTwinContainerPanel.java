@@ -60,7 +60,7 @@ public class PedigreeTwinContainerPanel extends AbstractContainerPanel<PedigreeV
 
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-		searchResultPanel = new TwinSearchResultsListPanel("searchResults");
+		searchResultPanel = new TwinSearchResultsListPanel("searchResults",arkCrudContainerVO,containerForm);
 		searchResultPanel.setOutputMarkupId(true);
 		
 		iModel = new LoadableDetachableModel<Object>() {
