@@ -35,13 +35,13 @@ db.commit()
 for r in range(1, 2, 1):
         print "Rack %d" % (r)
         cursor.execute("""insert into lims.inv_rack (FREEZER_ID,CAPACITY,NAME,AVAILABLE) values(%s,%s,%s,%s) """,
-                       (lnFreezerId, 100, ("Rack " + str(r)), 70))
+                       (lnFreezerId, 100, ("Rack " + "{0:0>2}".format(r)), 70))
         rackId = db.insert_id()
         db.commit()
         for b in range(1, 31, 1):
                 print "Box" + str(b)
                 cursor.execute("""insert into lims.inv_box (rack_ID,CAPACITY,NAME,AVAILABLE,COLNOTYPE_ID,ROWNOTYPE_ID,NOOFROW,NOOFCOL) values(%s,%s,%s,%s,%s,%s,%s,%s) """,
-                               (rackId, 169, ("Box " + str(b)), 169, colTypeId, rowTypeId,13,13))
+                               (rackId, 169, ("Box " + "{0:0>2}".format(b)), 169, colTypeId, rowTypeId,13,13))
                 boxId = db.insert_id()
                 db.commit()
                 for x in range(1, 14, 1):

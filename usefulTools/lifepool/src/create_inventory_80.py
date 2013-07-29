@@ -26,7 +26,7 @@ siteId = row[0]
 
 
 cursor.execute("""insert into lims.inv_freezer (SITE_ID,CAPACITY,NAME,AVAILABLE) values(%s,%s,%s,%s) """,
-                              (siteId,30,"-80",24))
+                              (siteId,30,"-80C",24))
 
 lnFreezerId = db.insert_id()
 
@@ -35,14 +35,14 @@ db.commit()
 for r in range(1, 7, 1):
         print "Rack %d" % (r)
         cursor.execute("""insert into lims.inv_rack (FREEZER_ID,CAPACITY,NAME,AVAILABLE) values(%s,%s,%s,%s) """,
-                       (lnFreezerId, 100, ("Rack " + str(r)), 75))
+                       (lnFreezerId, 100, ("Rack " + "{0:0>2}".format(r)), 75))
         rackId = db.insert_id()
         db.commit()
         if r < 2:
                 for b in range(1, 26, 1):
                         print "Box" + str(b)
                         cursor.execute("""insert into lims.inv_box (rack_ID,CAPACITY,NAME,AVAILABLE,COLNOTYPE_ID,ROWNOTYPE_ID,NOOFROW,NOOFCOL) values(%s,%s,%s,%s,%s,%s,%s,%s) """,
-                                       (rackId, 100, ("Box " + str(b)), 100, colTypeId, rowTypeId,10,10))
+                                       (rackId, 100, ("Box " + "{0:0>2}".format(b)), 100, colTypeId, rowTypeId,10,10))
                         boxId = db.insert_id()
                         db.commit()
                         for x in range(1, 11, 1):
@@ -54,7 +54,7 @@ for r in range(1, 7, 1):
                 for b in range(1, 26, 1):
                         print "Box" + str(b)
                         cursor.execute("""insert into lims.inv_box (rack_ID,CAPACITY,NAME,AVAILABLE,COLNOTYPE_ID,ROWNOTYPE_ID,NOOFROW,NOOFCOL) values(%s,%s,%s,%s,%s,%s,%s,%s) """,
-                                       (rackId, 169, ("Box " + str(b)), 169, colTypeId, rowTypeId,13,13))
+                                       (rackId, 169, ("Box " + "{0:0>2}".format(b)), 169, colTypeId, rowTypeId,13,13))
                         boxId = db.insert_id()
                         db.commit()
                         for x in range(1, 14, 1):
