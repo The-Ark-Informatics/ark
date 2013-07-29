@@ -502,17 +502,19 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 			}
 		}
 		
-	// Check for any duplicated ids
-		for (Biospecimen biospecimen: getModelObject().getAliquots()) {
-			// Check BiospecimenUID is unique
-			String biospecimenUid = (biospecimen.getBiospecimenUid());
-			Biospecimen b = iLimsService.getBiospecimenByUid(biospecimenUid, biospecimen.getStudy());
-			if(biospecimen !=null && biospecimen.getId() != null) {
-				error("Field 'Biospecimen UID' must be unique.");
-				ok = false;
-				break;
-			}
-  		} 
+		if(!getModelObject().getParentBiospecimen().getStudy().getAutoGenerateBiospecimenUid()) {
+			// Check for any duplicated ids
+			for (Biospecimen biospecimen: getModelObject().getAliquots()) {
+				// Check BiospecimenUID is unique
+				String biospecimenUid = (biospecimen.getBiospecimenUid());
+				Biospecimen b = iLimsService.getBiospecimenByUid(biospecimenUid, biospecimen.getStudy());
+				if(biospecimen !=null && biospecimen.getId() != null) {
+					error("Field 'Biospecimen UID' must be unique.");
+					ok = false;
+					break;
+				}
+	  		} 
+		}
 		
 		// Check for any empty required fields in list
 		for (Biospecimen biospecimen: getModelObject().getAliquots()) {
