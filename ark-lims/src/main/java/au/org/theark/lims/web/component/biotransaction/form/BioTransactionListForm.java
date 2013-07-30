@@ -130,16 +130,16 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 					target.add(feedbackPanel);
 				}
 				else {
-					// Make quantity minus if positive and Aliquoted or Processed
+					// Make quantity minus if positive and Aliquoted, Processed or	Delivered
 					String status = cpModel.getObject().getBioTransaction().getStatus().getName();
-					if(status != null && (status.equalsIgnoreCase("Aliquoted") || status.equalsIgnoreCase("Processed")) && txnQuantity != null && txnQuantity > 0) {
+					if(status != null && (status.equalsIgnoreCase("Aliquoted") || status.equalsIgnoreCase("Processed") || status.equalsIgnoreCase("Delivered")) && txnQuantity != null && txnQuantity > 0) {
 						txnQuantity = (-1 * txnQuantity);
 						cpModel.getObject().getBioTransaction().setQuantity(txnQuantity);
 					}
 					
 					// Check that quantity specified not greater than available
 					if(txnQuantity < 0 && (Math.abs(txnQuantity) > qtyAvail)) {
-						error("When aliquoting or processing, transaction quantity may not exceed total quantity available.");
+						error("When aliquoting, processing or delivering, transaction quantity may not exceed total quantity available.");
 						target.add(feedbackPanel);
 					}
 					else {
