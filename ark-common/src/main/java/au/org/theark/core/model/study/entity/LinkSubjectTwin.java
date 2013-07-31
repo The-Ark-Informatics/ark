@@ -26,17 +26,17 @@ public class LinkSubjectTwin implements Serializable {
 	private Integer id;
 	private LinkSubjectStudy firstSubject;
 	private LinkSubjectStudy secondSubject;
-	private Relationship relationship;
+	private TwinType twinType;
 
 	public LinkSubjectTwin() {
 	}
 
 	public LinkSubjectTwin(Integer id, LinkSubjectStudy firstSubject,
-			LinkSubjectStudy secondSubject, Relationship relationship) {
+			LinkSubjectStudy secondSubject, TwinType twinType) {
 		this.id = id;
 		this.firstSubject = firstSubject;
 		this.secondSubject = secondSubject;
-		this.relationship = relationship;
+		this.twinType = twinType;
 	}
 
 	@Id
@@ -72,15 +72,13 @@ public class LinkSubjectTwin implements Serializable {
 	}
 
 	@OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RELATIONSHIP_ID")
-	public Relationship getRelationship() {
-		return relationship;
+    @JoinColumn(name = "TWIN_TYPE_ID")
+	public TwinType getTwinType() {
+		return twinType;
 	}
 
-	public void setRelationship(Relationship relationship) {
-		this.relationship = relationship;
+	public void setTwinType(TwinType twinType) {
+		this.twinType = twinType;
 	}
-	
-	
 
 }
