@@ -20,9 +20,12 @@ package au.org.theark.core.model.lims.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -37,9 +40,12 @@ public class Unit implements java.io.Serializable {
 
 	private static final long	serialVersionUID	= 8076302336716748287L;
 	private Long					id;
+	private Long					order;
 	private String					name;
 	private String					description;
-
+	private Double					factor; // we will use factors in the calculation of converted units
+	private UnitType				type;
+	
 	public Unit() {
 	}
 
@@ -85,6 +91,34 @@ public class Unit implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Column(name = "ORDER")
+	public Long getOrder() {
+		return order;
+	}
+
+	public void setOrder(Long order) {
+		this.order = order;
+	}
+
+	@Column(name = "FACTOR")
+	public Double getFactor() {
+		return factor;
+	}
+
+	public void setFactor(Double factor) {
+		this.factor = factor;
+	}
+
+	@Enumerated(EnumType.STRING)
+	@JoinColumn(name = "TYPE")
+	public UnitType getType() {
+		return type;
+	}
+
+	public void setType(UnitType type) {
+		this.type = type;
 	}
 
 }
