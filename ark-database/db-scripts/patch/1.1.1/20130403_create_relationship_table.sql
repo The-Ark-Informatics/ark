@@ -1,0 +1,8 @@
+CREATE TABLE `relationship` (
+  `ID` int(11) NOT NULL,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB 
+DEFAULT CHARACTER SET = latin1;
+
