@@ -26,8 +26,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -40,6 +42,8 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -2134,11 +2138,58 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public List<RelationshipVo> getSubjectSiblings(final String subjectUID,final Long studyId){
-		List<RelationshipVo> siblings = new ArrayList<RelationshipVo>();
-//		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class, "lsp");
-//		criteria.createAlias("subject", "sub", JoinType.INNER_JOIN);
-//		criteria.createAlias("sub.study", "substudy", JoinType.INNER_JOIN);
+		/**
+		 * sample sql
+		 * 
+select p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,'') as id ,coalesce(ftype.name,stype.name,'NT') as twin 
+    from study.link_subject_pedigree lsp 
+        inner join study.link_subject_study lss on lss.id=lsp.LINK_SUBJECT_STUDY_ID 
+        inner join study.study st on st.id=lss.study_id 
+        inner join study.link_subject_pedigree slsp on slsp.relative_id = lsp.relative_id
+        inner join study.link_subject_study slss on slss.id=slsp.LINK_SUBJECT_STUDY_ID 
+        inner join study.person p on p.id = slss.PERSON_ID
+        left outer join study.link_subject_twin flst on flst.FIRST_SUBJECT = slsp.LINK_SUBJECT_STUDY_ID
+        left outer join study.twin_type ftype on ftype.id = flst.twin_type_id
+        left outer join study.link_subject_twin slst on slst.FIRST_SUBJECT = slsp.LINK_SUBJECT_STUDY_ID
+        left outer join study.twin_type stype on stype.id = slst.twin_type_id
+where lss.subject_uid = '100' 
+        and st.name='sleep study' 
+        and slsp.relationship_id = lsp.relationship_id  
+        and lsp.LINK_SUBJECT_STUDY_ID <> slsp.LINK_SUBJECT_STUDY_ID
+		 */
 		
+		
+		
+		
+		
+		StringBuffer sb = new StringBuffer("select p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,NULL) as id ,coalesce(ftype.name,stype.name,'NT') as twin");
+		sb.append(" from study.link_subject_pedigree lsp");
+		sb.append("		inner join study.link_subject_study lss on lss.id=lsp.LINK_SUBJECT_STUDY_ID");
+		sb.append("		inner join study.study st on st.id=lss.study_id ");
+		sb.append("		inner join study.link_subject_pedigree slsp on slsp.relative_id = lsp.relative_id");
+		sb.append("		inner join study.link_subject_study slss on slss.id=slsp.LINK_SUBJECT_STUDY_ID");
+		sb.append("		inner join study.person p on p.id = slss.PERSON_ID");
+		sb.append("		left outer join study.link_subject_twin flst on flst.FIRST_SUBJECT = slsp.LINK_SUBJECT_STUDY_ID");
+		sb.append("		left outer join study.twin_type ftype on ftype.id = flst.twin_type_id");
+		sb.append("		left outer join study.link_subject_twin slst on slst.FIRST_SUBJECT = slsp.LINK_SUBJECT_STUDY_ID");
+		sb.append("		left outer join study.twin_type stype on stype.id = slst.twin_type_id");
+		sb.append("	where lss.subject_uid = :subjectUid ");
+		sb.append("		and st.id = :studyId ");
+		sb.append("		and slsp.relationship_id = lsp.relationship_id");
+		sb.append("		and lsp.LINK_SUBJECT_STUDY_ID <> slsp.LINK_SUBJECT_STUDY_ID");
+		
+		
+		List<RelationshipVo> siblings = getSession().createSQLQuery(sb.toString())
+				  .addScalar("firstName")
+				  .addScalar("lastName")
+				  .addScalar("dob")
+				  .addScalar("id")
+				  .addScalar("twin")
+				  .setParameter("subjectUid", subjectUID)
+				  .setParameter("studyId", studyId)
+				  .setResultTransformer( Transformers.aliasToBean(RelationshipVo.class))
+				  .list();
+				
 		return siblings;
 	} 
 

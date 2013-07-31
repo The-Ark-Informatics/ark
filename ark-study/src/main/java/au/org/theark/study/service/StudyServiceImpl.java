@@ -1611,40 +1611,40 @@ public class StudyServiceImpl implements IStudyService {
 		
 		System.out.println("-------------------------------------------------Get subject pedigree twin list-----------------------------------------------------------------------------");
 		
-		ArrayList<RelationshipVo> relationships = new ArrayList<RelationshipVo>();
-		
-		RelationshipVo r1=new RelationshipVo();
-		r1.setIndividualId("A001");
-		r1.setFirstName("Dean");
-		r1.setLastName("Jones");
-		r1.setDob(new Date());
-		relationships.add(r1);
-		
-		RelationshipVo r2=new RelationshipVo();
-		r2.setIndividualId("A002");
-		r2.setFirstName("Dan");
-		r2.setLastName("Palmer");
-		r2.setDob(new Date());
-		relationships.add(r2);
-		
-		RelationshipVo r3=new RelationshipVo();
-		r3.setIndividualId("A003");
-		r3.setFirstName("Sen");
-		r3.setLastName("Nivans");
-		r3.setDob(new Date());
-		r3.setTwin("MZ");
-		relationships.add(r3);
-	
-		RelationshipVo r4=new RelationshipVo();
-		r4.setIndividualId("A004");
-		r4.setFirstName("Ann");
-		r4.setLastName("Pam");
-		r4.setDob(new Date());
-		r4.setTwin("DZ");
-		relationships.add(r4);
+//		ArrayList<RelationshipVo> relationships = new ArrayList<RelationshipVo>();
+//		
+//		RelationshipVo r1=new RelationshipVo();
+//		r1.setIndividualId("A001");
+//		r1.setFirstName("Dean");
+//		r1.setLastName("Jones");
+//		r1.setDob(new Date());
+//		relationships.add(r1);
+//		
+//		RelationshipVo r2=new RelationshipVo();
+//		r2.setIndividualId("A002");
+//		r2.setFirstName("Dan");
+//		r2.setLastName("Palmer");
+//		r2.setDob(new Date());
+//		relationships.add(r2);
+//		
+//		RelationshipVo r3=new RelationshipVo();
+//		r3.setIndividualId("A003");
+//		r3.setFirstName("Sen");
+//		r3.setLastName("Nivans");
+//		r3.setDob(new Date());
+//		r3.setTwin("MZ");
+//		relationships.add(r3);
+//	
+//		RelationshipVo r4=new RelationshipVo();
+//		r4.setIndividualId("A004");
+//		r4.setFirstName("Ann");
+//		r4.setLastName("Pam");
+//		r4.setDob(new Date());
+//		r4.setTwin("DZ");
+//		relationships.add(r4);
 		
 		// TODO Auto-generated method stub
-		return relationships;
+		return iStudyDao.getSubjectSiblings(subjectUID,studyId);
 	}
 
 }
