@@ -27,6 +27,7 @@ public class RelationshipVo implements Serializable {
 	private String motherId;
 	private int relativeIndex;
 	
+	
 	public RelationshipVo() {
 		relationship = "--";
 	}
