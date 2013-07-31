@@ -2162,7 +2162,7 @@ where lss.subject_uid = '100'
 		
 		
 		
-		StringBuffer sb = new StringBuffer("select p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,NULL) as id ,coalesce(ftype.name,stype.name,'NT') as twin");
+		StringBuffer sb = new StringBuffer("select slss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,NULL) as id ,coalesce(ftype.name,stype.name,'NT') as twin");
 		sb.append(" from study.link_subject_pedigree lsp");
 		sb.append("		inner join study.link_subject_study lss on lss.id=lsp.LINK_SUBJECT_STUDY_ID");
 		sb.append("		inner join study.study st on st.id=lss.study_id ");
@@ -2180,10 +2180,11 @@ where lss.subject_uid = '100'
 		
 		
 		List<RelationshipVo> siblings = getSession().createSQLQuery(sb.toString())
+				  .addScalar("individualId")
+				  .addScalar("id")
 				  .addScalar("firstName")
 				  .addScalar("lastName")
 				  .addScalar("dob")
-				  .addScalar("id")
 				  .addScalar("twin")
 				  .setParameter("subjectUid", subjectUID)
 				  .setParameter("studyId", studyId)
