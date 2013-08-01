@@ -426,4 +426,6 @@ public interface IStudyService {
 	public void create(LinkSubjectPedigree pedigree);
 	
 	public List<RelationshipVo> getSubjectPedigreeTwinList(final String subjectUID,final Long studyId);
+	
+	public void processPedigreeTwinRelationship(final RelationshipVo relationshipVo, final String subjectUid, final Long studyId);
 }

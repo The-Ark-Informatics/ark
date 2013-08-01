@@ -86,6 +86,7 @@ import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.LinkSubjectTwin;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -100,6 +101,7 @@ import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidSequence;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
@@ -2141,16 +2143,17 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		/**
 		 * sample sql
 		 * 
-select p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,'') as id ,coalesce(ftype.name,stype.name,'NT') as twin 
+select slss.id,lss.id ,slss.subject_uid,p.FIRST_NAME as firstName,p.LAST_NAME as lastName,
+    p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,0) as id ,coalesce(ftype.name,stype.name,'NT') as twin 
     from study.link_subject_pedigree lsp 
         inner join study.link_subject_study lss on lss.id=lsp.LINK_SUBJECT_STUDY_ID 
         inner join study.study st on st.id=lss.study_id 
         inner join study.link_subject_pedigree slsp on slsp.relative_id = lsp.relative_id
         inner join study.link_subject_study slss on slss.id=slsp.LINK_SUBJECT_STUDY_ID 
         inner join study.person p on p.id = slss.PERSON_ID
-        left outer join study.link_subject_twin flst on flst.FIRST_SUBJECT = slsp.LINK_SUBJECT_STUDY_ID
+        left outer join study.link_subject_twin flst on flst.FIRST_SUBJECT = slss.ID and flst.SECOND_SUBJECT = lss.ID
         left outer join study.twin_type ftype on ftype.id = flst.twin_type_id
-        left outer join study.link_subject_twin slst on slst.FIRST_SUBJECT = slsp.LINK_SUBJECT_STUDY_ID
+        left outer join study.link_subject_twin slst on slst.FIRST_SUBJECT = lss.ID and slst.SECOND_SUBJECT = slss.ID 
         left outer join study.twin_type stype on stype.id = slst.twin_type_id
 where lss.subject_uid = '100' 
         and st.name='sleep study' 
@@ -2169,9 +2172,9 @@ where lss.subject_uid = '100'
 		sb.append("		inner join study.link_subject_pedigree slsp on slsp.relative_id = lsp.relative_id");
 		sb.append("		inner join study.link_subject_study slss on slss.id=slsp.LINK_SUBJECT_STUDY_ID");
 		sb.append("		inner join study.person p on p.id = slss.PERSON_ID");
-		sb.append("		left outer join study.link_subject_twin flst on flst.FIRST_SUBJECT = slsp.LINK_SUBJECT_STUDY_ID");
+		sb.append("		left outer join study.link_subject_twin flst on flst.FIRST_SUBJECT = slss.ID and flst.SECOND_SUBJECT = lss.ID");
 		sb.append("		left outer join study.twin_type ftype on ftype.id = flst.twin_type_id");
-		sb.append("		left outer join study.link_subject_twin slst on slst.FIRST_SUBJECT = slsp.LINK_SUBJECT_STUDY_ID");
+		sb.append("		left outer join study.link_subject_twin slst on slst.FIRST_SUBJECT = lss.ID and slst.SECOND_SUBJECT = slss.ID");
 		sb.append("		left outer join study.twin_type stype on stype.id = slst.twin_type_id");
 		sb.append("	where lss.subject_uid = :subjectUid ");
 		sb.append("		and st.id = :studyId ");
@@ -2193,5 +2196,23 @@ where lss.subject_uid = '100'
 				
 		return siblings;
 	} 
+	
+	public List<TwinType> getTwinTypes(){
+		Example example = Example.create(new TwinType());
+		Criteria criteria = getSession().createCriteria(TwinType.class).add(example);
+		return criteria.list();
+	}
+	
+	public void create(LinkSubjectTwin twin){
+		getSession().save(twin);
+	}
+	
+	public void update(LinkSubjectTwin twin){
+		getSession().update(twin);
+	}
+	
+	public void delete(LinkSubjectTwin twin){
+		getSession().delete(twin);
+	}
 
 }
