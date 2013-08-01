@@ -81,6 +81,7 @@ import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.LinkSubjectTwin;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -94,6 +95,7 @@ import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
@@ -1608,43 +1610,46 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public List<RelationshipVo> getSubjectPedigreeTwinList(String subjectUID, Long studyId) {
-		
-		System.out.println("-------------------------------------------------Get subject pedigree twin list-----------------------------------------------------------------------------");
-		
-//		ArrayList<RelationshipVo> relationships = new ArrayList<RelationshipVo>();
-//		
-//		RelationshipVo r1=new RelationshipVo();
-//		r1.setIndividualId("A001");
-//		r1.setFirstName("Dean");
-//		r1.setLastName("Jones");
-//		r1.setDob(new Date());
-//		relationships.add(r1);
-//		
-//		RelationshipVo r2=new RelationshipVo();
-//		r2.setIndividualId("A002");
-//		r2.setFirstName("Dan");
-//		r2.setLastName("Palmer");
-//		r2.setDob(new Date());
-//		relationships.add(r2);
-//		
-//		RelationshipVo r3=new RelationshipVo();
-//		r3.setIndividualId("A003");
-//		r3.setFirstName("Sen");
-//		r3.setLastName("Nivans");
-//		r3.setDob(new Date());
-//		r3.setTwin("MZ");
-//		relationships.add(r3);
-//	
-//		RelationshipVo r4=new RelationshipVo();
-//		r4.setIndividualId("A004");
-//		r4.setFirstName("Ann");
-//		r4.setLastName("Pam");
-//		r4.setDob(new Date());
-//		r4.setTwin("DZ");
-//		relationships.add(r4);
-		
-		// TODO Auto-generated method stub
 		return iStudyDao.getSubjectSiblings(subjectUID,studyId);
+	}
+	
+	public void processPedigreeTwinRelationship(final RelationshipVo relationshipVo, final String subjectUid, final Long studyId){
+		if("NT".equalsIgnoreCase(relationshipVo.getTwin())){
+			if(relationshipVo.getId() != null){
+				LinkSubjectTwin twin = new LinkSubjectTwin();
+				twin.setId(relationshipVo.getId());
+				iStudyDao.delete(twin);
+			}
+		}else{
+			List<TwinType> twinTypes = iStudyDao.getTwinTypes();
+			for(TwinType type:twinTypes){
+				if(relationshipVo.getTwin().equalsIgnoreCase(type.getName())){
+					LinkSubjectTwin twin = new LinkSubjectTwin();
+					twin.setTwinType(type);
+					
+					Study study= iArkCommonService.getStudy(studyId);
+					try{
+						LinkSubjectStudy subject1 = iArkCommonService.getSubjectByUID(subjectUid, study);
+						LinkSubjectStudy subject2 = iArkCommonService.getSubjectByUID(relationshipVo.getIndividualId(), study);
+						
+						twin.setFirstSubject(subject1);
+						twin.setSecondSubject(subject2);
+						twin.setId(relationshipVo.getId());
+						if(twin.getId() != null){
+							iStudyDao.update(twin);
+						}
+						else{
+							iStudyDao.create(twin);
+						}		
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
+					break;
+					
+				}
+			}
+		}
 	}
 
 }

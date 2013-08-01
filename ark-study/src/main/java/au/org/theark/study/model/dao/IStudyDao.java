@@ -21,6 +21,9 @@ package au.org.theark.study.model.dao;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Example;
+
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
@@ -49,6 +52,7 @@ import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.LinkSubjectTwin;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -62,6 +66,7 @@ import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.vo.ArkUserVO;
@@ -434,4 +439,11 @@ public interface IStudyDao {
 	
 	public List<RelationshipVo> getSubjectSiblings(final String subjectUID,final Long studyId);
 	
+	public List<TwinType> getTwinTypes();
+	
+	public void create(LinkSubjectTwin twin);
+	
+	public void update(LinkSubjectTwin twin);
+	
+	public void delete(LinkSubjectTwin twin);
 }
