@@ -46,6 +46,7 @@ import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.audit.entity.LssConsentHistory;
+import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.ConsentOption;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
@@ -67,6 +68,7 @@ import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.panel.collapsiblepanel.CollapsiblePanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.lims.service.ILimsService;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.consenthistory.LinkSubjectStudyConsentHistoryPanel;
@@ -85,10 +87,14 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService									studyService;
 
+
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService								iArkCommonService;
 
+	@SpringBean(name = Constants.LIMS_SERVICE)
+	private ILimsService										iLimsService;
+	
 	private WebMarkupContainer								arkContextMarkupContainer;
 
 	protected TextField<String>							subjectUIDTxtFld;
@@ -269,6 +275,26 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		List<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
 		ChoiceRenderer<SubjectStatus> subjectStatusRenderer = new ChoiceRenderer<SubjectStatus>(Constants.NAME, Constants.SUBJECT_STATUS_ID);
 		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS, subjectStatusList, subjectStatusRenderer);
+		subjectStatusDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				if(subjectStatusDdc.getModelObject().getName().equalsIgnoreCase("Archive")) {
+					Biospecimen biospecimenCriteria = new Biospecimen();
+					biospecimenCriteria.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+					biospecimenCriteria.setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
+					// check no biospecimens exist
+					long count = iLimsService.getBiospecimenCount(biospecimenCriteria);
+					if(count >0) {
+						error("You cannot archive this subject as there are Biospecimens associated ");
+						saveButton.setEnabled(false);
+					}
+				}
+				target.add(saveButton);
+			}
+		});
 
 		// Marital Status
 		Collection<MaritalStatus> maritalStatusList = iArkCommonService.getMaritalStatus();
@@ -537,21 +563,33 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		}
 		else {
 
-			try {
-				studyService.updateSubject(subjectVO);
-				StringBuffer sb = new StringBuffer();
-				sb.append("The Subject with Subject UID: ");
-				sb.append(subjectVO.getLinkSubjectStudy().getSubjectUID());
-				sb.append(" has been updated successfully and linked to the study in context ");
-				sb.append(study.getName());
-				onSavePostProcess(target);
-				this.info(sb.toString());
+			if(subjectStatusDdc.getModelObject().getName().equalsIgnoreCase("Archive")) {
+				Biospecimen biospecimenCriteria = new Biospecimen();
+				biospecimenCriteria.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+				biospecimenCriteria.setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
+				// check no biospecimens exist
+				long count = iLimsService.getBiospecimenCount(biospecimenCriteria);
+				if(count >0) {
+					error("You cannot archive this subject as there are Biospecimens associated ");
+				}
 			}
-			catch (ArkUniqueException e) {
-				this.error("Subject UID must be unique.");
-			}
-			catch(EntityNotFoundException enf){
-				this.error("Cannot found the selected Subject.");
+			else {
+				try {
+					studyService.updateSubject(subjectVO);
+					StringBuffer sb = new StringBuffer();
+					sb.append("The Subject with Subject UID: ");
+					sb.append(subjectVO.getLinkSubjectStudy().getSubjectUID());
+					sb.append(" has been updated successfully and linked to the study in context ");
+					sb.append(study.getName());
+					onSavePostProcess(target);
+					this.info(sb.toString());
+				}
+				catch (ArkUniqueException e) {
+					this.error("Subject UID must be unique.");
+				}
+				catch(EntityNotFoundException enf){
+					this.error("Cannot found the selected Subject.");
+				}
 			}
 		}
 		processErrors(target);
