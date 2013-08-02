@@ -36,7 +36,8 @@ public class SearchForm extends Form<PedigreeVo> {
 	protected AjaxButton motherButton;
 	protected AjaxButton twinButton;
 	protected AjaxButton viewButton;
-	protected AjaxButton exportButton;
+	//Move Export button to export link
+//	protected AjaxButton exportButton;
 	
 	protected AbstractDetailModalWindow modalWindow;
 
@@ -65,7 +66,7 @@ public class SearchForm extends Form<PedigreeVo> {
 		add(motherButton);
 		add(twinButton);
 		add(viewButton);
-		add(exportButton);
+//		add(exportButton);
 		add(modalWindow);
 	}
 
@@ -123,13 +124,13 @@ public class SearchForm extends Form<PedigreeVo> {
 			}						
 		};
 		
-		exportButton = new AjaxButton(au.org.theark.core.Constants.EXPORT){
-			
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				//TODO
-			}						
-		};
+//		exportButton = new AjaxButton(au.org.theark.core.Constants.EXPORT){
+//			
+//			@Override
+//			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+//				//TODO
+//			}						
+//		};
 		
 	}
 	
