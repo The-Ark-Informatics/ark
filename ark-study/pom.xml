@@ -30,6 +30,12 @@
 		  <artifactId>ark-common</artifactId>
 		  <version>${ark-common.version}</version>
 		</dependency>
+		
+		<dependency>
+		  <groupId>au.org.theark.lims</groupId>
+		  <artifactId>ark-lims</artifactId>
+		  <version>${ark-lims.version}</version>
+		</dependency>
 
 		<dependency>
                   <groupId>au.org.theark.worktracking</groupId>
@@ -193,5 +199,6 @@
 		<jetty.version>6.1.4</jetty.version>
 		<ark-common.version>1.0.0</ark-common.version>
 		<ark-work-tracking.version>1.0.0</ark-work-tracking.version>
+		<ark-lims.version>1.0.1</ark-lims.version>
 	</properties>
 </project>
