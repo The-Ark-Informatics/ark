@@ -1,19 +1,33 @@
 package au.org.theark.study.web.component.pedigree;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.Component;
+import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.time.Duration;
 
 import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.vo.PedigreeVo;
 import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.pedigree.form.ContainerForm;
+
+import com.x5.template.Chunk;
+import com.x5.template.Theme;
 
 public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 
@@ -74,7 +88,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 			@Override
 			protected Object load() {
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				String subjectUID= (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);			
+				String subjectUID= (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 				containerForm.getModelObject().setRelationshipList(studyService.generateSubjectPedigreeRelativeList(subjectUID,studyId));
 				pageableListView.removeAll();
 				return containerForm.getModelObject().getRelationshipList();
@@ -86,6 +100,51 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
+		
+		DownloadLink downloadLink = new DownloadLink("pedLink", new AbstractReadOnlyModel<File>() {
+
+			@Override
+			public File getObject() {
+				File tempFile = null;
+				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+
+				RelativeCapsule[] relatives = studyService.generateSubjectPedigree(subjectUID, studyId);
+
+				try {
+					Theme theme = new Theme();
+					Chunk chunk = theme.makeChunk("pedigree_template", "txt");
+					chunk.set("relatives", relatives);
+
+					tempFile = File.createTempFile(subjectUID+"_", ".ped");
+					FileWriter out = new FileWriter(tempFile);
+					chunk.render(out);
+					out.flush();
+					out.close();
+				}
+				catch (IOException io) {
+					io.printStackTrace();
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				return tempFile;
+			}
+
+		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
+		
+		downloadLink.add(new Behavior(){
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public void onComponentTag(Component component, ComponentTag tag) {
+				tag.put("title", "Export to PED");
+			}
+		});
+		
+		searchResultPanel.add(downloadLink);
+		
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
