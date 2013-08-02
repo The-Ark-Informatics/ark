@@ -1,22 +1,31 @@
 package au.org.theark.study.web.component.pedigree;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.Component;
 import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.request.resource.DynamicImageResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.file.Files;
+import org.apache.wicket.util.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +48,49 @@ public class PedigreeDisplayPanel extends Panel {
 	
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	IStudyService studyService;
+	
+	private byte[] pngOutPutArray;
+	
+	private DownloadLink downloadLink;
 
 	public PedigreeDisplayPanel(String id) {
 		super(id);
+		downloadLink = new DownloadLink("imgLink", new AbstractReadOnlyModel<File>() {
+
+			@Override
+			public File getObject() {
+				File tempFile = null;
+				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+				try {
+					
+					tempFile = File.createTempFile(subjectUID + "_", ".png");
+					InputStream data = new ByteArrayInputStream(pngOutPutArray);
+               Files.writeTo(tempFile, data);
+
+				}
+				catch (IOException io) {
+					io.printStackTrace();
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				return tempFile;
+			}
+
+		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
+
+		downloadLink.add(new Behavior() {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public void onComponentTag(Component component, ComponentTag tag) {
+				tag.put("title", "Export to PNG");
+			}
+		});
+
+		add(downloadLink);
+
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -170,7 +219,7 @@ public class PedigreeDisplayPanel extends Panel {
 	 		}
 		
 		}else{
-			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<svg width=\"640\" height=\"480\" xmlns=\"http://www.w3.org/2000/svg\">\r\n <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->\r\n <g>\r\n  <title>Layer 1</title>\r\n  <text transform=\"rotate(-0.0100589, 317.008, 97.5)\" xml:space=\"preserve\" text-anchor=\"middle\" font-family=\"serif\" font-size=\"24\" id=\"svg_3\" y=\"106\" x=\"317\" stroke-width=\"0\" stroke=\"#000000\" fill=\"#000000\">No Pedigree History</text>\r\n </g>\r\n</svg>");
+			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<svg width=\"640\" height=\"480\" xmlns=\"http://www.w3.org/2000/svg\">\r\n <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->\r\n <g>\r\n  <title>Layer 1</title>\r\n  <text transform=\"rotate(-0.0100589, 317.008, 97.5)\" xml:space=\"preserve\" text-anchor=\"middle\" font-family=\"serif\" font-size=\"24\" id=\"svg_3\" y=\"106\" x=\"317\" stroke-width=\"0\" stroke=\"#000000\" fill=\"#000000\">Information is not sufficient to generate Pedigree History</text>\r\n </g>\r\n</svg>");
 		}
 		
 		DynamicImageResource svgImageRes = new DynamicImageResource("png") {
@@ -186,7 +235,10 @@ public class PedigreeDisplayPanel extends Panel {
                  ByteArrayOutputStream os = new ByteArrayOutputStream();
                  TranscoderOutput output = new TranscoderOutput(os);
                  t.transcode(input, output);
-                 return os.toByteArray();
+                 
+                 pngOutPutArray = os.toByteArray();
+                 
+                 return pngOutPutArray;
                  
              } catch (Exception e) {
                  throw new WicketRuntimeException(e);
