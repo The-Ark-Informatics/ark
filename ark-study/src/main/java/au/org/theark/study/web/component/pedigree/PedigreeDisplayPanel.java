@@ -55,42 +55,6 @@ public class PedigreeDisplayPanel extends Panel {
 
 	public PedigreeDisplayPanel(String id) {
 		super(id);
-		downloadLink = new DownloadLink("imgLink", new AbstractReadOnlyModel<File>() {
-
-			@Override
-			public File getObject() {
-				File tempFile = null;
-				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-				try {
-					
-					tempFile = File.createTempFile(subjectUID + "_", ".png");
-					InputStream data = new ByteArrayInputStream(pngOutPutArray);
-               Files.writeTo(tempFile, data);
-
-				}
-				catch (IOException io) {
-					io.printStackTrace();
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-
-				return tempFile;
-			}
-
-		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
-
-		downloadLink.add(new Behavior() {
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			public void onComponentTag(Component component, ComponentTag tag) {
-				tag.put("title", "Export to PNG");
-			}
-		});
-
-		add(downloadLink);
-
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -248,6 +212,43 @@ public class PedigreeDisplayPanel extends Panel {
      };
 
      addOrReplace(new Image("pedigreeImg", svgImageRes));
+     
+     downloadLink = new DownloadLink("imgLink", new AbstractReadOnlyModel<File>() {
+
+			@Override
+			public File getObject() {
+				File tempFile = null;
+				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+				try {
+					
+					tempFile = File.createTempFile(subjectUID + "_", ".png");
+					InputStream data = new ByteArrayInputStream(pngOutPutArray);
+              Files.writeTo(tempFile, data);
+
+				}
+				catch (IOException io) {
+					io.printStackTrace();
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				return tempFile;
+			}
+
+		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
+
+		downloadLink.add(new Behavior() {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public void onComponentTag(Component component, ComponentTag tag) {
+				tag.put("title", "Export to PNG");
+			}
+		});
+
+		addOrReplace(downloadLink);
+
 		
 	}
 	
