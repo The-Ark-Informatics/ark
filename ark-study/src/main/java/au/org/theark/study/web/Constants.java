@@ -210,6 +210,7 @@ public class Constants {
 	/* Spring Bean names */
 	public static final String			STUDY_SERVICE													= "studyService";
 	public static final String			STUDY_DAO														= "studyDao";
+	public static final String			LIMS_SERVICE 													= "limsService";
 
 	public static final String			ACTION_ADD_SELECTED											= "addSelected";
 	public static final String			ACTION_ADD_ALL													= "addAll";
@@ -438,6 +439,7 @@ public class Constants {
 				add("DZ");
 		   }
 	};
+	
 
 	
 }
