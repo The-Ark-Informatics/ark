@@ -22,6 +22,13 @@ def insertNull(val):
         result = val
     return result
 
+def insertTextNull(val,text):
+    result="\\N";
+    if isNotNull(val) and isAlphaNumeric(val):
+        result = text+"{0:0>2}".format(val)
+    return result
+
+
 rowMap ={}
 rowMap["A"]="1"
 rowMap["B"]="2"
@@ -54,11 +61,11 @@ for line in inputFile:
     output=output+subjectUid
     freezer = insertNull(tokens[17])
     output=output+","+freezer
-    rack = insertNull(tokens[18])
+    rack = insertTextNull(tokens[18],"Rack ")
     output=output+","+rack
-    box = insertNull(tokens[19])
+    box = insertTextNull(tokens[19],"Box ")
     output=output+","+box
-    row = insertNull(rowMap.get(tokens[20]))
+    row = insertNull(rowMap.get(tokens[20].upper()))
     output=output+","+row
     col = insertNull(tokens[21])
     output=output+","+col+"\n"
@@ -68,11 +75,11 @@ for line in inputFile:
     output=output+subjectUid
     freezer = insertNull(tokens[25])
     output=output+","+freezer
-    rack = insertNull(tokens[26])
+    rack = insertTextNull(tokens[26],"Rack ")
     output=output+","+rack
-    box = insertNull(tokens[27])
+    box = insertTextNull(tokens[27],"Box ")
     output=output+","+box
-    row = insertNull(rowMap.get(tokens[28]))
+    row = insertNull(rowMap.get(tokens[28].upper()))
     output=output+","+row
     col = insertNull(tokens[29])
     output=output+","+col+"\n"
@@ -82,11 +89,11 @@ for line in inputFile:
     output=output+subjectUid
     freezer = insertNull(tokens[33])
     output=output+","+freezer
-    rack = insertNull(tokens[34])
+    rack = insertTextNull(tokens[34],"Rack ")
     output=output+","+rack
-    box = insertNull(tokens[35])
+    box = insertTextNull(tokens[35],"Box ")
     output=output+","+box
-    row = insertNull(rowMap.get(tokens[36]))
+    row = insertNull(rowMap.get(tokens[36].upper()))
     output=output+","+row
     col = insertNull(tokens[37])
     output=output+","+col+"\n"
@@ -96,11 +103,11 @@ for line in inputFile:
     output=output+subjectUid
     freezer = insertNull(tokens[41])
     output=output+","+freezer
-    rack = insertNull(tokens[42])
+    rack = insertTextNull(tokens[42],"Rack ")
     output=output+","+rack
-    box = insertNull(tokens[43])
+    box = insertTextNull(tokens[43],"Box ")
     output=output+","+box
-    row = insertNull(rowMap.get(tokens[44]))
+    row = insertNull(rowMap.get(tokens[44].upper()))
     output=output+","+row
     col = insertNull(tokens[45])
     output=output+","+col+"\n"
@@ -110,11 +117,11 @@ for line in inputFile:
     output=output+subjectUid
     freezer = insertNull(tokens[50])
     output=output+","+freezer
-    rack = insertNull(tokens[51])
+    rack = insertTextNull(tokens[51],"Rack ")
     output=output+","+rack
-    box = insertNull(tokens[49])
+    box = insertTextNull(tokens[49],"Box ")
     output=output+","+box
-    row = insertNull(rowMap.get(tokens[52]))
+    row = insertNull(rowMap.get(tokens[52].upper()))
     output=output+","+row
     col = insertNull(tokens[53])
     output=output+","+col+"\n"

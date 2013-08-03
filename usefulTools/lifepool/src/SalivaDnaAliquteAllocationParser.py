@@ -11,8 +11,24 @@ print "----------------------- SALIVA DNA BIOSPECIMEN ALLIQUOT ALLOCATION ------
 
 inputFile = open('../resource/DNA_SALIVA_SPECIMEN.csv', 'r')
 
-def IsNotNull(value):
+def isNotNull(value):
     return value is not None and len(value) > 0
+
+def isAlphaNumeric(val):
+    valid = re.match('^[a-zA-Z0-9]*$', val) is not None
+    return valid
+
+def insertNull(val):
+    result="\\N";
+    if isNotNull(val) and isAlphaNumeric(val):
+        result = val
+    return result
+
+def insertTextNull(val,text):
+    result="\\N";
+    if isNotNull(val) and isAlphaNumeric(val):
+        result = text+"{0:0>2}".format(val)
+    return result
 
 firstLine=True
 output=""
@@ -31,7 +47,6 @@ rowMap["J"]="10"
 rowMap["K"]="11"
 rowMap["L"]="12"
 rowMap["M"]="13" 
-rowMap["l"]="9"   
 
 for line in inputFile:
     if firstLine :
@@ -40,7 +55,6 @@ for line in inputFile:
     tokens = line.split(",")
        
     superParentUid =  tokens[1].strip()
-    parentUid = superParentUid[:-3]+"800"
     
     specimenUid1 = superParentUid+"-"+tokens[8].strip()
     quantity1=tokens[9].strip()
@@ -50,10 +64,10 @@ for line in inputFile:
     quantity2=tokens[17].strip()
     concentration2 = tokens[18].strip()
     
-    line1=specimenUid1+","+tokens[11]+","+tokens[12]+","+tokens[13]+","+(rowMap.get(tokens[14]) if IsNotNull(tokens[14]) else "")+","+tokens[15]
+    line1=specimenUid1+","+insertNull(tokens[11])+","+insertTextNull(tokens[12],"Rack ")+","+insertTextNull(tokens[13],"Box ")+","+(rowMap.get(tokens[14].upper()) if isNotNull(tokens[14]) else "\\N")+","+insertNull(tokens[15])
     print line1
     
-    line2=specimenUid2+","+tokens[19]+","+tokens[20]+","+tokens[21]+","+(rowMap.get(tokens[22]) if IsNotNull(tokens[22]) else "")+","+tokens[23]
+    line2=specimenUid2+","+insertNull(tokens[19])+","+insertTextNull(tokens[20],"Rack ")+","+insertTextNull(tokens[21],"Box ")+","+(rowMap.get(tokens[22].upper()) if isNotNull(tokens[22]) else "\\N")+","+insertNull(tokens[23])
     print line2
     
     output=output+line1+"\n"+line2+"\n"
