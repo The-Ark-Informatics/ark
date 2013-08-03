@@ -31,11 +31,11 @@ for line in inputFile:
     parentQuantity = float(tokens[4]) - getCorrectVolume(tokens[17])
     specimenUid1 = superParentUid+"-"+tokens[8].strip()
     quantity1=getCorrectVolume(tokens[9])
-    concentration1 = getCorrectVolume(tokens[10])/1000
+    concentration1 = getCorrectVolume(tokens[10])
     
     specimenUid2 = superParentUid+"-"+tokens[16].strip()
     quantity2=getCorrectVolume(tokens[17])
-    concentration2 = getCorrectVolume(tokens[18])/1000
+    concentration2 = getCorrectVolume(tokens[18])
     
     
     
