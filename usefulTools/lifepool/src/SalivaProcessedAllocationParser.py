@@ -8,6 +8,19 @@ import re
  
 print "----------------------- SALIVA PROCESSED BIOSPECIMEN ALLOCATION --------------------------------"
 
+def isNotNull(value):
+    return value is not None and len(value) > 0
+
+def isAlphaNumeric(val):
+    valid = re.match('^[a-zA-Z0-9]*$', val) is not None
+    return valid
+
+def insertTextNull(val,text):
+    result="\\N";
+    if isNotNull(val) and isAlphaNumeric(val):
+        result = text+"{0:0>2}".format(val)
+    return result
+
 inputFile = open('../resource/saliva-template.csv', 'r')
 
 firstLine=True
@@ -40,9 +53,9 @@ for line in inputFile:
     sampleUID1=parentUid+" "+tokens[6]
     sampleUID2=parentUid+" "+tokens[13]
     
-    line1=sampleUID1+","+tokens[8]+","+tokens[9]+","+tokens[10]+","+rowMap.get(tokens[11])+","+tokens[12]
+    line1=sampleUID1+","+tokens[8]+","+insertTextNull(tokens[9],"Rack ")+","+insertTextNull(tokens[10],"Box ")+","+rowMap.get(tokens[11])+","+tokens[12]
     print line1
-    line2=sampleUID2+","+tokens[15]+","+tokens[16]+","+tokens[17]+","+rowMap.get(tokens[18])+","+tokens[19][:-1]
+    line2=sampleUID2+","+tokens[15]+","+insertTextNull(tokens[16],"Rack ")+","+insertTextNull(tokens[17],"Box ")+","+rowMap.get(tokens[18])+","+tokens[19][:-1]
     print line2
     output=output+line1+"\n"+line2+"\n"
     
