@@ -289,10 +289,10 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 					long count = iLimsService.getBiospecimenCount(biospecimenCriteria);
 					if(count >0) {
 						error("You cannot archive this subject as there are Biospecimens associated ");
-						saveButton.setEnabled(false);
+						target.focusComponent(subjectStatusDdc);
 					}
 				}
-				target.add(saveButton);
+				processErrors(target);
 			}
 		});
 
@@ -571,6 +571,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				long count = iLimsService.getBiospecimenCount(biospecimenCriteria);
 				if(count >0) {
 					error("You cannot archive this subject as there are Biospecimens associated ");
+					target.focusComponent(subjectStatusDdc);
 				}
 			}
 			else {
