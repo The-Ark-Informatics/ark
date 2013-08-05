@@ -112,7 +112,7 @@ public class DataMatrixBarcodeImage extends NonCachingImage {
 		BitmapCanvasProvider canvas = new BitmapCanvasProvider(dpi, BufferedImage.TYPE_BYTE_BINARY, antiAlias, orientation);
 
 		// Generate the barcode
-		bean.generateBarcode(canvas, barcodeString);
+		bean.generateBarcode(canvas, ((barcodeString==null) ? "" : barcodeString));
 
 		// Signal end of generation
 		try {
