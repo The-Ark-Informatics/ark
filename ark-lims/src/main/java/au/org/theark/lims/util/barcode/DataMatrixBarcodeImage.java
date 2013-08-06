@@ -54,6 +54,7 @@ public class DataMatrixBarcodeImage extends NonCachingImage {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		setImageResource(getDataMatrixBarcodeImageResource(barcodeStringModel));
+		setVisible(!barcodeStringModel.getObject().isEmpty());
 	}
 
 	/**
@@ -112,7 +113,7 @@ public class DataMatrixBarcodeImage extends NonCachingImage {
 		BitmapCanvasProvider canvas = new BitmapCanvasProvider(dpi, BufferedImage.TYPE_BYTE_BINARY, antiAlias, orientation);
 
 		// Generate the barcode
-		bean.generateBarcode(canvas, ((barcodeString==null) ? "" : barcodeString));
+		bean.generateBarcode(canvas, (barcodeString));
 
 		// Signal end of generation
 		try {
