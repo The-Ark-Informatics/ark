@@ -1941,6 +1941,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getStatelessSession().createCriteria(Study.class);
 		criteria.add(Restrictions.ne("id", study.getId()));
 		criteria.add(Restrictions.eq("parentStudy", study));
+		
+		try {
+			criteria.add(Restrictions.ne("studyStatus", getStudyStatus("Archive")));
+		}
+		catch (StatusNotAvailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		criteria.addOrder(Order.asc("name"));
 		List<Study> childStudyList = (List<Study>) criteria.list();
 		return childStudyList;
