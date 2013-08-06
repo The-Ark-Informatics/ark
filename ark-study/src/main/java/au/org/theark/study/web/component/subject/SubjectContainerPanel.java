@@ -87,6 +87,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	private Study														study = new Study();
 	protected WebMarkupContainer 								studyNameMarkup;
 	protected WebMarkupContainer 								studyLogoMarkup;
+	protected WebMarkupContainer resultsWmc = new WebMarkupContainer("resultsWmc");
 	
 
 	/**
@@ -262,7 +263,8 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
-		searchResultsPanel.add(pageNavigator);
+		resultsWmc.add(pageNavigator);
+		
 
 		List<IColumn<SubjectVO>> columns = new ArrayList<IColumn<SubjectVO>>();
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("SubjectUID"), "subjectUID"));
@@ -289,9 +291,10 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		RepeatingView toolbars = new RepeatingView("toolbars");
 		ExportToolbar<String> exportToolBar = new ExportToolbar<String>(table, headers, filename);
 		toolbars.add(new Component[] { exportToolBar });
-		searchResultsPanel.add(toolbars);
+		resultsWmc.add(toolbars);
 
-		searchResultsPanel.add(dataView);
+		resultsWmc.add(dataView);
+		searchResultsPanel.add(resultsWmc);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
@@ -300,6 +303,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	protected WebMarkupContainer initialiseSearchResults(AbstractDetailModalWindow modalWindow,final String gender) {
 		searchResultsPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup);
 		searchResultsPanel.setOutputMarkupId(true);
+		
 		
 		if (sessionStudyId != null) {
 			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
@@ -352,7 +356,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 				target.add(searchResultsPanel);
 			}
 		};
-		searchResultsPanel.add(pageNavigator);
+		resultsWmc.add(pageNavigator);
 
 		List<IColumn<SubjectVO>> columns = new ArrayList<IColumn<SubjectVO>>();
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("SubjectUID"), "subjectUID"));
@@ -379,9 +383,10 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		RepeatingView toolbars = new RepeatingView("toolbars");
 		ExportToolbar<String> exportToolBar = new ExportToolbar<String>(table, headers, filename);
 		toolbars.add(new Component[] { exportToolBar });
-		searchResultsPanel.add(toolbars);
+		resultsWmc.add(toolbars);
 
-		searchResultsPanel.add(dataView);
+		resultsWmc.add(dataView);
+		searchResultsPanel.add(resultsWmc);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
