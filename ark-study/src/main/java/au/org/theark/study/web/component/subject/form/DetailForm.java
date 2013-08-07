@@ -161,6 +161,10 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(childStudySubjectPanel);
 		
 		consentHistoryPanel.setVisible(!isNew());
+		
+		if(isNew()){
+			consentStatusChoice.setModel(new Model<ConsentStatus>(iArkCommonService.getConsentStatusByName("Pending")));
+		}
 		super.onBeforeRender();
 	}
 
@@ -511,6 +515,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		// DateValidator.maximum(new Date())).setLabel(new StringResourceModel("phone.dateReceived.DateValidator.maximum", this, null));
 		preferredEmailTxtFld.add(EmailAddressValidator.getInstance());
 		otherEmailTxtFld.add(EmailAddressValidator.getInstance());
+		consentStatusChoice.setRequired(true).setLabel(new StringResourceModel("consentStatus.required", this, null));
 	}
 
 	@SuppressWarnings("unused")
