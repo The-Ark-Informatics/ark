@@ -2160,7 +2160,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				+ addressJoinFilters
 				//TODO also add filters for phone and address 
 				+ " where lss.study.id = " + search.getStudy().getId()
-				+ lssAndPersonFilters;
+				+ lssAndPersonFilters
+				+ " and lss.subjectStatus.name != 'Archive'";
 		
 		Query query = null;
 		if(subjectList.isEmpty()){
@@ -4345,5 +4346,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 	public void delete(Search search) {
 		getSession().delete(search);
+	}
+
+	@Override
+	public ConsentStatus getConsentStatusByName(String name) {
+		Criteria criteria = getSession().createCriteria(ConsentStatus.class);
+		criteria.add(Restrictions.eq("name", name));
+		return (ConsentStatus) criteria.uniqueResult();
 	}
 }
