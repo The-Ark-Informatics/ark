@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Queue;
 
+import org.apache.log4j.net.TelnetAppender;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.util.collections.ArrayListStack;
@@ -1366,7 +1367,28 @@ public class StudyServiceImpl implements IStudyService {
 					}
 				}
 			}
+			
+			//Generate twin relationships
+			List<RelationshipVo> siblings = getSubjectPedigreeTwinList(subjectUID, studyId);
+			for (RelativeCapsule existingCapsule : relativeCapsules) {
+				for (RelationshipVo sibling : siblings) {
+					String twinType = sibling.getTwin();
+					if (!"NT".equals(twinType) && existingCapsule.getIndividualId().equals(sibling.getIndividualId())) {
+						if ("MZ".equals(twinType)) {
+							proband.setMzTwin("Y");
+							existingCapsule.setMzTwin("Y");
+						}
+						else if ("DZ".equals(twinType)) {
+							proband.setDzTwin("Y");
+							existingCapsule.setDzTwin("Y");
+						}
+					}
+				}
+			}
+			
 		}
+		
+		
 		
 		return relativeCapsules.size() >2 ? relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]):new RelativeCapsule[0];
 	}
@@ -1547,6 +1569,17 @@ public class StudyServiceImpl implements IStudyService {
 					
 				}
 			}
+			
+			//Twin relationships
+			List<RelationshipVo> siblings = getSubjectPedigreeTwinList(subjectUID, studyId);
+			for (RelationshipVo existingRelationship : relativeSubjects) {
+				for (RelationshipVo sibling : siblings) {
+					if (existingRelationship.getIndividualId().equals(sibling.getIndividualId())) {
+						existingRelationship.setTwin(sibling.getTwin());
+					}
+				}
+			}
+			
 			
 			//Remove proband from the list
 			relativeSubjects.remove(0);

@@ -54,8 +54,9 @@ public class SaveForm extends Form<PedigreeVo> {
 				modalWindow.close(target);
 			}						
 		};
+		saveButton.setVisible(false);
 		
-		cancelButton = new AjaxButton(au.org.theark.core.Constants.CANCEL){
+		cancelButton = new AjaxButton("close"){
 			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
