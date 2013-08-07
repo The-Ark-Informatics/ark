@@ -720,4 +720,6 @@ public interface IStudyDao {
 	public void runSearch(Long searchId, String currentUser);
 
 	public void delete(Search search);
+
+	public ConsentStatus getConsentStatusByName(String name);
 }
