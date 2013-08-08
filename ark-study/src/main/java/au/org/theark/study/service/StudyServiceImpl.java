@@ -1388,8 +1388,6 @@ public class StudyServiceImpl implements IStudyService {
 			
 		}
 		
-		
-		
 		return relativeCapsules.size() >2 ? relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]):new RelativeCapsule[0];
 	}
 	
@@ -1457,6 +1455,10 @@ public class StudyServiceImpl implements IStudyService {
 			
 			RelationshipVo father=null;
 			RelationshipVo mother=null;
+			RelationshipVo paternalGF=null;
+			RelationshipVo paternalGM=null;
+			RelationshipVo maternalGF=null;
+			RelationshipVo maternalGM=null;
 			Queue<RelationshipVo> parentQueue = new LinkedList<RelationshipVo>();
 			
 			//Paternal relationships
@@ -1474,6 +1476,9 @@ public class StudyServiceImpl implements IStudyService {
 						RelationshipVo grandFather=relativeSubjects.get(position);
 						grandFather.setRelationship(createRelationship("Paternal",++relativeIndex,"GrandFather"));
 						grandFather.setRelativeIndex(relativeIndex);
+						if((relativeIndex -1 )==0){
+							paternalGF = grandFather;
+						}
 						parentQueue.add(grandFather);
 					}
 					if(relativeSubject.getMotherId() !=null){
@@ -1482,6 +1487,9 @@ public class StudyServiceImpl implements IStudyService {
 						RelationshipVo grandMother=relativeSubjects.get(position);
 						grandMother.setRelationship(createRelationship("Paternal",++relativeIndex,"GrandMother"));
 						grandMother.setRelativeIndex(relativeIndex);
+						if((relativeIndex -1 )==0){
+							paternalGM = grandMother;
+						}
 						parentQueue.add(grandMother);
 					}
 				}
@@ -1490,6 +1498,7 @@ public class StudyServiceImpl implements IStudyService {
 			}
 			
 			//Maternal Relationships
+			
 			if(probandRelationship.getMotherId() != null){
 				int motherIndex = getRelativePosition(probandRelationship.getMotherId(), relativeSubjects);
 				mother = relativeSubjects.get(motherIndex);
@@ -1503,6 +1512,9 @@ public class StudyServiceImpl implements IStudyService {
 						RelationshipVo grandFather=relativeSubjects.get(position);
 						grandFather.setRelationship(createRelationship("Maternal",++relativeIndex,"GrandFather"));
 						grandFather.setRelativeIndex(relativeIndex);
+						if((relativeIndex -1 )==0){
+							maternalGF = grandFather;
+						}
 						parentQueue.add(grandFather);
 					}
 					if(relativeSubject.getMotherId() !=null){
@@ -1511,6 +1523,9 @@ public class StudyServiceImpl implements IStudyService {
 						RelationshipVo grandMother=relativeSubjects.get(position);
 						grandMother.setRelationship(createRelationship("Maternal",++relativeIndex,"GrandMother"));
 						grandMother.setRelativeIndex(relativeIndex);
+						if((relativeIndex -1 )==0){
+							maternalGM = grandMother;
+						}
 						parentQueue.add(grandMother);
 					}
 				}
@@ -1518,6 +1533,7 @@ public class StudyServiceImpl implements IStudyService {
 			}
 			
 			//Siblings
+			List<RelationshipVo> brotherSisterList = new ArrayList<RelationshipVo>();
 			for(int i=0;i<relativeSubjects.size();++i){
 				relativeSubject = relativeSubjects.get(i);
 				String fatherId=relativeSubject.getFatherId();
@@ -1526,8 +1542,30 @@ public class StudyServiceImpl implements IStudyService {
 						&& ((father !=null && father.getIndividualId().equals(fatherId)) ||(mother !=null && mother.getIndividualId().equals(motherId)))){
 					if("Male".equalsIgnoreCase(relativeSubject.getGender())){
 						relativeSubject.setRelationship("Brother");
+						brotherSisterList.add(relativeSubject);
 					}else if("Female".equalsIgnoreCase(relativeSubject.getGender())){
 						relativeSubject.setRelationship("Sister");
+						brotherSisterList.add(relativeSubject);
+					}
+				}
+			}
+			
+			//Nieces and Nephews
+			for(RelationshipVo brotherOrSister : brotherSisterList){
+				for(RelationshipVo existingRelationship : relativeSubjects){
+					if("Male".equalsIgnoreCase(brotherOrSister.getGender()) && existingRelationship.getFatherId() != null && existingRelationship.getFatherId().equals(brotherOrSister.getIndividualId())){
+						if("Male".equalsIgnoreCase(existingRelationship.getGender())){
+							existingRelationship.setRelationship("Nephew");
+						}else if("Female".equalsIgnoreCase(existingRelationship.getGender())){
+							existingRelationship.setRelationship("Niece");
+						}
+						
+					}else if("Female".equalsIgnoreCase(brotherOrSister.getGender()) && existingRelationship.getMotherId() != null && existingRelationship.getMotherId().equals(brotherOrSister.getIndividualId())){
+						if("Male".equalsIgnoreCase(existingRelationship.getGender())){
+							existingRelationship.setRelationship("Nephew");
+						}else if("Female".equalsIgnoreCase(existingRelationship.getGender())){
+							existingRelationship.setRelationship("Niece");
+						}
 					}
 				}
 			}
@@ -1579,6 +1617,52 @@ public class StudyServiceImpl implements IStudyService {
 					}
 				}
 			}
+			
+			
+			//Select uncles and aunts
+			List<RelationshipVo> uncleAuntList = new ArrayList<RelationshipVo>();
+			for (RelationshipVo existingRelationship : relativeSubjects) {
+				//Paternal uncles and aunts
+				if(father.getIndividualId().equals(existingRelationship.getIndividualId())
+						|| mother.getIndividualId().equals(existingRelationship.getIndividualId())){
+					continue;
+				}
+				
+				if((paternalGF != null && paternalGF.getIndividualId().equalsIgnoreCase(existingRelationship.getFatherId()))
+						|| (paternalGM != null && paternalGM.getIndividualId().equalsIgnoreCase(existingRelationship.getMotherId()))){
+					if("Male".equalsIgnoreCase(existingRelationship.getGender())){
+						existingRelationship.setRelationship("Paternal Uncle");
+						uncleAuntList.add(existingRelationship);
+					}else if("Female".equalsIgnoreCase(existingRelationship.getGender())){
+						existingRelationship.setRelationship("Paternal Aunt");
+						uncleAuntList.add(existingRelationship);
+					}
+				}
+				if((maternalGF != null && maternalGF.getIndividualId().equalsIgnoreCase(existingRelationship.getFatherId()))
+						|| (maternalGM != null && maternalGM.getIndividualId().equalsIgnoreCase(existingRelationship.getMotherId()))){
+					if("Male".equalsIgnoreCase(existingRelationship.getGender())){
+						existingRelationship.setRelationship("Maternal Uncle");
+						uncleAuntList.add(existingRelationship);
+					}else if("Female".equalsIgnoreCase(existingRelationship.getGender())){
+						existingRelationship.setRelationship("Maternal Aunt");
+						uncleAuntList.add(existingRelationship);
+					}
+				}
+			}
+			
+			//First Cousins
+			for(RelationshipVo uncleOrAunty : uncleAuntList){
+				for(RelationshipVo existingRelationship : relativeSubjects){
+					if("Male".equalsIgnoreCase(uncleOrAunty.getGender()) && existingRelationship.getFatherId() != null && existingRelationship.getFatherId().equals(uncleOrAunty.getIndividualId())){
+						existingRelationship.setRelationship("First Cousin");
+						
+					}else if("Female".equalsIgnoreCase(uncleOrAunty.getGender()) && existingRelationship.getMotherId() != null && existingRelationship.getMotherId().equals(uncleOrAunty.getIndividualId())){
+						existingRelationship.setRelationship("First Cousin");
+					}
+				}
+			}
+			
+			
 			
 			
 			//Remove proband from the list
