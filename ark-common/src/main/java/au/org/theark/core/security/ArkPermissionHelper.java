@@ -18,14 +18,20 @@
  ******************************************************************************/
 package au.org.theark.core.security;
 
+import java.util.Collection;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 
 /**
  * Global common class that provide helper methods to determine permissions of particular action/module
@@ -36,6 +42,9 @@ import au.org.theark.core.Constants;
 public class ArkPermissionHelper {
 	private transient static Logger	log	= LoggerFactory.getLogger(ArkPermissionHelper.class);
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private static IArkCommonService<Void>	iArkCommonService;
+	
 	/**
 	 * Determines whether a particular module function is accessible/permitted by the user in context
 	 * 
@@ -69,7 +78,7 @@ public class ArkPermissionHelper {
 		boolean modulePermitted = true;
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-
+		
 		if (sessionStudyId != null) {
 			String arkModule = (String) SecurityUtils.getSubject().getSession().getAttribute(arkModuleName);
 			if (arkModule != null) {
