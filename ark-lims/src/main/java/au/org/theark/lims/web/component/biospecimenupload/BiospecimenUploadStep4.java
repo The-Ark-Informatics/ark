@@ -87,7 +87,7 @@ public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 
 		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
 		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
-		StringBuffer uploadReport = null;
+		StringBuffer uploadReport = new StringBuffer("");
 		try {
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			uploadReport = iLimsService.uploadAndReportMatrixBiospecimenFile(containerForm.getModelObject().getUpload().getStudy(), inputStream, containerForm.getModelObject().getFileUpload().getSize(), fileFormat, delimiterChar);
