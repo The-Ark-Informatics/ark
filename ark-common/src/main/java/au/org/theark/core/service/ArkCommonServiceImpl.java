@@ -1422,4 +1422,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		this.createAuditHistory(ah, SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString(), search.getStudy());
 		studyDao.delete(search);
 	}
+
+	public ConsentStatus getConsentStatusByName(String name) {
+		return studyDao.getConsentStatusByName(name);
+	}
 }
