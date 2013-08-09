@@ -1,6 +1,7 @@
 package au.org.theark.report.model.vo.report;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class BiospecimenDetailsDataRow implements Serializable {
 
@@ -12,6 +13,8 @@ public class BiospecimenDetailsDataRow implements Serializable {
 	private String studyName;
 	private String subjectUId;
 	private Long 	biospecimenId;
+	private String	 biocollectionUid;
+	private Date 	 sampleDate;
 	private String	biospecimenUid;
 	private String parentId;
 	private String sampleType;
@@ -137,5 +140,33 @@ public class BiospecimenDetailsDataRow implements Serializable {
 
 	public void setBiospecimenUid(String biospecimenUid) {
 		this.biospecimenUid = biospecimenUid;
+	}
+
+	/**
+	 * @param biocollectionUid the biocollectionUid to set
+	 */
+	public void setBiocollectionUid(String biocollectionUid) {
+		this.biocollectionUid = biocollectionUid;
+	}
+
+	/**
+	 * @return the biocollectionUid
+	 */
+	public String getBiocollectionUid() {
+		return biocollectionUid;
+	}
+
+	/**
+	 * @param sampleDate the sampleDate to set
+	 */
+	public void setSampleDate(Date sampleDate) {
+		this.sampleDate = sampleDate;
+	}
+
+	/**
+	 * @return the sampleDate
+	 */
+	public Date getSampleDate() {
+		return sampleDate;
 	}
 }
