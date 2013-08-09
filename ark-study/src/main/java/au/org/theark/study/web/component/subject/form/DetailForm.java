@@ -567,7 +567,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 		}
 		else {
-
+			boolean errorFlag = false;
 			if(subjectStatusDdc.getModelObject().getName().equalsIgnoreCase("Archive")) {
 				Biospecimen biospecimenCriteria = new Biospecimen();
 				biospecimenCriteria.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
@@ -577,9 +577,10 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				if(count >0) {
 					error("You cannot archive this subject as there are Biospecimens associated ");
 					target.focusComponent(subjectStatusDdc);
+					errorFlag = true;
 				}
 			}
-			else {
+			if(!errorFlag) {
 				try {
 					studyService.updateSubject(subjectVO);
 					StringBuffer sb = new StringBuffer();
@@ -598,6 +599,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				}
 			}
 		}
+		
 		processErrors(target);
 	}
 
