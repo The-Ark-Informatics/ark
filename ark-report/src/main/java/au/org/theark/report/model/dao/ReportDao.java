@@ -900,6 +900,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.createAlias("status","bts",JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("biospecimen","bs",JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("bs.study", "st", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("bs.bioCollection", "bc", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("bs.linkSubjectStudy", "lss", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("bs.sampleType", "sat", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("bs.invCell", "inc", JoinType.LEFT_OUTER_JOIN);
@@ -920,6 +921,8 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		projectionList.add(Projections.property("st.name"), "studyName");
 		projectionList.add(Projections.property("lss.subjectUID"), "subjectUId");
 		projectionList.add(Projections.property("bs.id"), "biospecimenId");
+		projectionList.add(Projections.property("bc.biocollectionUid") , "biocollectionUid");
+		projectionList.add(Projections.property("bs.sampleDate"), "sampleDate");
 		projectionList.add(Projections.property("bs.biospecimenUid"), "biospecimenUid");
 		projectionList.add(Projections.property("bs.parentUid"), "parentId");
 		projectionList.add(Projections.property("sat.name"), "sampleType");
