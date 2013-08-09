@@ -1,4 +1,4 @@
-drop table if exists lims.appointments	;
+	drop table if exists lims.appointments	;
 drop table if exists lims.attachment	;
 drop table if exists lims.barcode_command	;
 drop table if exists lims.barcode_printer	;
