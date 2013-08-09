@@ -1,11 +1,13 @@
 package au.org.theark.report.web.component.viewReport.biospecimendetails;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
+import au.org.theark.core.Constants;
 import au.org.theark.report.model.vo.BiospecimenDetailsReportVO;
 import au.org.theark.report.model.vo.report.BiospecimenDetailsDataRow;
 import au.org.theark.report.service.IReportService;
@@ -35,6 +37,14 @@ public class BiospecimenDetailsReportDataSource implements Serializable,
 		}
 		else if ("biospecimenId".equalsIgnoreCase(fieldName)) {
 			value = data.get(index).getBiospecimenId();
+		}
+		else if ("biocollectionUid".equalsIgnoreCase(fieldName)) {
+			value = data.get(index).getBiocollectionUid();
+		}
+		else if ("sampleDate".equalsIgnoreCase(fieldName)) {
+			SimpleDateFormat sf = new SimpleDateFormat(Constants.DD_MM_YYYY);
+			value = (data.get(index).getSampleDate()!=null)?data.get(index).getSampleDate():null;
+			value = value==null?new String():sf.format(value);
 		}
 		else if ("parentId".equalsIgnoreCase(fieldName)) {
 			value = data.get(index).getParentId();
