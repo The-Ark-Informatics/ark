@@ -1271,8 +1271,6 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.getConsentTypeByName(name);
 	}
 
-
-
 	public AddressType getDefaultAddressType() {
 		return iStudyDao.getDefaultAddressType();
 	}
@@ -1623,8 +1621,8 @@ public class StudyServiceImpl implements IStudyService {
 			List<RelationshipVo> uncleAuntList = new ArrayList<RelationshipVo>();
 			for (RelationshipVo existingRelationship : relativeSubjects) {
 				//Paternal uncles and aunts
-				if(father.getIndividualId().equals(existingRelationship.getIndividualId())
-						|| mother.getIndividualId().equals(existingRelationship.getIndividualId())){
+				if((father != null &&father.getIndividualId().equals(existingRelationship.getIndividualId()))
+						|| (mother !=null && mother.getIndividualId().equals(existingRelationship.getIndividualId()))){
 					continue;
 				}
 				
