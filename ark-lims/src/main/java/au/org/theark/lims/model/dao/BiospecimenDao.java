@@ -419,6 +419,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 
 	public List<Unit> getUnits() {
 		Criteria criteria = getSession().createCriteria(Unit.class);
+		criteria.addOrder(Order.asc("order"));
 		List<Unit> list = criteria.list();
 		return list;
 	}

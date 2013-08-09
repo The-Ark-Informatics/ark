@@ -258,6 +258,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 	@SuppressWarnings("unchecked")
 	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria) {
 		Criteria criteria = buildGeneralUnitTypeCriteria(unitTypeCriteria);
+		criteria.addOrder(Order.asc("displayOrder"));
 		List<UnitType> results = criteria.list();
 		return results;
 	}
@@ -370,6 +371,7 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 		// UnitType name should be sufficient to return only 1 row (i.e. uniqueness at the global and arkFunction-specific levels)
 		criteria.add(Restrictions.eq("name", name));
 		criteria.add(Restrictions.or(Restrictions.isNull("arkFunction"), Restrictions.eq("arkFunction", arkFunction)));
+		criteria.addOrder(Order.asc("displayOrder"));
 		UnitType result = (UnitType) criteria.uniqueResult();
 		return result;
 	}
