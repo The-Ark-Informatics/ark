@@ -721,6 +721,28 @@ LOCK TABLES `ark_user_role` WRITE;
 /*!40000 ALTER TABLE `ark_user_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+/*
+-- Query: select
+        *
+    from
+        study.ARK_USER_ROLE this_ 
+    where
+        this_.ARK_USER_ID=1
+LIMIT 0, 2000
+
+-- Date: 2013-07-31 16:59
+*/
+INSERT INTO study.`ark_user_role` (`ID`,`ARK_USER_ID`,`ARK_ROLE_ID`,`ARK_MODULE_ID`,`STUDY_ID`) VALUES (1,1,1,1,NULL);
+INSERT INTO study.`ark_user_role` (`ID`,`ARK_USER_ID`,`ARK_ROLE_ID`,`ARK_MODULE_ID`,`STUDY_ID`) VALUES (2,1,1,2,NULL);
+INSERT INTO study.`ark_user_role` (`ID`,`ARK_USER_ID`,`ARK_ROLE_ID`,`ARK_MODULE_ID`,`STUDY_ID`) VALUES (3,1,1,3,NULL);
+INSERT INTO study.`ark_user_role` (`ID`,`ARK_USER_ID`,`ARK_ROLE_ID`,`ARK_MODULE_ID`,`STUDY_ID`) VALUES (4,1,1,4,NULL);
+INSERT INTO study.`ark_user_role` (`ID`,`ARK_USER_ID`,`ARK_ROLE_ID`,`ARK_MODULE_ID`,`STUDY_ID`) VALUES (5,1,1,5,NULL);
+INSERT INTO study.`ark_user_role` (`ID`,`ARK_USER_ID`,`ARK_ROLE_ID`,`ARK_MODULE_ID`,`STUDY_ID`) VALUES (7,1,1,9,NULL);
+INSERT INTO study.`ark_user_role` (`ID`,`ARK_USER_ID`,`ARK_ROLE_ID`,`ARK_MODULE_ID`,`STUDY_ID`) VALUES (45,1,1,8,NULL);
+
+
+
 --
 -- Table structure for table `audit_history`
 --
