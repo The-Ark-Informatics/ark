@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -38,6 +39,7 @@ import au.org.theark.core.model.lims.entity.AccessRequest;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
@@ -56,6 +58,7 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 	private CompoundPropertyModel<LimsVO> 					cpModel;
 	private FeedbackPanel										feedbackPanel;
 	private Label													transactionDateLbl;
+	private DateTextField										transactionDate;
 	private TextField<Number>									quantity;
 	private Label													unitsLbl;
 	private Label													recorderLbl;
@@ -78,7 +81,13 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 		feedbackPanel.setOutputMarkupPlaceholderTag(true);
 		add(feedbackPanel);
 		
-		transactionDateLbl = new Label("bioTransaction.transactionDate", simpleDateFormat.format(new Date()));
+		//transactionDateLbl = new Label("bioTransaction.transactionDate", simpleDateFormat.format(new Date()));
+		transactionDate = new DateTextField("bioTransaction.transactionDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		ArkDatePicker dobDatePicker = new ArkDatePicker();
+		dobDatePicker.bind(transactionDate);
+		transactionDate.add(dobDatePicker);
+		
+		
 		quantity = new TextField<Number>("bioTransaction.quantity");
 		
 		unitsLbl = new Label("bioTransaction.biospecimen.unit.name", cpModel.getObject().getBiospecimen().getUnit().getName());
@@ -115,7 +124,7 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Set defaults
-				cpModel.getObject().getBioTransaction().setTransactionDate(new Date());
+				//cpModel.getObject().getBioTransaction().setTransactionDate(new Date());
 				cpModel.getObject().getBioTransaction().setRecorder(SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal().toString());
 				
 				Double qtyAvail = iLimsService.getQuantityAvailable(cpModel.getObject().getBiospecimen());
@@ -184,7 +193,8 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 	}
 	
 	private void addFormComponents() {
-		add(transactionDateLbl);
+		//add(transactionDateLbl);
+		add(transactionDate);
 		add(quantity);
 		add(unitsLbl);
 		add(recorderLbl);
