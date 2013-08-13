@@ -157,7 +157,7 @@ public class Constants {
 	public static final char IMPORT_DELIM_CHAR_TAB = '	';
 
 	/* Search result list rows per page */
-	public static final int ROWS_PER_PAGE = 10;
+	public static final int ROWS_PER_PAGE = 50;
 	public static final int CUSTOM_FIELDS_PER_PAGE = 50;
 	public static final String RESULT_LIST = "resultList";
 
