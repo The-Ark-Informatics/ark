@@ -96,7 +96,6 @@ public class GridBoxPanel extends Panel {
 	private static final PackageResourceReference	BARCODE_CELL_ICON		= new PackageResourceReference(GridBoxPanel.class, "barcodeCell.gif");
 	private static final PackageResourceReference	PRIVATE_USED_CELL_ICON		= new PackageResourceReference(GridCellContentPanel.class, "privateUsedCell.gif");
 	
-	
 	private AbstractDetailModalWindow		modalWindow;
 	private LimsVO limsVo;
 	private Boolean allocating = false;
@@ -120,6 +119,8 @@ public class GridBoxPanel extends Panel {
 		if(limsVo.getInvBox().getId() != null) {
 			log.info("InvBox ID: " + limsVo.getInvBox().getId());
 		}
+		add(new Label("boxName", limsVo.getInvBox().getName()));
+		
 		setVisible(limsVo.getInvBox().getId() != null);
 		this.allocating = allocating;
 		initialiseGrid();
