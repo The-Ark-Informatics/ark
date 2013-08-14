@@ -2051,8 +2051,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public RelationshipVo getSubjectRelative(final String subjectUID,final Long studyId){
 		List<RelationshipVo> relatives = new ArrayList<RelationshipVo>();
-		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class, "lsp");
-		criteria.createAlias("subject", "sub", JoinType.LEFT_OUTER_JOIN);
+//		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class, "lsp");
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class, "sub");
+//		criteria.createAlias("subject", "sub", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("sub.study", "substudy", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("sub.person", "subPerson", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("subPerson.genderType", "subGender", JoinType.LEFT_OUTER_JOIN);
@@ -2062,8 +2063,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.eq("substudy.id", studyId));
 		
 		ProjectionList projectionList = Projections.projectionList();
-		projectionList.add(Projections.property("lsp.id"), "id");
-		projectionList.add(Projections.property("lsp.familyId"), "familyId");
+//		projectionList.add(Projections.property("lsp.id"), "id");
+//		projectionList.add(Projections.property("lsp.familyId"), "familyId");
 		projectionList.add(Projections.property("sub.subjectUID"), "individualId");
 		projectionList.add(Projections.property("subGender.name"), "gender");
 		projectionList.add(Projections.property("subPerson.dateOfBirth"), "dob");
