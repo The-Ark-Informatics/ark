@@ -1576,7 +1576,7 @@ public class StudyServiceImpl implements IStudyService {
 				relativeSubject = relativeSubjects.get(i);
 				String fatherId=relativeSubject.getFatherId();
 				String motherId=relativeSubject.getMotherId();
-				if((father !=null && probandRelationship.getIndividualId().equals(fatherId)) ||(mother !=null && probandRelationship.getIndividualId().equals(motherId))){
+				if((probandRelationship.getIndividualId().equals(fatherId)) ||(probandRelationship.getIndividualId().equals(motherId))){
 					if("Male".equalsIgnoreCase(relativeSubject.getGender())){
 						relativeSubject.setRelationship("Son");
 						childrenQueue.add(relativeSubject);
@@ -1590,19 +1590,19 @@ public class StudyServiceImpl implements IStudyService {
 			//Grand Children
 			while((relativeSubject = childrenQueue.poll())!=null ){
 				for(RelationshipVo relative:relativeSubjects){
-					if("Male".equals(relativeSubject.getGender()) && relativeSubject.getIndividualId().equals(relative.getFatherId())){
+					if(relativeSubject.getIndividualId().equals(relative.getFatherId()) || relativeSubject.getIndividualId().equals(relative.getMotherId())){
+						
 						int relativeIndex = relative.getRelativeIndex();
-						relative.setRelationship(createRelationship("",++relativeIndex,"GrandSon"));
+						if("Male".equals(relative.getGender())){
+							relative.setRelationship(createRelationship("",++relativeIndex,"Grandson"));
+						}
+						else if("Female".equals(relative.getGender())){
+							relative.setRelationship(createRelationship("",++relativeIndex,"Granddaughter"));
+						}
 						relative.setRelativeIndex(relativeIndex);
 						childrenQueue.add(relative);
-					}
-					if("Female".equals(relativeSubject.getGender()) && relativeSubject.getIndividualId().equals(relative.getMotherId())){
-						int relativeIndex = relative.getRelativeIndex();
-						relative.setRelationship(createRelationship("",++relativeIndex,"GrandDaughter"));
-						relative.setRelativeIndex(relativeIndex);
-						childrenQueue.add(relative);
-					}
 					
+					}	
 				}
 			}
 			
