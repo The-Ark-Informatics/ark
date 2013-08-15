@@ -100,7 +100,7 @@ public class PedigreeDisplayPanel extends Panel {
 		sb.setLength(0);
 
 		String familyId = null;
-		RelativeCapsule[] relatives = studyService.generateSubjectPedigree(subjectUID, studyId);
+		RelativeCapsule[] relatives = studyService.generateSubjectPedigreeImageList(subjectUID, studyId);
 
 		if (relatives.length > 2) {
 			File dataFile = null;
@@ -207,7 +207,7 @@ public class PedigreeDisplayPanel extends Panel {
 
 		}
 		else {
-			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<svg width=\"640\" height=\"480\" xmlns=\"http://www.w3.org/2000/svg\">\r\n <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->\r\n <g>\r\n  <title>Layer 1</title>\r\n  <text transform=\"rotate(-0.0100589, 317.008, 97.5)\" xml:space=\"preserve\" text-anchor=\"middle\" font-family=\"serif\" font-size=\"24\" id=\"svg_3\" y=\"106\" x=\"317\" stroke-width=\"0\" stroke=\"#000000\" fill=\"#000000\">Information is not sufficient to generate Pedigree History</text>\r\n </g>\r\n</svg>");
+			sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<svg width=\"640\" height=\"480\" xmlns=\"http://www.w3.org/2000/svg\">\r\n <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->\r\n <g>\r\n  <title>Layer 1</title>\r\n  <text transform=\"rotate(-0.0100589, 317.008, 97.5)\" xml:space=\"preserve\" text-anchor=\"middle\" font-family=\"serif\" font-size=\"24\" id=\"svg_3\" y=\"106\" x=\"317\" stroke-width=\"0\" stroke=\"#000000\" fill=\"#000000\">No Pedigree History</text>\r\n </g>\r\n</svg>");
 		}
 
 		DynamicImageResource svgImageRes = new DynamicImageResource("png") {
