@@ -109,7 +109,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-				RelativeCapsule[] relatives = studyService.generateSubjectPedigree(subjectUID, studyId);
+				RelativeCapsule[] relatives = studyService.generateSubjectPedigreeExportList(subjectUID, studyId);
 
 				try {
 					Theme theme = new Theme();

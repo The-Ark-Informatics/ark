@@ -417,7 +417,9 @@ public interface IStudyService {
 	
 	public StringBuffer uploadAndReportPedigreeDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId);
 	
-	public RelativeCapsule[] generateSubjectPedigree(final String subjectUID,final Long studyId);
+	public RelativeCapsule[] generateSubjectPedigreeImageList(final String subjectUID,final Long studyId);
+	
+	public RelativeCapsule[] generateSubjectPedigreeExportList(final String subjectUID,final Long studyId);
 	
 	public List<RelationshipVo> generateSubjectPedigreeRelativeList(final String subjectUID,final Long studyId);
 	
