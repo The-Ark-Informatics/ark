@@ -1303,8 +1303,18 @@ public class StudyServiceImpl implements IStudyService {
 	public List<ConsentType> getConsentType() {
 		return iStudyDao.getConsentType();
 	}
+	
+	public RelativeCapsule[] generateSubjectPedigreeImageList(final String subjectUID,final Long studyId){
+		RelativeCapsule[] relativeCapsules = generateSubjectPedigree(subjectUID,studyId);
+		return relativeCapsules.length > 2 ? relativeCapsules:new RelativeCapsule[0];
+	}
+	
+	public RelativeCapsule[] generateSubjectPedigreeExportList(final String subjectUID,final Long studyId){
+		RelativeCapsule[] relativeCapsules = generateSubjectPedigree(subjectUID,studyId);
+		return relativeCapsules;
+	}
 
-	public RelativeCapsule[] generateSubjectPedigree(final String subjectUID,final Long studyId){
+	private RelativeCapsule[] generateSubjectPedigree(final String subjectUID,final Long studyId){
 		List<RelativeCapsule> relativeCapsules = new ArrayList<RelativeCapsule>();
 		Queue<RelativeCapsule> relativeCapsuleQueue = new LinkedList<RelativeCapsule>();
 		RelationshipVo probandRelationship = iStudyDao.getSubjectRelative(subjectUID, studyId);
@@ -1386,7 +1396,8 @@ public class StudyServiceImpl implements IStudyService {
 			
 		}
 		
-		return relativeCapsules.size() >2 ? relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]):new RelativeCapsule[0];
+//		return relativeCapsules.size() >2 ? relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]):new RelativeCapsule[0];
+		return  relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]);
 	}
 	
 	public List<RelationshipVo> generateSubjectPedigreeRelativeList(final String subjectUID,final Long studyId){
