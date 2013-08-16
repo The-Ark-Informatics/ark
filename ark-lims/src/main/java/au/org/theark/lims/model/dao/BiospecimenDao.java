@@ -673,6 +673,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 			getSession().refresh(biospecimen);
 			
 			BioTransaction bioTransaction = new BioTransaction();
+			bioTransaction.setUnit(biospecimen.getUnit());	//TODO: soon in web form
 			bioTransaction.setBiospecimen(biospecimen.getParent());
 			bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
 			bioTransaction.setReason("Sub-Aliquot for: " + biospecimen.getBiospecimenUid());
@@ -703,6 +704,8 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 			bioTransaction.setQuantity(biospecimen.getQuantity() * -1);
 			BioTransactionStatus bioTransactionStatus = iBioTransactionDao.getBioTransactionStatusByName("Aliquoted");
 			bioTransaction.setStatus(bioTransactionStatus);
+			bioTransaction.setUnit(biospecimen.getUnit());	//TODO: soon in web form
+			
 			getSession().save(bioTransaction);
 
 			InvCell invCell = biospecimen.getInvCell();
