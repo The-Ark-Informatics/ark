@@ -61,7 +61,7 @@ public class LinkSubjectPedigree implements Serializable {
         this.familyId = familyId;
     }
    
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "LINK_SUBJECT_STUDY_ID")
     public LinkSubjectStudy getSubject() {
         return subject;
@@ -70,7 +70,7 @@ public class LinkSubjectPedigree implements Serializable {
         this.subject = subject;
     }
    
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "RELATIVE_ID")
     public LinkSubjectStudy getRelative() {
         return relative;
@@ -79,7 +79,7 @@ public class LinkSubjectPedigree implements Serializable {
         this.relative = relative;
     }
    
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "RELATIONSHIP_ID")
     public Relationship getRelationship() {
         return relationship;
