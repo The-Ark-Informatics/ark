@@ -20,6 +20,7 @@ package au.org.theark.study.model.dao;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
@@ -446,4 +447,12 @@ public interface IStudyDao {
 	public void update(LinkSubjectTwin twin);
 	
 	public void delete(LinkSubjectTwin twin);
+	
+	public Integer getSubjectParentCount(final LinkSubjectStudy subject);
+	
+	public List<LinkSubjectPedigree> getSubjectParentRelationshipList(final LinkSubjectStudy subject);
+	
+	public List<LinkSubjectPedigree> getParentNonSubjectRelationshipList(final LinkSubjectStudy subject,final LinkSubjectStudy parentSubject);
+	
+	public List<RelationshipVo> getSubjectTwins(final Set<String> subjectUids,final Long studyId);
 }

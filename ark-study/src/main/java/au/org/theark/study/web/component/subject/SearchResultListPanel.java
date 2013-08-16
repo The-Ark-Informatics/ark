@@ -51,6 +51,7 @@ import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
+import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
@@ -66,7 +67,7 @@ public class SearchResultListPanel extends Panel {
 	private static final long	serialVersionUID	= -8517602411833622907L;
 	private WebMarkupContainer	arkContextMarkup;
 	private ContainerForm		subjectContainerForm;
-	private ArkCrudContainerVO	arkCrudContainerVO;
+	private ArkCrudContainerVO	 arkCrudContainerVO;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
@@ -135,14 +136,14 @@ public class SearchResultListPanel extends Panel {
 		return studyCompDataView;
 	}
 	
-	public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider,final AbstractDetailModalWindow modalWindow) {
+	public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider,final AbstractDetailModalWindow modalWindow,final List<RelationshipVo> relatives ) {
 
 		DataView<SubjectVO> studyCompDataView = new DataView<SubjectVO>("subjectList", subjectProvider) {
 
 			@Override
 			protected void populateItem(final Item<SubjectVO> item) {
 				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
-				item.add(buildLink(item.getModelObject(),modalWindow));
+				item.add(buildLink(item.getModelObject(),modalWindow,relatives));
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
 
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
@@ -281,7 +282,7 @@ public class SearchResultListPanel extends Panel {
 		return link;
 	}
 	
-	private AjaxLink buildLink(final SubjectVO subject,final AbstractDetailModalWindow modalWindow) {
+	private AjaxLink buildLink(final SubjectVO subject,final AbstractDetailModalWindow modalWindow,final List<RelationshipVo> relatives ) {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.SUBJECT_UID) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
@@ -294,6 +295,20 @@ public class SearchResultListPanel extends Panel {
 				Study study = iArkCommonService.getStudy(sessionStudyId);
 
 				String subjectUID = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+				
+				
+				if(subjectUID.equals(subject.getLinkSubjectStudy().getSubjectUID())){
+					this.error("Invalid parent relationship");
+					return;
+				}
+				
+				for(RelationshipVo relative:relatives){
+					if(subject.getLinkSubjectStudy().getSubjectUID().equals(relative.getIndividualId())){
+						this.error("Invalid parent relationship");
+						return;
+					}
+				}
+				
 				
 				SubjectVO criteriaSubjectVo = new SubjectVO();
 				criteriaSubjectVo.getLinkSubjectStudy().setStudy(study);

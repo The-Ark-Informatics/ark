@@ -6,6 +6,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -15,6 +16,7 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.pedigree.PedigreeDisplayPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeParentContainerPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeTwinContainerPanel;
+import au.org.theark.worktracking.model.vo.BillableItemVo;
 
 public class SearchForm extends Form<PedigreeVo> {
 	
@@ -41,8 +43,8 @@ public class SearchForm extends Form<PedigreeVo> {
 	
 	protected AbstractDetailModalWindow modalWindow;
 
-	public SearchForm(String id,WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup , ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
-		super(id);
+	public SearchForm(String id,CompoundPropertyModel<PedigreeVo> cpmModel,WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup , ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
+		super(id,cpmModel);
 		
 		this.arkContextMarkup = arkContextMarkup;
 		this.studyNameMarkup = studyNameMarkup;
@@ -88,7 +90,8 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				modalWindow.setTitle("Set Father");
-				modalWindow.setContent(new PedigreeParentContainerPanel("content",arkContextMarkup,studyNameMarkup,studyLogoMarkup,modalWindow,Constants.MALE));
+				
+				modalWindow.setContent(new PedigreeParentContainerPanel("content",arkContextMarkup,studyNameMarkup,studyLogoMarkup,modalWindow,Constants.MALE,getFormModelObject().getRelationshipList()));
 				modalWindow.show(target);
 			}						
 		};
@@ -98,7 +101,7 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				modalWindow.setTitle("Set Mother");
-				modalWindow.setContent(new PedigreeParentContainerPanel("content",arkContextMarkup,studyNameMarkup,studyLogoMarkup,modalWindow,Constants.FEMALE));
+				modalWindow.setContent(new PedigreeParentContainerPanel("content",arkContextMarkup,studyNameMarkup,studyLogoMarkup,modalWindow,Constants.FEMALE,getFormModelObject().getRelationshipList()));
 				modalWindow.show(target);
 			}						
 		};
@@ -149,5 +152,11 @@ public class SearchForm extends Form<PedigreeVo> {
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
 		}
+	}
+	
+	
+	
+	private PedigreeVo getFormModelObject(){
+		return getModelObject();
 	}
 }
