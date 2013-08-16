@@ -38,7 +38,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.AccessRequest;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.BioTransactionStatus;
-import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -149,9 +148,10 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 					// Check that quantity specified not greater than available
 					if(txnQuantity < 0 && (Math.abs(txnQuantity) > qtyAvail)) {
 						error("When aliquoting, processing or delivering, transaction quantity may not exceed total quantity available.");
-						target.add(feedbackPanel);
+						target.add(feedbackPanel);	
 					}
 					else {
+						cpModel.getObject().getBioTransaction().setUnit(cpModel.getObject().getBiospecimen().getUnit());  //TODO: Unit
 						iLimsService.createBioTransaction(cpModel.getObject());
 						info("Transaction saved successfully");
 						
@@ -167,6 +167,7 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 						// refresh transaction form
 						BioTransaction bioTransaction = new BioTransaction();
 						bioTransaction.setBiospecimen(cpModel.getObject().getBiospecimen());
+						bioTransaction.setUnit(cpModel.getObject().getBiospecimen().getUnit());  //TODO: Unit
 						cpModel.getObject().setBioTransaction(bioTransaction);
 						
 						target.add(form.getParent().getParent());
