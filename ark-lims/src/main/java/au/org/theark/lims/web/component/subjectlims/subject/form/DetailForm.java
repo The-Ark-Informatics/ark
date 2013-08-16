@@ -276,7 +276,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		// Set study in context back to limsVo.study
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if(sessionStudyId != null) {
-			Study study = iArkCommonService.getStudy(sessionStudyId);
+			//Study study = iArkCommonService.getStudy(sessionStudyId);
 			LimsVO limsVo = new LimsVO();
 			//limsVo.setStudy(study);
 			containerForm.setModelObject(limsVo);
