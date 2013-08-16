@@ -426,6 +426,7 @@ public class AutoGenBatchCreateBiospecimenForm extends Form<BatchBiospecimenVO> 
 					// Inheriently create a transaction for the initial quantity
 					BioTransaction bioTransaction = new BioTransaction();
 					bioTransaction.setBiospecimen(biospecimen);
+					bioTransaction.setUnit(biospecimen.getUnit());	//TODO: soon in web form
 					bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
 					bioTransaction.setQuantity(biospecimen.getQuantity());
 					bioTransaction.setReason(au.org.theark.lims.web.Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY);
