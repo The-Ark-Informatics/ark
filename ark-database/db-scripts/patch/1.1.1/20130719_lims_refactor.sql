@@ -21,7 +21,7 @@ drop table if exists lims.samplecode	;
 drop table if exists lims.biodata_group_criteria	;
 drop table if exists lims.biodata_criteria	;
 drop table if exists lims.biodata_group	;
-#  don't delete even though empty...this links to biotransaction...may be used?  drop table if exists lims.access_request;
+/*  don't delete even though empty...this links to biotransaction...may be used?  drop table if exists lims.access_request;*/
 
 
 
@@ -53,6 +53,28 @@ UPDATE `lims`.`unit` SET `FACTOR`='1000000' WHERE `ID`='10';
 UPDATE `lims`.`unit` SET `FACTOR`='1000' WHERE `ID`='12';
 UPDATE `lims`.`unit` SET `FACTOR`='0.001' WHERE `ID`='14';
 UPDATE `lims`.`unit` SET `FACTOR`='.001' WHERE `ID`='1';
+
+/*
+add units to transaction;
+*/
+ALTER TABLE `lims`.`bio_transaction` ADD COLUMN `UNIT_ID` INT(11) NULL DEFAULT 0  AFTER `REQUEST_ID` ;
+
+
+/*
+add units to transaction - update existing data to ensure unit matches that of the parent;
+logic needs to make sure every transaction gets the unit of the biospecimen if it has one (app logic doesnt permit no unit but...), else use that of the parent, else use that of the grandparent, etc?
+*/
+update lims.bio_transaction t
+left join lims.biospecimen b on
+    t.biospecimen_id = b.id
+set
+    t.unit_id = b.unit_id
+
+
+
+
+
+
 
 
 
