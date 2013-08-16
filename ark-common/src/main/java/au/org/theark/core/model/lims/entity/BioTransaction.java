@@ -47,27 +47,29 @@ public class BioTransaction implements java.io.Serializable {
 
 	private static final long	serialVersionUID	= 1L;
 	
-	private Long						id;
+	private Long					id;
 	private Biospecimen				biospecimen;
-	private Date						transactionDate;
-	private Double						quantity;
-	private String						reason;
-	private String						recorder;
+	private Unit					unit;
+	private Date					transactionDate;
+	private Double					quantity;
+	private String					reason;
+	private String					recorder;
 	private BioTransactionStatus	status;
 	private AccessRequest			accessRequest;
 
 	public BioTransaction() {
 	}
 
-	public BioTransaction(Long id, Biospecimen biospecimen, Date transactionDate, Double quantity) {
+	public BioTransaction(Long id, Biospecimen biospecimen, Date transactionDate, Double quantity, Unit unit) {
 		this.id = id;
 		this.biospecimen = biospecimen;
 		this.transactionDate = transactionDate;
 		this.quantity = quantity;
+		this.unit = unit;
 	}
 
 	public BioTransaction(Long id, Biospecimen biospecimen, Date transactionDate, Double quantity, 
-			String reason, String recorder, BioTransactionStatus status, AccessRequest accessRequest) {
+			String reason, String recorder, BioTransactionStatus status, AccessRequest accessRequest, Unit unit) {
 		this.id = id;
 		this.biospecimen = biospecimen;
 		this.transactionDate = transactionDate;
@@ -76,6 +78,7 @@ public class BioTransaction implements java.io.Serializable {
 		this.recorder = recorder;
 		this.status = status;
 		this.accessRequest = accessRequest;
+		this.unit = unit;
 	}
 
 	@Id
@@ -97,6 +100,16 @@ public class BioTransaction implements java.io.Serializable {
 
 	public void setBiospecimen(Biospecimen biospecimen) {
 		this.biospecimen = biospecimen;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "UNIT_ID")
+	public Unit getUnit() {
+		return this.unit;
+	}
+
+	public void setUnit(Unit unit) {
+		this.unit = unit;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
