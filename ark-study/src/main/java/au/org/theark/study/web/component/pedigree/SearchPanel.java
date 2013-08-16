@@ -40,7 +40,7 @@ public class SearchPanel extends Panel {
 
 	public void initialisePanel(CompoundPropertyModel<PedigreeVo> studyCompCpm) {
 
-		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM,arkContextMarkup,studyNameMarkup,studyLogoMarkup ,arkCrudContainerVO, feedBackPanel);
+		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM,studyCompCpm,arkContextMarkup,studyNameMarkup,studyLogoMarkup ,arkCrudContainerVO, feedBackPanel);
 		add(searchStudyCompForm);
 	}
 

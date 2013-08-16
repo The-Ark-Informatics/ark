@@ -26,11 +26,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Queue;
+import java.util.Set;
 
 import org.apache.log4j.net.TelnetAppender;
 import org.apache.shiro.SecurityUtils;
@@ -1736,7 +1739,59 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public List<RelationshipVo> getSubjectPedigreeTwinList(String subjectUID, Long studyId) {
-		return iStudyDao.getSubjectSiblings(subjectUID,studyId);
+
+		List<RelationshipVo> twinList = new ArrayList<RelationshipVo>();
+
+		Study study = iArkCommonService.getStudy(studyId);
+		LinkSubjectStudy subject = null;
+		try {
+			subject = iArkCommonService.getSubjectByUID(subjectUID, study);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		List<LinkSubjectPedigree> parentList = iStudyDao.getSubjectParentRelationshipList(subject);
+
+		LinkSubjectStudy father = null;
+		LinkSubjectStudy mother = null;
+
+		if (parentList != null && parentList.size() == 2) {
+			for (LinkSubjectPedigree subjectRelationship : parentList) {
+				if ("father".equalsIgnoreCase(subjectRelationship.getRelationship().getName())) {
+					father = subjectRelationship.getRelative();
+				}
+				else if ("mother".equalsIgnoreCase(subjectRelationship.getRelationship().getName())) {
+					mother = subjectRelationship.getRelative();
+				}
+			}
+
+			List<LinkSubjectPedigree> fatherRelationList = iStudyDao.getParentNonSubjectRelationshipList(subject, father);
+			List<LinkSubjectPedigree> motherRelationList = iStudyDao.getParentNonSubjectRelationshipList(subject, mother);
+
+			HashMap<String, Integer> parentMap = new HashMap<String, Integer>();
+
+			for (LinkSubjectPedigree fatherRelationship : fatherRelationList) {
+				for (LinkSubjectPedigree motherRelationship : motherRelationList) {
+					if (fatherRelationship.getSubject().getSubjectUID().equals(motherRelationship.getSubject().getSubjectUID())) {
+						if (parentMap.containsKey(fatherRelationship.getSubject().getSubjectUID())) {
+							int count = parentMap.get(fatherRelationship.getSubject().getSubjectUID());
+							parentMap.put(fatherRelationship.getSubject().getSubjectUID(), ++count);
+						}
+						else {
+							parentMap.put(fatherRelationship.getSubject().getSubjectUID(), 1);
+						}
+					}
+				}
+			}
+
+			Set<String> siblingUids = parentMap.keySet();
+			if (siblingUids != null && siblingUids.size() > 0) {
+				twinList = iStudyDao.getSubjectTwins(siblingUids, studyId);
+			}
+		}
+
+		return twinList;
 	}
 	
 	public void processPedigreeTwinRelationship(final RelationshipVo relationshipVo, final String subjectUid, final Long studyId){

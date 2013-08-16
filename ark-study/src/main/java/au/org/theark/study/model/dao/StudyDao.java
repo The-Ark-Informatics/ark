@@ -2223,5 +2223,52 @@ where lss.subject_uid = '100'
 	public void delete(LinkSubjectTwin twin){
 		getSession().delete(twin);
 	}
+		
+	public Integer getSubjectParentCount(final LinkSubjectStudy subject){
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class); 
+		criteria.add(Restrictions.eq("subject", subject));
+		criteria.setProjection(Projections.rowCount());
+		return ((Integer)criteria.list().get(0)).intValue(); 
+	}
+	
+	public List<LinkSubjectPedigree> getSubjectParentRelationshipList(final LinkSubjectStudy subject){
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class); 
+		criteria.add(Restrictions.eq("subject", subject));
+		return criteria.list(); 
+	}
+	
+	public List<LinkSubjectPedigree> getParentNonSubjectRelationshipList(final LinkSubjectStudy subject,final LinkSubjectStudy parentSubject){
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class); 
+		criteria.add(Restrictions.eq("relative", parentSubject));
+		criteria.add(Restrictions.ne("subject", subject));
+		return criteria.list(); 
+	}
+	
+	public List<RelationshipVo> getSubjectTwins(final Set<String> subjectUids,final Long studyId){		
+		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,NULL) as id ,coalesce(ftype.name,stype.name,'NT') as twin");
+		sb.append(" From study.link_subject_study lss ");
+		sb.append("		inner join study.study st on st.id=lss.study_id ");
+		sb.append("		inner join study.person p on p.id = lss.PERSON_ID");
+		sb.append("		left outer join study.link_subject_twin flst on flst.FIRST_SUBJECT = lss.ID");
+		sb.append("		left outer join study.twin_type ftype on ftype.id = flst.twin_type_id");
+		sb.append("		left outer join study.link_subject_twin slst on slst.SECOND_SUBJECT = lss.ID");
+		sb.append("		left outer join study.twin_type stype on stype.id = slst.twin_type_id");
+		sb.append("	where lss.subject_uid in ( :subjectUids ) ");
+		sb.append("		and st.id = :studyId ");
+		
+		List<RelationshipVo> twins = getSession().createSQLQuery(sb.toString())
+				  .addScalar("individualId")
+				  .addScalar("id")
+				  .addScalar("firstName")
+				  .addScalar("lastName")
+				  .addScalar("dob")
+				  .addScalar("twin")
+				  .setParameterList("subjectUids", subjectUids!=null?subjectUids:new HashSet<String>())
+				  .setParameter("studyId", studyId)
+				  .setResultTransformer( Transformers.aliasToBean(RelationshipVo.class))
+				  .list();
+		
+		return twins;
+	}
 
 }
