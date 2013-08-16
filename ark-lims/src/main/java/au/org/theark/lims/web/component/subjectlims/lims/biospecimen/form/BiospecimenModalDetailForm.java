@@ -755,11 +755,12 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		try {
 			if (cpModel.getObject().getBiospecimen().getId() == null) {
 				// Save/Process/Aliquot
-				if (cpModel.getObject().getBiospecimenProcessing().isEmpty()) {
+				if (cpModel.getObject().getBiospecimenProcessing().isEmpty()) {	//empty
 					// Normal Save functionality
 					// Initial transaction detail
 					currentUser = SecurityUtils.getSubject();
 					cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
+					cpModel.getObject().getBioTransaction().setUnit(cpModel.getObject().getBiospecimen().getUnit());	//TODO: soon in web form
 
 					iLimsService.createBiospecimen(cpModel.getObject());
 
@@ -799,6 +800,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 							LimsVO parentLimsVo = new LimsVO();
 							parentLimsVo.setBiospecimen(parentBiospecimen);
 							parentLimsVo.getBioTransaction().setId(null);
+							parentLimsVo.getBioTransaction().setUnit(biospecimen.getUnit());	//TODO: soon in web form
 							parentLimsVo.getBioTransaction().setBiospecimen(parentBiospecimen);
 							parentLimsVo.getBioTransaction().setTransactionDate(Calendar.getInstance().getTime());
 							parentLimsVo.getBioTransaction().setReason("Processed for: " + biospecimen.getBiospecimenUid());
@@ -846,6 +848,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 							//parentLimsVo.setBiospecimen(parentBiospecimen);
 							parentLimsVo.getBioTransaction().setId(null);
 							parentLimsVo.getBioTransaction().setBiospecimen(parentBiospecimen);
+							parentLimsVo.getBioTransaction().setUnit(biospecimen.getUnit());	//TODO: soon in web form
 							parentLimsVo.getBioTransaction().setTransactionDate(Calendar.getInstance().getTime());
 							parentLimsVo.getBioTransaction().setReason("Sub-Aliquot for: " + biospecimen.getBiospecimenUid());
 							parentLimsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
@@ -1021,6 +1024,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
 				cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
 				cpModel.getObject().getBioTransaction().setQuantity(null);
+				cpModel.getObject().getBioTransaction().setUnit(biospecimen.getUnit());
 
 				enableQuantityTreatment(target);
 				CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());
@@ -1125,6 +1129,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
 				cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
 				cpModel.getObject().getBioTransaction().setQuantity(null);
+				cpModel.getObject().getBioTransaction().setUnit(biospecimen.getUnit());  //TODO: unit
 
 				enableQuantityTreatment(target);
 				CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());
