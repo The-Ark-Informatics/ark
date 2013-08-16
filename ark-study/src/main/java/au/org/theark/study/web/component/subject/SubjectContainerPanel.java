@@ -54,6 +54,7 @@ import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.export.ExportToolbar;
 import au.org.theark.core.web.component.export.ExportableDateColumn;
 import au.org.theark.core.web.component.export.ExportableTextColumn;
+import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
@@ -123,8 +124,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
 		add(containerForm);
 	}
-	
-	
+		
 	/**
 	 * Re-use in pedigree panel
 	 * 
@@ -133,7 +133,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	 * @param studyNameMarkup 
 	 * @param modalWindow
 	 */
-	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup,AbstractDetailModalWindow modalWindow,String gender) {
+	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup,AbstractDetailModalWindow modalWindow,String gender,List<RelationshipVo> relatives) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		this.studyNameMarkup = studyNameMarkup;
@@ -153,10 +153,11 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseSearchResults(modalWindow,gender));
+		containerForm.add(initialiseSearchResults(modalWindow,gender,relatives));
 		containerForm.add(initialiseSearchPanel());
 		
 		arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("genderType").setEnabled(false);
+		arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("study").setEnabled(false);
 		
 		add(containerForm);
 	}
@@ -300,7 +301,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected WebMarkupContainer initialiseSearchResults(AbstractDetailModalWindow modalWindow,final String gender) {
+	protected WebMarkupContainer initialiseSearchResults(AbstractDetailModalWindow modalWindow,final String gender,final List<RelationshipVo> relatives) {
 		searchResultsPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO, studyNameMarkup, studyLogoMarkup);
 		searchResultsPanel.setOutputMarkupId(true);
 		
@@ -344,7 +345,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		};
 		subjectProvider.setModel(this.cpModel);
 
-		dataView = searchResultsPanel.buildDataView(subjectProvider,modalWindow);
+		dataView = searchResultsPanel.buildDataView(subjectProvider,modalWindow,relatives);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView){
