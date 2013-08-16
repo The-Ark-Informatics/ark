@@ -426,6 +426,7 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 					
 					// Inheriently create a transaction for the initial quantity
 					BioTransaction bioTransaction = new BioTransaction();
+					bioTransaction.setUnit(biospecimen.getUnit());	//TODO: soon in web form
 					bioTransaction.setBiospecimen(biospecimen);
 					bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
 					bioTransaction.setQuantity(biospecimen.getQuantity());
