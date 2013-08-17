@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -136,14 +137,14 @@ public class SearchResultListPanel extends Panel {
 		return studyCompDataView;
 	}
 	
-	public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider,final AbstractDetailModalWindow modalWindow,final List<RelationshipVo> relatives ) {
+	public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider,final AbstractDetailModalWindow modalWindow,final List<RelationshipVo> relatives, final FeedbackPanel feedbackPanel ) {
 
 		DataView<SubjectVO> studyCompDataView = new DataView<SubjectVO>("subjectList", subjectProvider) {
 
 			@Override
 			protected void populateItem(final Item<SubjectVO> item) {
 				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
-				item.add(buildLink(item.getModelObject(),modalWindow,relatives));
+				item.add(buildLink(item.getModelObject(),modalWindow,relatives,feedbackPanel));
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
 
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
@@ -282,7 +283,7 @@ public class SearchResultListPanel extends Panel {
 		return link;
 	}
 	
-	private AjaxLink buildLink(final SubjectVO subject,final AbstractDetailModalWindow modalWindow,final List<RelationshipVo> relatives ) {
+	private AjaxLink buildLink(final SubjectVO subject,final AbstractDetailModalWindow modalWindow,final List<RelationshipVo> relatives, final FeedbackPanel feedbackPanel ) {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.SUBJECT_UID) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
@@ -299,12 +300,14 @@ public class SearchResultListPanel extends Panel {
 				
 				if(subjectUID.equals(subject.getLinkSubjectStudy().getSubjectUID())){
 					this.error("Invalid parent relationship");
+					target.add(feedbackPanel);
 					return;
 				}
 				
 				for(RelationshipVo relative:relatives){
 					if(subject.getLinkSubjectStudy().getSubjectUID().equals(relative.getIndividualId())){
 						this.error("Invalid parent relationship");
+						target.add(feedbackPanel);
 						return;
 					}
 				}

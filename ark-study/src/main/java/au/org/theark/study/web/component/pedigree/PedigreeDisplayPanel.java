@@ -27,6 +27,7 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.image.Image;
@@ -50,7 +51,7 @@ import au.org.theark.study.web.Constants;
 import com.x5.template.Chunk;
 import com.x5.template.Theme;
 
-public class PedigreeDisplayPanel extends Panel {
+public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 
 	/**
 	 * 
@@ -236,7 +237,8 @@ public class PedigreeDisplayPanel extends Panel {
 			}
 
 		};
-
+		
+		
 		addOrReplace(new Image("pedigreeImg", svgImageRes));
 
 		downloadLink = new DownloadLink("imgLink", new AbstractReadOnlyModel<File>() {
@@ -275,6 +277,11 @@ public class PedigreeDisplayPanel extends Panel {
 
 		addOrReplace(downloadLink);
 
+	}
+
+	public String getAjaxIndicatorMarkupId() {
+		// TODO Auto-generated method stub
+		return "indicator";
 	}
 
 }

@@ -345,7 +345,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		};
 		subjectProvider.setModel(this.cpModel);
 
-		dataView = searchResultsPanel.buildDataView(subjectProvider,modalWindow,relatives);
+		dataView = searchResultsPanel.buildDataView(subjectProvider,modalWindow,relatives,feedBackPanel);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView){
