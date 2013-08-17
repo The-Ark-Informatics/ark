@@ -24,21 +24,14 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Queue;
 import java.util.Set;
 
-import org.apache.log4j.net.TelnetAppender;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.util.collections.ArrayListStack;
 import org.apache.wicket.util.file.File;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -1749,6 +1742,7 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			return twinList;
 		}
 
 		List<LinkSubjectPedigree> parentList = iStudyDao.getSubjectParentRelationshipList(subject);
