@@ -1,6 +1,10 @@
 <wicket:panel>
 	<div class="leftZone">&nbsp;</div>
+	<!--  <img id="indicator" src="images/ajax-loader.gif"/> -->
 	<div align="center" class="contentZone">
+		<div id="indicator" style="display:none;position:absolute;top:0;left:0;z-index=99999;background-color:#FFFFFF;width:100%;height:100%;color:white">
+            <div style="background: url(‘images/ajax-loader.gif’) center no-repeat;"></div>
+        </div>
 		<img wicket:id = "pedigreeImg"  border="0"/>
 		<a href="#" wicket:id ="imgLink"><img  src="images/icons/picture_save.png" onmouseover="Download PNG"/></a>
 	</div>
