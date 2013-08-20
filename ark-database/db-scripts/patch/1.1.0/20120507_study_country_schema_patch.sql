@@ -24,14 +24,14 @@ UPDATE `study`.`country_state` SET short_name = state;
 ALTER TABLE `study`.`country_state` RENAME TO  `study`.`state` ;
 
 -- Update existing used Australian States
-update study.state SET type = "State", code = "AU-NSW", name = "New South Wales" WHERE country_id = (select id from country where country_code="AU" ) AND state = 'NSW';
-update study.state SET type = "State", code = "AU-QLD", name = "Queensland" WHERE country_id = (select id from country where country_code="AU" ) AND state = 'QLD';
-update study.state SET type = "State", code = "AU-SA", name = "South Australia" WHERE country_id = (select id from country where country_code="AU" AND state = 'SA';
-update study.state SET type = "State", code = "AU-TAS", name = "Tasmania" WHERE country_id = (select id from country where country_code="AU" AND state = 'TAS';
-update study.state SET type = "State", code = "AU-VIC", name = "Victoria" WHERE country_id = (select id from country where country_code="AU" AND state = 'VIC';
-update study.state SET type = "State", code = "AU-WA", name = "Western Australia" WHERE country_id = (select id from country where country_code="AU" AND state = 'WA';        
-update study.state SET type = "Territory", code = "AU-ACT", name = "Australian Capital Territory" WHERE country_id = (select id from country where country_code="AU" AND state = 'ACT';
-update study.state SET type = "Territory", code = "AU-NT", name = "Northern Territory" WHERE country_id = (select id from country where country_code="AU" AND state = 'NT';
+update study.state SET type = "State", code = "AU-NSW", name = "New South Wales" WHERE country_id = (select id from country where country_code="AU" ) AND short_name = 'NSW';
+update study.state SET type = "State", code = "AU-QLD", name = "Queensland" WHERE country_id = (select id from country where country_code="AU" ) AND short_name = 'QLD';
+update study.state SET type = "State", code = "AU-SA", name = "South Australia" WHERE country_id = (select id from country where country_code="AU") AND short_name = 'SA';
+update study.state SET type = "State", code = "AU-TAS", name = "Tasmania" WHERE country_id = (select id from country where country_code="AU") AND short_name = 'TAS';
+update study.state SET type = "State", code = "AU-VIC", name = "Victoria" WHERE country_id = (select id from country where country_code="AU") AND short_name = 'VIC';
+update study.state SET type = "State", code = "AU-WA", name = "Western Australia" WHERE country_id = (select id from country where country_code="AU") AND short_name = 'WA';        
+update study.state SET type = "Territory", code = "AU-ACT", name = "Australian Capital Territory" WHERE country_id = (select id from country where country_code="AU") AND short_name = 'ACT';
+update study.state SET type = "Territory", code = "AU-NT", name = "Northern Territory" WHERE country_id = (select id from country where country_code="AU") AND short_name = 'NT';
 
 ALTER TABLE `study`.`state` DROP COLUMN state;
 
