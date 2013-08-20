@@ -65,8 +65,8 @@
 	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="ark-smtp" />
 		<!-- Parameters for SMTP AUTH Using Google-->
-		<property name="username" value="usernam@gmail.com"/>
-		<property name="password" value="#insert-ultra-secure-password-here#" />
+		<property name="username" value="theark.org.au@gmail.com"/>
+		<property name="password" value="v@Tym4np[]" />
 		<property name="javaMailProperties">
 			<props>
 				<prop key="mail.smtp.auth">true</prop>
@@ -98,7 +98,7 @@
 		<property name="url"
 			value="jdbc:mysql://ark-database:3306?rewriteBatchedStatements=true" />
 		<property name="username" value="arkadmin" />
-		<property name="password" value="v@Tym4np[]" />
+		<property name="password" value="vuTim95zo@" />
 	</bean>
 
 	<!--  Ark LDAP configuration (includes the LDAP data source) -->
@@ -113,7 +113,7 @@
 		<property name="basePeopleDn" value="ou=arkUsers" />
 		<property name="base" value="dc=the-ark,dc=org,dc=au" />
 		<property name="userDn" value="cn=admin,dc=the-ark,dc=org,dc=au" />
-		<property name="password" value="v@Tym4np[]" />
+		<property name="password" value="xvz60t9Z" />
 	</bean>
 
 	<!-- Shibboleth service provider -->

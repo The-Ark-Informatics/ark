@@ -70,6 +70,7 @@ public abstract class BasePage extends WebPage {
 	private MyDetailModalWindow	modalWindow;
 	private ArkBusyAjaxLink<Void> ajaxLogoutLink;
 	
+/**
 	static {
 		try{
 			System.loadLibrary("madeline");
@@ -78,7 +79,7 @@ public abstract class BasePage extends WebPage {
 		}
 	}
 
-
+*/
 	
 	@SuppressWarnings("unchecked")
 	public BasePage() {
