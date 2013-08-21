@@ -4348,7 +4348,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		getSession().delete(search);
 	}
 
-	@Override
 	public ConsentStatus getConsentStatusByName(String name) {
 		Criteria criteria = getSession().createCriteria(ConsentStatus.class);
 		criteria.add(Restrictions.eq("name", name));
