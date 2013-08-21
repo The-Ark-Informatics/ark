@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -775,7 +775,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		if (study.getName() == null) {
 			log.error("Error in Subject insertion - Study name was null");
-			throw new ArkSubjectInsertException("Error in Subject insertion - Empty�� study name");
+			throw new ArkSubjectInsertException("Error in Subject insertion - Empty study name");
 		}
 		log.warn("Ark uid generator nnull??? " +  (arkUidGenerator == null));
 		//arkUidGenerator.
@@ -934,7 +934,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			if (phone.getAreaCode() != null) {
 				phoneCriteria.add(Restrictions.eq(Constants.AREA_CODE, phone.getAreaCode()));
 			}
-
+			phoneCriteria.setFetchMode("silentMode", FetchMode.JOIN);
+			
 		}
 
 		List<Phone> personPhoneList = phoneCriteria.list();
