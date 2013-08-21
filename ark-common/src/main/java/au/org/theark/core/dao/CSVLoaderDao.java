@@ -59,6 +59,7 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 		log.info("Obtained database name: " + databaseName);
 		log.info("Obtained table name: " + tableName);
 
+		//TODO : close anything that is opened
 		BufferedReader in = new BufferedReader(new FileReader(csvFile));
 
 		// First line will always be the column names
