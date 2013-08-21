@@ -462,10 +462,10 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 				//csv.write(subjectUID);
 				
 				ExtractionVO evo = hashOfSubjectsWithData.get(phenoCollectionId);
-				csv.write(evo.getSubjectUid());
-				csv.write(evo.getRecordDate());
 				
 				if (evo != null) {
+					csv.write(evo.getSubjectUid());
+					csv.write(evo.getRecordDate());
 					HashMap<String, String> keyValues = evo.getKeyValues();
 					for (CustomFieldDisplay cfd : cfds) {
 
