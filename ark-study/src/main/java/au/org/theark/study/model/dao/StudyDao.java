@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -928,6 +929,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			if (phone.getAreaCode() != null) {
 				phoneCriteria.add(Restrictions.eq(Constants.AREA_CODE, phone.getAreaCode()));
 			}
+			phoneCriteria.setFetchMode("silentMode", FetchMode.JOIN);
 
 		}
 
