@@ -85,7 +85,7 @@ public class BiospecimenTreeProvidor implements ITreeProvider<Object> {
 		}
 		else if (obj instanceof Biospecimen) {
 			Biospecimen biospecimen = (Biospecimen) obj;
-			biospecimen = iLimsService.getBiospecimenByUid(biospecimen.getBiospecimenUid(), biospecimen.getStudy());
+			//biospecimen = iLimsService.getBiospecimenByUid(biospecimen.getBiospecimenUid(), biospecimen.getStudy());
 			return biospecimen.getParent() == null || !biospecimen.getChildren().isEmpty();
 		}
 		return false;
