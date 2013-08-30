@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -62,7 +63,7 @@ import au.org.theark.web.pages.login.LoginPage;
  * @author nivedann
  * @author cellis
  */
-public class HomePage extends BasePage {
+public class HomePage extends BasePage implements IAjaxIndicatorAware{
 
 	private static final long	serialVersionUID	= 6042144198163845254L;
 	private transient static Logger	log	= LoggerFactory.getLogger(HomePage.class);
@@ -202,14 +203,18 @@ public class HomePage extends BasePage {
 						moduleTabsList.add(tab);
 					}
 				}
+				
+				if(arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_REPORTING)){
+					// Reporting always displayed, but data extraction function requires role/permisssion 
+					ReportTabProviderImpl reportTabProvider = new ReportTabProviderImpl((au.org.theark.core.Constants.ARK_MODULE_REPORTING));
+					List<ITab> reportTabList = reportTabProvider.buildTabs();
+					for (ITab tab : reportTabList) {
+						moduleTabsList.add(tab);
+					}
+				}
 			}
 			
-			// Reporting always displayed, but data extraction function requires role/permisssion 
-			ReportTabProviderImpl reportTabProvider = new ReportTabProviderImpl((au.org.theark.core.Constants.ARK_MODULE_REPORTING));
-			List<ITab> reportTabList = reportTabProvider.buildTabs();
-			for (ITab tab : reportTabList) {
-				moduleTabsList.add(tab);
-			}
+			
 			
 			// Only display admin tab for the super user
 			ArkModule arkModule = iArkCommonService.getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_ADMIN);
@@ -251,5 +256,10 @@ public class HomePage extends BasePage {
 	 */
 	public static Logger getLog() {
 		return log;
+	}
+
+	@Override
+	public String getAjaxIndicatorMarkupId() {
+		return "veil";
 	}
 }
