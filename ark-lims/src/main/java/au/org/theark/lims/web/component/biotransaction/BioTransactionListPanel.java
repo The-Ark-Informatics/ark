@@ -191,10 +191,10 @@ public class BioTransactionListPanel extends Panel {
 
 				};
 				rowDetailsWMC.add(rowDeleteLink);
-				if ((bioTransaction.getStatus() != null) && (bioTransaction.getStatus().getName().equalsIgnoreCase(Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY))) {
-					// do not allow the initial quantity to be deleted
-					rowDetailsWMC.setVisible(false);
-				}
+//				if ((bioTransaction.getStatus() != null) && (bioTransaction.getStatus().getName().equalsIgnoreCase(Constants.BIOTRANSACTION_STATUS_INITIAL_QUANTITY))) {
+//					// do not allow the initial quantity to be deleted
+//					rowDetailsWMC.setVisible(false);
+//				}
 
 				idLbl = new Label("bioTransaction.id", bioTransaction.getId().toString());
 				String dateOfTransaction = "";
