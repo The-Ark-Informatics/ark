@@ -22,9 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Example;
-
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
