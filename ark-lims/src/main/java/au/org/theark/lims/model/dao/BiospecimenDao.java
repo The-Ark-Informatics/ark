@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
@@ -728,6 +729,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);
 		criteria.add(Restrictions.eq("bioCollection", bc));
 		criteria.add(Restrictions.isNull("parent"));
+		//criteria.setFetchMode("invBlah", FetchMode.JOIN);
 		List<Biospecimen> list = criteria.list();
 		return list;
 	}
