@@ -8,8 +8,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.study.model.vo.PedigreeVo;
-import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.pedigree.PedigreeParentContainerPanel;
 
 public class SaveForm extends Form<PedigreeVo> {
 

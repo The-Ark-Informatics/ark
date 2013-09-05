@@ -1,5 +1,6 @@
 package au.org.theark.study.web.component.pedigree;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -40,7 +41,13 @@ public class SearchPanel extends Panel {
 
 	public void initialisePanel(CompoundPropertyModel<PedigreeVo> studyCompCpm) {
 
-		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM,studyCompCpm,arkContextMarkup,studyNameMarkup,studyLogoMarkup ,arkCrudContainerVO, feedBackPanel);
+		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM,studyCompCpm,arkContextMarkup,studyNameMarkup,studyLogoMarkup ,arkCrudContainerVO, feedBackPanel){
+			@Override
+			public boolean isEnabled() {
+					String subject = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+					return subject != null;
+			}
+		};
 		add(searchStudyCompForm);
 	}
 
