@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import au.org.theark.core.model.worktracking.entity.Researcher;
 
 public class ResearcherVo implements Serializable {
