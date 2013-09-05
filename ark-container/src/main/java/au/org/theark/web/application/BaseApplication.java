@@ -24,6 +24,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.settings.IApplicationSettings;
+import org.apache.wicket.settings.IDebugSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,7 @@ public abstract class BaseApplication extends WebApplication {
 		// Alow wicket-source for development debugging
 		if(getConfigurationType().equals(RuntimeConfigurationType.DEVELOPMENT)){
 			WicketSource.configure(this);
+			getDebugSettings().setOutputComponentPath(true);
 		}
 	}
 
