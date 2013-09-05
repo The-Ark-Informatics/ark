@@ -16,7 +16,6 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.pedigree.PedigreeDisplayPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeParentContainerPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeTwinContainerPanel;
-import au.org.theark.worktracking.model.vo.BillableItemVo;
 
 public class SearchForm extends Form<PedigreeVo> {
 	

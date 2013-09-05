@@ -78,7 +78,7 @@ public class PedigreeTwinContainerPanel extends AbstractContainerPanel<PedigreeV
 
 		pageableListView = searchResultPanel.buildPageableListView(iModel);
 		pageableListView.setReuseItems(true);
-//		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+//		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", pageableListView);
 //		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
