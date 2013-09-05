@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -91,7 +91,7 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 
 		pageableListView = searchResultListPanel.buildPageableListView(iModel, arkCrudContainerVO.getSearchResultPanelContainer());
 		pageableListView.setReuseItems(true);
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", pageableListView);
 		searchResultListPanel.add(pageNavigator);
 		searchResultListPanel.add(pageableListView);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultListPanel);

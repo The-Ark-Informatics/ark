@@ -6,12 +6,12 @@ import java.io.IOException;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -97,7 +97,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 
 		pageableListView = searchResultPanel.buildPageableListView(iModel);
 		pageableListView.setReuseItems(true);
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", pageableListView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
 		

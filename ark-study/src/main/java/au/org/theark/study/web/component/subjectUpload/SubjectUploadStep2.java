@@ -20,7 +20,6 @@ package au.org.theark.study.web.component.subjectUpload;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;

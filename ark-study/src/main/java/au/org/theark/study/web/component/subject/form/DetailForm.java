@@ -63,7 +63,6 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.panel.collapsiblepanel.CollapsiblePanel;

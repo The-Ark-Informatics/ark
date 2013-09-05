@@ -9,7 +9,6 @@ import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.study.model.vo.PedigreeVo;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.pedigree.form.SaveForm;
-import au.org.theark.study.web.component.pedigree.form.SearchForm;
 
 public class SavePanel extends Panel {
 
