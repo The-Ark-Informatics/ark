@@ -21,11 +21,11 @@ package au.org.theark.report.web.component.searchresult;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
@@ -70,7 +70,7 @@ public class SearchResultPanel extends Panel {
 
 		pageableListView = buildPageableListView(iModel);
 		pageableListView.setReuseItems(true);
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", pageableListView);
 		add(pageNavigator);
 		add(pageableListView);
 	}

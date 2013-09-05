@@ -7,7 +7,6 @@ import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.report.model.vo.StudyCostReportVo;
 import au.org.theark.report.web.component.viewReport.AbstractSelectedReportContainer;
 import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
-import au.org.theark.report.web.component.viewReport.studycost.ReportFilterPanel;
 
 public class StudyCostReportContainer extends AbstractSelectedReportContainer<StudyCostReportVo> {
 

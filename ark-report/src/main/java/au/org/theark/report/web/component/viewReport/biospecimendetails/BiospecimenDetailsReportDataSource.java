@@ -50,7 +50,7 @@ public class BiospecimenDetailsReportDataSource implements Serializable,
 			value = data.get(index).getParentId();
 		}
 		else if ("sampleType".equalsIgnoreCase(fieldName)) {
-			value = data.get(index).getSampleType();
+			value = data.get(index).getSampleType();	
 		}
 		else if ("quantity".equalsIgnoreCase(fieldName)) {
 			value = data.get(index).getQuantity();
