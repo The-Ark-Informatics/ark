@@ -913,8 +913,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 			
 				// Disable initial transaction details, and hide inital quantity text box
-				bioTransactionDetailWmc.setEnabled(false);
-				bioTransactionQuantityTxtFld.setVisible(false);
+				bioTransactionDetailWmc.setEnabled(true);
+				bioTransactionQuantityTxtFld.setVisible(true);
 				quantityTxtFld.setVisible(true);
 				// quantityTxtFld.setModelObject(bioTransactionQuantityTxtFld.getModelObject());
 				target.add(bioTransactionDetailWmc);
