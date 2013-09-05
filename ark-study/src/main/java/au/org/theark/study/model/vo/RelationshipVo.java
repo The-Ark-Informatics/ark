@@ -29,7 +29,7 @@ public class RelationshipVo implements Serializable {
 	
 	
 	public RelationshipVo() {
-		relationship = "--";
+		relationship = "Not Known";
 	}
 	public Integer getId() {
 		return id;
