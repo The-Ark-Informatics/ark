@@ -116,7 +116,8 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 					Chunk chunk = theme.makeChunk("pedigree_template", "txt");
 					chunk.set("relatives", relatives);
 
-					tempFile = File.createTempFile(subjectUID+"_", ".ped");
+					String tmpDir = System.getProperty("java.io.tmpdir");
+					tempFile = new File(tmpDir,"Ark_"+subjectUID+".ped");
 					FileWriter out = new FileWriter(tempFile);
 					chunk.render(out);
 					out.flush();
