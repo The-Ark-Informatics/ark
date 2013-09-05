@@ -1373,18 +1373,20 @@ public class StudyServiceImpl implements IStudyService {
 			}
 			
 			//Generate twin relationships
-			List<RelationshipVo> siblings = getSubjectPedigreeTwinList(subjectUID, studyId);
-			for (RelativeCapsule existingCapsule : relativeCapsules) {
-				for (RelationshipVo sibling : siblings) {
-					String twinType = sibling.getTwin();
-					if (!"NT".equals(twinType) && existingCapsule.getIndividualId().equals(sibling.getIndividualId())) {
-						if ("MZ".equals(twinType)) {
-							proband.setMzTwin("Y");
-							existingCapsule.setMzTwin("Y");
-						}
-						else if ("DZ".equals(twinType)) {
-							proband.setDzTwin("Y");
-							existingCapsule.setDzTwin("Y");
+			for(RelativeCapsule capsule:relativeCapsules){
+				List<RelationshipVo> siblings = getSubjectPedigreeTwinList(capsule.getIndividualId(), studyId);
+				for (RelativeCapsule existingCapsule : relativeCapsules) {
+					for (RelationshipVo sibling : siblings) {
+						String twinType = sibling.getTwin();
+						if (!"NT".equals(twinType) && existingCapsule.getIndividualId().equals(sibling.getIndividualId())) {
+							if ("MZ".equals(twinType)) {
+								proband.setMzTwin("Y");
+								existingCapsule.setMzTwin("Y");
+							}
+							else if ("DZ".equals(twinType)) {
+								proband.setDzTwin("Y");
+								existingCapsule.setDzTwin("Y");
+							}
 						}
 					}
 				}
@@ -1613,15 +1615,15 @@ public class StudyServiceImpl implements IStudyService {
 				}
 			}
 			
-			//Twin relationships
-			List<RelationshipVo> siblings = getSubjectPedigreeTwinList(subjectUID, studyId);
-			for (RelationshipVo existingRelationship : relativeSubjects) {
-				for (RelationshipVo sibling : siblings) {
-					if (existingRelationship.getIndividualId().equals(sibling.getIndividualId())) {
-						existingRelationship.setTwin(sibling.getTwin());
-					}
-				}
-			}
+//			//Twin relationships
+//			List<RelationshipVo> siblings = getSubjectPedigreeTwinList(subjectUID, studyId);
+//			for (RelationshipVo existingRelationship : relativeSubjects) {
+//				for (RelationshipVo sibling : siblings) {
+//					if (existingRelationship.getIndividualId().equals(sibling.getIndividualId())) {
+//						existingRelationship.setTwin(sibling.getTwin());
+//					}
+//				}
+//			}
 			
 			
 			//Select uncles and aunts
@@ -1667,6 +1669,19 @@ public class StudyServiceImpl implements IStudyService {
 				}
 			}
 			
+			
+			//Twin relationships
+			
+			for(RelationshipVo relationshipVo :relativeSubjects){
+				List<RelationshipVo> siblings = getSubjectPedigreeTwinList(relationshipVo.getIndividualId(), studyId);
+				for (RelationshipVo existingRelationship : relativeSubjects) {
+					for (RelationshipVo sibling : siblings) {
+						if (existingRelationship.getIndividualId().equals(sibling.getIndividualId())) {
+							existingRelationship.setTwin(sibling.getTwin());
+						}
+					}
+				}
+			}
 			
 			
 			
@@ -1752,11 +1767,13 @@ public class StudyServiceImpl implements IStudyService {
 
 		if (parentList != null && parentList.size() == 2) {
 			for (LinkSubjectPedigree subjectRelationship : parentList) {
-				if ("father".equalsIgnoreCase(subjectRelationship.getRelationship().getName())) {
-					father = subjectRelationship.getRelative();
-				}
-				else if ("mother".equalsIgnoreCase(subjectRelationship.getRelationship().getName())) {
-					mother = subjectRelationship.getRelative();
+				if(subjectRelationship.getRelationship() != null){
+					if ( "father".equalsIgnoreCase(subjectRelationship.getRelationship().getName())) {
+						father = subjectRelationship.getRelative();
+					}
+					else if ("mother".equalsIgnoreCase(subjectRelationship.getRelationship().getName())) {
+						mother = subjectRelationship.getRelative();
+					}
 				}
 			}
 
