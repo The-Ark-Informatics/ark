@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
@@ -72,6 +73,7 @@ import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biolocation.BioLocationPanel;
+import au.org.theark.lims.web.component.biolocation.BioModalAllocateDetailPanel;
 import au.org.theark.lims.web.component.biospecimen.batchaliquot.BatchAliquotBiospecimenPanel;
 import au.org.theark.lims.web.component.biospecimen.batchcreate.AutoGenBatchCreateBiospecimenPanel;
 import au.org.theark.lims.web.component.biospecimen.batchcreate.ManualBatchCreateBiospecimenPanel;
@@ -512,6 +514,63 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					};
 					
 				}.setDefaultFormProcessing(false));
+				
+				
+				item.add(new AjaxButton("allocateUnallocate"){
+					private static final long	serialVersionUID	= 1L;
+
+					@Override
+					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+						
+						BiospecimenLocationVO biospecimenLocationVo = null;
+						try {
+							biospecimenLocationVo = iInventoryService.getBiospecimenLocation(biospecimen);
+						}
+						catch (ArkSystemException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						if(biospecimenLocationVo.getIsAllocated()) {
+							//unallocate
+							InvCell invCell = iInventoryService.getInvCellByBiospecimen(biospecimen);
+							invCell.setBiospecimen(null);
+							invCell.setStatus("Empty");
+							iInventoryService.updateInvCell(invCell);
+							
+							try {
+								cpModel.getObject().setBiospecimenLocationVO(iInventoryService.getInvCellLocation(invCell));
+								cpModel.getObject().getBiospecimenLocationVO().setIsAllocated(false);
+								cpModel.getObject().setInvCell(invCell);
+							}
+							catch (ArkSystemException e) {
+							}
+						}
+						else {
+							//cpModel.getObject().setBiospecimen(biospecimen);
+							CompoundPropertyModel<LimsVO> cpm = new CompoundPropertyModel<LimsVO>(new LimsVO());
+							cpm.getObject().setBiospecimen(biospecimen);
+							modalContentPanel = new BioModalAllocateDetailPanel("content", modalWindow, cpm);
+							
+	
+							// Set the modalWindow title and content
+							modalWindow.setTitle("Biospecimen Allocation");
+							modalWindow.setContent(modalContentPanel);
+							modalWindow.setWidthUnit("%");
+							modalWindow.setInitialWidth(70);
+							modalWindow.show(target);
+							//cpModel.getObject().setBiospecimen(new Biospecimen());
+							modalWindow.repaintComponent(BiospecimenListForm.this);
+							
+						}
+						target.add(BiospecimenListForm.this);
+					}
+					
+					@Override
+					protected void onError(AjaxRequestTarget target, Form<?> form) {
+					}
+					
+				}.setDefaultFormProcessing(false).setOutputMarkupPlaceholderTag(true));
+				
 
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 
