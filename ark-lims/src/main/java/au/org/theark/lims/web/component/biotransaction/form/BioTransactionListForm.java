@@ -146,7 +146,7 @@ public class BioTransactionListForm extends Form<BioTransaction> {
 					}
 					
 					// Check that quantity specified not greater than available
-					if(txnQuantity < 0 && (Math.abs(txnQuantity) > qtyAvail)) {
+					if(txnQuantity < 0 && (Math.abs(txnQuantity) > (qtyAvail==null?0:qtyAvail))) {
 						error("When aliquoting, processing or delivering, transaction quantity may not exceed total quantity available.");
 						target.add(feedbackPanel);	
 					}
