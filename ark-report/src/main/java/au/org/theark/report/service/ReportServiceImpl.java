@@ -62,7 +62,6 @@ import au.org.theark.report.model.vo.report.CustomFieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
 import au.org.theark.report.model.vo.report.ResearcherCostDataRow;
 import au.org.theark.report.model.vo.report.ResearcherDetailCostDataRow;
-
 import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 
 @Transactional
