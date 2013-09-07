@@ -1319,7 +1319,13 @@ public class StudyServiceImpl implements IStudyService {
 		
 		if(probandRelationship !=null){
 			
-			familyUID = "F"+probandRelationship.getIndividualId();
+			familyUID = "_F"+probandRelationship.getIndividualId();
+			
+			if(familyUID.length()>11){
+				familyUID = familyUID.substring(0, 11);
+			}
+			
+			System.out.println("Family Id is ---------- "+familyUID);
 			
 			RelativeCapsule proband = createSubjectRelativeCapsule(probandRelationship,familyUID);
 			proband.setProband("Y");
@@ -1545,14 +1551,27 @@ public class StudyServiceImpl implements IStudyService {
 				relativeSubject = relativeSubjects.get(i);
 				String fatherId=relativeSubject.getFatherId();
 				String motherId=relativeSubject.getMotherId();
-				if(!"Proband".equals(relativeSubject.getRelationship())  
-						&& ((father !=null && father.getIndividualId().equals(fatherId)) ||(mother !=null && mother.getIndividualId().equals(motherId)))){
-					if("Male".equalsIgnoreCase(relativeSubject.getGender())){
-						relativeSubject.setRelationship("Brother");
-						brotherSisterList.add(relativeSubject);
-					}else if("Female".equalsIgnoreCase(relativeSubject.getGender())){
-						relativeSubject.setRelationship("Sister");
-						brotherSisterList.add(relativeSubject);
+				if(!"Proband".equals(relativeSubject.getRelationship())){  
+						
+					if ((father !=null && father.getIndividualId().equals(fatherId)) && (mother !=null && mother.getIndividualId().equals(motherId))){
+						if("Male".equalsIgnoreCase(relativeSubject.getGender())){
+							relativeSubject.setRelationship("Brother");
+							brotherSisterList.add(relativeSubject);
+						}else if("Female".equalsIgnoreCase(relativeSubject.getGender())){
+							relativeSubject.setRelationship("Sister");
+							brotherSisterList.add(relativeSubject);
+						}
+					}	
+					else{
+						if ((father !=null && father.getIndividualId().equals(fatherId)) || (mother !=null && mother.getIndividualId().equals(motherId))){
+							if("Male".equalsIgnoreCase(relativeSubject.getGender())){
+								relativeSubject.setRelationship("Half Brother");
+								brotherSisterList.add(relativeSubject);
+							}else if("Female".equalsIgnoreCase(relativeSubject.getGender())){
+								relativeSubject.setRelationship("Half Sister");
+								brotherSisterList.add(relativeSubject);
+							}
+						}	
 					}
 				}
 			}
