@@ -62,6 +62,8 @@ public class SubjectVO implements Serializable {
 	private List<Study>			selectedChildStudies;
 
 	private List<Study>			studyList;
+	
+	protected boolean enableNewButton =true;
 
 	
 	public SubjectVO() {
@@ -247,5 +249,13 @@ public class SubjectVO implements Serializable {
 	 */
 	public void setStudyList(List<Study> studyList) {
 		this.studyList = studyList;
+	}
+
+	public boolean isEnableNewButton() {
+		return enableNewButton;
+	}
+
+	public void setEnableNewButton(boolean enableNewButton) {
+		this.enableNewButton = enableNewButton;
 	}
 }
