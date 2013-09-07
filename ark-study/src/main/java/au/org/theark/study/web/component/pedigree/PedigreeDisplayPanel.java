@@ -171,12 +171,22 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 
 				XPath xpath = XPathFactory.newInstance().newXPath();
 
-				String xPathExpression = "//text[1]";
+//				String xPathExpression = "//text[1]";
+				String xPathExpression = "//text";
+				
 				NodeList nodes = (NodeList) xpath.evaluate(xPathExpression, doc, XPathConstants.NODESET);
 
-				//Replace family id with blank text
+				
 				for (int idx = 0; idx < nodes.getLength(); idx++) {
-					nodes.item(idx).setTextContent("");
+					String nodeText=nodes.item(idx).getTextContent();
+					if(nodeText !=null){
+						//Replace family id and dummy subject uids by blank text
+						if(nodeText.startsWith("_F") 
+								|| nodeText.startsWith("!")){
+							nodes.item(idx).setTextContent("");
+						}
+						
+					}
 				}
 
 				TransformerFactory transformerFactory = TransformerFactory.newInstance();

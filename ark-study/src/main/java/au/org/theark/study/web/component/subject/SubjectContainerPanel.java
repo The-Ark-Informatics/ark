@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -140,7 +141,10 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		this.studyLogoMarkup = studyLogoMarkup;
 		
 		/* Initialise the CPM */
-		cpModel = new CompoundPropertyModel<SubjectVO>(new SubjectVO());
+		
+		SubjectVO subjectVO = new SubjectVO();
+		subjectVO.setEnableNewButton(false);
+		cpModel = new CompoundPropertyModel<SubjectVO>(subjectVO);
 		
 		
 	// Restrict to subjects in current study in session
