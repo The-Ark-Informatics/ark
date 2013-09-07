@@ -269,7 +269,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		cpmModel.getObject().getLinkSubjectStudy().setStudy(study);
-		boolean parentStudy = (study.getParentStudy() == null || (study.getParentStudy() == study));
+		boolean parentStudy = (study.getParentStudy() == null || (study.getParentStudy() == study)) && cpmModel.getObject().isEnableNewButton();
 		newButton.setEnabled(parentStudy);
 		super.onBeforeRender();
 	}
