@@ -256,11 +256,11 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 				File tempFile = null;
 				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 				try {
-
-					tempFile = File.createTempFile(subjectUID + "_", ".png");
+					String tmpDir = System.getProperty("java.io.tmpdir");
+					String pedFileName="Ark_"+subjectUID+".png";
+					tempFile = new File(tmpDir,pedFileName);
 					InputStream data = new ByteArrayInputStream(pngOutPutArray);
 					Files.writeTo(tempFile, data);
-
 				}
 				catch (IOException io) {
 					io.printStackTrace();
@@ -268,12 +268,10 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 				catch (Exception e) {
 					e.printStackTrace();
 				}
-
 				return tempFile;
 			}
-
 		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
-
+		
 		downloadLink.add(new Behavior() {
 			private static final long	serialVersionUID	= 1L;
 

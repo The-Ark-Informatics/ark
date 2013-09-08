@@ -1386,11 +1386,9 @@ public class StudyServiceImpl implements IStudyService {
 						String twinType = sibling.getTwin();
 						if (!"NT".equals(twinType) && existingCapsule.getIndividualId().equals(sibling.getIndividualId())) {
 							if ("MZ".equals(twinType)) {
-								proband.setMzTwin("Y");
 								existingCapsule.setMzTwin("Y");
 							}
 							else if ("DZ".equals(twinType)) {
-								proband.setDzTwin("Y");
 								existingCapsule.setDzTwin("Y");
 							}
 						}
