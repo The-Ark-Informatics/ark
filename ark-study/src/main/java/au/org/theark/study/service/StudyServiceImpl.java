@@ -1739,8 +1739,11 @@ public class StudyServiceImpl implements IStudyService {
 		relative.setIndividualId(relationshipVo.getIndividualId());
 		if(relationshipVo.getGender() !=null && "Male".equalsIgnoreCase(relationshipVo.getGender())){
 			relative.setGender("M");
-		}else{
+		}else if(relationshipVo.getGender() !=null && "Female".equalsIgnoreCase(relationshipVo.getGender())){
 			relative.setGender("F");
+		}
+		else{
+			relative.setGender("0");
 		}
 		
 		try{
