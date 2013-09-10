@@ -182,6 +182,10 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 				return true;
 			};
 			
+			public boolean isEnabled() {
+				return containerForm.getModelObject().getSearch().getId() != null;
+			};
+			
 		}.setDefaultFormProcessing(false));
 		
 /*
