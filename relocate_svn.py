@@ -7,7 +7,7 @@
 #         Steven Bird <sb@csse.unimelb.edu.au>
 # URL: <http://www.nltk.org/>
 # For license information, see LICENSE.TXT
-#  and messed with locally
+# and messed with locally
 # $Id:$
 
 # NB Should work on all platforms, http://www.python.org/doc/2.5.2/lib/os-file-dir.html
