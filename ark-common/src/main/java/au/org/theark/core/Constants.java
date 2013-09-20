@@ -385,11 +385,11 @@ public class Constants {
 
 	public static final String[] BIOSPECIMEN_TEMPLATE_HEADER = { "SUBJECTUID",
 			"BIOSPECIMENUID", "BIOCOLLECTIONUID", "SAMPLETYPE", "QUANTITY",
-			"UNITS", "TREATMENT", "SITE", "FREEZER", "RACK", "BOX", "ROW",
+			"UNITS", "TREATMENT", "CONCENTRATION", "SITE", "FREEZER", "RACK", "BOX", "ROW",
 			"COLUMN" };
 	public static final String[][] BIOSPECIMEN_TEMPLATE_CELLS = {
 			{ "", "SUBJECTUID", "BIOSPECIMENUID", "BIOCOLLECTIONUID",
-					"SAMPLETYPE", "QUANTITY", "UNITS", "TREATMENT", "SITE",
+					"SAMPLETYPE", "QUANTITY", "UNITS", "TREATMENT", "CONCENTRATION", "SITE",
 					"FREEZER", "RACK", "BOX", "ROW", "COLUMN" },
 			{
 					"DESCRIPTION",
@@ -400,14 +400,28 @@ public class Constants {
 					"The quantity of the bispecimen", 
 					"The units of quanity",
 					"The treatment type of the bispecimen",
+					"The concentration of the bispecimen",
 					"The site of the bispecimen location",
 					"The freezer of the bispecimen location",
 					"The rack of the bispecimen location",
 					"The box of the bispecimen location",
 					"The row of the bispecimen location",
 					"The column of the bispecimen location" },
-			{ "MANDATORY", "Mandatory IF study not set to autogenerate id's for biospecimens", "Mandatory IF study not set to autogenerate id's for biocollections", "Yes", "Yes", "Yes", "Yes", "Yes",
-					"No", "No", "No", "No", "No", "No" },
+			{ 		"MANDATORY", 
+					"Mandatory IF study not set to autogenerate id's for biospecimens", 
+					"Mandatory IF study not set to autogenerate id's for biocollections", "" +
+					"Yes", 
+					"Yes", 
+					"Yes", 
+					"Yes", 
+					"Yes",
+					"No",
+					"No", 
+					"No", 
+					"No", 
+					"No", 
+					"No", 
+					"No" },
 			{
 					"VALID VALUES",
 					"",
@@ -417,13 +431,14 @@ public class Constants {
 					"",
 					"",
 					"70% Alcohol Fixed, Formalin Fixed, Frozen, RN later, RNA later, then Formalin Fixed, RNA later, then Snap Frozen, Tissue Cultured, Unprocessed",
+					"",
 					"", 
 					"", 
 					"", 
 					"", 
 					"", 
 					""},
-			{ "NOTE: Removed this first column, and replace rows 2 to 5", "",
+			{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "",
 					"", "", "", "", "", "", "", "", "", "", "", "" } };
 	public static final String DOWNLOAD_FILE = "downloadFile";
 	public static final String DELETE_FILE = "deleteFile";
