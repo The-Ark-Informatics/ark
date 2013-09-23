@@ -119,7 +119,17 @@ public class GridBoxPanel extends Panel {
 		if(limsVo.getInvBox().getId() != null) {
 			log.info("InvBox ID: " + limsVo.getInvBox().getId());
 		}
-		add(new Label("boxName", limsVo.getInvBox().getName()));
+		
+		StringBuilder str = new StringBuilder();
+		str.append(limsVo.getInvBox().getInvRack().getInvFreezer().getInvSite().getName());
+		str.append(" > ");
+		str.append(limsVo.getInvBox().getInvRack().getInvFreezer().getName());
+		str.append(" > ");
+		str.append(limsVo.getInvBox().getInvRack().getName());
+		str.append(" > ");
+		str.append(limsVo.getInvBox().getName());
+		
+		add(new Label("boxName", str.toString()));
 		
 		setVisible(limsVo.getInvBox().getId() != null);
 		this.allocating = allocating;
