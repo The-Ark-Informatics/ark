@@ -395,7 +395,7 @@ public class Constants {
 					"DESCRIPTION",
 					"The unique identifier assigned for this subject.",
 					"The unique identifier of the biospecimen",
-					"The unique identifier of collection to which the biospecimen is assoicated with",
+					"The unique identifier of collection to which the biospecimen is associated with",
 					"The sample type of the biospecimen",
 					"The quantity of the bispecimen", 
 					"The units of quanity",
