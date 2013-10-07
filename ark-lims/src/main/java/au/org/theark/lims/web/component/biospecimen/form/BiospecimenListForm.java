@@ -93,13 +93,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService								iInventoryService;
-	/* do we really need this?
-	@SpringBean(name = "arkLdapRealm")
-	private ArkLdapRealm				arkLdapRealm;
-	
-	@SpringBean(name = "aafRealm")
-	private AAFRealm					aafRealm;
-*/
+
 	protected CompoundPropertyModel<LimsVO>			cpModel;
 	protected FeedbackPanel									feedbackPanel;
 	protected AbstractDetailModalWindow					modalWindow;
