@@ -2160,6 +2160,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				+ addressJoinFilters
 				//TODO also add filters for phone and address 
 				+ " where lss.study.id = " + search.getStudy().getId()
+//TODO once we have confidence in entire methodology of including sub studies 				+ (search.getStudy().getParentStudy()==null?"":(" or lss.study.id = " + search.getStudy().getParentStudy() ) ) 
 				+ lssAndPersonFilters
 				+ " and lss.subjectStatus.name != 'Archive'";
 		
@@ -3975,9 +3976,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		
 		BiocollectionField bcf = queryfilter.getBiocollectionField();
-		if(bf != null) {
+		if(bcf != null) {
 			getSession().refresh(bcf.getFieldType());
-			return bf.getFieldType();
+			return bcf.getFieldType();
 		}
 		
 		CustomFieldDisplay cfd = queryfilter.getCustomFieldDisplay();
