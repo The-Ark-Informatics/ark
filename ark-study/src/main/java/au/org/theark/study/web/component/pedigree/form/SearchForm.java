@@ -58,8 +58,8 @@ public class SearchForm extends Form<PedigreeVo> {
 
 		initialiseSearchForm();
 		addSearchComponentsToForm();
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.");
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a subject or contact.");
 	}
 	
 	protected void addSearchComponentsToForm() {		
