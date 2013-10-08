@@ -26,6 +26,17 @@ CREATE  TABLE `geno`.`process` (
   `COMMAND_ID` INT NULL COMMENT 'The command is the task/program that will perform the process/transform' ,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
 
+
+ALTER TABLE `geno`.`process` 
+  ADD CONSTRAINT `fk_process_command`
+  FOREIGN KEY (`COMMAND_ID` )
+  REFERENCES `geno`.`command` (`ID` )
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+, ADD INDEX `fk_process_command_idx` (`COMMAND_ID` ASC) ;
+
+
+
 DROP TABLE IF EXISTS `geno`.`transformation_template`;
 CREATE  TABLE `geno`.`transformation_template` (
   `ID` INT NOT NULL ,
