@@ -1,5 +1,7 @@
 package au.org.theark.study.web.component.pedigree.form;
 
+import javax.security.auth.Subject;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -9,6 +11,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.study.model.vo.PedigreeVo;
@@ -92,7 +95,12 @@ public class SearchForm extends Form<PedigreeVo> {
 				
 				modalWindow.setContent(new PedigreeParentContainerPanel("content",arkContextMarkup,studyNameMarkup,studyLogoMarkup,modalWindow,Constants.MALE,getFormModelObject().getRelationshipList()));
 				modalWindow.show(target);
-			}						
+			}
+			
+			@Override
+			public boolean isEnabled() {
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+			}
 		};
 		
 		motherButton = new AjaxButton(au.org.theark.core.Constants.MOTHER){
@@ -102,7 +110,12 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.setTitle("Set Mother");
 				modalWindow.setContent(new PedigreeParentContainerPanel("content",arkContextMarkup,studyNameMarkup,studyLogoMarkup,modalWindow,Constants.FEMALE,getFormModelObject().getRelationshipList()));
 				modalWindow.show(target);
-			}						
+			}
+			
+			@Override
+			public boolean isEnabled() {
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+			}
 		};
 		
 		twinButton = new AjaxButton(au.org.theark.core.Constants.TWIN){
@@ -112,7 +125,12 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.setTitle("Set Twins");
 				modalWindow.setContent(new PedigreeTwinContainerPanel("content",modalWindow));
 				modalWindow.show(target);
-			}						
+			}				
+			
+			@Override
+			public boolean isEnabled() {
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+			}
 		};
 		
 		viewButton = new AjaxButton(au.org.theark.core.Constants.VIEW){
