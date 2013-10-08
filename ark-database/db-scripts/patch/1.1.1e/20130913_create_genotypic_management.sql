@@ -59,6 +59,21 @@ CREATE  TABLE `geno`.`transformation_process` (
   `PROCESS_ID` INT NOT NULL,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
 
+ALTER TABLE `geno`.`transformation_process` 
+  ADD CONSTRAINT `fk_transformation_process_process`
+  FOREIGN KEY (`PROCESS_ID` )
+  REFERENCES `geno`.`process` (`ID` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION, 
+  ADD CONSTRAINT `fk_transformation_process_transformation`
+  FOREIGN KEY (`TRANSFORMATION_ID` )
+  REFERENCES `geno`.`transformation` (`ID` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `fk_transformation_process_process_idx` (`PROCESS_ID` ASC) 
+, ADD INDEX `fk_transformation_process_transformation_idx` (`TRANSFORMATION_ID` ASC) ;
+
+
 DROP TABLE IF EXISTS `geno`.`lss_process`;
 /* really could be person*/
 CREATE  TABLE `geno`.`lss_process` (
