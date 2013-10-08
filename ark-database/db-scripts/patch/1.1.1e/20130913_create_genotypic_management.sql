@@ -73,17 +73,34 @@ ALTER TABLE `geno`.`transformation_process`
 , ADD INDEX `fk_transformation_process_process_idx` (`PROCESS_ID` ASC) 
 , ADD INDEX `fk_transformation_process_transformation_idx` (`TRANSFORMATION_ID` ASC) ;
 
-
+/*
 DROP TABLE IF EXISTS `geno`.`lss_process`;
-/* really could be person*/
+/* really could be person*
 CREATE  TABLE `geno`.`lss_process` (
   `ID` INT NOT NULL ,
   `TRANSFORMATION_ID` INT NOT NULL,
   `LSS_ID` INT NOT NULL,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
+*/
 
+/*L;SS TRANSFORM INSTEAD OF PROCESS...NOT SURE WHICH IS RIGHT?*/
+DROP TABLE IF EXISTS `geno`.`lss_transformation`;
+/* really could be person*/
+CREATE  TABLE `geno`.`lss_transformation` (
+  `ID` INT NOT NULL ,
+  `TRANSFORMATION_ID` INT NOT NULL,
+  `LSS_ID` INT NOT NULL,
+  PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
 
+ALTER TABLE `geno`.`lss_transformation` 
+  ADD CONSTRAINT `fk_lss_transformation_transformation`
+  FOREIGN KEY (`TRANSFORMATION_ID` )
+  REFERENCES `geno`.`transformation` (`ID` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `fk_lss_transformation_lss_idx` (`TRANSFORMATION_ID` ASC) ;
 
+/*** NOW DO THE SAME FOR LSS  !!!!!!!!!!!!!!      */
 
 
 
