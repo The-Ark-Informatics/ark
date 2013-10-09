@@ -1,6 +1,7 @@
--- drop schema geno;
--- create schema geno;
-
+/*
+ drop schema geno; 
+create schema geno;
+*/
 DROP TABLE IF EXISTS `geno`.`command`;
 CREATE  TABLE `geno`.`command` (
   `ID` INT NOT NULL ,
@@ -30,6 +31,48 @@ CREATE  TABLE `geno`.`process` (
   `START_TIME` DATETIME NULL,
   `END_TIME` DATETIME NULL,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
+
+
+DROP TABLE IF EXISTS `geno`.`process_input`;
+CREATE  TABLE `geno`.`process_input` (
+  `ID` INT NOT NULL ,
+  `PROCESS_ID` INT NOT NULL ,
+  `INPUT_FILE_LOCATION` VARCHAR(255) NULL ,
+  `INPUT_FILE_HASH` VARCHAR(255) NULL ,
+  `INPUT_FILE_TYPE` VARCHAR(255) NULL ,
+  `INPUT_KEPT` BOOLEAN NULL ,
+  `INPUT_SERVER` VARCHAR(255) NULL ,
+  PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
+
+
+DROP TABLE IF EXISTS `geno`.`process_output`;
+CREATE  TABLE `geno`.`process_output` (
+  `ID` INT NOT NULL ,
+  `PROCESS_ID` INT NOT NULL ,
+  `OUTPUT_FILE_LOCATION` VARCHAR(255) NULL ,
+  `OUTPUT_FILE_HASH` VARCHAR(255) NULL ,
+  `OUTPUT_FILE_TYPE` VARCHAR(255) NULL ,
+  `OUTPUT_KEPT` BOOLEAN NULL ,
+  `OUTPUT_SERVER` VARCHAR(255) NULL ,
+  PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
+
+
+ALTER TABLE `geno`.`process_input` 
+  ADD CONSTRAINT `fk_process_input_process`
+  FOREIGN KEY (`PROCESS_ID` )
+  REFERENCES `geno`.`process` (`ID` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `fk_process_input_process_idx` (`PROCESS_ID` ASC) ;
+
+ALTER TABLE `geno`.`process_output` 
+  ADD CONSTRAINT `fk_process_output_process`
+  FOREIGN KEY (`PROCESS_ID` )
+  REFERENCES `geno`.`process` (`ID` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `fk_process_output_process_idx` (`PROCESS_ID` ASC) ;
+
 
 
 ALTER TABLE `geno`.`process` 
