@@ -8,7 +8,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import wickettree.ITreeProvider;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -60,12 +59,14 @@ public class BiospecimenTreeProvidor implements ITreeProvider<Object> {
 		}
 		if(obj instanceof BioCollection) {
 			BioCollection bc = (BioCollection)obj;
+			//return bc.getBiospecimens().iterator();
 			return iLimsService.getRootBiospecimensForBiocollection(bc).iterator();
 		}
 		else if (obj instanceof Biospecimen) {
 			Biospecimen childBiospecimen = new Biospecimen();
 			childBiospecimen.setParent((Biospecimen) obj);
-			return iLimsService.searchPageableBiospecimens(childBiospecimen, 0, 100).iterator();
+			return childBiospecimen.getChildren().iterator(); //now maybe consider a fetch join with inv stuff
+			// changeing to line about, reduces about 10 selects...   return iLimsService.searchPageableBiospecimens(childBiospecimen, 0, 100).iterator();//maybe change to just getchildren?
 		}
 		return null;
 	}
