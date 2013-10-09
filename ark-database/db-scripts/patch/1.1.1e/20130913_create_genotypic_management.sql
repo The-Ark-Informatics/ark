@@ -1,3 +1,6 @@
+-- drop schema geno;
+-- create schema geno;
+
 DROP TABLE IF EXISTS `geno`.`command`;
 CREATE  TABLE `geno`.`command` (
   `ID` INT NOT NULL ,
@@ -24,6 +27,8 @@ CREATE  TABLE `geno`.`process` (
   `OUTPUT_KEPT` BOOLEAN NULL ,
   `OUTPUT_SERVER` VARCHAR(255) NULL ,
   `COMMAND_ID` INT NULL COMMENT 'The command is the task/program that will perform the process/transform' ,
+  `START_TIME` DATETIME NULL,
+  `END_TIME` DATETIME NULL,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
 
 
@@ -92,13 +97,23 @@ CREATE  TABLE `geno`.`lss_transformation` (
   `LSS_ID` INT NOT NULL,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
 
+
 ALTER TABLE `geno`.`lss_transformation` 
   ADD CONSTRAINT `fk_lss_transformation_transformation`
   FOREIGN KEY (`TRANSFORMATION_ID` )
   REFERENCES `geno`.`transformation` (`ID` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
-, ADD INDEX `fk_lss_transformation_lss_idx` (`TRANSFORMATION_ID` ASC) ;
+, ADD INDEX `fk_lss_transformation_transformation_idx` (`TRANSFORMATION_ID` ASC) ;
+
+
+ALTER TABLE `geno`.`lss_transformation` 
+  ADD CONSTRAINT `fk_lss_transformation_lss`
+  FOREIGN KEY (`LSS_ID` )
+  REFERENCES `study`.`link_subject_study` (`ID` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `fk_lss_transformation_lss_idx` (`LSS_ID` ASC) ;
 
 /*** NOW DO THE SAME FOR LSS  !!!!!!!!!!!!!!      */
 
