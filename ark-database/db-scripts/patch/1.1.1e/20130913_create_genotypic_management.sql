@@ -42,78 +42,78 @@ ALTER TABLE `geno`.`process`
 
 
 
-DROP TABLE IF EXISTS `geno`.`transformation_template`;
-CREATE  TABLE `geno`.`transformation_template` (
+DROP TABLE IF EXISTS `geno`.`pipeline_template`;
+CREATE  TABLE `geno`.`pipeline_template` (
   `ID` INT NOT NULL ,
   `NAME` VARCHAR(255) NOT NULL ,
   `DESCRIPTION` VARCHAR(4096) NULL ,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
 
 /**where do I link a person**/
-DROP TABLE IF EXISTS `geno`.`transformation`;
-CREATE  TABLE `geno`.`transformation` (
+DROP TABLE IF EXISTS `geno`.`pipeline`;
+CREATE  TABLE `geno`.`pipeline` (
   `ID` INT NOT NULL ,
   `NAME` VARCHAR(255) NOT NULL ,
   `DESCRIPTION` VARCHAR(4096) NULL ,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
 
-DROP TABLE IF EXISTS `geno`.`transformation_process`;
-CREATE  TABLE `geno`.`transformation_process` (
+DROP TABLE IF EXISTS `geno`.`pipeline_process`;
+CREATE  TABLE `geno`.`pipeline_process` (
   `ID` INT NOT NULL ,
-  `TRANSFORMATION_ID` INT NOT NULL,
+  `PIPELINE_ID` INT NOT NULL,
   `PROCESS_ID` INT NOT NULL,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
 
-ALTER TABLE `geno`.`transformation_process` 
-  ADD CONSTRAINT `fk_transformation_process_process`
+ALTER TABLE `geno`.`pipeline_process` 
+  ADD CONSTRAINT `fk_pipeline_process_process`
   FOREIGN KEY (`PROCESS_ID` )
   REFERENCES `geno`.`process` (`ID` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION, 
-  ADD CONSTRAINT `fk_transformation_process_transformation`
-  FOREIGN KEY (`TRANSFORMATION_ID` )
-  REFERENCES `geno`.`transformation` (`ID` )
+  ADD CONSTRAINT `fk_pipeline_process_pipeline`
+  FOREIGN KEY (`PIPELINE_ID` )
+  REFERENCES `geno`.`pipeline` (`ID` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
-, ADD INDEX `fk_transformation_process_process_idx` (`PROCESS_ID` ASC) 
-, ADD INDEX `fk_transformation_process_transformation_idx` (`TRANSFORMATION_ID` ASC) ;
+, ADD INDEX `fk_pipeline_process_process_idx` (`PROCESS_ID` ASC) 
+, ADD INDEX `fk_pipeline_process_pipeline_idx` (`PIPELINE_ID` ASC) ;
 
 /*
 DROP TABLE IF EXISTS `geno`.`lss_process`;
 /* really could be person*
 CREATE  TABLE `geno`.`lss_process` (
   `ID` INT NOT NULL ,
-  `TRANSFORMATION_ID` INT NOT NULL,
+  `PIPELINE_ID` INT NOT NULL,
   `LSS_ID` INT NOT NULL,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
 */
 
-/*L;SS TRANSFORM INSTEAD OF PROCESS...NOT SURE WHICH IS RIGHT?*/
-DROP TABLE IF EXISTS `geno`.`lss_transformation`;
+/*LSS TRANSFORM INSTEAD OF PROCESS...NOT SURE WHICH IS RIGHT?*/
+DROP TABLE IF EXISTS `geno`.`lss_pipeline`;
 /* really could be person*/
-CREATE  TABLE `geno`.`lss_transformation` (
+CREATE  TABLE `geno`.`lss_pipeline` (
   `ID` INT NOT NULL ,
-  `TRANSFORMATION_ID` INT NOT NULL,
+  `PIPELINE_ID` INT NOT NULL,
   `LSS_ID` INT NOT NULL,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
 
 
-ALTER TABLE `geno`.`lss_transformation` 
-  ADD CONSTRAINT `fk_lss_transformation_transformation`
-  FOREIGN KEY (`TRANSFORMATION_ID` )
-  REFERENCES `geno`.`transformation` (`ID` )
+ALTER TABLE `geno`.`lss_pipeline` 
+  ADD CONSTRAINT `fk_lss_pipeline_pipeline`
+  FOREIGN KEY (`PIPELINE_ID` )
+  REFERENCES `geno`.`pipeline` (`ID` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
-, ADD INDEX `fk_lss_transformation_transformation_idx` (`TRANSFORMATION_ID` ASC) ;
+, ADD INDEX `fk_lss_pipeline_pipeline_idx` (`PIPELINE_ID` ASC) ;
 
 
-ALTER TABLE `geno`.`lss_transformation` 
-  ADD CONSTRAINT `fk_lss_transformation_lss`
+ALTER TABLE `geno`.`lss_pipeline` 
+  ADD CONSTRAINT `fk_lss_pipeline_lss`
   FOREIGN KEY (`LSS_ID` )
   REFERENCES `study`.`link_subject_study` (`ID` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
-, ADD INDEX `fk_lss_transformation_lss_idx` (`LSS_ID` ASC) ;
+, ADD INDEX `fk_lss_pipeline_lss_idx` (`LSS_ID` ASC) ;
 
 /*** NOW DO THE SAME FOR LSS  !!!!!!!!!!!!!!      */
 
