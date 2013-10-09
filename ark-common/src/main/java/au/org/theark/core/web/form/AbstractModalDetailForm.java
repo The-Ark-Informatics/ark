@@ -26,7 +26,6 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.feedback.FeedbackMessagesModel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -136,7 +135,6 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements  IEd
 		visitChildren(formVisitor);
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void saveOnErrorProcess(AjaxRequestTarget target) {
 		boolean setFocusError = false;
 		WebMarkupContainer wmc = arkCrudContainerVo.getDetailPanelFormContainer();
