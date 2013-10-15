@@ -165,6 +165,7 @@ public class Constants {
 	public static final String STUDY_SCHEMA = "study";
 	public static final String AUDIT_SCHEMA = "audit";
 	public static final String ADMIN_SCHEMA = "admin";
+	public static final String GENO_SCHEMA = "geno";
 
 	/* Default Country */
 	public static final String DEFAULT_COUNTRY = "Australia";
@@ -459,6 +460,7 @@ public class Constants {
 	public static final String SEARCH_NAME = "search.name";
 	public static final String	SAVEANDCLOSE									= "saveAndClose";
 	public static final String	yyyy_MM_dd	= "yyyy-MM-dd";
+	public static final String ARK_GENO_SERVICE = "genoService";
 	public enum FileFormat {CSV, XLS, PDF, TXT, DOC, XML}
 	
 }
