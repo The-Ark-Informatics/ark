@@ -9,7 +9,7 @@ import au.org.theark.core.Constants;
 
 
 @Entity
-@Table(name = "COMMAND", schema = Constants.STUDY_SCHEMA)
+@Table(name = "COMMAND", schema = Constants.GENO_SCHEMA)
 public class Command implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
