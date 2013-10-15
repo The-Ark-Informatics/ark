@@ -12,7 +12,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 
 @Entity
@@ -23,8 +22,8 @@ public class Pipeline implements java.io.Serializable {
 	private Long id;
 	private String name;
 	private String description;
-	private Set<Process> processes = new HashSet<Process>(0);
-	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(0);
+	private Set<PipelineProcess> pipelineProcesses = new HashSet<PipelineProcess>(0);
+	private Set<LinkSubjectStudyPipeline> linkSubjectStudyPipelines = new HashSet<LinkSubjectStudyPipeline>(0);
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
@@ -45,7 +44,6 @@ public class Pipeline implements java.io.Serializable {
 		this.name = name;
 	}
 	
-
 	@Column(name = "DESCRIPTION", length = 100)
 	public String getDescription() {
 		return this.description;
@@ -55,23 +53,22 @@ public class Pipeline implements java.io.Serializable {
 		this.description = description;
 	}
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "pipeline")
+	public Set<PipelineProcess> getPipelineProcesses() {
+		return pipelineProcesses;
+	}
+
+	public void setPipelineProcesses(Set<PipelineProcess> pipelineProcesses) {
+		this.pipelineProcesses = pipelineProcesses;
+	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "pipeline")
-	public Set<Process> getProcesses() {
-		return processes;
+	public Set<LinkSubjectStudyPipeline> getLinkSubjectStudyPipelines() {
+		return this.linkSubjectStudyPipelines;
 	}
 
-	public void setProcesses(Set<Process> processes) {
-		this.processes = processes;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "pipeline")
-	public Set<LinkSubjectStudy> getLinkSubjectStudies() {
-		return this.linkSubjectStudies;
-	}
-
-	public void setLinkSubjectStudies(Set<LinkSubjectStudy> linkSubjectStudies) {
-		this.linkSubjectStudies = linkSubjectStudies;
+	public void setLinkSubjectStudyPipelines(Set<LinkSubjectStudyPipeline> linkSubjectStudyPipelines) {
+		this.linkSubjectStudyPipelines = linkSubjectStudyPipelines;
 	}
 
 }
