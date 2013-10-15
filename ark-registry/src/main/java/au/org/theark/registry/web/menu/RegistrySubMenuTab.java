@@ -17,7 +17,7 @@ import org.apache.wicket.model.Model;
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.registry.web.Constants;
-import au.org.theark.registry.web.component.invoice.InvoiceContainerPanel;
+import au.org.theark.registry.web.component.invoice.GenoContainerPanel;
 
 /**
  * @author nivedann
@@ -62,7 +62,7 @@ public class RegistrySubMenuTab extends Panel {
 					Panel panelToReturn = null;// Set up a common tab that will be accessible for all users
 
 					if (moduleName.getModuleName().equalsIgnoreCase(Constants.INVOICE_SUBMENU)) {
-						panelToReturn = new InvoiceContainerPanel(panelId);
+						panelToReturn = new GenoContainerPanel(panelId);
 					}
 					return panelToReturn;
 				};
