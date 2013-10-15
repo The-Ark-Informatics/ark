@@ -16,7 +16,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 
 @Entity
-@Table(name = "PIPELINE", schema = Constants.STUDY_SCHEMA)
+@Table(name = "PIPELINE", schema = Constants.GENO_SCHEMA)
 public class Pipeline implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -56,7 +56,7 @@ public class Pipeline implements java.io.Serializable {
 	}
 
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "pipeline")
 	public Set<Process> getProcesses() {
 		return processes;
 	}
@@ -65,7 +65,7 @@ public class Pipeline implements java.io.Serializable {
 		this.processes = processes;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "pipeline")
 	public Set<LinkSubjectStudy> getLinkSubjectStudies() {
 		return this.linkSubjectStudies;
 	}

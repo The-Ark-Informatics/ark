@@ -1,6 +1,6 @@
 package au.org.theark.core.model.geno.entity;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +16,7 @@ import au.org.theark.core.Constants;
 
 
 @Entity
-@Table(name = "PROCESS", schema = Constants.STUDY_SCHEMA)
+@Table(name = "PROCESS", schema = Constants.GENO_SCHEMA)
 public class Process implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -79,7 +79,7 @@ public class Process implements java.io.Serializable {
 	}	
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "START_DATE", nullable = false, length = 19)
+	@Column(name = "END_TIME", nullable = false, length = 19)
 	public Date getEndTime() {
 		return this.endTime;
 	}
