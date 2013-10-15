@@ -44,6 +44,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.component.panel.applet.PrintAppletPanel;
+import au.org.theark.registry.web.menu.RegistryTabProviderImpl;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.web.menu.AdminTabProviderImpl;
@@ -204,6 +205,15 @@ public class HomePage extends BasePage {
 					}
 				}
 				
+				if(arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_REGISTRY)){
+					//  Registry
+					RegistryTabProviderImpl regoTab = new RegistryTabProviderImpl(arkModule.getName());
+					List<ITab> regoTabList = regoTab.buildTabs();
+					for (ITab tab : regoTabList) {
+						moduleTabsList.add(tab);
+					}
+				}
+								
 				if(arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_REPORTING)){
 					// Reporting always displayed, but data extraction function requires role/permisssion 
 					ReportTabProviderImpl reportTabProvider = new ReportTabProviderImpl((au.org.theark.core.Constants.ARK_MODULE_REPORTING));

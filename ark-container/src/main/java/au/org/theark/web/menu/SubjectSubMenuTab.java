@@ -21,7 +21,6 @@ package au.org.theark.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -32,7 +31,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
@@ -44,11 +42,10 @@ import au.org.theark.study.web.component.address.AddressContainerPanel;
 import au.org.theark.study.web.component.attachments.AttachmentsContainerPanel;
 import au.org.theark.study.web.component.consent.ConsentContainerPanel;
 import au.org.theark.study.web.component.correspondence.CorrespondenceContainerPanel;
+import au.org.theark.study.web.component.pedigree.PedigreeContainerPanel;
 import au.org.theark.study.web.component.phone.PhoneContainerPanel;
 import au.org.theark.study.web.component.subject.SubjectContainerPanel;
-import au.org.theark.study.web.component.subjectUpload.SubjectUploadContainerPanel;
 import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataContainerPanel;
-import au.org.theark.study.web.component.pedigree.PedigreeContainerPanel;
 
 /**
  * @author nivedann
