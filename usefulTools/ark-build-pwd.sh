@@ -17,8 +17,6 @@ if [ "$?" != "0" ]; then
 exit 1
 fi
 
-
-
 cd $WORKSPACE_DIR/ark-study
 mvn clean install
 if [ "$?" != "0" ]; then
@@ -50,6 +48,12 @@ exit 1
 fi
 
 cd $WORKSPACE_DIR/ark-lims
+mvn clean install
+if [ "$?" != "0" ]; then
+exit 1
+fi
+
+cd $WORKSPACE_DIR/ark-work-tracking
 mvn clean install
 if [ "$?" != "0" ]; then
 exit 1
