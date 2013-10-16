@@ -24,6 +24,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.service.IArkCommonService;
@@ -44,10 +45,12 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
-	
+/*
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_GENO_SERVICE)
-	private IGenoService					iGenoService;
-
+	@Autowired
+	protected IGenoService					iGenoService;
+*/
 	//@SpringBean(name = Constants.STUDY_SERVICE)
 	//private IStudyService						iStudyService;
 
