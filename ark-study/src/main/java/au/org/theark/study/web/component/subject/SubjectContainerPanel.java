@@ -334,6 +334,11 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 			}
 
 			public int size() {
+				String subjectUID = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+				model.getObject().getRelativeUIDs().add(subjectUID);
+				for(RelationshipVo relationshipVo:relatives){
+					model.getObject().getRelativeUIDs().add(relationshipVo.getIndividualId());
+				}
 				model.getObject().getLinkSubjectStudy().getPerson().setGenderType(genderType);
 				return (int) service.getStudySubjectCount(model.getObject());
 			}
@@ -342,6 +347,11 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 				List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
 				if (isActionPermitted()) {
 					model.getObject().getLinkSubjectStudy().getPerson().setGenderType(genderType);
+					String subjectUID = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+					model.getObject().getRelativeUIDs().add(subjectUID);
+					for(RelationshipVo relationshipVo:relatives){
+						model.getObject().getRelativeUIDs().add(relationshipVo.getIndividualId());
+					}
 					listSubjects = iArkCommonService.searchPageableSubjects(model.getObject(), first, count);
 				}
 				return listSubjects.iterator();
