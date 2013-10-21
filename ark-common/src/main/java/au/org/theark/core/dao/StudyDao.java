@@ -887,6 +887,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));
 			}
 		}
+		if (subjectVO.getRelativeUIDs().size() > 0) {
+			criteria.add(Restrictions.not(Restrictions.in("subjectUID",
+					subjectVO.getRelativeUIDs().toArray())));
+		}
 
 		criteria.addOrder(Order.asc("subjectUID"));
 		return criteria;
