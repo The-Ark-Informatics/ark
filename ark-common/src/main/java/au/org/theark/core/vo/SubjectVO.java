@@ -63,6 +63,8 @@ public class SubjectVO implements Serializable {
 
 	private List<Study>			studyList;
 	
+	private List<String> relativeUIDs;
+	
 	protected boolean enableNewButton =true;
 
 	
@@ -77,6 +79,7 @@ public class SubjectVO implements Serializable {
 		availableChildStudies = new ArrayList<Study>();
 		selectedChildStudies  = new ArrayList<Study>();
 		studyList = new ArrayList<Study>();
+		relativeUIDs = new ArrayList<String>();
 	}
 
 	public String getSubjectFullName() {
@@ -249,6 +252,14 @@ public class SubjectVO implements Serializable {
 	 */
 	public void setStudyList(List<Study> studyList) {
 		this.studyList = studyList;
+	}
+	
+	public List<String> getRelativeUIDs() {
+		return relativeUIDs;
+	}
+
+	public void setRelativeUIDs(List<String> relativeUIDs) {
+		this.relativeUIDs = relativeUIDs;
 	}
 
 	public boolean isEnableNewButton() {
