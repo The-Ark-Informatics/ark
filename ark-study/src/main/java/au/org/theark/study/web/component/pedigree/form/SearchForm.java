@@ -97,10 +97,10 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.show(target);
 			}
 			
-			@Override
-			public boolean isEnabled() {
-				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-			}
+//			@Override
+//			public boolean isEnabled() {
+//				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+//			}
 		};
 		
 		motherButton = new AjaxButton(au.org.theark.core.Constants.MOTHER){
@@ -112,10 +112,10 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.show(target);
 			}
 			
-			@Override
-			public boolean isEnabled() {
-				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-			}
+//			@Override
+//			public boolean isEnabled() {
+//				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+//			}
 		};
 		
 		twinButton = new AjaxButton(au.org.theark.core.Constants.TWIN){
@@ -127,10 +127,10 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.show(target);
 			}				
 			
-			@Override
-			public boolean isEnabled() {
-				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-			}
+//			@Override
+//			public boolean isEnabled() {
+//				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+//			}
 		};
 		
 		viewButton = new AjaxButton(au.org.theark.core.Constants.VIEW){
