@@ -18,6 +18,16 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subjectUpload;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -30,9 +40,19 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.IRequestCycle;
+import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
+import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.file.Files;
+import org.apache.wicket.util.io.IOUtils;
+import org.apache.wicket.util.resource.FileResourceStream;
+import org.apache.wicket.util.resource.IResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.x5.template.Chunk;
+import com.x5.template.Theme;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.Payload;
@@ -41,6 +61,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
+import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 
 /**
@@ -86,11 +107,57 @@ public class SearchResultListPanel extends Panel {
 				this.error("Unexpected Error: Could not proceed with download of the template.");
 			}
 
-		};		
+		};
 		
+		AjaxButton downLoadPedFileButton =new AjaxButton("downloadPedigreeTemplate"){
+			private static final long	serialVersionUID	= 1L;
+			
+			{
+				this.setDefaultFormProcessing(false);
+			}
+			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+					try {
+						Theme theme = new Theme();
+						Chunk chunk = theme.makeChunk("map_template", "txt");
+
+						String tmpDir = System.getProperty("java.io.tmpdir");
+						String pedFileName="Ark_pedigree_template"+".ped";
+						final File tempFile = new File(tmpDir,pedFileName);
+						FileWriter out = new FileWriter(tempFile);
+						chunk.render(out);
+						
+						IResourceStream resourceStream = new FileResourceStream(new org.apache.wicket.util.file.File(tempFile));
+						getRequestCycle().scheduleRequestHandlerAfterCurrent(new ResourceStreamRequestHandler(resourceStream) {
+							@Override
+							public void respond(IRequestCycle requestCycle) {
+								super.respond(requestCycle);
+								Files.remove(tempFile);
+							}
+						}.setFileName(pedFileName).setContentDisposition(ContentDisposition.ATTACHMENT));
+						
+						out.flush();
+						out.close();
+					}
+					catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
+					catch (IOException e) {
+						e.printStackTrace();
+					}
+				
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Could not proceed with download of the template.");
+			}
+		};
 		add(downloadTemplateButton);
 		add(downloadCustomFieldTemplateButton);
 		add(downloadConsentFieldTemplateButton);
+		add(downLoadPedFileButton);
 	}
 
 	/**
