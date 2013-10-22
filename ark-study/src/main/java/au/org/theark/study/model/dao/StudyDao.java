@@ -209,10 +209,21 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void processPedigreeBatch(List<LinkSubjectPedigree> fieldsToInsert) {
+	public void processPedigreeBatch(List<LinkSubjectPedigree> parentsToInsert,List<LinkSubjectTwin> twinsToInsert) {
 		Session session = getSession();
 		int count = 0;
-		for(LinkSubjectPedigree dataToInsert : fieldsToInsert){
+		for(LinkSubjectPedigree dataToInsert : parentsToInsert){
+			session.save(dataToInsert);
+			count++;
+			//based on recommended hibernate practice of	<prop key="hibernate.jdbc.batch_size">50</prop>
+			if(count%50==0){	
+				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
+				session.flush();
+				session.clear();
+			}
+		}
+		count =0;
+		for(LinkSubjectTwin dataToInsert : twinsToInsert){
 			session.save(dataToInsert);
 			count++;
 			//based on recommended hibernate practice of	<prop key="hibernate.jdbc.batch_size">50</prop>

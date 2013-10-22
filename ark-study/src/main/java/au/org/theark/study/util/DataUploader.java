@@ -59,6 +59,7 @@ import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.LinkSubjectTwin;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
@@ -74,6 +75,7 @@ import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
@@ -161,7 +163,7 @@ public class DataUploader {
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
-		
+
 		// If Excel, convert to CSV for validation
 		if (inFileFormat.equalsIgnoreCase("XLS")) {
 			Workbook w;
@@ -184,7 +186,6 @@ public class DataUploader {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			String[] stringLineArray;
-			
 
 			// this is a list of all our somewhat enum-like reference tables...
 			// much better to call this once than each one n times in the for loop...plus each ones default is n times
@@ -246,7 +247,7 @@ public class DataUploader {
 			ConsentOption concentOptionOfYes = iStudyService.getConsentOptionForBoolean(true);// sounds a lot like boolean blah = true????
 			ConsentStatus consentStatusOfConsented = iStudyService.getConsentStatusByName("Consented");
 			ConsentType consentTypeOfElectronic = iStudyService.getConsentTypeByName("Electronic");
-			
+
 			List<ConsentOption> consentOptionsPossible = iStudyService.getConsentOptions();
 			List<ConsentStatus> consentStatusPossible = iStudyService.getConsentStatus();
 			List<ConsentType> consentTypePossible = iStudyService.getConsentType();
@@ -321,16 +322,15 @@ public class DataUploader {
 			int genderIndex = ((csvReader.getIndex("GENDER_TYPE") > 0) ? csvReader.getIndex("GENDER_TYPE") : ((csvReader.getIndex("GENDER") > 0) ? csvReader.getIndex("GENDER") : ((csvReader
 					.getIndex("SEX") > 0) ? csvReader.getIndex("SEX") : -1)));
 
-
 			boolean isAutoGen = study.getAutoGenerateSubjectUid();
 
 			while (csvReader.readRecord()) {
 				rowCount++;
 				LinkSubjectStudy subject = null;
-				
+
 				// Hack to ensure XLS rows contain all cells (ie empty strings for cells after the right-hand non-null value
 				List<String> stringList = new ArrayList<String>(csvReader.getHeaders().length);
-				for (int i =0; i < csvReader.getHeaders().length; i++) {
+				for (int i = 0; i < csvReader.getHeaders().length; i++) {
 					stringList.add(csvReader.get(i));
 				}
 				stringLineArray = stringList.toArray(new String[csvReader.getHeaders().length]);
@@ -570,12 +570,12 @@ public class DataUploader {
 						if (subject.getSubjectStatus() == null || StringUtils.isBlank(subject.getSubjectStatus().getName())) {
 							subject.setSubjectStatus(defaultSubjectStatus);
 						}
-						
+
 					}
 					else {
 						subject.setSubjectStatus(defaultSubjectStatus);
 					}
-					
+
 					// if the study is autoconsent...then there are some defaults we have to set TODO get rid of hardcoding
 					subject.setUpdateConsent(false);
 					if (autoConsent && subject.getSubjectStatus().getName().equalsIgnoreCase("Subject")) {
@@ -596,51 +596,50 @@ public class DataUploader {
 						String passiveDataStr = csvReader.get("CONSENT_TO_PASSIVE_DATA_GATHERING");
 						String activeContactStr = csvReader.get("CONSENT_TO_ACTIVE_CONTACT");
 						String useDataStr = csvReader.get("CONSENT_TO_USE_DATA");
-						
-						if(!consentDate.isEmpty() || !consentStatusStr.isEmpty() || !consentTypeStr.isEmpty() || !passiveDataStr.isEmpty() || !activeContactStr.isEmpty() || !useDataStr.isEmpty())
-						{
+
+						if (!consentDate.isEmpty() || !consentStatusStr.isEmpty() || !consentTypeStr.isEmpty() || !passiveDataStr.isEmpty() || !activeContactStr.isEmpty() || !useDataStr.isEmpty()) {
 							LinkSubjectStudy newSubject = new LinkSubjectStudy();
-							
-							if(!consentDate.isEmpty()) {
+
+							if (!consentDate.isEmpty()) {
 								newSubject.setConsentDate(simpleDateFormat.parse(consentDate));
 							}
-							
-							if(!consentStatusStr.isEmpty()) {
-								for(ConsentStatus consentStatus : consentStatusPossible) {
-									if(consentStatus.getName().equalsIgnoreCase(consentStatusStr)) {
+
+							if (!consentStatusStr.isEmpty()) {
+								for (ConsentStatus consentStatus : consentStatusPossible) {
+									if (consentStatus.getName().equalsIgnoreCase(consentStatusStr)) {
 										newSubject.setConsentStatus(consentStatus);
 									}
 								}
 							}
-							
-							if(!consentTypeStr.isEmpty()) {
-								for(ConsentType consentType : consentTypePossible) {
-									if(consentType.getName().equalsIgnoreCase(consentTypeStr)) {
+
+							if (!consentTypeStr.isEmpty()) {
+								for (ConsentType consentType : consentTypePossible) {
+									if (consentType.getName().equalsIgnoreCase(consentTypeStr)) {
 										newSubject.setConsentType(consentType);
 									}
 								}
 							}
-							
-							if(!passiveDataStr.isEmpty() || !activeContactStr.isEmpty() || !useDataStr.isEmpty()) {
-								for(ConsentOption consentOption : consentOptionsPossible) {
-									if(consentOption.getName().equalsIgnoreCase(passiveDataStr)) {
+
+							if (!passiveDataStr.isEmpty() || !activeContactStr.isEmpty() || !useDataStr.isEmpty()) {
+								for (ConsentOption consentOption : consentOptionsPossible) {
+									if (consentOption.getName().equalsIgnoreCase(passiveDataStr)) {
 										newSubject.setConsentToPassiveDataGathering(consentOption);
 									}
-									
-									if(consentOption.getName().equalsIgnoreCase(activeContactStr)) {
+
+									if (consentOption.getName().equalsIgnoreCase(activeContactStr)) {
 										newSubject.setConsentToActiveContact(consentOption);
 									}
-									
-									if(consentOption.getName().equalsIgnoreCase(useDataStr)) {
+
+									if (consentOption.getName().equalsIgnoreCase(useDataStr)) {
 										newSubject.setConsentToUseData(consentOption);
 									}
 								}
 							}
-							
+
 							if (thisSubjectAlreadyExists) {
 								// Existing Subject to compare if consent actually changed (inherently handles when no consent previously)
-								LinkSubjectStudyConsentHistoryComparator comparator=new LinkSubjectStudyConsentHistoryComparator();
-								if(comparator.compare(subject,newSubject)!=0){
+								LinkSubjectStudyConsentHistoryComparator comparator = new LinkSubjectStudyConsentHistoryComparator();
+								if (comparator.compare(subject, newSubject) != 0) {
 									subject.setUpdateConsent(true);
 									subject.setConsentDate(newSubject.getConsentDate());
 									subject.setConsentStatus(newSubject.getConsentStatus());
@@ -1271,21 +1270,21 @@ public class DataUploader {
 	private SubjectCustomFieldData setValue(CustomField customField, CustomFieldDisplay customFieldDisplay, SubjectCustomFieldData data, String theDataAsString) {
 		// Rerun the validation check to determine if "invalid" data was in fact ignored and forcibly set to be loaded in
 		boolean isValidData = CustomFieldUploadValidator.validateFieldData(customField, theDataAsString, "", new ArrayList<String>(0), customFieldDisplay.getAllowMultiselect());
-		
+
 		if (customField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER)) {
 			try {
-				if(isValidData) {
+				if (isValidData) {
 					data.setNumberDataValue(new Double(theDataAsString));
 				}
 				else {
-					if(data.getId() != null) {
+					if (data.getId() != null) {
 						data.setNumberDataValue(null);
 					}
 					data.setErrorDataValue(theDataAsString);
 				}
 			}
-			catch(NumberFormatException nfe) {
-				if(data.getId() != null) {
+			catch (NumberFormatException nfe) {
+				if (data.getId() != null) {
 					data.setNumberDataValue(null);
 				}
 				data.setErrorDataValue(theDataAsString);
@@ -1296,21 +1295,21 @@ public class DataUploader {
 			Date dateFieldValue;
 			try {
 				dateFieldValue = dateFormat.parse(theDataAsString);
-				if(isValidData) {
-						data.setDateDataValue(dateFieldValue);
-						if(data.getId() != null) {
-							data.setErrorDataValue(null);
-						}
+				if (isValidData) {
+					data.setDateDataValue(dateFieldValue);
+					if (data.getId() != null) {
+						data.setErrorDataValue(null);
+					}
 				}
 				else {
-					if(data.getId() != null) {
+					if (data.getId() != null) {
 						data.setDateDataValue(null);
 					}
 					data.setErrorDataValue(theDataAsString);
 				}
 			}
 			catch (ParseException e) {
-				if(data.getId() != null) {
+				if (data.getId() != null) {
 					data.setDateDataValue(null);
 				}
 				data.setErrorDataValue(theDataAsString);
@@ -1322,11 +1321,11 @@ public class DataUploader {
 					theDataAsString = theDataAsString.replaceAll(" ", ";");
 				}
 			}
-			if(isValidData) {
+			if (isValidData) {
 				data.setTextDataValue(theDataAsString);
 			}
 			else {
-				if(data.getId() != null) {
+				if (data.getId() != null) {
 					data.setTextDataValue(null);
 				}
 				data.setErrorDataValue(theDataAsString);
@@ -1346,119 +1345,117 @@ public class DataUploader {
 		}
 		return null;
 	}
-	
-	public StringBuffer uploadAndReportSubjectConsentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar) throws FileFormatException,ArkSystemException {
+
+	public StringBuffer uploadAndReportSubjectConsentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar) throws FileFormatException, ArkSystemException {
 		uploadReport = new StringBuffer();
 		long rowCount = 0;
-		long insertFieldsCount=0;
-		long updateFieldsCount=0;
+		long insertFieldsCount = 0;
+		long updateFieldsCount = 0;
 		List<Consent> consentFieldsToUpdate = new ArrayList<Consent>();
 		List<Consent> consentFieldsToInsert = new ArrayList<Consent>();
 		delimiterCharacter = delimChar;
-		
+
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
-		
-		
-		
-		try{
+
+		try {
 			inputStreamReader = new InputStreamReader(inputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			csvReader.readHeaders();
 			String[] stringLineArray;
-			
+
 			List<StudyComp> studyComList = iArkCommonService.getStudyComponentByStudy(study);
-			Map<String,StudyComp > studyCompMap = new HashMap<String,StudyComp>();
-			for(StudyComp  studuComp:studyComList){
+			Map<String, StudyComp> studyCompMap = new HashMap<String, StudyComp>();
+			for (StudyComp studuComp : studyComList) {
 				studyCompMap.put(studuComp.getName().toUpperCase(), studuComp);
 			}
-			
+
 			List<StudyCompStatus> studyCompStatusList = iArkCommonService.getStudyComponentStatus();
-			Map<String, StudyCompStatus> studyCompStatusMap = new HashMap<String,StudyCompStatus>();
-			for(StudyCompStatus studyCompStatus:studyCompStatusList){
+			Map<String, StudyCompStatus> studyCompStatusMap = new HashMap<String, StudyCompStatus>();
+			for (StudyCompStatus studyCompStatus : studyCompStatusList) {
 				studyCompStatusMap.put(studyCompStatus.getName().toUpperCase(), studyCompStatus);
 			}
-			
+
 			List<ConsentType> consentTypeList = iArkCommonService.getConsentType();
-			Map<String,ConsentType> consentTypeMap= new HashMap<String,ConsentType>();
-			for(ConsentType consentType : consentTypeList){
+			Map<String, ConsentType> consentTypeMap = new HashMap<String, ConsentType>();
+			for (ConsentType consentType : consentTypeList) {
 				consentTypeMap.put(consentType.getName().toUpperCase(), consentType);
 			}
-			
+
 			List<ConsentStatus> consentStatusList = iArkCommonService.getConsentStatus();
-			Map<String, ConsentStatus> consentStatusMap = new HashMap<String,ConsentStatus>();
-			for(ConsentStatus consentStatus:consentStatusList){
+			Map<String, ConsentStatus> consentStatusMap = new HashMap<String, ConsentStatus>();
+			for (ConsentStatus consentStatus : consentStatusList) {
 				consentStatusMap.put(consentStatus.getName().toUpperCase(), consentStatus);
 			}
-			
+
 			List<YesNo> consentDownloadedList = iArkCommonService.getYesNoList();
-			Map<String, YesNo> consentDownloadedMap=new HashMap<String,YesNo>();
-			for(YesNo consentDownloaded: consentDownloadedList){
+			Map<String, YesNo> consentDownloadedMap = new HashMap<String, YesNo>();
+			for (YesNo consentDownloaded : consentDownloadedList) {
 				consentDownloadedMap.put(consentDownloaded.getName().toUpperCase(), consentDownloaded);
 			}
-						
-			ConsentVO consentVO= new ConsentVO();
+
+			ConsentVO consentVO = new ConsentVO();
 			consentVO.getConsent().setStudy(study);
-			int subjectUidIndex 					= csvReader.getIndex("SUBJECTUID");
-			int studyComponentIndex 			= csvReader.getIndex("STUDY_COMPONENT");
-			int studyComponentStatusIndex 	= csvReader.getIndex("STUDY_COMPONENT_STATUS");
-			int consentTypeIndex 				= csvReader.getIndex("CONSENT_TYPE");
-			int consentStatusIndex 				= csvReader.getIndex("CONSENT_STATUS");
-			int consentDownloadedIndex 		= csvReader.getIndex("CONSENT_DOWNLOADED");
-			int consentedByIndex 				= csvReader.getIndex("CONSENTED_BY");
-			int consentDateIndex 				= csvReader.getIndex("CONSENT_DATE");
-			int commentIndex 						= csvReader.getIndex("COMMENT");
-			int completedDateIndex				= csvReader.getIndex("COMPLETED_DATE");
-			
-			while (csvReader.readRecord()) {	
-				++rowCount;				 
+			int subjectUidIndex = csvReader.getIndex("SUBJECTUID");
+			int studyComponentIndex = csvReader.getIndex("STUDY_COMPONENT");
+			int studyComponentStatusIndex = csvReader.getIndex("STUDY_COMPONENT_STATUS");
+			int consentTypeIndex = csvReader.getIndex("CONSENT_TYPE");
+			int consentStatusIndex = csvReader.getIndex("CONSENT_STATUS");
+			int consentDownloadedIndex = csvReader.getIndex("CONSENT_DOWNLOADED");
+			int consentedByIndex = csvReader.getIndex("CONSENTED_BY");
+			int consentDateIndex = csvReader.getIndex("CONSENT_DATE");
+			int commentIndex = csvReader.getIndex("COMMENT");
+			int completedDateIndex = csvReader.getIndex("COMPLETED_DATE");
+
+			while (csvReader.readRecord()) {
+				++rowCount;
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[subjectUidIndex];
-				LinkSubjectStudy subject= iArkCommonService.getSubjectByUID(subjectUID, study);
-				
+				LinkSubjectStudy subject = iArkCommonService.getSubjectByUID(subjectUID, study);
+
 				consentVO.getConsent().setLinkSubjectStudy(subject);
 				consentVO.getConsent().setStudyComp(studyCompMap.get(stringLineArray[studyComponentIndex].toUpperCase()));
-				
+
 				List<Consent> existingConcentList = iStudyService.searchConsent(consentVO);
-		
-				if(existingConcentList.size() > 0){
+
+				if (existingConcentList.size() > 0) {
 					++updateFieldsCount;
 					Consent existingConsent = existingConcentList.get(0);
 					existingConsent.setStudyComponentStatus(studyCompStatusMap.get(stringLineArray[studyComponentStatusIndex].toUpperCase()));
 					existingConsent.setConsentType(consentTypeMap.get(stringLineArray[consentTypeIndex].toUpperCase()));
-					existingConsent.setConsentStatus(consentStatusMap.get(stringLineArray[consentStatusIndex].toUpperCase() ));
+					existingConsent.setConsentStatus(consentStatusMap.get(stringLineArray[consentStatusIndex].toUpperCase()));
 					existingConsent.setConsentDownloaded(consentDownloadedMap.get(stringLineArray[consentDownloadedIndex].toUpperCase()));
-					
-					if(stringLineArray.length  > consentedByIndex ){
+
+					if (stringLineArray.length > consentedByIndex) {
 						existingConsent.setConsentedBy(stringLineArray[consentedByIndex]);
 					}
-					
-					if(stringLineArray.length  > consentDateIndex ){
+
+					if (stringLineArray.length > consentDateIndex) {
 						String consentDate = stringLineArray[consentDateIndex];
-						if(consentDate != null 
-								&& consentDate.trim().length()>0){
+						if (consentDate != null && consentDate.trim().length() > 0) {
 							existingConsent.setConsentDate(simpleDateFormat.parse(consentDate));
 						}
 					}
-					
-					if(stringLineArray.length  > commentIndex ){
+
+					if (stringLineArray.length > commentIndex) {
 						existingConsent.setComments(stringLineArray[commentIndex]);
 					}
-					
-					if("Completed".equalsIgnoreCase(existingConsent.getStudyComponentStatus().getName())){
-						try{
+
+					if ("Completed".equalsIgnoreCase(existingConsent.getStudyComponentStatus().getName())) {
+						try {
 							existingConsent.setCompletedDate(simpleDateFormat.parse(stringLineArray[completedDateIndex]));
-						}catch(Exception e){
+						}
+						catch (Exception e) {
 							existingConsent.setCompletedDate(null);
 						}
 					}
-					else{
-							existingConsent.setCompletedDate(null);
+					else {
+						existingConsent.setCompletedDate(null);
 					}
 					consentFieldsToUpdate.add(existingConsent);
 				}
-				else{
+				else {
 					++insertFieldsCount;
 					Consent consent = new Consent();
 					consent.setStudy(study);
@@ -1468,42 +1465,44 @@ public class DataUploader {
 					consent.setConsentType(consentTypeMap.get(stringLineArray[consentTypeIndex].toUpperCase().trim()));
 					consent.setConsentStatus(consentStatusMap.get(stringLineArray[consentStatusIndex].toUpperCase().trim()));
 					consent.setConsentDownloaded(consentDownloadedMap.get(stringLineArray[consentDownloadedIndex].toUpperCase().trim()));
-					
-					if(stringLineArray.length  > consentedByIndex ){
+
+					if (stringLineArray.length > consentedByIndex) {
 						consent.setConsentedBy(stringLineArray[consentedByIndex]);
 					}
-					
-					if(stringLineArray.length  > consentDateIndex ){
+
+					if (stringLineArray.length > consentDateIndex) {
 						String consentDate = stringLineArray[consentDateIndex].trim();
-						if(consentDate != null 
-								&& consentDate.trim().length()>0){
-							try{
+						if (consentDate != null && consentDate.trim().length() > 0) {
+							try {
 								consent.setConsentDate(simpleDateFormat.parse(consentDate));
-							}catch(Exception e){
+							}
+							catch (Exception e) {
 								consent.setConsentDate(simpleDateFormat.parse(null));
 							}
 						}
 					}
-					
-					if(stringLineArray.length  > commentIndex ){
+
+					if (stringLineArray.length > commentIndex) {
 						consent.setComments(stringLineArray[commentIndex].trim());
 					}
-					
-					if("Completed".equalsIgnoreCase(consent.getStudyComponentStatus().getName())){
-						try{
+
+					if ("Completed".equalsIgnoreCase(consent.getStudyComponentStatus().getName())) {
+						try {
 							consent.setCompletedDate(simpleDateFormat.parse(stringLineArray[completedDateIndex].trim()));
-						}catch(Exception e){
+						}
+						catch (Exception e) {
 							consent.setCompletedDate(null);
 						}
 					}
 					consentFieldsToInsert.add(consent);
-				}			
-			}	
-		}catch(Exception e){
+				}
+			}
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			throw new ArkSystemException(e.getMessage());
 		}
-		finally{
+		finally {
 			uploadReport.append("Total file size: ");
 			uploadReport.append(decimalFormat.format(size / 1024.0 / 1024.0));
 			uploadReport.append(" MB");
@@ -1539,88 +1538,114 @@ public class DataUploader {
 		uploadReport.append(updateFieldsCount);
 		uploadReport.append(" fields were updated.");
 		uploadReport.append("\n");
-				
-		try{
+
+		try {
 			iStudyService.processSubjectConsentBatch(consentFieldsToUpdate, consentFieldsToInsert);
-		}catch(Exception e){
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			throw new ArkSystemException(e.getMessage());
 		}
-	
+
 		return uploadReport;
 	}
-	
-	
-	public StringBuffer uploadAndReportPedigreeDataFile(InputStream inputStream, long size, String fileFormat, char delimChar) throws FileFormatException,ArkSystemException {
+
+	public StringBuffer uploadAndReportPedigreeDataFile(InputStream inputStream, long size, String fileFormat, char delimChar) throws FileFormatException, ArkSystemException {
 		uploadReport = new StringBuffer();
 		long rowCount = 0;
-		long insertFieldsCount=0;
-		long updateFieldsCount=0;
-		
-		List<LinkSubjectPedigree> relationships = new ArrayList<LinkSubjectPedigree>();
-		
+		long insertFieldsCount = 0;
+		long updateFieldsCount = 0;
+
+		List<LinkSubjectPedigree> parentSubjectLinkRelationships = new ArrayList<LinkSubjectPedigree>();
+
+		List<LinkSubjectTwin> twinSubjectLinkRelationships = new ArrayList<LinkSubjectTwin>();
+
 		delimiterCharacter = delimChar;
-		
+
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
-		
-		try{
+
+		try {
 			inputStreamReader = new InputStreamReader(inputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
-//			csvReader.readHeaders();
+			// csvReader.readHeaders();
 			String[] stringLineArray;
-			
+
 			List<Relationship> familyRelationships = iArkCommonService.getFamilyRelationships();
-			HashMap<String,Relationship> relationshipMap = new HashMap<String, Relationship>();
-			for(Relationship relationship : familyRelationships){
+			HashMap<String, Relationship> relationshipMap = new HashMap<String, Relationship>();
+			for (Relationship relationship : familyRelationships) {
 				relationshipMap.put(relationship.getName(), relationship);
 			}
-			
-			while (csvReader.readRecord()) {	
+
+			List<TwinType> twinRelationshipList = iStudyService.getTwinTypes();
+			HashMap<String, TwinType> twinRelationshipMap = new HashMap<String, TwinType>();
+			for (TwinType type : twinRelationshipList) {
+				twinRelationshipMap.put(type.getName(), type);
+			}
+
+			while (csvReader.readRecord()) {
 				++rowCount;
-				int index =0;
+				int index = 0;
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[index++];
 				String fatherUID = stringLineArray[index++];
-				String motherUID = stringLineArray[index++];		
-				
+				String motherUID = stringLineArray[index++];
+				String twinStatus = stringLineArray[index++];
+				String twinUID = stringLineArray[index++];
+
 				LinkSubjectStudy subjectUser = iArkCommonService.getSubjectByUID(subjectUID, study);
-				int parentCount = 0;
-				
-				if(fatherUID != null && !fatherUID.equalsIgnoreCase("0") ){
+				// int parentCount = 0;
+
+				if (fatherUID != null && !fatherUID.equalsIgnoreCase("-")) {
 					LinkSubjectPedigree father = new LinkSubjectPedigree();
 					father.setSubject(subjectUser);
 					father.setRelationship(relationshipMap.get("Father"));
 					LinkSubjectStudy fatherUser = iArkCommonService.getSubjectByUID(fatherUID, study);
 					father.setRelative(fatherUser);
-					relationships.add(father);
-					++parentCount;
+					parentSubjectLinkRelationships.add(father);
+					// ++parentCount;
 				}
-				
-				if(motherUID !=null && !motherUID.equalsIgnoreCase("0")){
+
+				if (motherUID != null && !motherUID.equalsIgnoreCase("-")) {
 					LinkSubjectPedigree mother = new LinkSubjectPedigree();
 					mother.setSubject(subjectUser);
 					mother.setRelationship(relationshipMap.get("Mother"));
 					LinkSubjectStudy motherUser = iArkCommonService.getSubjectByUID(motherUID, study);
 					mother.setRelative(motherUser);
-					relationships.add(mother);
-					++parentCount;
+					parentSubjectLinkRelationships.add(mother);
+					// ++parentCount;
 				}
-				
-				if(parentCount == 0){
-					LinkSubjectPedigree parent = new LinkSubjectPedigree();
-					parent.setSubject(subjectUser);
-					parent.setRelationship(null);
-					parent.setRelative(null);
-					relationships.add(parent);
+
+				// if(parentCount == 0){
+				// LinkSubjectPedigree parent = new LinkSubjectPedigree();
+				// parent.setSubject(subjectUser);
+				// parent.setRelationship(null);
+				// parent.setRelative(null);
+				// parentRelationships.add(parent);
+				// }
+
+				if (twinStatus != null && !twinStatus.equalsIgnoreCase("-")) {
+					LinkSubjectTwin twin = new LinkSubjectTwin();
+					if ("M".equalsIgnoreCase(twinStatus)) {
+						twin.setTwinType(twinRelationshipMap.get("MZ"));
+					}
+					else {
+						twin.setTwinType(twinRelationshipMap.get("DZ"));
+					}
+					twin.setFirstSubject(subjectUser);
+					LinkSubjectStudy siblingUser = iArkCommonService.getSubjectByUID(twinUID, study);
+					twin.setSecondSubject(siblingUser);
+					twinSubjectLinkRelationships.add(twin);
 				}
-			}	
-		}catch(Exception e){
+
+			}
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			throw new ArkSystemException(e.getMessage());
 		}
-		finally{
+		finally {
 			uploadReport.append("Total file size: ");
 			uploadReport.append(decimalFormat.format(size / 1024.0 / 1024.0));
 			uploadReport.append(" MB");
@@ -1655,14 +1680,15 @@ public class DataUploader {
 		uploadReport.append(updateFieldsCount);
 		uploadReport.append(" fields were updated.");
 		uploadReport.append("\n");
-				
-		try{
-			iStudyService.processPedigreeBatch(relationships);
-		}catch(Exception e){
+
+		try {
+			iStudyService.processPedigreeBatch(parentSubjectLinkRelationships, twinSubjectLinkRelationships);
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			throw new ArkSystemException(e.getMessage());
 		}
-	
+
 		return uploadReport;
 	}
 }

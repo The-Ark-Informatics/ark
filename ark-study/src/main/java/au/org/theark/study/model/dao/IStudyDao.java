@@ -93,9 +93,10 @@ public interface IStudyDao {
 	
 	/**
 	 * Perform all pedigree inserts as an atomic unit.
-	 * @param fieldsToInsert
+	 * @param parentsToInsert Parent list
+	 * @param twinsToInsert Twin list
 	 */
-	public void processPedigreeBatch(List<LinkSubjectPedigree> fieldsToInsert);
+	public void processPedigreeBatch(List<LinkSubjectPedigree> parentsToInsert,List<LinkSubjectTwin> twinsToInsert);
 	
 
 	/**

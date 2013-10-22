@@ -1040,8 +1040,8 @@ public class StudyServiceImpl implements IStudyService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void processPedigreeBatch(List<LinkSubjectPedigree> insertPedigreeList) throws ArkSystemException, EntityNotFoundException {
-		iStudyDao.processPedigreeBatch(insertPedigreeList);
+	public void processPedigreeBatch(List<LinkSubjectPedigree> parentsToInsert,List<LinkSubjectTwin> twinsToInsert) throws ArkSystemException, EntityNotFoundException {
+		iStudyDao.processPedigreeBatch(parentsToInsert,twinsToInsert);
 		
 	}
 	
@@ -1862,6 +1862,11 @@ public class StudyServiceImpl implements IStudyService {
 				}
 			}
 		}
+	}
+	
+	public List<TwinType> getTwinTypes() {
+		// TODO Auto-generated method stub
+		return iStudyDao.getTwinTypes();
 	}
 
 }
