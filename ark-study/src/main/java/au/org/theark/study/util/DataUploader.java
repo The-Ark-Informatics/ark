@@ -1581,7 +1581,6 @@ public class DataUploader {
 				++rowCount;
 				int index =0;
 				stringLineArray = csvReader.getValues();
-				String familyId   = stringLineArray[index++];
 				String subjectUID = stringLineArray[index++];
 				String fatherUID = stringLineArray[index++];
 				String motherUID = stringLineArray[index++];		
@@ -1591,7 +1590,6 @@ public class DataUploader {
 				
 				if(fatherUID != null && !fatherUID.equalsIgnoreCase("0") ){
 					LinkSubjectPedigree father = new LinkSubjectPedigree();
-					father.setFamilyId(Integer.parseInt(familyId));
 					father.setSubject(subjectUser);
 					father.setRelationship(relationshipMap.get("Father"));
 					LinkSubjectStudy fatherUser = iArkCommonService.getSubjectByUID(fatherUID, study);
@@ -1602,7 +1600,6 @@ public class DataUploader {
 				
 				if(motherUID !=null && !motherUID.equalsIgnoreCase("0")){
 					LinkSubjectPedigree mother = new LinkSubjectPedigree();
-					mother.setFamilyId(Integer.parseInt(familyId));
 					mother.setSubject(subjectUser);
 					mother.setRelationship(relationshipMap.get("Mother"));
 					LinkSubjectStudy motherUser = iArkCommonService.getSubjectByUID(motherUID, study);
@@ -1613,7 +1610,6 @@ public class DataUploader {
 				
 				if(parentCount == 0){
 					LinkSubjectPedigree parent = new LinkSubjectPedigree();
-					parent.setFamilyId(Integer.parseInt(familyId));
 					parent.setSubject(subjectUser);
 					parent.setRelationship(null);
 					parent.setRelative(null);
