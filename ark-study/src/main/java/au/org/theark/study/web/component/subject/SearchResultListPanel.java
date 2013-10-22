@@ -289,14 +289,12 @@ public class SearchResultListPanel extends Panel {
 			public void onClick(AjaxRequestTarget target) {
 				
 				LinkSubjectPedigree pedigreeRelationship = new LinkSubjectPedigree();
-				pedigreeRelationship.setFamilyId(0);
 				
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				
 				Study study = iArkCommonService.getStudy(sessionStudyId);
 
 				String subjectUID = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-				
 				
 				if(subjectUID.equals(subject.getLinkSubjectStudy().getSubjectUID())){
 					this.error("Invalid parent relationship");
@@ -311,7 +309,6 @@ public class SearchResultListPanel extends Panel {
 						return;
 					}
 				}
-				
 				
 				SubjectVO criteriaSubjectVo = new SubjectVO();
 				criteriaSubjectVo.getLinkSubjectStudy().setStudy(study);
