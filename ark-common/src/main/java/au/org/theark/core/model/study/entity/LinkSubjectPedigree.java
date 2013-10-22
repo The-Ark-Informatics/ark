@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
 import au.org.theark.core.Constants;
 
 @Entity
@@ -23,7 +24,6 @@ public class LinkSubjectPedigree implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     private Integer id;
-    private Integer familyId;
     private LinkSubjectStudy subject;
     private LinkSubjectStudy relative;
     private Relationship relationship;
@@ -31,12 +31,11 @@ public class LinkSubjectPedigree implements Serializable {
     public LinkSubjectPedigree(){
     }
    
-    public LinkSubjectPedigree(Integer id, Integer familyId,
+    public LinkSubjectPedigree(Integer id,
             LinkSubjectStudy subject, LinkSubjectStudy relative,
             Relationship relationship) {
         super();
         this.id = id;
-        this.familyId = familyId;
         this.subject = subject;
         this.relative = relative;
         this.relationship = relationship;
@@ -52,16 +51,8 @@ public class LinkSubjectPedigree implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-   
-    @Column(name = "FAMILY_ID", nullable = false, precision = 22, scale = 0)
-    public Integer getFamilyId() {
-        return familyId;
-    }
-    public void setFamilyId(Integer familyId) {
-        this.familyId = familyId;
-    }
-   
-    @OneToOne
+    
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "LINK_SUBJECT_STUDY_ID")
     public LinkSubjectStudy getSubject() {
         return subject;
@@ -70,7 +61,7 @@ public class LinkSubjectPedigree implements Serializable {
         this.subject = subject;
     }
    
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RELATIVE_ID")
     public LinkSubjectStudy getRelative() {
         return relative;
@@ -79,7 +70,7 @@ public class LinkSubjectPedigree implements Serializable {
         this.relative = relative;
     }
    
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RELATIONSHIP_ID")
     public Relationship getRelationship() {
         return relationship;
