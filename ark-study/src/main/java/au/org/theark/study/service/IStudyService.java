@@ -54,6 +54,7 @@ import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.LinkSubjectTwin;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -66,6 +67,7 @@ import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.TwinType;
 import au.org.theark.core.model.study.entity.Upload;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.vo.ArkUserVO;
@@ -391,11 +393,12 @@ public interface IStudyService {
 	
 	/**
 	 * Insert the given {@link LinkSubjectPedigree} list. 
-	 * @param insertPedigreeList
+	 * @param parentsToInsert
+	 * @param twinsToInsert
 	 * @throws ArkSystemException
 	 * @throws EntityNotFoundException
 	 */
-	public void processPedigreeBatch(List<LinkSubjectPedigree> insertPedigreeList) throws ArkSystemException,EntityNotFoundException;
+	public void processPedigreeBatch(List<LinkSubjectPedigree> parentsToInsert,List<LinkSubjectTwin> twinsToInsert) throws ArkSystemException,EntityNotFoundException;
 
 	public AddressType getDefaultAddressType();
 
@@ -430,4 +433,6 @@ public interface IStudyService {
 	public List<RelationshipVo> getSubjectPedigreeTwinList(final String subjectUID,final Long studyId);
 	
 	public void processPedigreeTwinRelationship(final RelationshipVo relationshipVo, final String subjectUid, final Long studyId);
+	
+	public List<TwinType> getTwinTypes();
 }
