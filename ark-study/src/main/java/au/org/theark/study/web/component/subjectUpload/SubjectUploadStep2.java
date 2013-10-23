@@ -124,7 +124,7 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			}
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.PEDIGREE_DATA)){
 				PedigreeUploadValidator subjectConsentUploadValidator=new PedigreeUploadValidator();
-				validationMessages = subjectConsentUploadValidator.validatePedigreeFileFormat(containerForm.getModelObject());
+//				validationMessages = subjectConsentUploadValidator.validatePedigreeFileFormat(containerForm.getModelObject());
 			}
 			else{
 				//TODO : Throw error back to user

@@ -1827,9 +1827,9 @@ public class StudyServiceImpl implements IStudyService {
 	
 	public void processPedigreeTwinRelationship(final RelationshipVo relationshipVo, final String subjectUid, final Long studyId){
 		if("NT".equalsIgnoreCase(relationshipVo.getTwin())){
-			if(relationshipVo.getId() != null){
+			if(relationshipVo.getTwinId() != null){
 				LinkSubjectTwin twin = new LinkSubjectTwin();
-				twin.setId(relationshipVo.getId());
+				twin.setId(relationshipVo.getTwinId().intValue());
 				iStudyDao.delete(twin);
 			}
 		}else{
@@ -1846,7 +1846,7 @@ public class StudyServiceImpl implements IStudyService {
 						
 						twin.setFirstSubject(subject1);
 						twin.setSecondSubject(subject2);
-						twin.setId(relationshipVo.getId());
+						twin.setId(relationshipVo.getTwinId() != null ? relationshipVo.getTwinId().intValue():null);
 						if(twin.getId() != null){
 							iStudyDao.update(twin);
 						}

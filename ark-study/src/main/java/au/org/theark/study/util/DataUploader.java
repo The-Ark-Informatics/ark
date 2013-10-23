@@ -1572,10 +1572,10 @@ public class DataUploader {
 			// csvReader.readHeaders();
 			String[] stringLineArray;
 
-			List<Relationship> familyRelationships = iArkCommonService.getFamilyRelationships();
-			HashMap<String, Relationship> relationshipMap = new HashMap<String, Relationship>();
-			for (Relationship relationship : familyRelationships) {
-				relationshipMap.put(relationship.getName(), relationship);
+			List<Relationship> familyRelationshipList = iArkCommonService.getFamilyRelationships();
+			HashMap<String, Relationship> familyRelationshipMap = new HashMap<String, Relationship>();
+			for (Relationship relationship : familyRelationshipList) {
+				familyRelationshipMap.put(relationship.getName(), relationship);
 			}
 
 			List<TwinType> twinRelationshipList = iStudyService.getTwinTypes();
@@ -1595,35 +1595,24 @@ public class DataUploader {
 				String twinUID = stringLineArray[index++];
 
 				LinkSubjectStudy subjectUser = iArkCommonService.getSubjectByUID(subjectUID, study);
-				// int parentCount = 0;
 
 				if (fatherUID != null && !fatherUID.equalsIgnoreCase("-")) {
 					LinkSubjectPedigree father = new LinkSubjectPedigree();
 					father.setSubject(subjectUser);
-					father.setRelationship(relationshipMap.get("Father"));
+					father.setRelationship(familyRelationshipMap.get("Father"));
 					LinkSubjectStudy fatherUser = iArkCommonService.getSubjectByUID(fatherUID, study);
 					father.setRelative(fatherUser);
 					parentSubjectLinkRelationships.add(father);
-					// ++parentCount;
 				}
 
 				if (motherUID != null && !motherUID.equalsIgnoreCase("-")) {
 					LinkSubjectPedigree mother = new LinkSubjectPedigree();
 					mother.setSubject(subjectUser);
-					mother.setRelationship(relationshipMap.get("Mother"));
+					mother.setRelationship(familyRelationshipMap.get("Mother"));
 					LinkSubjectStudy motherUser = iArkCommonService.getSubjectByUID(motherUID, study);
 					mother.setRelative(motherUser);
 					parentSubjectLinkRelationships.add(mother);
-					// ++parentCount;
 				}
-
-				// if(parentCount == 0){
-				// LinkSubjectPedigree parent = new LinkSubjectPedigree();
-				// parent.setSubject(subjectUser);
-				// parent.setRelationship(null);
-				// parent.setRelative(null);
-				// parentRelationships.add(parent);
-				// }
 
 				if (twinStatus != null && !twinStatus.equalsIgnoreCase("-")) {
 					LinkSubjectTwin twin = new LinkSubjectTwin();
