@@ -2263,7 +2263,9 @@ where lss.subject_uid = '100'
 	}
 	
 	public List<RelationshipVo> getSubjectTwins(final Set<String> subjectUids,final Long studyId){		
-		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,NULL) as id ,coalesce(ftype.name,stype.name,'NT') as twin");
+//		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,NULL) as id ,coalesce(ftype.name,stype.name,'NT') as twin");
+		StringBuffer sb = new StringBuffer("select * from (select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,NULL) as twinId ,coalesce(ftype.name,stype.name,'NT') as twin");
+//		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(ftype.name,stype.name,'NT') as twin");
 		sb.append(" From study.link_subject_study lss ");
 		sb.append("		inner join study.study st on st.id=lss.study_id ");
 		sb.append("		inner join study.person p on p.id = lss.PERSON_ID");
@@ -2273,10 +2275,12 @@ where lss.subject_uid = '100'
 		sb.append("		left outer join study.twin_type stype on stype.id = slst.twin_type_id");
 		sb.append("	where lss.subject_uid in ( :subjectUids ) ");
 		sb.append("		and st.id = :studyId ");
+//		sb.append(" group by lss.subject_uid");
+		sb.append(" ) X group by individualId");
 		
 		List<RelationshipVo> twins = getSession().createSQLQuery(sb.toString())
 				  .addScalar("individualId")
-				  .addScalar("id")
+				  .addScalar("twinId")
 				  .addScalar("firstName")
 				  .addScalar("lastName")
 				  .addScalar("dob")

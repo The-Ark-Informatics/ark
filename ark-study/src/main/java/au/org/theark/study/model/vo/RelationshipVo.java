@@ -1,6 +1,7 @@
 package au.org.theark.study.model.vo;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 public class RelationshipVo implements Serializable {
@@ -26,6 +27,8 @@ public class RelationshipVo implements Serializable {
 	private String fatherId;
 	private String motherId;
 	private int relativeIndex;
+	
+	private BigInteger twinId;
 	
 	
 	public RelationshipVo() {
@@ -126,6 +129,12 @@ public class RelationshipVo implements Serializable {
 		return result;
 	}
 	
+	public BigInteger getTwinId() {
+		return twinId;
+	}
+	public void setTwinId(BigInteger twinId) {
+		this.twinId = twinId;
+	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
