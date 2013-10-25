@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,10 +18,13 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
+import au.org.theark.study.service.IStudyService;
 
 import com.csvreader.CsvReader;
 /**
@@ -35,6 +39,10 @@ public class PedigreeUploadValidator {
 
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
+	
+	@SuppressWarnings("unchecked")
+	private IStudyService		iStudyService;
+	
 	private Long						studyId;
 	private Study						study;
 	java.util.Collection<String>	fileValidationMessages	= new java.util.ArrayList<String>();
@@ -51,8 +59,9 @@ public class PedigreeUploadValidator {
 		
 	}
 	
-	public PedigreeUploadValidator(IArkCommonService iArkCommonService) {
+	public PedigreeUploadValidator(IArkCommonService iArkCommonService,IStudyService		iStudyService) {
 		this.iArkCommonService = iArkCommonService;
+		this.iStudyService = iStudyService;
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		this.study = iArkCommonService.getStudy(studyId);
@@ -151,50 +160,148 @@ public class PedigreeUploadValidator {
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			String[] stringLineArray;
-			if (inLength <= 0) {
-				throw new FileFormatException("The input files' size was not greater than 0.  Actual length reported: " + inLength);
+			if (inLength == 0) {
+				throw new FileFormatException("Error: The pedigree uploader expects a file comprising 5 tab delimitted columns. Please refer to the template example.  Actual length reported: " + inLength);
 			}
 
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 
-			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);			
+			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	
+			
+			class TmpTwinRecord{
+				String individualId;
+				String parentId;
+				String twinId;
+				int row;
+				
+				public TmpTwinRecord(String individualId, String parentId, String twinId, int row) {
+					super();
+					this.individualId = individualId;
+					this.parentId = parentId;
+					this.twinId = twinId;
+					this.row = row;
+				}
+				public String getIndividualId() {
+					return individualId;
+				}
+				public void setIndividualId(String individualId) {
+					this.individualId = individualId;
+				}
+				public String getParentId() {
+					return parentId;
+				}
+				public void setParentId(String parentId) {
+					this.parentId = parentId;
+				}
+				public String getTwinId() {
+					return twinId;
+				}
+				public void setTwinId(String twinId) {
+					this.twinId = twinId;
+				}
+				public int getRow() {
+					return row;
+				}
+				public void setRow(int row) {
+					this.row = row;
+				}
+			}
+			
+			List<TmpTwinRecord> twinRecords = new ArrayList<TmpTwinRecord>();
 			
 			while (csvReader.readRecord()) {
 				stringLineArray = csvReader.getValues();
 				int index =0;
-				String familyId   = stringLineArray[index++];
+//				String familyId   = stringLineArray[index++];
 				String subjectUID = stringLineArray[index++];
 				String fatherUID = stringLineArray[index++];
 				String motherUID = stringLineArray[index++];		
-				
-				try  
-				{  
-					Long.parseLong(familyId); 
-				}  
-				catch(NumberFormatException nfe)  
-				{  
-					errorCells.add(new ArkGridCell(0, row));
-					dataValidationMessages.add("Invalid family ID is specified on row "+row);
-				}  
+				String twinStatus = stringLineArray[index++];
+				String twinUID = stringLineArray[index++];
+
+//				try  
+//				{  
+//					Long.parseLong(familyId); 
+//				}  
+//				catch(NumberFormatException nfe)  
+//				{  
+//					errorCells.add(new ArkGridCell(0, row));
+//					dataValidationMessages.add("Invalid family ID is specified on row "+row);
+//				}  
 				
 				if(!subjectUIDsAlreadyExisting.contains(subjectUID)){
 					nonExistantUIDs.add(row);//TODO test and compare array.
-					errorCells.add(new ArkGridCell(1, row));
+					errorCells.add(new ArkGridCell(0, row));
 				}
 				
-				if(!fatherUID.equalsIgnoreCase("0") && !subjectUIDsAlreadyExisting.contains(fatherUID)){
+				if(!"-".equalsIgnoreCase(fatherUID) && !subjectUIDsAlreadyExisting.contains(fatherUID)){
 					nonExistantUIDs.add(row);
-					errorCells.add(new ArkGridCell(2, row));
+					errorCells.add(new ArkGridCell(1, row));
 					dataValidationMessages.add("Invalid father subject UID is specified on row "+row);
 				}
+				else{
+					GenderType gender = iArkCommonService.getSubjectGenderType(fatherUID);
+					if(gender == null || gender.getName().startsWith("F")){
+						errorCells.add(new ArkGridCell(1, row));
+						dataValidationMessages.add("Father were specified with female"+row);
+					}
+				}
 				
-				if(!motherUID.equalsIgnoreCase("0") && !subjectUIDsAlreadyExisting.contains(motherUID)){
+				if(!"-".equalsIgnoreCase(motherUID) && !subjectUIDsAlreadyExisting.contains(motherUID)){
 					nonExistantUIDs.add(row);
-					errorCells.add(new ArkGridCell(3, row));
+					errorCells.add(new ArkGridCell(2, row));
 					dataValidationMessages.add("Invalid mother subject UID is specified on row "+row);
+				}
+				else{
+					GenderType gender = iArkCommonService.getSubjectGenderType(motherUID);
+					if(gender == null || gender.getName().startsWith("M")){
+						errorCells.add(new ArkGridCell(2, row));
+						dataValidationMessages.add("Mother were specified with female"+row);
+					}
+				}
+				
+				if((twinStatus==null) || (!twinStatus.matches("[-]|[M]|[D]"))){
+					errorCells.add(new ArkGridCell(3, row));
+					dataValidationMessages.add("Incorrect encodings found in the TwinStatus field. Please refer to the template example"+row);
+				}
+				else{
+					if(twinStatus.matches("[M]|[D]") && ("-".equals(fatherUID)||"-".equals(motherUID))){
+						errorCells.add(new ArkGridCell(1, row));
+						errorCells.add(new ArkGridCell(2, row));
+						dataValidationMessages.add("Both parents must be specified for subject who is a twin"+row);
+					}
+				}
+
+				if(!"-".equalsIgnoreCase(twinStatus) && !subjectUIDsAlreadyExisting.contains(twinUID)){
+					errorCells.add(new ArkGridCell(4, row));
+					dataValidationMessages.add("Invalid twin subject UID is specified on row "+row);
+				}else{
+					if(!"-".equalsIgnoreCase(twinStatus)){
+						twinRecords.add(new TmpTwinRecord(subjectUID, fatherUID+"-"+motherUID, twinUID,row));
+					}
+				}
+				
+				long existingRelationships=iStudyService.getRelationshipCount(subjectUID, studyId);
+				
+				if(existingRelationships >0){
+					errorCells.add(new ArkGridCell(0, row));
+					dataValidationMessages.add("Subject UID already have parent relationships "+row);
 				}
 				
 				row++;
+			}
+			
+			loop1:for(TmpTwinRecord tmp1:twinRecords){
+				loop2:for(TmpTwinRecord tmp2:twinRecords){
+					if(tmp1.getTwinId()!=null && tmp1.getTwinId().equals(tmp2.getIndividualId())){
+						if(!tmp1.getParentId().equalsIgnoreCase(tmp2.getParentId())){
+							errorCells.add(new ArkGridCell(1, tmp2.getRow()));
+							errorCells.add(new ArkGridCell(2, tmp2.getRow()));
+							dataValidationMessages.add("Twins were specified with missmathed parent UIDs"+row);
+							break loop2;
+						}
+					}
+				}
 			}
 		}
 		catch (IOException ioe) {
@@ -295,8 +402,8 @@ public class PedigreeUploadValidator {
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			while(csvReader.readRecord()){
 				stringLineArray = csvReader.getValues();
-				if(stringLineArray.length < 5){
-					fileValidationMessages.add("Error: each line should contain minimum 4 fields");
+				if(stringLineArray.length == 5){
+					fileValidationMessages.add("Error: The pedigree uploader expects a file comprising 5 tab delimitted columns. Please refer to the template example");
 					break;
 				}
 			}			

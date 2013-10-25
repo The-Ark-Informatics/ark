@@ -28,7 +28,7 @@ public class RelationshipVo implements Serializable {
 	private String motherId;
 	private int relativeIndex;
 	
-	private BigInteger twinId;
+//	private BigInteger twinId;
 	
 	
 	public RelationshipVo() {
@@ -129,12 +129,12 @@ public class RelationshipVo implements Serializable {
 		return result;
 	}
 	
-	public BigInteger getTwinId() {
-		return twinId;
-	}
-	public void setTwinId(BigInteger twinId) {
-		this.twinId = twinId;
-	}
+//	public BigInteger getTwinId() {
+//		return twinId;
+//	}
+//	public void setTwinId(BigInteger twinId) {
+//		this.twinId = twinId;
+//	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
