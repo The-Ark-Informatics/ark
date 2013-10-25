@@ -1426,4 +1426,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public ConsentStatus getConsentStatusByName(String name) {
 		return studyDao.getConsentStatusByName(name);
 	}
+	
+	public GenderType getSubjectGenderType(final String subjectUID){
+		return studyDao.getSubjectGenderType(subjectUID);
+	}
 }
