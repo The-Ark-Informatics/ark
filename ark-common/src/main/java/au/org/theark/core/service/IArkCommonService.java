@@ -807,4 +807,6 @@ public interface IArkCommonService<T> {
 	public void delete(Search search);
 
 	public ConsentStatus getConsentStatusByName(String string);
+	
+	public GenderType getSubjectGenderType(final String subjectUID);
 }

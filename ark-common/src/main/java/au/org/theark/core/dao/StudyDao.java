@@ -47,6 +47,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -4357,5 +4358,18 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(ConsentStatus.class);
 		criteria.add(Restrictions.eq("name", name));
 		return (ConsentStatus) criteria.uniqueResult();
+	}
+	
+	public GenderType getSubjectGenderType(final String subjectUID){
+		GenderType genderType=null;
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class,"lss");
+		criteria.createAlias("person","per",JoinType.INNER_JOIN);
+		criteria.createAlias("per.genderType","gen",JoinType.INNER_JOIN);
+		List list = criteria.list();
+		if(list.size()>0){
+			LinkSubjectStudy subject = (LinkSubjectStudy)list.get(0);
+			genderType = subject.getPerson().getGenderType();
+		}
+		return genderType;
 	}
 }

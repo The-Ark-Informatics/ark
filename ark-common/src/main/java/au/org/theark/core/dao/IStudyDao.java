@@ -722,4 +722,6 @@ public interface IStudyDao {
 	public void delete(Search search);
 
 	public ConsentStatus getConsentStatusByName(String name);
+	
+	public GenderType getSubjectGenderType(final String subjectUID);
 }
