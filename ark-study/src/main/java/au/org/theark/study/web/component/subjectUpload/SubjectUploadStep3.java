@@ -40,6 +40,7 @@ import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.util.CustomFieldUploadValidator;
 import au.org.theark.study.util.PedigreeUploadValidator;
 import au.org.theark.study.util.SubjectConsentUploadValidator;
@@ -62,6 +63,10 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
+	
+	@SpringBean(name = "arkStudyService")
+	private IStudyService				iStudyService;
+	
 
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
 
@@ -186,8 +191,8 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 				errorCells = subjectConsentUploadValidator.getErrorCells();
 			}
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.PEDIGREE_DATA)){
-				PedigreeUploadValidator subjectConsentUploadValidator=new PedigreeUploadValidator(iArkCommonService);
-//				validationMessages = subjectConsentUploadValidator.validatePedigreeFileData(containerForm.getModelObject(), listOfUidsToUpdate);
+				PedigreeUploadValidator subjectConsentUploadValidator=new PedigreeUploadValidator(iArkCommonService,iStudyService);
+				validationMessages = subjectConsentUploadValidator.validatePedigreeFileData(containerForm.getModelObject(), listOfUidsToUpdate);
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
 				insertRows = subjectConsentUploadValidator.getInsertRows();
 				updateRows = subjectConsentUploadValidator.getUpdateRows();

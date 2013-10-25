@@ -452,5 +452,7 @@ public interface IStudyDao {
 	
 	public List<LinkSubjectPedigree> getParentNonSubjectRelationshipList(final LinkSubjectStudy subject,final LinkSubjectStudy parentSubject);
 	
-	public List<RelationshipVo> getSubjectTwins(final Set<String> subjectUids,final Long studyId);
+	public List<RelationshipVo> getSubjectTwins(final String subjectUid,final Set<String> subjectUids,final Long studyId);
+	
+	public long getRelationshipCount(final String subjectUID,final Long studyId);
 }

@@ -33,6 +33,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -2262,35 +2263,96 @@ where lss.subject_uid = '100'
 		return criteria.list(); 
 	}
 	
-	public List<RelationshipVo> getSubjectTwins(final Set<String> subjectUids,final Long studyId){		
-//		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,NULL) as id ,coalesce(ftype.name,stype.name,'NT') as twin");
-		StringBuffer sb = new StringBuffer("select * from (select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,NULL) as twinId ,coalesce(ftype.name,stype.name,'NT') as twin");
-//		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(ftype.name,stype.name,'NT') as twin");
+//	public List<RelationshipVo> getSubjectTwins(final Set<String> subjectUids,final Long studyId){		
+////		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,NULL) as id ,coalesce(ftype.name,stype.name,'NT') as twin");
+//		StringBuffer sb = new StringBuffer("select * from (select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(flst.id,slst.id,NULL) as twinId ,coalesce(ftype.name,stype.name,'NT') as twin");
+////		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,coalesce(ftype.name,stype.name,'NT') as twin");
+//		sb.append(" From study.link_subject_study lss ");
+//		sb.append("		inner join study.study st on st.id=lss.study_id ");
+//		sb.append("		inner join study.person p on p.id = lss.PERSON_ID");
+//		sb.append("		left outer join study.link_subject_twin flst on flst.FIRST_SUBJECT = lss.ID");
+//		sb.append("		left outer join study.twin_type ftype on ftype.id = flst.twin_type_id");
+//		sb.append("		left outer join study.link_subject_twin slst on slst.SECOND_SUBJECT = lss.ID");
+//		sb.append("		left outer join study.twin_type stype on stype.id = slst.twin_type_id");
+//		sb.append("	where lss.subject_uid in ( :subjectUids ) ");
+//		sb.append("		and st.id = :studyId ");
+////		sb.append(" group by lss.subject_uid");
+//		sb.append(" ) X group by individualId");
+//		
+//		List<RelationshipVo> twins = getSession().createSQLQuery(sb.toString())
+//				  .addScalar("individualId")
+//				  .addScalar("twinId")
+//				  .addScalar("firstName")
+//				  .addScalar("lastName")
+//				  .addScalar("dob")
+//				  .addScalar("twin")
+//				  .setParameterList("subjectUids", subjectUids!=null?subjectUids:new HashSet<String>())
+//				  .setParameter("studyId", studyId)
+//				  .setResultTransformer( Transformers.aliasToBean(RelationshipVo.class))
+//				  .list();
+//		
+//		return twins;
+//	}
+	
+	public List<RelationshipVo> getSubjectTwins(final String subjectUid,final Set<String> subjectUids,final Long studyId){
+		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,slt.id as id , IFNULL(tw.name,'NT') as twin ");
 		sb.append(" From study.link_subject_study lss ");
-		sb.append("		inner join study.study st on st.id=lss.study_id ");
-		sb.append("		inner join study.person p on p.id = lss.PERSON_ID");
-		sb.append("		left outer join study.link_subject_twin flst on flst.FIRST_SUBJECT = lss.ID");
-		sb.append("		left outer join study.twin_type ftype on ftype.id = flst.twin_type_id");
-		sb.append("		left outer join study.link_subject_twin slst on slst.SECOND_SUBJECT = lss.ID");
-		sb.append("		left outer join study.twin_type stype on stype.id = slst.twin_type_id");
-		sb.append("	where lss.subject_uid in ( :subjectUids ) ");
-		sb.append("		and st.id = :studyId ");
-//		sb.append(" group by lss.subject_uid");
-		sb.append(" ) X group by individualId");
+		sb.append(" 	inner join study.study st on st.id=lss.study_id ");
+		sb.append(" 	inner join study.person p on p.id=lss.person_id ");
+		sb.append(" 	left outer join study.link_subject_twin slt on (slt.first_subject = lss.id and slt.second_Subject = (select a.id ");
+		sb.append(" 		From study.link_subject_study a ");
+		sb.append(" 			inner join study.study st on st.id=a.study_id ");
+		sb.append(" 		where a.SUBJECT_UID in (:asubjectuid) ");
+		sb.append(" 			and st.id= :astudyid )) or (slt.second_subject = lss.id and slt.first_Subject = (select b.id ");
+		sb.append(" 				From study.link_subject_study b ");
+		sb.append(" 					inner join study.study st on st.id=b.study_id ");
+		sb.append(" 				where b.SUBJECT_UID in ( :bsubjectuid ) ");
+		sb.append(" 				and st.id= :bstudyid )) ");
+		sb.append(" 	left outer join study.twin_type tw on tw.id = slt.twin_type_id ");
+		sb.append(" where lss.SUBJECT_UID in ( :subjectUids ) ");
+		sb.append(" 	and st.id= :studyId ");
 		
 		List<RelationshipVo> twins = getSession().createSQLQuery(sb.toString())
 				  .addScalar("individualId")
-				  .addScalar("twinId")
+				  .addScalar("id")
 				  .addScalar("firstName")
 				  .addScalar("lastName")
 				  .addScalar("dob")
 				  .addScalar("twin")
+				  .setParameter("asubjectuid", subjectUid)
+				  .setParameter("astudyid", studyId)
+				  .setParameter("bsubjectuid", subjectUid)
+				  .setParameter("bstudyid", studyId)
 				  .setParameterList("subjectUids", subjectUids!=null?subjectUids:new HashSet<String>())
 				  .setParameter("studyId", studyId)
 				  .setResultTransformer( Transformers.aliasToBean(RelationshipVo.class))
 				  .list();
 		
 		return twins;
+		
+	}
+	
+	public long getRelationshipCount(final String subjectUID,final Long studyId){
+		long count =0;
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class, "lsp");
+		criteria.createAlias("subject", "sub", JoinType.INNER_JOIN);
+		criteria.createAlias("relative", "rel", JoinType.INNER_JOIN);
+		criteria.createAlias("sub.study", "substudy", JoinType.INNER_JOIN);
+		criteria.createAlias("rel.study", "relstudy", JoinType.INNER_JOIN);
+		criteria.add(Restrictions.eq("substudy.id", studyId));
+		criteria.add(Restrictions.eq("relstudy.id", studyId));
+		Disjunction or = Restrictions.disjunction();
+		or.add(Restrictions.eq("sub.subjectUID", subjectUID));
+		or.add(Restrictions.eq("rel.subjectUID", subjectUID));
+		criteria.add(or);
+		ProjectionList projList = Projections.projectionList(); 
+		projList.add(Projections.count("lsp.id"));
+		criteria.setProjection(projList);
+		List list = criteria.list();
+		if(list.size()>0){
+			count=Integer.parseInt(list.get(0).toString());
+		}
+		return count;
 	}
 
 }

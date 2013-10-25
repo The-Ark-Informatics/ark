@@ -435,4 +435,7 @@ public interface IStudyService {
 	public void processPedigreeTwinRelationship(final RelationshipVo relationshipVo, final String subjectUid, final Long studyId);
 	
 	public List<TwinType> getTwinTypes();
+	
+	public long getRelationshipCount(final String subjectUID,final Long studyId);
+	
 }
