@@ -1818,7 +1818,7 @@ public class StudyServiceImpl implements IStudyService {
 
 			Set<String> siblingUids = parentMap.keySet();
 			if (siblingUids != null && siblingUids.size() > 0) {
-				twinList = iStudyDao.getSubjectTwins(siblingUids, studyId);
+				twinList = iStudyDao.getSubjectTwins(subjectUID,siblingUids, studyId);
 			}
 		}
 
@@ -1827,9 +1827,9 @@ public class StudyServiceImpl implements IStudyService {
 	
 	public void processPedigreeTwinRelationship(final RelationshipVo relationshipVo, final String subjectUid, final Long studyId){
 		if("NT".equalsIgnoreCase(relationshipVo.getTwin())){
-			if(relationshipVo.getTwinId() != null){
+			if(relationshipVo.getId() != null){
 				LinkSubjectTwin twin = new LinkSubjectTwin();
-				twin.setId(relationshipVo.getTwinId().intValue());
+				twin.setId(relationshipVo.getId());
 				iStudyDao.delete(twin);
 			}
 		}else{
@@ -1846,7 +1846,7 @@ public class StudyServiceImpl implements IStudyService {
 						
 						twin.setFirstSubject(subject1);
 						twin.setSecondSubject(subject2);
-						twin.setId(relationshipVo.getTwinId() != null ? relationshipVo.getTwinId().intValue():null);
+						twin.setId(relationshipVo.getId());
 						if(twin.getId() != null){
 							iStudyDao.update(twin);
 						}
@@ -1867,6 +1867,10 @@ public class StudyServiceImpl implements IStudyService {
 	public List<TwinType> getTwinTypes() {
 		// TODO Auto-generated method stub
 		return iStudyDao.getTwinTypes();
+	}
+	
+	public long getRelationshipCount(final String subjectUID,final Long studyId){
+		return iStudyDao.getRelationshipCount(subjectUID, studyId);
 	}
 
 }
