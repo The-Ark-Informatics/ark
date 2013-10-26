@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -1379,22 +1380,25 @@ public class StudyServiceImpl implements IStudyService {
 			}
 			
 			//Generate twin relationships
-			for(RelativeCapsule capsule:relativeCapsules){
-				List<RelationshipVo> siblings = getSubjectPedigreeTwinList(capsule.getIndividualId(), studyId);
-				for (RelativeCapsule existingCapsule : relativeCapsules) {
-					for (RelationshipVo sibling : siblings) {
-						String twinType = sibling.getTwin();
-						if (!"NT".equals(twinType) && existingCapsule.getIndividualId().equals(sibling.getIndividualId())) {
-							if ("MZ".equals(twinType)) {
-								existingCapsule.setMzTwin("Y");
-							}
-							else if ("DZ".equals(twinType)) {
-								existingCapsule.setDzTwin("Y");
-							}
-						}
-					}
-				}
-			}
+			
+			processTwinRelationshipCapsules(relativeCapsules, studyId);
+			
+//			for(RelativeCapsule capsule:relativeCapsules){
+//				List<RelationshipVo> siblings = getSubjectPedigreeTwinList(capsule.getIndividualId(), studyId);
+//				for (RelativeCapsule existingCapsule : relativeCapsules) {
+//					for (RelationshipVo sibling : siblings) {
+//						String twinType = sibling.getTwin();
+//						if (!"NT".equals(twinType) && existingCapsule.getIndividualId().equals(sibling.getIndividualId())) {
+//							if ("MZ".equals(twinType)) {
+//								existingCapsule.setMzTwin("Y");
+//							}
+//							else if ("DZ".equals(twinType)) {
+//								existingCapsule.setDzTwin("Y");
+//							}
+//						}
+//					}
+//				}
+//			}
 			
 		}
 		
@@ -1631,18 +1635,7 @@ public class StudyServiceImpl implements IStudyService {
 					}	
 				}
 			}
-			
-//			//Twin relationships
-//			List<RelationshipVo> siblings = getSubjectPedigreeTwinList(subjectUID, studyId);
-//			for (RelationshipVo existingRelationship : relativeSubjects) {
-//				for (RelationshipVo sibling : siblings) {
-//					if (existingRelationship.getIndividualId().equals(sibling.getIndividualId())) {
-//						existingRelationship.setTwin(sibling.getTwin());
-//					}
-//				}
-//			}
-			
-			
+						
 			//Select uncles and aunts
 			List<RelationshipVo> uncleAuntList = new ArrayList<RelationshipVo>();
 			for (RelationshipVo existingRelationship : relativeSubjects) {
@@ -1686,19 +1679,18 @@ public class StudyServiceImpl implements IStudyService {
 				}
 			}
 			
-			
 			//Twin relationships
-			
-			for(RelationshipVo relationshipVo :relativeSubjects){
-				List<RelationshipVo> siblings = getSubjectPedigreeTwinList(relationshipVo.getIndividualId(), studyId);
-				for (RelationshipVo existingRelationship : relativeSubjects) {
-					for (RelationshipVo sibling : siblings) {
-						if (existingRelationship.getIndividualId().equals(sibling.getIndividualId())) {
-							existingRelationship.setTwin(sibling.getTwin());
-						}
-					}
-				}
-			}
+//			for(RelationshipVo relationshipVo :relativeSubjects){
+//				List<RelationshipVo> siblings = getSubjectPedigreeTwinList(relationshipVo.getIndividualId(), studyId);
+//				for (RelationshipVo existingRelationship : relativeSubjects) {
+//					for (RelationshipVo sibling : siblings) {
+//						if (existingRelationship.getIndividualId().equals(sibling.getIndividualId())) {
+//							existingRelationship.setTwin(sibling.getTwin());
+//						}
+//					}
+//				}
+//			}
+			processTwinRelationships(relativeSubjects, studyId);
 			
 			
 			
@@ -1871,6 +1863,55 @@ public class StudyServiceImpl implements IStudyService {
 	
 	public long getRelationshipCount(final String subjectUID,final Long studyId){
 		return iStudyDao.getRelationshipCount(subjectUID, studyId);
+	}
+	
+	private void processTwinRelationships(List<RelationshipVo> relatives, Long studyId) {
+		Set<String> uidSet = new HashSet<String>();
+		for(RelationshipVo relationship:relatives){
+			uidSet.add(relationship.getIndividualId());
+		}
+		List<LinkSubjectTwin> twins = getTwins(uidSet, studyId);
+		for(RelationshipVo relationship:relatives){
+			String individualId=relationship.getIndividualId();
+			for(LinkSubjectTwin twin: twins){
+				if(individualId.equals(twin.getFirstSubject().getSubjectUID())
+						|| individualId.equals(twin.getSecondSubject().getSubjectUID())){
+					if("MZ".equalsIgnoreCase(twin.getTwinType().getName())){
+						relationship.setMz("MZ");
+					}
+					else if("DZ".equalsIgnoreCase(twin.getTwinType().getName())){
+						relationship.setDz("DZ");
+					}
+				}
+			}
+		}
+	}
+	
+	private void processTwinRelationshipCapsules(List<RelativeCapsule> relatives, Long studyId) {
+		Set<String> uidSet = new HashSet<String>();
+		for(RelativeCapsule relationship:relatives){
+			uidSet.add(relationship.getIndividualId());
+		}
+		List<LinkSubjectTwin> twins = getTwins(uidSet, studyId);
+		for(RelativeCapsule relationship:relatives){
+			String individualId=relationship.getIndividualId();
+			for(LinkSubjectTwin twin: twins){
+				if(individualId.equals(twin.getFirstSubject().getSubjectUID())
+						|| individualId.equals(twin.getSecondSubject().getSubjectUID())){
+					if("MZ".equalsIgnoreCase(twin.getTwinType().getName())){
+						relationship.setMzTwin("Y");
+					}
+					else if("DZ".equalsIgnoreCase(twin.getTwinType().getName())){
+						relationship.setDzTwin("Y");
+					}
+				}
+			}
+		}
+	}
+	
+	public List<LinkSubjectTwin> getTwins(Set<String> subjectUids, Long studyId) {
+		// TODO Auto-generated method stub
+		return iStudyDao.getTwins(subjectUids, studyId);
 	}
 
 }
