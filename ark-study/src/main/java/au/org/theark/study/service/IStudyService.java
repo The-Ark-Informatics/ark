@@ -21,6 +21,7 @@ package au.org.theark.study.service;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.util.file.File;
 
@@ -437,5 +438,7 @@ public interface IStudyService {
 	public List<TwinType> getTwinTypes();
 	
 	public long getRelationshipCount(final String subjectUID,final Long studyId);
+	
+	public List<LinkSubjectTwin> getTwins(final Set<String> subjectUids,final Long studyId);
 	
 }

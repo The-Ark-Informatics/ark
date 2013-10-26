@@ -28,6 +28,9 @@ public class RelationshipVo implements Serializable {
 	private String motherId;
 	private int relativeIndex;
 	
+	private String mz;
+	private String dz;
+	
 //	private BigInteger twinId;
 	
 	
@@ -92,6 +95,15 @@ public class RelationshipVo implements Serializable {
 	}
 	
 	public String getTwin() {
+		if(this.mz !=null && this.dz!=null){
+			twin=this.mz+"-"+this.dz;
+		}
+		else if(this.mz !=null && this.dz==null){
+			twin=this.mz;
+		}
+		else if(this.mz ==null && this.dz!=null){
+			twin=this.dz;
+		}
 		return twin;
 	}
 	
@@ -121,6 +133,21 @@ public class RelationshipVo implements Serializable {
 	public void setRelativeIndex(int relativeIndex) {
 		this.relativeIndex = relativeIndex;
 	}
+	
+	public String getMz() {
+		return mz;
+	}
+	public void setMz(String mz) {
+		this.mz = mz;
+	}
+	
+	public String getDz() {
+		return dz;
+	}
+	public void setDz(String dz) {
+		this.dz = dz;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -129,12 +156,6 @@ public class RelationshipVo implements Serializable {
 		return result;
 	}
 	
-//	public BigInteger getTwinId() {
-//		return twinId;
-//	}
-//	public void setTwinId(BigInteger twinId) {
-//		this.twinId = twinId;
-//	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
