@@ -2332,6 +2332,31 @@ where lss.subject_uid = '100'
 		
 	}
 	
+	public List<LinkSubjectTwin> getTwins(final Set<String> subjectUids,final Long studyId){
+		List<LinkSubjectTwin> twins=new ArrayList<LinkSubjectTwin>();
+		Criteria criteria = getSession().createCriteria(LinkSubjectTwin.class, "lst");
+		criteria.createAlias("firstSubject", "lssa",JoinType.INNER_JOIN);
+		criteria.createAlias("lssa.study", "sta",JoinType.INNER_JOIN);
+		criteria.createAlias("secondSubject", "lssb",JoinType.INNER_JOIN);
+		criteria.createAlias("lssb.study", "stb",JoinType.INNER_JOIN);
+		
+		criteria.setFetchMode("firstSubject", FetchMode.JOIN);
+		criteria.setFetchMode("secondSubject", FetchMode.JOIN);
+		criteria.setFetchMode("twinType", FetchMode.JOIN);
+		
+		criteria.add(Restrictions.eq("sta.id", studyId));
+		criteria.add(Restrictions.eq("stb.id", studyId));
+		Disjunction or = Restrictions.disjunction();
+		or.add(Restrictions.in("lssa.subjectUID", subjectUids));
+		or.add(Restrictions.in("lssb.subjectUID", subjectUids));
+		criteria.add(or);
+		
+		twins = criteria.list();
+		
+		return twins;
+		
+	}
+	
 	public long getRelationshipCount(final String subjectUID,final Long studyId){
 		long count =0;
 		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class, "lsp");
