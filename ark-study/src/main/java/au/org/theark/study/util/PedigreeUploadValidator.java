@@ -168,13 +168,13 @@ public class PedigreeUploadValidator {
 
 			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	
 			
-			class TmpTwinRecord{
+			class TmpPedRecord{
 				String individualId;
 				String parentId;
 				String twinId;
 				int row;
 				
-				public TmpTwinRecord(String individualId, String parentId, String twinId, int row) {
+				public TmpPedRecord(String individualId, String parentId, String twinId, int row) {
 					super();
 					this.individualId = individualId;
 					this.parentId = parentId;
@@ -207,7 +207,8 @@ public class PedigreeUploadValidator {
 				}
 			}
 			
-			List<TmpTwinRecord> twinRecords = new ArrayList<TmpTwinRecord>();
+			List<TmpPedRecord> twinRecords = new ArrayList<TmpPedRecord>();
+			List<TmpPedRecord> individualRecords = new ArrayList<TmpPedRecord>();
 			
 			while (csvReader.readRecord()) {
 				stringLineArray = csvReader.getValues();
@@ -235,28 +236,28 @@ public class PedigreeUploadValidator {
 				}
 				
 				if(!"-".equalsIgnoreCase(fatherUID) && !subjectUIDsAlreadyExisting.contains(fatherUID)){
-					nonExistantUIDs.add(row);
+//					nonExistantUIDs.add(row);
 					errorCells.add(new ArkGridCell(1, row));
 					dataValidationMessages.add("Invalid father subject UID is specified on row "+row);
 				}
-				else{
-					GenderType gender = iArkCommonService.getSubjectGenderType(fatherUID);
+				else if (!"-".equalsIgnoreCase(fatherUID)){
+					GenderType gender = iArkCommonService.getSubjectGenderType(fatherUID,study.getId());
 					if(gender == null || gender.getName().startsWith("F")){
 						errorCells.add(new ArkGridCell(1, row));
-						dataValidationMessages.add("Father were specified with female"+row);
+						dataValidationMessages.add("Father was specified with sex:female on row "+row);
 					}
 				}
 				
 				if(!"-".equalsIgnoreCase(motherUID) && !subjectUIDsAlreadyExisting.contains(motherUID)){
-					nonExistantUIDs.add(row);
+//					nonExistantUIDs.add(row);
 					errorCells.add(new ArkGridCell(2, row));
 					dataValidationMessages.add("Invalid mother subject UID is specified on row "+row);
 				}
-				else{
-					GenderType gender = iArkCommonService.getSubjectGenderType(motherUID);
+				else if(!"-".equalsIgnoreCase(motherUID)){
+					GenderType gender = iArkCommonService.getSubjectGenderType(motherUID,study.getId());
 					if(gender == null || gender.getName().startsWith("M")){
 						errorCells.add(new ArkGridCell(2, row));
-						dataValidationMessages.add("Mother were specified with female"+row);
+						dataValidationMessages.add("Mother was specified with sex:male on row "+row);
 					}
 				}
 				
@@ -268,7 +269,7 @@ public class PedigreeUploadValidator {
 					if(twinStatus.matches("[M]|[D]") && ("-".equals(fatherUID)||"-".equals(motherUID))){
 						errorCells.add(new ArkGridCell(1, row));
 						errorCells.add(new ArkGridCell(2, row));
-						dataValidationMessages.add("Both parents must be specified for subject who is a twin"+row);
+						dataValidationMessages.add("Both parents must be specified for subject who is a twin on row "+row);
 					}
 				}
 
@@ -277,7 +278,7 @@ public class PedigreeUploadValidator {
 					dataValidationMessages.add("Invalid twin subject UID is specified on row "+row);
 				}else{
 					if(!"-".equalsIgnoreCase(twinStatus)){
-						twinRecords.add(new TmpTwinRecord(subjectUID, fatherUID+"-"+motherUID, twinUID,row));
+						twinRecords.add(new TmpPedRecord(subjectUID, fatherUID+"-"+motherUID, twinUID,row));
 					}
 				}
 				
@@ -285,19 +286,21 @@ public class PedigreeUploadValidator {
 				
 				if(existingRelationships >0){
 					errorCells.add(new ArkGridCell(0, row));
-					dataValidationMessages.add("Subject UID already have parent relationships "+row);
+					dataValidationMessages.add("Subject UID: "+subjectUID+" already have parent relationships "+row);
 				}
+				
+				individualRecords.add(new TmpPedRecord(subjectUID, fatherUID+"-"+motherUID, null,row));
 				
 				row++;
 			}
 			
-			loop1:for(TmpTwinRecord tmp1:twinRecords){
-				loop2:for(TmpTwinRecord tmp2:twinRecords){
+			loop1:for(TmpPedRecord tmp1:twinRecords){
+				loop2:for(TmpPedRecord tmp2:individualRecords){
 					if(tmp1.getTwinId()!=null && tmp1.getTwinId().equals(tmp2.getIndividualId())){
 						if(!tmp1.getParentId().equalsIgnoreCase(tmp2.getParentId())){
 							errorCells.add(new ArkGridCell(1, tmp2.getRow()));
 							errorCells.add(new ArkGridCell(2, tmp2.getRow()));
-							dataValidationMessages.add("Twins were specified with missmathed parent UIDs"+row);
+							dataValidationMessages.add("Twins were specified with missmathed parent UIDs on row "+tmp2.getRow());
 							break loop2;
 						}
 					}
@@ -402,7 +405,7 @@ public class PedigreeUploadValidator {
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			while(csvReader.readRecord()){
 				stringLineArray = csvReader.getValues();
-				if(stringLineArray.length == 5){
+				if(stringLineArray.length != 5){
 					fileValidationMessages.add("Error: The pedigree uploader expects a file comprising 5 tab delimitted columns. Please refer to the template example");
 					break;
 				}

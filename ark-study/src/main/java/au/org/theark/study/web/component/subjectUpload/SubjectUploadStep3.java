@@ -64,7 +64,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
 	
-	@SpringBean(name = "arkStudyService")
+	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService				iStudyService;
 	
 
