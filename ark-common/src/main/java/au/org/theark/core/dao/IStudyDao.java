@@ -723,5 +723,5 @@ public interface IStudyDao {
 
 	public ConsentStatus getConsentStatusByName(String name);
 	
-	public GenderType getSubjectGenderType(final String subjectUID);
+	public GenderType getSubjectGenderType(final String subjectUID,final Long studyId);
 }
