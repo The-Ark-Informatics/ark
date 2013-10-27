@@ -39,6 +39,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Example;
@@ -4360,11 +4361,18 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (ConsentStatus) criteria.uniqueResult();
 	}
 	
-	public GenderType getSubjectGenderType(final String subjectUID){
+	public GenderType getSubjectGenderType(final String subjectUID,final Long studyId){
 		GenderType genderType=null;
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class,"lss");
+		criteria.createAlias("study","st",JoinType.INNER_JOIN);
 		criteria.createAlias("person","per",JoinType.INNER_JOIN);
 		criteria.createAlias("per.genderType","gen",JoinType.INNER_JOIN);
+		
+		criteria.setFetchMode("person", FetchMode.JOIN);
+		
+		criteria.add(Restrictions.eq("st.id", studyId));
+		criteria.add(Restrictions.eq("lss.subjectUID", subjectUID));
+		
 		List list = criteria.list();
 		if(list.size()>0){
 			LinkSubjectStudy subject = (LinkSubjectStudy)list.get(0);
