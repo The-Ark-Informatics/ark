@@ -1,7 +1,6 @@
 package au.org.theark.study.model.vo;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 
 public class RelationshipVo implements Serializable {

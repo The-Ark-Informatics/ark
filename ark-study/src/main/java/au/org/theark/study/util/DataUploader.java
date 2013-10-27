@@ -1614,7 +1614,7 @@ public class DataUploader {
 					parentSubjectLinkRelationships.add(mother);
 				}
 
-				if (twinStatus != null && !twinStatus.equalsIgnoreCase("-")) {
+				if (twinStatus != null && !twinStatus.equalsIgnoreCase("-") && !isTwinRelationshipExists(twinSubjectLinkRelationships, subjectUID, twinUID)) {
 					LinkSubjectTwin twin = new LinkSubjectTwin();
 					if ("M".equalsIgnoreCase(twinStatus)) {
 						twin.setTwinType(twinRelationshipMap.get("MZ"));
@@ -1627,7 +1627,6 @@ public class DataUploader {
 					twin.setSecondSubject(siblingUser);
 					twinSubjectLinkRelationships.add(twin);
 				}
-
 			}
 		}
 		catch (Exception e) {
@@ -1679,5 +1678,21 @@ public class DataUploader {
 		}
 
 		return uploadReport;
+	}
+
+	private boolean isTwinRelationshipExists(final List<LinkSubjectTwin> twinSubjectLinkRelationships, final String subjectUid1, final String subjectUid2) {
+		boolean exists = false;
+		LinkSubjectStudy firstSubject = null;
+		LinkSubjectStudy secondSubject = null;
+		for (LinkSubjectTwin twin : twinSubjectLinkRelationships) {
+			firstSubject = twin.getFirstSubject();
+			secondSubject = twin.getSecondSubject();
+
+			if ((firstSubject.getSubjectUID().equalsIgnoreCase(subjectUid1) && secondSubject.getSubjectUID().equalsIgnoreCase(subjectUid2))
+					|| (secondSubject.getSubjectUID().equalsIgnoreCase(subjectUid1) && firstSubject.getSubjectUID().equalsIgnoreCase(subjectUid2))) {
+				exists = true;
+			}
+		}
+		return exists;
 	}
 }
