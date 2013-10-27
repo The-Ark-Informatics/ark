@@ -808,5 +808,5 @@ public interface IArkCommonService<T> {
 
 	public ConsentStatus getConsentStatusByName(String string);
 	
-	public GenderType getSubjectGenderType(final String subjectUID);
+	public GenderType getSubjectGenderType(final String subjectUID,final Long studyId);
 }
