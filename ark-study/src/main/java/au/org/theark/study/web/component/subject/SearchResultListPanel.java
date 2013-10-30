@@ -38,6 +38,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.collections.MultiMap;
 
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -54,6 +55,7 @@ import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.util.PedigreeUploadValidator;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
 
@@ -296,19 +298,46 @@ public class SearchResultListPanel extends Panel {
 
 				String subjectUID = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 				
-				if(subjectUID.equals(subject.getLinkSubjectStudy().getSubjectUID())){
-					this.error("Invalid parent relationship");
+				
+				
+				
+				//Pedigree validation
+				MultiMap<String, String> pedigree = new MultiMap<String, String>();
+				
+				for(RelationshipVo relative:relatives){
+					if(relative.getFatherId() !=null){
+						pedigree.addValue(relative.getFatherId(),relative.getIndividualId());
+					}
+					
+					if(relative.getMotherId() !=null ){
+						pedigree.addValue(relative.getMotherId(),relative.getIndividualId());
+					}
+				}
+				
+				pedigree.addValue(subject.getLinkSubjectStudy().getSubjectUID(), subjectUID);
+				
+				List<RelationshipVo> newRelatives=iStudyService.generateSubjectPedigreeRelativeList(subject.getLinkSubjectStudy().getSubjectUID(),sessionStudyId);
+				
+				for(RelationshipVo relative:newRelatives){
+					if(relative.getFatherId() !=null){
+						pedigree.addValue(relative.getFatherId(),relative.getIndividualId());
+					}
+					
+					if(relative.getMotherId() !=null ){
+						pedigree.addValue(relative.getMotherId(),relative.getIndividualId());
+					}
+				}
+				
+				
+				String circularUID=PedigreeUploadValidator.getCircularUID(pedigree);
+				if(circularUID !=null){
+					this.error("System cannot allow to create a circular relationship with "+circularUID +" UID");
 					target.add(feedbackPanel);
 					return;
 				}
 				
-				for(RelationshipVo relative:relatives){
-					if(subject.getLinkSubjectStudy().getSubjectUID().equals(relative.getIndividualId())){
-						this.error("Invalid parent relationship");
-						target.add(feedbackPanel);
-						return;
-					}
-				}
+				
+				//Assign new parent relationships
 				
 				SubjectVO criteriaSubjectVo = new SubjectVO();
 				criteriaSubjectVo.getLinkSubjectStudy().setStudy(study);
