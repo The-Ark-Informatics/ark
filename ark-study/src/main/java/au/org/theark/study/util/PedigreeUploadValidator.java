@@ -9,9 +9,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.util.collections.MultiMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -210,25 +212,17 @@ public class PedigreeUploadValidator {
 			List<TmpPedRecord> twinRecords = new ArrayList<TmpPedRecord>();
 			List<TmpPedRecord> individualRecords = new ArrayList<TmpPedRecord>();
 			
+			MultiMap<String, String> pedigree = new MultiMap<String, String>();
+			
 			while (csvReader.readRecord()) {
 				stringLineArray = csvReader.getValues();
 				int index =0;
-//				String familyId   = stringLineArray[index++];
+				
 				String subjectUID = stringLineArray[index++];
 				String fatherUID = stringLineArray[index++];
 				String motherUID = stringLineArray[index++];		
 				String twinStatus = stringLineArray[index++];
 				String twinUID = stringLineArray[index++];
-
-//				try  
-//				{  
-//					Long.parseLong(familyId); 
-//				}  
-//				catch(NumberFormatException nfe)  
-//				{  
-//					errorCells.add(new ArkGridCell(0, row));
-//					dataValidationMessages.add("Invalid family ID is specified on row "+row);
-//				}  
 				
 				if(!subjectUIDsAlreadyExisting.contains(subjectUID)){
 					nonExistantUIDs.add(row);//TODO test and compare array.
@@ -236,7 +230,6 @@ public class PedigreeUploadValidator {
 				}
 				
 				if(!"-".equalsIgnoreCase(fatherUID) && !subjectUIDsAlreadyExisting.contains(fatherUID)){
-//					nonExistantUIDs.add(row);
 					errorCells.add(new ArkGridCell(1, row));
 					dataValidationMessages.add("Invalid father subject UID is specified on row "+row);
 				}
@@ -246,10 +239,10 @@ public class PedigreeUploadValidator {
 						errorCells.add(new ArkGridCell(1, row));
 						dataValidationMessages.add("Father was specified with sex:female on row "+row);
 					}
+					pedigree.addValue(fatherUID, subjectUID);
 				}
 				
 				if(!"-".equalsIgnoreCase(motherUID) && !subjectUIDsAlreadyExisting.contains(motherUID)){
-//					nonExistantUIDs.add(row);
 					errorCells.add(new ArkGridCell(2, row));
 					dataValidationMessages.add("Invalid mother subject UID is specified on row "+row);
 				}
@@ -259,6 +252,7 @@ public class PedigreeUploadValidator {
 						errorCells.add(new ArkGridCell(2, row));
 						dataValidationMessages.add("Mother was specified with sex:male on row "+row);
 					}
+					pedigree.addValue(motherUID, subjectUID);
 				}
 				
 				if((twinStatus==null) || (!twinStatus.matches("[-]|[M]|[D]"))){
@@ -286,7 +280,7 @@ public class PedigreeUploadValidator {
 				
 				if(existingRelationships >0){
 					errorCells.add(new ArkGridCell(0, row));
-					dataValidationMessages.add("Subject UID: "+subjectUID+" already have parent relationships "+row);
+					dataValidationMessages.add("Subject UID: "+subjectUID+" have already assigned parent relationship on row "+row);
 				}
 				
 				individualRecords.add(new TmpPedRecord(subjectUID, fatherUID+"-"+motherUID, null,row));
@@ -298,14 +292,20 @@ public class PedigreeUploadValidator {
 				loop2:for(TmpPedRecord tmp2:individualRecords){
 					if(tmp1.getTwinId()!=null && tmp1.getTwinId().equals(tmp2.getIndividualId())){
 						if(!tmp1.getParentId().equalsIgnoreCase(tmp2.getParentId())){
+							errorCells.add(new ArkGridCell(4, tmp1.getRow()));
 							errorCells.add(new ArkGridCell(1, tmp2.getRow()));
-							errorCells.add(new ArkGridCell(2, tmp2.getRow()));
-							dataValidationMessages.add("Twins were specified with missmathed parent UIDs on row "+tmp2.getRow());
+							dataValidationMessages.add("Twins were specified with missmathed parent UIDs on rows "+tmp1.getRow()+" and "+tmp2.getRow());
 							break loop2;
 						}
 					}
 				}
 			}
+			
+			String uid=getCircularUID(pedigree);
+			if(uid!=null){
+				dataValidationMessages.add("Circular relationship has detected for the  subject UID "+uid);
+			}
+			
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
@@ -341,8 +341,44 @@ public class PedigreeUploadValidator {
 		return dataValidationMessages;
 	}
 	
-	
-	
+	public static String getCircularUID(MultiMap<String, String> pedigree) {
+		
+		for(String uid : pedigree.keySet()) {
+			if (checkCircularRelationshipsByUID(pedigree, uid)) {
+				return uid;
+			}
+		}
+		return null;
+	}
+
+	private static boolean checkCircularRelationshipsByUID(MultiMap<String, String> pedigree, String uid) {
+		Set<String> allChildren = new HashSet<String>();
+
+		List<String> children = pedigree.get(uid);
+
+		allChildren.addAll(children);
+
+		Set<String> parents = pedigree.keySet();
+
+		for (String parent : parents) {
+			if (!parent.equalsIgnoreCase(uid) && allChildren.contains(parent)) {
+				allChildren.addAll(pedigree.get(parent));
+			}
+		}
+
+		for (String subjectChild : allChildren) {
+			if (parents.contains(subjectChild)) {
+				List<String> selectedChildren = pedigree.get(subjectChild);
+				for (String child : children) {
+					if (selectedChildren.contains(child)) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
 
 	/**
 	 * Validates the pedigree file type
