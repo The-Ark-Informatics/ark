@@ -341,6 +341,11 @@ public class PedigreeUploadValidator {
 		return dataValidationMessages;
 	}
 	
+	/**
+	 * Check which parent UID creates a circular relationship
+	 * @param pedigree Relationship graph
+	 * @return Problematic UID
+	 */
 	public static String getCircularUID(MultiMap<String, String> pedigree) {
 		
 		for(String uid : pedigree.keySet()) {
@@ -350,7 +355,14 @@ public class PedigreeUploadValidator {
 		}
 		return null;
 	}
-
+	
+	
+	/**
+	 * Check for selected parent UID creates a circular relationship
+	 * @param pedigree Relationship graph
+	 * @param uid Parent UID
+	 * @return Circular relationship status
+	 */
 	private static boolean checkCircularRelationshipsByUID(MultiMap<String, String> pedigree, String uid) {
 		Set<String> allChildren = new HashSet<String>();
 
@@ -360,6 +372,24 @@ public class PedigreeUploadValidator {
 
 		Set<String> parents = pedigree.keySet();
 
+		//Check invalid grand-child relationships
+		List<String> grandChildren=new ArrayList<String>();
+		for(String child:children){
+			if(parents.contains(child)){
+				List<String> selectedChildren = pedigree.get(child);
+				for(String selectedChild:selectedChildren){
+					if(grandChildren.contains(selectedChild)){
+						return true;
+					}
+					else{
+						grandChildren.add(selectedChild);
+					}
+				}
+			}
+		}
+		
+
+		//Check invalid parent-child relationships
 		for (String parent : parents) {
 			if (!parent.equalsIgnoreCase(uid) && allChildren.contains(parent)) {
 				allChildren.addAll(pedigree.get(parent));
@@ -369,11 +399,12 @@ public class PedigreeUploadValidator {
 		for (String subjectChild : allChildren) {
 			if (parents.contains(subjectChild)) {
 				List<String> selectedChildren = pedigree.get(subjectChild);
+				
 				for (String child : children) {
 					if (selectedChildren.contains(child)) {
 						return true;
 					}
-				}
+				}				
 			}
 		}
 		
