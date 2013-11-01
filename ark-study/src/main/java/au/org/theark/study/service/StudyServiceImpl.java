@@ -103,6 +103,7 @@ import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
+import au.org.theark.study.model.capsule.ArkRelativeCapsule;
 import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.model.vo.RelationshipVo;
@@ -1310,6 +1311,42 @@ public class StudyServiceImpl implements IStudyService {
 		RelativeCapsule[] relativeCapsules = generateSubjectPedigree(subjectUID,studyId);
 		return relativeCapsules;
 	}
+	
+	public ArkRelativeCapsule[] generateSubjectArkPedigreeExportList(final String subjectUID, final Long studyId) {
+		List<ArkRelativeCapsule> arkRelativeCapsules = new ArrayList<ArkRelativeCapsule>();
+		RelativeCapsule[] relativeCapsules = generateSubjectPedigree(subjectUID, studyId);
+
+		for (RelativeCapsule relativeCapsule : relativeCapsules) {
+			ArkRelativeCapsule arkRelativeCapsule = new ArkRelativeCapsule();
+			arkRelativeCapsule.setIndividualId(relativeCapsule.getIndividualId());
+			arkRelativeCapsule.setFatherId(relativeCapsule.getFather());
+			arkRelativeCapsule.setMotherId(relativeCapsule.getMother());
+
+			if ("Y".equalsIgnoreCase(relativeCapsule.getMzTwin())) {
+				arkRelativeCapsule.setTwinStatus("M");
+			}
+			else if ("Y".equalsIgnoreCase(relativeCapsule.getDzTwin())) {
+				arkRelativeCapsule.setTwinStatus("D");
+			}
+			arkRelativeCapsules.add(arkRelativeCapsule);
+		}
+
+		for (ArkRelativeCapsule capsule1 : arkRelativeCapsules) {
+			if (capsule1.getTwinStatus() != null) {
+				for (ArkRelativeCapsule capsule2 : arkRelativeCapsules) {
+					if (capsule2.getTwinStatus() != null) {
+						if (!capsule1.getIndividualId().equals(capsule2.getIndividualId()) && 
+								capsule1.getFatherId().equals(capsule2.getFatherId()) && 
+								capsule1.getMotherId().equals(capsule2.getMotherId())) {
+							capsule1.setTwinId(capsule2.getIndividualId());
+						}
+					}
+				}
+			}
+		}
+
+		return arkRelativeCapsules.toArray(new ArkRelativeCapsule[arkRelativeCapsules.size()]);
+	}
 
 	private RelativeCapsule[] generateSubjectPedigree(final String subjectUID,final Long studyId){
 		List<RelativeCapsule> relativeCapsules = new ArrayList<RelativeCapsule>();
@@ -1325,8 +1362,6 @@ public class StudyServiceImpl implements IStudyService {
 			if(familyUID.length()>11){
 				familyUID = familyUID.substring(0, 11);
 			}
-			
-			System.out.println("Family Id is ---------- "+familyUID);
 			
 			RelativeCapsule proband = createSubjectRelativeCapsule(probandRelationship,familyUID);
 			proband.setProband("Y");

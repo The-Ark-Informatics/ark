@@ -19,6 +19,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 
 import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.study.model.capsule.ArkRelativeCapsule;
 import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.vo.PedigreeVo;
 import au.org.theark.study.model.vo.RelationshipVo;
@@ -101,7 +102,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
 		
-		DownloadLink downloadLink = new DownloadLink("pedLink", new AbstractReadOnlyModel<File>() {
+		DownloadLink madelineDownloadLink = new DownloadLink("pedLink", new AbstractReadOnlyModel<File>() {
 
 			@Override
 			public File getObject() {
@@ -117,7 +118,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 					chunk.set("relatives", relatives);
 
 					String tmpDir = System.getProperty("java.io.tmpdir");
-					String pedFileName="Ark_"+subjectUID+".ped";
+					String pedFileName=subjectUID+"-Madeline.ped";
 					tempFile = new File(tmpDir,pedFileName);
 					FileWriter out = new FileWriter(tempFile);
 					chunk.render(out);
@@ -136,16 +137,63 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 
 		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
 		
-		downloadLink.add(new Behavior(){
+		madelineDownloadLink.add(new Behavior(){
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public void onComponentTag(Component component, ComponentTag tag) {
-				tag.put("title", "Export to PED");
+				tag.put("title", "Export to Madeline PED");
 			}
 		});
+
 		
-		searchResultPanel.add(downloadLink);
+		DownloadLink arkDownloadLink = new DownloadLink("arkLink", new AbstractReadOnlyModel<File>() {
+
+			@Override
+			public File getObject() {
+				File tempFile = null;
+				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+
+				ArkRelativeCapsule[] arkrelatives = studyService.generateSubjectArkPedigreeExportList(subjectUID, studyId);
+
+				try {
+					Theme theme = new Theme();
+					Chunk chunk = theme.makeChunk("ark_pedigree_template", "txt");
+					chunk.set("arkrelatives", arkrelatives);
+
+					String tmpDir = System.getProperty("java.io.tmpdir");
+					String pedFileName=subjectUID+"-Ark.ped";
+					tempFile = new File(tmpDir,pedFileName);
+					FileWriter out = new FileWriter(tempFile);
+					chunk.render(out);
+					out.flush();
+					out.close();
+				}
+				catch (IOException io) {
+					io.printStackTrace();
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				return tempFile;
+			}
+
+		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
+		
+		arkDownloadLink.add(new Behavior(){
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public void onComponentTag(Component component, ComponentTag tag) {
+				tag.put("title", "Export to Ark PED");
+			}
+		});
+
+		
+		searchResultPanel.add(madelineDownloadLink);
+		searchResultPanel.add(arkDownloadLink);
 		
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
