@@ -76,6 +76,7 @@ import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
+import au.org.theark.study.model.capsule.ArkRelativeCapsule;
 import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.util.SubjectUploadValidator;
@@ -441,4 +442,5 @@ public interface IStudyService {
 	
 	public List<LinkSubjectTwin> getTwins(final Set<String> subjectUids,final Long studyId);
 	
+	public ArkRelativeCapsule[] generateSubjectArkPedigreeExportList(final String subjectUID,final Long studyId);
 }
