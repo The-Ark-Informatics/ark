@@ -2,7 +2,10 @@ package au.org.theark.core.model.geno.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
@@ -21,6 +24,8 @@ public class Command implements java.io.Serializable {
 	private String outputFileFormat;
 
 	@Id
+	@SequenceGenerator(name = "command_generator", sequenceName = "COMMAND_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "command_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
