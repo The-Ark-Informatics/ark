@@ -41,7 +41,7 @@ public class RegistrySubMenuTab extends Panel {
 	public void buildTabs() {
 		// This way we can get the menus from the back-end. We should source this data from a table in the backend and wrap it up in a class like this
 		MenuModule menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.INVOICE_SUBMENU);
+		menuModule.setModuleName(Constants.GENOTYPIC);
 		menuModule.setResourceKey(Constants.INVOICE_RESOURCEKEY);
 		moduleTabs.add(menuModule);
 
@@ -61,7 +61,7 @@ public class RegistrySubMenuTab extends Panel {
 				public Panel getPanel(String panelId) {
 					Panel panelToReturn = null;// Set up a common tab that will be accessible for all users
 
-					if (moduleName.getModuleName().equalsIgnoreCase(Constants.INVOICE_SUBMENU)) {
+					if (moduleName.getModuleName().equalsIgnoreCase(Constants.GENOTYPIC)) {
 						panelToReturn = new GenoContainerPanel(panelId);
 					}
 					return panelToReturn;
