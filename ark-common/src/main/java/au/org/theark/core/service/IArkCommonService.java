@@ -35,6 +35,7 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
@@ -807,6 +808,12 @@ public interface IArkCommonService<T> {
 	public void delete(Search search);
 
 	public ConsentStatus getConsentStatusByName(String string);
+	
+	public void createPipeline(Pipeline p);
+
+	public void updatePipeline(Pipeline p);
+	
+	public void deletePipeline(Pipeline p);
 	
 	public GenderType getSubjectGenderType(final String subjectUID,final Long studyId);
 }
