@@ -99,6 +99,7 @@ CREATE  TABLE `geno`.`pipeline` (
   `ID` INT NOT NULL ,
   `NAME` VARCHAR(255) NOT NULL ,
   `DESCRIPTION` VARCHAR(4096) NULL ,
+  `STUDY_ID` INT NOT NULL ,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
 
 DROP TABLE IF EXISTS `geno`.`pipeline_process`;
