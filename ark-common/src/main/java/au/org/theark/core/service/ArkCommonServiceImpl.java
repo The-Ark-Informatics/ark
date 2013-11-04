@@ -60,6 +60,7 @@ import au.org.theark.core.dao.ArkLdapContextSource;
 import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.dao.ICSVLoaderDao;
 import au.org.theark.core.dao.ICustomFieldDao;
+import au.org.theark.core.dao.IGenoDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.dao.ReCaptchaContextSource;
 import au.org.theark.core.exception.ArkSystemException;
@@ -67,6 +68,7 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
@@ -158,6 +160,16 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private ReCaptchaContextSource	reCaptchaContextSource;
 	private JavaMailSender				javaMailSender;
 	private VelocityEngine				velocityEngine;
+	private IGenoDao					genoDao;
+
+	public IGenoDao getGenoDao() {
+		return genoDao;
+	}
+
+	@Autowired
+	public void setGenoDao(IGenoDao genoDao) {
+		this.genoDao = genoDao;
+	}
 
 	public ICustomFieldDao getCustomFieldDao() {
 		return customFieldDao;
@@ -1425,6 +1437,18 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public ConsentStatus getConsentStatusByName(String name) {
 		return studyDao.getConsentStatusByName(name);
+	}
+	
+	public void createPipeline(Pipeline p) {
+		genoDao.createPipeline(p);
+	}
+
+	public void deletePipeline(Pipeline p) {
+		genoDao.deletePipeline(p);
+	}
+
+	public void updatePipeline(Pipeline p) {
+		genoDao.updatePipeline(p);
 	}
 	
 	public GenderType getSubjectGenderType(final String subjectUID,final Long studyId){
