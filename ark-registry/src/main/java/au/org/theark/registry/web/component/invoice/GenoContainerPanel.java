@@ -9,11 +9,14 @@ package au.org.theark.registry.web.component.invoice;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.model.geno.entity.Pipeline;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.registry.web.component.invoice.form.ContainerForm;
 
 /**
@@ -22,12 +25,17 @@ import au.org.theark.registry.web.component.invoice.form.ContainerForm;
  */
 public class GenoContainerPanel extends AbstractContainerPanel<Pipeline> {
 
-
 	private static final long serialVersionUID = 1L;
+	
 	private ContainerForm					containerForm;
 
 	// Panels
 	private DetailPanel						detailPanel;
+
+	
+	private ArkDataProvider2 arkDataProvider;
+	private DataView<CustomFieldGroup> dataView;
+	
 	
 	@Override
 	protected void onBeforeRender() {
@@ -60,8 +68,10 @@ public class GenoContainerPanel extends AbstractContainerPanel<Pipeline> {
 	}
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
-		// TODO Auto-generated method stub
-		return null;
+		SearchPanel searchPanel = new SearchPanel("searchPanel", cpModel,arkCrudContainerVO,feedBackPanel);
+		searchPanel.initialisePanel();
+		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
+		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {

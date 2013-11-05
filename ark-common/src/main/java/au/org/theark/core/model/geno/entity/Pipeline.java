@@ -10,11 +10,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.study.entity.Study;
 
 
 @Entity
@@ -25,6 +28,8 @@ public class Pipeline implements java.io.Serializable {
 	private Long id;
 	private String name;
 	private String description;
+	private Study study;
+	
 	private Set<PipelineProcess> pipelineProcesses = new HashSet<PipelineProcess>(0);
 	private Set<LinkSubjectStudyPipeline> linkSubjectStudyPipelines = new HashSet<LinkSubjectStudyPipeline>(0);
 
@@ -75,5 +80,17 @@ public class Pipeline implements java.io.Serializable {
 	public void setLinkSubjectStudyPipelines(Set<LinkSubjectStudyPipeline> linkSubjectStudyPipelines) {
 		this.linkSubjectStudyPipelines = linkSubjectStudyPipelines;
 	}
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDY_ID")
+	public Study getStudy() {
+		return this.study;
+	}
+
+	public void setStudy(Study study) {
+		this.study = study;
+	}
+	
 
 }

@@ -45,6 +45,13 @@ public class DetailPanel extends Panel {
 		this.feedBackPanel = feedBackPanel;
 	}
 
+	public DetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO ) {
+		super(id);
+		this.arkCrudContainerVO = arkCrudContainerVO;
+	//	this.containerForm = containerForm;
+		this.feedBackPanel = feedBackPanel;
+	}
+
 	public void initialisePanel() {
 		detailForm = new DetailForm("detailsForm", feedBackPanel, arkCrudContainerVO, containerForm);
 		detailForm.initialiseDetailForm();

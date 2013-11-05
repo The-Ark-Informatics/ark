@@ -24,14 +24,14 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.model.geno.entity.Pipeline;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractDetailForm;
-import au.org.theark.registry.service.IGenoService;
 
 /**
  * @author nivedann
@@ -125,8 +125,13 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 	 */
 	@Override
 	protected void onSave(Form<Pipeline> containerForm, AjaxRequestTarget target) {
-		Long personSessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		StringBuffer feedBackMessageStr = new StringBuffer();
+	//	Long personSessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		//StringBuffer feedBackMessageStr = new StringBuffer();
+		if(containerForm.getModelObject()!=null && containerForm.getModelObject().getId()==null){
+			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(Constants.STUDY_CONTEXT_ID);
+			Study study = iArkCommonService.getStudy(studyId);
+			getModelObject().setStudy(study);
+		}
 		iArkCommonService.createPipeline(containerForm.getModelObject());
 		this.info("Pipeline saved");
 		target.add(feedBackPanel);
