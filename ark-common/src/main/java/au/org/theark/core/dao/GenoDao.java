@@ -9,6 +9,7 @@ package au.org.theark.core.dao;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.model.geno.entity.Pipeline;
+import au.org.theark.core.model.study.entity.Study;
 
 /**
  * @author nivedann
@@ -27,4 +28,9 @@ public class GenoDao extends HibernateSessionDao implements IGenoDao {
 	public void deletePipeline(Pipeline p) {
 		getSession().delete(p);
 	}
+
+	public long getPipelineCount(Study study){
+		return study.getPipelines().size();//TODO  woefully inappropriate speed/efficiency FIX
+	}
+	
 }

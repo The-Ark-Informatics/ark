@@ -816,4 +816,6 @@ public interface IArkCommonService<T> {
 	public void deletePipeline(Pipeline p);
 	
 	public GenderType getSubjectGenderType(final String subjectUID,final Long studyId);
+
+	public long getPipelineCount(Study study);
 }

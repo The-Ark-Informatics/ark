@@ -37,10 +37,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.geno.entity.Pipeline;
 
 /**
  * Study entity. @author MyEclipse Persistence Tools
@@ -96,6 +96,8 @@ public class Study implements java.io.Serializable {
 			0);
 	private Set<LinkStudySubstudy> linkStudySubstudiesForSubid = new HashSet<LinkStudySubstudy>(
 			0);
+
+	private Set<Pipeline> pipelines = new HashSet<Pipeline>(0);
 
 	public Study() {
 	}
@@ -384,6 +386,16 @@ public class Study implements java.io.Serializable {
 	public void setLinkStudySubstudiesForSubid(
 			Set<LinkStudySubstudy> linkStudySubstudiesForSubid) {
 		this.linkStudySubstudiesForSubid = linkStudySubstudiesForSubid;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
+	public Set<Pipeline> getPipelines() {
+		return this.pipelines;
+	}
+
+	public void setPipelines(
+			Set<Pipeline> pipelines) {
+		this.pipelines = pipelines;
 	}
 
 	/**
