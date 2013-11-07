@@ -32,7 +32,8 @@ public class CustomFieldGroupDetailPanel extends Panel {
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public CustomFieldGroupDetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,CompoundPropertyModel<CustomFieldGroupVO> cpmModel, ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdProvider, Boolean addCustomFieldDisplayList){
+	public CustomFieldGroupDetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,CompoundPropertyModel<CustomFieldGroupVO> cpmModel, 
+			ArkDataProvider2<CustomFieldDisplay, CustomFieldDisplay> cfdProvider, Boolean addCustomFieldDisplayList){
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedBackPanel = feedBackPanel;
