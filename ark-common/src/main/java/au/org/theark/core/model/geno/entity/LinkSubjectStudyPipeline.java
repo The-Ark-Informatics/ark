@@ -16,7 +16,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 
 @Entity
-@Table(name = "LINK_SUBJECT_STUDY_PIPELINE", schema = Constants.GENO_SCHEMA)
+@Table(name = "LSS_PIPELINE", schema = Constants.GENO_SCHEMA)
 public class LinkSubjectStudyPipeline implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
