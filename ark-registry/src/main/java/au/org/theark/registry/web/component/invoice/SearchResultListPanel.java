@@ -170,6 +170,7 @@ public class SearchResultListPanel extends Panel {
 				//subject.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 
 				containerForm.setModelObject(pipeline);
+				
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 			}
 		};

@@ -93,6 +93,7 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 	protected void onCancel(AjaxRequestTarget target) {
 		//AddressVO addressVO = new AddressVO();
 		//containerForm.setModelObject(addressVO);
+		containerForm.setModelObject(new Pipeline());
 	}
 
 	/*
@@ -115,6 +116,8 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 //			// admin
 //			e.printStackTrace();
 //		}
+		iArkCommonService.deletePipeline(containerForm.getModelObject());
+		this.info("Pipeline deleted");
 		onCancel(target);
 	}
 
@@ -130,7 +133,7 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 		if(containerForm.getModelObject()!=null && containerForm.getModelObject().getId()==null){
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(Constants.STUDY_CONTEXT_ID);
 			Study study = iArkCommonService.getStudy(studyId);
-			getModelObject().setStudy(study);
+			containerForm.getModelObject().setStudy(study);
 		}
 		iArkCommonService.createPipeline(containerForm.getModelObject());
 		this.info("Pipeline saved");
