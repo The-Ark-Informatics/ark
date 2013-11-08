@@ -1455,6 +1455,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getSubjectGenderType(subjectUID, studyId);
 	}
 
+	public int getPipelineCount(Pipeline p) {
+		return genoDao.getPipelineCount(p);
+	}
+
+	public List<Pipeline> searchPageablePipelines(Pipeline p, int first, int count) {
+		return genoDao.searchPageablePipelines(p, first, count);
+	}
+
 	public long getPipelineCount(Study study) {
 		return genoDao.getPipelineCount(study);
 	}

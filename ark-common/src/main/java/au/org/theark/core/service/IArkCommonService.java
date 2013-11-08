@@ -817,5 +817,9 @@ public interface IArkCommonService<T> {
 	
 	public GenderType getSubjectGenderType(final String subjectUID,final Long studyId);
 
+	public int getPipelineCount(Pipeline p);
+
+	public List<Pipeline> searchPageablePipelines(Pipeline object, int first,	int count);
+
 	public long getPipelineCount(Study study);
 }
