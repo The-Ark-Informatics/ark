@@ -6,6 +6,8 @@
  */
 package au.org.theark.core.dao;
 
+import java.util.List;
+
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.study.entity.Study;
 
@@ -19,6 +21,11 @@ public interface IGenoDao {
 	public void updatePipeline(Pipeline p);
 
 	public void deletePipeline(Pipeline p);
+
+	public int getPipelineCount(Pipeline p);
+
+	public List<Pipeline> searchPageablePipelines(Pipeline p, int first,
+			int count);
 
 	public long getPipelineCount(Study study);
 
