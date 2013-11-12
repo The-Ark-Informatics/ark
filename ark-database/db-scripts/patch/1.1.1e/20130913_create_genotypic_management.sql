@@ -160,8 +160,10 @@ ALTER TABLE `geno`.`lss_pipeline`
   ON UPDATE NO ACTION
 , ADD INDEX `fk_lss_pipeline_lss_idx` (`LSS_ID` ASC) ;
 
-/*** NOW DO THE SAME FOR LSS  !!!!!!!!!!!!!!      */
 
+ALTER TABLE `reporting`.`search` 
+   ADD COLUMN `INCLUDE_GENO` 
+   TINYINT NULL  AFTER `FINISHTIME` ;
 
 
 
