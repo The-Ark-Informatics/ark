@@ -92,6 +92,8 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 		pageableListView = searchResultListPanel.buildPageableListView(iModel, arkCrudContainerVO.getSearchResultPanelContainer());
 		pageableListView.setReuseItems(true);
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", pageableListView);
+		pageNavigator.setOutputMarkupId(true);
+		searchResultListPanel.setOutputMarkupId(true);
 		searchResultListPanel.add(pageNavigator);
 		searchResultListPanel.add(pageableListView);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultListPanel);
