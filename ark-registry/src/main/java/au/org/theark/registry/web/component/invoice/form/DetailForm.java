@@ -130,13 +130,19 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 	protected void onSave(Form<Pipeline> containerForm, AjaxRequestTarget target) {
 	//	Long personSessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		//StringBuffer feedBackMessageStr = new StringBuffer();
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(studyId);
+		containerForm.getModelObject().setStudy(study);
 		if(containerForm.getModelObject()!=null && containerForm.getModelObject().getId()==null){
-			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(Constants.STUDY_CONTEXT_ID);
-			Study study = iArkCommonService.getStudy(studyId);
-			containerForm.getModelObject().setStudy(study);
+			
+			iArkCommonService.createPipeline(containerForm.getModelObject());
+			this.info("Pipeline saved");
 		}
-		iArkCommonService.createPipeline(containerForm.getModelObject());
-		this.info("Pipeline saved");
+		else {
+			iArkCommonService.updatePipeline(containerForm.getModelObject());
+			this.info("Pipeline updated");
+		}
+		
 		target.add(feedBackPanel);
 	}
 
