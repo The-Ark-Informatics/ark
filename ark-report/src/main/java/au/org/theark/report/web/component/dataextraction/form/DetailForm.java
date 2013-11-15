@@ -26,6 +26,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
@@ -72,9 +73,9 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	public static final int	PALETTE_ROWS		= 5;
 	private TextField<String>	searchIdTxtFld;
 	private TextField<String>	searchNameTxtFld;
-	private FeedbackPanel		feedBackPanel;
+	private CheckBox			includeGenoChkBox;
 
-//	protected FeedbackPanel									feedbackPanel;
+	private FeedbackPanel		feedBackPanel;
 	private Panel										modalContentPanel;
 	protected AbstractDetailModalWindow					modalWindow;
 	
@@ -120,6 +121,11 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 	}
 
+
+	private void initIncludeGeno() {
+		includeGenoChkBox = new CheckBox(Constants.SEARCH_INCLUDE_GENO);
+	}
+
 	public void initialiseDetailForm() {
 
 		arkCrudContainerVO.getDetailPanelFormContainer().add(modalWindow);
@@ -129,6 +135,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		searchNameTxtFld.add(new ArkDefaultFormFocusBehavior());
 
 		modalContentPanel = new EmptyPanel("content");
+		initIncludeGeno();
 		initDemographicFieldsModulePalette();
 		initBiospecimenFieldsModulePalette();
 		initBiocollectionFieldsModulePalette();
@@ -200,6 +207,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		}));*/
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(includeGenoChkBox);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(demographicFieldsToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(biocollectionFieldsToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(biospecimenFieldsToReturnPalette);
@@ -338,36 +346,6 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		demographicFieldsToReturnPalette.setOutputMarkupId(true);
 	}
 
-	/*
-	@SuppressWarnings("unchecked")
-	private void initBiocollectionFieldsModulePalette() {
-		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
-		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("publicFieldName", "id");
-		PropertyModel<Collection<BiocollectionField>> selectedBiocollectionFieldsPm = new PropertyModel<Collection<BiocollectionField>>(searchCPM, "selectedBiocollectionFields");//"selectedBiocollectionFields");
-
-		Collection<BiocollectionField> availableBiocollectionFields = iArkCommonService.getAllBiocollectionFields();
-		containerForm.getModelObject().setAvailableBiocollectionFields(availableBiocollectionFields);
-		
-		PropertyModel<Collection<BiocollectionField>> availableBiocollectionFieldsPm = new PropertyModel<Collection<BiocollectionField>>(searchCPM, "availableBiocollectionFields");
-		biocollectionFieldsToReturnPalette = new ArkPalette("selectedBiocollectionFields", selectedBiocollectionFieldsPm, availableBiocollectionFieldsPm, renderer, PALETTE_ROWS, false);
-		biocollectionFieldsToReturnPalette.setOutputMarkupId(true);
-	}
-
-	
-	@SuppressWarnings("unchecked")
-	private void initBiospecimenFieldsModulePalette() {
-		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
-		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("publicFieldName", "id");
-		PropertyModel<Collection<BiospecimenField>> selectedBiospecimenFieldsPm = new PropertyModel<Collection<BiospecimenField>>(searchCPM, "selectedBiospecimenFields");//"selectedBiospecimenFields");
-
-		Collection<BiospecimenField> availableBiospecimenFields = iArkCommonService.getAllBiospecimenFields();
-		containerForm.getModelObject().setAvailableBiospecimenFields(availableBiospecimenFields);
-		
-		PropertyModel<Collection<BiospecimenField>> availableBiospecimenFieldsPm = new PropertyModel<Collection<BiospecimenField>>(searchCPM, "availableBiospecimenFields");
-		biospecimenFieldsToReturnPalette = new ArkPalette("selectedBiospecimenFields", selectedBiospecimenFieldsPm, availableBiospecimenFieldsPm, renderer, PALETTE_ROWS, false);
-		biospecimenFieldsToReturnPalette.setOutputMarkupId(true);
-	}
-	*/
 	@SuppressWarnings("unchecked")
 	private void initBiocollectionFieldsModulePalette() {
 		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
@@ -421,7 +399,6 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	@SuppressWarnings("unchecked")
 	private void initSubjectCustomFieldDisplaysModulePalette() {
 		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
-	//	IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("customField.name", "id");
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("customField.name", "id");
 		
 		PropertyModel<Collection<CustomFieldDisplay>> selectedSubjectCustomFieldDisplaysPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "selectedSubjectCustomFieldDisplays");//"selectedDemographicFields");
@@ -465,7 +442,6 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	private void initBiocollectionCustomFieldDisplaysModulePalette() {
 		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("customField.name", "id");
-	//	IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("descriptiveNameIncludingCFGName", "id");
 		
 		PropertyModel<Collection<CustomFieldDisplay>> selectedBiocollectionCustomFieldDisplaysPm = new PropertyModel<Collection<CustomFieldDisplay>>(searchCPM, "selectedBiocollectionCustomFieldDisplays");//"selectedDemographicFields");
 
@@ -481,7 +457,5 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		biocollectionCustomFieldDisplaysToReturnPalette.setOutputMarkupId(true);
 
 	}
-
-	
 
 }
