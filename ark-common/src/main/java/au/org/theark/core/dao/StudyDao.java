@@ -1959,9 +1959,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			wipeBiocollectionDataNotMatchThisList(search.getStudy(), allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering, biospecimenIdsAfterFiltering,  getBiospecimenQueryFilters(search));
 			
 			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
-
-			log.info("uidsafterFiltering SUBJECT cust=" + idsAfterFiltering.size());
 			
+			log.info("uidsafterFiltering SUBJECT cust=" + idsAfterFiltering.size());
+			if(search.getIncludeGeno()){
+				addGenoData(allTheData, search, idsAfterFiltering);
+			}
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getBiospecimenData(), FieldCategory.BIOSPECIMEN_FIELD);
@@ -4085,6 +4087,42 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
 		return studyCriteria.list();
 	}	
+
+
+	/**
+	 * For now this is just forcing all the fields into one new file listing the geno info, given that I believe this whole model will change to include real genetic 
+	 * analysis going forward, rather than just discussing WHERE the data is and WHAT was done to it.  For now they get all of that info 
+	 * 
+	 * @param allTheData
+	 * @param search
+	 * @param idsAfterFiltering
+	 */
+	private void addGenoData(DataExtractionVO allTheData, Search search, List<Long> idsAfterFiltering) {
+		
+		if (!idsAfterFiltering.isEmpty()) {
+			//note.  filtering is happening previously...we then do the fetch when we have narrowed down the list of subjects to save a lot of processing
+			String queryString = "select distinct lss " // , address, lss, email " +
+					+ " from LinkSubjectStudy lss " 
+					+ " and lss.id in (:idsToInclude) "
+					+ " order by lss.subjectUID";
+
+			Query query = getSession().createQuery(queryString);
+			query.setParameterList("idsToInclude", idsAfterFiltering);
+			List<LinkSubjectStudy> subjects = query.list();
+
+			// DataExtractionVO devo; = new DataExtractionVO();
+			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirDemographicData = allTheData.getDemographicData();
+
+			/* this is putting the data we extracted into a generic kind of VO doc that will be converted to an appopriate format later (such as csv/xls/pdf/xml/etc) */
+			for (LinkSubjectStudy lss : subjects) {
+				ExtractionVO sev = new ExtractionVO();
+// todo with geno in some way				sev.setKeyValues(constructKeyValueHashmap(lss, personFields, lssFields, addressFields, phoneFields));
+				hashOfSubjectsWithTheirDemographicData.put(lss.getSubjectUID(), sev);
+			}
+
+		}
+	}
+	
 
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
 			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search, List<Long> idsAfterFiltering) {
