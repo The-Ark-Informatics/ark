@@ -174,9 +174,10 @@ ALTER TABLE `geno`.`process`
   ON UPDATE CASCADE
 , ADD INDEX `fk_process_pipeline_idx` (`PIPELINE_ID` ASC) ;
 
+
 ALTER TABLE `reporting`.`search` 
    ADD COLUMN `INCLUDE_GENO` 
-   TINYINT NULL  AFTER `FINISHTIME` ;
+   TINYINT NOT NULL DEFAULT 0  AFTER `FINISHTIME` ;
 
 
 
