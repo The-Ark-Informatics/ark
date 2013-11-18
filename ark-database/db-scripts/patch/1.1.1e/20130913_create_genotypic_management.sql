@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS `geno`.`process`;
 CREATE  TABLE `geno`.`process` (
   `ID` INT NOT NULL ,
   `NAME` VARCHAR(255) NULL ,
+  `PIPELINE_ID` INT NOT NULL ,
   `DESCRIPTION` VARCHAR(4096) NULL ,
 /*  `INPUT_FILE_LOCATION` VARCHAR(255) NULL ,
   `INPUT_FILE_HASH` VARCHAR(255) NULL ,
@@ -102,6 +103,7 @@ CREATE  TABLE `geno`.`pipeline` (
   `STUDY_ID` INT NOT NULL ,
   PRIMARY KEY (`ID`) ) ENGINE=InnoDB ;
 
+/*
 DROP TABLE IF EXISTS `geno`.`pipeline_process`;
 CREATE  TABLE `geno`.`pipeline_process` (
   `ID` INT NOT NULL ,
@@ -122,6 +124,7 @@ ALTER TABLE `geno`.`pipeline_process`
   ON UPDATE NO ACTION
 , ADD INDEX `fk_pipeline_process_process_idx` (`PROCESS_ID` ASC) 
 , ADD INDEX `fk_pipeline_process_pipeline_idx` (`PIPELINE_ID` ASC) ;
+*/
 
 /*
 DROP TABLE IF EXISTS `geno`.`lss_process`;
@@ -160,6 +163,16 @@ ALTER TABLE `geno`.`lss_pipeline`
   ON UPDATE NO ACTION
 , ADD INDEX `fk_lss_pipeline_lss_idx` (`LSS_ID` ASC) ;
 
+ALTER TABLE `geno`.`pipeline` CHANGE COLUMN `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT  ;
+
+
+ALTER TABLE `geno`.`process` 
+  ADD CONSTRAINT `fk_process_pipeline`
+  FOREIGN KEY (`PIPELINE_ID` )
+  REFERENCES `geno`.`lss_pipeline` (`ID` )
+  ON DELETE NO ACTION
+  ON UPDATE CASCADE
+, ADD INDEX `fk_process_pipeline_idx` (`PIPELINE_ID` ASC) ;
 
 ALTER TABLE `reporting`.`search` 
    ADD COLUMN `INCLUDE_GENO` 

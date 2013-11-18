@@ -30,7 +30,7 @@ public class Pipeline implements java.io.Serializable {
 	private String description;
 	private Study study;
 	
-	private Set<PipelineProcess> pipelineProcesses = new HashSet<PipelineProcess>(0);
+	private Set<Process> pipelineProcesses = new HashSet<Process>(0);
 	private Set<LinkSubjectStudyPipeline> linkSubjectStudyPipelines = new HashSet<LinkSubjectStudyPipeline>(0);
 
 	@Id
@@ -64,11 +64,11 @@ public class Pipeline implements java.io.Serializable {
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "pipeline")
-	public Set<PipelineProcess> getPipelineProcesses() {
+	public Set<Process> getPipelineProcesses() {
 		return pipelineProcesses;
 	}
 
-	public void setPipelineProcesses(Set<PipelineProcess> pipelineProcesses) {
+	public void setPipelineProcesses(Set<Process> pipelineProcesses) {
 		this.pipelineProcesses = pipelineProcesses;
 	}
 

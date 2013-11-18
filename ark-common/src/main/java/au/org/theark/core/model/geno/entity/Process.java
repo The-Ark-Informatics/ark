@@ -29,6 +29,7 @@ public class Process implements java.io.Serializable {
 	private Command command;
 	private Date startTime;//TODO: 
 	private Date endTime;
+	private Pipeline pipeline;
 
 	@Id
 	@SequenceGenerator(name = "process_generator", sequenceName = "PROCESS_SEQUENCE")
@@ -91,6 +92,17 @@ public class Process implements java.io.Serializable {
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	/* TODO: confirm the need for eager */
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "PIPELINE_ID")
+	public Pipeline getPipeline() {
+		return pipeline;
+	}
+
+	public void setPipeline(Pipeline pipeline) {
+		this.pipeline = pipeline;
 	}
 
 }
