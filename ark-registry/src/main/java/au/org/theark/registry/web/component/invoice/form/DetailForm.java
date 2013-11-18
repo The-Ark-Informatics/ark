@@ -23,6 +23,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
@@ -126,7 +128,7 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 	 * 
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#onSave(org.apache.wicket.markup.html.form.Form, org.apache.wicket.ajax.AjaxRequestTarget)
 	 */
-	@Override
+	@Override	
 	protected void onSave(Form<Pipeline> containerForm, AjaxRequestTarget target) {
 	//	Long personSessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		//StringBuffer feedBackMessageStr = new StringBuffer();
@@ -175,7 +177,6 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 
 	@Override
 	protected void attachValidators() {
-		// TODO Auto-generated method stub
-		
+		name.setRequired(true).setLabel((new StringResourceModel("name.required", this, new Model<String>("Name"))));
 	}
 }
