@@ -4110,7 +4110,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			query.setParameterList("idsToInclude", idsAfterFiltering);
 			List<LinkSubjectStudy> subjects = query.list();
 
-			// DataExtractionVO devo; = new DataExtractionVO();
 			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirDemographicData = allTheData.getDemographicData();
 
 			/* this is putting the data we extracted into a generic kind of VO doc that will be converted to an appopriate format later (such as csv/xls/pdf/xml/etc) */
