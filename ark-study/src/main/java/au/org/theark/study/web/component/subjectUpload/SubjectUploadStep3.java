@@ -191,12 +191,12 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 				errorCells = subjectConsentUploadValidator.getErrorCells();
 			}
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.PEDIGREE_DATA)){
-				PedigreeUploadValidator subjectConsentUploadValidator=new PedigreeUploadValidator(iArkCommonService,iStudyService);
-				validationMessages = subjectConsentUploadValidator.validatePedigreeFileData(containerForm.getModelObject(), listOfUidsToUpdate);
+				PedigreeUploadValidator pedigreeUploadValidator=new PedigreeUploadValidator(iArkCommonService,iStudyService);
+				validationMessages = pedigreeUploadValidator.validatePedigreeFileData(containerForm.getModelObject(), listOfUidsToUpdate);
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
-				insertRows = subjectConsentUploadValidator.getInsertRows();
-				updateRows = subjectConsentUploadValidator.getUpdateRows();
-				errorCells = subjectConsentUploadValidator.getErrorCells();
+				insertRows = pedigreeUploadValidator.getInsertRows();
+				updateRows = pedigreeUploadValidator.getUpdateRows();
+				errorCells = pedigreeUploadValidator.getErrorCells();
 			}
 			else{
 				//TODO : Throw error back to user

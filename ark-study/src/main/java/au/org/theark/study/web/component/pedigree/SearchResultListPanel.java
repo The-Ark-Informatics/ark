@@ -18,6 +18,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -118,7 +119,7 @@ public class SearchResultListPanel extends Panel {
 				
 				AjaxLink unsetLink= buildUnsetLink(relationshipVo);
 				item.add(unsetLink);
-				if(!("Father".equalsIgnoreCase(relationshipVo.getRelationship())
+				if(!ArkPermissionHelper.isActionPermitted(Constants.SAVE) || !("Father".equalsIgnoreCase(relationshipVo.getRelationship())
 						||
 						"Mother".equalsIgnoreCase(relationshipVo.getRelationship()))){
 					unsetLink.setVisible(false);
