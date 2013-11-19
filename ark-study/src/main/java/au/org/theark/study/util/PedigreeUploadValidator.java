@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -155,15 +156,15 @@ public class PedigreeUploadValidator {
 	public java.util.Collection<String> validateMatrixPedigreeFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate, List<String> uidsToUpdateReference) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
-		row = 1;
+		row = 0;
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
-		
+		HashMap<Integer,String> noUidMap = new HashMap<Integer, String>(); 
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			String[] stringLineArray;
 			if (inLength == 0) {
-				throw new FileFormatException("Error: The pedigree uploader expects a file comprising 5 tab delimitted columns. Please refer to the template example.  Actual length reported: " + inLength);
+				throw new FileFormatException("The pedigree uploader expects a file comprising 5 tab-delimited columns. Please refer to the template example..  Actual length reported: " + inLength);
 			}
 
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
@@ -214,10 +215,11 @@ public class PedigreeUploadValidator {
 			
 			MultiMap<String, String> pedigree = new MultiMap<String, String>();
 			
+			
+			
 			while (csvReader.readRecord()) {
 				stringLineArray = csvReader.getValues();
-				int index =0;
-				
+				int index =0;				
 				String subjectUID = stringLineArray[index++];
 				String fatherUID = stringLineArray[index++];
 				String motherUID = stringLineArray[index++];		
@@ -226,50 +228,54 @@ public class PedigreeUploadValidator {
 				
 				if(!subjectUIDsAlreadyExisting.contains(subjectUID)){
 					nonExistantUIDs.add(row);//TODO test and compare array.
+					noUidMap.put(row,subjectUID);
 					errorCells.add(new ArkGridCell(0, row));
 				}
 				
 				if(!"-".equalsIgnoreCase(fatherUID) && !subjectUIDsAlreadyExisting.contains(fatherUID)){
 					errorCells.add(new ArkGridCell(1, row));
-					dataValidationMessages.add("Invalid father subject UID is specified on row "+row);
+					dataValidationMessages.add("Invalid father subject UID is specified on row "+row+".");
 				}
 				else if (!"-".equalsIgnoreCase(fatherUID)){
 					GenderType gender = iArkCommonService.getSubjectGenderType(fatherUID,study.getId());
 					if(gender == null || gender.getName().startsWith("F")){
 						errorCells.add(new ArkGridCell(1, row));
-						dataValidationMessages.add("Father was specified with sex:female on row "+row);
+						dataValidationMessages.add("Father on row "+ row+" with UID "+fatherUID+" has sex: female.");
 					}
 					pedigree.addValue(fatherUID, subjectUID);
 				}
 				
 				if(!"-".equalsIgnoreCase(motherUID) && !subjectUIDsAlreadyExisting.contains(motherUID)){
 					errorCells.add(new ArkGridCell(2, row));
-					dataValidationMessages.add("Invalid mother subject UID is specified on row "+row);
+					dataValidationMessages.add("Invalid mother subject UID is specified on row "+row+".");
 				}
 				else if(!"-".equalsIgnoreCase(motherUID)){
 					GenderType gender = iArkCommonService.getSubjectGenderType(motherUID,study.getId());
 					if(gender == null || gender.getName().startsWith("M")){
 						errorCells.add(new ArkGridCell(2, row));
-						dataValidationMessages.add("Mother was specified with sex:male on row "+row);
+						dataValidationMessages.add("Mother on row "+ row+" with UID "+motherUID+" has sex: male.");
 					}
 					pedigree.addValue(motherUID, subjectUID);
 				}
 				
 				if((twinStatus==null) || (!twinStatus.matches("[-]|[M]|[D]"))){
 					errorCells.add(new ArkGridCell(3, row));
-					dataValidationMessages.add("Incorrect encodings found in the TwinStatus field. Please refer to the template example"+row);
+					dataValidationMessages.add("Incorrect encodings found in the TwinStatus field. Please refer to the pedigree template "+row+".");
 				}
 				else{
 					if(twinStatus.matches("[M]|[D]") && ("-".equals(fatherUID)||"-".equals(motherUID))){
 						errorCells.add(new ArkGridCell(1, row));
 						errorCells.add(new ArkGridCell(2, row));
-						dataValidationMessages.add("Both parents must be specified for subject who is a twin on row "+row);
+						dataValidationMessages.add("Both parents must be specified for the subject on row "+row +" who is a twin.");
 					}
 				}
 
-				if(!"-".equalsIgnoreCase(twinStatus) && !subjectUIDsAlreadyExisting.contains(twinUID)){
+				if("-".equalsIgnoreCase(twinStatus) && !"-".equalsIgnoreCase(twinUID)){
 					errorCells.add(new ArkGridCell(4, row));
-					dataValidationMessages.add("Invalid twin subject UID is specified on row "+row);
+					dataValidationMessages.add("TwinUID specified on row " + row + " for a subject who is not a twin.");
+				}else if(!"-".equalsIgnoreCase(twinStatus) && !subjectUIDsAlreadyExisting.contains(twinUID)){
+					errorCells.add(new ArkGridCell(4, row));
+					dataValidationMessages.add("Invalid twin UID "+twinUID +" specified on row "+row+".");
 				}else{
 					if(!"-".equalsIgnoreCase(twinStatus)){
 						twinRecords.add(new TmpPedRecord(subjectUID, fatherUID+"-"+motherUID, twinUID,row));
@@ -280,7 +286,7 @@ public class PedigreeUploadValidator {
 				
 				if(existingRelationships >0){
 					errorCells.add(new ArkGridCell(0, row));
-					dataValidationMessages.add("Subject UID: "+subjectUID+" have already assigned parent relationship on row "+row);
+					dataValidationMessages.add("Subject on row "+row+" with UID "+subjectUID+" is already member of a pedigree.");
 				}
 				
 				individualRecords.add(new TmpPedRecord(subjectUID, fatherUID+"-"+motherUID, null,row));
@@ -294,7 +300,7 @@ public class PedigreeUploadValidator {
 						if(!tmp1.getParentId().equalsIgnoreCase(tmp2.getParentId())){
 							errorCells.add(new ArkGridCell(4, tmp1.getRow()));
 							errorCells.add(new ArkGridCell(1, tmp2.getRow()));
-							dataValidationMessages.add("Twins were specified with missmathed parent UIDs on rows "+tmp1.getRow()+" and "+tmp2.getRow());
+							dataValidationMessages.add("Twins were specified with miss-matched parent UIDs on rows "+ tmp1.getRow() +" and " +tmp2.getRow()+".");
 							break loop2;
 						}
 					}
@@ -303,17 +309,17 @@ public class PedigreeUploadValidator {
 			
 			String uid=getCircularUID(pedigree);
 			if(uid!=null){
-				dataValidationMessages.add("Circular relationship has detected for the  subject UID "+uid);
+				dataValidationMessages.add("Circular relationship has detected for the  subject UID "+uid+".");
 			}
 			
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file.");
 		}
 		catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
+			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file.");
 		}
 		finally {
 			if (csvReader != null) {
@@ -336,7 +342,7 @@ public class PedigreeUploadValidator {
 
 		for (Iterator<Integer> iterator = nonExistantUIDs.iterator(); iterator.hasNext();) {
 			Integer i = (Integer) iterator.next();
-			dataValidationMessages.add("Subject on row " + i.intValue() + " does not exist in the database.  Please remove this row and retry or run upload/create this subject first.");
+			dataValidationMessages.add("Subject on row " + i.intValue() + " with UID "+ noUidMap.get(i)+" is not present in the current study.");
 		}
 		return dataValidationMessages;
 	}
@@ -473,7 +479,7 @@ public class PedigreeUploadValidator {
 			while(csvReader.readRecord()){
 				stringLineArray = csvReader.getValues();
 				if(stringLineArray.length != 5){
-					fileValidationMessages.add("Error: The pedigree uploader expects a file comprising 5 tab delimitted columns. Please refer to the template example");
+					fileValidationMessages.add("The pedigree uploader expects a file comprising 5 tab-delimited columns. Please refer to the template example.");
 					break;
 				}
 			}			
