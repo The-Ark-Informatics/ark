@@ -7,3 +7,4 @@ Mandatory    Mandatory   Mandatory   Mandatory      Mandatory
                                      D=Dizygotic    the twin,
                                                     otherwise  -
                                                     (dash)
+                                                                                                      
