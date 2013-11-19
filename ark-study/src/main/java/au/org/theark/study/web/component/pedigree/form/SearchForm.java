@@ -40,8 +40,6 @@ public class SearchForm extends Form<PedigreeVo> {
 	protected AjaxButton motherButton;
 	protected AjaxButton twinButton;
 	protected AjaxButton viewButton;
-	//Move Export button to export link
-//	protected AjaxButton exportButton;
 	
 	protected AbstractDetailModalWindow modalWindow;
 
@@ -55,14 +53,12 @@ public class SearchForm extends Form<PedigreeVo> {
 		this.setMultiPart(true);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
-//		this.listView = listView;
-//		
-//		this.cpmModel=cpmModel;
 
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a subject or contact.");
+		disableSearchForm(sessionPersonId, "There is no in context. Please bring a subject into context via the Subject tab.");
+		disableSaveButtons();
 	}
 	
 	protected void addSearchComponentsToForm() {		
@@ -70,7 +66,6 @@ public class SearchForm extends Form<PedigreeVo> {
 		add(motherButton);
 		add(twinButton);
 		add(viewButton);
-//		add(exportButton);
 		add(modalWindow);
 	}
 
@@ -97,10 +92,6 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.show(target);
 			}
 			
-//			@Override
-//			public boolean isEnabled() {
-//				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-//			}
 		};
 		
 		motherButton = new AjaxButton(au.org.theark.core.Constants.MOTHER){
@@ -112,10 +103,6 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.show(target);
 			}
 			
-//			@Override
-//			public boolean isEnabled() {
-//				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-//			}
 		};
 		
 		twinButton = new AjaxButton(au.org.theark.core.Constants.TWIN){
@@ -127,10 +114,6 @@ public class SearchForm extends Form<PedigreeVo> {
 				modalWindow.show(target);
 			}				
 			
-//			@Override
-//			public boolean isEnabled() {
-//				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-//			}
 		};
 		
 		viewButton = new AjaxButton(au.org.theark.core.Constants.VIEW){
@@ -144,20 +127,13 @@ public class SearchForm extends Form<PedigreeVo> {
 			}						
 		};
 		
-//		exportButton = new AjaxButton(au.org.theark.core.Constants.EXPORT){
-//			
-//			@Override
-//			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-//				//TODO
-//			}						
-//		};
-		
 	}
 	
 	protected void disableSearchForm(Long sessionId, String errorMessage) {
 		if (ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
 			if (sessionId == null) {
 				arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
+				arkCrudContainerVO.getSearchResultPanelContainer().setEnabled(false);
 				this.error(errorMessage);
 			}
 			else {
@@ -175,5 +151,13 @@ public class SearchForm extends Form<PedigreeVo> {
 	
 	private PedigreeVo getFormModelObject(){
 		return getModelObject();
+	}
+	
+	protected void disableSaveButtons(){
+		if(!ArkPermissionHelper.isActionPermitted(Constants.SAVE)){
+			fatherButton.setEnabled(false);
+			motherButton.setEnabled(false);
+			twinButton.setEnabled(false);
+		}
 	}
 }

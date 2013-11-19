@@ -118,7 +118,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 					chunk.set("relatives", relatives);
 
 					String tmpDir = System.getProperty("java.io.tmpdir");
-					String pedFileName=subjectUID+"-Madeline.ped";
+					String pedFileName=(subjectUID!=null?subjectUID:"NO_SUBJECT")+"-Madeline.ped";
 					tempFile = new File(tmpDir,pedFileName);
 					FileWriter out = new FileWriter(tempFile);
 					chunk.render(out);
@@ -163,7 +163,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 					chunk.set("arkrelatives", arkrelatives);
 
 					String tmpDir = System.getProperty("java.io.tmpdir");
-					String pedFileName=subjectUID+"-Ark.ped";
+					String pedFileName=(subjectUID!=null?subjectUID:"NO_SUBJECT")+"-Ark.ped";
 					tempFile = new File(tmpDir,pedFileName);
 					FileWriter out = new FileWriter(tempFile);
 					chunk.render(out);
