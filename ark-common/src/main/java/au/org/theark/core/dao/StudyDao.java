@@ -60,6 +60,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.geno.entity.LinkSubjectStudyPipeline;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
@@ -1962,7 +1963,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			log.info("uidsafterFiltering SUBJECT cust=" + idsAfterFiltering.size());
 			if(search.getIncludeGeno()){
-				addGenoData(allTheData, search, idsAfterFiltering);
+				addGenoData(allTheData, search, idsAfterFiltering);//TODO: test
 			}
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
@@ -4101,22 +4102,21 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 		if (!idsAfterFiltering.isEmpty()) {
 			//note.  filtering is happening previously...we then do the fetch when we have narrowed down the list of subjects to save a lot of processing
-			String queryString = "select distinct lss " // , address, lss, email " +
-					+ " from LinkSubjectStudy lss " 
-					+ " and lss.id in (:idsToInclude) "
-					+ " order by lss.subjectUID";
+			String queryString = "select LinkSubjectStudyPipeline lssp " +
+					" and lssp.linkSubjectStudy.id in (:idsToInclude) " // stoing this to an lss means we should fetch lss and pipeline..and process
+					+ " order by lssp.linkSubjectStudy.id ";
 
 			Query query = getSession().createQuery(queryString);
 			query.setParameterList("idsToInclude", idsAfterFiltering);
-			List<LinkSubjectStudy> subjects = query.list();
+			List<LinkSubjectStudyPipeline> subjectPipelines = query.list();
 
 			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirDemographicData = allTheData.getDemographicData();
 
 			/* this is putting the data we extracted into a generic kind of VO doc that will be converted to an appopriate format later (such as csv/xls/pdf/xml/etc) */
-			for (LinkSubjectStudy lss : subjects) {
+			for (LinkSubjectStudyPipeline lssp : subjectPipelines) { 	
 				ExtractionVO sev = new ExtractionVO();
 // todo with geno in some way				sev.setKeyValues(constructKeyValueHashmap(lss, personFields, lssFields, addressFields, phoneFields));
-				hashOfSubjectsWithTheirDemographicData.put(lss.getSubjectUID(), sev);
+				hashOfSubjectsWithTheirDemographicData.put(lssp.getLinkSubjectStudy().getSubjectUID(), sev);
 			}
 
 		}
