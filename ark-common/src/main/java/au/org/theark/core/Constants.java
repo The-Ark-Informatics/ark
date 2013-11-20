@@ -167,6 +167,13 @@ public class Constants {
 	public static final String ADMIN_SCHEMA = "admin";
 	public static final String GENO_SCHEMA = "geno";
 
+	/* Geno fields for output in dataextraction - will later allow choice*/
+	public static final String GENO_FIELDS_PIPELINE_ID = "pipelineId";
+	public static final String GENO_FIELDS_PIPELINE_NAME = "pipelineName";
+	public static final String GENO_FIELDS_PIPELINE_DECSRIPTION = "pipelineDescription";
+
+	public static final String GENO_FIELDS_PROCESS_ID = "processId";
+
 	/* Default Country */
 	public static final String DEFAULT_COUNTRY = "Australia";
 	public static final String DEFAULT_COUNTRY_CODE = "AU";
