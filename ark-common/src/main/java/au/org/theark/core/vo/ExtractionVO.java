@@ -29,20 +29,11 @@ public class ExtractionVO {
 		this.recordDate = recordDate;
 	}
 
-	/*public String getStudyId() {
-		return studyId;
-	}
-	
-	public void setStudyId(String studyId) {
-		this.studyId = studyId;
-	}
-	*/
 	public java.util.HashMap<String, String> getKeyValues() {
 		return keyValues;
 	}
 	public void setKeyValues(java.util.HashMap<String, String> keyValues) {
 		this.keyValues = keyValues;
 	}
-	
 	
 }

@@ -61,6 +61,8 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.geno.entity.LinkSubjectStudyPipeline;
+import au.org.theark.core.model.geno.entity.Pipeline;
+import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
@@ -1980,10 +1982,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				deleteSearchResult(sr);
 			}
 			
+			int maxNumberProcesses = 1;//TODO this is to be calculated
+			
 			createSearchResult(search, iDataExtractionDao.createSubjectDemographicCSV(search, allTheData, allSubjectFields, scfds, FieldCategory.DEMOGRAPHIC_FIELD), currentUser);
 			createSearchResult(search, iDataExtractionDao.createBiocollectionCSV(search, allTheData, bccfds, FieldCategory.BIOCOLLECTION_FIELD), currentUser);
 			createSearchResult(search, iDataExtractionDao.createBiospecimenCSV(search, allTheData, bsfs, bscfds, FieldCategory.BIOSPECIMEN_FIELD), currentUser);
 			createSearchResult(search, iDataExtractionDao.createPhenotypicCSV(search, allTheData, pcfds, FieldCategory.PHENO_CFD),currentUser);
+			createSearchResult(search, iDataExtractionDao.createGenoCSV(search, allTheData, FieldCategory.GENO, maxNumberProcesses),currentUser);
 			
 			try {
 				search.setFinishTime(new java.util.Date(System.currentTimeMillis()));
@@ -4110,13 +4115,25 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			query.setParameterList("idsToInclude", idsAfterFiltering);
 			List<LinkSubjectStudyPipeline> subjectPipelines = query.list();
 
-			HashMap<String, ExtractionVO> hashOfSubjectsWithTheirDemographicData = allTheData.getDemographicData();
+			List<ExtractionVO> allGenoData = allTheData.getGenoData();
 
 			/* this is putting the data we extracted into a generic kind of VO doc that will be converted to an appopriate format later (such as csv/xls/pdf/xml/etc) */
 			for (LinkSubjectStudyPipeline lssp : subjectPipelines) { 	
 				ExtractionVO sev = new ExtractionVO();
 // todo with geno in some way				sev.setKeyValues(constructKeyValueHashmap(lss, personFields, lssFields, addressFields, phoneFields));
-				hashOfSubjectsWithTheirDemographicData.put(lssp.getLinkSubjectStudy().getSubjectUID(), sev);
+				HashMap map = new HashMap<String, String>();
+				sev.setSubjectUid(lssp.getLinkSubjectStudy().getSubjectUID());
+				Pipeline pl = lssp.getPipeline();
+				map.put("pipelineId", pl.getId());
+				map.put("pipelineName", pl.getName());
+				map.put("pipelineDescription", pl.getDescription());
+				//map.put("pipelineStudy", pl.getStudy());
+				int index = 1;
+				for(Process p : pl.getPipelineProcesses()){
+					map.put(("processId" + (index>1?("_"+index):"")), p.getId());
+				}
+				sev.setKeyValues(map);
+				allGenoData.add(sev);
 			}
 
 		}
