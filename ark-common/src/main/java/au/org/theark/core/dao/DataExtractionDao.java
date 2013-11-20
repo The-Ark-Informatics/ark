@@ -433,6 +433,98 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		return file;
 	}
 	
+
+	public File createGenoCSV(Search search, DataExtractionVO devo, FieldCategory fieldCategory, int maxProcessesPerPipeline){
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		String filename = new String("GENO.csv");
+		final java.io.File file = new File(tempDir, filename);
+		
+		List<ExtractionVO> genoData = devo.getGenoData();
+
+		OutputStream outputStream;
+		try {
+			outputStream = new FileOutputStream(file);
+			CsvWriter csv = new CsvWriter(outputStream);
+
+			// Header
+			csv.write("SUBJECTUID");
+			//csv.write("RECORD_DATE_TIME");??
+
+			csv.write(Constants.GENO_FIELDS_PIPELINE_ID);
+			csv.write(Constants.GENO_FIELDS_PIPELINE_NAME);
+			csv.write(Constants.GENO_FIELDS_PIPELINE_DECSRIPTION);
+			for (int i=0; i<maxProcessesPerPipeline ; i++) {
+
+				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
+				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
+				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
+				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
+				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
+				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
+				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
+				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
+				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
+				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
+				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
+				csv.write(Constants.GENO_FIELDS_PROCESS_ID);//etc
+			}
+
+			csv.endLine();
+
+			for (ExtractionVO evo : genoData) {
+				//csv.write(subjectUID);
+				
+				//ExtractionVO evo = genoData.get(phenoCollectionId);
+				
+				if (evo != null) {
+					csv.write(evo.getSubjectUid());
+					//csv.write(evo.getRecordDate());
+					HashMap<String, String> keyValues = evo.getKeyValues();//TODO:  Something should be done to check that values always match order of columns
+
+					
+					
+					
+					//TODO:  replace this with hardcoded use of the field names or use the function if 
+					//		available to getColumnOf(GENO_FIELD_PIPELINE_ID) and put it in there at appropriate line
+					
+					/*				for (CustomFieldDisplay cfd : cfds) {
+
+						String valueResult = keyValues.get(cfd.getCustomField().getName());
+						if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
+							try {
+								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+								String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
+								Date date = DateUtils.parseDate(valueResult, dateFormats);
+								csv.write(dateFormat.format(date));
+							}
+							catch (ParseException e) {
+								csv.write(valueResult);
+							}
+						}
+						else {
+							csv.write(valueResult);
+						}
+					}*/
+				}
+				else{
+					//not sure if we need this
+//					// Write out a line with no values (no data existed for subject in question
+//					for (CustomFieldDisplay cfd : cfds) {
+//						csv.write("");
+//					}
+				}
+
+				csv.endLine();
+			}
+			csv.close();
+		}
+		catch (FileNotFoundException e) {
+			log.error(e.getMessage());
+		}
+
+		return file;
+	}
+	
 	public File createPhenotypicCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("PHENOTYPIC.csv");
