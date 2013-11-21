@@ -36,6 +36,7 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.geno.entity.Pipeline;
+import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
@@ -822,4 +823,15 @@ public interface IArkCommonService<T> {
 	public List<Pipeline> searchPageablePipelines(Pipeline object, int first,	int count);
 
 	public long getPipelineCount(Study study);
+
+	public int getProcessCount(Process object);
+
+	public List<Process> searchPageableProcesses(Process object, int first,
+			int count);
+
+	public void createProcess(Process modelObject);
+
+	public void updateProcess(Process modelObject);
+
+	public void deleteProcess(Process modelObject);
 }
