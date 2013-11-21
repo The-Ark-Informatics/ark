@@ -69,6 +69,7 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.geno.entity.Pipeline;
+import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
@@ -1465,5 +1466,26 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public long getPipelineCount(Study study) {
 		return genoDao.getPipelineCount(study);
+	}
+
+	public int getProcessCount(Process p) {
+		return genoDao.getProcessCount(p);
+	}
+
+	public List searchPageableProcesses(Process p, int first, int count) {
+		return genoDao.searchPageableProcesses(p, first, count);
+	}
+
+	public void createProcess(Process p) {
+		genoDao.createProcess(p);
+	}
+
+	public void deleteProcess(Process p) {
+		genoDao.deleteProcess(p);
+	}
+
+	public void updateProcess(Process p) {
+		genoDao.updateProcess(p);
+		
 	}
 }
