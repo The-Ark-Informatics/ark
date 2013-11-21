@@ -21,6 +21,9 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.graph.Cycle;
+import au.org.theark.core.graph.Graph;
+import au.org.theark.core.graph.SymbolGraph;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -38,7 +41,7 @@ import com.csvreader.CsvReader;
  *
  */
 public class PedigreeUploadValidator {
-	private static Logger			log							= LoggerFactory.getLogger(SubjectConsentUploadValidator.class);
+	private static Logger			log							= LoggerFactory.getLogger(PedigreeUploadValidator.class);
 
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
@@ -213,8 +216,10 @@ public class PedigreeUploadValidator {
 			List<TmpPedRecord> twinRecords = new ArrayList<TmpPedRecord>();
 			List<TmpPedRecord> individualRecords = new ArrayList<TmpPedRecord>();
 			
-			MultiMap<String, String> pedigree = new MultiMap<String, String>();
-			
+//			MultiMap<String, String> pedigree = new MultiMap<String, String>();
+			StringBuilder pedigree = new StringBuilder();
+			ArrayList<String> dummyParents = new ArrayList<String>();
+			boolean firstLine = true;
 			
 			
 			while (csvReader.readRecord()) {
@@ -225,6 +230,8 @@ public class PedigreeUploadValidator {
 				String motherUID = stringLineArray[index++];		
 				String twinStatus = stringLineArray[index++];
 				String twinUID = stringLineArray[index++];
+				
+				String dummyParent = "D-";
 				
 				if(!subjectUIDsAlreadyExisting.contains(subjectUID)){
 					nonExistantUIDs.add(row);//TODO test and compare array.
@@ -242,7 +249,8 @@ public class PedigreeUploadValidator {
 						errorCells.add(new ArkGridCell(1, row));
 						dataValidationMessages.add("Father on row "+ row+" with UID "+fatherUID+" has sex: female.");
 					}
-					pedigree.addValue(fatherUID, subjectUID);
+//					pedigree.addValue(fatherUID, subjectUID);
+					dummyParent = dummyParent + fatherUID;
 				}
 				
 				if(!"-".equalsIgnoreCase(motherUID) && !subjectUIDsAlreadyExisting.contains(motherUID)){
@@ -255,7 +263,8 @@ public class PedigreeUploadValidator {
 						errorCells.add(new ArkGridCell(2, row));
 						dataValidationMessages.add("Mother on row "+ row+" with UID "+motherUID+" has sex: male.");
 					}
-					pedigree.addValue(motherUID, subjectUID);
+//					pedigree.addValue(motherUID, subjectUID);
+					dummyParent = dummyParent + motherUID;
 				}
 				
 				if((twinStatus==null) || (!twinStatus.matches("[-]|[M]|[D]"))){
@@ -291,6 +300,34 @@ public class PedigreeUploadValidator {
 				
 				individualRecords.add(new TmpPedRecord(subjectUID, fatherUID+"-"+motherUID, null,row));
 				
+				 if (!"D-".equals(dummyParent) && !dummyParents.contains(dummyParent)) {
+                dummyParents.add(dummyParent);
+                if (!"-".equals(fatherUID)) {
+                    if (firstLine) {
+                        pedigree.append(fatherUID + " " + dummyParent);
+                        firstLine = false;
+                    } else {
+                        pedigree.append("\n" + fatherUID + " " + dummyParent);
+                    }
+                }
+                if (!"-".equals(motherUID)) {
+                    if (firstLine) {
+                        pedigree.append(motherUID + " " + dummyParent);
+                        firstLine = false;
+                    } else {
+                        pedigree.append("\n" + motherUID + " " + dummyParent);
+                    }
+                }
+                pedigree.append("\n" + dummyParent + " " + subjectUID);
+            } else if (!"D-".equals(dummyParent)) {
+               if(firstLine){ 
+               	pedigree.append(dummyParent + " " + subjectUID);
+               	firstLine=false;
+               }else{
+               	pedigree.append("\n" + dummyParent + " " + subjectUID);
+               }
+            }
+				
 				row++;
 			}
 			
@@ -307,9 +344,26 @@ public class PedigreeUploadValidator {
 				}
 			}
 			
-			String uid=getCircularUID(pedigree);
-			if(uid!=null){
-				dataValidationMessages.add("Circular relationship has detected for the  subject UID "+uid+".");
+//			String uid=getCircularUID(pedigree);
+//			if(uid!=null){
+//				dataValidationMessages.add("Circular relationship has detected for the  subject UID "+uid+".");
+//			}
+			
+			Set<String> circularUIDs = getCircularUIDs(pedigree);
+			if(circularUIDs.size() > 0){
+				dataValidationMessages.add("Circular relationship encountered within the pedigree file.");
+				StringBuffer sb = new StringBuffer("The proposed action will cause a pedigree cycle involving subjects with UID:");
+				boolean first=true;
+				for(String uid:circularUIDs){
+					if(first){
+						sb.append(uid);
+						first=false;
+					}else{
+						sb.append(", "+uid);
+					}
+				}
+				sb.append(".");
+				dataValidationMessages.add(sb.toString());
 			}
 			
 		}
@@ -345,6 +399,34 @@ public class PedigreeUploadValidator {
 			dataValidationMessages.add("Subject on row " + i.intValue() + " with UID "+ noUidMap.get(i)+" is not present in the current study.");
 		}
 		return dataValidationMessages;
+	}
+	
+	
+	public static Set<String> getCircularUIDs(StringBuilder sb){
+		Set<String> circularUIDs = new HashSet<String>();
+		 String delimiter = "\\s+";
+
+       char[] characters=new char[sb.length()];
+       sb.getChars(0,sb.length(),characters,0);
+
+       log.info(new String(characters));
+       SymbolGraph sg = new SymbolGraph(characters, delimiter);
+
+       Graph G = sg.G();
+       Cycle cycle = new Cycle(G);
+
+       if (cycle.hasCycle()) {
+      	 log.info("Detect cycle");
+           for (int v : cycle.cycle()) {
+         	  	String uid = sg.name(v);
+         	  	if(uid!=null && !uid.startsWith("D-")){
+         	  		circularUIDs.add(uid);
+         	  	}
+           }
+       } else {
+      	 log.info("No cycle detected");
+       }
+		return circularUIDs;
 	}
 	
 	/**

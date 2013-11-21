@@ -30,9 +30,6 @@ public class RelationshipVo implements Serializable {
 	private String mz;
 	private String dz;
 	
-//	private BigInteger twinId;
-	
-	
 	public RelationshipVo() {
 		relationship = "Not Known";
 	}

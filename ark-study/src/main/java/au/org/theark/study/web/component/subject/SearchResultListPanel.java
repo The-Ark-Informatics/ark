@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -299,39 +300,95 @@ public class SearchResultListPanel extends Panel {
 				String subjectUID = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 				
 				
+				StringBuilder pedigree = new StringBuilder();
+				ArrayList<String> dummyParents = new ArrayList<String>();
+				boolean firstLine = true;
 				
+				List<RelationshipVo> existingRelatives = relatives;
 				
-				//Pedigree validation
-				MultiMap<String, String> pedigree = new MultiMap<String, String>();
-				
-				for(RelationshipVo relative:relatives){
-					if(relative.getFatherId() !=null){
-						pedigree.addValue(relative.getFatherId(),relative.getIndividualId());
+				RelationshipVo proband = new RelationshipVo();
+				proband.setIndividualId(subjectUID);
+				for(RelationshipVo relative:existingRelatives){
+					if("Father".equalsIgnoreCase(relative.getRelationship())){
+						proband.setFatherId(relative.getIndividualId());
 					}
 					
-					if(relative.getMotherId() !=null ){
-						pedigree.addValue(relative.getMotherId(),relative.getIndividualId());
+					if("Mother".equalsIgnoreCase(relative.getRelationship())){
+						proband.setMotherId(relative.getIndividualId());
 					}
 				}
 				
-				pedigree.addValue(subject.getLinkSubjectStudy().getSubjectUID(), subjectUID);
+				if(subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("M")){
+					proband.setFatherId(subject.getLinkSubjectStudy().getSubjectUID());
+				}
+				else if(subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("F")){
+					proband.setMotherId(subject.getLinkSubjectStudy().getSubjectUID());
+				}
+				existingRelatives.add(proband);
 				
 				List<RelationshipVo> newRelatives=iStudyService.generateSubjectPedigreeRelativeList(subject.getLinkSubjectStudy().getSubjectUID(),sessionStudyId);
 				
-				for(RelationshipVo relative:newRelatives){
-					if(relative.getFatherId() !=null){
-						pedigree.addValue(relative.getFatherId(),relative.getIndividualId());
-					}
+				existingRelatives.addAll(newRelatives);
+				
+				for(RelationshipVo relative:existingRelatives){
+					String dummyParent = "D-";
+               String father = relative.getFatherId();
+               String mother = relative.getMotherId();
+               String individual = relative.getIndividualId();
 					
-					if(relative.getMotherId() !=null ){
-						pedigree.addValue(relative.getMotherId(),relative.getIndividualId());
-					}
+               if(father!=null){
+               	dummyParent = dummyParent + father;
+               }
+               
+               if(mother!=null){
+               	dummyParent = dummyParent + mother;
+               }
+               
+               if (!"D-".equals(dummyParent) && !dummyParents.contains(dummyParent)) {
+                  dummyParents.add(dummyParent);
+                  if (father != null) {
+                      if (firstLine) {
+                     	 pedigree.append(father + " " + dummyParent);
+                          firstLine = false;
+                      } else {
+                     	 pedigree.append("\n" + father + " " + dummyParent);
+                      }
+                  }
+                  if (mother != null) {
+                      if (firstLine) {
+                     	 pedigree.append(mother + " " + dummyParent);
+                          firstLine = false;
+                      } else {
+                     	 pedigree.append("\n" + mother + " " + dummyParent);
+                      }
+                  }
+                  pedigree.append("\n" + dummyParent + " " + individual);
+              } else if (!"D-".equals(dummyParent)) {
+            	  if(firstLine){ 
+            		  pedigree.append(dummyParent + " " + individual);
+            		  firstLine=false;
+                 }else{
+               	  pedigree.append("\n" + dummyParent + " " + individual);
+                 }
+              }
 				}
 				
 				
-				String circularUID=PedigreeUploadValidator.getCircularUID(pedigree);
-				if(circularUID !=null){
-					this.error("System cannot allow to create a circular relationship with "+circularUID +" UID");
+				Set<String> circularUIDs = PedigreeUploadValidator.getCircularUIDs(pedigree);
+				if(circularUIDs.size() > 0){
+					this.error("Performing this action will create a circular relationship in the pedigree.");
+					StringBuffer sb = new StringBuffer("The proposed action will cause a pedigree cycle involving subjects with UID:");
+					boolean first=true;
+					for(String uid:circularUIDs){
+						if(first){
+							sb.append(uid);
+							first=false;
+						}else{
+							sb.append(", "+uid);
+						}
+					}
+					sb.append(".");
+					this.error(sb.toString());
 					target.add(feedbackPanel);
 					return;
 				}
