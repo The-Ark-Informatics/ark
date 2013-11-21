@@ -33,8 +33,40 @@
 				<div class="fldControl">
 					<input wicket:id="description" type="text"	maxlength="255" />
 				</div>
+
+				<div class="detailPanelBreaker">
+					&nbsp;
+				</div>
+				
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+				
+				<!--	Row 1 -->
+				<div class="fldLabel">
+					<wicket:message key="startTime">
+						Name:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="startTime"	type="text" />
+				</div>
+				
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<wicket:message key="endTime">
+						endTime:
+					</wicket:message>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="endTime" type="text"	maxlength="255" />
+				</div>
 					
-				<div wicket:id="processResults"></div>
 			</div>
 			<!--	Row 2 Action Buttons -->
 				<div wicket:id="editButtonContainer">

@@ -18,11 +18,19 @@
  ******************************************************************************/
 package au.org.theark.registry.web.component.invoice.form;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -33,7 +41,9 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.registry.web.component.invoice.ProcessResultListPanel;
 
 /**
  * @author nivedann
@@ -59,6 +69,13 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 	private TextField<String>					name;
 	private TextField<String>					description;
 
+	private ProcessResultListPanel processResults;
+
+	private ArkDataProvider<au.org.theark.core.model.geno.entity.Process, IArkCommonService> processProvider;
+
+	private DataView<au.org.theark.core.model.geno.entity.Process>									dataView;
+	protected WebMarkupContainer resultsWmc = new WebMarkupContainer("resultsWmc");
+
 	/**
 	 * 
 	 * @param id
@@ -75,13 +92,50 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 		name = new TextField<String>("name");
 		name.add(new ArkDefaultFormFocusBehavior());
 		description = new TextField<String>("description");
+		
+		processResults = new ProcessResultListPanel("processResults", feedBackPanel, arkCrudContainerVO);
+		
+		// Data providor to paginate resultList
+		processProvider = new ArkDataProvider<au.org.theark.core.model.geno.entity.Process, IArkCommonService>(iArkCommonService) {
+
+			private static final long	serialVersionUID	= 1L;
+
+			public int size() {
+				Study study = iArkCommonService.getStudy((Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID));
+				model.getObject().setPipeline(containerForm.getModelObject()); 
+				return (int) service.getProcessCount(model.getObject());
+			}
+
+			public Iterator<au.org.theark.core.model.geno.entity.Process> iterator(int first, int count) {
+				List<au.org.theark.core.model.geno.entity.Process> list = new ArrayList<au.org.theark.core.model.geno.entity.Process>();
+				list = iArkCommonService.searchPageableProcesses(model.getObject(), first, count);
+				return list.iterator();
+			}
+		};
+		
+		processProvider.setModel(new Model<au.org.theark.core.model.geno.entity.Process>(new au.org.theark.core.model.geno.entity.Process()));
+
+		
+		dataView = processResults.buildDataView(processProvider);
+		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
+		
+		processResults.add(pageNavigator);
+		processResults.buildDataView(processProvider);
+		
+		resultsWmc.add(pageNavigator);
+		resultsWmc.add(dataView);
+		processResults.add(resultsWmc);
+		
 		attachValidators();
 		addDetailFormComponents();
 	}
 
 	public void addDetailFormComponents() {
-		arkCrudContainerVO.getDetailPanelFormContainer().add(name);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(description);
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(name);
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(description);
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(processResults);
 	}
 
 	
