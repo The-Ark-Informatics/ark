@@ -75,7 +75,7 @@ public class Process implements java.io.Serializable {
 	
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "START_DATE", nullable = false, length = 19)
+	@Column(name = "START_TIME", nullable = false, length = 19)
 	public Date getStartTime() {
 		return this.startTime;
 	}

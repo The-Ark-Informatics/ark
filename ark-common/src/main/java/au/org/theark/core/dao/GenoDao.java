@@ -14,6 +14,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.model.geno.entity.Pipeline;
+import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.model.study.entity.Study;
 
 /**
@@ -78,5 +79,53 @@ public class GenoDao extends HibernateSessionDao implements IGenoDao {
 
 	public long getPipelineCount(Study study) {
 		return 0;
+	}
+	
+	private Criteria buildGeneralProcessCriteria(Process p) {
+		Criteria criteria = getSession().createCriteria(Process.class);
+		if (p.getId() != null){ 
+			criteria.add(Restrictions.eq("id", p.getId()));
+		}
+		
+		if(p.getName() != null){
+			criteria.add(Restrictions.eq("name", p.getName()));
+		}
+	
+		if(p.getDescription()!=null) {
+			criteria.add(Restrictions.eq("description", p.getDescription()));
+		}
+		
+		if(p.getPipeline() != null) {
+			criteria.add(Restrictions.eq("pipeline", p.getPipeline()));
+		}
+		
+		return criteria;
+	}
+
+	public int getProcessCount(Process p) {
+		Criteria criteria = buildGeneralProcessCriteria(p);
+		criteria.setProjection(Projections.rowCount());
+		Long totalCount = (Long) criteria.uniqueResult();
+		return totalCount.intValue();
+	}
+
+	public List searchPageableProcesses(Process p, int first, int count) {
+		Criteria criteria = buildGeneralProcessCriteria(p);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<Pipeline> list = criteria.list();
+		return list;
+	}
+
+	public void createProcess(Process p) {
+		getSession().save(p);
+	}
+
+	public void deleteProcess(Process p) {
+		getSession().delete(p);
+	}
+	
+	public void updateProcess(Process p) {
+		getSession().update(p);
 	}
 }
