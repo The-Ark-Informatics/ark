@@ -33,22 +33,24 @@ import au.org.theark.core.web.component.worksheet.ArkGridCell;
 import au.org.theark.study.service.IStudyService;
 
 import com.csvreader.CsvReader;
+
 /**
- * The PED file is a TAB delimited file.The first four columns are mandatory. 
+ * The PED file is a TAB delimited file.The first four columns are mandatory.
  * <p>
- * Validator checks the input file has satisfied the required file format 
+ * Validator checks the input file has satisfied the required file format
+ * 
  * @author thilina
- *
+ * 
  */
 public class PedigreeUploadValidator {
 	private static Logger			log							= LoggerFactory.getLogger(PedigreeUploadValidator.class);
 
 	@SuppressWarnings("unchecked")
 	private IArkCommonService		iArkCommonService;
-	
+
 	@SuppressWarnings("unchecked")
-	private IStudyService		iStudyService;
-	
+	private IStudyService			iStudyService;
+
 	private Long						studyId;
 	private Study						study;
 	java.util.Collection<String>	fileValidationMessages	= new java.util.ArrayList<String>();
@@ -59,13 +61,13 @@ public class PedigreeUploadValidator {
 	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;
 	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;
-	private int						row							= 1;
-	
+	private int							row							= 1;
+
 	public PedigreeUploadValidator() {
-		
+
 	}
-	
-	public PedigreeUploadValidator(IArkCommonService iArkCommonService,IStudyService		iStudyService) {
+
+	public PedigreeUploadValidator(IArkCommonService iArkCommonService, IStudyService iStudyService) {
 		this.iArkCommonService = iArkCommonService;
 		this.iStudyService = iStudyService;
 		Subject currentUser = SecurityUtils.getSubject();
@@ -76,8 +78,6 @@ public class PedigreeUploadValidator {
 		this.errorCells = new HashSet<ArkGridCell>();
 		simpleDateFormat.setLenient(false);
 	}
-
-	
 
 	/**
 	 * Validates the file in the default PED file format
@@ -100,8 +100,7 @@ public class PedigreeUploadValidator {
 		}
 		return validationMessages;
 	}
-	
-	
+
 	/**
 	 * Validates the file in the default PED file data format
 	 * 
@@ -111,17 +110,17 @@ public class PedigreeUploadValidator {
 	 */
 	public Collection<String> validatePedigreeFileData(UploadVO uploadVo, List<String> uidsToUpdateReference) {
 		java.util.Collection<String> validationMessages = null;
-		try{
+		try {
 			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
 			validationMessages = validatePedigreeFileData(inputStream, fileFormat, delimiterCharacter, uidsToUpdateReference);
-		}catch(Exception e){
+		}
+		catch (Exception e) {
 			log.error(e.toString());
 		}
 		return validationMessages;
 	}
-	
-	
+
 	public Collection<String> validatePedigreeFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
 		java.util.Collection<String> validationMessages = null;
 
@@ -136,7 +135,7 @@ public class PedigreeUploadValidator {
 		}
 		return validationMessages;
 	}
-	
+
 	/**
 	 * Validates the file in the default PED file format.
 	 * 
@@ -156,13 +155,14 @@ public class PedigreeUploadValidator {
 	 * @return a collection of data validation messages
 	 */
 	@SuppressWarnings("unchecked")
-	public java.util.Collection<String> validateMatrixPedigreeFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate, List<String> uidsToUpdateReference) throws FileFormatException, ArkSystemException {
+	public java.util.Collection<String> validateMatrixPedigreeFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr, long rowsToValidate,
+			List<String> uidsToUpdateReference) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		row = 0;
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
-		HashMap<Integer,String> noUidMap = new HashMap<Integer, String>(); 
+		HashMap<Integer, String> noUidMap = new HashMap<Integer, String>();
 		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			String[] stringLineArray;
@@ -172,14 +172,14 @@ public class PedigreeUploadValidator {
 
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 
-			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);	
-			
-			class TmpPedRecord{
-				String individualId;
-				String parentId;
-				String twinId;
-				int row;
-				
+			List<String> subjectUIDsAlreadyExisting = iArkCommonService.getAllSubjectUIDs(study);
+
+			class TmpPedRecord {
+				String	individualId;
+				String	parentId;
+				String	twinId;
+				int		row;
+
 				public TmpPedRecord(String individualId, String parentId, String twinId, int row) {
 					super();
 					this.individualId = individualId;
@@ -187,185 +187,191 @@ public class PedigreeUploadValidator {
 					this.twinId = twinId;
 					this.row = row;
 				}
+
 				public String getIndividualId() {
 					return individualId;
 				}
+
 				public void setIndividualId(String individualId) {
 					this.individualId = individualId;
 				}
+
 				public String getParentId() {
 					return parentId;
 				}
+
 				public void setParentId(String parentId) {
 					this.parentId = parentId;
 				}
+
 				public String getTwinId() {
 					return twinId;
 				}
+
 				public void setTwinId(String twinId) {
 					this.twinId = twinId;
 				}
+
 				public int getRow() {
 					return row;
 				}
+
 				public void setRow(int row) {
 					this.row = row;
 				}
 			}
-			
+
 			List<TmpPedRecord> twinRecords = new ArrayList<TmpPedRecord>();
 			List<TmpPedRecord> individualRecords = new ArrayList<TmpPedRecord>();
-			
-//			MultiMap<String, String> pedigree = new MultiMap<String, String>();
+
 			StringBuilder pedigree = new StringBuilder();
 			ArrayList<String> dummyParents = new ArrayList<String>();
 			boolean firstLine = true;
-			
-			
+
 			while (csvReader.readRecord()) {
 				stringLineArray = csvReader.getValues();
-				int index =0;				
+				int index = 0;
 				String subjectUID = stringLineArray[index++];
 				String fatherUID = stringLineArray[index++];
-				String motherUID = stringLineArray[index++];		
+				String motherUID = stringLineArray[index++];
 				String twinStatus = stringLineArray[index++];
 				String twinUID = stringLineArray[index++];
-				
+
 				String dummyParent = "D-";
-				
-				if(!subjectUIDsAlreadyExisting.contains(subjectUID)){
-					nonExistantUIDs.add(row);//TODO test and compare array.
-					noUidMap.put(row,subjectUID);
+
+				if (!subjectUIDsAlreadyExisting.contains(subjectUID)) {
+					nonExistantUIDs.add(row);// TODO test and compare array.
+					noUidMap.put(row, subjectUID);
 					errorCells.add(new ArkGridCell(0, row));
 				}
-				
-				if(!"-".equalsIgnoreCase(fatherUID) && !subjectUIDsAlreadyExisting.contains(fatherUID)){
+
+				if (!"-".equalsIgnoreCase(fatherUID) && !subjectUIDsAlreadyExisting.contains(fatherUID)) {
 					errorCells.add(new ArkGridCell(1, row));
-					dataValidationMessages.add("Invalid father subject UID is specified on row "+row+".");
+					dataValidationMessages.add("Invalid father subject UID is specified on row " + row + ".");
 				}
-				else if (!"-".equalsIgnoreCase(fatherUID)){
-					GenderType gender = iArkCommonService.getSubjectGenderType(fatherUID,study.getId());
-					if(gender == null || gender.getName().startsWith("F")){
+				else if (!"-".equalsIgnoreCase(fatherUID)) {
+					GenderType gender = iArkCommonService.getSubjectGenderType(fatherUID, study.getId());
+					if (gender == null || gender.getName().startsWith("F")) {
 						errorCells.add(new ArkGridCell(1, row));
-						dataValidationMessages.add("Father on row "+ row+" with UID "+fatherUID+" has sex: female.");
+						dataValidationMessages.add("Father on row " + row + " with UID " + fatherUID + " has sex: female.");
 					}
-//					pedigree.addValue(fatherUID, subjectUID);
 					dummyParent = dummyParent + fatherUID;
 				}
-				
-				if(!"-".equalsIgnoreCase(motherUID) && !subjectUIDsAlreadyExisting.contains(motherUID)){
+
+				if (!"-".equalsIgnoreCase(motherUID) && !subjectUIDsAlreadyExisting.contains(motherUID)) {
 					errorCells.add(new ArkGridCell(2, row));
-					dataValidationMessages.add("Invalid mother subject UID is specified on row "+row+".");
+					dataValidationMessages.add("Invalid mother subject UID is specified on row " + row + ".");
 				}
-				else if(!"-".equalsIgnoreCase(motherUID)){
-					GenderType gender = iArkCommonService.getSubjectGenderType(motherUID,study.getId());
-					if(gender == null || gender.getName().startsWith("M")){
+				else if (!"-".equalsIgnoreCase(motherUID)) {
+					GenderType gender = iArkCommonService.getSubjectGenderType(motherUID, study.getId());
+					if (gender == null || gender.getName().startsWith("M")) {
 						errorCells.add(new ArkGridCell(2, row));
-						dataValidationMessages.add("Mother on row "+ row+" with UID "+motherUID+" has sex: male.");
+						dataValidationMessages.add("Mother on row " + row + " with UID " + motherUID + " has sex: male.");
 					}
-//					pedigree.addValue(motherUID, subjectUID);
 					dummyParent = dummyParent + motherUID;
 				}
-				
-				if((twinStatus==null) || (!twinStatus.matches("[-]|[M]|[D]"))){
+
+				if ((twinStatus == null) || (!twinStatus.matches("[-]|[M]|[D]"))) {
 					errorCells.add(new ArkGridCell(3, row));
-					dataValidationMessages.add("Incorrect encodings found in the TwinStatus field. Please refer to the pedigree template "+row+".");
+					dataValidationMessages.add("Incorrect encodings found in the TwinStatus field. Please refer to the pedigree template.");
 				}
-				else{
-					if(twinStatus.matches("[M]|[D]") && ("-".equals(fatherUID)||"-".equals(motherUID))){
+				else {
+					if (twinStatus.matches("[M]|[D]") && ("-".equals(fatherUID) || "-".equals(motherUID))) {
 						errorCells.add(new ArkGridCell(1, row));
 						errorCells.add(new ArkGridCell(2, row));
-						dataValidationMessages.add("Both parents must be specified for the subject on row "+row +" who is a twin.");
+						dataValidationMessages.add("Both parents must be specified for the subject on row " + row + " who is a twin.");
 					}
 				}
 
-				if("-".equalsIgnoreCase(twinStatus) && !"-".equalsIgnoreCase(twinUID)){
+				if ("-".equalsIgnoreCase(twinStatus) && !"-".equalsIgnoreCase(twinUID)) {
 					errorCells.add(new ArkGridCell(4, row));
 					dataValidationMessages.add("TwinUID specified on row " + row + " for a subject who is not a twin.");
-				}else if(!"-".equalsIgnoreCase(twinStatus) && !subjectUIDsAlreadyExisting.contains(twinUID)){
+				}
+				else if (!"-".equalsIgnoreCase(twinStatus) && !subjectUIDsAlreadyExisting.contains(twinUID)) {
 					errorCells.add(new ArkGridCell(4, row));
-					dataValidationMessages.add("Invalid twin UID "+twinUID +" specified on row "+row+".");
-				}else{
-					if(!"-".equalsIgnoreCase(twinStatus)){
-						twinRecords.add(new TmpPedRecord(subjectUID, fatherUID+"-"+motherUID, twinUID,row));
+					dataValidationMessages.add("Invalid twin UID " + twinUID + " specified on row " + row + ".");
+				}
+				else {
+					if (!"-".equalsIgnoreCase(twinStatus)) {
+						twinRecords.add(new TmpPedRecord(subjectUID, fatherUID + "-" + motherUID, twinUID, row));
 					}
 				}
-				
-				long existingRelationships=iStudyService.getRelationshipCount(subjectUID, studyId);
-				
-				if(existingRelationships >0){
+
+				long existingRelationships = iStudyService.getRelationshipCount(subjectUID, studyId);
+
+				if (existingRelationships > 0) {
 					errorCells.add(new ArkGridCell(0, row));
-					dataValidationMessages.add("Subject on row "+row+" with UID "+subjectUID+" is already member of a pedigree.");
+					dataValidationMessages.add("Subject on row " + row + " with UID " + subjectUID + " is already member of a pedigree.");
 				}
-				
-				individualRecords.add(new TmpPedRecord(subjectUID, fatherUID+"-"+motherUID, null,row));
-				
-				 if (!"D-".equals(dummyParent) && !dummyParents.contains(dummyParent)) {
-                dummyParents.add(dummyParent);
-                if (!"-".equals(fatherUID)) {
-                    if (firstLine) {
-                        pedigree.append(fatherUID + " " + dummyParent);
-                        firstLine = false;
-                    } else {
-                        pedigree.append("\n" + fatherUID + " " + dummyParent);
-                    }
-                }
-                if (!"-".equals(motherUID)) {
-                    if (firstLine) {
-                        pedigree.append(motherUID + " " + dummyParent);
-                        firstLine = false;
-                    } else {
-                        pedigree.append("\n" + motherUID + " " + dummyParent);
-                    }
-                }
-                pedigree.append("\n" + dummyParent + " " + subjectUID);
-            } else if (!"D-".equals(dummyParent)) {
-               if(firstLine){ 
-               	pedigree.append(dummyParent + " " + subjectUID);
-               	firstLine=false;
-               }else{
-               	pedigree.append("\n" + dummyParent + " " + subjectUID);
-               }
-            }
-				
+
+				individualRecords.add(new TmpPedRecord(subjectUID, fatherUID + "-" + motherUID, null, row));
+
+				if (!"D-".equals(dummyParent) && !dummyParents.contains(dummyParent)) {
+					dummyParents.add(dummyParent);
+					if (!"-".equals(fatherUID)) {
+						if (firstLine) {
+							pedigree.append(fatherUID + " " + dummyParent);
+							firstLine = false;
+						}
+						else {
+							pedigree.append("\n" + fatherUID + " " + dummyParent);
+						}
+					}
+					if (!"-".equals(motherUID)) {
+						if (firstLine) {
+							pedigree.append(motherUID + " " + dummyParent);
+							firstLine = false;
+						}
+						else {
+							pedigree.append("\n" + motherUID + " " + dummyParent);
+						}
+					}
+					pedigree.append("\n" + dummyParent + " " + subjectUID);
+				}
+				else if (!"D-".equals(dummyParent)) {
+					if (firstLine) {
+						pedigree.append(dummyParent + " " + subjectUID);
+						firstLine = false;
+					}
+					else {
+						pedigree.append("\n" + dummyParent + " " + subjectUID);
+					}
+				}
+
 				row++;
 			}
-			
-			loop1:for(TmpPedRecord tmp1:twinRecords){
-				loop2:for(TmpPedRecord tmp2:individualRecords){
-					if(tmp1.getTwinId()!=null && tmp1.getTwinId().equals(tmp2.getIndividualId())){
-						if(!tmp1.getParentId().equalsIgnoreCase(tmp2.getParentId())){
+
+			loop1: for (TmpPedRecord tmp1 : twinRecords) {
+				loop2: for (TmpPedRecord tmp2 : individualRecords) {
+					if (tmp1.getTwinId() != null && tmp1.getTwinId().equals(tmp2.getIndividualId())) {
+						if (!tmp1.getParentId().equalsIgnoreCase(tmp2.getParentId())) {
 							errorCells.add(new ArkGridCell(4, tmp1.getRow()));
 							errorCells.add(new ArkGridCell(1, tmp2.getRow()));
-							dataValidationMessages.add("Twins were specified with miss-matched parent UIDs on rows "+ tmp1.getRow() +" and " +tmp2.getRow()+".");
+							dataValidationMessages.add("Twins were specified with miss-matched parent UIDs on rows " + tmp1.getRow() + " and " + tmp2.getRow() + ".");
 							break loop2;
 						}
 					}
 				}
 			}
-			
-//			String uid=getCircularUID(pedigree);
-//			if(uid!=null){
-//				dataValidationMessages.add("Circular relationship has detected for the  subject UID "+uid+".");
-//			}
-			
+
 			Set<String> circularUIDs = getCircularUIDs(pedigree);
-			if(circularUIDs.size() > 0){
+			if (circularUIDs.size() > 0) {
 				dataValidationMessages.add("Circular relationship encountered within the pedigree file.");
 				StringBuffer sb = new StringBuffer("The proposed action will cause a pedigree cycle involving subjects with UID:");
-				boolean first=true;
-				for(String uid:circularUIDs){
-					if(first){
+				boolean first = true;
+				for (String uid : circularUIDs) {
+					if (first) {
 						sb.append(uid);
-						first=false;
-					}else{
-						sb.append(", "+uid);
+						first = false;
+					}
+					else {
+						sb.append(", " + uid);
 					}
 				}
 				sb.append(".");
 				dataValidationMessages.add(sb.toString());
 			}
-			
+
 		}
 		catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
@@ -396,59 +402,63 @@ public class PedigreeUploadValidator {
 
 		for (Iterator<Integer> iterator = nonExistantUIDs.iterator(); iterator.hasNext();) {
 			Integer i = (Integer) iterator.next();
-			dataValidationMessages.add("Subject on row " + i.intValue() + " with UID "+ noUidMap.get(i)+" is not present in the current study.");
+			dataValidationMessages.add("Subject on row " + i.intValue() + " with UID " + noUidMap.get(i) + " is not present in the current study.");
 		}
 		return dataValidationMessages;
 	}
-	
-	
-	public static Set<String> getCircularUIDs(StringBuilder sb){
+
+	public static Set<String> getCircularUIDs(StringBuilder sb) {
 		Set<String> circularUIDs = new HashSet<String>();
-		 String delimiter = "\\s+";
+		String delimiter = "\\s+";
 
-       char[] characters=new char[sb.length()];
-       sb.getChars(0,sb.length(),characters,0);
+		char[] characters = new char[sb.length()];
+		sb.getChars(0, sb.length(), characters, 0);
 
-       log.info(new String(characters));
-       SymbolGraph sg = new SymbolGraph(characters, delimiter);
+		log.info(new String(characters));
+		SymbolGraph sg = new SymbolGraph(characters, delimiter);
 
-       Graph G = sg.G();
-       Cycle cycle = new Cycle(G);
+		Graph G = sg.G();
+		Cycle cycle = new Cycle(G);
 
-       if (cycle.hasCycle()) {
-      	 log.info("Detect cycle");
-           for (int v : cycle.cycle()) {
-         	  	String uid = sg.name(v);
-         	  	if(uid!=null && !uid.startsWith("D-")){
-         	  		circularUIDs.add(uid);
-         	  	}
-           }
-       } else {
-      	 log.info("No cycle detected");
-       }
+		if (cycle.hasCycle()) {
+			log.info("Detect cycle");
+			for (int v : cycle.cycle()) {
+				String uid = sg.name(v);
+				if (uid != null && !uid.startsWith("D-")) {
+					circularUIDs.add(uid);
+				}
+			}
+		}
+		else {
+			log.info("No cycle detected");
+		}
 		return circularUIDs;
 	}
-	
+
 	/**
 	 * Check which parent UID creates a circular relationship
-	 * @param pedigree Relationship graph
+	 * 
+	 * @param pedigree
+	 *           Relationship graph
 	 * @return Problematic UID
 	 */
 	public static String getCircularUID(MultiMap<String, String> pedigree) {
-		
-		for(String uid : pedigree.keySet()) {
+
+		for (String uid : pedigree.keySet()) {
 			if (checkCircularRelationshipsByUID(pedigree, uid)) {
 				return uid;
 			}
 		}
 		return null;
 	}
-	
-	
+
 	/**
 	 * Check for selected parent UID creates a circular relationship
-	 * @param pedigree Relationship graph
-	 * @param uid Parent UID
+	 * 
+	 * @param pedigree
+	 *           Relationship graph
+	 * @param uid
+	 *           Parent UID
 	 * @return Circular relationship status
 	 */
 	private static boolean checkCircularRelationshipsByUID(MultiMap<String, String> pedigree, String uid) {
@@ -460,24 +470,23 @@ public class PedigreeUploadValidator {
 
 		Set<String> parents = pedigree.keySet();
 
-		//Check invalid grand-child relationships
-		List<String> grandChildren=new ArrayList<String>();
-		for(String child:children){
-			if(parents.contains(child)){
+		// Check invalid grand-child relationships
+		List<String> grandChildren = new ArrayList<String>();
+		for (String child : children) {
+			if (parents.contains(child)) {
 				List<String> selectedChildren = pedigree.get(child);
-				for(String selectedChild:selectedChildren){
-					if(grandChildren.contains(selectedChild)){
+				for (String selectedChild : selectedChildren) {
+					if (grandChildren.contains(selectedChild)) {
 						return true;
 					}
-					else{
+					else {
 						grandChildren.add(selectedChild);
 					}
 				}
 			}
 		}
-		
 
-		//Check invalid parent-child relationships
+		// Check invalid parent-child relationships
 		for (String parent : parents) {
 			if (!parent.equalsIgnoreCase(uid) && allChildren.contains(parent)) {
 				allChildren.addAll(pedigree.get(parent));
@@ -487,15 +496,15 @@ public class PedigreeUploadValidator {
 		for (String subjectChild : allChildren) {
 			if (parents.contains(subjectChild)) {
 				List<String> selectedChildren = pedigree.get(subjectChild);
-				
+
 				for (String child : children) {
 					if (selectedChildren.contains(child)) {
 						return true;
 					}
-				}				
+				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -512,17 +521,18 @@ public class PedigreeUploadValidator {
 	 */
 	public Collection<String> validatePedigreeFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
 		java.util.Collection<String> validationMessages = null;
-		if(!fileFormat.equalsIgnoreCase("PED")){
+		if (!fileFormat.equalsIgnoreCase("PED")) {
 			fileValidationMessages.add("The input file has to be a PED file");
 			validationMessages = fileValidationMessages;
 		}
-		else{
-			try{	
+		else {
+			try {
 				validationMessages = validatePedigreeMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimiterCharacter);
-			}catch(ArkBaseException abe){
+			}
+			catch (ArkBaseException abe) {
 				log.error(abe.toString());
 			}
-			catch(Exception ex){
+			catch (Exception ex) {
 				log.error(ex.toString());
 			}
 		}
@@ -558,13 +568,13 @@ public class PedigreeUploadValidator {
 			}
 
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
-			while(csvReader.readRecord()){
+			while (csvReader.readRecord()) {
 				stringLineArray = csvReader.getValues();
-				if(stringLineArray.length != 5){
+				if (stringLineArray.length != 5) {
 					fileValidationMessages.add("The pedigree uploader expects a file comprising 5 tab-delimited columns. Please refer to the template example.");
 					break;
 				}
-			}			
+			}
 			row = 1;
 		}
 		catch (IOException ioe) {
@@ -598,7 +608,7 @@ public class PedigreeUploadValidator {
 
 		return fileValidationMessages;
 	}
-	
+
 	public HashSet<Integer> getInsertRows() {
 		return existantSubjectUIDRows;
 	}

@@ -1336,7 +1336,9 @@ public class StudyServiceImpl implements IStudyService {
 				for (ArkRelativeCapsule capsule2 : arkRelativeCapsules) {
 					if (capsule2.getTwinStatus() != null) {
 						if (!capsule1.getIndividualId().equals(capsule2.getIndividualId()) && 
+								capsule1.getFatherId()!=null &&
 								capsule1.getFatherId().equals(capsule2.getFatherId()) && 
+								capsule2.getMotherId()!=null &&
 								capsule1.getMotherId().equals(capsule2.getMotherId())) {
 							capsule1.setTwinId(capsule2.getIndividualId());
 						}

@@ -20,7 +20,6 @@ public class PedigreeParentContainerPanel extends SubjectContainerPanel {
 	public PedigreeParentContainerPanel(String id, WebMarkupContainer arkContextMarkup, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup,AbstractDetailModalWindow modalWindow,String gender,List<RelationshipVo> relatives) {
 		super(id, arkContextMarkup, studyNameMarkup, studyLogoMarkup,modalWindow,gender,relatives);
 		setOutputMarkupId(true);
-		// TODO Auto-generated constructor stub
 	}
 
 }
