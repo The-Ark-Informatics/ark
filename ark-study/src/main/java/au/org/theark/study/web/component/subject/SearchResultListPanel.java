@@ -298,6 +298,8 @@ public class SearchResultListPanel extends Panel {
 
 				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 
+				String parentUID = subject.getLinkSubjectStudy().getSubjectUID();
+
 				// Circular validation
 				StringBuilder pedigree = new StringBuilder();
 				ArrayList<String> dummyParents = new ArrayList<String>();
@@ -319,14 +321,28 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				if (subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("M")) {
-					proband.setFatherId(subject.getLinkSubjectStudy().getSubjectUID());
+					proband.setFatherId(parentUID);
 				}
 				else if (subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("F")) {
-					proband.setMotherId(subject.getLinkSubjectStudy().getSubjectUID());
+					proband.setMotherId(parentUID);
 				}
 				existingRelatives.add(proband);
 
-				List<RelationshipVo> newRelatives = iStudyService.generateSubjectPedigreeRelativeList(subject.getLinkSubjectStudy().getSubjectUID(), sessionStudyId);
+				List<RelationshipVo> newRelatives = iStudyService.generateSubjectPedigreeRelativeList(parentUID, sessionStudyId);
+
+				RelationshipVo parent = new RelationshipVo();
+				parent.setIndividualId(parentUID);
+				for (RelationshipVo relative : newRelatives) {
+					if ("Father".equalsIgnoreCase(relative.getRelationship())) {
+						parent.setFatherId(relative.getIndividualId());
+					}
+
+					if ("Mother".equalsIgnoreCase(relative.getRelationship())) {
+						parent.setMotherId(relative.getIndividualId());
+					}
+				}
+
+				newRelatives.add(parent);
 
 				for (RelationshipVo relative : newRelatives) {
 					if (!existingRelatives.contains(relative)) {
@@ -422,7 +438,7 @@ public class SearchResultListPanel extends Panel {
 				SubjectVO subjectVo = subjects.iterator().next();
 				pedigreeRelationship.setSubject(subjectVo.getLinkSubjectStudy());
 
-				criteriaSubjectVo.getLinkSubjectStudy().setSubjectUID(subject.getLinkSubjectStudy().getSubjectUID());
+				criteriaSubjectVo.getLinkSubjectStudy().setSubjectUID(parentUID);
 				subjects = iArkCommonService.getSubject(criteriaSubjectVo);
 				subjectVo = subjects.iterator().next();
 				pedigreeRelationship.setRelative(subjectVo.getLinkSubjectStudy());
