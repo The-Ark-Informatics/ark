@@ -57,7 +57,7 @@ public class ProcessDetailForm extends AbstractDetailForm<Process> {
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public ProcessDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ProcessContainerForm containerForm) {
+	public ProcessDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, Form<Process> containerForm) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
 	}
@@ -78,6 +78,7 @@ public class ProcessDetailForm extends AbstractDetailForm<Process> {
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(description);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(startTime);
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(endTime);
+		this.addOrReplace(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	

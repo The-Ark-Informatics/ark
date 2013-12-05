@@ -18,11 +18,15 @@
  ******************************************************************************/
 package au.org.theark.registry.web.component.invoice;
 
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -37,10 +41,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.geno.entity.Command;
+import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
+import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.registry.web.component.invoice.form.ContainerForm;
@@ -69,6 +77,24 @@ public class ProcessResultListPanel extends Panel {
 		super(id);
 		this.arkCrudContainerVO  = arkCrudContainerVO;
 		this.feedBackPanel = feedBackPanel;
+		
+		modalWindow = new AbstractDetailModalWindow("modalWindow") {
+			
+			@Override
+			protected void onCloseModalWindow(AjaxRequestTarget target) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		
+		add(modalWindow);
+	}
+
+	public ProcessResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+		super(id);
+		this.feedBackPanel = feedBackPanel;
+		this.containerForm = containerForm;
+		this.arkCrudContainerVO  = arkCrudContainerVO;
 		
 		modalWindow = new AbstractDetailModalWindow("modalWindow") {
 			
@@ -179,7 +205,20 @@ public class ProcessResultListPanel extends Panel {
 				else {
 					item.add(new Label("endTime", ""));
 				}
-
+					
+				if(process != null && process.getCommand() != null) {
+					item.add(new Label("command", process.getCommand().getName()));
+				}
+				else {
+					item.add(new Label("command", ""));
+				}
+				
+				
+//				List<Command> commandList = iArkCommonService.getCommands();
+//				ChoiceRenderer<Command> defaultChoiceRenderer = new ChoiceRenderer<Command>(Constants.NAME, Constants.ID);
+//				DropDownChoice<Command> commandChoice = new DropDownChoice<Command>("command", commandList, defaultChoiceRenderer);
+//				item.add(commandChoice);
+				
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
@@ -201,24 +240,31 @@ public class ProcessResultListPanel extends Panel {
 				//ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				
 				//POPUP FOR DETAILS
-				target.appendJavaScript("alert('popup for process details');");
+				//target.appendJavaScript("alert('popup for process details');");
 				
-				ArkCrudContainerVO arkCrudContainerVO = new ArkCrudContainerVO();
+				arkCrudContainerVO = new ArkCrudContainerVO();
 				ProcessContainerForm processContainerForm = new ProcessContainerForm("content", new CompoundPropertyModel<Process>(process));
+
+				//add(processContainerForm);
 				
-				add(processContainerForm);
-				
-				processDetailPanel = new ProcessDetailPanel("content", feedBackPanel, arkCrudContainerVO, processContainerForm);
+				processDetailPanel = new ProcessDetailPanel("detailContainer", feedBackPanel, arkCrudContainerVO, processContainerForm);
 				processDetailPanel.initialisePanel();
 				//processContainerForm.add(processDetailPanel);
-				DetailPanel dp = new DetailPanel("content", feedBackPanel, arkCrudContainerVO);
+				
+				DetailPanel dp = new DetailPanel("content", feedBackPanel, arkCrudContainerVO, containerForm);
 				dp.initialisePanel();
+				PageableListView<Pipeline> listView = null;
+				SearchPanel sp = new SearchPanel("content", feedBackPanel, listView, containerForm, arkCrudContainerVO);
+				sp.initialisePanel();
 				
 				// Set the modalWindow title and content
-				modalWindow.setTitle("Edit Process Details");
-				modalWindow.setContent(dp);
-				modalWindow.show(target);
-				
+//				modalWindow.setTitle("Edit Process Details");
+//				modalWindow.setContent(processDetailPanel);
+//				
+//				modalWindow.show(target);
+//				arkCrudContainerVO.getDetailPanelContainer().replaceWith(processDetailPanel);
+				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
+
 			}
 		};
 		Label nameLinkLabel = new Label("process", process.getName());

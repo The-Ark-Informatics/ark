@@ -18,11 +18,13 @@
  ******************************************************************************/
 package au.org.theark.registry.web.component.invoice;
 
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.registry.web.component.invoice.form.ProcessContainerForm;
+import au.org.theark.registry.web.component.invoice.form.ContainerForm;
 import au.org.theark.registry.web.component.invoice.form.ProcessDetailForm;
 
 /**
@@ -35,13 +37,13 @@ public class ProcessDetailPanel extends Panel {
 	private FeedbackPanel		feedBackPanel;
 	private ArkCrudContainerVO	arkCrudContainerVO;
 
-	private ProcessContainerForm		containerForm;
+	private Form<Process>		containerForm;
 	private ProcessDetailForm			detailForm;
 
-	public ProcessDetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ProcessContainerForm containerForm) {
+	public ProcessDetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, Form<Process> containerForm2) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
-		this.containerForm = containerForm;
+		this.containerForm = containerForm2;
 		this.feedBackPanel = feedBackPanel;
 	}
 
@@ -54,6 +56,7 @@ public class ProcessDetailPanel extends Panel {
 	public void initialisePanel() {
 		detailForm = new ProcessDetailForm("detailsForm", feedBackPanel, arkCrudContainerVO, containerForm);
 		detailForm.initialiseDetailForm();
+		detailForm.addOrReplace(arkCrudContainerVO.getDetailPanelFormContainer());
 		add(detailForm);
 	}
 
