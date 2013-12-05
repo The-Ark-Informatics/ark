@@ -14,6 +14,7 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
 
@@ -67,7 +68,7 @@ public class RegistryTabProviderImpl extends Panel implements IMainTabProvider {
 			}
 
 			public boolean isVisible() {
-				return true;
+				return ArkPermissionHelper.isModuleAccessPermitted(au.org.theark.core.Constants.ARK_MODULE_REGISTRY);
 			}
 		};
 	}

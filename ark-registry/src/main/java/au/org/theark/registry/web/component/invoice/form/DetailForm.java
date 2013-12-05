@@ -30,7 +30,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -93,7 +92,7 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 		name.add(new ArkDefaultFormFocusBehavior());
 		description = new TextField<String>("description");
 		
-		processResults = new ProcessResultListPanel("processResults", feedBackPanel, arkCrudContainerVO);
+		processResults = new ProcessResultListPanel("processResults", feedBackPanel, (ContainerForm) containerForm, arkCrudContainerVO);
 		
 		// Data providor to paginate resultList
 		processProvider = new ArkDataProvider<au.org.theark.core.model.geno.entity.Process, IArkCommonService>(iArkCommonService) {
@@ -102,7 +101,9 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 
 			public int size() {
 				Study study = iArkCommonService.getStudy((Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID));
-				model.getObject().setPipeline(containerForm.getModelObject()); 
+				Pipeline p = containerForm.getModelObject();
+				au.org.theark.core.model.geno.entity.Process proc = model.getObject();
+				proc.setPipeline(p);
 				return (int) service.getProcessCount(model.getObject());
 			}
 
