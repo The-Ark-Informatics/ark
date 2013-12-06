@@ -30,8 +30,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import net.sf.ehcache.util.ProductInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -60,9 +64,12 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.LinkSubjectStudyPipeline;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
+import au.org.theark.core.model.geno.entity.ProcessInput;
+import au.org.theark.core.model.geno.entity.ProcessOutput;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
@@ -142,6 +149,7 @@ import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.util.CsvListReader;
 import au.org.theark.core.vo.DataExtractionVO;
 import au.org.theark.core.vo.ExtractionVO;
+import au.org.theark.core.vo.LinkedExtractionVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
@@ -1964,8 +1972,12 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
 			
 			log.info("uidsafterFiltering SUBJECT cust=" + idsAfterFiltering.size());
+
+			Map<Long, Long> maxInputList = new HashMap<Long, Long>();//pass the index and do a max comparison to minimize a simple grid which will be too bulky
+			Map<Long, Long> maxOutputList = new HashMap<Long, Long>();
+			long maxProcessesPerPipeline = 0L;
 			if(search.getIncludeGeno()){
-				addGenoData(allTheData, search, idsAfterFiltering);//TODO: test
+				addGenoData(allTheData, search, idsAfterFiltering, maxInputList, maxOutputList, maxProcessesPerPipeline);//TODO: test
 			}
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
@@ -1974,7 +1986,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 // CREATE CSVs - later will offer options xml, pdf, etc
 			SearchResult searchResult = new SearchResult();
-			searchResult.setSearch(search);
+			searchResult.setSearch(search);	
 			Criteria criteria = getSession().createCriteria(SearchResult.class);
 			criteria.add(Restrictions.eq("search", search));
 			List<SearchResult> searchResults = criteria.list();
@@ -1982,13 +1994,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				deleteSearchResult(sr);
 			}
 			
-			int maxNumberProcesses = 1;//TODO this is to be calculated
-			
 			createSearchResult(search, iDataExtractionDao.createSubjectDemographicCSV(search, allTheData, allSubjectFields, scfds, FieldCategory.DEMOGRAPHIC_FIELD), currentUser);
 			createSearchResult(search, iDataExtractionDao.createBiocollectionCSV(search, allTheData, bccfds, FieldCategory.BIOCOLLECTION_FIELD), currentUser);
 			createSearchResult(search, iDataExtractionDao.createBiospecimenCSV(search, allTheData, bsfs, bscfds, FieldCategory.BIOSPECIMEN_FIELD), currentUser);
 			createSearchResult(search, iDataExtractionDao.createPhenotypicCSV(search, allTheData, pcfds, FieldCategory.PHENO_CFD),currentUser);
-			createSearchResult(search, iDataExtractionDao.createGenoCSV(search, allTheData, FieldCategory.GENO, maxNumberProcesses),currentUser);
+			createSearchResult(search, iDataExtractionDao.createGenoCSV(search, allTheData, FieldCategory.GENO, maxProcessesPerPipeline, maxInputList, maxOutputList),currentUser);
 			
 			try {
 				search.setFinishTime(new java.util.Date(System.currentTimeMillis()));
@@ -4102,35 +4112,133 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @param allTheData
 	 * @param search
 	 * @param idsAfterFiltering
+	 * @param maxProcessesPerPipeline 
 	 */
-	private void addGenoData(DataExtractionVO allTheData, Search search, List<Long> idsAfterFiltering) {
+	private void addGenoData(DataExtractionVO allTheData, Search search, List<Long> idsAfterFiltering,
+						Map<Long, Long> maxInputList, Map<Long, Long> maxOutputList, long maxProcessesPerPipeline) {
+		log.info("idsAfterFiltering" + idsAfterFiltering);
 		
 		if (!idsAfterFiltering.isEmpty()) {
 			//note.  filtering is happening previously...we then do the fetch when we have narrowed down the list of subjects to save a lot of processing
-			String queryString = "select LinkSubjectStudyPipeline lssp " +
-					" and lssp.linkSubjectStudy.id in (:idsToInclude) " // stoing this to an lss means we should fetch lss and pipeline..and process
+			String queryString = "select lssp from LinkSubjectStudyPipeline lssp " +
+					" where lssp.linkSubjectStudy.id in (:idsToInclude) " // stoing this to an lss means we should fetch lss and pipeline..and process
 					+ " order by lssp.linkSubjectStudy.id ";
 
 			Query query = getSession().createQuery(queryString);
 			query.setParameterList("idsToInclude", idsAfterFiltering);
 			List<LinkSubjectStudyPipeline> subjectPipelines = query.list();
 
-			List<ExtractionVO> allGenoData = allTheData.getGenoData();
+			List<LinkedExtractionVO> allGenoData = allTheData.getGenoData();
+			log.info("count=" + ((subjectPipelines==null)?"0":subjectPipelines.size()));
 
 			/* this is putting the data we extracted into a generic kind of VO doc that will be converted to an appopriate format later (such as csv/xls/pdf/xml/etc) */
 			for (LinkSubjectStudyPipeline lssp : subjectPipelines) { 	
-				ExtractionVO sev = new ExtractionVO();
+				log.info("adding geno info for lss= " + lssp.getLinkSubjectStudy().getId());
+				LinkedExtractionVO sev = new LinkedExtractionVO();
 // todo with geno in some way				sev.setKeyValues(constructKeyValueHashmap(lss, personFields, lssFields, addressFields, phoneFields));
-				HashMap map = new HashMap<String, String>();
+				LinkedHashMap map = new LinkedHashMap<String, String>();
 				sev.setSubjectUid(lssp.getLinkSubjectStudy().getSubjectUID());
+				/*
+				 * 
+	public static final String GENO_FIELDS_PIPELINE_ID = "pipelineId";
+	public static final String GENO_FIELDS_PIPELINE_NAME = "pipelineName";
+	public static final String GENO_FIELDS_PIPELINE_DECSRIPTION = "pipelineDescription";
+	public static final String GENO_FIELDS_PROCESS_ID = "processId";
+	public static final String GENO_FIELDS_PROCESS_NAME = "processName";
+	public static final String GENO_FIELDS_PROCESS_DESCRIPTION = "processDescription";
+	public static final String GENO_FIELDS_PROCESS_START_TIME = "startTime";
+	public static final String GENO_FIELDS_PROCESS_END_TIME = "endTime";
+	public static final String GENO_FIELDS_PROCESS_COMMAND_SERVER_URL = "commandServerUrl";
+	public static final String GENO_FIELDS_PROCESS_COMMAND_NAME = "commandName";
+	public static final String GENO_FIELDS_PROCESS_COMMAND_LOCATION = "commandLocation";
+//	public static final String GENO_FIELDS_PROCESS_COMMAND_INPUT_FILE_FORMAT;
+//	public static final String GENO_FIELDS_PROCESS_COMMAND_OUTPUT_FILE_FORMAT;
+	public static final String GENO_FIELDS_PROCESS_INPUT_SERVER = "inputServer";
+	public static final String GENO_FIELDS_PROCESS_INPUT_LOCATION = "inputLocation";
+	public static final String GENO_FIELDS_PROCESS_INPUT_FILE_HASH = "inputFileHash";
+	public static final String GENO_FIELDS_PROCESS_INPUT_FILE_TYPE = "inputFileType";
+	public static final String GENO_FIELDS_PROCESS_INPUT_KEPT = "outputKept";
+	public static final String GENO_FIELDS_PROCESS_OUTPUT_SERVER = "outputServer";
+	public static final String GENO_FIELDS_PROCESS_OUTPUT_LOCATION = "outputLocation";
+	public static final String GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH = "outputFileHash";
+	public static final String GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE = "outputFileType";
+	public static final String GENO_FIELDS_PROCESS_OUTPUT_KEPT = "outputKept";*/
+				
+				//TODO : NULL CHECK EVERY SINGLE APPROPRIATE PLACE
+				
+				//TODO ASAP : change this to do all fields in a precise order (possibly defined somewhere common)
 				Pipeline pl = lssp.getPipeline();
-				map.put("pipelineId", pl.getId());
-				map.put("pipelineName", pl.getName());
-				map.put("pipelineDescription", pl.getDescription());
-				//map.put("pipelineStudy", pl.getStudy());
-				int index = 1;
+				map.put(Constants.GENO_FIELDS_PIPELINE_ID, pl.getId().toString());
+				map.put(Constants.GENO_FIELDS_PIPELINE_NAME, pl.getName());
+				map.put(Constants.GENO_FIELDS_PIPELINE_DECSRIPTION, pl.getDescription());
+				
+				long processIndex = 0L;
+				
+				
+				log.info("we have process..." + pl.getPipelineProcesses().size());
 				for(Process p : pl.getPipelineProcesses()){
-					map.put(("processId" + (index>1?("_"+index):"")), p.getId());
+					processIndex++;
+					if(processIndex >= maxProcessesPerPipeline){
+						log.info("processIndex  maxProcessesPerPipeline = " + processIndex + "  " + maxProcessesPerPipeline);
+						maxProcessesPerPipeline = processIndex + 1;
+					} 
+					else{
+						log.info("processIndex  maxProcessesPerPipeline = " + processIndex + "  " + maxProcessesPerPipeline);
+					}
+					
+					//TODO : obvbiously need to pre=append the pipeline info/count too
+					map.put((Constants.GENO_FIELDS_PROCESS_ID + (processIndex>1?("_"+processIndex):"")), p.getId().toString());
+					map.put((Constants.GENO_FIELDS_PROCESS_NAME + (processIndex>1?("_"+processIndex):"")), p.getName());
+					map.put((Constants.GENO_FIELDS_PROCESS_DESCRIPTION + (processIndex>1?("_"+processIndex):"")), p.getDescription());
+					map.put((Constants.GENO_FIELDS_PROCESS_START_TIME + (processIndex>1?("_"+processIndex):"")), p.getStartTime()!=null?p.getStartTime().toString():"");
+					map.put((Constants.GENO_FIELDS_PROCESS_END_TIME + (processIndex>1?("_"+processIndex):"")), p.getEndTime()!=null?p.getEndTime().toString():"");
+					Command command = p.getCommand();
+					map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_NAME + (processIndex>1?("_"+processIndex):"")), (command==null?"":command.getName()));
+					map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + (processIndex>1?("_"+processIndex):"")), (command==null?"":command.getLocation()));
+					map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_SERVER_URL + (processIndex>1?("_"+processIndex):"")), (command==null?"":command.getServerUrl()));
+					//map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + (index>1?("_"+index):"")), (command==null?"":command.getName()));//space keeper for file format info
+					//map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + (index>1?("_"+index):"")), (command==null?"":command.getName()));
+					
+					Set<ProcessInput> inputs = p.getProcessInputs();
+					long inputsIndex = 0L;
+					for(ProcessInput input : inputs){
+						inputsIndex++;
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + (processIndex>1?("_"+processIndex):"")), (input==null?"":input.getInputServer()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + (processIndex>1?("_"+processIndex):"")), (input==null?"":input.getinputFileLocation()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + (processIndex>1?("_"+processIndex):"")), (input==null?"":input.getInputFileHash()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + (processIndex>1?("_"+processIndex):"")), (input==null?"":input.getInputFileType()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + (processIndex>1?("_"+processIndex):"")), (input==null?"":input.getInputKept()));
+						//TODO ASAP : now put all the input info in with a similar _<index> suffix
+					}
+
+					long maxInputCurrent = (maxInputList.get(processIndex)==null)?0L:maxInputList.get(processIndex);//get the procesIndex'th max input and see if it is bigger than 
+					maxInputList.put(processIndex, (maxInputCurrent>inputsIndex)?maxInputCurrent:inputsIndex);
+					
+
+					long outputsIndex = 0L;
+					Set<ProcessOutput> outputs = p.getProcessOutputs();
+					for(ProcessOutput output : outputs){
+						outputsIndex++;//TODO ASAP : now put all the output info in with a similar _<index> suffix
+						
+					}
+
+					long maxOutputCurrent = (maxOutputList.get(processIndex)==null)?0L:maxOutputList.get(processIndex);//get the procesOutdex'th max output and see if it is bigger than 
+					maxOutputList.put(processIndex, (maxOutputCurrent>outputsIndex)?maxOutputCurrent:outputsIndex);
+					
+					
+					/*
+					public static final String GENO_FIELDS_PROCESS_INPUT_SERVER = "inputServer";
+					public static final String GENO_FIELDS_PROCESS_INPUT_LOCATION = "inputLocation";
+					public static final String GENO_FIELDS_PROCESS_INPUT_FILE_HASH = "inputFileHash";
+					public static final String GENO_FIELDS_PROCESS_INPUT_FILE_TYPE = "inputFileType";
+					public static final String GENO_FIELDS_PROCESS_INPUT_KEPT = "outputKept";
+					public static final String GENO_FIELDS_PROCESS_OUTPUT_SERVER = "outputServer";
+					public static final String GENO_FIELDS_PROCESS_OUTPUT_LOCATION = "outputLocation";
+					public static final String GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH = "outputFileHash";
+					public static final String GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE = "outputFileType";
+					public static final String GENO_FIELDS_PROCESS_OUTPUT_KEPT = "outputKept";
+					*/
+					//map.put((Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + (index>1?("_"+index):"")), p.getId());
 				}
 				sev.setKeyValues(map);
 				allGenoData.add(sev);
@@ -4337,6 +4445,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 	public void createSearchResult(Search search, File file, String currentUser) {
 		try {
+			log.info("what file?" + file.getName());
 			SearchResult sr = new SearchResult();
 			sr.setSearch(search);
 			sr.setFilename(file.getName());

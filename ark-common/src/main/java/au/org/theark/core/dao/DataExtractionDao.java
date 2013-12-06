@@ -28,7 +28,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -37,6 +39,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.geno.entity.Command;
+import au.org.theark.core.model.geno.entity.Pipeline;
+import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
@@ -47,6 +52,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.util.CsvWriter;
 import au.org.theark.core.vo.DataExtractionVO;
 import au.org.theark.core.vo.ExtractionVO;
+import au.org.theark.core.vo.LinkedExtractionVO;
 
 /**
  * @author cellis
@@ -299,32 +305,34 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 
 			for (String biospecimenUID : biospecimens) {
 				ExtractionVO evo = hashOfBiospecimensWithData.get(biospecimenUID);
-				csv.write(evo.getSubjectUid());
-				csv.write(biospecimenUID);
-				
-				for (BiospecimenField bsf : bsfs) {
+				if(evo != null && evo.getSubjectUid() != null){
+					csv.write(evo.getSubjectUid());
+					csv.write(biospecimenUID);
 					
-					if(evo != null){
-						HashMap<String, String> keyValues = evo.getKeyValues();
-						if (!bsf.getPublicFieldName().equalsIgnoreCase("biospecimenUid")){
-							String valueResult = keyValues.get(bsf.getPublicFieldName());
-							if (bsf.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
-								try {
-									DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-									String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
-									Date date = DateUtils.parseDate(valueResult, dateFormats);
-									csv.write(dateFormat.format(date));
+					for (BiospecimenField bsf : bsfs) {
+						
+						if(evo != null){
+							HashMap<String, String> keyValues = evo.getKeyValues();
+							if (!bsf.getPublicFieldName().equalsIgnoreCase("biospecimenUid")){
+								String valueResult = keyValues.get(bsf.getPublicFieldName());
+								if (bsf.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
+									try {
+										DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+										String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
+										Date date = DateUtils.parseDate(valueResult, dateFormats);
+										csv.write(dateFormat.format(date));
+									}
+									catch (ParseException e) {
+										csv.write(valueResult);
+									}
 								}
-								catch (ParseException e) {
+								else {
 									csv.write(valueResult);
 								}
 							}
-							else {
-								csv.write(valueResult);
-							}
+							
+							
 						}
-						
-						
 					}
 				}
 
@@ -434,12 +442,12 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 	}
 	
 
-	public File createGenoCSV(Search search, DataExtractionVO devo, FieldCategory fieldCategory, int maxProcessesPerPipeline){
+	public File createGenoCSV(Search search, DataExtractionVO devo, FieldCategory fieldCategory, long maxProcessesPerPipeline, Map<Long, Long> maxInputList, Map<Long, Long> maxOutputList){
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("GENO.csv");
 		final java.io.File file = new File(tempDir, filename);
 		
-		List<ExtractionVO> genoData = devo.getGenoData();
+		List<LinkedExtractionVO> genoData = devo.getGenoData();
 
 		OutputStream outputStream;
 		try {
@@ -453,58 +461,200 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			csv.write(Constants.GENO_FIELDS_PIPELINE_ID);
 			csv.write(Constants.GENO_FIELDS_PIPELINE_NAME);
 			csv.write(Constants.GENO_FIELDS_PIPELINE_DECSRIPTION);
-			for (int i=0; i<maxProcessesPerPipeline ; i++) {
-
-				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
-				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
-				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
-				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
-				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
-				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
-				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
-				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
-				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
-				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
-				csv.write(Constants.GENO_FIELDS_PROCESS_ID);
-				csv.write(Constants.GENO_FIELDS_PROCESS_ID);//etc
+			for (int i=1; i<=maxProcessesPerPipeline ; i++) { //one-based humanized
+				if(i==1){
+					//process
+					csv.write(Constants.GENO_FIELDS_PROCESS_ID);
+					csv.write(Constants.GENO_FIELDS_PROCESS_NAME);
+					csv.write(Constants.GENO_FIELDS_PROCESS_DESCRIPTION);
+					csv.write(Constants.GENO_FIELDS_PROCESS_START_TIME);
+					csv.write(Constants.GENO_FIELDS_PROCESS_END_TIME);
+					
+					//commmand
+					csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_SERVER_URL);
+					csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_NAME);
+					csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION);
+	//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_INPUT_FILE_FORMAT)//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_OUTPUT_FILE_FORMAT);
+					
+					//input
+					//for each of the inputs..........!!!!  EACH - there COULD be more than one
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT);
+	
+					//output
+					//for each of the outputs..........!!!!  EACH - there COULD be more than one
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT);
+				}
+				else{
+					//process
+					csv.write(Constants.GENO_FIELDS_PROCESS_ID + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_NAME + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_DESCRIPTION + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_START_TIME + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_END_TIME + "_" + i);
+					
+					//commmand
+					csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_SERVER_URL + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_NAME + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + "_" + i);
+	//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_INPUT_FILE_FORMAT)//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_OUTPUT_FILE_FORMAT);
+					
+					//input
+					//for each of the inputs..........!!!!  EACH - there COULD be more than one
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + "_" + i);
+	
+					//output
+					//for each of the outputs..........!!!!  EACH - there COULD be more than one
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + i);
+				}
 			}
-
 			csv.endLine();
 
-			for (ExtractionVO evo : genoData) {
-				//csv.write(subjectUID);
-				
-				//ExtractionVO evo = genoData.get(phenoCollectionId);
+			//now for the actual data
+			for (LinkedExtractionVO evo : genoData) {
+				//csv.write(evo.getSubjectUid());//ExtractionVO evo = genoData.get(phenoCollectionId);
 				
 				if (evo != null) {
 					csv.write(evo.getSubjectUid());
 					//csv.write(evo.getRecordDate());
-					HashMap<String, String> keyValues = evo.getKeyValues();//TODO:  Something should be done to check that values always match order of columns
+					LinkedHashMap<String, String> keyValues = evo.getKeyValues();	//TODO:  Something should be done to check that values always match order of columns
+/*order is based on the code that constructs this in study dao 
+  				Pipeline pl = lssp.getPipeline();
+				map.put(Constants.GENO_FIELDS_PIPELINE_ID, pl.getId().toString());
+				map.put(Constants.GENO_FIELDS_PIPELINE_NAME, pl.getName());
+				map.put(Constants.GENO_FIELDS_PIPELINE_DECSRIPTION, pl.getDescription());
+				
+				int index = 0;
+				for(Process p : pl.getPipelineProcesses()){
+					index++;
+					
+					//TODO : obvbiously need to pre=append the pipeline info/count too
+					map.put((Constants.GENO_FIELDS_PROCESS_ID + (index>1?("_"+index):"")), p.getId().toString());
+					map.put((Constants.GENO_FIELDS_PROCESS_NAME + (index>1?("_"+index):"")), p.getName());
+					map.put((Constants.GENO_FIELDS_PROCESS_DESCRIPTION + (index>1?("_"+index):"")), p.getDescription());
+					map.put((Constants.GENO_FIELDS_PROCESS_START_TIME + (index>1?("_"+index):"")), p.getStartTime()!=null?p.getStartTime().toString():"");
+					map.put((Constants.GENO_FIELDS_PROCESS_END_TIME + (index>1?("_"+index):"")), p.getEndTime()!=null?p.getEndTime().toString():"");
+					Command command = p.getCommand();
+					map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_NAME + (index>1?("_"+index):"")), (command==null?"":command.getName()));
+					map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + (index>1?("_"+index):"")), (command==null?"":command.getLocation()));
+					map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_SERVER_URL + (index>1?("_"+index):"")), (command==null?"":command.getServerUrl()));
+*/
+					csv.write(keyValues.get(Constants.GENO_FIELDS_PIPELINE_ID));
 
+					csv.write(keyValues.get(Constants.GENO_FIELDS_PIPELINE_NAME));
+					csv.write(keyValues.get(Constants.GENO_FIELDS_PIPELINE_DECSRIPTION));
+					for (int i=1; i<=maxProcessesPerPipeline ; i++) { //one-based humanized
+						if(i==1){
+							//process
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_ID));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_NAME));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_DESCRIPTION));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_START_TIME));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_END_TIME));
+							
+							//commmand
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_SERVER_URL));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_NAME));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION));
+			//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_INPUT_FILE_FORMAT)//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_OUTPUT_FILE_FORMAT);
+							
+							//input
+							//for each of the inputs..........!!!!  EACH - there COULD be more than one
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT));
+			
+							//output
+							//for each of the outputs..........!!!!  EACH - there COULD be more than one
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT));
+						}
+						else{
+							//process
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_ID + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_NAME + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_DESCRIPTION + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_START_TIME + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_END_TIME + "_" + i));
+							
+							//commmand
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_SERVER_URL + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_NAME + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + "_" + i));
+			//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_INPUT_FILE_FORMAT)//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_OUTPUT_FILE_FORMAT));
+							
+							//input
+							//for each of the inputs..........!!!!  EACH - there COULD be more than one
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + "_" + i));
+			
+							//output
+							//for each of the outputs..........!!!!  EACH - there COULD be more than one
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE + "_" + i));
+							csv.write(keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + i));
+						}
+					}
+										
 					
 					
 					
 					//TODO:  replace this with hardcoded use of the field names or use the function if 
 					//		available to getColumnOf(GENO_FIELD_PIPELINE_ID) and put it in there at appropriate line
 					
-					/*				for (CustomFieldDisplay cfd : cfds) {
+					/*
+					 * TODO ASAP  : Change this to iterating in order so naming remains the same
+					 *
+					 * THIS CODE WORKS BUT WE MAY WANT TO MAKE SURE THAT WE HAVE THE CORRECT ORDER
+					 *			
+					for (String key : keyValues.keySet()) {
 
-						String valueResult = keyValues.get(cfd.getCustomField().getName());
-						if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
-							try {
-								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-								String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
-								Date date = DateUtils.parseDate(valueResult, dateFormats);
-								csv.write(dateFormat.format(date));
+						String valueResult = keyValues.get(key);
+						if (valueResult != null) {
+							if(key.startsWith(Constants.GENO_FIELDS_PROCESS_END_TIME) || key.startsWith(Constants.GENO_FIELDS_PROCESS_START_TIME)){
+								try {
+									DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+									String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
+									Date date = DateUtils.parseDate(valueResult, dateFormats);
+									csv.write(dateFormat.format(date));
+								}
+								catch (ParseException e) {
+									csv.write(valueResult);
+								}
 							}
-							catch (ParseException e) {
+							else{
 								csv.write(valueResult);
 							}
 						}
 						else {
-							csv.write(valueResult);
+							csv.write("");
 						}
-					}*/
+					} */	
 				}
 				else{
 					//not sure if we need this
@@ -595,4 +745,5 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 
 		return file;
 	}
+
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class DataExtractionVO {
 	private HashMap<String, ExtractionVO> demographicData = new HashMap<String, ExtractionVO>();
-	private List<ExtractionVO> genoData = new ArrayList<ExtractionVO>();//stepping away from previous pattern...seeing what best approach is
+	private List<LinkedExtractionVO> genoData = new ArrayList<LinkedExtractionVO>();//stepping away from previous pattern...seeing what best approach is
 	private HashMap<String, ExtractionVO> biocollectionData = new HashMap<String, ExtractionVO>();
 	private HashMap<String, ExtractionVO> biospecimenData = new HashMap<String, ExtractionVO>();
 	private HashMap<String, ExtractionVO> subjectCustomData = new HashMap<String, ExtractionVO>();
@@ -29,11 +29,11 @@ public class DataExtractionVO {
 	}
 	
 
-	public List<ExtractionVO> getGenoData() {
+	public List<LinkedExtractionVO> getGenoData() {
 		return genoData;
 	}
 
-	public void setGenoData(List<ExtractionVO> subjectAndData) {
+	public void setGenoData(List<LinkedExtractionVO> subjectAndData) {
 		this.genoData = subjectAndData;
 	}
 	

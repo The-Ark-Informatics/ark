@@ -167,12 +167,33 @@ public class Constants {
 	public static final String ADMIN_SCHEMA = "admin";
 	public static final String GENO_SCHEMA = "geno";
 
-	/* Geno fields for output in dataextraction - will later allow choice*/
+	/* Geno fields for output in dataextraction - will later allow choice
+	 * - these are used in a linked hash map often, so please 
+	 * 	- so we will try to keep order whereever they are used*/
 	public static final String GENO_FIELDS_PIPELINE_ID = "pipelineId";
 	public static final String GENO_FIELDS_PIPELINE_NAME = "pipelineName";
 	public static final String GENO_FIELDS_PIPELINE_DECSRIPTION = "pipelineDescription";
-
 	public static final String GENO_FIELDS_PROCESS_ID = "processId";
+	public static final String GENO_FIELDS_PROCESS_NAME = "processName";
+	public static final String GENO_FIELDS_PROCESS_DESCRIPTION = "processDescription";
+	public static final String GENO_FIELDS_PROCESS_START_TIME = "startTime";
+	public static final String GENO_FIELDS_PROCESS_END_TIME = "endTime";
+	public static final String GENO_FIELDS_PROCESS_COMMAND_SERVER_URL = "commandServerUrl";
+	public static final String GENO_FIELDS_PROCESS_COMMAND_NAME = "commandName";
+	public static final String GENO_FIELDS_PROCESS_COMMAND_LOCATION = "commandLocation";
+//	public static final String GENO_FIELDS_PROCESS_COMMAND_INPUT_FILE_FORMAT;
+//	public static final String GENO_FIELDS_PROCESS_COMMAND_OUTPUT_FILE_FORMAT;
+	public static final String GENO_FIELDS_PROCESS_INPUT_SERVER = "inputServer";
+	public static final String GENO_FIELDS_PROCESS_INPUT_LOCATION = "inputLocation";
+	public static final String GENO_FIELDS_PROCESS_INPUT_FILE_HASH = "inputFileHash";
+	public static final String GENO_FIELDS_PROCESS_INPUT_FILE_TYPE = "inputFileType";
+	public static final String GENO_FIELDS_PROCESS_INPUT_KEPT = "outputKept";
+	public static final String GENO_FIELDS_PROCESS_OUTPUT_SERVER = "outputServer";
+	public static final String GENO_FIELDS_PROCESS_OUTPUT_LOCATION = "outputLocation";
+	public static final String GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH = "outputFileHash";
+	public static final String GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE = "outputFileType";
+	public static final String GENO_FIELDS_PROCESS_OUTPUT_KEPT = "outputKept";
+	
 
 	/* Default Country */
 	public static final String DEFAULT_COUNTRY = "Australia";
