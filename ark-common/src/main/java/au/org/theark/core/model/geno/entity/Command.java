@@ -18,7 +18,7 @@ public class Command implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String name;
-	private String serverURL;
+	private String serverUrl;
 	private String location;
 	private String inputFileFormat;//TODO: 
 	private String outputFileFormat;
@@ -43,33 +43,42 @@ public class Command implements java.io.Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-/*
-	@Column(name = "NAME", length = 100)
-	public String getName() {
-		return this.name;
+
+	@Column(name = "LOCATION", length = 100)
+	public String getLocation() {
+		return this.location;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
-	@Column(name = "NAME", length = 100)
-	public String getName() {
-		return this.name;
+	@Column(name = "SERVER_URL", length = 100)
+	public String getServerUrl() {
+		return this.serverUrl;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setServerUrl(String serverUrl) {
+		this.serverUrl = serverUrl;
 	}
 
-	@Column(name = "NAME", length = 100)
-	public String getName() {
-		return this.name;
+	@Column(name = "INPUT_FILE_FORMAT", length = 100)
+	public String getInputFileFormat() {
+		return this.inputFileFormat;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setInputFileFormat(String inputFileFormat) {
+		this.inputFileFormat = inputFileFormat;
 	}
-*/
 
+	@Column(name = "OUTPUT_FILE_FORMAT", length = 100)
+	public String getOutputFileFormat() {
+		return this.outputFileFormat;
+	}
+
+	public void setOutputFileFormat(String outputFileFormat) {
+		this.outputFileFormat = outputFileFormat;
+	}
+	
+	
 }

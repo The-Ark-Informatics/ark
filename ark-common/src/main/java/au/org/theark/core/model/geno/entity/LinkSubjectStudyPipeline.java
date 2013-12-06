@@ -47,7 +47,7 @@ public class LinkSubjectStudyPipeline implements java.io.Serializable {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "LINK_SUBJECT_STUDY_ID")
+	@JoinColumn(name = "LSS_ID")
 	public LinkSubjectStudy getLinkSubjectStudy() {
 		return this.linkSubjectStudy;
 	}
