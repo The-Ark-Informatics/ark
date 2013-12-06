@@ -461,8 +461,8 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			csv.write(Constants.GENO_FIELDS_PIPELINE_ID);
 			csv.write(Constants.GENO_FIELDS_PIPELINE_NAME);
 			csv.write(Constants.GENO_FIELDS_PIPELINE_DECSRIPTION);
-			for (int i=1; i<=maxProcessesPerPipeline ; i++) { //one-based humanized
-				if(i==1){
+			for (int processIndex=1; processIndex<=maxProcessesPerPipeline ; processIndex++) { //one-based humanized
+				if(processIndex==1){
 					//process
 					csv.write(Constants.GENO_FIELDS_PROCESS_ID);
 					csv.write(Constants.GENO_FIELDS_PROCESS_NAME);
@@ -478,11 +478,19 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 					
 					//input
 					//for each of the inputs..........!!!!  EACH - there COULD be more than one
-					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER);
-					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION);
-					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH);
-					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE);
-					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT);
+					long maxInputsForThisProcess = 0L;
+					if(maxInputList!=null && maxInputList.get(new Long(processIndex))!=null){
+						maxInputsForThisProcess = maxInputList.get(new Long(processIndex));
+					}
+
+					for(long inputIndex=1 ; inputIndex<maxInputsForThisProcess ; inputIndex++){
+						//csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER);
+						csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex );
+						csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex );
+						csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex );
+						csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex );
+						csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex );
+					}
 	
 					//output
 					//for each of the outputs..........!!!!  EACH - there COULD be more than one
@@ -494,33 +502,33 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 				}
 				else{
 					//process
-					csv.write(Constants.GENO_FIELDS_PROCESS_ID + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_NAME + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_DESCRIPTION + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_START_TIME + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_END_TIME + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_ID + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_NAME + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_DESCRIPTION + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_START_TIME + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_END_TIME + "_" + processIndex);
 					
 					//commmand
-					csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_SERVER_URL + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_NAME + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_SERVER_URL + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_NAME + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + "_" + processIndex);
 	//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_INPUT_FILE_FORMAT)//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_OUTPUT_FILE_FORMAT);
 					
 					//input
 					//for each of the inputs..........!!!!  EACH - there COULD be more than one
-					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + "_" + processIndex);
 	
 					//output
 					//for each of the outputs..........!!!!  EACH - there COULD be more than one
-					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE + "_" + i);
-					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + i);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE + "_" + processIndex);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + processIndex);
 				}
 			}
 			csv.endLine();
