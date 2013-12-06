@@ -4200,19 +4200,19 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					//map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + (index>1?("_"+index):"")), (command==null?"":command.getName()));
 					
 					Set<ProcessInput> inputs = p.getProcessInputs();
-					long inputsIndex = 0L;
+					long inputIndex = 0L;
 					for(ProcessInput input : inputs){
-						inputsIndex++;
-						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + (processIndex>1?("_"+processIndex):"")), (input==null?"":input.getInputServer()));
-						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + (processIndex>1?("_"+processIndex):"")), (input==null?"":input.getinputFileLocation()));
-						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + (processIndex>1?("_"+processIndex):"")), (input==null?"":input.getInputFileHash()));
-						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + (processIndex>1?("_"+processIndex):"")), (input==null?"":input.getInputFileType()));
-						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + (processIndex>1?("_"+processIndex):"")), (input==null?"":input.getInputKept()));
+						inputIndex++;
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ) , (input==null?"":input.getInputServer()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":input.getinputFileLocation()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":input.getInputFileHash()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":input.getInputFileType()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":input.getInputKept()));
 						//TODO ASAP : now put all the input info in with a similar _<index> suffix
 					}
 
 					long maxInputCurrent = (maxInputList.get(processIndex)==null)?0L:maxInputList.get(processIndex);//get the procesIndex'th max input and see if it is bigger than 
-					maxInputList.put(processIndex, (maxInputCurrent>inputsIndex)?maxInputCurrent:inputsIndex);
+					maxInputList.put(processIndex, (maxInputCurrent>inputIndex)?maxInputCurrent:inputIndex);
 					
 
 					long outputsIndex = 0L;
