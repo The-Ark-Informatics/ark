@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.model.IModel;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -35,6 +36,7 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
@@ -834,4 +836,6 @@ public interface IArkCommonService<T> {
 	public void updateProcess(Process modelObject);
 
 	public void deleteProcess(Process modelObject);
+
+	public List<Command> getCommands();
 }
