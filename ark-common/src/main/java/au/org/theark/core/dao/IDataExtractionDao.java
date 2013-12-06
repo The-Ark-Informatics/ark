@@ -2,6 +2,7 @@ package au.org.theark.core.dao;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.DemographicField;
@@ -16,5 +17,5 @@ public interface IDataExtractionDao {
 	public File createSubjectDemographicCSV(Search search, DataExtractionVO devo, List<DemographicField> allSubjectFields, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory);
 	public File createBiospecimenDataCustomCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory);
 	public File createPhenotypicCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory);
-	public File createGenoCSV(Search search, DataExtractionVO devo, FieldCategory fieldCategory, int maxProcessesPerPipeline);
+	public File createGenoCSV(Search search, DataExtractionVO allTheData, FieldCategory geno, long maxProcessesPerPipeline, Map<Long, Long> maxInputList, Map<Long, Long> maxOutputList);
 }
