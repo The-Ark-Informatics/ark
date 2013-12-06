@@ -66,7 +66,7 @@ public class ProcessDetailForm extends AbstractDetailForm<Process> {
 		name = new TextField<String>("name");
 		name.add(new ArkDefaultFormFocusBehavior());
 		description = new TextField<String>("description");
-		startTime = new TextField<String>("startTime");
+		startTime = new TextField<String>("startTime");//TODO: analyze textfield construction?
 		endTime = new TextField<String>("endTime");
 		
 		attachValidators();
