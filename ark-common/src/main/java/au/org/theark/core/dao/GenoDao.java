@@ -13,6 +13,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.model.study.entity.Study;
@@ -127,5 +128,10 @@ public class GenoDao extends HibernateSessionDao implements IGenoDao {
 	
 	public void updateProcess(Process p) {
 		getSession().update(p);
+	}
+
+	public List<Command> getCommands() {
+		Criteria criteria = getSession().createCriteria(Command.class);
+		return criteria.list();
 	}
 }
