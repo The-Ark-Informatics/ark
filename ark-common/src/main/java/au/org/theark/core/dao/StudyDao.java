@@ -4207,23 +4207,27 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":input.getinputFileLocation()));
 						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":input.getInputFileHash()));
 						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":input.getInputFileType()));
-						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":input.getInputKept()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":(""+input.getInputKept())));
 						//TODO ASAP : now put all the input info in with a similar _<index> suffix
 					}
 
 					long maxInputCurrent = (maxInputList.get(processIndex)==null)?0L:maxInputList.get(processIndex);//get the procesIndex'th max input and see if it is bigger than 
 					maxInputList.put(processIndex, (maxInputCurrent>inputIndex)?maxInputCurrent:inputIndex);
 					
-
-					long outputsIndex = 0L;
+					long outputIndex = 0L;
 					Set<ProcessOutput> outputs = p.getProcessOutputs();
 					for(ProcessOutput output : outputs){
-						outputsIndex++;//TODO ASAP : now put all the output info in with a similar _<index> suffix
+						outputIndex++;//TODO ASAP : now put all the output info in with a similar _<index> suffix
+						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + (processIndex>1?("_"+processIndex):"") + "_" + outputIndex ) , (output==null?"":output.getOutputServer()));
+						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION + (processIndex>1?("_"+processIndex):"") + "_" + outputIndex ), (output==null?"":output.getOutputFileLocation()));
+						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH + (processIndex>1?("_"+processIndex):"") + "_" + outputIndex ), (output==null?"":output.getOutputFileHash()));
+						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE + (processIndex>1?("_"+processIndex):"") + "_" + outputIndex ), (output==null?"":output.getOutputFileType()));
+						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + (processIndex>1?("_"+processIndex):"") + "_" + outputIndex ), (output==null?"":(""+output.getOutputKept())));
 						
 					}
 
 					long maxOutputCurrent = (maxOutputList.get(processIndex)==null)?0L:maxOutputList.get(processIndex);//get the procesOutdex'th max output and see if it is bigger than 
-					maxOutputList.put(processIndex, (maxOutputCurrent>outputsIndex)?maxOutputCurrent:outputsIndex);
+					maxOutputList.put(processIndex, (maxOutputCurrent>outputIndex)?maxOutputCurrent:outputIndex);
 					
 					
 					/*
