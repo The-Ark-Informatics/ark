@@ -4203,11 +4203,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					long inputIndex = 0L;
 					for(ProcessInput input : inputs){
 						inputIndex++;
-						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ) , (input==null?"":input.getInputServer()));
-						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":input.getinputFileLocation()));
-						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":input.getInputFileHash()));
-						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":input.getInputFileType()));
-						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + (processIndex>1?("_"+processIndex):"") + "_" + inputIndex ), (input==null?"":(""+input.getInputKept())));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + "_" + processIndex + "_" + inputIndex ) , (input==null?"":input.getInputServer()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + "_"  + processIndex + "_" + inputIndex ), (input==null?"":input.getinputFileLocation()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + "_"  + processIndex + "_" + inputIndex ), (input==null?"":input.getInputFileHash()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + "_"  + processIndex + "_" + inputIndex ), (input==null?"":input.getInputFileType()));
+						map.put((Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + "_"  + processIndex + "_" + inputIndex ), (input==null?"":(""+input.getInputKept())));
 						//TODO ASAP : now put all the input info in with a similar _<index> suffix
 					}
 
@@ -4218,11 +4218,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					Set<ProcessOutput> outputs = p.getProcessOutputs();
 					for(ProcessOutput output : outputs){
 						outputIndex++;//TODO ASAP : now put all the output info in with a similar _<index> suffix
-						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + (processIndex>1?("_"+processIndex):"") + "_" + outputIndex ) , (output==null?"":output.getOutputServer()));
-						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION + (processIndex>1?("_"+processIndex):"") + "_" + outputIndex ), (output==null?"":output.getOutputFileLocation()));
-						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH + (processIndex>1?("_"+processIndex):"") + "_" + outputIndex ), (output==null?"":output.getOutputFileHash()));
-						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE + (processIndex>1?("_"+processIndex):"") + "_" + outputIndex ), (output==null?"":output.getOutputFileType()));
-						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + (processIndex>1?("_"+processIndex):"") + "_" + outputIndex ), (output==null?"":(""+output.getOutputKept())));
+						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + "_"  + processIndex + "_" + outputIndex ) , (output==null?"":output.getOutputServer()));
+						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION + "_" + processIndex + "_" + outputIndex ), (output==null?"":output.getOutputFileLocation()));
+						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH + "_" + processIndex + "_" + outputIndex ), (output==null?"":output.getOutputFileHash()));
+						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE + "_" + processIndex + "_" + outputIndex ), (output==null?"":output.getOutputFileType()));
+						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + processIndex + "_" + outputIndex ), (output==null?"":(""+output.getOutputKept())));
 						
 					}
 
