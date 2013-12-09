@@ -442,7 +442,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 	}
 	
 
-	public File createGenoCSV(Search search, DataExtractionVO devo, FieldCategory fieldCategory, long maxProcessesPerPipeline, Map<Long, Long> maxInputList, Map<Long, Long> maxOutputList){
+	public File createGenoCSV(Search search, DataExtractionVO devo, FieldCategory fieldCategory, Long maxProcessesPerPipeline, Map<Long, Long> maxInputList, Map<Long, Long> maxOutputList){
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("GENO.csv");
 		final java.io.File file = new File(tempDir, filename);
