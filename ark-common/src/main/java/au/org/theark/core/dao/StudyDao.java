@@ -1975,9 +1975,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 			Map<Long, Long> maxInputList = new HashMap<Long, Long>();//pass the index and do a max comparison to minimize a simple grid which will be too bulky
 			Map<Long, Long> maxOutputList = new HashMap<Long, Long>();
-			long maxProcessesPerPipeline = 0L;
+			Long maxProcessesPerPipeline = new Long(0L);
 			if(search.getIncludeGeno()){
-				addGenoData(allTheData, search, idsAfterFiltering, maxInputList, maxOutputList, maxProcessesPerPipeline);//TODO: test
+				maxProcessesPerPipeline = addGenoData(allTheData, search, idsAfterFiltering, maxInputList, maxOutputList, maxProcessesPerPipeline);//TODO: test
 			}
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getDemographicData(), FieldCategory.DEMOGRAPHIC_FIELD);
 			prettyLoggingOfWhatIsInOurMegaObject(allTheData.getSubjectCustomData(), FieldCategory.SUBJECT_CFD);
@@ -4114,8 +4114,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @param idsAfterFiltering
 	 * @param maxProcessesPerPipeline 
 	 */
-	private void addGenoData(DataExtractionVO allTheData, Search search, List<Long> idsAfterFiltering,
-						Map<Long, Long> maxInputList, Map<Long, Long> maxOutputList, long maxProcessesPerPipeline) {
+	private Long addGenoData(DataExtractionVO allTheData, Search search, List<Long> idsAfterFiltering,
+						Map<Long, Long> maxInputList, Map<Long, Long> maxOutputList, Long maxProcessesPerPipeline) {
 		log.info("idsAfterFiltering" + idsAfterFiltering);
 		
 		if (!idsAfterFiltering.isEmpty()) {
@@ -4180,7 +4180,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					processIndex++;
 					if(processIndex >= maxProcessesPerPipeline){
 						log.info("processIndex  maxProcessesPerPipeline = " + processIndex + "  " + maxProcessesPerPipeline);
-						maxProcessesPerPipeline = processIndex + 1;
+						maxProcessesPerPipeline = Long.valueOf(processIndex);
 					} 
 					else{
 						log.info("processIndex  maxProcessesPerPipeline = " + processIndex + "  " + maxProcessesPerPipeline);
@@ -4249,6 +4249,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 
 		}
+		return maxProcessesPerPipeline;
 	}
 	
 
