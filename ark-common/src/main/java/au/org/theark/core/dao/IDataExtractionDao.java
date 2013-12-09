@@ -17,5 +17,5 @@ public interface IDataExtractionDao {
 	public File createSubjectDemographicCSV(Search search, DataExtractionVO devo, List<DemographicField> allSubjectFields, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory);
 	public File createBiospecimenDataCustomCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory);
 	public File createPhenotypicCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory);
-	public File createGenoCSV(Search search, DataExtractionVO allTheData, FieldCategory geno, long maxProcessesPerPipeline, Map<Long, Long> maxInputList, Map<Long, Long> maxOutputList);
+	public File createGenoCSV(Search search, DataExtractionVO allTheData, FieldCategory geno, Long maxProcessesPerPipeline, Map<Long, Long> maxInputList, Map<Long, Long> maxOutputList);
 }
