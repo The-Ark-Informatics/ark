@@ -482,6 +482,11 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 					maxInputsForThisProcess = maxInputList.get(new Long(processIndex)).longValue();
 				}
 
+				long maxOutputsForThisProcess = 0L;
+				if(maxOutputList!=null && maxOutputList.get(new Long(processIndex))!=null){
+					maxOutputsForThisProcess = maxOutputList.get(new Long(processIndex)).longValue();
+				}
+
 				/**why ther heck isnt this workinG?
 				for(long inputIndex=1L ; inputIndex<=maxInputsForThisProcess ; inputIndex++){
 					//csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER);
@@ -499,8 +504,19 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + (processIndex>1?("_forProcess_"+processIndex):"") + "_" + inputIndex );
 					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + (processIndex>1?("_forProcess_"+processIndex):"") + "_" + inputIndex );
 					csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + (processIndex>1?("_forProcess_"+processIndex):"") + "_" + inputIndex );
-					inputIndex++;
-					
+					inputIndex++;	
+				}
+				
+
+				long outputIndex=1L ; 
+				while(outputIndex<=maxOutputsForThisProcess ){
+					//csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER);
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + (processIndex>1?("_forProcess_"+processIndex):"") + "_" + outputIndex );
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION + (processIndex>1?("_forProcess_"+processIndex):"") + "_" + outputIndex );
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH + (processIndex>1?("_forProcess_"+processIndex):"") + "_" + outputIndex );
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE + (processIndex>1?("_forProcess_"+processIndex):"") + "_" + outputIndex );
+					csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + (processIndex>1?("_forProcess_"+processIndex):"") + "_" + outputIndex );
+					outputIndex++;	
 				}
 				
 				
@@ -524,7 +540,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 				csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + "_" + processIndex);
 				csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + "_" + processIndex);
 				csv.write(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + "_" + processIndex);
-*/
+				
 				//output
 				//for each of the outputs..........!!!!  EACH - there COULD be more than one
 				csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + "_forProcess_" + processIndex);
@@ -532,6 +548,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 				csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH + "_forProcess_" + processIndex);
 				csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE + "_forProcess_" + processIndex);
 				csv.write(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_forProcess_" + processIndex);
+*/
 			}
 			csv.endLine();
 
@@ -583,21 +600,48 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION));
 			//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_INPUT_FILE_FORMAT)//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_OUTPUT_FILE_FORMAT);
 							
-							//input
-							//for each of the inputs..........!!!!  EACH - there COULD be more than one
-							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER));
-							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION));
-							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH));
-							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE));
-							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT));
-			
+							
+							long maxInputsForThisProcess = 0L;
+							if(maxInputList!=null && maxInputList.get(new Long(processIndex))!=null){
+								maxInputsForThisProcess = maxInputList.get(new Long(processIndex));
+							}
+							for(long inputIndex=1 ; inputIndex<maxInputsForThisProcess ; inputIndex++){
+								//input
+								//for each of the inputs..........!!!!  EACH - there COULD be more than one
+								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + "_" + processIndex + "_" + inputIndex ));
+								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + "_" + processIndex + "_" + inputIndex ));
+								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + "_" + processIndex + "_" + inputIndex ));
+								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + "_" + processIndex + "_" + inputIndex ));
+								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + "_" + processIndex + "_" + inputIndex ));
+							}
+							
+
+							
+							long maxOutputsForThisProcess = 0L;
+							if(maxOutputList!=null && maxOutputList.get(new Long(processIndex))!=null){
+								maxOutputsForThisProcess = maxOutputList.get(new Long(processIndex));
+							}
+							for(long outputIndex=1 ; outputIndex<maxOutputsForThisProcess ; outputIndex++){
+								//output
+								//for each of the outputs..........!!!!  EACH - there COULD be more than one
+								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + "_" + processIndex + "_" + outputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + "_" + processIndex + "_" + outputIndex ));
+								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION + "_" + processIndex + "_" + outputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION + "_" + processIndex + "_" + outputIndex ));
+								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH + "_" + processIndex + "_" + outputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH + "_" + processIndex + "_" + outputIndex ));
+								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE + "_" + processIndex + "_" + outputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE + "_" + processIndex + "_" + outputIndex ));
+								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + processIndex + "_" + outputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + processIndex + "_" + outputIndex ));
+							}
+
+							
+
+							
+								/*
 							//output
 							//for each of the outputs..........!!!!  EACH - there COULD be more than one
 							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER));
 							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION));
 							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH));
 							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE));
-							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT));
+							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT));*/
 						}
 						else{
 							//process
