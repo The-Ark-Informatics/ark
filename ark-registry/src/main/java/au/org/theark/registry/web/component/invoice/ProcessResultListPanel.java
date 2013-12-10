@@ -28,7 +28,6 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -44,6 +43,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.model.geno.entity.ProcessInput;
+import au.org.theark.core.model.geno.entity.ProcessOutput;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
@@ -278,6 +278,27 @@ public class ProcessResultListPanel extends Panel {
 				}
 				target.appendJavaScript("alert('ProcessInput Details : " + processInputDetails + "');");
 				
+				
+				List<ProcessOutput> list2 = iArkCommonService.getProcessOutputsForProcess(process);
+				StringBuilder processOutputDetails = new StringBuilder();
+				for (Iterator iterator = list2.iterator(); iterator.hasNext();) {
+					ProcessOutput processOutput = (ProcessOutput) iterator.next();
+					processOutputDetails.append("File Location: ");
+					processOutputDetails.append(processOutput.getOutputFileLocation());
+					processOutputDetails.append("<br>");
+					processOutputDetails.append("File Hash: ");
+					processOutputDetails.append(processOutput.getOutputFileHash());
+					processOutputDetails.append("<br>");
+					processOutputDetails.append("File type: ");
+					processOutputDetails.append(processOutput.getOutputFileType());
+					processOutputDetails.append("<br>");
+					processOutputDetails.append("Output Kept: ");
+					processOutputDetails.append(processOutput.getOutputKept());
+					processOutputDetails.append("<br>");
+					processOutputDetails.append("Output Server: ");
+					processOutputDetails.append(processOutput.getOutputServer());
+				}
+				target.appendJavaScript("alert('ProcessOutput Details : " + processOutputDetails + "');");
 				
 				// Set the modalWindow title and content
 				//modalWindow.setTitle("Edit Process Details");
