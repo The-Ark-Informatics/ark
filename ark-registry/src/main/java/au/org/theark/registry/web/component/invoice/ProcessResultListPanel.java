@@ -256,7 +256,7 @@ public class ProcessResultListPanel extends Panel {
 				SearchPanel sp = new SearchPanel("content", feedBackPanel, listView, containerForm, arkCrudContainerVO);
 				sp.initialisePanel();
 				
-				target.appendJavaScript("alert('Process : " + process.getName() + "');");
+				//target.appendJavaScript("alert('Process : " + process.getName() + "');");
 				List<ProcessInput> list = iArkCommonService.getProcessInputsForProcess(process);
 				StringBuilder processInputDetails = new StringBuilder();
 				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
@@ -266,15 +266,22 @@ public class ProcessResultListPanel extends Panel {
 					processInputDetails.append("<br>");
 					processInputDetails.append("Input Location: ");
 					processInputDetails.append(processInput.getinputFileLocation());
+					processInputDetails.append("<br>");
 					processInputDetails.append("File type: ");
 					processInputDetails.append(processInput.getInputFileType());
+					processInputDetails.append("<br>");
+					processInputDetails.append("Input Kept: ");
+					processInputDetails.append(processInput.getInputKept());
+					processInputDetails.append("<br>");
+					processInputDetails.append("Input Server: ");
+					processInputDetails.append(processInput.getInputServer());
 				}
 				target.appendJavaScript("alert('ProcessInput Details : " + processInputDetails + "');");
 				
 				
 				// Set the modalWindow title and content
-				modalWindow.setTitle("Edit Process Details");
-				modalWindow.setContent(new EmptyPanel("content"));
+				//modalWindow.setTitle("Edit Process Details");
+				//modalWindow.setContent(new EmptyPanel("content"));
 				
 				modalWindow.show(target);
 //				arkCrudContainerVO.getDetailPanelContainer().replaceWith(processDetailPanel);
