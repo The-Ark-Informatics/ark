@@ -1493,4 +1493,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<Command> getCommands() {
 		return genoDao.getCommands();
 	}
+
+	public List getProcessInputsForProcess(Process process) {
+		return genoDao.getProcessInputsForProcess(process);
+	}
 }
