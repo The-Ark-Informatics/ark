@@ -40,6 +40,7 @@ import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.model.geno.entity.ProcessInput;
+import au.org.theark.core.model.geno.entity.ProcessOutput;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
@@ -841,4 +842,6 @@ public interface IArkCommonService<T> {
 	public List<Command> getCommands();
 
 	public List<ProcessInput> getProcessInputsForProcess(Process process);
+
+	public List<ProcessOutput> getProcessOutputsForProcess(Process process);
 }
