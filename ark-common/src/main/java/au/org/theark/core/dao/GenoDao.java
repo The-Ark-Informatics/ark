@@ -96,7 +96,7 @@ public class GenoDao extends HibernateSessionDao implements IGenoDao {
 			criteria.add(Restrictions.eq("description", p.getDescription()));
 		}
 		
-		if(p.getPipeline() != null) {
+		if(p.getPipeline() != null && p.getId() != null) {
 			criteria.add(Restrictions.eq("pipeline", p.getPipeline()));
 		}
 		
