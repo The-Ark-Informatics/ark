@@ -581,6 +581,9 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 					map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + (index>1?("_"+index):"")), (command==null?"":command.getLocation()));
 					map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_SERVER_URL + (index>1?("_"+index):"")), (command==null?"":command.getServerUrl()));
 */
+					for(String key : keyValues.keySet()){
+						log.info(key + keyValues.get(key));
+					}
 					csv.write(keyValues.get(Constants.GENO_FIELDS_PIPELINE_ID));
 
 					csv.write(keyValues.get(Constants.GENO_FIELDS_PIPELINE_NAME));
@@ -605,7 +608,8 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 							if(maxInputList!=null && maxInputList.get(new Long(processIndex))!=null){
 								maxInputsForThisProcess = maxInputList.get(new Long(processIndex));
 							}
-							for(long inputIndex=1 ; inputIndex<maxInputsForThisProcess ; inputIndex++){
+							long inputIndex=1L;
+							while(inputIndex<=maxInputsForThisProcess){
 								//input
 								//for each of the inputs..........!!!!  EACH - there COULD be more than one
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + "_" + processIndex + "_" + inputIndex ));
@@ -613,6 +617,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + "_" + processIndex + "_" + inputIndex ));
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + "_" + processIndex + "_" + inputIndex ));
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + "_" + processIndex + "_" + inputIndex ));
+								inputIndex++;
 							}
 							
 
@@ -621,7 +626,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 							if(maxOutputList!=null && maxOutputList.get(new Long(processIndex))!=null){
 								maxOutputsForThisProcess = maxOutputList.get(new Long(processIndex));
 							}
-							for(long outputIndex=1 ; outputIndex<maxOutputsForThisProcess ; outputIndex++){
+							for(long outputIndex=1L ; outputIndex<=maxOutputsForThisProcess ; outputIndex++){
 								//output
 								//for each of the outputs..........!!!!  EACH - there COULD be more than one
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + "_" + processIndex + "_" + outputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + "_" + processIndex + "_" + outputIndex ));
@@ -631,7 +636,12 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + processIndex + "_" + outputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + processIndex + "_" + outputIndex ));
 							}
 
-							
+
+
+							log.info("\n\nprocess=" + processIndex + 
+									"    \n max in=" + maxInputsForThisProcess + "   \n  max outs=" + maxOutputsForThisProcess
+									+ "\nequation=" + (inputIndex<maxInputsForThisProcess)
+									);
 
 							
 								/*
@@ -663,14 +673,15 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 								maxInputsForThisProcess = maxInputList.get(new Long(processIndex));
 							}
 
-							for(long inputIndex=1 ; inputIndex<maxInputsForThisProcess ; inputIndex++){
-								//input
-								//for each of the inputs..........!!!!  EACH - there COULD be more than one
+							long inputIndex=1L ;
+							while(inputIndex<=maxInputsForThisProcess){
+								log.info("pr=" + processIndex + " in=" + inputIndex);
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_SERVER + "_" + processIndex + "_" + inputIndex ));
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_LOCATION + "_" + processIndex + "_" + inputIndex ));
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_HASH + "_" + processIndex + "_" + inputIndex ));
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_FILE_TYPE + "_" + processIndex + "_" + inputIndex ));
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + "_" + processIndex + "_" + inputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_INPUT_KEPT + "_" + processIndex + "_" + inputIndex ));
+								inputIndex++;
 							}
 
 
@@ -679,7 +690,12 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 								maxOutputsForThisProcess = maxOutputList.get(new Long(processIndex));
 							}
 
-							for(long outputIndex=1 ; outputIndex<maxOutputsForThisProcess ; outputIndex++){
+							log.info("\n\nprocess=" + processIndex + 
+									"    \n max in=" + maxInputsForThisProcess + "   \n  max outs=" + maxOutputsForThisProcess
+									+ "\nequation=" + (inputIndex<maxInputsForThisProcess)
+									);
+							
+							for(long outputIndex=1 ; outputIndex<=maxOutputsForThisProcess ; outputIndex++){
 								//output
 								//for each of the outputs..........!!!!  EACH - there COULD be more than one
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + "_" + processIndex + "_" + outputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER + "_" + processIndex + "_" + outputIndex ));
