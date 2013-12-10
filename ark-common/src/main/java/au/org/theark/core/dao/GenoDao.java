@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
+import au.org.theark.core.model.geno.entity.ProcessInput;
 import au.org.theark.core.model.study.entity.Study;
 
 /**
@@ -138,5 +139,22 @@ public class GenoDao extends HibernateSessionDao implements IGenoDao {
 	public List<Command> getCommands() {
 		Criteria criteria = getSession().createCriteria(Command.class);
 		return criteria.list();
+	}
+	
+	public List<ProcessInput> getProcessInputsForProcess(Process p) {
+		List<ProcessInput> list = new ArrayList();
+		Criteria criteria = buildGeneralProcessInputCriteria(p);
+		list = criteria.list();
+		return list; 
+	}
+
+	private Criteria buildGeneralProcessInputCriteria(Process p) {
+		Criteria criteria = getSession().createCriteria(ProcessInput.class);
+		
+		if(p.getId() != null){
+			criteria.add(Restrictions.eq("process", p));
+		}
+		
+		return criteria;
 	}
 }

@@ -43,5 +43,7 @@ public interface IGenoDao {
 
 	public List<Command> getCommands();
 
+	public List getProcessInputsForProcess(Process process);
+
 }
 

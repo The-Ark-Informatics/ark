@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.registry.web.component.invoice;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -25,10 +26,9 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -41,10 +41,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
-import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.geno.entity.ProcessInput;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
@@ -257,11 +256,27 @@ public class ProcessResultListPanel extends Panel {
 				SearchPanel sp = new SearchPanel("content", feedBackPanel, listView, containerForm, arkCrudContainerVO);
 				sp.initialisePanel();
 				
+				target.appendJavaScript("alert('Process : " + process.getName() + "');");
+				List<ProcessInput> list = iArkCommonService.getProcessInputsForProcess(process);
+				StringBuilder processInputDetails = new StringBuilder();
+				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+					ProcessInput processInput = (ProcessInput) iterator.next();
+					processInputDetails.append("FileHash: ");
+					processInputDetails.append(processInput.getInputFileHash());
+					processInputDetails.append("<br>");
+					processInputDetails.append("Input Location: ");
+					processInputDetails.append(processInput.getinputFileLocation());
+					processInputDetails.append("File type: ");
+					processInputDetails.append(processInput.getInputFileType());
+				}
+				target.appendJavaScript("alert('ProcessInput Details : " + processInputDetails + "');");
+				
+				
 				// Set the modalWindow title and content
-//				modalWindow.setTitle("Edit Process Details");
-//				modalWindow.setContent(processDetailPanel);
-//				
-//				modalWindow.show(target);
+				modalWindow.setTitle("Edit Process Details");
+				modalWindow.setContent(new EmptyPanel("content"));
+				
+				modalWindow.show(target);
 //				arkCrudContainerVO.getDetailPanelContainer().replaceWith(processDetailPanel);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 
