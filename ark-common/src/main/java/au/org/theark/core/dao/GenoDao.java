@@ -6,6 +6,7 @@
  */
 package au.org.theark.core.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -96,7 +97,7 @@ public class GenoDao extends HibernateSessionDao implements IGenoDao {
 			criteria.add(Restrictions.eq("description", p.getDescription()));
 		}
 		
-		if(p.getPipeline() != null && p.getId() != null) {
+		if(p.getPipeline() != null && p.getPipeline().getId() != null) {
 			criteria.add(Restrictions.eq("pipeline", p.getPipeline()));
 		}
 		
@@ -111,10 +112,14 @@ public class GenoDao extends HibernateSessionDao implements IGenoDao {
 	}
 
 	public List searchPageableProcesses(Process p, int first, int count) {
+		List<Pipeline> list = new ArrayList();
+		if(p !=null && p.getPipeline().getId() == null) {
+			return list;
+		}
 		Criteria criteria = buildGeneralProcessCriteria(p);
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
-		List<Pipeline> list = criteria.list();
+		list = criteria.list();
 		return list;
 	}
 
