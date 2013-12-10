@@ -603,7 +603,6 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION));
 			//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_INPUT_FILE_FORMAT)//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_OUTPUT_FILE_FORMAT);
 							
-							
 							long maxInputsForThisProcess = 0L;
 							if(maxInputList!=null && maxInputList.get(new Long(processIndex))!=null){
 								maxInputsForThisProcess = maxInputList.get(new Long(processIndex));
@@ -620,8 +619,6 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 								inputIndex++;
 							}
 							
-
-							
 							long maxOutputsForThisProcess = 0L;
 							if(maxOutputList!=null && maxOutputList.get(new Long(processIndex))!=null){
 								maxOutputsForThisProcess = maxOutputList.get(new Long(processIndex));
@@ -636,15 +633,12 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 								csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + processIndex + "_" + outputIndex )== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + processIndex + "_" + outputIndex ));
 							}
 
-
-
 							log.info("\n\nprocess=" + processIndex + 
 									"    \n max in=" + maxInputsForThisProcess + "   \n  max outs=" + maxOutputsForThisProcess
 									+ "\nequation=" + (inputIndex<maxInputsForThisProcess)
 									);
-
 							
-								/*
+							/*
 							//output
 							//for each of the outputs..........!!!!  EACH - there COULD be more than one
 							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_OUTPUT_SERVER));
@@ -666,7 +660,6 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_NAME + "_" + processIndex)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_NAME + "_" + processIndex));
 							csv.write((keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + "_" + processIndex)== null)?"":keyValues.get(Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + "_" + processIndex));
 			//				csv.write((Constants.GENO_FIELDS_PROCESS_COMMAND_INPUT_FILE_FORMAT)//				csv.write(Constants.GENO_FIELDS_PROCESS_COMMAND_OUTPUT_FILE_FORMAT));
-
 
 							long maxInputsForThisProcess = 0L;
 							if(maxInputList!=null && maxInputList.get(new Long(processIndex))!=null){
@@ -715,9 +708,6 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 							 */
 						}
 					}
-										
-					
-					
 					
 					//TODO:  replace this with hardcoded use of the field names or use the function if 
 					//		available to getColumnOf(GENO_FIELD_PIPELINE_ID) and put it in there at appropriate line
@@ -840,5 +830,4 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 
 		return file;
 	}
-
 }
