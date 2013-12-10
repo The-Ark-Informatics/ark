@@ -18,6 +18,7 @@ import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.model.geno.entity.ProcessInput;
+import au.org.theark.core.model.geno.entity.ProcessOutput;
 import au.org.theark.core.model.study.entity.Study;
 
 /**
@@ -153,6 +154,23 @@ public class GenoDao extends HibernateSessionDao implements IGenoDao {
 		
 		if(p.getId() != null){
 			criteria.add(Restrictions.eq("process", p));
+		}
+		
+		return criteria;
+	}
+
+	public List getProcessOutputsForProcess(Process process) {
+		List<ProcessInput> list = new ArrayList();
+		Criteria criteria = buildGeneralProcessOutputCriteria(process);
+		list = criteria.list();
+		return list; 
+	}
+
+	private Criteria buildGeneralProcessOutputCriteria(Process process) {
+		Criteria criteria = getSession().createCriteria(ProcessOutput.class);
+		
+		if(process.getId() != null){
+			criteria.add(Restrictions.eq("process", process));
 		}
 		
 		return criteria;
