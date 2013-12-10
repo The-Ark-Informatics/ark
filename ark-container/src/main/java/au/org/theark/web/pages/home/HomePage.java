@@ -205,8 +205,6 @@ public class HomePage extends BasePage {
 					}
 				}
 				
-				/**
-				 * To be utilized once geno complete
 				if(arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_REGISTRY)){
 					//  Registry
 					RegistryTabProviderImpl regoTab = new RegistryTabProviderImpl(arkModule.getName());
@@ -215,7 +213,6 @@ public class HomePage extends BasePage {
 						moduleTabsList.add(tab);
 					}
 				}
-				*/
 								
 				if(arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_REPORTING)){
 					// Reporting always displayed, but data extraction function requires role/permisssion 
