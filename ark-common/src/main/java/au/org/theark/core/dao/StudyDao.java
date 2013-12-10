@@ -4222,8 +4222,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_LOCATION + "_" + processIndex + "_" + outputIndex ), (output==null?"":output.getOutputFileLocation()));
 						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_HASH + "_" + processIndex + "_" + outputIndex ), (output==null?"":output.getOutputFileHash()));
 						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_FILE_TYPE + "_" + processIndex + "_" + outputIndex ), (output==null?"":output.getOutputFileType()));
-						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + processIndex + "_" + outputIndex ), (output==null?"":(""+output.getOutputKept())));
-						
+						map.put((Constants.GENO_FIELDS_PROCESS_OUTPUT_KEPT + "_" + processIndex + "_" + outputIndex ), (output==null?"":(""+output.getOutputKept())));						
 					}
 
 					long maxOutputCurrent = (maxOutputList.get(processIndex)==null)?0L:maxOutputList.get(processIndex);//get the procesOutdex'th max output and see if it is bigger than 
