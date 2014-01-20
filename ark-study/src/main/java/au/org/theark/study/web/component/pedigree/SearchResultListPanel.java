@@ -7,6 +7,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -14,6 +15,7 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
@@ -134,6 +136,9 @@ public class SearchResultListPanel extends Panel {
 					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("mother").setEnabled(false);
 				}
 				
+				if("Brother".equalsIgnoreCase(relationshipVo.getRelationship()) || "Sister".equalsIgnoreCase(relationshipVo.getRelationship())){
+					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("twin").setEnabled(true);
+				}
 				
 				
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
@@ -180,6 +185,7 @@ public class SearchResultListPanel extends Panel {
 				//Refresh relationship list
 				arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("father").setEnabled(true);
 				arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("mother").setEnabled(true);
+				arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("twin").setEnabled(false);
 				sitePageableListView.removeAll();
 				containerForm.getModelObject().setRelationshipList(iStudyService.generateSubjectPedigreeRelativeList(subjectFromBackend.getLinkSubjectStudy().getSubjectUID(),sessionStudyId));
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
@@ -222,6 +228,24 @@ public class SearchResultListPanel extends Panel {
 				
 			}
 		};
+		
+//		class JavascriptEventConfirmation extends AttributeModifier {
+//		    public JavascriptEventConfirmation(String event, String msg) {
+//		        super(event, new Model(msg));
+//		    }
+//		 
+//		    protected String newValue(final String currentValue, final String replacementValue) {
+//		        String prefix = "var conf = confirm('" + replacementValue + "'); " +
+//		            "if (!conf) return false; ";
+//		        String result = prefix;
+//		        if (currentValue != null) {
+//		            result = prefix + currentValue;
+//		        }
+//		        return result;
+//		    }
+//		}
+//		
+//		link.add(new JavascriptEventConfirmation("onclick", "are you sure?"));
 		Label nameLinkLabel = new Label("unsetLbl", "Unset");
 		link.add(nameLinkLabel);
 		return link;

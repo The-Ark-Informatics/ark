@@ -115,6 +115,7 @@ public class SearchForm extends Form<PedigreeVo> {
 			}				
 			
 		};
+		twinButton.setEnabled(false);
 		
 		viewButton = new AjaxButton(au.org.theark.core.Constants.VIEW){
 			
