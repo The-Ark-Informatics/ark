@@ -12,6 +12,11 @@ float:right;
 padding-bottom:10px;
 width:50%;
 }
+.pedigreeButtons {
+float:right;
+padding-bottom:10px;
+width:58%;
+}
 .printButtons {
 float:left;
 margin:10px auto auto 20%;
