@@ -20,7 +20,7 @@
 		</license>
 	</licenses>
 	<dependencies>
-		<!--  Ark Dependencies -->
+		<!--  Ark Dependencies  -->
 		<dependency>
 			<groupId>au.org.theark.core</groupId>
 			<artifactId>ark-common</artifactId>
