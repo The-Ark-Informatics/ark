@@ -67,6 +67,9 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.lims.entity.InvFreezer;
+import au.org.theark.core.model.lims.entity.InvRack;
+import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
@@ -75,6 +78,7 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
+import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 
 /**
@@ -120,14 +124,23 @@ public class GridBoxPanel extends Panel {
 			log.info("InvBox ID: " + limsVo.getInvBox().getId());
 		}
 		
+		
 		StringBuilder str = new StringBuilder();
-		str.append(limsVo.getInvBox().getInvRack().getInvFreezer().getInvSite().getName());
+		InvBox box = iInventoryService.getInvBox(limsVo.getInvBox().getId()); //limsVo.getInvBox();
+		InvRack rack = box.getInvRack();
+		InvFreezer freezer = rack.getInvFreezer();
+		InvSite site  = freezer.getInvSite();
+		log.info(site.getName());
+		
+		
+		
+		str.append(site.getName());
 		str.append(" > ");
-		str.append(limsVo.getInvBox().getInvRack().getInvFreezer().getName());
+		str.append(freezer.getName());
 		str.append(" > ");
-		str.append(limsVo.getInvBox().getInvRack().getName());
+		str.append(rack.getName());
 		str.append(" > ");
-		str.append(limsVo.getInvBox().getName());
+		str.append(box.getName());
 		
 		add(new Label("boxName", str.toString()));
 		
