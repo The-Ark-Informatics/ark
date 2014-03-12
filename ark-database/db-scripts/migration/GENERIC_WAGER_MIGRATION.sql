@@ -96,6 +96,7 @@ FROM zeus.SUBJECT
 WHERE studykey=@STUDYKEY;
 
 -- Home phone
+-- Trav : mix of hard code and not through out...not same field though, so i am fine with it.
 INSERT INTO study.phone (area_code, phone_number, person_id, phone_type_id, phone_status_id)
 SELECT 
     NULL as area_code,
@@ -144,6 +145,7 @@ AND sub.mobile_phone IS NOT NULL
 AND s.studyname=@STUDYNAME;
 
 -- Address
+-- trav may get referencial issues
 INSERT INTO study.address
 (`ADDRESS_LINE_1`,`STREET_ADDRESS`,`CITY`,`STATE_ID`,`POST_CODE`,`COUNTRY_ID`,`ADDRESS_STATUS_ID`,`ADDRESS_TYPE_ID`,`OTHER_STATE`,`PERSON_ID`,`PREFERRED_MAILING_ADDRESS`)
 SELECT 
@@ -166,6 +168,7 @@ AND `person`.`OTHER_ID` IS NOT NULL
 AND s.studyname=@STUDYNAME;
 
 -- Insert subject/consent details into parent study
+-- trav assuming wager doesnt have a statuis or consent status itself
 INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, subject_uid, consent_status_id)
 SELECT 
     `person`.`id`,
@@ -181,6 +184,7 @@ AND `person`.`OTHER_ID` IS NOT NULL
 AND s.studyname=@STUDYNAME;
 
 -- Insert child-study subjects
+-- trav please explain consent section key
 -- Based on consent to particular sub-study, if not consented to any sub-study (or consent in fact wrong, subjects will be missed)
 INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, subject_uid, consent_status_id, consent_date, comments)
 SELECT 
@@ -313,18 +317,26 @@ GROUP BY bt.biospecimenkey
 SET b.units = bt.units;
 */
 
+
+-- Trav : is this not done already?
 INSERT INTO `lims`.`biospecimen_protocol` (NAME) 
 SELECT DISTINCT protocol FROM wagerlab.IX_BIOSPECIMEN WHERE protocol IS NOT NULL
 AND protocol NOT IN (SELECT NAME FROM lims.biospecimen_protocol);
 
+
+-- Trav : is this not done already?
 INSERT INTO `lims`.`biospecimen_grade` (NAME) 
 SELECT DISTINCT GRADE FROM wagerlab.IX_BIOSPECIMEN WHERE GRADE IS NOT NULL
 AND grade NOT IN (SELECT NAME FROM lims.biospecimen_grade);
 
+
+-- Trav : is this not done already?
 INSERT INTO `lims`.`biospecimen_storage` (NAME) 
 SELECT DISTINCT STORED_IN FROM wagerlab.IX_BIOSPECIMEN WHERE STORED_IN IS NOT NULL
 AND STORED_IN NOT IN (SELECT NAME FROM lims.biospecimen_storage);
 
+
+-- Trav : is this not done already?
 INSERT INTO lims.unit (NAME)
 SELECT DISTINCT unit
 FROM wagerlab.IX_BIO_TRANSACTIONS
@@ -334,6 +346,7 @@ AND unit NOT IN (SELECT NAME FROM lims.unit);
 
 -- Insert biospecimens
 -- Require all biocollections (encounter) to match accordingly
+-- Trav : let's run this slowly with a small sample or something???
 INSERT INTO `lims`.`biospecimen`
 (`BIOSPECIMEN_UID`,
 `STUDY_ID`,
@@ -442,6 +455,7 @@ SET
     b.parentid = p.parentid;
 
 -- Insert bio_transactions
+-- Trav : these may now need units themselves (just take from biospecimen)
 INSERT INTO `lims`.`bio_transaction`
 (`BIOSPECIMEN_ID`,
 `TRANSACTION_DATE`,
@@ -980,6 +994,7 @@ INSERT INTO `lims`.`biocollectionuid_template`
 VALUES (@STUDYKEY, 'TN', NULL, 5);
 
 -- Set base sequence count
+-- Trav : TODO CREATE PARAMS
 DELETE FROM `lims`.`biocollectionuid_sequence` 
 WHERE
     `STUDY_NAME_ID` = @STUDYNAME;
@@ -998,6 +1013,7 @@ AND name like 'TN%'),
 );
 
 -- Biospecimen pattern
+-- Trav : TODO CREATE PARAMS
 DELETE FROM `lims`.`biospecimenuid_template` 
 WHERE
     `STUDY_ID` = @STUDYKEY;
@@ -1024,6 +1040,7 @@ VALUES
 );
 
 -- Assign modules to all studies
+-- Trav : In each study analyze which modules are needed - or select them all and add the appropriate for max coverage.
 DELETE FROM `study`.`link_study_arkmodule` 
 WHERE
     study_id IN (SELECT 
