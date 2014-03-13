@@ -210,7 +210,6 @@ AND sub.`SUBJECTKEY` = `person`.`OTHER_ID`
 AND `person`.`OTHER_ID` IS NOT NULL
 AND s.studyname=@STUDYNAME;
 
-/*
 -- Insert child-study subjects
 -- Based on consent to particular sub-study, if not consented to any sub-study (or consent in fact wrong, subjects will be missed)
 INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, subject_uid, consent_status_id, consent_date, comments)
@@ -232,9 +231,7 @@ AND s.studyname=@STUDYNAME
 AND css.consentsectionkey=300 AND css.substudykey = ss.substudykey
 AND csub.consstudysectkey = css.consstudysectkey
 AND csub.subjectkey = sub.subjectkey;
-*/
 
-/*
 -- Some subjects/sub-studies may have been missed. This adds any missed based on admission sub-study (should only have the one "dodgy" subject)
 -- run select as a check first, but otherwise not needed to execute INSERT
 INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, subject_uid, comments)
@@ -266,7 +263,6 @@ AND `adm`.collectiongroupkey = ss.substudykey
 AND ss.studykey = @STUDYKEY
 AND `adm`.`DELETED` = 0
 );
-*/
 
 -- Insert admissions/bioCollection
 -- Based on particular sub-study, if sub-study (collectiongroupkey) is incorrect, collections will be missed
@@ -313,7 +309,7 @@ FROM
 WHERE
     `adm`.`patientkey` = s.SUBJECTKEY
 AND s.subjectid = `lss`.`subject_uid`
-AND `lss`.study_id = s.studykey -- `adm`.collectiongroupkey
+AND `lss`.study_id = `adm`.collectiongroupkey
 AND `adm`.studykey = s.studykey
 AND `adm`.collectiongroupkey = ss.substudykey
 AND ss.studykey = @STUDYKEY
@@ -448,7 +444,7 @@ FROM
 WHERE
     `b`.`patientkey` = s.SUBJECTKEY
 AND s.subjectid = `lss`.`subject_uid`
-AND `lss`.study_id = `b`.studykey
+AND `lss`.study_id = `b`.substudykey
 AND `b`.substudykey = ss.substudykey
 AND ss.studykey = @STUDYKEY
 AND `b`.`DELETED` = 0;
@@ -504,7 +500,7 @@ WHERE
     reason like 'Initia%'
         AND status_id IS NULL;
 
--- SITES ************************* NEARLY WORKS NEEDS TWEAKING
+-- SITES
 INSERT INTO `lims`.`inv_site`
 (
 `DELETED`,
@@ -523,7 +519,7 @@ FROM wagerlab.IX_INV_SITE
 WHERE ldap_group != 'SJOG';
 
 INSERT INTO lims.study_inv_site (study_id, inv_site_id)
-SELECT id, (SELECT id FROM lims.inv_site WHERE name = 'WADB (SCGH)')
+SELECT id, (SELECT id FROM lims.inv_site WHERE name != 'SJOG')
 FROM study.study
 WHERE parent_id = @STUDYKEY;
 
@@ -612,7 +608,6 @@ WHERE `t`.`BOXKEY` = `b`.`BOXKEY`
 AND tank.TANKKEY = b.TANKKEY
 AND tank.NAME = f.NAME
 AND tank.TANKKEY NOT IN (222, 223, 224, 225);
-
 
 -- Insert a fake biospecimen for cell merging
 INSERT INTO `lims`.`biospecimen`
