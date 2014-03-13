@@ -3,8 +3,22 @@ SET @STUDYNAME= test;
 SET @AUTOGEN_SUBJECT = 123;
 SET @AUTOGEN_BIOSPECIMEN = 123;
 SET @AUTOGEN_BIOCOLLECTION = 123;
-SET @PADCHAR = 8; -- no of chars to pad out
+-- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
+SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
+-- apparently subject prefix comes from wager
+SET @SUBJECT_PREFIX = 'WTN';
+SET @BIOCOLLECTIONUID_PREFIX = 'TN';
+SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
+SET @BIOCOLLECTIONUID_TOKEN_DASH = '-';
+SET @BIOCOLLECTIONUID_PADCHAR_ID = 8;
 
+SET @BIOSPECIMEN_UID_PREFIX = 'TN';
+SET @BIOSPECIMENUID_TOKEN_ID = 1;
+SET @BIOSPECIMENUID_PADCHAR_ID = 8;
+
+-- SET @BIOCOLLECTIONUID_PREFIX = 8;
+-- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
+-- SET @BIOCOLLECTIONUID_PADCHAR_ID = 8;
 /*
 -- Remove any existing data
 DELETE FROM lims.inv_cell WHERE box_id IN 
@@ -65,7 +79,7 @@ s.OWNER AS `CHIEF_INVESTIGATOR`,
 s.LDAP_GROUP AS LDAP_GROUP_NAME,
 s.AUTO_CONSENT as AUTO_CONSENT,
 1 as SUBJECTUID_TOKEN_ID,
-@PADCHAR as SUBJECTUID_PADCHAR_ID,
+@SUBJECT_PADCHAR as SUBJECTUID_PADCHAR_ID,
 s.studykey as PARENT_ID,
 @AUTOGEN_BIOSPECIMEN as AUTO_GENERATE_BIOSPECIMENUID,
 @AUTOGEN_BIOCOLLECTION as AUTO_GENERATE_BIOCOLLECTIONUID
@@ -96,7 +110,6 @@ FROM zeus.SUBJECT
 WHERE studykey=@STUDYKEY;
 
 -- Home phone
--- Trav : mix of hard code and not through out...not same field though, so i am fine with it.
 INSERT INTO study.phone (area_code, phone_number, person_id, phone_type_id, phone_status_id)
 SELECT 
     NULL as area_code,
@@ -168,7 +181,7 @@ AND `person`.`OTHER_ID` IS NOT NULL
 AND s.studyname=@STUDYNAME;
 
 -- Insert subject/consent details into parent study
--- trav assuming wager doesnt have a statuis or consent status itself
+-- trav assuming wager doesnt have a status or consent status itself
 INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, subject_uid, consent_status_id)
 SELECT 
     `person`.`id`,
@@ -184,7 +197,6 @@ AND `person`.`OTHER_ID` IS NOT NULL
 AND s.studyname=@STUDYNAME;
 
 -- Insert child-study subjects
--- trav please explain consent section key
 -- Based on consent to particular sub-study, if not consented to any sub-study (or consent in fact wrong, subjects will be missed)
 INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, subject_uid, consent_status_id, consent_date, comments)
 SELECT 
@@ -317,32 +329,30 @@ GROUP BY bt.biospecimenkey
 SET b.units = bt.units;
 */
 
-
+/*
 -- Trav : is this not done already?
 INSERT INTO `lims`.`biospecimen_protocol` (NAME) 
 SELECT DISTINCT protocol FROM wagerlab.IX_BIOSPECIMEN WHERE protocol IS NOT NULL
 AND protocol NOT IN (SELECT NAME FROM lims.biospecimen_protocol);
 
 
--- Trav : is this not done already?
 INSERT INTO `lims`.`biospecimen_grade` (NAME) 
 SELECT DISTINCT GRADE FROM wagerlab.IX_BIOSPECIMEN WHERE GRADE IS NOT NULL
 AND grade NOT IN (SELECT NAME FROM lims.biospecimen_grade);
 
 
--- Trav : is this not done already?
 INSERT INTO `lims`.`biospecimen_storage` (NAME) 
 SELECT DISTINCT STORED_IN FROM wagerlab.IX_BIOSPECIMEN WHERE STORED_IN IS NOT NULL
 AND STORED_IN NOT IN (SELECT NAME FROM lims.biospecimen_storage);
 
 
--- Trav : is this not done already?
 INSERT INTO lims.unit (NAME)
 SELECT DISTINCT unit
 FROM wagerlab.IX_BIO_TRANSACTIONS
 WHERE studykey = @STUDYKEY
 AND DELETED =0
 AND unit NOT IN (SELECT NAME FROM lims.unit);
+*/
 
 -- Insert biospecimens
 -- Require all biocollections (encounter) to match accordingly
@@ -455,7 +465,7 @@ SET
     b.parentid = p.parentid;
 
 -- Insert bio_transactions
--- Trav : these may now need units themselves (just take from biospecimen)
+-- Trav : these may now need units themselves (just take from biospecimen) - we will just run a fix up script after to make sure the units are the correct references.
 INSERT INTO `lims`.`bio_transaction`
 (`BIOSPECIMEN_ID`,
 `TRANSACTION_DATE`,
@@ -983,6 +993,7 @@ AND bs.OLD_ID = bio.BIOSPECIMENKEY;
 */
 
 -- BioCollection pattern
+-- Trav : TODO CREATE PARAMS
 DELETE FROM `lims`.`biocollectionuid_template` 
 WHERE
     STUDY_ID = @STUDYKEY;
@@ -991,7 +1002,7 @@ INSERT INTO `lims`.`biocollectionuid_template`
 `BIOCOLLECTIONUID_PREFIX`,
 `BIOCOLLECTIONUID_TOKEN_ID`,
 `BIOCOLLECTIONUID_PADCHAR_ID`)
-VALUES (@STUDYKEY, 'TN', NULL, 5);
+VALUES (@STUDYKEY, @BIOCOLLECTIONUID_PREFIX, @BIOCOLLECTIONUID_TOKEN_ID, @BIOCOLLECTIONUID_PADCHAR_ID);
 
 -- Set base sequence count
 -- Trav : TODO CREATE PARAMS
@@ -1005,10 +1016,10 @@ INSERT INTO `lims`.`biocollectionuid_sequence`
 VALUES
 (
 @STUDYNAME,
-(SELECT MAX(TRIM('TN' FROM name)) + 1 -- NEED TO CHECK THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+(SELECT MAX(TRIM(@BIOCOLLECTIONUID_PREFIX FROM name)) + 1 -- NEED TO CHECK THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 FROM lims.biocollection
 WHERE study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
-AND name like 'TN%'),
+AND name like @BIOCOLLECTIONUID_PREFIX || '%'),  -- 'TN%'),
 0
 );
 
@@ -1022,7 +1033,7 @@ INSERT INTO `lims`.`biospecimenuid_template`
 `BIOSPECIMENUID_PREFIX`,
 `BIOSPECIMENUID_TOKEN_ID`,
 `BIOSPECIMENUID_PADCHAR_ID`)
-VALUES (@STUDYKEY, 'TN', NULL, 9); -- NEED TO CHECK THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+VALUES (@STUDYKEY, @BIOSPECIMENUID_PREFIX, @BIOSPECIMENUID_TOKEN_ID, @BIOSPECIMENUID_PADCHAR_ID); -- NEED TO CHECK THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 -- Set base sequence count
 DELETE FROM `lims`.`biospecimenuid_sequence` 
@@ -1060,10 +1071,11 @@ AND a.name IN ('Study', 'Subject', 'Phenotypic', 'LIMS')
 ORDER BY s.id, a.id;
 
 -- SET starting subject increment
+-- TRAV Params
 UPDATE `study`.`subjectuid_sequence` 
 SET 
     `UID_SEQUENCE` = (SELECT 
-            TRIM('0' FROM TRIM(LEADING 'WTN-' FROM (SELECT 
+            TRIM('0' FROM TRIM(LEADING @SUBJECT_PREFIX || @BIOCOLLECTIONUID_TOKEN_DASH FROM ( SELECT         -- 'WTN-' FROM (SELECT 
                                 max(subject_uid) maxid
                             FROM
                                 link_subject_study
