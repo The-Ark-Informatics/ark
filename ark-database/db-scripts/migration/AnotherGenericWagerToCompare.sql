@@ -19,6 +19,7 @@ SET @BIOSPECIMEN_UID_PREFIX = 'RAV';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
 SET @BIOSPECIMENUID_PADCHAR_ID = 5;
 
+SET SITE_PERMITTED = 'WADB (SCGH)'   -- IF MORE THAN ONE FIX THIS 
 
 -- SET @BIOCOLLECTIONUID_PREFIX = 8;
 -- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
@@ -524,12 +525,13 @@ WHERE ldap_group != 'SJOG'and 			-- TRAV TODO Remove this line after initial ins
 name not in (select name from lims.inv_site);
 
 
-
-
+-- map the sites to studies
 INSERT INTO lims.study_inv_site (study_id, inv_site_id)
-SELECT id, (SELECT id FROM lims.inv_site WHERE name = 'WADB (SCGH)')
+SELECT id, (SELECT id FROM lims.inv_site WHERE name = 'WADB (SCGH)')  --  TODO TRAV long term remove this
 FROM study.study
 WHERE parent_id = @STUDYKEY;
+
+
 
 -- FREEZERS
 INSERT INTO `lims`.`inv_freezer`
