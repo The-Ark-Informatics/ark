@@ -5,7 +5,6 @@ SET @AUTOGEN_BIOSPECIMEN = 1;
 SET @AUTOGEN_BIOCOLLECTION = 1;
 -- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
 
-
 -- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
 -- apparently subject prefix comes from wager
 -- SET @SUBJECT_PREFIX = 'RAV';
@@ -19,8 +18,6 @@ SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 SET @BIOSPECIMEN_UID_PREFIX = 'RAV';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
 SET @BIOSPECIMENUID_PADCHAR_ID = 5;
-
-
 
 
 -- SET @BIOCOLLECTIONUID_PREFIX = 8;
@@ -119,8 +116,6 @@ SELECT
   CAUSE_OF_DEATH as CAUSE_OF_DEATH
 FROM zeus.SUBJECT
 WHERE studykey=@STUDYKEY;
-
-
 
 
 -- Home phone
@@ -268,7 +263,7 @@ AND `adm`.`DELETED` = 0
 );
 */
 
--- TRav FYI Raves one less than number of people...investigate if that is ok
+-- FYI Raves one less than number of people...investigate if that is ok - it was due to delete ok..
 -- Insert admissions/bioCollection
 -- Based on particular sub-study, if sub-study (collectiongroupkey) is incorrect, collections will be missed
 INSERT INTO `lims`.`biocollection`
@@ -320,13 +315,13 @@ AND `adm`.collectiongroupkey = ss.substudykey
 AND ss.studykey = @STUDYKEY
 AND `adm`.`DELETED` = 0;
 
--- Trav is this necessary?  It's brokwn
 -- Insert biospecimen sampletypes that may not exist
+-- TRAV PROD  When you run this in prod...check what it is about to install and if we want them
 INSERT INTO lims.bio_sampletype (name, sampletype, samplesubtype)
 SELECT DISTINCT CONCAT(sampletype, ' / ', samplesubtype), sampletype, samplesubtype FROM wagerlab.IX_BIOSPECIMEN
 WHERE (sampletype, samplesubtype) NOT IN (SELECT sampletype, samplesubtype FROM lims.bio_sampletype);
 
--- TODO: HANDLE FOR STORED_IN / GRADE / 
+-- TODO: HANDLE FOR STORED_IN / GRADE / - we have none stored in the ark...does that matter?  are we losing data?
 
 /*
 -- Any Treatment types not already matched
@@ -434,9 +429,9 @@ SELECT
     `b`.`QTY_REMOVED`,
     `b`.`COMMENTS`,
     (`b`.`QTY_COLLECTED` + (IF(`b`.`QTY_REMOVED` IS NULL, 0, `b`.`QTY_REMOVED`))) as `quantity`,
-    IFNULL((SELECT id FROM lims.treatment_type tt WHERE UPPER(tt.name) = UPPER(b.TREATMENT)),1) as `treatment_type_id`,
+    IFNULL((SELECT min(id) FROM lims.treatment_type tt WHERE UPPER(tt.name) = UPPER(b.TREATMENT)),1) as `treatment_type_id`,
     1 as `barcoded`,
-    IFNULL((SELECT id FROM lims.unit WHERE name = b.UNITS), 0) as `UNIT_ID`,
+    IFNULL((SELECT min(id) FROM lims.unit WHERE name = b.UNITS), 0) as `UNIT_ID`,
     `b`.`PURITY`,
     (SELECT max(id) FROM lims.biospecimen_protocol WHERE name = b.PROTOCOL) as `BIOSPECIMEN_PROTOCOL_ID`,
     (SELECT max(id) FROM lims.biospecimen_grade WHERE name = b.GRADE) as `BIOSPECIMEN_GRADE_ID`,
@@ -454,6 +449,7 @@ AND `lss`.study_id = `b`.studykey
 AND `b`.substudykey = ss.substudykey
 AND ss.studykey = @STUDYKEY
 AND `b`.`DELETED` = 0;
+
 
 -- Trav I get safe update complaints about this - is it a safe update of everything?
 -- Update parent/child mapping
@@ -523,8 +519,12 @@ SELECT `DELETED`,
 `ADDRESS`,
 `NAME`,
 `PHONE` 
-FROM wagerlab.IX_INV_SITE
-WHERE ldap_group != 'SJOG';
+FROM wagerlab.IX_INV_SITE 
+WHERE ldap_group != 'SJOG'and 			-- TRAV TODO Remove this line after initial insert
+name not in (select name from lims.inv_site);
+
+
+
 
 INSERT INTO lims.study_inv_site (study_id, inv_site_id)
 SELECT id, (SELECT id FROM lims.inv_site WHERE name = 'WADB (SCGH)')
