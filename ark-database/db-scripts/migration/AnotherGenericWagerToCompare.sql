@@ -21,6 +21,71 @@ SET @BIOSPECIMENUID_PADCHAR_ID = 5;
 
 SET @SITE_PERMITTED = 'WADB (SCGH)' ;  -- IF MORE THAN ONE FIX THIS 
 
+/* 
+
+-- select every cell which has a biospecimen we care about
+select * from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+
+-- select every tray  which has a cell which has a biospecimen we care about
+select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+
+select * from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+
+-- select every box (rack in ark) which has a  tray (box in ark)  which has a cell which has a biospecimen we care about
+-- as we go on with this copied unindexed data...these queries will get so big though that we may just run
+
+-- 
+
+select distinct boxkey from wagerlab.ix_inv_tray where traykey in (1, 2, 12212, 123213213, 123123212, etc>> (from the previous query
+eg;
+
+select distinct boxkey from wagerlab.ix_inv_tray where traykey in (61);
+select * from wagerlab.ix_inv_tray where traykey in (61);
+
+select * from wagerlab.ix_inv_cell where traykey in (61);
+
+-- instead of
+
+select distinct boxkey from wagerlab.ix_inv_tray where traykey in
+(select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194));
+
+
+
+-- and 
+select distinct tankkey from wagerlab.ix_inv_box where boxid in (1, 12, 12321 etc from previous query)
+
+instead of
+
+select distinct tankkey from wagerlab.ix_inv_tray where 
+select distinct boxkey from wagerlab.ix_inv_tray where traykey in
+(select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194));
+
+
+
+select * from wagerlab.ix_inv_box where boxkey in 
+select boxkey from wagerlab.ix_inv_tray where traykey in
+(select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+
+
+select * from wagerlab.ix_inv_cell where biospecimenkey = -1; 
+
+-- change cell 601 to point to biospecimenkey 2188706 (new bio id = 501036)
+update wagerlab.ix_inv_cell set biospecimenkey = 2188706
+where cellkey = 601;
+
+select * from wagerlab.ix_inv_cell where cellkey = 601;
+
+
+select * from lims.biospecimen where old_id in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+
+*/
+
+SET @TANKS_PERMITTED = 'WADB (SCGH)' ;  -- IF MORE THAN ONE FIX THIS 
+SET @TANK_IDS_NOT_PERMITTED = (225,222,223,224) ;  -- IF MORE THAN ONE FIX THIS 
+SET @BOX_IDS_PERMITTED = (-1111111111) ;  -- IF MORE THAN ONE FIX THIS 
+SET @TRAY_IDS_PERMITTED = (61, -1111111111) ;  -- IF MORE THAN ONE FIX THIS 
+-- SET @CELLS_PERMITTED = (90) ;  -- IF MORE THAN ONE FIX THIS 
+
 -- SET @BIOCOLLECTIONUID_PREFIX = 8;
 -- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
 -- SET @BIOCOLLECTIONUID_PADCHAR_ID = 8;
@@ -683,7 +748,50 @@ AND bio.OLD_ID = c.biospecimenkey
 AND bio.study_id = @STUDYKEY
 and c.biospecimenkey >0 ;
 
-/*select * from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+/* 
+
+-- select every cell which has a biospecimen we care about
+select * from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+
+-- select every tray  which has a cell which has a biospecimen we care about
+select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+
+select * from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+
+-- select every box (rack in ark) which has a  tray (box in ark)  which has a cell which has a biospecimen we care about
+-- as we go on with this copied unindexed data...these queries will get so big though that we may just run
+
+-- 
+
+select distinct boxkey from wagerlab.ix_inv_tray where traykey in (1, 2, 12212, 123213213, 123123212, etc>> (from the previous query
+eg;
+
+select distinct boxkey from wagerlab.ix_inv_tray where traykey in (61);
+select * from wagerlab.ix_inv_tray where traykey in (61);
+
+select * from wagerlab.ix_inv_cell where traykey in (61);
+
+-- instead of
+
+select distinct boxkey from wagerlab.ix_inv_tray where traykey in
+(select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194));
+
+
+
+-- and 
+select distinct tankkey from wagerlab.ix_inv_box where boxid in (1, 12, 12321 etc from previous query)
+
+instead of
+
+select distinct tankkey from wagerlab.ix_inv_tray where 
+select distinct boxkey from wagerlab.ix_inv_tray where traykey in
+(select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194));
+
+
+
+select * from wagerlab.ix_inv_box where boxkey in 
+select boxkey from wagerlab.ix_inv_tray where traykey in
+(select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
 
 
 select * from wagerlab.ix_inv_cell where biospecimenkey = -1; 
@@ -696,6 +804,7 @@ select * from wagerlab.ix_inv_cell where cellkey = 601;
 
 
 select * from lims.biospecimen where old_id in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+
 */
 
 -- Set -1 biospecimen_id to nulls
@@ -1067,9 +1176,11 @@ VALUES
 (SELECT MAX(TRIM(@BIOCOLLECTIONUID_PREFIX FROM name)) + 1 -- NEED TO CHECK THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 FROM lims.biocollection
 WHERE study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
-AND name like @BIOCOLLECTIONUID_PREFIX || '%'),  -- 'TN%'),
+AND name like concat(@BIOCOLLECTIONUID_PREFIX, '%')),  -- 'TN%'),
 0
 );
+
+
 
 -- Biospecimen pattern
 -- Trav : TODO CREATE PARAMS
@@ -1123,24 +1234,28 @@ ORDER BY s.id, a.id;
 UPDATE `study`.`subjectuid_sequence` 
 SET 
     `UID_SEQUENCE` = (SELECT 
-            TRIM('0' FROM TRIM(LEADING @SUBJECT_PREFIX || @BIOCOLLECTIONUID_TOKEN_DASH FROM ( SELECT         -- 'WTN-' FROM (SELECT 
+            TRIM('0' FROM TRIM(LEADING concat(@SUBJECT_PREFIX, @BIOCOLLECTIONUID_TOKEN_DASH) FROM ( SELECT         -- 'WTN-' FROM (SELECT 
                                 max(subject_uid) maxid
                             FROM
-                                link_subject_study
+                                study.link_subject_study
                             WHERE
                                 study_id = @STUDYKEY)))
         )
 WHERE
     `STUDY_NAME_ID` = @STUDYNAME;
 
-
+select * from lims.biospecimen;
 
 
 -- There is a difference in wager and ark units 
 -- we are holding some biospcimens in ml type...move to mL type like the rest
 update biospecimen
-set units = 17 -- current ark ie mL
-where units = 101; -- wager ml
+set unit_id = 17 -- current ark ie mL
+where unit_id = 101 -- wager ml
+and study_id = @STUDYKEY;
+
+
+-- select * from lims.biospecimen  where study_id = 194
 
 
 -- update all transactions to have the units of their parents
@@ -1149,12 +1264,16 @@ where units = 101; -- wager ml
 /*
 add units to transaction - update existing data to ensure unit matches that of the parent;
 logic needs to make sure every transaction gets the unit of the biospecimen if it has one (app logic doesnt permit no unit but...), else use that of the parent, else use that of the grandparent, etc?
+
+TODO:  Look at this when re-running
 */
-update lims.bio_transaction t
+update lims.bio_transaction t 
 left join lims.biospecimen b on
     t.biospecimen_id = b.id
 	and b.study_id = @study_id
+--	and t.id = 0
 set
     t.unit_id = b.unit_id ;
 
+select count(*) from  lims.bio_transaction t -- where  t.id = 0;
 
