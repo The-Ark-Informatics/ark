@@ -1,0 +1,6 @@
+--todo cleanup
+
+ALTER TABLE `lims`.`inv_site` DROP FOREIGN KEY `FK_INV_SITE_STUDY` ;
+ALTER TABLE `lims`.`inv_site` DROP COLUMN `STUDY_ID` 
+, DROP INDEX `FK_INV_SITE_STUDY` ;
+
