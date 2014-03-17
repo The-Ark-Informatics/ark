@@ -268,6 +268,7 @@ AND `adm`.`DELETED` = 0
 );
 */
 
+-- TRav FYI Raves one less than number of people...investigate if that is ok
 -- Insert admissions/bioCollection
 -- Based on particular sub-study, if sub-study (collectiongroupkey) is incorrect, collections will be missed
 INSERT INTO `lims`.`biocollection`
@@ -319,6 +320,7 @@ AND `adm`.collectiongroupkey = ss.substudykey
 AND ss.studykey = @STUDYKEY
 AND `adm`.`DELETED` = 0;
 
+-- Trav is this necessary?  It's brokwn
 -- Insert biospecimen sampletypes that may not exist
 INSERT INTO lims.bio_sampletype (name, sampletype, samplesubtype)
 SELECT DISTINCT CONCAT(sampletype, ' / ', samplesubtype), sampletype, samplesubtype FROM wagerlab.IX_BIOSPECIMEN
@@ -453,6 +455,7 @@ AND `b`.substudykey = ss.substudykey
 AND ss.studykey = @STUDYKEY
 AND `b`.`DELETED` = 0;
 
+-- Trav I get safe update complaints about this - is it a safe update of everything?
 -- Update parent/child mapping
 UPDATE lims.biospecimen b
         INNER JOIN
@@ -465,18 +468,19 @@ UPDATE lims.biospecimen b
                 FROM
                     lims.biospecimen p
                 WHERE
-                    p.old_id = b.oldparent_id) as parent_id,
+                    p.old_id = b.oldparent_id and p.study_id = @studykey) as parent_id,
             (SELECT 
                     biospecimen_uid
                 FROM
                     lims.biospecimen p
                 WHERE
-                    p.old_id = b.oldparent_id) as parentid
+                    p.old_id = b.oldparent_id and p.study_id = @studykey) as parentid
     FROM
         lims.biospecimen b
     WHERE
         oldparent_id IS NOT NULL
             AND oldparent_id > - 1
+		and b.study_id = @studykey
     ORDER BY oldparent_id) p ON b.id = p.id 
 SET 
     b.parent_id = p.parent_id,
@@ -636,6 +640,7 @@ SELECT '-1' AS ID,
 '-1' AS DELETED
 FROM dual;
 
+-- Trav 38893 cells!
 -- CELLS
 INSERT INTO `lims`.`inv_cell`
 (`BOX_ID`,
@@ -652,8 +657,8 @@ SELECT
     `c`.`TIMESTAMP`,
     `c`.`ROWNO`,
     `c`.`COLNO`,
-bio.id as biospecimen_id,
-`c`.`BIOSPECIMENKEY`,
+	bio.id as biospecimen_id,
+	`c`.`BIOSPECIMENKEY`,
     (CASE
         WHEN `c`.`BIOSPECIMENKEY` > -1 THEN 2
         ELSE 1
@@ -665,9 +670,25 @@ FROM
 	lims.biospecimen bio
 WHERE
     `c`.`TRAYKEY` = `t`.`TRAYKEY`
-AND b.OLD_ID = `t`.`TRAYKEY`
+AND b.OLD_ID = `t`.`TRAYKEY`	
 AND bio.OLD_ID = c.biospecimenkey
-AND bio.study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY);
+AND bio.study_id = @STUDYKEY
+and c.biospecimenkey >0 ;
+
+/*select * from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+
+
+select * from wagerlab.ix_inv_cell where biospecimenkey = -1; 
+
+-- change cell 601 to point to biospecimenkey 2188706 (new bio id = 501036)
+update wagerlab.ix_inv_cell set biospecimenkey = 2188706
+where cellkey = 601;
+
+select * from wagerlab.ix_inv_cell where cellkey = 601;
+
+
+select * from lims.biospecimen where old_id in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+*/
 
 -- Set -1 biospecimen_id to nulls
 UPDATE `lims`.`inv_cell` 
