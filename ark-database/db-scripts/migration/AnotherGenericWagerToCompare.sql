@@ -19,7 +19,7 @@ SET @BIOSPECIMEN_UID_PREFIX = 'RAV';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
 SET @BIOSPECIMENUID_PADCHAR_ID = 5;
 
-SET SITE_PERMITTED = 'WADB (SCGH)'   -- IF MORE THAN ONE FIX THIS 
+SET @SITE_PERMITTED = 'WADB (SCGH)' ;  -- IF MORE THAN ONE FIX THIS 
 
 -- SET @BIOCOLLECTIONUID_PREFIX = 8;
 -- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
@@ -527,7 +527,7 @@ name not in (select name from lims.inv_site);
 
 -- map the sites to studies
 INSERT INTO lims.study_inv_site (study_id, inv_site_id)
-SELECT id, (SELECT id FROM lims.inv_site WHERE name = 'WADB (SCGH)')  --  TODO TRAV long term remove this
+SELECT id, (SELECT id FROM lims.inv_site WHERE name = @SITE_PERMITTED)  --  TODO TRAV long term remove this
 FROM study.study
 WHERE parent_id = @STUDYKEY;
 
@@ -555,7 +555,13 @@ FROM wagerlab.IX_INV_TANK t, wagerlab.IX_INV_SITE s, lims.inv_site lims_site
 WHERE t.SITEKEY = s.SITEKEY
 AND s.NAME = lims_site.NAME
 AND s.NAME != 'SJOG'
-AND t.TANKKEY NOT IN (222, 223, 224, 225);
+AND t.TANKKEY NOT IN (222, 223, 224, 225)
+and s.name = @SITE_PERMITTED	-- todo maybe group of sites
+and t.sitekey = @SITE_PERMITTED;
+
+select * from 
+
+select * from wagerlab.ix_inv_tank
 
 -- RACKS
 INSERT INTO `lims`.`inv_rack`
