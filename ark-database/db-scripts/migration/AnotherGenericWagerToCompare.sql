@@ -562,6 +562,10 @@ WHERE bt.biospecimenkey = b.old_id
 AND b.study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
 AND bt.DELETED = 0;
 
+/*
+select * from lims.bio_transaction where biospecimen_id in(
+select id from lims.biospecimen where study_id = @STUDYKEY)*/
+
 -- Update status if initial quantity (where possible)
 UPDATE lims.bio_transaction 
 SET 
@@ -569,6 +573,27 @@ SET
 WHERE
     reason like 'Initia%'
         AND status_id IS NULL;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 -- SITES ************************* NEARLY WORKS NEEDS TWEAKING
 INSERT INTO `lims`.`inv_site`
@@ -1256,7 +1281,12 @@ set unit_id = 17 -- current ark ie mL
 where unit_id = 101 -- wager ml
 and study_id = @STUDYKEY;
 
-
+/*
+select * from lims.biospecimen
+where unit_id = 101 -- wager ml
+and study_id = @STUDYKEY;
+select * from lims.unit;
+*/
 -- select * from lims.biospecimen  where study_id = 194
 
 
@@ -1268,14 +1298,27 @@ add units to transaction - update existing data to ensure unit matches that of t
 logic needs to make sure every transaction gets the unit of the biospecimen if it has one (app logic doesnt permit no unit but...), else use that of the parent, else use that of the grandparent, etc?
 
 TODO:  Look at this when re-running
-*/
+
 update lims.bio_transaction t 
-left join lims.biospecimen b on
+inner join lims.biospecimen b on
     t.biospecimen_id = b.id
 	and b.study_id = @study_id
---	and t.id = 0
+	and (t.UNIT_id is null or t.unit_id = 0)
 set
     t.unit_id = b.unit_id ;
 
+
+select count(*) from lims.bio_transaction t 
+ inner join lims.biospecimen b on
+    t.biospecimen_id = b.id
+	and b.study_id = @STUDYKEY
+	and (t.UNIT_id is null or t.unit_id = 0);
+
 select count(*) from  lims.bio_transaction t -- where  t.id = 0;
+*/
+
+select distinct hospital from wagerlab.ix_admissions;
+
+select distinct hospital from lims.biocollection where study_id  = 194;
+
 
