@@ -65,8 +65,9 @@ public class BiospecimenTreeProvidor implements ITreeProvider<Object> {
 		else if (obj instanceof Biospecimen) {
 			Biospecimen childBiospecimen = new Biospecimen();
 			childBiospecimen.setParent((Biospecimen) obj);
-			return childBiospecimen.getChildren().iterator(); //now maybe consider a fetch join with inv stuff
-			// changeing to line about, reduces about 10 selects...   return iLimsService.searchPageableBiospecimens(childBiospecimen, 0, 100).iterator();//maybe change to just getchildren?
+			// return childBiospecimen.getChildren().iterator(); //now maybe consider a fetch join with inv stuff
+			// changeing to line about, reduces about 10 selects...   
+			return iLimsService.searchPageableBiospecimens(childBiospecimen, 0, 100).iterator();//maybe change to just getchildren?
 		}
 		return null;
 	}
@@ -86,7 +87,7 @@ public class BiospecimenTreeProvidor implements ITreeProvider<Object> {
 		}
 		else if (obj instanceof Biospecimen) {
 			Biospecimen biospecimen = (Biospecimen) obj;
-			//biospecimen = iLimsService.getBiospecimenByUid(biospecimen.getBiospecimenUid(), biospecimen.getStudy());
+			//biospecimen = iLimsService.getBiospecimenByUid(biospecimen.getBiospecimenUid(), biospecimen.getStudy());  trav asks Should this be necessary?
 			return biospecimen.getParent() == null || !biospecimen.getChildren().isEmpty();
 		}
 		return false;
