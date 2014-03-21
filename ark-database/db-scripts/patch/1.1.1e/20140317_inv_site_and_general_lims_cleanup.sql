@@ -15,12 +15,13 @@ ALTER TABLE `lims`.`bio_transaction`
 , ADD INDEX `FK_BIOTRANSACTION_UNIT_IT_idx` (`UNIT_ID` ASC) ;
 
 
---stops repeat boxes in a rack
+-- stops repeat boxes in a rack
 alter table lims.inv_box add unique index (name, rack_id);
 
 
---stops repeat rows
+-- stops repeat rows
 alter table lims.inv_cell add unique index (box_id, rowno, colno);
 
 
-
+ALTER TABLE `lims`.`inv_site` 
+ADD UNIQUE INDEX `NAME_UNIQUE` (`NAME` ASC) ;
