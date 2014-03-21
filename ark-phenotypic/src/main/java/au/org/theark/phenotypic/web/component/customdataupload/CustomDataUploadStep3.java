@@ -135,7 +135,7 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 			//this is not the best way to do this fix TODO
 			List<String> listOfUidsToUpdate = new ArrayList<String>();				//TODO remove hardcoding
 
-			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase("Custom Data Sets")){
+			if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(iArkCommonService.getCustomFieldDataUploadType().getName())){//    "Custom Data Sets")){
 				CustomDataUploadValidator customFieldUploadValidator = new CustomDataUploadValidator(iArkCommonService);
 				validationMessages = customFieldUploadValidator.validateCustomFieldFileData(containerForm.getModelObject(), listOfUidsToUpdate, containerForm.getModelObject().getCustomFieldGroup());
 				containerForm.getModelObject().setUidsToUpload(listOfUidsToUpdate);
@@ -147,7 +147,7 @@ public class CustomDataUploadStep3 extends AbstractWizardStepPanel {
 			}
 			else{
 				//TODO : Throw error back to user
-				log.error("unexpected upload type");
+				log.error("unexpected upload type" + containerForm.getModelObject().getUpload().getUploadType().getName());
 			}
 			
 			this.containerForm.getModelObject().setValidationMessages(validationMessages);
