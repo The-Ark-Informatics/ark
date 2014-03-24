@@ -14,18 +14,38 @@ SELECT `DELETED`,
 `ADDRESS`,
 `NAME`,
 `PHONE` 
-FROM wagerlab.IX_INV_SITE 
-WHERE ldap_group != 'SJOG'and 			-- TRAV TODO Remove this line after initial insert
-name not in (select name from lims.inv_site);
+FROM wagerlab.IX_INV_SITE  s
+WHERE ldap_group != 'SJOG' 			-- TRAV TODO Remove this line after initial insert
+-- and name not in (select name from lims.inv_site)
+ON DUPLICATE KEY update DELETED = s.deleted, TIMESTAMP = s.TIMESTAMP, CONTACT = s.CONTACT, ADDRESS = s.ADDRESS, NAME = s.NAME, PHONE = s.PHONE;
 
-
+SELECT @STUDYKEY;
+SELECT * FROM lims.study_inv_site;
 -- map the sites to studies
 INSERT INTO lims.study_inv_site (study_id, inv_site_id)
-SELECT id, (SELECT id FROM lims.inv_site WHERE name = @SITE_PERMITTED)  --  TODO TRAV long term remove this
-FROM study.study
-WHERE parent_id = @STUDYKEY;
-
-
+SELECT @STUDYKEY, id
+FROM 
+(select id from lims.inv_site
+where (`NAME`) in
+(
+select `NAME` from wagerlab.ix_inv_site s
+where sitekey in
+(
+select sitekey from wagerlab.ix_inv_tank where tankkey in
+(
+select tankkey from wagerlab.ix_inv_box b
+where boxkey in
+(select boxkey from wagerlab.ix_inv_tray t,
+(select 
+    distinct c.traykey
+from
+    wagerlab.ix_biospecimen b,
+    wagerlab.ix_inv_cell c
+where b.BIOSPECIMENKEY = c.BIOSPECIMENKEY
+and b.studykey=@STUDYKEY) ct
+where t.traykey = ct.traykey)
+)
+))) s;
 
 -- FREEZERS
 INSERT INTO `lims`.`inv_freezer`
@@ -48,13 +68,20 @@ SELECT t.DELETED, t.TIMESTAMP, t.LOCATION, t.STATUS, lims_site.ID, t.CAPACITY, t
 FROM wagerlab.IX_INV_TANK t, wagerlab.IX_INV_SITE s, lims.inv_site lims_site
 WHERE t.SITEKEY = s.SITEKEY
 AND s.NAME = lims_site.NAME
-AND s.NAME != 'SJOG'
-AND t.TANKKEY NOT IN (222, 223, 224, 225)
-and s.name = @SITE_PERMITTED	-- todo maybe group of sites
-and t.sitekey = @SITE_PERMITTED;
-
-
-
+AND t.TANKKEY IN 
+(
+select distinct tankkey from wagerlab.ix_inv_box b
+where boxkey in
+(select boxkey from wagerlab.ix_inv_tray t,
+(select 
+    distinct c.traykey
+from
+    wagerlab.ix_biospecimen b,
+    wagerlab.ix_inv_cell c
+where b.BIOSPECIMENKEY = c.BIOSPECIMENKEY
+and b.studykey=@STUDYKEY) b
+where t.traykey = b.traykey)
+);
 
 -- RACKS
 INSERT INTO `lims`.`inv_rack`
@@ -71,7 +98,20 @@ SELECT f.ID, b.DELETED, b.TIMESTAMP, b.NAME, b.AVAILABLE, b.DESCRIPTION, b.CAPAC
 FROM wagerlab.IX_INV_BOX b, wagerlab.IX_INV_TANK t, lims.inv_freezer f
 WHERE t.TANKKEY = b.TANKKEY
 AND t.NAME = f.NAME
-AND t.TANKKEY NOT IN (222, 223, 224, 225);
+AND b.boxkey IN
+(
+select boxkey from wagerlab.ix_inv_box where boxkey in
+(
+select distinct boxkey from wagerlab.ix_inv_tray where traykey in
+(
+		select 
+			distinct c.traykey
+		from
+			wagerlab.ix_biospecimen b,
+			wagerlab.ix_inv_cell c
+		where b.BIOSPECIMENKEY = c.BIOSPECIMENKEY
+		and b.studykey=@STUDYKEY))
+);
 
 -- BOXES
 INSERT INTO `lims`.`inv_box`
@@ -116,8 +156,18 @@ FROM
 WHERE `t`.`BOXKEY` = `b`.`BOXKEY`
 AND tank.TANKKEY = b.TANKKEY
 AND tank.NAME = f.NAME
-AND tank.TANKKEY NOT IN (222, 223, 224, 225);
-
+AND t.traykey in
+(
+	select traykey boxkey from wagerlab.ix_inv_tray where traykey in
+	(
+		select 
+			distinct c.traykey
+		from
+			wagerlab.ix_biospecimen b,
+			wagerlab.ix_inv_cell c
+		where b.BIOSPECIMENKEY = c.BIOSPECIMENKEY
+		and b.studykey=@STUDYKEY)
+);
 
 -- Insert a fake biospecimen for cell merging
 INSERT INTO `lims`.`biospecimen`
@@ -161,12 +211,12 @@ SELECT
 	bio.id as biospecimen_id,
 	`c`.`BIOSPECIMENKEY`,
     (CASE
-        WHEN `c`.`BIOSPECIMENKEY` > -1 THEN 2
-        ELSE 1
+        WHEN `c`.`BIOSPECIMENKEY` > -1 THEN 'Not Empty'
+        ELSE 'Empty'
     END) as `STATUS`
 FROM
     wagerlab.IX_INV_CELL `c`,
-    wagerlab.IX_INV_TRAY `t`,
+    wagerlab.IX_INV_TRAY `t`, 
 	lims.inv_box b,
 	lims.biospecimen bio
 WHERE
