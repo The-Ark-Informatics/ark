@@ -1,4 +1,4 @@
---todo cleanup
+-- todo cleanup
 
 -- Chris made this many to many a while back
 ALTER TABLE `lims`.`inv_site` DROP FOREIGN KEY `FK_INV_SITE_STUDY` ;
