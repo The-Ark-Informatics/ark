@@ -11,5 +11,9 @@ ALTER TABLE `wagerlab`.`ix_inv_tray`
 ADD INDEX `ixinvtravbox` (`BOXKEY` ASC) ;
 
 
+ALTER TABLE `wagerlab`.`ix_biospecimen` 
+ADD INDEX `ixbiospecstudy` (`STUDYKEY` ASC) ;
 
-select * from  `wagerlab`.`ix_inv_tank` 
+
+
+-- select * from  `wagerlab`.`ix_inv_tank` 
