@@ -1,5 +1,53 @@
 -- INVENTORY SQL
--- SITES ************************* NEARLY WORKS NEEDS TWEAKING
+
+SET @STUDYKEY = 22;
+SET @STUDYNAME= 'Vitamin A';
+SET @AUTOGEN_SUBJECT = 1;
+SET @AUTOGEN_BIOSPECIMEN = 1;
+SET @AUTOGEN_BIOCOLLECTION = 1;
+-- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
+-- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
+-- apparently subject prefix comes from wager
+-- SET @SUBJECT_PREFIX = 'RAV';
+SET @BIOCOLLECTIONUID_PREFIX = 'VTA';
+-- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
+SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
+SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
+
+SET @BIOSPECIMENUID_PREFIX = 'VTA';
+-- SET @BIOSPECIMENUID_TOKEN_ID = 1;
+SET @BIOSPECIMENUID_PADCHAR_ID = 5;
+
+SET @SITE_PERMITTED = 'WADB (SCGH)' ; 
+
+
+
+
+/**** NOTE!!!   We only RAN (past tense) this the first time for VIT A ... then no new sites will need to be added...therefore commented out for after vitamin A
+
+INSERT INTO `lims`.`inv_site`
+(
+`DELETED`,
+`TIMESTAMP`,
+`CONTACT`,
+`ADDRESS`,
+`NAME`,
+`PHONE`)
+SELECT `DELETED`,
+`TIMESTAMP`,
+`CONTACT`,
+`ADDRESS`,
+`NAME`,
+`PHONE` 
+FROM wagerlab.IX_INV_SITE 
+WHERE ldap_group != 'SJOG' and 		
+name not in (select name from lims.inv_site)
+and 			-- TRAV TODO Remove this line after initial insert
+name not in ('WADB (SCGH)');
+
+
+PICK BETWEEN THESE
+
 INSERT INTO `lims`.`inv_site`
 (
 `DELETED`,
@@ -19,8 +67,17 @@ WHERE ldap_group != 'SJOG' 			-- TRAV TODO Remove this line after initial insert
 -- and name not in (select name from lims.inv_site)
 ON DUPLICATE KEY update DELETED = s.deleted, TIMESTAMP = s.TIMESTAMP, CONTACT = s.CONTACT, ADDRESS = s.ADDRESS, NAME = s.NAME, PHONE = s.PHONE;
 
+****/
+
+
+
+
+
+
 SELECT @STUDYKEY;
+
 SELECT * FROM lims.study_inv_site;
+
 -- map the sites to studies
 INSERT INTO lims.study_inv_site (study_id, inv_site_id)
 SELECT @STUDYKEY, id
@@ -100,9 +157,7 @@ WHERE t.TANKKEY = b.TANKKEY
 AND t.NAME = f.NAME
 AND b.boxkey IN
 (
-select boxkey from wagerlab.ix_inv_box where boxkey in
-(
-select distinct boxkey from wagerlab.ix_inv_tray where traykey in
+select distinct boxkey from wagerlab.ix_inv_tray where traykey in -- (3230, 3231)
 (
 		select 
 			distinct c.traykey
@@ -110,8 +165,11 @@ select distinct boxkey from wagerlab.ix_inv_tray where traykey in
 			wagerlab.ix_biospecimen b,
 			wagerlab.ix_inv_cell c
 		where b.BIOSPECIMENKEY = c.BIOSPECIMENKEY
-		and b.studykey=@STUDYKEY))
+		and b.studykey=@STUDYKEY
+)
 );
+
+
 
 -- BOXES
 INSERT INTO `lims`.`inv_box`
@@ -190,6 +248,8 @@ SELECT '-1' AS ID,
 '1' AS TREATMENT_TYPE_ID, 
 '-1' AS DELETED
 FROM dual;
+
+select * from study.study;
 
 -- Trav 38893 cells!
 -- CELLS

@@ -1,6 +1,6 @@
-SET @STUDYKEY = 194;
-SET @STUDYNAME= 'RAVES';
-SET @AUTOGEN_SUBJECT = 0;
+SET @STUDYKEY = 22;
+SET @STUDYNAME= 'Vitamin A';
+SET @AUTOGEN_SUBJECT = 1;
 SET @AUTOGEN_BIOSPECIMEN = 1;
 SET @AUTOGEN_BIOCOLLECTION = 1;
 -- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
@@ -10,12 +10,12 @@ SET @AUTOGEN_BIOCOLLECTION = 1;
 -- SET @SUBJECT_PREFIX = 'RAV';
 
 
-SET @BIOCOLLECTIONUID_PREFIX = 'RAV';
+SET @BIOCOLLECTIONUID_PREFIX = 'VTA';
 -- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
 SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
 SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 
-SET @BIOSPECIMENUID_PREFIX = 'RAV';
+SET @BIOSPECIMENUID_PREFIX = 'VTA';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
 SET @BIOSPECIMENUID_PADCHAR_ID = 5;
 
@@ -80,10 +80,10 @@ select * from lims.biospecimen where old_id in (select biospecimenkey from wager
 
 */
 
-SET @TANKS_PERMITTED = 'WADB (SCGH)' ;  -- IF MORE THAN ONE FIX THIS 
-SET @TANK_IDS_NOT_PERMITTED = (225,222,223,224) ;  -- IF MORE THAN ONE FIX THIS 
-SET @BOX_IDS_PERMITTED = (-1111111111) ;  -- IF MORE THAN ONE FIX THIS 
-SET @TRAY_IDS_PERMITTED = (61, -1111111111) ;  -- IF MORE THAN ONE FIX THIS 
+-- SET @TANKS_PERMITTED = 'WADB (SCGH)' ;  -- IF MORE THAN ONE FIX THIS 
+-- SET @TANK_IDS_NOT_PERMITTED = (225,222,223,224) ;  -- IF MORE THAN ONE FIX THIS 
+-- SET @BOX_IDS_PERMITTED = (-1111111111) ;  -- IF MORE THAN ONE FIX THIS 
+-- SET @TRAY_IDS_PERMITTED = (61, -1111111111) ;  -- IF MORE THAN ONE FIX THIS 
 -- SET @CELLS_PERMITTED = (90) ;  -- IF MORE THAN ONE FIX THIS 
 
 -- SET @BIOCOLLECTIONUID_PREFIX = 8;
@@ -162,6 +162,10 @@ UPDATE study.study set parent_id = @STUDYKEY where id = @STUDYKEY;
 
 
 /*-- Add missed titles
+
+select * from study.study where id = @STUDYKEY
+
+
 INSERT INTO study.title_type (ID, NAME)
 SELECT DISTINCT (SELECT MAX(ID)+1 FROM study.title_type), concat( upper(substring(title,1,1)),lower(substring(title,2)) ) FROM zeus.SUBJECT
 WHERE TITLE NOT IN (SELECT (NAME) FROM study.title_type);
@@ -383,10 +387,10 @@ AND `adm`.`DELETED` = 0;
 
 -- Insert biospecimen sampletypes that may not exist
 -- TRAV PROD  When you run this in prod...check what it is about to install and if we want them
-INSERT INTO lims.bio_sampletype (name, sampletype, samplesubtype)
+/* INSERT INTO lims.bio_sampletype (name, sampletype, samplesubtype)
 SELECT DISTINCT CONCAT(sampletype, ' / ', samplesubtype), sampletype, samplesubtype FROM wagerlab.IX_BIOSPECIMEN
 WHERE (sampletype, samplesubtype) NOT IN (SELECT sampletype, samplesubtype FROM lims.bio_sampletype);
-
+*/
 -- TODO: HANDLE FOR STORED_IN / GRADE / - we have none stored in the ark...does that matter?  are we losing data?
 
 /*
@@ -595,7 +599,12 @@ WHERE
 
 
 
--- SITES ************************* NEARLY WORKS NEEDS TWEAKING
+/*
+
+THIS IS NOW ALL IN inventory.sql
+
+
+ SITES ************************* NEARLY WORKS NEEDS TWEAKING
 INSERT INTO `lims`.`inv_site`
 (
 `DELETED`,
@@ -829,7 +838,7 @@ select * from wagerlab.ix_inv_cell where cellkey = 601;
 
 select * from lims.biospecimen where old_id in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
 
-*/
+
 
 -- Set -1 biospecimen_id to nulls
 UPDATE `lims`.`inv_cell` 
@@ -844,7 +853,7 @@ WHERE
 
 -- Allow large byte value for GROUP_CONCAT
 SET SESSION group_concat_max_len = 30000;
-
+*/
 /*
 -- Insert HOSPITAL and REF_DOCTOR as custom biocollection fields
 INSERT INTO `study`.`custom_field`
