@@ -6,18 +6,22 @@ import java.util.Collection;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.IAjaxCallDecorator;
+import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
@@ -26,6 +30,7 @@ import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.StudyHelper;
+import au.org.theark.core.web.component.link.AjaxConfirmLink;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.service.IStudyService;
@@ -119,7 +124,7 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(Constants.PEDIGREE_TWIN, ""));
 				}
 				
-				AjaxLink unsetLink= buildUnsetLink(relationshipVo);
+				AjaxLink unsetLink= buildUnsetLink(item);
 				item.add(unsetLink);
 				if(!ArkPermissionHelper.isActionPermitted(Constants.SAVE) || !("Father".equalsIgnoreCase(relationshipVo.getRelationship())
 						||
@@ -200,8 +205,10 @@ public class SearchResultListPanel extends Panel {
 	
 
 	@SuppressWarnings( { "serial" })
-	private AjaxLink buildUnsetLink(final RelationshipVo relationshipVo) {
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.PEDIGREE_RELATIONSHIP_DELETE) {
+	private AjaxLink buildUnsetLink(final ListItem<RelationshipVo> item) {	
+		final RelationshipVo relationshipVo = item.getModelObject();
+		
+		AjaxConfirmLink<RelationshipVo> link = new AjaxConfirmLink<RelationshipVo>(Constants.PEDIGREE_RELATIONSHIP_DELETE, new StringResourceModel("pedigree.relationship.warning", this, item.getModel()),item.getModel()) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				LinkSubjectPedigree relationship=new LinkSubjectPedigree();
@@ -224,30 +231,10 @@ public class SearchResultListPanel extends Panel {
 				sitePageableListView.removeAll();
 				containerForm.getModelObject().setRelationshipList(iStudyService.generateSubjectPedigreeRelativeList(subjectFromBackend.getLinkSubjectStudy().getSubjectUID(),sessionStudyId));
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-				target.add(arkCrudContainerVO.getSearchPanelContainer());
-				
-			}
+				target.add(arkCrudContainerVO.getSearchPanelContainer());				
+			}			
 		};
 		
-//		class JavascriptEventConfirmation extends AttributeModifier {
-//		    public JavascriptEventConfirmation(String event, String msg) {
-//		        super(event, new Model(msg));
-//		    }
-//		 
-//		    protected String newValue(final String currentValue, final String replacementValue) {
-//		        String prefix = "var conf = confirm('" + replacementValue + "'); " +
-//		            "if (!conf) return false; ";
-//		        String result = prefix;
-//		        if (currentValue != null) {
-//		            result = prefix + currentValue;
-//		        }
-//		        return result;
-//		    }
-//		}
-//		
-//		link.add(new JavascriptEventConfirmation("onclick", "are you sure?"));
-		Label nameLinkLabel = new Label("unsetLbl", "Unset");
-		link.add(nameLinkLabel);
 		return link;
 	}
 
