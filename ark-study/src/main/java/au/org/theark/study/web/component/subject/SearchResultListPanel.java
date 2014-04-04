@@ -21,6 +21,7 @@ package au.org.theark.study.web.component.subject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -38,6 +39,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
@@ -52,6 +54,7 @@ import au.org.theark.core.web.StudyHelper;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.core.web.component.link.AjaxConfirmLink;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.service.IStudyService;
@@ -147,7 +150,7 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void populateItem(final Item<SubjectVO> item) {
 				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
-				item.add(buildLink(item.getModelObject(), modalWindow, relatives, feedbackPanel));
+				item.add(buildLink(item, modalWindow, relatives, feedbackPanel));
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
 
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
@@ -285,186 +288,243 @@ public class SearchResultListPanel extends Panel {
 		return link;
 	}
 
-	private AjaxLink buildLink(final SubjectVO subject, final AbstractDetailModalWindow modalWindow, final List<RelationshipVo> relatives, final FeedbackPanel feedbackPanel) {
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.SUBJECT_UID) {
-			@Override
-			public void onClick(AjaxRequestTarget target) {
-
-				LinkSubjectPedigree pedigreeRelationship = new LinkSubjectPedigree();
-
-				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-
-				Study study = iArkCommonService.getStudy(sessionStudyId);
-
-				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-
-				String parentUID = subject.getLinkSubjectStudy().getSubjectUID();
-
-				// Circular validation
-				StringBuilder pedigree = new StringBuilder();
-				ArrayList<String> dummyParents = new ArrayList<String>();
-				boolean firstLine = true;
-
-				List<RelationshipVo> existingRelatives = new ArrayList<RelationshipVo>();
-				existingRelatives.addAll(relatives);
-
-				RelationshipVo proband = new RelationshipVo();
-				proband.setIndividualId(subjectUID);
-				for (RelationshipVo relative : existingRelatives) {
-					if ("Father".equalsIgnoreCase(relative.getRelationship())) {
-						proband.setFatherId(relative.getIndividualId());
-					}
-
-					if ("Mother".equalsIgnoreCase(relative.getRelationship())) {
-						proband.setMotherId(relative.getIndividualId());
-					}
+	private AjaxLink buildLink(Item<SubjectVO> item, final AbstractDetailModalWindow modalWindow, final List<RelationshipVo> relatives, final FeedbackPanel feedbackPanel) {
+		
+		AjaxLink link=null;
+		final SubjectVO subject = item.getModelObject();
+		if("Male".equalsIgnoreCase(subject.getLinkSubjectStudy().getPerson().getGenderType().getName())){
+			subject.setParentType("Father");
+		}else{
+			subject.setParentType("Mother");
+		}
+		
+		if(isConsiderParentAge(subject)){
+			link = new AjaxConfirmLink(Constants.SUBJECT_UID, new StringResourceModel("pedigree.parent.dob.warning", this, item.getModel()),item.getModel()) {
+				@Override
+				public void onClick(AjaxRequestTarget target) {
+					processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);	
 				}
-
-				if (subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("M")) {
-					proband.setFatherId(parentUID);
-				}
-				else if (subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("F")) {
-					proband.setMotherId(parentUID);
-				}
-				existingRelatives.add(proband);
-
-				List<RelationshipVo> newRelatives = iStudyService.generateSubjectPedigreeRelativeList(parentUID, sessionStudyId);
-
-				RelationshipVo parent = new RelationshipVo();
-				parent.setIndividualId(parentUID);
-				for (RelationshipVo relative : newRelatives) {
-					if ("Father".equalsIgnoreCase(relative.getRelationship())) {
-						parent.setFatherId(relative.getIndividualId());
-					}
-
-					if ("Mother".equalsIgnoreCase(relative.getRelationship())) {
-						parent.setMotherId(relative.getIndividualId());
-					}
-				}
-
-				newRelatives.add(parent);
-
-				for (RelationshipVo relative : newRelatives) {
-					if (!existingRelatives.contains(relative)) {
-						existingRelatives.add(relative);
-					}
-					else {
-						for (RelationshipVo existingRelative : existingRelatives) {
-							if (relative.getIndividualId().equals(existingRelative.getIndividualId())) {
-								if (existingRelative.getFatherId() == null) {
-									existingRelative.setFatherId(relative.getFatherId());
-								}
-								if (existingRelative.getMotherId() == null) {
-									existingRelative.setMotherId(relative.getMotherId());
-								}
-							}
-						}
-					}
-				}
-
-				for (RelationshipVo relative : existingRelatives) {
-					String dummyParent = "D-";
-					String father = relative.getFatherId();
-					String mother = relative.getMotherId();
-					String individual = relative.getIndividualId();
-
-					if (father != null) {
-						dummyParent = dummyParent + father;
-					}
-
-					if (mother != null) {
-						dummyParent = dummyParent + mother;
-					}
-
-					if (!"D-".equals(dummyParent) && !dummyParents.contains(dummyParent)) {
-						dummyParents.add(dummyParent);
-						if (father != null) {
-							if (firstLine) {
-								pedigree.append(father + " " + dummyParent);
-								firstLine = false;
-							}
-							else {
-								pedigree.append("\n" + father + " " + dummyParent);
-							}
-						}
-						if (mother != null) {
-							if (firstLine) {
-								pedigree.append(mother + " " + dummyParent);
-								firstLine = false;
-							}
-							else {
-								pedigree.append("\n" + mother + " " + dummyParent);
-							}
-						}
-						pedigree.append("\n" + dummyParent + " " + individual);
-					}
-					else if (!"D-".equals(dummyParent)) {
-						if (firstLine) {
-							pedigree.append(dummyParent + " " + individual);
-							firstLine = false;
-						}
-						else {
-							pedigree.append("\n" + dummyParent + " " + individual);
-						}
-					}
-				}
-
-				Set<String> circularUIDs = PedigreeUploadValidator.getCircularUIDs(pedigree);
-				if (circularUIDs.size() > 0) {
-					this.error("Performing this action will create a circular relationship in the pedigree.");
-					StringBuffer sb = new StringBuffer("The proposed action will cause a pedigree cycle involving subjects with UID:");
-					boolean first = true;
-					for (String uid : circularUIDs) {
-						if (first) {
-							sb.append(uid);
-							first = false;
-						}
-						else {
-							sb.append(", " + uid);
-						}
-					}
-					sb.append(".");
-					this.error(sb.toString());
-					target.add(feedbackPanel);
-					return;
-				}
-
-				// Assign new parent relationships
-
-				SubjectVO criteriaSubjectVo = new SubjectVO();
-				criteriaSubjectVo.getLinkSubjectStudy().setStudy(study);
-				criteriaSubjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
-				Collection<SubjectVO> subjects = iArkCommonService.getSubject(criteriaSubjectVo);
-				SubjectVO subjectVo = subjects.iterator().next();
-				pedigreeRelationship.setSubject(subjectVo.getLinkSubjectStudy());
-
-				criteriaSubjectVo.getLinkSubjectStudy().setSubjectUID(parentUID);
-				subjects = iArkCommonService.getSubject(criteriaSubjectVo);
-				subjectVo = subjects.iterator().next();
-				pedigreeRelationship.setRelative(subjectVo.getLinkSubjectStudy());
-
-				String gender = subject.getLinkSubjectStudy().getPerson().getGenderType().getName();
-
-				List<Relationship> relationships = iArkCommonService.getFamilyRelationships();
-				for (Relationship relationship : relationships) {
-					if ("Male".equalsIgnoreCase(gender) && "Father".equalsIgnoreCase(relationship.getName())) {
-						pedigreeRelationship.setRelationship(relationship);
-						break;
-					}
-
-					if ("Female".equalsIgnoreCase(gender) && "Mother".equalsIgnoreCase(relationship.getName())) {
-						pedigreeRelationship.setRelationship(relationship);
-						break;
-					}
-				}
-
-				iStudyService.create(pedigreeRelationship);
-				modalWindow.close(target);
-			}
-		};
+			};
+		}
+		else{
+			link = new ArkBusyAjaxLink(Constants.SUBJECT_UID) {
+				@Override
+				public void onClick(AjaxRequestTarget target) {
+					processParentSelection(subject, modalWindow, relatives, feedbackPanel, target);
+				}	
+			};
+		}
 		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getLinkSubjectStudy().getSubjectUID());
 		link.add(nameLinkLabel);
 		return link;
+	}
+	
+	/**
+	 * Check is the parent age is to be consider for the validation.
+	 * @param parentSubject
+	 * @return
+	 */
+	private boolean isConsiderParentAge(SubjectVO parentSubject){
+		boolean check=false;
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+		SubjectVO criteriaSubjectVo = new SubjectVO();
+		criteriaSubjectVo.getLinkSubjectStudy().setStudy(study);
+		criteriaSubjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
+		Collection<SubjectVO> subjects = iArkCommonService.getSubject(criteriaSubjectVo);
+		SubjectVO subjectVo = subjects.iterator().next();
+		
+		Date parentDOB = parentSubject.getLinkSubjectStudy().getPerson().getDateOfBirth();
+		Date subjectDOB = subjectVo.getLinkSubjectStudy().getPerson().getDateOfBirth();
+		
+		if( parentDOB != null &&
+				 subjectDOB!=null &&
+				 	parentDOB.compareTo(subjectDOB) >= 0){
+				check =true;	
+		}
+		return check;
+	}
+	
+	/**After select a parent validate the pedigree for circular relationships and create new parent relationship in database.
+	 * @param subject
+	 * @param modalWindow
+	 * @param relatives
+	 * @param feedbackPanel
+	 * @param target
+	 */
+	private void processParentSelection(final SubjectVO subject, final AbstractDetailModalWindow modalWindow, final List<RelationshipVo> relatives, final FeedbackPanel feedbackPanel,
+			AjaxRequestTarget target) {
+		LinkSubjectPedigree pedigreeRelationship = new LinkSubjectPedigree();
+
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+
+		String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+
+		String parentUID = subject.getLinkSubjectStudy().getSubjectUID();
+
+		// Circular validation
+		StringBuilder pedigree = new StringBuilder();
+		ArrayList<String> dummyParents = new ArrayList<String>();
+		boolean firstLine = true;
+
+		List<RelationshipVo> existingRelatives = new ArrayList<RelationshipVo>();
+		existingRelatives.addAll(relatives);
+
+		RelationshipVo proband = new RelationshipVo();
+		proband.setIndividualId(subjectUID);
+		for (RelationshipVo relative : existingRelatives) {
+			if ("Father".equalsIgnoreCase(relative.getRelationship())) {
+				proband.setFatherId(relative.getIndividualId());
+			}
+
+			if ("Mother".equalsIgnoreCase(relative.getRelationship())) {
+				proband.setMotherId(relative.getIndividualId());
+			}
+		}
+
+		if (subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("M")) {
+			proband.setFatherId(parentUID);
+		}
+		else if (subject.getLinkSubjectStudy().getPerson().getGenderType().getName().startsWith("F")) {
+			proband.setMotherId(parentUID);
+		}
+		existingRelatives.add(proband);
+
+		List<RelationshipVo> newRelatives = iStudyService.generateSubjectPedigreeRelativeList(parentUID, sessionStudyId);
+
+		RelationshipVo parent = new RelationshipVo();
+		parent.setIndividualId(parentUID);
+		for (RelationshipVo relative : newRelatives) {
+			if ("Father".equalsIgnoreCase(relative.getRelationship())) {
+				parent.setFatherId(relative.getIndividualId());
+			}
+
+			if ("Mother".equalsIgnoreCase(relative.getRelationship())) {
+				parent.setMotherId(relative.getIndividualId());
+			}
+		}
+
+		newRelatives.add(parent);
+
+		for (RelationshipVo relative : newRelatives) {
+			if (!existingRelatives.contains(relative)) {
+				existingRelatives.add(relative);
+			}
+			else {
+				for (RelationshipVo existingRelative : existingRelatives) {
+					if (relative.getIndividualId().equals(existingRelative.getIndividualId())) {
+						if (existingRelative.getFatherId() == null) {
+							existingRelative.setFatherId(relative.getFatherId());
+						}
+						if (existingRelative.getMotherId() == null) {
+							existingRelative.setMotherId(relative.getMotherId());
+						}
+					}
+				}
+			}
+		}
+
+		for (RelationshipVo relative : existingRelatives) {
+			String dummyParent = "D-";
+			String father = relative.getFatherId();
+			String mother = relative.getMotherId();
+			String individual = relative.getIndividualId();
+
+			if (father != null) {
+				dummyParent = dummyParent + father;
+			}
+
+			if (mother != null) {
+				dummyParent = dummyParent + mother;
+			}
+
+			if (!"D-".equals(dummyParent) && !dummyParents.contains(dummyParent)) {
+				dummyParents.add(dummyParent);
+				if (father != null) {
+					if (firstLine) {
+						pedigree.append(father + " " + dummyParent);
+						firstLine = false;
+					}
+					else {
+						pedigree.append("\n" + father + " " + dummyParent);
+					}
+				}
+				if (mother != null) {
+					if (firstLine) {
+						pedigree.append(mother + " " + dummyParent);
+						firstLine = false;
+					}
+					else {
+						pedigree.append("\n" + mother + " " + dummyParent);
+					}
+				}
+				pedigree.append("\n" + dummyParent + " " + individual);
+			}
+			else if (!"D-".equals(dummyParent)) {
+				if (firstLine) {
+					pedigree.append(dummyParent + " " + individual);
+					firstLine = false;
+				}
+				else {
+					pedigree.append("\n" + dummyParent + " " + individual);
+				}
+			}
+		}
+
+		Set<String> circularUIDs = PedigreeUploadValidator.getCircularUIDs(pedigree);
+		if (circularUIDs.size() > 0) {
+			this.error("Performing this action will create a circular relationship in the pedigree.");
+			StringBuffer sb = new StringBuffer("The proposed action will cause a pedigree cycle involving subjects with UID:");
+			boolean first = true;
+			for (String uid : circularUIDs) {
+				if (first) {
+					sb.append(uid);
+					first = false;
+				}
+				else {
+					sb.append(", " + uid);
+				}
+			}
+			sb.append(".");
+			this.error(sb.toString());
+			target.add(feedbackPanel);
+			return;
+		}
+
+		// Assign new parent relationships
+
+		SubjectVO criteriaSubjectVo = new SubjectVO();
+		criteriaSubjectVo.getLinkSubjectStudy().setStudy(study);
+		criteriaSubjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
+		Collection<SubjectVO> subjects = iArkCommonService.getSubject(criteriaSubjectVo);
+		SubjectVO subjectVo = subjects.iterator().next();
+		pedigreeRelationship.setSubject(subjectVo.getLinkSubjectStudy());
+
+		criteriaSubjectVo.getLinkSubjectStudy().setSubjectUID(parentUID);
+		subjects = iArkCommonService.getSubject(criteriaSubjectVo);
+		subjectVo = subjects.iterator().next();
+		pedigreeRelationship.setRelative(subjectVo.getLinkSubjectStudy());
+
+		String gender = subject.getLinkSubjectStudy().getPerson().getGenderType().getName();
+
+		List<Relationship> relationships = iArkCommonService.getFamilyRelationships();
+		for (Relationship relationship : relationships) {
+			if ("Male".equalsIgnoreCase(gender) && "Father".equalsIgnoreCase(relationship.getName())) {
+				pedigreeRelationship.setRelationship(relationship);
+				break;
+			}
+
+			if ("Female".equalsIgnoreCase(gender) && "Mother".equalsIgnoreCase(relationship.getName())) {
+				pedigreeRelationship.setRelationship(relationship);
+				break;
+			}
+		}
+
+		iStudyService.create(pedigreeRelationship);
+		modalWindow.close(target);
 	}
 
 }
