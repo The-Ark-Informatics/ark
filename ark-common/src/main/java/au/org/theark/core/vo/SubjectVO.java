@@ -66,6 +66,8 @@ public class SubjectVO implements Serializable {
 	private List<String> relativeUIDs;
 	
 	protected boolean enableNewButton =true;
+	
+	private String parentType;
 
 	
 	public SubjectVO() {
@@ -269,4 +271,13 @@ public class SubjectVO implements Serializable {
 	public void setEnableNewButton(boolean enableNewButton) {
 		this.enableNewButton = enableNewButton;
 	}
+
+	public String getParentType() {
+		return parentType;
+	}
+
+	public void setParentType(String parentType) {
+		this.parentType = parentType;
+	}
+
 }
