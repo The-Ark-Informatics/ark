@@ -118,7 +118,8 @@ public class TwinSearchResultsListPanel extends Panel {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 
-				relationshipVo.setTwin("NT");
+//				relationshipVo.setTwin("NT");
+				relationshipVo.setTwin(null);
 				twinPageableListView.removeAll();
 				updateTwinRelationship(relationshipVo);
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer().get("searchResults"));
@@ -132,7 +133,8 @@ public class TwinSearchResultsListPanel extends Panel {
 
 		ajaxButton.setDefaultFormProcessing(false);
 
-		if ("NT".equalsIgnoreCase(relationshipVo.getTwin())) {
+//		if ("NT".equalsIgnoreCase(relationshipVo.getTwin())) {
+		if (relationshipVo.getTwin()==null) {
 			ajaxButton.setEnabled(false);
 		}
 		else {

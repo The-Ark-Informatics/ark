@@ -1855,7 +1855,8 @@ public class StudyServiceImpl implements IStudyService {
 	}
 	
 	public void processPedigreeTwinRelationship(final RelationshipVo relationshipVo, final String subjectUid, final Long studyId){
-		if("NT".equalsIgnoreCase(relationshipVo.getTwin())){
+//		if("NT".equalsIgnoreCase(relationshipVo.getTwin())){
+		if(relationshipVo.getTwin()==null){
 			if(relationshipVo.getId() != null){
 				LinkSubjectTwin twin = new LinkSubjectTwin();
 				twin.setId(relationshipVo.getId());
