@@ -2200,7 +2200,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public List<RelationshipVo> getSubjectTwins(final String subjectUid,final Set<String> subjectUids,final Long studyId){
-		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,slt.id as id , IFNULL(tw.name,'NT') as twin ");
+//		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,slt.id as id , IFNULL(tw.name,'NT') as twin ");
+		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,slt.id as id , tw.name as twin ");
 		sb.append(" From study.link_subject_study lss ");
 		sb.append(" 	inner join study.study st on st.id=lss.study_id ");
 		sb.append(" 	inner join study.person p on p.id=lss.person_id ");
