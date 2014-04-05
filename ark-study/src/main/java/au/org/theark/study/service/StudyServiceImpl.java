@@ -1526,7 +1526,7 @@ public class StudyServiceImpl implements IStudyService {
 						int relativeIndex = relativeSubject.getRelativeIndex();
 						int position = getRelativePosition(relativeSubject.getFatherId(), relativeSubjects);
 						RelationshipVo grandFather=relativeSubjects.get(position);
-						grandFather.setRelationship(createRelationship("Paternal",++relativeIndex,"GrandFather"));
+						grandFather.setRelationship(createRelationship("Paternal",++relativeIndex,"Grandfather"));
 						grandFather.setRelativeIndex(relativeIndex);
 						if((relativeIndex -1 )==0){
 							paternalGF = grandFather;
@@ -1537,7 +1537,7 @@ public class StudyServiceImpl implements IStudyService {
 						int relativeIndex = relativeSubject.getRelativeIndex();
 						int position = getRelativePosition(relativeSubject.getMotherId(), relativeSubjects);
 						RelationshipVo grandMother=relativeSubjects.get(position);
-						grandMother.setRelationship(createRelationship("Paternal",++relativeIndex,"GrandMother"));
+						grandMother.setRelationship(createRelationship("Paternal",++relativeIndex,"Grandmother"));
 						grandMother.setRelativeIndex(relativeIndex);
 						if((relativeIndex -1 )==0){
 							paternalGM = grandMother;
@@ -1562,7 +1562,7 @@ public class StudyServiceImpl implements IStudyService {
 						int relativeIndex = relativeSubject.getRelativeIndex();
 						int position = getRelativePosition(relativeSubject.getFatherId(), relativeSubjects);
 						RelationshipVo grandFather=relativeSubjects.get(position);
-						grandFather.setRelationship(createRelationship("Maternal",++relativeIndex,"GrandFather"));
+						grandFather.setRelationship(createRelationship("Maternal",++relativeIndex,"Grandfather"));
 						grandFather.setRelativeIndex(relativeIndex);
 						if((relativeIndex -1 )==0){
 							maternalGF = grandFather;
@@ -1573,7 +1573,7 @@ public class StudyServiceImpl implements IStudyService {
 						int relativeIndex = relativeSubject.getRelativeIndex();
 						int position = getRelativePosition(relativeSubject.getMotherId(), relativeSubjects);
 						RelationshipVo grandMother=relativeSubjects.get(position);
-						grandMother.setRelationship(createRelationship("Maternal",++relativeIndex,"GrandMother"));
+						grandMother.setRelationship(createRelationship("Maternal",++relativeIndex,"Grandmother"));
 						grandMother.setRelativeIndex(relativeIndex);
 						if((relativeIndex -1 )==0){
 							maternalGM = grandMother;
@@ -1741,7 +1741,7 @@ public class StudyServiceImpl implements IStudyService {
 	private String createRelationship(String prefix,int count,String suffix){
 		String great=" ";
 		for (int i =1;i<count;++i){
-			great=great+"G ";
+			great=great+"G/";
 		}
 		
 		return prefix +great+suffix;
