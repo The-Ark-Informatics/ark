@@ -77,8 +77,8 @@ public class SearchResultListPanel extends Panel {
 	private IArkCommonService	iArkCommonService;
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService		iStudyService;
-	private WebMarkupContainer	studyNameMarkup;
-	private WebMarkupContainer	studyLogoMarkup;
+	private WebMarkupContainer studyNameMarkup;
+	private WebMarkupContainer studyLogoMarkup;
 
 	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer studyNameMarkup,
 			WebMarkupContainer studyLogoMarkup) {
