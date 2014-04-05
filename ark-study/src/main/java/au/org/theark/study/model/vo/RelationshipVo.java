@@ -31,7 +31,7 @@ public class RelationshipVo implements Serializable {
 	private String dz;
 	
 	public RelationshipVo() {
-		relationship = "Not Known";
+		relationship = "Undetermined";
 	}
 	public Integer getId() {
 		return id;
