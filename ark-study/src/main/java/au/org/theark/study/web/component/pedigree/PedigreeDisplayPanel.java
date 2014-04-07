@@ -3,6 +3,7 @@ package au.org.theark.study.web.component.pedigree;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +23,7 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.apache.fop.image.PNGImage;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.WicketRuntimeException;
@@ -32,6 +34,8 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.request.resource.DynamicImageResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.Files;
@@ -46,6 +50,13 @@ import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
+import com.itextpdf.text.Element;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.codec.PngImage;
 import com.x5.template.Chunk;
 import com.x5.template.Theme;
 
@@ -61,9 +72,11 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	IStudyService					studyService;
 
-	private byte[]					pngOutPutArray;
+	private byte[]				pngOutPutArray;
 
 	private DownloadLink			downloadLink;
+	
+	private DownloadLink 		pdfLink;
 
 	public PedigreeDisplayPanel(String id) {
 		super(id);
@@ -282,6 +295,50 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 		});
 
 		addOrReplace(downloadLink);
+		
+		pdfLink = new DownloadLink("pdfLink", new AbstractReadOnlyModel<File>() {
+
+			@Override
+			public File getObject() {
+				File f = null;
+				String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+				try {
+					String tmpDir = System.getProperty("java.io.tmpdir");
+					String pedFileName = "Ark_" + subjectUID + ".pdf";
+					f = new File(tmpDir, pedFileName);
+					com.itextpdf.text.Document document = new com.itextpdf.text.Document(PageSize.A4.rotate());
+					PdfWriter.getInstance(document, new FileOutputStream(f));
+					document.open();
+					com.itextpdf.text.Image pedigreeImg = PngImage.getImage(pngOutPutArray);
+					PdfPTable table = new PdfPTable(1);
+					table.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.setWidthPercentage(100f);
+					PdfPCell c = new PdfPCell(pedigreeImg, true);
+					c.setBorder(PdfPCell.NO_BORDER);
+					c.setPadding(5);
+					c.getImage().scaleToFit(750f, 750f); /* The new line */
+					c.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table.addCell(c);
+					document.add(table);
+					document.close();
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+				return f;
+			}
+		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
+		
+		pdfLink.add(new Behavior() {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public void onComponentTag(Component component, ComponentTag tag) {
+				tag.put("title", "Export to PDF");
+			}
+		});
+		
+		addOrReplace(pdfLink);
 
 	}
 
