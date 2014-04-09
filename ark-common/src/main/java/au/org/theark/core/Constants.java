@@ -414,8 +414,50 @@ public class Constants {
 
 	public static final String[] BIOSPECIMEN_TEMPLATE_HEADER = { "SUBJECTUID",
 			"BIOSPECIMENUID", "BIOCOLLECTIONUID", "SAMPLETYPE", "QUANTITY",
-			"UNITS", "TREATMENT", "CONCENTRATION", "SITE", "FREEZER", "RACK", "BOX", "ROW",
-			"COLUMN" };
+			"UNITS", "TREATMENT", "CONCENTRATION", "SITE", "FREEZER", "RACK", "BOX", "ROW", "COLUMN" };
+	
+	public static final String[] LOCATION_UPLOAD_TEMPLATE_HEADER = { // "SUBJECTUID",
+		"BIOSPECIMENUID", 											// , "BIOCOLLECTIONUID", "SAMPLETYPE", "QUANTITY",
+																	//"UNITS", "TREATMENT", "CONCENTRATION",
+		"SITE", "FREEZER", "RACK", "BOX", "ROW","COLUMN" };
+
+	
+	public static final String[][] LOCATION_UPLOAD_TEMPLATE_CELLS = {
+			{  "", "BIOSPECIMENUID", "SITE",
+					"FREEZER", "RACK", "BOX", "ROW", "COLUMN" 
+			},
+			{
+					"DESCRIPTION",
+					"The unique identifier of the biospecimen",
+					"The site of the bispecimen location",
+					"The freezer of the bispecimen location",
+					"The rack of the bispecimen location",
+					"The box of the bispecimen location",
+					"The row of the bispecimen location",
+					"The column of the bispecimen location" 
+			},
+			{ 		"MANDATORY", 
+					"Yes", 
+					"Yes", 
+					"Yes", 
+					"Yes", 
+					"Yes", 
+					"Yes",
+					"Yes",
+			 },
+			{
+					"VALID VALUES",
+					"",
+					"", 
+					"", 
+					"", 
+					"", 
+					"", 
+					""
+			},
+			{ "NOTE: Removed this first column, and replace rows 2 to 5", "", "", "", "", "", "", ""
+			} };
+	
 	public static final String[][] BIOSPECIMEN_TEMPLATE_CELLS = {
 			{ "", "SUBJECTUID", "BIOSPECIMENUID", "BIOCOLLECTIONUID",
 					"SAMPLETYPE", "QUANTITY", "UNITS", "TREATMENT", "CONCENTRATION", "SITE",
@@ -490,6 +532,9 @@ public class Constants {
 	public static final String	SAVEANDCLOSE									= "saveAndClose";
 	public static final String	yyyy_MM_dd	= "yyyy-MM-dd";
 	public static final String ARK_GENO_SERVICE = "genoService";
-	public enum FileFormat {CSV, XLS, PDF, TXT, DOC, XML}
+	public enum FileFormat {CSV, XLS, PDF, TXT, DOC, XML};
+
+	public static final String			UPLOAD_TYPE_ID											= "id";
+	public static final String			UPLOAD_TYPE_NAME										= "name";
 	
 }

@@ -4190,8 +4190,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 					map.put((Constants.GENO_FIELDS_PROCESS_ID + (processIndex>1?("_"+processIndex):"")), p.getId().toString());
 					map.put((Constants.GENO_FIELDS_PROCESS_NAME + (processIndex>1?("_"+processIndex):"")), p.getName());
 					map.put((Constants.GENO_FIELDS_PROCESS_DESCRIPTION + (processIndex>1?("_"+processIndex):"")), p.getDescription());
-					map.put((Constants.GENO_FIELDS_PROCESS_START_TIME + (processIndex>1?("_"+processIndex):"")), p.getStartTime()!=null?p.getStartTime().toString():"");
-					map.put((Constants.GENO_FIELDS_PROCESS_END_TIME + (processIndex>1?("_"+processIndex):"")), p.getEndTime()!=null?p.getEndTime().toString():"");
+					map.put((Constants.GENO_FIELDS_PROCESS_START_TIME + (processIndex>1?("_"+processIndex):"")), p.getStartTime()!=null?p.getStartTime().toLocaleString():"");
+					map.put((Constants.GENO_FIELDS_PROCESS_END_TIME + (processIndex>1?("_"+processIndex):"")), p.getEndTime()!=null?p.getEndTime().toLocaleString():"");
 					Command command = p.getCommand();
 					map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_NAME + (processIndex>1?("_"+processIndex):"")), (command==null?"":command.getName()));
 					map.put((Constants.GENO_FIELDS_PROCESS_COMMAND_LOCATION + (processIndex>1?("_"+processIndex):"")), (command==null?"":command.getLocation()));
