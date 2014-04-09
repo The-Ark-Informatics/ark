@@ -278,9 +278,9 @@ public class InventoryServiceImpl implements IInventoryService {
 		arkCommonService.createAuditHistory(ah);
 	}
 
-	public InvCell getInvCell(InvBox invBox, int rowno, int colno) {
-		return iInventoryDao.getInvCell(invBox, rowno, colno);
-	}
+	//public InvCell getInvCell(InvBox invBox, int rowno, int colno) {
+	//	return iInventoryDao.getInvCell(invBox, rowno, colno);
+	//}
 
 	public Biospecimen getBiospecimenByInvCell(InvCell invCell) {
 		return iInventoryDao.getBiospecimenByInvCell(invCell);
@@ -402,4 +402,9 @@ public class InventoryServiceImpl implements IInventoryService {
 	public void unallocateBox(InvBox invBox) {
 		iInventoryDao.unallocateBox(invBox);
 	}
+	
+	public String fillOutAllBoxesWithEmptyInvCellsToCapacity(Study study){
+		return iInventoryDao.fillOutAllBoxesWithEmptyInvCellsToCapacity(study);
+	}
+
 }
