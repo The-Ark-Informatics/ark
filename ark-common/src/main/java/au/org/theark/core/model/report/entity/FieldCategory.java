@@ -8,6 +8,6 @@ public enum FieldCategory {
 	BIOSPECIMEN_CFD, 
 	SUBJECT_CFD, 
 	PHENO_CFD, 
-	GENO, 
+	GENO
 }
 
