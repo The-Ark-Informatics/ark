@@ -161,7 +161,7 @@ public interface IInventoryDao {
 	 * @param colno
 	 * @return
 	 */
-	public InvCell getInvCell(InvBox invBox, int rowno, int colno);
+	//public InvCell getInvCell(InvBox invBox, int rowno, int colno);
 	
 	/**
 	 * Get a Biospecimen based on an InvCell
@@ -297,4 +297,6 @@ public interface IInventoryDao {
 	public void updateInvSite(LimsVO modelObject);
 
 	public void unallocateBox(InvBox invBox);
+	
+	public String fillOutAllBoxesWithEmptyInvCellsToCapacity(Study study);
 }

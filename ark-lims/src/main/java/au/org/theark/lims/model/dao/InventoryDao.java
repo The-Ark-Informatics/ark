@@ -171,9 +171,10 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		return invSite;
 	}
 
-	public InvCell getInvCell(InvBox invBox, int rowno, int colno) {
-		InvCell invCell = new InvCell();
-		Criteria criteria = getSession().createCriteria(InvSite.class);
+	
+	public InvCell getInvCell(InvBox invBox, long rowno, long colno) {
+		InvCell invCell = null; //new InvCell();
+		Criteria criteria = getSession().createCriteria(InvCell.class);
 
 		if (invBox != null) {
 			criteria.add(Restrictions.eq("invBox", invBox));
@@ -219,8 +220,22 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		return invBox;
 	}
 
+	/** TODO ASAP TEST THIS */
 	public List<InvCell> getCellAndBiospecimenListByBox(InvBox invBox) {
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append(" select cell FROM  InvCell AS cell ");
+		sb.append(" LEFT JOIN fetch cell.biospecimen ");
+		sb.append(" WHERE cell.invBox.id = :invBoxId ");
+		sb.append(" ORDER BY cell.rowno, cell.colno ");
 
+		Query query = getSession().createQuery(sb.toString());
+		query.setParameter("invBoxId", invBox.getId());
+
+		List<InvCell> invCellList = query.list();
+		return invCellList;
+		
+/*
 		List<InvCell> invCellList = new ArrayList<InvCell>();
 
 		StringBuffer sb = new StringBuffer();
@@ -247,7 +262,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 			}
 		}
 
-		return invCellList;
+		return invCellList;*/
 	}
 
 	public List<InvColRowType> getInvColRowTypes() {
@@ -567,6 +582,61 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		// session.close();
 	}
 
+	/*
+	 * TODO Clean up catch
+	 * 
+	 * Bigger TODO  remove all this logic of empty cells and such cells should just be null/nothing/non-existent 
+	 * 
+	 */
+	public String fillOutAllBoxesWithEmptyInvCellsToCapacity(Study study){
+		int count = 0;
+		if(study != null){
+			InvRack emptySearchRack = new InvRack();
+			List<Study> studyListForUser = new ArrayList<Study>();
+			studyListForUser.add(study);
+			
+			try {
+				List<InvRack> allRacks = searchInvRack(emptySearchRack, studyListForUser);
+			
+				for (InvRack rack : allRacks){
+					List<InvBox> boxes = rack.getInvBoxes();
+				
+					for(InvBox box : boxes){
+						int nocols = box.getNoofcol();
+						int norows = box.getNoofrow();
+						
+						for (long rowno=1; rowno<=norows ; rowno++){
+							for(long colno=1; colno<=nocols ; colno++){
+								
+								if(getInvCell(box, rowno, colno)==null){
+									InvCell invCell = new InvCell();
+									invCell.setColno(colno);
+									invCell.setRowno(rowno);
+									invCell.setInvBox(box);
+									
+									//invCell.setDeleted(0L);
+									invCell.setStatus("Empty");
+									getSession().save(invCell);
+									count++;
+								}
+							}
+						}
+					}
+				}
+			} catch (ArkSystemException e) {
+				log.error("you madea mistake trying to insert / fill empty box for study " + study.getName());
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return "failed - " + e.getMessage();
+			}
+		}
+		else{
+			log.error("give me a study name or I will refuse to enter empty cells");
+			return "Without a study name we cannot complete empty cells";
+		}
+		return "successfully completed " + count + " cells";
+	}
+	
 	public InvCell getNextAvailableInvCell(InvBox invBox) {
 		Criteria criteria = getSession().createCriteria(InvCell.class);
 		criteria.add(Restrictions.eq("invBox", invBox));

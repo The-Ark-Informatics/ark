@@ -151,7 +151,7 @@ public interface IInventoryService {
 	 * @param colno
 	 * @return
 	 */
-	public InvCell getInvCell(InvBox invBox, int rowno, int colno);
+	//public InvCell getInvCell(InvBox invBox, int rowno, int colno);
 	
 	/**
 	 * Get a Biospecimen based on an InvCell
@@ -272,4 +272,7 @@ public interface IInventoryService {
 	public InvCell getNextAvailableInvCell(InvBox invBox);
 
 	public void unallocateBox(InvBox invBox);
+	
+	public String fillOutAllBoxesWithEmptyInvCellsToCapacity(Study study);
+
 }
