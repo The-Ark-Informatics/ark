@@ -87,6 +87,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		    protected void onUpdate(AjaxRequestTarget target) {
 		   	UploadType uploadType = uploadTypeDdc.getModelObject();
 		   	
+		   	//TODO : Why is this delimiter logic in here?  on change of uploadtype???
 		   	DelimiterType tabtype =null;
 		   	DelimiterType commatype =null;
 		   	for(DelimiterType type : delimiterTypeCollection){
