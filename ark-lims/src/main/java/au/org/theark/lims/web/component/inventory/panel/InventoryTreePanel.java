@@ -60,6 +60,7 @@ public class InventoryTreePanel extends Panel {
 	
 	protected ArkBusyAjaxButton	addSite;
 	protected ArkBusyAjaxButton	addFreezer;
+	protected ArkBusyAjaxButton	enableAllEmptyCells;
 	protected ArkBusyAjaxButton	addRack;
 	protected ArkBusyAjaxButton	addBox;
 	
@@ -232,6 +233,29 @@ public class InventoryTreePanel extends Panel {
 
 		};
 
+		enableAllEmptyCells = new ArkBusyAjaxButton("enableAllEmptyCells") {
+
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public boolean isVisible() {
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+			}
+
+			@Override
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onEnableAllEmptyCellsSubmit(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to process Enabling of all empty cells");
+			}
+
+		};
+
+
 		addRack = new ArkBusyAjaxButton("addRack") {
 
 
@@ -280,6 +304,7 @@ public class InventoryTreePanel extends Panel {
 	private void addComponents() {
 		treeForm.addOrReplace(addSite);
 		treeForm.addOrReplace(addFreezer);
+		treeForm.addOrReplace(enableAllEmptyCells);
 		treeForm.addOrReplace(addRack);
 		treeForm.addOrReplace(addBox);
 
@@ -303,6 +328,26 @@ public class InventoryTreePanel extends Panel {
 		detailPanel.initialisePanel();
 
 		refreshDetailPanel(target, detailPanel);
+	}
+
+
+	public void onEnableAllEmptyCellsSubmit(AjaxRequestTarget target) {
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = null;
+		if(sessionStudyId != null) {
+			study = iArkCommonService.getStudy(sessionStudyId);
+		}
+		
+		String successFailureMessage = iInventoryService.fillOutAllBoxesWithEmptyInvCellsToCapacity(study);
+		log.info("attempted to fill empty cells...this message returned: \n\n" + successFailureMessage);
+		
+		resetModel();
+
+//		FreezerDetailPanel detailPanel = new FreezerDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null);
+//		detailPanel.initialisePanel();
+		//TODO : simple message saying DONT DO ANYTHING FOR TEN MINUTES
+
+//		refreshDetailPanel(target, detailPanel);
 	}
 
 	public void onAddRackSubmit(AjaxRequestTarget target) {

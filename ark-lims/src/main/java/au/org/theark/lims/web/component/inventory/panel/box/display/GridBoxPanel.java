@@ -177,17 +177,16 @@ public class GridBoxPanel extends Panel {
 	public void initialiseGrid() {
 		limsVo.setInvBox(iInventoryService.getInvBox(limsVo.getInvBox().getId()));
 		
-		List<InvCell> invCellList = new ArrayList<InvCell>(0);
-		invCellList = limsVo.getInvBox().getInvCells();
+		List<InvCell> invCellList = iInventoryService.getCellAndBiospecimenListByBox(limsVo.getInvBox());//limsVo.getInvBox().getInvCells();
 		
 		setUserStudyList();
 		
 		// Handle for no cells in InvCell table!
 		int cells = limsVo.getInvBox().getNoofcol() * limsVo.getInvBox().getNoofrow();
-		if(invCellList == null || invCellList.isEmpty()){
-			//refresh from db?
-			invCellList = iInventoryService.getCellAndBiospecimenListByBox(limsVo.getInvBox());
-		}
+		//if(invCellList == null || invCellList.isEmpty()){
+		//	//refresh from db?
+		//	invCellList = iInventoryService.getCellAndBiospecimenListByBox(limsVo.getInvBox());
+		//}
 		if (invCellList.size() != cells) {
 			//we were getting here every time we created a new cell because list was always empty...i "fixed" this by refreshing the cells from the db
 			// Chris, should I also set them in the lims VO...ie; via the limsVo.getinvbox.setinvCells(freshinvcellListFromDB) 
