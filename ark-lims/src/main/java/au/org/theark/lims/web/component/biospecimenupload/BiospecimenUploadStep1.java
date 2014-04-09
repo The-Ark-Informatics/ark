@@ -23,33 +23,27 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.UploadType;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.lims.web.component.biospecimenupload.form.WizardForm;
-
 /**
  * The first step of this wizard.
  */
@@ -71,6 +65,8 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
 	private WizardForm							wizardForm;
 
+	private DropDownChoice<UploadType>		uploadTypeDdc;
+	
 	public BiospecimenUploadStep1(String id) {
 		super(id);
 		initialiseDetailForm();
@@ -90,7 +86,13 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		ChoiceRenderer<DelimiterType> choiceRenderer = new ChoiceRenderer<DelimiterType>(Constants.NAME, Constants.ID);
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List<DelimiterType>) delimiterTypeCollection, choiceRenderer);
 		// Set to default delimiterType
-		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));
+		containerForm.getModelObject().getUpload().setDelimiterType(iArkCommonService.getDelimiterType(new Long(1)));//TODO:  This looks hardcoded...please check different types
+
+		java.util.Collection<UploadType> uploadTypeCollection = iArkCommonService.getUploadTypesForLims();
+		ChoiceRenderer uploadTypeRenderer = new ChoiceRenderer(Constants.UPLOAD_TYPE_NAME, Constants.UPLOAD_TYPE_ID);
+		uploadTypeDdc = new DropDownChoice<UploadType>(Constants.UPLOADVO_UPLOAD_UPLOAD_TYPE, (List) uploadTypeCollection, uploadTypeRenderer);
+		
+		
 		
 		List<Study> studyListForUser = new ArrayList<Study>(0);
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -102,6 +104,7 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
 		PropertyModel<Study> pModel = new PropertyModel<Study>(containerForm.getModelObject(), "upload.study");
 		studyDdc = new DropDownChoice<Study>(Constants.UPLOADVO_UPLOAD_STUDY, pModel, (List<Study>) studyListForUser, studyRenderer);
+		containerForm.getModelObject().getUpload().setUploadType(iArkCommonService.getDefaultUploadType());
 	}
 
 	public void initialiseDetailForm() {
@@ -133,6 +136,7 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		add(studyDdc);
 		add(fileUploadField);
 		add(delimiterTypeDdc);
+		add(uploadTypeDdc);
 	}
 
 	@Override
@@ -173,6 +177,7 @@ public class BiospecimenUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setChecksum(checksum);
 		containerForm.getModelObject().getUpload().setFilename(fileUpload.getClientFileName());
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
+		containerForm.getModelObject().setUploadType(uploadTypeDdc.getModelObject()==null?"Unknown":uploadTypeDdc.getModelObject().getName());	
 		containerForm.getModelObject().getUpload().setArkFunction(iArkCommonService.getArkFunctionByName(Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_UPLOAD));
 		wizardForm.setFileName(fileUpload.getClientFileName());
 

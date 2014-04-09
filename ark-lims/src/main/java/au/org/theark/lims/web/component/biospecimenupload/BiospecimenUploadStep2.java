@@ -62,10 +62,6 @@ public class BiospecimenUploadStep2 extends AbstractWizardStepPanel {
 	
 
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
-
-		/**
-		 * 
-		 */
 		private static final long	serialVersionUID	= 1L;
 
 		@Override
@@ -118,6 +114,9 @@ public class BiospecimenUploadStep2 extends AbstractWizardStepPanel {
 		try {
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
+			String uploadType = containerForm.getModelObject().getUploadType();
+			log.info("so what is the upload type =" + uploadType);
+			
 			String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 			String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
