@@ -38,6 +38,7 @@ import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.BiospecimenUploadValidator;
+import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biospecimenupload.form.WizardForm;
 
 /**
@@ -127,7 +128,13 @@ public class BiospecimenUploadStep2 extends AbstractWizardStepPanel {
 			}
 
 			BiospecimenUploadValidator biospecimenUploadValidator = new BiospecimenUploadValidator(containerForm.getModelObject().getUpload().getStudy(), iArkCommonService, iLimsService, iInventoryService);
-			validationMessages = biospecimenUploadValidator.validateSubjectFileFormat(containerForm.getModelObject());
+			
+			if(uploadType.equalsIgnoreCase(Constants.UPLOAD_TYPE_FOR_LOCATION_UPLOADER)){
+				validationMessages = biospecimenUploadValidator.validateLocationFileFormat(containerForm.getModelObject());
+			}
+			else{	//TODO : i dont see biocollection uploader, so let's kill it in the database for now
+				validationMessages = biospecimenUploadValidator.validateSubjectFileFormat(containerForm.getModelObject());
+			}
 			containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
