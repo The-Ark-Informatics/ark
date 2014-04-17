@@ -25,3 +25,8 @@ alter table lims.inv_cell add unique index (box_id, rowno, colno);
 
 ALTER TABLE `lims`.`inv_site` 
 ADD UNIQUE INDEX `NAME_UNIQUE` (`NAME` ASC) ;
+
+
+select count(*) from inv_cell ;
+
+select count(*) from wagerlab.ix_inv_cell where biospecimenkey is null or biospecimenkey < 1;
