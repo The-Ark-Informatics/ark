@@ -153,6 +153,28 @@ public class BiospecimenUploadValidator {
 	}
 
 	/**
+	 * 
+	 * @param uploadVo
+	 *           is the UploadVO of the file
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateLocationFileFormat(UploadVO uploadVo) {
+		java.util.Collection<String> validationMessages = null;
+		try {
+			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
+			String filename = uploadVo.getFileUpload().getClientFileName();
+			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
+			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
+			validationMessages = validateLocationFileFormat(inputStream, fileFormat, delimiterCharacter);
+		}
+		catch (IOException e) {
+			log.error(e.getMessage());
+		}
+		return validationMessages;
+	}
+
+
+	/**
 	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
 	 * 
 	 * @param uploadVo
@@ -170,6 +192,51 @@ public class BiospecimenUploadValidator {
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
+		}
+		return validationMessages;
+	}
+
+
+	/**
+	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * 
+	 * @param inputStream
+	 *           is the input stream of the file
+	 * @param fileFormat
+	 *           is the file format (eg txt)
+	 * @param delimChar
+	 *           is the delimiter character of the file (eg comma)
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateLocationFileFormat(InputStream inputStream, String fileFormat, char delimChar) {
+		java.util.Collection<String> validationMessages = null;
+
+		try {
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS")) {
+				Workbook w;
+				try {
+					w = Workbook.getWorkbook(inputStream);
+					delimiterCharacter = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
+					inputStream.reset();
+					delimiterCharacter = ',';
+				}
+				catch (BiffException e) {
+					log.error(e.getMessage());
+				}
+				catch (IOException e) {
+					log.error(e.getMessage());
+				}
+			}
+			validationMessages = validateLocationFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+		}
+		catch (FileFormatException ffe) {
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe) {
+			log.error(Constants.ARK_BASE_EXCEPTION + abe);
 		}
 		return validationMessages;
 	}
@@ -214,6 +281,45 @@ public class BiospecimenUploadValidator {
 		}
 		catch (ArkBaseException abe) {
 			log.error(Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return validationMessages;
+	}
+
+
+	/**
+	 * Validates the file in the default "matrix" file data assumed: BiospecimenUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * 
+	 * @param uploadVo
+	 *           is the UploadVO of the file
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateLocationFileData(UploadVO uploadVo) {
+		java.util.Collection<String> validationMessages = null;
+		try {
+			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
+			String filename = uploadVo.getFileUpload().getClientFileName();
+			fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
+			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
+
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS")) {
+				Workbook w;
+				try {
+					w = Workbook.getWorkbook(inputStream);
+					delimiterCharacter = ',';
+					XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+					inputStream = xlsToCsv.convertXlsToCsv(w);
+					inputStream.reset();
+				}
+				catch (BiffException e) {
+					log.error(e.getMessage());
+				}
+			}
+
+			validationMessages = validateLocationFileData(inputStream, fileFormat, delimiterCharacter);
+		}
+		catch (IOException e) {
+			log.error(e.getMessage());
 		}
 		return validationMessages;
 	}
@@ -270,6 +376,137 @@ public class BiospecimenUploadValidator {
 		}
 		return validationMessages;
 	}
+
+
+	public Collection<String> validateLocationFileData(InputStream inputStream, String fileFormat, char delimChar) {
+		java.util.Collection<String> validationMessages = null;
+
+		try {
+			validationMessages = validateMatrixLocationFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+		}
+		catch (FileFormatException ffe) {
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe) {
+			log.error(Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return validationMessages;
+	}
+
+	/**
+	 * Validates the Biospecimen file in the default "matrix" file format assumed
+	 * 
+	 * @param fileInputStream
+	 * @param inLength
+	 * @param inFileFormat
+	 * @param inDelimChr
+	 * @return
+	 * @throws FileFormatException
+	 * @throws ArkBaseException
+	 */
+	public java.util.Collection<String> validateLocationFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException,
+			ArkBaseException {
+		delimiterCharacter = inDelimChr;
+		fileFormat = inFileFormat;
+		row = 0;
+
+		InputStreamReader inputStreamReader = null;
+		CsvReader csvReader = null;
+		try {
+			inputStreamReader = new InputStreamReader(fileInputStream);
+			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+
+			srcLength = inLength;
+			if (srcLength <= 0) {
+				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
+			}
+
+			// Set field list (note 2th column to Nth column)
+			// BiospecimenUID SITE F1 F2 FN
+			// 0 1 2 3 N
+			csvReader.readHeaders();
+
+			srcLength = inLength - csvReader.getHeaders().toString().length();
+			log.debug("Header length: " + csvReader.getHeaders().toString().length());
+			String[] headerColumnArray = csvReader.getHeaders();
+
+			Collection<String> biospecimenColumns = new ArrayList<String>();
+			String[] biospecimenHeaderColumnArray = Constants.LOCATION_UPLOAD_TEMPLATE_HEADER;
+			boolean headerError = false;
+			for (int i = 0; i < biospecimenHeaderColumnArray.length; i++) {
+				String colName = biospecimenHeaderColumnArray[i];
+				biospecimenColumns.add(colName);
+			}
+
+			for (int i = 0; i < headerColumnArray.length; i++) {
+				String colName = headerColumnArray[i];
+				if (!biospecimenColumns.contains(colName)) {
+					headerError = true;
+					break;
+				}
+			}
+
+			if (headerError) {
+				// Invalid file format
+				StringBuffer stringBuffer = new StringBuffer();
+				stringBuffer.append("Error: The specified file does not appear to conform to the expected file format.\n");
+				stringBuffer.append("The specified fileformat was: " + fileFormat + ".\n");
+				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n");
+				stringBuffer.append("The default format should be as follows:\n");
+
+				// Column headers
+				for (String column : Constants.LOCATION_UPLOAD_TEMPLATE_HEADER) {
+					stringBuffer.append(column);
+					stringBuffer.append(delimiterCharacter);
+				}
+				stringBuffer.deleteCharAt(stringBuffer.length()-1);
+				stringBuffer.append("\n");
+
+				fileValidationMessages.add(stringBuffer.toString());
+
+				for (int i = 0; i < headerColumnArray.length; i++) {
+					if (!biospecimenColumns.contains(headerColumnArray[i].toUpperCase())) {
+						fileValidationMessages.add("Error: the column name " + headerColumnArray[i] + " is not a valid column name.");
+					}
+				}
+			}
+
+			row = 1;
+		}
+		catch (IOException ioe) {
+			log.error("locationFile IOException stacktrace:", ioe);
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the Location data file");
+		}
+		catch (Exception ex) {
+			log.error("locationFile Exception stacktrace:", ex);
+			throw new ArkSystemException("Unexpected exception occurred when trying to process Location data file");
+		}
+		finally {
+			// Clean up the IO objects
+			
+			if (csvReader != null) {
+				try {
+					csvReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}
+			}
+			// Restore the state of variables
+			srcLength = -1;
+		}
+
+		return fileValidationMessages;
+	}
+
 
 	/**
 	 * Validates the Biospecimen file in the default "matrix" file format assumed
@@ -932,4 +1169,215 @@ public class BiospecimenUploadValidator {
 
 		return dataValidationMessages;
 	}
+	
+	
+	public java.util.Collection<String> validateMatrixLocationFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException,
+	ArkSystemException {
+		delimiterCharacter = inDelimChr;
+		fileFormat = inFileFormat;
+		
+		HashMap<String, String> uniqueSubjectBiocollections = new HashMap<String, String>();
+		HashSet<String> uniqueSubjectBiospecimens = new HashSet<String>();
+		
+		row = 1;
+		
+		InputStreamReader inputStreamReader = null;
+		CsvReader csvReader = null;
+		try {
+			inputStreamReader = new InputStreamReader(fileInputStream);
+			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+			
+			String[] stringLineArray;
+		
+			srcLength = inLength;
+			if (srcLength <= 0) {
+				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
+			}
+		
+		
+			// Set field list (note 1th column to Nth column)
+			// BiospecimenUID F1 F2 FN
+			// 0 1 2 N
+			csvReader.readHeaders();
+		
+			srcLength = inLength - csvReader.getHeaders().toString().length();
+		
+			String[] fieldNameArray = csvReader.getHeaders();
+			
+			// Loop through all rows in file
+			while (csvReader.readRecord()) {
+				boolean updateThisRow = true;
+				stringLineArray = csvReader.getValues();
+				
+				String biospecimenUID = csvReader.get("BIOSPECIMENUID");
+				
+				/*LinkSubjectStudy linkSubjectStudy = (iArkCommonService.getSubjectByUIDAndStudy(subjectUID, study));
+				if(linkSubjectStudy==null){
+					StringBuilder errorString = new StringBuilder();
+					errorString.append("Error: Row ");
+					errorString.append(row);
+					errorString.append(": SubjectUID: ");
+					errorString.append(subjectUID);
+					errorString.append(" does not exist.  Please check this Subject UID and try again.");
+					dataValidationMessages.add(errorString.toString());
+					errorCells.add(new ArkGridCell(csvReader.getIndex("SUBJECTUID"), row));
+					insertThisRow = false;//drop out also?
+					recordCount++;
+					row++;
+					break;
+				}*/
+				
+				Biospecimen biospecimen = null;//iLimsService.getBiospecimenByUid(biospecimenUID,study);
+				
+				biospecimen = iLimsService.getBiospecimenByUid(biospecimenUID,study);
+				if(biospecimen == null){
+					StringBuilder errorString = new StringBuilder();
+					errorString.append("Error: Row ");
+					errorString.append(row);
+					errorString.append(": bioscpeim UID: ");
+					errorString.append(biospecimenUID);
+					errorString.append(" does not exist in study '" + study.getName() + "   Please check this Subject UID and try again.");
+					dataValidationMessages.add(errorString.toString());
+					errorCells.add(new ArkGridCell(csvReader.getIndex("SUBJECTUID"), row));
+					updateThisRow = false;//drop out also?
+					recordCount++;
+					row++;
+					break;								
+				}
+				else{
+//default					updateThisRow = true;//drop out also?
+				}
+			
+				if(updateThisRow){ //else why bother
+					String site = csvReader.get("SITE");
+					String freezer = csvReader.get("FREEZER");
+					String rack = csvReader.get("RACK");
+					String box = csvReader.get("BOX");
+					String rowString = csvReader.get("ROW");
+					String columnString = csvReader.get("COLUMN");
+					
+					//if anything is empty
+					if ((site != null && freezer != null && rack != null && 
+							box != null && rowString != null && columnString != null) &&
+						(!site.isEmpty() && !freezer.isEmpty() && !rack.isEmpty() &&
+							!box.isEmpty() && !rowString.isEmpty() && !columnString.isEmpty())	
+					) {
+						InvCell invCell = iInventoryService.getInvCellByLocationNames(site, freezer, rack, box, rowString, columnString);
+						if (invCell == null) {
+							StringBuilder errorString = new StringBuilder();
+							errorString.append("Error: Row ");
+							errorString.append(row);
+							errorString.append(".  The location details provided for BiospecimenUID: ");
+							errorString.append(biospecimenUID);
+							errorString.append(" do not match any location in the database. Please check and try again");
+							dataValidationMessages.add(errorString.toString());
+							errorCells.add(new ArkGridCell(csvReader.getIndex("SITE"), row));
+							errorCells.add(new ArkGridCell(csvReader.getIndex("FREEZER"), row));
+							errorCells.add(new ArkGridCell(csvReader.getIndex("RACK"), row));
+							errorCells.add(new ArkGridCell(csvReader.getIndex("BOX"), row));
+							errorCells.add(new ArkGridCell(csvReader.getIndex("ROW"), row));
+							errorCells.add(new ArkGridCell(csvReader.getIndex("COLUMN"), row));
+							updateThisRow = false;
+						}
+						else{
+							//check ownership of the cell.  
+							//if nothing is there - put this spec there
+							if(invCell.getBiospecimen()==null){
+								//invCell.setBiospecimen(biospecimen); is what we will do next step
+								updateRows.add(row);
+							}
+							else{
+								StringBuilder errorString = new StringBuilder();
+								errorString.append("Error: Row ");
+								errorString.append(row);
+								errorString.append(": biospecimen UID: ");
+								errorString.append(biospecimenUID);
+								errorString.append(" cannot be placed at this cell location as there is already something there (" + invCell.getBiospecimen().getBiospecimenUid() + ").  Please check this UID or location and try again.");
+								dataValidationMessages.add(errorString.toString());
+								errorCells.add(new ArkGridCell(csvReader.getIndex("SUBJECTUID"), row));
+								updateThisRow = false;//drop out also?
+							}
+						}
+					}
+					else{
+						//else you have incomplete info, and we aren't cool with that;
+						StringBuilder errorString = new StringBuilder();
+						errorString.append("Error: Row ");
+						errorString.append(row);
+						errorString.append(" The location details provided for BiospecimenUID: ");
+						errorString.append(biospecimenUID);
+						errorString.append(" are incomplete. Please ensure you either provide all of the following information \"SITE, FREEZER, RACK, BOX, ROW and COLUMN\" or none of these ");
+						dataValidationMessages.add(errorString.toString());
+						errorCells.add(new ArkGridCell(csvReader.getIndex("SITE"), row));
+						errorCells.add(new ArkGridCell(csvReader.getIndex("FREEZER"), row));
+						errorCells.add(new ArkGridCell(csvReader.getIndex("RACK"), row));
+						errorCells.add(new ArkGridCell(csvReader.getIndex("BOX"), row));
+						errorCells.add(new ArkGridCell(csvReader.getIndex("ROW"), row));
+						errorCells.add(new ArkGridCell(csvReader.getIndex("COLUMN"), row));
+						updateThisRow = false;//drop out also?
+						
+					}
+				}
+					
+				//log.debug("\n");
+				recordCount++;
+				row++;
+				if(updateThisRow){
+					updateRows.add(row);
+				}
+		
+			}
+		
+			if (dataValidationMessages.size() > 0) {
+				log.debug("Validation messages: " + dataValidationMessages.size());
+				for (Iterator<String> iterator = dataValidationMessages.iterator(); iterator.hasNext();) {
+					String errorMessage = iterator.next();
+					log.debug(errorMessage);
+				}
+			}
+			else {
+				log.debug("Validation is ok");
+			}
+		}
+		catch (IOException ioe) {
+			log.error("processMatrixBiospecimenFile IOException stacktrace:", ioe);
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the Biospecimen data file");
+		}
+		finally {
+			// Clean up the IO objects
+			//timer.stop();
+			//log.debug("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
+			//log.debug("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
+			//if (timer != null)
+			//	timer = null;
+			if (csvReader != null) {
+				try {
+					csvReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}
+			}
+			// Restore the state of variables
+			srcLength = -1;
+		}
+		
+		for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
+			Integer i = (Integer) iterator.next();
+			dataValidationMessages.add("Data on row " + i.intValue() + " exists, please confirm update");
+		}
+		
+		return dataValidationMessages;
+		}
+	
+	
+	
 }

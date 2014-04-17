@@ -206,6 +206,10 @@ public class Constants {
 	public static final String			DELIMITER_TYPE_NAME										= "name";
 	public static final String			UPLOAD_TYPE_NAME										= "name";
 
+
+	public static final String			UPLOAD_TYPE_FOR_BIOSPECIMEN_CUSTOM						= "Custom Data to be associated with a biospecimen";//or for now use db instead as that is what is used elsewhere??
+	public static final String			UPLOAD_TYPE_FOR_LOCATION_UPLOADER						= "Biospecimen Location Updater";
+
 	// Exception messages
 	public static final String			IO_EXCEPTION											= "IOException: Input error. ";
 	public static final String			FILE_FORMAT_EXCEPTION									= "File Format Exception: Input error. ";
