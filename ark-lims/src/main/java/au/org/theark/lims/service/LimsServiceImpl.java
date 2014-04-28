@@ -783,6 +783,24 @@ public class LimsServiceImpl implements ILimsService {
 		return iBiospecimenDao.getTreatmentTypeByName(name);
 	}
 
+	public StringBuffer uploadAndReportMatrixLocationFile(Study study, InputStream inputStream, long size, String fileFormat, char delimiterChar) {
+		StringBuffer uploadReport = null;
+		BiospecimenUploader biospecimenUploader = new BiospecimenUploader(study, arkCommonService, this, iInventoryService);
+		
+		try {
+			log.debug("Importing and reporting Biospecimen file");
+			uploadReport = biospecimenUploader.uploadAndReportMatrixLocationFile(inputStream, size, fileFormat, delimiterChar);
+		}
+		catch (FileFormatException ffe) {
+			log.error(au.org.theark.core.Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe) {
+			log.error(au.org.theark.core.Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return uploadReport;
+	}
+
+
 	public StringBuffer uploadAndReportMatrixBiospecimenFile(Study study, InputStream inputStream, long size, String fileFormat, char delimiterChar) {
 		StringBuffer uploadReport = null;
 		BiospecimenUploader biospecimenUploader = new BiospecimenUploader(study, arkCommonService, this, iInventoryService);
