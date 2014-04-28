@@ -405,6 +405,223 @@ public class BiospecimenUploader {
 		return uploadReport;
 	}
 
+	
+
+
+	/**
+	 * Imports the subject data file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file format:
+	 * SUBJECTUID,FIELD1,FIELD2,FIELDN... 1,01/01/1900,99.99,99.99,, ...
+	 * 
+	 * Where N is any number of columns
+	 * 
+	 * @param fileInputStream
+	 *           is the input stream of a file
+	 * @param inLength
+	 *           is the length of a file
+	 * @throws FileFormatException
+	 *            file format Exception
+	 * @throws ArkBaseException
+	 *            general ARK Exception
+	 * @return the upload report detailing the upload process
+	 */
+	public StringBuffer uploadAndReportMatrixLocationFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
+		delimiterCharacter = inDelimChr;
+		uploadReport = new StringBuffer();
+		curPos = 0;
+		List<InvCell> cellsToUpdate = new ArrayList<InvCell>();
+
+		InputStreamReader inputStreamReader = null;
+		CsvReader csvReader = null;
+		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		
+		// If Excel, convert to CSV for validation
+		if (inFileFormat.equalsIgnoreCase("XLS")) {
+			Workbook w;
+			try {
+				w = Workbook.getWorkbook(fileInputStream);
+				delimiterCharacter = ',';
+				XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+				fileInputStream = xlsToCsv.convertXlsToCsv(w);
+				fileInputStream.reset();
+			}
+			catch (BiffException e) {
+				log.error(e.getMessage());
+			}
+			catch (IOException e) {
+				log.error(e.getMessage());
+			}
+		}
+
+		try {
+			inputStreamReader = new InputStreamReader(fileInputStream);
+			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+
+			srcLength = inLength;
+			if (srcLength <= 0) {
+				uploadReport.append("The input size was not greater than 0. Actual length reported: ");
+				uploadReport.append(srcLength);
+				uploadReport.append("\n");
+				throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + srcLength);
+			}
+
+			timer = new StopWatch();
+			timer.start();
+
+			// Set field list (note 2th column to Nth column)
+			// BIOSPECIMENUID F1 F2 FN
+			// 0 1 2 N
+			csvReader.readHeaders();
+
+			srcLength = inLength - csvReader.getHeaders().toString().length();
+			log.debug("Header length: " + csvReader.getHeaders().toString().length());
+
+			// Loop through all rows in file
+			while (csvReader.readRecord()) {
+				
+				log.info("At record: " + recordCount);
+				String biospecimenUID = csvReader.get("BIOSPECIMENUID");
+
+/*				//this is validated in prior step and should never happen
+				if(linkSubjectStudy==null){
+					log.error("\n\n\n\n\n\n\n\n\n\n\n\nUnexpected subject? a shouldnt happen...we should have errored this in validation");
+					break;//TODO : log appropriately or do some handling
+				}
+*/
+				Biospecimen biospecimen = iLimsService.getBiospecimenByUid(biospecimenUID,study);
+				if(biospecimen == null) {
+					log.error("\n\n\n\n\n\n\n\n\n....We should NEVER have null biospecimens this should be  validated in prior step");
+					break;
+				}
+								
+					
+				// Allocation details
+				InvCell invCell;
+				String siteName = null;
+				String freezerName = null;
+				String rackName = null;
+				String boxName = null;
+				String row = null;
+				String column = null;
+				
+				if (csvReader.getIndex("SITE") > 0) {
+					siteName = csvReader.get("SITE");
+				}
+
+				if (csvReader.getIndex("FREEZER") > 0) {
+					freezerName = csvReader.get("FREEZER");
+				}
+
+				if (csvReader.getIndex("RACK") > 0) {
+					rackName = csvReader.get("RACK");
+				}
+
+				if (csvReader.getIndex("BOX") > 0) {
+					boxName = csvReader.get("BOX");
+				}
+				
+				if (csvReader.getIndex("ROW") > 0) {
+					row = csvReader.get("ROW");
+				}
+				
+				if (csvReader.getIndex("COLUMN") > 0) {
+					column = csvReader.get("COLUMN");
+				}
+				
+				invCell = iInventoryService.getInvCellByLocationNames(siteName, freezerName, rackName, boxName, row, column);
+				//TODO : null checking here.  should be picked up ikn validation  JIRA 657 Created  log.info("invcell null?" + (invCell == null));
+
+				if(invCell != null && invCell.getId() != null) {
+					if(invCell.getBiospecimen()!=null){
+						log.error("This should NEVER happen as validation should ensure no cell will wipte another");
+						break;
+					}
+					invCell.setBiospecimen(biospecimen);
+					cellsToUpdate.add(invCell);
+//					biospecimen.setInvCell(invCell); 
+					updateCount++;
+				}
+				else{
+					log.error("This should NEVER happen as validation should ensure all cells valid");
+					break;
+				}
+				
+				recordCount++;
+			}
+		}
+		catch (IOException ioe) {
+			uploadReport.append("Unexpected I/O exception whilst reading the biospecimen data file\n");
+			log.error("processMatrixBiospecimenFile IOException stacktrace:", ioe);
+			throw new ArkSystemException("Unexpected I/O exception whilst reading the biospecimen data file");
+		}
+		catch (Exception ex) {
+			uploadReport.append("Unexpected exception whilst reading the biospecimen data file\n");
+			log.error("processMatrixBiospecimenFile Exception stacktrace:", ex);
+			throw new ArkSystemException("Unexpected exception occurred when trying to process biospecimen data file");
+		}
+		finally {
+			// Clean up the IO objects
+			timer.stop();
+			uploadReport.append("\n");
+			uploadReport.append("Total elapsed time: ");
+			uploadReport.append(timer.getTime());
+			uploadReport.append(" ms or ");
+			uploadReport.append(decimalFormat.format(timer.getTime() / 1000.0));
+			uploadReport.append(" s");
+			uploadReport.append("\n");
+			uploadReport.append("Total file size: ");
+			uploadReport.append(inLength);
+			uploadReport.append(" B or ");
+			uploadReport.append(decimalFormat.format(inLength / 1024.0 / 1024.0));
+			uploadReport.append(" MB");
+			uploadReport.append("\n");
+
+			if (timer != null)
+				timer = null;
+
+			if (csvReader != null) {
+				try {
+					csvReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}
+			}
+			// Restore the state of variables
+			srcLength = -1;
+		}
+		iLimsService.batchUpdateInvCells(cellsToUpdate);//TODO:  finally after everything for timing...or remove timing
+		uploadReport.append("Processed ");
+		uploadReport.append(recordCount);
+		uploadReport.append(" records.");
+		uploadReport.append("\n");
+		uploadReport.append("Updated ");
+		uploadReport.append(updateCount);
+		uploadReport.append(" records.");
+		uploadReport.append("\n");
+
+		// Batch insert/update
+		//iLimsService.batchInsertBiospecimens(insertBiospecimens);
+		//iLimsService.batchUpdateBiospecimens(updateBiospecimens);
+		//iLimsService.batchUpdateInvCells(updateInvCells);
+		
+		return uploadReport;
+	}
+
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Return the progress of the current process in %
 	 * 
