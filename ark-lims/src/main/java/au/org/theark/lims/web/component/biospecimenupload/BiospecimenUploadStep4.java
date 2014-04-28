@@ -90,7 +90,14 @@ public class BiospecimenUploadStep4 extends AbstractWizardStepPanel {
 		StringBuffer uploadReport = new StringBuffer("");
 		try {
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			uploadReport = iLimsService.uploadAndReportMatrixBiospecimenFile(containerForm.getModelObject().getUpload().getStudy(), inputStream, containerForm.getModelObject().getFileUpload().getSize(), fileFormat, delimiterChar);
+			String uploadType = containerForm.getModelObject().getUploadType();
+			log.info("upload type ---=" + uploadType);			
+			if(uploadType.equalsIgnoreCase(au.org.theark.lims.web.Constants.UPLOAD_TYPE_FOR_LOCATION_UPLOADER)){
+				uploadReport = iLimsService.uploadAndReportMatrixLocationFile(containerForm.getModelObject().getUpload().getStudy(), inputStream, containerForm.getModelObject().getFileUpload().getSize(), fileFormat, delimiterChar);				
+			}
+			else{
+				uploadReport = iLimsService.uploadAndReportMatrixBiospecimenFile(containerForm.getModelObject().getUpload().getStudy(), inputStream, containerForm.getModelObject().getFileUpload().getSize(), fileFormat, delimiterChar);
+			}
 		}
 		catch (IOException e) {
 			e.printStackTrace();
