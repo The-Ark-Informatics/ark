@@ -1315,10 +1315,13 @@ also this can't be an update...needs to be an insert
 *****/
 select max(subject_uid) from study.link_Subject_study where study_id = @STUDYKEY;
 
-select * from  `study`.`subjectuid_sequence`  where study_id = @STUDY_KEY;
+select * from  `study`.`subjectuid_sequence`; -- where study_id = @STUDY_KEY;
 -- we want something like this only if it's auto gent
--- INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES ('WASOS', '50443', '0');
-INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES ('WASOS', '50443', '0'); -- BTW:  Change this table!  what if study changes name!
+-- INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) 
+-- VALUES (@STUDYNAME, select  max(subject_uid) from study.link_Subject_study where study_id = @STUDYKEY), '0'); -- BTW:  Change this table!  what if study changes name!
+
+-- BUT INSTEAD JUST RUN SOMETHING LIKE THIS MANUALLY UNTIL WE KNOW THERE DATA?
+ INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES ('WASOS', '50443', '0');
 
 -- INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`) VALUES ('');
 
@@ -1328,7 +1331,7 @@ select * from lims.biospecimen;
 
 
 -- There is a difference in wager and ark units 
--- we are holding some biospcimens in ml type...move to mL type like the rest
+-- we are holding some biospcimens in ml type...move to mL type like the rest - well mysql is setup case insensitive so this does nothing for us
 update biospecimen
 set unit_id = 17 -- current ark ie mL
 where unit_id = 101 -- wager ml

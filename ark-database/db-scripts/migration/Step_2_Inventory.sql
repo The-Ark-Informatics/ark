@@ -166,6 +166,8 @@ and b.studykey=@STUDYKEY) b
 where t.traykey = b.traykey)
 );
 
+select * from  wagerlab.IX_INV_TANK t
+
 -- RACKS
 INSERT INTO `lims`.`inv_rack`
 (
@@ -195,7 +197,30 @@ select distinct boxkey from wagerlab.ix_inv_tray where traykey in -- (3230, 3231
 )
 );
 
+select distinct(colnotype) from     wagerlab.`IX_INV_TRAY` t;
 
+select colnotype, count(*) from     wagerlab.`IX_INV_TRAY` t
+group by colnotype;
+
+select * from lims.inv_col_row_type;
+
+select colnotype_id, count(*) from     lims.inv_box
+group by colnotype_id;
+
+SELECT 
+        `crt`.`ID`
+    FROM
+        `lims`.`inv_col_row_type` `crt`
+    WHERE
+        `NAME` in(select distinct(colnotype) from     wagerlab.`IX_INV_TRAY` t);
+
+-- I am proposing that we change all number colnotype to Numeric like in lims.
+
+update wagerlab.ix_inv_tray
+set colnotype = 'Numeric' where colnotype = 'Number';
+
+update wagerlab.ix_inv_tray
+set rownotype = 'Numeric' where rownotype = 'Number';
 
 -- BOXES
 INSERT INTO `lims`.`inv_box`
@@ -216,7 +241,7 @@ SELECT
     `t`.`NAME`,
     `t`.`NOOFCOL`,
     `t`.`CAPACITY`,
-    (SELECT id FROM `lims`.`inv_rack` WHERE OLD_ID = b.BOXKEY) as `RACK_ID`,
+    (SELECT id FROM `lims`.`inv_rack` WHERE OLD_ID = b.BOXKEY and tank.name = freezer.name) as `RACK_ID`,
     `t`.`AVAILABLE`,
     `t`.`NOOFROW`,
     ifnull((SELECT 
