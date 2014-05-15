@@ -574,6 +574,16 @@ WHERE bt.biospecimenkey = b.old_id
 AND b.study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
 AND bt.DELETED = 0;
 
+/*  above select for inset is
+
+SELECT count(*) -- b.id, bt.transactiondate, bt.quantity, bt.recorder, bt.reason
+FROM wagerlab.IX_BIO_TRANSACTIONS bt, lims.biospecimen b
+WHERE bt.biospecimenkey = b.old_id
+AND b.study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
+AND bt.DELETED = 0;
+
+*/
+
 /*
 select * from lims.bio_transaction where biospecimen_id in(
 select id from lims.biospecimen where study_id = @STUDYKEY)*/
