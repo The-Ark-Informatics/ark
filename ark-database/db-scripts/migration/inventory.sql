@@ -345,6 +345,7 @@ select * from lims.biospecimen where old_id in (select biospecimenkey from wager
 
 */
 
+-- Set -1 biospecimen_id to nulls
 UPDATE `lims`.`inv_cell` 
 SET 
     biospecimen_id = null
