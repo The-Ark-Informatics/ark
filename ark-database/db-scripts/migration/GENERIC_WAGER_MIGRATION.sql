@@ -1,24 +1,23 @@
-SET @STUDYKEY = 194;
-SET @STUDYNAME= 'RAVES';
-SET @AUTOGEN_SUBJECT = 0;
+SET @STUDYKEY = 414;
+SET @STUDYNAME= 'WASOS';
+SET @AUTOGEN_SUBJECT = 1;
 SET @AUTOGEN_BIOSPECIMEN = 1;
 SET @AUTOGEN_BIOCOLLECTION = 1;
 -- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
-
 
 -- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
 -- apparently subject prefix comes from wager
 -- SET @SUBJECT_PREFIX = 'RAV';
 
 
-SET @BIOCOLLECTIONUID_PREFIX = 'RAV';
+SET @BIOCOLLECTIONUID_PREFIX = 'WAS';
 -- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
 SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
 SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 
-SET @BIOSPECIMEN_UID_PREFIX = 'RAV';
+SET @BIOSPECIMEN_UID_PREFIX = 'WAS';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
-SET @BIOSPECIMENUID_PADCHAR_ID = 5;
+SET @BIOSPECIMENUID_PADCHAR_ID = 6;
 
 
 
@@ -320,9 +319,11 @@ AND ss.studykey = @STUDYKEY
 AND `adm`.`DELETED` = 0;
 
 -- Insert biospecimen sampletypes that may not exist
-INSERT INTO lims.bio_sampletype (name, sampletype, samplesubtype)
-SELECT DISTINCT CONCAT(sampletype, ' / ', samplesubtype), sampletype, samplesubtype FROM wagerlab.IX_BIOSPECIMEN
-WHERE (sampletype, samplesubtype) NOT IN (SELECT sampletype, samplesubtype FROM lims.bio_sampletype);
+-- INSERT INTO lims.bio_sampletype (name, sampletype, samplesubtype)
+-- SELECT DISTINCT CONCAT(sampletype, ' / ', samplesubtype), sampletype, samplesubtype FROM wagerlab.IX_BIOSPECIMEN
+-- WHERE (sampletype, samplesubtype) NOT IN (SELECT sampletype, samplesubtype FROM lims.bio_sampletype);
+
+
 
 -- TODO: HANDLE FOR STORED_IN / GRADE / 
 
@@ -346,6 +347,9 @@ GROUP BY bt.biospecimenkey
 ) bt ON b.biospecimenkey = bt.biospecimenkey
 SET b.units = bt.units;
 */
+
+select * from  wagerlab.IX_BIOSPECIMEN b 
+where b.studykey=414 and b.units is null;
 
 /*
 -- Trav : is this not done already?
@@ -371,6 +375,11 @@ WHERE studykey = @STUDYKEY
 AND DELETED =0
 AND unit NOT IN (SELECT NAME FROM lims.unit);
 */
+
+SELECT * 
+FROM lims.unit a, lims.unit b 
+WHERE a.name = b.name 
+and a.id <> b.id;
 
 -- Insert biospecimens
 -- Require all biocollections (encounter) to match accordingly
