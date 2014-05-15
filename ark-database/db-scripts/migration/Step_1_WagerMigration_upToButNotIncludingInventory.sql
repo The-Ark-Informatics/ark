@@ -121,6 +121,8 @@ DELETE FROM study.study WHERE parent_id = @STUDYKEY;
 DELETE FROM study.study WHERE ldap_group_name = @STUDYNAME;
 */
 
+select * from study.study;
+
 -- Insert Study
 INSERT INTO study.study(
 `ID`,
@@ -1212,6 +1214,8 @@ INSERT INTO `lims`.`biocollectionuid_template`
 `BIOCOLLECTIONUID_PADCHAR_ID`)
 VALUES (@STUDYKEY, @BIOCOLLECTIONUID_PREFIX, @BIOCOLLECTIONUID_TOKEN_ID, @BIOCOLLECTIONUID_PADCHAR_ID);
 
+SELECT @STUDYKEY, @BIOCOLLECTIONUID_PREFIX, @BIOCOLLECTIONUID_TOKEN_ID, @BIOCOLLECTIONUID_PADCHAR_ID;
+
 -- Set base sequence count
 -- Trav : TODO CREATE PARAMS
 DELETE FROM `lims`.`biocollectionuid_sequence` 
@@ -1285,6 +1289,12 @@ ORDER BY s.id, a.id;
 
 -- SET starting subject increment
 -- TRAV Params
+/****
+!!!!!!!!!!!!!!!!!!!!!!
+THIS IS ONLY IF IT HAS PREFIX ETC  else use the one after it 
+also this can't be an update...needs to be an insert
+!!!!!!!!!!!!!!!!!!!!!!
+*****/
 UPDATE `study`.`subjectuid_sequence` 
 SET 
     `UID_SEQUENCE` = (SELECT 
@@ -1297,6 +1307,22 @@ SET
         )
 WHERE
     `STUDY_NAME_ID` = @STUDYNAME;
+/****
+!!!!!!!!!!!!!!!!!
+ELSE USE THIS ONE IF it is just a number     -- ALSO PLEASE TEST WHAT HAPPENS TO MAX(dddd) when comparing 111111 to 22 !!!!!  this is a text field
+also this can't be an update...needs to be an insert
+!!!!!!!!!!!!!!!!!
+*****/
+select max(subject_uid) from study.link_Subject_study where study_id = @STUDYKEY;
+
+select * from  `study`.`subjectuid_sequence`  where study_id = @STUDY_KEY;
+-- we want something like this only if it's auto gent
+-- INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES ('WASOS', '50443', '0');
+INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES ('WASOS', '50443', '0'); -- BTW:  Change this table!  what if study changes name!
+
+-- INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`) VALUES ('');
+
+
 
 select * from lims.biospecimen;
 
