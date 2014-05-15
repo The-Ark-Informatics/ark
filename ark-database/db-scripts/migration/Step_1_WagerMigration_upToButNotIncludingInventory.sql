@@ -1326,7 +1326,7 @@ set
 
 
 select count(*) from lims.bio_transaction t 
- inner join lims.biospecimen b on
+ inner join lims.biospecimen b on  -- or left join...let's research what we are doing with some selects
     t.biospecimen_id = b.id
 	and b.study_id = @STUDYKEY
 	and (t.UNIT_id is null or t.unit_id = 0);
