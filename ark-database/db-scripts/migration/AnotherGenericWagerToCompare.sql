@@ -1,5 +1,5 @@
-SET @STUDYKEY = 22;
-SET @STUDYNAME= 'Vitamin A';
+SET @STUDYKEY = 414;
+SET @STUDYNAME= 'WASOS';
 SET @AUTOGEN_SUBJECT = 1;
 SET @AUTOGEN_BIOSPECIMEN = 1;
 SET @AUTOGEN_BIOCOLLECTION = 1;
@@ -10,14 +10,14 @@ SET @AUTOGEN_BIOCOLLECTION = 1;
 -- SET @SUBJECT_PREFIX = 'RAV';
 
 
-SET @BIOCOLLECTIONUID_PREFIX = 'VTA';
+SET @BIOCOLLECTIONUID_PREFIX = 'WAS';
 -- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
 SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
 SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 
-SET @BIOSPECIMENUID_PREFIX = 'VTA';
+SET @BIOSPECIMEN_UID_PREFIX = 'WAS';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
-SET @BIOSPECIMENUID_PADCHAR_ID = 5;
+SET @BIOSPECIMENUID_PADCHAR_ID = 6;
 
 SET @SITE_PERMITTED = 'WADB (SCGH)' ;  -- IF MORE THAN ONE FIX THIS 
 
@@ -414,6 +414,9 @@ GROUP BY bt.biospecimenkey
 SET b.units = bt.units;
 */
 
+select * from  wagerlab.IX_BIOSPECIMEN b 
+where b.studykey=414 and b.units is null;
+
 /*
 -- Trav : is this not done already?
 INSERT INTO `lims`.`biospecimen_protocol` (NAME) 
@@ -438,6 +441,11 @@ WHERE studykey = @STUDYKEY
 AND DELETED =0
 AND unit NOT IN (SELECT NAME FROM lims.unit);
 */
+
+SELECT * 
+FROM lims.unit a, lims.unit b 
+WHERE a.name = b.name 
+and a.id <> b.id;
 
 -- Insert biospecimens
 -- Require all biocollections (encounter) to match accordingly
