@@ -151,6 +151,7 @@ SELECT t.DELETED, t.TIMESTAMP, t.LOCATION, t.STATUS, lims_site.ID, t.CAPACITY, t
 FROM wagerlab.IX_INV_TANK t, wagerlab.IX_INV_SITE s, lims.inv_site lims_site
 WHERE t.SITEKEY = s.SITEKEY
 AND s.NAME = lims_site.NAME
+-- and lims_site.ID<>16 - fore wasos got rid of already existing freezer/site
 AND t.TANKKEY IN 
 (
 select distinct tankkey from wagerlab.ix_inv_box b
@@ -166,7 +167,9 @@ and b.studykey=@STUDYKEY) b
 where t.traykey = b.traykey)
 );
 
-select * from  wagerlab.IX_INV_TANK t
+
+
+select * from  wagerlab.IX_INV_TANK t;
 
 -- RACKS
 INSERT INTO `lims`.`inv_rack`
@@ -241,7 +244,7 @@ SELECT
     `t`.`NAME`,
     `t`.`NOOFCOL`,
     `t`.`CAPACITY`,
-    (SELECT id FROM `lims`.`inv_rack` WHERE OLD_ID = b.BOXKEY and tank.name = freezer.name) as `RACK_ID`,
+    (SELECT id FROM `lims`.`inv_rack` WHERE OLD_ID = b.BOXKEY) as `RACK_ID`,
     `t`.`AVAILABLE`,
     `t`.`NOOFROW`,
     ifnull((SELECT 
