@@ -1,0 +1,194 @@
+/* *
+*
+this statement may be better off goiing straight into biocollection.hospital field 
+*
+INSERT INTO `study`.`custom_field`
+(`NAME`,
+`DESCRIPTION`,
+`FIELD_TYPE_ID`,
+`STUDY_ID`,
+`ARK_FUNCTION_ID`,
+`UNIT_TYPE_ID`,
+`MIN_VALUE`,
+`MAX_VALUE`,
+`ENCODED_VALUES`,
+`MISSING_VALUE`,
+`HAS_DATA`,
+`CUSTOM_FIELD_LABEL`)
+SELECT 'HOSPITAL' AS NAME, 'NOTE: Encoded values mapped from sortorder in old data' as DESCRIPTION, 
+(SELECT ID FROM study.field_type WHERE name = 'CHARACTER') AS FIELD_TYPE,
+@STUDYKEY AS STUDY_ID, (SELECT ID FROM study.ark_function WHERE name = 'LIMS_COLLECTION') AS ARK_FUNCTION_ID, NULL AS UNITS_TYPE_ID, NULL MIN_VALUE, NULL MAX_VALUE,
+(SELECT (CONCAT(GROUP_CONCAT(CONCAT(FLOOR(SORTORDER),'=',TRIM(VALUE)) ORDER BY SORTORDER SEPARATOR ';'),';'))) AS ENCODED_VALUES,
+NULL AS MISSING_VALUE,
+0 AS HAS_DATA,
+'Hospital' AS CUSTOM_FIELD_LABEL
+FROM wagerlab.IX_LISTOFVALUES 
+WHERE TYPE ='HOSPITAL' AND DELETED =0 AND STUDYKEY IN (0, @STUDYKEY) AND VALUE IS NOT NULL;
+
+-- this could go straight into biocollection.ref_doctor field that seems to be in lims.biocollectuion.  will perform better  - might loose capablility of dropdownish kind of things
+-- Insert HOSPITAL and REF_DOCTOR as custom biocollection fields
+INSERT INTO `study`.`custom_field`
+(`NAME`,
+`DESCRIPTION`,
+`FIELD_TYPE_ID`,
+`STUDY_ID`,
+`ARK_FUNCTION_ID`,
+`UNIT_TYPE_ID`,
+`MIN_VALUE`,
+`MAX_VALUE`,
+`ENCODED_VALUES`,
+`MISSING_VALUE`,
+`HAS_DATA`,
+`CUSTOM_FIELD_LABEL`)
+SELECT 'SURGEON' AS NAME, 'NOTE: Encoded values mapped from sortorder in old data' as DESCRIPTION, 
+(SELECT ID FROM study.field_type WHERE name = 'CHARACTER') AS FIELD_TYPE,
+@STUDYKEY AS STUDY_ID, (SELECT ID FROM study.ark_function WHERE name = 'LIMS_COLLECTION') AS ARK_FUNCTION_ID, NULL AS UNITS_TYPE_ID, NULL MIN_VALUE, NULL MAX_VALUE,
+(SELECT (CONCAT(GROUP_CONCAT(CONCAT(FLOOR(SORTORDER),'=',TRIM(VALUE)) ORDER BY SORTORDER SEPARATOR ';'),';'))) AS ENCODED_VALUES,
+NULL AS MISSING_VALUE,
+0 AS HAS_DATA,
+'Surgeon' AS CUSTOM_FIELD_LABEL
+FROM wagerlab.IX_LISTOFVALUES 
+WHERE TYPE ='REF_DOCTOR' AND DELETED =0 AND STUDYKEY IN (0, @STUDYKEY) AND VALUE IS NOT NULL;
+
+-- Insert Custom field display (BioCollection)
+INSERT INTO `study`.`custom_field_display`
+(`CUSTOM_FIELD_ID`,
+`CUSTOM_FIELD_GROUP_ID`,
+`SEQUENCE`,
+`REQUIRED`,
+`REQUIRED_MESSAGE`)
+SELECT ID, NULL, ID, 0 AS REQUIRED, NULL
+FROM study.custom_field
+WHERE study_id = @STUDYKEY
+AND ark_function_id = (SELECT ID FROM study.ark_function WHERE name = 'LIMS_COLLECTION')
+AND name IN ('HOSPITAL', 'SURGEON');
+
+
+-- HOSPITAL and SURGEON data from IX_ADMISSIONS
+INSERT INTO `lims`.`biocollection_custom_field_data`
+(`BIO_COLLECTION_ID`,
+`CUSTOM_FIELD_DISPLAY_ID`,
+`TEXT_DATA_VALUE`,
+`DATE_DATA_VALUE`,
+`NUMBER_DATA_VALUE`,
+`ERROR_DATA_VALUE`)
+SELECT bc.id AS BIO_COLLECTION_ID, cfd.id AS CUSTOM_FIELD_DISPLAY_ID, SUBSTRING_INDEX(TRIM(TRAILING  SUBSTRING(cf.encoded_values, INSTR(cf.ENCODED_VALUES, concat('=', bc.HOSPITAL, ';'))) FROM cf.ENCODED_VALUES), ';', -1) AS TEXT_DATA_VALUE, NULL AS `DATE_DATA_VALUE`, NULL AS`NUMBER_DATA_VALUE`, NULL AS `ERROR_DATA_VALUE`
+FROM study.custom_field cf, study.custom_field_display cfd, lims.biocollection bc
+WHERE cf.id = cfd.custom_field_id
+AND cf.NAME = 'HOSPITAL'
+AND cf.study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
+AND bc.study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
+AND bc.HOSPITAL IS NOT NULL;
+
+
+
+INSERT INTO `lims`.`biocollection_custom_field_data`
+(`BIO_COLLECTION_ID`,
+`CUSTOM_FIELD_DISPLAY_ID`,
+`TEXT_DATA_VALUE`,
+`DATE_DATA_VALUE`,
+`NUMBER_DATA_VALUE`,
+`ERROR_DATA_VALUE`)
+SELECT bc.id AS BIO_COLLECTION_ID, cfd.id AS CUSTOM_FIELD_DISPLAY_ID, SUBSTRING_INDEX(TRIM(TRAILING  SUBSTRING(cf.encoded_values, INSTR(cf.ENCODED_VALUES, concat('=', bc.REF_DOCTOR, ';'))) FROM cf.ENCODED_VALUES), ';', -1) AS TEXT_DATA_VALUE, NULL AS `DATE_DATA_VALUE`, NULL AS`NUMBER_DATA_VALUE`, NULL AS `ERROR_DATA_VALUE`
+FROM study.custom_field cf, study.custom_field_display cfd, lims.biocollection bc
+WHERE cf.id = cfd.custom_field_id
+AND cf.NAME = 'SURGEON'
+AND cf.study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
+AND bc.study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
+AND bc.REF_DOCTOR IS NOT NULL;
+
+*/
+
+
+
+-- Insert All BioCollection Custom fields
+INSERT INTO `study`.`custom_field`
+(`NAME`,
+`DESCRIPTION`,
+`FIELD_TYPE_ID`,
+`STUDY_ID`,
+`ARK_FUNCTION_ID`,
+`UNIT_TYPE_ID`,
+`MIN_VALUE`,
+`MAX_VALUE`,
+`ENCODED_VALUES`,
+`MISSING_VALUE`,
+`HAS_DATA`,
+`CUSTOM_FIELD_LABEL`)
+SELECT bf.COLUMNNAME AS NAME, IF(bf.LOVTYPE IS NOT NULL, 'NOTE: Encoded values mapped from sortorder in old data', null) as DESCRIPTION, 
+(SELECT ID FROM study.field_type WHERE name = IF(bft.TYPENAME = 'string', 'CHARACTER', IF(bft.TYPENAME = 'number', 'NUMBER', 'DATE'))) AS FIELD_TYPE,
+@STUDYKEY AS STUDY_ID, (SELECT ID FROM study.ark_function WHERE name = 'LIMS_COLLECTION') AS ARK_FUNCTION_ID, NULL AS UNITS_TYPE_ID, NULL MIN_VALUE, NULL MAX_VALUE,
+(
+SELECT CONCAT(GROUP_CONCAT(CONCAT(FLOOR(SORTORDER),'=',TRIM(VALUE)) ORDER BY SORTORDER SEPARATOR ';'),';') AS ENCODED_VALUES
+FROM wagerlab.IX_LISTOFVALUES 
+WHERE TYPE = bf.LOVTYPE
+GROUP BY TYPE
+) AS ENCODED_VALUES,
+NULL AS MISSING_VALUE,
+0 AS HAS_DATA,
+bf.FIELDNAME AS CUSTOM_FIELD_LABEL
+FROM wagerlab.IX_BIODATA_FIELD bf, wagerlab.IX_BIODATA_TYPES bft, wagerlab.IX_BIODATA_FIELD_GROUP bfg, wagerlab.IX_BIODATA_GROUP bg
+WHERE bfg.GROUPKEY = bg.GROUPKEY
+AND bfg.FIELDKEY = bf.FIELDKEY
+AND bf.DOMAIN = bg.DOMAIN
+AND bf.TYPEKEY = bft.TYPEKEY
+AND bg.GROUP_NAME like 'WARTN%'
+AND bg.DOMAIN = 'ADMISSIONS'
+ORDER BY bfg.POSITION;
+
+-- Insert  All Custom field display (for BioCollection)
+INSERT INTO `study`.`custom_field_display`
+(`CUSTOM_FIELD_ID`,
+`CUSTOM_FIELD_GROUP_ID`,
+`SEQUENCE`,
+`REQUIRED`,
+`REQUIRED_MESSAGE`)
+SELECT ID, NULL, ID, 0 AS REQUIRED, NULL
+FROM study.custom_field
+WHERE study_id = @STUDYKEY
+AND ark_function_id = (SELECT ID FROM study.ark_function WHERE name = 'LIMS_COLLECTION');
+
+
+-- inset actual biocollection custopm field data itself now
+-- Normal text/character data
+INSERT INTO `lims`.`biocollection_custom_field_data`
+(`BIO_COLLECTION_ID`,
+`CUSTOM_FIELD_DISPLAY_ID`,
+`TEXT_DATA_VALUE`,
+`DATE_DATA_VALUE`,
+`NUMBER_DATA_VALUE`,
+`ERROR_DATA_VALUE`)
+SELECT bc.id AS BIO_COLLECTION_ID, cfd.id AS CUSTOM_FIELD_DISPLAY_ID, bd.STRING_VALUE AS TEXT_DATA_VALUE, NULL AS `DATE_DATA_VALUE`, NULL AS`NUMBER_DATA_VALUE`, NULL AS `ERROR_DATA_VALUE`
+FROM wagerlab.IX_BIODATA bd, wagerlab.IX_BIODATA_FIELD bf, wagerlab.IX_BIODATA_TYPES bft, wagerlab.IX_BIODATA_FIELD_GROUP bfg, wagerlab.IX_BIODATA_GROUP bg, wagerlab.IX_ADMISSIONS adm,study.custom_field cf, study.custom_field_display cfd,
+lims.biocollection bc
+WHERE bfg.GROUPKEY = bg.GROUPKEY
+AND bfg.FIELDKEY = bf.FIELDKEY
+AND bf.DOMAIN = bg.DOMAIN
+AND bf.TYPEKEY = bft.TYPEKEY
+AND bg.GROUP_NAME like 'WARTN%'
+AND bg.DOMAIN = 'ADMISSIONS'
+AND bd.FIELDKEY = bf.FIELDKEY
+AND bd.DOMAINKEY = adm.ADMISSIONKEY
+AND adm.DELETED = 0
+AND cf.study_id = @STUDYKEY
+AND ark_function_id = (SELECT ID FROM study.ark_function WHERE name = 'LIMS_COLLECTION')
+AND cf.id = cfd.custom_field_id
+AND cf.NAME = bf.COLUMNNAME
+AND bc.NAME = adm.ADMISSIONID
+AND bc.STUDY_ID = adm.COLLECTIONGROUPKEY
+AND bf.LOVTYPE IS NULL
+AND STRING_VALUE IS NOT NULL;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
