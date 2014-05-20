@@ -2,7 +2,6 @@ SELECT count(*) FROM wagerlab.ix_biospecimen where studykey=18 and deleted = 0;
 
 SELECT biospecimenkey FROM wagerlab.ix_biospecimen where studykey=18 and deleted = 0;
 
-
 select * from study.person order by id desc;
 
 select * from wagerlab.ix_admissions where admissionkey = 103075;
