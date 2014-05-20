@@ -1,5 +1,6 @@
-SET @STUDYKEY = 414;
-SET @STUDYNAME= 'WASOS';
+SET @STUDY_GROUP_NAME = 'IRD';
+SET @STUDYKEY = 18;
+SET @STUDYNAME= 'IRD';
 SET @AUTOGEN_SUBJECT = 1;
 SET @AUTOGEN_BIOSPECIMEN = 1;
 SET @AUTOGEN_BIOCOLLECTION = 1;
@@ -9,13 +10,12 @@ SET @AUTOGEN_BIOCOLLECTION = 1;
 -- apparently subject prefix comes from wager
 -- SET @SUBJECT_PREFIX = 'RAV';
 
-
-SET @BIOCOLLECTIONUID_PREFIX = 'WAS';
+SET @BIOCOLLECTIONUID_PREFIX = 'IRD';
 -- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
 SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
 SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 	
-SET @BIOSPECIMENUID_PREFIX = 'WAS';
+SET @BIOSPECIMENUID_PREFIX = 'IRD';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
 SET @BIOSPECIMENUID_PADCHAR_ID = 6;
 
@@ -91,36 +91,37 @@ select * from lims.biospecimen where old_id in (select biospecimenkey from wager
 -- SET @BIOCOLLECTIONUID_PADCHAR_ID = 8;
 /*
 -- Remove any existing data
-DELETE FROM lims.inv_cell WHERE box_id IN 
+D ELETE FROM lims.inv_cell WHERE box_id IN 
     (SELECT ID FROM lims.inv_box WHERE rack_id IN 
         (SELECT ID FROM lims.inv_rack WHERE freezer_id IN 
             (SELECT ID FROM lims.inv_freezer WHERE site_id IN
                 (SELECT ID FROM lims.inv_site WHERE name = 'SJOG'))));
-DELETE FROM lims.inv_box WHERE rack_id IN 
+D ELETE FROM lims.inv_box WHERE rack_id IN 
         (SELECT ID FROM lims.inv_rack WHERE freezer_id IN 
             (SELECT ID FROM lims.inv_freezer WHERE site_id IN
                 (SELECT ID FROM lims.inv_site WHERE name = 'SJOG')));
-DELETE FROM lims.inv_rack WHERE freezer_id IN 
+D ELETE FROM lims.inv_rack WHERE freezer_id IN 
             (SELECT ID FROM lims.inv_freezer WHERE site_id IN
                 (SELECT ID FROM lims.inv_site WHERE name = 'SJOG'));
-DELETE FROM lims.inv_freezer WHERE site_id IN
+D ELETE FROM lims.inv_freezer WHERE site_id IN
                 (SELECT ID FROM lims.inv_site WHERE name = 'SJOG');
-DELETE FROM lims.study_inv_site WHERE inv_site_id IN (SELECT ID FROM lims.inv_site WHERE name = 'SJOG');
-DELETE FROM lims.inv_site WHERE name = 'SJOG';
-DELETE FROM `lims`.`bio_transaction` WHERE biospecimen_id IN (SELECT ID FROM `lims`.`biospecimen` WHERE study_id in (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY));
+D ELETE FROM lims.study_inv_site WHERE inv_site_id IN (SELECT ID FROM lims.inv_site WHERE name = 'SJOG');
+D ELETE FROM lims.inv_site WHERE name = 'SJOG';
+D ELETE FROM `lims`.`bio_transaction` WHERE biospecimen_id IN (SELECT ID FROM `lims`.`biospecimen` WHERE study_id in (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY));
 -- NOTE: Cascades biospecimen_custom_field_data
-DELETE FROM `lims`.`biospecimen` WHERE study_id in (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY);
+D ELETE FROM `lims`.`biospecimen` WHERE study_id in (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY);
 -- NOTE: Cascades biocollection_custom_field_data
-DELETE FROM `lims`.`biocollection` WHERE study_id in (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY);
-DELETE FROM study.custom_field WHERE study_id in (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY);
-DELETE FROM study.link_subject_study WHERE person_id IN (SELECT id FROM study.person WHERE OTHER_ID IN (SELECT subjectkey FROM zeus.SUBJECT WHERE studykey=@STUDYKEY));
-DELETE FROM study.phone WHERE person_id IN (SELECT id FROM study.person WHERE OTHER_ID IN (SELECT subjectkey FROM zeus.SUBJECT WHERE studykey=@STUDYKEY));
-DELETE FROM study.address WHERE person_id IN (SELECT id FROM study.person WHERE OTHER_ID IN (SELECT subjectkey FROM zeus.SUBJECT WHERE studykey=@STUDYKEY));
-DELETE FROM study.person WHERE OTHER_ID IN (SELECT subjectkey FROM zeus.SUBJECT WHERE studykey=@STUDYKEY);
-DELETE FROM study.study WHERE parent_id = @STUDYKEY;
-DELETE FROM study.study WHERE ldap_group_name = @STUDYNAME;
+D ELETE FROM `lims`.`biocollection` WHERE study_id in (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY);
+D ELETE FROM study.custom_field WHERE study_id in (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY);
+D ELETE FROM study.link_subject_study WHERE person_id IN (SELECT id FROM study.person WHERE OTHER_ID IN (SELECT subjectkey FROM zeus.SUBJECT WHERE studykey=@STUDYKEY));
+D ELETE FROM study.phone WHERE person_id IN (SELECT id FROM study.person WHERE OTHER_ID IN (SELECT subjectkey FROM zeus.SUBJECT WHERE studykey=@STUDYKEY));
+DE LETE FROM study.address WHERE person_id IN (SELECT id FROM study.person WHERE OTHER_ID IN (SELECT subjectkey FROM zeus.SUBJECT WHERE studykey=@STUDYKEY));
+D ELETE FROM study.person WHERE OTHER_ID IN (SELECT subjectkey FROM zeus.SUBJECT WHERE studykey=@STUDYKEY);
+D ELETE FROM study.study WHERE parent_id = @STUDYKEY;
+D ELETE FROM study.study WHERE ldap_group_name = @STUDYNAME;
+d elete from study.link_subject_study where study_id = 18;
+d elete from study.study where id = 18;
 */
-
 select * from study.study;
 
 -- Insert Study
@@ -162,6 +163,17 @@ ORDER BY ID;
 
 UPDATE study.study set parent_id = @STUDYKEY where id = @STUDYKEY;
 
+select * from study.study;
+
+
+
+/***********************  !!!!!!!!!!!!!!!!!!!!
+-- IF it should NOT HAVE A SUBJECT_UID PREFIX FIX IT NOW... BECAUSE IT IS GETTING IT FROM ZEUS!!!!!!!!
+-- update study.study set subjectuid_prefix = null where id = @STUDYKEY;
+-- update study.study set subjectuid_token_id = null where id = @STUDYKEY;
+************************************************/
+
+select * from study.study;
 
 /*-- Add missed titles
 
@@ -188,6 +200,7 @@ SELECT
   CAUSE_OF_DEATH as CAUSE_OF_DEATH
 FROM zeus.SUBJECT
 WHERE studykey=@STUDYKEY;
+
 
 
 -- Home phone
@@ -259,6 +272,12 @@ zeus.STUDY s, zeus.SUBJECT sub, study.person
 WHERE s.studykey = sub.studykey
 AND sub.`SUBJECTKEY` = `person`.`OTHER_ID` 
 AND `person`.`OTHER_ID` IS NOT NULL
+AND (sub.ADDR_STREET is not null 
+	OR
+	sub.ADDR_SUBURB is not null	-- aka city
+	OR
+	sub.ADDR_POSTCODE is not null
+	)
 AND s.studyname=@STUDYNAME;
 
 -- Insert subject/consent details into parent study
@@ -277,31 +296,8 @@ AND sub.`SUBJECTKEY` = `person`.`OTHER_ID`
 AND `person`.`OTHER_ID` IS NOT NULL
 AND s.studyname=@STUDYNAME;
 
-/*
--- Insert child-study subjects
--- Based on consent to particular sub-study, if not consented to any sub-study (or consent in fact wrong, subjects will be missed)
-INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, subject_uid, consent_status_id, consent_date, comments)
-SELECT 
-    `person`.`id` as `person_id`,
-    ss.substudykey as `study_id`,
-    1 as `subject_status_id`,
-    sub.`SUBJECTID` as `subject_uid`,
-    IF(csub.status = 1, csub.status, null) as `consent_status_id`,
-    csub.consent_date,
-    csub.comments
-FROM
-zeus.STUDY s, zeus.ZE_SUBSTUDY ss, zeus.SUBJECT sub, study.person, zeus.CONSENT_STUDY_SECTION css, zeus.CONSENT_SUBJECT_SECTION csub
-WHERE s.studykey = sub.studykey
-AND s.studykey = ss.studykey
-AND sub.SUBJECTKEY = study.person.OTHER_ID
-AND study.person.OTHER_ID IS NOT NULL
-AND s.studyname=@STUDYNAME
-AND css.consentsectionkey=300 AND css.substudykey = ss.substudykey
-AND csub.consstudysectkey = css.consstudysectkey
-AND csub.subjectkey = sub.subjectkey;
-*/
 
-/*
+/*  SHOULDNT need this
 -- Some subjects/sub-studies may have been missed. This adds any missed based on admission sub-study (should only have the one "dodgy" subject)
 -- run select as a check first, but otherwise not needed to execute INSERT
 INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, subject_uid, comments)
@@ -570,7 +566,7 @@ INSERT INTO `lims`.`bio_transaction`
 `QUANTITY`,
 `RECORDER`,
 `REASON`)
-SELECT b.id, bt.transactiondate, bt.quantity, bt.recorder, bt.reason
+SELECT   b.id, bt.transactiondate, bt.quantity, bt.recorder, bt.reason  
 FROM wagerlab.IX_BIO_TRANSACTIONS bt, lims.biospecimen b
 WHERE bt.biospecimenkey = b.old_id
 AND b.study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
@@ -685,8 +681,11 @@ VALUES (@STUDYKEY, @BIOCOLLECTIONUID_PREFIX, @BIOCOLLECTIONUID_TOKEN_ID, @BIOCOL
 
 SELECT @STUDYKEY, @BIOCOLLECTIONUID_PREFIX, @BIOCOLLECTIONUID_TOKEN_ID, @BIOCOLLECTIONUID_PADCHAR_ID;
 
+
+
 -- Set base sequence count
 -- Trav : TODO CREATE PARAMS
+/**************************ONLY WORKS WHERE EXISTING STRUCTURE PPERMITS***********************************/
 DELETE FROM `lims`.`biocollectionuid_sequence` 
 WHERE
     `STUDY_NAME_ID` = @STUDYNAME;
@@ -703,8 +702,16 @@ WHERE study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
 AND name like concat(@BIOCOLLECTIONUID_PREFIX, '%')),  -- 'TN%'),
 0
 );
-
-
+/******************************************************ELSE DO THIS MANUALLY LIKE BELOW**************************
+DELETE FROM `lims`.`biocollectionuid_sequence` 
+WHERE
+    `STUDY_NAME_ID` = @STUDYNAME;
+INSERT INTO `lims`.`biocollectionuid_sequence`
+(`STUDY_NAME_ID`,
+`UID_SEQUENCE`,
+`INSERT_LOCK`)
+VALUES (@STUDYNAME, 5000, 0);
+**********************************************************************************************************************/
 
 -- Biospecimen pattern
 -- Trav : TODO CREATE PARAMS
@@ -735,6 +742,8 @@ VALUES
 (SELECT MAX(ID) FROM lims.biospecimen WHERE study_id IN (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY)),
 0
 );
+select * from lims.biospecimenuid_sequence; -- TODO rewrite another time and run manually.
+
 
 -- Assign modules to all studies
 -- Trav : In each study analyze which modules are needed - or select them all and add the appropriate for max coverage.
