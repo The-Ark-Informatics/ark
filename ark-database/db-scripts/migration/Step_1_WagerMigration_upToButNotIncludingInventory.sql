@@ -685,7 +685,10 @@ SELECT @STUDYKEY, @BIOCOLLECTIONUID_PREFIX, @BIOCOLLECTIONUID_TOKEN_ID, @BIOCOLL
 
 -- Set base sequence count
 -- Trav : TODO CREATE PARAMS
-/**************************ONLY WORKS WHERE EXISTING STRUCTURE PPERMITS***********************************/
+/**************************
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ONLY WORKS WHERE EXISTING STRUCTURE PPERMITS
+***********************************/
 DELETE FROM `lims`.`biocollectionuid_sequence` 
 WHERE
     `STUDY_NAME_ID` = @STUDYNAME;
@@ -702,7 +705,9 @@ WHERE study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
 AND name like concat(@BIOCOLLECTIONUID_PREFIX, '%')),  -- 'TN%'),
 0
 );
-/******************************************************ELSE DO THIS MANUALLY LIKE BELOW**************************
+/******************************************************
+* ELSE DO THIS MANUALLY LIKE BELOW**************************
+
 DELETE FROM `lims`.`biocollectionuid_sequence` 
 WHERE
     `STUDY_NAME_ID` = @STUDYNAME;
@@ -729,6 +734,10 @@ select @STUDYKEY, @BIOSPECIMENUID_PREFIX, @BIOSPECIMENUID_TOKEN_ID, @BIOSPECIMEN
 
 
 -- Set base sequence count
+/**************************
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ONLY WORKS WHERE EXISTING STRUCTURE PPERMITS
+***********************************/
 DELETE FROM `lims`.`biospecimenuid_sequence` 
 WHERE
     `STUDY_NAME_ID` = @STUDYNAME;
@@ -742,6 +751,18 @@ VALUES
 (SELECT MAX(ID) FROM lims.biospecimen WHERE study_id IN (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY)),
 0
 );
+/******************************************************
+* ELSE DO THIS MANUALLY LIKE BELOW**************************
+
+DELETE FROM `lims`.`biocollectionuid_sequence` 
+WHERE
+    `STUDY_NAME_ID` = @STUDYNAME;
+INSERT INTO `lims`.`biocollectionuid_sequence`
+(`STUDY_NAME_ID`,
+`UID_SEQUENCE`,
+`INSERT_LOCK`)
+VALUES (@STUDYNAME, 5000, 0);
+**********************************************************************************************************************/
 select * from lims.biospecimenuid_sequence; -- TODO rewrite another time and run manually.
 
 
@@ -772,7 +793,7 @@ ORDER BY s.id, a.id;
 THIS IS ONLY IF IT HAS PREFIX ETC  else use the one after it 
 also this can't be an update...needs to be an insert
 !!!!!!!!!!!!!!!!!!!!!!
-*****/
+*****
 UPDATE `study`.`subjectuid_sequence` 
 SET 
     `UID_SEQUENCE` = (SELECT 
@@ -789,23 +810,25 @@ WHERE
 !!!!!!!!!!!!!!!!!
 ELSE USE THIS ONE IF it is just a number     -- ALSO PLEASE TEST WHAT HAPPENS TO MAX(dddd) when comparing 111111 to 22 !!!!!  this is a text field
 also this can't be an update...needs to be an insert
+
+-- BUT INSTEAD JUST RUN SOMETHING LIKE THIS MANUALLY UNTIL WE KNOW THERE DATA?
+
+ DELETE FROM  `study`.`subjectuid_sequence` where study_name_id = @STUDYNAME;
+
+ INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES ('@STUDYNAME', '50000', '0');
+
+OR
+
+(`STUDY_NAME_ID`,
+`UID_SEQUENCE`,
+`INSERT_LOCK`)
+VALUES (@STUDYNAME, 50000, 0); -- or there abouts as suits your migration data
+
 !!!!!!!!!!!!!!!!!
 *****/
 select max(subject_uid) from study.link_Subject_study where study_id = @STUDYKEY;
 
-select * from  `study`.`subjectuid_sequence`; -- where study_id = @STUDY_KEY;
--- we want something like this only if it's auto gent
--- INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) 
--- VALUES (@STUDYNAME, select  max(subject_uid) from study.link_Subject_study where study_id = @STUDYKEY), '0'); -- BTW:  Change this table!  what if study changes name!
-
--- BUT INSTEAD JUST RUN SOMETHING LIKE THIS MANUALLY UNTIL WE KNOW THERE DATA?
- INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES ('WASOS', '50443', '0');
-
--- INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`) VALUES ('');
-
-
-
-select * from lims.biospecimen;
+select * from  `study`.`subjectuid_sequence` where study_name_id = @STUDYNAME;
 
 
 -- There is a difference in wager and ark units 
@@ -815,14 +838,7 @@ set unit_id = 17 -- current ark ie mL
 where unit_id = 101 -- wager ml
 and study_id = @STUDYKEY;
 
-/*
-select * from lims.biospecimen
-where unit_id = 101 -- wager ml
-and study_id = @STUDYKEY;
-select * from lims.unit;
-*/
 -- select * from lims.biospecimen  where study_id = 194
-
 
 -- update all transactions to have the units of their parents
 -- script for this exists in some past update script in svn
@@ -856,3 +872,4 @@ select distinct hospital from wagerlab.ix_admissions;
 select distinct hospital from lims.biocollection where study_id  = 194;
 
 
+ 
