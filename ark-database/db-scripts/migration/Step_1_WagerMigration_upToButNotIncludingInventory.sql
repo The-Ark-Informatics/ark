@@ -22,7 +22,6 @@ SET @BIOSPECIMENUID_PADCHAR_ID = 6;
 -- SET @SITE_PERMITTED = 'WADB (SCGH)' ;  -- IF MORE THAN ONE FIX THIS 
 
 /* 
-
 -- select every cell which has a biospecimen we care about
 select * from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
 
@@ -49,8 +48,6 @@ select * from wagerlab.ix_inv_cell where traykey in (61);
 select distinct boxkey from wagerlab.ix_inv_tray where traykey in
 (select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194));
 
-
-
 -- and 
 select distinct tankkey from wagerlab.ix_inv_box where boxid in (1, 12, 12321 etc from previous query)
 
@@ -60,12 +57,9 @@ select distinct tankkey from wagerlab.ix_inv_tray where
 select distinct boxkey from wagerlab.ix_inv_tray where traykey in
 (select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194));
 
-
-
 select * from wagerlab.ix_inv_box where boxkey in 
 select boxkey from wagerlab.ix_inv_tray where traykey in
 (select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
-
 
 select * from wagerlab.ix_inv_cell where biospecimenkey = -1; 
 
@@ -74,7 +68,6 @@ update wagerlab.ix_inv_cell set biospecimenkey = 2188706
 where cellkey = 601;
 
 select * from wagerlab.ix_inv_cell where cellkey = 601;
-
 
 select * from lims.biospecimen where old_id in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
 
