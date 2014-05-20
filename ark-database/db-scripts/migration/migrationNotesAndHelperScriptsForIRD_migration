@@ -27,3 +27,17 @@ where biospecimenkey in (
 2222592.000000000000000000000000000000,
 2222593.000000000000000000000000000000,
 2222594.000000000000000000000000000000);
+
+
+SELECT -- b.id, bt.transactiondate, bt.quantity, bt.recorder, bt.reason  
+ count(*)
+FROM wagerlab.IX_BIO_TRANSACTIONS bt
+where bt.studykey IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
+AND bt.DELETED = 0;
+-- 8385
+
+SELECT -- b.id, bt.transactiondate, bt.quantity, bt.recorder, bt.reason  
+ count(*)
+FROM wagerlab.IX_BIO_TRANSACTIONS bt
+where bt.biospecimenkey IN (SELECT biospecimenkey from wagerlab.ix_biospecimen where studykey = 18)
+AND bt.DELETED = 0; -- 14636
