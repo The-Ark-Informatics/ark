@@ -1,6 +1,7 @@
-/* WASOS */
-SET @STUDYKEY = 414;
-SET @STUDYNAME= 'WASOS';
+/* ALWAYS CHECK BEFORE RUNNING */
+SET @STUDY_GROUP_NAME = 'IRD';
+SET @STUDYKEY = 18;
+SET @STUDYNAME= 'IRD';
 SET @AUTOGEN_SUBJECT = 1;
 SET @AUTOGEN_BIOSPECIMEN = 1;
 SET @AUTOGEN_BIOCOLLECTION = 1;
@@ -10,13 +11,12 @@ SET @AUTOGEN_BIOCOLLECTION = 1;
 -- apparently subject prefix comes from wager
 -- SET @SUBJECT_PREFIX = 'RAV';
 
-
-SET @BIOCOLLECTIONUID_PREFIX = 'WAS';
+SET @BIOCOLLECTIONUID_PREFIX = 'IRD';
 -- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
 SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
 SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
-
-SET @BIOSPECIMEN_UID_PREFIX = 'WAS';
+	
+SET @BIOSPECIMENUID_PREFIX = 'IRD';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
 SET @BIOSPECIMENUID_PADCHAR_ID = 6;
 
@@ -127,9 +127,16 @@ where t.traykey = ct.traykey)
 ))) s;
 
 select id, name from lims.inv_site;  -- ensure sites match wager vs prod for any of this to work!!! 
-select id, name from lims.inv_site;
+select * from lims.study_inv_site;
 
-
+/*************
+ALWAYS always ALWAYS 
+		run the select first before the insert.
+   plus follow all the rules regarding prod access;  
+		WHAT ENV AM I IN?    
+	is AUTO-COMMIT OFFFF?
+etc
+***************/
 -- FREEZERS
 INSERT INTO `lims`.`inv_freezer`
 (
@@ -152,6 +159,8 @@ FROM wagerlab.IX_INV_TANK t, wagerlab.IX_INV_SITE s, lims.inv_site lims_site
 WHERE t.SITEKEY = s.SITEKEY
 AND s.NAME = lims_site.NAME
 -- and lims_site.ID<>16 -- fore wasos got rid of already existing freezer/site
+-- the below line eliminates already present freezers from  entry
+AND t.name not in (select name from lims.inv_freezer)
 AND t.TANKKEY IN 
 (
 select distinct tankkey from wagerlab.ix_inv_box b
@@ -226,6 +235,9 @@ update wagerlab.ix_inv_tray
 set rownotype = 'Numeric' where rownotype = 'Number';
 
 -- BOXES
+/***** 
+!!!!!!!!!!!!!!!!!!!!!!!!!!! caution 26 minutes only run on local box or allow significant time out.  Or fix query 
+******/
 INSERT INTO `lims`.`inv_box`
 (`DELETED`,
 `TIMESTAMP`,
@@ -238,48 +250,42 @@ INSERT INTO `lims`.`inv_box`
 `COLNOTYPE_ID`,
 `ROWNOTYPE_ID`,
 `OLD_ID`)
-SELECT 
-    `t`.`DELETED`,
-    `t`.`TIMESTAMP`,
-    `t`.`NAME`,
-    `t`.`NOOFCOL`,
-    `t`.`CAPACITY`,
-    (SELECT id FROM `lims`.`inv_rack` WHERE OLD_ID = b.BOXKEY) as `RACK_ID`,
-    `t`.`AVAILABLE`,
-    `t`.`NOOFROW`,
-    ifnull((SELECT 
-        `crt`.`ID`
-    FROM
-        `lims`.`inv_col_row_type` `crt`
-    WHERE
-        `NAME` = `t`.`COLNOTYPE`),123) as `COLNOTYPE_ID`,
-    ifnull((SELECT 
-        `crt`.`ID`
-    FROM
-        `lims`.`inv_col_row_type` `crt`
-    WHERE
-        `NAME` = `t`.`ROWNOTYPE`),123) as `ROWNOTYPE_ID`,
-`t`.`TRAYKEY` as OLD_ID
-FROM
-    wagerlab.`IX_INV_TRAY` t, 
-    wagerlab.`IX_INV_BOX` b,
-    wagerlab.IX_INV_TANK tank, 
-    lims.inv_freezer f
-WHERE `t`.`BOXKEY` = `b`.`BOXKEY`
-AND tank.TANKKEY = b.TANKKEY
-AND tank.NAME = f.NAME
-AND t.traykey in
-(
-	select traykey boxkey from wagerlab.ix_inv_tray where traykey in
+	SELECT 
+		`t`.`DELETED`,
+		`t`.`TIMESTAMP`,
+		`t`.`NAME`,
+		`t`.`NOOFCOL`,
+		`t`.`CAPACITY`,
+		(SELECT id FROM `lims`.`inv_rack` WHERE OLD_ID = b.BOXKEY) as `RACK_ID`,
+		`t`.`AVAILABLE`,
+		`t`.`NOOFROW`,
+		ifnull((SELECT `crt`.`ID`
+				FROM `lims`.`inv_col_row_type` `crt`
+				WHERE `NAME` = `t`.`COLNOTYPE`),123) as `COLNOTYPE_ID`,
+		ifnull((SELECT `crt`.`ID`
+				FROM `lims`.`inv_col_row_type` `crt`
+				WHERE `NAME` = `t`.`ROWNOTYPE`),123) as `ROWNOTYPE_ID`,
+		`t`.`TRAYKEY` as OLD_ID
+	FROM
+		wagerlab.`IX_INV_TRAY` t, 
+		wagerlab.`IX_INV_BOX` b-- ,
+		-- wagerlab.IX_INV_TANK tank, 
+		-- lims.inv_freezer f
+	WHERE `t`.`BOXKEY` = `b`.`BOXKEY`
+	-- AND tank.TANKKEY = b.TANKKEY
+	-- AND tank.NAME = f.NAME
+	AND t.traykey in
 	(
-		select 
-			distinct c.traykey
-		from
-			wagerlab.ix_biospecimen b,
-			wagerlab.ix_inv_cell c
-		where b.BIOSPECIMENKEY = c.BIOSPECIMENKEY
-		and b.studykey=@STUDYKEY)
-);
+		select traykey boxkey from wagerlab.ix_inv_tray where traykey in
+		(
+			select 
+				distinct c.traykey
+			from
+				wagerlab.ix_biospecimen b,
+				wagerlab.ix_inv_cell c
+			where b.BIOSPECIMENKEY = c.BIOSPECIMENKEY
+			and b.studykey=@STUDYKEY)
+	);
 
 -- Insert a fake biospecimen for cell merging
 INSERT INTO `lims`.`biospecimen`
@@ -339,6 +345,13 @@ AND b.OLD_ID = `t`.`TRAYKEY`
 AND bio.OLD_ID = c.biospecimenkey
 AND bio.study_id = @STUDYKEY
 and c.biospecimenkey >0 ;
+
+
+select * from lims.inv_cell 
+where box_id in 
+	(select id from lims.inv_box where rack_id in
+		(select id from lims.inv_rack where study_id = 18));
+
 
 /* 
 
