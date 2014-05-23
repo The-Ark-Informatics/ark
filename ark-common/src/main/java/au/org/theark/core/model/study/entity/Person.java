@@ -75,6 +75,7 @@ public class Person implements java.io.Serializable {
 	private Set<LinkSiteContact> linkSiteContacts = new HashSet<LinkSiteContact>(0);
 	private Set<LinkSubjectContact> linkSubjectContactsForSubjectKey = new HashSet<LinkSubjectContact>(0);
 	private Set<PersonLastnameHistory> personLastnameHistory = new HashSet<PersonLastnameHistory>(0);
+	private Set<OtherID> otherIDs = new HashSet<OtherID>(0);
 
 	public Person() {
 	}
@@ -337,6 +338,15 @@ public class Person implements java.io.Serializable {
 	public Set<PersonLastnameHistory> getPersonLastnameHistory() {
 		return personLastnameHistory;
 	}
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "person")
+	public Set<OtherID> getOtherIDs() {
+		return otherIDs;
+	}
+	
+	public void setOtherIDs(Set<OtherID> otherIDs) {
+		this.otherIDs = otherIDs;
+	}
 
 	/**
 	 * @param causeOfDeath
@@ -454,6 +464,8 @@ public class Person implements java.io.Serializable {
 				+ ((titleType == null) ? 0 : titleType.hashCode());
 		result = prime * result
 				+ ((vitalStatus == null) ? 0 : vitalStatus.hashCode());
+		result = prime * result 
+				+ ((otherIDs == null) ? 0 : otherIDs.hashCode());
 		return result;
 	}
 
@@ -560,6 +572,12 @@ public class Person implements java.io.Serializable {
 			if (other.vitalStatus != null)
 				return false;
 		} else if (!vitalStatus.equals(other.vitalStatus))
+			return false;
+		if (otherIDs == null) {
+			if (other.otherIDs != null) {
+				return false;
+			}
+		} else if (!otherIDs.equals(other.otherIDs))
 			return false;
 		return true;
 	}

@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -44,6 +45,7 @@ import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
+import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Entity;
 import au.org.theark.core.model.report.entity.FieldCategory;
@@ -830,4 +832,85 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 
 		return file;
 	}
+	
+	public File createConsentStatusCSV(Search search, DataExtractionVO devo, List<ConsentStatusField> consentStatusFields, FieldCategory fieldCategory) {
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		String filename = new String("STUDYCOMPONENTCONSENTSTATUS.csv");
+		final java.io.File file = new File(tempDir, filename);
+		if (filename == null || filename.isEmpty()) {
+			filename = "exportcsv.csv";
+		}
+
+		HashMap<String, ExtractionVO> hashOfConsentStatusData = devo.getConsentStatusData();
+
+		OutputStream outputStream;
+		try {
+			outputStream = new FileOutputStream(file);
+			CsvWriter csv = new CsvWriter(outputStream);
+			log.info("hash: " + devo.getConsentStatusData());
+			for(Entry<String, ExtractionVO> hash : devo.getConsentStatusData().entrySet()) {
+				log.info("Entry: " + hash.getKey() + " " + hash.getValue().getSubjectUid() + " " + hash.getValue().getKeyValues());
+			}
+			
+			// Header
+			csv.write("SUBJECTUID");
+			
+			Set<String> fields = new HashSet<String>();
+			for (String subjectUID : hashOfConsentStatusData.keySet()) {
+				HashMap<String, String> keyValues = hashOfConsentStatusData.get(subjectUID).getKeyValues();
+				fields.addAll((keyValues.keySet()));
+			}
+			for(String f : fields) {
+				csv.write(f);
+			}
+			csv.endLine();
+			log.info("keyset: " + hashOfConsentStatusData.keySet().toString());
+			for (String subjectUID : hashOfConsentStatusData.keySet()) {
+				csv.write(subjectUID);
+
+				for (String f : fields) {
+					HashMap<String, String> keyValues = hashOfConsentStatusData.get(subjectUID).getKeyValues();
+					csv.write(keyValues.get(f));
+					log.info(keyValues.get(f));
+					
+				}
+
+				/**
+				 * for (String subjectUID : hashOfSubjectsWithData.keySet()) { HashMap<String, String> keyValues =
+				 * hashOfSubjectsWithData.get(subjectUID).getKeyValues(); log.info(subjectUID + " has " + keyValues.size() + "demo fields"); //
+				 * remove(subjectUID).getKeyValues().size() + "demo fields"); for (String key : keyValues.keySet()) { log.info("     key=" + key +
+				 * "\t   value=" + keyValues.get(key)); } }
+				 */
+				ExtractionVO evo = hashOfConsentStatusData.get(subjectUID);
+				if (evo != null) {
+					HashMap<String, String> keyValues = evo.getKeyValues();
+					for (ConsentStatusField csf : consentStatusFields) {
+
+						String valueResult = keyValues.get(csf.getPublicFieldName());
+						if (valueResult != null) {
+							csv.write(valueResult);
+						}
+						else {
+							csv.write(valueResult);
+						}
+					}
+				}
+				else {
+					// Write out a line with no values (no data existed for subject in question
+					for (ConsentStatusField csf : consentStatusFields) {
+						csv.write("");
+					}
+				}
+
+				csv.endLine();
+			}
+			csv.close();
+		}
+		catch (FileNotFoundException e) {
+			log.error(e.getMessage());
+		}
+
+		return file;
+	}
+	
 }

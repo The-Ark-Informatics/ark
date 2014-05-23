@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.model.study.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,6 +29,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
 
 import au.org.theark.core.Constants;
 
@@ -82,7 +85,8 @@ public class PersonLastnameHistory implements java.io.Serializable {
 	/**
 	 * @return the person
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
+//TODO ASAP Evaluate cascade selection
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "PERSON_ID")
 	public Person getPerson() {
 		return person;

@@ -3,20 +3,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd" xml:lang="en" lang="en">
 	<head></head>
 	<wicket:panel>
-		<table wicket:id="table" cellpadding="0" cellspacing="0" border="0" class="wizardDataGridTable">
+		<table wicket:id="table" cellpadding="0" cellspacing="0" class="wizardDataGridTable" style="margin-top:1em;" border="1">
 			<thead>
 				<tr>
-					<div wicket:id="headerList"></div>
+					<td><b>Field</b></td>
+					<td><b>Values</b></td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr wicket:id="data">
-					<td wicket:id="column">
-						<span wicket:id="value">
-						</span>
-					</td>
+					<td><span wicket:id="field"></span></td>
+					<td><span wicket:id="value"></span></td>
 				</tr>
 			</tbody>
 		</table>
+		<span wicket:id="navigator" class="a"></span>
 	</wicket:panel>
 </html>

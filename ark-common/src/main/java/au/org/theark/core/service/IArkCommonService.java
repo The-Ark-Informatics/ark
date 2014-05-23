@@ -49,6 +49,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
+import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
@@ -82,9 +83,11 @@ import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Relationship;
@@ -749,6 +752,8 @@ public interface IArkCommonService<T> {
 
 
 	public String getPreviousLastname(Person person);
+	
+	public List<OtherID> getOtherIDs(Person person);
 
 	public List<Upload> searchUploadsForBiospecimen(Upload studyUpload, List<Study> studyListForUser);
 
@@ -762,12 +767,16 @@ public interface IArkCommonService<T> {
 
 	public boolean update(SearchVO search) throws EntityExistsException;
 
+	public Collection<ConsentStatusField> getAllConsentStatusFields();
+	
 	public Collection<DemographicField> getAllDemographicFields();
 
 	public Collection<BiospecimenField> getAllBiospecimenFields();
 
 	public Collection<BiocollectionField> getAllBiocollectionFields();
 
+	public Collection<ConsentStatusField> getSelectedConsentStatusFieldsForSearch(Search search);
+	
 	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search);
 
 
@@ -811,6 +820,10 @@ public interface IArkCommonService<T> {
 	public void runSearch(Long searchId, String currentUser);
 
 	public void delete(Search search);
+	
+//	public List<OtherID> getPersonOtherIDList(Long personID);
+	
+	public Collection<PersonLastnameHistory> getPersonLastNameHistory(Person person);
 
 	public ConsentStatus getConsentStatusByName(String string);
 	

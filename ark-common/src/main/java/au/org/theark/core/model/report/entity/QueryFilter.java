@@ -2,6 +2,7 @@ package au.org.theark.core.model.report.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
 
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -43,6 +46,7 @@ public class QueryFilter  implements Serializable {
 	private BiocollectionField biocollectionField;	
 	private DemographicField demographicField;	
 	private CustomFieldDisplay customFieldDisplay;
+	private ConsentStatusField consentStatusField;
 	private String value;
 	private String secondValue; // for between and similar operators
 	//private String valueForMultiselectComponentLookup;    -- will be compared to demographicfield.fieldForDisplay
@@ -122,6 +126,15 @@ public class QueryFilter  implements Serializable {
 		this.prefix = prefix;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONSENT_STATUS_FIELD_ID")
+	public ConsentStatusField getConsentStatusField() {
+		return consentStatusField;
+	}
+	
+	public void setConsentStatusField(ConsentStatusField consentStatusField) {
+		this.consentStatusField = consentStatusField;
+	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BIOSPECIMEN_FIELD_ID")
@@ -144,7 +157,9 @@ public class QueryFilter  implements Serializable {
 		this.biocollectionField = biocollectionField;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+//TODO ASAP : Travis Investigate what we might be forcing cascade all here...does it corelate with our DB?  
+//What are the effects on updates, deletes, etc
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "SEARCH_ID")
 	public Search getSearch() {
 		return search;

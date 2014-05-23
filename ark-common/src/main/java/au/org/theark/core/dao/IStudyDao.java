@@ -35,6 +35,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
+import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
@@ -62,6 +63,7 @@ import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
@@ -669,13 +671,16 @@ public interface IStudyDao {
 	public boolean create(SearchVO search) throws EntityExistsException;
 
 	public boolean update(SearchVO search) throws EntityExistsException;
-
+	
+	public Collection<ConsentStatusField> getAllConsentStatusFields();
+	
 	public Collection<DemographicField> getAllDemographicFields();
 
 	public Collection<BiocollectionField> getAllBiocollectionFields();
 
 	public Collection<BiospecimenField> getAllBiospecimenFields();
 
+	public Collection<ConsentStatusField> getSelectedConsentStatusFieldsForSearch(Search search);
 
 	public List<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search);
 
@@ -724,4 +729,9 @@ public interface IStudyDao {
 	public ConsentStatus getConsentStatusByName(String name);
 	
 	public GenderType getSubjectGenderType(final String subjectUID,final Long studyId);
+
+	public List<OtherID> getOtherIDs(Person person);
+
+	public Collection<PersonLastnameHistory> getPersonLastnameHistory(Person person);
+
 }

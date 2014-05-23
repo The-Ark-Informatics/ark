@@ -25,6 +25,7 @@ import java.util.List;
 
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
+import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -63,6 +64,8 @@ public class SearchVO implements Serializable {
 	private Collection<CustomFieldDisplay>	availablePhenoCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
 	private Collection<CustomFieldDisplay>	selectedPhenoCustomFieldDisplays = new ArrayList<CustomFieldDisplay>();
 	
+	private Collection<ConsentStatusField> availableConsentStatusFields = new ArrayList<ConsentStatusField>();
+	private Collection<ConsentStatusField> selectedConsentStatusFields = new ArrayList<ConsentStatusField>();
 	
 	public SearchVO() {
 		search = new Search();
@@ -105,6 +108,13 @@ public class SearchVO implements Serializable {
 		this.subjectFileUpload = subjectFileUpload;
 	}
 
+	public Collection<ConsentStatusField> getAvailableConsentStatusFields() {
+		return availableConsentStatusFields;
+	}
+	
+	public void setAvailableConsentStatusFields(Collection<ConsentStatusField> availableConsentStatusFields) {
+		this.availableConsentStatusFields = availableConsentStatusFields;
+	}
 
 	public Collection<DemographicField> getAvailableDemographicFields() {
 		return availableDemographicFields;
@@ -136,6 +146,13 @@ public class SearchVO implements Serializable {
 		this.availableBiocollectionFields = availableBiocollectionFields;
 	}
 
+	public Collection<ConsentStatusField> getSelectedConsentStatusFields() {
+		return selectedConsentStatusFields;
+	}
+	
+	public void setSelectedConsentStatusFields(Collection<ConsentStatusField> selectedConsentStatusFields) {
+		this.selectedConsentStatusFields = selectedConsentStatusFields;
+	}
 
 	public Collection<DemographicField> getSelectedDemographicFields() {
 		return selectedDemographicFields;
