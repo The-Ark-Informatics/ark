@@ -245,7 +245,8 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		
 		// Sample type
 		velocityContext.put("sampleType", biospecimen.getSampleType().getName());
-
+		velocityContext.put("subjectUid", biospecimen.getLinkSubjectStudy().getSubjectUID());
+		
 		if (dateOfBirth != null) {
 			velocityContext.put("dateOfBirth", dateOfBirth);
 		}
@@ -297,9 +298,17 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		}
 		String sex = new String();
 		if (bioCollection.getLinkSubjectStudy().getPerson().getGenderType() != null) {
-			bioCollection.getLinkSubjectStudy().getPerson().getGenderType().getName();
+			sex = bioCollection.getLinkSubjectStudy().getPerson().getGenderType().getName();
 		}
-
+		String collectionID = bioCollection.getBiocollectionUid();
+		String subjectFirstName = linkSubjectStudy.getPerson().getFirstName();
+		String subjectLastName = linkSubjectStudy.getPerson().getLastName();
+		String initials = subjectFirstName.charAt(0) + "" +subjectLastName.charAt(0);
+		
+		velocityContext.put("initials", initials);
+		velocityContext.put("firstName", subjectFirstName);
+		velocityContext.put("lastName", subjectLastName);
+		velocityContext.put("collectionID", collectionID);
 		velocityContext.put("subjectUid", subjectUid);
 		velocityContext.put("familyId", familyId);
 		velocityContext.put("asrbno", asrbno);

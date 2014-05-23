@@ -42,6 +42,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
@@ -504,6 +505,7 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 		}
 		
 		if(!getModelObject().getParentBiospecimen().getStudy().getAutoGenerateBiospecimenUid()) {
+/* we did have this previously
 			// Check for any duplicated ids
 			for (Biospecimen biospecimen: getModelObject().getAliquots()) {
 				// Check BiospecimenUID is unique
@@ -515,6 +517,21 @@ public class BatchAliquotBiospecimenForm extends Form<BatchBiospecimenAliquotsVO
 					break;
 				}
 	  		} 
+
+now replacing with this from George;
+*/
+		// Check for any duplicated ids
+			for (Biospecimen biospecimen: getModelObject().getAliquots()) {
+				// Check BiospecimenUID is unique
+				String biospecimenUid = (biospecimen.getBiospecimenUid());
+				Biospecimen b = iLimsService.getBiospecimenByUid(biospecimenUid, biospecimen.getStudy());
+				if(b !=null && b.getId() != null) {
+					error("Field 'Biospecimen UID' must be unique.");
+					ok = false;
+					break;
+				}
+	  		} 
+/* end of George new code */
 		}
 		
 		// Check for any empty required fields in list

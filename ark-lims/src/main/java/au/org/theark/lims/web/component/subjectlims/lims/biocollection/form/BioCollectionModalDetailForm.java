@@ -76,6 +76,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 	private Panel 							bioCollectionCFDataEntryPanel;
 	private AjaxButton					printBioCollectionLabelButton;
 	private AjaxButton					printBiospecimensForBioCollectionButton;
+	private AjaxButton					printStrawBiospecimensForBioCollectionButton;
 	
 	protected NumberOfLabelsPanel numberOfLabels;
 
@@ -162,7 +163,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		};
 		printBioCollectionLabelButton.setDefaultFormProcessing(false);
 		
-		printBiospecimensForBioCollectionButton = new PrintBiospecimensForBioCollectionButton("printBiospecimensForBioCollectionButton", bioCollection) {
+		printBiospecimensForBioCollectionButton = new PrintBiospecimensForBioCollectionButton("printBiospecimensForBioCollectionButton", bioCollection, "zebra biospecimen", (IModel<Number>) numberOfLabels.getDefaultModel()) {
 
 			private static final long	serialVersionUID	= 1L;
 
@@ -172,6 +173,16 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		};
 		printBioCollectionLabelButton.setDefaultFormProcessing(false);
 
+		printStrawBiospecimensForBioCollectionButton = new PrintBiospecimensForBioCollectionButton("printStrawBiospecimensForBioCollectionButton", bioCollection, "straw barcode", (IModel<Number>) numberOfLabels.getDefaultModel()) {
+			
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			protected void onPostSubmit(AjaxRequestTarget target, Form<?> form) {
+			}
+		};
+		printStrawBiospecimensForBioCollectionButton.setDefaultFormProcessing(false);
+		
 		attachValidators();
 		addComponents();
 		
@@ -195,6 +206,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		add(numberOfLabels);
 		add(printBioCollectionLabelButton);
 		add(printBiospecimensForBioCollectionButton);
+		add(printStrawBiospecimensForBioCollectionButton);
 		
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
