@@ -21,13 +21,18 @@ package au.org.theark.study.web.component.subject.form;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -41,6 +46,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkUniqueException;
@@ -53,6 +60,7 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -79,7 +87,7 @@ import au.org.theark.study.web.component.subject.ChildStudySubjectPanel;
  * 
  */
 public class DetailForm extends AbstractDetailForm<SubjectVO> {
-
+	static Logger log = LoggerFactory.getLogger(DetailForm.class);
 
 	private static final long								serialVersionUID	= -9196914684971413116L;
 
@@ -145,6 +153,10 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	protected ChildStudySubjectPanel		childStudySubjectPanel;
 	protected Study											study;
 
+	private MultiLineLabel	otherIDLabel;
+	private TextField<String> otherIDTxtFld;
+	private TextField<String> otherIDSourceTxtFld;
+
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
@@ -205,6 +217,42 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 		};
 		preferredNameTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_NAME);
+
+		otherIDSourceTxtFld = new TextField<String>("otherIDSource") {
+			private static final long serialVersionUID = 1L;
+			
+			protected void onBeforeRender() {
+				this.setDefaultModel(new Model<String>(""));
+				super.onBeforeRender();
+			}
+		};
+		otherIDSourceTxtFld.setModel(new Model<String>(""));
+		otherIDTxtFld = new TextField<String>("otherIDTxtFld") {
+			private static final long serialVersionUID = 1L;
+			
+			protected void onBeforeRender() {
+				this.setDefaultModel(new Model<String>(""));
+				super.onBeforeRender();
+			}
+		};
+		otherIDTxtFld.setModel(new Model<String>(""));
+		
+		otherIDLabel = new MultiLineLabel("otherID", "") {
+			private static final long serialVersionUID = 1L;
+
+			protected void onBeforeRender() {
+				if(!isNew()) {
+					containerForm.getModelObject().setOtherIDList(iArkCommonService.getOtherIDs(containerForm.getModelObject().getLinkSubjectStudy().getPerson()));
+					List<OtherID> otherIDs = iArkCommonService.getOtherIDs(containerForm.getModelObject().getLinkSubjectStudy().getPerson());
+					String otherIDstring = "";
+					for(OtherID o : otherIDs) {
+						otherIDstring += o.getOtherID_Source() + ": " + o.getOtherID() + "\n";
+					}
+					this.setDefaultModel(new Model<String>(otherIDstring));
+				}
+				super.onBeforeRender();
+			}
+		};
 
 		preferredEmailTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_EMAIL);
 		otherEmailTxtFld = new TextField<String>(Constants.PERSON_OTHER_EMAIL);
@@ -434,6 +482,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentTxtAreaFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(heardAboutStudyTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(vitalStatusDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(otherIDLabel);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(otherIDSourceTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(otherIDTxtFld);
 
 		// Death details only be edited when vital status set to deceased
 		wmcDeathDetailsContainer.add(dateOfDeathTxtFld);
@@ -621,6 +672,22 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		else {
 
 			study = iArkCommonService.getStudy(studyId);
+			if(!(otherIDTxtFld.getValue() == null || otherIDTxtFld.getValue().isEmpty()) && !(otherIDSourceTxtFld.getValue() == null || otherIDSourceTxtFld.getValue().isEmpty())) {
+				if(isNew()) {
+					containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(new HashSet<OtherID>());
+				}
+				log.info("onsave subject otherids (before adding actual): " + containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
+				OtherID newOtherID = new OtherID();
+				newOtherID.setOtherID(otherIDTxtFld.getValue());
+				newOtherID.setOtherID_Source(otherIDSourceTxtFld.getValue());
+				newOtherID.setPerson(containerForm.getModelObject().getLinkSubjectStudy().getPerson());
+				Set<OtherID> o = containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs();
+				o.add(newOtherID);
+				containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(o);
+				log.info("onsave subject otherids: " + containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
+			} else {
+				containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(new HashSet<OtherID>());
+			}
 			saveUpdateProcess(containerForm.getModelObject(), target);
 			// String subjectPreviousLastname = iArkCommonService.getPreviousLastname(containerForm.getModelObject().getSubjectStudy().getPerson());
 			// containerForm.getModelObject().setSubjectPreviousLastname(subjectPreviousLastname);

@@ -129,7 +129,7 @@ public class StudyContainerPanel extends AbstractContainerPanel<StudyModelVO> {
 		studyCrudContainerVO.getPageableListView().setReuseItems(true);
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", studyCrudContainerVO.getPageableListView());
 		searchResultsPanel.add(pageNavigator);
-		searchResultsPanel.add(studyCrudContainerVO.getPageableListView());
+		searchResultsPanel.add(studyCrudContainerVO.getPageableListView());//todo more rows
 		studyCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
 		return studyCrudContainerVO.getSearchResultPanelContainer();
 	}
