@@ -42,7 +42,7 @@ public class NumberOfLabelsPanel extends Panel {
 	protected Label							labelsToPrint;
 	protected DropDownChoice<Integer>	numberOfLabelsToPrint;
 	/** available numbers for selection. */
-	private static final List<Integer>	INTEGERS				= Arrays.asList(1, 5, 10);
+	private static final List<Integer>	INTEGERS				= Arrays.asList(1, 2, 5, 10);
 
 	public NumberOfLabelsPanel(String id) {
 		super(id);
