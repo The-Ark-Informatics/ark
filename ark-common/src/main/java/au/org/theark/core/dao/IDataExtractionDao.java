@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import au.org.theark.core.model.report.entity.BiospecimenField;
+import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.FieldCategory;
 import au.org.theark.core.model.report.entity.Search;
@@ -18,4 +19,5 @@ public interface IDataExtractionDao {
 	public File createBiospecimenDataCustomCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory);
 	public File createPhenotypicCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory);
 	public File createGenoCSV(Search search, DataExtractionVO allTheData, FieldCategory geno, Long maxProcessesPerPipeline, Map<Long, Long> maxInputList, Map<Long, Long> maxOutputList);
+	public File createConsentStatusCSV(Search search, DataExtractionVO devo, List<ConsentStatusField> consentStatusFields, FieldCategory fieldCategory);
 }

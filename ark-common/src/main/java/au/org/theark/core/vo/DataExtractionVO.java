@@ -2,7 +2,7 @@ package au.org.theark.core.vo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap; 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class DataExtractionVO {
@@ -10,6 +10,7 @@ public class DataExtractionVO {
 	private List<LinkedExtractionVO> genoData = new ArrayList<LinkedExtractionVO>();//stepping away from previous pattern...seeing what best approach is
 	private HashMap<String, ExtractionVO> biocollectionData = new HashMap<String, ExtractionVO>();
 	private HashMap<String, ExtractionVO> biospecimenData = new HashMap<String, ExtractionVO>();
+	private HashMap<String, ExtractionVO> consentStatusData = new HashMap<String, ExtractionVO>();
 	private HashMap<String, ExtractionVO> subjectCustomData = new HashMap<String, ExtractionVO>();
 	/*the key to each of these is infact a biospecimen uid and not a subject uid, and subjectUID is just a key value pair?  i am open to suggestions */
 	private HashMap<String, ExtractionVO> biospecimenCustomData = new HashMap<String, ExtractionVO>();
@@ -19,7 +20,14 @@ public class DataExtractionVO {
 	/* the key to each of these is infact a biocollection uid and not a subject uid, and subjectUID is just a key value pair?  i am open to suggestions */
 	private HashMap<String, ExtractionVO> biocollectionCustomData = new HashMap<String, ExtractionVO>();
 
-
+	public HashMap<String, ExtractionVO> getConsentStatusData() {
+		return consentStatusData;
+	}
+	
+	public void setConsentStatusData(HashMap<String, ExtractionVO> consentStatusData) {
+		this.consentStatusData = consentStatusData;
+	}
+	
 	public HashMap<String, ExtractionVO> getDemographicData() {
 		return demographicData;
 	}
