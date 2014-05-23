@@ -20,7 +20,9 @@ package au.org.theark.study.web.component.subject.form;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -34,6 +36,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
@@ -43,6 +46,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -85,6 +89,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	private DropDownChoice<GenderType>			genderTypeDdc;
 	private DropDownChoice<SubjectStatus>		subjectStatusDdc;
 	private DateTextField							dateOfBirthTxtFld;
+	private TextField<String> otherIDTxtFld;
 
 	// TODO get explanation never accessed, yet we can set it - maybe wicket can access?
 	//private PageableListView<SubjectVO>			listView;
@@ -123,6 +128,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		add(subjectStatusDdc);
 		add(genderTypeDdc);
 		add(dateOfBirthTxtFld);
+		add(otherIDTxtFld);
 	}
 
 	protected void initialiseSearchForm() {
@@ -131,6 +137,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
+		otherIDTxtFld = new TextField<String>("otherID", new Model(""));
 		initVitalStatusDdc();
 		initSubjectStatusDdc();
 		initGenderTypeDdc();
@@ -255,6 +262,14 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		
 		//getModelObject().getLinkSubjectStudy().getStudy();
 
+		String otherIDSearch = otherIDTxtFld.getValue();
+		if(otherIDSearch != null) {
+			OtherID o = new OtherID();
+			o.setOtherID(otherIDSearch);
+			Set<OtherID> otherIDs = new HashSet<OtherID>();
+			otherIDs.add(o);
+			cpmModel.getObject().getLinkSubjectStudy().getPerson().setOtherIDs(otherIDs);
+		}
 		long count = iArkCommonService.getStudySubjectCount(cpmModel.getObject());
 		if (count == 0L) {
 			this.info("There are no subjects with the specified criteria.");

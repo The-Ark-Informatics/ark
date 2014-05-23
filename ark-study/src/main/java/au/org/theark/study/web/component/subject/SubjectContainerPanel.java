@@ -20,8 +20,10 @@ package au.org.theark.study.web.component.subject;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
@@ -31,6 +33,7 @@ import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -38,6 +41,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.iterator.ComponentHierarchyIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +49,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -262,6 +267,18 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 				return listSubjects.iterator();
 			}
 		};
+		
+		TextField<OtherID> txtFld = ((TextField<OtherID>) containerForm.get("searchContainer:searchComponentPanel:searchForm:otherID")); 
+		String otherIDSearch = txtFld!=null?txtFld.getValue():null;
+		if(otherIDSearch != null) {
+			OtherID o;
+			o = new OtherID();
+			o.setOtherID(otherIDSearch);
+			Set<OtherID> otherIDs = new HashSet<OtherID>();
+			otherIDs.add(o);
+			cpModel.getObject().getLinkSubjectStudy().getPerson().setOtherIDs(otherIDs);
+		}
+			
 		subjectProvider.setModel(this.cpModel);
 
 		dataView = searchResultsPanel.buildDataView(subjectProvider);
