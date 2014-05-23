@@ -2,6 +2,8 @@ package au.org.theark.phenotypic.web.component.customfieldgroup.form;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -189,6 +191,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 
 //		PropertyModel<Collection<CustomField>> selectedPm = new PropertyModel<Collection<CustomField>>(cpModel, "selectedCustomFields");
 		PropertyModel<Collection<CustomField>> availablePm = new PropertyModel<Collection<CustomField>>(cpModel, "availableCustomFields");
+		Collections.sort((List<CustomField>)availablePm.getObject(), new Comparator<CustomField>(){
+			public int compare(CustomField arg0, CustomField arg1) {
+				return arg0.getId().compareTo(arg1.getId());
+			}
+		});
 		customFieldPalette = new ArkPalette("selectedCustomFields", new ListModel(selectedCustomFieldList), availablePm, renderer, au.org.theark.core.Constants.PALETTE_ROWS, true);
 	}
 
