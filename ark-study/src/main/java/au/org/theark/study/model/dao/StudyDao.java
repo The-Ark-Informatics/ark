@@ -32,6 +32,7 @@ import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
@@ -86,6 +87,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.LinkSubjectTwin;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
@@ -537,6 +539,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		if (subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus() == null || StringUtils.isBlank(subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus().getName())) {
 			VitalStatus vitalStatus = getVitalStatus(new Long(0));
 			subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
+		}
+		
+		log.info("create subject otherIDs:  " + subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs());
+		
+		if (subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs() == null || subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs().isEmpty()) { //get better values when implemented properly
+			Set<OtherID> otherIDs = new HashSet<OtherID>();
+			subjectVo.getLinkSubjectStudy().getPerson().setOtherIDs(otherIDs);
 		}
 
 		Session session = getSession();
@@ -1024,6 +1033,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void delete(Address address) throws ArkSystemException {
 
 		getSession().delete(address);
+	}
+	
+	public void create(OtherID otherID) throws ArkSystemException { 
+		Session session = getSession();
+		session.save(otherID);
 	}
 
 	public void create(Consent consent) throws ArkSystemException {
@@ -2286,4 +2300,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return count;
 	}
 
+	public List<OtherID> getPersonOtherIDList(Long personID) throws ArkSystemException {
+		List<OtherID> personOtherIDList = getSession().createCriteria(OtherID.class).add(Restrictions.eq(Constants.PERSON_PERSON_ID, personID)).list();
+		log.info("Number of otherIDs fetched " + personOtherIDList.size() + "Person ID " + personID.intValue());
+
+		if(personOtherIDList.isEmpty()) {
+			log.error("this person has no other IDs; " + personID);
+		}
+		log.info("Number of OtherID items retrieved for person ID " + personID + " " + personOtherIDList.size());
+		return personOtherIDList;
+	}
 }

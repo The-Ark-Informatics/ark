@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -31,6 +32,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -41,9 +43,12 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.OtherID;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -100,12 +105,24 @@ public class SearchResultListPanel extends Panel {
 				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
 				item.add(buildLink(item.getModelObject()));
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
-
+/*
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
 					item.add(new Label("linkSubjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
 				}
 				else {
 					item.add(new Label("linkSubjectStudy.person.preferredName", ""));
+				}
+	*/			
+				List<PersonLastnameHistory> lastnameHistory = (List<PersonLastnameHistory>) iArkCommonService.getPersonLastNameHistory(subject.getPerson());
+				String lastNameString = "";
+				for(PersonLastnameHistory plh : lastnameHistory) {
+					lastNameString += plh.getLastName() + ",";
+				}
+				
+				if (subject != null && subject.getPerson() != null && subject.getPerson().getPersonLastnameHistory() != null && !lastNameString.isEmpty()) {
+					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname" ,lastNameString));
+				} else {
+					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname", ""));
 				}
 
 				item.add(new Label("linkSubjectStudy.person.genderType.name", subject.getPerson().getGenderType().getName()));
@@ -130,7 +147,18 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label("linkSubjectStudy.consentStatus.name", ""));
 				}
-
+				
+				List<OtherID> otherIDs = iArkCommonService.getOtherIDs(subject.getPerson());
+				String otherIDstring = "";
+				for(OtherID o : otherIDs) {
+					otherIDstring += o.getOtherID_Source() + ": " + o.getOtherID() + "\n";
+				}
+				if (!otherIDs.isEmpty()) {
+					item.add(new MultiLineLabel("linkSubjectStudy.person.otherIDs.otherID", otherIDstring));
+				} else {
+					item.add(new Label("linkSubjectStudy.person.otherIDs.otherID", ""));
+				}
+				
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
@@ -152,14 +180,14 @@ public class SearchResultListPanel extends Panel {
 				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
 				item.add(buildLink(item, modalWindow, relatives, feedbackPanel));
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
-
+/*
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
 					item.add(new Label("linkSubjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
 				}
 				else {
 					item.add(new Label("linkSubjectStudy.person.preferredName", ""));
 				}
-
+*/
 				item.add(new Label("linkSubjectStudy.person.genderType.name", subject.getPerson().getGenderType().getName()));
 
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
@@ -189,6 +217,17 @@ public class SearchResultListPanel extends Panel {
 						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
 					}
 				}));
+				
+				List<OtherID> otherIDs = iArkCommonService.getOtherIDs(subject.getPerson());
+				String otherIDstring = "";
+				for(OtherID o : otherIDs) {
+					otherIDstring += o.getOtherID_Source() + ": " + o.getOtherID() + "\n";
+				}
+				if (!otherIDs.isEmpty()) {
+					item.add(new MultiLineLabel("linkSubjectStudy.person.otherIDs.otherID", otherIDstring));
+				} else {
+					item.add(new Label("linkSubjectStudy.person.otherIDs.otherID", ""));
+				}
 			}
 		};
 		return studyCompDataView;
@@ -204,13 +243,13 @@ public class SearchResultListPanel extends Panel {
 				item.add(buildLink(item.getModelObject()));
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
 
-				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
+		/*		if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
 					item.add(new Label("linkSubjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
 				}
 				else {
 					item.add(new Label("linkSubjectStudy.person.preferredName", ""));
 				}
-
+		 */
 				item.add(new Label("linkSubjectStudy.person.genderType.name", subject.getPerson().getGenderType().getName()));
 
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
@@ -233,6 +272,17 @@ public class SearchResultListPanel extends Panel {
 						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
 					}
 				}));
+				
+				List<OtherID> otherIDs = iArkCommonService.getOtherIDs(subject.getPerson());
+				String otherIDstring = "";
+				for(OtherID o : otherIDs) {
+					otherIDstring += o.getOtherID_Source() + ": " + o.getOtherID() + "\n";
+				}
+				if (!otherIDs.isEmpty()) {
+					item.add(new MultiLineLabel("linkSubjectStudy.person.otherIDs.otherID", otherIDstring));
+				} else {
+					item.add(new Label("linkSubjectStudy.person.otherIDs.otherID", ""));
+				}
 			}
 		};
 		return listView;

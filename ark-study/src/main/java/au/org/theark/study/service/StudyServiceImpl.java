@@ -81,6 +81,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectPedigree;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.LinkSubjectTwin;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
@@ -546,7 +547,12 @@ public class StudyServiceImpl implements IStudyService {
 	public List<Phone> getPersonPhoneList(Long personId) throws ArkSystemException {
 		return iStudyDao.getPersonPhoneList(personId);
 	}
-
+	
+	public List<OtherID> getPersonOtherIDList(Long personID) throws ArkSystemException {
+		return iStudyDao.getPersonOtherIDList(personID);
+	}
+	
+	
 	/**
 	 * Looks up the phones linked to a person and applies any filter supplied with the phone object.Used in Search Phone functionality. One can look up
 	 * base don area code, phone type, phone number
