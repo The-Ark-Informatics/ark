@@ -49,6 +49,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
+import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.FieldCategory;
 import au.org.theark.core.model.report.entity.Operator;
@@ -491,6 +492,28 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 					});
 					break;
 				}
+				
+				case CONSENT_STATUS_FIELD: {
+					Collection<ConsentStatusField> consentStatusFieldCategoryList = iArkCommonService.getAllConsentStatusFields();
+					ChoiceRenderer<ConsentStatusField> choiceRenderer = new ChoiceRenderer<ConsentStatusField>(Constants.PUBLIC_FIELD_NAME, Constants.ID);
+					fieldDdc = new DropDownChoice<ConsentStatusField>("queryFilter.field", 
+							new PropertyModel(item.getModelObject(), "queryFilter.consentStatusField"),
+							(List<ConsentStatusField>) consentStatusFieldCategoryList, choiceRenderer);
+					fieldDdc.setRequired(true);
+					fieldDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+						/**
+						 * 
+						 */
+						private static final long	serialVersionUID	= 1L;
+
+						@Override
+						protected void onUpdate(AjaxRequestTarget target) {
+							queryFilterVoToCopy.getQueryFilter().setConsentStatusField((ConsentStatusField) getComponent().getDefaultModelObject());
+						}
+					});
+					break;
+				}				
 	
 			}
 		}
@@ -588,6 +611,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						item.getModelObject().getQueryFilter().setBiocollectionField(null);
 						item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 	//					item.getModelObject().getQueryFilter().setDemographicField(null);
+						item.getModelObject().getQueryFilter().setConsentStatusField(null);
 						
 						break;
 					}
@@ -603,6 +627,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						item.getModelObject().getQueryFilter().setBiocollectionField(null);
 						item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
+						item.getModelObject().getQueryFilter().setConsentStatusField(null);
 						break;
 
 					}
@@ -618,6 +643,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						//item.getModelObject().getQueryFilter().setBiocollectionField(null);
 						item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
+						item.getModelObject().getQueryFilter().setConsentStatusField(null);
 						break;
 					}
 					
@@ -634,6 +660,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						item.getModelObject().getQueryFilter().setBiocollectionField(null);
 						//item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
+						item.getModelObject().getQueryFilter().setConsentStatusField(null);
 						break;
 					}
 
@@ -650,6 +677,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						item.getModelObject().getQueryFilter().setBiocollectionField(null);
 						//item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
+						item.getModelObject().getQueryFilter().setConsentStatusField(null);
 						break;
 					}
 
@@ -666,6 +694,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						item.getModelObject().getQueryFilter().setBiocollectionField(null);
 						//item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
+						item.getModelObject().getQueryFilter().setConsentStatusField(null);
 						break;
 					}
 					
@@ -682,6 +711,22 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 						item.getModelObject().getQueryFilter().setBiocollectionField(null);
 						//item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
 						item.getModelObject().getQueryFilter().setDemographicField(null);
+						item.getModelObject().getQueryFilter().setConsentStatusField(null);
+						break;
+					}
+					
+					case CONSENT_STATUS_FIELD:{	
+						Collection<ConsentStatusField> consentStatusFieldCategoryList = iArkCommonService.getAllConsentStatusFields();
+						ChoiceRenderer<ConsentStatusField> choiceRenderer = new ChoiceRenderer<ConsentStatusField>(Constants.PUBLIC_FIELD_NAME, Constants.ID);
+						fieldDdc = new DropDownChoice<ConsentStatusField>("queryFilter.field", 
+								new PropertyModel<ConsentStatusField>(item.getModelObject(), "queryFilter.consentStatusField"),
+								(List<ConsentStatusField>) consentStatusFieldCategoryList, choiceRenderer);
+						fieldDdc.setRequired(true);
+						item.getModelObject().getQueryFilter().setBiospecimenField(null);
+						item.getModelObject().getQueryFilter().setBiocollectionField(null);
+						item.getModelObject().getQueryFilter().setCustomFieldDisplay(null);
+						item.getModelObject().getQueryFilter().setDemographicField(null);
+						//item.getModelObject().getQueryFilter().setConsentStatusField(null);
 						break;
 					}
 

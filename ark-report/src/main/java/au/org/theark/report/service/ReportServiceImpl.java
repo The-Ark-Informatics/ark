@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -41,6 +42,7 @@ import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
@@ -140,6 +142,13 @@ public class ReportServiceImpl implements IReportService {
 		List<LinkSubjectStudy> tmpResults = reportDao.getStudyLevelConsentDetailsList(cdrVO);
 		for (LinkSubjectStudy subject : tmpResults) {
 			String subjectUID = subject.getSubjectUID();
+//			Set<OtherID> list = subject.getPerson().getOtherIDs();
+//			String otherID = "";
+//			for(OtherID o : list) {
+//				otherID += o.getOtherID_Source() + ": " + o.getOtherID() + "; ";
+//			}
+			String otherID = "WORLD!";
+			String otherID_Source = "HELLO";
 			String consentStatus = Constants.NOT_CONSENTED;
 			ConsentStatus studyConsent = subject.getConsentStatus();
 			if (studyConsent != null) {
@@ -189,7 +198,7 @@ public class ReportServiceImpl implements IReportService {
 			}
 			String sex = p.getGenderType().getName().substring(0, 1);
 			Date consentDate = subject.getConsentDate();
-			consentDetailsList.add(new ConsentDetailsDataRow(subjectUID, consentStatus, subjectStatus, title, firstName, lastName, streetAddress, suburb, state, postcode, country, workPhone.toString(), homePhone.toString(),
+			consentDetailsList.add(new ConsentDetailsDataRow(subjectUID, otherID_Source, otherID, consentStatus, subjectStatus, title, firstName, lastName, streetAddress, suburb, state, postcode, country, workPhone.toString(), homePhone.toString(),
 					email, sex, consentDate));
 		}
 
@@ -399,6 +408,10 @@ public class ReportServiceImpl implements IReportService {
 
 	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsDataRowList(ConsentDetailsReportVO cdrVO) {
 		return reportDao.getStudyLevelConsentDetailsDataRowList(cdrVO);
+	}
+	
+	public List<ConsentDetailsDataRow> getStudyLevelConsentOtherIDDetailsDataRowList(ConsentDetailsReportVO cdrVO) {
+		return reportDao.getStudyLevelConsentOtherIDDetailsDataRowList(cdrVO);
 	}
 	
 	public List<ResearcherCostDataRow> getResearcherBillableItemTypeCostData(
