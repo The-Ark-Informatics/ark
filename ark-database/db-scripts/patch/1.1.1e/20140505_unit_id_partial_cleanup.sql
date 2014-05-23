@@ -21,16 +21,25 @@ update lims.bio_transaction
 set unit_id = 17 
 where unit_id in (7,41,101);  -- check the unit ids in your specific env first!!!!
 
+select * from lims.biospecimen;
+
 delete from lims.unit where id in (7,41,101);   -- check the unit ids in your specific env first!!!!
 
-select * from lims.bio_transaction where unit_id = 41;
+delete from lims.unit where id = 101;
+delete from lims.unit where id = 41;
+delete from lims.unit where id = 7;
+
+select * from lims.biospecimen where unit_id = 7;
+																																																																																																																																							
+select * from lims.bio_transaction where unit_id = 41;																																																																																																																																																																																																																																																																																						
 
 select * from lims.biospecimen where unit_id = 17;
-
+																									
 select * from lims.bio_transaction where unit_id = 17;
 
 select * from lims.unit a, lims.unit b where a.name = b.name and a.id <> b.id;
 
-
+show tables in lims;
+																																																																												
 ALTER TABLE `lims`.`unit` 
 ADD UNIQUE INDEX `uq_unit_name` (`NAME` ASC) ;
