@@ -24,6 +24,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +58,10 @@ public abstract class PrintBiospecimensForBioCollectionButton extends AjaxButton
 	private BioCollection				bioCollection;
 	private String							zplString;
 	private BarcodeLabel 				barcodeLabel;
+	private String 						printerName;
+	private IModel<?>						numberModel;
+	private Number							barcodesToPrint;
+
 
 	/**
 	 * Construct an ajax button to send the specified barcodeString for a particular BioCollection to a ZebraTLP2844 printer<br>
@@ -65,8 +70,16 @@ public abstract class PrintBiospecimensForBioCollectionButton extends AjaxButton
 	 * @param id
 	 * @param bioCollection
 	 */
-	public PrintBiospecimensForBioCollectionButton(String id, final BioCollection bioCollection) {
+	public PrintBiospecimensForBioCollectionButton(String id, final BioCollection bioCollection, String printerName, IModel<Number> numberModel) {
 		super(id);
+		this.printerName = printerName;
+		this.numberModel = numberModel;
+		if(numberModel != null){
+			this.barcodesToPrint = (Number) numberModel.getObject();
+		}
+		else{
+			this.barcodesToPrint = 1;
+		}
 		setOutputMarkupPlaceholderTag(true);
 		this.bioCollection = bioCollection;
 		try {
@@ -83,7 +96,7 @@ public abstract class PrintBiospecimensForBioCollectionButton extends AjaxButton
 		
 		barcodeLabel = new BarcodeLabel();
 		barcodeLabel.setStudy(bioCollection.getStudy());
-		barcodeLabel.setName("zebra biospecimen");
+		barcodeLabel.setName(printerName);
 		barcodeLabel = iLimsAdminService.searchBarcodeLabel(barcodeLabel);
 	}
 
@@ -109,10 +122,19 @@ public abstract class PrintBiospecimensForBioCollectionButton extends AjaxButton
 		if(barcodeLabel != null) {
 			List<Biospecimen> biospecimenList = iLimsService.getBiospecimenByBioCollection(bioCollection);
 			
+			if(numberModel == null) {
+				barcodesToPrint = 1;
+			}
+			else {
+				barcodesToPrint = (Number) numberModel.getObject();
+			}
+			
 			StringBuffer sb = new StringBuffer();
 			for(Biospecimen biospecimen : biospecimenList) {
-				sb.append(iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel));
-				sb.append("%0A");
+				for (int i = 0; i < barcodesToPrint.intValue(); i++) {
+					sb.append(iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel));
+					sb.append("%0A");
+				}
 			}
 			
 			this.zplString = sb.toString();

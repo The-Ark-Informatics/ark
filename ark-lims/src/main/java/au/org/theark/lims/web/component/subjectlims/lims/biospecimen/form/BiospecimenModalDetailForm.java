@@ -734,8 +734,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioTransactionDetailWmc.add(quantityTxtFld);
 		bioTransactionDetailWmc.add(bioTransactionQuantityTxtFld);
 		bioTransactionDetailWmc.add(unitDdc);
+//TODO why did it go to this;
 		arkCrudContainerVo.getDetailPanelFormContainer().add(treatmentTypeDdc);
-
+//from this bioTransactionDetailWmc.add(treatmentTypeDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(concentrationTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(amountLbl);
 

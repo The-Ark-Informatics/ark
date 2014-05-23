@@ -49,6 +49,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -213,6 +215,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("BiospecimenUID"), "biospecimenUid"));
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Study"), "study.name"));
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("SubjectUID"), "linkSubjectStudy.subjectUID"));
+		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("ParentUID"), "ParentUid"));
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Collection"), "bioCollection.name"));
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Sample Type"), "sampleType.name"));
 		columns.add(new ExportableTextColumn<Biospecimen>(Model.of("Quantity"), "quantity"));
@@ -222,6 +225,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		headers.add("BiospecimenUID");
 		headers.add("Study");
 		headers.add("SubjectUID");
+		headers.add("ParentUID");
 		headers.add("Collection");
 		headers.add("Sample Type");
 		headers.add("Quantity");
@@ -488,7 +492,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				else {
 					item.addOrReplace(new ContextImage("biospecimen.barcoded", new Model<String>("images/icons/cross.png")));
 				}
-				
+
 				item.add(new AjaxButton("batchAliquot"){
 
 					/**
