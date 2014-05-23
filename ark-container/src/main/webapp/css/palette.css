@@ -58,7 +58,8 @@ display:block;
 background:url("../images/right.gif") no-repeat right top;
 text-decoration:none;
 font-weight:700;
-color:#6F6F6F;
+/*color:#6F6F6F;*/
+color:#FFF;
 white-space:nowrap;
 padding:5px 15px 4px 6px;
 }
@@ -73,7 +74,8 @@ background-image:url("../images/lefton.gif");
 
 div.tabpanel div.tab-row li.selected a {
 background-image:url("../images/righton.gif");
-color:#333;
+/*color:#333;*/
+color: #000;
 padding-bottom:5px;
 }
 
