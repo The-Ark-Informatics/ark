@@ -26,6 +26,8 @@ public class ConsentDetailsDataRow implements Serializable {
 	private static final long	serialVersionUID	= 1L; 
 
 	protected String				subjectUID;
+	protected String 				otherID_Source;
+	protected String				otherID;
 	protected String				consentStatus;
 	protected String				subjectStatus;
 	protected String				title;
@@ -46,10 +48,12 @@ public class ConsentDetailsDataRow implements Serializable {
 
 	}
 
-	public ConsentDetailsDataRow(String subjectUID, String consentStatus, String subjectStatus, String title, String firstName, String lastName, String streetAddress, String suburb, String state,
+	public ConsentDetailsDataRow(String subjectUID, String otherID_Source, String otherID, String consentStatus, String subjectStatus, String title, String firstName, String lastName, String streetAddress, String suburb, String state,
 			String postcode, String country, String workPhone, String homePhone, String email, String sex, Date consentDate) {
 		super();
 		this.subjectUID = subjectUID;
+		this.otherID_Source = otherID_Source;
+		this.otherID = otherID;
 		this.consentStatus = consentStatus;
 		this.subjectStatus = subjectStatus;
 		this.title = title;
@@ -73,6 +77,22 @@ public class ConsentDetailsDataRow implements Serializable {
 
 	public void setSubjectUID(String subjectUID) {
 		this.subjectUID = subjectUID;
+	}
+
+	public String getOtherIDSource() {
+		return otherID_Source;
+	}
+	
+	public void setOtherIDSource(String otherID_Source) {
+		this.otherID_Source = otherID_Source;
+	}
+	
+	public String getOtherID() {
+		return otherID;
+	}
+	
+	public void setOtherID(String otherID) {
+		this.otherID = otherID;
 	}
 
 	public String getConsentStatus() {

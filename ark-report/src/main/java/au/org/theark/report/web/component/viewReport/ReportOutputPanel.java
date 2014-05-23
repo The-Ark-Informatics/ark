@@ -30,6 +30,7 @@ public class ReportOutputPanel extends Panel {
 	private static final long		serialVersionUID	= 1L;
 
 	public AbstractLink				downloadReportLink;
+	public AbstractLink				otherIDLink;
 
 	public ReportOutputPanel(String id) {
 		super(id);
@@ -40,6 +41,10 @@ public class ReportOutputPanel extends Panel {
 		downloadReportLink.setOutputMarkupPlaceholderTag(true); // allow link to be replaced even when invisible
 		add(downloadReportLink);
 
+		otherIDLink = new ExternalLink("otherIDLink", "", "");
+		otherIDLink.setOutputMarkupPlaceholderTag(true);
+		add(otherIDLink);
+		
 		this.setVisible(false); // start off invisible
 	}
 
@@ -56,6 +61,22 @@ public class ReportOutputPanel extends Panel {
 				newLink.setOutputMarkupPlaceholderTag(true); // allow link to be replaced even when invisible
 				addOrReplace(newLink);
 				downloadReportLink = newLink;
+			}
+		}
+	}
+	
+	public void setOtherIDReportResource(JRResource resource) {
+		if(resource != null) {
+			ResourceLink<Void> newLink = new ResourceLink<Void>("otherIDLink", resource);
+			newLink.setOutputMarkupPlaceholderTag(true);
+			addOrReplace(newLink);
+			otherIDLink = newLink;
+		} else {
+			if(!otherIDLink.getClass().equals(ExternalLink.class)){
+				ExternalLink newLink = new ExternalLink("otherIDLink", "", "");
+				newLink.setOutputMarkupPlaceholderTag(true); // allow link to be replaced even when invisible
+				addOrReplace(newLink);
+				otherIDLink = newLink;
 			}
 		}
 	}

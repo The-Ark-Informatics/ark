@@ -38,6 +38,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
+import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -213,6 +214,11 @@ public class SearchResultListPanel extends Panel {
 				containerForm.getModelObject().setAvailableDemographicFields(availableDemographicFields);
 				Collection<DemographicField> selectedDemographicFields =iArkCommonService.getSelectedDemographicFieldsForSearch(search);//, true);
 				containerForm.getModelObject().setSelectedDemographicFields(selectedDemographicFields);
+				
+				Collection<ConsentStatusField> availableConsentStatusFields = iArkCommonService.getAllConsentStatusFields();
+				containerForm.getModelObject().setAvailableConsentStatusFields(availableConsentStatusFields);
+				Collection<ConsentStatusField> selectedConsentStatusFields = iArkCommonService.getSelectedConsentStatusFieldsForSearch(search);
+				containerForm.getModelObject().setSelectedConsentStatusFields(selectedConsentStatusFields);
 
 
 				Collection<BiospecimenField> availableBiospecimenFields = iArkCommonService.getAllBiospecimenFields();
