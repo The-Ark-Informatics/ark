@@ -27,6 +27,7 @@ import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.EmailAccount;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectFile;
@@ -58,6 +59,8 @@ public class SubjectVO implements Serializable {
 	/** A List of Files linked to this person/subject */
 	protected Collection<SubjectFile>				subjectFileList;
 	
+	protected Collection<OtherID>					otherIDs;
+	
 	private List<Study>			availableChildStudies;
 	private List<Study>			selectedChildStudies;
 
@@ -82,6 +85,7 @@ public class SubjectVO implements Serializable {
 		selectedChildStudies  = new ArrayList<Study>();
 		studyList = new ArrayList<Study>();
 		relativeUIDs = new ArrayList<String>();
+		otherIDs = new ArrayList<OtherID>();
 	}
 
 	public String getSubjectFullName() {
@@ -143,6 +147,14 @@ public class SubjectVO implements Serializable {
 		this.addressList = addressList;
 	}
 
+	public void setOtherIDList(Collection<OtherID> otherIDList) {
+		this.otherIDs = otherIDList;
+	}
+	
+	public Collection<OtherID> getOtherIDList() {
+		return otherIDs;
+	}
+	
 	public Collection<EmailAccount> getEmailAccountList() {
 		return emailAccountList;
 	}

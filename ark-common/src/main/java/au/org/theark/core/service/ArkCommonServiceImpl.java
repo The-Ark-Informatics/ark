@@ -79,6 +79,7 @@ import au.org.theark.core.model.lims.entity.BiospecimenUidTemplate;
 import au.org.theark.core.model.lims.entity.BiospecimenUidToken;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
+import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.QueryFilter;
 import au.org.theark.core.model.report.entity.Search;
@@ -112,9 +113,11 @@ import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Payload;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Relationship;
@@ -1303,6 +1306,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.update(search);
 	}
 
+	public Collection<ConsentStatusField> getAllConsentStatusFields() {
+		return studyDao.getAllConsentStatusFields();
+	}
+	
 	public Collection<DemographicField> getAllDemographicFields(){
 
 		return studyDao.getAllDemographicFields();
@@ -1328,6 +1335,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public boolean update(SearchVO search) throws EntityExistsException {
 
 		return studyDao.update(search);
+	}
+	
+	public Collection<ConsentStatusField> getSelectedConsentStatusFieldsForSearch(Search search) {
+		return studyDao.getSelectedConsentStatusFieldsForSearch(search);
 	}
 	
 	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search){
@@ -1437,6 +1448,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		studyDao.delete(search);
 	}
 
+
+	public List<OtherID> getOtherIDs(Person person) {
+		return studyDao.getOtherIDs(person);
+	}
+	
+	public Collection<PersonLastnameHistory> getPersonLastNameHistory(Person person) {
+		return studyDao.getPersonLastnameHistory(person);
+	}
 	public ConsentStatus getConsentStatusByName(String name) {
 		return studyDao.getConsentStatusByName(name);
 	}

@@ -40,6 +40,7 @@ public class Search  implements java.io.Serializable {
 	private Set<BiospecimenFieldSearch>  	biospecimenFieldsToReturn = new HashSet<BiospecimenFieldSearch>();
 	private Set<BiocollectionFieldSearch>  	biocollectionFieldsToReturn = new HashSet<BiocollectionFieldSearch>();
 	private Set<DemographicFieldSearch>  	demographicFieldsToReturn = new HashSet<DemographicFieldSearch>();
+	private Set<ConsentStatusFieldSearch>	consentStatusFieldsToReturn = new HashSet<ConsentStatusFieldSearch>();
 	private QueryGrouping topLevelQueryGrouping;
 	private Study study;
 	private String status;
@@ -59,6 +60,13 @@ public class Search  implements java.io.Serializable {
 		this.id = id;
 	}
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "search") 
+	public Set<ConsentStatusFieldSearch> getConsentStatusFieldsToReturn() {
+		return consentStatusFieldsToReturn;
+	}
+	public void setConsentStatusFieldsToReturn(Set<ConsentStatusFieldSearch> consentStatusFieldsToReturn) {
+		this.consentStatusFieldsToReturn = consentStatusFieldsToReturn;
+	}
 
 	@Column(name = "INCLUDE_GENO")
 	public Boolean getIncludeGeno() {
@@ -68,7 +76,6 @@ public class Search  implements java.io.Serializable {
 	public void setIncludeGeno(Boolean includeGeno) {
 		this.includeGeno = includeGeno;
 	}
-
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "search")
 	public Set<DemographicFieldSearch> getDemographicFieldsToReturn() {
