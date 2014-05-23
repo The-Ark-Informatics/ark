@@ -1,4 +1,6 @@
 -- todo cleanup
+select * from lims.inv_site;
+
 
 -- Chris made this many to many a while back
 ALTER TABLE `lims`.`inv_site` DROP FOREIGN KEY `FK_INV_SITE_STUDY` ;
