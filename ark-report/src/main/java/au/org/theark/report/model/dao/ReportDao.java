@@ -21,6 +21,7 @@ package au.org.theark.report.model.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoData;
@@ -55,6 +57,7 @@ import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.OtherID;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -337,7 +340,129 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		
 		return resultList;
 	}
+	
+	public List<ConsentDetailsDataRow> getStudyLevelConsentOtherIDDetailsDataRowList(ConsentDetailsReportVO cdrVO) {
+		List<ConsentDetailsDataRow> resultList = new ArrayList<ConsentDetailsDataRow>(0);
 
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class, "lss");
+		// Add study in context to criteria first (linkSubjectStudy on the VO should never be null)
+		criteria.add(Restrictions.eq("lss." + Constants.LINKSUBJECTSTUDY_STUDY, cdrVO.getLinkSubjectStudy().getStudy()));
+		if (cdrVO.getLinkSubjectStudy().getSubjectUID() != null) {
+			criteria.add(Restrictions.ilike("lss." + Constants.LINKSUBJECTSTUDY_SUBJECTUID, cdrVO.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
+		}
+		if (cdrVO.getLinkSubjectStudy().getSubjectStatus() != null) {
+			criteria.add(Restrictions.eq("lss." + Constants.LINKSUBJECTSTUDY_SUBJECTSTATUS, cdrVO.getLinkSubjectStudy().getSubjectStatus()));
+		}
+
+		// we are dealing with study-level consent
+		if (cdrVO.getConsentStatus() != null) {
+			if (cdrVO.getConsentStatus().getName().equals(Constants.NOT_CONSENTED)) {
+				// Special-case: Treat the null FK for consentStatus as "Not Consented"
+				criteria.add(Restrictions.or(Restrictions.eq("lss." + Constants.LINKSUBJECTSTUDY_CONSENTSTATUS, cdrVO.getConsentStatus()), Restrictions.isNull(Constants.LINKSUBJECTSTUDY_CONSENTSTATUS)));
+			}
+			else {
+				criteria.add(Restrictions.eq("lss." + Constants.LINKSUBJECTSTUDY_CONSENTSTATUS, cdrVO.getConsentStatus()));
+			}
+		}
+		if (cdrVO.getConsentDate() != null) {
+			criteria.add(Restrictions.eq("lss." + Constants.LINKSUBJECTSTUDY_CONSENTDATE, cdrVO.getConsentDate()));
+		}
+		
+		criteria.createAlias("lss.consentStatus", "cs", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("lss.subjectStatus", "ss");
+		criteria.createAlias("lss.person", "p");
+		criteria.createAlias("lss.person.genderType", "genderType");
+		
+		// Restrict any addresses to the preferred mailing address
+		//Criteria addressCriteria = 
+				criteria.createAlias("lss.person.addresses", "a", JoinType.LEFT_OUTER_JOIN);
+//		addressCriteria.setMaxResults(1);
+//		addressCriteria.add(Restrictions.or(Restrictions.or(Restrictions.eq("a.preferredMailingAddress", true), Restrictions.isNull("a.preferredMailingAddress"),Restrictions.eq("a.preferredMailingAddress", false))));
+		
+		criteria.createAlias("lss.person.addresses.country", "c", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("lss.person.addresses.state", "state", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("lss.person.phones", "phone", JoinType.LEFT_OUTER_JOIN);
+		
+		//TODO: Get work phone returned as well
+		//Criteria phoneCriteria = 
+		criteria.createAlias("lss.person.phones.phoneType", "phoneType", JoinType.LEFT_OUTER_JOIN);/*.add(
+				Restrictions.or(Restrictions.eq("phoneType.name", "Home"),
+									(
+										Restrictions.or(Restrictions.or(Restrictions.eq("phoneType.name", "Home"),
+														Restrictions.isNull("phoneType.name"),Restrictions.eq("phoneType.name", "Mobile")))
+								
+									)
+								)
+							));*/
+		//phoneCriteria.setMaxResults(1);
+		criteria.createAlias("lss.person.titleType", "title");
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("lss.subjectUID"), "subjectUID");
+		projectionList.add(Projections.property("cs.name"), "consentStatus");
+		projectionList.add(Projections.property("ss.name"), "subjectStatus");
+		projectionList.add(Projections.property("title.name"), "title");
+		projectionList.add(Projections.property("p.firstName"), "firstName");
+		projectionList.add(Projections.property("p.lastName"), "lastName");
+		projectionList.add(Projections.property("a.streetAddress"), "streetAddress");
+		projectionList.add(Projections.property("a.city"), "suburb");
+		projectionList.add(Projections.property("a.postCode"), "postcode");
+		projectionList.add(Projections.property("state.name"), "state");
+		projectionList.add(Projections.property("c.name"), "country");
+		projectionList.add(Projections.property("phone.phoneNumber"), "homePhone");
+		projectionList.add(Projections.property("p.preferredEmail"), "email");
+		projectionList.add(Projections.property("genderType.name"), "sex");
+		projectionList.add(Projections.property("lss.consentDate"), "consentDate");
+		
+		criteria.setProjection(projectionList); // only return fields required for report
+
+		criteria.addOrder(Order.asc("lss.consentStatus")); // although MySQL causes NULLs to come first
+		criteria.addOrder(Order.asc("lss.subjectUID"));
+		
+		criteria.setResultTransformer(Transformers.aliasToBean(ConsentDetailsDataRow.class));
+		resultList = (criteria.list());
+		
+		//removing duplicate entries from resultList
+		
+		List<ConsentDetailsDataRow>	uniqueResults = new ArrayList();
+
+		Iterator<ConsentDetailsDataRow> iterator = resultList.iterator();
+
+		while (iterator.hasNext())
+		{
+			ConsentDetailsDataRow o = iterator.next();
+			if(!uniqueResults.contains(o)) uniqueResults.add(o);
+		}
+		
+		resultList.clear();
+		resultList.addAll(uniqueResults);
+		
+		for(int j = 0; j < resultList.size(); j++) {
+			ConsentDetailsDataRow c = resultList.get(j);
+			if(c.getOtherID() == null && c.getOtherIDSource() == null) {
+				List<OtherID> otherIDs = null;
+				try {
+					otherIDs = iArkCommonService.getOtherIDs(iArkCommonService.getSubjectByUID(c.getSubjectUID(), cdrVO.getLinkSubjectStudy().getStudy()).getPerson());
+					if(otherIDs.size() >= 1) {
+						c.setOtherID(otherIDs.get(0).getOtherID());
+						c.setOtherIDSource(otherIDs.get(0).getOtherID_Source());
+					}
+					if(otherIDs.size() > 1) { 
+						for(int i = 1; i <otherIDs.size(); i++) {
+							OtherID o = otherIDs.get(i);
+							ConsentDetailsDataRow clone = new ConsentDetailsDataRow(c.getSubjectUID(), o.getOtherID_Source(), o.getOtherID(), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+							resultList.add(clone);
+						}	
+					}
+				} catch (EntityNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return resultList;
+	}	
+	
 	public List<ConsentDetailsDataRow> getStudyCompConsentList(ConsentDetailsReportVO cdrVO) {
 		// NB: There should only ever be one Consent record for a particular Subject for a particular StudyComp
 

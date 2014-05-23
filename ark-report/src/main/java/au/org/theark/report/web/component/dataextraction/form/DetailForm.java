@@ -42,11 +42,15 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.dao.StudyDao;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.model.report.entity.BiocollectionField;
 import au.org.theark.core.model.report.entity.BiospecimenField;
+import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -69,6 +73,8 @@ import au.org.theark.report.web.component.dataextraction.filter.QueryFilterPanel
  */
 public class DetailForm extends AbstractDetailForm<SearchVO> {
 
+	private static Logger	log	= LoggerFactory.getLogger(DetailForm.class);
+	
 	private static final long	serialVersionUID	= -8267651986631341353L;
 	public static final int	PALETTE_ROWS		= 5;
 	private TextField<String>	searchIdTxtFld;
@@ -86,6 +92,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	private Palette<CustomFieldDisplay>	subjectCustomFieldDisplaysToReturnPalette;
 	private Palette<CustomFieldDisplay>	biospecimenCustomFieldDisplaysToReturnPalette;
 	private Palette<CustomFieldDisplay>	biocollectionCustomFieldDisplaysToReturnPalette;
+	
+	private Palette<ConsentStatusField> consentStatusFieldsToReturnPalette; 
 	
 	private FileUploadField		subjectListFileUploadField;
 	private String subjectFileUpload;
@@ -113,7 +121,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		Search search = searchVO.getSearch();
 //  studyComponent = containerForm.getModelObject();
 		//StudyComp component = studyComponent.getStudyComponent();
-		//;
+		//;	
 		if (search != null && search.getId() != null ) {
 //			deleteButton.setEnabled(false);
 		}
@@ -143,6 +151,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		initSubjectCustomFieldDisplaysModulePalette();
 		initBiospecimenCustomFieldDisplaysModulePalette();
 		initBiocollectionCustomFieldDisplaysModulePalette();
+		initConsentStatusFieldsModulePalette();
 		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectListFileUploadField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(new AjaxLink("downloadSubjectList"){
 
@@ -214,7 +223,8 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(phenoCustomFieldDisplaysToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectCustomFieldDisplaysToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(biospecimenCustomFieldDisplaysToReturnPalette);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(biocollectionCustomFieldDisplaysToReturnPalette																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(biocollectionCustomFieldDisplaysToReturnPalette);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentStatusFieldsToReturnPalette);
 	}
 
 	/*
@@ -257,7 +267,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 			containerForm.getModelObject().getSearch().setStudy(study);
 			containerForm.getModelObject().getSearch().setStatus("READY TO RUN");
 			containerForm.getModelObject().getSearch().setFinishTime(null);
-			
+						
 			FileUpload subjectFileUpload = subjectListFileUploadField.getFileUpload();
 			List<SubjectVO> selectedSubjects = iArkCommonService.matchSubjectsFromInputFile(subjectFileUpload, study);
 
@@ -456,6 +466,21 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		biocollectionCustomFieldDisplaysToReturnPalette = new ArkPalette("selectedBiocollectionCustomFieldDisplays", selectedBiocollectionCustomFieldDisplaysPm, availableBiocollectionCustomFieldDisplayPm, renderer, PALETTE_ROWS, false);
 		biocollectionCustomFieldDisplaysToReturnPalette.setOutputMarkupId(true);
 
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void initConsentStatusFieldsModulePalette() {
+		log.info("INITCONSENTSTATUSFIELDSMODULEPALETTE CALLED ##########################");
+		CompoundPropertyModel<SearchVO> searchCPM = (CompoundPropertyModel<SearchVO>) containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("publicFieldName", "id");
+		PropertyModel<Collection<ConsentStatusField>> selectedConsentStatusFieldsPm = new PropertyModel<Collection<ConsentStatusField>>(searchCPM, "selectedConsentStatusFields");
+		
+		Collection<ConsentStatusField> availableConsentStatusFields = iArkCommonService.getAllConsentStatusFields();
+		containerForm.getModelObject().setAvailableConsentStatusFields(availableConsentStatusFields);
+		
+		PropertyModel<Collection<ConsentStatusField>> availableConsentStatusFieldsPm = new PropertyModel<Collection<ConsentStatusField>>(searchCPM, "availableConsentStatusFields");
+		consentStatusFieldsToReturnPalette = new ArkPalette("selectedConsentStatusFields", selectedConsentStatusFieldsPm, availableConsentStatusFieldsPm, renderer, PALETTE_ROWS, false);
+		consentStatusFieldsToReturnPalette.setOutputMarkupId(true);
 	}
 
 }

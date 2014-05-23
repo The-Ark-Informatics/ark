@@ -21,7 +21,11 @@ package au.org.theark.report.web.component.dataextraction;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.report.entity.ConsentStatusField;
+import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.report.web.component.dataextraction.form.ContainerForm;
@@ -29,7 +33,8 @@ import au.org.theark.report.web.component.dataextraction.form.DetailForm;
 
 public class DetailPanel extends Panel {
 
-
+	private static Logger	log	= LoggerFactory.getLogger(DetailPanel.class);
+	
 	private static final long	serialVersionUID	= 1L;
 
 	private DetailForm			detailForm;
@@ -66,6 +71,17 @@ public class DetailPanel extends Panel {
 				// TODO Auto-generated method stub				
 			}
 		};
+		
+
+		log.info("initpanel getselectedconsentstatusfields");
+		for(ConsentStatusField field : containerForm.getModelObject().getSelectedConsentStatusFields()) {
+			log.info(field.getPublicFieldName());
+		}
+		for(DemographicField field : containerForm.getModelObject().getSelectedDemographicFields()) {
+			log.info(field.getPublicFieldName());
+		}
+		
+		
 		detailForm = new DetailForm("detailsForm", feedBackPanel, arkCrudContainerVO, containerForm, modalWindow);
 		detailForm.initialiseDetailForm();
 		add(detailForm);

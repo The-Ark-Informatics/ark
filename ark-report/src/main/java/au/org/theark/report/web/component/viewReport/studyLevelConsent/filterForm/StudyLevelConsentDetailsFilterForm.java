@@ -40,11 +40,14 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wicketstuff.jasperreports.JRConcreteResource;
 import org.wicketstuff.jasperreports.JRResource;
 import org.wicketstuff.jasperreports.handlers.CsvResourceHandler;
 import org.wicketstuff.jasperreports.handlers.PdfResourceHandler;
 
+import au.org.theark.core.dao.StudyDao;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -54,6 +57,7 @@ import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterForm;
+import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLevelConsentOtherIDReportDataSource;
 import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLevelConsentReportDataSource;
 
 /**
@@ -68,11 +72,84 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 	protected DropDownChoice<ConsentStatus>	ddcConsentStatus;
 	protected DateTextField							dtfConsentDate;
 
+	private static Logger	log	= LoggerFactory.getLogger(StudyLevelConsentDetailsFilterForm.class);
+
+	
 	public StudyLevelConsentDetailsFilterForm(String id, CompoundPropertyModel<ConsentDetailsReportVO> model) {
 		super(id, model);
 		this.cpModel = model;
 	}
 
+	protected JRResource generateOtherIDResource(AjaxRequestTarget target) {
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		cpModel.getObject().getLinkSubjectStudy().setStudy(study);
+		
+		String consentType = "Study-level Consent OtherIDs";
+		String reportTitle = study.getName() + " - Consent Details Report - " + consentType;
+
+//		ReportTemplate reportTemplate = cpModel.getObject().getSelectedReportTemplate();
+		ReportOutputFormat reportOutputFormat = cpModel.getObject().getSelectedOutputFormat();
+		ReportTemplate reportTemplate = new ReportTemplate();
+		reportTemplate.setName("OtherID");
+		reportTemplate.setTemplatePath("otherid.jrxml");
+		
+		
+		// show report
+		ServletContext context = ((WebApplication) getApplication()).getServletContext();
+		File reportFile = null;
+
+		reportFile = new File(context.getRealPath("/reportTemplates/" + reportTemplate.getTemplatePath()));
+		log.info(""+ reportFile.getAbsoluteFile());
+
+		JasperDesign design = null;
+		JasperReport report = null;
+		try {
+			design = JRXmlLoader.load(reportFile);
+			// System.out.println(" design -- created " );
+			if (design != null) {
+				design.setName(reportTitle); // set the output file name to match report title
+				if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
+					design.setIgnorePagination(true); // don't paginate CSVs
+				}
+				report = JasperCompileManager.compileReport(design);
+				// System.out.println(" design -- compiled " );
+			}
+		}
+		catch (JRException e) {
+			reportFile = null;
+			e.printStackTrace();
+		}
+		log.info(""+ reportFile.getAbsoluteFile());
+		// templateIS = getClass().getResourceAsStream("/reportTemplates/WebappReport.jrxml");
+		final Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("BaseDir", new File(context.getRealPath("/reportTemplates")));
+		parameters.put("ReportTitle", reportTitle);
+		Subject currentUser = SecurityUtils.getSubject();
+		String userName = "(unknown)";
+		if (currentUser.getPrincipal() != null) {
+			userName = (String) currentUser.getPrincipal();
+		}
+		parameters.put("UserName", userName);
+//		StudyLevelConsentReportDataSource reportDS = new StudyLevelConsentReportDataSource(reportService, cpModel.getObject());
+		StudyLevelConsentOtherIDReportDataSource reportDS = new StudyLevelConsentOtherIDReportDataSource(reportService, cpModel.getObject());
+		
+		JRResource reportResource = null;
+		if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.PDF_REPORT_FORMAT)) {
+			final JRResource pdfResource = new JRConcreteResource<PdfResourceHandler>(new PdfResourceHandler());
+			pdfResource.setJasperReport(report);
+			pdfResource.setReportParameters(parameters).setReportDataSource(reportDS);
+			reportResource = pdfResource;
+		}
+		else if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
+			final JRResource csvResource = new JRConcreteResource<CsvResourceHandler>(new CsvResourceHandler());
+			csvResource.setJasperReport(report);
+			csvResource.setReportParameters(parameters).setReportDataSource(reportDS);
+			reportResource = csvResource;
+		}
+		return reportResource;
+	}
+	
 	protected void onGenerateProcess(AjaxRequestTarget target) {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
@@ -134,6 +211,10 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 		}
 		if (reportResource != null) {
 			reportOutputPanel.setReportResource(reportResource);
+			JRResource other = generateOtherIDResource(target);
+			if(other != null) {
+				reportOutputPanel.setOtherIDReportResource(generateOtherIDResource(target));
+			}
 			reportOutputPanel.setVisible(true);
 			target.add(reportOutputPanel);
 		}
