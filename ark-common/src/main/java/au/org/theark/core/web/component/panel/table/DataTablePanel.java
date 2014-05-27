@@ -19,6 +19,7 @@
 package au.org.theark.core.web.component.panel.table;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -27,10 +28,13 @@ import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
+
+import org.apache.wicket.markup.html.list.ListView;
+
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigation;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,13 +132,18 @@ public class DataTablePanel extends Panel {
 
 			@Override
 			protected void populateItem(ListItem<List<String>> item) {
-				// Iterate through headerList for columns
-				final List<String> row = item.getModelObject();
-				item.add(new Label("field", row.get(0)));
-				if(row.size() > 1 || row.get(1) != null) {
-					item.add(new Label("value", row.get(1)));
-				}
-			}							
+				IModel model = item.getModel();
+				item.add(new ListView<String>("cols", model) {
+					private static final long serialVersionUID = 1L;
+					
+					@Override
+					protected void populateItem(ListItem<String> item) {
+						item.add( new Label("value", item.getModelObject()));
+					}
+					
+				});
+				
+			}
 		};
 		table.add(listView);
 		add(new PagingNavigator("navigator", listView));
