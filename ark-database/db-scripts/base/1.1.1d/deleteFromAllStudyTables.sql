@@ -59,12 +59,14 @@ delete from  study.subject_custom_field_data ;
 delete from  study.subject_file ;
 delete from  study.subject_study_consent ;
 delete from  study.subjectuid_sequence ;
-delete from  study.temp ;
+
+
+-- delete from  study.temp ;  -- can this be deleted
 delete from  study.upload ;
 delete from  study.upload_error ;
+delete from  study.otherid ;
 delete from  study.person ;
 delete from  study.person_lastname_history ;
-delete from  study.otherid ;
 
 -- TABLES NOT TO DELETE FROM
 -- delete from  study.ark_module ;
