@@ -13,6 +13,7 @@ show tables in reporting;
 step 2...do all the delete froms in order that they are permitted.
 *******************/
 -- show tables in audit;
+ -- 	run deleteFromAllAuditTables.sql script 
 -- show tables in admin;
 -- show tables in reporting;
 -- show tables in geno;
