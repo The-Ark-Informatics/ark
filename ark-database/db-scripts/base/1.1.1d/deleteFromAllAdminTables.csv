@@ -1,4 +1,4 @@
-,,Tables_in_admin,,
+
 delete from ,admin.,bilable_item,,;
 delete from ,admin.,billable_item_type,,;
 delete from ,admin.,billable_item_type_status,,;

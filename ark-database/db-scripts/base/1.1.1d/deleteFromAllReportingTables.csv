@@ -1,4 +1,4 @@
-,,Tables_in_reporting,
+
 delete from ,reporting.,biocollection_field,;
 delete from ,reporting.,biocollection_field_search,;
 delete from ,reporting.,biospecimen_field,;
