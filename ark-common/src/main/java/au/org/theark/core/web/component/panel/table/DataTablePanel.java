@@ -91,6 +91,7 @@ public class DataTablePanel extends Panel {
 	}
 
 	static <T> List<List<T>> transpose(List<List<T>> table) {
+		if(table.size() == 0) return table;
 		List<List<T>> ret = new ArrayList<List<T>>();
 		final int N = table.get(0).size();
 		for (int i = 0; i < N; i++) {

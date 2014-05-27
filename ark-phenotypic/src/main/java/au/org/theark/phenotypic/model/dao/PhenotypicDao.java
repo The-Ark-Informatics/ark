@@ -1802,63 +1802,64 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			}
 		}
 		// Remove erroneous ',' char from end of strings
-		customFieldColumnSQL.setLength(customFieldColumnSQL.length()-1);
-		noDataHQLquery.setLength(noDataHQLquery.length()-1);
-		dataHQLquery.append(customFieldColumnSQL);
-		
-		dataHQLquery.append("\nFROM \n");
-		dataHQLquery.append(" PhenoData pd, ");
-		dataHQLquery.append(" PhenoCollection pc, ");
-		dataHQLquery.append(" LinkSubjectStudy lss, ");
-		dataHQLquery.append(" CustomFieldDisplay cfd \n");
-		dataHQLquery.append("WHERE pd.phenoCollection.id = pc.id \n");
-		dataHQLquery.append(" AND pc.linkSubjectStudy.id = lss.id \n");
-		dataHQLquery.append(" AND lss.study = :study \n");
-		dataHQLquery.append(" AND lss.subjectUID IN (:subjectUids) \n");
-		dataHQLquery.append(" AND cfd.customFieldGroup in (:customFieldGroups) \n");
-		dataHQLquery.append(" AND pd.customFieldDisplay.id = cfd.id \n");
-		dataHQLquery.append("GROUP BY lss.subjectUID, pd.phenoCollection");
-		
-		noDataHQLquery.append("\nFROM LinkSubjectStudy lss\n");
-		noDataHQLquery.append("WHERE lss.study = :study \n");
-		noDataHQLquery.append("AND lss.id NOT IN (SELECT pc.linkSubjectStudy.id FROM PhenoCollection pc WHERE pc.questionnaire IN (:customFieldGroups))\n");
-		
-		String hqlQuery = dataHQLquery.toString();
-		
-		Session session = getSession();
-		
-		Query dataQuery = session.createQuery(hqlQuery);
-		dataQuery.setParameter("study", study);
-		dataQuery.setParameterList("subjectUids", subjectUids);
-		dataQuery.setParameterList("customFieldGroups", customFieldGroups);
-		
-		// Add header as first list item
-		dataSet.add(header);
-		// Add data
-		//ArrayList<List<String>> dataList = new ArrayList<List<String>>();
-		//dataList = (ArrayList<List<String>>) dataQuery.list();
-		
-		//This result set contains a List of Object arrays—each array represents one set of properties
-      Iterator it=dataQuery.iterate();
-      while (it.hasNext()) {
-          Object[] val = (Object[]) it.next();
-          List<String> stringList = new ArrayList<String>();
-          for(Object o : val) {
-         	 stringList.add(o !=null ? o.toString() : new String());
-          }
-          dataSet.add(stringList);
-      }
-		
-		
-		
-		hqlQuery = noDataHQLquery.toString();
-		
-		Query noDataQuery = session.createQuery(hqlQuery);
-		noDataQuery.setParameter("study", study);
-		noDataQuery.setParameterList("customFieldGroups", customFieldGroups);
-		//noDataQuery.list();
-		//dataSet.addAll(noDataQuery.list());
-		
+		if(customFieldColumnSQL.length() > 0) {
+			customFieldColumnSQL.setLength(customFieldColumnSQL.length()-1);
+			noDataHQLquery.setLength(noDataHQLquery.length()-1);
+			dataHQLquery.append(customFieldColumnSQL);
+			
+			dataHQLquery.append("\nFROM \n");
+			dataHQLquery.append(" PhenoData pd, ");
+			dataHQLquery.append(" PhenoCollection pc, ");
+			dataHQLquery.append(" LinkSubjectStudy lss, ");
+			dataHQLquery.append(" CustomFieldDisplay cfd \n");
+			dataHQLquery.append("WHERE pd.phenoCollection.id = pc.id \n");
+			dataHQLquery.append(" AND pc.linkSubjectStudy.id = lss.id \n");
+			dataHQLquery.append(" AND lss.study = :study \n");
+			dataHQLquery.append(" AND lss.subjectUID IN (:subjectUids) \n");
+			dataHQLquery.append(" AND cfd.customFieldGroup in (:customFieldGroups) \n");
+			dataHQLquery.append(" AND pd.customFieldDisplay.id = cfd.id \n");
+			dataHQLquery.append("GROUP BY lss.subjectUID, pd.phenoCollection");
+			
+			noDataHQLquery.append("\nFROM LinkSubjectStudy lss\n");
+			noDataHQLquery.append("WHERE lss.study = :study \n");
+			noDataHQLquery.append("AND lss.id NOT IN (SELECT pc.linkSubjectStudy.id FROM PhenoCollection pc WHERE pc.questionnaire IN (:customFieldGroups))\n");
+			
+			String hqlQuery = dataHQLquery.toString();
+			
+			Session session = getSession();
+			
+			Query dataQuery = session.createQuery(hqlQuery);
+			dataQuery.setParameter("study", study);
+			dataQuery.setParameterList("subjectUids", subjectUids);
+			dataQuery.setParameterList("customFieldGroups", customFieldGroups);
+			
+			// Add header as first list item
+			dataSet.add(header);
+			// Add data
+			//ArrayList<List<String>> dataList = new ArrayList<List<String>>();
+			//dataList = (ArrayList<List<String>>) dataQuery.list();
+			
+			//This result set contains a List of Object arrays���each array represents one set of properties
+	      Iterator it=dataQuery.iterate();
+	      while (it.hasNext()) {
+	          Object[] val = (Object[]) it.next();
+	          List<String> stringList = new ArrayList<String>();
+	          for(Object o : val) {
+	         	 stringList.add(o !=null ? o.toString() : new String());
+	          }
+	          dataSet.add(stringList);
+	      }
+			
+			
+			
+			hqlQuery = noDataHQLquery.toString();
+			
+			Query noDataQuery = session.createQuery(hqlQuery);
+			noDataQuery.setParameter("study", study);
+			noDataQuery.setParameterList("customFieldGroups", customFieldGroups);
+			//noDataQuery.list();
+			//dataSet.addAll(noDataQuery.list());
+		}
 		return dataSet;
 	}
 	
