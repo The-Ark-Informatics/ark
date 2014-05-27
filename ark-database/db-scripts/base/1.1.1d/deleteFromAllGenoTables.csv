@@ -1,4 +1,4 @@
-,,Tables_in_geno,
+
 delete from ,geno.,command,;
 delete from ,geno.,lss_pipeline,;
 delete from ,geno.,pipeline,;

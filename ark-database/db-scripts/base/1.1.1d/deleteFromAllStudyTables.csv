@@ -1,4 +1,4 @@
-,,Tables_in_study,
+
 delete from ,study.,action_type,;
 delete from ,study.,address,;
 delete from ,study.,address_status,;
