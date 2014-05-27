@@ -22,7 +22,12 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.UrlRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.util.Protocol;
+import au.org.theark.core.web.component.panel.recaptcha.ReCaptchaPanel;
 import au.org.theark.web.pages.Constants;
 
 /**
@@ -36,6 +41,8 @@ import au.org.theark.web.pages.Constants;
  */
 public class ResetPage<T> extends WebPage {
 
+	static Logger log = LoggerFactory.getLogger(ResetPage.class);
+	
 	private static final long	serialVersionUID	= -8767984428141993995L;
 	private FeedbackPanel		feedbackPanel;
 	private ContextImage			hostedByImage;
@@ -43,12 +50,24 @@ public class ResetPage<T> extends WebPage {
 	private ResetForm				resetForm;
 
 	public ResetPage() {
+		String protocol = new UrlRenderer(this.getRequest()).renderFullUrl(this.getRequest().getUrl()).split("://")[0];
+		Protocol p = Protocol.HTTP;
+		if(protocol.equals("http")) {
+			p = Protocol.HTTP;
+		} else if(protocol.equals("https")) {
+			p = Protocol.HTTPS;
+		}
+		log.info("protocol = " + protocol);
+		
+		for(String s : this.getRequest().getRequestParameters().getParameterNames()) {
+			log.info(s);
+		}
 		feedbackPanel = new FeedbackPanel("feedbackMessage");
 		feedbackPanel.setOutputMarkupPlaceholderTag(true);
 		
 		hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
 		productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
-		resetForm = new ResetForm("resetForm", feedbackPanel);
+		resetForm = new ResetForm("resetForm", feedbackPanel, p);
 		addComponents();
 	}
 
