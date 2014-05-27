@@ -17,6 +17,7 @@ delete from lims.biocollectionuid_padchar ;
 delete from lims.biocollectionuid_sequence ;
 delete from lims.biocollectionuid_template ;
 delete from lims.biocollectionuid_token ;
+/* drop tables...this can happen in another script
 delete from lims.biodata ;
 delete from lims.biodata_criteria ;
 delete from lims.biodata_field ;
@@ -27,7 +28,8 @@ delete from lims.biodata_group_criteria ;
 delete from lims.biodata_lov_list ;
 delete from lims.biodata_type ;
 delete from lims.biodata_unit ;
-delete from lims.biospecimen ;
+*/
+delete from lims.biospecimenuid_template ;
 delete from lims.biospecimen_anticoagulant ;
 delete from lims.biospecimen_before_fieldchange ;
 delete from lims.biospecimen_custom_field_data ;
@@ -39,16 +41,17 @@ delete from lims.biospecimen_status ;
 delete from lims.biospecimen_storage ;
 delete from lims.biospecimenuid_padchar ;
 delete from lims.biospecimenuid_sequence ;
-delete from lims.biospecimenuid_template ;
 delete from lims.biospecimenuid_token ;
+delete from lims.biospecimen ;
+
 delete from lims.cell_status ;
 delete from lims.flag ;
 delete from lims.group ;
-delete from lims.inv_box ;
 delete from lims.inv_cell ;
+delete from lims.inv_box ;
 delete from lims.inv_col_row_type ;
-delete from lims.inv_freezer ;
 delete from lims.inv_rack ;
+delete from lims.inv_freezer ;
 delete from lims.inv_site ;
 delete from lims.inv_type ;
 delete from lims.listofvalues ;
@@ -56,8 +59,10 @@ delete from lims.listofvalues_description ;
 delete from lims.note ;
 delete from lims.samplecode ;
 delete from lims.study_inv_site ;
+/*dropped these
 delete from lims.tmp_bio_transaction ;
 delete from lims.tmp_biospecimen ;
 delete from lims.tmp_biospecimen_custom_field_data ;
+*/
 delete from lims.treatment_type ;
 delete from lims.unit ;
