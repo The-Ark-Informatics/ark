@@ -21,6 +21,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ArkUserPasswordGenerator;
+import au.org.theark.core.util.Protocol;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.panel.recaptcha.ReCaptchaPanel;
 import au.org.theark.study.service.IUserService;
@@ -57,7 +58,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 	 * 
 	 * @param id
 	 */
-	public ResetForm(String id, final FeedbackPanel feedbackPanel) {
+	public ResetForm(String id, final FeedbackPanel feedbackPanel, Protocol protocol) {
 		super(id, new CompoundPropertyModel<ArkUserVO>(new ArkUserVO()));
 		this.feedbackPanel = feedbackPanel;
 
@@ -65,7 +66,7 @@ public class ResetForm extends Form<ArkUserVO> implements Serializable {
 		userName.setRequired(true);
 		userName.setOutputMarkupId(true);
 
-		reCaptchaPanel = new ReCaptchaPanel("reCaptchaPanel");
+		reCaptchaPanel = new ReCaptchaPanel("reCaptchaPanel", protocol);
 		reCaptchaPanel.setOutputMarkupId(true);
 
 		resetButton = new AjaxButton("resetButton") {

@@ -1,7 +1,5 @@
 package au.org.theark.core.web.component.panel.recaptcha;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import net.tanesha.recaptcha.ReCaptcha;
@@ -18,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.Protocol;
 
 /**
  * Displays recaptcha widget. It is configured using a pair of public/private keys which can be registered at the following location:
@@ -36,7 +35,7 @@ public class ReCaptchaPanel extends Panel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 	
-	public ReCaptchaPanel(final String id) {
+	public ReCaptchaPanel(final String id, final Protocol protocol) {
 		super(id);
 
 		FormComponent<Void> formComponent = new FormComponent<Void>("captcha") {
@@ -47,10 +46,22 @@ public class ReCaptchaPanel extends Panel {
 			public void onComponentTagBody(final MarkupStream markupStream, final ComponentTag openTag) {
 //TODO: keep LEI and Chris code and do switch/if etc for whatever works.
 // D'ark LEI George uses ReCaptcha recaptcha = ReCaptchaFactory.newSecureReCaptcha(iArkCommonService.getRecaptchaContextSource().getReCaptchaPublicKey(), iArkCommonService.getRecaptchaContextSource().getReCaptchaPrivateKey(), false);
-				ReCaptcha recaptcha = ReCaptchaFactory.newReCaptcha(iArkCommonService.getRecaptchaContextSource().getReCaptchaPublicKey(), iArkCommonService.getRecaptchaContextSource().getReCaptchaPrivateKey(), false);
+// ReCaptcha recaptcha = ReCaptchaFactory.newReCaptcha(iArkCommonService.getRecaptchaContextSource().getReCaptchaPublicKey(), iArkCommonService.getRecaptchaContextSource().getReCaptchaPrivateKey(), false);
+				ReCaptcha recaptcha = null;
+				switch(protocol) {
+					case HTTPS:
+						recaptcha = ReCaptchaFactory.newSecureReCaptcha(iArkCommonService.getRecaptchaContextSource().getReCaptchaPublicKey(), iArkCommonService.getRecaptchaContextSource().getReCaptchaPrivateKey(), false);
+						break;
+					case HTTP:
+						recaptcha = ReCaptchaFactory.newReCaptcha(iArkCommonService.getRecaptchaContextSource().getReCaptchaPublicKey(), iArkCommonService.getRecaptchaContextSource().getReCaptchaPrivateKey(), false);
+						break;
+					default:
+						recaptcha = ReCaptchaFactory.newReCaptcha(iArkCommonService.getRecaptchaContextSource().getReCaptchaPublicKey(), iArkCommonService.getRecaptchaContextSource().getReCaptchaPrivateKey(), false);
+						break;
+				}
 				replaceComponentTagBody(markupStream, openTag, recaptcha.createRecaptchaHtml(null, null));
 			}
-
+			
 			@Override
 			public void validate() {
 				HttpServletRequest servletReq = (HttpServletRequest) getRequest().getContainerRequest();
