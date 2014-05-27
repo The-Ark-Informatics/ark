@@ -1,4 +1,4 @@
-,,Tables_in_pheno,
+
 delete from ,pheno.,pheno_collection,;
 delete from ,pheno.,pheno_data,;
 delete from ,pheno.,questionnaire_status,;
