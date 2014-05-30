@@ -279,7 +279,7 @@ public class PhenoCollectionListForm extends Form<PhenoDataCollectionVO> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				if(customFieldGroupDdc.getValue().isEmpty()) {
+				if(customFieldGroupDdc.getValue() == null || customFieldGroupDdc.getValue().isEmpty()) {
 					error("Please select a Data Set");	
 				}
 				else {
