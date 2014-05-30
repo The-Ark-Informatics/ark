@@ -111,6 +111,12 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	}
 
 	public List<InvSite> searchInvSite(InvSite invSite, List<Study> studyList) throws ArkSystemException {
+		List<InvSite> invSiteList = new ArrayList<InvSite>(0);
+		
+		if(studyList==null || studyList.isEmpty()){
+			return invSiteList;
+		}
+		
 		Criteria criteria = getSession().createCriteria(StudyInvSite.class);
 
 		/*
@@ -124,14 +130,25 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		 * 
 		 * if (invSite.getPhone() != null) { criteria.add(Restrictions.eq("phone", invSite.getPhone())); }
 		 */
-
+/*if you have an empty grouping, hibernate will do this sort of this;
+ * select
+        this_.INV_SITE_ID as y0_ 
+    from
+        lims.study_inv_site this_ 
+    where
+        this_.STUDY_ID in (
+            
+        ) 
+    group by
+        this_.INV_SITE_ID
+        ...therefore always null check before checking if something is in a group of nothing
+         */
 		criteria.add(Restrictions.in("study", studyList));
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.groupProperty("invSite"), "invSite");
 		criteria.setProjection(projectionList);
 
 		// List<StudyInvSite> list = criteria.list();
-		List<InvSite> invSiteList = new ArrayList<InvSite>(0);
 		invSiteList = criteria.list();
 		/*
 		 * for(StudyInvSite studyInvSite : list){ invSiteList.add(studyInvSite.getInvSite()); }
