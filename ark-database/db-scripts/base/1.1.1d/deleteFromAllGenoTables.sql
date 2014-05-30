@@ -7,3 +7,9 @@ delete from  geno.pipeline_template ;
 delete from  geno.process ;
 delete from  geno.process_input ;
 delete from  geno.process_output ;
+
+
+/*******************
+ LOOK UP TABLES DO NOT DELETE
+-- probably eventual want a standard set of commands?
+********************/
