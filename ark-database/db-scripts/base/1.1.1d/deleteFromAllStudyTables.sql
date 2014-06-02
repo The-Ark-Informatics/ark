@@ -4,17 +4,16 @@ select * from study.ark_user_role ;
 delete from  study.address ;
 delete from  study.ark_user_role where ark_user_id <> 1;
 delete from  study.ark_user  where id <> 1;
+select * from study.ark_user_role;
 delete from  study.audit_history ;
 delete from  study.consent ;
 delete from  study.consent_file ;
 delete from  study.correspondences ;
-delete from  study.csv_blob ;  -- TODO CHECK IF STILL NEEDED - maybe drop and all entities
 delete from  study.custom_field ;
 delete from  study.custom_field_display ;
 delete from  study.custom_field_group ;
 delete from  study.custom_field_upload ;
 delete from  study.email_account ;
-delete from  study.link_site_contact ; -- TODO CHECK IF STILL NEEDED - drop and all entities
 delete from  study.link_study_arkmodule ;
 delete from  study.link_study_studycomp ;
 delete from  study.link_study_studysite ;
@@ -27,26 +26,31 @@ delete from  study.link_subject_twin ;
 delete from  study.padding_character ;    -- this can go or better yet refactor so that we don't ahve 3 differen padchar tables
 delete from  study.payload ;
 delete from  study.phone ;
-delete from  study.question_answer ;  -- CAN THIS BE DELETED?
-delete from  study.registration_status ; -- CAN THIS BE DELETED?
 delete from  study.relationship ;
--- delete from  study.role_policy ;  -- THIS IS A VIEW...CAN IT BE DELETED
 delete from  study.study ;
 delete from  study.study_comp ;
 delete from  study.study_consent_question ;
 delete from  study.study_site ;
--- delete from  study.study_user_role_permission_view ; -- THIS IS A VIEW...CAN IT BE DELETED
 delete from  study.subject_custom_field_data ;
 delete from  study.subject_file ;
 delete from  study.subject_study_consent ;
 delete from  study.subjectuid_sequence ;
--- delete from  study.temp ;  -- can this be deleted
 delete from  study.upload ;
 delete from  study.upload_error ;
 delete from  study.otherid ;
 delete from  study.person ;
 delete from  study.person_lastname_history ;
 
+/*
+one off only...dropping these tables which appear to be junk 
+drop table study.temp ;
+drop view study.study_user_role_permission_view ;
+drop view study.role_policy ;-- delete from  study.role_policy ;  -- THIS IS A VIEW...CAN IT BE DELETED
+drop table  study.question_answer ;  -- CAN THIS BE DELETED?
+drop table   study.registration_status ; -- CAN THIS BE DELETED?
+drop table    study.csv_blob ;  -- TODO CHECK IF STILL NEEDED - maybe drop and all entities
+drop table    study.link_site_contact ; -- TODO CHECK IF STILL NEEDED - drop and all entities
+*/
 
 
 /*******************
