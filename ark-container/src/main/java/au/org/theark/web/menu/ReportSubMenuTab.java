@@ -87,7 +87,11 @@ public class ReportSubMenuTab extends AbstractArkTabPanel {
 						panelToReturn = reportContainerPanel;
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.DATA_EXTRACTION)) {
-						
+//
+//						if (securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR) )
+//								{
+//							//do i need this?
+//								}
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_REPORTING, iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_EXTRACTION));
 						
 						DataExtractionContainerPanel dataExtractionContainerPanel = new DataExtractionContainerPanel(panelId);
