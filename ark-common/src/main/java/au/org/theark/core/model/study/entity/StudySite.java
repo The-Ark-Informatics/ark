@@ -47,8 +47,6 @@ public class StudySite implements java.io.Serializable {
 	private String name;
 	private String description;
 	private DomainType domainType;
-	private Set<LinkSiteContact> linkSiteContacts = new HashSet<LinkSiteContact>(
-			0);
 	private Set<LinkStudyStudysite> linkStudyStudysites = new HashSet<LinkStudyStudysite>(
 			0);
 
@@ -59,17 +57,6 @@ public class StudySite implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public StudySite(Long id, Address address, String name, String description,
-			DomainType domainType, Set<LinkSiteContact> linkSiteContacts,
-			Set<LinkStudyStudysite> linkStudyStudysites) {
-		this.id = id;
-		this.address = address;
-		this.name = name;
-		this.description = description;
-		this.domainType = domainType;
-		this.linkSiteContacts = linkSiteContacts;
-		this.linkStudyStudysites = linkStudyStudysites;
-	}
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
@@ -117,16 +104,7 @@ public class StudySite implements java.io.Serializable {
 	public void setDomainType(DomainType domainType) {
 		this.domainType = domainType;
 	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "studySite")
-	public Set<LinkSiteContact> getLinkSiteContacts() {
-		return this.linkSiteContacts;
-	}
-
-	public void setLinkSiteContacts(Set<LinkSiteContact> linkSiteContacts) {
-		this.linkSiteContacts = linkSiteContacts;
-	}
-
+	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "studySite")
 	public Set<LinkStudyStudysite> getLinkStudyStudysites() {
 		return this.linkStudyStudysites;

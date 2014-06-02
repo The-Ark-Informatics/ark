@@ -19,9 +19,6 @@
 package au.org.theark.core.service;
 
 import java.io.File;
-import java.util.List;
-
-import au.org.theark.core.model.study.entity.CsvBlob;
 
 public interface ICSVLoaderService {
 	/**
@@ -57,18 +54,4 @@ public interface ICSVLoaderService {
 	 */
 	public int loadTempFileToDatabase(String temporaryFileName, String databaseName, String temporaryTableName);
 	
-	/**
-	 * Creates a temporary table for the session
-	 * @param databaseName
-	 * @param temporaryTableName
-	 * @param columList
-	 */
-	public void createTemporaryTable(String databaseName, String temporaryTableName, List<String> columnNameList);
-
-	/**
-	 * Store a file as CSV in the database
-	 * @param csvBlob
-	 * @return The id of the newly created entity
-	 */
-	public Long createCsvBlob(CsvBlob csvBlob);
 }
