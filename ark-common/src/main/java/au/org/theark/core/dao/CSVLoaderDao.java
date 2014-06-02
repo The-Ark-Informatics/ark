@@ -36,7 +36,6 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.DelimiterType;
-import au.org.theark.core.model.study.entity.CsvBlob;
 
 /**
  * 
@@ -245,7 +244,7 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 			}
 		}
 	}
-
+/*
 	public Long createCsvBlob(CsvBlob csvBlob) {
 		getSession().save(csvBlob);
 		return csvBlob.getId();
@@ -257,7 +256,7 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 		CsvBlob csvBlob = (CsvBlob) criteria.list().get(0);
 		return csvBlob;
 	}
-	
+	*/
 	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr){
 			String delimiterTypeName = null;
 			Criteria criteria = getSession().createCriteria(DelimiterType.class);

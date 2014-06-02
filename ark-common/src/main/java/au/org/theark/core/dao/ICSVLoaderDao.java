@@ -22,8 +22,6 @@ import java.io.File;
 import java.sql.Blob;
 import java.util.List;
 
-import au.org.theark.core.model.study.entity.CsvBlob;
-
 /**
  * @author cellis
  *
@@ -72,13 +70,6 @@ public interface ICSVLoaderDao {
 	 * @param columList
 	 */
 	public void createTemporaryTable(String databaseName, String temporaryTableName, List<String> columnNameList);
-
-	/**
-	 * Store a file as CSV in the database
-	 * @param csvBlob
-	 * @return The id of the newly created entity
-	 */
-	public Long createCsvBlob(CsvBlob csvBlob);
 
 	/**
 	 * Returns a Delimiter Type based on the delimiter character passed in
