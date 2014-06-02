@@ -175,6 +175,7 @@ public class StudySubMenuTab extends AbstractArkTabPanel {
 						Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 						// Subject Upload only visible to parent studies 
 						if (sessionStudyId !=null && arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)) {
+							
 							Study study = iArkCommonService.getStudy(sessionStudyId);
 							boolean childStudy = study.getParentStudy() != null  && (study != study.getParentStudy());
 							return (!childStudy);
