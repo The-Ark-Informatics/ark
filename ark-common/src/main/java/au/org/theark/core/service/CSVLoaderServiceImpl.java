@@ -19,7 +19,6 @@
 package au.org.theark.core.service;
 
 import java.io.File;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.ICSVLoaderDao;
-import au.org.theark.core.model.study.entity.CsvBlob;
 
 /**
  * The implementation of ICSVLoaderService. We want to auto-wire and hence use the @Service annotation.
@@ -61,11 +59,4 @@ public class CSVLoaderServiceImpl implements ICSVLoaderService {
 		return iCSVLoaderDao.loadTempFileToDatabase(databaseName, temporaryFileName, temporaryTableName);
 	}
 
-	public void createTemporaryTable(String databaseName, String temporaryTableName, List<String> columnNameList) {
-		iCSVLoaderDao.createTemporaryTable(databaseName, temporaryTableName, columnNameList);
-	}
-
-	public Long createCsvBlob(CsvBlob csvBlob) {
-		return iCSVLoaderDao.createCsvBlob(csvBlob);
-	}
 }

@@ -72,7 +72,6 @@ public class Person implements java.io.Serializable {
 	private Set<Phone> phones = new HashSet<Phone>(0);
 	private Set<LinkSubjectStudycomp> linkSubjectStudycomps = new HashSet<LinkSubjectStudycomp>(0);
 	private Set<LinkSubjectContact> linkSubjectContactsForContactKey = new HashSet<LinkSubjectContact>(0);
-	private Set<LinkSiteContact> linkSiteContacts = new HashSet<LinkSiteContact>(0);
 	private Set<LinkSubjectContact> linkSubjectContactsForSubjectKey = new HashSet<LinkSubjectContact>(0);
 	private Set<PersonLastnameHistory> personLastnameHistory = new HashSet<PersonLastnameHistory>(0);
 	private Set<OtherID> otherIDs = new HashSet<OtherID>(0);
@@ -82,31 +81,6 @@ public class Person implements java.io.Serializable {
 
 	public Person(Long id) {
 		this.id = id;
-	}
-
-	public Person(Long id, String firstName, String middleName,
-			String lastName, String preferredName, Date dateOfBirth,
-			VitalStatus vitalStatus, TitleType titleType,
-			GenderType genderType, Set<LinkSubjectStudy> linkSubjectStudies,
-			Set<Phone> phones, Set<LinkSubjectStudycomp> linkSubjectStudycomps,
-			Set<LinkSubjectContact> linkSubjectContactsForContactKey,
-			Set<LinkSiteContact> linkSiteContacts,
-			Set<LinkSubjectContact> linkSubjectContactsForSubjectKey) {
-		this.id = id;
-		this.firstName = firstName;
-		this.middleName = middleName;
-		this.lastName = lastName;
-		this.preferredName = preferredName;
-		this.dateOfBirth = dateOfBirth;
-		this.vitalStatus = vitalStatus;
-		this.titleType = titleType;
-		this.genderType = genderType;
-		this.linkSubjectStudies = linkSubjectStudies;
-		this.phones = phones;
-		this.linkSubjectStudycomps = linkSubjectStudycomps;
-		this.linkSubjectContactsForContactKey = linkSubjectContactsForContactKey;
-		this.linkSiteContacts = linkSiteContacts;
-		this.linkSubjectContactsForSubjectKey = linkSubjectContactsForSubjectKey;
 	}
 
 	@Id
@@ -252,15 +226,6 @@ public class Person implements java.io.Serializable {
 	public void setLinkSubjectContactsForContactKey(
 			Set<LinkSubjectContact> linkSubjectContactsForContactKey) {
 		this.linkSubjectContactsForContactKey = linkSubjectContactsForContactKey;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
-	public Set<LinkSiteContact> getLinkSiteContacts() {
-		return this.linkSiteContacts;
-	}
-
-	public void setLinkSiteContacts(Set<LinkSiteContact> linkSiteContacts) {
-		this.linkSiteContacts = linkSiteContacts;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "personBySubjectId")

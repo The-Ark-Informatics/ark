@@ -145,13 +145,6 @@ public class LoadCsvFileHelper {
 		}
 	}
 
-	public int createTemporaryTable() {
-		int rowCount = 0;
-		iCSVLoaderService.createTemporaryTable(databaseName, temporaryTableName, this.columnNameList);
-		rowCount = iCSVLoaderService.loadTempFileToDatabase(temporaryFileName, databaseName, temporaryTableName);
-		return rowCount;
-	}
-
 	/**
 	 * Converts an XLS inputStream to a CSV file
 	 * 
