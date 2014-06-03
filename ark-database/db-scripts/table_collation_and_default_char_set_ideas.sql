@@ -30,4 +30,4 @@ SELECT character_set_name FROM information_schema.`COLUMNS` C
 WHERE table_schema = "schemaname"
   AND table_name = "tablename"
   AND column_name = "columnname";
-****************/
+****************/	
