@@ -85,10 +85,14 @@ SELECT `DELETED`,
 `NAME`,
 `PHONE` 
 FROM wagerlab.IX_INV_SITE 
-WHERE ldap_group != 'SJOG' and 		
+WHERE -- ldap_group != 'SJOG' and 		
 name not in (select name from lims.inv_site)
-and 			-- TRAV TODO Remove this line after initial insert
-name not in ('WADB (SCGH)');
+and name  in ('WAIMR', 'WAFSS');
+
+select * FROM wagerlab.IX_INV_SITE 
+WHERE -- ldap_group != 'SJOG' and 		
+name not in (select name from lims.inv_site)
+and name  in ('WAIMR', 'WAFSS');
 
 
 PICK BETWEEN THESE
