@@ -1,7 +1,7 @@
-SET @STUDY_GROUP_NAME = 'IRD';
-SET @STUDYKEY = 18;
-SET @STUDYNAME= 'IRD';
-SET @AUTOGEN_SUBJECT = 1;
+SET @STUDY_GROUP_NAME = 'WAFSS';
+SET @STUDYKEY = 17;
+SET @STUDYNAME= 'WAFSS';
+SET @AUTOGEN_SUBJECT = 0;
 SET @AUTOGEN_BIOSPECIMEN = 1;
 SET @AUTOGEN_BIOCOLLECTION = 1;
 -- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
@@ -10,14 +10,15 @@ SET @AUTOGEN_BIOCOLLECTION = 1;
 -- apparently subject prefix comes from wager
 -- SET @SUBJECT_PREFIX = 'RAV';
 
-SET @BIOCOLLECTIONUID_PREFIX = 'IRD';
+SET @BIOCOLLECTIONUID_PREFIX = 'WFC';
 -- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
 SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
 SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 	
-SET @BIOSPECIMENUID_PREFIX = 'IRD';
+SET @BIOSPECIMENUID_PREFIX = 'WFB';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
 SET @BIOSPECIMENUID_PADCHAR_ID = 6;
+
 
 -- SET @SITE_PERMITTED = 'WADB (SCGH)' ;  -- IF MORE THAN ONE FIX THIS 
 
@@ -438,6 +439,14 @@ FROM lims.unit a, lims.unit b
 WHERE a.name = b.name 
 and a.id <> b.id;
 
+-- change nulls to something meaningful
+update wagerlab.ix_biospecimen set samplesubtype = 'wasNull' where samplesubtype is null and sampletype is not null;
+update lims.bio_sampletype set samplesubtype = 'wasNull' where samplesubtype is null and sampletype is not null;
+-- then run insert
+--  ...
+-- then clean up the mess you made
+-- this will be run AFTER INSERT update lims.bio_sampletype set subsampletype = null where subsampletype = 'wasNull' and sampletype is not null;
+
 -- Insert biospecimens
 -- Require all biocollections (encounter) to match accordingly
 -- Trav : let's run this slowly with a small sample or something???
@@ -518,6 +527,9 @@ AND `lss`.study_id = `b`.studykey
 AND `b`.substudykey = ss.substudykey
 AND ss.studykey = @STUDYKEY
 AND `b`.`DELETED` = 0;
+
+-- then clean up the mess you made from the nulls
+update lims.bio_sampletype set samplesubtype = null where samplesubtype = 'wasNull' and sampletype is not null;
 
 
 -- Trav I get safe update complaints about this - is it a safe update of everything?
@@ -680,7 +692,7 @@ SELECT @STUDYKEY, @BIOCOLLECTIONUID_PREFIX, @BIOCOLLECTIONUID_TOKEN_ID, @BIOCOLL
 -- Trav : TODO CREATE PARAMS
 /**************************
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-ONLY WORKS WHERE EXISTING STRUCTURE PPERMITS
+ONLY WORKS WHERE EXISTING STRUCTURE PPERMITS and auto
 ***********************************/
 DELETE FROM `lims`.`biocollectionuid_sequence` 
 WHERE
@@ -729,7 +741,7 @@ select @STUDYKEY, @BIOSPECIMENUID_PREFIX, @BIOSPECIMENUID_TOKEN_ID, @BIOSPECIMEN
 -- Set base sequence count
 /**************************
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-ONLY WORKS WHERE EXISTING STRUCTURE PPERMITS
+ONLY WORKS WHERE EXISTING STRUCTURE PPERMITS - and autogen
 ***********************************/
 DELETE FROM `lims`.`biospecimenuid_sequence` 
 WHERE
@@ -747,14 +759,14 @@ VALUES
 /******************************************************
 * ELSE DO THIS MANUALLY LIKE BELOW**************************
 
-DELETE FROM `lims`.`biocollectionuid_sequence` 
+DELETE FROM `lims`.`biospecimenuid_sequence` 
 WHERE
     `STUDY_NAME_ID` = @STUDYNAME;
-INSERT INTO `lims`.`biocollectionuid_sequence`
+INSERT INTO `lims`.`biospecimenuid_sequence`
 (`STUDY_NAME_ID`,
 `UID_SEQUENCE`,
 `INSERT_LOCK`)
-VALUES (@STUDYNAME, 5000, 0);
+VALUES (@STUDYNAME, 50000, 0);
 **********************************************************************************************************************/
 select * from lims.biospecimenuid_sequence; -- TODO rewrite another time and run manually.
 
@@ -776,7 +788,7 @@ INSERT INTO `study`.`link_study_arkmodule`
 SELECT s.id as study_id, a.id as ark_module_id
 FROM study.study s, study.ark_module a
 WHERE s.parent_id = @STUDYKEY
-AND a.name IN ('Study', 'Subject', 'Phenotypic', 'LIMS')
+AND a.name IN ('Study', 'Subject', 'Datasets', 'LIMS', 'Reporting', 'Work Tracking')
 ORDER BY s.id, a.id;
 
 -- SET starting subject increment
@@ -826,7 +838,7 @@ select * from  `study`.`subjectuid_sequence` where study_name_id = @STUDYNAME;
 
 -- There is a difference in wager and ark units 
 -- we are holding some biospcimens in ml type...move to mL type like the rest - well mysql is setup case insensitive so this does nothing for us
-update biospecimen
+update lims.biospecimen
 set unit_id = 17 -- current ark ie mL
 where unit_id = 101 -- wager ml
 and study_id = @STUDYKEY;
