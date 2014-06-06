@@ -1,0 +1,32 @@
+select count(*), treatment from wagerlab.ix_biospecimen where studykey=18 and deleted =0 group by treatment;
+'9', 'Tissue Culture'
+						'65', 'Unprocessed'
+						'77', 'Formalin Fixed'
+						'90', '70% Alcohol Fixed'
+'1875', 'Frozen'
+'11882', NULL
+
+select count(*), treatment_type_id from lims.biospecimen where study_id=18 group by treatment_type_id;
+						'65', '8' Unprocessed
+						'77', '2' Formalin Fixed
+						'90', '4' 70% Alcohol Fixed
+'1884', '1' Frozen
+'11879', '-1' null
+
+select count(*) from lims.biospecimen where study_id = 18
+
+
+select * from lims.treatment_type;
+
+select * from lims.biospecimen l, wagerlab.ix_biospecimen w
+where l.old_id = w.biospecimenkey
+and l.study_id = 18
+and l.treatment_type_id not in (select id from lims.treatment_type  tt
+						where tt.name = w.treatment);
+
+
+update lims.biospecimen
+set treatment_type_id = 3 
+where old_id in (select biospecimenkey 
+		from wagerlab.ix_biospecimen 
+		where treatment like 'Tissue Culture%');
