@@ -440,6 +440,11 @@ and a.id <> b.id;
 -- change nulls to something meaningful
 update wagerlab.ix_biospecimen set samplesubtype = 'wasNull' where samplesubtype is null and sampletype is not null;
 update lims.bio_sampletype set samplesubtype = 'wasNull' where samplesubtype is null and sampletype is not null;
+
+
+update wagerlab.ix_biospecimen set treatment = 'Tissue Cultured' where treatment = 'Tissue Culture';
+
+
 -- then run insert
 --  ...
 -- then clean up the mess you made
@@ -479,7 +484,10 @@ INSERT INTO `lims`.`biospecimen`
 `BIOSPECIMEN_PROTOCOL_ID`,
 `BIOSPECIMEN_GRADE_ID`,
 `BIOSPECIMEN_STORAGE_ID`,
-`CONCENTRATION`
+`CONCENTRATION`,
+`BIOSPECIMEN_ANTICOAGULANT_ID`,
+`BIOSPECIMEN_QUALITY_ID`,
+`BIOSPECIMEN_STATUS_ID`
 )
 SELECT 
     `b`.`BIOSPECIMENID` as `biospecimen_uid`,
@@ -505,14 +513,17 @@ SELECT
     `b`.`QTY_REMOVED`,
     `b`.`COMMENTS`,
     (`b`.`QTY_COLLECTED` + (IF(`b`.`QTY_REMOVED` IS NULL, 0, `b`.`QTY_REMOVED`))) as `quantity`,
-    IFNULL((SELECT min(id) FROM lims.treatment_type tt WHERE UPPER(tt.name) = UPPER(b.TREATMENT)),1) as `treatment_type_id`,
+    IFNULL((SELECT min(id) FROM lims.treatment_type tt WHERE UPPER(tt.name) = UPPER(b.TREATMENT)),-1) as `treatment_type_id`,
     1 as `barcoded`,
     IFNULL((SELECT min(id) FROM lims.unit WHERE name = b.UNITS), 0) as `UNIT_ID`,
     `b`.`PURITY`,
     (SELECT max(id) FROM lims.biospecimen_protocol WHERE name = b.PROTOCOL) as `BIOSPECIMEN_PROTOCOL_ID`,
     (SELECT max(id) FROM lims.biospecimen_grade WHERE name = b.GRADE) as `BIOSPECIMEN_GRADE_ID`,
     (SELECT max(id) FROM lims.biospecimen_storage WHERE name = b.STORED_IN) as `BIOSPECIMEN_STORAGE_ID`,
-    b.DNACONC as `CONCENTRATION`
+    b.DNACONC as `CONCENTRATION`,
+	(SELECT max(id) FROM lims.BIOSPECIMEN_ANTICOAGULANT WHERE name = b.ANTICOAG) as `BIOSPECIMEN_ANTICOAGULANT_ID`,
+	(SELECT max(id) FROM lims.BIOSPECIMEN_QUALITY WHERE name = b.QUALITY) as `BIOSPECIMEN_QUALITY_ID`,
+	(SELECT max(id) FROM lims.BIOSPECIMEN_STATUS WHERE name = b.STATUS) as `BIOSPECIMEN_STATUS_ID`
 FROM
     wagerlab.`IX_BIOSPECIMEN` `b`,
     zeus.SUBJECT s,
