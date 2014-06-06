@@ -1,0 +1,28 @@
+
+select BIOSPECIMEN_ANTICOAGULANT_ID, count(*) 
+from lims.biospecimen
+-- where study_id = 18
+group by BIOSPECIMEN_ANTICOAGULANT_ID;
+
+select anticoag, count(*) 
+from wagerlab.ix_biospecimen
+-- where studykey = 18
+group by ANTICOAG;
+
+select * from  lims.BIOSPECIMEN_ANTICOAGULANT;
+
+update lims.biospecimen
+set BIOSPECIMEN_ANTICOAGULANT_ID = 1
+where old_id in (select biospecimenkey 
+		from wagerlab.ix_biospecimen 
+		where anticoag = 'N/A');
+-- and study_id = 18;
+
+
+update lims.biospecimen
+set BIOSPECIMEN_ANTICOAGULANT_ID = 2
+where old_id in (select biospecimenkey 
+		from wagerlab.ix_biospecimen 
+		where anticoag = 'EDTA');
+
+desc wagerlab.ix_biospecimen
