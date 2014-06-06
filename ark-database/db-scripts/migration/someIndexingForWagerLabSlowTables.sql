@@ -15,5 +15,7 @@ ALTER TABLE `wagerlab`.`ix_biospecimen`
 ADD INDEX `ixbiospecstudy` (`STUDYKEY` ASC) ;
 
 
+select count(*) from wagerlab.ix_inv_tank;
+
 
 -- select * from  `wagerlab`.`ix_inv_tank` 
