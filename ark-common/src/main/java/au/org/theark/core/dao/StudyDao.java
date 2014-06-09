@@ -2013,7 +2013,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			List<DemographicField> lssDFs = getSelectedDemographicFieldsForSearch(search, Entity.LinkSubjectStudy);
 			List<DemographicField> personDFs = getSelectedDemographicFieldsForSearch(search, Entity.Person);
 			List<DemographicField> phoneDFs = getSelectedDemographicFieldsForSearch(search, Entity.Phone);
-
+			List<DemographicField> otherIDDFs = getSelectedDemographicFieldsForSearch(search, Entity.OtherID);
+			
 			List<DemographicField> allSubjectFields = new ArrayList<DemographicField>();
 			allSubjectFields.addAll(addressDFs);
 			allSubjectFields.addAll(lssDFs);
@@ -2079,7 +2080,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			wipeBiospecimenDataNotMatchingThisList(search.getStudy(), allTheData, biospecimenIdsAfterFiltering, bioCollectionIdsAfterFiltering, idsAfterFiltering);
 			wipeBiocollectionDataNotMatchThisList(search.getStudy(), allTheData, bioCollectionIdsAfterFiltering, idsAfterFiltering, biospecimenIdsAfterFiltering,  getBiospecimenQueryFilters(search));
 
-			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
+			addDataFromMegaDemographicQuery(allTheData, personDFs, lssDFs, addressDFs, phoneDFs, otherIDDFs, scfds, search, idsAfterFiltering);//This must go last, as the number of joining tables is going to affect performance
 
 			log.info("uidsafterFiltering SUBJECT cust=" + idsAfterFiltering.size());
 
@@ -2287,6 +2288,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		String personFilters = getPersonFilters(search, "");
 		String lssAndPersonFilters = getLSSFilters(search, personFilters);
+		
+		String otherIDFilters = getOtherIDFilters(search);
+		
 		List<Long> subjectList = getSubjectIdsforSearch(search);
 
 		/**
@@ -2294,12 +2298,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		 */
 		String queryString = "select distinct lss.id from LinkSubjectStudy lss " 
 				+ addressJoinFilters
+				+ otherIDFilters
 				//TODO also add filters for phone and address 
 				+ " where lss.study.id = " + search.getStudy().getId()
 //TODO once we have confidence in entire methodology of including sub studies 				+ (search.getStudy().getParentStudy()==null?"":(" or lss.study.id = " + search.getStudy().getParentStudy() ) ) 
 				+ lssAndPersonFilters
 				+ " and lss.subjectStatus.name != 'Archive'";
-		
+				
 		Query query = null;
 		if(subjectList.isEmpty()){
 			query = getSession().createQuery(queryString);
@@ -2352,7 +2357,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				switch(qf.getOperator()) {
 					case EQUAL:
 						sb.append(" and c.consentStatus = ");
-						sb.append("`"+qf.getValue()+"`");
+						sb.append("'"+qf.getValue()+"'");
 						break;
 				}
 				log.info("Sb.tostring: " + sb.toString());
@@ -2360,6 +2365,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			log.info("qf.csf: " + qf.getConsentStatusField() + " " + qf.getValue() + " " + qf.getSecondValue() + " " + qf.getOperator());
 		}
 		queryString = queryString + sb.toString();
+		log.info("QUERY: " + queryString);
 		Query query = null;
 		query = getSession().createQuery(queryString);
 		
@@ -2987,7 +2993,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	 * @return
 	 */
 	private HashMap<String, String> constructKeyValueHashmap(LinkSubjectStudy lss, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
-			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields) {
+			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<DemographicField> otherIDFields) {
 		HashMap map = new HashMap<String, String>();
 		for (DemographicField field : personFields) {
 			// TODO: Analyse performance cost of using reflection instead...would be CLEANER code...maybe dangerous/slow
@@ -3239,6 +3245,27 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				}
 				else if (field.getFieldName().equalsIgnoreCase("comment")) {
 					map.put((field.getPublicFieldName() + ((count > 1) ? ("_" + count) : "")), phone.getComment());
+				}
+			}
+		}
+		for(DemographicField field : otherIDFields) {
+			if(field.getFieldName().equalsIgnoreCase("otherID")) {
+				if(lss.getPerson().getOtherIDs() != null) {
+					int index = 1;
+					for(OtherID o : lss.getPerson().getOtherIDs()) {
+						log.info("Adding otherID, " + o.getOtherID() + " to map");
+						map.put(field.getPublicFieldName() + "_" + index, o.getOtherID());
+						index++;
+					}
+				}
+			} else if(field.getFieldName().equalsIgnoreCase("otherID_source")) {
+				if(lss.getPerson().getOtherIDs() != null) {
+					int index = 1;
+					for(OtherID o : lss.getPerson().getOtherIDs()) {
+						log.info("Adding otherID, " + o.getOtherID_Source() + " to map");
+						map.put(field.getPublicFieldName() + "_" + index, o.getOtherID_Source());
+						index++;
+					}
 				}
 			}
 		}
@@ -3632,6 +3659,47 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 							}
 							else {//TODO:  does this work with the join???
 								filterClause += " and address." + lineAfterRelationship;
+							}
+						}
+					}
+				}
+			}
+		}
+		log.info("filterClause = " + filterClause);
+		return (filterClause == null ? "" : filterClause);
+	}
+	
+	private String getOtherIDFilters(Search search) {
+		String filterClause = null;
+		Set<QueryFilter> filters = search.getQueryFilters();// or we could run query to just get demographic ones
+		for (QueryFilter filter : filters) {
+			DemographicField demoField = filter.getDemographicField();
+			if ((demoField != null)) {
+				if (demoField.getEntity() != null && demoField.getEntity().equals(Entity.OtherID)) {				
+					String lineAfterRelationship = makeLineFromOperatorAndValuesWithoutRelationship(demoField.getFieldName(), filter.getOperator(), demoField.getFieldType(), filter.getValue(), filter.getSecondValue());
+					log.info("lineafterRelationship " + lineAfterRelationship);
+					if(lineAfterRelationship!=null && !lineAfterRelationship.isEmpty()){
+
+						if(demoField.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_LOOKUP)){
+
+							if (filterClause == null || filterClause.isEmpty()) {
+								filterClause = " right join lss.person as person " +
+										" right join person.otherIDs as otherIDs " +
+										" right join otherIDs." + demoField.getFieldName() + " as " + demoField.getFieldName() + " with " + lineAfterRelationship;
+							}
+							else {//TODO:  does this work with the join???
+								//filterClause = filterClause + " and exists address." + nextFilterLine;
+								filterClause += " right join otherIDs." + demoField.getFieldName() + " as " + demoField.getFieldName() + " with " + lineAfterRelationship;
+							}						
+
+						}
+						else{
+							if (filterClause == null || filterClause.isEmpty()) {
+								filterClause = " right join lss.person as person " +
+										" right join person.otherIDs as otherIDs with otherIDs." + lineAfterRelationship;
+							}
+							else {//TODO:  does this work with the join???
+								filterClause += " and otherIDs." + lineAfterRelationship;
 							}
 						}
 					}
@@ -4490,7 +4558,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 
 	private void addDataFromMegaDemographicQuery(DataExtractionVO allTheData, Collection<DemographicField> personFields, Collection<DemographicField> lssFields,
-			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<CustomFieldDisplay> subjectCFDs, Search search, List<Long> idsAfterFiltering) {
+			Collection<DemographicField> addressFields, Collection<DemographicField> phoneFields, Collection<DemographicField> otherIDFields, Collection<CustomFieldDisplay> subjectCFDs, Search search, List<Long> idsAfterFiltering) {
 		log.info("in addDataFromMegaDemographicQuery");																						//if no id's, no need to run this
 		if ((!lssFields.isEmpty() || !personFields.isEmpty() || !addressFields.isEmpty() || !phoneFields.isEmpty() || !subjectCFDs.isEmpty()) && !idsAfterFiltering.isEmpty()) { // hasEmailFields(dfs)
 			//note.  filtering is happening previously...we then do the fetch when we have narrowed down the list of subjects to save a lot of processing
@@ -4513,7 +4581,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			/* this is putting the data we extracted into a generic kind of VO doc that will be converted to an appopriate format later (such as csv/xls/pdf/xml/etc) */
 			for (LinkSubjectStudy lss : subjects) {
 				ExtractionVO sev = new ExtractionVO();
-				sev.setKeyValues(constructKeyValueHashmap(lss, personFields, lssFields, addressFields, phoneFields));
+				sev.setKeyValues(constructKeyValueHashmap(lss, personFields, lssFields, addressFields, phoneFields, otherIDFields));
 				hashOfSubjectsWithTheirDemographicData.put(lss.getSubjectUID(), sev);
 			}
 
