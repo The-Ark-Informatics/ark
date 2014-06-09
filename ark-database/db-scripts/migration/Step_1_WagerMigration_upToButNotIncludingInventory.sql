@@ -166,6 +166,7 @@ select * from study.study;
 -- IF it should NOT HAVE A SUBJECT_UID PREFIX FIX IT NOW... BECAUSE IT IS GETTING IT FROM ZEUS!!!!!!!!
 -- update study.study set subjectuid_prefix = null where id = @STUDYKEY;
 -- update study.study set subjectuid_token_id = null where id = @STUDYKEY;
+-- and update the sequence if necessary
 ************************************************/
 
 select * from study.study;
@@ -501,10 +502,10 @@ SELECT
     `b`.`DELETED`,
     `b`.`TIMESTAMP`,
     `b`.`BIOSPECIMENID` as `otherid`,
-    `b`.`DATEEXTRACTED` as processed_date,
-    `b`.`EXTRACTED_TIME` as processed_time,
+    `b`.`DATEEXTRACTED` as processed_date, 
+	DATE_FORMAT(`b`.`EXTRACTED_TIME`, '%H:%i:%s') as processed_time,  --  `b`.`EXTRACTED_TIME` as processed_time,
     `b`.`SAMPLEDATE` as sample_date,
-    `b`.`SAMPLE_TIME` as sample_time,
+	DATE_FORMAT(`b`.`SAMPLE_TIME`, '%H:%i:%s') as sample_time, --   `b`.`SAMPLE_TIME` as sample_time,
     `b`.`SAMPLETYPE` as sampletype,
     `b`.`SAMPLESUBTYPE` as samplesubtype,
     `b`.`DEPTH`,
@@ -613,7 +614,13 @@ WHERE
 
 
 
+/**********
 
+!!!!!!!!!!!!!! NOW SET UP THE USERS, both original and DNA BANK
+!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+************************/
 
 
 SET SESSION group_concat_max_len = 30000;
@@ -829,7 +836,7 @@ also this can't be an update...needs to be an insert
 
  DELETE FROM  `study`.`subjectuid_sequence` where study_name_id = @STUDYNAME;
 
- INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES ('@STUDYNAME', '50000', '0');
+ INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES (@STUDYNAME, '5000', '0');
 
 OR
 
@@ -840,10 +847,9 @@ VALUES (@STUDYNAME, 50000, 0); -- or there abouts as suits your migration data
 
 !!!!!!!!!!!!!!!!!
 *****/
-select max(subject_uid) from study.link_Subject_study where study_id = @STUDYKEY;
+select max(subject_uid) from study.link_Subject_study where study_id = @STUDYKEY;  -- THIS TAKES THE FIELD AT TEXT ONLY!!!!!!!!! 99> 10000000 !!!!! use another means
 
 select * from  `study`.`subjectuid_sequence` where study_name_id = @STUDYNAME;
-
 
 -- There is a difference in wager and ark units 
 -- we are holding some biospcimens in ml type...move to mL type like the rest - well mysql is setup case insensitive so this does nothing for us
