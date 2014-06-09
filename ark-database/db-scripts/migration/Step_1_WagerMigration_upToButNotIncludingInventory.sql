@@ -737,7 +737,20 @@ INSERT INTO `lims`.`biocollectionuid_sequence`
 `UID_SEQUENCE`,
 `INSERT_LOCK`)
 VALUES (@STUDYNAME, 5000, 0);
+
+ --- U PDATE `lims`.`biocollectionuid_sequence` SET `UID_SEQUENCE`='5000' WHERE `STUDY_NAME_ID`='Vitamin A';
+
 **********************************************************************************************************************/
+
+select * from  `lims`.`biocollectionuid_template` ;
+
+select * from  `lims`.`biospecimenuid_template` ;
+
+
+select * from  `lims`.`biocollectionuid_sequence` ;
+
+select * from  `lims`.`biospecimenuid_sequence` ;
+
 
 -- Biospecimen pattern
 -- Trav : TODO CREATE PARAMS
@@ -753,7 +766,7 @@ VALUES (@STUDYKEY, @BIOSPECIMENUID_PREFIX, @BIOSPECIMENUID_TOKEN_ID, @BIOSPECIME
 
 select @STUDYKEY, @BIOSPECIMENUID_PREFIX, @BIOSPECIMENUID_TOKEN_ID, @BIOSPECIMENUID_PADCHAR_ID;
 
-
+select 
 -- Set base sequence count
 /**************************
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -783,6 +796,28 @@ INSERT INTO `lims`.`biospecimenuid_sequence`
 `UID_SEQUENCE`,
 `INSERT_LOCK`)
 VALUES (@STUDYNAME, 50000, 0);
+
+INSERT INTO `lims`.`biospecimenuid_sequence`
+(`STUDY_NAME_ID`,
+`UID_SEQUENCE`,
+`INSERT_LOCK`)
+VALUES ('Vitamin A', 5000, 0)
+
+U P DATE `lims`.`biospecimenuid_sequence` SET `UID_SEQUENCE`='50000' WHERE `STUDY_NAME_ID`='Vitamin A';
+
+Example To manual add a template
+
+select * from  `lims`.`biocollectionuid_template` ;
+
+select * from  `lims`.`biospecimenuid_template` ;
+
+insert into `lims`.`biocollectionuid_template`(study_id, BIOCOLLECTIONUID_PREFIX, BIOCOLLECTIONUID_TOKEN_ID, BIOCOLLECTIONUID_PADCHAR_ID)
+										values (22, 'VTA', NULL, 5);
+
+insert into `lims`.`biospecimenuid_template`(study_id, BIOSPECIMENUID_PREFIX, BIOSPECIMENUID_TOKEN_ID, BIOSPECIMENUID_PADCHAR_ID)
+										values (22, 'VTA', NULL, 5);
+
+select * from  `lims`.`biospecimenuid_template` ;
 **********************************************************************************************************************/
 select * from lims.biospecimenuid_sequence; -- TODO rewrite another time and run manually.
 
@@ -885,11 +920,9 @@ select count(*) from lims.bio_transaction t
 	and (t.UNIT_id is null or t.unit_id = 0);
 
 select count(*) from  lims.bio_transaction t -- where  t.id = 0;
+
 */
 
 select distinct hospital from wagerlab.ix_admissions;
 
 select distinct hospital from lims.biocollection where study_id  = 194;
-
-
- 
