@@ -766,7 +766,7 @@ VALUES (@STUDYKEY, @BIOSPECIMENUID_PREFIX, @BIOSPECIMENUID_TOKEN_ID, @BIOSPECIME
 
 select @STUDYKEY, @BIOSPECIMENUID_PREFIX, @BIOSPECIMENUID_TOKEN_ID, @BIOSPECIMENUID_PADCHAR_ID;
 
-select 
+
 -- Set base sequence count
 /**************************
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -817,7 +817,12 @@ insert into `lims`.`biocollectionuid_template`(study_id, BIOCOLLECTIONUID_PREFIX
 insert into `lims`.`biospecimenuid_template`(study_id, BIOSPECIMENUID_PREFIX, BIOSPECIMENUID_TOKEN_ID, BIOSPECIMENUID_PADCHAR_ID)
 										values (22, 'VTA', NULL, 5);
 
-select * from  `lims`.`biospecimenuid_template` ;
+ INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES (@STUDYNAME, '5000', '0');
+ INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES (@STUDYNAME, '5000', '0');
+
+select * from  `study`.`subjectuid_sequence` where study_id = 18;
+
+
 **********************************************************************************************************************/
 select * from lims.biospecimenuid_sequence; -- TODO rewrite another time and run manually.
 
