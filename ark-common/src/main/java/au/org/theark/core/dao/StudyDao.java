@@ -50,6 +50,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -60,6 +61,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.DigestUtils;
+
+import com.itextpdf.tool.xml.css.parser.state.Properties;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
@@ -2030,10 +2033,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			List<ConsentStatusField> consentStatus = (List<ConsentStatusField>) getSelectedConsentStatusFieldsForSearch(search);
 			
-			log.info("consentstatus : " + consentStatus.toString() + " " + consentStatus.size());
-			for(ConsentStatusField s : consentStatus) {
-				log.info("consentstatusField s : " + s.getPublicFieldName());
-			}
 			/* Making this stuff into an xml document THEN converting it generically to xls/csv/pdf/etc might be an option
 			 * other options;
 			 *  1 get each of these and apply a filter every time 
@@ -2320,72 +2319,80 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		return subjectUIDs;
 	}
-
 	
-	private List<Long> getIDsAfterConsentStatusFiltering(Search search, List<Long> idsToInclude) {
-		String queryString = "select distinct c.linkSubjectStudy.subjectUID from Consent c where c.study.id = " + search.getStudy().getId() + " ";
-		
-		
-		
-		return null;
+	private String getConsentFilterFieldName(QueryFilter qf) {
+		String filterName = qf.getConsentStatusField().getFieldName();
+		if(filterName.equalsIgnoreCase("studyComponentStatus")) {
+			return "cscs.name";
+		} else if(filterName.equalsIgnoreCase("studyComp")) {
+			return "csc.name";
+		} else {
+			return "c."+filterName;
+		}
 	}
 
 	private List<Long> applyConsentStatusFilters(DataExtractionVO allTheData, Search search, List<Long> idsToInclude) {
-			
-		List<Long> consentStatusIDs = new ArrayList<Long>();
 		
-		List<Long> idsAfterConsentFiltering = getIDsAfterConsentStatusFiltering(search, idsToInclude);
-		
-		
-		String queryString = "select distinct c.id from Consent c where c.study.id = " + search.getStudy().getId();
-				
-		String personFilters = getPersonFilters(search, "");
-		String lssAndPersonFilters = getLSSFilters(search, personFilters);
-		List<Long> subjectList = getSubjectIdsforSearch(search);
-		log.info("personFilters: " + personFilters);
-		log.info("lssandpersonfilters: " + lssAndPersonFilters);
-		log.info("subjectlist: ");
-		log.info("QueryString: " + queryString);
-		for(Long l : subjectList) {
-			log.info(l + "");
+		for(Long l : idsToInclude) {
+			log.info("including: " + l);
 		}
 		
-		log.info("search getQueryFilters: " + search.getQueryFilters());
-		StringBuffer sb = new StringBuffer();
+		Criteria filter = getSession().createCriteria(Consent.class, "c");
+		filter.add(Restrictions.eq("c.study.id", search.getStudy().getId()));
+		filter.createAlias("c.linkSubjectStudy", "lss");
+		filter.add(Restrictions.in("lss.id", idsToInclude));
+		filter.createAlias("c.studyComponentStatus", "cscs");
+		filter.createAlias("c.studyComp", "csc");
+		
 		for(QueryFilter qf : search.getQueryFilters()) {
 			if(qf.getConsentStatusField() != null) {
 				switch(qf.getOperator()) {
 					case EQUAL:
-						sb.append(" and c.consentStatus = ");
-						sb.append("'"+qf.getValue()+"'");
+						filter.add(Restrictions.eq(getConsentFilterFieldName(qf), qf.getValue()));
+						break;
+					case BETWEEN:
+						filter.add(Restrictions.between(getConsentFilterFieldName(qf), qf.getValue(), qf.getSecondValue()));
+						break;
+					case GREATER_THAN:
+						filter.add(Restrictions.gt(getConsentFilterFieldName(qf), qf.getValue()));
+						break;
+					case GREATER_THAN_OR_EQUAL:
+						filter.add(Restrictions.ge(getConsentFilterFieldName(qf), qf.getValue()));
+						break;
+					case IS_EMPTY:
+						filter.add(Restrictions.isEmpty(getConsentFilterFieldName(qf)));
+						break;
+					case IS_NOT_EMPTY:
+						filter.add(Restrictions.isNotEmpty(getConsentFilterFieldName(qf)));
+						break;
+					case LESS_THAN:
+						filter.add(Restrictions.lt(getConsentFilterFieldName(qf), qf.getValue()));
+						break;
+					case LESS_THAN_OR_EQUAL:
+						filter.add(Restrictions.le(getConsentFilterFieldName(qf), qf.getValue()));
+						break;
+					case LIKE:
+						filter.add(Restrictions.like(getConsentFilterFieldName(qf), qf.getValue(), MatchMode.ANYWHERE));
+						break;
+					case NOT_EQUAL:
+						filter.add(Restrictions.ne(getConsentFilterFieldName(qf), qf.getValue()));
+						break;
+					default:
 						break;
 				}
-				log.info("Sb.tostring: " + sb.toString());
 			}
-			log.info("qf.csf: " + qf.getConsentStatusField() + " " + qf.getValue() + " " + qf.getSecondValue() + " " + qf.getOperator());
 		}
-		queryString = queryString + sb.toString();
-		log.info("QUERY: " + queryString);
-		Query query = null;
-		query = getSession().createQuery(queryString);
+		filter.setProjection(Projections.distinct(Projections.projectionList().add(Projections.property("lss.id"))));
 		
-		log.info("printing consents returned.");
-		for(Long l : (List<Long>) query.list()) {
-			log.info("Consent: " + l);
-		}
-		
-		consentStatusIDs = query.list();
-		List<Long> clonedIdsToInclude = new ArrayList<Long>(idsToInclude);
-		for(Long id : consentStatusIDs) {
-			clonedIdsToInclude.add(id);
-		}
-		
-		String queryString2 = "select c from Consent c where c.study.id = " + search.getStudy().getId();
-		Query query2 = null;
-		query2 = getSession().createQuery(queryString2);
+		List<Long> consentStatusIDs = filter.list();
 		
 		
-		Collection<Consent> csData = query2.list();
+		Criteria consentData = getSession().createCriteria(Consent.class, "c");
+		consentData.add(Restrictions.eq("c.study.id", search.getStudy().getId()));
+		consentData.createAlias("c.linkSubjectStudy", "lss");
+		consentData.add(Restrictions.in("lss.id", consentStatusIDs));
+		
+		Collection<Consent> csData = consentData.list();
 		HashMap<String, ExtractionVO> hashOfConsentStatusData = allTheData.getConsentStatusData();
 
 		ExtractionVO valuesForThisLss = new ExtractionVO();
@@ -2394,7 +2401,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		int count = 0;
 		//will try to order our results and can therefore just compare to last LSS and either add to or create new Extraction VO
 		for (Consent data : csData) {
-			log.info("consent data: " + data.getStudyComp().getName() + " " + data.getConsentDate() + " " + data.getConsentedBy() + " " + data.getStudyComponentStatus().getName());
 			if(previousLss==null){
 				map = new HashMap<String, String>();
 				previousLss = data.getLinkSubjectStudy();
@@ -2436,7 +2442,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		//can probably now go ahead and add these to the dataVO...even though inevitable further filters may further axe this list or parts of it.
 		allTheData.setConsentStatusData(hashOfConsentStatusData);
-		return idsToInclude;
+		return consentStatusIDs;
 	}
 
 	/**
