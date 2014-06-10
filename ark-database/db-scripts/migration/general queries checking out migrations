@@ -1,0 +1,14 @@
+select * from study.person where id in
+(select person_id from study.link_subject_study where study_id = 18 and subject_uid in (168,167,170)
+);
+
+select * from study.gender_type;
+
+
+select * from biospecimen where study_id = 22
+and id >510799
+;
+
+
+select * from study.link_subject_study where subject_uid = 'aaaaaaa'
+
