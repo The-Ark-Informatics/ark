@@ -78,6 +78,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	private TextField<String>					bioCollectionUidTxtFld;
 	private DateTextField						sampleDateTxtFld;
 	private DropDownChoice<BioSampletype>	sampleTypeDdc;
+	private TextField<String>					subjectUIDTxtFld;
 	
 	public SearchForm(String id, CompoundPropertyModel<LimsVO> compoundPropertyModel, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, compoundPropertyModel, feedbackPanel, arkCrudContainerVO);
@@ -121,6 +122,8 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 
 		initSampleTypeDdc();
 
+		subjectUIDTxtFld = new TextField<String>("linkSubjectStudy.subjectUID");
+		
 		addFieldComponents();
 	}
 
@@ -176,6 +179,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		add(biospecimenUidTxtFld);
 		add(sampleDateTxtFld);
 		add(sampleTypeDdc);
+		add(subjectUIDTxtFld);
 	}
 
 	@Override
@@ -187,7 +191,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	protected void onSearch(AjaxRequestTarget target) {
 		// Refresh the FB panel if there was an old message from previous search result
 		target.add(feedbackPanel);
-		
+
 		long count = iLimsService.getBiospecimenCount(cpmModel.getObject());
 		if (count == 0L) {
 			this.info("There are no Biospecimens with the specified criteria.");
