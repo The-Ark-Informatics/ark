@@ -1,4 +1,26 @@
-SET @STUDY_GROUP_NAME = 'IRD';
+SET @STUDY_GROUP_NAME = 'WAFSS';
+SET @STUDYKEY = 17;
+SET @STUDYNAME= 'WAFSS';
+SET @AUTOGEN_SUBJECT = 0;
+SET @AUTOGEN_BIOSPECIMEN = 1;
+SET @AUTOGEN_BIOCOLLECTION = 1;
+-- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
+
+-- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
+-- apparently subject prefix comes from wager
+-- SET @SUBJECT_PREFIX = 'RAV';
+
+SET @BIOCOLLECTIONUID_PREFIX = 'WFC';
+-- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
+SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
+SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
+	
+SET @BIOSPECIMENUID_PREFIX = 'WFB';
+-- SET @BIOSPECIMENUID_TOKEN_ID = 1;
+SET @BIOSPECIMENUID_PADCHAR_ID = 6;
+
+
+/*SET @STUDY_GROUP_NAME = 'IRD';
 SET @STUDYKEY = 18;
 SET @STUDYNAME= 'IRD';
 SET @AUTOGEN_SUBJECT = 1;
@@ -17,7 +39,7 @@ SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 	
 SET @BIOSPECIMENUID_PREFIX = 'IRD';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
-SET @BIOSPECIMENUID_PADCHAR_ID = 6;
+SET @BIOSPECIMENUID_PADCHAR_ID = 6;*/
 
 
 
@@ -282,7 +304,7 @@ INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, su
 SELECT 
     `person`.`id`,
     @STUDYKEY as `study_id`,
-    1 as `subject_status_id`,
+    sub.status,
     sub.`SUBJECTID` as `subject_uid`,
     1 as `consent_status_id`
 FROM
@@ -292,6 +314,11 @@ AND sub.`SUBJECTKEY` = `person`.`OTHER_ID`
 AND `person`.`OTHER_ID` IS NOT NULL
 AND s.studyname=@STUDYNAME;
 
+select subject_status_id, count(*) from study.link_subject_study where study_id = 17
+group by subject_status_id
+
+
+select * from study.subject_status;
 
 /*  SHOULDNT need this
 -- Some subjects/sub-studies may have been missed. This adds any missed based on admission sub-study (should only have the one "dodgy" subject)
