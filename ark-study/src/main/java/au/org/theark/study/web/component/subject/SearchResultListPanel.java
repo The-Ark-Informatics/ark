@@ -115,10 +115,13 @@ public class SearchResultListPanel extends Panel {
 	*/			
 				List<PersonLastnameHistory> lastnameHistory = (List<PersonLastnameHistory>) iArkCommonService.getPersonLastNameHistory(subject.getPerson());
 				String lastNameString = "";
-				for(PersonLastnameHistory plh : lastnameHistory) {
-					lastNameString += plh.getLastName() + ",";
+				if(!lastnameHistory.isEmpty()) {
+					lastNameString = lastnameHistory.get(0).getLastName();
+					for(int i = 1; i < lastnameHistory.size(); i++) {
+						lastNameString += ", " + lastnameHistory.get(i).getLastName();
+					}
 				}
-				
+								
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPersonLastnameHistory() != null && !lastNameString.isEmpty()) {
 					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname" ,lastNameString));
 				} else {
