@@ -560,15 +560,18 @@ SELECT
 FROM
     wagerlab.`IX_BIOSPECIMEN` `b`,
     zeus.SUBJECT s,
-    zeus.ZE_SUBSTUDY ss,
+   --  zeus.ZE_SUBSTUDY ss,  This was only needed for WARTN substudy ...keep as reference in case we need again
     `study`.`link_subject_study` `lss`
 WHERE
     `b`.`patientkey` = s.SUBJECTKEY
 AND s.subjectid = `lss`.`subject_uid`
 AND `lss`.study_id = `b`.studykey
-AND `b`.substudykey = ss.substudykey
-AND ss.studykey = @STUDYKEY
+-- AND `b`.substudykey = ss.substudykey  This was only needed for WARTN substudy ...keep as reference in case we need again
+AND s.studykey = @STUDYKEY
 AND `b`.`DELETED` = 0;
+
+
+select count(*) from wagerlab.ix_biospecimen where studykey = 17 and deleted  =0 and patientkey in (select subjectkey from zeus.subject where studykey = 17)
 
 -- then clean up the mess you made from the nulls
 update lims.bio_sampletype set samplesubtype = null where samplesubtype = 'wasNull' and sampletype is not null;
