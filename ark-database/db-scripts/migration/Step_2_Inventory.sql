@@ -1,4 +1,4 @@
-/*SET @STUDY_GROUP_NAME = 'WAFSS';
+SET @STUDY_GROUP_NAME = 'WAFSS';
 SET @STUDYKEY = 17;
 SET @STUDYNAME= 'WAFSS';
 SET @AUTOGEN_SUBJECT = 0;
@@ -18,9 +18,9 @@ SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 SET @BIOSPECIMENUID_PREFIX = 'WFB';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
 SET @BIOSPECIMENUID_PADCHAR_ID = 6;
-*/
 
-/* ALWAYS CHECK BEFORE RUNNING */
+
+/* ALWAYS CHECK BEFORE RUNNING 
 SET @STUDY_GROUP_NAME = 'IRD';
 SET @STUDYKEY = 18;
 SET @STUDYNAME= 'IRD';
@@ -41,7 +41,7 @@ SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 SET @BIOSPECIMENUID_PREFIX = 'IRD';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
 SET @BIOSPECIMENUID_PADCHAR_ID = 6;
-
+*/
 /* */
 
 /* Vit A
@@ -87,7 +87,7 @@ SELECT `DELETED`,
 FROM wagerlab.IX_INV_SITE 
 WHERE -- ldap_group != 'SJOG' and 		
 name not in (select name from lims.inv_site)
-and name  in ('WADB (RPH)', 'WAFSS', 'KEMH', 'IRD - SKB');
+and name  in ('WADB (RPH)', 'WAFSS', 'KEMH', 'IRD - SKB', 'WAIMR');
 
 select * FROM wagerlab.IX_INV_SITE 
 WHERE -- ldap_group != 'SJOG' and 		
@@ -123,6 +123,10 @@ ON DUPLICATE KEY update DELETED = s.deleted, TIMESTAMP = s.TIMESTAMP, CONTACT = 
 
 
 
+
+SELECT * FROM lims.inv_site;
+
+SELECT * FROM lims.study_inv_site;
 SELECT @STUDYKEY;
 
 SELECT * FROM lims.study_inv_site;
@@ -203,7 +207,7 @@ and b.studykey=@STUDYKEY) b
 where t.traykey = b.traykey)
 );
 
-
+select * from lims.inv_freezer where site_id in (select site_id from lims.study_inv_site);
 
 select * from  wagerlab.IX_INV_TANK t;
 
