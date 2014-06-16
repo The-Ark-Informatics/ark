@@ -306,19 +306,24 @@ SELECT
     @STUDYKEY as `study_id`,
     sub.status,
     sub.`SUBJECTID` as `subject_uid`,
-    1 as `consent_status_id`
+	IFNULL((select min(id) from study.consent_status where UPPER(name) = UPPER(constat.description)),1) as `consent_status_id`
+	-- UPPER(constat.description) as throwawayupper-- ,
+	-- s-elect min(id) from study.consent_status where UPPER(name) = UPPER(constat.description) as throwawayselect
 FROM
-zeus.STUDY s, zeus.SUBJECT sub, study.person
+zeus.STUDY s, zeus.SUBJECT sub, study.person, zeus.consent_status constat, zeus.consent_study constudy 
 WHERE s.studykey = sub.studykey
 AND sub.`SUBJECTKEY` = `person`.`OTHER_ID` 
 AND `person`.`OTHER_ID` IS NOT NULL
-AND s.studyname=@STUDYNAME;
+AND s.studyname=@STUDYNAME
+and constudy.status = constat.status
+and constudy.subjectkey = sub.subjectkey;
+
+
+select * from link_subject_study where study_id  = @STUDYKEY;
 
 select subject_status_id, count(*) from study.link_subject_study where study_id = 17
-group by subject_status_id
+group by subject_status_id;
 
-
-select * from study.subject_status;
 
 /*  SHOULDNT need this
 -- Some subjects/sub-studies may have been missed. This adds any missed based on admission sub-study (should only have the one "dodgy" subject)
