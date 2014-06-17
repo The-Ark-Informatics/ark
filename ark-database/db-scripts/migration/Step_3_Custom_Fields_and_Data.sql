@@ -326,8 +326,9 @@ INSERT INTO `lims`.`biospecimen_custom_field_data`
 `NUMBER_DATA_VALUE`,
 `ERROR_DATA_VALUE`)
 SELECT bs.id AS BIOSPECIMEN_ID, cfd.id AS CUSTOM_FIELD_DISPLAY_ID, SUBSTRING_INDEX(TRIM(TRAILING  SUBSTRING(cf.encoded_values, INSTR(cf.ENCODED_VALUES, concat('=', bd.STRING_VALUE, ';'))) FROM cf.ENCODED_VALUES), ';', -1) AS TEXT_DATA_VALUE, NULL AS `DATE_DATA_VALUE`, NULL AS`NUMBER_DATA_VALUE`, NULL AS `ERROR_DATA_VALUE`
-FROM wagerlab.IX_BIODATA bd, wagerlab.IX_BIODATA_FIELD bf, wagerlab.IX_BIODATA_TYPES bft, wagerlab.IX_BIODATA_FIELD_GROUP bfg, wagerlab.IX_BIODATA_GROUP bg, wagerlab.IX_BIOSPECIMEN bio,study.custom_field cf, study.custom_field_display cfd,
-lims.biospecimen bs
+FROM 	wagerlab.IX_BIODATA bd, wagerlab.IX_BIODATA_FIELD bf, wagerlab.IX_BIODATA_TYPES bft, wagerlab.IX_BIODATA_FIELD_GROUP bfg, 
+		wagerlab.IX_BIODATA_GROUP bg, wagerlab.IX_BIOSPECIMEN bio,study.custom_field cf, study.custom_field_display cfd,
+		lims.biospecimen bs
 WHERE bfg.GROUPKEY = bg.GROUPKEY
 AND bfg.FIELDKEY = bf.FIELDKEY
 AND bf.DOMAIN = bg.DOMAIN
@@ -337,13 +338,14 @@ AND bg.DOMAIN = 'BIOSPECIMEN'
 AND bd.FIELDKEY = bf.FIELDKEY
 AND bd.DOMAINKEY = bio.BIOSPECIMENKEY
 AND bio.DELETED = 0
+AND bio.studykey =  @STUDYKEY
 AND cf.study_id = @STUDYKEY
 AND ark_function_id = (SELECT ID FROM study.ark_function WHERE name = 'BIOSPECIMEN')
 AND cf.id = cfd.custom_field_id
 AND cf.NAME = bf.COLUMNNAME
 AND STRING_VALUE IS NOT NULL
 AND bf.LOVTYPE IS NOT NULL
-AND bs.OLD_ID = bio.BIOSPECIMENKEY;  -- wafss 20,744
+AND bs.OLD_ID = bio.BIOSPECIMENKEY;  -- wafss 20,744  --- noooo 0
  
 -- Dates
 INSERT INTO `lims`.`biospecimen_custom_field_data`
@@ -354,8 +356,9 @@ INSERT INTO `lims`.`biospecimen_custom_field_data`
 `NUMBER_DATA_VALUE`,
 `ERROR_DATA_VALUE`)
 SELECT bs.id AS BIOSPECIMEN_ID, cfd.id AS CUSTOM_FIELD_DISPLAY_ID, NULL AS TEXT_DATA_VALUE, bd.DATE_VALUE AS `DATE_DATA_VALUE`, NULL AS`NUMBER_DATA_VALUE`, NULL AS `ERROR_DATA_VALUE`
-FROM wagerlab.IX_BIODATA bd, wagerlab.IX_BIODATA_FIELD bf, wagerlab.IX_BIODATA_TYPES bft, wagerlab.IX_BIODATA_FIELD_GROUP bfg, wagerlab.IX_BIODATA_GROUP bg, wagerlab.IX_BIOSPECIMEN bio,study.custom_field cf, study.custom_field_display cfd,
-lims.biospecimen bs
+FROM 	wagerlab.IX_BIODATA bd, wagerlab.IX_BIODATA_FIELD bf, wagerlab.IX_BIODATA_TYPES bft, wagerlab.IX_BIODATA_FIELD_GROUP bfg, 
+		wagerlab.IX_BIODATA_GROUP bg, wagerlab.IX_BIOSPECIMEN bio,study.custom_field cf, study.custom_field_display cfd,
+		lims.biospecimen bs
 WHERE bfg.GROUPKEY = bg.GROUPKEY
 AND bfg.FIELDKEY = bf.FIELDKEY
 AND bf.DOMAIN = bg.DOMAIN
@@ -364,13 +367,14 @@ AND bg.GROUP_NAME = @STUDY_GROUP_NAME -- like (@STUDYNAME || '%')
 AND bg.DOMAIN = 'BIOSPECIMEN'
 AND bd.FIELDKEY = bf.FIELDKEY
 AND bd.DOMAINKEY = bio.BIOSPECIMENKEY
+AND bio.studykey =  @STUDYKEY
 AND bio.DELETED = 0
 AND cf.study_id = @STUDYKEY
 AND ark_function_id = (SELECT ID FROM study.ark_function WHERE name = 'BIOSPECIMEN')
 AND cf.id = cfd.custom_field_id
 AND cf.NAME = bf.COLUMNNAME
 AND DATE_VALUE IS NOT NULL
-AND bs.OLD_ID = bio.BIOSPECIMENKEY; -- WAFSS 34,182
+AND bs.OLD_ID = bio.BIOSPECIMENKEY; -- WAFSS 34,182 - in reality looks like we have =935*5+29*4 (ie 4791) ... ok now fixed by adding link to bio.studykey = @studykey
 
 
 /** Work in progress  - To be completed  **/
@@ -386,13 +390,16 @@ SELECT bs.id AS BIOSPECIMEN_ID, cfd.id AS CUSTOM_FIELD_DISPLAY_ID,
 	SUBSTRING_INDEX(TRIM(TRAILING  SUBSTRING(cf.encoded_values, INSTR(cf.ENCODED_VALUES, concat('=', bd.STRING_VALUE, ';'))) FROM cf.ENCODED_VALUES), ';', -1) AS TEXT_DATA_VALUE, 
 	NULL AS `DATE_DATA_VALUE`, NULL AS`NUMBER_DATA_VALUE`, NULL AS `ERROR_DATA_VALUE`
 FROM wagerlab.IX_BIODATA bd, wagerlab.IX_BIODATA_FIELD bf, wagerlab.IX_BIODATA_TYPES bft, wagerlab.IX_BIODATA_FIELD_GROUP bfg, 
-	wagerlab.IX_BIODATA_GROUP bg, wagerlab.IX_BIOSPECIMEN ixb,study.custom_field cf, study.custom_field_display cfd, lims.biospecimen bs
+	wagerlab.IX_BIODATA_GROUP bg, wagerlab.IX_BIOSPECIMEN bio, wagerlab.IX_BIOSPECIMEN ixb,study.custom_field cf, study.custom_field_display cfd, 
+	lims.biospecimen bs
 WHERE bfg.GROUPKEY = bg.GROUPKEY
 AND bfg.FIELDKEY = bf.FIELDKEY
 AND bf.DOMAIN = bg.DOMAIN
 AND bf.TYPEKEY = bft.TYPEKEY
 AND bg.GROUP_NAME = @STUDY_GROUP_NAME -- 'WARTN%'
 AND bg.DOMAIN = 'BIOSPECIMEN'
+AND bd.DOMAINKEY = bio.BIOSPECIMENKEY
+AND bio.studykey =  @STUDYKEY
 AND bd.FIELDKEY = bf.FIELDKEY
 AND bd.DOMAINKEY = ixb.biospecimenkey
 AND ixb.DELETED = 0
