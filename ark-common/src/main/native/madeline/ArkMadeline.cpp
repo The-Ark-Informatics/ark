@@ -16,7 +16,7 @@
 
 using namespace std;
 
-void generatePedigree (const std::string &filename){
+void generatePedigree (const std::string &filename, const std::string &outputFilename){
 	cout << "Start Generating pedigree!" << endl;
 
 	try {
@@ -24,7 +24,7 @@ void generatePedigree (const std::string &filename){
 		CLP clp;
 		Parser dataTableParser;
 		dataTableParser.readFile(filename);
-
+		DrawingMetrics::setDrawingFileNamePrefix(outputFilename);
 		DataTable *dataTable;
 		for( int j=0 ; j < dataTableParser.getNumberOfTables() ; j++ ){
 

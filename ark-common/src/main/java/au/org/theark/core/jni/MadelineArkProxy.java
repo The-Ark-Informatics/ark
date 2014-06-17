@@ -11,6 +11,6 @@ public class MadelineArkProxy implements Serializable{
 
     public native void sayHello();
     
-    public native void generatePedigree(String dataFilePath);
+    public native void generatePedigree(String dataFilePath, String fileOutputPath);
 
 }
