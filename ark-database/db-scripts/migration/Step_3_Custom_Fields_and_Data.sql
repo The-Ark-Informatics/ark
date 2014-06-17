@@ -1,6 +1,31 @@
+SET @STUDY_GROUP_NAME = 'WAFSS BioData Details';  -- however there could be more than one of these perhaps?
+SET @STUDYKEY = 17;
+SET @STUDYNAME= 'WAFSS';
+
+
+/* still need to test this
+
+
+
+
+
+
 SET @STUDY_GROUP_NAME = 'IRD';
 SET @STUDYKEY = 18;
 SET @STUDYNAME= 'IRD';
+
+
+
+
+
+*/
+
+
+
+
+
+
+
 /* *
 *
 this statement may be better off goiing straight into biocollection.hospital field 
@@ -135,7 +160,7 @@ WHERE bfg.GROUPKEY = bg.GROUPKEY
 AND bfg.FIELDKEY = bf.FIELDKEY
 AND bf.DOMAIN = bg.DOMAIN
 AND bf.TYPEKEY = bft.TYPEKEY
-AND bg.GROUP_NAME = @STUDY_GROUP_NAME -- like 'WARTN%'
+AND bg.GROUP_NAME = @STUDY_GROUP_NAME 									-- like 'WARTN%'
 AND bg.DOMAIN = 'ADMISSIONS'
 ORDER BY bfg.POSITION;
 
@@ -318,7 +343,7 @@ AND cf.id = cfd.custom_field_id
 AND cf.NAME = bf.COLUMNNAME
 AND STRING_VALUE IS NOT NULL
 AND bf.LOVTYPE IS NOT NULL
-AND bs.OLD_ID = bio.BIOSPECIMENKEY;
+AND bs.OLD_ID = bio.BIOSPECIMENKEY;  -- wafss 20,744
  
 -- Dates
 INSERT INTO `lims`.`biospecimen_custom_field_data`
@@ -345,7 +370,7 @@ AND ark_function_id = (SELECT ID FROM study.ark_function WHERE name = 'BIOSPECIM
 AND cf.id = cfd.custom_field_id
 AND cf.NAME = bf.COLUMNNAME
 AND DATE_VALUE IS NOT NULL
-AND bs.OLD_ID = bio.BIOSPECIMENKEY;
+AND bs.OLD_ID = bio.BIOSPECIMENKEY; -- WAFSS 34,182
 
 
 /** Work in progress  - To be completed  **/
@@ -378,7 +403,7 @@ AND cf.NAME = bf.COLUMNNAME
 AND bs.biospecimen_uid = ixb.biospecimenid
 AND bs.STUDY_ID = ixb.SUBSTUDYKEY
 AND bf.LOVTYPE IS NOT NULL
-AND STRING_VALUE IS NOT NULL;
+AND STRING_VALUE IS NOT NULL; -- WAFSS 17359 - 72285
  
 
 select * from lims.biocollection where name is not null
