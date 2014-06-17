@@ -106,7 +106,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 		String sessionId = getSession().getId();
 		// log.info(subjectUID!=null ? "Subject UID -------- "+subjectUID.toString() +
 		// "-----------Session Id is -----"+sessionId:"---------------  Subject UID is null ----------------------");
-
+		String filePath = System.getProperty("java.io.tmpdir") + File.separator; 
 		String filePrefix = subjectUID.toString() + "_" + sessionId;
 		final StringBuffer sb = new StringBuffer();
 		sb.setLength(0);
@@ -129,7 +129,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 
 				chunk.set("relatives", relatives);
 
-				dataFile = new File(filePrefix + ".data");
+				dataFile = new File(filePath + filePrefix + ".data");
 				FileWriter out = new FileWriter(dataFile);
 				chunk.render(out);
 				out.flush();
@@ -154,7 +154,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 			}
 
 			try {
-				madeline.generatePedigree(filePrefix + ".data");
+				madeline.generatePedigree(filePath + filePrefix + ".data", filePath + familyId + "ped");
 			}
 			catch (Error e) {
 				e.printStackTrace();
@@ -175,7 +175,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 			// ioe.printStackTrace();
 			// }
 
-			File pedFile = new File(familyId + "ped.xml");
+			File pedFile = new File(filePath + familyId + "ped.xml");
 
 			try {
 				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();

@@ -9,12 +9,16 @@ JNIEXPORT void JNICALL Java_au_org_theark_core_jni_MadelineArkProxy_sayHello (JN
     return;
 }
 
-JNIEXPORT void JNICALL Java_au_org_theark_core_jni_MadelineArkProxy_generatePedigree (JNIEnv *env, jobject obj, jstring jstr) {
+JNIEXPORT void JNICALL Java_au_org_theark_core_jni_MadelineArkProxy_generatePedigree (JNIEnv *env, jobject obj, jstring jstr, jstring jstr2) {
 
 	const char *filename = env->GetStringUTFChars(jstr, NULL);
 
-	generatePedigree (filename);
+	const char *outputFilename = env->GetStringUTFChars(jstr2, NULL);
+
+	generatePedigree (filename, outputFilename);
 
 	env->ReleaseStringUTFChars(jstr, filename);
+
+	env->ReleaseStringUTFChars(jstr2, outputFilename);
 	return;
 }
