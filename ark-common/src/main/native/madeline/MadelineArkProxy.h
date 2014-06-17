@@ -24,7 +24,7 @@ JNIEXPORT void JNICALL Java_au_org_theark_core_jni_MadelineArkProxy_sayHello
  * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_au_org_theark_core_jni_MadelineArkProxy_generatePedigree
-  (JNIEnv *, jobject, jstring);
+  (JNIEnv *, jobject, jstring, jstring);
 
 #ifdef __cplusplus
 }
