@@ -191,6 +191,21 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("linkSubjectStudy.person.preferredName", ""));
 				}
 */
+				List<PersonLastnameHistory> lastnameHistory = (List<PersonLastnameHistory>) iArkCommonService.getPersonLastNameHistory(subject.getPerson());
+				String lastNameString = "";
+				if(!lastnameHistory.isEmpty()) {
+					lastNameString = lastnameHistory.get(0).getLastName();
+					for(int i = 1; i < lastnameHistory.size(); i++) {
+						lastNameString += ", " + lastnameHistory.get(i).getLastName();
+					}
+				}
+				
+				if (subject != null && subject.getPerson() != null && subject.getPerson().getPersonLastnameHistory() != null && !lastNameString.isEmpty()) {
+					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname" ,lastNameString));
+				} else {
+					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname", ""));
+				}
+				
 				item.add(new Label("linkSubjectStudy.person.genderType.name", subject.getPerson().getGenderType().getName()));
 
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
@@ -253,6 +268,21 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("linkSubjectStudy.person.preferredName", ""));
 				}
 		 */
+				List<PersonLastnameHistory> lastnameHistory = (List<PersonLastnameHistory>) iArkCommonService.getPersonLastNameHistory(subject.getPerson());
+				String lastNameString = "";
+				if(!lastnameHistory.isEmpty()) {
+					lastNameString = lastnameHistory.get(0).getLastName();
+					for(int i = 1; i < lastnameHistory.size(); i++) {
+						lastNameString += ", " + lastnameHistory.get(i).getLastName();
+					}
+				}
+								
+				if (subject != null && subject.getPerson() != null && subject.getPerson().getPersonLastnameHistory() != null && !lastNameString.isEmpty()) {
+					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname" ,lastNameString));
+				} else {
+					item.add(new Label("linkSubjectStudy.person.previouslastnamehistory.lastname", ""));
+				}
+				
 				item.add(new Label("linkSubjectStudy.person.genderType.name", subject.getPerson().getGenderType().getName()));
 
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
