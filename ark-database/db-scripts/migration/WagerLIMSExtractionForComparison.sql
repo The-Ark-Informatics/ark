@@ -2,17 +2,29 @@
 
 SET @STUDYKEY = 17;
 
-select * from lims.biospecimen where biospecimen_uid = '0199SCZ00150F1';
+select * from lims.biospecimen where biospecimen_uid = '0208SCZ00154EB2';
+
+
+select EXTRACTED_TIME,
+  TIME_FORMAT(EXTRACTED_TIME, '%H:%i:%s') AS 'Processed Time'
+ from wagerlab.ix_biospecimen 
+where biospecimen_uid = '0208SCZ00154EB2';
+
+select EXTRACTED_TIME,
+  TIME_FORMAT(EXTRACTED_TIME, '%H:%i:%s') AS 'Processed Time'
+ from wagerlab.ix_biospecimen 
+where biospecimenid = '0208SCZ00154EB2';
 
 SELECT 
     PAT.SUBJECTID as 'SUBJECTUID',
     BIO.BIOSPECIMENID AS 'BIOSPECIMENUID',
    DATE_FORMAT(BIO.SAMPLEDATE, '%d/%m/%Y') AS 'Sample Date',
- TIME_FORMAT(BIO.SAMPLE_TIME, '%h:%m:%s') AS 'Sample Time',
+ TIME_FORMAT(BIO.SAMPLE_TIME, '%H:%i:%s') AS 'Sample Time',
    DATE_FORMAT(BIO.DATEEXTRACTED,'%d/%m/%Y')  AS 'Processed Date',
-  TIME_FORMAT(BIO.EXTRACTED_TIME, '%h:%m:%s') AS 'Processed Time',
+  TIME_FORMAT(BIO.EXTRACTED_TIME, '%H:%i:%s') AS 'Processed Time',
   --  BIO.COLLABORATOR AS 'COLLABORATOR',
-    (ifnull(BIO.QTY_REMOVED, 0) + ifnull(BIO.QTY_COLLECTED, 0) ) AS 'Quantity',
+  -- if( ((ifnull(BIO.QTY_REMOVED, 0) + ifnull(BIO.QTY_COLLECTED, 0)) = 0 ), '', (ifnull(BIO.QTY_REMOVED, 0) + ifnull(BIO.QTY_COLLECTED, 0)) ) AS 'Quantity',
+	(ifnull(BIO.QTY_REMOVED, 0) + ifnull(BIO.QTY_COLLECTED, 0))  AS 'Quantity',
    --  BIO.QTY_REMOVED  AS 'QuantityRem',
    -- BIO.QTY_COLLECTED  AS 'QuantityCol',
     BIO.DNACONC AS 'Concentration',
