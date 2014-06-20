@@ -1,6 +1,34 @@
 
-
 SET @STUDYKEY = 17;
+SET @NEWSTUDYKEY = 18;
+SET @COPYFROMSTUDYKEY = 17;
+SET @SEARCHNAME1 = 'Biospecimen Detailed Report';
+SET @SEARCHNAME2 = 'Locations Info Only';
+SET @SEARCHNAME3 = 'Biospecimen Custom Fields';
+
+
+insert into reporting.search(
+`NAME`,
+`TOP_LEVEL_GROUPING_ID`,
+`STUDY_ID`,
+`STATUS`,
+`STARTTIME`,
+`FINISHTIME`,
+`INCLUDE_GENO`)
+	SELECT 
+	`NAME`,
+	`TOP_LEVEL_GROUPING_ID`,
+	@NEWSTUDYKEY,
+	`STATUS`,
+	`STARTTIME`,
+	`FINISHTIME`,
+	`INCLUDE_GENO` 
+	FROM `reporting`.`search`
+	WHERE 	study_id = @COPYFROMSTUDYKEY
+	AND 	name in (@SEARCHNAME1, @SEARCHNAME2, @SEARCHNAME3);
+
+select * from reporting.search where study_id in (@STUDYKEY, @NEWSTUDYKEY );
+
 
 select * from lims.biospecimen where biospecimen_uid = '0208SCZ00154EB2';
 
