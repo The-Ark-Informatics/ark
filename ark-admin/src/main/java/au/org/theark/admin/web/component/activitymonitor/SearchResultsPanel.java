@@ -29,9 +29,11 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkSubjectSessionVO;
 
 public class SearchResultsPanel extends Panel {
@@ -39,6 +41,9 @@ public class SearchResultsPanel extends Panel {
 	private static final long	serialVersionUID	= -2656326926648860189L;
 	protected transient Logger		log					= LoggerFactory.getLogger(SearchResultsPanel.class);
 	private FeedbackPanel feedbackPanel;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 
 	public SearchResultsPanel(String id, FeedbackPanel feedbackPanel) {
 		super(id);
@@ -48,7 +53,7 @@ public class SearchResultsPanel extends Panel {
 
 	@SuppressWarnings("unchecked")
 	public PageableListView<ArkSubjectSessionVO> buildPageableListView(IModel iModel) {
-		PageableListView<ArkSubjectSessionVO> pageableListView = new PageableListView<ArkSubjectSessionVO>("list", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<ArkSubjectSessionVO> pageableListView = new PageableListView<ArkSubjectSessionVO>("list", iModel, iArkCommonService.getRowsPerPage()) {
 
 
 			private static final long	serialVersionUID	= 1L;

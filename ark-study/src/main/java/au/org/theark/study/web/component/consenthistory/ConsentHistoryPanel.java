@@ -37,6 +37,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.audit.entity.ConsentHistory;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
@@ -51,6 +52,9 @@ public class ConsentHistoryPanel extends Panel {
 	private SimpleDateFormat						simpleDateFormat		= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	private SimpleDateFormat						simpleDateTimeFormat	= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
+	
 	/**
 	 * Construct a ConsentHistoryPanel for the linkSubjectStudy in question
 	 * 
@@ -93,7 +97,7 @@ public class ConsentHistoryPanel extends Panel {
 
 	@SuppressWarnings("unchecked")
 	public PageableListView<ConsentHistory> buildListView(IModel iModel) {
-		PageableListView<ConsentHistory> listView = new PageableListView<ConsentHistory>("resultList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<ConsentHistory> listView = new PageableListView<ConsentHistory>("resultList", iModel, iArkCommonService.getRowsPerPage()) {
 
 
 			private static final long	serialVersionUID	= 1L;

@@ -12,8 +12,10 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.worktracking.entity.BillableItemType;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
@@ -27,6 +29,9 @@ public class SearchResultListPanel extends Panel {
 
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 
 	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm studyCompContainerForm) {
 		super(id);
@@ -36,7 +41,7 @@ public class SearchResultListPanel extends Panel {
 
 	public PageableListView<BillableItemType> buildPageableListView(IModel iModel) {
 
-		PageableListView<BillableItemType> sitePageableListView = new PageableListView<BillableItemType>("billableItemTypeList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<BillableItemType> sitePageableListView = new PageableListView<BillableItemType>("billableItemTypeList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 

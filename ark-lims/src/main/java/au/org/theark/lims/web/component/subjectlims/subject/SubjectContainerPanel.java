@@ -287,7 +287,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		subjectProvider.setCriteriaModel(this.cpModel);
 
 		dataView = searchResultListPanel.buildDataView(subjectProvider);
-		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 

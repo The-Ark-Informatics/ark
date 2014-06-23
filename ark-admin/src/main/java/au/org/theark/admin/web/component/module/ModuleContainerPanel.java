@@ -34,6 +34,7 @@ import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.ContainerForm;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider;
 
@@ -55,6 +56,9 @@ public class ModuleContainerPanel extends AbstractContainerPanel<AdminVO> {
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
 	private IAdminService<Void>								iAdminService;
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
+	
 	/**
 	 * @param id
 	 */
@@ -96,7 +100,7 @@ public class ModuleContainerPanel extends AbstractContainerPanel<AdminVO> {
 		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, arkCrudContainerVO);
 		initialiseDataView();
 		dataView = searchResultsPanel.buildDataView(dataProvider);
-		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		searchResultsPanel.add(pageNavigator);
 		searchResultsPanel.add(dataView);
