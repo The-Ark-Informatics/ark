@@ -131,6 +131,7 @@ public abstract class PrintBiospecimensForBioCollectionButton extends AjaxButton
 			
 			StringBuffer sb = new StringBuffer();
 			for(Biospecimen biospecimen : biospecimenList) {
+				biospecimen.setBarcoded(true);
 				for (int i = 0; i < barcodesToPrint.intValue(); i++) {
 					sb.append(iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel));
 					sb.append("%0A");
