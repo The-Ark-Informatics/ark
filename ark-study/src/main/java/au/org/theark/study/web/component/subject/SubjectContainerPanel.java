@@ -282,7 +282,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		subjectProvider.setModel(this.cpModel);
 
 		dataView = searchResultsPanel.buildDataView(subjectProvider);
-		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		resultsWmc.add(pageNavigator);
@@ -298,7 +298,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Subject Status"), "linkSubjectStudy.subjectStatus.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Consent Status"), "linkSubjectStudy.consentStatus.name"));
 
-		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), au.org.theark.core.Constants.ROWS_PER_PAGE);
+		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("SubjectUID");
 		headers.add("Full Name");
@@ -377,7 +377,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		subjectProvider.setModel(this.cpModel);
 
 		dataView = searchResultsPanel.buildDataView(subjectProvider,modalWindow,relatives,feedBackPanel);
-		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView){
 
@@ -400,7 +400,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Subject Status"), "linkSubjectStudy.subjectStatus.name"));
 		columns.add(new ExportableTextColumn<SubjectVO>(Model.of("Consent Status"), "linkSubjectStudy.consentStatus.name"));
 
-		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), au.org.theark.core.Constants.ROWS_PER_PAGE);
+		DataTable table = new DataTable("datatable", columns, dataView.getDataProvider(), iArkCommonService.getRowsPerPage());
 		List<String> headers = new ArrayList<String>(0);
 		headers.add("SubjectUID");
 		headers.add("Full Name");

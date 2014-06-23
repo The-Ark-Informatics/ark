@@ -15,6 +15,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.worktracking.entity.Researcher;
 import au.org.theark.core.model.worktracking.entity.WorkRequest;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
@@ -32,6 +33,9 @@ public class SearchResultListPanel extends Panel {
 	
 	@SpringBean(name = Constants.WORK_TRACKING_SERVICE)
 	private IWorkTrackingService iWorkTrackingService; 
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 
 	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO, ContainerForm workRequestContainerForm) {
 		super(id);
@@ -41,7 +45,7 @@ public class SearchResultListPanel extends Panel {
 
 	public PageableListView<WorkRequest> buildPageableListView(IModel iModel) {
 
-		PageableListView<WorkRequest> sitePageableListView = new PageableListView<WorkRequest>("workRequestList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<WorkRequest> sitePageableListView = new PageableListView<WorkRequest>("workRequestList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 

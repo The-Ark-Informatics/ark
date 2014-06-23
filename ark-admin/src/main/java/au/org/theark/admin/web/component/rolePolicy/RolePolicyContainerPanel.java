@@ -104,7 +104,7 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> {
 		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, feedBackPanel, arkCrudContainerVO);
 		initialiseDataView();
 		dataView = searchResultsPanel.buildDataView(dataProvider);
-		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		searchResultsPanel.add(pageNavigator);
 		searchResultsPanel.add(dataView);

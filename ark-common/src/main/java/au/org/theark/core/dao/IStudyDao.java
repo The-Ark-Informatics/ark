@@ -27,6 +27,8 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.config.entity.ConfigField;
+import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.lims.entity.BioCollectionUidPadChar;
 import au.org.theark.core.model.lims.entity.BioCollectionUidTemplate;
 import au.org.theark.core.model.lims.entity.BioCollectionUidToken;
@@ -89,6 +91,7 @@ import au.org.theark.core.model.study.entity.Relationship;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.vo.UserConfigVO;
 
 /**
  * Interface that provides CRUD and accessor methods to Study entities 
@@ -733,5 +736,17 @@ public interface IStudyDao {
 	public List<OtherID> getOtherIDs(Person person);
 
 	public Collection<PersonLastnameHistory> getPersonLastnameHistory(Person person);
+
+	public void createUserConfigs(List<UserConfig> userConfigList) throws ArkSystemException;
+	
+	public Collection<ConfigField> getAllConfigFields();
+	
+	public List<UserConfigVO> getUserConfigVOs(ArkUser arkUser);
+	
+	public int getRowsPerPage();
+	
+	public int getCustomFieldsPerPage();
+	
+	public void deleteUserConfig(UserConfig uc);
 
 }

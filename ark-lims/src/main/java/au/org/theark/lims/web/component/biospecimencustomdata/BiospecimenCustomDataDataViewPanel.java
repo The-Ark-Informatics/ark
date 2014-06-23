@@ -70,7 +70,7 @@ public class BiospecimenCustomDataDataViewPanel extends Panel {
 	public BiospecimenCustomDataDataViewPanel initialisePanel(Integer numRowsPerPage) {	
 		initialiseDataView();
 		if (numRowsPerPage != null) {
-			dataView.setItemsPerPage(numRowsPerPage);	// au.org.theark.core.Constants.ROWS_PER_PAGE);
+			dataView.setItemsPerPage(numRowsPerPage);	// iArkCommonService.getRowsPerPage());
 		}
 		
 		this.add(dataView);

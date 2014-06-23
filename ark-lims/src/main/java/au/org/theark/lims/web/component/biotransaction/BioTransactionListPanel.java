@@ -47,6 +47,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.link.AjaxConfirmLink;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -58,6 +59,9 @@ public class BioTransactionListPanel extends Panel {
 
 	private static final long									serialVersionUID	= 7224168117680252835L;
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
+	
 	private static Logger										log					= LoggerFactory.getLogger(BioTransactionListPanel.class);
 	protected CompoundPropertyModel<LimsVO>				cpModel;
 
@@ -127,7 +131,7 @@ public class BioTransactionListPanel extends Panel {
 		bioTransactionProvider.setCriteriaModel(cpModel);
 
 		dataView = buildDataView(bioTransactionProvider);
-		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 

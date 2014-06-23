@@ -118,7 +118,7 @@ public class DetailForm extends AbstractDetailForm<Pipeline> {
 
 		
 		dataView = processResults.buildDataView(processProvider);
-		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		

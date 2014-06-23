@@ -114,7 +114,7 @@ public class ProcessResultListPanel extends Panel {
 	 */
 	@SuppressWarnings("unchecked")
 	public PageableListView<Process> buildPageableListView(IModel iModel) {
-		PageableListView<Process> pageableListView = new PageableListView<Process>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<Process> pageableListView = new PageableListView<Process>(Constants.RESULT_LIST, iModel, iArkCommonService.getRowsPerPage()) {
 			
 			private static final long	serialVersionUID	= 1L;
 

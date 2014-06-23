@@ -68,6 +68,8 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.config.entity.ConfigField;
+import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
@@ -144,6 +146,7 @@ import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.vo.UserConfigVO;
 
 /**
  * The implementation of IArkCommonService. We want to auto-wire and hence use the @Service annotation.
@@ -1519,5 +1522,29 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	
 	public List getProcessOutputsForProcess(Process process) {
 		return genoDao.getProcessOutputsForProcess(process);
+	}
+	
+	public void createUserConfigs(List userConfigList) throws ArkSystemException {
+		studyDao.createUserConfigs(userConfigList);
+	}
+	
+	public Collection<ConfigField> getAllConfigFields() {
+		return studyDao.getAllConfigFields();
+	}
+	
+	public List<UserConfigVO> getUserConfigVOs(ArkUser arkUser) {
+		return studyDao.getUserConfigVOs(arkUser);
+	}
+		
+	public int getRowsPerPage() {
+		return studyDao.getRowsPerPage();
+	}
+	
+	public int getCustomFieldsPerPage() {
+		return studyDao.getCustomFieldsPerPage();
+	}
+
+	public void deleteUserConfig(UserConfig uc) {
+		studyDao.deleteUserConfig(uc);
 	}
 }

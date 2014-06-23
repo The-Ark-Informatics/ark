@@ -35,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.ehcache.util.ProductInfo;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.shiro.SecurityUtils;
@@ -50,7 +48,6 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -62,13 +59,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.DigestUtils;
 
-import com.itextpdf.tool.xml.css.parser.state.Properties;
-
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.config.entity.ConfigField;
+import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.LinkSubjectStudyPipeline;
 import au.org.theark.core.model.geno.entity.Pipeline;
@@ -161,6 +158,7 @@ import au.org.theark.core.vo.LinkedExtractionVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.vo.UserConfigVO;
 
 /**
  * @author nivedann
@@ -4878,5 +4876,91 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		c.add(Restrictions.eq("person", person));
 		Collection<PersonLastnameHistory> results = c.list();
 		return results;
+	}
+	
+	public void createUserConfigs(List<UserConfig> userConfigList) throws ArkSystemException {
+		
+		for(UserConfig uc : userConfigList) {
+			getSession().saveOrUpdate(uc);
+		}
+			
+	}
+			
+	public Collection<ConfigField> getAllConfigFields() {
+		Criteria criteria = getSession().createCriteria(ConfigField.class);
+		return criteria.list();
+	}
+	
+	public List<UserConfigVO> getUserConfigVOs(ArkUser arkUser)  {
+		List<UserConfigVO> userConfigVOs = new ArrayList<UserConfigVO>();
+		Criteria criteria = getSession().createCriteria(UserConfig.class);
+		log.info("arkuser: " + arkUser);
+		log.info("arkuser.id: " + arkUser.getId());
+		if(arkUser != null && arkUser.getId() != null) {
+			criteria.add(Restrictions.eq("arkUser", arkUser));
+			List<UserConfig> userConfs = criteria.list();
+			log.info("userconfs.size: " + userConfs.size());
+			for(UserConfig uc : userConfs) {
+				UserConfigVO userConfigVO = new UserConfigVO();
+				userConfigVO.setUserConfig(uc);
+				userConfigVOs.add(userConfigVO);
+			}
+		}
+		return userConfigVOs;
+	}
+
+	
+	public UserConfig getUserConfigForUser(String configField) {
+		String currentUserName = (String) SecurityUtils.getSubject().getPrincipal();
+		Criteria userCriteria = getSession().createCriteria(ArkUser.class);
+		if (currentUserName != null) {
+			userCriteria.add(Restrictions.eq("ldapUserName", currentUserName));
+		}
+		ArkUser user = (ArkUser) userCriteria.uniqueResult();
+		Criteria criteria = getSession().createCriteria(UserConfig.class);
+		criteria.add(Restrictions.eq("arkUser", user));
+		criteria.createAlias("configField", "cf");
+		criteria.add(Restrictions.eq("cf.name", configField));
+		
+		UserConfig config = (UserConfig) criteria.uniqueResult();
+		return config;
+	}
+	
+	public int getRowsPerPage() {
+		UserConfig config = getUserConfigForUser(au.org.theark.core.Constants.CONFIG_ROWS_PER_PAGE);
+
+		if(config != null) {
+			int rows_per_page = au.org.theark.core.Constants.ROWS_PER_PAGE;
+			try {
+				rows_per_page = Integer.parseInt(config.getValue());
+			} catch(NumberFormatException e) {
+				log.error("Caught NumberFormatException, setting to default value " + e.getMessage());
+			}
+			return rows_per_page;
+		} else {
+			return au.org.theark.core.Constants.ROWS_PER_PAGE;
+		}
+	}
+	
+	public int getCustomFieldsPerPage() {
+		UserConfig config = getUserConfigForUser(au.org.theark.core.Constants.CONFIG_CUSTOM_FIELDS_PER_PAGE);
+
+		if(config != null) {
+			int rows_per_page = au.org.theark.core.Constants.CUSTOM_FIELDS_PER_PAGE;
+			try {
+				rows_per_page = Integer.parseInt(config.getValue());
+			} catch(NumberFormatException e) {
+				log.error("Caught NumberFormatException, setting to default value " + e.getMessage());
+			}
+			return rows_per_page;
+		} else {
+			return au.org.theark.core.Constants.CUSTOM_FIELDS_PER_PAGE;
+		}
+	}
+	
+	public void deleteUserConfig(UserConfig uc) {
+		if(uc != null) {
+			getSession().delete(uc);
+		}
 	}
 }

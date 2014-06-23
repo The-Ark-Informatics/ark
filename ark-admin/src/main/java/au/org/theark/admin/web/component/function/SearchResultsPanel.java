@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.ContainerForm;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
@@ -51,6 +52,9 @@ public class SearchResultsPanel extends Panel {
 	private IAdminService<Void>	iAdminService;
 	private ContainerForm			containerForm;
 	private ArkCrudContainerVO		arkCrudContainerVo;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 
 	public SearchResultsPanel(String id, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo) {
 		super(id);
@@ -102,7 +106,7 @@ public class SearchResultsPanel extends Panel {
 
 	@SuppressWarnings("unchecked")
 	public PageableListView<ArkFunction> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
-		PageableListView<ArkFunction> pageableListView = new PageableListView<ArkFunction>("arkFunctionList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<ArkFunction> pageableListView = new PageableListView<ArkFunction>("arkFunctionList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 3350183112731574263L;
 

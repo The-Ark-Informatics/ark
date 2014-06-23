@@ -71,7 +71,7 @@ public class SearchResultListPanel extends Panel {
 
 	public PageableListView<RelationshipVo> buildPageableListView(IModel iModel) {
 		
-		sitePageableListView = new PageableListView<RelationshipVo>("relationshipList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		sitePageableListView = new PageableListView<RelationshipVo>("relationshipList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 

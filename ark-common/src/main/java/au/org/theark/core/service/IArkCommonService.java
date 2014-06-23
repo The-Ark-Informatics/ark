@@ -36,6 +36,8 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.config.entity.ConfigField;
+import au.org.theark.core.model.config.entity.UserConfig;
 import au.org.theark.core.model.geno.entity.Command;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
@@ -113,6 +115,7 @@ import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.vo.UserConfigVO;
 
 public interface IArkCommonService<T> {
 
@@ -857,4 +860,17 @@ public interface IArkCommonService<T> {
 	public List<ProcessInput> getProcessInputsForProcess(Process process);
 
 	public List<ProcessOutput> getProcessOutputsForProcess(Process process);
+		
+	public Collection<ConfigField> getAllConfigFields();
+	
+	public List<UserConfigVO> getUserConfigVOs(ArkUser arkUser);
+	
+	public int getRowsPerPage();
+	
+	public int getCustomFieldsPerPage();
+
+	public void createUserConfigs(List userConfigList) throws ArkSystemException;
+
+	public void deleteUserConfig(UserConfig userConfig);
+	
 }

@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.ContainerForm;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
@@ -47,6 +48,9 @@ public class SearchResultsPanel extends Panel {
 	private static final long		serialVersionUID	= 5237384531161620862L;
 	protected transient Logger		log					= LoggerFactory.getLogger(SearchResultsPanel.class);
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
+	
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
 	private IAdminService<Void>	iAdminService;
 
@@ -97,7 +101,7 @@ public class SearchResultsPanel extends Panel {
 
 	@SuppressWarnings("unchecked")
 	public PageableListView<ArkModule> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
-		PageableListView<ArkModule> pageableListView = new PageableListView<ArkModule>("arkModuleList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<ArkModule> pageableListView = new PageableListView<ArkModule>("arkModuleList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 3350183112731574263L;
 

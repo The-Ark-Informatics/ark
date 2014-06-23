@@ -253,7 +253,7 @@ public class SearchResultListPanel extends Panel {
 
 	public PageableListView<SubjectVO> buildListView(IModel iModel) {
 
-		PageableListView<SubjectVO> listView = new PageableListView<SubjectVO>(Constants.SUBJECT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<SubjectVO> listView = new PageableListView<SubjectVO>(Constants.SUBJECT_LIST, iModel, iArkCommonService.getRowsPerPage()) {
 
 			@Override
 			protected void populateItem(final ListItem<SubjectVO> item) {

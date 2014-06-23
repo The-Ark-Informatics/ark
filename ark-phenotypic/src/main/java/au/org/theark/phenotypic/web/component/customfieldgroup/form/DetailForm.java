@@ -123,7 +123,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldGroupVO> {
 		cfdListPanel.setOutputMarkupId(true);
 		cfdListPanel.initialisePanel();
 		dataView = cfdListPanel.buildDataView(cfdProvider);
-		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("cfDisplayNavigator", dataView) {
 

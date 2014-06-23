@@ -35,6 +35,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
@@ -57,6 +58,9 @@ public class SearchResultListPanel extends Panel {
 
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private ContainerForm		containerForm;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 
 	/**
 	 * @param id
@@ -72,7 +76,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<Consent> buildPageableListView(IModel iModel) {
 
-		PageableListView<Consent> pageableListView = new PageableListView<Consent>(Constants.CONSENT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<Consent> pageableListView = new PageableListView<Consent>(Constants.CONSENT_LIST, iModel, iArkCommonService.getRowsPerPage()) {
 
 
 			private static final long	serialVersionUID	= 1L;
