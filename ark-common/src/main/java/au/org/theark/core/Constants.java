@@ -158,7 +158,7 @@ public class Constants {
 
 	/* Search result list rows per page */
 	public static final int ROWS_PER_PAGE = 20;
-	public static final int CUSTOM_FIELDS_PER_PAGE = 50;
+	public static final int CUSTOM_FIELDS_PER_PAGE = 20;
 	public static final String RESULT_LIST = "resultList";
 
 	/* Schema */
@@ -166,6 +166,7 @@ public class Constants {
 	public static final String AUDIT_SCHEMA = "audit";
 	public static final String ADMIN_SCHEMA = "admin";
 	public static final String GENO_SCHEMA = "geno";
+	public static final String CONFIG_SCHEMA = "config";
 
 	/* Geno fields for output in dataextraction - will later allow choice
 	 * - these are used in a linked hash map often, so please 
@@ -536,5 +537,8 @@ public class Constants {
 
 	public static final String			UPLOAD_TYPE_ID											= "id";
 	public static final String			UPLOAD_TYPE_NAME										= "name";
+	
+	public static final String CONFIG_ROWS_PER_PAGE = "ROWS_PER_PAGE";
+	public static final String CONFIG_CUSTOM_FIELDS_PER_PAGE = "CUSTOM_FIELDS_PER_PAGE";
 	
 }

@@ -15,6 +15,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.study.model.vo.RelationshipVo;
 import au.org.theark.study.service.IStudyService;
@@ -36,6 +37,9 @@ public class TwinSearchResultsListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService		iStudyService;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 
 	public TwinSearchResultsListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id);
@@ -46,7 +50,7 @@ public class TwinSearchResultsListPanel extends Panel {
 
 	public PageableListView<RelationshipVo> buildPageableListView(IModel iModel) {
 
-		twinPageableListView = new PageableListView<RelationshipVo>("relationshipList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		twinPageableListView = new PageableListView<RelationshipVo>("relationshipList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 1L;
 

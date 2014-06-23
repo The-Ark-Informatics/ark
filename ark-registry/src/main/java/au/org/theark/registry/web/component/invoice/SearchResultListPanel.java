@@ -73,7 +73,7 @@ public class SearchResultListPanel extends Panel {
 	 */
 	@SuppressWarnings("unchecked")
 	public PageableListView<Pipeline> buildPageableListView(IModel iModel) {
-		PageableListView<Pipeline> pageableListView = new PageableListView<Pipeline>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<Pipeline> pageableListView = new PageableListView<Pipeline>(Constants.RESULT_LIST, iModel, iArkCommonService.getRowsPerPage()) {
 			
 			private static final long	serialVersionUID	= 1L;
 

@@ -62,7 +62,7 @@ public class SearchResultListPanel extends Panel {
 
 	public PageableListView<GenoCollection> buildPageableListView(IModel iModel) {
 		
-		PageableListView<GenoCollection> sitePageableListView = new PageableListView<GenoCollection>("collectionList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE)
+		PageableListView<GenoCollection> sitePageableListView = new PageableListView<GenoCollection>("collectionList", iModel, iArkCommonService.getRowsPerPage())
 		{
 			@Override
 			protected void populateItem(final ListItem<GenoCollection> item)

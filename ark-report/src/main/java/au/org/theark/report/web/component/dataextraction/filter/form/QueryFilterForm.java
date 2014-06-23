@@ -224,7 +224,7 @@ public class QueryFilterForm extends Form<QueryFilterListVO> {
 			@Override
 			protected void onPopulateItem(final ListItem<QueryFilterVO> item) {
 				item.setOutputMarkupId(true);
-				item.add(new Label("row", ""+item.getIndex()+1));
+				item.add(new Label("row", ""+(item.getIndex()+1)));
 				
 				if(copyQueryFilter) {
 					item.getModelObject().setFieldCategory(queryFilterVoToCopy.getFieldCategory());

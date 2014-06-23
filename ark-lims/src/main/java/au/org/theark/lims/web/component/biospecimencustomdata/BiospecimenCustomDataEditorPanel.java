@@ -23,7 +23,9 @@ import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
 import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
 import au.org.theark.lims.web.component.biospecimencustomdata.form.CustomDataEditorForm;
@@ -39,6 +41,9 @@ public class BiospecimenCustomDataEditorPanel extends Panel {
 
 	private static final long		serialVersionUID	= -1L;
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
+	
 	private CompoundPropertyModel<BiospecimenCustomDataVO>			cpModel;
 	
 	protected FeedbackPanel				feedbackPanel;
@@ -54,7 +59,7 @@ public class BiospecimenCustomDataEditorPanel extends Panel {
 	
 	public BiospecimenCustomDataEditorPanel initialisePanel() {
 		
-		dataViewPanel = new BiospecimenCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		dataViewPanel = new BiospecimenCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(iArkCommonService.getRowsPerPage());
 
 		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm();
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {

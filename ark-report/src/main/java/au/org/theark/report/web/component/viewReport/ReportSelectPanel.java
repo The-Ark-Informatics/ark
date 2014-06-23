@@ -138,7 +138,7 @@ public class ReportSelectPanel extends Panel {
 	 */
 	public PageableListView<ReportTemplate> buildPageableListView(IModel iModel) {
 
-		PageableListView<ReportTemplate> sitePageableListView = new PageableListView<ReportTemplate>("reportList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<ReportTemplate> sitePageableListView = new PageableListView<ReportTemplate>("reportList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long serialVersionUID = 1L;
 

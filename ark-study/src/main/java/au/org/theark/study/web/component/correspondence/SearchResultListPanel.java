@@ -43,6 +43,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.security.PermissionConstants;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
@@ -56,6 +57,9 @@ public class SearchResultListPanel extends Panel {
 	private IStudyService		studyService;
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private ContainerForm		containerForm;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 
 	public SearchResultListPanel(String id, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
@@ -66,7 +70,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<Correspondences> buildPageableListView(IModel iModel) {
 
-		PageableListView<Correspondences> pageableListView = new PageableListView<Correspondences>("correspondenceList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<Correspondences> pageableListView = new PageableListView<Correspondences>("correspondenceList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			private static final long	serialVersionUID	= 9076367524574951367L;
 

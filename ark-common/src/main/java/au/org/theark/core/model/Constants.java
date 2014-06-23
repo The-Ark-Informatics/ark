@@ -23,6 +23,8 @@ public class Constants {
 
 	public static final String	STUDY_SCHEMA = "study";
 	public static final String	REPORT_SCHEMA = "reporting";
+	
+	public static final String CONFIG_SCHEMA = "config";
 	// Pheno
 	public static final String	PHENO_TABLE_SCHEMA			= "pheno";
 

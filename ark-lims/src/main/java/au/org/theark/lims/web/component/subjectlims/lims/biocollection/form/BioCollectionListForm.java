@@ -170,7 +170,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		});
 
 		dataView = buildDataView(bioColectionProvider);
-		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 

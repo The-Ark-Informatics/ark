@@ -95,7 +95,7 @@ public class LinkSubjectStudyConsentHistoryPanel extends Panel {
 
 	@SuppressWarnings("unchecked")
 	public PageableListView<LssConsentHistory> buildListView(IModel iModel) {
-		PageableListView<LssConsentHistory> listView = new PageableListView<LssConsentHistory>("resultList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<LssConsentHistory> listView = new PageableListView<LssConsentHistory>("resultList", iModel, iArkCommonService.getRowsPerPage()) {
 
 
 			private static final long	serialVersionUID	= 1L;

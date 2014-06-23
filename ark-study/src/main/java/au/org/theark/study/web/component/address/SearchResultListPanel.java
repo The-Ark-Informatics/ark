@@ -31,8 +31,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
@@ -50,6 +52,9 @@ public class SearchResultListPanel extends Panel {
 	private static final long	serialVersionUID	= 1L;
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 
 	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id);
@@ -60,7 +65,7 @@ public class SearchResultListPanel extends Panel {
 	@SuppressWarnings("unchecked")
 	public PageableListView<Address> buildPageableListView(IModel iModel) {
 
-		PageableListView<Address> pageableListView = new PageableListView<Address>(Constants.ADDRESS_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		PageableListView<Address> pageableListView = new PageableListView<Address>(Constants.ADDRESS_LIST, iModel, iArkCommonService.getRowsPerPage()) {
 
 
 			private static final long	serialVersionUID	= 1L;
