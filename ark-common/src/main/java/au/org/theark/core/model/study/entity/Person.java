@@ -304,7 +304,7 @@ public class Person implements java.io.Serializable {
 		return personLastnameHistory;
 	}
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "person")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
 	public Set<OtherID> getOtherIDs() {
 		return otherIDs;
 	}
