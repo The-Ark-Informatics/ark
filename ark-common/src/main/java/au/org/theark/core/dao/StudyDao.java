@@ -48,6 +48,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -897,11 +898,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				OtherID o = (OtherID) subjectVO.getLinkSubjectStudy().getPerson().getOtherIDs().toArray()[0];
 				if(o != null && o.getOtherID()!= null && !o.getOtherID().isEmpty()) {
 					log.info("OtherID search");	
-					DetachedCriteria otherID = DetachedCriteria.forClass(OtherID.class, "O")
-							.setProjection(Projections.projectionList().add(Projections.property("O.otherID")))
-							.add(Restrictions.ilike("O.otherID", ((OtherID) subjectVO.getLinkSubjectStudy().getPerson().getOtherIDs().toArray()[0]).getOtherID(), MatchMode.ANYWHERE))
-							.add(Restrictions.eqProperty("p.id", "O.person.id"));
-					criteria.add(Subqueries.exists(otherID));
+//					DetachedCriteria otherID = DetachedCriteria.forClass(OtherID.class, "O")
+//							.setProjection(Projections.projectionList().add(Projections.property("O.otherID")))
+//							.add(Restrictions.ilike("O.otherID", ((OtherID) subjectVO.getLinkSubjectStudy().getPerson().getOtherIDs().toArray()[0]).getOtherID(), MatchMode.EXACT))
+//							.add(Restrictions.eqProperty("p.id", "O.person.id"));
+//					criteria.add(Subqueries.exists(otherID));
+					criteria.createAlias("p.otherIDs", "o");
+					criteria.add(Restrictions.ilike("o.otherID", ((OtherID) subjectVO.getLinkSubjectStudy().getPerson().getOtherIDs().toArray()[0]).getOtherID(), MatchMode.ANYWHERE));
+					criteria.setProjection(Projections.distinct(Projections.projectionList()
+							.add(Projections.property("o.personid"), "lss.person.id")));
 				}
 			}
 		}
