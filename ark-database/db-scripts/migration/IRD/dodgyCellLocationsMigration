@@ -1,0 +1,18 @@
+
+
+select * from lims.inv_cell 
+where biospecimen_id in 
+(select id from lims.biospecimen where biospecimen_uid in ('11IRD02648G'));-- , '10IRD02772H', '12IRD02830H'));
+
+
+
+select * from lims.inv_cell 
+where biospecimen_id in 
+(select id from lims.biospecimen where biospecimen_uid in ('10IRD02772H'));
+
+
+select * from lims.inv_cell 
+where biospecimen_id in 
+(select id from lims.biospecimen where biospecimen_uid in ( '12IRD02830H'));
+
+select * from lims.inv_box where id in (3744);
