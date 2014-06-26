@@ -46,6 +46,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -242,13 +243,14 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 
 			protected void onBeforeRender() {
 				if(!isNew()) {
-					containerForm.getModelObject().setOtherIDList(iArkCommonService.getOtherIDs(containerForm.getModelObject().getLinkSubjectStudy().getPerson()));
-					List<OtherID> otherIDs = iArkCommonService.getOtherIDs(containerForm.getModelObject().getLinkSubjectStudy().getPerson());
+					Set<OtherID> otherIDs = containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs();
 					String otherIDstring = "";
 					for(OtherID o : otherIDs) {
 						otherIDstring += o.getOtherID_Source() + ": " + o.getOtherID() + "\n";
 					}
 					this.setDefaultModel(new Model<String>(otherIDstring));
+				} else {
+					this.setDefaultModel(new Model<String>(""));
 				}
 				super.onBeforeRender();
 			}
@@ -676,6 +678,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				if(isNew()) {
 					containerForm.getModelObject().getLinkSubjectStudy().getPerson().setOtherIDs(new HashSet<OtherID>());
 				}
+				Hibernate.initialize(containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
 				log.info("onsave subject otherids (before adding actual): " + containerForm.getModelObject().getLinkSubjectStudy().getPerson().getOtherIDs());
 				OtherID newOtherID = new OtherID();
 				newOtherID.setOtherID(otherIDTxtFld.getValue());
