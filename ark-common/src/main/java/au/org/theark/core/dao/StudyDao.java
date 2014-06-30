@@ -1670,17 +1670,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		}
 		getSession().save(searchVO.getSearch());
 		getSession().refresh(searchVO.getSearch());
-
-		for (DemographicField field : searchVO.getSelectedDemographicFields()) {
-			DemographicFieldSearch dfs = new DemographicFieldSearch(field, searchVO.getSearch());
-			getSession().save(dfs);
-		}
-
-		for(ConsentStatusField field : searchVO.getSelectedConsentStatusFields()) {
-			log.info("Selected consent status fields: " + field.getPublicFieldName());
-			ConsentStatusFieldSearch csfs = new ConsentStatusFieldSearch(field, searchVO.getSearch());
-			getSession().save(csfs);
-		}
+	
+		createOrUpdateFields(searchVO);
 		
 		return success;
 	}
@@ -1696,7 +1687,16 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		getSession().flush();
 		getSession().refresh(search);
 		//end save basic search info
-
+		
+		createOrUpdateFields(searchVO);
+		
+		return success;
+	}
+	
+	private void createOrUpdateFields(SearchVO searchVO) { 
+		
+		Search search = searchVO.getSearch();
+		
 		//start save demographic fields
 		Collection<DemographicField> listOfDemographicFieldsFromVO = searchVO.getSelectedDemographicFields();
 		List<DemographicFieldSearch> nonPoppableDFS = new ArrayList<DemographicFieldSearch>();
@@ -1865,8 +1865,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			getSession().save(csfs);
 		}
 		searchVO.setSelectedConsentStatusFields(getSelectedConsentStatusFieldsForSearch(search));
-		
-		return success;
 	}
 
 	/**
