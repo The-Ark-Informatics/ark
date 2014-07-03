@@ -1,12 +1,12 @@
 
 -- SET @STUDYKEY = 17;
-SET @NEWSTUDYKEY = 17;
+SET @NEWSTUDYKEY = 24;
 SET @COPYFROMSTUDYKEY = 18;
 SET @SEARCHNAME1 = 'Biospecimen Detailed Report';
 SET @SEARCHNAME2 = 'Locations Info Only';
 SET @SEARCHNAME3 = 'Biospecimen Custom Fields';
 select * from study.study;
-
+/*
 insert into reporting.search(
 `NAME`,
 `TOP_LEVEL_GROUPING_ID`,
@@ -44,7 +44,7 @@ select EXTRACTED_TIME,
   TIME_FORMAT(EXTRACTED_TIME, '%H:%i:%s') AS 'Processed Time'
  from wagerlab.ix_biospecimen 
 where biospecimenid = '0208SCZ00154EB2';
-
+*/
 SELECT 
     PAT.SUBJECTID as 'SUBJECTUID',
     BIO.BIOSPECIMENID AS 'BIOSPECIMENUID',
@@ -73,7 +73,7 @@ SELECT
 	--  BIO.EXTRACTED_TIME  AS 'EXTRACTED_TIME_real',
 	--   BIO.GESTAT AS 'GESTAT',   never used at all
 --  !this is bad we dont extract this...in there interim could manually run something to compare...be very thorough!!!!!!!    BIO.PARENTID AS 'PARENTID'
-FROM
+FROM		
     ZEUS.SUBJECT PAT,
     WAGERLAB.IX_BIOSPECIMEN BIO
 WHERE
