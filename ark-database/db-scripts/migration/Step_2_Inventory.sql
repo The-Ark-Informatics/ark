@@ -20,7 +20,17 @@ SET @BIOSPECIMENUID_PREFIX = 'WFB';
 SET @BIOSPECIMENUID_PADCHAR_ID = 6;
 
 
+
+
+
 /* ALWAYS CHECK BEFORE RUNNING 
+
+
+and
+
+always add indexes in this folder, else some of these quieries will simply time out
+
+
 SET @STUDY_GROUP_NAME = 'IRD';
 SET @STUDYKEY = 18;
 SET @STUDYNAME= 'IRD';
@@ -117,11 +127,6 @@ WHERE ldap_group != 'SJOG' 			-- TRAV TODO Remove this line after initial insert
 ON DUPLICATE KEY update DELETED = s.deleted, TIMESTAMP = s.TIMESTAMP, CONTACT = s.CONTACT, ADDRESS = s.ADDRESS, NAME = s.NAME, PHONE = s.PHONE;
 
 ****/
-
-
-
-
-
 
 
 SELECT * FROM lims.inv_site;
