@@ -1,11 +1,11 @@
 
-SET @STUDYKEY = 17;
-SET @NEWSTUDYKEY = 18;
-SET @COPYFROMSTUDYKEY = 17;
+-- SET @STUDYKEY = 17;
+SET @NEWSTUDYKEY = 17;
+SET @COPYFROMSTUDYKEY = 18;
 SET @SEARCHNAME1 = 'Biospecimen Detailed Report';
 SET @SEARCHNAME2 = 'Locations Info Only';
 SET @SEARCHNAME3 = 'Biospecimen Custom Fields';
-
+select * from study.study;
 
 insert into reporting.search(
 `NAME`,
@@ -27,7 +27,9 @@ insert into reporting.search(
 	WHERE 	study_id = @COPYFROMSTUDYKEY
 	AND 	name in (@SEARCHNAME1, @SEARCHNAME2, @SEARCHNAME3);
 
-select * from reporting.search where study_id in (@STUDYKEY, @NEWSTUDYKEY );
+select * from reporting.search where study_id in (@COPYFROMSTUDYKEY, @NEWSTUDYKEY );
+
+select @COPYFROMSTUDYKEY, @NEWSTUDYKEY, s.* from study.study s where  id in (@COPYFROMSTUDYKEY, @NEWSTUDYKEY );
 
 
 select * from lims.biospecimen where biospecimen_uid = '0208SCZ00154EB2';
@@ -46,15 +48,15 @@ where biospecimenid = '0208SCZ00154EB2';
 SELECT 
     PAT.SUBJECTID as 'SUBJECTUID',
     BIO.BIOSPECIMENID AS 'BIOSPECIMENUID',
-   DATE_FORMAT(BIO.SAMPLEDATE, '%d/%m/%Y') AS 'Sample Date',
- TIME_FORMAT(BIO.SAMPLE_TIME, '%H:%i:%s') AS 'Sample Time',
-   DATE_FORMAT(BIO.DATEEXTRACTED,'%d/%m/%Y')  AS 'Processed Date',
-  TIME_FORMAT(BIO.EXTRACTED_TIME, '%H:%i:%s') AS 'Processed Time',
-  --  BIO.COLLABORATOR AS 'COLLABORATOR',
-  -- if( ((ifnull(BIO.QTY_REMOVED, 0) + ifnull(BIO.QTY_COLLECTED, 0)) = 0 ), '', (ifnull(BIO.QTY_REMOVED, 0) + ifnull(BIO.QTY_COLLECTED, 0)) ) AS 'Quantity',
+	DATE_FORMAT(BIO.SAMPLEDATE, '%d/%m/%Y') AS 'Sample Date',
+	TIME_FORMAT(BIO.SAMPLE_TIME, '%H:%i:%s') AS 'Sample Time',
+	DATE_FORMAT(BIO.DATEEXTRACTED,'%d/%m/%Y')  AS 'Processed Date',
+	TIME_FORMAT(BIO.EXTRACTED_TIME, '%H:%i:%s') AS 'Processed Time',
+	--  BIO.COLLABORATOR AS 'COLLABORATOR',
+	-- if( ((ifnull(BIO.QTY_REMOVED, 0) + ifnull(BIO.QTY_COLLECTED, 0)) = 0 ), '', (ifnull(BIO.QTY_REMOVED, 0) + ifnull(BIO.QTY_COLLECTED, 0)) ) AS 'Quantity',
 	(ifnull(BIO.QTY_REMOVED, 0) + ifnull(BIO.QTY_COLLECTED, 0))  AS 'Quantity',
-   --  BIO.QTY_REMOVED  AS 'QuantityRem',
-   -- BIO.QTY_COLLECTED  AS 'QuantityCol',
+	--  BIO.QTY_REMOVED  AS 'QuantityRem',
+	-- BIO.QTY_COLLECTED  AS 'QuantityCol',
     BIO.DNACONC AS 'Concentration',
     BIO.PURITY AS 'Purity',
     BIO.GRADE AS 'Grade',
@@ -65,20 +67,20 @@ SELECT
     BIO.ANTICOAG AS 'Anticoagulant',
     BIO.STATUS AS 'Status',
     BIO.PROTOCOL AS 'Protocol',
-  --  BIO.QTY_COLLECTED AS 'QTY_COLLECTED',
+	--  BIO.QTY_COLLECTED AS 'QTY_COLLECTED',
     BIO.ENCOUNTER AS 'BiocollectionUid',
     BIO.STORED_IN AS 'Stored In'
- --  BIO.EXTRACTED_TIME  AS 'EXTRACTED_TIME_real',
- --   BIO.GESTAT AS 'GESTAT',   never used at all
+	--  BIO.EXTRACTED_TIME  AS 'EXTRACTED_TIME_real',
+	--   BIO.GESTAT AS 'GESTAT',   never used at all
 --  !this is bad we dont extract this...in there interim could manually run something to compare...be very thorough!!!!!!!    BIO.PARENTID AS 'PARENTID'
 FROM
     ZEUS.SUBJECT PAT,
     WAGERLAB.IX_BIOSPECIMEN BIO
 WHERE
-    PAT.STUDYKEY = @STUDYKEY
+    PAT.STUDYKEY = @NEWSTUDYKEY
         AND PAT.SUBJECTKEY = BIO.PATIENTKEY
         AND BIO.DELETED = 0
-        AND BIO.STUDYKEY = @STUDYKEY
+        AND BIO.STUDYKEY = @NEWSTUDYKEY
 ORDER BY (PAT.SUBJECTID + 0) , BIO.BIOSPECIMENID;
 
 /* doctored to match ark formating friom this lims report
@@ -90,3 +92,5 @@ AND BIO.DELETED = 0
 AND BIO.STUDYKEY = 17
 ORDER BY PAT.SUBJECTID, BIO.BIOSPECIMENID
 */
+
+select * from lims.biospecimen where biospecimen_uid like '0106SCZ07344LB1'
