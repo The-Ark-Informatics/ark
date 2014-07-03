@@ -319,9 +319,9 @@ and constudy.status = constat.status
 and constudy.subjectkey = sub.subjectkey;
 
 
-select * from link_subject_study where study_id  = @STUDYKEY;
+select * from study.link_subject_study where study_id  = @STUDYKEY;
 
-select subject_status_id, count(*) from study.link_subject_study where study_id = 17
+select subject_status_id, count(*) from study.link_subject_study where study_id =@STUDYKEY
 group by subject_status_id;
 
 
@@ -571,9 +571,11 @@ AND s.studykey = @STUDYKEY
 AND `b`.`DELETED` = 0;
 
 
-select count(*) from wagerlab.ix_biospecimen where studykey = 17 and deleted  =0 and patientkey in (select subjectkey from zeus.subject where studykey = 17)
+select count(*) from wagerlab.ix_biospecimen where studykey = 17 and deleted  =0 and patientkey in (select subjectkey from zeus.subject where studykey = 17);
 
 -- then clean up the mess you made from the nulls
+-- inverse there two -- update wagerlab.ix_biospecimen set samplesubtype = 'wasNull' where samplesubtype is null and sampletype is not null; not much need to inverse this really
+			-- update lims.bio_sampletype set samplesubtype = 'wasNull' where samplesubtype is null and sampletype is not null;
 update lims.bio_sampletype set samplesubtype = null where samplesubtype = 'wasNull' and sampletype is not null;
 
 
@@ -832,7 +834,7 @@ INSERT INTO `lims`.`biospecimenuid_sequence`
 `INSERT_LOCK`)
 VALUES (@STUDYNAME, 50000, 0);
 
-INSERT INTO `lims`.`biospecimenuid_sequence`
+IN SERT INTO `lims`.`biospecimenuid_sequence`
 (`STUDY_NAME_ID`,
 `UID_SEQUENCE`,
 `INSERT_LOCK`)
