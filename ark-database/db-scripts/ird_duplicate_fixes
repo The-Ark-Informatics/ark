@@ -1,0 +1,21 @@
+
+select * from inv_cell where biospecimen_id in (
+	select id from lims.biospecimen where biospecimen_uid in ('10IRD02772H', '12IRD02830H', '12IRD03107H'));
+
+select * from inv_cell where biospecimen_id in (
+	select id from lims.biospecimen where biospecimen_uid in ('12IRD03107H'));
+/* produced
+'324584', '3744', '0', '12-JUL-12 08.29.02.134502 AM +08:00', '8', '3', 'Not Empty', '522163', '2032932'
+'324585', '3747', '0', '17-DEC-12 12.13.22.460483 PM +08:00', '1', '8', 'Not Empty', '522163', '2032932' -- delete this
+'324959', '3745', '0', '12-JUL-12 09.03.41.455499 AM +08:00', '4', '1', 'Not Empty', '522959', '2187843' -- delete this
+'324960', '3747', '0', '17-DEC-12 12.13.22.517537 PM +08:00', '10', '10', 'Not Empty', '522959', '2187843'
+*/
+select * from inv_cell where box_id = 3747 and rowno =1;
+
+update inv_cell set biospecimen_id = 523246, biospecimenkey = null where id = 324585 ;
+
+update inv_cell set biospecimen_id = null, Status = 'Empty', biospecimenkey = null where id = 324960 ;
+
+Select * from inv_rack where id in (select rack_id from inv_box where name like 'IRD DNA H%');
+
+select * from inv_cell where biospecimen_id = '522959';
