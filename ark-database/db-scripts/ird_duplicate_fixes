@@ -19,3 +19,12 @@ update inv_cell set biospecimen_id = null, Status = 'Empty', biospecimenkey = nu
 Select * from inv_rack where id in (select rack_id from inv_box where name like 'IRD DNA H%');
 
 select * from inv_cell where biospecimen_id = '522959';
+
+/*******I DID THIS BUT WAITING ON TEGAN - in order to be able to go ahead with the constraint *******************/
+select * from inv_cell where biospecimen_id in (
+	select id from lims.biospecimen where biospecimen_uid in ('11IRD02648G'));
+/* produced 
+'324425', '3748', '0', '24-MAR-14 09.19.56.306250 AM +08:00', '2', '4', 'Not Empty', '521680', '2026848'
+'324426', '3748', '0', '24-MAR-14 09.19.56.307951 AM +08:00', '2', '7', 'Not Empty', '521680', '2026848'  - emptying this guy for now
+*/
+update inv_cell set biospecimen_id = null, Status = 'Empty', biospecimenkey = null where id = 324426 ;
