@@ -23,4 +23,4 @@ alter table lims.inv_box add unique index (name, rack_id);
 alter table lims.inv_cell add unique index (box_id, rowno, colno);
 
 
-
+select * from inv_site; -- I really don't think we need an ldap group or a deleted column
