@@ -1,4 +1,5 @@
 -- update_string,SUBSTRING_INDEX(encounter,'T',-1),more_text,encounter';
+
 UPDATE wagerlab.ix_biospecimen set encounter='VUS00002'     WHERE encounter = 'DVT00002';
 UPDATE wagerlab.ix_biospecimen set encounter='VUS00002'     WHERE encounter = 'DVT00002';
 UPDATE wagerlab.ix_biospecimen set encounter='VUS00003'     WHERE encounter = 'DVT00003';
@@ -180,3 +181,5 @@ UPDATE wagerlab.ix_biospecimen set encounter='VUS00152'     WHERE encounter = 'D
 UPDATE wagerlab.ix_biospecimen set encounter='VUS00169'     WHERE encounter = 'DVT00169';
 UPDATE wagerlab.ix_biospecimen set encounter='VUS00019'     WHERE encounter = 'DVT00019';
 UPDATE wagerlab.ix_biospecimen set encounter='VUS00008'     WHERE encounter = 'DVT00008';
+
+-- select * from  wagerlab.ix_biospecimen where encounter = null
