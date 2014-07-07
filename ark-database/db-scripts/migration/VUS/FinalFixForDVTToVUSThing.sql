@@ -1,4 +1,4 @@
-update_string,SUBSTRING_INDEX(encounter,'T',-1),more_text,encounter';
+-- update_string,SUBSTRING_INDEX(encounter,'T',-1),more_text,encounter';
 UPDATE wagerlab.ix_biospecimen set encounter='VUS00002'     WHERE encounter = 'DVT00002';
 UPDATE wagerlab.ix_biospecimen set encounter='VUS00002'     WHERE encounter = 'DVT00002';
 UPDATE wagerlab.ix_biospecimen set encounter='VUS00003'     WHERE encounter = 'DVT00003';
