@@ -19,7 +19,7 @@ SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 	
 SET @BIOSPECIMENUID_PREFIX = 'VUB';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
-SET @BIOSPECIMENUID_PADCHAR_ID = 6;
+SET @BIOSPECIMENUID_PADCHAR_ID = 5;
 
 select * from zeus.study where studyname = 'VUS';
 -- '24', 'VUS', 'Venous Ulcer Study', '2013-04-02 15:52:43', '2007-12-21 14:20:32', 'Hilary Wallace', 'WAGERLAB', 'Deep Vein Thrombosis', NULL, '0', '1', 'DVT', NULL, '2'
@@ -940,7 +940,7 @@ also this can't be an update...needs to be an insert
 
  DELETE FROM  `study`.`subjectuid_sequence` where study_name_id = @STUDYNAME;
 
- INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES (@STUDYNAME, '5000', '0');
+ INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES (@STUDYNAME, '50000', '0');
 
 OR
 
