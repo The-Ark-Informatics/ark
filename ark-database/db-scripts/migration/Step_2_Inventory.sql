@@ -1,3 +1,27 @@
+
+SET @STUDY_GROUP_NAME = 'VUS';
+SET @STUDYKEY = 24;
+SET @STUDYNAME= 'VUS';
+SET @AUTOGEN_SUBJECT = 0;
+SET @AUTOGEN_BIOSPECIMEN = 1;
+SET @AUTOGEN_BIOCOLLECTION = 1;
+-- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
+
+-- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
+-- apparently subject prefix comes from wager
+-- SET @SUBJECT_PREFIX = 'RAV';
+
+SET @BIOCOLLECTIONUID_PREFIX = 'VUC';
+-- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
+SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
+SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
+	
+SET @BIOSPECIMENUID_PREFIX = 'VUB';
+-- SET @BIOSPECIMENUID_TOKEN_ID = 1;
+SET @BIOSPECIMENUID_PADCHAR_ID = 6;
+
+/*
+
 SET @STUDY_GROUP_NAME = 'WAFSS';
 SET @STUDYKEY = 17;
 SET @STUDYNAME= 'WAFSS';
@@ -19,7 +43,7 @@ SET @BIOSPECIMENUID_PREFIX = 'WFB';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
 SET @BIOSPECIMENUID_PADCHAR_ID = 6;
 
-
+*/
 
 
 
@@ -163,7 +187,7 @@ where t.traykey = ct.traykey)
 ))) s;
 
 select id, name from lims.inv_site;  -- ensure sites match wager vs prod for any of this to work!!! 
-select * from lims.study_inv_site;
+select * from lims.study_inv_site where study_id = @STUDYKEY;
 
 /*************
 ALWAYS always ALWAYS 
@@ -196,7 +220,7 @@ WHERE t.SITEKEY = s.SITEKEY
 AND s.NAME = lims_site.NAME
 -- and lims_site.ID<>16 -- fore wasos got rid of already existing freezer/site
 -- the below line eliminates already present freezers from  entry
-AND t.name not in (select name from lims.inv_freezer)
+AND t.name not in (select name from lims.inv_freezer)  -- if running only the select part feel free to comment this line temporarily to make it include those already existing
 AND t.TANKKEY IN 
 (
 select distinct tankkey from wagerlab.ix_inv_box b
@@ -213,6 +237,8 @@ where t.traykey = b.traykey)
 );
 
 select * from lims.inv_freezer where site_id in (select site_id from lims.study_inv_site);
+
+select * from lims.biospecimen where study_id = @STUDYKEY;
 
 select * from  wagerlab.IX_INV_TANK t;
 
