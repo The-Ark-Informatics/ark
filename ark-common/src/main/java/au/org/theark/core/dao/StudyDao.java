@@ -2110,7 +2110,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			createSearchResult(search, iDataExtractionDao.createBiocollectionCSV(search, allTheData, bccfds, FieldCategory.BIOCOLLECTION_FIELD), currentUser);
 			createSearchResult(search, iDataExtractionDao.createBiospecimenCSV(search, allTheData, bsfs, bscfds, FieldCategory.BIOSPECIMEN_FIELD), currentUser);
 			createSearchResult(search, iDataExtractionDao.createPhenotypicCSV(search, allTheData, pcfds, FieldCategory.PHENO_CFD),currentUser);
-			createSearchResult(search, iDataExtractionDao.createGenoCSV(search, allTheData, FieldCategory.GENO, maxProcessesPerPipeline, maxInputList, maxOutputList),currentUser);
+			if(search.getIncludeGeno()) {
+				createSearchResult(search, iDataExtractionDao.createGenoCSV(search, allTheData, FieldCategory.GENO, maxProcessesPerPipeline, maxInputList, maxOutputList),currentUser);				
+			}
 			createSearchResult(search, iDataExtractionDao.createConsentStatusCSV(search, allTheData, consentStatus, FieldCategory.CONSENT_STATUS_FIELD), currentUser);
 
 			try {
