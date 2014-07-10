@@ -1,0 +1,36 @@
+notes from VUS Migrations
+
+There following were all repeats.  Please check all and see if the correct repeat was brought over and why this happened
+---
+> BIOSPECIMENID
+115a116,117
+> 07VUS30008H
+> 07VUS30008J
+165a168,169
+> 07VUS30101H
+> 07VUS30101J
+284a289,290
+> 07VUS30161H
+> 07VUS30161J
+1457a1464,1465
+> 08VUS30008H
+> 08VUS30008J
+1596a1605,1606
+> 08VUS30101H
+> 08VUS30101J
+1598a1609,1610
+> 08VUS30161H
+> 08VUS30161J
+1642a1655
+> 09VUS10392H
+2085a2099
+> 13VUS10392H
+2086a2101,2102
+> 13VUS10392J
+> 13VUS10392S
+2714a2731,2732
+> 14VUS10592H
+> 14VUS10592J
+
+Also , we changes a whole lot of DVT-******* to VUS-****** as wager didn't represent them at all and yet they were referenced.
+So I think we have a moderate degree of consistency going on.  However there is not consistency with the front page of wager...but that has less, so I guess more is better than less - given it is consistent with what we were expecting
