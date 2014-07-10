@@ -25,6 +25,8 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,21 +35,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.geno.entity.Command;
-import au.org.theark.core.model.geno.entity.Pipeline;
-import au.org.theark.core.model.geno.entity.Process;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
 import au.org.theark.core.model.report.entity.ConsentStatusField;
 import au.org.theark.core.model.report.entity.DemographicField;
-import au.org.theark.core.model.report.entity.Entity;
 import au.org.theark.core.model.report.entity.FieldCategory;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -762,6 +764,14 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		return file;
 	}
 	
+	private String getPhenoCollectionName(String collectionID) {
+		Criteria c = getSession().createCriteria(PhenoCollection.class, "p");
+		c.add(Restrictions.eq("p.id", Long.parseLong(collectionID)));
+
+		PhenoCollection pc = (PhenoCollection) c.uniqueResult();
+		return pc.getQuestionnaire().getName();
+	}
+	
 	public File createPhenotypicCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory) {
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		String filename = new String("PHENOTYPIC.csv");
@@ -769,9 +779,37 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		if (filename == null || filename.isEmpty()) {
 			filename = "exportcsv.csv";
 		}
+
 		
 		HashMap<String, ExtractionVO> hashOfSubjectsWithData = devo.getPhenoCustomData();
-
+		
+		HashMap<String, HashMap<String, String>> subjects = new HashMap<String, HashMap<String, String>>(); //Defs not the most elegant solution
+		
+		Set<String> set = new TreeSet<String>();
+		for(String phenoCollectionID : hashOfSubjectsWithData.keySet()) {
+			String phenoName = getPhenoCollectionName(phenoCollectionID);
+			set.add(phenoName);
+			ExtractionVO vo = hashOfSubjectsWithData.get(phenoCollectionID);
+			if(subjects.containsKey(vo.getSubjectUid())) {
+				HashMap<String, String> map = subjects.get(vo.getSubjectUid());
+				for(Entry<String, String> entry : vo.getKeyValues().entrySet()) {
+					map.put(entry.getKey(), entry.getValue());
+				}
+				map.put(phenoName, hashOfSubjectsWithData.get(phenoCollectionID).getRecordDate().toString());
+				subjects.put(vo.getSubjectUid(), map);
+			} else {
+				HashMap<String, String> map = new HashMap<String, String>();
+				for(Entry<String, String> entry : vo.getKeyValues().entrySet()) {
+					map.put(entry.getKey(), entry.getValue());
+				}
+				map.put(phenoName, hashOfSubjectsWithData.get(phenoCollectionID).getRecordDate().toString());
+				subjects.put(vo.getSubjectUid(), map);
+			}
+		}
+		
+		List<String> ids = new ArrayList<String>(subjects.keySet());
+		Collections.sort(ids);
+		
 		OutputStream outputStream;
 		try {
 			outputStream = new FileOutputStream(file);
@@ -779,57 +817,92 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 
 			// Header
 			csv.write("SUBJECTUID");
-			csv.write("RECORD_DATE_TIME");
+//			csv.write("RECORD_DATE_TIME");
+			
+			for(String s : set) {
+				csv.write("RECORD_DATE_TIME_" + s);
+			}
 			
 			for (CustomFieldDisplay cfd : cfds) {
 				csv.write(cfd.getCustomField().getName());
 			}
 
 			csv.endLine();
+			
+			for(String subjectUID : subjects.keySet()) {
+				csv.write(subjectUID);
 
-			for (String phenoCollectionId : hashOfSubjectsWithData.keySet()) {
-				//csv.write(subjectUID);
-				
-				ExtractionVO evo = hashOfSubjectsWithData.get(phenoCollectionId);
-				
-				if (evo != null) {
-					csv.write(evo.getSubjectUid());
-					csv.write(evo.getRecordDate());
-					HashMap<String, String> keyValues = evo.getKeyValues();
-					for (CustomFieldDisplay cfd : cfds) {
-
-						String valueResult = keyValues.get(cfd.getCustomField().getName());
-						if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
-							try {
-								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-								String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
-								Date date = DateUtils.parseDate(valueResult, dateFormats);
-								csv.write(dateFormat.format(date));
-							}
-							catch (ParseException e) {
-								csv.write(valueResult);
-							}
-						}
-						else {
-							csv.write(valueResult);
-						}
-					}
+				for(String s : set) {
+					csv.write(subjects.get(subjectUID).get(s));
 				}
-				else {
-					// Write out a line with no values (no data existed for subject in question
-					for (CustomFieldDisplay cfd : cfds) {
+				
+				for(CustomFieldDisplay cfd : cfds) {
+					String value = subjects.get(subjectUID).get(cfd.getCustomField().getName());
+					if(cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && value != null) {
+						try {
+							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+							String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
+							Date date = DateUtils.parseDate(value, dateFormats);
+							csv.write(dateFormat.format(date));
+						}
+						catch (ParseException e) {
+							csv.write(value);
+						}
+					} else if(value == null) {
 						csv.write("");
+					} else {
+						csv.write(value);
 					}
 				}
-
 				csv.endLine();
 			}
 			csv.close();
+			
+
+//			for (String phenoCollectionId : hashOfSubjectsWithData.keySet()) {
+//				//csv.write(subjectUID);
+//				
+//				ExtractionVO evo = hashOfSubjectsWithData.get(phenoCollectionId);
+//				
+//				if (evo != null) {
+//					csv.write(evo.getSubjectUid());
+//					csv.write(evo.getRecordDate());
+//					HashMap<String, String> keyValues = evo.getKeyValues();
+//					for (CustomFieldDisplay cfd : cfds) {
+//
+//						String valueResult = keyValues.get(cfd.getCustomField().getName());
+//						if (cfd.getCustomField().getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE) && valueResult != null) {
+//							try {
+//								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+//								String[] dateFormats = { au.org.theark.core.Constants.DD_MM_YYYY, au.org.theark.core.Constants.yyyy_MM_dd_hh_mm_ss_S };
+//								Date date = DateUtils.parseDate(valueResult, dateFormats);
+//								csv.write(dateFormat.format(date));
+//							}
+//							catch (ParseException e) {
+//								csv.write(valueResult);
+//							}
+//						}
+//						else {
+//							csv.write(valueResult);
+//						}
+//					}
+//				}
+//				else {
+//					// Write out a line with no values (no data existed for subject in question
+//					for (CustomFieldDisplay cfd : cfds) {
+//						csv.write("");
+//					}
+//				}
+
+//				csv.endLine();
+//			}
+//			csv.close();
 		}
 		catch (FileNotFoundException e) {
 			log.error(e.getMessage());
 		}
 
+		
 		return file;
 	}
 	
