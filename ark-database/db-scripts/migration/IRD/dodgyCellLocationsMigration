@@ -1,4 +1,14 @@
+select * from inv_cell where box_id = 3748 and rowno = 2
 
+
+
+select * from lims.inv_cell 
+where biospecimen_id in 
+(select id from lims.biospecimen where biospecimen_uid in ('11IRD02645G'));-- , '10IRD02772H', '12IRD02830H'));
+
+select * from lims.biospecimen where biospecimen_uid in ('11IRD02645G');-- ,    521683
+
+select * from wagerlab.ix_biospecimen where biospecimenid = '11IRD2645G'
 
 select * from lims.inv_cell 
 where biospecimen_id in 
@@ -16,3 +26,9 @@ where biospecimen_id in
 (select id from lims.biospecimen where biospecimen_uid in ( '12IRD02830H'));
 
 select * from lims.inv_box where id in (3744);
+
+
+UPDATE `lims`.`inv_cell` SET `BIOSPECIMEN_ID`='521680' WHERE `ID`='324426';
+UPDATE `lims`.`inv_cell` SET `BIOSPECIMEN_ID`='521683', `BIOSPECIMENKEY`='-1' WHERE `ID`='324425';
+
+select * from inv_box where id = 3748
