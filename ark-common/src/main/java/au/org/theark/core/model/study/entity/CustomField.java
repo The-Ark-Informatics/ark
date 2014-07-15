@@ -60,6 +60,7 @@ public class CustomField implements Serializable {
 	private String missingValue;
 	private Boolean customFieldHasData;
 	private String fieldLabel;
+	private String default_value;
 
 	private Set<CustomFieldDisplay> customFieldDisplay = new HashSet<CustomFieldDisplay>();
 
@@ -198,6 +199,15 @@ public class CustomField implements Serializable {
 
 	public void setCustomFieldDisplay(Set<CustomFieldDisplay> customFieldDisplay) {
 		this.customFieldDisplay = customFieldDisplay;
+	}
+	
+	@Column(name = "DEFAULT_VALUE")
+	public String getDefaultValue() {
+		return this.default_value;
+	}
+	
+	public void setDefaultValue(String default_value) {
+		this.default_value = default_value;
 	}
 
 	@Override
