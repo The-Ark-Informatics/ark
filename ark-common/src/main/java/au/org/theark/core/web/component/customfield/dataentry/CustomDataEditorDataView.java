@@ -18,6 +18,9 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield.dataentry;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -39,6 +42,7 @@ import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.MaximumValidator;
 import org.apache.wicket.validation.validator.MinimumValidator;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -56,6 +60,7 @@ import au.org.theark.core.model.study.entity.ICustomFieldData;
  */
 public abstract class CustomDataEditorDataView<T extends ICustomFieldData> extends DataView<T> {
 
+	private static final Logger				log					= LoggerFactory.getLogger(CustomDataEditorDataView.class);
 
 	private static final long	serialVersionUID	= 1L;
 
@@ -85,6 +90,14 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 		String encodedValues = cf.getEncodedValues();
 		Boolean requiredField = aCustomData.getCustomFieldDisplay().getRequired();
 		if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
+			if(cf.getDefaultValue() != null && item.getModelObject().getDateDataValue() == null) {
+				try {
+					item.getModelObject().setDateDataValue(new SimpleDateFormat(Constants.DD_MM_YYYY).parse(cf.getDefaultValue()));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			DateDataEntryPanel dateDataEntryPanel = new DateDataEntryPanel("dataValueEntryPanel", 
 														new PropertyModel<Date>(item.getModel(), "dateDataValue"),
 														new Model<String>(labelModel));
@@ -158,6 +171,9 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 
 				}
 				else{
+					if(cf.getDefaultValue() != null && item.getModelObject().getTextDataValue() == null) {
+						item.getModelObject().setTextDataValue(cf.getDefaultValue());
+					}
 					DropDownChoiceDataEntryPanel ddcPanel = 
 								new DropDownChoiceDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
 																				new Model<String>(labelModel), choiceList, choiceRenderer);
@@ -176,6 +192,9 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 			else {
 				if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.CHARACTER_FIELD_TYPE_NAME)) {
 					// Text data
+					if(cf.getDefaultValue() != null && item.getModelObject().getTextDataValue() == null) {
+						item.getModelObject().setTextDataValue(cf.getDefaultValue());
+					}
 					TextDataEntryPanel textDataEntryPanel = new TextDataEntryPanel("dataValueEntryPanel", 
 																										new PropertyModel<String>(item.getModel(), "textDataValue"), 
 																										new Model<String>(labelModel));
@@ -190,6 +209,9 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				}
 				else if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.NUMBER_FIELD_TYPE_NAME)) {
 					// Number data
+					if(cf.getDefaultValue() != null && item.getModelObject().getNumberDataValue() == null) {
+						item.getModelObject().setNumberDataValue(Double.parseDouble(cf.getDefaultValue()));;
+					}
 					NumberDataEntryPanel numberDataEntryPanel = new NumberDataEntryPanel("dataValueEntryPanel", 
 																						new PropertyModel<Double>(item.getModel(), "numberDataValue"), 
 																						new Model<String>(labelModel));
@@ -233,7 +255,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				}
 			}
 		}
-
+		
 		item.add(fieldLabelLbl);
 		item.add(dataValueEntryPanel);
 	}
