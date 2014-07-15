@@ -1268,26 +1268,21 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public Long isCustomFieldUsed(PhenoData phenoData) {
 		Long count = new Long("0");
 		CustomField customField = phenoData.getCustomFieldDisplay().getCustomField();
-
+		
 		Study study = customField.getStudy();
 		ArkFunction arkFunction = customField.getArkFunction();
-
-		StringBuffer stringBuffer = new StringBuffer();
 		
-		stringBuffer.append(" SELECT COUNT(*) FROM " + PhenoData.class.getName() + " AS phenoData WHERE EXISTS ");
-		stringBuffer.append(" ( ");               
-		stringBuffer.append(" SELECT cfd.id FROM " + CustomFieldDisplay.class.getName() + " AS cfd  WHERE cfd.customField.study.id = :studyId");
-		stringBuffer.append(" AND cfd.customField.arkFunction.id = :functionId AND phenoData.customFieldDisplay.id = :customFieldDisplayId");
-		stringBuffer.append(" )");
+		Criteria criteria = getSession().createCriteria(PhenoData.class, "pd");
+		criteria.createAlias("pd.customFieldDisplay", "cfd");
+		criteria.createAlias("cfd.customField", "cf");
+		criteria.createAlias("cf.arkFunction", "aF");
+		criteria.createAlias("cf.study", "s");
+		criteria.add(Restrictions.eq("aF.id", arkFunction.getId()));
+		criteria.add(Restrictions.eq("cfd.id", phenoData.getCustomFieldDisplay().getId()));
+		criteria.add(Restrictions.eq("s.id", study.getId()));
 		
-		String theHQLQuery = stringBuffer.toString();
-		
-		Query query = getSession().createQuery(theHQLQuery);
-		query.setParameter("studyId", study.getId());
-		query.setParameter("functionId", arkFunction.getId());
-		query.setParameter("customFieldDisplayId", phenoData.getCustomFieldDisplay().getId());
-		count = (Long) query.uniqueResult();
-			
+		count = (Long) criteria.setProjection(Projections.rowCount()).uniqueResult();
+				
 		return count;
 	}
 

@@ -101,6 +101,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	protected Panel									minValueEntryPnl;
 	protected Panel									maxValueEntryPnl;
 
+	private TextArea<String>						defaultValueTextArea;
+	
 	protected IModel<List<CustomFieldGroup>>	cfGroupDdcListModel;
 
 	/**
@@ -311,7 +313,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		// Have to Edit, before allowing delete
 		deleteButton.setEnabled(false);
 
-		attachValidators();
+		defaultValueTextArea = new TextArea<String>("customField.defaultValue");
+		
 		addDetailFormComponents();
 	}
 
@@ -440,6 +443,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		customFieldDetailWMC.add(fieldEncodedValuesTxtFld);
 		customFieldDetailWMC.add(fieldMissingValueTxtFld);
 		customFieldDetailWMC.add(fieldLabelTxtAreaFld);
+		customFieldDetailWMC.add(defaultValueTextArea);
+		
 
 		customFieldDisplayDetailWMC = new WebMarkupContainer("customFieldDisplayDetailWMC");
 		customFieldDisplayDetailWMC.add(customFieldDisplayPositionPanel);
