@@ -1,6 +1,6 @@
 
--- SET @STUDYKEY = 17;
-SET @NEWSTUDYKEY = 24;
+-- SET @STUDYKEY = 17;17waffs    24vus
+SET @NEWSTUDYKEY = 17;
 SET @COPYFROMSTUDYKEY = 18;
 SET @SEARCHNAME1 = 'Biospecimen Detailed Report';
 SET @SEARCHNAME2 = 'Locations Info Only';
@@ -93,4 +93,20 @@ AND BIO.STUDYKEY = 17
 ORDER BY PAT.SUBJECTID, BIO.BIOSPECIMENID
 */
 
-select * from lims.biospecimen where biospecimen_uid like '0106SCZ07344LB1'
+select * from lims.biospecimen where biospecimen_uid like '0106SCZ07344LB1';
+
+
+-- study fee is $4000 p.a.
+
+select count(*) from lims.biospecimen 
+where study_id like @NEWSTUDYKEY;  -- 11830 specimens  = $5915 p.a
+
+select count(*) from study.link_subject_study 
+where study_id like @NEWSTUDYKEY;  -- 1828 subject = $914 p.a.
+
+-- no pheno in actual prod as yet but that is at 1c per answer  - at last check and without all of Mel's new data it was around $3360pa
+
+
+
+select  @NEWSTUDYKEY;
+
