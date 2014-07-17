@@ -412,7 +412,7 @@ and c.biospecimenkey >0 ;
 select * from lims.inv_cell 
 where box_id in 
 	(select id from lims.inv_box where rack_id in
-		(select id from lims.inv_rack where study_id = 18));
+		(select id from lims.inv_rack where study_id = @STUDYKEY));
 
 
 /* 
