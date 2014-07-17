@@ -23,6 +23,7 @@ SET time_zone = "+00:00";
 USE `reporting`;
 
 -- --------------------------------------------------------
+-- select * from consent_status_fielddrop table consent_status_field;
 
 --
 -- Table structure for table `consent_status_field`
