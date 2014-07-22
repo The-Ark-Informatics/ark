@@ -35,6 +35,13 @@ delete from lims.study_inv_site ;
 delete from lims.tmp_bio_transaction ;
 delete from lims.tmp_biospecimen ;
 delete from lims.tmp_biospecimen_custom_field_data ;
+
+— these tables may not be everywhere
+delete from lims.tmp_biospecimen;
+delete from lims.tmp_bio_transaction;
+delete from lims.tmp_biospecimen_custom_field_data;
+
+
 */
 /* drop tables...this can happen in another script
 delete from lims.biodata ;
