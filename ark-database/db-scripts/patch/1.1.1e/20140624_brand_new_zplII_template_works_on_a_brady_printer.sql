@@ -6,6 +6,7 @@ VALUES ('zebra or brady biospecimen', 'Generic biospecimen label using ZPL - tes
 
 select * from lims.barcode_label;
 
+USE `lims`;
 
 INSERT INTO `barcode_label_data` (`BARCODE_LABEL_ID`,`COMMAND`,`X_COORD`,`Y_COORD`,`P1`,`P2`,`P3`,`P4`,`P5`,`P6`,`P7`,`P8`,`QUOTE_LEFT`,`DATA`,`QUOTE_RIGHT`,`LINE_FEED`) 
 						  VALUES (9,					'b',200,15,'D','h3','c16','r16',NULL,NULL,NULL,NULL,'\"','${biospecimenUid}','\"','\n');
