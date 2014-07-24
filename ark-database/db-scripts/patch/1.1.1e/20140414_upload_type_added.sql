@@ -1,9 +1,14 @@
+set @id = 0;
+
+SELECT @id := max(id)+1 from `study`.`upload_type`;
+
+
 -- SELECT * FROM study.upload_type;
 
 
 -- add a new uploader type;
 
-INSERT INTO `study`.`upload_type` (`NAME`, `DESCRIPTION`, `ARK_MODULE_ID`) VALUES ('Biospecimen Location Updater', 'Upload the locations of Biospecimen only', '5');
+INSERT INTO `study`.`upload_type` (`ID`, `NAME`, `DESCRIPTION`, `ARK_MODULE_ID`) VALUES (@id,'Biospecimen Location Updater', 'Upload the locations of Biospecimen only', '5');
 
 
 -- INSERT INTO `study`.`upload_type` (`NAME`, `DESCRIPTION`, `ARK_MODULE_ID`) VALUES ('Biospecimen Uploader - Under Development', 'Upload the Biospecimen.  Only use supervised', '5');

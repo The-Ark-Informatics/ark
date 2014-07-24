@@ -1,5 +1,5 @@
 CREATE DATABASE IF NOT EXISTS `config`;
-
+USE `config`;
 DROP TABLE IF EXISTS `config_fields`;
 CREATE TABLE IF NOT EXISTS `config_fields` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
