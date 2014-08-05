@@ -23,7 +23,6 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
-import org.apache.fop.image.PNGImage;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.WicketRuntimeException;
@@ -34,8 +33,6 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.request.resource.DynamicImageResource;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.Files;
@@ -46,13 +43,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import au.org.theark.core.jni.MadelineArkProxy;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
 import com.itextpdf.text.Element;
 import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -69,6 +69,9 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 
 	static Logger					log					= LoggerFactory.getLogger(PedigreeDisplayPanel.class);
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
+	
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	IStudyService					studyService;
 
@@ -112,6 +115,13 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 		sb.setLength(0);
 
 		String familyId = null;
+		StringBuffer columnList = new StringBuffer("IndividualId");
+		Study study= iArkCommonService.getStudy(studyId);
+		StudyPedigreeConfiguration config=study.getPedigreeConfiguration();
+		if(config.isDobAllowed()){
+			columnList.append(" DOB");
+		}
+		
 		RelativeCapsule[] relatives = studyService.generateSubjectPedigreeImageList(subjectUID, studyId);
 
 		if (relatives.length > 2) {
@@ -154,7 +164,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 			}
 
 			try {
-				madeline.generatePedigree(filePath + filePrefix + ".data", filePath + familyId + "ped");
+				madeline.generatePedigree(filePath + filePrefix + ".data", filePath + familyId + "ped",columnList.toString());
 			}
 			catch (Error e) {
 				e.printStackTrace();
@@ -165,7 +175,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 
 			// Execute madeline by runtime
 			// Madeline execute independent of the Ark program
-			// Not recomend this option because this may causes unexpected errors. Ex: FileNotFound Exception
+			// Not recommend this option because this may causes unexpected errors. Ex: FileNotFound Exception
 			// try{
 			//
 			// File file = new File("/tmp");
@@ -197,6 +207,11 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 						if(nodeText.startsWith("_F") 
 								|| nodeText.startsWith("!")){
 							nodes.item(idx).setTextContent("");
+						}
+						
+						//Replace half generated Indiv.. by UID
+						if(nodeText.startsWith("Indiv")){
+							nodes.item(idx).setTextContent("UID");
 						}
 						
 					}
@@ -306,20 +321,16 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 					String tmpDir = System.getProperty("java.io.tmpdir");
 					String pedFileName = "Ark_" + subjectUID + ".pdf";
 					f = new File(tmpDir, pedFileName);
-					com.itextpdf.text.Document document = new com.itextpdf.text.Document(PageSize.A4.rotate());
-					PdfWriter.getInstance(document, new FileOutputStream(f));
-					document.open();
+					
 					com.itextpdf.text.Image pedigreeImg = PngImage.getImage(pngOutPutArray);
-					PdfPTable table = new PdfPTable(1);
-					table.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.setWidthPercentage(100f);
-					PdfPCell c = new PdfPCell(pedigreeImg, true);
-					c.setBorder(PdfPCell.NO_BORDER);
-					c.setPadding(5);
-					c.getImage().scaleToFit(750f, 750f); /* The new line */
-					c.setHorizontalAlignment(Element.ALIGN_CENTER);
-					table.addCell(c);
-					document.add(table);
+					
+					Rectangle pageSize = new Rectangle(pedigreeImg.getWidth(),pedigreeImg.getHeight());
+					
+					com.itextpdf.text.Document document = new com.itextpdf.text.Document(pageSize,0f,0f,0f,0f);
+					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(f));
+					writer.setStrictImageSequence(true);
+					document.open();
+		         document.add(pedigreeImg);
 					document.close();
 				}
 				catch (Exception e) {

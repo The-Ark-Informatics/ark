@@ -89,6 +89,7 @@ import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
@@ -1767,7 +1768,7 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	
-	private RelativeCapsule createSubjectRelativeCapsule(RelationshipVo relationshipVo,String familyUID){
+	private RelativeCapsule createSubjectRelativeCapsule(RelationshipVo relationshipVo,String familyUID){	
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy.MM.dd");
 		RelativeCapsule relative=new RelativeCapsule();
 		relative.setFamilyId(familyUID);
@@ -1790,6 +1791,11 @@ public class StudyServiceImpl implements IStudyService {
 		if(relationshipVo.getDeceased() !=null && "Deceased".equalsIgnoreCase(relationshipVo.getDeceased())){
 			relative.setDeceased("Y");
 		}
+		
+		if("0".equalsIgnoreCase(relationshipVo.getAffectedStatus())){
+			relative.setAffected("Y");
+		}
+		
 		return relative;
 	}	 
 	
@@ -1956,6 +1962,19 @@ public class StudyServiceImpl implements IStudyService {
 	public List<LinkSubjectTwin> getTwins(Set<String> subjectUids, Long studyId) {
 		// TODO Auto-generated method stub
 		return iStudyDao.getTwins(subjectUids, studyId);
+	}
+	
+	public List<CustomField> getBinaryCustomFieldsForPedigreeRelativesList(Long studyId) {
+		// TODO Auto-generated method stub
+		return iStudyDao.getBinaryCustomFieldsForPedigreeRelativesList(studyId);
+	}
+	
+	public StudyPedigreeConfiguration getStudyPedigreeConfiguration(Long studyId){
+		return iStudyDao.getStudyPedigreeConfiguration(studyId);
+	}
+	
+	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config){
+		iStudyDao.saveOrUpdateStudyPedigreeConfiguration(config);
 	}
 
 }

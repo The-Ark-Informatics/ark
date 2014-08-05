@@ -1,0 +1,67 @@
+<wicket:panel>
+	&nbsp;
+	<div class="searchPanelContainer">
+		<form wicket:id="configurationForm">
+			<div class="searchPanelContent">
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft">
+					&nbsp;
+				</div>
+				<div class="fldLabel">
+					<div class="label">
+						<label for="effectedStatus">
+							<wicket:message key="pedigree.effectedStatus">
+								status field:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+
+				<div class="fldControl">
+					<div class="label">
+						<!--	this will change to ID -->
+						<select wicket:id="pedigreeConfig.customField">
+							<option>
+								field1
+							</option>
+							<option>
+								field2
+							</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="panelMargin">
+					&nbsp;
+				</div>
+
+				<div class="fldLabel">
+					<div class="label">
+						<label for="dob">
+							<wicket:message key="pedigree.showDob">
+								status field:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<input type="checkbox" wicket:id="pedigreeConfig.dobAllowed"/>
+				</div>
+				
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div class="actionButtons">
+					<input wicket:id="save" type="submit" wicket:message="value:button.save" />
+					<input wicket:id="close" type="submit" wicket:message="value:button.close" />
+				</div>
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+			</div>
+		</form>
+	</div>
+</wicket:panel>

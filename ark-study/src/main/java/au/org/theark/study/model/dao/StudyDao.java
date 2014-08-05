@@ -95,6 +95,7 @@ import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
@@ -121,8 +122,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	private IArkAuthorisation	iArkAuthorisationService;
 	private Date					dateNow;
 	private ArkUidGenerator		arkUidGenerator;
-	private IAuditDao						iAuditDao;
-	
+	private IAuditDao				iAuditDao;
+
 	@Autowired
 	public void setArkUidGenerator(ArkUidGenerator arkUidGenerator) {
 		this.arkUidGenerator = arkUidGenerator;
@@ -142,7 +143,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void setIArkAuthorisationService(IArkAuthorisation iArkAuthorisationService) {
 		this.iArkAuthorisationService = iArkAuthorisationService;
 	}
-	
+
 	/**
 	 * @return the iAuditDao
 	 */
@@ -177,29 +178,31 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	/**
 	 * Perform all inserts and updates as an atomic unit
+	 * 
 	 * @param subjectsToInsert
 	 * @param study
 	 * @param subjectsToUpdate
 	 */
-	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert){
+	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert) {
 		Session session = getSession();
 		int count = 0;
-		for(SubjectCustomFieldData dataToUpdate : fieldsToUpdate){
+		for (SubjectCustomFieldData dataToUpdate : fieldsToUpdate) {
 			session.update(dataToUpdate);
 			count++;
-			//based on recommended hibernate practice of	<prop key="hibernate.jdbc.batch_size">50</prop>
-			if(count%50==0){
-				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!"); // TODO Evaluate why batch not working.  hints: may be identity/id generation related.  Will revisit after all batch work done
+			// based on recommended hibernate practice of <prop key="hibernate.jdbc.batch_size">50</prop>
+			if (count % 50 == 0) {
+				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!"); // TODO Evaluate why batch not working. hints: may be identity/id generation related.
+																					// Will revisit after all batch work done
 				session.flush();
 				session.clear();
 			}
 		}
 		count = 0;
-		for(SubjectCustomFieldData dataToInsert : fieldsToInsert){
+		for (SubjectCustomFieldData dataToInsert : fieldsToInsert) {
 			session.save(dataToInsert);
 			count++;
-			//based on recommended hibernate practice of	<prop key="hibernate.jdbc.batch_size">50</prop>
-			if(count%50==0){	
+			// based on recommended hibernate practice of <prop key="hibernate.jdbc.batch_size">50</prop>
+			if (count % 50 == 0) {
 				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
 				session.flush();
 				session.clear();
@@ -208,29 +211,29 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		session.flush();
 		session.clear();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public void processPedigreeBatch(List<LinkSubjectPedigree> parentsToInsert,List<LinkSubjectTwin> twinsToInsert) {
+	public void processPedigreeBatch(List<LinkSubjectPedigree> parentsToInsert, List<LinkSubjectTwin> twinsToInsert) {
 		Session session = getSession();
 		int count = 0;
-		for(LinkSubjectPedigree dataToInsert : parentsToInsert){
+		for (LinkSubjectPedigree dataToInsert : parentsToInsert) {
 			session.save(dataToInsert);
 			count++;
-			//based on recommended hibernate practice of	<prop key="hibernate.jdbc.batch_size">50</prop>
-			if(count%50==0){	
+			// based on recommended hibernate practice of <prop key="hibernate.jdbc.batch_size">50</prop>
+			if (count % 50 == 0) {
 				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
 				session.flush();
 				session.clear();
 			}
 		}
-		count =0;
-		for(LinkSubjectTwin dataToInsert : twinsToInsert){
+		count = 0;
+		for (LinkSubjectTwin dataToInsert : twinsToInsert) {
 			session.save(dataToInsert);
 			count++;
-			//based on recommended hibernate practice of	<prop key="hibernate.jdbc.batch_size">50</prop>
-			if(count%50==0){	
+			// based on recommended hibernate practice of <prop key="hibernate.jdbc.batch_size">50</prop>
+			if (count % 50 == 0) {
 				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
 				session.flush();
 				session.clear();
@@ -238,9 +241,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		session.flush();
 		session.clear();
-		
+
 	}
-	
+
 	public void create(Study study, ArkUserVO arkUserVo, Collection<ArkModule> selectedModules) {
 		Session session = getSession();
 		session.save(study);
@@ -320,9 +323,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public void updateStudy(Study study, Collection<ArkModule> selectedApplications) throws CannotRemoveArkModuleException {
 		Session session = getSession();
-		
-//		session.update(study);
-		//execute merge method instead of update to avoid org.hibernate.NonUniqueObjectException
+
+		// session.update(study);
+		// execute merge method instead of update to avoid org.hibernate.NonUniqueObjectException
 		session.merge(study);
 
 		Collection<LinkStudyArkModule> linkStudyArkModulesToAdd = getModulesToAddList(study, selectedApplications);
@@ -506,13 +509,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			if (isSubjectUIDUnique(subjectUID, study.getId(), "Insert")) {
 				subjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
 			}
-			else{//TODO : maybe a for loop to guard against a manual db insert, or just throw exception and holds someone up from further inserts until investigated why?
+			else {// TODO : maybe a for loop to guard against a manual db insert, or just throw exception and holds someone up from further inserts until
+					// investigated why?
 				subjectUID = getNextGeneratedSubjectUID(study);
-				subjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);	
+				subjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
 			}
 		}
-		else{
-			if(!isSubjectUIDUnique(subjectVo.getLinkSubjectStudy().getSubjectUID(), subjectVo.getLinkSubjectStudy().getStudy().getId(), "Insert")){
+		else {
+			if (!isSubjectUIDUnique(subjectVo.getLinkSubjectStudy().getSubjectUID(), subjectVo.getLinkSubjectStudy().getStudy().getId(), "Insert")) {
 				throw new ArkUniqueException("Subject UID must be unique");
 			}
 		}
@@ -540,10 +544,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			VitalStatus vitalStatus = getVitalStatus(new Long(0));
 			subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
 		}
-		
+
 		log.info("create subject otherIDs:  " + subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs());
-		
-		if (subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs() == null || subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs().isEmpty()) { //get better values when implemented properly
+
+		if (subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs() == null || subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs().isEmpty()) { // get
+																																																		// better
+																																																		// values
+																																																		// when
+																																																		// implemented
+																																																		// properly
 			Set<OtherID> otherIDs = new HashSet<OtherID>();
 			subjectVo.getLinkSubjectStudy().getPerson().setOtherIDs(otherIDs);
 		}
@@ -563,13 +572,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 				session.save(personLastNameHistory);
 			}
 
-/*		 only keeping previous names from now on	// Current lastName
-			if (person.getLastName() != null) {
-				personLastNameHistory = new PersonLastnameHistory();
-				personLastNameHistory.setPerson(person);
-				personLastNameHistory.setLastName(person.getLastName());
-				session.save(personLastNameHistory);
-			}*/
+			/*
+			 * only keeping previous names from now on // Current lastName if (person.getLastName() != null) { personLastNameHistory = new
+			 * PersonLastnameHistory(); personLastNameHistory.setPerson(person); personLastNameHistory.setLastName(person.getLastName());
+			 * session.save(personLastNameHistory); }
+			 */
 		}
 
 		// Update subjectPreviousLastname TODO investigate
@@ -579,8 +586,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
 
 		autoConsentLinkSubjectStudy(subjectVo.getLinkSubjectStudy());
-			
-		//TODO EXCEPTIONHANDLING
+
+		// TODO EXCEPTIONHANDLING
 	}
 
 	private void autoConsentLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
@@ -628,7 +635,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		return (VitalStatus) criteria.list().get(0);
 	}
-	
+
 	public MaritalStatus getMaritalStatusNyName(String name) {
 		Criteria criteria = getSession().createCriteria(MaritalStatus.class);
 
@@ -667,8 +674,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 
 		List<SubjectStatus> subjectStatus = criteria.list();
-		
-		//TODO - this should just be not permitted at db level...code shouldnt be checking for poor data - particularly on something which is more enum like than data like
+
+		// TODO - this should just be not permitted at db level...code shouldnt be checking for poor data - particularly on something which is more enum
+		// like than data like
 		if (subjectStatus.size() > 0) {
 			if (subjectStatus.size() > 1) {
 				log.error("Backend database has non-unique Status names, returned the first one");
@@ -683,15 +691,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Session session = getSession();
 
 		Person person = subjectVO.getLinkSubjectStudy().getPerson();
-		String currentLastNameFromDB = getCurrentLastnameFromDB(person);//may need to test this effect of a reget
-		
+		String currentLastNameFromDB = getCurrentLastnameFromDB(person);// may need to test this effect of a reget
+
 		session.update(person);// Update Person and associated Phones
 
 		PersonLastnameHistory personLastNameHistory = null;
 
-		if (currentLastNameFromDB != null && !currentLastNameFromDB.isEmpty() &&
-				!currentLastNameFromDB.equalsIgnoreCase(person.getLastName())
-			) {
+		if (currentLastNameFromDB != null && !currentLastNameFromDB.isEmpty() && !currentLastNameFromDB.equalsIgnoreCase(person.getLastName())) {
 			if (person.getLastName() != null) {
 				personLastNameHistory = new PersonLastnameHistory();
 				personLastNameHistory.setPerson(person);
@@ -701,37 +707,39 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 
 		// Update subjectPreviousLastname
-		if(personLastNameHistory!=null){
+		if (personLastNameHistory != null) {
 			subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
 		}
-		
+
 		LinkSubjectStudy linkSubjectStudy = subjectVO.getLinkSubjectStudy();
 		session.merge(linkSubjectStudy);
 	}
-		
+
 	/**
-	 * note the numbers coming in 
+	 * note the numbers coming in
 	 * 
-	 * @param nextSequenceNumber  - IMPORTANT this is the NEXT (ie already incremented and gotten from the DB, with the DB updated)
+	 * @param nextSequenceNumber
+	 *           - IMPORTANT this is the NEXT (ie already incremented and gotten from the DB, with the DB updated)
 	 * @param subjectUidPrefix
 	 * @param subjectUidToken
 	 * @param padChar
 	 * @param subjectUidPaddedIncrementor
 	 * @param subjectUidPadChar
 	 * @return
-	 */																																								//called padchar in db?
-	public String getUIDGiven(long startingAtNumber, long nextSequenceNumber, String subjectUidPrefix, String subjectUidToken, int padThisManyChars){
-																				//ABC-0000123
-//		String subjectUidPrefix = new String("");					//ABC
-//		String subjectUidToken = new String("");					//   -
-//		String subjectUidPadChar = 									//(how many chars to pad to...eg; "7" here 0000001 0000012 0234567
-//		String nextIncrementedsubjectUid = new String("");		//124
-//		String subjectUid = new String("");							//ABC-0000124
+	 */
+	// called padchar in db?
+	public String getUIDGiven(long startingAtNumber, long nextSequenceNumber, String subjectUidPrefix, String subjectUidToken, int padThisManyChars) {
+		// ABC-0000123
+		// String subjectUidPrefix = new String(""); //ABC
+		// String subjectUidToken = new String(""); // -
+		// String subjectUidPadChar = //(how many chars to pad to...eg; "7" here 0000001 0000012 0234567
+		// String nextIncrementedsubjectUid = new String(""); //124
+		// String subjectUid = new String(""); //ABC-0000124
 		String theCompletedUID = "";
 		long incrementedValue = startingAtNumber + nextSequenceNumber;
-		//log.warn("after convoluted analysis...sequenceuid = " + incrementedValue);
-		String numberAsString ="" + incrementedValue;
-		String subjectUidPaddedIncrementor = StringUtils.leftPad(numberAsString, (int)padThisManyChars, "0");
+		// log.warn("after convoluted analysis...sequenceuid = " + incrementedValue);
+		String numberAsString = "" + incrementedValue;
+		String subjectUidPaddedIncrementor = StringUtils.leftPad(numberAsString, (int) padThisManyChars, "0");
 		theCompletedUID = subjectUidPrefix + subjectUidToken + subjectUidPaddedIncrementor;
 		log.warn("completeUID = " + theCompletedUID);
 		return theCompletedUID;
@@ -739,6 +747,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	/**
 	 * TODO : make this and batch use same mechanism
+	 * 
 	 * @param study
 	 * @return
 	 * @throws ArkSubjectInsertException
@@ -795,8 +804,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			log.error("Error in Subject insertion - Study name was null");
 			throw new ArkSubjectInsertException("Error in Subject insertion - Empty study name");
 		}
-		log.warn("Ark uid generator nnull??? " +  (arkUidGenerator == null));
-		//arkUidGenerator.
+		log.warn("Ark uid generator nnull??? " + (arkUidGenerator == null));
+		// arkUidGenerator.
 
 		result = (Integer) arkUidGenerator.getUidAndIncrement(study.getName());
 		log.warn("about to return uid # of " + result + " for study " + study.getName());
@@ -806,19 +815,19 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	protected boolean getSubjectUidSequenceLock(Study study) {
 		boolean lock = false;
 		SubjectUidSequence subjUidSeq = getSubjectUidSequence(study);
-	//	log.warn("uid seq = " + subjUidSeq);
+		// log.warn("uid seq = " + subjUidSeq);
 		if (subjUidSeq == null) {
 			lock = false; // not locked if record doesn't exist
 		}
 		else {
-	//		log.warn("got subjectuid with a lock = " + subjUidSeq.getInsertLock());
+			// log.warn("got subjectuid with a lock = " + subjUidSeq.getInsertLock());
 			lock = subjUidSeq.getInsertLock();
 		}
 		return lock;
 	}
 
 	protected SubjectUidSequence getSubjectUidSequence(Study study) {
-	//	log.info("Getting uid seq entity for study " + study.getName());
+		// log.info("Getting uid seq entity for study " + study.getName());
 		// Stateless sessions should be used to avoid locking the record for future update
 		// by getSession(), which relies on the "open session filter" mechanism
 		StatelessSession session = getStatelessSession();
@@ -831,30 +840,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return result;
 	}
 
-/*	protected void setSubjectUidSequenceLock(Study study, boolean lock) {
-		log.info("***********************SETTING LOCK ON STUDY = " + study.getName() + " to " + lock);
-		// Stateless sessions should be used to avoid locking the record for future update
-		// by getSession(), which relies on the "open session filter" mechanism
-		StatelessSession session = getStatelessSession();
-		Transaction tx = session.getTransaction();
-		tx.begin();
-		SubjectUidSequence subjUidSeq = getSubjectUidSequence(study);
-		if (subjUidSeq == null) {
-			// create a new record if it doens't exist
-			subjUidSeq = new SubjectUidSequence();
-			subjUidSeq.setStudyNameId(study.getName());
-			subjUidSeq.setUidSequence(new Integer(0));
-			subjUidSeq.setInsertLock(lock);
-			session.insert(subjUidSeq);
-		}
-		else {
-			subjUidSeq.setInsertLock(lock);
-			session.update(subjUidSeq);
-		}
-		tx.commit();
-		session.close();
-	}
-*/
+	/*
+	 * protected void setSubjectUidSequenceLock(Study study, boolean lock) { log.info("***********************SETTING LOCK ON STUDY = " +
+	 * study.getName() + " to " + lock); // Stateless sessions should be used to avoid locking the record for future update // by getSession(), which
+	 * relies on the "open session filter" mechanism StatelessSession session = getStatelessSession(); Transaction tx = session.getTransaction();
+	 * tx.begin(); SubjectUidSequence subjUidSeq = getSubjectUidSequence(study); if (subjUidSeq == null) { // create a new record if it doens't exist
+	 * subjUidSeq = new SubjectUidSequence(); subjUidSeq.setStudyNameId(study.getName()); subjUidSeq.setUidSequence(new Integer(0));
+	 * subjUidSeq.setInsertLock(lock); session.insert(subjUidSeq); } else { subjUidSeq.setInsertLock(lock); session.update(subjUidSeq); } tx.commit();
+	 * session.close(); }
+	 */
 	public Long getSubjectCount(Study study) {
 		Long subjectCount = new Long(0);
 		if (study.getId() != null) {
@@ -953,7 +947,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 				phoneCriteria.add(Restrictions.eq(Constants.AREA_CODE, phone.getAreaCode()));
 			}
 			phoneCriteria.setFetchMode("silentMode", FetchMode.JOIN);
-			
+
 		}
 
 		List<Phone> personPhoneList = phoneCriteria.list();
@@ -1013,10 +1007,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		List<Address> personAddressList = criteria.list();
 
-		//if (personAddressList.isEmpty()) {
-			// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
-		//	log.info("person " + personId + " does not have any addresses");
-		//}
+		// if (personAddressList.isEmpty()) {
+		// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+		// log.info("person " + personId + " does not have any addresses");
+		// }
 		return personAddressList;
 	}
 
@@ -1034,8 +1028,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		getSession().delete(address);
 	}
-	
-	public void create(OtherID otherID) throws ArkSystemException { 
+
+	public void create(OtherID otherID) throws ArkSystemException {
 		Session session = getSession();
 		session.save(otherID);
 	}
@@ -1200,22 +1194,20 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException {
 
-		Criteria criteria = getSession().createCriteria(Correspondences.class,"co");
-		criteria.createAlias("person","pe",JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("study","st",JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("st.parentStudy","pstudy",JoinType.LEFT_OUTER_JOIN);
+		Criteria criteria = getSession().createCriteria(Correspondences.class, "co");
+		criteria.createAlias("person", "pe", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("study", "st", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("st.parentStudy", "pstudy", JoinType.LEFT_OUTER_JOIN);
 
 		if (personId != null) {
 			criteria.add(Restrictions.eq("pe.id", personId));
 		}
-		
+
 		if (correspondence != null) {
-			
-			//Check context study is match with correspondence study or it's parent study
-			if(correspondence.getStudy()!=null){
-				criteria.add(Restrictions.disjunction().
-						add(Restrictions.eq("st.id", correspondence.getStudy().getId())).
-						add(Restrictions.eq("pstudy.id", correspondence.getStudy().getId())));			
+
+			// Check context study is match with correspondence study or it's parent study
+			if (correspondence.getStudy() != null) {
+				criteria.add(Restrictions.disjunction().add(Restrictions.eq("st.id", correspondence.getStudy().getId())).add(Restrictions.eq("pstudy.id", correspondence.getStudy().getId())));
 			}
 			if (correspondence.getCorrespondenceDirectionType() != null) {
 				criteria.add(Restrictions.eq("co.correspondenceDirectionType", correspondence.getCorrespondenceDirectionType()));
@@ -1269,7 +1261,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public Consent getConsent(Long id) throws ArkSystemException {
-		Session session=openSession();		
+		Session session = openSession();
 		Consent consent = (Consent) session.get(Consent.class, id);
 		return consent;
 	}
@@ -1277,8 +1269,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void create(ConsentFile consentFile) {
 		getSession().save(consentFile);
 	}
-	
-	public void create(LinkSubjectPedigree pedigree){
+
+	public void create(LinkSubjectPedigree pedigree) {
 		getSession().save(pedigree);
 	}
 
@@ -1416,18 +1408,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		getSession().save(personLastNameHistory);
 	}
-/*
-	public void updatePersonLastnameHistory(Person person) {
-		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory();
-		personLastnameHistory.setPerson(person);
-		personLastnameHistory.setLastName(person.getLastName());
 
-		String currentLastName = getCurrentLastname(person);
-
-		if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
-			getSession().save(personLastnameHistory);
-	}
-*/
+	/*
+	 * public void updatePersonLastnameHistory(Person person) { PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory();
+	 * personLastnameHistory.setPerson(person); personLastnameHistory.setLastName(person.getLastName());
+	 * 
+	 * String currentLastName = getCurrentLastname(person);
+	 * 
+	 * if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
+	 * getSession().save(personLastnameHistory); }
+	 */
 	public String getPreviousLastname(Person person) {
 		PersonLastnameHistory personLastameHistory = new PersonLastnameHistory();
 
@@ -1439,38 +1429,34 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			List pastNamesList = criteria.list();
 			if (!pastNamesList.isEmpty()) {
 				if (pastNamesList.size() > 0)
-					personLastameHistory = (PersonLastnameHistory) pastNamesList.get((pastNamesList.size()-1));
+					personLastameHistory = (PersonLastnameHistory) pastNamesList.get((pastNamesList.size() - 1));
 			}
 		}
 
 		return personLastameHistory.getLastName();
 	}
 
-	
 	/**
 	 * Ensures that the lastname in the db is returned
 	 */
 	public String getCurrentLastnameFromDB(Person person) {
-		/*Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class);
-
-		if (person.getId() != null) {
-			criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON, person));
-		}
-		criteria.addOrder(Order.desc("id")); 
-		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory();
-		if (!criteria.list().isEmpty()) {
-			personLastnameHistory = (PersonLastnameHistory) criteria.list().get(0);
-		}
-
-		return personLastnameHistory.getLastName();*/
+		/*
+		 * Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class);
+		 * 
+		 * if (person.getId() != null) { criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON, person)); }
+		 * criteria.addOrder(Order.desc("id")); PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory(); if
+		 * (!criteria.list().isEmpty()) { personLastnameHistory = (PersonLastnameHistory) criteria.list().get(0); }
+		 * 
+		 * return personLastnameHistory.getLastName();
+		 */
 
 		if (person.getId() != null) {
 			Query q = getSession().createQuery("Select person.lastName from Person person where person.id = :personId ");
 			q.setParameter("personId", person.getId());
 
 			List<String> results = q.list();
-			if(!results.isEmpty()){
-				return (String)results.get(0);
+			if (!results.isEmpty()) {
+				return (String) results.get(0);
 			}
 		}
 
@@ -1548,191 +1534,171 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		List<SubjectFile> list = criteria.list();
 		return list;
 	}
-	
-	public void processBatch(List<LinkSubjectStudy> subjectsToInsert, Study study, List<LinkSubjectStudy> subjectsToUpdate){
+
+	public void processBatch(List<LinkSubjectStudy> subjectsToInsert, Study study, List<LinkSubjectStudy> subjectsToUpdate) {
 		log.warn("about to process " + subjectsToInsert.size() + " inserts and " + subjectsToUpdate.size() + " updates!");
-		//Transaction tx = null;
-		//Session session  = getSession();
-		//StatelessSession session = getStatelessSession();
-		try{
-			//tx = getSession().beginTransaction();
+		// Transaction tx = null;
+		// Session session = getSession();
+		// StatelessSession session = getStatelessSession();
+		try {
+			// tx = getSession().beginTransaction();
 			batchInsertSubjects(subjectsToInsert, study);
 			for (LinkSubjectStudy subject : subjectsToInsert) {
 				Person person = subject.getPerson();
-				
+
 				Set<Address> addresses = person.getAddresses();
-				person.setAddresses(new HashSet<Address>(0));//this line seems like a hack to get around something that should be set up in our relationships TODO: fix
+				person.setAddresses(new HashSet<Address>(0));// this line seems like a hack to get around something that should be set up in our
+																			// relationships TODO: fix
 				Set<Phone> phones = person.getPhones();
-				person.setPhones(new HashSet<Phone>(0));//this line seems like a hack to get around something that should be set up in our relationships TODO: fix
+				person.setPhones(new HashSet<Phone>(0));// this line seems like a hack to get around something that should be set up in our relationships
+																		// TODO: fix
 				getSession().save(person);
-				
-				for(Address address : addresses){
+
+				for (Address address : addresses) {
 					address.setPerson(person);
 					getSession().save(address);
 				}
-				for(Phone phone : phones){
+				for (Phone phone : phones) {
 					phone.setPerson(person);
 					getSession().save(phone);
 				}
-				
-				// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
+
+				// Update Person and associated Phones - TODO test personlastnamehistory nonsense
 				getSession().save(subject);
-				
+
 				// Create a new consent history by default
 				saveConsentHistory(subject);
 			}
-			
+
 			for (LinkSubjectStudy subject : subjectsToUpdate) {
-				Person person = subject.getPerson();	
-				getSession().update(person);// Update Person and associated Phones  and addresses - TODO test personlastnamehistory nonsense
+				Person person = subject.getPerson();
+				getSession().update(person);// Update Person and associated Phones and addresses - TODO test personlastnamehistory nonsense
 				getSession().update(subject);
-				
+
 				// Only save history if indicated to do so (ie prevents save of history for every single update)
-				if(subject.getUpdateConsent()){
+				if (subject.getUpdateConsent()) {
 					saveConsentHistory(subject);
 				}
 			}
-			//tx.commit();
+			// tx.commit();
 		}
-		catch	(ArkUniqueException e){
+		catch (ArkUniqueException e) {
 			log.error("Got a unique insertion error" + e);
-			//if(tx!=null){
-			//	tx.rollback();
-			//}
+			// if(tx!=null){
+			// tx.rollback();
+			// }
 		}
-		catch (HibernateException e){
+		catch (HibernateException e) {
 			log.error("Got an exception from hibernate " + e);
-			//if(tx!=null){
-			//	tx.rollback();
-			//}
+			// if(tx!=null){
+			// tx.rollback();
+			// }
 		}
 		catch (ArkSubjectInsertException e) {
 			log.error("ArkSubjectInsertion Exception while performing batch" + e);
-			//if(tx!=null){
-			//	tx.rollback();
-			//}
+			// if(tx!=null){
+			// tx.rollback();
+			// }
 		}
-		catch (RuntimeException e){
+		catch (RuntimeException e) {
 			log.error("Runtime Exception while performing batch" + e);
-			//if(tx!=null){
-			//	tx.rollback();
-			//}
+			// if(tx!=null){
+			// tx.rollback();
+			// }
 		}
-		catch (Exception e){
+		catch (Exception e) {
 			log.error("Generic unknown Exception while performing batch" + e);
-			//if(tx!=null){
-			//	tx.rollback();
-			//}
+			// if(tx!=null){
+			// tx.rollback();
+			// }
 		}
-		finally{
-			//session.close();
+		finally {
+			// session.close();
 		}
-	}
-	
-	public void saveConsentHistory(LinkSubjectStudy subject) {
-		if (subject.getConsentToActiveContact() != null || 
-				subject.getConsentToPassiveDataGathering() != null || 
-				subject.getConsentToUseData() != null || 
-				subject.getConsentStatus() != null || 
-				subject.getConsentType() != null || 
-				subject.getConsentDate() != null || 
-				subject.getConsentDownloaded() != null) {
-				
-				LssConsentHistory lssConsentHistory = new LssConsentHistory();
-				lssConsentHistory.setLinkSubjectStudy(subject);
-				lssConsentHistory.setConsentToActiveContact(subject.getConsentToActiveContact());
-				lssConsentHistory.setConsentToPassiveDataGathering(subject.getConsentToPassiveDataGathering());
-				lssConsentHistory.setConsentToUseData(subject.getConsentToUseData());
-				lssConsentHistory.setConsentStatus(subject.getConsentStatus());
-				lssConsentHistory.setConsentType(subject.getConsentType());
-				lssConsentHistory.setConsentDate(subject.getConsentDate());
-				lssConsentHistory.setConsentDownloaded(subject.getConsentDownloaded());
-				
-				iAuditDao.createLssConsentHistory(lssConsentHistory);
-			}
 	}
 
-	//TODO ASAP we need to handle excepions and ROLLBACK if something hits the fan.
-	//We also need to discuss uid create and external references and user training
+	public void saveConsentHistory(LinkSubjectStudy subject) {
+		if (subject.getConsentToActiveContact() != null || subject.getConsentToPassiveDataGathering() != null || subject.getConsentToUseData() != null || subject.getConsentStatus() != null
+				|| subject.getConsentType() != null || subject.getConsentDate() != null || subject.getConsentDownloaded() != null) {
+
+			LssConsentHistory lssConsentHistory = new LssConsentHistory();
+			lssConsentHistory.setLinkSubjectStudy(subject);
+			lssConsentHistory.setConsentToActiveContact(subject.getConsentToActiveContact());
+			lssConsentHistory.setConsentToPassiveDataGathering(subject.getConsentToPassiveDataGathering());
+			lssConsentHistory.setConsentToUseData(subject.getConsentToUseData());
+			lssConsentHistory.setConsentStatus(subject.getConsentStatus());
+			lssConsentHistory.setConsentType(subject.getConsentType());
+			lssConsentHistory.setConsentDate(subject.getConsentDate());
+			lssConsentHistory.setConsentDownloaded(subject.getConsentDownloaded());
+
+			iAuditDao.createLssConsentHistory(lssConsentHistory);
+		}
+	}
+
+	// TODO ASAP we need to handle excepions and ROLLBACK if something hits the fan.
+	// We also need to discuss uid create and external references and user training
 	public List<LinkSubjectStudy> batchInsertSubjects(List<LinkSubjectStudy> subjectsToInsert, Study study) throws ArkUniqueException, ArkSubjectInsertException {
-																			
+
 		Integer nextSequenceNumber = null;
-		long start =1L;
-		String prefix=null;
-		String token=null;
-		int howManyCharsToPad=0;
-		
+		long start = 1L;
+		String prefix = null;
+		String token = null;
+		int howManyCharsToPad = 0;
+
 		if (study.getAutoGenerateSubjectUid()) {
 			nextSequenceNumber = arkUidGenerator.getUidAndIncrement(study.getName(), subjectsToInsert.size());
-			start = study.getSubjectUidStart()==null ? 1L : study.getSubjectUidStart();
-			prefix = study.getSubjectUidPrefix()==null ? "" : study.getSubjectUidPrefix();
-			token = study.getSubjectUidToken()==null?"":study.getSubjectUidToken().getName();
-			howManyCharsToPad = study.getSubjectUidPadChar()==null?0:study.getSubjectUidPadChar().getId().intValue();
-			log.warn("\n\nnextSequenceNumber = '" + nextSequenceNumber + "'" +
-			"\tstart = '" + start + "'" + "\tprefix = '" + prefix +"'" +
-			"\ttoken = '" + token + "'" + "\thowManyCharsToPad = '" + howManyCharsToPad + "'" );
+			start = study.getSubjectUidStart() == null ? 1L : study.getSubjectUidStart();
+			prefix = study.getSubjectUidPrefix() == null ? "" : study.getSubjectUidPrefix();
+			token = study.getSubjectUidToken() == null ? "" : study.getSubjectUidToken().getName();
+			howManyCharsToPad = study.getSubjectUidPadChar() == null ? 0 : study.getSubjectUidPadChar().getId().intValue();
+			log.warn("\n\nnextSequenceNumber = '" + nextSequenceNumber + "'" + "\tstart = '" + start + "'" + "\tprefix = '" + prefix + "'" + "\ttoken = '" + token + "'" + "\thowManyCharsToPad = '"
+					+ howManyCharsToPad + "'");
 		}
-		
-		try{
-			for(LinkSubjectStudy subject : subjectsToInsert){
+
+		try {
+			for (LinkSubjectStudy subject : subjectsToInsert) {
 				if (study.getAutoGenerateSubjectUid()) {
 					String nextsubjectUID = getUIDGiven(start, nextSequenceNumber++, prefix, token, howManyCharsToPad);
-					//log.warn("setting uid to " + nextsubjectUID);
-					subject.setSubjectUID(nextsubjectUID);			
+					// log.warn("setting uid to " + nextsubjectUID);
+					subject.setSubjectUID(nextsubjectUID);
 				}
 			}
 		}
-		catch(HibernateException e){//TODO ASAP exception handling
+		catch (HibernateException e) {// TODO ASAP exception handling
 			log.error("SQL Exception which we must intelligently handle/throw asap" + e);
 		}
-		catch(Exception e){
+		catch (Exception e) {
 			log.error("Generic Exception which we must intelligently handle asap" + e);
 		}
 		finally {
-			//TODO ASAP handle and test success &  failure, both expected and runtime	
+			// TODO ASAP handle and test success & failure, both expected and runtime
 		}
 		return subjectsToInsert;
 	}
-/*
-	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) {
-		StatelessSession session = getStatelessSession();
 
-		//Transaction tx = session.beginTransaction();
-
-		for (Iterator<SubjectVO> iterator = subjectVoCollection.iterator(); iterator.hasNext();) {
-			SubjectVO subjectVo = (SubjectVO) iterator.next();
-
-			Person person = subjectVo.getLinkSubjectStudy().getPerson();
-			session.update(person);// Update Person and associated Phones
-
-			String currentLastName = getCurrentLastname(person);
-
-			if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName()))) {
-				if (person.getLastName() != null) {
-					PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-					personLastNameHistory.setPerson(person);
-					personLastNameHistory.setLastName(person.getLastName());
-					session.insert(personLastNameHistory);
-				}
-
-				// Update subjectPreviousLastname
-				subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
-			}
-
-			LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
-			session.update(linkSubjectStudy);
-		}
-		//tx.commit();
-		session.close();
-	}
-
-	public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) {
-		for (LinkSubjectStudy subject : subjectList) {
-			Person person = subject.getPerson();
-			getSession().update(person);// Update Person and associated Phones  - TODO test personlastnamehistory nonsense
-			getSession().update(subject);	
-		}
-	}*/
+	/*
+	 * public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) { StatelessSession session = getStatelessSession();
+	 * 
+	 * //Transaction tx = session.beginTransaction();
+	 * 
+	 * for (Iterator<SubjectVO> iterator = subjectVoCollection.iterator(); iterator.hasNext();) { SubjectVO subjectVo = (SubjectVO) iterator.next();
+	 * 
+	 * Person person = subjectVo.getLinkSubjectStudy().getPerson(); session.update(person);// Update Person and associated Phones
+	 * 
+	 * String currentLastName = getCurrentLastname(person);
+	 * 
+	 * if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName()))) { if (person.getLastName()
+	 * != null) { PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory(); personLastNameHistory.setPerson(person);
+	 * personLastNameHistory.setLastName(person.getLastName()); session.insert(personLastNameHistory); }
+	 * 
+	 * // Update subjectPreviousLastname subjectVo.setSubjectPreviousLastname(getPreviousLastname(person)); }
+	 * 
+	 * LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy(); session.update(linkSubjectStudy); } //tx.commit(); session.close(); }
+	 * 
+	 * public void batchUpdateSubjects(List<LinkSubjectStudy> subjectList) { for (LinkSubjectStudy subject : subjectList) { Person person =
+	 * subject.getPerson(); getSession().update(person);// Update Person and associated Phones - TODO test personlastnamehistory nonsense
+	 * getSession().update(subject); } }
+	 */
 	public Collection<ArkUser> lookupArkUser(Study study) {
 		StringBuffer hqlQuery = new StringBuffer();
 		hqlQuery.append("  select distinct arkUserObj from ArkUserRole as arkuserRole,ArkUser as arkUserObj ");
@@ -1965,7 +1931,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getStatelessSession().createCriteria(Study.class);
 		criteria.add(Restrictions.ne("id", study.getId()));
 		criteria.add(Restrictions.eq("parentStudy", study));
-		
+
 		try {
 			criteria.add(Restrictions.ne("studyStatus", getStudyStatus("Archive")));
 		}
@@ -1981,7 +1947,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void update(LinkSubjectStudy linkSubjectStudy) {
 		getSession().update(linkSubjectStudy);
 	}
-	
+
 	public void delete(LinkSubjectStudy linkSubjectStudy) {
 		getSession().delete(linkSubjectStudy);
 	}
@@ -1996,10 +1962,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public GenderType getDefaultGenderType() {
-		return getGenderType(0L);//TODO meaningful use of constants perhaps or a default bool in db
+		return getGenderType(0L);// TODO meaningful use of constants perhaps or a default bool in db
 	}
 
-	//TODO ASAP - I see hardcoding everywhere, fix
+	// TODO ASAP - I see hardcoding everywhere, fix
 	public MaritalStatus getDefaultMaritalStatus() {
 		return getMaritalStatusNyName("Unknown");
 	}
@@ -2016,46 +1982,46 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return getVitalStatus(new Long(0));
 	}
 
-
 	public AddressType getDefaultAddressType() {
-	//	return getAddressType(new Long(0)); TODO replace the logic in these methods with there list criteria with .get[0] to simple session gets with the id
+		// return getAddressType(new Long(0)); TODO replace the logic in these methods with there list criteria with .get[0] to simple session gets with
+		// the id
 		return (AddressType) (getSession().get(AddressType.class, 1L));
 	}
 
-	//TODO fix hardcoding
+	// TODO fix hardcoding
 	public AddressStatus getDefaultAddressStatus() {
 		return (AddressStatus) (getSession().get(AddressStatus.class, 1L));
 	}
 
-
 	public PhoneType getDefaultPhoneType() {
-	//	return getPhoneType(new Long(0)); TODO replace the logic in these methods with there list criteria with .get[0] to simple session gets with the id
+		// return getPhoneType(new Long(0)); TODO replace the logic in these methods with there list criteria with .get[0] to simple session gets with
+		// the id
 		return (PhoneType) (getSession().get(PhoneType.class, 1L));
 	}
 
-	//TODO fix hardcoding
+	// TODO fix hardcoding
 	public PhoneStatus getDefaultPhoneStatus() {
 		return (PhoneStatus) (getSession().get(PhoneStatus.class, 1L));
 	}
 
 	public ConsentOption getConsentOptionForBoolean(boolean trueForYesFalseForNo) {
-		if(trueForYesFalseForNo){
+		if (trueForYesFalseForNo) {
 			return getConsentOption("YES");
 		}
-		else{
+		else {
 			return getConsentOption("NO");
 		}
 	}
 
 	public void setPreferredMailingAdressToFalse(Person person) {
 		String queryString = "UPDATE Address SET preferredMailingAddress = 0 WHERE person = :person";
-		Query query =  getSession().createQuery(queryString);
+		Query query = getSession().createQuery(queryString);
 		query.setParameter("person", person);
 		query.executeUpdate();
 	}
 
 	public EmailStatus getDefaultEmailStatus() {
-		return (EmailStatus) (getSession().get(EmailStatus.class, 0L));//TODO  hardcode removal
+		return (EmailStatus) (getSession().get(EmailStatus.class, 0L));// TODO hardcode removal
 	}
 
 	public List<ConsentOption> getConsentOptions() {
@@ -2073,53 +2039,65 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 
-	public RelationshipVo getSubjectRelative(final String subjectUID,final Long studyId){
+	public RelationshipVo getSubjectRelative(final String subjectUID, final Long studyId) {
 		List<RelationshipVo> relatives = new ArrayList<RelationshipVo>();
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class, "sub");
 		criteria.createAlias("sub.study", "substudy", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("sub.person", "subPerson", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("subPerson.genderType", "subGender", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("subPerson.vitalStatus", "subVitStatus", JoinType.LEFT_OUTER_JOIN);
+
+		criteria.createAlias("substudy.pedigreeConfiguration", "spc", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("spc.customField", "cf", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("cf.customFieldDisplay", "cfd", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("sub.subjectCustomFieldDataSet", "scfd", JoinType.LEFT_OUTER_JOIN,Restrictions.eqProperty("cfd.id", "scfd.customFieldDisplay.id"));
 		
 		criteria.add(Restrictions.eq("sub.subjectUID", subjectUID));
 		criteria.add(Restrictions.eq("substudy.id", studyId));
-		
+
 		criteria.setFetchMode("subject", FetchMode.JOIN);
 		criteria.setFetchMode("relative", FetchMode.JOIN);
-		
+
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("sub.subjectUID"), "individualId");
 		projectionList.add(Projections.property("subGender.name"), "gender");
 		projectionList.add(Projections.property("subPerson.dateOfBirth"), "dob");
 		projectionList.add(Projections.property("subVitStatus.name"), "deceased");
 		
-		criteria.setProjection(projectionList); 
+		projectionList.add(Projections.property("scfd.textDataValue"), "affectedStatus");
+
+		criteria.setProjection(projectionList);
 		criteria.setResultTransformer(Transformers.aliasToBean(RelationshipVo.class));
-		
-		relatives=criteria.list();
-		
-		return relatives.size()>0 ? relatives.get(0):null;
+
+		relatives = criteria.list();
+
+		return relatives.size() > 0 ? relatives.get(0) : null;
 	}
-		
-	public List<RelationshipVo> getSubjectParentRelatives(final String subjectUID,final Long studyId){
+
+	public List<RelationshipVo> getSubjectParentRelatives(final String subjectUID, final Long studyId) {
 		List<RelationshipVo> relatives = new ArrayList<RelationshipVo>();
 		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class, "lsp");
 		criteria.createAlias("subject", "sub", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("sub.study", "substudy", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("relative", "rel", JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("rel.study", "relstudy", JoinType.LEFT_OUTER_JOIN);		
+		criteria.createAlias("rel.study", "relstudy", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("relationship", "type", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("rel.person", "relPerson", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("relPerson.genderType", "relGender", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("relPerson.vitalStatus", "relVitStatus", JoinType.LEFT_OUTER_JOIN);
 		
+		criteria.createAlias("relstudy.pedigreeConfiguration", "spc", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("spc.customField", "cf", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("cf.customFieldDisplay", "cfd", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("rel.subjectCustomFieldDataSet", "scfd", JoinType.LEFT_OUTER_JOIN,Restrictions.eqProperty("cfd.id", "scfd.customFieldDisplay.id"));
+
 		criteria.add(Restrictions.eq("sub.subjectUID", subjectUID));
 		criteria.add(Restrictions.eq("substudy.id", studyId));
 		criteria.add(Restrictions.eq("relstudy.id", studyId));
-		
+
 		criteria.setFetchMode("subject", FetchMode.JOIN);
 		criteria.setFetchMode("relative", FetchMode.JOIN);
-		
+
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("lsp.id"), "id");
 		projectionList.add(Projections.property("rel.subjectUID"), "individualId");
@@ -2129,24 +2107,31 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		projectionList.add(Projections.property("relPerson.lastName"), "lastName");
 		projectionList.add(Projections.property("relVitStatus.name"), "deceased");
 		
-		criteria.setProjection(projectionList); 
+		projectionList.add(Projections.property("scfd.textDataValue"), "affectedStatus");
+
+		criteria.setProjection(projectionList);
 		criteria.setResultTransformer(Transformers.aliasToBean(RelationshipVo.class));
-		
-		relatives=criteria.list();
+
+		relatives = criteria.list();
 		return relatives;
 	}
-	
-	public List<RelationshipVo> getSubjectChildRelatives(final String subjectUID,final Long studyId){
+
+	public List<RelationshipVo> getSubjectChildRelatives(final String subjectUID, final Long studyId) {
 		List<RelationshipVo> relatives = new ArrayList<RelationshipVo>();
 		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class, "lsp");
 		criteria.createAlias("subject", "sub", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("sub.study", "substudy", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("relative", "rel", JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("rel.study", "relstudy", JoinType.LEFT_OUTER_JOIN);		
+		criteria.createAlias("rel.study", "relstudy", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("relationship", "type", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("sub.person", "subPerson", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("subPerson.genderType", "subGender", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("subPerson.vitalStatus", "subVitStatus", JoinType.LEFT_OUTER_JOIN);
+		
+		criteria.createAlias("substudy.pedigreeConfiguration", "spc", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("spc.customField", "cf", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("cf.customFieldDisplay", "cfd", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("sub.subjectCustomFieldDataSet", "scfd", JoinType.LEFT_OUTER_JOIN,Restrictions.eqProperty("cfd.id", "scfd.customFieldDisplay.id"));
 		
 		criteria.add(Restrictions.eq("rel.subjectUID", subjectUID));
 		criteria.add(Restrictions.eq("substudy.id", studyId));
@@ -2154,7 +2139,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 		criteria.setFetchMode("subject", FetchMode.JOIN);
 		criteria.setFetchMode("relative", FetchMode.JOIN);
-		
+
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("lsp.id"), "id");
 		projectionList.add(Projections.property("sub.subjectUID"), "individualId");
@@ -2164,57 +2149,60 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		projectionList.add(Projections.property("subPerson.lastName"), "lastName");
 		projectionList.add(Projections.property("subVitStatus.name"), "deceased");
 		
-		criteria.setProjection(projectionList); 
+		projectionList.add(Projections.property("scfd.textDataValue"), "affectedStatus");
+
+		criteria.setProjection(projectionList);
 		criteria.setResultTransformer(Transformers.aliasToBean(RelationshipVo.class));
-		
-		relatives=criteria.list();
+
+		relatives = criteria.list();
 		return relatives;
 	}
-	
-	public void deleteRelationship(final LinkSubjectPedigree relationship){
+
+	public void deleteRelationship(final LinkSubjectPedigree relationship) {
 		getSession().delete(relationship);
 	}
-	
-	public List<TwinType> getTwinTypes(){
+
+	public List<TwinType> getTwinTypes() {
 		Example example = Example.create(new TwinType());
 		Criteria criteria = getSession().createCriteria(TwinType.class).add(example);
 		return criteria.list();
 	}
-	
-	public void create(LinkSubjectTwin twin){
+
+	public void create(LinkSubjectTwin twin) {
 		getSession().save(twin);
 	}
-	
-	public void update(LinkSubjectTwin twin){
+
+	public void update(LinkSubjectTwin twin) {
 		getSession().update(twin);
 	}
-	
-	public void delete(LinkSubjectTwin twin){
+
+	public void delete(LinkSubjectTwin twin) {
 		getSession().delete(twin);
 	}
-		
-	public Integer getSubjectParentCount(final LinkSubjectStudy subject){
-		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class); 
+
+	public Integer getSubjectParentCount(final LinkSubjectStudy subject) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class);
 		criteria.add(Restrictions.eq("subject", subject));
 		criteria.setProjection(Projections.rowCount());
-		return ((Integer)criteria.list().get(0)).intValue(); 
+		return ((Integer) criteria.list().get(0)).intValue();
 	}
-	
-	public List<LinkSubjectPedigree> getSubjectParentRelationshipList(final LinkSubjectStudy subject){
-		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class); 
+
+	public List<LinkSubjectPedigree> getSubjectParentRelationshipList(final LinkSubjectStudy subject) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class);
 		criteria.add(Restrictions.eq("subject", subject));
-		return criteria.list(); 
+		return criteria.list();
 	}
-	
-	public List<LinkSubjectPedigree> getParentNonSubjectRelationshipList(final LinkSubjectStudy subject,final LinkSubjectStudy parentSubject){
-		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class); 
+
+	public List<LinkSubjectPedigree> getParentNonSubjectRelationshipList(final LinkSubjectStudy subject, final LinkSubjectStudy parentSubject) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class);
 		criteria.add(Restrictions.eq("relative", parentSubject));
 		criteria.add(Restrictions.ne("subject", subject));
-		return criteria.list(); 
+		return criteria.list();
 	}
-	
-	public List<RelationshipVo> getSubjectTwins(final String subjectUid,final Set<String> subjectUids,final Long studyId){
-//		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,slt.id as id , IFNULL(tw.name,'NT') as twin ");
+
+	public List<RelationshipVo> getSubjectTwins(final String subjectUid, final Set<String> subjectUids, final Long studyId) {
+		// StringBuffer sb = new
+		// StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,slt.id as id , IFNULL(tw.name,'NT') as twin ");
 		StringBuffer sb = new StringBuffer("select lss.subject_uid as individualId, p.FIRST_NAME as firstName,p.LAST_NAME as lastName,p.DATE_OF_BIRTH as dob,slt.id as id , tw.name as twin ");
 		sb.append(" From study.link_subject_study lss ");
 		sb.append(" 	inner join study.study st on st.id=lss.study_id ");
@@ -2231,54 +2219,43 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append(" 	left outer join study.twin_type tw on tw.id = slt.twin_type_id ");
 		sb.append(" where lss.SUBJECT_UID in ( :subjectUids ) ");
 		sb.append(" 	and st.id= :studyId ");
-		
-		List<RelationshipVo> twins = getSession().createSQLQuery(sb.toString())
-				  .addScalar("individualId")
-				  .addScalar("id")
-				  .addScalar("firstName")
-				  .addScalar("lastName")
-				  .addScalar("dob")
-				  .addScalar("twin")
-				  .setParameter("asubjectuid", subjectUid)
-				  .setParameter("astudyid", studyId)
-				  .setParameter("bsubjectuid", subjectUid)
-				  .setParameter("bstudyid", studyId)
-				  .setParameterList("subjectUids", subjectUids!=null?subjectUids:new HashSet<String>())
-				  .setParameter("studyId", studyId)
-				  .setResultTransformer( Transformers.aliasToBean(RelationshipVo.class))
-				  .list();
-		
+
+		List<RelationshipVo> twins = getSession().createSQLQuery(sb.toString()).addScalar("individualId").addScalar("id").addScalar("firstName").addScalar("lastName").addScalar("dob").addScalar("twin")
+				.setParameter("asubjectuid", subjectUid).setParameter("astudyid", studyId).setParameter("bsubjectuid", subjectUid).setParameter("bstudyid", studyId)
+				.setParameterList("subjectUids", subjectUids != null ? subjectUids : new HashSet<String>()).setParameter("studyId", studyId)
+				.setResultTransformer(Transformers.aliasToBean(RelationshipVo.class)).list();
+
 		return twins;
-		
+
 	}
-	
-	public List<LinkSubjectTwin> getTwins(final Set<String> subjectUids,final Long studyId){
-		List<LinkSubjectTwin> twins=new ArrayList<LinkSubjectTwin>();
+
+	public List<LinkSubjectTwin> getTwins(final Set<String> subjectUids, final Long studyId) {
+		List<LinkSubjectTwin> twins = new ArrayList<LinkSubjectTwin>();
 		Criteria criteria = getSession().createCriteria(LinkSubjectTwin.class, "lst");
-		criteria.createAlias("firstSubject", "lssa",JoinType.INNER_JOIN);
-		criteria.createAlias("lssa.study", "sta",JoinType.INNER_JOIN);
-		criteria.createAlias("secondSubject", "lssb",JoinType.INNER_JOIN);
-		criteria.createAlias("lssb.study", "stb",JoinType.INNER_JOIN);
-		
+		criteria.createAlias("firstSubject", "lssa", JoinType.INNER_JOIN);
+		criteria.createAlias("lssa.study", "sta", JoinType.INNER_JOIN);
+		criteria.createAlias("secondSubject", "lssb", JoinType.INNER_JOIN);
+		criteria.createAlias("lssb.study", "stb", JoinType.INNER_JOIN);
+
 		criteria.setFetchMode("firstSubject", FetchMode.JOIN);
 		criteria.setFetchMode("secondSubject", FetchMode.JOIN);
 		criteria.setFetchMode("twinType", FetchMode.JOIN);
-		
+
 		criteria.add(Restrictions.eq("sta.id", studyId));
 		criteria.add(Restrictions.eq("stb.id", studyId));
 		Disjunction or = Restrictions.disjunction();
 		or.add(Restrictions.in("lssa.subjectUID", subjectUids));
 		or.add(Restrictions.in("lssb.subjectUID", subjectUids));
 		criteria.add(or);
-		
+
 		twins = criteria.list();
-		
+
 		return twins;
-		
+
 	}
-	
-	public long getRelationshipCount(final String subjectUID,final Long studyId){
-		long count =0;
+
+	public long getRelationshipCount(final String subjectUID, final Long studyId) {
+		long count = 0;
 		Criteria criteria = getSession().createCriteria(LinkSubjectPedigree.class, "lsp");
 		criteria.createAlias("subject", "sub", JoinType.INNER_JOIN);
 		criteria.createAlias("relative", "rel", JoinType.INNER_JOIN);
@@ -2290,12 +2267,12 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		or.add(Restrictions.eq("sub.subjectUID", subjectUID));
 		or.add(Restrictions.eq("rel.subjectUID", subjectUID));
 		criteria.add(or);
-		ProjectionList projList = Projections.projectionList(); 
+		ProjectionList projList = Projections.projectionList();
 		projList.add(Projections.count("lsp.id"));
 		criteria.setProjection(projList);
 		List list = criteria.list();
-		if(list.size()>0){
-			count=Integer.parseInt(list.get(0).toString());
+		if (list.size() > 0) {
+			count = Integer.parseInt(list.get(0).toString());
 		}
 		return count;
 	}
@@ -2304,10 +2281,51 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		List<OtherID> personOtherIDList = getSession().createCriteria(OtherID.class).add(Restrictions.eq(Constants.PERSON_PERSON_ID, personID)).list();
 		log.info("Number of otherIDs fetched " + personOtherIDList.size() + "Person ID " + personID.intValue());
 
-		if(personOtherIDList.isEmpty()) {
+		if (personOtherIDList.isEmpty()) {
 			log.error("this person has no other IDs; " + personID);
 		}
 		log.info("Number of OtherID items retrieved for person ID " + personID + " " + personOtherIDList.size());
 		return personOtherIDList;
+	}
+
+	public List<CustomField> getBinaryCustomFieldsForPedigreeRelativesList(Long studyId) {
+		List<CustomField> pedigreeCustomFields = null;
+		Criteria criteria = getSession().createCriteria(CustomField.class, "cf");
+		criteria.createAlias("study", "st", JoinType.INNER_JOIN);
+		criteria.createAlias("arkFunction", "af", JoinType.INNER_JOIN);
+
+		criteria.add(Restrictions.eq("st.id", studyId));
+		criteria.add(Restrictions.eq("af.name", "SUBJECT_CUSTOM_FIELD"));
+		criteria.add(Restrictions.eq("cf.encodedValues", "0=Yes;1=No;").ignoreCase());
+
+		pedigreeCustomFields = criteria.list();
+
+		return pedigreeCustomFields;
+	}
+
+	public StudyPedigreeConfiguration getStudyPedigreeConfiguration(Long studyId) {
+
+		StudyPedigreeConfiguration pedigreeConfig = null;
+		
+		Criteria criteria = getSession().createCriteria(StudyPedigreeConfiguration.class, "spc");
+		criteria.createAlias("study", "st", JoinType.INNER_JOIN);
+		criteria.setFetchMode("customField", FetchMode.JOIN);
+
+		criteria.add(Restrictions.eq("st.id", studyId));
+
+		List<StudyPedigreeConfiguration> list = criteria.list();
+		pedigreeConfig = list.size() == 1 ? list.get(0) : new StudyPedigreeConfiguration();
+
+		return pedigreeConfig;
+
+	}
+
+	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config) {
+		if (config.getId() == null) {
+			getSession().save(config);
+		}
+		else {
+			getSession().update(config);
+		}
 	}
 }
