@@ -33,6 +33,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -98,6 +99,8 @@ public class Study implements java.io.Serializable {
 			0);
 
 	private Set<Pipeline> pipelines = new HashSet<Pipeline>(0);
+	
+	private StudyPedigreeConfiguration pedigreeConfiguration = new StudyPedigreeConfiguration();
 
 	public Study() {
 	}
@@ -122,7 +125,8 @@ public class Study implements java.io.Serializable {
 			Set<LinkSubjectStudy> linkSubjectStudies,
 			Set<LinkSubjectContact> linkSubjectContacts,
 			Set<LinkStudyStudycomp> linkStudyStudycomps,
-			Set<LinkStudySubstudy> linkStudySubstudiesForSubid) {
+			Set<LinkStudySubstudy> linkStudySubstudiesForSubid,
+			StudyPedigreeConfiguration pedigreeConfiguration) {
 		this.id = id;
 		this.studyStatus = studyStatus;
 		this.name = name;
@@ -150,6 +154,7 @@ public class Study implements java.io.Serializable {
 		this.linkSubjectContacts = linkSubjectContacts;
 		this.linkStudyStudycomps = linkStudyStudycomps;
 		this.linkStudySubstudiesForSubid = linkStudySubstudiesForSubid;
+		this.pedigreeConfiguration = pedigreeConfiguration;
 	}
 
 	@Id
@@ -456,6 +461,15 @@ public class Study implements java.io.Serializable {
 	@JoinColumn(name = "PARENT_ID")
 	public Study getParentStudy() {
 		return parentStudy;
+	}
+	
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
+	public StudyPedigreeConfiguration getPedigreeConfiguration() {
+		return pedigreeConfiguration;
+	}
+
+	public void setPedigreeConfiguration(StudyPedigreeConfiguration pedigreeConfiguration) {
+		this.pedigreeConfiguration = pedigreeConfiguration;
 	}
 
 	@Override
