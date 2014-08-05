@@ -16,7 +16,7 @@
 
 using namespace std;
 
-void generatePedigree (const std::string &filename, const std::string &outputFilename){
+void generatePedigree (const std::string &filename, const std::string &outputFilename, const std::string &columnList){
 	cout << "Start Generating pedigree!" << endl;
 
 	try {
@@ -38,6 +38,9 @@ void generatePedigree (const std::string &filename, const std::string &outputFil
 			// Tell user the type of table:
 			//
 			std::cout << "Table " << (j+1) << " is a " << dataTable->getTableTypeAsString() << " table." << std::endl;
+
+			//Set show columns
+			showColumns = split(columnList);
 
 			//
 			// Draw pedigrees
