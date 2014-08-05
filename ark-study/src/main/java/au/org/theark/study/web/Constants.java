@@ -56,6 +56,7 @@ public class Constants {
 	public static final String			SEARCH_USER_FORM												= "searchUserForm";
 	public static final String			SEARCH_FORM														= "searchForm";
 	public static final String			SAVE_FORM														= "saveForm";
+	public static final String			CONFIG_FORM														= "configurationForm";
 	public static final String			SEARCH															= "search";
 	public static final String			NEW																= "new";
 	public static final String			RESET																= "reset";

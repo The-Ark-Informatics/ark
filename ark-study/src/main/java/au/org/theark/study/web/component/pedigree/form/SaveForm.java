@@ -25,12 +25,15 @@ public class SaveForm extends Form<PedigreeVo> {
 	
 	protected AbstractDetailModalWindow modalWindow;
 	
-	public SaveForm(String id,FeedbackPanel feedbackPanel,ArkCrudContainerVO arkCrudContainerVO, AbstractDetailModalWindow modalWindow ) {
+	private boolean showSaveButton;
+	
+	public SaveForm(String id,FeedbackPanel feedbackPanel,ArkCrudContainerVO arkCrudContainerVO, AbstractDetailModalWindow modalWindow, boolean showSaveButton ) {
 		super(id);
 		
 		this.feedbackPanel =feedbackPanel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.modalWindow =modalWindow;
+		this.showSaveButton =showSaveButton;
 		
 		initialiseSaveForm();
 		addSaveComponentsToForm();
@@ -52,7 +55,8 @@ public class SaveForm extends Form<PedigreeVo> {
 				modalWindow.close(target);
 			}						
 		};
-		saveButton.setVisible(false);
+		saveButton.setVisible(showSaveButton);
+		
 		
 		cancelButton = new AjaxButton("close"){
 			
@@ -62,5 +66,4 @@ public class SaveForm extends Form<PedigreeVo> {
 			}						
 		};
 	}
-
 }

@@ -90,7 +90,7 @@ public class PedigreeTwinContainerPanel extends AbstractContainerPanel<PedigreeV
 		savePanelContainer = new WebMarkupContainer("saveContainer");
 		savePanelContainer.setOutputMarkupPlaceholderTag(true);
 		
-		savePanel = new SavePanel("saveComponentPanel",feedBackPanel,arkCrudContainerVO, modalWindow);
+		savePanel = new SavePanel("saveComponentPanel",feedBackPanel,arkCrudContainerVO, modalWindow,false);
 		savePanel.setOutputMarkupId(true);
 		savePanel.initialisePanel(cpModel);
 		savePanelContainer.add(savePanel);

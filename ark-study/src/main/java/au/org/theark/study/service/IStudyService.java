@@ -50,6 +50,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.EmailStatus;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudySubstudy;
@@ -64,6 +65,7 @@ import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -443,4 +445,10 @@ public interface IStudyService {
 	public List<LinkSubjectTwin> getTwins(final Set<String> subjectUids,final Long studyId);
 	
 	public ArkRelativeCapsule[] generateSubjectArkPedigreeExportList(final String subjectUID,final Long studyId);
+	
+	public List<CustomField> getBinaryCustomFieldsForPedigreeRelativesList(Long studyId);
+	
+	public StudyPedigreeConfiguration getStudyPedigreeConfiguration(Long studyId);
+	
+	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
 }
