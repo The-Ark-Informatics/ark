@@ -34,17 +34,17 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 	private IStudyService							studyService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService		iArkCommonService;
-	
+	private IArkCommonService						iArkCommonService;
+
 	protected FeedbackPanel							feedbackPanel;
 
 	protected ArkCrudContainerVO					arkCrudContainerVO;
 
 	protected AbstractDetailModalWindow			modalWindow;
-	
+
 	private DropDownChoice<CustomField>			effectedStatuses;
 
-	private CompoundPropertyModel<PedigreeVo>	 cpmModel;
+	private CompoundPropertyModel<PedigreeVo>	cpmModel;
 
 	private List<CustomField>						customFieldList;
 
@@ -55,7 +55,7 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 	protected AjaxButton								cancelButton;
 
 	public ConfigurationForm(String id, CompoundPropertyModel<PedigreeVo> cpmModel, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVO, AbstractDetailModalWindow modalWindow) {
-		super(id,cpmModel);
+		super(id, cpmModel);
 		this.cpmModel = cpmModel;
 		this.feedbackPanel = feedbackPanel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
@@ -66,34 +66,30 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 	}
 
 	protected void initialiseSearchForm() {
-		
+
 		final Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-//		StudyPedigreeConfiguration config = studyService.getStudyPedigreeConfiguration(studyId);
-		
-		Study study= iArkCommonService.getStudy(studyId);
-		StudyPedigreeConfiguration config=study.getPedigreeConfiguration();
-		
+		final Study study = iArkCommonService.getStudy(studyId);
+		StudyPedigreeConfiguration config = study.getPedigreeConfiguration();
+
 		cpmModel.getObject().setPedigreeConfig(config);
-		
+
 		customFieldList = studyService.getBinaryCustomFieldsForPedigreeRelativesList(studyId);
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		effectedStatuses = new DropDownChoice("pedigreeConfig.customField", this.customFieldList, defaultChoiceRenderer);
-		
+
 		dobChkBox = new CheckBox("pedigreeConfig.dobAllowed");
 
 		saveButton = new AjaxButton(au.org.theark.core.Constants.SAVE) {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				PedigreeVo obj =(PedigreeVo)form.getModelObject();
-				
+				PedigreeVo obj = (PedigreeVo) form.getModelObject();
+
 				StudyPedigreeConfiguration configObject = obj.getPedigreeConfig();
-//				System.out.println("Selected custom field name --- "+obj.getPedigreeConfig().getCustomField().getName());
-//				System.out.println("DOB value --- "+obj.getPedigreeConfig().isDobAllowed());
-//				System.out.println("---------------------------------------------------------- ");
-//				System.out.println("---------------------------------------------------------- ");
-						
+				if (configObject.getStudy() == null) {
+					configObject.setStudy(study);
+				}
 				studyService.saveOrUpdateStudyPedigreeConfiguration(configObject);
 				modalWindow.close(target);
 			}
