@@ -21,7 +21,13 @@ WHERE table_schema = "study"
 
 SELECT * -- default_character_set_name 
 FROM information_schema.SCHEMATA S
-WHERE schema_name = "study";
+WHERE schema_name in ('study', 'admin', 'audit', 'lims', 'pheno', 'reporting');
+
+
+update information_schema.SCHEMATA S
+set default_character_set_name = 'utf8',
+default_collaction_name = 'utf8_general_ci'
+WHERE schema_name in ('study', 'admin', 'audit', 'lims', 'pheno', 'reporting');
 
 
 /**** stack overflow reference 
