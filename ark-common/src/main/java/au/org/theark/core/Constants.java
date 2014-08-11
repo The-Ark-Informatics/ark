@@ -303,6 +303,7 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
 	public static final String	FUNCTION_KEY_VALUE_DATA_EXTRACTION	= "DATA_EXTRACTION";
 	public static final String FUNCTION_KEY_VALUE_PEDIGREE = "PEDIGREE";
+	public static final String FUNCTION_KEY_VALUE_GENO_TABLE = "GENO_TABLE";
 
 	/* Ark Module Keys */
 	public static final String ARK_MODULE_KEY = "MODULE_KEY";

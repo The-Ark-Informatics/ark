@@ -1,0 +1,36 @@
+package au.org.theark.geno.model.vo;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import au.org.theark.core.vo.BaseVO;
+
+public class RowListVO extends BaseVO {
+
+	private static final long serialVersionUID = 1L;
+
+	private Collection<RowVO> rows = new ArrayList<RowVO>();
+
+	public RowListVO() {
+		super();
+		rows = new ArrayList<RowVO>();
+	}
+
+	public RowListVO(Collection<RowVO> rows) {
+		super();
+		this.rows = rows;
+	}
+
+	public Collection<RowVO> getRows() {
+		return rows;
+	}
+
+	public void setRows(Collection<RowVO> rows) {
+		this.rows = rows;
+	}
+
+	@Override
+	public String toString() {
+		return "RowListVO [rows=" + rows + "]";
+	}
+}
