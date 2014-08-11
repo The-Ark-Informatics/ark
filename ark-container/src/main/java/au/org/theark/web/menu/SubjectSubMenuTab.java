@@ -34,6 +34,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
+import au.org.theark.geno.web.component.table.GenoTableContainerPanel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
 import au.org.theark.lims.web.component.inventory.tree.TreeModel;
@@ -146,6 +147,11 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 						// Clear cache to determine permissions
 						panelToReturn = new PedigreeContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup);
 					}
+					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_GENO_TABLE)) {
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_GENOTYPIC, arkFunction);
+						panelToReturn = new GenoTableContainerPanel(panelId, arkContextMarkup, studyNameMarkup, studyLogoMarkup);
+					}
+					
 					return panelToReturn;
 				}
 				

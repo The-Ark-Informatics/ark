@@ -7,6 +7,7 @@
 package au.org.theark.core.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -14,11 +15,15 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import au.org.theark.core.model.geno.entity.Beam;
 import au.org.theark.core.model.geno.entity.Command;
+import au.org.theark.core.model.geno.entity.Data;
 import au.org.theark.core.model.geno.entity.Pipeline;
 import au.org.theark.core.model.geno.entity.Process;
 import au.org.theark.core.model.geno.entity.ProcessInput;
 import au.org.theark.core.model.geno.entity.ProcessOutput;
+import au.org.theark.core.model.geno.entity.Row;
+import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 
 /**
@@ -175,4 +180,51 @@ public class GenoDao extends HibernateSessionDao implements IGenoDao {
 		
 		return criteria;
 	}
+	
+	public Collection<Row> getGenoTableRow(Study study) {
+		Criteria criteria = getSession().createCriteria(Row.class);
+		criteria.add(Restrictions.eq("study", study));
+		
+		Collection<Row> results = criteria.list();
+		
+		return results;
+	}
+	
+	public Collection<Beam> getGenoTableBeam(Study study) {
+		Criteria criteria = getSession().createCriteria(Beam.class);
+		criteria.add(Restrictions.eq("study", study));
+		
+		Collection<Beam> results = criteria.list();
+		
+		return results;
+	}
+
+	public Collection<Data> getGenoTableData(Study study, Person person) {
+		return getSession().createCriteria(Data.class).add(Restrictions.eq("study", study)).add(Restrictions.eq("person", person)).list();
+	}
+	
+	public Data getDataGivenRowandColumn(Person person, Row row, Beam beam) {
+		return (Data) getSession().createCriteria(Data.class).add(Restrictions.eq("row", row)).add(Restrictions.eq("beam", beam)).add(Restrictions.eq("person", person)).uniqueResult();
+	}
+
+	public void saveOrUpdate(Data data) {
+		getSession().saveOrUpdate(data);
+	}
+
+	public void createOrUpdateRows(List<Row> rowList) {
+		for(Row row : rowList) {
+			getSession().saveOrUpdate(row);
+		}
+	}
+
+	public void createOrUpdateBeams(List<Beam> beamList) {
+		for(Beam beam : beamList) {
+			getSession().saveOrUpdate(beam);
+		}
+	}
+
+	public void delete(Object object) {
+		getSession().delete(object);
+	}
+	
 }
