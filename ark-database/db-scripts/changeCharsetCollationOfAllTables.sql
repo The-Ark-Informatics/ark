@@ -1,5 +1,8 @@
 SET @SCHEMANAME = 'study';
 
+-- tread very carefully in any database with pre-existing data.  I am not sure how forcing a change in charset/collation will affect actual existing data.  Work on the assumption 
+-- it could be seriously dangerous and you could use data.  
+-- This script is intended for setting up the new database.  We will look into how to change pre-existing charset/collaction down the line.
 
 SELECT CONCAT("ALTER TABLE `", TABLE_NAME,"` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;") AS    mySQL
 FROM INFORMATION_SCHEMA.TABLES
@@ -165,5 +168,82 @@ ALTER TABLE `upload_collection` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_
 ALTER TABLE `upload_marker_group` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 
+
+
+
+
+SET @SCHEMANAME = 'lims';
+
+SELECT CONCAT("ALTER TABLE `", TABLE_NAME,"` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;") AS    mySQL
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA=@SCHEMANAME
+AND TABLE_TYPE="BASE TABLE"; -- copy these results
+
+use lims;
+ALTER TABLE `access_request` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `appointments` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `attachment` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `barcode_command` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `barcode_label` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `barcode_label_data` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `barcode_printer` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `barcodeformat` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `barcodeid_engine` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `bio_sampletype` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `bio_transaction` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `bio_transaction_status` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biocollection` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biocollection_custom_field_data` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biocollectionuid_padchar` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biocollectionuid_sequence` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biocollectionuid_template` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biocollectionuid_token` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimen` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimen_anticoagulant` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimen_custom_field_data` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimen_grade` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimen_protocol` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimen_quality` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimen_species` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimen_status` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimen_storage` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimenuid_padchar` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimenuid_sequence` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimenuid_template` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimenuid_token` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `cell_status` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `flag` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `group` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `inv_box` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `inv_cell` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `inv_col_row_type` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `inv_freezer` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `inv_rack` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `inv_site` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `inv_type` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `listofvalues` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `listofvalues_description` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `note` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `samplecode` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `study_inv_site` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `treatment_type` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `unit` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+
+
+
+SET @SCHEMANAME = 'pheno';
+
+SELECT CONCAT("ALTER TABLE `", TABLE_NAME,"` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;") AS    mySQL
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA=@SCHEMANAME
+AND TABLE_TYPE="BASE TABLE"; -- copy these results
+
+use pheno;
+ALTER TABLE `pheno_collection` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `pheno_data` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `questionnaire_status` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `status` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `upload` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 
