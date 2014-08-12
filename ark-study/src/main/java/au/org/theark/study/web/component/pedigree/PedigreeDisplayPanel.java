@@ -50,11 +50,7 @@ import au.org.theark.study.model.capsule.RelativeCapsule;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
-import com.itextpdf.text.Element;
-import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.codec.PngImage;
 import com.x5.template.Chunk;
@@ -118,7 +114,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 		StringBuffer columnList = new StringBuffer("IndividualId");
 		Study study= iArkCommonService.getStudy(studyId);
 		StudyPedigreeConfiguration config=study.getPedigreeConfiguration();
-		if(config.isDobAllowed()){
+		if(config!=null && config.isDobAllowed()){
 			columnList.append(" DOB");
 		}
 		
