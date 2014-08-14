@@ -97,6 +97,10 @@
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url"
 			value="jdbc:mysql://ark-database:3306?rewriteBatchedStatements=true" />
+		<!-- or for utf-8	
+			value="jdbc:mysql://ark-database:3306?characterEncoding=utf8" /> 
+			but the slightest typo or variation will cause you problems!!!
+		-->
 		<property name="username" value="arkadmin" />
 		<property name="password" value="v@Tym4np[]" />
 	</bean>
