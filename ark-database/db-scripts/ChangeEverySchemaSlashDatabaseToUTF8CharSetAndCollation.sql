@@ -43,10 +43,11 @@ ALTER DATABASE reporting
  DEFAULT CHARACTER SET utf8
  DEFAULT COLLATE utf8_unicode_ci;
 
-
+/*
 ALTER DATABASE geno
  CHARACTER SET utf8
   COLLATE utf8_unicode_ci; 
 ALTER DATABASE geno
  DEFAULT CHARACTER SET utf8
  DEFAULT COLLATE utf8_unicode_ci;
+*/
