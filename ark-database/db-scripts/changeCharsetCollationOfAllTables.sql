@@ -137,7 +137,7 @@ ALTER TABLE `lss_consent_history` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicod
 
 
 
-
+/*
 SET @SCHEMANAME = 'geno';
 
 SELECT CONCAT("ALTER TABLE `", TABLE_NAME,"` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;") AS    mySQL
@@ -166,7 +166,7 @@ ALTER TABLE `subject_meta_data` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_
 ALTER TABLE `upload` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 ALTER TABLE `upload_collection` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 ALTER TABLE `upload_marker_group` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
+*/
 
 
 
