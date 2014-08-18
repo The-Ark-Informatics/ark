@@ -385,13 +385,13 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 				}
 
 				// Quote the data
-				sb.append(barcodeLabelData.getQuoteLeft());
+				sb.append(barcodeLabelData.getQuoteLeft()==null?"":barcodeLabelData.getQuoteLeft());
 
 				// Add the data/text
-				sb.append(barcodeLabelData.getData());
+				sb.append(barcodeLabelData.getData()==null?"":barcodeLabelData.getData());
 
 				// End quote the data
-				sb.append(barcodeLabelData.getQuoteRight());
+				sb.append(barcodeLabelData.getQuoteRight()==null?"":barcodeLabelData.getQuoteRight());
 
 				// Add a line feed
 				// sb.append(barcodeLabelData.getLineFeed());
