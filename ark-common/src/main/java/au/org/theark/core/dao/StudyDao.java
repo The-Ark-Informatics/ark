@@ -2325,7 +2325,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 	private String getConsentFilterFieldName(QueryFilter qf) {
 		String filterName = qf.getConsentStatusField().getFieldName();
-		if(filterName.equalsIgnoreCase("studyComponentStatus")) {
+		if(qf.getConsentStatusField().getEntity().name().equalsIgnoreCase("StudyComp")){
+			return "csc."+filterName;
+		} else if(filterName.equalsIgnoreCase("studyComponentStatus")) {
 			return "cscs.name";
 		} else if(filterName.equalsIgnoreCase("studyComp")) {
 			return "csc.name";
