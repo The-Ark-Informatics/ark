@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -48,7 +49,6 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -4606,12 +4606,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			Search search, List<Long> idsToInclude, List<Long> biocollectionIdsAfterFiltering ){
 		String bioCollectionFilters = getBiocollectionFilters(search);
 		
+		Collection<BioCollection> bioCollectionList = null;
+		
 		if(biocollectionFields.isEmpty() && bioCollectionFilters.isEmpty() ) {
 			if(idsToInclude.isEmpty()) {
 				// no need
 			}
 			else {
 				biocollectionIdsAfterFiltering = getBioCollectionIdForSubjectIds(idsToInclude);
+				bioCollectionList = getSession().createCriteria(BioCollection.class).add(Restrictions.in("id", biocollectionIdsAfterFiltering)).list();
 			}
 		}
 		
@@ -4628,24 +4631,23 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			
 			Query query = getSession().createQuery(queryBuffer.toString());
 			query.setParameterList("idsToInclude", idsToInclude);
-			Collection<BioCollection> bioCollectionList=query.list();
-			HashSet uniqueSubjectIDs = new HashSet<Long>();
-			HashMap<String, ExtractionVO> hashOfBioCollectionData = allTheData.getBiocollectionData();
-			
-			for (BioCollection bioCollection : bioCollectionList) {
-				ExtractionVO sev = new ExtractionVO();
-				sev.setKeyValues(constructKeyValueHashmap(bioCollection,biocollectionFields));
-				hashOfBioCollectionData.put(bioCollection.getBiocollectionUid(), sev);
-				uniqueSubjectIDs.add(bioCollection.getLinkSubjectStudy().getId());
-				sev.setSubjectUid(bioCollection.getLinkSubjectStudy().getSubjectUID()); //TODO: mow that we haevb this probably need to fetch join to save us a bunch of hits to the db
-				biocollectionIdsAfterFiltering.add(bioCollection.getId());
-			}			
-			
-			//maintaining list of subject IDs for filtering past results
-			if(!bioCollectionFilters.isEmpty()) {
-				idsToInclude = new ArrayList(uniqueSubjectIDs);
-			}
-			
+			bioCollectionList = query.list();
+		}
+		HashSet uniqueSubjectIDs = new HashSet<Long>();
+		HashMap<String, ExtractionVO> hashOfBioCollectionData = allTheData.getBiocollectionData();
+		
+		for (BioCollection bioCollection : bioCollectionList) {
+			ExtractionVO sev = new ExtractionVO();
+			sev.setKeyValues(constructKeyValueHashmap(bioCollection,biocollectionFields));
+			hashOfBioCollectionData.put(bioCollection.getBiocollectionUid(), sev);
+			uniqueSubjectIDs.add(bioCollection.getLinkSubjectStudy().getId());
+			sev.setSubjectUid(bioCollection.getLinkSubjectStudy().getSubjectUID()); //TODO: mow that we haevb this probably need to fetch join to save us a bunch of hits to the db
+			biocollectionIdsAfterFiltering.add(bioCollection.getId());
+		}			
+		
+		//maintaining list of subject IDs for filtering past results
+		if(!bioCollectionFilters.isEmpty()) {
+			idsToInclude = new ArrayList(uniqueSubjectIDs);
 		}
 		return biocollectionIdsAfterFiltering;
 	}
@@ -4658,12 +4660,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 		HashMap<String, ExtractionVO> hashOfBiospecimenData = allTheData.getBiospecimenData();
 		
+		Collection<Biospecimen> biospecimenList = null;
+		
 		if((biospecimenFields.isEmpty() && biospecimenFilters.isEmpty())){
 			if(idsToInclude.isEmpty()) {
 				// no need
 			}
 			else {
 				biospecimenIdsAfterFiltering = getBiospecimenIdForSubjectIds(idsToInclude);
+				biospecimenList = getSession().createCriteria(Biospecimen.class).add(Restrictions.in("id", biospecimenIdsAfterFiltering)).list();
 			}
 		}
 		else if((!biospecimenFields.isEmpty() || !biospecimenFilters.isEmpty()) && !idsToInclude.isEmpty()){
@@ -4703,27 +4708,26 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				query.setParameterList("biocollectionsToFilter", bioCollectionIdsAfterFiltering);
 			}
 			
-			Collection<Biospecimen> biospecimenList=query.list();
-			HashSet uniqueSubjectIDs = new HashSet<Long>();
+			biospecimenList = query.list();
+		}
+		HashSet uniqueSubjectIDs = new HashSet<Long>();
+		for (Biospecimen biospecimen : biospecimenList) {
+			ExtractionVO sev = new ExtractionVO();
+			sev.setKeyValues(constructKeyValueHashmap(biospecimen,biospecimenFields));
+			sev.setSubjectUid(biospecimen.getLinkSubjectStudy().getSubjectUID());
+			hashOfBiospecimenData.put(biospecimen.getBiospecimenUid(), sev);
+			uniqueSubjectIDs.add(biospecimen.getLinkSubjectStudy().getId());
+			biospecimenIdsAfterFiltering.add(biospecimen.getId());
+		}			
+		
+		//maintaining list of subject IDs for filtering past results
+		if(!biospecimenFilters.isEmpty()){
 			
-			for (Biospecimen biospecimen : biospecimenList) {
-				ExtractionVO sev = new ExtractionVO();
-				sev.setKeyValues(constructKeyValueHashmap(biospecimen,biospecimenFields));
-				sev.setSubjectUid(biospecimen.getLinkSubjectStudy().getSubjectUID());
-				hashOfBiospecimenData.put(biospecimen.getBiospecimenUid(), sev);
-				uniqueSubjectIDs.add(biospecimen.getLinkSubjectStudy().getId());
-				biospecimenIdsAfterFiltering.add(biospecimen.getId());
-			}			
-			
-			//maintaining list of subject IDs for filtering past results
-			if(!biospecimenFilters.isEmpty()){
-				
-				idsToInclude.clear();
-				for(Object id : uniqueSubjectIDs){
-					idsToInclude.add((Long)id);
-				}
-				log.info("LATEST LIST OF IDS SIZE=" + idsToInclude.size());
+			idsToInclude.clear();
+			for(Object id : uniqueSubjectIDs){
+				idsToInclude.add((Long)id);
 			}
+			log.info("LATEST LIST OF IDS SIZE=" + idsToInclude.size());
 		}
 		allTheData.setBiospecimenData(hashOfBiospecimenData);//wouldnt think I need to set ht
 		//log.info("addDataFromMegaBiospecimenQuery.biospecimenIdsAfterFiltering: " + biospecimenIdsAfterFiltering.size());
