@@ -25,12 +25,13 @@ public class RelationshipVo implements Serializable {
 
 	private String					fatherId;
 	private String					motherId;
-	private int					relativeIndex;
+	private int						relativeIndex;
 
 	private String					mz;
 	private String					dz;
 
 	private String					affectedStatus;
+	private Date					dod;
 
 	public RelationshipVo() {
 		relationship = "Undetermined";
@@ -171,6 +172,14 @@ public class RelationshipVo implements Serializable {
 
 	public void setAffectedStatus(String affectedStatus) {
 		this.affectedStatus = affectedStatus;
+	}
+	
+	public Date getDod() {
+		return dod;
+	}
+
+	public void setDod(Date dod) {
+		this.dod = dod;
 	}
 
 	@Override

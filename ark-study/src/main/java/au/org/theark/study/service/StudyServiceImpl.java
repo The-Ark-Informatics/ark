@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -35,6 +36,9 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.util.file.File;
 import org.hibernate.exception.ConstraintViolationException;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -426,15 +430,11 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkSubjectInsertException {
 		iStudyDao.createSubject(subjectVO);
-		
-		//Consent history record create only when user has update one of the consent history fields.
-		if (subjectVO.getLinkSubjectStudy().getConsentToActiveContact() != null || 
-				subjectVO.getLinkSubjectStudy().getConsentToPassiveDataGathering() != null || 
-				subjectVO.getLinkSubjectStudy().getConsentToUseData() != null || 
-				subjectVO.getLinkSubjectStudy().getConsentStatus() != null || 
-				subjectVO.getLinkSubjectStudy().getConsentType() != null || 
-				subjectVO.getLinkSubjectStudy().getConsentDate() != null || 
-				subjectVO.getLinkSubjectStudy().getConsentDownloaded() != null) {
+
+		// Consent history record create only when user has update one of the consent history fields.
+		if (subjectVO.getLinkSubjectStudy().getConsentToActiveContact() != null || subjectVO.getLinkSubjectStudy().getConsentToPassiveDataGathering() != null
+				|| subjectVO.getLinkSubjectStudy().getConsentToUseData() != null || subjectVO.getLinkSubjectStudy().getConsentStatus() != null || subjectVO.getLinkSubjectStudy().getConsentType() != null
+				|| subjectVO.getLinkSubjectStudy().getConsentDate() != null || subjectVO.getLinkSubjectStudy().getConsentDownloaded() != null) {
 			createLssConsentHistory(subjectVO.getLinkSubjectStudy());
 		}
 		assignChildStudies(subjectVO);
@@ -447,16 +447,16 @@ public class StudyServiceImpl implements IStudyService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException, EntityNotFoundException{
+	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException, EntityNotFoundException {
 		LinkSubjectStudy linkSubjectStudy = iStudyDao.getLinkSubjectStudy(subjectVO.getLinkSubjectStudy().getId());
-			
-		LinkSubjectStudyConsentHistoryComparator comparator=new LinkSubjectStudyConsentHistoryComparator();
-		if(comparator.compare(linkSubjectStudy,subjectVO.getLinkSubjectStudy())!=0){
+
+		LinkSubjectStudyConsentHistoryComparator comparator = new LinkSubjectStudyConsentHistoryComparator();
+		if (comparator.compare(linkSubjectStudy, subjectVO.getLinkSubjectStudy()) != 0) {
 			updateLssConsentHistory(subjectVO.getLinkSubjectStudy());
 		}
-		
+
 		iStudyDao.updateSubject(subjectVO);
-		
+
 		assignChildStudies(subjectVO);
 
 		AuditHistory ah = new AuditHistory();
@@ -498,7 +498,7 @@ public class StudyServiceImpl implements IStudyService {
 				iStudyDao.update(linkSubjectStudy);
 			}
 			catch (EntityNotFoundException e) { // TODO :probably dont need an exception here
-			//	log.error(e.getMessage());
+				// log.error(e.getMessage());
 			}
 		}
 
@@ -548,12 +548,11 @@ public class StudyServiceImpl implements IStudyService {
 	public List<Phone> getPersonPhoneList(Long personId) throws ArkSystemException {
 		return iStudyDao.getPersonPhoneList(personId);
 	}
-	
+
 	public List<OtherID> getPersonOtherIDList(Long personID) throws ArkSystemException {
 		return iStudyDao.getPersonOtherIDList(personID);
 	}
-	
-	
+
 	/**
 	 * Looks up the phones linked to a person and applies any filter supplied with the phone object.Used in Search Phone functionality. One can look up
 	 * base don area code, phone type, phone number
@@ -646,13 +645,12 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityId(consent.getId());
 		iArkCommonService.createAuditHistory(ah);
 	}
-	
-	public void update(Consent consent,boolean consentFile) throws ArkSystemException, EntityNotFoundException {
 
-		ConsentHistoryComparator comparator=new ConsentHistoryComparator();
-		if(consentFile ||
-				comparator.compare(iStudyDao.getConsent(consent.getId()), consent)!=0){
-			
+	public void update(Consent consent, boolean consentFile) throws ArkSystemException, EntityNotFoundException {
+
+		ConsentHistoryComparator comparator = new ConsentHistoryComparator();
+		if (consentFile || comparator.compare(iStudyDao.getConsent(consent.getId()), consent) != 0) {
+
 			createConsentHistory(consent);
 		}
 		iStudyDao.update(consent);
@@ -705,7 +703,7 @@ public class StudyServiceImpl implements IStudyService {
 	public Consent getConsent(Long id) throws ArkSystemException {
 		return iStudyDao.getConsent(id);
 	}
-	
+
 	public ConsentOption getConsentOptionForBoolean(boolean trueForYesFalseForNo) throws ArkSystemException {
 		return iStudyDao.getConsentOptionForBoolean(trueForYesFalseForNo);
 	}
@@ -776,28 +774,22 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.searchConsentFile(consentFile);
 	}
 
-	/*public void createPersonLastnameHistory(Person person) {
-		iStudyDao.createPersonLastnameHistory(person);
-
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created PersonLastnameHistory " + person.getId());
-		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PERSON_LASTNAME_HISTORY);
-		ah.setEntityId(person.getId());
-		iArkCommonService.createAuditHistory(ah);
-	}*/
-/*
-	public void updatePersonLastnameHistory(Person person) {
-		iStudyDao.updatePersonLastnameHistory(person);
-
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Updated PersonLastnameHistory " + person.getId());
-		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PERSON_LASTNAME_HISTORY);
-		ah.setEntityId(person.getId());
-		iArkCommonService.createAuditHistory(ah);
-	}
-*/
+	/*
+	 * public void createPersonLastnameHistory(Person person) { iStudyDao.createPersonLastnameHistory(person);
+	 * 
+	 * AuditHistory ah = new AuditHistory(); ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+	 * ah.setComment("Created PersonLastnameHistory " + person.getId());
+	 * ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PERSON_LASTNAME_HISTORY); ah.setEntityId(person.getId());
+	 * iArkCommonService.createAuditHistory(ah); }
+	 */
+	/*
+	 * public void updatePersonLastnameHistory(Person person) { iStudyDao.updatePersonLastnameHistory(person);
+	 * 
+	 * AuditHistory ah = new AuditHistory(); ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+	 * ah.setComment("Updated PersonLastnameHistory " + person.getId());
+	 * ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PERSON_LASTNAME_HISTORY); ah.setEntityId(person.getId());
+	 * iArkCommonService.createAuditHistory(ah); }
+	 */
 	public List<PersonLastnameHistory> getLastnameHistory(Person person) {
 		return iStudyDao.getLastnameHistory(person);
 	}
@@ -805,11 +797,10 @@ public class StudyServiceImpl implements IStudyService {
 	public String getPreviousLastname(Person person) {
 		return iStudyDao.getPreviousLastname(person);
 	}
-/*
-	public String getCurrentLastname(Person person) {
-		return iStudyDao.getCurrentLastname(person);
-	}
-*/
+
+	/*
+	 * public String getCurrentLastname(Person person) { return iStudyDao.getCurrentLastname(person); }
+	 */
 	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory) {
 		return iStudyDao.getPreviousSurnameHistory(personSurnameHistory);
 	}
@@ -932,12 +923,12 @@ public class StudyServiceImpl implements IStudyService {
 		return subjectUploadValidator;
 	}
 
-	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId,  List<String> listOfUIDsToUpdate){
+	public StringBuffer uploadAndReportCustomDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId, List<String> listOfUIDsToUpdate) {
 		StringBuffer uploadReport = null;
 		Study study = iArkCommonService.getStudy(studyId);
 		DataUploader dataUploader = new DataUploader(study, iArkCommonService, this);
 		try {
-			//log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
+			// log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
 			uploadReport = dataUploader.uploadAndReportCustomDataFile(inputStream, size, fileFormat, delimChar, listOfUIDsToUpdate);
 		}
 		catch (FileFormatException ffe) {
@@ -949,12 +940,12 @@ public class StudyServiceImpl implements IStudyService {
 		return uploadReport;
 	}
 
-	public StringBuffer uploadAndReportSubjectConsentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId){
+	public StringBuffer uploadAndReportSubjectConsentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId) {
 		StringBuffer uploadReport = null;
 		Study study = iArkCommonService.getStudy(studyId);
 		DataUploader dataUploader = new DataUploader(study, iArkCommonService, this);
 		try {
-			//log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
+			// log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
 			uploadReport = dataUploader.uploadAndReportSubjectConsentDataFile(inputStream, size, fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe) {
@@ -965,13 +956,13 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		return uploadReport;
 	}
-	
+
 	public StringBuffer uploadAndReportPedigreeDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId) {
 		StringBuffer uploadReport = null;
 		Study study = iArkCommonService.getStudy(studyId);
 		DataUploader dataUploader = new DataUploader(study, iArkCommonService, this);
 		try {
-			//log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
+			// log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
 			uploadReport = dataUploader.uploadAndReportPedigreeDataFile(inputStream, size, fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe) {
@@ -982,7 +973,7 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		return uploadReport;
 	}
-	
+
 	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 		try {
@@ -1030,34 +1021,34 @@ public class StudyServiceImpl implements IStudyService {
 		iStudyDao.processBatch(subjectListToInsert, study, subjectsToUpdate);
 	}
 
-	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert){
+	public void processFieldsBatch(List<SubjectCustomFieldData> fieldsToUpdate, Study study, List<SubjectCustomFieldData> fieldsToInsert) {
 		iStudyDao.processFieldsBatch(fieldsToUpdate, study, fieldsToInsert);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public void processSubjectConsentBatch(List<Consent> updateConsentList, List<Consent> insertConsentList) throws ArkSystemException,EntityNotFoundException{
-		for(Consent updateConsent : updateConsentList){
-			update(updateConsent,false);
+	public void processSubjectConsentBatch(List<Consent> updateConsentList, List<Consent> insertConsentList) throws ArkSystemException, EntityNotFoundException {
+		for (Consent updateConsent : updateConsentList) {
+			update(updateConsent, false);
 		}
-		for(Consent insertConsent : insertConsentList){
+		for (Consent insertConsent : insertConsentList) {
 			create(insertConsent);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public void processPedigreeBatch(List<LinkSubjectPedigree> parentsToInsert,List<LinkSubjectTwin> twinsToInsert) throws ArkSystemException, EntityNotFoundException {
-		iStudyDao.processPedigreeBatch(parentsToInsert,twinsToInsert);
-		
+	public void processPedigreeBatch(List<LinkSubjectPedigree> parentsToInsert, List<LinkSubjectTwin> twinsToInsert) throws ArkSystemException, EntityNotFoundException {
+		iStudyDao.processPedigreeBatch(parentsToInsert, twinsToInsert);
+
 	}
-	
+
 	/*
-	public void batchInsertSubjects(List<LinkSubjectStudy> subjectList, Study study) throws ArkUniqueException, ArkSubjectInsertException {
-		iStudyDao.batchInsertSubjects(subjectList, study);
-	}*/
+	 * public void batchInsertSubjects(List<LinkSubjectStudy> subjectList, Study study) throws ArkUniqueException, ArkSubjectInsertException {
+	 * iStudyDao.batchInsertSubjects(subjectList, study); }
+	 */
 
 	public Collection<ArkUser> lookupArkUser(Study study) {
 		return iStudyDao.lookupArkUser(study);
@@ -1072,7 +1063,6 @@ public class StudyServiceImpl implements IStudyService {
 		customfieldDataList = iStudyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, first, count);
 		return customfieldDataList;
 	}
-
 
 	public long getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction) {
 		return iStudyDao.getSubjectCustomFieldDataCount(linkSubjectStudyCriteria, arkFunction);
@@ -1235,7 +1225,6 @@ public class StudyServiceImpl implements IStudyService {
 		return iAuditDao.getConsentHistoryList(consent);
 	}
 
-
 	public Upload getUpload(Long id) {
 		return iStudyDao.getUpload(id);
 	}
@@ -1249,15 +1238,15 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public void setPreferredMailingAdressToFalse(Person person) {
-		iStudyDao.setPreferredMailingAdressToFalse(person);	
+		iStudyDao.setPreferredMailingAdressToFalse(person);
 	}
-	
+
 	public MaritalStatus getDefaultMaritalStatus() {
 		return iStudyDao.getDefaultMaritalStatus();
 	}
 
 	public SubjectStatus getDefaultSubjectStatus() {
-		 return iStudyDao.getDefaultSubjectStatus();
+		return iStudyDao.getDefaultSubjectStatus();
 	}
 
 	public TitleType getDefaultTitleType() {
@@ -1284,7 +1273,6 @@ public class StudyServiceImpl implements IStudyService {
 		return iStudyDao.getDefaultAddressStatus();
 	}
 
-
 	public PhoneType getDefaultPhoneType() {
 		return iStudyDao.getDefaultPhoneType();
 	}
@@ -1308,17 +1296,17 @@ public class StudyServiceImpl implements IStudyService {
 	public List<ConsentType> getConsentType() {
 		return iStudyDao.getConsentType();
 	}
-	
-	public RelativeCapsule[] generateSubjectPedigreeImageList(final String subjectUID,final Long studyId){
-		RelativeCapsule[] relativeCapsules = generateSubjectPedigree(subjectUID,studyId);
-		return relativeCapsules.length > 2 ? relativeCapsules:new RelativeCapsule[0];
+
+	public RelativeCapsule[] generateSubjectPedigreeImageList(final String subjectUID, final Long studyId) {
+		RelativeCapsule[] relativeCapsules = generateSubjectPedigree(subjectUID, studyId);
+		return relativeCapsules.length > 2 ? relativeCapsules : new RelativeCapsule[0];
 	}
-	
-	public RelativeCapsule[] generateSubjectPedigreeExportList(final String subjectUID,final Long studyId){
-		RelativeCapsule[] relativeCapsules = generateSubjectPedigree(subjectUID,studyId);
+
+	public RelativeCapsule[] generateSubjectPedigreeExportList(final String subjectUID, final Long studyId) {
+		RelativeCapsule[] relativeCapsules = generateSubjectPedigree(subjectUID, studyId);
 		return relativeCapsules;
 	}
-	
+
 	public ArkRelativeCapsule[] generateSubjectArkPedigreeExportList(final String subjectUID, final Long studyId) {
 		List<ArkRelativeCapsule> arkRelativeCapsules = new ArrayList<ArkRelativeCapsule>();
 		RelativeCapsule[] relativeCapsules = generateSubjectPedigree(subjectUID, studyId);
@@ -1342,11 +1330,8 @@ public class StudyServiceImpl implements IStudyService {
 			if (capsule1.getTwinStatus() != null) {
 				for (ArkRelativeCapsule capsule2 : arkRelativeCapsules) {
 					if (capsule2.getTwinStatus() != null) {
-						if (!capsule1.getIndividualId().equals(capsule2.getIndividualId()) && 
-								capsule1.getFatherId()!=null &&
-								capsule1.getFatherId().equals(capsule2.getFatherId()) && 
-								capsule2.getMotherId()!=null &&
-								capsule1.getMotherId().equals(capsule2.getMotherId())) {
+						if (!capsule1.getIndividualId().equals(capsule2.getIndividualId()) && capsule1.getFatherId() != null && capsule1.getFatherId().equals(capsule2.getFatherId())
+								&& capsule2.getMotherId() != null && capsule1.getMotherId().equals(capsule2.getMotherId())) {
 							capsule1.setTwinId(capsule2.getIndividualId());
 						}
 					}
@@ -1357,36 +1342,36 @@ public class StudyServiceImpl implements IStudyService {
 		return arkRelativeCapsules.toArray(new ArkRelativeCapsule[arkRelativeCapsules.size()]);
 	}
 
-	private RelativeCapsule[] generateSubjectPedigree(final String subjectUID,final Long studyId){
+	private RelativeCapsule[] generateSubjectPedigree(final String subjectUID, final Long studyId) {
 		List<RelativeCapsule> relativeCapsules = new ArrayList<RelativeCapsule>();
 		Queue<RelativeCapsule> relativeCapsuleQueue = new LinkedList<RelativeCapsule>();
 		RelationshipVo probandRelationship = iStudyDao.getSubjectRelative(subjectUID, studyId);
-		
-		String familyUID=null;
-		
-		if(probandRelationship !=null){
-			
-			familyUID = "_F"+probandRelationship.getIndividualId();
-			
-			if(familyUID.length()>11){
+
+		String familyUID = null;
+
+		if (probandRelationship != null) {
+
+			familyUID = "_F" + probandRelationship.getIndividualId();
+
+			if (familyUID.length() > 11) {
 				familyUID = familyUID.substring(0, 11);
 			}
-			
-			RelativeCapsule proband = createSubjectRelativeCapsule(probandRelationship,familyUID);
+
+			RelativeCapsule proband = createSubjectRelativeCapsule(probandRelationship, familyUID);
 			proband.setProband("Y");
 			proband.setRelationship("Proband");
 			relativeCapsuleQueue.add(proband);
-			
-			//Generate parent relationships
-			RelativeCapsule relativeCapsule =null;
-			while((relativeCapsule = relativeCapsuleQueue.poll())!=null ){
-				List<RelationshipVo> relationships =  iStudyDao.getSubjectParentRelatives(relativeCapsule.getIndividualId(),studyId);
-				for(RelationshipVo parentRelationshipVo : relationships){
-					RelativeCapsule parentCapsule = createSubjectRelativeCapsule(parentRelationshipVo,familyUID); 
-					if("M".equalsIgnoreCase(parentCapsule.getGender())){
+
+			// Generate parent relationships
+			RelativeCapsule relativeCapsule = null;
+			while ((relativeCapsule = relativeCapsuleQueue.poll()) != null) {
+				List<RelationshipVo> relationships = iStudyDao.getSubjectParentRelatives(relativeCapsule.getIndividualId(), studyId);
+				for (RelationshipVo parentRelationshipVo : relationships) {
+					RelativeCapsule parentCapsule = createSubjectRelativeCapsule(parentRelationshipVo, familyUID);
+					if ("M".equalsIgnoreCase(parentCapsule.getGender())) {
 						relativeCapsule.setFather(parentCapsule.getIndividualId());
 					}
-					else{
+					else {
 						relativeCapsule.setMother(parentCapsule.getIndividualId());
 					}
 					relativeCapsuleQueue.add(parentCapsule);
@@ -1396,25 +1381,25 @@ public class StudyServiceImpl implements IStudyService {
 
 			relativeCapsuleQueue.addAll(relativeCapsules);
 
-			//Generate the child relationships to parent relationships
-			while((relativeCapsule = relativeCapsuleQueue.poll())!=null ){
-				List<RelationshipVo> relationships =  iStudyDao.getSubjectChildRelatives(relativeCapsule.getIndividualId(),studyId);
-				for(RelationshipVo childRelativeVo : relationships){
-					RelativeCapsule childCapsule = createSubjectRelativeCapsule(childRelativeVo,familyUID);
-					if(relativeCapsules.contains(childCapsule)){
+			// Generate the child relationships to parent relationships
+			while ((relativeCapsule = relativeCapsuleQueue.poll()) != null) {
+				List<RelationshipVo> relationships = iStudyDao.getSubjectChildRelatives(relativeCapsule.getIndividualId(), studyId);
+				for (RelationshipVo childRelativeVo : relationships) {
+					RelativeCapsule childCapsule = createSubjectRelativeCapsule(childRelativeVo, familyUID);
+					if (relativeCapsules.contains(childCapsule)) {
 						RelativeCapsule prevCapsule = relativeCapsules.get(relativeCapsules.indexOf(childCapsule));
-						if("M".equalsIgnoreCase(relativeCapsule.getGender())){
+						if ("M".equalsIgnoreCase(relativeCapsule.getGender())) {
 							prevCapsule.setFather(relativeCapsule.getIndividualId());
 						}
-						else{
+						else {
 							prevCapsule.setMother(relativeCapsule.getIndividualId());
 						}
 					}
-					else{
-						if("M".equalsIgnoreCase(relativeCapsule.getGender())){
+					else {
+						if ("M".equalsIgnoreCase(relativeCapsule.getGender())) {
 							childCapsule.setFather(relativeCapsule.getIndividualId());
 						}
-						else{
+						else {
 							childCapsule.setMother(relativeCapsule.getIndividualId());
 						}
 						relativeCapsuleQueue.add(childCapsule);
@@ -1422,54 +1407,53 @@ public class StudyServiceImpl implements IStudyService {
 					}
 				}
 			}
-			
-			//Generate twin relationships
-			
+
+			// Generate twin relationships
+
 			processTwinRelationshipCapsules(relativeCapsules, studyId);
-			
-//			for(RelativeCapsule capsule:relativeCapsules){
-//				List<RelationshipVo> siblings = getSubjectPedigreeTwinList(capsule.getIndividualId(), studyId);
-//				for (RelativeCapsule existingCapsule : relativeCapsules) {
-//					for (RelationshipVo sibling : siblings) {
-//						String twinType = sibling.getTwin();
-//						if (!"NT".equals(twinType) && existingCapsule.getIndividualId().equals(sibling.getIndividualId())) {
-//							if ("MZ".equals(twinType)) {
-//								existingCapsule.setMzTwin("Y");
-//							}
-//							else if ("DZ".equals(twinType)) {
-//								existingCapsule.setDzTwin("Y");
-//							}
-//						}
-//					}
-//				}
-//			}
-			
+
+			// for(RelativeCapsule capsule:relativeCapsules){
+			// List<RelationshipVo> siblings = getSubjectPedigreeTwinList(capsule.getIndividualId(), studyId);
+			// for (RelativeCapsule existingCapsule : relativeCapsules) {
+			// for (RelationshipVo sibling : siblings) {
+			// String twinType = sibling.getTwin();
+			// if (!"NT".equals(twinType) && existingCapsule.getIndividualId().equals(sibling.getIndividualId())) {
+			// if ("MZ".equals(twinType)) {
+			// existingCapsule.setMzTwin("Y");
+			// }
+			// else if ("DZ".equals(twinType)) {
+			// existingCapsule.setDzTwin("Y");
+			// }
+			// }
+			// }
+			// }
+			// }
+
 		}
-		
-//		return relativeCapsules.size() >2 ? relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]):new RelativeCapsule[0];
-		return  relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]);
+
+		// return relativeCapsules.size() >2 ? relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]):new RelativeCapsule[0];
+		return relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]);
 	}
-	
-	public List<RelationshipVo> generateSubjectPedigreeRelativeList(final String subjectUID,final Long studyId){
+
+	public List<RelationshipVo> generateSubjectPedigreeRelativeList(final String subjectUID, final Long studyId) {
 		List<RelationshipVo> relativeSubjects = new ArrayList<RelationshipVo>();
 		Queue<RelationshipVo> relativeSubjectQueue = new LinkedList<RelationshipVo>();
 		RelationshipVo probandRelationship = iStudyDao.getSubjectRelative(subjectUID, studyId);
-		
-		
-		if(probandRelationship !=null){
-			
+
+		if (probandRelationship != null) {
+
 			probandRelationship.setRelationship("Proband");
 			relativeSubjectQueue.add(probandRelationship);
-			
-			//Generate parent relationships
-			RelationshipVo relativeSubject =null;
-			while((relativeSubject = relativeSubjectQueue.poll())!=null ){
-				List<RelationshipVo> relationships =  iStudyDao.getSubjectParentRelatives(relativeSubject.getIndividualId(),studyId);
-				for(RelationshipVo parentRelationshipVo : relationships){ 
-					if("Male".equalsIgnoreCase(parentRelationshipVo.getGender())){
+
+			// Generate parent relationships
+			RelationshipVo relativeSubject = null;
+			while ((relativeSubject = relativeSubjectQueue.poll()) != null) {
+				List<RelationshipVo> relationships = iStudyDao.getSubjectParentRelatives(relativeSubject.getIndividualId(), studyId);
+				for (RelationshipVo parentRelationshipVo : relationships) {
+					if ("Male".equalsIgnoreCase(parentRelationshipVo.getGender())) {
 						relativeSubject.setFatherId(parentRelationshipVo.getIndividualId());
 					}
-					else{
+					else {
 						relativeSubject.setMotherId(parentRelationshipVo.getIndividualId());
 					}
 					relativeSubjectQueue.add(parentRelationshipVo);
@@ -1479,24 +1463,24 @@ public class StudyServiceImpl implements IStudyService {
 
 			relativeSubjectQueue.addAll(relativeSubjects);
 
-			//Generate the child relationships to parent relationships
-			while((relativeSubject = relativeSubjectQueue.poll())!=null ){
-				List<RelationshipVo> relationships =  iStudyDao.getSubjectChildRelatives(relativeSubject.getIndividualId(),studyId);
-				for(RelationshipVo childRelativeVo : relationships){
-					if(relativeSubjects.contains(childRelativeVo)){
+			// Generate the child relationships to parent relationships
+			while ((relativeSubject = relativeSubjectQueue.poll()) != null) {
+				List<RelationshipVo> relationships = iStudyDao.getSubjectChildRelatives(relativeSubject.getIndividualId(), studyId);
+				for (RelationshipVo childRelativeVo : relationships) {
+					if (relativeSubjects.contains(childRelativeVo)) {
 						RelationshipVo prevRelativeSubject = relativeSubjects.get(relativeSubjects.indexOf(childRelativeVo));
-						if("Male".equalsIgnoreCase(relativeSubject.getGender())){
+						if ("Male".equalsIgnoreCase(relativeSubject.getGender())) {
 							prevRelativeSubject.setFatherId(relativeSubject.getIndividualId());
 						}
-						else{
+						else {
 							prevRelativeSubject.setMotherId(relativeSubject.getIndividualId());
 						}
 					}
-					else{
-						if("Male".equalsIgnoreCase(relativeSubject.getGender())){
+					else {
+						if ("Male".equalsIgnoreCase(relativeSubject.getGender())) {
 							childRelativeVo.setFatherId(relativeSubject.getIndividualId());
 						}
-						else{
+						else {
 							childRelativeVo.setMotherId(relativeSubject.getIndividualId());
 						}
 						relativeSubjectQueue.add(childRelativeVo);
@@ -1504,306 +1488,349 @@ public class StudyServiceImpl implements IStudyService {
 					}
 				}
 			}
-			
-			
+
 			/**
-			 * Building the relationships around proband 
+			 * Building the relationships around proband
 			 */
-			
-			//Set parents
-			
-			RelationshipVo father=null;
-			RelationshipVo mother=null;
-			RelationshipVo paternalGF=null;
-			RelationshipVo paternalGM=null;
-			RelationshipVo maternalGF=null;
-			RelationshipVo maternalGM=null;
+
+			// Set parents
+
+			RelationshipVo father = null;
+			RelationshipVo mother = null;
+			RelationshipVo paternalGF = null;
+			RelationshipVo paternalGM = null;
+			RelationshipVo maternalGF = null;
+			RelationshipVo maternalGM = null;
 			Queue<RelationshipVo> parentQueue = new LinkedList<RelationshipVo>();
-			
-			//Paternal relationships
-			if(probandRelationship.getFatherId() != null){
+
+			// Paternal relationships
+			if (probandRelationship.getFatherId() != null) {
 				int fatherIndex = getRelativePosition(probandRelationship.getFatherId(), relativeSubjects);
 				father = relativeSubjects.get(fatherIndex);
 				father.setRelationship("Father");
-					
+
 				parentQueue.add(father);
-				
-				while((relativeSubject = parentQueue.poll())!=null ){					
-					if(relativeSubject.getFatherId() !=null){
+
+				while ((relativeSubject = parentQueue.poll()) != null) {
+					if (relativeSubject.getFatherId() != null) {
 						int relativeIndex = relativeSubject.getRelativeIndex();
 						int position = getRelativePosition(relativeSubject.getFatherId(), relativeSubjects);
-						RelationshipVo grandFather=relativeSubjects.get(position);
-						grandFather.setRelationship(createRelationship("Paternal",++relativeIndex,"Grandfather"));
+						RelationshipVo grandFather = relativeSubjects.get(position);
+						grandFather.setRelationship(createRelationship("Paternal", ++relativeIndex, "Grandfather"));
 						grandFather.setRelativeIndex(relativeIndex);
-						if((relativeIndex -1 )==0){
+						if ((relativeIndex - 1) == 0) {
 							paternalGF = grandFather;
 						}
 						parentQueue.add(grandFather);
 					}
-					if(relativeSubject.getMotherId() !=null){
+					if (relativeSubject.getMotherId() != null) {
 						int relativeIndex = relativeSubject.getRelativeIndex();
 						int position = getRelativePosition(relativeSubject.getMotherId(), relativeSubjects);
-						RelationshipVo grandMother=relativeSubjects.get(position);
-						grandMother.setRelationship(createRelationship("Paternal",++relativeIndex,"Grandmother"));
+						RelationshipVo grandMother = relativeSubjects.get(position);
+						grandMother.setRelationship(createRelationship("Paternal", ++relativeIndex, "Grandmother"));
 						grandMother.setRelativeIndex(relativeIndex);
-						if((relativeIndex -1 )==0){
+						if ((relativeIndex - 1) == 0) {
 							paternalGM = grandMother;
 						}
 						parentQueue.add(grandMother);
 					}
 				}
-				
-				
+
 			}
-			
-			//Maternal Relationships
-			
-			if(probandRelationship.getMotherId() != null){
+
+			// Maternal Relationships
+
+			if (probandRelationship.getMotherId() != null) {
 				int motherIndex = getRelativePosition(probandRelationship.getMotherId(), relativeSubjects);
 				mother = relativeSubjects.get(motherIndex);
 				mother.setRelationship("Mother");
 				parentQueue.add(mother);
-				
-				while((relativeSubject = parentQueue.poll())!=null ){					
-					if(relativeSubject.getFatherId() !=null){
+
+				while ((relativeSubject = parentQueue.poll()) != null) {
+					if (relativeSubject.getFatherId() != null) {
 						int relativeIndex = relativeSubject.getRelativeIndex();
 						int position = getRelativePosition(relativeSubject.getFatherId(), relativeSubjects);
-						RelationshipVo grandFather=relativeSubjects.get(position);
-						grandFather.setRelationship(createRelationship("Maternal",++relativeIndex,"Grandfather"));
+						RelationshipVo grandFather = relativeSubjects.get(position);
+						grandFather.setRelationship(createRelationship("Maternal", ++relativeIndex, "Grandfather"));
 						grandFather.setRelativeIndex(relativeIndex);
-						if((relativeIndex -1 )==0){
+						if ((relativeIndex - 1) == 0) {
 							maternalGF = grandFather;
 						}
 						parentQueue.add(grandFather);
 					}
-					if(relativeSubject.getMotherId() !=null){
+					if (relativeSubject.getMotherId() != null) {
 						int relativeIndex = relativeSubject.getRelativeIndex();
 						int position = getRelativePosition(relativeSubject.getMotherId(), relativeSubjects);
-						RelationshipVo grandMother=relativeSubjects.get(position);
-						grandMother.setRelationship(createRelationship("Maternal",++relativeIndex,"Grandmother"));
+						RelationshipVo grandMother = relativeSubjects.get(position);
+						grandMother.setRelationship(createRelationship("Maternal", ++relativeIndex, "Grandmother"));
 						grandMother.setRelativeIndex(relativeIndex);
-						if((relativeIndex -1 )==0){
+						if ((relativeIndex - 1) == 0) {
 							maternalGM = grandMother;
 						}
 						parentQueue.add(grandMother);
 					}
 				}
-				
+
 			}
-			
-			//Siblings
+
+			// Siblings
 			List<RelationshipVo> brotherSisterList = new ArrayList<RelationshipVo>();
-			for(int i=0;i<relativeSubjects.size();++i){
+			for (int i = 0; i < relativeSubjects.size(); ++i) {
 				relativeSubject = relativeSubjects.get(i);
-				String fatherId=relativeSubject.getFatherId();
-				String motherId=relativeSubject.getMotherId();
-				if(!"Proband".equals(relativeSubject.getRelationship())){  
-						
-					if ((father !=null && father.getIndividualId().equals(fatherId)) && (mother !=null && mother.getIndividualId().equals(motherId))){
-						if("Male".equalsIgnoreCase(relativeSubject.getGender())){
+				String fatherId = relativeSubject.getFatherId();
+				String motherId = relativeSubject.getMotherId();
+				if (!"Proband".equals(relativeSubject.getRelationship())) {
+
+					if ((father != null && father.getIndividualId().equals(fatherId)) && (mother != null && mother.getIndividualId().equals(motherId))) {
+						if ("Male".equalsIgnoreCase(relativeSubject.getGender())) {
 							relativeSubject.setRelationship("Brother");
 							brotherSisterList.add(relativeSubject);
-						}else if("Female".equalsIgnoreCase(relativeSubject.getGender())){
+						}
+						else if ("Female".equalsIgnoreCase(relativeSubject.getGender())) {
 							relativeSubject.setRelationship("Sister");
 							brotherSisterList.add(relativeSubject);
 						}
-					}	
-					else{
-						if ((father !=null && father.getIndividualId().equals(fatherId)) || (mother !=null && mother.getIndividualId().equals(motherId))){
-							if("Male".equalsIgnoreCase(relativeSubject.getGender())){
+					}
+					else {
+						if ((father != null && father.getIndividualId().equals(fatherId)) || (mother != null && mother.getIndividualId().equals(motherId))) {
+							if ("Male".equalsIgnoreCase(relativeSubject.getGender())) {
 								relativeSubject.setRelationship("Half Brother");
 								brotherSisterList.add(relativeSubject);
-							}else if("Female".equalsIgnoreCase(relativeSubject.getGender())){
+							}
+							else if ("Female".equalsIgnoreCase(relativeSubject.getGender())) {
 								relativeSubject.setRelationship("Half Sister");
 								brotherSisterList.add(relativeSubject);
 							}
-						}	
-					}
-				}
-			}
-			
-			//Nieces and Nephews
-			for(RelationshipVo brotherOrSister : brotherSisterList){
-				for(RelationshipVo existingRelationship : relativeSubjects){
-					if("Male".equalsIgnoreCase(brotherOrSister.getGender()) && existingRelationship.getFatherId() != null && existingRelationship.getFatherId().equals(brotherOrSister.getIndividualId())){
-						if("Male".equalsIgnoreCase(existingRelationship.getGender())){
-							existingRelationship.setRelationship("Nephew");
-						}else if("Female".equalsIgnoreCase(existingRelationship.getGender())){
-							existingRelationship.setRelationship("Niece");
-						}
-						
-					}else if("Female".equalsIgnoreCase(brotherOrSister.getGender()) && existingRelationship.getMotherId() != null && existingRelationship.getMotherId().equals(brotherOrSister.getIndividualId())){
-						if("Male".equalsIgnoreCase(existingRelationship.getGender())){
-							existingRelationship.setRelationship("Nephew");
-						}else if("Female".equalsIgnoreCase(existingRelationship.getGender())){
-							existingRelationship.setRelationship("Niece");
 						}
 					}
 				}
 			}
-			
-			
-			//Children
+
+			// Nieces and Nephews
+			for (RelationshipVo brotherOrSister : brotherSisterList) {
+				for (RelationshipVo existingRelationship : relativeSubjects) {
+					if ("Male".equalsIgnoreCase(brotherOrSister.getGender()) && existingRelationship.getFatherId() != null && existingRelationship.getFatherId().equals(brotherOrSister.getIndividualId())) {
+						if ("Male".equalsIgnoreCase(existingRelationship.getGender())) {
+							existingRelationship.setRelationship("Nephew");
+						}
+						else if ("Female".equalsIgnoreCase(existingRelationship.getGender())) {
+							existingRelationship.setRelationship("Niece");
+						}
+
+					}
+					else if ("Female".equalsIgnoreCase(brotherOrSister.getGender()) && existingRelationship.getMotherId() != null
+							&& existingRelationship.getMotherId().equals(brotherOrSister.getIndividualId())) {
+						if ("Male".equalsIgnoreCase(existingRelationship.getGender())) {
+							existingRelationship.setRelationship("Nephew");
+						}
+						else if ("Female".equalsIgnoreCase(existingRelationship.getGender())) {
+							existingRelationship.setRelationship("Niece");
+						}
+					}
+				}
+			}
+
+			// Children
 			Queue<RelationshipVo> childrenQueue = new LinkedList<RelationshipVo>();
-			
-			for(int i=0;i<relativeSubjects.size();++i){
+
+			for (int i = 0; i < relativeSubjects.size(); ++i) {
 				relativeSubject = relativeSubjects.get(i);
-				String fatherId=relativeSubject.getFatherId();
-				String motherId=relativeSubject.getMotherId();
-				if((probandRelationship.getIndividualId().equals(fatherId)) ||(probandRelationship.getIndividualId().equals(motherId))){
-					if("Male".equalsIgnoreCase(relativeSubject.getGender())){
+				String fatherId = relativeSubject.getFatherId();
+				String motherId = relativeSubject.getMotherId();
+				if ((probandRelationship.getIndividualId().equals(fatherId)) || (probandRelationship.getIndividualId().equals(motherId))) {
+					if ("Male".equalsIgnoreCase(relativeSubject.getGender())) {
 						relativeSubject.setRelationship("Son");
 						childrenQueue.add(relativeSubject);
-					}else if("Female".equalsIgnoreCase(relativeSubject.getGender())){
+					}
+					else if ("Female".equalsIgnoreCase(relativeSubject.getGender())) {
 						relativeSubject.setRelationship("Daughter");
 						childrenQueue.add(relativeSubject);
 					}
 				}
 			}
-			
-			//Grand Children
-			while((relativeSubject = childrenQueue.poll())!=null ){
-				for(RelationshipVo relative:relativeSubjects){
-					if(relativeSubject.getIndividualId().equals(relative.getFatherId()) || relativeSubject.getIndividualId().equals(relative.getMotherId())){
-						
+
+			// Grand Children
+			while ((relativeSubject = childrenQueue.poll()) != null) {
+				for (RelationshipVo relative : relativeSubjects) {
+					if (relativeSubject.getIndividualId().equals(relative.getFatherId()) || relativeSubject.getIndividualId().equals(relative.getMotherId())) {
+
 						int relativeIndex = relative.getRelativeIndex();
-						if("Male".equals(relative.getGender())){
-							relative.setRelationship(createRelationship("",++relativeIndex,"Grandson"));
+						if ("Male".equals(relative.getGender())) {
+							relative.setRelationship(createRelationship("", ++relativeIndex, "Grandson"));
 						}
-						else if("Female".equals(relative.getGender())){
-							relative.setRelationship(createRelationship("",++relativeIndex,"Granddaughter"));
+						else if ("Female".equals(relative.getGender())) {
+							relative.setRelationship(createRelationship("", ++relativeIndex, "Granddaughter"));
 						}
 						relative.setRelativeIndex(relativeIndex);
 						childrenQueue.add(relative);
-					
-					}	
+
+					}
 				}
 			}
-						
-			//Select uncles and aunts
+
+			// Select uncles and aunts
 			List<RelationshipVo> uncleAuntList = new ArrayList<RelationshipVo>();
 			for (RelationshipVo existingRelationship : relativeSubjects) {
-				//Paternal uncles and aunts
-				if((father != null &&father.getIndividualId().equals(existingRelationship.getIndividualId()))
-						|| (mother !=null && mother.getIndividualId().equals(existingRelationship.getIndividualId()))){
+				// Paternal uncles and aunts
+				if ((father != null && father.getIndividualId().equals(existingRelationship.getIndividualId()))
+						|| (mother != null && mother.getIndividualId().equals(existingRelationship.getIndividualId()))) {
 					continue;
 				}
-				
-				if((paternalGF != null && paternalGF.getIndividualId().equalsIgnoreCase(existingRelationship.getFatherId()))
-						|| (paternalGM != null && paternalGM.getIndividualId().equalsIgnoreCase(existingRelationship.getMotherId()))){
-					if("Male".equalsIgnoreCase(existingRelationship.getGender())){
+
+				if ((paternalGF != null && paternalGF.getIndividualId().equalsIgnoreCase(existingRelationship.getFatherId()))
+						|| (paternalGM != null && paternalGM.getIndividualId().equalsIgnoreCase(existingRelationship.getMotherId()))) {
+					if ("Male".equalsIgnoreCase(existingRelationship.getGender())) {
 						existingRelationship.setRelationship("Paternal Uncle");
 						uncleAuntList.add(existingRelationship);
-					}else if("Female".equalsIgnoreCase(existingRelationship.getGender())){
+					}
+					else if ("Female".equalsIgnoreCase(existingRelationship.getGender())) {
 						existingRelationship.setRelationship("Paternal Aunt");
 						uncleAuntList.add(existingRelationship);
 					}
 				}
-				if((maternalGF != null && maternalGF.getIndividualId().equalsIgnoreCase(existingRelationship.getFatherId()))
-						|| (maternalGM != null && maternalGM.getIndividualId().equalsIgnoreCase(existingRelationship.getMotherId()))){
-					if("Male".equalsIgnoreCase(existingRelationship.getGender())){
+				if ((maternalGF != null && maternalGF.getIndividualId().equalsIgnoreCase(existingRelationship.getFatherId()))
+						|| (maternalGM != null && maternalGM.getIndividualId().equalsIgnoreCase(existingRelationship.getMotherId()))) {
+					if ("Male".equalsIgnoreCase(existingRelationship.getGender())) {
 						existingRelationship.setRelationship("Maternal Uncle");
 						uncleAuntList.add(existingRelationship);
-					}else if("Female".equalsIgnoreCase(existingRelationship.getGender())){
+					}
+					else if ("Female".equalsIgnoreCase(existingRelationship.getGender())) {
 						existingRelationship.setRelationship("Maternal Aunt");
 						uncleAuntList.add(existingRelationship);
 					}
 				}
 			}
-			
-			//First Cousins
-			for(RelationshipVo uncleOrAunty : uncleAuntList){
-				for(RelationshipVo existingRelationship : relativeSubjects){
-					if("Male".equalsIgnoreCase(uncleOrAunty.getGender()) && existingRelationship.getFatherId() != null && existingRelationship.getFatherId().equals(uncleOrAunty.getIndividualId())){
+
+			// First Cousins
+			for (RelationshipVo uncleOrAunty : uncleAuntList) {
+				for (RelationshipVo existingRelationship : relativeSubjects) {
+					if ("Male".equalsIgnoreCase(uncleOrAunty.getGender()) && existingRelationship.getFatherId() != null && existingRelationship.getFatherId().equals(uncleOrAunty.getIndividualId())) {
 						existingRelationship.setRelationship("First Cousin");
-						
-					}else if("Female".equalsIgnoreCase(uncleOrAunty.getGender()) && existingRelationship.getMotherId() != null && existingRelationship.getMotherId().equals(uncleOrAunty.getIndividualId())){
+
+					}
+					else if ("Female".equalsIgnoreCase(uncleOrAunty.getGender()) && existingRelationship.getMotherId() != null && existingRelationship.getMotherId().equals(uncleOrAunty.getIndividualId())) {
 						existingRelationship.setRelationship("First Cousin");
 					}
 				}
 			}
-			
-			//Twin relationships
-//			for(RelationshipVo relationshipVo :relativeSubjects){
-//				List<RelationshipVo> siblings = getSubjectPedigreeTwinList(relationshipVo.getIndividualId(), studyId);
-//				for (RelationshipVo existingRelationship : relativeSubjects) {
-//					for (RelationshipVo sibling : siblings) {
-//						if (existingRelationship.getIndividualId().equals(sibling.getIndividualId())) {
-//							existingRelationship.setTwin(sibling.getTwin());
-//						}
-//					}
-//				}
-//			}
+
+			// Twin relationships
+			// for(RelationshipVo relationshipVo :relativeSubjects){
+			// List<RelationshipVo> siblings = getSubjectPedigreeTwinList(relationshipVo.getIndividualId(), studyId);
+			// for (RelationshipVo existingRelationship : relativeSubjects) {
+			// for (RelationshipVo sibling : siblings) {
+			// if (existingRelationship.getIndividualId().equals(sibling.getIndividualId())) {
+			// existingRelationship.setTwin(sibling.getTwin());
+			// }
+			// }
+			// }
+			// }
 			processTwinRelationships(relativeSubjects, studyId);
-			
-			
-			
-			//Remove proband from the list
+
+			// Remove proband from the list
 			relativeSubjects.remove(0);
 		}
-		
+
 		return relativeSubjects;
 	}
-	
-	private String createRelationship(String prefix,int count,String suffix){
-		String great=" ";
-		for (int i =1;i<count;++i){
-			great=great+"G/";
+
+	private String createRelationship(String prefix, int count, String suffix) {
+		String great = " ";
+		for (int i = 1; i < count; ++i) {
+			great = great + "G/";
 		}
-		
-		return prefix +great+suffix;
-				
+
+		return prefix + great + suffix;
+
 	}
-	
-	private int getRelativePosition(String individualUID, List<RelationshipVo> relationshipList){
-		int index=-1;
-		
-		for(RelationshipVo obj:relationshipList ){
+
+	private int getRelativePosition(String individualUID, List<RelationshipVo> relationshipList) {
+		int index = -1;
+
+		for (RelationshipVo obj : relationshipList) {
 			++index;
-			if(individualUID.equals(obj.getIndividualId())){
+			if (individualUID.equals(obj.getIndividualId())) {
 				break;
 			}
 		}
 		return index;
 	}
 
-	
-	private RelativeCapsule createSubjectRelativeCapsule(RelationshipVo relationshipVo,String familyUID){	
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy.MM.dd");
-		RelativeCapsule relative=new RelativeCapsule();
+	private RelativeCapsule createSubjectRelativeCapsule(RelationshipVo relationshipVo, String familyUID) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+		RelativeCapsule relative = new RelativeCapsule();
 		relative.setFamilyId(familyUID);
 		relative.setIndividualId(relationshipVo.getIndividualId());
-		if(relationshipVo.getGender() !=null && "Male".equalsIgnoreCase(relationshipVo.getGender())){
+
+		if ("Male".equalsIgnoreCase(relationshipVo.getGender())) {
 			relative.setGender("M");
-		}else if(relationshipVo.getGender() !=null && "Female".equalsIgnoreCase(relationshipVo.getGender())){
+		}
+		else if ("Female".equalsIgnoreCase(relationshipVo.getGender())) {
 			relative.setGender("F");
 		}
-		else{
+		else {
 			relative.setGender("0");
 		}
-		
-		try{
-			String dob=sdf.format(relationshipVo.getDob());
+
+		try {
+			String dob = sdf.format(relationshipVo.getDob());
 			relative.setDob(dob);
-		}catch(Exception e){
-			
 		}
-		if(relationshipVo.getDeceased() !=null && "Deceased".equalsIgnoreCase(relationshipVo.getDeceased())){
+		catch (Exception e) {
+
+		}
+
+		if ("Deceased".equalsIgnoreCase(relationshipVo.getDeceased())) {
 			relative.setDeceased("Y");
 		}
-		
-		if("0".equalsIgnoreCase(relationshipVo.getAffectedStatus())){
+
+		if ("0".equalsIgnoreCase(relationshipVo.getAffectedStatus())) {
 			relative.setAffected("Y");
 		}
-		
+
+		relative.setAge(calculateRelativeAge(relationshipVo));
+
 		return relative;
-	}	 
-	
-	public void create(LinkSubjectPedigree pedigree){
+	}
+
+	private String calculateRelativeAge(final RelationshipVo relationshipVo) {
+		String age = null;
+
+		if ("Alive".equalsIgnoreCase(relationshipVo.getDeceased()) && relationshipVo.getDob() != null) {
+			age = calculatePedigreeAge(relationshipVo.getDob(), null);
+		}
+		else if ("Deceased".equalsIgnoreCase(relationshipVo.getDeceased()) && relationshipVo.getDob() != null && relationshipVo.getDod() != null) {
+			age = calculatePedigreeAge(relationshipVo.getDob(), relationshipVo.getDod());
+		}
+		return age;
+	}
+
+	private String calculatePedigreeAge(Date birthDate, Date selectDate) {
+		String age = null;
+		LocalDate oldDate = null;
+		LocalDate newDate = null;
+
+		oldDate = new LocalDate(birthDate);
+
+		if (selectDate != null) {
+			newDate = new LocalDate(selectDate);
+		}
+		else {
+			newDate = new LocalDate();
+		}
+
+		Period period = new Period(oldDate, newDate, PeriodType.yearMonthDay());
+		int years = period.getYears();
+		age = "" + (years < 1 ? "1&lt;" : years);
+
+		return age;
+	}
+
+	public void create(LinkSubjectPedigree pedigree) {
 		iStudyDao.create(pedigree);
 	}
-	
-	public void deleteRelationship(final LinkSubjectPedigree relationship){
+
+	public void deleteRelationship(final LinkSubjectPedigree relationship) {
 		iStudyDao.deleteRelationship(relationship);
 	}
 
@@ -1828,8 +1855,8 @@ public class StudyServiceImpl implements IStudyService {
 
 		if (parentList != null && parentList.size() == 2) {
 			for (LinkSubjectPedigree subjectRelationship : parentList) {
-				if(subjectRelationship.getRelationship() != null){
-					if ( "father".equalsIgnoreCase(subjectRelationship.getRelationship().getName())) {
+				if (subjectRelationship.getRelationship() != null) {
+					if ("father".equalsIgnoreCase(subjectRelationship.getRelationship().getName())) {
 						father = subjectRelationship.getRelative();
 					}
 					else if ("mother".equalsIgnoreCase(subjectRelationship.getRelationship().getName())) {
@@ -1859,121 +1886,120 @@ public class StudyServiceImpl implements IStudyService {
 
 			Set<String> siblingUids = parentMap.keySet();
 			if (siblingUids != null && siblingUids.size() > 0) {
-				twinList = iStudyDao.getSubjectTwins(subjectUID,siblingUids, studyId);
+				twinList = iStudyDao.getSubjectTwins(subjectUID, siblingUids, studyId);
 			}
 		}
 
 		return twinList;
 	}
-	
-	public void processPedigreeTwinRelationship(final RelationshipVo relationshipVo, final String subjectUid, final Long studyId){
-//		if("NT".equalsIgnoreCase(relationshipVo.getTwin())){
-		if(relationshipVo.getTwin()==null){
-			if(relationshipVo.getId() != null){
+
+	public void processPedigreeTwinRelationship(final RelationshipVo relationshipVo, final String subjectUid, final Long studyId) {
+		// if("NT".equalsIgnoreCase(relationshipVo.getTwin())){
+		if (relationshipVo.getTwin() == null) {
+			if (relationshipVo.getId() != null) {
 				LinkSubjectTwin twin = new LinkSubjectTwin();
 				twin.setId(relationshipVo.getId());
 				iStudyDao.delete(twin);
 			}
-		}else{
+		}
+		else {
 			List<TwinType> twinTypes = iStudyDao.getTwinTypes();
-			for(TwinType type:twinTypes){
-				if(relationshipVo.getTwin().equalsIgnoreCase(type.getName())){
+			for (TwinType type : twinTypes) {
+				if (relationshipVo.getTwin().equalsIgnoreCase(type.getName())) {
 					LinkSubjectTwin twin = new LinkSubjectTwin();
 					twin.setTwinType(type);
-					
-					Study study= iArkCommonService.getStudy(studyId);
-					try{
+
+					Study study = iArkCommonService.getStudy(studyId);
+					try {
 						LinkSubjectStudy subject1 = iArkCommonService.getSubjectByUID(subjectUid, study);
 						LinkSubjectStudy subject2 = iArkCommonService.getSubjectByUID(relationshipVo.getIndividualId(), study);
-						
+
 						twin.setFirstSubject(subject1);
 						twin.setSecondSubject(subject2);
 						twin.setId(relationshipVo.getId());
-						if(twin.getId() != null){
+						if (twin.getId() != null) {
 							iStudyDao.update(twin);
 						}
-						else{
+						else {
 							iStudyDao.create(twin);
-						}		
+						}
 					}
-					catch(Exception e){
+					catch (Exception e) {
 						e.printStackTrace();
 					}
 					break;
-					
+
 				}
 			}
 		}
 	}
-	
+
 	public List<TwinType> getTwinTypes() {
 		// TODO Auto-generated method stub
 		return iStudyDao.getTwinTypes();
 	}
-	
-	public long getRelationshipCount(final String subjectUID,final Long studyId){
+
+	public long getRelationshipCount(final String subjectUID, final Long studyId) {
 		return iStudyDao.getRelationshipCount(subjectUID, studyId);
 	}
-	
+
 	private void processTwinRelationships(List<RelationshipVo> relatives, Long studyId) {
 		Set<String> uidSet = new HashSet<String>();
-		for(RelationshipVo relationship:relatives){
+		for (RelationshipVo relationship : relatives) {
 			uidSet.add(relationship.getIndividualId());
 		}
 		List<LinkSubjectTwin> twins = getTwins(uidSet, studyId);
-		for(RelationshipVo relationship:relatives){
-			String individualId=relationship.getIndividualId();
-			for(LinkSubjectTwin twin: twins){
-				if(individualId.equals(twin.getFirstSubject().getSubjectUID())
-						|| individualId.equals(twin.getSecondSubject().getSubjectUID())){
-					if("MZ".equalsIgnoreCase(twin.getTwinType().getName())){
+		for (RelationshipVo relationship : relatives) {
+			String individualId = relationship.getIndividualId();
+			for (LinkSubjectTwin twin : twins) {
+				if (individualId.equals(twin.getFirstSubject().getSubjectUID()) || individualId.equals(twin.getSecondSubject().getSubjectUID())) {
+					if ("MZ".equalsIgnoreCase(twin.getTwinType().getName())) {
 						relationship.setMz("MZ");
 					}
-					else if("DZ".equalsIgnoreCase(twin.getTwinType().getName())){
+					else if ("DZ".equalsIgnoreCase(twin.getTwinType().getName())) {
 						relationship.setDz("DZ");
 					}
 				}
 			}
 		}
 	}
-	
+
 	private void processTwinRelationshipCapsules(List<RelativeCapsule> relatives, Long studyId) {
 		Set<String> uidSet = new HashSet<String>();
-		for(RelativeCapsule relationship:relatives){
+		for (RelativeCapsule relationship : relatives) {
 			uidSet.add(relationship.getIndividualId());
 		}
 		List<LinkSubjectTwin> twins = getTwins(uidSet, studyId);
-		for(RelativeCapsule relationship:relatives){
-			String individualId=relationship.getIndividualId();
-			for(LinkSubjectTwin twin: twins){
-				if(individualId.equals(twin.getFirstSubject().getSubjectUID())
-						|| individualId.equals(twin.getSecondSubject().getSubjectUID())){
-					if("MZ".equalsIgnoreCase(twin.getTwinType().getName())){
+		for (RelativeCapsule relationship : relatives) {
+			String individualId = relationship.getIndividualId();
+			for (LinkSubjectTwin twin : twins) {
+				if (individualId.equals(twin.getFirstSubject().getSubjectUID()) || individualId.equals(twin.getSecondSubject().getSubjectUID())) {
+					if ("MZ".equalsIgnoreCase(twin.getTwinType().getName())) {
 						relationship.setMzTwin("Y");
 					}
-					else if("DZ".equalsIgnoreCase(twin.getTwinType().getName())){
+					else if ("DZ".equalsIgnoreCase(twin.getTwinType().getName())) {
 						relationship.setDzTwin("Y");
 					}
 				}
 			}
 		}
 	}
-	
+
 	public List<LinkSubjectTwin> getTwins(Set<String> subjectUids, Long studyId) {
 		// TODO Auto-generated method stub
 		return iStudyDao.getTwins(subjectUids, studyId);
 	}
-	
+
 	public List<CustomField> getBinaryCustomFieldsForPedigreeRelativesList(Long studyId) {
 		// TODO Auto-generated method stub
 		return iStudyDao.getBinaryCustomFieldsForPedigreeRelativesList(studyId);
 	}
-	
-	public StudyPedigreeConfiguration getStudyPedigreeConfiguration(Long studyId){
+
+	public StudyPedigreeConfiguration getStudyPedigreeConfiguration(Long studyId) {
 		return iStudyDao.getStudyPedigreeConfiguration(studyId);
 	}
-	
-	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config){
+
+	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config) {
 		iStudyDao.saveOrUpdateStudyPedigreeConfiguration(config);
 	}
 

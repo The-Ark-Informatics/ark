@@ -4,35 +4,35 @@ import java.io.Serializable;
 
 import com.x5.util.DataCapsule;
 
-public class RelativeCapsule implements DataCapsule,Serializable{
+public class RelativeCapsule implements DataCapsule, Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
-	
-	private String familyId;
-	private String individualId;
-	private String gender;
-	private String father;
-	private String mother;
-	private String deceased;
-	private String proband;
-	private String dob;
-	private String mzTwin;
-	private String dzTwin;
-	private String sampled;
-	private String affected;
-	private String relationship;
-	
-	public RelativeCapsule(){
-		
+
+	private String					familyId;
+	private String					individualId;
+	private String					gender;
+	private String					father;
+	private String					mother;
+	private String					deceased;
+	private String					proband;
+	private String					dob;
+	private String					mzTwin;
+	private String					dzTwin;
+	private String					sampled;
+	private String					affected;
+	private String					relationship;
+	private String					lineEnd;
+	private String					age;
+
+	public RelativeCapsule() {
+		this.lineEnd = "";
 	}
 
-	public RelativeCapsule(String familyId, String individualId, String gender,
-			String father, String mother, String deceased, String proband,
-			String dob, String mzTwin, String dzTwin, String sampled,
-			String affected) {
+	public RelativeCapsule(String familyId, String individualId, String gender, String father, String mother, String deceased, String proband, String dob, String mzTwin, String dzTwin, String sampled,
+			String affected, String age) {
 		this.familyId = familyId;
 		this.individualId = individualId;
 		this.gender = gender;
@@ -45,6 +45,8 @@ public class RelativeCapsule implements DataCapsule,Serializable{
 		this.dzTwin = dzTwin;
 		this.sampled = sampled;
 		this.affected = affected;
+		this.age = age;
+		this.lineEnd = "";
 	}
 
 	public String getFamilyId() {
@@ -136,7 +138,7 @@ public class RelativeCapsule implements DataCapsule,Serializable{
 	}
 
 	public String getAffected() {
-		return affected==null?".":affected;
+		return affected;
 	}
 
 	public void setAffected(String affected) {
@@ -151,21 +153,25 @@ public class RelativeCapsule implements DataCapsule,Serializable{
 		this.relationship = relationship;
 	}
 
+	public String getAge() {
+		return age;
+	}
+
+	public void setAge(String age) {
+		this.age = age;
+	}
+
+	public String getLineEnd() {
+		return lineEnd;
+	}
+
+	public void setLineEnd(String lineEnd) {
+		this.lineEnd = lineEnd;
+	}
+
 	public String[] getExports() {
-		  return new String[]{
-				     "getFamilyId",
-				     "getIndividualId",
-				     "getGender",
-				     "getFather",
-				     "getMother",
-				     "getDeceased",
-				     "getProband",
-				     "getDob",
-				     "getMzTwin",
-				     "getDzTwin",
-				     "getSampled",
-				     "getAffected",
-				     };
+		return new String[] { "getFamilyId", "getIndividualId", "getGender", "getFather", "getMother", "getDeceased", "getProband", "getDob", "getMzTwin", "getDzTwin", "getSampled", "getAffected",
+				"getLineEnd", "getAge" };
 	}
 
 	public String getExportPrefix() {

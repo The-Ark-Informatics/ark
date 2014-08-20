@@ -3,6 +3,7 @@ package au.org.theark.study.web.component.pedigree;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.Component;
@@ -90,8 +91,15 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 			protected Object load() {
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				String subjectUID= (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-				containerForm.getModelObject().setRelationshipList(studyService.generateSubjectPedigreeRelativeList(subjectUID,studyId));
+				List<RelationshipVo> relatives = studyService.generateSubjectPedigreeRelativeList(subjectUID,studyId);
+				containerForm.getModelObject().setRelationshipList(relatives);
 				pageableListView.removeAll();
+				if(relatives.size() > 2){
+					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("view").setEnabled(true);
+				}
+				else{
+					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("view").setEnabled(false);
+				}
 				return containerForm.getModelObject().getRelationshipList();
 			}
 		};

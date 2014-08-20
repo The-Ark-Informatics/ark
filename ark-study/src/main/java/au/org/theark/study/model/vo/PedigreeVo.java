@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.StudyPedigreeConfiguration;
 
 public class PedigreeVo implements Serializable {

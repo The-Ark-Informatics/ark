@@ -6,14 +6,34 @@
 				<div class="searchPanelBreaker">
 					&nbsp;
 				</div>
-
-				<div class="panelContentLeft">
+				
+				<div class="panelContentLeft" style="width:150px;">
 					&nbsp;
 				</div>
-				<div class="fldLabel">
+				<div class="fldLabel" style="width:125px;">
+					<div class="label">
+						<label for="dob">
+							<wicket:message key="pedigree.plotAffectedStatus">
+								status field:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<input type="checkbox" wicket:id="pedigreeConfig.statusAllowed"/>
+				</div>
+				
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div class="panelContentLeft" style="width:150px;">
+					&nbsp;
+				</div>
+				<div class="fldLabel" style="width:125px;">
 					<div class="label">
 						<label for="effectedStatus">
-							<wicket:message key="pedigree.effectedStatus">
+							<wicket:message key="pedigree.affectedStatus">
 								status field:
 							</wicket:message>
 						</label>
@@ -33,15 +53,18 @@
 						</select>
 					</div>
 				</div>
-
-				<div class="panelMargin">
+				
+				<div class="searchPanelBreaker">
 					&nbsp;
 				</div>
-
-				<div class="fldLabel">
+				
+				<div class="panelContentLeft" style="width:150px;">
+					&nbsp;
+				</div>
+				<div class="fldLabel" style="width:125px;">
 					<div class="label">
 						<label for="dob">
-							<wicket:message key="pedigree.showDob">
+							<wicket:message key="pedigree.plotdateOfBirth">
 								status field:
 							</wicket:message>
 						</label>
@@ -49,6 +72,26 @@
 				</div>
 				<div class="fldControl">
 					<input type="checkbox" wicket:id="pedigreeConfig.dobAllowed"/>
+				</div>
+				
+				<div class="searchPanelBreaker">
+					&nbsp;
+				</div>
+				
+				<div class="panelContentLeft" style="width:150px;">
+					&nbsp;
+				</div>
+				<div class="fldLabel" style="width:125px;">
+					<div class="label">
+						<label for="dob">
+							<wicket:message key="pedigree.plotAge">
+								status field:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div class="fldControl">
+					<input type="checkbox" wicket:id="pedigreeConfig.ageAllowed"/>
 				</div>
 				
 				<div class="searchPanelBreaker">

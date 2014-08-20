@@ -79,6 +79,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 
 	public PedigreeDisplayPanel(String id) {
 		super(id);
+		this.setOutputMarkupId(true);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -114,9 +115,15 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 		StringBuffer columnList = new StringBuffer("IndividualId");
 		Study study= iArkCommonService.getStudy(studyId);
 		StudyPedigreeConfiguration config=study.getPedigreeConfiguration();
+		
 		if(config!=null && config.isDobAllowed()){
 			columnList.append(" DOB");
 		}
+		
+		if(config!=null && config.isAgeAllowed()){
+			columnList.append(" Age");
+		}
+		
 		
 		RelativeCapsule[] relatives = studyService.generateSubjectPedigreeImageList(subjectUID, studyId);
 
@@ -190,7 +197,6 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 
 				XPath xpath = XPathFactory.newInstance().newXPath();
 
-//				String xPathExpression = "//text[1]";
 				String xPathExpression = "//text";
 				
 				NodeList nodes = (NodeList) xpath.evaluate(xPathExpression, doc, XPathConstants.NODESET);
@@ -295,6 +301,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 				return tempFile;
 			}
 		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
+		downloadLink.setOutputMarkupId(true);
 		
 		downloadLink.add(new Behavior() {
 			private static final long	serialVersionUID	= 1L;
@@ -335,6 +342,8 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 				return f;
 			}
 		}).setCacheDuration(Duration.NONE).setDeleteAfterDownload(true);
+		
+		pdfLink.setOutputMarkupId(true);
 		
 		pdfLink.add(new Behavior() {
 			private static final long	serialVersionUID	= 1L;
