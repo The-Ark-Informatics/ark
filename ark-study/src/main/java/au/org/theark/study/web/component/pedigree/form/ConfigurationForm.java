@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -50,6 +51,10 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 
 	private CheckBox									dobChkBox;
 
+	private CheckBox									statusChkBox;
+	
+	private CheckBox									ageChkBox;
+
 	protected AjaxButton								saveButton;
 
 	protected AjaxButton								cancelButton;
@@ -66,19 +71,54 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 	}
 
 	protected void initialiseSearchForm() {
+		
+		this.setOutputMarkupId(true);
 
 		final Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
 		final Study study = iArkCommonService.getStudy(studyId);
 		StudyPedigreeConfiguration config = study.getPedigreeConfiguration();
 
-		cpmModel.getObject().setPedigreeConfig(config);
-
+		if(config!=null){
+			cpmModel.getObject().setPedigreeConfig(config);
+		}
+		
 		customFieldList = studyService.getBinaryCustomFieldsForPedigreeRelativesList(studyId);
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		effectedStatuses = new DropDownChoice("pedigreeConfig.customField", this.customFieldList, defaultChoiceRenderer);
-
+		effectedStatuses.setOutputMarkupId(true);
+		
+		if(config !=null && config.isStatusAllowed() !=null  && config.isStatusAllowed()){
+			effectedStatuses.setEnabled(true);
+		}
+		else{
+			effectedStatuses.setEnabled(false);
+			cpmModel.getObject().getPedigreeConfig().setCustomField(null);
+		}
+		
 		dobChkBox = new CheckBox("pedigreeConfig.dobAllowed");
+		
+		statusChkBox = new CheckBox("pedigreeConfig.statusAllowed");
+		
+		statusChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+
+			private static final long	serialVersionUID	= -4514605801401294450L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				cpmModel.getObject().getPedigreeConfig().setCustomField(null);
+				if (cpmModel.getObject().getPedigreeConfig().isStatusAllowed()) {
+					effectedStatuses.setEnabled(true); 
+				}
+				else {
+					effectedStatuses.setEnabled(false);
+				}
+				target.add(effectedStatuses);
+			}
+		});
+		
+		
+		ageChkBox = new CheckBox("pedigreeConfig.ageAllowed");
 
 		saveButton = new AjaxButton(au.org.theark.core.Constants.SAVE) {
 
@@ -107,6 +147,8 @@ public class ConfigurationForm extends Form<PedigreeVo> {
 	protected void addSearchComponentsToForm() {
 		add(effectedStatuses);
 		add(dobChkBox);
+		add(statusChkBox);
+		add(ageChkBox);
 		add(saveButton);
 		add(cancelButton);
 

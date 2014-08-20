@@ -86,7 +86,8 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				modalWindow.setTitle("Set Father");
-
+				modalWindow.setInitialWidth(90);
+				modalWindow.setInitialHeight(100);
 				modalWindow.setContent(new PedigreeParentContainerPanel("content", arkContextMarkup, studyNameMarkup, studyLogoMarkup, modalWindow, Constants.MALE, getFormModelObject()
 						.getRelationshipList()));
 				modalWindow.show(target);
@@ -99,6 +100,8 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				modalWindow.setTitle("Set Mother");
+				modalWindow.setInitialWidth(90);
+				modalWindow.setInitialHeight(100);
 				modalWindow.setContent(new PedigreeParentContainerPanel("content", arkContextMarkup, studyNameMarkup, studyLogoMarkup, modalWindow, Constants.FEMALE, getFormModelObject()
 						.getRelationshipList()));
 				modalWindow.show(target);
@@ -111,6 +114,8 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				modalWindow.setTitle("Set Twins");
+				modalWindow.setInitialWidth(90);
+				modalWindow.setInitialHeight(100);
 				modalWindow.setContent(new PedigreeTwinContainerPanel("content", modalWindow));
 				modalWindow.show(target);
 			}
@@ -123,6 +128,8 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				modalWindow.setTitle("Pedigree View");
+				modalWindow.setInitialWidth(90);
+				modalWindow.setInitialHeight(90);
 				modalWindow.setContent(new PedigreeDisplayPanel("content"));
 				modalWindow.show(target);
 			}
@@ -133,6 +140,9 @@ public class SearchForm extends Form<PedigreeVo> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				modalWindow.setTitle("Configure");
+				modalWindow.setInitialWidth(35);
+				modalWindow.setInitialHeight(60);
+//				modalWindow.setResizable(true);
 				modalWindow.setContent(new PedigreeConfigurationContainerPanel("content", modalWindow));
 				modalWindow.show(target);
 			}

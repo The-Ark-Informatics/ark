@@ -2062,6 +2062,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		projectionList.add(Projections.property("sub.subjectUID"), "individualId");
 		projectionList.add(Projections.property("subGender.name"), "gender");
 		projectionList.add(Projections.property("subPerson.dateOfBirth"), "dob");
+		projectionList.add(Projections.property("subPerson.dateOfDeath"), "dod");
 		projectionList.add(Projections.property("subVitStatus.name"), "deceased");
 		
 		projectionList.add(Projections.property("scfd.textDataValue"), "affectedStatus");
@@ -2103,6 +2104,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		projectionList.add(Projections.property("rel.subjectUID"), "individualId");
 		projectionList.add(Projections.property("relGender.name"), "gender");
 		projectionList.add(Projections.property("relPerson.dateOfBirth"), "dob");
+		projectionList.add(Projections.property("relPerson.dateOfDeath"), "dod");
 		projectionList.add(Projections.property("relPerson.firstName"), "firstName");
 		projectionList.add(Projections.property("relPerson.lastName"), "lastName");
 		projectionList.add(Projections.property("relVitStatus.name"), "deceased");
@@ -2145,6 +2147,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		projectionList.add(Projections.property("sub.subjectUID"), "individualId");
 		projectionList.add(Projections.property("subGender.name"), "gender");
 		projectionList.add(Projections.property("subPerson.dateOfBirth"), "dob");
+		projectionList.add(Projections.property("subPerson.dateOfDeath"), "dod");
 		projectionList.add(Projections.property("subPerson.firstName"), "firstName");
 		projectionList.add(Projections.property("subPerson.lastName"), "lastName");
 		projectionList.add(Projections.property("subVitStatus.name"), "deceased");
