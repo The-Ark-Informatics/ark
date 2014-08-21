@@ -23,12 +23,15 @@ public class StudyPedigreeConfiguration implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long id;
 	private Study study;
 	private CustomField customField;
 	private Boolean dobAllowed;
-	
+
+	private Boolean statusAllowed;
+	private Boolean ageAllowed;
+
 	@Id
 	@SequenceGenerator(name = "study_pedigree_config_generator", sequenceName = "STUDYPEDIGREECONFIG_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "study_pedigree_config_generator")
@@ -36,36 +39,56 @@ public class StudyPedigreeConfiguration implements Serializable {
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return study;
 	}
+
 	public void setStudy(Study study) {
 		this.study = study;
 	}
-	
+
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CUSTOM_FIELD_ID")
 	public CustomField getCustomField() {
 		return customField;
 	}
+
 	public void setCustomField(CustomField customField) {
 		this.customField = customField;
 	}
-	
+
 	@Column(name = "DOB_ALLOWED")
 	public Boolean isDobAllowed() {
 		return dobAllowed;
 	}
+
 	public void setDobAllowed(Boolean dobAllowed) {
 		this.dobAllowed = dobAllowed;
 	}
-	
-	
+
+	@Column(name = "STATUS_ALLOWED")
+	public Boolean isStatusAllowed() {
+		return statusAllowed;
+	}
+
+	public void setStatusAllowed(Boolean statusAllowed) {
+		this.statusAllowed = statusAllowed;
+	}
+
+	@Column(name = "AGE_ALLOWED")
+	public Boolean isAgeAllowed() {
+		return ageAllowed;
+	}
+
+	public void setAgeAllowed(Boolean ageAllowed) {
+		this.ageAllowed = ageAllowed;
+	}
 
 }
