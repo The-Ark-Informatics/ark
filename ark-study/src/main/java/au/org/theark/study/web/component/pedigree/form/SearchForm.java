@@ -139,10 +139,9 @@ public class SearchForm extends Form<PedigreeVo> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				modalWindow.setTitle("Configure");
+				modalWindow.setTitle("Pedigree Configuration");
 				modalWindow.setInitialWidth(35);
 				modalWindow.setInitialHeight(60);
-//				modalWindow.setResizable(true);
 				modalWindow.setContent(new PedigreeConfigurationContainerPanel("content", modalWindow));
 				modalWindow.show(target);
 			}
