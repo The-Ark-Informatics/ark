@@ -48,6 +48,7 @@ import au.org.theark.registry.web.menu.RegistryTabProviderImpl;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.web.menu.AdminTabProviderImpl;
+import au.org.theark.web.menu.DiseaseTabProviderImpl;
 import au.org.theark.web.menu.LimsTabProviderImpl;
 import au.org.theark.web.menu.MainTabProviderImpl;
 import au.org.theark.web.menu.PhenotypicTabProviderImpl;
@@ -171,12 +172,21 @@ public class HomePage extends BasePage {
 			arkModuleList = iArkCommonService.getArkModuleListByArkUser(arkUser);
 			
 			for (ArkModule arkModule: arkModuleList) {
+				log.info("arkModule: " + arkModule.getName());
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_STUDY)) {
 					// Study
 					studyMainTabProvider = new MainTabProviderImpl(arkModule.getName());
 					// Pass in the Study logo mark up, to allow dynamic logo reference
 					moduleTabsList = studyMainTabProvider.buildTabs(this.studyNameMarkup, this.studyLogoMarkup, this.arkContextPanelMarkup);
 				}
+				
+				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_DISEASE)) {
+					//Disease
+					DiseaseTabProviderImpl diseaseTabProvider = new DiseaseTabProviderImpl(arkModule.getName());
+					List<ITab> diseaseTabList = diseaseTabProvider.buildTabs(this.arkContextPanelMarkup);
+					moduleTabsList.addAll(diseaseTabList);
+				}
+				
 
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC)) {
 					// Pheno

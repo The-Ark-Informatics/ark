@@ -1,0 +1,61 @@
+<wicket:panel>
+	<div class="searchPanelBreaker">
+		&nbsp;
+	</div>
+<!-- TODO ASAP  do we need this div??? -->
+	<div wicket:id="resultsWmc">
+	<table width="0%" cellspacing="0">
+	</table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">
+				&nbsp;
+			</th>
+			<th width="96%">
+				<label for="disease.name">
+					<wicket:message	key="nameHeader">
+						Name:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="2%">
+				&nbsp;
+			</th>
+		</tr>
+		<!--	The Data Result Set -->
+		<tr wicket:id="diseaseList">
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="96%">
+				<a href="#" wicket:id="disease.name">
+					<span wicket:id="nameLabel">
+						Disease
+					</span>
+				</a>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+	
+		<tfoot>
+			<tr>
+				<td width="2%">
+					&nbsp;
+				</td>
+				<td width="96%" colspan="9">
+					<span wicket:id="navigator" class="a">
+					</span>			
+				</td>
+				<td width="2%">
+					&nbsp;
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+	<!-- <table width="0%" cellspacing="0">
+		<wicket:container wicket:id="toolbars"></wicket:container>
+	</table> -->
+	</div>
+</wicket:panel>
