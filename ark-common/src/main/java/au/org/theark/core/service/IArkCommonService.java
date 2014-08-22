@@ -112,6 +112,7 @@ import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.vo.DiseaseVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
