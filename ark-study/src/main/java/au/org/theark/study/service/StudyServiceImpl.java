@@ -1821,7 +1821,7 @@ public class StudyServiceImpl implements IStudyService {
 
 		Period period = new Period(oldDate, newDate, PeriodType.yearMonthDay());
 		int years = period.getYears();
-		age = "" + (years < 1 ? "1&lt;" : years);
+		age = "" + (years < 1 ? "&lt;1" : years);
 
 		return age;
 	}
