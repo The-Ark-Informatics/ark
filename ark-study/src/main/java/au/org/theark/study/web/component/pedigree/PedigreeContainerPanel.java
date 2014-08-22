@@ -1,5 +1,9 @@
 package au.org.theark.study.web.component.pedigree;
 
+import static au.org.theark.study.web.Constants.MADELINE_PEDIGREE_TEMPLATE;
+import static au.org.theark.study.web.Constants.ARK_PEDIGREE_TEMPLATE;
+import static au.org.theark.study.web.Constants.PEDIGREE_TEMPLATE_EXT;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -122,7 +126,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 
 				try {
 					Theme theme = new Theme();
-					Chunk chunk = theme.makeChunk("pedigree_template", "txt");
+					Chunk chunk = theme.makeChunk(MADELINE_PEDIGREE_TEMPLATE, PEDIGREE_TEMPLATE_EXT);
 					chunk.set("relatives", relatives);
 
 					String tmpDir = System.getProperty("java.io.tmpdir");
@@ -167,7 +171,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 
 				try {
 					Theme theme = new Theme();
-					Chunk chunk = theme.makeChunk("ark_pedigree_template", "txt");
+					Chunk chunk = theme.makeChunk(ARK_PEDIGREE_TEMPLATE, PEDIGREE_TEMPLATE_EXT);
 					chunk.set("arkrelatives", arkrelatives);
 
 					String tmpDir = System.getProperty("java.io.tmpdir");

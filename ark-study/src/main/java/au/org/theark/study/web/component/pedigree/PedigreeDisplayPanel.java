@@ -1,5 +1,8 @@
 package au.org.theark.study.web.component.pedigree;
 
+import static au.org.theark.study.web.Constants.MADELINE_PEDIGREE_TEMPLATE;
+import static au.org.theark.study.web.Constants.PEDIGREE_TEMPLATE_EXT;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -133,13 +136,7 @@ public class PedigreeDisplayPanel extends Panel implements IAjaxIndicatorAware {
 
 			try {
 				Theme theme = new Theme();
-				Chunk chunk = theme.makeChunk("pedigree_template", "txt");
-
-				// RelativeCapsule[] relatives={new RelativeCapsule("cs_008","i00045","M",".",".",".",".",".",".",".",".","."),
-				// new RelativeCapsule("cs_008","i00046","F",".",".",".",".",".",".",".",".","."),
-				// new RelativeCapsule("cs_008","i00047","F","i00045","i00046",".",".",".",".",".",".","."),
-				// new RelativeCapsule("cs_008","i00048","F","i00045","i00046",".","Y",".",".",".",".",".")};
-
+				Chunk chunk = theme.makeChunk(MADELINE_PEDIGREE_TEMPLATE, PEDIGREE_TEMPLATE_EXT);
 				chunk.set("relatives", relatives);
 
 				dataFile = new File(filePath + filePrefix + ".data");
