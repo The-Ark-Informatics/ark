@@ -52,12 +52,13 @@
 			<version>${ark-phenotypic.version}</version>
 		</dependency>
 
-		<!-- Ark Geno Module -->
+		<!-- Ark Genotypic Module -->
 		<dependency>
 			<groupId>au.org.theark.geno</groupId>
 			<artifactId>ark-geno</artifactId>
 			<version>${ark-geno.version}</version>
 		</dependency>
+		
 		
 		<!-- Ark Registry Module -->
 		<dependency>
@@ -154,6 +155,11 @@
 			<version>${jetty.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>au.org.theark.disease</groupId>
+			<artifactId>ark-disease</artifactId>
+			<version>${ark-disease.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 	 	<finalName>ark</finalName>
@@ -232,5 +238,6 @@
 		<ark-report.version>1.0.0</ark-report.version>
 		<ark-admin.version>1.0.0</ark-admin.version>
 		<ark-work-tracking.version>1.0.0</ark-work-tracking.version>
+		<ark-disease.version>1.0.0</ark-disease.version>
 	</properties>
 </project>
