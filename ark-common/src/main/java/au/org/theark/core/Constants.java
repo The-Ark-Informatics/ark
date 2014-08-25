@@ -29,7 +29,8 @@ public class Constants {
 	public static final String ARK_COMMON_SERVICE = "arkCommonService";
 	// public static final String ARK_STUDY_SERVICE = "StudyService";
 	public static final String ARK_CSV_LOADER_SERVICE = "arkCsvLoaderService";
-
+	public static final String ARK_DISEASE_SERVICE = "arkDiseaseService";
+	
 	/* Global constants */
 	public static final String STUDY_CONTEXT_ID = "studyId";
 	public static final String PERSON_CONTEXT_ID = "personId";
@@ -40,6 +41,11 @@ public class Constants {
 	public static final String MODULE_CONTEXT_NAME = "moduleName";
 	public static final String	COPY												= "copy";
 
+	/* Disease tabs */
+	
+	public static final String MENU_DISEASE_SUBMENU = "diseaseSubMenus";
+	
+	
 	/* Menu tabs */
 	public static final String MENU_SUBJECT_SUBMENU = "subjectSubMenus";
 	public static final String TAB_SUBJECT_DETAIL = "Participant Detail";
@@ -168,6 +174,7 @@ public class Constants {
 	public static final String ADMIN_SCHEMA = "admin";
 	public static final String GENO_SCHEMA = "geno";
 	public static final String CONFIG_SCHEMA = "config";
+	public static final String DISEASE_SCHEMA = "disease";
 
 	/* Geno fields for output in dataextraction - will later allow choice
 	 * - these are used in a linked hash map often, so please 
@@ -301,9 +308,13 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_CUSTOM_FIELD_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD = "BIOSPECIMEN_AND_BIOCOLLECTION_CUSTOM_FIELD_UPLOAD";
-	public static final String	FUNCTION_KEY_VALUE_DATA_EXTRACTION	= "DATA_EXTRACTION";
+	public static final String FUNCTION_KEY_VALUE_DATA_EXTRACTION	= "DATA_EXTRACTION";
 	public static final String FUNCTION_KEY_VALUE_PEDIGREE = "PEDIGREE";
 	public static final String FUNCTION_KEY_VALUE_GENO_TABLE = "GENO_TABLE";
+	
+	public static final String FUNCTION_KEY_VALUE_GENE = "GENE";
+	public static final String FUNCTION_KEY_VALUE_POSITION = "POSITION";
+	public static final String FUNCTION_KEY_VALUE_DISEASE = "DISEASE";
 
 	/* Ark Module Keys */
 	public static final String ARK_MODULE_KEY = "MODULE_KEY";
@@ -319,6 +330,7 @@ public class Constants {
 	public static final String ARK_MODULE_REPORTING = "Reporting";
 	public static final String ARK_MODULE_ADMIN = "Admin";
 	public static final String ARK_MODULE_WORKTRACKING = "Work Tracking";
+	public static final String ARK_MODULE_DISEASE = "Disease";
 
 	public static final char DEFAULT_DELIMITER_CHARACTER = ',';
 	public static final String DEFAULT_FILE_FORMAT = "CSV";
