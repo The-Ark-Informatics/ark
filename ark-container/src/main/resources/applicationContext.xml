@@ -157,6 +157,7 @@
 				<value>au.org.theark.core.model.audit.entity</value>
 				<value>au.org.theark.core.model.worktracking.entity</value>
 				<value>au.org.theark.core.model.disease.entity</value>
+				<value>au.org.theark.core.model.config.entity</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">
