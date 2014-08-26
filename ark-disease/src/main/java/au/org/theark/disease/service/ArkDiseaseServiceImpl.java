@@ -1,4 +1,4 @@
-package au.org.theark.core.service;
+package au.org.theark.disease.service;
 
 import java.util.List;
 
@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.dao.IDiseaseDao;
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.DiseaseVO;
 import au.org.theark.core.vo.GeneVO;
+import au.org.theark.disease.dao.IDiseaseDao;
 
 @Transactional
 @Service(Constants.ARK_DISEASE_SERVICE)

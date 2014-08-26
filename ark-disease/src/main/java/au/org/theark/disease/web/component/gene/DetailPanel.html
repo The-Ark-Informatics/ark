@@ -10,8 +10,7 @@
 
 				<div class="fldLabel">
 					<div class="label">
-						<label for="gene.name"><wicket:message
-								key="gene.name">Name:</wicket:message></label>
+						<label for="gene.name"><wicket:message key="gene.name">Name:</wicket:message></label>
 					</div>
 				</div>
 				<div class="fldControl">
@@ -21,20 +20,49 @@
 				</div>
 
 				<div class="detailPanelBreaker">&nbsp;</div>
-				
+
 				<wicket:enclosure child="associatedDiseasePalette">
 					<div class="customPanelBorder">
 						<div class="floatLeft50">
-							<div wicket:id="associatedDiseasePalette">
-								[Associated Disease Palette]
-							</div>
+							<div wicket:id="associatedDiseasePalette">[Associated
+								Disease Palette]</div>
 						</div>
-						
-						<div class="floatRight50">
-						</div>
+
+						<div class="floatRight50"></div>
 					</div>
 				</wicket:enclosure>
+
+				<table width="100%" cellspacing="0" class="dataview" border="0"
+					style="font-size: 0.9em;">
+					<tr>
+						<th width="2%">&nbsp;</th>
+						<th width="4%">ID</th>
+						<th width="82%">Name</th>
+						<th width="10%">&nbsp;</th>
+						<th width="2%">&nbsp;</th>
+					</tr>
+					<!--	The Data Result Set -->
+					<tr wicket:id="listEditor">
+						<td width="2%">&nbsp;</td>
+						<td width="4%"><span wicket:id="id"></span></td>
+						<td width="82%"><input wicket:id="name" type="text">
+							</input></td>
+						<td width="10%"><input type="button" wicket:id="delete" value="Delete"/></td>
+						<td width="2%">&nbsp;</td>
+					</tr>
+					<tfoot>
+						<tr>
+							<td width="2%">&nbsp;</td>
+							<td width="96%" colspan="3"><input wicket:id="new"
+								type="submit" wicket:message="value:button.new" /></td>
+							<td width="2%">&nbsp;</td>
+						</tr>
+					</tfoot>
+				</table>
+
 			</div>
+
+
 			<!--	Row 2 Action Buttons -->
 			<div wicket:id="editButtonContainer">
 				<div class="actionButtons">
