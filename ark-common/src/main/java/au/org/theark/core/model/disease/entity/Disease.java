@@ -98,8 +98,61 @@ public class Disease implements Serializable {
 	@Override
 	public String toString() {
 		return "Disease [id=" + id + ", name=" + name + ", study=" + study
-				+ ", customFieldGroup=" + customFieldGroup + ", genes=" 
+				+ ", customFieldGroup=" + customFieldGroup + ", genes=" + genes 
 				+ "]";
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((customFieldGroup == null) ? 0 : customFieldGroup.hashCode());
+		result = prime * result + ((genes == null) ? 0 : genes.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((study == null) ? 0 : study.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Disease other = (Disease) obj;
+		if (customFieldGroup == null) {
+			if (other.customFieldGroup != null)
+				return false;
+		} else if (!customFieldGroup.equals(other.customFieldGroup))
+			return false;
+		if (genes == null) {
+			if (other.genes != null)
+				return false;
+		} else if (!genes.equals(other.genes))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (study == null) {
+			if (other.study != null)
+				return false;
+		} else if (!study.equals(other.study))
+			return false;
+		return true;
+	}
+	
+	
 	
 }

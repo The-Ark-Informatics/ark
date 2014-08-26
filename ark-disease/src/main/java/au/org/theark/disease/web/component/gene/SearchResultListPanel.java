@@ -18,6 +18,9 @@
  ******************************************************************************/
 package au.org.theark.disease.web.component.gene;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -32,10 +35,12 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.hibernate.mapping.Array;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IArkDiseaseService;
@@ -62,6 +67,9 @@ public class SearchResultListPanel extends Panel {
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
+	@SpringBean(name = au.org.theark.core.Constants.ARK_DISEASE_SERVICE)
+	private IArkDiseaseService iArkDiseaseService;
+
 
 	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
@@ -131,14 +139,24 @@ public class SearchResultListPanel extends Panel {
 				
 				log.info(geneVO.toString());
 				
-//				GeneVO diseaseFromBackend = new GeneVO();
-//				
+				List<Disease> availableDiseases = iArkDiseaseService.getAvailableDiseasesForStudy(iArkCommonService.getStudy(sessionStudyId));
+				List<Disease> selectedDiseases = new ArrayList<Disease>(geneVO.getGene().getDiseases());
+
+				log.info("Selected Diseases:");
+				for(Disease d : selectedDiseases) {
+					log.info(d.toString());
+				}
+				
+				log.info("Available Diseases:");
+				for(Disease d : availableDiseases) {
+					log.info(d.toString());
+				}
+				
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-				
 				containerForm.setModelObject(geneVO);
+				containerForm.getModelObject().setAvailableDiseases(availableDiseases);
+				containerForm.getModelObject().setSelectedDiseases(selectedDiseases);
 				
-				// Set SubjectUID into context
-				// Set Study Logo
 			}
 		};
 		Label nameLinkLabel = new Label("nameLabel", geneVO.getGene().getName());

@@ -1,5 +1,7 @@
 package au.org.theark.disease.web.component.gene.form;
 
+import java.util.HashSet;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -12,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkDiseaseService;
@@ -19,6 +22,7 @@ import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.GeneVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.disease.web.component.gene.AssociatedDiseasePalettePanel;
 
 public class DetailForm extends AbstractDetailForm<GeneVO> {
 
@@ -29,6 +33,7 @@ public class DetailForm extends AbstractDetailForm<GeneVO> {
 	private WebMarkupContainer arkContextMarkupContainer;
 
 	private TextField<String> name;
+	private AssociatedDiseasePalettePanel<GeneVO> associatedDiseasePalettePanel;
 	
 	@SpringBean(name = Constants.ARK_DISEASE_SERVICE)
 	private IArkDiseaseService iArkDiseaseService;
@@ -40,6 +45,9 @@ public class DetailForm extends AbstractDetailForm<GeneVO> {
 
 	@Override
 	public void onBeforeRender() {
+		associatedDiseasePalettePanel = new AssociatedDiseasePalettePanel<GeneVO>("associatedDiseasePalette", containerForm.getModel());
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(associatedDiseasePalettePanel);
+		
 		if(!isNew()) deleteButton.setVisible(true);
 		super.onBeforeRender();
 	}
@@ -91,6 +99,8 @@ public class DetailForm extends AbstractDetailForm<GeneVO> {
 			gene.setStudy(iArkCommonService.getStudy(sessionStudyId));
 			
 			log.info("name: " + gene.getName());
+			
+			gene.setDiseases(new HashSet<Disease>(containerForm.getModelObject().getSelectedDiseases()));
 			
 			if(isNew()) {
 				iArkDiseaseService.save(gene);
