@@ -1,0 +1,1 @@
+DELETE FROM `study`.`ark_function` WHERE `ark_function`.`NAME`="Position";
