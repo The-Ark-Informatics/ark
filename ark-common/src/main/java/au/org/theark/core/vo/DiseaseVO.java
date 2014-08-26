@@ -49,7 +49,8 @@ public class DiseaseVO extends BaseVO {
 	@Override
 	public String toString() {
 		return "DiseaseVO [availableGenes="
-				+ availableGenes + ", selectedGenes=" + selectedGenes + "]";
+				+ availableGenes + ", selectedGenes=" + selectedGenes
+				+ ", disease=" + disease + "]";
 	}
 	
 }

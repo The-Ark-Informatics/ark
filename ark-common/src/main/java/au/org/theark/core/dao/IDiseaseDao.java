@@ -2,6 +2,7 @@ package au.org.theark.core.dao;
 
 import java.util.List;
 
+import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.DiseaseVO;
@@ -24,5 +25,7 @@ public interface IDiseaseDao {
 	public void delete(Object object);
 	
 	public List<Gene> getAvailableGenesForStudy(Study study);
+	
+	public List<Disease> getAvailableDiseasesForStudy(Study study);
 	
 }

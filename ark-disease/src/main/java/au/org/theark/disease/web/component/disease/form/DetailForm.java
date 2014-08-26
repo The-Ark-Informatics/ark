@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.disease.entity.Disease;
+import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkDiseaseService;
 import au.org.theark.core.util.ContextHelper;
@@ -141,9 +142,12 @@ public class DetailForm extends AbstractDetailForm<DiseaseVO> {
 			
 			log.info("name: " + disease.getName());
 			
-			log.info(containerForm.getModelObject().getSelectedGenes().toString());
+			log.info("Selected Genes: ");
+			for(Gene g : containerForm.getModelObject().getSelectedGenes()) {
+				log.info(g.toString());
+			}			
 			
-			disease.setGenes(new HashSet(containerForm.getModelObject().getSelectedGenes()));
+			disease.setGenes(new HashSet<Gene>(containerForm.getModelObject().getSelectedGenes()));
 			
 			if(isNew()) {
 				iArkDiseaseService.save(disease);

@@ -1,10 +1,16 @@
 package au.org.theark.core.vo;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
 
 public class GeneVO extends BaseVO {
 
 	private Gene gene;
+	private List<Disease> selectedDiseases = new ArrayList<Disease>();
+	private List<Disease> availableDiseases = new ArrayList<Disease>();
 	
 	public GeneVO() {
 		gene = new Gene();
@@ -21,5 +27,20 @@ public class GeneVO extends BaseVO {
 	public void setGene(Gene gene) {
 		this.gene = gene;
 	}
-	
+
+	public List<Disease> getSelectedDiseases() {
+		return selectedDiseases;
+	}
+
+	public void setSelectedDiseases(List<Disease> selectedDiseases) {
+		this.selectedDiseases = selectedDiseases;
+	}
+
+	public List<Disease> getAvailableDiseases() {
+		return availableDiseases;
+	}
+
+	public void setAvailableDiseases(List<Disease> availableDiseases) {
+		this.availableDiseases = availableDiseases;
+	}	
 }

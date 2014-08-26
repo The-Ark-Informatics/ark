@@ -142,6 +142,16 @@ public class SearchResultListPanel extends Panel {
 				List<Gene> availableGenes = iArkDiseaseService.getAvailableGenesForStudy(iArkCommonService.getStudy(sessionStudyId));
 				List<Gene> selectedGenes = new ArrayList<Gene>(disease.getDisease().getGenes());		
 				
+				log.info("Selected Genes: ");
+				for(Gene g : selectedGenes) {
+					log.info(g.toString());
+				}
+				
+				log.info("Available Genes: ");
+				for(Gene g : availableGenes) {
+					log.info(g.toString());
+				}
+				
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				containerForm.setModelObject(disease);
 				containerForm.getModelObject().setAvailableGenes(availableGenes);

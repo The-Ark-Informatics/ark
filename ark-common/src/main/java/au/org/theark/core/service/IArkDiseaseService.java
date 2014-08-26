@@ -2,6 +2,7 @@ package au.org.theark.core.service;
 
 import java.util.List;
 
+import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.DiseaseVO;
@@ -17,7 +18,6 @@ public interface IArkDiseaseService {
 
 	public List<GeneVO> searchPageableGenes(GeneVO object, int first, int count);
 	
-
 	public void save(Object object);
 	
 	public void update(Object object);
@@ -25,5 +25,7 @@ public interface IArkDiseaseService {
 	public void delete(Object object);
 
 	public List<Gene> getAvailableGenesForStudy(Study study);
+
+	public List<Disease> getAvailableDiseasesForStudy(Study study);
 	
 }

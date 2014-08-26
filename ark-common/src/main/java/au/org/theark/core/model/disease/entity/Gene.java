@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -81,7 +82,10 @@ public class Gene implements Serializable {
 		this.positions = positions;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "genes")
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "gene_disease", schema=Constants.DISEASE_SCHEMA, 
+	joinColumns = {@JoinColumn(name = "GENE_ID", nullable = false, updatable = false) }, 
+	inverseJoinColumns = { @JoinColumn(name = "DISEASE_ID", nullable = false, updatable = false)})
 	public Set<Disease> getDiseases() {
 		return this.diseases;
 	}
@@ -94,7 +98,8 @@ public class Gene implements Serializable {
 	public String toString() {
 		return "Gene [id=" + id + ", name=" + name + ", study=" + study
 				+ ", positions=" + positions 
-				+ ", diseases=" + diseases + "]";
+//				+ ", diseases=" + diseases + "]";
+				+ "]";
 	}
 	
 	

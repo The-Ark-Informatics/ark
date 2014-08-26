@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.IDiseaseDao;
+import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.DiseaseVO;
@@ -58,6 +59,10 @@ public class ArkDiseaseServiceImpl implements IArkDiseaseService {
 
 	public List<Gene> getAvailableGenesForStudy(Study study) {
 		return diseaseDao.getAvailableGenesForStudy(study);
+	}
+
+	public List<Disease> getAvailableDiseasesForStudy(Study study) {
+		return diseaseDao.getAvailableDiseasesForStudy(study);
 	}
 	
 }
