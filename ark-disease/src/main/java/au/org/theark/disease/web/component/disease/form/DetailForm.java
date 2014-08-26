@@ -36,11 +36,11 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkDiseaseService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.DiseaseVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.disease.service.IArkDiseaseService;
 import au.org.theark.disease.web.component.disease.AssociatedGenePalettePanel;
 
 public class DetailForm extends AbstractDetailForm<DiseaseVO> {

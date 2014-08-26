@@ -60,7 +60,6 @@ import au.org.theark.core.dao.ArkLdapContextSource;
 import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.dao.ICSVLoaderDao;
 import au.org.theark.core.dao.ICustomFieldDao;
-import au.org.theark.core.dao.IDiseaseDao;
 import au.org.theark.core.dao.IGenoDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.dao.ReCaptchaContextSource;
@@ -171,17 +170,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private JavaMailSender				javaMailSender;
 	private VelocityEngine				velocityEngine;
 	private IGenoDao					genoDao;
-	private IDiseaseDao					diseaseDao;
-
-	public IDiseaseDao getDiseaseDao() {
-		return diseaseDao;
-	}
 	
-	@Autowired
-	public void setDiseaseDao(IDiseaseDao diseaseDao) {
-		this.diseaseDao = diseaseDao;
-	}
-		
 	public IGenoDao getGenoDao() {
 		return genoDao;
 	}
