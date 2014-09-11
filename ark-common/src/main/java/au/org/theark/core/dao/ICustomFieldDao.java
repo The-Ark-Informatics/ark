@@ -191,6 +191,8 @@ public interface ICustomFieldDao {
 	public void convertLimsBiocollectionCustomDataValuesToKeysForThisStudy(Study study);
 
 	public void convertLimsBiospecimenCustomDataValuesToKeysForThisStudy(Study study);
+
+	public List<CustomField> getCustomFieldsNotInList(List<CustomField> customFieldsFromData, ArkFunction arkFunction, Study study);
 	
 	
 }

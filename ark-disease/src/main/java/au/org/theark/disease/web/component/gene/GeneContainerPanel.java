@@ -18,11 +18,11 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.DiseaseVO;
-import au.org.theark.core.vo.GeneVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.disease.service.IArkDiseaseService;
+import au.org.theark.disease.vo.DiseaseVO;
+import au.org.theark.disease.vo.GeneVO;
 import au.org.theark.disease.web.component.gene.SearchPanel;
 import au.org.theark.disease.web.component.gene.form.ContainerForm;
 

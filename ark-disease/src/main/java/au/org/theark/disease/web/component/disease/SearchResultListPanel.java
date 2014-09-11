@@ -41,13 +41,15 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.DiseaseVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.disease.service.IArkDiseaseService;
+import au.org.theark.disease.vo.DiseaseVO;
 import au.org.theark.disease.web.component.disease.form.ContainerForm;
 
 /**
@@ -85,7 +87,7 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void populateItem(final Item<DiseaseVO> item) {
 				Disease disease = item.getModelObject().getDisease();
-				
+				log.info("custom fields: " + disease.getCustomFields());
 				item.add(buildLink(item.getModelObject()));
 				
 //				item.add(new Label("nameLabel", item.getModel()));
@@ -139,7 +141,8 @@ public class SearchResultListPanel extends Panel {
 				
 //				DiseaseVO diseaseFromBackend = new DiseaseVO();
 //				
-				List<Gene> availableGenes = iArkDiseaseService.getAvailableGenesForStudy(iArkCommonService.getStudy(sessionStudyId));
+				Study study = iArkCommonService.getStudy(sessionStudyId);
+				List<Gene> availableGenes = iArkDiseaseService.getAvailableGenesForStudy(study);
 				List<Gene> selectedGenes = new ArrayList<Gene>(disease.getDisease().getGenes());		
 				
 				log.info("Selected Genes: ");
@@ -151,11 +154,18 @@ public class SearchResultListPanel extends Panel {
 				for(Gene g : availableGenes) {
 					log.info(g.toString());
 				}
-				
+				CustomField criteria = new CustomField();
+				criteria.setStudy(study);
+				criteria.setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS));
+				List<CustomField> selectedCustomFields = new ArrayList<CustomField>(disease.getDisease().getCustomFields());
+				List<CustomField> availableCustomFields = iArkCommonService.getCustomFieldList(criteria);
+								
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 				containerForm.setModelObject(disease);
 				containerForm.getModelObject().setAvailableGenes(availableGenes);
 				containerForm.getModelObject().setSelectedGenes(selectedGenes);
+				containerForm.getModelObject().setAvailableCustomFields(availableCustomFields);
+				containerForm.getModelObject().setSelectedCustomFields(selectedCustomFields);
 				
 				// Set SubjectUID into context
 				// Set Study Logo

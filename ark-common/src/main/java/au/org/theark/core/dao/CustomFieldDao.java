@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.mchange.v2.c3p0.FullQueryConnectionTester;
+
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
@@ -514,5 +516,22 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 				}
 			}
 	}
-	
+
+	public List<CustomField> getCustomFieldsNotInList(List<CustomField> customFieldsFromData, ArkFunction arkFunction, Study study) {
+		List<Long> ids = new ArrayList<Long>();
+		for(CustomField cf : customFieldsFromData) {
+			ids.add(cf.getId());
+		}
+		Criteria criteria = getSession().createCriteria(CustomField.class);
+		criteria.add(Restrictions.eq("arkFunction", arkFunction));
+		criteria.add(Restrictions.eq("study", study));
+		if(!ids.isEmpty()) {
+			criteria.add(Restrictions.not(Restrictions.in("id", ids)));
+		}
+		log.info("num returned customfields: " + criteria.list().size());
+		for(Object o : criteria.list()) {
+			log.info(o.toString());
+		}
+		return criteria.list();	
+	}	
 }

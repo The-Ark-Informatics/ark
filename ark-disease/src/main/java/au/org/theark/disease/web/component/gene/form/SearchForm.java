@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.GeneVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
+import au.org.theark.disease.vo.GeneVO;
 
 public class SearchForm extends AbstractSearchForm<GeneVO> {
 	

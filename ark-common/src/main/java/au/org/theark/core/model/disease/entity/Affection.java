@@ -1,6 +1,7 @@
 package au.org.theark.core.model.disease.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,8 +17,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 
 @Entity
@@ -28,7 +32,10 @@ public class Affection implements Serializable {
 	
 	private Long id;
 	private Study study;
-	private String name;
+	private Disease disease;
+	private Date recordDate;
+	private LinkSubjectStudy linkSubjectStudy;
+	private AffectionStatus affectionStatus;
 	private Set<AffectionCustomFieldData> affectionCustomFieldDataSet = new HashSet<AffectionCustomFieldData>();
 	
 	@Id
@@ -43,7 +50,7 @@ public class Affection implements Serializable {
 		this.id = id;
 	}
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return this.study;
@@ -51,15 +58,6 @@ public class Affection implements Serializable {
 
 	public void setStudy(Study study) {
 		this.study = study;
-	}
-	
-	@Column(name = "NAME", length=100)
-	public String getName() {
-		return this.name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
 	}
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "affection")
@@ -70,5 +68,120 @@ public class Affection implements Serializable {
 	public void setAffectionCustomFieldDataSets(Set<AffectionCustomFieldData> affectionCustomFieldDataSet) {
 		this.affectionCustomFieldDataSet = affectionCustomFieldDataSet;
 	}
-	 
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "DISEASE_ID")
+	public Disease getDisease() {
+		return disease;
+	}
+
+	public void setDisease(Disease disease) {
+		this.disease = disease;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinColumn(name = "LINKSUBJECTSTUDY_ID")
+	public LinkSubjectStudy getLinkSubjectStudy() {
+		return linkSubjectStudy;
+	}
+
+	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
+		this.linkSubjectStudy = linkSubjectStudy;
+	}	
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "RECORD_DATE", length = 10)
+	public Date getRecordDate() {
+		return recordDate;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinColumn(name = "AFFECTION_STATUS_ID")
+	public AffectionStatus getAffectionStatus() {
+		return affectionStatus;
+	}
+	
+	public void setAffectionStatus(AffectionStatus affectionStatus) {
+		this.affectionStatus = affectionStatus;
+	}
+
+	public void setRecordDate(Date recordDate) {
+		this.recordDate = recordDate;
+	}
+
+	@Override
+	public String toString() {
+		return "Affection [id=" + id + ", study=" + study + ", recordDate=" + recordDate
+				+ ", disease=" + disease + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((affectionCustomFieldDataSet == null) ? 0
+						: affectionCustomFieldDataSet.hashCode());
+		result = prime * result
+				+ ((affectionStatus == null) ? 0 : affectionStatus.hashCode());
+		result = prime * result + ((disease == null) ? 0 : disease.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime
+				* result
+				+ ((linkSubjectStudy == null) ? 0 : linkSubjectStudy.hashCode());
+		result = prime * result
+				+ ((recordDate == null) ? 0 : recordDate.hashCode());
+		result = prime * result + ((study == null) ? 0 : study.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Affection other = (Affection) obj;
+		if (affectionCustomFieldDataSet == null) {
+			if (other.affectionCustomFieldDataSet != null)
+				return false;
+		} else if (!affectionCustomFieldDataSet
+				.equals(other.affectionCustomFieldDataSet))
+			return false;
+		if (affectionStatus == null) {
+			if (other.affectionStatus != null)
+				return false;
+		} else if (!affectionStatus.equals(other.affectionStatus))
+			return false;
+		if (disease == null) {
+			if (other.disease != null)
+				return false;
+		} else if (!disease.equals(other.disease))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (linkSubjectStudy == null) {
+			if (other.linkSubjectStudy != null)
+				return false;
+		} else if (!linkSubjectStudy.equals(other.linkSubjectStudy))
+			return false;
+		if (recordDate == null) {
+			if (other.recordDate != null)
+				return false;
+		} else if (!recordDate.equals(other.recordDate))
+			return false;
+		if (study == null) {
+			if (other.study != null)
+				return false;
+		} else if (!study.equals(other.study))
+			return false;
+		return true;
+	}
+	
 }

@@ -1,4 +1,4 @@
-package au.org.theark.disease.web.component.disease;
+package au.org.theark.disease.web.component.affection;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -8,19 +8,20 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.disease.vo.DiseaseVO;
-import au.org.theark.disease.web.component.disease.form.SearchForm;
+import au.org.theark.disease.vo.AffectionListVO;
+import au.org.theark.disease.vo.AffectionVO;
+import au.org.theark.disease.web.component.affection.form.SearchForm;
 
 public class SearchPanel extends Panel {
 
 	private static final long serialVersionUID = 1L;
 	
 	private FeedbackPanel feedBackPanel;
-	private PageableListView<DiseaseVO> listView;
+	private PageableListView<AffectionVO> listView;
 	private ArkCrudContainerVO arkCrudContainerVO;
 	protected WebMarkupContainer arkContextMarkup;
 	
-	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<DiseaseVO> listView, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer arkContextMarkup) {
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<AffectionVO> listView, ArkCrudContainerVO arkCrudContainerVO, WebMarkupContainer arkContextMarkup) {
 		super(id);
 		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;
@@ -28,8 +29,8 @@ public class SearchPanel extends Panel {
 		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 	
-	public void initialisePanel(CompoundPropertyModel<DiseaseVO> diseaseVOCPM) {
-		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, diseaseVOCPM, listView, feedBackPanel, arkCrudContainerVO, arkContextMarkup);
+	public void initialisePanel(CompoundPropertyModel<AffectionVO> affectionVOCPM) {
+		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, affectionVOCPM, listView, feedBackPanel, arkCrudContainerVO, arkContextMarkup);
 		add(searchForm);
 	}
 	

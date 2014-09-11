@@ -313,8 +313,10 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_GENO_TABLE = "GENO_TABLE";
 	
 	public static final String FUNCTION_KEY_VALUE_GENE = "GENE";
-	public static final String FUNCTION_KEY_VALUE_POSITION = "POSITION";
 	public static final String FUNCTION_KEY_VALUE_DISEASE = "DISEASE";
+	public static final String FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS = "DISEASE_CUSTOM_FIELDS";
+	public static final String FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS_DISPLAY = "DISEASE_CUSTOM_FIELD_DISPLAY";
+	public static final String FUNCTION_KEY_VALUE_DISEASE_AFFECTION = "DISEASE_AFFECTION";
 
 	/* Ark Module Keys */
 	public static final String ARK_MODULE_KEY = "MODULE_KEY";

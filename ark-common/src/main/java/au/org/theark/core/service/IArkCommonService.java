@@ -26,7 +26,6 @@ import java.util.Set;
 
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.model.IModel;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -112,7 +111,6 @@ import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.CustomFieldVO;
-import au.org.theark.core.vo.DiseaseVO;
 import au.org.theark.core.vo.QueryFilterVO;
 import au.org.theark.core.vo.SearchVO;
 import au.org.theark.core.vo.SubjectVO;
@@ -873,5 +871,7 @@ public interface IArkCommonService<T> {
 	public void createUserConfigs(List userConfigList) throws ArkSystemException;
 
 	public void deleteUserConfig(UserConfig userConfig);
+
+	public List<CustomField> getCustomFieldsNotInList(List<CustomField> customFieldsFromData, ArkFunction function, Study study);
 	
 }

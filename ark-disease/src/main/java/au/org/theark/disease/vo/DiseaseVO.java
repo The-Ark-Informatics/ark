@@ -1,10 +1,12 @@
-package au.org.theark.core.vo;
+package au.org.theark.disease.vo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.vo.BaseVO;
 
 public class DiseaseVO extends BaseVO {
 
@@ -13,6 +15,9 @@ public class DiseaseVO extends BaseVO {
 	private Disease disease;
 	private List<Gene> availableGenes = new ArrayList<Gene>();
 	private List<Gene> selectedGenes = new ArrayList<Gene>();
+	
+	private List<CustomField> availableCustomFields = new ArrayList<CustomField>();
+	private List<CustomField> selectedCustomFields = new ArrayList<CustomField>();
 	
 	public DiseaseVO() {
 		disease = new Disease();
@@ -46,11 +51,27 @@ public class DiseaseVO extends BaseVO {
 		this.selectedGenes = selectedGenes;
 	}
 
+	public List<CustomField> getAvailableCustomFields() {
+		return availableCustomFields;
+	}
+
+	public void setAvailableCustomFields(List<CustomField> availableCustomFields) {
+		this.availableCustomFields = availableCustomFields;
+	}
+
+	public List<CustomField> getSelectedCustomFields() {
+		return selectedCustomFields;
+	}
+
+	public void setSelectedCustomFields(List<CustomField> selectedCustomFields) {
+		this.selectedCustomFields = selectedCustomFields;
+	}
+
 	@Override
 	public String toString() {
 		return "DiseaseVO [availableGenes="
 				+ availableGenes + ", selectedGenes=" + selectedGenes
 				+ ", disease=" + disease + "]";
 	}
-	
+
 }

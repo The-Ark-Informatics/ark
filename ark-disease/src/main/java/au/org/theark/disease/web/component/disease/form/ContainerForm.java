@@ -2,8 +2,8 @@ package au.org.theark.disease.web.component.disease.form;
 
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.core.vo.DiseaseVO;
 import au.org.theark.core.web.form.AbstractContainerForm;
+import au.org.theark.disease.vo.DiseaseVO;
 
 public class ContainerForm extends AbstractContainerForm<DiseaseVO> {
 

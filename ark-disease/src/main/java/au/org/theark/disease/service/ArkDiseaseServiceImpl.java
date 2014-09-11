@@ -7,12 +7,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.disease.entity.Affection;
+import au.org.theark.core.model.disease.entity.AffectionCustomFieldData;
+import au.org.theark.core.model.disease.entity.AffectionStatus;
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.vo.DiseaseVO;
-import au.org.theark.core.vo.GeneVO;
+import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.disease.dao.IDiseaseDao;
+import au.org.theark.disease.vo.AffectionListVO;
+import au.org.theark.disease.vo.AffectionVO;
+import au.org.theark.disease.vo.DiseaseVO;
+import au.org.theark.disease.vo.GeneVO;
 
 @Transactional
 @Service(Constants.ARK_DISEASE_SERVICE)
@@ -64,5 +71,33 @@ public class ArkDiseaseServiceImpl implements IArkDiseaseService {
 	public List<Disease> getAvailableDiseasesForStudy(Study study) {
 		return diseaseDao.getAvailableDiseasesForStudy(study);
 	}
-	
+
+	public int getAffectionCount(AffectionVO affectionVO) {
+		return diseaseDao.getAffectionCount(affectionVO);
+	}
+
+	public List<AffectionVO> searchPageableAffections(AffectionVO affectionVO, int first, int count) {
+		return diseaseDao.searchPageableAffections(affectionVO, first, count);
+	}
+
+	public List<AffectionStatus> getAffectionStatus() {
+		return diseaseDao.getAffectionStatus();
+	}
+
+	public List<Affection> getPersonsAffections(Affection affection) {
+		return diseaseDao.getPersonsAffections(affection);
+	}
+
+	public List<AffectionListVO> searchPageableAffectionListVOs(AffectionListVO affectionListVO, int first, int count) {
+		return diseaseDao.searchPageableAffectionListVOs(affectionListVO, first, count);
+	}
+
+	public int getAffectionCount(LinkSubjectStudy linkSubjectStudy) {
+		return diseaseDao.getAffectionCount(linkSubjectStudy);
+	}
+
+	public List<AffectionCustomFieldData> getAffectionCustomFieldData(Affection affection) {
+		return diseaseDao.getAffectionCustomFieldData(affection);
+	}
+
 }

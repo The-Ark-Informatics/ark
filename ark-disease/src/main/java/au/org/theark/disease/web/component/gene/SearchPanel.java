@@ -8,8 +8,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.DiseaseVO;
-import au.org.theark.core.vo.GeneVO;
+import au.org.theark.disease.vo.DiseaseVO;
+import au.org.theark.disease.vo.GeneVO;
 import au.org.theark.disease.web.component.gene.form.SearchForm;
 
 public class SearchPanel extends Panel {
