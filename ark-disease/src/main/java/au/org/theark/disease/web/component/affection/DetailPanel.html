@@ -1,0 +1,95 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailsForm">
+		<div class="detailsPanelBorder">
+			<div wicket:id="detailFormContainer">
+				<br/>
+				<!-- Row 1 -->
+				<div class="detailPanelBreaker">&nbsp;</div>
+				<div class="panelContentLeft">&nbsp;</div>
+
+				<div class="fldLabel">
+					<label for="affection.disease">Disease:</label>  
+				</div>
+				
+				<div class="fldControl">
+					<select wicket:id="affection.disease">
+					</select>
+				</div>
+				
+				<div class="panelMargin">&nbsp;</div>
+				
+				<div class="fldLabel">
+					<label for="affection.affectionStatus">Affection Status:</label>
+				</div>
+				
+				<div class="fldControl">
+					<select wicket:id="affection.affectionStatus">
+					</select>
+				</div>
+				
+				<div class="detailPanelBreaker">&nbsp;</div>
+				
+				<!-- Row 2 -->
+				<div class="panelContentLeft">&nbsp;</div>
+			
+				<div class="fldLabel">
+					<label for="recordDate">Record Date:</label>
+				</div>
+				
+				<div class="fldControl">
+			 		<input wicket:id="recordDate" />
+			 	</div>
+
+				<div class="detailPanelBreaker">&nbsp;</div>
+				<div class="detailPanelBreaker">&nbsp;</div>
+				<div class="detailPanelBreaker">&nbsp;</div>
+				
+				<!-- Row 3 -->
+				<form wicket:id="customFieldForm">
+					<div wicket:id="dataViewWMC">
+						<div wicket:id="dataViewPanel"></div>
+					</div>
+					<div class="detailPanelBreaker">&nbsp;</div>
+					<div wicket:id="buttonsPanelWMC">
+						<div wicket:id="buttonsPanel"></div>
+					</div>
+				</form>
+				<div>
+					<span wicket:id="navigator" class="a"> </span>
+					<div class="detailPanelBreaker"></div>
+					<div class="centreLabel">
+						<label for="warnSaveLabel"> <wicket:message
+								key="warnSaveLabel">
+							Please "Save"!
+						</wicket:message>
+						</label>
+					</div>
+				</div>
+			</div>
+
+
+			<!--	Row 2 Action Buttons -->
+			<div wicket:id="editButtonContainer">
+				<div class="actionButtons">
+					<input wicket:id="save" type="submit"
+						wicket:message="value:page.save" /> <input wicket:id="cancel"
+						type="submit" wicket:message="value:page.cancel" /> <input
+						wicket:id="delete" type="submit"
+						wicket:message="value:page.delete" />
+				</div>
+			</div>
+			<!--	End buttons -->
+
+			<div class="detailPanelBreaker">&nbsp;</div>
+			<!--	End detailsPanelBorder -->
+		</div>
+		<div class="detailPanelBreaker">&nbsp;</div>
+	</form>
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+	<br>
+	&nbsp;
+</wicket:panel>

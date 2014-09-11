@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,11 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.Study;
 
 @Entity
@@ -31,7 +31,8 @@ public class Disease implements Serializable {
 	private Long id;
 	private String name;
 	private Study study;
-	private CustomFieldGroup customFieldGroup;
+//	private CustomFieldDisplay customFieldDisplay;
+	private Set<CustomField> customFields;
 	private Set<Gene> genes = new HashSet<Gene>();
 	
 	public Disease() {
@@ -73,17 +74,30 @@ public class Disease implements Serializable {
 		this.study = study;
 	}
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "CUSTOM_FIELD_GROUP_ID")
-	public CustomFieldGroup getCustomFieldGroup() {
-		return customFieldGroup;
-	}
-
-	public void setCustomFieldGroup(CustomFieldGroup customFieldGroup) {
-		this.customFieldGroup = customFieldGroup;
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "CUSTOM_FIELD_DISPLAY_ID")
+//	public CustomFieldDisplay getCustomFieldDisplay() {
+//		return customFieldDisplay;
+//	}
+//
+//	public void setCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) {
+//		this.customFieldDisplay = customFieldDisplay;
+//	}
+//	
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "disease_custom_fields", schema=Constants.DISEASE_SCHEMA,
+		joinColumns = {@JoinColumn(name="DISEASE_ID", nullable = false, updatable = false) },
+		inverseJoinColumns = {@JoinColumn(name="CUSTOM_FIELD_ID", nullable = false, updatable = false) })
+	public Set<CustomField> getCustomFields() {
+		return customFields;
 	}
 	
-	@ManyToMany(fetch = FetchType.EAGER)
+	public void setCustomFields(Set<CustomField> customFields) {
+		this.customFields = customFields;
+	}
+	
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "gene_disease", schema=Constants.DISEASE_SCHEMA, 
 		joinColumns = {@JoinColumn(name = "DISEASE_ID", nullable = false, updatable = false) }, 
 		inverseJoinColumns = { @JoinColumn(name = "GENE_ID", nullable = false, updatable = false)}) 
@@ -98,7 +112,7 @@ public class Disease implements Serializable {
 	@Override
 	public String toString() {
 		return "Disease [id=" + id + ", name=" + name + ", study=" + study
-				+ ", customFieldGroup=" + customFieldGroup + ", genes=" + genes 
+				+ ", genes=" + genes 
 				+ "]";
 	}
 
@@ -106,9 +120,9 @@ public class Disease implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime
-				* result
-				+ ((customFieldGroup == null) ? 0 : customFieldGroup.hashCode());
+//		result = prime
+//				* result
+//				+ ((customFieldDisplay == null) ? 0 : customFieldDisplay.hashCode());
 		result = prime * result + ((genes == null) ? 0 : genes.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -125,11 +139,11 @@ public class Disease implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Disease other = (Disease) obj;
-		if (customFieldGroup == null) {
-			if (other.customFieldGroup != null)
-				return false;
-		} else if (!customFieldGroup.equals(other.customFieldGroup))
-			return false;
+//		if (customFieldDisplay == null) {
+//			if (other.customFieldDisplay != null)
+//				return false;
+//		} else if (!customFieldDisplay.equals(other.customFieldDisplay))
+//			return false;
 		if (genes == null) {
 			if (other.genes != null)
 				return false;

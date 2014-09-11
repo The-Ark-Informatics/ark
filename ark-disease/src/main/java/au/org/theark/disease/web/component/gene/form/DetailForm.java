@@ -29,13 +29,13 @@ import au.org.theark.core.model.disease.entity.Position;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.GeneVO;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.component.listeditor.AjaxEditorButton;
 import au.org.theark.core.web.component.listeditor.AjaxListDeleteButton;
 import au.org.theark.core.web.component.listeditor.ListItem;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.disease.service.IArkDiseaseService;
+import au.org.theark.disease.vo.GeneVO;
 import au.org.theark.disease.web.component.gene.AssociatedDiseasePalettePanel;
 
 public class DetailForm extends AbstractDetailForm<GeneVO> {

@@ -19,6 +19,7 @@
 package au.org.theark.disease.web.component.disease.form;
 
 import java.util.HashSet;
+import java.util.TreeSet;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -28,20 +29,21 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.DiseaseVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.disease.service.IArkDiseaseService;
+import au.org.theark.disease.vo.DiseaseVO;
 import au.org.theark.disease.web.component.disease.AssociatedGenePalettePanel;
+import au.org.theark.disease.web.component.disease.DiseaseCustomFieldsPalettePanel;
 
 public class DetailForm extends AbstractDetailForm<DiseaseVO> {
 	static Logger log = LoggerFactory.getLogger(DetailForm.class);
@@ -52,6 +54,7 @@ public class DetailForm extends AbstractDetailForm<DiseaseVO> {
 
 	private TextField<String> name;
 	protected AssociatedGenePalettePanel<DiseaseVO> associatedGenesPalettePanel;
+	protected DiseaseCustomFieldsPalettePanel<DiseaseVO> diseaseCustomFieldPalettePanel;
 	
 	@SpringBean(name = Constants.ARK_DISEASE_SERVICE)
 	private IArkDiseaseService iArkDiseaseService;
@@ -65,6 +68,9 @@ public class DetailForm extends AbstractDetailForm<DiseaseVO> {
 	public void onBeforeRender() {
 		associatedGenesPalettePanel = new AssociatedGenePalettePanel<DiseaseVO>("associatedGenePalette", containerForm.getModel());
 		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(associatedGenesPalettePanel);
+		
+		diseaseCustomFieldPalettePanel = new DiseaseCustomFieldsPalettePanel<DiseaseVO>("diseaseCustomFieldsPalette", containerForm.getModel());
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(diseaseCustomFieldPalettePanel);
 		
 		if(!isNew()) deleteButton.setVisible(true);
 		super.onBeforeRender();
@@ -146,8 +152,14 @@ public class DetailForm extends AbstractDetailForm<DiseaseVO> {
 			for(Gene g : containerForm.getModelObject().getSelectedGenes()) {
 				log.info(g.toString());
 			}			
-			
 			disease.setGenes(new HashSet<Gene>(containerForm.getModelObject().getSelectedGenes()));
+			
+			log.info("Selected Custom Fields: ");
+			for(CustomField cf : containerForm.getModelObject().getSelectedCustomFields()) {
+				log.info(cf.getName());
+			}
+			
+			disease.setCustomFields(new TreeSet<CustomField>(containerForm.getModelObject().getSelectedCustomFields()));
 			
 			if(isNew()) {
 				iArkDiseaseService.save(disease);

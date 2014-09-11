@@ -1,0 +1,58 @@
+<wicket:panel>
+&nbsp;
+<!-- Start of searchPanelContainer-->
+<div class="searchPanelContainer">
+	<form wicket:id="searchForm">
+		<div class="searchPanelContent">
+				<div class="searchPanelBreaker">&nbsp;</div>
+				<div class="panelContentLeft">&nbsp;</div>
+
+				<div class="fldLabel">
+					<label for="disease.name">Disease:</label>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="disease.name">
+					</select>
+				</div>
+
+				<div class="panelMargin">&nbsp;</div>
+
+				<div class="fldLabel">
+					<label for="affection.affectionStatus">Affection Status:</label>
+				</div>
+
+				<div class="fldControl">
+					<select wicket:id="affection.affectionStatus">
+					</select>
+				</div>
+
+				<div class="searchPanelBreaker">&nbsp;</div>
+				
+				<div class="panelContentLeft">&nbsp;</div>
+
+				<div class="fldLabel">
+					<label for="affection.recordDate">Record Date:</label>
+				</div>
+
+				<div class="fldControl">
+					<input wicket:id="affection.recordDate"/>
+				</div>
+				
+				<div class="searchPanelBreaker">&nbsp;</div>
+				<div class="searchPanelBreaker">&nbsp;</div>
+				<div class="searchPanelBreaker">&nbsp;</div>
+
+				<!--  Defines the location for buttons -->
+			<div class="actionButtons">
+				<input wicket:id="search" type="submit" wicket:message="value:page.search" />
+				<input wicket:id="reset" type="submit" wicket:message="value:page.reset" />
+				<input wicket:id="new" type="submit" wicket:message="value:page.new" />
+			</div>
+
+			<div class="searchPanelBreaker">&nbsp;</div>
+		</div>
+	</form>
+</div>
+<!-- End of searchPanelContainer-->
+</wicket:panel>

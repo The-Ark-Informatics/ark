@@ -1,6 +1,5 @@
-package au.org.theark.disease.web.component.disease;
+package au.org.theark.disease.web.component.affection;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,32 +15,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.disease.service.IArkDiseaseService;
-import au.org.theark.disease.vo.DiseaseVO;
-import au.org.theark.disease.web.component.disease.form.ContainerForm;
+import au.org.theark.disease.vo.AffectionVO;
+import au.org.theark.disease.web.component.affection.form.ContainerForm;
 
-public class DiseaseContainerPanel extends AbstractContainerPanel<DiseaseVO> {
+public class AffectionContainerPanel extends AbstractContainerPanel<AffectionVO> {
 
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(DiseaseContainerPanel.class);
+	private static final Logger log = LoggerFactory.getLogger(AffectionContainerPanel.class);
 	
 	private WebMarkupContainer	arkContextMarkup;
 	private Long sessionStudyID;
 	private Study study;
+	private LinkSubjectStudy linkSubjectStudy;
 	
 	private ContainerForm containerForm;
 
 	private SearchResultListPanel searchResultsPanel;
 	private DetailPanel detailPanel;
 	private SearchPanel searchPanel;
-	private PageableListView<DiseaseVO> pageableListView;
-	private DataView<DiseaseVO> dataView;
+	private PageableListView<AffectionVO> pageableListView;
+	private DataView<AffectionVO> dataView;
 	
-	private ArkDataProvider<DiseaseVO, IArkDiseaseService> diseaseProvider;
+	private ArkDataProvider<AffectionVO, IArkDiseaseService> affectionProvider;
 	
 	protected WebMarkupContainer resultsWmc = new WebMarkupContainer("resultsWmc");
 
@@ -52,21 +54,31 @@ public class DiseaseContainerPanel extends AbstractContainerPanel<DiseaseVO> {
 	@SpringBean(name = Constants.ARK_DISEASE_SERVICE)
 	private IArkDiseaseService iArkDiseaseService;
 	
-	public DiseaseContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
+	public AffectionContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		
-		cpModel = new CompoundPropertyModel<DiseaseVO>(new DiseaseVO());
+		cpModel = new CompoundPropertyModel<AffectionVO>(new AffectionVO());
 		
 		sessionStudyID = (Long) SecurityUtils.getSubject().getSession().getAttribute(Constants.STUDY_CONTEXT_ID);
 		if(sessionStudyID != null) {
 			study = iArkCommonService.getStudy(sessionStudyID);
-			cpModel.getObject().getDisease().setStudy(study);
+//			cpModel.getObject().getAffection().getDisease().setStudy(study);
+		}
+		
+		Long subjectSessionID = (Long) SecurityUtils.getSubject().getSession().getAttribute(Constants.PERSON_CONTEXT_ID);
+		try {
+			linkSubjectStudy = iArkCommonService.getSubject(subjectSessionID, study);
+//			cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
+		}
+		catch (EntityNotFoundException e) {
+			e.printStackTrace();
 		}
 		
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
+		log.info("created detail panel");
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 		
@@ -92,23 +104,33 @@ public class DiseaseContainerPanel extends AbstractContainerPanel<DiseaseVO> {
 		searchResultsPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO);
 		searchResultsPanel.setOutputMarkupId(true);
 		
-		diseaseProvider = new ArkDataProvider<DiseaseVO, IArkDiseaseService>(iArkDiseaseService) {
+		affectionProvider = new ArkDataProvider<AffectionVO, IArkDiseaseService>(iArkDiseaseService) {
 			private static final long serialVersionUID = 1L;
 			
 			public int size() {
-				return service.getDiseaseCount(containerForm.getModelObject());
+				log.info("getting size via getAffectionCount");
+				int count = service.getAffectionCount(containerForm.getModelObject());
+				log.info("got size : " + count);
+				return count;
 			}
 
-			public Iterator<? extends DiseaseVO> iterator(int first, int count) {
-				List<DiseaseVO> listDiseases = new ArrayList<DiseaseVO>();
-				listDiseases = service.searchPageableDiseases(model.getObject(), first, count);
-				return listDiseases.iterator();
+			public Iterator<? extends AffectionVO> iterator(int first, int count) {
+				log.info("GET ITERATOR");
+				log.info("" + containerForm.getModelObject());
+				List<AffectionVO> affectionVOs = service.searchPageableAffections(containerForm.getModelObject(), first, count);
+				log.info("=============");
+				for(AffectionVO alvo : affectionVOs) {
+					log.info("Disease: " + alvo.getAffection().getDisease());
+					log.info("CustomFields: " + alvo.getAffection().getDisease().getCustomFields());
+				}
+				log.info("=============");
+				log.info("affection iterator finished");
+				return affectionVOs.iterator();
 			}
-			
 		};
-		diseaseProvider.setModel(this.cpModel);
+		affectionProvider.setModel(this.cpModel);
 		
-		dataView = searchResultsPanel.buildDataView(diseaseProvider);
+		dataView = searchResultsPanel.buildDataView(affectionProvider);
 		dataView.setItemsPerPage(iArkCommonService.getRowsPerPage());
 		
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
@@ -124,11 +146,13 @@ public class DiseaseContainerPanel extends AbstractContainerPanel<DiseaseVO> {
 		resultsWmc.add(dataView);
 		searchResultsPanel.add(resultsWmc);		
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
+		log.info("finished initSearchResults");
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
+//		log.info("initDetailPanel = " + containerForm.getModelObject().getAffection().getDisease().getCustomFields());
 		detailPanel = new DetailPanel("detailPanel", feedBackPanel, arkContextMarkup, containerForm, arkCrudContainerVO);
 		
 		detailPanel.initialisePanel();

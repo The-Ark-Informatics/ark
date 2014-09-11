@@ -16,10 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.disease.web.component.gene;
-
-import java.util.ArrayList;
-import java.util.List;
+package au.org.theark.disease.web.component.affection;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -35,21 +32,20 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.mapping.Array;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.disease.entity.Disease;
-import au.org.theark.core.model.disease.entity.Gene;
+import au.org.theark.core.model.disease.entity.Affection;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkCRUDHelper;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.disease.service.IArkDiseaseService;
-import au.org.theark.disease.vo.GeneVO;
-import au.org.theark.disease.web.component.gene.form.ContainerForm;
+import au.org.theark.disease.vo.AffectionListVO;
+import au.org.theark.disease.vo.AffectionVO;
+import au.org.theark.disease.web.component.affection.form.ContainerForm;
 
 /**
  * @author nivedann
@@ -68,8 +64,7 @@ public class SearchResultListPanel extends Panel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_DISEASE_SERVICE)
-	private IArkDiseaseService iArkDiseaseService;
-
+	private IArkDiseaseService	iArkDiseaseService;
 
 	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
@@ -80,18 +75,20 @@ public class SearchResultListPanel extends Panel {
 		
 	}
 
-	public DataView<GeneVO> buildDataView(ArkDataProvider<GeneVO, IArkDiseaseService> diseaseProvider) {
+	public DataView<AffectionVO> buildDataView(final ArkDataProvider<AffectionVO, IArkDiseaseService> diseaseProvider) {
 
-		DataView<GeneVO> studyCompDataView = new DataView<GeneVO>("diseaseList", diseaseProvider) {
+		DataView<AffectionVO> studyCompDataView = new DataView<AffectionVO>("affectionList", diseaseProvider, iArkCommonService.getRowsPerPage()) {
 
 			@Override
-			protected void populateItem(final Item<GeneVO> item) {
-				Gene gene = item.getModelObject().getGene();
-				
+			protected void populateItem(final Item<AffectionVO> item) {
+				Affection affection = item.getModelObject().getAffection();
+				log.info("test: " + diseaseProvider.getModel().getObject().toString());
+
+				log.info("populate item buildDataView");
+				item.add(new Label("affection.id", affection.getId().toString()));
 				item.add(buildLink(item.getModelObject()));
-				
-//				item.add(new Label("nameLabel", item.getModel()));
-				
+				item.add(new Label("affection.recordDate",affection.getRecordDate().toString()));
+				item.add(new Label("affection.status", affection.getAffectionStatus().getName()));
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
@@ -100,23 +97,22 @@ public class SearchResultListPanel extends Panel {
 				}));
 			}
 		};
+		log.info("returning dataview<AffectionListVO>");
 		return studyCompDataView;
 	}
 
 	
-	public PageableListView<GeneVO> buildListView(IModel iModel) {
+	public PageableListView<AffectionVO> buildListView(IModel iModel) {
 
-		PageableListView<GeneVO> listView = new PageableListView<GeneVO>("diseaseList", iModel, iArkCommonService.getRowsPerPage()) {
+		PageableListView<AffectionVO> listView = new PageableListView<AffectionVO>("affectionList", iModel, iArkCommonService.getRowsPerPage()) {
 
 			@Override
-			protected void populateItem(final ListItem<GeneVO> item) {
-				
-				Gene gene = item.getModelObject().getGene();
-				
-				item.add(buildLink(item.getModelObject()));
-				
-//				item.add(new Label("nameLabel", item.getModel()));
-				
+			protected void populateItem(final ListItem<AffectionVO> item) {
+				Affection affection= item.getModelObject().getAffection();
+				item.add(new Label("affection.id", affection.getId().toString()));
+				item.add(buildLink(item.getModelObject()));				
+				item.add(new Label("affection.recordDate",affection.getRecordDate().toString()));
+				item.add(new Label("affection.status", affection.getAffectionStatus().getName()));
 				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
@@ -128,39 +124,24 @@ public class SearchResultListPanel extends Panel {
 		return listView;
 	}
 
-	private AjaxLink buildLink(final GeneVO geneVO) {
+	private AjaxLink buildLink(final AffectionVO affectionVO) {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("disease.name") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				// subject.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 
-				// We specify the type of person here as Subject
-				
-				log.info(geneVO.toString());
-				
-				List<Disease> availableDiseases = iArkDiseaseService.getAvailableDiseasesForStudy(iArkCommonService.getStudy(sessionStudyId));
-				List<Disease> selectedDiseases = new ArrayList<Disease>(geneVO.getGene().getDiseases());
-
-				log.info("Selected Diseases:");
-				for(Disease d : selectedDiseases) {
-					log.info(d.toString());
-				}
-				
-				log.info("Available Diseases:");
-				for(Disease d : availableDiseases) {
-					log.info(d.toString());
-				}
-				
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
-				containerForm.setModelObject(geneVO);
-				containerForm.getModelObject().setAvailableDiseases(availableDiseases);
-				containerForm.getModelObject().setSelectedDiseases(selectedDiseases);
+				log.info("BUILDLINK");
+				log.info(affectionVO.getAffection().toString());				
 				
+				log.info("=========");
+				containerForm.setModelObject(affectionVO);
 			}
 		};
-		Label nameLinkLabel = new Label("nameLabel", geneVO.getGene().getName());
+		log.info("building label");
+		Label nameLinkLabel = new Label("nameLabel", affectionVO.getAffection().getDisease().getName());
 		link.add(nameLinkLabel);
+		log.info("built link");
 		return link;
 	}
 }

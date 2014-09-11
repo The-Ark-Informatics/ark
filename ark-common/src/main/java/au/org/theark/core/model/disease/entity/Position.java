@@ -63,5 +63,9 @@ public class Position implements Serializable {
 	public void setGene(Gene gene) {
 		this.gene = gene;
 	}
+
+	public String toString() {
+		return "Position[id=" + id + ", name=" + name + "]";
+	}
 	
 }

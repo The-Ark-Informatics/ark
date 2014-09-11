@@ -1,10 +1,11 @@
-package au.org.theark.core.vo;
+package au.org.theark.disease.vo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
+import au.org.theark.core.vo.BaseVO;
 
 public class GeneVO extends BaseVO {
 

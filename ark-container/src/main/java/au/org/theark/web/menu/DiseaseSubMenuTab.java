@@ -19,6 +19,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
+import au.org.theark.disease.web.component.affection.AffectionContainerPanel;
 import au.org.theark.disease.web.component.disease.DiseaseContainerPanel;
 import au.org.theark.disease.web.component.gene.GeneContainerPanel;
 import au.org.theark.lims.service.IInventoryService;
@@ -66,9 +67,15 @@ public class DiseaseSubMenuTab extends AbstractArkTabPanel {
 					} else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_GENE)) {
 						log.info("GENE");
 						panelToReturn = new GeneContainerPanel(panelId, arkContextMarkup);
-					} else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_POSITION)) {
-						log.info("POSITION");
-					}					
+					} else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS)) {
+						panelToReturn = new au.org.theark.core.web.component.customfield.CustomFieldContainerPanel(panelId, true, arkFunction);
+						log.info(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS);
+					} else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DISEASE_CUSTOM_FIELDS_DISPLAY)) {
+						log.info(arkFunction.getName());
+					} else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DISEASE_AFFECTION)) {
+						log.info(arkFunction.getName());
+						panelToReturn = new AffectionContainerPanel(panelId, arkContextMarkup);
+					}
 					return panelToReturn;
 				}
 

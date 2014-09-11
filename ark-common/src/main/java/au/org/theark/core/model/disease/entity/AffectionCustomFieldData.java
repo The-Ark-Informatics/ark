@@ -1,7 +1,9 @@
 package au.org.theark.core.model.disease.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,11 +20,10 @@ import javax.persistence.TemporalType;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.ICustomFieldData;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 @Entity
 @Table(name = "AFFECTION_CUSTOM_FIELD_DATA", schema = Constants.DISEASE_SCHEMA)
-public class AffectionCustomFieldData implements ICustomFieldData {
+public class AffectionCustomFieldData implements Serializable, ICustomFieldData {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
@@ -32,9 +33,9 @@ public class AffectionCustomFieldData implements ICustomFieldData {
 	private Date dateDataValue;
 	private String errorDataValue;
 	private Double numberDataValue;
-	
+
 	public AffectionCustomFieldData() {
-		
+
 	}
 
 	@Id
@@ -49,7 +50,7 @@ public class AffectionCustomFieldData implements ICustomFieldData {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name = "AFFECTION_ID")
 	public Affection getAffection() {
 		return this.affection;
@@ -59,7 +60,7 @@ public class AffectionCustomFieldData implements ICustomFieldData {
 		this.affection = affection;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
 	@JoinColumn(name = "CUSTOM_FIELD_DISPLAY_ID")
 	public CustomFieldDisplay getCustomFieldDisplay() {
 		return customFieldDisplay;
@@ -106,4 +107,14 @@ public class AffectionCustomFieldData implements ICustomFieldData {
 		this.textDataValue = textDataValue;
 	}
 
+	@Override
+	public String toString() {
+		return "AffectionCustomFieldData [id=" + id + ", affection="
+				+ affection.getId() + ", customFieldDisplay=" + customFieldDisplay
+				+ ", textDataValue=" + textDataValue + ", dateDataValue="
+				+ dateDataValue + ", errorDataValue=" + errorDataValue
+				+ ", numberDataValue=" + numberDataValue + "]";
+	}
+	
+	
 }
