@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -75,6 +76,8 @@ public class AffectionContainerPanel extends AbstractContainerPanel<AffectionVO>
 			e.printStackTrace();
 		}
 		
+//		boolean contextLoaded = prerenderContextCheck();
+		
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
@@ -83,11 +86,33 @@ public class AffectionContainerPanel extends AbstractContainerPanel<AffectionVO>
 		containerForm.add(initialiseSearchPanel());
 		
 		add(containerForm);
-		
 	}
 	
-	protected void prerenderContextCheck() {
-		
+	protected boolean prerenderContextCheck() {
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+
+		boolean contextLoaded = false;
+		if ((sessionStudyId != null) && (sessionPersonId != null)) {
+			String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);			
+			
+			if (sessionPersonType.equals(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)) {
+				LinkSubjectStudy lss;
+				try {
+					Study study = iArkCommonService.getStudy(sessionStudyId);
+					lss = iArkCommonService.getSubject(sessionPersonId, study);
+					contextLoaded = true;
+					log.info("context loaded");
+				}
+				catch (EntityNotFoundException e) {
+					log.error(e.getMessage());
+				}
+				if(contextLoaded) {
+					arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+				} 
+			}
+		}
+		return contextLoaded;
 	}
 
 	@Override
@@ -116,7 +141,8 @@ public class AffectionContainerPanel extends AbstractContainerPanel<AffectionVO>
 
 			public Iterator<? extends AffectionVO> iterator(int first, int count) {
 				log.info("GET ITERATOR");
-				log.info("" + containerForm.getModelObject());
+				log.info("" + containerForm.getModelObject().getAffection());
+				log.info("" + containerForm.getModelObject().getAffection().getLinkSubjectStudy());
 				List<AffectionVO> affectionVOs = service.searchPageableAffections(containerForm.getModelObject(), first, count);
 				log.info("=============");
 				for(AffectionVO alvo : affectionVOs) {

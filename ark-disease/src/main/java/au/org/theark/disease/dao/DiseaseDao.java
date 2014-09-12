@@ -25,7 +25,6 @@ import au.org.theark.core.model.disease.entity.AffectionStatus;
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
 import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.disease.vo.AffectionListVO;
@@ -224,7 +223,10 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 			if (affection.getLinkSubjectStudy() != null && affection.getLinkSubjectStudy().getSubjectUID() != null && !affection.getLinkSubjectStudy().getSubjectUID().isEmpty()) {
 				log.info("LSS: " + affection.getLinkSubjectStudy().getSubjectUID());
 				criteria.createAlias("linkSubjectStudy", "lss");
-				criteria.add(Restrictions.like("lss.subjectUID", affection.getLinkSubjectStudy().getSubjectUID(), MatchMode.EXACT));
+				criteria.add(Restrictions.eq("lss.subjectUID", affection.getLinkSubjectStudy().getSubjectUID()));
+			} else {
+				criteria.createAlias("linkSubjectStudy", "lss");
+				criteria.add(Restrictions.isNull("lss.subjectUID"));
 			}
 			if (affection.getRecordDate() != null) {
 				log.info("RecordDate: " + affection.getRecordDate());

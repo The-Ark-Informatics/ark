@@ -58,6 +58,8 @@ public class SearchForm extends AbstractSearchForm<AffectionVO> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		disableSearchForm(sessionPersonId, "There is no subject in context. Please select a Subject.");
 	}
 	
 	
