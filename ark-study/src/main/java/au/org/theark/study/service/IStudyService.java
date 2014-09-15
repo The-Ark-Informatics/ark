@@ -258,8 +258,8 @@ public interface IStudyService {
 	 * @param subjectFile
 	 * @throws ArkSystemException
 	 */
-	public void create(SubjectFile subjectFile) throws ArkSystemException;
 
+	public void create(SubjectFile subjectFile) throws ArkSystemException;
 	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException;
 
 	public void delete(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException;
@@ -451,4 +451,6 @@ public interface IStudyService {
 	public StudyPedigreeConfiguration getStudyPedigreeConfiguration(Long studyId);
 	
 	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
+	
+	public byte[] retriveSubjectFileByteArray(SubjectFile subjectFile);
 }

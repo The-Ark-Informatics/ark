@@ -170,7 +170,9 @@ public class SearchResultListPanel extends Panel {
 				byte[] data = null;
 				try {
 					
-					data = subjectFile.getPayload();//.getBytes(1, (int) subjectFile.getPayload().length());
+//					data = subjectFile.getPayload();//.getBytes(1, (int) subjectFile.getPayload().length());
+					
+					data = studyService.retriveSubjectFileByteArray(subjectFile);
 
 					if (data != null) {
 						InputStream inputStream = new ByteArrayInputStream(data);
