@@ -50,6 +50,7 @@ public class SubjectFile implements java.io.Serializable {
 	private String checksum;
 	private String userId;
 	private String comments;
+	private String fileId;
 
 	public SubjectFile() {
 	}
@@ -161,4 +162,14 @@ public class SubjectFile implements java.io.Serializable {
 	public String getComments() {
 		return comments;
 	}
+
+	@Column(name = "FILE_ID", length = 1000)
+	public String getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(String fileId) {
+		this.fileId = fileId;
+	}
+
 }
