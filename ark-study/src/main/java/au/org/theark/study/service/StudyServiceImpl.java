@@ -18,7 +18,10 @@
  ******************************************************************************/
 package au.org.theark.study.service;
 
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -31,7 +34,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+import java.util.UUID;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.util.file.File;
@@ -42,6 +48,7 @@ import org.joda.time.PeriodType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -129,6 +136,9 @@ public class StudyServiceImpl implements IStudyService {
 	private IUserService			iUserService;
 	private IStudyDao				iStudyDao;
 	private IAuditDao				iAuditDao;
+	
+	@Value( "${file.attachment.dir}" )
+	private String fileAttachmentDir;
 
 	public IArkCommonService getiArkCommonService() {
 		return iArkCommonService;
@@ -810,6 +820,11 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public void create(SubjectFile subjectFile) throws ArkSystemException {
+		
+		//Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+		saveSubjectFileAttachment(subjectFile);
+		
+		//Save attachment meta information in relational tables 
 		iStudyDao.create(subjectFile);
 
 		AuditHistory ah = new AuditHistory();
@@ -820,7 +835,98 @@ public class StudyServiceImpl implements IStudyService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException {
+	private void saveSubjectFileAttachment(SubjectFile subjectFile) {
+
+		String directoryName = getSubjectFileDir(subjectFile);
+
+		File fileDir = new File(directoryName);
+
+		if (!fileDir.exists()) {
+			boolean result = false;
+			try {
+				fileDir.mkdirs();
+				result = true;
+			}
+			catch (SecurityException se) {
+				log.error("Do not have the sufficient permission to access the file directory");
+			}
+			if (result) {
+				log.info("DIR created successfully " + directoryName);
+			}
+		}
+
+		subjectFile.setFileId(generateUniqueFileId(subjectFile.getFilename()));
+		createSubjectFile(directoryName, subjectFile);
+		// Remove the attachment
+		subjectFile.setPayload(null);
+
+	}
+
+	private String getSubjectFileDir(SubjectFile subjectFile) {
+		String studyName = subjectFile.getLinkSubjectStudy().getStudy().getName();
+		String subjectUID = subjectFile.getLinkSubjectStudy().getSubjectUID();
+		String directoryName = this.fileAttachmentDir + File.separator + studyName + File.separator + subjectUID;
+		return directoryName;
+	}
+
+	private String generateUniqueFileId(String fileName) {
+		return System.currentTimeMillis() + "_" + UUID.randomUUID() + "_" + fileName;
+	}
+
+	private void createSubjectFile(String directory, SubjectFile subjectFile) {
+		try {
+			File file = new File(directory + File.separator + subjectFile.getFileId());
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(subjectFile.getPayload());
+			fos.close();
+
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public byte[] retriveSubjectFileByteArray(SubjectFile subjectFile) {
+		byte[] data = null;
+		String directoryName = getSubjectFileDir(subjectFile);
+		String fileName = directoryName + File.separator + subjectFile.getFileId();
+
+		FileInputStream md5input = null;
+		FileInputStream fileInput = null;
+		try {
+			md5input = new FileInputStream(new File(fileName));
+			//Check md5 hashes
+			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(subjectFile.getChecksum())) {
+				fileInput = new FileInputStream(new File(fileName));
+				//Convert file to byte array
+				data = IOUtils.toByteArray(fileInput);
+			}
+			else {
+				log.error("MD5 Hashes are not matching");
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				md5input.close();
+				fileInput.close();
+			}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return data;
+	}
+
+	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException {		
 		iStudyDao.update(subjectFile);
 
 		AuditHistory ah = new AuditHistory();
@@ -832,14 +938,44 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public void delete(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException {
-		iStudyDao.delete(subjectFile);
+		String directory = getSubjectFileDir(subjectFile);
+		String location = directory + File.separator + subjectFile.getFileId();
+		File file = new File(location);
 
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
-		ah.setComment("Deleted subjectFile " + subjectFile.getId());
-		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT_FILE);
-		ah.setEntityId(subjectFile.getId());
-		iArkCommonService.createAuditHistory(ah);
+		FileInputStream md5input = null;
+		try {
+			md5input = new FileInputStream(file);
+			//Check the md5 hashes
+			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(subjectFile.getChecksum())) {
+				if (file.delete()) {
+					iStudyDao.delete(subjectFile);
+					AuditHistory ah = new AuditHistory();
+					ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+					ah.setComment("Deleted subjectFile " + subjectFile.getId());
+					ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT_FILE);
+					ah.setEntityId(subjectFile.getId());
+					iArkCommonService.createAuditHistory(ah);
+				}
+				else {
+					log.error("Could not find the file in " + location);
+				}
+			}
+			else {
+				log.error("MD5 Hashes are not matching");
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				md5input.close();
+			}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public List<SubjectFile> searchSubjectFile(SubjectFile subjectFile) throws EntityNotFoundException, ArkSystemException {
