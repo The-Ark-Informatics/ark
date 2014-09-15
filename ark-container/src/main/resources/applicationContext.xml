@@ -27,6 +27,9 @@
 
 	<!-- Enable annotation configuration -->
 	<context:annotation-config />
+	
+	<!-- Enable Ark properties -->
+	<context:property-placeholder location="classpath*:application.properties"/>
 
 	<!--  Belongs to the Ark Container Application -->
 	<context:component-scan base-package="au.org.theark.dao" />
