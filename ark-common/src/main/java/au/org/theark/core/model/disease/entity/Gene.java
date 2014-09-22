@@ -73,7 +73,7 @@ public class Gene implements Serializable {
 		this.study = study;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "gene")
+	@OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL, mappedBy = "gene")
 	public Set<Position> getPositions() {
 		return this.positions;
 	}

@@ -12,9 +12,9 @@ import au.org.theark.core.model.disease.entity.AffectionCustomFieldData;
 import au.org.theark.core.model.disease.entity.AffectionStatus;
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
+import au.org.theark.core.model.disease.entity.Position;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.disease.dao.IDiseaseDao;
 import au.org.theark.disease.vo.AffectionListVO;
 import au.org.theark.disease.vo.AffectionVO;
@@ -98,6 +98,14 @@ public class ArkDiseaseServiceImpl implements IArkDiseaseService {
 
 	public List<AffectionCustomFieldData> getAffectionCustomFieldData(Affection affection) {
 		return diseaseDao.getAffectionCustomFieldData(affection);
+	}
+
+	public List<Position> getPositions(Affection affection) {
+		return diseaseDao.getPositions(affection);
+	}
+
+	public Gene getGeneByID(Long id) {
+		return diseaseDao.getGeneById(id);
 	}
 
 }
