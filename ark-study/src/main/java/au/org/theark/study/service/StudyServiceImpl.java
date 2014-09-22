@@ -18,10 +18,8 @@
  ******************************************************************************/
 package au.org.theark.study.service;
 
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -136,9 +134,9 @@ public class StudyServiceImpl implements IStudyService {
 	private IUserService			iUserService;
 	private IStudyDao				iStudyDao;
 	private IAuditDao				iAuditDao;
-	
-	@Value( "${file.attachment.dir}" )
-	private String fileAttachmentDir;
+
+	@Value("${file.attachment.dir}")
+	private String					fileAttachmentDir;
 
 	public IArkCommonService getiArkCommonService() {
 		return iArkCommonService;
@@ -820,11 +818,26 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public void create(SubjectFile subjectFile) throws ArkSystemException {
-		
-		//Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
-		saveSubjectFileAttachment(subjectFile);
-		
-		//Save attachment meta information in relational tables 
+
+		Long studyId = subjectFile.getLinkSubjectStudy().getStudy().getId();
+		String subjectUID = subjectFile.getLinkSubjectStudy().getSubjectUID();
+		String fileName = subjectFile.getFilename();
+		byte[] payload = subjectFile.getPayload();
+		String checksum = subjectFile.getChecksum();
+
+		// Generate unique file id for given file name
+		String fileId = generateUniqueFileId(fileName);
+
+		// Set unique subject file id
+		subjectFile.setFileId(fileId);
+
+		// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+		saveFileAttachment(studyId, subjectUID, Constants.ARK_SUBJECT_ATTACHEMENT_DIR, fileName, payload, checksum, fileId);
+
+		// Remove the attachment
+		subjectFile.setPayload(null);
+
+		// Save attachment meta information in relational tables
 		iStudyDao.create(subjectFile);
 
 		AuditHistory ah = new AuditHistory();
@@ -835,9 +848,9 @@ public class StudyServiceImpl implements IStudyService {
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	private void saveSubjectFileAttachment(SubjectFile subjectFile) {
+	private void saveFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String checksum, final String fileId) {
 
-		String directoryName = getSubjectFileDir(subjectFile);
+		String directoryName = getFileDir(studyId, subjectUID, directoryType);
 
 		File fileDir = new File(directoryName);
 
@@ -854,18 +867,11 @@ public class StudyServiceImpl implements IStudyService {
 				log.info("DIR created successfully " + directoryName);
 			}
 		}
-
-		subjectFile.setFileId(generateUniqueFileId(subjectFile.getFilename()));
-		createSubjectFile(directoryName, subjectFile);
-		// Remove the attachment
-		subjectFile.setPayload(null);
-
+		createFile(directoryName, fileId, payload);
 	}
 
-	private String getSubjectFileDir(SubjectFile subjectFile) {
-		String studyName = subjectFile.getLinkSubjectStudy().getStudy().getName();
-		String subjectUID = subjectFile.getLinkSubjectStudy().getSubjectUID();
-		String directoryName = this.fileAttachmentDir + File.separator + studyName + File.separator + subjectUID;
+	private String getFileDir(final Long studyId, final String subjectUID, final String directoryType) {
+		String directoryName = this.fileAttachmentDir + File.separator + studyId + File.separator + subjectUID + File.separator + directoryType;
 		return directoryName;
 	}
 
@@ -873,16 +879,16 @@ public class StudyServiceImpl implements IStudyService {
 		return System.currentTimeMillis() + "_" + UUID.randomUUID() + "_" + fileName;
 	}
 
-	private void createSubjectFile(String directory, SubjectFile subjectFile) {
+	private void createFile(final String directory, final String fileId, final byte[] payload) {
 		try {
-			File file = new File(directory + File.separator + subjectFile.getFileId());
+			File file = new File(directory + File.separator + fileId);
 			// if file doesnt exists, then create it
 			if (!file.exists()) {
 				file.createNewFile();
 			}
 
 			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(subjectFile.getPayload());
+			fos.write(payload);
 			fos.close();
 
 		}
@@ -891,19 +897,19 @@ public class StudyServiceImpl implements IStudyService {
 		}
 	}
 
-	public byte[] retriveSubjectFileByteArray(SubjectFile subjectFile) {
+	public byte[] retriveFileByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) {
 		byte[] data = null;
-		String directoryName = getSubjectFileDir(subjectFile);
-		String fileName = directoryName + File.separator + subjectFile.getFileId();
+		String directoryName = getFileDir(studyId, subjectUID, directoryType);
+		String fileName = directoryName + File.separator + fileId;
 
 		FileInputStream md5input = null;
 		FileInputStream fileInput = null;
 		try {
 			md5input = new FileInputStream(new File(fileName));
-			//Check md5 hashes
-			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(subjectFile.getChecksum())) {
+			// Check md5 hashes
+			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
 				fileInput = new FileInputStream(new File(fileName));
-				//Convert file to byte array
+				// Convert file to byte array
 				data = IOUtils.toByteArray(fileInput);
 			}
 			else {
@@ -926,7 +932,7 @@ public class StudyServiceImpl implements IStudyService {
 		return data;
 	}
 
-	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException {		
+	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException {
 		iStudyDao.update(subjectFile);
 
 		AuditHistory ah = new AuditHistory();
@@ -938,14 +944,18 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public void delete(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException {
-		String directory = getSubjectFileDir(subjectFile);
+
+		Long studyId = subjectFile.getLinkSubjectStudy().getStudy().getId();
+		String subjectUID = subjectFile.getLinkSubjectStudy().getSubjectUID();
+
+		String directory = getFileDir(studyId, subjectUID, Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
 		String location = directory + File.separator + subjectFile.getFileId();
 		File file = new File(location);
 
 		FileInputStream md5input = null;
 		try {
 			md5input = new FileInputStream(file);
-			//Check the md5 hashes
+			// Check the md5 hashes
 			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(subjectFile.getChecksum())) {
 				if (file.delete()) {
 					iStudyDao.delete(subjectFile);

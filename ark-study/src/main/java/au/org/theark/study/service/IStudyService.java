@@ -452,5 +452,5 @@ public interface IStudyService {
 	
 	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
 	
-	public byte[] retriveSubjectFileByteArray(SubjectFile subjectFile);
+	public byte[] retriveFileByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum);
 }
