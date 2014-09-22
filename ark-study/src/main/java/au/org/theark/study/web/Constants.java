@@ -443,6 +443,11 @@ public class Constants {
 	public static final String MADELINE_PEDIGREE_TEMPLATE="pedigree_template";
 	public static final String PEDIGREE_TEMPLATE_EXT="txt";
 	public static final String ARK_PEDIGREE_TEMPLATE="ark_pedigree_template";
+	
+	public static final String ARK_SUBJECT_ATTACHEMENT_DIR="attachments";
+	public static final String ARK_SUBJECT_CORRESPONDENCE_DIR="correspondence";
+	public static final String ARK_STUDY_COMPONENT_DIR="studycomponent";
+	
 
 	
 }

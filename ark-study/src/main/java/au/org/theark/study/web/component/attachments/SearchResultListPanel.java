@@ -172,7 +172,12 @@ public class SearchResultListPanel extends Panel {
 					
 //					data = subjectFile.getPayload();//.getBytes(1, (int) subjectFile.getPayload().length());
 					
-					data = studyService.retriveSubjectFileByteArray(subjectFile);
+					Long studyId =subjectFile.getLinkSubjectStudy().getStudy().getId();
+					String subjectUID = subjectFile.getLinkSubjectStudy().getSubjectUID();
+					String fileId = subjectFile.getFileId();
+					String checksum = subjectFile.getChecksum();
+					
+					data = studyService.retriveFileByteArray(studyId,subjectUID,au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR,fileId,checksum);
 
 					if (data != null) {
 						InputStream inputStream = new ByteArrayInputStream(data);
