@@ -7,6 +7,7 @@ import au.org.theark.core.model.disease.entity.AffectionCustomFieldData;
 import au.org.theark.core.model.disease.entity.AffectionStatus;
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
+import au.org.theark.core.model.disease.entity.Position;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.CustomFieldVO;
@@ -48,5 +49,9 @@ public interface IDiseaseDao {
 	public int getAffectionCount(LinkSubjectStudy linkSubjectStudy);
 
 	public List<AffectionCustomFieldData> getAffectionCustomFieldData(Affection affection);
+
+	public List<Position> getPositions(Affection affection);
+
+	public Gene getGeneById(Long id);
 	
 }

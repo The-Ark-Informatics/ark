@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -37,10 +38,11 @@ public class Affection implements Serializable {
 	private LinkSubjectStudy linkSubjectStudy;
 	private AffectionStatus affectionStatus;
 	private Set<AffectionCustomFieldData> affectionCustomFieldDataSet = new HashSet<AffectionCustomFieldData>();
+	private Set<Position> positions = new HashSet<Position>();
 	
 	@Id
 	@SequenceGenerator(name = "affection_generator", sequenceName = "AFFECTION_SEQ")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "affection_generator")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "affection_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
@@ -50,7 +52,7 @@ public class Affection implements Serializable {
 		this.id = id;
 	}
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return this.study;
@@ -60,7 +62,7 @@ public class Affection implements Serializable {
 		this.study = study;
 	}
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "affection")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "affection")
 	public Set<AffectionCustomFieldData> getAffectionCustomFieldDataSets() {
 		return this.affectionCustomFieldDataSet;
 	}
@@ -79,7 +81,7 @@ public class Affection implements Serializable {
 		this.disease = disease;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LINKSUBJECTSTUDY_ID")
 	public LinkSubjectStudy getLinkSubjectStudy() {
 		return linkSubjectStudy;
@@ -95,7 +97,7 @@ public class Affection implements Serializable {
 		return recordDate;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "AFFECTION_STATUS_ID")
 	public AffectionStatus getAffectionStatus() {
 		return affectionStatus;
@@ -108,11 +110,23 @@ public class Affection implements Serializable {
 	public void setRecordDate(Date recordDate) {
 		this.recordDate = recordDate;
 	}
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "affection_position", schema=Constants.DISEASE_SCHEMA, 
+	joinColumns = {@JoinColumn(name = "AFFECTION_ID", nullable = false, updatable = false) },
+	inverseJoinColumns = { @JoinColumn(name = "POSITION_ID", nullable = false, updatable = false)})
+	public Set<Position> getPositions() {
+		return this.positions;
+	}
+	
+	public void setPositions(Set<Position> positions) {
+		this.positions = positions;
+	}
 
 	@Override
 	public String toString() {
 		return "Affection [id=" + id + ", study=" + study + ", recordDate=" + recordDate
-				+ ", disease=" + disease + "]";
+				+ ", disease=" + disease + ", positions=" + positions +"]";
 	}
 
 	@Override

@@ -50,7 +50,7 @@ public class AffectionCustomFieldData implements Serializable, ICustomFieldData 
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "AFFECTION_ID")
 	public Affection getAffection() {
 		return this.affection;
@@ -60,7 +60,7 @@ public class AffectionCustomFieldData implements Serializable, ICustomFieldData 
 		this.affection = affection;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CUSTOM_FIELD_DISPLAY_ID")
 	public CustomFieldDisplay getCustomFieldDisplay() {
 		return customFieldDisplay;

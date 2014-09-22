@@ -6,8 +6,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import mx4j.tools.config.DefaultConfigurationBuilder.Create;
+
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
+import org.hibernate.NonUniqueObjectException;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
@@ -24,6 +27,7 @@ import au.org.theark.core.model.disease.entity.AffectionCustomFieldData;
 import au.org.theark.core.model.disease.entity.AffectionStatus;
 import au.org.theark.core.model.disease.entity.Disease;
 import au.org.theark.core.model.disease.entity.Gene;
+import au.org.theark.core.model.disease.entity.Position;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -145,19 +149,33 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 		return geneVOs;
 	}
 
-	private Gene getGeneById(Long id) {
+	public Gene getGeneById(Long id) {
 		Criteria criteria = getSession().createCriteria(Gene.class);
 		criteria.add(Restrictions.idEq(id));
 		Gene gene = (Gene) criteria.uniqueResult();
+		log.info("Gene.positions: " + gene.getPositions());
 		return gene;
 	}
 
 	public void save(Object object) {
-		getSession().saveOrUpdate(object);
+		try {
+			getSession().saveOrUpdate(object);
+		}
+		catch (NonUniqueObjectException nuoe) {
+			nuoe.printStackTrace();
+			getSession().merge(object);
+
+		}
 	}
 
 	public void update(Object object) {
-		getSession().update(object);
+		try {
+			getSession().update(object);
+		}
+		catch (NonUniqueObjectException nuoe) {
+			nuoe.printStackTrace();
+			getSession().merge(object);
+		}
 	}
 
 	public void delete(Object object) {
@@ -210,7 +228,8 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 		Affection affection = affectionVO.getAffection();
 
 		if (affection != null) {
-//			log.info("build affection criteria: " + affection + " " + affection.getLinkSubjectStudy().getSubjectUID() + " " + affection.getStudy().getName());
+			// log.info("build affection criteria: " + affection + " " + affection.getLinkSubjectStudy().getSubjectUID() + " " +
+			// affection.getStudy().getName());
 			if (affection.getStudy() != null) {
 				log.info("Study: " + affection.getStudy().getName());
 				criteria.add(Restrictions.eq("study", affection.getStudy()));
@@ -224,7 +243,8 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 				log.info("LSS: " + affection.getLinkSubjectStudy().getSubjectUID());
 				criteria.createAlias("linkSubjectStudy", "lss");
 				criteria.add(Restrictions.eq("lss.subjectUID", affection.getLinkSubjectStudy().getSubjectUID()));
-			} else {
+			}
+			else {
 				criteria.createAlias("linkSubjectStudy", "lss");
 				criteria.add(Restrictions.isNull("lss.subjectUID"));
 			}
@@ -237,7 +257,7 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 				criteria.add(Restrictions.eq("affectionStatus", affection.getAffectionStatus()));
 			}
 		}
-//		criteria.setResultTransformer(criteria.DISTINCT_ROOT_ENTITY);
+		// criteria.setResultTransformer(criteria.DISTINCT_ROOT_ENTITY);
 		return criteria;
 	}
 
@@ -270,16 +290,16 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 	}
 
 	public List<AffectionCustomFieldData> getAffectionCustomFieldData(Affection affection) {
-		List<AffectionCustomFieldData> data = new ArrayList<AffectionCustomFieldData>(); //default action if is new affection
+		List<AffectionCustomFieldData> data = new ArrayList<AffectionCustomFieldData>(); // default action if is new affection
 		log.info("affection: " + affection);
 		log.info("affection.disease: " + affection.getDisease());
-		if(affection.getId() != null) { //i.e is not new affection
-			Criteria criteria = getSession().createCriteria(AffectionCustomFieldData.class);			
+		if (affection.getId() != null) { // i.e is not new affection
+			Criteria criteria = getSession().createCriteria(AffectionCustomFieldData.class);
 			criteria.add(Restrictions.eq("affection", affection));
 			data = criteria.list();
-		} 
+		}
 		log.info("data: " + data);
-		if(affection != null && affection.getDisease() != null) {
+		if (affection != null && affection.getDisease() != null) {
 			Set<CustomField> customFields = affection.getDisease().getCustomFields();
 			for (AffectionCustomFieldData afcd : data) {
 				if (customFields.contains(afcd.getCustomFieldDisplay().getCustomField())) {
@@ -311,5 +331,26 @@ public class DiseaseDao extends HibernateSessionDao implements IDiseaseDao {
 	public int getAffectionCount(LinkSubjectStudy linkSubjectStudy) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public List<Position> getPositions(Affection affection) {
+		if (affection == null)
+			return new ArrayList<Position>();
+		Affection aff = getAffectionByID(affection.getId());
+		if (aff == null)
+			return new ArrayList<Position>();
+		List<Position> positions = new ArrayList<Position>(aff.getPositions());
+		Collections.sort(positions, new Comparator<Position>() {
+			public int compare(Position o1, Position o2) {
+//				return o1.getId().compareTo(o2.getId());
+				int geneSort = o1.getGene().getName().compareTo(o2.getGene().getName());
+				if(geneSort == 0) {
+					return o1.getId().compareTo(o2.getId());
+				} else {
+					return geneSort;
+				}
+			}
+		});
+		return positions;
 	}
 }
