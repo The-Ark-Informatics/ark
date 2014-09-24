@@ -1514,12 +1514,13 @@ public class StudyServiceImpl implements IStudyService {
 				List<RelationshipVo> relationships = iStudyDao.getSubjectParentRelatives(relativeCapsule.getIndividualId(), studyId);
 				for (RelationshipVo parentRelationshipVo : relationships) {
 					RelativeCapsule parentCapsule = createSubjectRelativeCapsule(parentRelationshipVo, familyUID);
-					if ("M".equalsIgnoreCase(parentCapsule.getGender())) {
-						relativeCapsule.setFather(parentCapsule.getIndividualId());
-					}
-					else {
-						relativeCapsule.setMother(parentCapsule.getIndividualId());
-					}
+					//TODO check on condition
+//					if ("M".equalsIgnoreCase(parentCapsule.getGender())) {
+//						relativeCapsule.setFather(parentCapsule.getIndividualId());
+//					}
+//					else {
+//						relativeCapsule.setMother(parentCapsule.getIndividualId());
+//					}
 					relativeCapsuleQueue.add(parentCapsule);
 				}
 				relativeCapsules.add(relativeCapsule);
@@ -1558,23 +1559,6 @@ public class StudyServiceImpl implements IStudyService {
 
 			processTwinRelationshipCapsules(relativeCapsules, studyId);
 
-			// for(RelativeCapsule capsule:relativeCapsules){
-			// List<RelationshipVo> siblings = getSubjectPedigreeTwinList(capsule.getIndividualId(), studyId);
-			// for (RelativeCapsule existingCapsule : relativeCapsules) {
-			// for (RelationshipVo sibling : siblings) {
-			// String twinType = sibling.getTwin();
-			// if (!"NT".equals(twinType) && existingCapsule.getIndividualId().equals(sibling.getIndividualId())) {
-			// if ("MZ".equals(twinType)) {
-			// existingCapsule.setMzTwin("Y");
-			// }
-			// else if ("DZ".equals(twinType)) {
-			// existingCapsule.setDzTwin("Y");
-			// }
-			// }
-			// }
-			// }
-			// }
-
 		}
 
 		// return relativeCapsules.size() >2 ? relativeCapsules.toArray(new RelativeCapsule[relativeCapsules.size()]):new RelativeCapsule[0];
@@ -1596,12 +1580,13 @@ public class StudyServiceImpl implements IStudyService {
 			while ((relativeSubject = relativeSubjectQueue.poll()) != null) {
 				List<RelationshipVo> relationships = iStudyDao.getSubjectParentRelatives(relativeSubject.getIndividualId(), studyId);
 				for (RelationshipVo parentRelationshipVo : relationships) {
-					if ("Male".equalsIgnoreCase(parentRelationshipVo.getGender())) {
-						relativeSubject.setFatherId(parentRelationshipVo.getIndividualId());
-					}
-					else {
-						relativeSubject.setMotherId(parentRelationshipVo.getIndividualId());
-					}
+					//TODO check on this condition
+//					if ("Male".equalsIgnoreCase(parentRelationshipVo.getGender())) {
+//						relativeSubject.setFatherId(parentRelationshipVo.getIndividualId());
+//					}
+//					else {
+//						relativeSubject.setMotherId(parentRelationshipVo.getIndividualId());
+//					}
 					relativeSubjectQueue.add(parentRelationshipVo);
 				}
 				relativeSubjects.add(relativeSubject);
@@ -1860,17 +1845,6 @@ public class StudyServiceImpl implements IStudyService {
 				}
 			}
 
-			// Twin relationships
-			// for(RelationshipVo relationshipVo :relativeSubjects){
-			// List<RelationshipVo> siblings = getSubjectPedigreeTwinList(relationshipVo.getIndividualId(), studyId);
-			// for (RelationshipVo existingRelationship : relativeSubjects) {
-			// for (RelationshipVo sibling : siblings) {
-			// if (existingRelationship.getIndividualId().equals(sibling.getIndividualId())) {
-			// existingRelationship.setTwin(sibling.getTwin());
-			// }
-			// }
-			// }
-			// }
 			processTwinRelationships(relativeSubjects, studyId);
 
 			// Remove proband from the list
