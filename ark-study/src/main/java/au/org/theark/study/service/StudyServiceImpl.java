@@ -729,8 +729,8 @@ public class StudyServiceImpl implements IStudyService {
 		iStudyDao.delete(correspondence);
 	}
 
-	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException {
-		return iStudyDao.getPersonCorrespondenceList(personId, correspondence);
+	public List<Correspondences> getCorrespondenceList(LinkSubjectStudy lss, Correspondences correspondence) throws ArkSystemException {
+		return iStudyDao.getCorrespondenceList(lss, correspondence);
 	}
 
 	public List<CorrespondenceModeType> getCorrespondenceModeTypes() {

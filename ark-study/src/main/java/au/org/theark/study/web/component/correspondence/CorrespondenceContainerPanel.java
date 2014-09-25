@@ -33,6 +33,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CorrespondenceVO;
@@ -98,10 +99,13 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 			
 			Collection<Correspondences> personCorrespondenceList = new ArrayList<Correspondences>();
 			// can be a subject or contact
+			LinkSubjectStudy lss = null;
+					
 			if (sessionPersonId != null) {
-				containerForm.getModelObject().getCorrespondence().setPerson(studyService.getPerson(sessionPersonId));
+				lss = studyService.getSubjectLinkedToStudy(sessionPersonId, study);
+				containerForm.getModelObject().getCorrespondence().setLss(lss);
 				containerForm.getModelObject().getCorrespondence().setStudy(study);
-				personCorrespondenceList = studyService.getPersonCorrespondenceList(sessionPersonId, containerForm.getModelObject().getCorrespondence());
+				personCorrespondenceList = studyService.getCorrespondenceList(lss, containerForm.getModelObject().getCorrespondence());
 			}
 
 			// add the corresponden\ce items related to the person if one found in session, or an empty list
@@ -143,16 +147,24 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 				Long studyId=(Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				Study study=commonService.getStudy(studyId);
 				
+				LinkSubjectStudy lss = null;
+				
 				try {
 					if (isActionPermitted()) {
 						if (sessionPersonId != null) {
+							lss = studyService.getSubjectLinkedToStudy(sessionPersonId, study);
+							
 							containerForm.getModelObject().getCorrespondence().setStudy(study);
-							correspondenceList = studyService.getPersonCorrespondenceList(sessionPersonId, containerForm.getModelObject().getCorrespondence());
+							correspondenceList = studyService.getCorrespondenceList(lss, containerForm.getModelObject().getCorrespondence());
 						}
 					}
 				}
 				catch (ArkSystemException ex) {
 					ex.printStackTrace();
+				}
+				catch (EntityNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 
 				pageableListView.removeAll();

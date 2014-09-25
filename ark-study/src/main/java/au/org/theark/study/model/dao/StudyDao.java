@@ -1192,15 +1192,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	}
 
-	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException {
+	public List<Correspondences> getCorrespondenceList(LinkSubjectStudy lss, Correspondences correspondence) throws ArkSystemException {
 
 		Criteria criteria = getSession().createCriteria(Correspondences.class, "co");
-		criteria.createAlias("person", "pe", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("lss", "lss", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("study", "st", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("st.parentStudy", "pstudy", JoinType.LEFT_OUTER_JOIN);
 
-		if (personId != null) {
-			criteria.add(Restrictions.eq("pe.id", personId));
+		if (lss != null) {
+			criteria.add(Restrictions.eq("lss", lss));
 		}
 
 		if (correspondence != null) {
