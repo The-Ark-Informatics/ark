@@ -329,7 +329,7 @@ public interface IStudyDao {
 
 	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
 
-	public List<Correspondences> getPersonCorrespondenceList(Long id, Correspondences correspondence) throws ArkSystemException;
+	public List<Correspondences> getCorrespondenceList(LinkSubjectStudy lss, Correspondences correspondence) throws ArkSystemException;
 
 	public List<CorrespondenceModeType> getCorrespondenceModeTypes();
 

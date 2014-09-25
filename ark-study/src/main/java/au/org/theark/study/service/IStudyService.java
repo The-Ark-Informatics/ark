@@ -231,7 +231,7 @@ public interface IStudyService {
 	 * @return a list of correspondence for person. if empty, returns an empty list
 	 * @throws ArkSystemException
 	 */
-	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException;
+	public List<Correspondences> getCorrespondenceList(LinkSubjectStudy lss, Correspondences correspondence) throws ArkSystemException;
 
 	public List<CorrespondenceModeType> getCorrespondenceModeTypes();
 
