@@ -44,6 +44,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -164,10 +165,15 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 
 		target.add(feedbackPanel);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);		
+
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		
 		try {
+			LinkSubjectStudy lss = studyService.getSubjectLinkedToStudy(sessionPersonId, study);
 			Correspondences correspondence = getModelObject().getCorrespondence();
-			correspondence.setPerson(studyService.getPerson(sessionPersonId));
-			Collection<Correspondences> correspondenceList = studyService.getPersonCorrespondenceList(sessionPersonId, correspondence);
+			correspondence.setLss(lss);
+			Collection<Correspondences> correspondenceList = studyService.getCorrespondenceList(lss, correspondence);
 			if (correspondenceList != null && correspondenceList.size() == 0) {
 				this.info("Fields with the specified criteria do not exist in the system.");
 				target.add(feedbackPanel);
