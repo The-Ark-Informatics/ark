@@ -50,6 +50,7 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.worktracking.entity.BillableItem;
@@ -340,12 +341,14 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		// get the person and set it on the correspondence object
 		try {
 			// set the Person in context
-			Person person = studyService.getPerson(personSessionId);
-			containerForm.getModelObject().getCorrespondence().setPerson(person);
+			//Person person = studyService.getPerson(personSessionId);
+
 			// set the Study in context
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			Study study = iArkCommonService.getStudy(studyId);
+			LinkSubjectStudy lss = studyService.getSubjectLinkedToStudy(personSessionId, study);
 			containerForm.getModelObject().getCorrespondence().setStudy(study);
+			containerForm.getModelObject().getCorrespondence().setLss(lss);
 
 			if (containerForm.getModelObject().getCorrespondence().getId() == null) {
 				// store correspondence file attachment
@@ -357,7 +360,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 				// save
 				studyService.create(containerForm.getModelObject().getCorrespondence());
-				this.info("Correspondence was successfully added and linked to subject: " + person.getFirstName() + " " + person.getLastName());
+				this.info("Correspondence was successfully added and linked to subject: " + lss.getSubjectUID());
 				processErrors(target);
 			}
 			else {
@@ -370,7 +373,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 				}
 
 				studyService.update(containerForm.getModelObject().getCorrespondence());
-				this.info("Correspondence was successfully updated and linked to subject: " + person.getFirstName() + " " + person.getLastName());
+				this.info("Correspondence was successfully updated and linked to subject: " + lss.getSubjectUID());
 				processErrors(target);
 			}
 			// invoke backend to persist the correspondence
