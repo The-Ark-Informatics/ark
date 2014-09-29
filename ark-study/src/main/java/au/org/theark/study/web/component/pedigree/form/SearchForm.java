@@ -56,7 +56,7 @@ public class SearchForm extends Form<PedigreeVo> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no in context. Please bring a subject into context via the Subject tab.");
+		disableSearchForm(sessionPersonId, "There is no subject in context. Please bring a subject into context via the Subject tab.");
 		disableSaveButtons();
 	}
 
