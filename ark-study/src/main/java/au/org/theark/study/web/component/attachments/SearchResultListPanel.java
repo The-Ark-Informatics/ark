@@ -56,6 +56,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.security.PermissionConstants;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.study.service.IStudyService;
@@ -71,6 +72,10 @@ import au.org.theark.study.web.component.attachments.form.ContainerForm;
 public class SearchResultListPanel extends Panel {
 	private static final long	serialVersionUID	= 8147089460348057381L;
 	private transient Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		arkCommonService;
+	
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
 	private IStudyService		studyService;
 	private ArkCrudContainerVO	arkCrudContainerVO;
@@ -177,7 +182,7 @@ public class SearchResultListPanel extends Panel {
 					String fileId = subjectFile.getFileId();
 					String checksum = subjectFile.getChecksum();
 					
-					data = studyService.retriveFileByteArray(studyId,subjectUID,au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR,fileId,checksum);
+					data = arkCommonService.retriveArkFileAttachmentByteArray(studyId,subjectUID,au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR,fileId,checksum);
 
 					if (data != null) {
 						InputStream inputStream = new ByteArrayInputStream(data);
@@ -199,12 +204,21 @@ public class SearchResultListPanel extends Panel {
 						}.setFileName(fileName).setContentDisposition(ContentDisposition.ATTACHMENT));
 					}
 				}
+				catch(ArkSystemException e){
+					this.error("Unexpected error: Download request could not be fulfilled.");
+					log.error(e.getMessage());
+				}
 				catch (FileNotFoundException e) {
+					this.error("Unexpected error: Download request could not be fulfilled.");
 					log.error(e.getMessage());
 				}
 				catch (IOException e) {
+					this.error("Unexpected error: Download request could not be fulfilled.");
 					log.error(e.getMessage());
 				}
+				
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(containerForm);
 			}
 
 			@Override
@@ -232,20 +246,26 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to delete upload
+				
+				boolean success=false;
 				if (subjectFile.getId() != null) {
 					try {
 						studyService.delete(subjectFile);
+						success=true;
 					}
 					catch (ArkSystemException e) {
+						this.error("Unexpected error: Delete request could not be fulfilled.");
 						log.error(e.getMessage());
 					}
 					catch (EntityNotFoundException e) {
+						this.error("Unexpected error: Delete request could not be fulfilled.");
 						log.error(e.getMessage());
 					}
 				}
 
-				containerForm.info("Attachment " + subjectFile.getFilename() + " was deleted successfully.");
-
+				if(success){
+					containerForm.info("Attachment " + subjectFile.getFilename() + " was deleted successfully.");
+				}	
 				// Update the result panel
 				// target.add(searchResultContainer);
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());

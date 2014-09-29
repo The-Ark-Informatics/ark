@@ -135,9 +135,6 @@ public class StudyServiceImpl implements IStudyService {
 	private IStudyDao				iStudyDao;
 	private IAuditDao				iAuditDao;
 
-	@Value("${file.attachment.dir}")
-	private String					fileAttachmentDir;
-
 	public IArkCommonService getiArkCommonService() {
 		return iArkCommonService;
 	}
@@ -826,13 +823,13 @@ public class StudyServiceImpl implements IStudyService {
 		String checksum = subjectFile.getChecksum();
 
 		// Generate unique file id for given file name
-		String fileId = generateUniqueFileId(fileName);
+		String fileId = iArkCommonService.generateArkFileId(fileName);
 
 		// Set unique subject file id
 		subjectFile.setFileId(fileId);
 
 		// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
-		saveFileAttachment(studyId, subjectUID, Constants.ARK_SUBJECT_ATTACHEMENT_DIR, fileName, payload, checksum, fileId);
+		iArkCommonService.saveArkFileAttachment(studyId, subjectUID, Constants.ARK_SUBJECT_ATTACHEMENT_DIR, fileName, payload, checksum, fileId);
 
 		// Remove the attachment
 		subjectFile.setPayload(null);
@@ -846,90 +843,6 @@ public class StudyServiceImpl implements IStudyService {
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT_FILE);
 		ah.setEntityId(subjectFile.getId());
 		iArkCommonService.createAuditHistory(ah);
-	}
-
-	private void saveFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String checksum, final String fileId) {
-
-		String directoryName = getFileDir(studyId, subjectUID, directoryType);
-
-		File fileDir = new File(directoryName);
-
-		if (!fileDir.exists()) {
-			boolean result = false;
-			try {
-				fileDir.mkdirs();
-				result = true;
-			}
-			catch (SecurityException se) {
-				log.error("Do not have the sufficient permission to access the file directory");
-			}
-			if (result) {
-				log.info("DIR created successfully " + directoryName);
-			}
-		}
-		createFile(directoryName, fileId, payload);
-	}
-
-	private String getFileDir(final Long studyId, final String subjectUID, final String directoryType) {
-		String directoryName = this.fileAttachmentDir + File.separator + studyId + File.separator + subjectUID + File.separator + directoryType;
-		return directoryName;
-	}
-
-	private String generateUniqueFileId(String fileName) {
-		return System.currentTimeMillis() + "_" + UUID.randomUUID() + "_" + fileName;
-	}
-
-	private void createFile(final String directory, final String fileId, final byte[] payload) {
-		try {
-			File file = new File(directory + File.separator + fileId);
-			// if file doesnt exists, then create it
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(payload);
-			fos.close();
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public byte[] retriveFileByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) {
-		byte[] data = null;
-		String directoryName = getFileDir(studyId, subjectUID, directoryType);
-		String fileName = directoryName + File.separator + fileId;
-
-		FileInputStream md5input = null;
-		FileInputStream fileInput = null;
-		try {
-			md5input = new FileInputStream(new File(fileName));
-			// Check md5 hashes
-			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
-				fileInput = new FileInputStream(new File(fileName));
-				// Convert file to byte array
-				data = IOUtils.toByteArray(fileInput);
-			}
-			else {
-				log.error("MD5 Hashes are not matching");
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				md5input.close();
-				fileInput.close();
-			}
-			catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return data;
 	}
 
 	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException {
@@ -948,7 +861,7 @@ public class StudyServiceImpl implements IStudyService {
 		Long studyId = subjectFile.getLinkSubjectStudy().getStudy().getId();
 		String subjectUID = subjectFile.getLinkSubjectStudy().getSubjectUID();
 
-		String directory = getFileDir(studyId, subjectUID, Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
+		String directory = iArkCommonService.getArkFileDirName(studyId, subjectUID, Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
 		String location = directory + File.separator + subjectFile.getFileId();
 		File file = new File(location);
 
@@ -974,16 +887,14 @@ public class StudyServiceImpl implements IStudyService {
 				log.error("MD5 Hashes are not matching");
 			}
 		}
-		catch (IOException e) {
-			e.printStackTrace();
+		catch (Exception e) {
+			throw new ArkSystemException(e.getMessage());
 		}
 		finally {
 			try {
 				md5input.close();
-			}
-			catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			}catch(Exception e){
+				throw new ArkSystemException(e.getMessage());
 			}
 		}
 	}
