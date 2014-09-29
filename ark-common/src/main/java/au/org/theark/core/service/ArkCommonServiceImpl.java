@@ -18,6 +18,9 @@
  ******************************************************************************/
 package au.org.theark.core.service;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.Blob;
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.mail.internet.MimeMessage;
 import javax.naming.InvalidNameException;
@@ -34,14 +38,18 @@ import javax.naming.Name;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.util.file.File;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ldap.NameNotFoundException;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
@@ -169,6 +177,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private JavaMailSender				javaMailSender;
 	private VelocityEngine				velocityEngine;
 	private IGenoDao					genoDao;
+	
+	@Value("${file.attachment.dir}")
+	private String					fileAttachmentDir;
 	
 	public IGenoDao getGenoDao() {
 		return genoDao;
@@ -1551,4 +1562,86 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<CustomField> getCustomFieldsNotInList(List customFieldsFromData, ArkFunction function, Study study) {
 		return customFieldDao.getCustomFieldsNotInList(customFieldsFromData, function, study);
 	}
+	
+	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String checksum, final String fileId) {
+
+		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
+
+		File fileDir = new File(directoryName);
+
+		if (!fileDir.exists()) {
+			boolean result = false;
+			try {
+				fileDir.mkdirs();
+				result = true;
+			}
+			catch (SecurityException se) {
+				log.error("Do not have the sufficient permission to access the file directory");
+			}
+			if (result) {
+				log.info("DIR created successfully " + directoryName);
+			}
+		}
+		createFile(directoryName, fileId, payload);
+	}
+
+	public String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType) {
+		String directoryName = this.fileAttachmentDir + File.separator + studyId + File.separator + directoryType +  File.separator + subjectUID ;
+		return directoryName;
+	}
+
+	public String generateArkFileId(String fileName) {
+		return System.currentTimeMillis() + "_" + UUID.randomUUID() + "_" + fileName;
+	}
+
+	private void createFile(final String directory, final String fileId, final byte[] payload) {
+		try {
+			File file = new File(directory + File.separator + fileId);
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(payload);
+			fos.close();
+
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public byte[] retriveArkFileAttachmentByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException {
+		byte[] data = null;
+		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
+		String fileName = directoryName + File.separator + fileId;
+
+		FileInputStream md5input = null;
+		FileInputStream fileInput = null;
+		try {
+			md5input = new FileInputStream(new File(fileName));
+			// Check md5 hashes
+			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
+				fileInput = new FileInputStream(new File(fileName));
+				// Convert file to byte array
+				data = IOUtils.toByteArray(fileInput);
+			} else {
+				log.error("MD5 Hashes are not matching");
+				throw new ArkSystemException("MD5 Hashes are not matching");
+			}
+		} catch (Exception e) {
+			throw new ArkSystemException(e.getMessage());
+		} finally {
+			try {
+				md5input.close();
+				fileInput.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				throw new ArkSystemException(e.getMessage());
+			}
+		}
+		return data;
+	}
+
 }
