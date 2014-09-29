@@ -874,4 +874,42 @@ public interface IArkCommonService<T> {
 
 	public List<CustomField> getCustomFieldsNotInList(List<CustomField> customFieldsFromData, ArkFunction function, Study study);
 	
+	/**
+	 * Save the Ark file attachment to pre-configured directory location in the server. 
+	 * @param studyId
+	 * @param subjectUID
+	 * @param directoryType
+	 * @param fileName
+	 * @param payload
+	 * @param checksum
+	 * @param fileId
+	 */
+	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String checksum, final String fileId);
+	
+	/**
+	 * Generate directory name according to attachment type 
+	 * @param studyId
+	 * @param subjectUID
+	 * @param directoryType
+	 * @return
+	 */
+	public String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType);
+	
+	/**
+	 * Generate a unique file id per attachment
+	 * @param fileName
+	 * @return
+	 */
+	public String generateArkFileId(String fileName);
+	
+	/**
+	 * Retrieve the attachment byte array 
+	 * @param studyId
+	 * @param subjectUID
+	 * @param directoryType
+	 * @param fileId
+	 * @param checksum
+	 * @return
+	 */
+	public byte[] retriveArkFileAttachmentByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException;
 }
