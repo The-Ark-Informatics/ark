@@ -347,8 +347,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			Study study = iArkCommonService.getStudy(studyId);
 			LinkSubjectStudy lss = studyService.getSubjectLinkedToStudy(personSessionId, study);
-			containerForm.getModelObject().getCorrespondence().setStudy(study);
 			containerForm.getModelObject().getCorrespondence().setLss(lss);
+			//containerForm.getModelObject().getCorrespondence().setStudy(study);
 
 			if (containerForm.getModelObject().getCorrespondence().getId() == null) {
 				// store correspondence file attachment
