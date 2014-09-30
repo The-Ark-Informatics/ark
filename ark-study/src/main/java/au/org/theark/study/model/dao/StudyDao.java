@@ -1197,7 +1197,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(Correspondences.class, "co");
 		criteria.createAlias("lss", "lss", JoinType.LEFT_OUTER_JOIN);
 		//criteria.createAlias("study", "st", JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("st.parentStudy", "pstudy", JoinType.LEFT_OUTER_JOIN);
+		//criteria.createAlias("st.parentStudy", "pstudy", JoinType.LEFT_OUTER_JOIN);
 
 		if (lss != null) {
 			criteria.add(Restrictions.eq("lss", lss));
@@ -1207,7 +1207,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 			// Check context study is match with correspondence study or it's parent study
 			if (correspondence.getLss() != null && correspondence.getLss().getStudy() != null) {
-				criteria.add(Restrictions.disjunction().add(Restrictions.eq("lss.study", correspondence.getLss().getStudy())).add(Restrictions.eq("pstudy", correspondence.getLss().getStudy())));
+				criteria.add(Restrictions.disjunction().add(Restrictions.eq("lss.study", correspondence.getLss().getStudy())));//.add(Restrictions.eq("pstudy", correspondence.getLss().getStudy())));
 			}
 			if (correspondence.getCorrespondenceDirectionType() != null) {
 				criteria.add(Restrictions.eq("co.correspondenceDirectionType", correspondence.getCorrespondenceDirectionType()));
