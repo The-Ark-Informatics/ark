@@ -166,6 +166,7 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 	}
 
 	public String createBiospecimenLabelTemplate(Biospecimen biospecimen, BarcodeLabel barcodeLabel) {
+		log.warn("about to print biospecimen " + biospecimen);
 		/* lets make a Context and put data into it */
 		VelocityContext context = getBiospecimenLabelContext(biospecimen);
 
@@ -230,6 +231,7 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		// log.error(e.getMessage());
 		// }
 		//
+		log.info("velocity context should have specimen=" + biospecimenUid + " and dob=" + dateOfBirth);
 		velocityContext.put("biospecimenUid", biospecimenUid);
 		// velocityContext.put("firstLineOfCircle", biospecimenUid.substring(0, indexOfnum));
 		// velocityContext.put("secondLineOfCircle", secondLine);
@@ -249,6 +251,9 @@ public class LimsAdminServiceImpl implements ILimsAdminService {
 		
 		if (dateOfBirth != null) {
 			velocityContext.put("dateOfBirth", dateOfBirth);
+		}
+		else{
+			velocityContext.put("dateOfBirth", "noDOB");
 		}
 		return velocityContext;
 	}
