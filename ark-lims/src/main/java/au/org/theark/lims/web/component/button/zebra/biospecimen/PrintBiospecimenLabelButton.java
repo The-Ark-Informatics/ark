@@ -94,24 +94,29 @@ public abstract class PrintBiospecimenLabelButton extends AjaxButton {
 			
 			if(numberModel == null) {
 				barcodesToPrint = 1;
+				log.warn("number model was null - set to 1");
 			}
 			else {
 				barcodesToPrint = (Number) numberModel.getObject();
+				log.warn("number model aka barcodes to print = " + barcodesToPrint);
 			}
 
 			for (int i = 0; i < barcodesToPrint.intValue(); i++) {
 				sb.append(iLimsAdminService.createBiospecimenLabelTemplate(biospecimen, barcodeLabel));
 				sb.append("%0A");
+				log.warn("have done this many barcodes in for loop = " + i);
 			}
 
-			this.zplString = sb.toString();
+			zplString = sb.toString();
+			
+			log.warn("so zpl string looks like this; " + zplString);
 
 			if (zplString == null || zplString.isEmpty()) {
 				this.error("There was an error when attempting to print the barcode for: " + biospecimen.getBiospecimenUid());
 				log.error("There was an error when attempting to print the barcode for: " + biospecimen.getBiospecimenUid());
 			}
 			else {
-				log.debug(zplString);
+				log.warn("printer = " + barcodeLabel.getBarcodePrinterName());
 				target.appendJavaScript("printBarcode(\"" + barcodeLabel.getBarcodePrinterName() + "\",\"" + zplString + "\");");
 				onPostSubmit(target, form);
 			}
