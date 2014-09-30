@@ -47,7 +47,6 @@ public class Correspondences implements Serializable {
 	private Long id;
 	//private Person person;
 	private LinkSubjectStudy lss;
-	private Study study;
 	private ArkUser operator;
 	private Date date;
 	private String time;
@@ -82,16 +81,6 @@ public class Correspondences implements Serializable {
 
 	public void setLss(LinkSubjectStudy lss) {
 		this.lss = lss;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "STUDY_ID")
-	public Study getStudy() {
-		return study;
-	}
-
-	public void setStudy(Study study) {
-		this.study = study;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

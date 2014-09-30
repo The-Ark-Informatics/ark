@@ -104,7 +104,7 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 			if (sessionPersonId != null) {
 				lss = studyService.getSubjectLinkedToStudy(sessionPersonId, study);
 				containerForm.getModelObject().getCorrespondence().setLss(lss);
-				containerForm.getModelObject().getCorrespondence().setStudy(study);
+				//this would only serve as convenience and source of integrity break containerForm.getModelObject().getCorrespondence().setStudy(study);
 				personCorrespondenceList = studyService.getCorrespondenceList(lss, containerForm.getModelObject().getCorrespondence());
 			}
 
@@ -154,7 +154,7 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 						if (sessionPersonId != null) {
 							lss = studyService.getSubjectLinkedToStudy(sessionPersonId, study);
 							
-							containerForm.getModelObject().getCorrespondence().setStudy(study);
+							//containerForm.getModelObject().getCorrespondence().setStudy(study);
 							correspondenceList = studyService.getCorrespondenceList(lss, containerForm.getModelObject().getCorrespondence());
 						}
 					}

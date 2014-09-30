@@ -87,8 +87,8 @@ public class CorrespondenceVO implements Serializable {
 
 	public String getStudyName() {
 		String studyName=null;
-		if(correspondence.getStudy()!=null){
-			studyName= this.correspondence.getStudy().getName();
+		if(correspondence.getLss()!=null && correspondence.getLss().getStudy()!=null){
+			studyName= this.correspondence.getLss().getStudy().getName();
 		}
 		return studyName;
 	}
