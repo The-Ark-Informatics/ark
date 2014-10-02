@@ -19,5 +19,15 @@ SET LINK_SUBJECT_STUDY_ID =
 where study_id is not null
 and person_id is not null;
 
-/*after thorough testing remove person_id column*/
+ALTER TABLE `study`.`correspondences` DROP FOREIGN KEY `correspondences_study_id` ;
+ALTER TABLE `study`.`correspondences` CHANGE COLUMN `STUDY_ID` `STUDY_ID` INT(11) NULL  ,
+  ADD CONSTRAINT `correspondences_study_id`
+  FOREIGN KEY (`STUDY_ID` )
+  REFERENCES `study`.`study` (`ID` )
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+
+
+/*after thorough testing remove person_id column and study column...
+we will keep it there though until we verify in each env that the lss corresponds correctly (pardon the pun)*/
 
