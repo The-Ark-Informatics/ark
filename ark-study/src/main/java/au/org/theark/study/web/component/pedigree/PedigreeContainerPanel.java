@@ -98,7 +98,7 @@ public class PedigreeContainerPanel extends AbstractContainerPanel<PedigreeVo>{
 				List<RelationshipVo> relatives = studyService.generateSubjectPedigreeRelativeList(subjectUID,studyId);
 				containerForm.getModelObject().setRelationshipList(relatives);
 				pageableListView.removeAll();
-				if(relatives.size() > 2){
+				if(relatives.size() > 1){
 					arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel").get("searchForm").get("view").setEnabled(true);
 				}
 				else{
