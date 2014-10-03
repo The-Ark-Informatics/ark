@@ -1425,13 +1425,6 @@ public class StudyServiceImpl implements IStudyService {
 				List<RelationshipVo> relationships = iStudyDao.getSubjectParentRelatives(relativeCapsule.getIndividualId(), studyId);
 				for (RelationshipVo parentRelationshipVo : relationships) {
 					RelativeCapsule parentCapsule = createSubjectRelativeCapsule(parentRelationshipVo, familyUID);
-					//TODO check on condition
-//					if ("M".equalsIgnoreCase(parentCapsule.getGender())) {
-//						relativeCapsule.setFather(parentCapsule.getIndividualId());
-//					}
-//					else {
-//						relativeCapsule.setMother(parentCapsule.getIndividualId());
-//					}
 					relativeCapsuleQueue.add(parentCapsule);
 				}
 				relativeCapsules.add(relativeCapsule);
@@ -1445,23 +1438,18 @@ public class StudyServiceImpl implements IStudyService {
 				for (RelationshipVo childRelativeVo : relationships) {
 					RelativeCapsule childCapsule = createSubjectRelativeCapsule(childRelativeVo, familyUID);
 					if (relativeCapsules.contains(childCapsule)) {
-						RelativeCapsule prevCapsule = relativeCapsules.get(relativeCapsules.indexOf(childCapsule));
-						if ("M".equalsIgnoreCase(relativeCapsule.getGender())) {
-							prevCapsule.setFather(relativeCapsule.getIndividualId());
-						}
-						else {
-							prevCapsule.setMother(relativeCapsule.getIndividualId());
-						}
+						childCapsule = relativeCapsules.get(relativeCapsules.indexOf(childCapsule));
 					}
 					else {
-						if ("M".equalsIgnoreCase(relativeCapsule.getGender())) {
-							childCapsule.setFather(relativeCapsule.getIndividualId());
-						}
-						else {
-							childCapsule.setMother(relativeCapsule.getIndividualId());
-						}
 						relativeCapsuleQueue.add(childCapsule);
 						relativeCapsules.add(childCapsule);
+					}
+
+					if ("M".equalsIgnoreCase(relativeCapsule.getGender())) {
+						childCapsule.setFather(relativeCapsule.getIndividualId());
+					}
+					else {
+						childCapsule.setMother(relativeCapsule.getIndividualId());
 					}
 				}
 			}
@@ -1491,13 +1479,6 @@ public class StudyServiceImpl implements IStudyService {
 			while ((relativeSubject = relativeSubjectQueue.poll()) != null) {
 				List<RelationshipVo> relationships = iStudyDao.getSubjectParentRelatives(relativeSubject.getIndividualId(), studyId);
 				for (RelationshipVo parentRelationshipVo : relationships) {
-					//TODO check on this condition
-//					if ("Male".equalsIgnoreCase(parentRelationshipVo.getGender())) {
-//						relativeSubject.setFatherId(parentRelationshipVo.getIndividualId());
-//					}
-//					else {
-//						relativeSubject.setMotherId(parentRelationshipVo.getIndividualId());
-//					}
 					relativeSubjectQueue.add(parentRelationshipVo);
 				}
 				relativeSubjects.add(relativeSubject);
@@ -1506,27 +1487,23 @@ public class StudyServiceImpl implements IStudyService {
 			relativeSubjectQueue.addAll(relativeSubjects);
 
 			// Generate the child relationships to parent relationships
+
 			while ((relativeSubject = relativeSubjectQueue.poll()) != null) {
 				List<RelationshipVo> relationships = iStudyDao.getSubjectChildRelatives(relativeSubject.getIndividualId(), studyId);
 				for (RelationshipVo childRelativeVo : relationships) {
 					if (relativeSubjects.contains(childRelativeVo)) {
-						RelationshipVo prevRelativeSubject = relativeSubjects.get(relativeSubjects.indexOf(childRelativeVo));
-						if ("Male".equalsIgnoreCase(relativeSubject.getGender())) {
-							prevRelativeSubject.setFatherId(relativeSubject.getIndividualId());
-						}
-						else {
-							prevRelativeSubject.setMotherId(relativeSubject.getIndividualId());
-						}
+						childRelativeVo = relativeSubjects.get(relativeSubjects.indexOf(childRelativeVo));
 					}
 					else {
-						if ("Male".equalsIgnoreCase(relativeSubject.getGender())) {
-							childRelativeVo.setFatherId(relativeSubject.getIndividualId());
-						}
-						else {
-							childRelativeVo.setMotherId(relativeSubject.getIndividualId());
-						}
 						relativeSubjectQueue.add(childRelativeVo);
 						relativeSubjects.add(childRelativeVo);
+					}
+
+					if ("Male".equalsIgnoreCase(relativeSubject.getGender())) {
+						childRelativeVo.setFatherId(relativeSubject.getIndividualId());
+					}
+					else {
+						childRelativeVo.setMotherId(relativeSubject.getIndividualId());
 					}
 				}
 			}
