@@ -59,6 +59,9 @@ public class Correspondences implements Serializable {
 	private String attachmentFilename;
 	private byte[] attachmentPayload;
 	
+	private String attachementChecksum;
+	private String attachementFileId;
+	
 	private BillableItem billableItem; 
 
 	@Id
@@ -201,4 +204,21 @@ public class Correspondences implements Serializable {
 		this.billableItem = billableItem;
 	}
 
+	@Column(name = "ATTACHMENT_CHECKSUM")
+	public String getAttachementChecksum() {
+		return attachementChecksum;
+	}
+
+	public void setAttachementChecksum(String attachementChecksum) {
+		this.attachementChecksum = attachementChecksum;
+	}
+
+	@Column(name = "ATTACHMENT_FILE_ID")
+	public String getAttachementFileId() {
+		return attachementFileId;
+	}
+
+	public void setAttachementFileId(String attachementFileId) {
+		this.attachementFileId = attachementFileId;
+	}
 }
