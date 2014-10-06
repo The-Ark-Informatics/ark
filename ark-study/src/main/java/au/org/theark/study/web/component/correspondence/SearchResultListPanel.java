@@ -188,7 +188,22 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				byte[] data = correspondences.getAttachmentPayload();
+//				byte[] data = correspondences.getAttachmentPayload();
+				Long studyId =correspondences.getLss().getStudy().getId();
+				String subjectUID = correspondences.getLss().getSubjectUID();
+				String fileId = correspondences.getAttachementFileId();
+				String checksum = correspondences.getAttachementChecksum();
+				
+				byte[] data = null;
+				
+				try {
+					data = iArkCommonService.retriveArkFileAttachmentByteArray(studyId,subjectUID,au.org.theark.study.web.Constants.ARK_SUBJECT_CORRESPONDENCE_DIR,fileId,checksum);
+				}
+				catch (ArkSystemException e) {
+					this.error("Unexpected error: Download request could not be fulfilled.");
+					log.error(e.getMessage());
+				}
+				
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("", data, correspondences.getAttachmentFilename()));
 			}
 

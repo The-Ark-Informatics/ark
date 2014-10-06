@@ -715,14 +715,147 @@ public class StudyServiceImpl implements IStudyService {
 
 	/*** correspondence service functions ***/
 	public void create(Correspondences correspondence) throws ArkSystemException {
+
+		if (correspondence.getAttachmentPayload() != null) {
+			Long studyId = correspondence.getLss().getStudy().getId();
+			String subjectUID = correspondence.getLss().getSubjectUID();
+			String fileName = correspondence.getAttachmentFilename();
+			byte[] payload = correspondence.getAttachmentPayload();
+			String checksum = correspondence.getAttachementChecksum();
+
+			// Generate unique file id for given file name
+			String fileId = iArkCommonService.generateArkFileId(fileName);
+
+			// Set unique subject file id
+			correspondence.setAttachementFileId(fileId);
+
+			// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+			iArkCommonService.saveArkFileAttachment(studyId, subjectUID, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR, fileName, payload, checksum, fileId);
+
+			// Remove the attachment
+			correspondence.setAttachmentPayload(null);
+		}
 		iStudyDao.create(correspondence);
 	}
 
 	public void update(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException {
+
+		Long studyId = correspondence.getLss().getStudy().getId();
+		String subjectUID = correspondence.getLss().getSubjectUID();
+		String fileName = correspondence.getAttachmentFilename();
+		byte[] payload = correspondence.getAttachmentPayload();
+		String checksum = correspondence.getAttachementChecksum();
+
+		String fileId = null;
+		if (correspondence.getAttachmentPayload() != null) {
+
+			if (correspondence.getAttachementFileId() != null) {
+
+				// Get existing file Id
+				fileId = correspondence.getAttachementFileId();
+
+				// Delete existing attachment
+				deleteCorrespondenceAttachment(studyId, subjectUID, fileId);
+
+				// Generate unique file id for given file name
+				fileId = iArkCommonService.generateArkFileId(fileName);
+
+				// Set unique subject file id
+				correspondence.setAttachementFileId(fileId);
+
+				// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+				iArkCommonService.saveArkFileAttachment(studyId, subjectUID, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR, fileName, payload, checksum, fileId);
+			}
+			else {
+				// Generate unique file id for given file name
+				fileId = iArkCommonService.generateArkFileId(fileName);
+
+				// Set unique subject file id
+				correspondence.setAttachementFileId(fileId);
+
+				// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+				iArkCommonService.saveArkFileAttachment(studyId, subjectUID, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR, fileName, payload, checksum, fileId);
+			}
+		}
+		else {
+			if (correspondence.getAttachementFileId() != null) {
+				// Get existing file Id
+				fileId = correspondence.getAttachementFileId();
+
+				// Delete existing attachment
+				deleteCorrespondenceAttachment(studyId, subjectUID, fileId);
+				correspondence.setAttachementFileId(null);
+			}
+		}
+		// Remove the attachment
+		correspondence.setAttachmentPayload(null);
 		iStudyDao.update(correspondence);
 	}
 
+	/**
+	 * @param studyId
+	 * @param subjectUID
+	 * @param checksum
+	 * @param fileId
+	 * @throws ArkSystemException
+	 */
+	private void deleteCorrespondenceAttachment(Long studyId, String subjectUID, String fileId) throws ArkSystemException {
+		String directory = iArkCommonService.getArkFileDirName(studyId, subjectUID, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR);
+		String location = directory + File.separator + fileId;
+		File file = new File(location);
+		try {
+			if (file.delete()) {
+				log.info("File deleted successfully");
+			}
+			else {
+				log.error("Could not find the file in " + location);
+			}
+		}
+		catch (Exception e) {
+			throw new ArkSystemException(e.getMessage());
+		}
+	}
+
 	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException {
+
+		if (correspondence.getAttachementFileId() != null) {
+			Long studyId = correspondence.getLss().getStudy().getId();
+			String subjectUID = correspondence.getLss().getSubjectUID();
+
+			String directory = iArkCommonService.getArkFileDirName(studyId, subjectUID, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR);
+			String location = directory + File.separator + correspondence.getAttachementFileId();
+			File file = new File(location);
+
+			FileInputStream md5input = null;
+			try {
+				md5input = new FileInputStream(file);
+				// Check the md5 hashes
+				if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(correspondence.getAttachementChecksum())) {
+					if (file.delete()) {
+						log.info("File deleted successfully in " + location);
+					}
+					else {
+						log.error("Could not find the file in " + location);
+					}
+				}
+				else {
+					log.error("MD5 Hashes are not matching");
+				}
+			}
+			catch (Exception e) {
+				throw new ArkSystemException(e.getMessage());
+			}
+			finally {
+				try {
+					if (md5input != null) {
+						md5input.close();
+					}
+				}
+				catch (Exception e) {
+					throw new ArkSystemException(e.getMessage());
+				}
+			}
+		}
 		iStudyDao.delete(correspondence);
 	}
 
@@ -893,7 +1026,8 @@ public class StudyServiceImpl implements IStudyService {
 		finally {
 			try {
 				md5input.close();
-			}catch(Exception e){
+			}
+			catch (Exception e) {
 				throw new ArkSystemException(e.getMessage());
 			}
 		}
