@@ -247,3 +247,37 @@ ALTER TABLE `status` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 ALTER TABLE `upload` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 
+
+
+SET @SCHEMANAME = 'reporting';
+
+-- tread very carefully in any database with pre-existing data.  I am not sure how forcing a change in charset/collation will affect actual existing data.  Work on the assumption
+-- it could be seriously dangerous and you could use data.
+-- This script is intended for setting up the new database.  We will look into how to change pre-existing charset/collaction down the line.
+
+SELECT CONCAT("ALTER TABLE `", TABLE_NAME,"` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;") AS    mySQL
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA=@SCHEMANAME
+AND TABLE_TYPE="BASE TABLE"; -- copy these results
+
+use reporting;
+
+ALTER TABLE `biocollection_field` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biocollection_field_search` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimen_field` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `biospecimen_field_search` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `consent_status_field` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `consent_status_field_search` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `custom_field_display_search` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `demographic_field` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `demographic_field_search` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `query_filter` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `query_filter_grouping` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `query_grouping` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `query_grouping_grouping` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `report_output_format` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `report_template` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `search` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `search_payload` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `search_result` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `search_subject` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
