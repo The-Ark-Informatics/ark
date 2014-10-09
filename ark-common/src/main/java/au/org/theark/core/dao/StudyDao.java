@@ -2349,7 +2349,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria filter = getSession().createCriteria(Consent.class, "c");
 		filter.add(Restrictions.eq("c.study.id", search.getStudy().getId()));
 		filter.createAlias("c.linkSubjectStudy", "lss");
-		filter.add(Restrictions.in("lss.id", idsToInclude));
+		if(!idsToInclude.isEmpty()) {
+			filter.add(Restrictions.in("lss.id", idsToInclude));
+		}
 		filter.createAlias("c.studyComponentStatus", "cscs");
 		filter.createAlias("c.studyComp", "csc");
 		
