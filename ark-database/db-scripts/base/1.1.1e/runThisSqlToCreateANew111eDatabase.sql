@@ -2923,7 +2923,7 @@ DROP TABLE IF EXISTS `consent_section`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `consent_section` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(500) NOT NULL,
+  `NAME` varchar(255) NOT NULL,
   `DESCRIPTION` varchar(1000) DEFAULT NULL,
   `STUDY_ID` int(11) NOT NULL,
   `STUDY_COMP_ID` int(11) NOT NULL,
