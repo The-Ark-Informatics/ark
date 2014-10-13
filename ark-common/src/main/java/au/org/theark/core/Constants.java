@@ -546,6 +546,7 @@ public class Constants {
 	public static final String SEARCH_ID = "search.id";
 	public static final String SEARCH_NAME = "search.name";
 	public static final String SEARCH_INCLUDE_GENO = "search.includeGeno";
+	public static final String SEARCH_INCLUDE_MEGA = "search.includeMega";
 	public static final String	SAVEANDCLOSE									= "saveAndClose";
 	public static final String	yyyy_MM_dd	= "yyyy-MM-dd";
 	public static final String ARK_GENO_SERVICE = "genoService";

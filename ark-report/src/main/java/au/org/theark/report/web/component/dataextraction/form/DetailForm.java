@@ -80,6 +80,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	private TextField<String>	searchIdTxtFld;
 	private TextField<String>	searchNameTxtFld;
 	private CheckBox			includeGenoChkBox;
+	private CheckBox			includeMegaChkBox;
 
 	private FeedbackPanel		feedBackPanel;
 	private Panel										modalContentPanel;
@@ -133,6 +134,10 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 	private void initIncludeGeno() {
 		includeGenoChkBox = new CheckBox(Constants.SEARCH_INCLUDE_GENO);
 	}
+	
+	private void initIncludeMega() {
+		includeMegaChkBox = new CheckBox(Constants.SEARCH_INCLUDE_MEGA);
+	}
 
 	public void initialiseDetailForm() {
 
@@ -144,6 +149,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 
 		modalContentPanel = new EmptyPanel("content");
 		initIncludeGeno();
+		initIncludeMega();
 		initDemographicFieldsModulePalette();
 		initBiospecimenFieldsModulePalette();
 		initBiocollectionFieldsModulePalette();
@@ -217,6 +223,7 @@ public class DetailForm extends AbstractDetailForm<SearchVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchIdTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(searchNameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(includeGenoChkBox);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(includeMegaChkBox);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(demographicFieldsToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(biocollectionFieldsToReturnPalette);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(biospecimenFieldsToReturnPalette);
