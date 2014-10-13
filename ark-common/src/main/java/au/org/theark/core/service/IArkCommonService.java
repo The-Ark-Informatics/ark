@@ -119,7 +119,8 @@ import au.org.theark.core.vo.UserConfigVO;
 public interface IArkCommonService<T> {
 
 	// Place here any common services that must be visible to sub-applications
-	// Get reference data etc.get study maybe required but sub-applications access a study via ETA Study module
+	// Get reference data etc.get study maybe required but sub-applications
+	// access a study via ETA Study module
 	public ArkUserVO getUser(String name) throws ArkSystemException, EntityNotFoundException;
 
 	public List<Study> getStudy(Study study);
@@ -134,12 +135,14 @@ public interface IArkCommonService<T> {
 
 	/**
 	 * 
-	 * Something of a hack for data that has value rather than key set for encoded data.
+	 * Something of a hack for data that has value rather than key set for
+	 * encoded data.
 	 * 
 	 */
 	public void convertLimsBiospecimenCustomDataValuesToKeysForThisStudy(Study study);
+
 	public void convertLimsBiocollectionCustomDataValuesToKeysForThisStudy(Study study);
-	
+
 	public Collection<TitleType> getTitleType();
 
 	public Collection<VitalStatus> getVitalStatus();
@@ -150,8 +153,10 @@ public interface IArkCommonService<T> {
 
 	/**
 	 * <p>
-	 * An interface that will return a LinkSubjectStudy instance which represents a Subject when provided with a Subject Unique Identifier.In the event
-	 * that the system does not find a subject with the given identifier the interface will throw an EntityNotFoundException.
+	 * An interface that will return a LinkSubjectStudy instance which
+	 * represents a Subject when provided with a Subject Unique Identifier.In
+	 * the event that the system does not find a subject with the given
+	 * identifier the interface will throw an EntityNotFoundException.
 	 * </p>
 	 * 
 	 * @param subjectUID
@@ -186,6 +191,7 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public List<AddressStatus> getAddressStatuses();
+
 	/**
 	 * Looks up all address types
 	 * 
@@ -207,8 +213,10 @@ public interface IArkCommonService<T> {
 	public List<ConsentStatus> getConsentStatus();
 
 	/**
-	 * Returns a list of consent status options permissible for creating/updating a record in the system. At the moment this means it is a list without
-	 * the following: - "Not Consented" (because it should be null and/or no record in the Consent table)
+	 * Returns a list of consent status options permissible for
+	 * creating/updating a record in the system. At the moment this means it is
+	 * a list without the following: - "Not Consented" (because it should be
+	 * null and/or no record in the Consent table)
 	 * 
 	 * @return List of ConsentStatus
 	 */
@@ -243,7 +251,7 @@ public interface IArkCommonService<T> {
 	 * Returns a LinkSubjectStudy via the personId represented by the Long
 	 * 
 	 * @param personId
-	 * @param study 
+	 * @param study
 	 * @return
 	 * @throws EntityNotFoundException
 	 */
@@ -271,7 +279,8 @@ public interface IArkCommonService<T> {
 	public boolean isAdministator(String userName) throws EntityNotFoundException;
 
 	/**
-	 * Returns a Collection User Admin Roles. Super Administrator or Administator
+	 * Returns a Collection User Admin Roles. Super Administrator or
+	 * Administator
 	 * 
 	 * @param ldapUserName
 	 * @return
@@ -290,7 +299,8 @@ public interface IArkCommonService<T> {
 	public String getUserRoleForStudy(String ldapUserName, Study study) throws EntityNotFoundException;
 
 	/**
-	 * Returns an instance of GenderType for a given String that represents a gender type name. The name should match the name in the database Gender
+	 * Returns an instance of GenderType for a given String that represents a
+	 * gender type name. The name should match the name in the database Gender
 	 * Type.
 	 * 
 	 * @param name
@@ -299,7 +309,8 @@ public interface IArkCommonService<T> {
 	public GenderType getGenderType(String name);
 
 	/**
-	 * Returns an instance of VitalStatus for a given String that represents a Vital Status. The name should match the name in the database table
+	 * Returns an instance of VitalStatus for a given String that represents a
+	 * Vital Status. The name should match the name in the database table
 	 * vital_status.
 	 * 
 	 * @param name
@@ -308,7 +319,8 @@ public interface IArkCommonService<T> {
 	public VitalStatus getVitalStatus(String name);
 
 	/**
-	 * Returns an instance of Title Type for a given String that represents a gender type name. The name should match the name in the database
+	 * Returns an instance of Title Type for a given String that represents a
+	 * gender type name. The name should match the name in the database
 	 * title_type
 	 * 
 	 * @param name
@@ -317,7 +329,8 @@ public interface IArkCommonService<T> {
 	public TitleType getTitleType(String name);
 
 	/**
-	 * Returns an instance of Marital Status for a given String that represents a gender type name. The name should match the name in the database
+	 * Returns an instance of Marital Status for a given String that represents
+	 * a gender type name. The name should match the name in the database
 	 * marital_status
 	 * 
 	 * @param name
@@ -327,8 +340,9 @@ public interface IArkCommonService<T> {
 	public MaritalStatus getMaritalStatus(String name);
 
 	/**
-	 * Returns an instance of PersonContactMethod for a given String that represents a Contact method. The name should match the name in the database
-	 * person_contact_method
+	 * Returns an instance of PersonContactMethod for a given String that
+	 * represents a Contact method. The name should match the name in the
+	 * database person_contact_method
 	 * 
 	 * @param name
 	 * @return
@@ -336,7 +350,8 @@ public interface IArkCommonService<T> {
 	public PersonContactMethod getPersonContactMethod(String name);
 
 	/**
-	 * Returns an instance of Subject Status for a given String that represents a gender type name. The name should match the name in the database
+	 * Returns an instance of Subject Status for a given String that represents
+	 * a gender type name. The name should match the name in the database
 	 * subject_status.
 	 * 
 	 * @param name
@@ -346,7 +361,8 @@ public interface IArkCommonService<T> {
 	public SubjectStatus getSubjectStatus(String name);
 
 	/**
-	 * Returns a ArkUsecase instance for a given String that represents a usecase name.The name should match the name in the database table
+	 * Returns a ArkUsecase instance for a given String that represents a
+	 * usecase name.The name should match the name in the database table
 	 * ark_usecase.
 	 * 
 	 * @return ArkUsecase
@@ -354,15 +370,17 @@ public interface IArkCommonService<T> {
 	public ArkFunction getArkFunctionByName(String arkFunctionName);
 
 	/**
-	 * Returns a ArkModule instance for a given String that represents a module name.The name should match the name in the database table ark_module
+	 * Returns a ArkModule instance for a given String that represents a module
+	 * name.The name should match the name in the database table ark_module
 	 * 
 	 * @return
 	 */
 	public ArkModule getArkModuleByName(String moduleName);
 
 	/**
-	 * Returns a String that represents a Role for a given Ldap User Name, ArkUsecase, ArkModule and Study. The LdapUserName,ArkUsecase are mandatory
-	 * for a successful retrieval of a role.
+	 * Returns a String that represents a Role for a given Ldap User Name,
+	 * ArkUsecase, ArkModule and Study. The LdapUserName,ArkUsecase are
+	 * mandatory for a successful retrieval of a role.
 	 * 
 	 * @param ldapUserName
 	 * @param arkUseCase
@@ -374,7 +392,8 @@ public interface IArkCommonService<T> {
 	public String getUserRole(String ldapUserName, ArkFunction arkFunction, ArkModule arkModule, Study study) throws EntityNotFoundException;
 
 	/**
-	 * Returns a ArkUsecase instance when provided a Long id that represents a valid use case id.
+	 * Returns a ArkUsecase instance when provided a Long id that represents a
+	 * valid use case id.
 	 * 
 	 * @param usecaseId
 	 * @return
@@ -382,7 +401,8 @@ public interface IArkCommonService<T> {
 	public ArkFunction getArkFunctionById(Long arkFunctionId);
 
 	/**
-	 * Returns a ArkModule instance when provided a Long id that represents a valid module id.
+	 * Returns a ArkModule instance when provided a Long id that represents a
+	 * valid module id.
 	 * 
 	 * @param usecaseId
 	 * @return
@@ -390,9 +410,12 @@ public interface IArkCommonService<T> {
 	public ArkModule getArkModuleById(Long moduleId);
 
 	/**
-	 * For a given ArkRole,ArkFunction and ArkModule return a list of Permissions. This interface does not require the user(ArkUser) information.The
-	 * ArkRole for the current user should be pre-determined before invoking this method.To get the user's role call getUserRole and then call this
-	 * method. This method will use ArkRolePolicyTemplate table to return the list of Permissions for the given parameters.
+	 * For a given ArkRole,ArkFunction and ArkModule return a list of
+	 * Permissions. This interface does not require the user(ArkUser)
+	 * information.The ArkRole for the current user should be pre-determined
+	 * before invoking this method.To get the user's role call getUserRole and
+	 * then call this method. This method will use ArkRolePolicyTemplate table
+	 * to return the list of Permissions for the given parameters.
 	 * 
 	 * @param ldapUserName
 	 * @param arkUseCase
@@ -404,9 +427,12 @@ public interface IArkCommonService<T> {
 	public Collection<String> getArkRolePermission(ArkFunction arkFunction, String userRole, ArkModule arkModule) throws EntityNotFoundException;
 
 	/**
-	 * This overloaded interface can be used when we only want all their Permissions for a Given Role. It is applicable for Super Administator role
-	 * where we don't need to specify the ArkModule or ArkRole. If this method is invoked for any other role it will return all the permissions for
-	 * each role, the permissions will be duplicated. So avoid invoking this method for Non SuperAdministator type roles.
+	 * This overloaded interface can be used when we only want all their
+	 * Permissions for a Given Role. It is applicable for Super Administator
+	 * role where we don't need to specify the ArkModule or ArkRole. If this
+	 * method is invoked for any other role it will return all the permissions
+	 * for each role, the permissions will be duplicated. So avoid invoking this
+	 * method for Non SuperAdministator type roles.
 	 * 
 	 * @param userRole
 	 * @return
@@ -433,14 +459,18 @@ public interface IArkCommonService<T> {
 	public ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException;
 
 	/**
-	 * A generic interface that will return a list Entities specified by the Type of class
+	 * A generic interface that will return a list Entities specified by the
+	 * Type of class
 	 * 
-	 * @return Collection of Class of type T .eg if the class passed in was ArkModule.class the return Collection will be Collection<ArkModule>
+	 * @return Collection of Class of type T .eg if the class passed in was
+	 *         ArkModule.class the return Collection will be
+	 *         Collection<ArkModule>
 	 */
 	public Collection<Class<T>> getEntityList(Class<T> aClass);
 
 	/**
-	 * A generic interface that will return a list SubjectVO specified by a particular criteria, and a pagingated reference point
+	 * A generic interface that will return a list SubjectVO specified by a
+	 * particular criteria, and a pagingated reference point
 	 * 
 	 * @return Collection of SubjectVO
 	 */
@@ -476,60 +506,76 @@ public interface IArkCommonService<T> {
 	public List<PhoneStatus> getPhoneStatus();
 
 	public Boolean studyHasSubjects(Study study);
-	
+
 	/**
 	 * Get a list of studies that the given ark user is associated with.
+	 * 
 	 * @param arkUser
 	 * @param study
 	 * @return
 	 */
 	public List<Study> getStudiesForUser(ArkUser arkUser, Study study);
-	
+
 	/**
 	 * A generic interface that will return count of the subjects in the study
+	 * 
 	 * @param customFieldCriteria
 	 * @return int
 	 */
 	public long getCustomFieldCount(CustomField customFieldCriteria);
 
 	/**
-	 * A generic interface that will return a list CustomFields specified by a particular criteria, and a paginated reference point
+	 * A generic interface that will return a list CustomFields specified by a
+	 * particular criteria, and a paginated reference point
+	 * 
 	 * @param customFieldCriteria
-	 * @param first - index to the first item (for that page)
-	 * @param count - number of items to return (for that page)
+	 * @param first
+	 *            - index to the first item (for that page)
+	 * @param count
+	 *            - number of items to return (for that page)
 	 * @return Collection of Custom Fields
 	 */
 	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count);
 
 	/**
-	 * A less generic interface that will return a list CustomFields specified by a particular criteria, and a paginated reference point
+	 * A less generic interface that will return a list CustomFields specified
+	 * by a particular criteria, and a paginated reference point
+	 * 
 	 * @param customFieldCriteria
-	 * @param first - index to the first item (for that page)
-	 * @param count - number of items to return (for that page)
+	 * @param first
+	 *            - index to the first item (for that page)
+	 * @param count
+	 *            - number of items to return (for that page)
 	 * @return Collection of Custom Fields
 	 */
 	public List<CustomField> searchPageableCustomFieldsForPheno(CustomField customFieldCriteria, int first, int count);
 
 	/**
 	 * A generic interface that will return a list Custom Field FieldTypes
+	 * 
 	 * @return Collection of Custom Field FieldTypes
 	 */
 	public List<FieldType> getFieldTypes();
-	
+
 	/**
-	 * A generic interface that will return a list Custom Field UnitType names for AutoCompletion
-	 * @param customFieldCriteria - criteria for the query on UnitType
-	 * @param maxResults - applies a maximum number of results to return if greater than 0 (otherwise, unconstrained)
+	 * A generic interface that will return a list Custom Field UnitType names
+	 * for AutoCompletion
+	 * 
+	 * @param customFieldCriteria
+	 *            - criteria for the query on UnitType
+	 * @param maxResults
+	 *            - applies a maximum number of results to return if greater
+	 *            than 0 (otherwise, unconstrained)
 	 * @return List of Custom Field UnitTypes
-	 */	
+	 */
 	public List<String> getUnitTypeNames(UnitType unitTypeCriteria, int maxResults);
 
 	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria);
-	
-	public CustomField getCustomField(Long id );
-	
+
+	public CustomField getCustomField(Long id);
+
 	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria);
-	
+
 	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria, CustomFieldGroup customFieldGroup);
 
 	/**
@@ -538,34 +584,36 @@ public interface IArkCommonService<T> {
 	 * @throws ArkUniqueException
 	 * @throws ArkSystemException
 	 */
-	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException,  ArkUniqueException;
-	
-	public void updateCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException;
-	
-	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException,EntityCannotBeRemoved;
+	public void createCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException;
+
+	public void updateCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, ArkUniqueException;
+
+	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException, EntityCannotBeRemoved;
 
 	public List<Study> getStudyListForUser(ArkUserVO arkUserVo);
-	
+
 	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo);
 
 	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplate(ArkRole arkRole, ArkModule arkModule);
 
 	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study);
-	
+
 	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule);
 
 	public boolean arkUserHasModuleAccess(ArkUser arkUser, ArkModule arkModule);
-	
+
 	public List<ArkModule> getArkModuleListByArkUser(ArkUser arkUser);
-	
+
 	public long getCountOfStudies();
-	
+
 	public Boolean isArkUserLinkedToStudies(ArkUser arkUser);
-	
+
 	public List<CustomFieldGroup> getCustomFieldGroups(CustomFieldGroup customFieldGroup, int first, int count);
-	
+
 	/**
-	 * Returns a count of  CustomFieldGroup that matches a specific criteria this is used by Data View
+	 * Returns a count of CustomFieldGroup that matches a specific criteria this
+	 * is used by Data View
+	 * 
 	 * @param customFieldGroup
 	 * @return
 	 */
@@ -574,45 +622,46 @@ public interface IArkCommonService<T> {
 	public CustomField getFieldByNameAndStudyAndFunction(String fieldName, Study study, ArkFunction arkFunction) throws EntityNotFoundException;
 
 	public FieldType getFieldTypeByName(String typeName) throws EntityNotFoundException;
-	
+
 	public ArkRole getArkRoleByName(String roleName);
-	
+
 	/**
-	 * Filters the CustomFields linked to 
-	 * 1. A Study and
-	 * 2. ArkFunction
-	 * The Criteria is specified in the CustomField parameter. The study and ArkFunction must be set in it.
+	 * Filters the CustomFields linked to 1. A Study and 2. ArkFunction The
+	 * Criteria is specified in the CustomField parameter. The study and
+	 * ArkFunction must be set in it.
+	 * 
 	 * @return List<CustomField>
 	 */
 	public List<CustomField> getCustomFieldList(CustomField customFieldCriteria);
-	
+
 	public ReCaptchaContextSource getRecaptchaContextSource();
-	
+
 	/**
 	 * Send an email to the specified address, using the given fields
+	 * 
 	 * @param simpleMailMessage
 	 * @throws MailSendException
 	 * @throws VelocityException
 	 */
 	public void sendEmail(final SimpleMailMessage simpleMailMessage) throws MailSendException, VelocityException;
-	
+
 	/**
 	 * Sets up the reset password message body using a Velocity template
+	 * 
 	 * @param fullName
 	 * @param password
 	 * @throws VelocityException
 	 * @return the reset password message
 	 */
 	public String setResetPasswordMessage(final String fullName, final String password) throws VelocityException;
-	
+
 	/**
 	 * 
 	 * @param customFieldDisplay
 	 * @throws ArkSystemException
 	 */
-	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
-	
-	
+	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws ArkSystemException;
+
 	public CustomFieldDisplay getCustomFieldDisplay(Long id);
 
 	public FileFormat getFileFormatByName(String fileFormatName);
@@ -624,13 +673,13 @@ public interface IArkCommonService<T> {
 	public UploadType getDefaultUploadType();
 
 	public UploadType getCustomFieldDataUploadType();
-	
+
 	public Collection<DelimiterType> getDelimiterTypes();
-	
+
 	public Collection<UploadType> getUploadTypes();
-	
+
 	public Collection<UploadType> getUploadTypesForSubject();
-	
+
 	public Collection<UploadType> getUploadTypesForLims();
 
 	public List<Upload> searchUploads(Upload uploadCriteria);
@@ -638,76 +687,84 @@ public interface IArkCommonService<T> {
 	public List<Upload> searchUploadsForBio(Upload uploadCriteria);
 
 	public CustomField getCustomFieldByNameStudyArkFunction(String customFieldName, Study study, ArkFunction arkFunction);
-	
+
 	public CustomField getCustomFieldByNameStudyCFG(String customFieldName, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup);
 
 	public UnitType getUnitTypeByNameAndArkFunction(String string, ArkFunction arkFunction);
 
 	public void createUpload(Upload studyUpload);
-	
+
 	public void updateUpload(Upload studyUpload);
-	
+
 	public Blob createBlob(byte[] bytes);
-	
+
 	public String getDelimiterTypeNameByDelimiterChar(char delimiterCharacter);
 
 	public void createCustomFieldUpload(CustomFieldUpload cfUpload);
-	
+
 	public List<BiospecimenUidToken> getBiospecimenUidTokens();
-	
+
 	public List<BiospecimenUidPadChar> getBiospecimenUidPadChars();
-	
+
 	public List<Study> getStudyListAssignedToBiospecimenUidTemplate();
-	
+
 	public void createBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
-	
+
 	public List<BioCollectionUidToken> getBioCollectionUidToken();
-	
+
 	public List<BioCollectionUidPadChar> getBioCollectionUidPadChar();
-	
+
 	public void createBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate);
-	
+
 	/**
-	 * Checks and returns true if the given study has  Biospecimens linked to it.
+	 * Checks and returns true if the given study has Biospecimens linked to it.
+	 * 
 	 * @param study
 	 * @return
 	 */
 	public Boolean studyHasBiospecimen(Study study);
-	
+
 	public Boolean studyHasBioCollection(Study study);
-	
+
 	public long getCountOfSubjects(Study study);
 
-//	public long countNumberOfUniqueSubjects(Study study, List subjects);
+	// public long countNumberOfUniqueSubjects(Study study, List subjects);
 	public long countNumberOfUniqueSubjectsWithTheseUIDs(Study study, List<String> subjectUIDs);
-	
+
 	public BiospecimenUidTemplate getBiospecimenUidTemplate(Study study);
-	
+
 	public BioCollectionUidTemplate getBioCollectionUidTemplate(Study study);
-	
+
 	public void updateBiospecimenUidTemplate(BiospecimenUidTemplate biospecimenUidTemplate);
-	
+
 	public void updateBioCollectionUidTemplate(BioCollectionUidTemplate bioCollectionUidTemplate);
 
 	public List<ArkUser> getArkUserListByStudy(Study study);
-	
+
 	public List<Study> getParentStudyList();
-	
+
 	/**
-	 * Sets up an ArkUserVO with the default administrator roles for the specified study and List of ArkModule names
-	 * @param userName the user to assign
-	 * @param study the study to assign to
-	 * @param moduleList the list of module names
+	 * Sets up an ArkUserVO with the default administrator roles for the
+	 * specified study and List of ArkModule names
+	 * 
+	 * @param userName
+	 *            the user to assign
+	 * @param study
+	 *            the study to assign to
+	 * @param moduleList
+	 *            the list of module names
 	 * @return
 	 */
 	public ArkUserVO getDefaultAdministratorRoles(String userName, Study study, Set<String> moduleList);
-	
+
 	public List<Study> getAssignedChildStudyListForUser(ArkUserVO arkUserVo);
-	
+
 	public void deleteArkUserRole(ArkUserRole arkUserRole);
-	
+
 	/**
-	 * Match a file containing a list of SubjectUid's for a given study, and return the matched list
+	 * Match a file containing a list of SubjectUid's for a given study, and
+	 * return the matched list
+	 * 
 	 * @param subjectFileUpload
 	 * @param study
 	 * @return
@@ -717,25 +774,27 @@ public interface IArkCommonService<T> {
 	public List<Study> getAssignedChildStudyListForPerson(Study study, Person person);
 
 	public List<ConsentOption> getConsentOptionList();
-	
+
 	/**
-	 * returns a the subject (linksubjectystudy) IF there is one, else returns null
+	 * returns a the subject (linksubjectystudy) IF there is one, else returns
+	 * null
+	 * 
 	 * @param subjectUID
 	 * @param study
 	 * @return LinkSubjectStudy
 	 */
 	public LinkSubjectStudy getSubjectByUIDAndStudy(String subjectUID, Study study);
-	
+
 	public boolean customFieldHasData(CustomField customField);
 
 	public List<String> getUniqueSubjectUIDsWithTheseUIDs(Study study, Collection<String> subjectUIDs);
 
 	public List<LinkSubjectStudy> getUniqueSubjectsWithTheseUIDs(Study study, Collection<String> subjectUIDs);
-	
+
 	public List<String> getAllSubjectUIDs(Study study);
 
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction, CustomFieldGroup customFieldGroup);
-	
+
 	public List<CustomFieldDisplay> getCustomFieldDisplaysIn(List fieldNameCollection, Study study, ArkFunction arkFunction);
 
 	public List<SubjectCustomFieldData> getCustomFieldDataFor(List customFieldDisplaysThatWeNeed, List<String> subjectUIDsToBeIncluded);
@@ -749,12 +808,11 @@ public interface IArkCommonService<T> {
 	public UploadStatus getUploadStatusForAwaitingValidation();
 
 	public UploadStatus getUploadStatusFor(String uploadStatusConstant);
-	
+
 	public List<CustomField> matchCustomFieldsFromInputFile(FileUpload fileUpload, Study study, ArkFunction arkFunction);
 
-
 	public String getPreviousLastname(Person person);
-	
+
 	public List<OtherID> getOtherIDs(Person person);
 
 	public List<Upload> searchUploadsForBiospecimen(Upload studyUpload, List<Study> studyListForUser);
@@ -770,7 +828,7 @@ public interface IArkCommonService<T> {
 	public boolean update(SearchVO search) throws EntityExistsException;
 
 	public Collection<ConsentStatusField> getAllConsentStatusFields();
-	
+
 	public Collection<DemographicField> getAllDemographicFields();
 
 	public Collection<BiospecimenField> getAllBiospecimenFields();
@@ -778,16 +836,15 @@ public interface IArkCommonService<T> {
 	public Collection<BiocollectionField> getAllBiocollectionFields();
 
 	public Collection<ConsentStatusField> getSelectedConsentStatusFieldsForSearch(Search search);
-	
-	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search);
 
+	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search);
 
 	public Collection<BiospecimenField> getSelectedBiospecimenFieldsForSearch(Search search);
 
-
 	public Collection<BiocollectionField> getSelectedBiocollectionFieldsForSearch(Search search);
-	
-//	public Collection<DemographicField> getSelectedDemographicFieldsForSearch(Search search, boolean readOnly);
+
+	// public Collection<DemographicField>
+	// getSelectedDemographicFieldsForSearch(Search search, boolean readOnly);
 
 	public Collection<CustomFieldDisplay> getSelectedPhenoCustomFieldDisplaysForSearch(Search search);
 
@@ -812,41 +869,40 @@ public interface IArkCommonService<T> {
 	public SearchPayload getSearchPayloadForSearchResult(SearchResult searchResult);
 
 	public List<SearchResult> getSearchResultList(Long searchResultId);
-	
+
 	public List<Relationship> getFamilyRelationships();
 
 	public List<SearchSubject> getSearchSubjects();
-	
+
 	public void createSearchSubjects(Search search, List<SubjectVO> subjectVos);
 
 	public void runSearch(Long searchId, String currentUser);
 
 	public void delete(Search search);
-	
-//	public List<OtherID> getPersonOtherIDList(Long personID);
-	
+
+	// public List<OtherID> getPersonOtherIDList(Long personID);
+
 	public Collection<PersonLastnameHistory> getPersonLastNameHistory(Person person);
 
 	public ConsentStatus getConsentStatusByName(String string);
-	
+
 	public void createPipeline(Pipeline p);
 
 	public void updatePipeline(Pipeline p);
-	
+
 	public void deletePipeline(Pipeline p);
-	
-	public GenderType getSubjectGenderType(final String subjectUID,final Long studyId);
+
+	public GenderType getSubjectGenderType(final String subjectUID, final Long studyId);
 
 	public int getPipelineCount(Pipeline p);
 
-	public List<Pipeline> searchPageablePipelines(Pipeline object, int first,	int count);
+	public List<Pipeline> searchPageablePipelines(Pipeline object, int first, int count);
 
 	public long getPipelineCount(Study study);
 
 	public int getProcessCount(Process object);
 
-	public List<Process> searchPageableProcesses(Process object, int first,
-			int count);
+	public List<Process> searchPageableProcesses(Process object, int first, int count);
 
 	public void createProcess(Process modelObject);
 
@@ -859,13 +915,13 @@ public interface IArkCommonService<T> {
 	public List<ProcessInput> getProcessInputsForProcess(Process process);
 
 	public List<ProcessOutput> getProcessOutputsForProcess(Process process);
-		
+
 	public Collection<ConfigField> getAllConfigFields();
-	
+
 	public List<UserConfigVO> getUserConfigVOs(ArkUser arkUser);
-	
+
 	public int getRowsPerPage();
-	
+
 	public int getCustomFieldsPerPage();
 
 	public void createUserConfigs(List userConfigList) throws ArkSystemException;
@@ -873,9 +929,11 @@ public interface IArkCommonService<T> {
 	public void deleteUserConfig(UserConfig userConfig);
 
 	public List<CustomField> getCustomFieldsNotInList(List<CustomField> customFieldsFromData, ArkFunction function, Study study);
-	
+
 	/**
-	 * Save the Ark file attachment to pre-configured directory location in the server. 
+	 * Save the Ark file attachment to pre-configured directory location in the
+	 * server.
+	 * 
 	 * @param studyId
 	 * @param subjectUID
 	 * @param directoryType
@@ -885,25 +943,28 @@ public interface IArkCommonService<T> {
 	 * @param fileId
 	 */
 	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String checksum, final String fileId);
-	
+
 	/**
-	 * Generate directory name according to attachment type 
+	 * Generate directory name according to attachment type
+	 * 
 	 * @param studyId
 	 * @param subjectUID
 	 * @param directoryType
 	 * @return
 	 */
 	public String getArkFileDirName(final Long studyId, final String subjectUID, final String directoryType);
-	
+
 	/**
 	 * Generate a unique file id per attachment
+	 * 
 	 * @param fileName
 	 * @return
 	 */
 	public String generateArkFileId(String fileName);
-	
+
 	/**
-	 * Retrieve the attachment byte array 
+	 * Retrieve the attachment byte array
+	 * 
 	 * @param studyId
 	 * @param subjectUID
 	 * @param directoryType
@@ -912,4 +973,16 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public byte[] retriveArkFileAttachmentByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException;
+
+	/**
+	 * Delete a selected attachment
+	 * 
+	 * @param studyId
+	 * @param subjectUID
+	 * @param checksum
+	 * @param fileId
+	 * @param attachmentType
+	 * @throws ArkSystemException
+	 */
+	public void deleteArkFile(Long studyId, String subjectUID, String fileId, String attachmentType) throws ArkSystemException;
 }
