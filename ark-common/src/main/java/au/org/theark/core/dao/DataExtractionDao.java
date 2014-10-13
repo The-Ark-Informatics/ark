@@ -999,35 +999,50 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		
 		//Add geno later
 
+		
+		
+		
 		Set<String> headers = new HashSet<String>();
 		HashMap<String, List<String>> biospecimenMapping = new HashMap<String, List<String>>();
 		HashMap<String, List<String>> biocollectionMapping = new HashMap<String, List<String>>();
 		HashMap<String, List<String>> phenoCollectionMapping = new HashMap<String, List<String>>();
+		
 		for(Entry<String, ExtractionVO> entry : allTheData.getDemographicData().entrySet()) {
 			headers.addAll(entry.getValue().getKeyValues().keySet());
-			LinkSubjectStudy lss = (LinkSubjectStudy) getSession().createCriteria(LinkSubjectStudy.class)
-					.add(Restrictions.eq("study", search.getStudy())).add(Restrictions.eq("subjectUID", entry.getKey())).uniqueResult();
-			
-			List<Biospecimen> subjectBiospecimens = (List<Biospecimen>) getSession().createCriteria(Biospecimen.class).add(Restrictions.eq("linkSubjectStudy", lss)).list();
-			List<String> biospecimenUIDs = new ArrayList<String>(subjectBiospecimens.size());
-			for(Biospecimen b : subjectBiospecimens) {
-				biospecimenUIDs.add(b.getBiospecimenUid());
+		}
+		
+		for(Entry<String, ExtractionVO> entry : allTheData.getBiospecimenData().entrySet()) {
+			String subjectUID = entry.getValue().getSubjectUid();
+			if(biospecimenMapping.containsKey(subjectUID)) {
+				biospecimenMapping.get(subjectUID).add(entry.getKey());
+			} else {
+				List<String> biospecimenUIDs = new ArrayList<String>();
+				biospecimenUIDs.add(entry.getKey());
+				biospecimenMapping.put(subjectUID, biospecimenUIDs);
 			}
-			biospecimenMapping.put(entry.getKey(), biospecimenUIDs);
-			
-			List<BioCollection> subjectBiocollection = (List<BioCollection>) getSession().createCriteria(BioCollection.class).add(Restrictions.eq("linkSubjectStudy", lss)).list();
-			List<String> biocollectionUIDs = new ArrayList<String>(subjectBiocollection.size());
-			for(BioCollection b : subjectBiocollection) {
-				biocollectionUIDs.add(b.getBiocollectionUid());
+		}
+		
+		for(Entry<String, ExtractionVO> entry : allTheData.getBiocollectionData().entrySet()) {
+			String subjectUID = entry.getValue().getSubjectUid();
+			if(biocollectionMapping.containsKey(subjectUID)) {
+				biocollectionMapping.get(subjectUID).add(entry.getKey());
+			} else {
+				List<String> biocollectionUIDs = new ArrayList<String>();
+				biocollectionUIDs.add(entry.getKey());
+				biocollectionMapping.put(subjectUID, biocollectionUIDs);
 			}
-			biocollectionMapping.put(entry.getKey(), biocollectionUIDs);
-			
-			List<PhenoCollection> subjectPhenoCollection = (List<PhenoCollection>) getSession().createCriteria(PhenoCollection.class).add(Restrictions.eq("linkSubjectStudy", lss)).list();
-			List<String> phenoCollectionIDs = new ArrayList<String>(subjectPhenoCollection.size());
-			for(PhenoCollection pc : subjectPhenoCollection) {
-				phenoCollectionIDs.add(pc.getId().toString());
+		}
+		
+		for(Entry<String, ExtractionVO> entry : allTheData.getPhenoCustomData().entrySet()) {
+			String subjectUID = entry.getValue().getSubjectUid();
+			if(phenoCollectionMapping.containsKey(subjectUID)) {
+
+				phenoCollectionMapping.get(subjectUID).add(entry.getKey());
+			} else {
+				List<String> phenoCollectionIDs = new ArrayList<String>();
+				phenoCollectionIDs.add(entry.getKey());
+				phenoCollectionMapping.put(subjectUID, phenoCollectionIDs);
 			}
-			phenoCollectionMapping.put(entry.getKey(), phenoCollectionIDs);
 		}
 		
 		for(Entry<String, ExtractionVO> entry : allTheData.getSubjectCustomData().entrySet()) {
@@ -1122,70 +1137,97 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 					row.add("");
 				}
 			}
-			for(String biospecimenUID : biospecimenMapping.get(subjectUID)) {
-				ExtractionVO biospecimenData = allTheData.getBiospecimenData().get(biospecimenUID);
-				ExtractionVO biospecimenCustomData = allTheData.getBiospecimenCustomData().get(biospecimenUID);
-				for(String header : biospecimenHeaders) {
-					if(header.equals("Biospecimen UID")) {
-						row.add(biospecimenUID);
-					} else if(biospecimenData.getKeyValues().containsKey(header)) {
-						row.add(biospecimenData.getKeyValues().get(header));
-					} else if(biospecimenCustomData != null && biospecimenCustomData.getKeyValues().containsKey(header)){
-						row.add(biospecimenCustomData.getKeyValues().get(header));
-					} else {
-						row.add("");
+			if(biospecimenMapping.containsKey(subjectUID)) {
+				for(String biospecimenUID : biospecimenMapping.get(subjectUID)) {
+					ExtractionVO biospecimenData = allTheData.getBiospecimenData().get(biospecimenUID);
+					ExtractionVO biospecimenCustomData = allTheData.getBiospecimenCustomData().get(biospecimenUID);
+					for(String header : biospecimenHeaders) {
+						if(header.equals("Biospecimen UID")) {
+							row.add(biospecimenUID);
+						} else if(biospecimenData.getKeyValues().containsKey(header)) {
+							row.add(biospecimenData.getKeyValues().get(header));
+						} else if(biospecimenCustomData != null && biospecimenCustomData.getKeyValues().containsKey(header)){
+							row.add(biospecimenCustomData.getKeyValues().get(header));
+						} else {
+							row.add("");
+						}
 					}
 				}
-			}
-			//Inserting empty cells where subject has fewer biospecimens than the max
-			if(biospecimenMapping.get(subjectUID).size() < maxBiospecimens) {
-				for(int i = 0; i < (maxBiospecimens - biospecimenMapping.get(subjectUID).size()); i++) {
+				//Inserting empty cells where subject has fewer biospecimens than the max
+				if(biospecimenMapping.get(subjectUID).size() < maxBiospecimens) {
+					for(int i = 0; i < (maxBiospecimens - biospecimenMapping.get(subjectUID).size()); i++) {
+						for(String header : biospecimenHeaders) {
+							row.add("");
+						}
+					}
+				}
+			} else {
+				for(int i = 0; i < maxBiospecimens; i++) {
 					for(String header : biospecimenHeaders) {
 						row.add("");
 					}
 				}
 			}
-					
-			for(String biocollectionUID : biocollectionMapping.get(subjectUID)) {
-				ExtractionVO biocollectionData = allTheData.getBiocollectionData().get(biocollectionUID);
-				ExtractionVO biocollectionCustomData = allTheData.getBiocollectionCustomData().get(biocollectionUID);
-				for(String header : biocollectionHeaders) {
-					if(header.equals("Biocollection UID")) {
-						row.add(biocollectionUID);
-					} else if(biocollectionData.getKeyValues().containsKey(header)) {
-						row.add(biocollectionData.getKeyValues().get(header));
-					} else if(biocollectionCustomData != null && biocollectionCustomData.getKeyValues().containsKey(header)){
-						row.add(biocollectionCustomData.getKeyValues().get(header));
-					} else {
-						row.add("");
+			
+			if(biocollectionMapping.containsKey(subjectUID)) {
+				for(String biocollectionUID : biocollectionMapping.get(subjectUID)) {
+					ExtractionVO biocollectionData = allTheData.getBiocollectionData().get(biocollectionUID);
+					ExtractionVO biocollectionCustomData = allTheData.getBiocollectionCustomData().get(biocollectionUID);
+					for(String header : biocollectionHeaders) {
+						if(header.equals("Biocollection UID")) {
+							row.add(biocollectionUID);
+						} else if(biocollectionData.getKeyValues().containsKey(header)) {
+							row.add(biocollectionData.getKeyValues().get(header));
+						} else if(biocollectionCustomData != null && biocollectionCustomData.getKeyValues().containsKey(header)){
+							row.add(biocollectionCustomData.getKeyValues().get(header));
+						} else {
+							row.add("");
+						}
 					}
 				}
-			}
-			//Inserting empty cells where subject has fewer biocollections than the max
-			if(biocollectionMapping.get(subjectUID).size() < maxBiocollections) {
-				for(int i = 0; i < (maxBiocollections - biocollectionMapping.get(subjectUID).size()); i++) {
+			
+				//Inserting empty cells where subject has fewer biocollections than the max
+				if(biocollectionMapping.get(subjectUID).size() < maxBiocollections) {
+					for(int i = 0; i < (maxBiocollections - biocollectionMapping.get(subjectUID).size()); i++) {
+						for(String header : biocollectionHeaders) {
+							row.add("");
+						}
+					}
+				}
+			} else {
+				for(int i = 0; i < maxBiocollections; i++) {
 					for(String header : biocollectionHeaders) {
 						row.add("");
 					}
 				}
 			}
 			
-			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-			for(String phenoCollectionID : phenoCollectionMapping.get(subjectUID)) {
-				ExtractionVO phenoCollectionData = allTheData.getPhenoCustomData().get(phenoCollectionID);
-				for(String header : phenoCollectionHeaders) {
-					if(header.equals("Record Date")) {
-						row.add(df.format(phenoCollectionData.getRecordDate()));
-					} else if(phenoCollectionData.getKeyValues().containsKey(header)) {
-						row.add(phenoCollectionData.getKeyValues().get(header));
-					} else {
-						row.add("");
+			if(phenoCollectionMapping.containsKey(subjectUID)) {
+				DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+				for(String phenoCollectionID : phenoCollectionMapping.get(subjectUID)) {
+					ExtractionVO phenoCollectionData = allTheData.getPhenoCustomData().get(phenoCollectionID);
+					for(String header : phenoCollectionHeaders) {
+						if(header.equals("Record Date")) {
+							row.add(df.format(phenoCollectionData.getRecordDate()));
+						} else if(phenoCollectionData.getKeyValues().containsKey(header)) {
+							row.add(phenoCollectionData.getKeyValues().get(header));
+						} else {
+							row.add("");
+						}
 					}
 				}
-			}
-			if(phenoCollectionMapping.get(subjectUID).size() < maxPhenoCollections) {
-				for(int i = 0; i < (maxPhenoCollections - phenoCollectionMapping.get(subjectUID).size()); i++) {
-					row.add("");
+				if(phenoCollectionMapping.get(subjectUID).size() < maxPhenoCollections) {
+					for(int i = 0; i < (maxPhenoCollections - phenoCollectionMapping.get(subjectUID).size()); i++) {
+						for(String header : phenoCollectionHeaders) {
+							row.add("");
+						}
+					}
+				}
+			} else {
+				for(int i = 0; i < maxPhenoCollections; i++) {
+					for(String header : phenoCollectionHeaders) {
+						row.add("");
+					}
 				}
 			}
 			outputData.add(row);
