@@ -150,7 +150,23 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				processErrors(target);
 			}
 			else {
+				FileUpload fileSubjectFile = fileSubjectFileField.getFileUpload();
+
+				try {
+					containerForm.getModelObject().getSubjectFile().setPayload(IOUtils.toByteArray(fileSubjectFile.getInputStream()));
+				}
+				catch (IOException e) {
+					log.error("IOException trying to convert inputstream" + e);
+				}
+
+				byte[] byteArray = fileSubjectFile.getMD5();
+				String checksum = getHex(byteArray);
+
+				// Set details of ConsentFile object
+				containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
+				containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
 				containerForm.getModelObject().getSubjectFile().setUserId(userId);
+				
 				// Update
 				iStudyService.update(containerForm.getModelObject().getSubjectFile());
 				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was updated successfully");

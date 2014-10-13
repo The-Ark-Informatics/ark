@@ -19,7 +19,6 @@
 package au.org.theark.study.service;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -32,10 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.util.file.File;
@@ -46,7 +43,6 @@ import org.joda.time.PeriodType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -755,7 +751,7 @@ public class StudyServiceImpl implements IStudyService {
 				fileId = correspondence.getAttachementFileId();
 
 				// Delete existing attachment
-				deleteCorrespondenceAttachment(studyId, subjectUID, fileId);
+				iArkCommonService.deleteArkFile(studyId, subjectUID, fileId,Constants.ARK_SUBJECT_CORRESPONDENCE_DIR);
 
 				// Generate unique file id for given file name
 				fileId = iArkCommonService.generateArkFileId(fileName);
@@ -783,7 +779,7 @@ public class StudyServiceImpl implements IStudyService {
 				fileId = correspondence.getAttachementFileId();
 
 				// Delete existing attachment
-				deleteCorrespondenceAttachment(studyId, subjectUID, fileId);
+				iArkCommonService.deleteArkFile(studyId, subjectUID, fileId,Constants.ARK_SUBJECT_CORRESPONDENCE_DIR);
 				correspondence.setAttachementFileId(null);
 			}
 		}
@@ -792,29 +788,7 @@ public class StudyServiceImpl implements IStudyService {
 		iStudyDao.update(correspondence);
 	}
 
-	/**
-	 * @param studyId
-	 * @param subjectUID
-	 * @param checksum
-	 * @param fileId
-	 * @throws ArkSystemException
-	 */
-	private void deleteCorrespondenceAttachment(Long studyId, String subjectUID, String fileId) throws ArkSystemException {
-		String directory = iArkCommonService.getArkFileDirName(studyId, subjectUID, Constants.ARK_SUBJECT_CORRESPONDENCE_DIR);
-		String location = directory + File.separator + fileId;
-		File file = new File(location);
-		try {
-			if (file.delete()) {
-				log.info("File deleted successfully");
-			}
-			else {
-				log.error("Could not find the file in " + location);
-			}
-		}
-		catch (Exception e) {
-			throw new ArkSystemException(e.getMessage());
-		}
-	}
+	
 
 	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException {
 
@@ -965,7 +939,8 @@ public class StudyServiceImpl implements IStudyService {
 		iArkCommonService.saveArkFileAttachment(studyId, subjectUID, Constants.ARK_SUBJECT_ATTACHEMENT_DIR, fileName, payload, checksum, fileId);
 
 		// Remove the attachment
-		subjectFile.setPayload(null);
+		//TODO enable set null payload after casper
+		//subjectFile.setPayload(null);
 
 		// Save attachment meta information in relational tables
 		iStudyDao.create(subjectFile);
@@ -979,6 +954,28 @@ public class StudyServiceImpl implements IStudyService {
 	}
 
 	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException {
+		Long studyId = subjectFile.getLinkSubjectStudy().getStudy().getId();
+		String subjectUID = subjectFile.getLinkSubjectStudy().getSubjectUID();
+		String fileName = subjectFile.getFilename();
+		byte[] payload = subjectFile.getPayload();
+		String checksum = subjectFile.getChecksum();
+		String fileId = subjectFile.getFileId();
+		
+		//delete existing attachment
+		iArkCommonService.deleteArkFile(studyId, subjectUID, fileId, Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
+		
+		fileId = iArkCommonService.generateArkFileId(fileName);
+
+		// Set unique subject file id
+		subjectFile.setFileId(fileId);
+
+		// Save the attachment to directory configured in application.properties {@code fileAttachmentDir}
+		iArkCommonService.saveArkFileAttachment(studyId, subjectUID, Constants.ARK_SUBJECT_ATTACHEMENT_DIR, fileName, payload, checksum, fileId);
+		
+		//remove payload
+		//TODO enable set null payload after casper
+		//subjectFile.setPayload(null);
+		
 		iStudyDao.update(subjectFile);
 
 		AuditHistory ah = new AuditHistory();
@@ -1559,7 +1556,9 @@ public class StudyServiceImpl implements IStudyService {
 				List<RelationshipVo> relationships = iStudyDao.getSubjectParentRelatives(relativeCapsule.getIndividualId(), studyId);
 				for (RelationshipVo parentRelationshipVo : relationships) {
 					RelativeCapsule parentCapsule = createSubjectRelativeCapsule(parentRelationshipVo, familyUID);
-					relativeCapsuleQueue.add(parentCapsule);
+					if (!relativeCapsuleQueue.contains(parentCapsule) && !relativeCapsules.contains(parentCapsule)) {
+						relativeCapsuleQueue.add(parentCapsule);
+					}
 				}
 				relativeCapsules.add(relativeCapsule);
 			}
@@ -1613,7 +1612,9 @@ public class StudyServiceImpl implements IStudyService {
 			while ((relativeSubject = relativeSubjectQueue.poll()) != null) {
 				List<RelationshipVo> relationships = iStudyDao.getSubjectParentRelatives(relativeSubject.getIndividualId(), studyId);
 				for (RelationshipVo parentRelationshipVo : relationships) {
-					relativeSubjectQueue.add(parentRelationshipVo);
+					if(!relativeSubjectQueue.contains(parentRelationshipVo) && !relativeSubjects.contains(parentRelationshipVo)){
+						relativeSubjectQueue.add(parentRelationshipVo);
+					}
 				}
 				relativeSubjects.add(relativeSubject);
 			}
