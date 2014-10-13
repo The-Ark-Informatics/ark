@@ -47,6 +47,7 @@ public class Search  implements java.io.Serializable {
 	private Date startTime;
 	private Date finishTime;
 	private Boolean includeGeno;
+	private Boolean includeMega;
 
 	@Id
 	@SequenceGenerator(name = "search_generator", sequenceName = "SEARCH_SEQ")
@@ -75,6 +76,15 @@ public class Search  implements java.io.Serializable {
 
 	public void setIncludeGeno(Boolean includeGeno) {
 		this.includeGeno = includeGeno;
+	}
+	
+	@Column(name = "INCLUDE_MEGA")
+	public Boolean getIncludeMega() {
+		return includeMega;
+	}
+	
+	public void setIncludeMega(Boolean includeMega) {
+		this.includeMega = includeMega;
 	}
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "search")

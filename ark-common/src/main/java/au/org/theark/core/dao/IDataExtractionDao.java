@@ -20,4 +20,5 @@ public interface IDataExtractionDao {
 	public File createPhenotypicCSV(Search search, DataExtractionVO devo, List<CustomFieldDisplay> cfds, FieldCategory fieldCategory);
 	public File createGenoCSV(Search search, DataExtractionVO allTheData, FieldCategory geno, Long maxProcessesPerPipeline, Map<Long, Long> maxInputList, Map<Long, Long> maxOutputList);
 	public File createConsentStatusCSV(Search search, DataExtractionVO devo, List<ConsentStatusField> consentStatusFields, FieldCategory fieldCategory);
+	public File createMegaCSV(Search search, DataExtractionVO allTheData, List<DemographicField> allSubjectFields, List<CustomFieldDisplay> biocollectionCustomFieldDisplay, List<CustomFieldDisplay> biospecimenCustomFieldDisplay, List<CustomFieldDisplay> phenotypicCustomFieldDisplay, List<ConsentStatusField> consentStatusFields);
 }

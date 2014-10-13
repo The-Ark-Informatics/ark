@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.BiocollectionFieldSearch;
 import au.org.theark.core.model.report.entity.BiospecimenField;
@@ -53,6 +56,7 @@ import au.org.theark.core.model.report.entity.DemographicField;
 import au.org.theark.core.model.report.entity.FieldCategory;
 import au.org.theark.core.model.report.entity.Search;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.util.CsvWriter;
 import au.org.theark.core.vo.DataExtractionVO;
 import au.org.theark.core.vo.ExtractionVO;
@@ -913,7 +917,7 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 		if (filename == null || filename.isEmpty()) {
 			filename = "exportcsv.csv";
 		}
-
+		log.info(consentStatusFields.toString());
 		HashMap<String, ExtractionVO> hashOfConsentStatusData = devo.getConsentStatusData();
 
 		OutputStream outputStream;
@@ -983,6 +987,249 @@ public class DataExtractionDao<T> extends HibernateSessionDao implements IDataEx
 			log.error(e.getMessage());
 		}
 
+		return file;
+	}	
+
+	public File createMegaCSV(Search search, DataExtractionVO allTheData, List<DemographicField> allSubjectFields, List<CustomFieldDisplay> biocollectionCustomFieldDisplay, List<CustomFieldDisplay> biospecimenCustomFieldDisplay, List<CustomFieldDisplay> phenotypicCustomFieldDisplay, List<ConsentStatusField> consentStatusFields) {
+		final String tempDir = System.getProperty("java.io.tmpdir");
+		String filename = new String("MEGA.csv");
+		final java.io.File file = new File(tempDir, filename);
+		
+		long start = System.currentTimeMillis();
+		
+		//Add geno later
+
+		Set<String> headers = new HashSet<String>();
+		HashMap<String, List<String>> biospecimenMapping = new HashMap<String, List<String>>();
+		HashMap<String, List<String>> biocollectionMapping = new HashMap<String, List<String>>();
+		HashMap<String, List<String>> phenoCollectionMapping = new HashMap<String, List<String>>();
+		for(Entry<String, ExtractionVO> entry : allTheData.getDemographicData().entrySet()) {
+			headers.addAll(entry.getValue().getKeyValues().keySet());
+			LinkSubjectStudy lss = (LinkSubjectStudy) getSession().createCriteria(LinkSubjectStudy.class)
+					.add(Restrictions.eq("study", search.getStudy())).add(Restrictions.eq("subjectUID", entry.getKey())).uniqueResult();
+			
+			List<Biospecimen> subjectBiospecimens = (List<Biospecimen>) getSession().createCriteria(Biospecimen.class).add(Restrictions.eq("linkSubjectStudy", lss)).list();
+			List<String> biospecimenUIDs = new ArrayList<String>(subjectBiospecimens.size());
+			for(Biospecimen b : subjectBiospecimens) {
+				biospecimenUIDs.add(b.getBiospecimenUid());
+			}
+			biospecimenMapping.put(entry.getKey(), biospecimenUIDs);
+			
+			List<BioCollection> subjectBiocollection = (List<BioCollection>) getSession().createCriteria(BioCollection.class).add(Restrictions.eq("linkSubjectStudy", lss)).list();
+			List<String> biocollectionUIDs = new ArrayList<String>(subjectBiocollection.size());
+			for(BioCollection b : subjectBiocollection) {
+				biocollectionUIDs.add(b.getBiocollectionUid());
+			}
+			biocollectionMapping.put(entry.getKey(), biocollectionUIDs);
+			
+			List<PhenoCollection> subjectPhenoCollection = (List<PhenoCollection>) getSession().createCriteria(PhenoCollection.class).add(Restrictions.eq("linkSubjectStudy", lss)).list();
+			List<String> phenoCollectionIDs = new ArrayList<String>(subjectPhenoCollection.size());
+			for(PhenoCollection pc : subjectPhenoCollection) {
+				phenoCollectionIDs.add(pc.getId().toString());
+			}
+			phenoCollectionMapping.put(entry.getKey(), phenoCollectionIDs);
+		}
+		
+		for(Entry<String, ExtractionVO> entry : allTheData.getSubjectCustomData().entrySet()) {
+			headers.addAll(entry.getValue().getKeyValues().keySet());
+		}
+		
+		//Biospecimens
+		Set<String> biospecimenHeadersSet = new HashSet<String>();
+		int maxBiospecimens = 0;
+		for(List<String> bs : biospecimenMapping.values()) {
+			if(bs.size() > maxBiospecimens) {
+				maxBiospecimens = bs.size();
+			}
+		}
+		
+		Iterator<ExtractionVO> iter = allTheData.getBiospecimenData().values().iterator();
+		while(iter.hasNext()) {
+			ExtractionVO evo = iter.next();
+			biospecimenHeadersSet.addAll(evo.getKeyValues().keySet());
+		}
+		
+		iter = allTheData.getBiospecimenCustomData().values().iterator();
+		while(iter.hasNext()) {
+			ExtractionVO evo = iter.next();
+			biospecimenHeadersSet.addAll(evo.getKeyValues().keySet());
+		}
+		
+		//Biocollections
+		Set<String> biocollectionHeadersSet = new HashSet<String>();
+		int maxBiocollections = 0; 
+		for(List<String> bc : biocollectionMapping.values()) { 
+			if(bc.size() > maxBiocollections) { 
+				maxBiocollections = bc.size(); 
+			}
+		}
+		
+		iter = allTheData.getBiocollectionData().values().iterator();
+		while(iter.hasNext()) {
+			ExtractionVO evo = iter.next();
+			biocollectionHeadersSet.addAll(evo.getKeyValues().keySet());
+		}
+		
+		iter = allTheData.getBiocollectionCustomData().values().iterator();
+		while(iter.hasNext()) {
+			ExtractionVO evo = iter.next();
+			biocollectionHeadersSet.addAll(evo.getKeyValues().keySet());
+		}
+		
+		//Phenocollections
+		Set<String> phenoCollectionHeadersSet = new HashSet<String>();
+		int maxPhenoCollections = 0; 
+		for(List<String> pc : phenoCollectionMapping.values()) { 
+			if(pc.size() > maxPhenoCollections) { 
+				maxPhenoCollections = pc.size(); 
+			}
+		}
+		
+		iter = allTheData.getPhenoCustomData().values().iterator();
+		while(iter.hasNext()) {
+			ExtractionVO evo = iter.next();
+			phenoCollectionHeadersSet.addAll(evo.getKeyValues().keySet());
+		}
+		
+		List<String> biospecimenHeaders = new ArrayList<String>(biospecimenHeadersSet);
+		List<String> biocollectionHeaders = new ArrayList<String>(biocollectionHeadersSet);
+		List<String> phenoCollectionHeaders = new ArrayList<String>(phenoCollectionHeadersSet);
+		
+		List<String> headersList = new ArrayList<String>(headers);
+		Collections.sort(headersList);
+		Collections.sort(biocollectionHeaders);
+		Collections.sort(biospecimenHeaders);
+		Collections.sort(phenoCollectionHeaders);
+		
+		biospecimenHeaders.add(0, "Biospecimen UID");
+		biocollectionHeaders.add(0, "Biocollection UID");
+		phenoCollectionHeaders.add(0, "Record Date");
+		
+		List<List<String>> outputData = new ArrayList<List<String>>(allTheData.getDemographicData().keySet().size()+1);
+		
+		for(String subjectUID : allTheData.getDemographicData().keySet()) {
+			List<String> row = new ArrayList<String>();
+			row.add(subjectUID);
+			
+			ExtractionVO subjectData = allTheData.getDemographicData().get(subjectUID);
+			ExtractionVO subjectCustomData = allTheData.getSubjectCustomData().get(subjectUID);
+			for(String header : headersList) {
+				if(subjectData.getKeyValues().containsKey(header)) {
+					row.add(subjectData.getKeyValues().get(header));
+				} else if(subjectCustomData != null && subjectCustomData.getKeyValues().containsKey(header)) {
+					row.add(subjectCustomData.getKeyValues().get(header));
+				} else {
+					row.add("");
+				}
+			}
+			for(String biospecimenUID : biospecimenMapping.get(subjectUID)) {
+				ExtractionVO biospecimenData = allTheData.getBiospecimenData().get(biospecimenUID);
+				ExtractionVO biospecimenCustomData = allTheData.getBiospecimenCustomData().get(biospecimenUID);
+				for(String header : biospecimenHeaders) {
+					if(header.equals("Biospecimen UID")) {
+						row.add(biospecimenUID);
+					} else if(biospecimenData.getKeyValues().containsKey(header)) {
+						row.add(biospecimenData.getKeyValues().get(header));
+					} else if(biospecimenCustomData != null && biospecimenCustomData.getKeyValues().containsKey(header)){
+						row.add(biospecimenCustomData.getKeyValues().get(header));
+					} else {
+						row.add("");
+					}
+				}
+			}
+			//Inserting empty cells where subject has fewer biospecimens than the max
+			if(biospecimenMapping.get(subjectUID).size() < maxBiospecimens) {
+				for(int i = 0; i < (maxBiospecimens - biospecimenMapping.get(subjectUID).size()); i++) {
+					for(String header : biospecimenHeaders) {
+						row.add("");
+					}
+				}
+			}
+					
+			for(String biocollectionUID : biocollectionMapping.get(subjectUID)) {
+				ExtractionVO biocollectionData = allTheData.getBiocollectionData().get(biocollectionUID);
+				ExtractionVO biocollectionCustomData = allTheData.getBiocollectionCustomData().get(biocollectionUID);
+				for(String header : biocollectionHeaders) {
+					if(header.equals("Biocollection UID")) {
+						row.add(biocollectionUID);
+					} else if(biocollectionData.getKeyValues().containsKey(header)) {
+						row.add(biocollectionData.getKeyValues().get(header));
+					} else if(biocollectionCustomData != null && biocollectionCustomData.getKeyValues().containsKey(header)){
+						row.add(biocollectionCustomData.getKeyValues().get(header));
+					} else {
+						row.add("");
+					}
+				}
+			}
+			//Inserting empty cells where subject has fewer biocollections than the max
+			if(biocollectionMapping.get(subjectUID).size() < maxBiocollections) {
+				for(int i = 0; i < (maxBiocollections - biocollectionMapping.get(subjectUID).size()); i++) {
+					for(String header : biocollectionHeaders) {
+						row.add("");
+					}
+				}
+			}
+			
+			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+			for(String phenoCollectionID : phenoCollectionMapping.get(subjectUID)) {
+				ExtractionVO phenoCollectionData = allTheData.getPhenoCustomData().get(phenoCollectionID);
+				for(String header : phenoCollectionHeaders) {
+					if(header.equals("Record Date")) {
+						row.add(df.format(phenoCollectionData.getRecordDate()));
+					} else if(phenoCollectionData.getKeyValues().containsKey(header)) {
+						row.add(phenoCollectionData.getKeyValues().get(header));
+					} else {
+						row.add("");
+					}
+				}
+			}
+			if(phenoCollectionMapping.get(subjectUID).size() < maxPhenoCollections) {
+				for(int i = 0; i < (maxPhenoCollections - phenoCollectionMapping.get(subjectUID).size()); i++) {
+					row.add("");
+				}
+			}
+			outputData.add(row);
+		}
+		headersList.add(0, "Subject UID");
+		for(int i = 1; i <= maxBiospecimens; i++) {
+			for(String header : biospecimenHeaders) {
+				headersList.add("BS" + i + "_" + header);
+			}
+		}
+		
+		for(int i = 1; i <= maxBiocollections; i++) {
+			for(String header : biocollectionHeaders) {
+				headersList.add("BC" + i + "_" + header);
+			}
+		}
+		
+		for(int i = 1; i <= maxPhenoCollections; i++) {
+			for(String header : phenoCollectionHeaders) {
+				headersList.add("P" + i + "_" + header);
+			}
+		}
+				
+		outputData.add(0, headersList);
+
+		//TODO Move this to surround the above logic, removing the need for the outputData variable
+		OutputStream outputStream;
+		try {
+			outputStream = new FileOutputStream(file);
+			CsvWriter csv = new CsvWriter(outputStream);
+			
+			for(List<String> row : outputData) {
+				for(String column : row) {
+					csv.write(column);
+				}
+				csv.endLine();
+			}
+		
+			csv.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		log.info("taken " + (System.currentTimeMillis() - start));
 		return file;
 	}
 	
