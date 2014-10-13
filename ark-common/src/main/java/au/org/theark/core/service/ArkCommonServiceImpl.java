@@ -1643,5 +1643,22 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		}
 		return data;
 	}
+	
+	public void deleteArkFile(Long studyId, String subjectUID, String fileId, String attachmentType) throws ArkSystemException {
+		String directory = getArkFileDirName(studyId, subjectUID, attachmentType);
+		String location = directory + File.separator + fileId;
+		File file = new File(location);
+		try {
+			if (file.delete()) {
+				log.info("File deleted successfully");
+			}
+			else {
+				log.error("Could not find the file in " + location);
+			}
+		}
+		catch (Exception e) {
+			throw new ArkSystemException(e.getMessage());
+		}
+	}
 
 }
