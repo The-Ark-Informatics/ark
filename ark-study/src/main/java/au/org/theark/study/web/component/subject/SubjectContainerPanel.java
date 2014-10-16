@@ -353,6 +353,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 			public int size() {
 				String subjectUID = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 				model.getObject().getRelativeUIDs().add(subjectUID);
+				//TODO comment this block to check inbred relatives
 				for(RelationshipVo relationshipVo:relatives){
 					model.getObject().getRelativeUIDs().add(relationshipVo.getIndividualId());
 				}
@@ -366,6 +367,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 					model.getObject().getLinkSubjectStudy().getPerson().setGenderType(genderType);
 					String subjectUID = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 					model.getObject().getRelativeUIDs().add(subjectUID);
+					//TODO comment this block to check inbred relatives
 					for(RelationshipVo relationshipVo:relatives){
 						model.getObject().getRelativeUIDs().add(relationshipVo.getIndividualId());
 					}

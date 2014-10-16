@@ -557,6 +557,7 @@ public class SearchResultListPanel extends Panel {
 			}
 		}
 
+		//TODO comment this block to disable circular validations for inbred relatives
 		Set<String> circularUIDs = PedigreeUploadValidator.getCircularUIDs(pedigree);
 		if (circularUIDs.size() > 0) {
 			this.error("Performing this action will create a circular relationship in the pedigree.");
