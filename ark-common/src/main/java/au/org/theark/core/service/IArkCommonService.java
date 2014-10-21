@@ -942,7 +942,7 @@ public interface IArkCommonService<T> {
 	 * @param checksum
 	 * @param fileId
 	 */
-	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String checksum, final String fileId);
+	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId);
 
 	/**
 	 * Generate directory name according to attachment type
@@ -975,14 +975,15 @@ public interface IArkCommonService<T> {
 	public byte[] retriveArkFileAttachmentByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException;
 
 	/**
-	 * Delete a selected attachment
+	 * Delete the Ark file attachment
 	 * 
 	 * @param studyId
 	 * @param subjectUID
 	 * @param checksum
 	 * @param fileId
 	 * @param attachmentType
+	 * @return isDeleteSuccess
 	 * @throws ArkSystemException
 	 */
-	public void deleteArkFile(Long studyId, String subjectUID, String fileId, String attachmentType) throws ArkSystemException;
+	public boolean deleteArkFileAttachment(Long studyId, String subjectUID, String fileId, String attachmentType, String checksum) throws ArkSystemException;
 }
