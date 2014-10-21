@@ -221,6 +221,8 @@ public interface IStudyService {
 	public void create(Correspondences correspondence) throws ArkSystemException;
 
 	public void update(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
+	
+	public void update(Correspondences correspondence, String checksum) throws ArkSystemException, EntityNotFoundException;
 
 	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
 
@@ -261,6 +263,8 @@ public interface IStudyService {
 
 	public void create(SubjectFile subjectFile) throws ArkSystemException;
 	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException;
+	
+	public void update(SubjectFile subjectFile, String checksum) throws ArkSystemException, EntityNotFoundException;
 
 	public void delete(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException;
 
