@@ -163,12 +163,12 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				String checksum = getHex(byteArray);
 
 				// Set details of ConsentFile object
-				containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
+				//containerForm.getModelObject().getSubjectFile().setChecksum(checksum);
 				containerForm.getModelObject().getSubjectFile().setFilename(fileSubjectFile.getClientFileName());
 				containerForm.getModelObject().getSubjectFile().setUserId(userId);
 				
 				// Update
-				iStudyService.update(containerForm.getModelObject().getSubjectFile());
+				iStudyService.update(containerForm.getModelObject().getSubjectFile(),checksum);
 				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was updated successfully");
 				processErrors(target);
 			}

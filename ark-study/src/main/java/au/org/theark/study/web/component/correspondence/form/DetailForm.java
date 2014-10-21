@@ -370,19 +370,20 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 			}
 			else {
 				// store correspondence file attachment
+				String checksum=null;
 				if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
 					// retrieve file and store as Blob in database
 					FileUpload fileUpload = fileUploadField.getFileUpload();
 					
 					byte[] byteArray = fileUpload.getMD5();
-					String checksum = getHex(byteArray);
+					checksum = getHex(byteArray);
 					
 					containerForm.getModelObject().getCorrespondence().setAttachmentPayload(fileUpload.getBytes());
 					containerForm.getModelObject().getCorrespondence().setAttachmentFilename(fileUpload.getClientFileName());
-					containerForm.getModelObject().getCorrespondence().setAttachementChecksum(checksum);
+//					containerForm.getModelObject().getCorrespondence().setAttachementChecksum(checksum);
 				}
 
-				studyService.update(containerForm.getModelObject().getCorrespondence());
+				studyService.update(containerForm.getModelObject().getCorrespondence(),checksum);
 				this.info("Correspondence was successfully updated and linked to subject: " + lss.getSubjectUID());
 				processErrors(target);
 			}
