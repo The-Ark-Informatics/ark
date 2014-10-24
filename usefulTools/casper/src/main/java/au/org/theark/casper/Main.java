@@ -1,17 +1,22 @@
 package au.org.theark.casper;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Logger;
+
+import org.apache.commons.codec.digest.DigestUtils;
 
 
 
@@ -21,6 +26,32 @@ public class Main {
 	
 	private static final String ARK_SUBJECT_CORRESPONDENCE_DIR="correspondence";
 	
+	private static final String DB_SCHEMA="study";
+	
+	private static final String SUBJECT_FILE_TABLE="subject_file";
+
+	private static final String CORRESPONDENCE_TABLE="correspondences";
+	
+	private static final String FILE_ID_COLUMN="FILE_ID";
+
+	private static final String FILE_PAYLOAD_COLUMN="PAYLOAD";
+
+	private static final String ATTACHEMENT_FILE_ID_COLUMN="ATTACHMENT_FILE_ID";
+	
+	private static final String ATTACHEMENT_CHECKSUM_COLUMN="ATTACHMENT_CHECKSUM";
+	
+	private static final String ADD_FILE_ID="ALTER TABLE `study`.`subject_file` \n" + 
+			"ADD COLUMN `FILE_ID` VARCHAR(1000) NULL";
+	
+	private static final String CHANGE_PAYLOAD_NULLABLE="ALTER TABLE `study`.`subject_file` \n" + 
+			"CHANGE COLUMN `PAYLOAD` `PAYLOAD` LONGBLOB NULL";
+	
+	private static final String ADD_ATTACHEMENT_FILE_ID="ALTER TABLE `study`.`correspondences` \n" + 
+			"ADD COLUMN `ATTACHMENT_FILE_ID` VARCHAR(1000) NULL";
+
+	private static final String ADD_ATTACHEMENT_CHECKSUM="ALTER TABLE `study`.`correspondences` \n" + 
+			"ADD COLUMN `ATTACHMENT_CHECKSUM` VARCHAR(50) NULL";
+		
 	private static final String SELECT_FILE_ATTACHMENT ="select sf.ID, sf.FILENAME, lss.STUDY_ID, lss.SUBJECT_UID,sf.PAYLOAD \n" + 
 			"from study.subject_file sf \n" + 
 			"	inner join study.link_subject_study lss on lss.ID = sf.LINK_SUBJECT_STUDY_ID \n" + 
@@ -40,7 +71,8 @@ public class Main {
 			"order by c.ID limit 1";
 	
 	private static final String UPDATE_CORRESPONDANCE_ATTACHMENT="update study.correspondences c \n" + 
-			"set c.ATTACHMENT_FILE_ID= ? \n" + 
+			"set c.ATTACHMENT_FILE_ID= ?, \n" + 
+			"c.ATTACHMENT_CHECKSUM= ? \n" + 
 			"where c.ID = ?";
 	
 	private static final String CASPER_PROPERTIES_FILE="casper.properties";
@@ -57,6 +89,7 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		Main m = new Main();	
 		Connection con =getConnection();
+		m.setup(con);
 		m.migrateSubjectFiles(con);
 		m.migrateCorrespondenceFiles(con);
 		closeConnection(con);
@@ -119,6 +152,60 @@ public class Main {
 //	}
 	
 	
+	
+//	private void testDBMeta(Connection con)throws Exception{
+//		DatabaseMetaData metadata = con.getMetaData();
+//		ResultSet resultSet;
+//		resultSet = metadata.getTables(Main.DB_SCHEMA, null, Main.SUBJECT_FILE_TABLE, null);
+//		while(resultSet.next())
+//		    System.out.println(resultSet.getString("TABLE_NAME"));
+//	}
+	
+	
+	private void setup(Connection con) throws Exception{
+		PreparedStatement ps = null; 
+		if(!isColumnExists(con,Main.DB_SCHEMA,Main.SUBJECT_FILE_TABLE,Main.FILE_ID_COLUMN)){
+			ps=con.prepareStatement(Main.ADD_FILE_ID);
+			ps.execute();
+		}
+		
+		if(!isColumnExistsAndNullable(con,Main.DB_SCHEMA,Main.SUBJECT_FILE_TABLE,Main.FILE_PAYLOAD_COLUMN)){
+			ps=con.prepareStatement(Main.CHANGE_PAYLOAD_NULLABLE);
+			ps.execute();
+		}
+		
+		if(!isColumnExists(con,Main.DB_SCHEMA,Main.CORRESPONDENCE_TABLE,Main.ATTACHEMENT_FILE_ID_COLUMN)){
+			ps=con.prepareStatement(Main.ADD_ATTACHEMENT_FILE_ID);
+			ps.execute();
+		}
+		
+		if(!isColumnExists(con,Main.DB_SCHEMA,Main.CORRESPONDENCE_TABLE,Main.ATTACHEMENT_CHECKSUM_COLUMN)){
+			ps=con.prepareStatement(Main.ADD_ATTACHEMENT_CHECKSUM);
+			ps.execute();
+		}
+	}
+	
+	private boolean isColumnExists(Connection con,String schema,String tableName,String columnName) throws Exception{
+		boolean isExist = false;
+		DatabaseMetaData md = con.getMetaData();
+		ResultSet rs = md.getColumns(schema, null, tableName, columnName);
+		if (rs.next()) {
+		   isExist = true;
+		}
+		return isExist;
+	}
+	
+	private boolean isColumnExistsAndNullable(Connection con,String schema,String tableName,String columnName) throws Exception{
+		boolean isAllowed = false;
+		DatabaseMetaData md = con.getMetaData();
+		ResultSet rs = md.getColumns(schema, null, tableName, columnName);
+		if (rs.next()) {
+			isAllowed = rs.getInt(11)==ResultSetMetaData.columnNoNulls?false:true;
+		}
+		return isAllowed;
+	}
+	
+	
 	public void migrateSubjectFiles(Connection con)throws Exception{
 		int id = 0;
 		PreparedStatement selectPS = con.prepareStatement(Main.SELECT_FILE_ATTACHMENT);
@@ -157,12 +244,21 @@ public class Main {
 			
 			saveArkFileAttachment(studyId, subjectUID, baseDir, fileName, payload, fileId);
 			
+			if(Main.ARK_SUBJECT_ATTACHEMENT_DIR.equals(baseDir)){
+				updatePS.setString(1, fileId);
+				updatePS.setInt(2, id);
+				updatePS.executeUpdate();
+			}else{
+				String checksum= DigestUtils.md5Hex(new ByteArrayInputStream(payload)).toUpperCase();				
+				updatePS.setString(1, fileId);
+				updatePS.setString(2, checksum);
+				updatePS.setInt(3, id);
+				updatePS.executeUpdate();
+			}
+			
 			//Clear payload 
 			payload = null;
 			
-			updatePS.setString(1, fileId);
-			updatePS.setInt(2, id);
-			updatePS.executeUpdate();
 		}
 		if(previousId != id){
 			migrate(id, selectPS, updatePS,baseDir);
