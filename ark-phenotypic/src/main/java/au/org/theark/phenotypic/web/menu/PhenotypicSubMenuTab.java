@@ -86,7 +86,7 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 
 		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
 			// attach the fields to this "Data Dictionary" function
-			panelToReturn = new CustomFieldContainerPanel(panelId, false, arkFunction);
+			panelToReturn = new CustomFieldContainerPanel(panelId, false, arkFunction,false);
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD)) {
 			//ArkFunction function = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY);
