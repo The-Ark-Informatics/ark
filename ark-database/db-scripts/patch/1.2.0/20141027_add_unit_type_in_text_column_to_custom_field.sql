@@ -1,0 +1,4 @@
+ALTER TABLE `study`.`custom_field` 
+ADD COLUMN `UNIT_TYPE_IN_TEXT` VARCHAR(20) NULL;
+
+
