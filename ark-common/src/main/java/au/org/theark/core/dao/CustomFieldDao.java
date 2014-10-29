@@ -17,8 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.mchange.v2.c3p0.FullQueryConnectionTester;
-
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
@@ -92,9 +90,14 @@ public class CustomFieldDao extends HibernateSessionDao implements ICustomFieldD
 			criteria.add(Restrictions.ilike("description", customField.getDescription(), MatchMode.ANYWHERE));
 		}
 	
-		if (customField.getUnitType() != null && customField.getUnitType().getName() != null) {
+		if (customField.getUnitType() != null && customField.getUnitType().getName() != null &&
+				customField.getUnitTypeInText() !=null) {
 			criteria.createAlias("unitType", "ut");
 			criteria.add(Restrictions.ilike("ut.name", customField.getUnitType().getName(), MatchMode.ANYWHERE));
+							
+		}
+		if(customField.getUnitTypeInText() !=null){
+			criteria.add(Restrictions.ilike("unitTypeInText", customField.getUnitTypeInText(),MatchMode.ANYWHERE));
 		}
 	
 		if (customField.getMinValue() != null) {

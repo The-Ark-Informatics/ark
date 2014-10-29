@@ -56,20 +56,28 @@ import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 public class SearchResultListPanel extends Panel {
 
 	private static final long							serialVersionUID	= -1L;
-	private CompoundPropertyModel<CustomFieldVO>	cpModel;
-
+	private CompoundPropertyModel<CustomFieldVO>		cpModel;
 	private FeedbackPanel								feedbackPanel;
 	private ArkCrudContainerVO							arkCrudContainerVO;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
+	private boolean 				unitTypeDropDownOn;
 	
-	public SearchResultListPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
+	/**
+	 * Constructor
+	 * @param id
+	 * @param cpModel
+	 * @param arkCrudContainerVO
+	 * @param feedBackPanel
+	 * @param unitTypeDropDownOn
+	 */
+	public SearchResultListPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel,boolean unitTypeDropDownOn) {
 		super(id);
-
 		this.cpModel = cpModel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
+		this.unitTypeDropDownOn=unitTypeDropDownOn;
 	}
 
 	public DataView<CustomField> buildDataView(ArkDataProvider2<CustomField, CustomField> subjectProvider) {
@@ -119,9 +127,14 @@ public class SearchResultListPanel extends Panel {
 				if (field.getUnitType() != null && field.getUnitType().getName() != null) {
 					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, field.getUnitType().getName()));
 				}
-				else {
+				else if(field.getUnitTypeInText() !=null ){
+					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, field.getUnitTypeInText()));
+				}
+				else  {
 					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, ""));
 				}
+				
+				
 
 				// Min
 				if (field.getMinValue() != null) {
@@ -167,7 +180,7 @@ public class SearchResultListPanel extends Panel {
 				newModel.getObject().setCustomField(cf);
 				newModel.getObject().setUseCustomFieldDisplay(cpModel.getObject().isUseCustomFieldDisplay());
 
-				DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
+				DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO,unitTypeDropDownOn);
 				arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 				ArkCRUDHelper.preProcessDetailPanelOnSearchResults(target, arkCrudContainerVO);
 

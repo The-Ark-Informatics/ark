@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -54,23 +55,27 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 	private IArkCommonService					iArkCommonService;
 
 	private CompoundPropertyModel<CustomFieldVO>	cpModel;
-	private ArkCrudContainerVO 				arkCrudContainerVO;
-
+	private ArkCrudContainerVO 					arkCrudContainerVO;
 	private TextField<String>					fieldIdTxtFld;
 	private TextField<String>					fieldNameTxtFld;
-	private DropDownChoice<FieldType>		fieldTypeDdc;
+	private DropDownChoice<FieldType>			fieldTypeDdc;
 	private TextArea<String>					fieldDescriptionTxtAreaFld;
 	private TextField<String>					fieldUnitsTxtFld;
+	private TextField<String>					fieldUnitsInTextTxtFld;
 	private TextField<String>					fieldMinValueTxtFld;
 	private TextField<String>					fieldMaxValueTxtFld;
+	
+	private WebMarkupContainer  				panelCustomUnitTypeDropDown;
+	private WebMarkupContainer  				panelCustomUnitTypeText;
+	private boolean 							unitTypeDropDownOn;
 	
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,boolean unitTypeDropDownOn) {
 
 		super(id, cpModel, feedBackPanel, arkCrudContainerVO);
-
+		this.unitTypeDropDownOn=unitTypeDropDownOn;
 		this.cpModel = cpModel;
 		this.feedbackPanel = feedBackPanel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
@@ -90,6 +95,10 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		fieldIdTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_ID);
 		fieldNameTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_NAME);
 		fieldDescriptionTxtAreaFld = new TextArea<String>(Constants.FIELDVO_CUSTOMFIELD_DESCRIPTION);
+		panelCustomUnitTypeDropDown=new WebMarkupContainer("panelCustomUnitTypeDropDown");
+		panelCustomUnitTypeDropDown.setOutputMarkupId(true);
+		panelCustomUnitTypeText=new WebMarkupContainer("panelCustomUnitTypeText");
+		panelCustomUnitTypeText.setOutputMarkupId(true);
 		fieldUnitsTxtFld = new AutoCompleteTextField<String>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE + ".name") {
 			@Override
 			protected Iterator getChoices(String input) {
@@ -99,6 +108,8 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 				return iArkCommonService.getUnitTypeNames(unitTypeCriteria, 10).iterator();
 			}
 		};
+		
+		fieldUnitsInTextTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE_TXT);
 		fieldMinValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MIN_VALUE);
 		fieldMaxValueTxtFld = new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_MAX_VALUE);
 		initFieldTypeDdc();
@@ -110,7 +121,17 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		add(fieldNameTxtFld);
 		add(fieldTypeDdc);
 		add(fieldDescriptionTxtAreaFld);
-		add(fieldUnitsTxtFld);
+		if(this.unitTypeDropDownOn){
+			panelCustomUnitTypeDropDown.setVisible(true);
+			panelCustomUnitTypeText.setVisible(false);
+		}else{
+			panelCustomUnitTypeDropDown.setVisible(false);
+			panelCustomUnitTypeText.setVisible(true);
+		}
+		panelCustomUnitTypeDropDown.add(fieldUnitsTxtFld);
+		add(panelCustomUnitTypeDropDown);
+		panelCustomUnitTypeText.add(fieldUnitsInTextTxtFld);
+		add(panelCustomUnitTypeText);
 		add(fieldMinValueTxtFld);
 		add(fieldMaxValueTxtFld);
 	}
@@ -158,7 +179,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		newCF.setMaxValue(cf.getMaxValue());
 		newModel.getObject().setUseCustomFieldDisplay(getModelObject().isUseCustomFieldDisplay());
 		
-		DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO);
+		DetailPanel detailPanel = new DetailPanel("detailPanel", feedbackPanel, newModel, arkCrudContainerVO,this.unitTypeDropDownOn);
 		arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailPanel);
 		
 		// Reset model's CF object (do NOT replace the CustomFieldVO in the model)

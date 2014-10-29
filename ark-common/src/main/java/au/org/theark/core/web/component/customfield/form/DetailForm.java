@@ -82,17 +82,20 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 
 	private TextField<String>						fieldIdTxtFld;
 	private TextField<String>						fieldNameTxtFld;
-	private DropDownChoice<FieldType>			fieldTypeDdc;
+	private DropDownChoice<FieldType>				fieldTypeDdc;
 
 	private TextArea<String>						fieldDescriptionTxtAreaFld;
 	private DropDownChoice<UnitType>				fieldUnitTypeDdc;
+	//Add unit type as text
+	private TextField<String>						fieldUnitTypeTxtFld;
+	//****************//
 	private TextArea<String>						fieldEncodedValuesTxtFld;
 	private TextField<String>						fieldMissingValueTxtFld;
 
 	private TextArea<String>						fieldLabelTxtAreaFld;
-	private CheckBox									fieldDisplayRequiredChkBox;
-	private CheckBox									fieldAllowMultiselectChkBox;
-	private DropDownChoice<CustomFieldGroup>	fieldDisplayFieldGroupDdc;
+	private CheckBox								fieldDisplayRequiredChkBox;
+	private CheckBox								fieldAllowMultiselectChkBox;
+	private DropDownChoice<CustomFieldGroup>		fieldDisplayFieldGroupDdc;
 
 	protected WebMarkupContainer					customFieldDetailWMC;
 	protected WebMarkupContainer					minMaxValueEntryWMC;
@@ -103,7 +106,13 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 
 	private TextArea<String>						defaultValueTextArea;
 	
-	protected IModel<List<CustomFieldGroup>>	cfGroupDdcListModel;
+	protected IModel<List<CustomFieldGroup>>		cfGroupDdcListModel;
+	
+	//New two webMarkupContainers to hold different unit types DropDown and Text.
+	private WebMarkupContainer  					panelCustomUnitTypeDropDown;
+	private WebMarkupContainer  					panelCustomUnitTypeText;
+	private boolean 								unitTypeDropDownOn;
+	
 
 	/**
 	 * Constructor
@@ -113,12 +122,12 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVO
 	 */
-	public DetailForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
+	public DetailForm(String id, CompoundPropertyModel<CustomFieldVO> cpModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,boolean unitTypeDropDownOn) {
 		super(id, feedBackPanel, cpModel, arkCrudContainerVO);
 		// Initialise the model to be empty for now
 		cfGroupDdcListModel = new ListModel<CustomFieldGroup>();
-
 		refreshEntityFromBackend();
+		this.unitTypeDropDownOn=unitTypeDropDownOn;
 	}
 
 	protected void refreshEntityFromBackend() {
@@ -160,6 +169,8 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				target.add(minMaxValueEntryWMC);
 				target.add(fieldEncodedValuesTxtFld);
 				target.add(fieldUnitTypeDdc);
+				//Add field unite type as text
+				target.add(fieldUnitTypeTxtFld);
 				target.add(fieldAllowMultiselectChkBox);
 			}
 		});
@@ -191,9 +202,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		if (fieldType != null && !fieldType.getName().equals(Constants.DATE_FIELD_TYPE_NAME)) {
 			// Only allowed to use unitType when fieldType != DATE
 			fieldUnitTypeDdc.setEnabled(true);
+			fieldUnitTypeTxtFld.setEnabled(true);
 		}
 		else {
 			fieldUnitTypeDdc.setEnabled(false);
+			fieldUnitTypeTxtFld.setEnabled(false);
 		}
 	}
 
@@ -255,6 +268,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		fieldUnitTypeDdc = new DropDownChoice<UnitType>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE, unitTypeList, unitTypeRenderer);
 		fieldUnitTypeDdc.setNullValid(true); // null is ok for units
 		fieldUnitTypeDdc.setOutputMarkupId(true); // unitTypeDdc can be enabled/disabled
+		
+		//Add the Unit type text.
+		fieldUnitTypeTxtFld=new TextField<String>(Constants.FIELDVO_CUSTOMFIELD_UNIT_TYPE_TXT);
+		fieldUnitTypeTxtFld.setOutputMarkupId(true);
+		
 	}
 
 	/**
@@ -433,19 +451,34 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	@Override
 	protected void addDetailFormComponents() {
 		customFieldDetailWMC = new WebMarkupContainer("customFieldDetailWMC");
+		//Add new panels to handle the Unit Type changes.
+		panelCustomUnitTypeDropDown=new WebMarkupContainer("panelCustomUnitTypeDropDown");
+		panelCustomUnitTypeDropDown.setOutputMarkupId(true);
+		panelCustomUnitTypeText=new WebMarkupContainer("panelCustomUnitTypeText");
+		panelCustomUnitTypeText.setOutputMarkupId(true);
+		if(this.unitTypeDropDownOn){
+			panelCustomUnitTypeDropDown.setVisible(true);
+			panelCustomUnitTypeText.setVisible(false);
+		}else{
+			panelCustomUnitTypeDropDown.setVisible(false);
+			panelCustomUnitTypeText.setVisible(true);
+		}
 		customFieldDetailWMC.setOutputMarkupPlaceholderTag(true);
 		customFieldDetailWMC.add(fieldIdTxtFld.setEnabled(false)); // Disable ID field editing
 		customFieldDetailWMC.add(fieldNameTxtFld);
 		customFieldDetailWMC.add(fieldDescriptionTxtAreaFld);
 		customFieldDetailWMC.add(fieldTypeDdc);
-		customFieldDetailWMC.add(fieldUnitTypeDdc);
+		//Unit type changes
+		panelCustomUnitTypeDropDown.add(fieldUnitTypeDdc);
+		customFieldDetailWMC.add(panelCustomUnitTypeDropDown);
+		panelCustomUnitTypeText.add(fieldUnitTypeTxtFld);
+		customFieldDetailWMC.add(panelCustomUnitTypeText);
+		//End of Unit type changes.
 		customFieldDetailWMC.add(minMaxValueEntryWMC);
 		customFieldDetailWMC.add(fieldEncodedValuesTxtFld);
 		customFieldDetailWMC.add(fieldMissingValueTxtFld);
 		customFieldDetailWMC.add(fieldLabelTxtAreaFld);
 		customFieldDetailWMC.add(defaultValueTextArea);
-		
-
 		customFieldDisplayDetailWMC = new WebMarkupContainer("customFieldDisplayDetailWMC");
 		customFieldDisplayDetailWMC.add(customFieldDisplayPositionPanel);
 		customFieldDisplayDetailWMC.add(fieldDisplayRequiredChkBox);

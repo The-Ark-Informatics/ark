@@ -62,6 +62,7 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 
 	private DataView<CustomField>						dataView;
 	private ArkDataProvider2<CustomField, CustomField>	customFieldProvider;
+	private boolean 									unitTypeDropDownOn; 
 
 	/**
 	 * @param id
@@ -73,10 +74,10 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	 * @param associatedPrimaryFn
 	 *           - primary function that the customFields will belong to
 	 */
-	public CustomFieldContainerPanel(String id, boolean useCustomFieldDisplay, ArkFunction associatedPrimaryFn) {
-
+	public CustomFieldContainerPanel(String id, boolean useCustomFieldDisplay, ArkFunction associatedPrimaryFn,boolean unitTypeDropDownOn) {
 		super(id);
 		/* Initialise the CPM */
+		this.unitTypeDropDownOn=unitTypeDropDownOn;
 		cpModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
 		cpModel.getObject().getCustomField().setArkFunction(associatedPrimaryFn);
 		cpModel.getObject().setUseCustomFieldDisplay(useCustomFieldDisplay);
@@ -117,7 +118,7 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
-		SearchPanel searchPanel = new SearchPanel("searchPanel", cpModel, arkCrudContainerVO, feedBackPanel);
+		SearchPanel searchPanel = new SearchPanel("searchPanel", cpModel, arkCrudContainerVO, feedBackPanel,this.unitTypeDropDownOn);
 
 		searchPanel.initialisePanel();
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
@@ -132,7 +133,7 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	}
 
 	protected WebMarkupContainer initialiseSearchResults() {
-		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("resultListPanel", cpModel, arkCrudContainerVO, feedBackPanel);
+		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("resultListPanel", cpModel, arkCrudContainerVO, feedBackPanel,this.unitTypeDropDownOn);
 
 		// Data providor to paginate resultList
 		customFieldProvider = new ArkDataProvider2<CustomField, CustomField>() {
