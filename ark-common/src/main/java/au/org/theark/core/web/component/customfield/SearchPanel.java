@@ -37,17 +37,19 @@ public class SearchPanel extends Panel {
 
 	private FeedbackPanel			feedbackPanel;
 	private ArkCrudContainerVO		arkCrudContainerVO;
+	private boolean 				unitTypeDropDownOn;
 
 	/* Constructor */
-	public SearchPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel) {
+	public SearchPanel(String id, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel,boolean unitTypeDropDownOn) {
 		super(id);
 		this.cpModel = cpModel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
+		this.unitTypeDropDownOn=unitTypeDropDownOn;
 	}
 
 	public void initialisePanel() {
-		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, cpModel, feedbackPanel, arkCrudContainerVO);
+		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, cpModel, feedbackPanel, arkCrudContainerVO,this.unitTypeDropDownOn);
 		add(searchForm);
 	}
 }

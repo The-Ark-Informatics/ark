@@ -61,6 +61,8 @@ public class CustomField implements Serializable {
 	private Boolean customFieldHasData;
 	private String fieldLabel;
 	private String defaultValue;
+	//Add unit type as String
+	private String unitTypeInText;
 
 	private Set<CustomFieldDisplay> customFieldDisplay = new HashSet<CustomFieldDisplay>();
 
@@ -209,6 +211,16 @@ public class CustomField implements Serializable {
 	public void setDefaultValue(String default_value) {
 		this.defaultValue = default_value;
 	}
+	
+	@Column(name="UNIT_TYPE_IN_TEXT")
+	public String getUnitTypeInText() {
+		return unitTypeInText;
+	}
+
+	public void setUnitTypeInText(String unitTypeInText) {
+		this.unitTypeInText = unitTypeInText;
+	}
+
 
 	@Override
 	public int hashCode() {

@@ -122,18 +122,25 @@
 							Units:
 						</wicket:message>
 					</div>
-
-					<div class="fldControl">
-						<select wicket:id="customField.unitType">
-							<option>
-								kg
-							</option>
-							<option>
-								cm
-							</option>
-						</select>
+					<!-- Add panel to control hide and show on 2014-10-25 --> 
+					<div wicket:id="panelCustomUnitTypeDropDown">
+						<div class="fldControl">
+							<select wicket:id="customField.unitType">
+								<option>
+									kg
+								</option>
+								<option>
+									cm
+								</option>
+							</select>
+						</div>
 					</div>
-
+					<div wicket:id="panelCustomUnitTypeText">
+						<div class="fldControl">
+							<input wicket:id="customField.unitTypeInText" type="text" />
+						</div>
+					</div>
+					<!-- End of Add panel to control hide and show on -->
 					<div class="panelMargin">
 						&nbsp;
 					</div>
