@@ -89,7 +89,7 @@ public class SubjectCustomDataContainerPanel extends Panel {
 			}
 			else {
 				dataEditorPanel = new SubjectCustomDataEditorPanel("customDataEditorPanel", cpModel, feedbackPanel).initialisePanel();
-				;
+				
 			}
 		}
 		else if (!contextLoaded) {
