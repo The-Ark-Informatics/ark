@@ -26,10 +26,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
@@ -175,7 +173,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		consentHistoryPanel.setVisible(!isNew());
 		
 		if(isNew()){
-			consentStatusChoice.setModel(new Model<ConsentStatus>(iArkCommonService.getConsentStatusByName("Pending")));
+			containerForm.getModelObject().getLinkSubjectStudy().setConsentStatus(iArkCommonService.getConsentStatusByName("Pending"));
+			//consentStatusChoice.setModel(new Model<ConsentStatus>(iArkCommonService.getConsentStatusByName("Pending")));
 		}
 		super.onBeforeRender();
 	}
