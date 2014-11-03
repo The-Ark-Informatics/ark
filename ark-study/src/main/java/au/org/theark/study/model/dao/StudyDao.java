@@ -545,7 +545,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
 		}
 
-		log.info("create subject otherIDs:  " + subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs());
+		//log.info("create subject otherIDs:  " + subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs());
 
 		if (subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs() == null || subjectVo.getLinkSubjectStudy().getPerson().getOtherIDs().isEmpty()) { // get
 																																																		// better
@@ -804,11 +804,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			log.error("Error in Subject insertion - Study name was null");
 			throw new ArkSubjectInsertException("Error in Subject insertion - Empty study name");
 		}
-		log.warn("Ark uid generator nnull??? " + (arkUidGenerator == null));
+		//log.warn("Ark uid generator nnull??? " + (arkUidGenerator == null));
 		// arkUidGenerator.
 
 		result = (Integer) arkUidGenerator.getUidAndIncrement(study.getName());
-		log.warn("about to return uid # of " + result + " for study " + study.getName());
+		log.info("about to return new uid # of " + result + " for study " + study.getName());
 		return result;
 	}
 
@@ -910,13 +910,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Criteria phoneCriteria = getSession().createCriteria(Phone.class);
 		phoneCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
 		List<Phone> personPhoneList = phoneCriteria.list();
-		log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
+		//log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
 
 		if (personPhoneList.isEmpty()) {
 			log.error("this person has no phone;  " + personId);
 			// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 		}
-		log.info("Number of phone items retrieved for person Id " + personId + " " + personPhoneList.size());
+		//log.info("Number of phone items retrieved for person Id " + personId + " " + personPhoneList.size());
 		return personPhoneList;
 	}
 
@@ -951,7 +951,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 
 		List<Phone> personPhoneList = phoneCriteria.list();
-		log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
+		//log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
 
 		if (personPhoneList.isEmpty()) {
 			// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
