@@ -874,7 +874,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 
 			if (subjectVO.getLinkSubjectStudy().getPerson().getLastName() != null) {
 				/* old code pre George adding personlastname lookup criteria.add(Restrictions.ilike("p.lastName", subjectVO.getLinkSubjectStudy().getPerson().getLastName(), MatchMode.ANYWHERE));*/
-				log.info("Lastname: " + subjectVO.getLinkSubjectStudy().getPerson().getLastName());
+				//log.info("Lastname: " + subjectVO.getLinkSubjectStudy().getPerson().getLastName());
 				DetachedCriteria previousLastNames = DetachedCriteria.forClass(PersonLastnameHistory.class, "l")
 						.setProjection(Projections.property("l.lastName"))
 						.add(Restrictions.ilike("l.lastName", subjectVO.getLinkSubjectStudy().getPerson().getLastName(), MatchMode.ANYWHERE))
