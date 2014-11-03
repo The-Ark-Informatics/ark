@@ -33,7 +33,8 @@ public class FieldUploadStep5 extends AbstractWizardStepPanel {
 	private Form<PhenoFieldUploadVO>		containerForm;
 
 	public FieldUploadStep5(String id, Form<PhenoFieldUploadVO> containerForm) {
-		super(id, "Step 5/5: Data Upload Finished", "The data is successfully uploaded, click Finish.");
+		super(id, "Step 5/5: Data Upload Finished", 
+				"The data has been successfully submitted, When the actual upload is finished it will have a status of \"Successfully Completed\".");
 		this.containerForm = containerForm;
 		initialiseDetailForm();
 	}
