@@ -8,7 +8,7 @@ CREATE TABLE study.`category` (
 	`ID` int(11) NOT NULL AUTO_INCREMENT,
 	`PARENT_ID` int(11) NULL,
 	`STUDY_ID` int(11) NULL,
-	`NAME` varchar(255) NOT NULL,
+	`NAME` varchar(100) NOT NULL,
 	`DESCRIPTION` text NULL,
 	PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB charset=latin1; -- or shall we go utf 8?
