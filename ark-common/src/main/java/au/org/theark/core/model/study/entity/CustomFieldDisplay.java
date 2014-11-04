@@ -43,7 +43,6 @@ import au.org.theark.core.model.pheno.entity.PhenoData;
 
 /**
  * @author nivedann
- * 
  */
 
 @Entity
@@ -53,6 +52,7 @@ public class CustomFieldDisplay implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+	private Category category;
 	private CustomField customField;
 	private CustomFieldGroup customFieldGroup;
 	private Boolean required;
@@ -89,6 +89,17 @@ public class CustomFieldDisplay implements Serializable {
 
 	public void setCustomField(CustomField customField) {
 		this.customField = customField;
+	}
+
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CATEGORY_ID", nullable = false)
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
