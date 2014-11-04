@@ -1,8 +1,8 @@
--- WASHS PARAMETERS
+-- T1D PARAMETERS
 -- latest
-SET @STUDY_GROUP_NAME = 'WASHS';
-SET @STUDYKEY = 5;
-SET @STUDYNAME= 'WASHS';
+SET @STUDY_GROUP_NAME = 'PMH';
+SET @STUDYKEY = 590;
+SET @STUDYNAME= 'PMH';
 SET @AUTOGEN_SUBJECT = 1;
 SET @AUTOGEN_BIOSPECIMEN = 1;
 SET @AUTOGEN_BIOCOLLECTION = 1;
@@ -10,227 +10,58 @@ SET @AUTOGEN_BIOCOLLECTION = 1;
 
 -- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
 -- apparently subject prefix comes from wager
--- SET @SUBJECT_PREFIX = 'RAV';
+-- SET @SUBJECT_PREFIX = ’T1D’;
 
-SET @BIOCOLLECTIONUID_PREFIX = 'WSC';
+SET @BIOCOLLECTIONUID_PREFIX = 'PMH';
 -- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
 SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
 SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 	
-SET @BIOSPECIMENUID_PREFIX = 'WSB';
+SET @BIOSPECIMENUID_PREFIX = 'PMH';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
 SET @BIOSPECIMENUID_PADCHAR_ID = 6;
 
-select * from zeus.study where studykey = @STUDYKEY;
-select * from zeus.study where studyname = @STUDYNAME;
--- '24', 'VUS', 'Venous Ulcer Study', '2013-04-02 15:52:43', '2007-12-21 14:20:32', 'Hilary Wallace', 'WAGERLAB', 'Deep Vein Thrombosis', NULL, '0', '1', 'DVT', NULL, '2'
-
-/*
-
--- WAMHS PARAMETERS
--- latest
-SET @STUDY_GROUP_NAME = 'WAMHS';
-SET @STUDYKEY = 11;
-SET @STUDYNAME= 'WAMHS';
-SET @AUTOGEN_SUBJECT = 1;
-SET @AUTOGEN_BIOSPECIMEN = 1;
-SET @AUTOGEN_BIOCOLLECTION = 1;
--- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
-
--- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
--- apparently subject prefix comes from wager
--- SET @SUBJECT_PREFIX = 'RAV';
-
-SET @BIOCOLLECTIONUID_PREFIX = 'MHC';
--- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
-SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
-SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
-	
-SET @BIOSPECIMENUID_PREFIX = 'MHS';
--- SET @BIOSPECIMENUID_TOKEN_ID = 1;
-SET @BIOSPECIMENUID_PADCHAR_ID = 6;
-
-select * from zeus.study where studyname = 'WAMHS';
--- '24', 'VUS', 'Venous Ulcer Study', '2013-04-02 15:52:43', '2007-12-21 14:20:32', 'Hilary Wallace', 'WAGERLAB', 'Deep Vein Thrombosis', NULL, '0', '1', 'DVT', NULL, '2'
 
 
 
+update pmhdiaendo.ix_biospecimen
+set samplesubtype = 'DNA',
+sampletype = 'Nucleic Acid'
+where sampletype='DNA';
 
--- VUS PARAMETERS
--- latest
-SET @STUDY_GROUP_NAME = 'VUS';
-SET @STUDYKEY = 24;
-SET @STUDYNAME= 'VUS';
-SET @AUTOGEN_SUBJECT = 0;
-SET @AUTOGEN_BIOSPECIMEN = 1;
-SET @AUTOGEN_BIOCOLLECTION = 1;
--- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
+update pmhdiaendo.ix_biospecimen
+set samplesubtype = 'Blood',
+sampletype = 'Whole Blood'
+where sampletype='Whole Blood';
 
--- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
--- apparently subject prefix comes from wager
--- SET @SUBJECT_PREFIX = 'RAV';
+update pmhdiaendo.ix_biospecimen
+set samplesubtype = 'Blood',
+sampletype = 'Whole Blood (EDTA)'
+where sampletype='Blood (EDTA)';
 
-SET @BIOCOLLECTIONUID_PREFIX = 'VUC';
--- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
-SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
-SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
-	
-SET @BIOSPECIMENUID_PREFIX = 'VUB';
--- SET @BIOSPECIMENUID_TOKEN_ID = 1;
-SET @BIOSPECIMENUID_PADCHAR_ID = 5;
-
-select * from zeus.study where studyname = 'VUS';
--- '24', 'VUS', 'Venous Ulcer Study', '2013-04-02 15:52:43', '2007-12-21 14:20:32', 'Hilary Wallace', 'WAGERLAB', 'Deep Vein Thrombosis', NULL, '0', '1', 'DVT', NULL, '2'
-*/
-
-/*
-SET @STUDY_GROUP_NAME = 'WAFSS';
-SET @STUDYKEY = 17;
-SET @STUDYNAME= 'WAFSS';
-SET @AUTOGEN_SUBJECT = 0;
-SET @AUTOGEN_BIOSPECIMEN = 1;
-SET @AUTOGEN_BIOCOLLECTION = 1;
--- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
-
--- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
--- apparently subject prefix comes from wager
--- SET @SUBJECT_PREFIX = 'RAV';
-
-SET @BIOCOLLECTIONUID_PREFIX = 'WFC';
--- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
-SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
-SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
-	
-SET @BIOSPECIMENUID_PREFIX = 'WFB';
--- SET @BIOSPECIMENUID_TOKEN_ID = 1;
-SET @BIOSPECIMENUID_PADCHAR_ID = 6;
-------------------------------
-SET @STUDY_GROUP_NAME = 'IRD';
-SET @STUDYKEY = 18;
-SET @STUDYNAME= 'IRD';
-SET @AUTOGEN_SUBJECT = 1;
-SET @AUTOGEN_BIOSPECIMEN = 1;
-SET @AUTOGEN_BIOCOLLECTION = 1;
--- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
-
--- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
--- apparently subject prefix comes from wager
--- SET @SUBJECT_PREFIX = 'RAV';
-
-SET @BIOCOLLECTIONUID_PREFIX = 'IRD';
--- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
-SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
-SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
-	
-SET @BIOSPECIMENUID_PREFIX = 'IRD';
--- SET @BIOSPECIMENUID_TOKEN_ID = 1;
-SET @BIOSPECIMENUID_PADCHAR_ID = 6;*/
+update pmhdiaendo.ix_biospecimen
+set samplesubtype = 'Blood',
+sampletype = 'Serum'
+where sampletype='Serum';
 
 
+-- fix two bad records
 
--- SET @SITE_PERMITTED = 'WADB (SCGH)' ;  -- IF MORE THAN ONE FIX THIS 
+UPDATE `pmhdiaendo`.`ix_admissions` SET `ADMISSIONID`='12345' 
+WHERE `ADMISSIONKEY`='10567';
 
-/* 
--- select every cell which has a biospecimen we care about
-select * from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+UPDATE `pmhdiaendo`.`ix_biospecimen` SET 
+`ENCOUNTER`='12345' 
+WHERE `ADMISSIONKEY`='10567';
 
--- select every tray  which has a cell which has a biospecimen we care about
-select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
+-- this guy's admission was deleted ... i undeleted given he theoretically has samples pointing at this admission/encounter
+UPDATE `pmhdiaendo`.`ix_admissions` SET `DELETED`='0' WHERE `ADMISSIONKEY`='12716.000000000000000000000000000000';
 
-select * from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
-
--- select every box (rack in ark) which has a  tray (box in ark)  which has a cell which has a biospecimen we care about
--- as we go on with this copied unindexed data...these queries will get so big though that we may just run
-
--- 
-
-select distinct boxkey from wagerlab.ix_inv_tray where traykey in (1, 2, 12212, 123213213, 123123212, etc>> (from the previous query
-eg;
-
-select distinct boxkey from wagerlab.ix_inv_tray where traykey in (61);
-select * from wagerlab.ix_inv_tray where traykey in (61);
-
-select * from wagerlab.ix_inv_cell where traykey in (61);
-
--- instead of
-
-select distinct boxkey from wagerlab.ix_inv_tray where traykey in
-(select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194));
-
--- and 
-select distinct tankkey from wagerlab.ix_inv_box where boxid in (1, 12, 12321 etc from previous query)
-
-instead of
-
-select distinct tankkey from wagerlab.ix_inv_tray where 
-select distinct boxkey from wagerlab.ix_inv_tray where traykey in
-(select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194));
-
-select * from wagerlab.ix_inv_box where boxkey in 
-select boxkey from wagerlab.ix_inv_tray where traykey in
-(select distinct traykey from wagerlab.ix_inv_cell where biospecimenkey in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
-
-select * from wagerlab.ix_inv_cell where biospecimenkey = -1; 
-
--- change cell 601 to point to biospecimenkey 2188706 (new bio id = 501036)
-update wagerlab.ix_inv_cell set biospecimenkey = 2188706
-where cellkey = 601;
-
-select * from wagerlab.ix_inv_cell where cellkey = 601;
-
-select * from lims.biospecimen where old_id in (select biospecimenkey from wagerlab.ix_biospecimen where studykey=194);
-
-*/
-
--- SET @TANKS_PERMITTED = 'WADB (SCGH)' ;  -- IF MORE THAN ONE FIX THIS 
--- SET @TANK_IDS_NOT_PERMITTED = (225,222,223,224) ;  -- IF MORE THAN ONE FIX THIS 
--- SET @BOX_IDS_PERMITTED = (-1111111111) ;  -- IF MORE THAN ONE FIX THIS 
--- SET @TRAY_IDS_PERMITTED = (61, -1111111111) ;  -- IF MORE THAN ONE FIX THIS 
--- SET @CELLS_PERMITTED = (90) ;  -- IF MORE THAN ONE FIX THIS 
-
--- SET @BIOCOLLECTIONUID_PREFIX = 8;
--- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
--- SET @BIOCOLLECTIONUID_PADCHAR_ID = 8;
-/*
--- Remove any existing data
-D ELETE FROM lims.inv_cell WHERE box_id IN 
-    (SELECT ID FROM lims.inv_box WHERE rack_id IN 
-        (SELECT ID FROM lims.inv_rack WHERE freezer_id IN 
-            (SELECT ID FROM lims.inv_freezer WHERE site_id IN
-                (SELECT ID FROM lims.inv_site WHERE name = 'SJOG'))));
-D ELETE FROM lims.inv_box WHERE rack_id IN 
-        (SELECT ID FROM lims.inv_rack WHERE freezer_id IN 
-            (SELECT ID FROM lims.inv_freezer WHERE site_id IN
-                (SELECT ID FROM lims.inv_site WHERE name = 'SJOG')));
-D ELETE FROM lims.inv_rack WHERE freezer_id IN 
-            (SELECT ID FROM lims.inv_freezer WHERE site_id IN
-                (SELECT ID FROM lims.inv_site WHERE name = 'SJOG'));
-D ELETE FROM lims.inv_freezer WHERE site_id IN
-                (SELECT ID FROM lims.inv_site WHERE name = 'SJOG');
-D ELETE FROM lims.study_inv_site WHERE inv_site_id IN (SELECT ID FROM lims.inv_site WHERE name = 'SJOG');
-D ELETE FROM lims.inv_site WHERE name = 'SJOG';
-D ELETE FROM `lims`.`bio_transaction` WHERE biospecimen_id IN (SELECT ID FROM `lims`.`biospecimen` WHERE study_id in (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY));
--- NOTE: Cascades biospecimen_custom_field_data
-D ELETE FROM `lims`.`biospecimen` WHERE study_id in (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY);
--- NOTE: Cascades biocollection_custom_field_data
-D ELETE FROM `lims`.`biocollection` WHERE study_id in (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY);
-D ELETE FROM study.custom_field WHERE study_id in (SELECT ID FROM study.study WHERE parent_id = @STUDYKEY);
-D ELETE FROM study.link_subject_study WHERE person_id IN (SELECT id FROM study.person WHERE OTHER_ID IN (SELECT subjectkey FROM zeus.SUBJECT WHERE studykey=@STUDYKEY));
-D ELETE FROM study.phone WHERE person_id IN (SELECT id FROM study.person WHERE OTHER_ID IN (SELECT subjectkey FROM zeus.SUBJECT WHERE studykey=@STUDYKEY));
-DE LETE FROM study.address WHERE person_id IN (SELECT id FROM study.person WHERE OTHER_ID IN (SELECT subjectkey FROM zeus.SUBJECT WHERE studykey=@STUDYKEY));
-D ELETE FROM study.person WHERE OTHER_ID IN (SELECT subjectkey FROM zeus.SUBJECT WHERE studykey=@STUDYKEY);
-D ELETE FROM study.study WHERE parent_id = @STUDYKEY;
-D ELETE FROM study.study WHERE ldap_group_name = @STUDYNAME;
-d elete from study.link_subject_study where study_id = 18;
-d elete from study.study where id = 18;
-*/
-select * from study.study;
 
 -- Insert Study
 INSERT INTO study.study(
 `ID`,
 `NAME`,
-`DESCRIPTION`,
 `AUTO_GENERATE_SUBJECTUID`,
 `STUDY_STATUS_ID`,
 `SUBJECTUID_PREFIX`,
@@ -243,32 +74,27 @@ INSERT INTO study.study(
 -- `PARENT_ID`,
 `AUTO_GENERATE_BIOSPECIMENUID`,
 `AUTO_GENERATE_BIOCOLLECTIONUID`)
-SELECT (CASE UPPER(ss.substudy_name) WHEN @STUDYNAME THEN @STUDYKEY ELSE ss.substudykey END) as ID, 
-ss.substudy_name AS NAME, 
-ss.description AS DESCRIPTION,
+SELECT @NEWSTUDYKEY as ID, 
+s.study_name AS NAME, 
 @AUTOGEN_SUBJECT as AUTO_GENERATE_SUBJECTUID,
 1 as STUDY_STATUS_ID,
-s.SUBJECTID_PREFIX as SUBJECTUID_PREFIX, 
-s.OWNER AS `CONTACT_PERSON`,
-s.OWNER AS `CHIEF_INVESTIGATOR`,
-s.LDAP_GROUP AS LDAP_GROUP_NAME,
-s.AUTO_CONSENT as AUTO_CONSENT,
+s.STUDYCODE as SUBJECTUID_PREFIX, 
+s.STUDY_OWNER AS `CONTACT_PERSON`,
+s.STUDY_OWNER AS `CHIEF_INVESTIGATOR`,
+'' AS LDAP_GROUP_NAME,
+1 as AUTO_CONSENT,
 1 as SUBJECTUID_TOKEN_ID,
 @SUBJECT_PADCHAR as SUBJECTUID_PADCHAR_ID,
 -- s.studykey as PARENT_ID,
 @AUTOGEN_BIOSPECIMEN as AUTO_GENERATE_BIOSPECIMENUID,
 @AUTOGEN_BIOCOLLECTION as AUTO_GENERATE_BIOCOLLECTIONUID
-FROM zeus.STUDY s, zeus.ZE_SUBSTUDY ss
-WHERE s.studykey= ss.studykey
-AND s.studyname=@STUDYNAME
+FROM pmhdiaendo.IX_STUDY s
+WHERE s.study_name=@STUDYNAME
 ORDER BY ID;
 
 UPDATE study.study set parent_id = @STUDYKEY where id = @STUDYKEY;
 
 select * from study.study where id = @STUDYKEY;
-
-
-select * from zeus.study where studyname = @STUDYKEY;
 
 
 
@@ -294,21 +120,26 @@ WHERE TITLE NOT IN (SELECT (NAME) FROM study.title_type);
 -- Insert person details
 INSERT INTO study.person (OTHER_ID, FIRST_NAME, MIDDLE_NAME, LAST_NAME, DATE_OF_BIRTH, VITAL_STATUS_ID, GENDER_TYPE_ID, TITLE_TYPE_ID, DATE_OF_DEATH, CAUSE_OF_DEATH)
 SELECT
-  SUBJECTKEY as OTHER_ID,
+  PATIENTKEY as OTHER_ID,
   FIRSTNAME as FIRST_NAME,
   MIDDLENAME as MIDDLE_NAME,
   SURNAME as LAST_NAME,
   DOB as DATE_OF_BIRTH,
-  (SELECT id FROM study.vital_status WHERE name = (IF(DATE_OF_DEATH IS NOT NULL, 'Deceased', 'Alive'))) as VITAL_STATUS_ID,
+  (SELECT id FROM study.vital_status WHERE name = (IF(DODEATH IS NOT NULL, 'Deceased', 'Alive'))) as VITAL_STATUS_ID,
   (SELECT id FROM study.gender_type WHERE UPPER(study.gender_type.NAME) = UPPER(CASE UPPER(SEX) WHEN 'M' THEN 'Male' WHEN 'F' THEN 'Female' ELSE 'Unknown' END)) as GENDER_TYPE_ID,
   (SELECT id FROM study.title_type WHERE UPPER(study.title_type.NAME) = UPPER(IF(TITLE IS NULL, 'Unknown', TITLE))) as TITLE_TYPE_ID,
-  DATE_OF_DEATH as DATE_OF_DEATH,
-  CAUSE_OF_DEATH as CAUSE_OF_DEATH
-FROM zeus.SUBJECT
-WHERE studykey=@STUDYKEY;
+  DODEATH as DATE_OF_DEATH,
+  CAUSEOD as CAUSE_OF_DEATH
+FROM  `pmhdiaendo`.`ix_patient`;
+-- WHERE studykey=@STUDYKEY;
 
 
+select l.study_id from pmhdiaendo.ix_patient p, study.person per, study.link_subject_study l
+where p.patientkey = per.other_id
+and l.person_id = per.id
 
+
+/* NO PHONES STORED
 -- Home phone
 INSERT INTO study.phone (area_code, phone_number, person_id, phone_type_id, phone_status_id)
 SELECT 
@@ -317,8 +148,7 @@ SELECT
     `person`.`id`,
     (SELECT id FROM study.phone_type WHERE UPPER(name) = 'HOME') as phone_type,
     1 as `phone_status_id`
-FROM
-zeus.STUDY s, zeus.SUBJECT sub, study.person
+FROM `pmhdiaendo`.`IX_STUDY` s, pmhdiaendo.ix_patient sub, study.person
 WHERE s.studykey = sub.studykey
 AND sub.`SUBJECTKEY` = `person`.`OTHER_ID` 
 AND `person`.`OTHER_ID` IS NOT NULL
@@ -356,13 +186,14 @@ AND sub.`SUBJECTKEY` = `person`.`OTHER_ID`
 AND `person`.`OTHER_ID` IS NOT NULL
 AND sub.mobile_phone IS NOT NULL
 AND s.studyname=@STUDYNAME;
-
+*/
+;
 -- Address
 -- trav may get referencial issues
 INSERT INTO study.address
 (`ADDRESS_LINE_1`,`STREET_ADDRESS`,`CITY`,`STATE_ID`,`POST_CODE`,`COUNTRY_ID`,`ADDRESS_STATUS_ID`,`ADDRESS_TYPE_ID`,`OTHER_STATE`,`PERSON_ID`,`PREFERRED_MAILING_ADDRESS`)
 SELECT 
-sub.ADDR_STREET AS `ADDRESS_LINE_1`,
+sub.ADDR_LINE1 AS `ADDRESS_LINE_1`,
 null  AS `STREET_ADDRESS`,
 sub.ADDR_SUBURB AS `CITY`,
 (SELECT id FROM study.state WHERE short_name = sub.ADDR_STATE OR name = sub.ADDR_STATE)`STATE_ID`,
@@ -371,40 +202,38 @@ sub.ADDR_POSTCODE `POST_CODE`,
 1 AS `ADDRESS_STATUS_ID`,
 1 AS `ADDRESS_TYPE_ID`,
 null AS `OTHER_STATE`,
-`person`.`id`  as `PERSON_ID`,
+`p`.`id`  as `PERSON_ID`,
 1 AS `PREFERRED_MAILING_ADDRESS`
-FROM
-zeus.STUDY s, zeus.SUBJECT sub, study.person
-WHERE s.studykey = sub.studykey
-AND sub.`SUBJECTKEY` = `person`.`OTHER_ID` 
-AND `person`.`OTHER_ID` IS NOT NULL
-AND (sub.ADDR_STREET is not null 
+FROM `pmhdiaendo`.ix_patient sub, study.person p
+WHERE  sub.`PATIENTKEY` = `p`.`OTHER_ID` 
+AND `p`.`OTHER_ID` IS NOT NULL
+AND (sub.ADDR_LINE1 is not null 
 	OR
 	sub.ADDR_SUBURB is not null	-- aka city
 	OR
 	sub.ADDR_POSTCODE is not null
-	)
-AND s.studyname=@STUDYNAME;
+	) 
+-- and p.study_id = @STUDYKEY 
+and p.id not in (select person_id from study.link_subject_study);
 
 -- Insert subject/consent details into parent study
 -- trav assuming wager doesnt have a status or consent status itself
-INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, subject_uid, consent_status_id)
+INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, subject_uid)
 SELECT 
     `person`.`id`,
     @STUDYKEY as `study_id`,
-    sub.status,
-    sub.`SUBJECTID` as `subject_uid`,
-	IFNULL((select min(id) from study.consent_status where UPPER(name) = UPPER(constat.description)),1) as `consent_status_id`
+    1,
+    sub.`PATIENTID` as `subject_uid`-- ,
+	-- IFNULL((select min(id) from study.consent_status where UPPER(name) = UPPER(constat.description)),1) as `consent_status_id`
 	-- UPPER(constat.description) as throwawayupper-- ,
 	-- s-elect min(id) from study.consent_status where UPPER(name) = UPPER(constat.description) as throwawayselect
 FROM
-zeus.STUDY s, zeus.SUBJECT sub, study.person, zeus.consent_status constat, zeus.consent_study constudy 
-WHERE s.studykey = sub.studykey
-AND sub.`SUBJECTKEY` = `person`.`OTHER_ID` 
+study.STUDY s, pmhdiaendo.ix_patient sub, study.person -- , zeus.consent_status constat, zeus.consent_study constudy 
+WHERE s.id = sub.studykey
+AND sub.`PATIENTKEY` = `person`.`OTHER_ID` 
 AND `person`.`OTHER_ID` IS NOT NULL
-AND s.studyname=@STUDYNAME
-and constudy.status = constat.status
-and constudy.subjectkey = sub.subjectkey;
+AND s.name=@STUDYNAME
+and person.id not in (select person_id from study.link_subject_study);
 
 
 select * from study.link_subject_study where study_id  = @STUDYKEY;
@@ -447,6 +276,10 @@ AND `adm`.`DELETED` = 0
 );
 */
 
+select count(*) from lims.biocollection where study_id = @STUDYKEY;
+
+del ete from lims.biocollection where study_id = @STUDYKEY;
+
 -- FYI Raves one less than number of people...investigate if that is ok - it was due to delete ok..
 -- Insert admissions/bioCollection
 -- Based on particular sub-study, if sub-study (collectiongroupkey) is incorrect, collections will be missed
@@ -469,7 +302,7 @@ INSERT INTO `lims`.`biocollection`
 `HOSPITAL_UR`,
 `DIAG_DATE`)
 SELECT 
-    `adm`.`admissionid` as `BIOCOLLECTION_UID`,
+    ifnull(`adm`.`admissionid`,'HadNoAdmissionId') as `BIOCOLLECTION_UID`,
     `adm`.`admissionid` as `NAME`,
     `lss`.`id` as `LINK_SUBJECT_STUDY_ID`,
     `lss`.`study_id`,
@@ -486,26 +319,23 @@ SELECT
     `adm`.`hospital_ur`,
     `adm`.`diag_date` as `diag_date`
 FROM
-    wagerlab.`IX_ADMISSIONS` `adm`,
-    zeus.SUBJECT s,
-    zeus.ZE_SUBSTUDY ss,
+    pmhdiaendo.`IX_ADMISSIONS` `adm`,
+    pmhdiaendo.IX_PATIENT s,
+--    zeus.ZE_SUBSTUDY ss,
     `study`.`link_subject_study` `lss`
 WHERE
-    `adm`.`patientkey` = s.SUBJECTKEY
-AND s.subjectid = `lss`.`subject_uid`
-AND `lss`.study_id = s.studykey -- `adm`.collectiongroupkey
-AND `adm`.studykey = s.studykey
-AND `adm`.collectiongroupkey = ss.substudykey
-AND ss.studykey = @STUDYKEY
-AND `adm`.`DELETED` = 0;
+    `adm`.`patientkey` = s.PATIENTKEY
+AND s.patientid = `lss`.`subject_uid`
+and lss.STUDY_ID = @STUDYKEY
+-- AND `lss`.study_id = s.studykey -- `adm`.collectiongroupkey
+-- AND `adm`.studykey = s.studykey
+-- AND `adm`.collectiongroupkey = ss.substudykey
+-- AND ss.studykey = @STUDYKEY
+AND `adm`.`DELETED` = 0; -- (107732, 107729, 107730, 107731);
 
--- and adm.admissionkey in (12345601); -- (107732, 107729, 107730, 107731);
+select * from wagerlab.ix_admissions where admissionkey = 107734;
 
-select * from wagerlab.ix_admissions where admissionkey = 107734
-
-select * from wagerlab.ix_admissions where admissionid = 'MH04224'
-
-select * from lims.biocollection where study_id = 11 and id > 78500
+select * from lims.biocollection where study_id = 11 and id > 78500;
 
 select count(*) from lims.biocollection where study_id = @STUDYKEY;
 
@@ -571,18 +401,48 @@ WHERE a.name = b.name
 and a.id <> b.id;
 
 -- change nulls to something meaningful
-update wagerlab.ix_biospecimen set samplesubtype = 'wasNull' where samplesubtype is null and sampletype is not null;
+update pmhdiaendo.ix_biospecimen set samplesubtype = 'wasNull' where samplesubtype is null and sampletype is not null;
+
 update lims.bio_sampletype set samplesubtype = 'wasNull' where samplesubtype is null and sampletype is not null
  limit 1000;
 
 
-update wagerlab.ix_biospecimen set treatment = 'Tissue Cultured' where treatment = 'Tissue Culture' limit 1000000;
+update pmhdiaendo.ix_biospecimen set treatment = 'Tissue Cultured' where treatment = 'Tissue Culture' limit 1000000;
 
 
 -- then run insert
 --  ...
 -- then clean up the mess you made
 -- this will be run AFTER INSERT update lims.bio_sampletype set subsampletype = null where subsampletype = 'wasNull' and sampletype is not null;
+
+
+-- update biogenix to match ark sampletypes
+
+
+-- THESE MAY NOW NEED A TWEAK ON ACTUAL PROD RUN!!!!!!!!!
+update pmhdiaendo.ix_biospecimen
+set samplesubtype = 'DNA',
+sampletype = 'Nucleic Acid'
+where sampletype='DNA';
+
+update pmhdiaendo.ix_biospecimen
+set samplesubtype = 'Whole Blood',
+sampletype = 'Blood'
+where sampletype='Whole Blood' -- and samplesubtype='Blood';
+
+update pmhdiaendo.ix_biospecimen
+set samplesubtype ='Whole Blood (EDTA)',
+sampletype =  'Blood'
+where sampletype like'%Blood (EDTA)';
+
+update pmhdiaendo.ix_biospecimen
+set samplesubtype = 'Serum',
+sampletype = 'Blood'
+where sampletype='Serum'
+or samplesubtype='Serum';
+
+select * from lims.biocollection where link_subject_study_id = '111387';
+
 
 -- Insert biospecimens
 -- Require all biocollections (encounter) to match accordingly
@@ -627,9 +487,19 @@ SELECT
     `b`.`BIOSPECIMENID` as `biospecimen_uid`,
     `lss`.`STUDY_ID`,
     `lss`.`ID` as `link_subject_study_id`,
+    -- sampletype,
+    -- samplesubtype,
     (SELECT min(id) FROM lims.bio_sampletype WHERE (sampletype, samplesubtype) = (b.sampletype, b.samplesubtype)) AS `sampletype_id`,
-    (SELECT min(id) FROM lims.biocollection bc WHERE (bc.link_subject_study_id, bc.study_id, bc.name) = 
-																	(lss.id, lss.study_id, b.encounter)) AS `biocollection_id`,
+    ifnull(
+			(SELECT min(id) FROM lims.biocollection bc WHERE (bc.link_subject_study_id, bc.study_id, bc.name) = 
+																	(lss.id, lss.study_id, b.encounter)
+																	and deleted=0)
+                                                                    ,
+			(SELECT min(id) FROM lims.biocollection bc WHERE (bc.link_subject_study_id, bc.study_id) = 
+																	(lss.id, lss.study_id)
+																	and deleted=0)                                                           
+                                                                    )AS `biocollection_id`,
+    -- b.ENCOUNTER,                                                               
     `b`.`PARENTID`,
     `b`.`BIOSPECIMENKEY` as `old_id`,
     `b`.`PARENTKEY` as `oldparent_id`,
@@ -648,30 +518,40 @@ SELECT
     `b`.`QTY_REMOVED`,
     `b`.`COMMENTS`,
     (`b`.`QTY_COLLECTED` + (IF(`b`.`QTY_REMOVED` IS NULL, 0, `b`.`QTY_REMOVED`))) as `quantity`,
-    IFNULL((SELECT min(id) FROM lims.treatment_type tt WHERE UPPER(tt.name) = UPPER(b.TREATMENT)),-1) as `treatment_type_id`,
+    -1 as `treatment_type_id`,
     1 as `barcoded`,
-    IFNULL((SELECT min(id) FROM lims.unit WHERE name = b.UNITS), 0) as `UNIT_ID`,
+    (SELECT min(id) FROM lims.unit WHERE name = 'mL') as `UNIT_ID`,
     `b`.`PURITY`,
     (SELECT max(id) FROM lims.biospecimen_protocol WHERE name = b.PROTOCOL) as `BIOSPECIMEN_PROTOCOL_ID`,
     (SELECT max(id) FROM lims.biospecimen_grade WHERE name = b.GRADE) as `BIOSPECIMEN_GRADE_ID`,
     (SELECT max(id) FROM lims.biospecimen_storage WHERE name = b.STORED_IN) as `BIOSPECIMEN_STORAGE_ID`,
     b.DNACONC as `CONCENTRATION`,
 	(SELECT max(id) FROM lims.BIOSPECIMEN_ANTICOAGULANT WHERE name = b.ANTICOAG) as `BIOSPECIMEN_ANTICOAGULANT_ID`,
-	(SELECT max(id) FROM lims.BIOSPECIMEN_QUALITY WHERE name = b.QUALITY) as `BIOSPECIMEN_QUALITY_ID`,
-	(SELECT max(id) FROM lims.BIOSPECIMEN_STATUS WHERE name = b.STATUS) as `BIOSPECIMEN_STATUS_ID`
+	1 as `BIOSPECIMEN_QUALITY_ID`,
+	1 as `BIOSPECIMEN_STATUS_ID`
 FROM
-    wagerlab.`IX_BIOSPECIMEN` `b`,
-    zeus.SUBJECT s,
-   --  zeus.ZE_SUBSTUDY ss,  This was only needed for WARTN substudy ...keep as reference in case we need again
+    pmhdiaendo.`IX_BIOSPECIMEN` `b`,
+    pmhdiaendo.ix_patient s,
     `study`.`link_subject_study` `lss`
 WHERE
-    `b`.`patientkey` = s.SUBJECTKEY
-AND s.subjectid = `lss`.`subject_uid`
-AND `lss`.study_id = `b`.studykey
--- and b.biospecimenkey <> 1728287 -- one we know not to exist - todo lookup
--- AND `b`.substudykey = ss.substudykey  This was only needed for WARTN substudy ...keep as reference in case we need again
+    `b`.`patientkey` = s.PATIENTKEY
+AND s.patientid = `lss`.`subject_uid`
+AND `lss`.study_id = @STUDYKEY -- `b`.studykey
 AND s.studykey = @STUDYKEY
 AND `b`.`DELETED` = 0;
+
+
+
+
+
+
+select sampletype, SAMPLESUBTYPE, count(*)
+from pmhdiaendo.ix_biospecimen
+where deleted = 0
+group by sampletype, SAMPLESUBTYPE;
+
+
+-- note biogenix pmh let's put original studyid in comments or something
 
 select count(*) from lims.biospecimen where study_id = @STUDYKEY;
 
@@ -724,10 +604,48 @@ INSERT INTO `lims`.`bio_transaction`
 `RECORDER`,
 `REASON`)
 SELECT   b.id, bt.transactiondate, bt.quantity, bt.recorder, bt.reason  
-FROM wagerlab.IX_BIO_TRANSACTIONS bt, lims.biospecimen b
+FROM pmhdiaendo.IX_BIO_TRANSACTIONS bt, lims.biospecimen b
 WHERE bt.biospecimenkey = b.old_id
-AND b.study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
+AND b.study_id = @STUDYKEY
 AND bt.DELETED = 0;
+
+select * from lims.biospecimen where study_id  = @STUDYKEY;
+
+select * from lims.bio_transaction 
+where biospecimen_id in (select id from lims.biospecimen where study_id  = @STUDYKEY);
+
+select * from pmhdiaendo.ix_biospecimen where biospecimenkey in (
+select biospecimenkey FROM pmhdiaendo.IX_BIO_TRANSACTIONS bt 
+where deleted = 0 and biospecimenkey not in 
+									(select old_id from lims.biospecimen where study_id = 590)
+);
+
+select biospecimenkey FROM pmhdiaendo.IX_BIO_TRANSACTIONS bt where deleted = 0 and biospecimenkey not in (select old_id from lims.biospecimen where study_id = 590);
+/* 
+ie; those that dont have a valid biospecimen
+produces the 5 transactions difference between all transactions on pmh and all that are coming in
+'0.000000000000000000000000000000','25-JUN-08 06.51.51.801703 AM +08:00','Frozen -80 Celsius','22.000000000000000000000000000000',NULL,'mL',NULL,NULL,'2008-06-25 00:00:00','0.5','sdennis','14196.000000000000000000000000000000',NULL,'Available',NULL,'None','10328.000000000000000000000000000000','sdennis',NULL,NULL,NULL
+'0.000000000000000000000000000000','25-MAY-07 09.04.50.539051 AM +08:00','Frozen -80 Celsius','22.000000000000000000000000000000',NULL,'mL',NULL,NULL,'2007-05-25 00:00:00','0.5','laura','9716.000000000000000000000000000000',NULL,'Available',NULL,'None','7290.000000000000000000000000000000','laura',NULL,NULL,'192'
+'0.000000000000000000000000000000','31-AUG-07 08.56.34.598766 AM +08:00','Frozen -80 Celsius','24.000000000000000000000000000000',NULL,'mL',NULL,NULL,'2007-08-31 00:00:00','0.5','sdennis','11035.000000000000000000000000000000',NULL,'Available',NULL,'None','8227.000000000000000000000000000000','sdennis',NULL,NULL,NULL
+'0.000000000000000000000000000000','31-AUG-07 08.57.12.389827 AM +08:00','Frozen -80 Celsius','24.000000000000000000000000000000',NULL,'mL',NULL,NULL,'2007-08-31 00:00:00','0.5','sdennis','11097.000000000000000000000000000000',NULL,'Available',NULL,'None','8228.000000000000000000000000000000','sdennis',NULL,NULL,NULL
+'0.000000000000000000000000000000','06/APR/10 01:53:58.177998 PM +08:00','Frozen -80 Celsius','22.000000000000000000000000000000',NULL,'mL',NULL,NULL,'2010-04-06 00:00:00','0.45','wmair','18011.000000000000000000000000000000',NULL,'Available',NULL,'None','14036.000000000000000000000000000000','wmair',NULL,NULL,NULL
+
+select * from pmhdiaendo.ix_biospecimen where biospecimenkey in (
+select biospecimenkey FROM pmhdiaendo.IX_BIO_TRANSACTIONS bt 
+where deleted = 0 and biospecimenkey not in 
+									(select old_id from lims.biospecimen where study_id = 590)
+);
+
+and so it turns out these guys are all deleted biospecimens...so no drama that these transactions don't come across
+
+'-1.000000000000000000000000000000','25-JUN-08 06.51.27.558373 AM +08:00','1',NULL,'0.5 mL tube','1970-01-01 09:50:00','Delay < 1 hr','-1.000000000000000000000000000000','1.000000000000000000000000000000','08T1D03080J','-1.000000000000000000000000000000','2008-06-23 00:00:00','22.000000000000000000000000000000','1970-01-01 06:50:00',NULL,NULL,'Nucleic Acid',NULL,'Human','106278.000000000000000000000000000000','0.25','2008-06-25 00:00:00',NULL,NULL,'14196.000000000000000000000000000000',NULL,'DNA',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
+'-1.000000000000000000000000000000','31-AUG-07 07.57.53.732372 AM +08:00','1',NULL,'0.5 mL tube','1970-01-01 10:25:00','Delay < 1 hr','-1.000000000000000000000000000000','1.000000000000000000000000000000','07T1D02828J','-1.000000000000000000000000000000','2007-08-21 00:00:00','24.000000000000000000000000000000','1970-01-01 11:55:00',NULL,NULL,'Nucleic Acid',NULL,'Human','103618.000000000000000000000000000000','0','2007-08-23 00:00:00',NULL,NULL,'11097.000000000000000000000000000000',NULL,'DNA',NULL,NULL,NULL,'134',NULL,NULL,NULL,NULL
+'-1.000000000000000000000000000000','25-MAY-07 09.03.21.193832 AM +08:00','2',NULL,'1 mL tube','1970-01-01 10:50:00','Delay < 1 hr','-1.000000000000000000000000000000','1.000000000000000000000000000000','07T1D02508H','-1.000000000000000000000000000000','2006-09-28 00:00:00','22.000000000000000000000000000000',NULL,NULL,NULL,'Nucleic Acid',NULL,'Human','100159.000000000000000000000000000000','0.25','2006-10-16 00:00:00',NULL,NULL,'9716.000000000000000000000000000000',NULL,'DNA',NULL,NULL,NULL,'192',NULL,NULL,NULL,NULL
+'-1.000000000000000000000000000000','30-AUG-07 11.51.19.435416 AM +08:00','1',NULL,'0.5 mL tube','1970-01-01 10:25:00','Delay < 1 hr','-1.000000000000000000000000000000','1.000000000000000000000000000000','07T1D02828H','-1.000000000000000000000000000000','2007-08-21 00:00:00','24.000000000000000000000000000000','1970-01-01 11:55:00',NULL,NULL,'Nucleic Acid',NULL,'Human','103618.000000000000000000000000000000','0','2007-08-23 00:00:00',NULL,NULL,'11035.000000000000000000000000000000',NULL,'DNA',NULL,NULL,NULL,'134',NULL,NULL,NULL,NULL
+'-1.000000000000000000000000000000','30/01/2009 02:56:03.003579 PM AUSTRALIA/PERTH','1',NULL,'2 mL tube',NULL,'Delay < 1 hr','-1.000000000000000000000000000000','1.000000000000000000000000000000','07T1D01379H','-1.000000000000000000000000000000','2010-04-06 00:00:00','22.000000000000000000000000000000',NULL,NULL,NULL,'Nucleic Acid',NULL,NULL,'101241.000000000000000000000000000000','0.45','2010-04-06 00:00:00',NULL,NULL,'18011.000000000000000000000000000000','Sampleid: 368 Barcodeid: 1141B Freezer:  Box:  Position: \r\nOriginal volume: 	missing\r\nH sample added 30/01/2009\r\n\r\nDNA Concentration (ng/µL): 123\r\nOD 260/280:  1.93','DNA',NULL,NULL,'4097.000000000000000000000000000000','126','1.830000000000000000000000000000',NULL,NULL,NULL
+
+*/
+
 
 /*  above select for inset is
 
@@ -1020,7 +938,7 @@ also this can't be an update...needs to be an insert
 
  DELETE FROM  `study`.`subjectuid_sequence` where study_name_id = @STUDYNAME;
 
- INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES (@STUDYNAME, '50000', '0');
+ INSERT INTO `study`.`subjectuid_sequence` (`STUDY_NAME_ID`, `UID_SEQUENCE`, `INSERT_LOCK`) VALUES (@STUDYNAME, '3685', '0');
 
 OR
 
@@ -1075,3 +993,16 @@ select count(*) from  lims.bio_transaction t -- where  t.id = 0;
 select distinct hospital from wagerlab.ix_admissions;
 
 select distinct hospital from lims.biocollection where study_id  = 194;
+
+select * From lims.link_subject_Study
+
+select * from study.link_subject_study lss, study.person p
+where first_name like '%TEST%ARK%'
+and lss.person_id = p.id
+-- # ID, PERSON_ID, STUDY_ID, SUBJECT_STATUS_ID, SUBJECT_UID, CONSENT_TO_ACTIVE_CONTACT_ID, CONSENT_TO_PASSIVE_DATA_GATHERING_ID, CONSENT_TO_USE_DATA_ID, CONSENT_STATUS_ID, CONSENT_TYPE_ID, CONSENT_DATE, HEARD_ABOUT_STUDY, COMMENTS, CONSENT_DOWNLOADED, ID, FIRST_NAME, MIDDLE_NAME, LAST_NAME, PREFERRED_NAME, GENDER_TYPE_ID, DATE_OF_BIRTH, DATE_OF_DEATH, REGISTRATION_DATE, CAUSE_OF_DEATH, VITAL_STATUS_ID, TITLE_TYPE_ID, MARITAL_STATUS_ID, PERSON_CONTACT_METHOD_ID, PREFERRED_EMAIL, OTHER_EMAIL, DATE_LAST_KNOWN_ALIVE, OTHER_ID, OTHER_EMAIL_STATUS, PREFERRED_EMAIL_STATUS
+-- '123798', '102543', '590', '1', '7365', '1', '1', '1', '1', '2', '2014-11-03', NULL, NULL, NULL, '102543', 'TEST_SUBJECT_ARK', NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '0', '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
+
+delete from study.link_subject_study where person_id = 102545;
+delete from study.person where id = 102545;
+delete from lims.biocollection where link_Subject_study_id = 123800;
+delete from lims.biospecimen where link_subject_study_id = 123800

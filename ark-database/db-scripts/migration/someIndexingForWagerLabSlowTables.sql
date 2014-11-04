@@ -15,7 +15,14 @@ ALTER TABLE `wagerlab`.`ix_biospecimen`
 ADD INDEX `ixbiospecstudy` (`STUDYKEY` ASC) ;
 
 
+ALTER TABLE `wagerlab`.`ix_admissions` ADD INDEX `ixadmissionsadmissionid` (`STUDYKEY` ASC) ;
+
+
 select count(*) from wagerlab.ix_inv_tank;
 
 
 -- select * from  `wagerlab`.`ix_inv_tank` 
+
+show full processlist;
+
+kill 938215;

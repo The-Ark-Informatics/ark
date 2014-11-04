@@ -1,8 +1,8 @@
--- WASHS PARAMETERS
+-- T1D PARAMETERS
 -- latest
-SET @STUDY_GROUP_NAME = 'WASHS';
-SET @STUDYKEY = 5;
-SET @STUDYNAME= 'WASHS';
+SET @STUDY_GROUP_NAME = 'PMH';
+SET @STUDYKEY = 590;
+SET @STUDYNAME= 'PMH';
 SET @AUTOGEN_SUBJECT = 1;
 SET @AUTOGEN_BIOSPECIMEN = 1;
 SET @AUTOGEN_BIOCOLLECTION = 1;
@@ -10,16 +10,17 @@ SET @AUTOGEN_BIOCOLLECTION = 1;
 
 -- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
 -- apparently subject prefix comes from wager
--- SET @SUBJECT_PREFIX = 'RAV';
+-- SET @SUBJECT_PREFIX = ’T1D’;
 
-SET @BIOCOLLECTIONUID_PREFIX = 'WSC';
+SET @BIOCOLLECTIONUID_PREFIX = 'T1C';
 -- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
 SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
 SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 	
-SET @BIOSPECIMENUID_PREFIX = 'WSB';
+SET @BIOSPECIMENUID_PREFIX = 'T1B';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
 SET @BIOSPECIMENUID_PADCHAR_ID = 6;
+
 
 /*
 SET @STUDY_GROUP_NAME = 'VUS';
@@ -127,7 +128,6 @@ SET @SITE_PERMITTED = 'WADB (SCGH)' ;
 
 
 /**** NOTE!!!   We only RAN (past tense) this the first time for VIT A ... then no new sites will need to be added...therefore commented out for after vitamin A
-
 INSERT INTO `lims`.`inv_site`
 (
 `DELETED`,
@@ -145,8 +145,13 @@ SELECT `DELETED`,
 FROM wagerlab.IX_INV_SITE 
 WHERE -- ldap_group != 'SJOG' and 		
 name not in (select name from lims.inv_site)
-and name  in ('WADB (RPH)', 'WAFSS', 'KEMH', 'IRD - SKB', 'WAIMR');
+and name  in ('WADB (RPH)', 'WAFSS', 'KEMH', 'IRD - SKB', 'WAIMR');*/
+INSERT INTO lims.`inv_site` (`DELETED`,`TIMESTAMP`,`CONTACT`,`ADDRESS`,`NAME`,`PHONE`) VALUES (0.000000000000000000000000000000,'09-JUN-08 02.59.10.230842 PM +08:00',NULL,NULL,'J -40C Chest Freezer',NULL);
+INSERT INTO lims.`inv_site` (`DELETED`,`TIMESTAMP`,`CONTACT`,`ADDRESS`,`NAME`,`PHONE`) VALUES (0.000000000000000000000000000000,'29-AUG-07 02.13.20.781015 PM +08:00','Narelle Weller (RA)','PMH Hospital\r\nHay St\r\nSubiaco','IDDM J samples',NULL);
+INSERT INTO lims.`inv_site` (`DELETED`,`TIMESTAMP`,`CONTACT`,`ADDRESS`,`NAME`,`PHONE`) VALUES (0.000000000000000000000000000000,'01-MAR-07 01.21.59.275313 PM +08:00','Marion McNish',NULL,'H -40 Chest Freezer ',NULL);
 
+
+/*
 select * FROM wagerlab.IX_INV_SITE 
 WHERE -- ldap_group != 'SJOG' and 		
 name not in (select name from lims.inv_site)
@@ -191,25 +196,27 @@ FROM
 (select id from lims.inv_site
 where (`NAME`) in
 (
-select `NAME` from wagerlab.ix_inv_site s
+select `NAME` from pmhdiaendo.ix_inv_site s
 where sitekey in
 (
-select sitekey from wagerlab.ix_inv_tank where tankkey in
+select sitekey from pmhdiaendo.ix_inv_tank where tankkey in
 (
-select tankkey from wagerlab.ix_inv_box b
+select tankkey from pmhdiaendo.ix_inv_box b
 where boxkey in
-(select boxkey from wagerlab.ix_inv_tray t,
+(select boxkey from pmhdiaendo.ix_inv_tray t,
 (select 
     distinct c.traykey
 from
-    wagerlab.ix_biospecimen b,
-    wagerlab.ix_inv_cell c
+    pmhdiaendo.ix_biospecimen b,
+    pmhdiaendo.ix_inv_cell c
 where b.BIOSPECIMENKEY = c.BIOSPECIMENKEY
-and b.studykey=@STUDYKEY) ct
+-- and b.studykey=@STUDYKEY
+) ct
 where t.traykey = ct.traykey)
 )
 ))) s;
 
+select @STUDYKEY;
 select id, name from lims.inv_site;  -- ensure sites match wager vs prod for any of this to work!!! 
 select * from lims.study_inv_site where study_id = @STUDYKEY;
 
@@ -239,7 +246,7 @@ INSERT INTO `lims`.`inv_freezer`
 `DESCRIPTION`)
 SELECT t.DELETED, t.TIMESTAMP, t.LOCATION, t.STATUS, lims_site.ID, t.CAPACITY, t.LASTSERVICENOTE, t.NAME, 
             t.AVAILABLE, t.DECOMMISSIONDATE, t.COMMISSIONDATE, t.LASTSERVICEDATE,  t.DESCRIPTION
-FROM wagerlab.IX_INV_TANK t, wagerlab.IX_INV_SITE s, lims.inv_site lims_site
+FROM pmhdiaendo.IX_INV_TANK t, pmhdiaendo.IX_INV_SITE s, lims.inv_site lims_site
 WHERE t.SITEKEY = s.SITEKEY
 AND s.NAME = lims_site.NAME
 -- and lims_site.ID<>16 -- fore wasos got rid of already existing freezer/site
@@ -247,16 +254,17 @@ AND s.NAME = lims_site.NAME
 -- AND t.name not in (select name from lims.inv_freezer)  -- if running only the select part feel free to comment this line temporarily to make it include those already existing
 AND t.TANKKEY IN 
 (
-select distinct tankkey from wagerlab.ix_inv_box b
+select distinct tankkey from pmhdiaendo.ix_inv_box b
 where boxkey in
-(select boxkey from wagerlab.ix_inv_tray t,
+(select boxkey from pmhdiaendo.ix_inv_tray t,
 (select 
     distinct c.traykey
 from
-    wagerlab.ix_biospecimen b,
-    wagerlab.ix_inv_cell c
+    pmhdiaendo.ix_biospecimen b,
+    pmhdiaendo.ix_inv_cell c
 where b.BIOSPECIMENKEY = c.BIOSPECIMENKEY
-and b.studykey=@STUDYKEY) b
+-- and b.studykey=@STUDYKEY
+) b
 where t.traykey = b.traykey)
 );
 
@@ -278,20 +286,20 @@ INSERT INTO `lims`.`inv_rack`
 `CAPACITY`,
 `OLD_ID`)
 SELECT f.ID, b.DELETED, b.TIMESTAMP, b.NAME, b.AVAILABLE, b.DESCRIPTION, b.CAPACITY, b.boxkey
-FROM wagerlab.IX_INV_BOX b, wagerlab.IX_INV_TANK t, lims.inv_freezer f
+FROM pmhdiaendo.IX_INV_BOX b, pmhdiaendo.IX_INV_TANK t, lims.inv_freezer f
 WHERE t.TANKKEY = b.TANKKEY
 AND t.NAME = f.NAME
 AND b.boxkey IN
 (
-select distinct boxkey from wagerlab.ix_inv_tray where traykey in -- (3230, 3231)
+select distinct boxkey from pmhdiaendo.ix_inv_tray where traykey in -- (3230, 3231)
 (
 		select 
 			distinct c.traykey
 		from
-			wagerlab.ix_biospecimen b,
-			wagerlab.ix_inv_cell c
+			pmhdiaendo.ix_biospecimen b,
+			pmhdiaendo.ix_inv_cell c
 		where b.BIOSPECIMENKEY = c.BIOSPECIMENKEY
-		and b.studykey=@STUDYKEY
+		-- and b.studykey=@STUDYKEY
 )
 ); -- note that shared tray/racks(ark) will cause mysql errs, in qhich case generate the inserts and run individually
 
@@ -318,10 +326,10 @@ SELECT
 
 -- I am proposing that we change all number colnotype to Numeric like in lims.
 
-update wagerlab.ix_inv_tray
+update pmhdiaendo.ix_inv_tray
 set colnotype = 'Numeric' where colnotype = 'Number';
 
-update wagerlab.ix_inv_tray
+update pmhdiaendo.ix_inv_tray
 set rownotype = 'Numeric' where rownotype = 'Number';
 
 -- BOXES
@@ -357,8 +365,8 @@ INSERT INTO `lims`.`inv_box`
 				WHERE `NAME` = `t`.`ROWNOTYPE`),123) as `ROWNOTYPE_ID`,
 		`t`.`TRAYKEY` as OLD_ID
 	FROM
-		wagerlab.`IX_INV_TRAY` t, 
-		wagerlab.`IX_INV_BOX` b-- ,
+		pmhdiaendo.`IX_INV_TRAY` t, 
+		pmhdiaendo.`IX_INV_BOX` b-- ,
 		-- wagerlab.IX_INV_TANK tank, 
 		-- lims.inv_freezer f
 	WHERE `t`.`BOXKEY` = `b`.`BOXKEY`
@@ -366,15 +374,16 @@ INSERT INTO `lims`.`inv_box`
 	-- AND tank.NAME = f.NAME
 	AND t.traykey in
 	(
-		select traykey boxkey from wagerlab.ix_inv_tray where traykey in
+		select traykey boxkey from pmhdiaendo.ix_inv_tray where traykey in
 		(
 			select 
 				distinct c.traykey
 			from
-				wagerlab.ix_biospecimen b,
-				wagerlab.ix_inv_cell c
+				pmhdiaendo.ix_biospecimen b,
+				pmhdiaendo.ix_inv_cell c
 			where b.BIOSPECIMENKEY = c.BIOSPECIMENKEY
-			and b.studykey=@STUDYKEY)
+			-- and b.studykey=@STUDYKEY
+		)
 	);
 
 -- Insert a fake biospecimen for cell merging
@@ -393,7 +402,7 @@ SELECT '-1' AS ID,
 (SELECT id FROM study.study WHERE name = @STUDYNAME) AS STUDY_ID, 
 (SELECT min(id) FROM study.link_subject_study WHERE study_id =(SELECT id FROM study.study WHERE name = @STUDYNAME)) AS LINK_SUBJECT_STUDY, 
 '0' AS SAMPLETYPE_ID, 
-(SELECT min(id) FROM lims.biocollection WHERE study_id IN (SELECT id FROM study.study WHERE parent_id =@STUDYKEY)) AS BIOCOLLECTION_ID, 
+(SELECT min(id) FROM lims.biocollection WHERE study_id =@STUDYKEY) AS BIOCOLLECTION_ID, 
 '-1' AS OLD_ID, 
 '1' AS TREATMENT_TYPE_ID, 
 '-1' AS DELETED
@@ -413,6 +422,7 @@ INSERT INTO `lims`.`inv_cell`
 `BIOSPECIMENKEY`,
 `STATUS`)
 SELECT 
+	-- b.name as box_name_we_will_comment_later,
     b.ID as BOX_ID,
     `c`.`DELETED`,
     `c`.`TIMESTAMP`,
@@ -425,16 +435,20 @@ SELECT
         ELSE 'Empty'
     END) as `STATUS`
 FROM
-    wagerlab.IX_INV_CELL `c`,
-    wagerlab.IX_INV_TRAY `t`, 
+    pmhdiaendo.IX_INV_CELL `c`,
+    pmhdiaendo.IX_INV_TRAY `t`, 
 	lims.inv_box b,
 	lims.biospecimen bio
 WHERE
     `c`.`TRAYKEY` = `t`.`TRAYKEY`
 AND b.OLD_ID = `t`.`TRAYKEY`	
+and b.NAME = t.NAME
 AND bio.OLD_ID = c.biospecimenkey
 AND bio.study_id = @STUDYKEY
-and c.biospecimenkey >0 ;
+and c.biospecimenkey >0 
+and c.deleted = 0;
+
+select old_id, name, count(*) from lims.inv_box group by OLD_ID
 
 select count(*) from lims.biospecimen where study_id = @STUDYKEY;
 
