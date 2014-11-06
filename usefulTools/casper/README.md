@@ -15,3 +15,6 @@ mvn clean compile assembly:single
 (3) Execute JAR file: 
 
 java -jar casper-1.0-SNAPSHOT-jar-with-dependencies.jar
+
+(4) Set permissions to tomcat user to access the base directory and it's sub directories.
+Ex: chown -R tomcat6:tomcat6 /opt/ark-datastore/
