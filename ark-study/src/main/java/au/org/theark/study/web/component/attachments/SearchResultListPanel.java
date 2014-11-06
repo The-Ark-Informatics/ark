@@ -206,15 +206,15 @@ public class SearchResultListPanel extends Panel {
 				}
 				catch(ArkSystemException e){
 					this.error("Unexpected error: Download request could not be fulfilled.");
-					log.error(e.getMessage());
+					log.error("ArkSystemException" + e.getMessage(), e);
 				}
 				catch (FileNotFoundException e) {
 					this.error("Unexpected error: Download request could not be fulfilled.");
-					log.error(e.getMessage());
+					log.error("FileNotFoundException" + e.getMessage(), e);
 				}
 				catch (IOException e) {
 					this.error("Unexpected error: Download request could not be fulfilled.");
-					log.error(e.getMessage());
+					log.error("IOException" + e.getMessage(), e);
 				}
 				
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
@@ -255,11 +255,11 @@ public class SearchResultListPanel extends Panel {
 					}
 					catch (ArkSystemException e) {
 						this.error("Unexpected error: Delete request could not be fulfilled.");
-						log.error(e.getMessage());
+						log.error("ArkSystemException" + e.getMessage(), e);
 					}
 					catch (EntityNotFoundException e) {
 						this.error("Unexpected error: Delete request could not be fulfilled.");
-						log.error(e.getMessage());
+						log.error("Ent not found" + e.getMessage(), e);
 					}
 				}
 
