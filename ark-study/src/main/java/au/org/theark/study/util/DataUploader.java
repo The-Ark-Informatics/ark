@@ -317,6 +317,7 @@ public class DataUploader {
 					.getIndex("CONTACT_METHOD") : -1));
 			int dateOfBirthIndex = ((csvReader.getIndex("DATE_OF_BIRTH") > 0) ? csvReader.getIndex("DATE_OF_BIRTH") : ((csvReader.getIndex("DOB") > 0) ? csvReader.getIndex("DOB") : -1));
 			int dateOfDeathIndex = ((csvReader.getIndex("DATE_OF_DEATH") > 0) ? csvReader.getIndex("DATE_OF_DEATH") : ((csvReader.getIndex("DODEATH") > 0) ? csvReader.getIndex("DODEATH") : -1));
+			int dateLastKnownAliveIndex = ((csvReader.getIndex("DATE_LAST_KNOWN_ALIVE") > 0) ? csvReader.getIndex("DATE_LAST_KNOWN_ALIVE") : ((csvReader.getIndex("LAST_KNOWN_ALIVE") > 0) ? csvReader.getIndex("LAST_KNOWN_ALIVE") : -1));
 			int causeOfDeathIndex = ((csvReader.getIndex("CAUSE_OF_DEATH") > 0) ? csvReader.getIndex("CAUSE_OF_DEATH") : ((csvReader.getIndex("CODEATH") > 0) ? csvReader.getIndex("CODEATH") : -1));
 			// in reality, validation doesnt permit this yet anyway...but probably not bad to align it over in validation
 			int genderIndex = ((csvReader.getIndex("GENDER_TYPE") > 0) ? csvReader.getIndex("GENDER_TYPE") : ((csvReader.getIndex("GENDER") > 0) ? csvReader.getIndex("GENDER") : ((csvReader
@@ -458,6 +459,15 @@ public class DataUploader {
 						if (stringLineArray[dateOfDeathIndex] != null && stringLineArray[dateOfDeathIndex].length() > 0) {
 							dateOfDeath = simpleDateFormat.parse(stringLineArray[dateOfDeathIndex]);
 							person.setDateOfDeath(dateOfDeath);
+						}
+					}
+
+
+					if (dateLastKnownAliveIndex > 0) {
+						Date dateLastKnownAlive = new Date();
+						if (stringLineArray[dateLastKnownAliveIndex] != null && stringLineArray[dateLastKnownAliveIndex].length() > 0) {
+							dateLastKnownAlive = simpleDateFormat.parse(stringLineArray[dateLastKnownAliveIndex]);
+							person.setDateLastKnownAlive(dateLastKnownAlive);
 						}
 					}
 

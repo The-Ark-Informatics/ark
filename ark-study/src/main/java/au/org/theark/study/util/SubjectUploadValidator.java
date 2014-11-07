@@ -554,6 +554,29 @@ public class SubjectUploadValidator {
 						}
 					}
 
+
+					if (csvReader.getIndex("DATE_LAST_KNOWN_ALIVE") > 0 || csvReader.getIndex("LAST_KNOWN_ALIVE") > 0) {
+						if (csvReader.getIndex("DATE_LAST_KNOWN_ALIVE") > 0) {
+							col = csvReader.getIndex("DATE_LAST_KNOWN_ALIVE");
+							cellValue = csvReader.get("DATE_LAST_KNOWN_ALIVE");
+						}
+						else {
+							col = csvReader.getIndex("LAST_KNOWN_ALIVE");
+							cellValue = csvReader.get("LAST_KNOWN_ALIVE");
+						}
+						try {
+							dateStr = cellValue;
+							if (dateStr != null && dateStr.length() > 0)
+								simpleDateFormat.parse(dateStr);
+						}
+						catch (ParseException pex) {
+							dataValidationMessages.add("Error: Row " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + 
+									cellValue + " is not in the valid date format of: "
+									+ Constants.DD_MM_YYYY.toLowerCase());
+							errorCells.add(new ArkGridCell(col, row));
+						}
+					}
+
 					if (csvReader.getIndex("ADDRESS_DATE_RECEIVED") > 0) {
 						col = csvReader.getIndex("ADDRESS_DATE_RECEIVED");
 						cellValue = csvReader.get("ADDRESS_DATE_RECEIVED");
