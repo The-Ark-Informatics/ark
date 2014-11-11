@@ -26,6 +26,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -171,9 +172,9 @@ public class CustomFieldImportValidator {
 				requiredHeaderArray = Constants.CUSTOM_FIELD_UPLOAD_HEADER;
 			}
 			
-			log.info("requiredArray = " + requiredHeaderArray);
+			log.info("requiredArray = " + Arrays.toString(requiredHeaderArray));
 			log.info("requiredlength = " + requiredHeaderArray.length);
-			log.info("fileHeaderColumnArray = " + fileHeaderColumnArray);
+			log.info("fileHeaderColumnArray = "  + Arrays.toString(fileHeaderColumnArray));
 			log.info("fileHeaderColumnlength = " + fileHeaderColumnArray.length);
 
 			String specificError = "";
