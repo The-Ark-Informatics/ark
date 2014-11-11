@@ -170,18 +170,32 @@ public class CustomFieldImportValidator {
 			else{
 				requiredHeaderArray = Constants.CUSTOM_FIELD_UPLOAD_HEADER;
 			}
+			
+			log.info("requiredArray = " + requiredHeaderArray);
+			log.info("requiredlength = " + requiredHeaderArray.length);
+			log.info("fileHeaderColumnArray = " + fileHeaderColumnArray);
+			log.info("fileHeaderColumnlength = " + fileHeaderColumnArray.length);
 
+			String specificError = "";
+			
 			//all columns mandatory, even if data empty
 			if (fileHeaderColumnArray.length < requiredHeaderArray.length) {
+				specificError =  "File did not contain all " +  requiredHeaderArray.length + " expected headers.\n";
+				log.info("error because less headers than required");
 				headerError = true;
 			}
 			// Populate the collection for a search
 			for (int i = 0; i < fileHeaderColumnArray.length; i++) {
 				fileHeaderCollection.add(fileHeaderColumnArray[i]);
 			}
+
+			log.info("fileHeaderlength now = " + fileHeaderCollection.size());
+			
 			// Search the dataDictionaryHeader for missing headers
 			for (int i = 0; i < requiredHeaderArray.length; i++) {
 				if (!fileHeaderCollection.contains(requiredHeaderArray[i])) {
+					log.info("error because didn't contact the following required header" + requiredHeaderArray[i]);
+					specificError =  "File was missing the following required header: " + requiredHeaderArray[i] + ".\n";
 					headerError = true;
 					break;
 				}
@@ -193,6 +207,7 @@ public class CustomFieldImportValidator {
 				String delimiterTypeName = iArkCommonService.getDelimiterTypeNameByDelimiterChar(delimChr);
 
 				stringBuffer.append("The specified file does not appear to conform to the expected data dictionary file format.\n");
+				stringBuffer.append(specificError);
 				stringBuffer.append("The specified file format was: " + fileFormat + "\n");
 				stringBuffer.append("The specified delimiter was: [" + delimChr + "] (" + delimiterTypeName + ")\n");
 				stringBuffer.append("The default data dictionary format is as follows:\n");
