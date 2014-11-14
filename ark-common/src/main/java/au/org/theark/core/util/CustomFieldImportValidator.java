@@ -178,7 +178,7 @@ public class CustomFieldImportValidator {
 			log.info("fileHeaderColumnlength = " + fileHeaderColumnArray.length);
 
 			String specificError = "";
-			
+			 
 			//all columns mandatory, even if data empty
 			if (fileHeaderColumnArray.length < requiredHeaderArray.length) {
 				specificError =  "File did not contain all " +  requiredHeaderArray.length + " expected headers.\n";
@@ -194,6 +194,8 @@ public class CustomFieldImportValidator {
 			
 			// Search the dataDictionaryHeader for missing headers
 			for (int i = 0; i < requiredHeaderArray.length; i++) {
+				//String ithHeader = (String)requiredHeaderArray[i];
+				//ithHeader.compareToIgnoreCase(str)
 				if (!fileHeaderCollection.contains(requiredHeaderArray[i])) {
 					log.info("error because didn't contact the following required header" + requiredHeaderArray[i]);
 					specificError =  "File was missing the following required header: " + requiredHeaderArray[i] + ".\n";
