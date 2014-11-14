@@ -93,19 +93,19 @@ public class Category implements java.io.Serializable {
 	}
 
 	/**
-	 * @param parentStudy
-	 *            the parentStudy to set
+	 * @param parentCategory
+	 *            the parentCategory to set
 	 */
-	public void setParentStudy(Category parentStudy) {
-		this.parentCategory = parentStudy;
+	public void setParentCategory(Category parentCategory) {
+		this.parentCategory = parentCategory;
 	}
 
 	/**
-	 * @return the parentStudy
+	 * @return the parentCategory
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PARENT_ID")
-	public Category getParentStudy() {
+	public Category getParentCategory() {
 		return parentCategory;
 	}
 
