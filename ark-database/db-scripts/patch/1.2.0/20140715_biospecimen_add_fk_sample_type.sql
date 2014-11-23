@@ -6,3 +6,7 @@ ALTER TABLE `lims`.`biospecimen`
   ON UPDATE NO ACTION
 , ADD INDEX `fk_biospecimen_sampletype_idx` (`SAMPLETYPE_ID` ASC) ;
 
+
+-- select * from lims.biospecimen
+-- where sampletype_id not in (select id from lims.bio_sampletype);
+
