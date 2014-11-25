@@ -26,6 +26,31 @@ select * from zeus.study where studyname = @STUDYNAME;
 -- '24', 'VUS', 'Venous Ulcer Study', '2013-04-02 15:52:43', '2007-12-21 14:20:32', 'Hilary Wallace', 'WAGERLAB', 'Deep Vein Thrombosis', NULL, '0', '1', 'DVT', NULL, '2'
 
 /*
+-- WASHS PARAMETERS
+-- latest
+SET @STUDY_GROUP_NAME = 'WASHS';
+SET @STUDYKEY = 5;
+SET @STUDYNAME= 'WASHS';
+SET @AUTOGEN_SUBJECT = 1;
+SET @AUTOGEN_BIOSPECIMEN = 1;
+SET @AUTOGEN_BIOCOLLECTION = 1;
+-- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
+
+-- SET @SUBJECT_PADCHAR = 8; -- no of chars to pad out
+-- apparently subject prefix comes from wager
+-- SET @SUBJECT_PREFIX = 'RAV';
+
+SET @BIOCOLLECTIONUID_PREFIX = 'WSC';
+-- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
+SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
+SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
+	
+SET @BIOSPECIMENUID_PREFIX = 'WSB';
+-- SET @BIOSPECIMENUID_TOKEN_ID = 1;
+SET @BIOSPECIMENUID_PADCHAR_ID = 6;
+
+
+
 
 -- WAMHS PARAMETERS
 -- latest
@@ -292,7 +317,7 @@ WHERE TITLE NOT IN (SELECT (NAME) FROM study.title_type);
 */
 
 -- Insert person details
-INSERT INTO study.person (OTHER_ID, FIRST_NAME, MIDDLE_NAME, LAST_NAME, DATE_OF_BIRTH, VITAL_STATUS_ID, GENDER_TYPE_ID, TITLE_TYPE_ID, DATE_OF_DEATH, CAUSE_OF_DEATH)
+INSERT INTO study.person (OTHER_ID, FIRST_NAME, MIDDLE_NAME, LAST_NAME, DATE_OF_BIRTH, VITAL_STATUS_ID, GENDER_TYPE_ID, TITLE_TYPE_ID, DATE_OF_DEATH, CAUSE_OF_DEATH, PREFERRED_EMAIL)
 SELECT
   SUBJECTKEY as OTHER_ID,
   FIRSTNAME as FIRST_NAME,
@@ -303,7 +328,8 @@ SELECT
   (SELECT id FROM study.gender_type WHERE UPPER(study.gender_type.NAME) = UPPER(CASE UPPER(SEX) WHEN 'M' THEN 'Male' WHEN 'F' THEN 'Female' ELSE 'Unknown' END)) as GENDER_TYPE_ID,
   (SELECT id FROM study.title_type WHERE UPPER(study.title_type.NAME) = UPPER(IF(TITLE IS NULL, 'Unknown', TITLE))) as TITLE_TYPE_ID,
   DATE_OF_DEATH as DATE_OF_DEATH,
-  CAUSE_OF_DEATH as CAUSE_OF_DEATH
+  CAUSE_OF_DEATH as CAUSE_OF_DEATH,
+  EMAIL AS PREFERRED_EMAIL
 FROM zeus.SUBJECT
 WHERE studykey=@STUDYKEY;
 
@@ -388,13 +414,14 @@ AND s.studyname=@STUDYNAME;
 
 -- Insert subject/consent details into parent study
 -- trav assuming wager doesnt have a status or consent status itself
-INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, subject_uid, consent_status_id)
+INSERT INTO study.link_subject_study (person_id, study_id, subject_status_id, subject_uid, consent_status_id, comments)
 SELECT 
     `person`.`id`,
     @STUDYKEY as `study_id`,
     sub.status,
     sub.`SUBJECTID` as `subject_uid`,
-	IFNULL((select min(id) from study.consent_status where UPPER(name) = UPPER(constat.description)),1) as `consent_status_id`
+	IFNULL((select min(id) from study.consent_status where UPPER(name) = UPPER(constat.description)),1) as `consent_status_id`,
+    sub.COMMENTS
 	-- UPPER(constat.description) as throwawayupper-- ,
 	-- s-elect min(id) from study.consent_status where UPPER(name) = UPPER(constat.description) as throwawayselect
 FROM
