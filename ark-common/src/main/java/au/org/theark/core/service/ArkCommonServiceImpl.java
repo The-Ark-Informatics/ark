@@ -1645,13 +1645,22 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 		FileInputStream md5input = null;
 		FileInputStream fileInput = null;
+		boolean fileInputIsNull = true;
 		try {
 			md5input = new FileInputStream(new File(fileName));
 			// Check md5 hashes
-			if (checksum != null &&  DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
+			/*if(checksum == null){
+				throw new ArkSystemException("checksum is null");
+			}
+			if(md5input == null){
+				throw new ArkSystemException("md5input is null");
+			}*/
+			
+			if ( DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
 				fileInput = new FileInputStream(new File(fileName));
 				// Convert file to byte array
 				data = IOUtils.toByteArray(fileInput);
+				fileInputIsNull = false;
 			} else {
 				log.error("MD5 Hashes are not matching");
 				throw new ArkSystemException("MD5 Hashes are not matching");
@@ -1661,7 +1670,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		} finally {
 			try {
 				md5input.close();
-				fileInput.close();
+				if(!fileInputIsNull){
+					fileInput.close();
+				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				throw new ArkSystemException("exception while closing stream" + e.getMessage());
