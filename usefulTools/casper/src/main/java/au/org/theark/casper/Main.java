@@ -268,7 +268,7 @@ public class Main {
 	private void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId) {
 
 		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
-
+		System.out.println("about to output to " + directoryName); 
 		File fileDir = new File(directoryName);
 
 		if (!fileDir.exists()) {
