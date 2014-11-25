@@ -1633,15 +1633,22 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 */
 	public byte[] retriveArkFileAttachmentByteArray(final Long studyId, final String subjectUID, final String directoryType, final String fileId, String checksum) throws ArkSystemException {
 		byte[] data = null;
+		log.info("what's wrong with this study" + studyId);
+		log.info("what's wrong with this subjectUID" +  subjectUID);
+		log.info("what's wrong with this directoryType" + directoryType);
+		log.info("what's wrong with this fileId" + fileId);
+		log.info("what's wrong with this checksum" + checksum);
 		String directoryName = getArkFileDirName(studyId, subjectUID, directoryType);
+		log.info("what's wrong with this dirname" + directoryName);
 		String fileName = directoryName + File.separator + fileId;
+		log.info("what's wrong with this filename" + fileName);
 
 		FileInputStream md5input = null;
 		FileInputStream fileInput = null;
 		try {
 			md5input = new FileInputStream(new File(fileName));
 			// Check md5 hashes
-			if (DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
+			if (checksum != null &&  DigestUtils.md5Hex(md5input).equalsIgnoreCase(checksum)) {
 				fileInput = new FileInputStream(new File(fileName));
 				// Convert file to byte array
 				data = IOUtils.toByteArray(fileInput);
@@ -1650,14 +1657,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				throw new ArkSystemException("MD5 Hashes are not matching");
 			}
 		} catch (Exception e) {
-			throw new ArkSystemException(e.getMessage());
+			throw new ArkSystemException("exception while getting data" + e.getMessage());
 		} finally {
 			try {
 				md5input.close();
 				fileInput.close();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				throw new ArkSystemException(e.getMessage());
+				throw new ArkSystemException("exception while closing stream" + e.getMessage());
 			}
 		}
 		return data;
