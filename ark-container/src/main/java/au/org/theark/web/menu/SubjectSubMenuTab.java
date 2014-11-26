@@ -42,6 +42,7 @@ import au.org.theark.phenotypic.web.component.phenodataentry.PhenoCollectionData
 import au.org.theark.study.web.component.address.AddressContainerPanel;
 import au.org.theark.study.web.component.attachments.AttachmentsContainerPanel;
 import au.org.theark.study.web.component.consent.ConsentContainerPanel;
+import au.org.theark.study.web.component.contact.ContactContainerPanel;
 import au.org.theark.study.web.component.correspondence.CorrespondenceContainerPanel;
 import au.org.theark.study.web.component.pedigree.PedigreeContainerPanel;
 import au.org.theark.study.web.component.phone.PhoneContainerPanel;
@@ -111,6 +112,10 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 					}
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ADDRESS)) {
 						panelToReturn = new AddressContainerPanel(panelId);
+					}
+					//Add Contact Panel
+					else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CONTACT)) {
+						panelToReturn = new  ContactContainerPanel (panelId);
 					}
 					else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ATTACHMENT)) {
 						panelToReturn = new AttachmentsContainerPanel(panelId);
