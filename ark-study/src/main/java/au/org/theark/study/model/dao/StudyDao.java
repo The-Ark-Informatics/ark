@@ -32,7 +32,6 @@ import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
@@ -949,7 +948,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			phoneCriteria.setFetchMode("silentMode", FetchMode.JOIN);
 
 		}
-
+	
 		List<Phone> personPhoneList = phoneCriteria.list();
 		//log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
 
@@ -2331,4 +2330,108 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			getSession().update(config);
 		}
 	}
+	/**
+	 * Pageable person phone list.
+	 */
+	public List<Phone> pageablePersonPhoneLst(Long personId,Phone phoneCriteria, int first, int count) {
+		Criteria criteria = buildGeneralPhoneCriteria(personId,phoneCriteria);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<Phone> personPhoneList = criteria.list();
+		//log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
+		if (personPhoneList.isEmpty()) {
+			// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+			log.info(" personId " + personId + " had no phones.  No drama");
+		}
+		return personPhoneList;
+	}
+	/**
+	 * Genenal Phone search.
+	 * @param personId
+	 * @param phone
+	 * @return
+	 */
+	private Criteria buildGeneralPhoneCriteria(Long personId,Phone phone){
+		Criteria phoneCriteria = getSession().createCriteria(Phone.class);
+
+		if (personId != null) {
+			phoneCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
+		}
+
+		if (phone != null) {
+
+			if (phone.getId() != null) {
+				phoneCriteria.add(Restrictions.eq(Constants.PHONE_ID, phone.getId()));
+			}
+
+			if (phone.getPhoneNumber() != null) {
+				phoneCriteria.add(Restrictions.ilike(Constants.PHONE_NUMBER, phone.getPhoneNumber()));
+			}
+
+			if (phone.getPhoneType() != null) {
+				phoneCriteria.add(Restrictions.eq(Constants.PHONE_TYPE, phone.getPhoneType()));
+			}
+
+			if (phone.getAreaCode() != null) {
+				phoneCriteria.add(Restrictions.eq(Constants.AREA_CODE, phone.getAreaCode()));
+			}
+			phoneCriteria.setFetchMode("silentMode", FetchMode.JOIN);
+
+		}
+		return phoneCriteria;
+	}
+
+	public List<Address> pageablePersonAddressLst(Long personId, Address addressCriteria, int first, int count) {
+		Criteria criteria = buildGeneralAddressCriteria(personId,addressCriteria);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<Address> personAddressList = criteria.list();
+		//log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
+		if (personAddressList.isEmpty()) {
+			// throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+			log.info(" personId " + personId + " had no addresses.  No drama");
+		}
+		return personAddressList;
+	}
+	/**
+	 * General Address search.
+	 * @param personId
+	 * @param address
+	 * @return
+	 */
+	private Criteria buildGeneralAddressCriteria(Long personId,Address address){
+		Criteria criteria = getSession().createCriteria(Address.class);
+		if (personId != null) {
+			criteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
+		}
+
+		if (address != null) {
+			// Add criteria for address
+			if (address.getStreetAddress() != null) {
+				criteria.add(Restrictions.ilike(Constants.STREET_ADDRESS, address.getStreetAddress(), MatchMode.ANYWHERE));
+			}
+
+			if (address.getCountry() != null) {
+				criteria.add(Restrictions.eq(Constants.COUNTRY_NAME, address.getCountry()));
+			}
+
+			if (address.getPostCode() != null) {
+				criteria.add(Restrictions.eq(Constants.POST_CODE, address.getPostCode()));
+			}
+
+			if (address.getCity() != null) {
+				criteria.add(Restrictions.ilike(Constants.CITY, address.getCity()));
+			}
+
+			if (address.getState() != null) {
+				criteria.add(Restrictions.eq(Constants.STATE_NAME, address.getState()));
+			}
+
+			if (address.getAddressType() != null) {
+				criteria.add(Restrictions.eq(Constants.ADDRESS_TYPE, address.getAddressType()));
+			}
+		}
+		return criteria;
+	}
+	
 }

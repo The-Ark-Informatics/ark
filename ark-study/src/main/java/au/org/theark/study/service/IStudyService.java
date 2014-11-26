@@ -456,4 +456,8 @@ public interface IStudyService {
 	
 	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
 	
+	public List<Phone> pageablePersonPhoneList(Long personId,Phone phoneCriteria, int first, int count);
+	
+	public List<Address> pageablePersonAddressList(Long personId,Address addressCriteria, int first, int count);
+
 }

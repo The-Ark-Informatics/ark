@@ -226,17 +226,17 @@ public class Constants {
 	public static final String			STUDY																= "study";
 
 	/* Person Address */
-	public static final String			ADDRESS_STREET_ADDRESS										= "address.streetAddress";
-	public static final String			ADDRESS_CITY													= "address.city";
-	public static final String			ADDRESS_POST_CODE												= "address.postCode";
-	public static final String			ADDRESS_COUNTRY												= "address.country";
-	public static final String			ADDRESS_STATE													= "address.state";
-	public static final String			ADDRESS_ADDRESSTYPE											= "address.addressType";
-	public static final String			ADDRESS_ADDRESSSTATUS										= "address.addressStatus";
-	public static final String			ADDRESS_DATE_RECEIVED										= "address.dateReceived";
-	public static final String			ADDRESS_COMMENTS												= "address.comments";
-	public static final String			ADDRESS_PREFERRED_MAILING									= "address.preferredMailingAddress";
-
+	/*public static final String			ADDRESS_STREET_ADDRESS										= "addressVo.address.streetAddress";
+	public static final String			ADDRESS_CITY													= "addressVo.address.city";
+	public static final String			ADDRESS_POST_CODE												= "addressVo.address.postCode";
+	public static final String			ADDRESS_COUNTRY												= "addressVo.address.country";
+	public static final String			ADDRESS_STATE													= "addressVo.address.state";
+	public static final String			ADDRESS_ADDRESSTYPE											= "addressVo.address.addressType";
+	public static final String			ADDRESS_ADDRESSSTATUS										= "addressVo.address.addressStatus";
+	public static final String			ADDRESS_DATE_RECEIVED										= "addressVo.address.dateReceived";
+	public static final String			ADDRESS_COMMENTS												= "addressVo.address.comments";
+	public static final String			ADDRESS_PREFERRED_MAILING									= "addressVo.address.preferredMailingAddress";
+*/
 	public static final String			CONSENT_CONSENT_TYPE											= "consent.consentType";
 	public static final String			CONSENT_CONSENTED_BY											= "consent.consentedBy";
 	public static final String			CONSENT_CONSENT_STATUS										= "consent.consentStatus";
@@ -279,7 +279,7 @@ public class Constants {
 	public static final String			SUBJECT_FILE_USER_ID											= "subjectFile.userId";
 	public static final String			SUBJECT_FILE_COMMENTS										= "subjectFile.comments";
 
-	public static final String			STATE_SELECTOR_WMC									= "stateSelector";																								// WebMarkupContainer
+	public static final String			STATE_SELECTOR_WMC											= "stateSelector";																								// WebMarkupContainer
 	// that
 	// will
 	// house
@@ -330,9 +330,9 @@ public class Constants {
 	public static final String			UPLOAD													= "upload";
 	public static final String			UPLOAD_ID												= "id";
 	public static final String			UPLOAD_STUDY											= "study";
-	public static final String			UPLOAD_FILE_FORMAT										= "fileFormat";
-	public static final String			UPLOAD_DELIMITER_TYPE									= "delimiterType";
-	public static final String			UPLOAD_FILENAME											= "filename";
+	public static final String			UPLOAD_FILE_FORMAT									= "fileFormat";
+	public static final String			UPLOAD_DELIMITER_TYPE								= "delimiterType";
+	public static final String			UPLOAD_FILENAME										= "filename";
 	public static final String			UPLOAD_PAYLOAD											= "payload";
 	public static final String			UPLOAD_USER												= "user";
 	public static final String			UPLOAD_CHECKSUM											= "checksum";
@@ -447,6 +447,8 @@ public class Constants {
 	public static final String ARK_SUBJECT_ATTACHEMENT_DIR="attachments";
 	public static final String ARK_SUBJECT_CORRESPONDENCE_DIR="correspondence";
 	public static final String ARK_STUDY_COMPONENT_DIR="studycomponent";
+	public static final String PHONE_DETAIL_PANEL="phoneDetailPanel";
+	public static final String ADDRESS_DETAIL_PANEL="addressDetailPanel";
 	
 
 	

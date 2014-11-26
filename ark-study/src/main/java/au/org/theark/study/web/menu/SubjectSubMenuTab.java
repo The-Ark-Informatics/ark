@@ -41,6 +41,7 @@ import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.study.web.component.address.AddressContainerPanel;
 import au.org.theark.study.web.component.attachments.AttachmentsContainerPanel;
 import au.org.theark.study.web.component.consent.ConsentContainerPanel;
+import au.org.theark.study.web.component.contact.ContactContainerPanel;
 import au.org.theark.study.web.component.correspondence.CorrespondenceContainerPanel;
 import au.org.theark.study.web.component.phone.PhoneContainerPanel;
 import au.org.theark.study.web.component.subject.SubjectContainerPanel;
@@ -103,6 +104,11 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ADDRESS)) {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new AddressContainerPanel(panelId);
+					}
+					//Add contact panel
+					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CONTACT)) {
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
+						panelToReturn = new  ContactContainerPanel (panelId);
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CONSENT)) {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);

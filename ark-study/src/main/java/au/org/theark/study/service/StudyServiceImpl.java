@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.util.file.File;
@@ -2123,6 +2122,13 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config) {
 		iStudyDao.saveOrUpdateStudyPedigreeConfiguration(config);
+	}
+
+	public List<Phone> pageablePersonPhoneList(Long personId, Phone phoneCriteria, int first, int count) {
+		return iStudyDao.pageablePersonPhoneLst(personId,phoneCriteria, first, count);
+	}
+	public List<Address> pageablePersonAddressList(Long personId, Address adressCriteria, int first, int count) {
+		return iStudyDao.pageablePersonAddressLst(personId,adressCriteria, first, count);
 	}
 
 }

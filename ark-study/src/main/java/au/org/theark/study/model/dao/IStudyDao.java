@@ -466,4 +466,9 @@ public interface IStudyDao {
 	public StudyPedigreeConfiguration getStudyPedigreeConfiguration(Long studyId);
 	
 	public void saveOrUpdateStudyPedigreeConfiguration(StudyPedigreeConfiguration config);
+	
+	public List<Phone> pageablePersonPhoneLst(Long personID,final Phone phoneCriteria,int first,int count);
+	
+	public List<Address> pageablePersonAddressLst(Long personID,final Address addressCriteria,int first,int count);
+	
 }

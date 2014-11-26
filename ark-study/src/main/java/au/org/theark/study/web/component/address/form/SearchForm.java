@@ -112,9 +112,9 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 	 */
 	protected void initialiseSearchForm() {
 
-		streetAddressTxtFld = new TextField<String>(Constants.ADDRESS_STREET_ADDRESS);
-		cityTxtFld = new TextField<String>(Constants.ADDRESS_CITY);
-		postCodeTxtFld = new TextField<String>(Constants.ADDRESS_POST_CODE);
+		streetAddressTxtFld = new TextField<String>("address.streetAddress");
+		cityTxtFld = new TextField<String>("address.city");
+		postCodeTxtFld = new TextField<String>("address.postCode");
 		initialiaseCountryDropDown();
 
 		initialiseCountrySelector();
@@ -143,7 +143,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 		// If there is no country selected, back should default to current country and pull the states
 		List<State> stateList = iArkCommonService.getStates(selectedCountry);
 		ChoiceRenderer<State> defaultStateChoiceRenderer = new ChoiceRenderer<State>("name", Constants.ID);
-		stateChoice = new DropDownChoice<State>(Constants.ADDRESS_STATE, stateList, defaultStateChoiceRenderer);
+		stateChoice = new DropDownChoice<State>("address.state", stateList, defaultStateChoiceRenderer);
 		// Add the Country State Dropdown into the WebMarkupContainer - countrySelector
 		stateSelector.add(stateChoice);
 	}
@@ -161,7 +161,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 
 		List<Country> countryList = iArkCommonService.getCountries();
 		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
-		countryChoice = new DropDownChoice<Country>(Constants.ADDRESS_COUNTRY, countryList, defaultChoiceRenderer);
+		countryChoice = new DropDownChoice<Country>("address.country", countryList, defaultChoiceRenderer);
 		// Attach a behavior, so when it changes it does something
 		countryChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
@@ -178,7 +178,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 	private void initialiseAddressTypeDropDown() {
 		List<AddressType> addressTypeList = iArkCommonService.getAddressTypes();
 		ChoiceRenderer<AddressType> defaultChoiceRenderer = new ChoiceRenderer<AddressType>(Constants.NAME, Constants.ID);
-		addressTypeChoice = new DropDownChoice<AddressType>(Constants.ADDRESS_ADDRESSTYPE, addressTypeList, defaultChoiceRenderer);
+		addressTypeChoice = new DropDownChoice<AddressType>("address.addressType", addressTypeList, defaultChoiceRenderer);
 	}
 
 	/**

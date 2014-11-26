@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.study.web.component.address.form;
+package au.org.theark.study.web.component.contact.form;
 
 import java.util.Date;
 import java.util.List;
@@ -53,8 +53,8 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.State;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.ContactVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -66,7 +66,7 @@ import au.org.theark.study.web.Constants;
  * @author cellis
  * 
  */
-public class DetailForm extends AbstractDetailForm<AddressVO> {
+public class AddressDetailForm extends AbstractDetailForm<ContactVO> {
 
 	private static final long					serialVersionUID	= 1423759632793367263L;
 
@@ -93,6 +93,9 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 
 	protected TextField<String>				otherState;
 	protected Label								otherStateInvalidError;
+	
+	private FeedbackPanel 					feedBackPanel;
+	private ArkCrudContainerVO 			arkCrudContainerVO;
 
 	/**
 	 * 
@@ -101,29 +104,32 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+	public AddressDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
+		this.arkCrudContainerVO=arkCrudContainerVO;
 	}
 
 	@Override
 	public void onBeforeRender() {
 		// Disable preferred mailing for new address and no others exist
-		boolean enabled = !(isNew() && containerForm.getModelObject().getAddresses().size() == 0);
+		boolean enabled = !(isNew() && containerForm.getModelObject().getAddressVo().getAddresses().size() == 0);
 		preferredMailingAddressChkBox.setEnabled(enabled);
 		super.onBeforeRender();
 	}
 
 	public void initialiseDetailForm() {
-		streetAddressTxtFld = new TextField<String>("address.streetAddress");
+		streetAddressTxtFld = new TextField<String>("addressVo.address.streetAddress");
 		streetAddressTxtFld.add(new ArkDefaultFormFocusBehavior());
-		cityTxtFld = new TextField<String>("address.city");
-		postCodeTxtFld = new TextField<String>("address.postCode");
-		commentsTxtArea = new TextArea<String>("address.comments");
-		otherState = new TextField<String>("address.otherState");
-		sourceTxtFld = new TextField<String>("address.source");
-		addressLineOneTxtFld = new TextField<String>("address.addressLineOne");
+		cityTxtFld = new TextField<String>("addressVo.address.city");
+		postCodeTxtFld = new TextField<String>("addressVo.address.postCode");
+		commentsTxtArea = new TextArea<String>("addressVo.address.comments");
+		otherState = new TextField<String>("addressVo.address.otherState");
+		sourceTxtFld = new TextField<String>("addressVo.address.source");
+		addressLineOneTxtFld = new TextField<String>("addressVo.address.addressLineOne");
+		
 		initialiaseCountryDropDown();
+		initialiseCountrySelector();
 		initialiseStateSelector();
 		initialiseAddressTypeDropDown();
 		initialiseAddressStatusDropDown();
@@ -151,11 +157,11 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	private void initialiseAddressTypeDropDown() {
 		List<AddressType> addressTypeList = iArkCommonService.getAddressTypes();
 		ChoiceRenderer<AddressType> defaultChoiceRenderer = new ChoiceRenderer<AddressType>(Constants.NAME, Constants.ID);
-		addressTypeChoice = new DropDownChoice<AddressType>("address.addressType", addressTypeList, defaultChoiceRenderer);
+		addressTypeChoice = new DropDownChoice<AddressType>("addressVo.address.addressType", addressTypeList, defaultChoiceRenderer);
 	}
 
 	private void initialisePreferredMailingAddressDropDown() {
-		preferredMailingAddressChkBox = new CheckBox("address.preferredMailingAddress");
+		preferredMailingAddressChkBox = new CheckBox("addressVo.address.preferredMailingAddress");
 	}
 
 	/**
@@ -170,9 +176,9 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		// If there is no country selected, back should default to current country and pull the states
 		List<State> stateList = iArkCommonService.getStates(selectedCountry);
 		ChoiceRenderer<State> defaultStateChoiceRenderer = new ChoiceRenderer<State>("name", Constants.ID);
-		stateChoice = new DropDownChoice<State>("address.state", stateList, defaultStateChoiceRenderer);
+		stateChoice = new DropDownChoice<State>("addressVo.address.state", stateList, defaultStateChoiceRenderer);
 		// Add the Country State Dropdown into the WebMarkupContainer - countrySelector
-		otherStateInvalidError = new Label("address.otherStateInvalidError", "");
+		otherStateInvalidError = new Label("addressVo.address.otherStateInvalidError", "");
 		otherStateInvalidError.setOutputMarkupPlaceholderTag(true);
 		otherStateInvalidError.add(new Behavior(){
 			private static final long	serialVersionUID	= -6756543741833275627L;
@@ -201,7 +207,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	private void initialiaseCountryDropDown() {
 		List<Country> countryList = iArkCommonService.getCountries();
 		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
-		countryChoice = new DropDownChoice<Country>("address.country", countryList, defaultChoiceRenderer);
+		countryChoice = new DropDownChoice<Country>("addressVo.address.country", countryList, defaultChoiceRenderer);
 
 		// Attach a behavior, so when it changes it does something
 		countryChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -239,13 +245,13 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	private void initialiseAddressStatusDropDown() {
 		List<AddressStatus> statusList = iArkCommonService.getAddressStatuses();
 		ChoiceRenderer<AddressStatus> defaultChoiceRenderer = new ChoiceRenderer<AddressStatus>(Constants.NAME, Constants.ID);
-		addressStatusChoice = new DropDownChoice<AddressStatus>("address.addressStatus", statusList, defaultChoiceRenderer);
+		addressStatusChoice = new DropDownChoice<AddressStatus>("addressVo.address.addressStatus", statusList, defaultChoiceRenderer);
 
 	}
 
 	private void initialiseDatePicker() {
 		// Create new DateTextField and assign date format
-		dateReceivedDp = new DateTextField("address.dateReceived", au.org.theark.core.Constants.DD_MM_YYYY);
+		dateReceivedDp = new DateTextField("addressVo.address.dateReceived", au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(dateReceivedDp);
 		dateReceivedDp.add(datePicker);
@@ -288,8 +294,10 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 */
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
-		AddressVO addressVO = new AddressVO();
-		containerForm.setModelObject(addressVO);
+		//AddressVO addressVO = new AddressVO();
+		//containerForm.setModelObject(addressVO);
+		ContactVO contactVO=new ContactVO();
+		containerForm.setModelObject(contactVO);
 	}
 
 	/*
@@ -301,7 +309,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
-			iStudyService.delete(containerForm.getModelObject().getAddress());
+			iStudyService.delete(containerForm.getModelObject().getAddressVo().getAddress());
 			this.info("The Address has been deleted successfully.");
 			editCancelProcess(target);
 		}
@@ -320,42 +328,42 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#onSave(org.apache.wicket.markup.html.form.Form, org.apache.wicket.ajax.AjaxRequestTarget)
 	 */
 	@Override
-	protected void onSave(Form<AddressVO> containerForm, AjaxRequestTarget target) {
+	protected void onSave(Form<ContactVO> containerForm, AjaxRequestTarget target) {
 		Long personSessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		StringBuffer feedBackMessageStr = new StringBuffer();
 		// Get the person and set it on the AddressVO.
 		try {
 			Person person = iStudyService.getPerson(personSessionId);
 			
-			List<State> statesForThisCountry = iArkCommonService.getStates(containerForm.getModelObject().getAddress().getCountry()) ;
+			List<State> statesForThisCountry = iArkCommonService.getStates(containerForm.getModelObject().getAddressVo().getAddress().getCountry()) ;
 			if(statesForThisCountry.isEmpty()){
-				containerForm.getModelObject().getAddress().setState(null);
+				containerForm.getModelObject().getAddressVo().getAddress().setState(null);
 			}
 			else{
-				containerForm.getModelObject().getAddress().setOtherState(null);
+				containerForm.getModelObject().getAddressVo().getAddress().setOtherState(null);
 			}
 //			otherStateInvalidError.setVisible(false);
 			WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.STATE_SELECTOR_WMC);
-			Label otherStateInvalidError = (Label) wmcStateSelector.get("address.otherStateInvalidError");
+			Label otherStateInvalidError = (Label) wmcStateSelector.get("addressVo.address.otherStateInvalidError");
 			otherStateInvalidError.setVisible(false);
 			
-			containerForm.getModelObject().getAddress().setPerson(person);
-			if (containerForm.getModelObject().getAddress().getId() == null) {
-				if(containerForm.getModelObject().getAddress().getPreferredMailingAddress()){
+			containerForm.getModelObject().getAddressVo().getAddress().setPerson(person);
+			if (containerForm.getModelObject().getAddressVo().getAddress().getId() == null) {
+				if(containerForm.getModelObject().getAddressVo().getAddress().getPreferredMailingAddress()){
 					// Update any other preferredMailingAddresses to false
 					iStudyService.setPreferredMailingAdressToFalse(person);
 				}
 				
-				iStudyService.create(containerForm.getModelObject().getAddress());
+				iStudyService.create(containerForm.getModelObject().getAddressVo().getAddress());
 				feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
 			}
 			else {
-				if(containerForm.getModelObject().getAddress().getPreferredMailingAddress()){
+				if(containerForm.getModelObject().getAddressVo().getAddress().getPreferredMailingAddress()){
 					// Update any other preferredMailingAddresses to false
 					iStudyService.setPreferredMailingAdressToFalse(person);
 				}
 				
-				iStudyService.update(containerForm.getModelObject().getAddress());
+				iStudyService.update(containerForm.getModelObject().getAddressVo().getAddress());
 				feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
 			}
 
@@ -400,12 +408,31 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 */
 	@Override
 	protected boolean isNew() {
-		if (containerForm.getModelObject().getAddress().getId() == null) {
+		if (containerForm.getModelObject().getAddressVo().getAddress().getId() == null) {
 			return true;
 		}
 		else {
 			return false;
 		}
 
+	}
+	
+	
+	/**
+	 * The MarkupContainer for The State DropDOwn control
+	 */
+	private void initialiseCountrySelector() {
+
+		stateSelector = new WebMarkupContainer("stateSelector");
+		stateSelector.setOutputMarkupPlaceholderTag(true);
+		// Get the value selected in Country
+		Country selectedCountry = countryChoice.getModelObject();
+
+		// If there is no country selected, back should default to current country and pull the states
+		List<State> stateList = iArkCommonService.getStates(selectedCountry);
+		ChoiceRenderer<State> defaultStateChoiceRenderer = new ChoiceRenderer<State>("name", Constants.ID);
+		stateChoice = new DropDownChoice<State>("addressVo.address.state", stateList, defaultStateChoiceRenderer);
+		// Add the Country State Dropdown into the WebMarkupContainer - countrySelector
+		stateSelector.add(stateChoice);
 	}
 }
