@@ -57,5 +57,5 @@ public class PhoneVO implements Serializable {
 	public void setPhoneList(Collection<Phone> phoneList) {
 		this.phoneList = phoneList;
 	}
-
+	
 }

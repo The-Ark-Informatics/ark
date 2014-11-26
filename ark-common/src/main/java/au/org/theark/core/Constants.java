@@ -61,6 +61,7 @@ public class Constants {
 	public static final String TAB_MODULE_SUBJECT_DETAIL = "tab.module.subject.detail";
 	public static final String TAB_MODULE_PERSON_PHONE = "tab.module.person.phone";
 	public static final String TAB_MODULE_PERSON_ADDRESS = "tab.module.person.address";
+	public static final String TAB_MODULE_PERSON_CONTACT = "tab.module.person.contact";
 	public static final String TAB_MODULE_SUBJECT_CONSENT = "tab.module.subject.consent";
 	public static final String TAB_MODULE_SUBJECT_SUBJECT_FILE = "tab.module.subject.subjectFile";
 	public static final String TAB_MODULE_SUBJECT_SUBJECT_UPLOAD = "tab.module.subject.subjectUpload";
@@ -275,6 +276,7 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_CONSENT = "CONSENT";
 	public static final String FUNCTION_KEY_VALUE_ATTACHMENT = "ATTACHMENT";
 	public static final String FUNCTION_KEY_VALUE_ADDRESS = "ADDRESS";
+	public static final String FUNCTION_KEY_VALUE_CONTACT = "CONTACT";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_UPLOAD = "SUBJECT_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE = "CORRESPONDENCE";
 	public static final String FUNCTION_KEY_VALUE_REPORT = "REPORT";

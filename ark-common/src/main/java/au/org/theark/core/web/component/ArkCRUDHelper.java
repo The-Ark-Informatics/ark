@@ -110,4 +110,41 @@ public class ArkCRUDHelper {
 		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 		
 	}
+	
+	
+	/**
+	 * While navigating from a result list(Search result list panel) into a Detail Panel this method must be invoked
+	 * by or within the onClick event handler.
+	 * @param target
+	 * @param arkCrudContainerVO
+	 */
+	public static void preProcessDetailPanelOnSearchResultsWhenTwoTypesForms(AjaxRequestTarget target, ArkCrudContainerVO arkCrudContainerVO,String type_one,String type_two){
+		// this check is required to make the delete button enabled if the user has Delete permissions. If the user had navigated from New to Detail Form first, 
+		// The delete button will be disabled. When he cancels out and then clicks on an existing record, even if the user had permissions the delete button will be disabled.
+		//The earlier code had two containers to manage this so it was possible. Now this has to be done through this method.
+		if(ArkPermissionHelper.isActionPermitted(Constants.DELETE)){
+			AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
+			if (ajaxButton != null) {
+				ajaxButton.setEnabled(true);
+				target.add(ajaxButton);
+			}
+		}
+		
+		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
+		arkCrudContainerVO.getDetailPanelContainer().get(type_one).setVisible(true);
+		arkCrudContainerVO.getDetailPanelContainer().get(type_one).setOutputMarkupId(true);
+		arkCrudContainerVO.getDetailPanelContainer().get(type_two).setVisible(false);
+		arkCrudContainerVO.getDetailPanelContainer().get(type_two).setOutputMarkupId(true);
+		//add to target.
+		target.add(arkCrudContainerVO.getDetailPanelContainer().get(type_one));
+		target.add(arkCrudContainerVO.getDetailPanelContainer().get(type_two));
+		target.add(arkCrudContainerVO.getSearchPanelContainer());
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.add(arkCrudContainerVO.getDetailPanelContainer());
+	
+	}
+	
+	
 }

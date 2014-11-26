@@ -56,6 +56,7 @@ public class Phone implements java.io.Serializable {
 	private YesNo silentMode;
 	private String comment;
 
+
 	/** default constructor */
 	public Phone() {
 	}
@@ -174,5 +175,5 @@ public class Phone implements java.io.Serializable {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-
+	
 }
