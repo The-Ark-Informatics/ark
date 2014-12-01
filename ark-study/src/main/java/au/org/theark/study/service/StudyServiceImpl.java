@@ -1139,6 +1139,23 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		return uploadReport;
 	}
+	
+	public StringBuffer uploadAndReportSubjectAttachmentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId) {
+		StringBuffer uploadReport = null;
+		Study study = iArkCommonService.getStudy(studyId);
+		DataUploader dataUploader = new DataUploader(study, iArkCommonService, this);
+		try {
+			// log.warn("uploadAndReportCustomDataFile list=" + listOfUIDsToUpdate);
+			uploadReport = dataUploader.uploadAndReportSubjectAttachmentDataFile(inputStream, size, fileFormat, delimChar);
+		}
+		catch (FileFormatException ffe) {
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe) {
+			log.error(Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return uploadReport;
+	}
 
 	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar, List<String> uidsToUpdateReference) {
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
@@ -1209,6 +1226,14 @@ public class StudyServiceImpl implements IStudyService {
 	public void processPedigreeBatch(List<LinkSubjectPedigree> parentsToInsert, List<LinkSubjectTwin> twinsToInsert) throws ArkSystemException, EntityNotFoundException {
 		iStudyDao.processPedigreeBatch(parentsToInsert, twinsToInsert);
 
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	public void processSubjectAttachmentBatch(List<SubjectFile> subjectFiles)throws ArkSystemException, EntityNotFoundException{
+		iStudyDao.processSubjectAttachmentBatch(subjectFiles);
 	}
 
 	/*

@@ -33,6 +33,7 @@ import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.study.job.PedigreeDataUploadExecutor;
 import au.org.theark.study.job.StudyDataUploadExecutor;
+import au.org.theark.study.job.SubjectAttachmentDataUploadExecutor;
 import au.org.theark.study.job.SubjectConsentDataUploadExecutor;
 import au.org.theark.study.job.SubjectCustomDataUploadExecutor;
 import au.org.theark.study.service.IStudyService;
@@ -112,6 +113,11 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.PEDIGREE_DATA)){
 				PedigreeDataUploadExecutor task=new PedigreeDataUploadExecutor(iArkCommonService, iStudyService, inputStream, uploadId,
 						studyId, fileFormat, delimiterChar, size, report);
+				task.run();
+			}
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.SUBJECT_ATTACHMENT_DATA)){
+				SubjectAttachmentDataUploadExecutor task=new SubjectAttachmentDataUploadExecutor(iArkCommonService, iStudyService,  uploadId,
+						studyId, fileFormat,inputStream, delimiterChar, size, report);
 				task.run();
 			}
 			

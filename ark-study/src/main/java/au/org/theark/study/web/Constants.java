@@ -370,7 +370,13 @@ public class Constants {
 		{ "", "SUBJECTUID", "STUDY_COMPONENT", "STUDY_COMPONENT_STATUS", "COMPLETED_DATE","CONSENT_TYPE","CONSENT_STATUS","CONSENT_DOWNLOADED","CONSENTED_BY","CONSENT_DATE","COMMENT"},
 		{ "DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database", "Valid study componenet name","Valid study component Status","If status is completed then (dd/mm/yyyy)","Valid consent type","Valid consent status","Yes/No","","dd/mm/yyyy","" },
 		{ "NOTE: Removed this first column", "", "" , "", "","","","" ,"","",""} };
-
+	
+	public static final String[] SUBJECT_ATTACHMENT_TEMPLATE_HEADER = {"SUBJECTUID", "FILE_NAME_WITH_FULL_PATH", "STUDY_COMPONENT","COMMENT"};
+	
+	public static final String[][] SUBJECT_ATTACHMENT_TEMPLATE_CELLS = {
+		{"", "SUBJECTUID", "FILE_NAME_WITH_FULL_PATH", "STUDY_COMPONENT","COMMENT"},
+		{"DESCRIPTION", "The unique identifier assigned for this subject.  This must match the subjectUID in the database","File name with full path. Ex:/mnt/data/arkAttachments/sample.csv", "Valid study component name","" },
+		{ "NOTE: Removed this first column", "", "" , "", ""}};
 	
 	//TODO this is all for validation and templates.  maybe we need some form of validation mapping to db, entities or something like that as this will not be maintainable for long
 	public static final String[][]	SUBJECT_TEMPLATE_CELLS										= {
@@ -420,6 +426,7 @@ public class Constants {
 	public static final String			PEDIGREE_DATA = 	"Pedigree Data";
 	public static final String			STUDY_SPECIFIC_CUSTOM_DATA = "Study-specific (custom) Data";
 	public static final String			FILENAME	= "fileName";
+	public static final String			SUBJECT_ATTACHMENT_DATA	= "Subject Attachment Data";
 	
 	public static final String PEDIGREE_INDIVIDUAL_ID="pedigree.individualId";
 	public static final String PEDIGREE_FIRST_NAME="pedigree.firstName";

@@ -154,10 +154,21 @@ public class SearchResultListPanel extends Panel {
 				this.error("Unexpected Error: Could not proceed with download of the template.");
 			}
 		};
+		
+		ArkDownloadTemplateButton downloadSubjectAttachmentTemplateButton = new ArkDownloadTemplateButton("downloadSubjectAttachmentTemplate", "SubjectAttachmentUpload", au.org.theark.study.web.Constants.SUBJECT_ATTACHMENT_TEMPLATE_CELLS) {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Could not proceed with download of the template.");
+			}
+		};				
+		
 		add(downloadTemplateButton);
 		add(downloadCustomFieldTemplateButton);
 		add(downloadConsentFieldTemplateButton);
 		add(downLoadPedFileButton);
+		add(downloadSubjectAttachmentTemplateButton);
 	}
 
 	/**

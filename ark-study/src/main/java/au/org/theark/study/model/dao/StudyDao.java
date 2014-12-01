@@ -242,6 +242,30 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		session.clear();
 
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void processSubjectAttachmentBatch(List<SubjectFile> subjectFiles) {
+		Session session = getSession();
+		int count = 0;
+		for (SubjectFile subjectFile : subjectFiles) {
+			session.save(subjectFile);
+			count++;
+			// based on recommended hibernate practice of <prop key="hibernate.jdbc.batch_size">50</prop>
+			if (count % 50 == 0) {
+				log.info("\n\n\n\n\n\n\n\n\nflush!!!!!!!!!!!!!!");
+				session.flush();
+				session.clear();
+			}
+		}
+		session.flush();
+		session.clear();
+
+	}
+
+	
+	
 
 	public void create(Study study, ArkUserVO arkUserVo, Collection<ArkModule> selectedModules) {
 		Session session = getSession();

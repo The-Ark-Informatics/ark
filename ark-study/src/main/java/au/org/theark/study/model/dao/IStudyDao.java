@@ -471,4 +471,6 @@ public interface IStudyDao {
 	
 	public List<Address> pageablePersonAddressLst(Long personID,final Address addressCriteria,int first,int count);
 	
+	public void processSubjectAttachmentBatch(List<SubjectFile> subjectFiles);
+	
 }

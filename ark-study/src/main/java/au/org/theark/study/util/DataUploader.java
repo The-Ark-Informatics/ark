@@ -18,9 +18,13 @@
  ******************************************************************************/
 package au.org.theark.study.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -37,6 +41,7 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,6 +78,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.TwinType;
@@ -317,7 +323,8 @@ public class DataUploader {
 					.getIndex("CONTACT_METHOD") : -1));
 			int dateOfBirthIndex = ((csvReader.getIndex("DATE_OF_BIRTH") > 0) ? csvReader.getIndex("DATE_OF_BIRTH") : ((csvReader.getIndex("DOB") > 0) ? csvReader.getIndex("DOB") : -1));
 			int dateOfDeathIndex = ((csvReader.getIndex("DATE_OF_DEATH") > 0) ? csvReader.getIndex("DATE_OF_DEATH") : ((csvReader.getIndex("DODEATH") > 0) ? csvReader.getIndex("DODEATH") : -1));
-			int dateLastKnownAliveIndex = ((csvReader.getIndex("DATE_LAST_KNOWN_ALIVE") > 0) ? csvReader.getIndex("DATE_LAST_KNOWN_ALIVE") : ((csvReader.getIndex("LAST_KNOWN_ALIVE") > 0) ? csvReader.getIndex("LAST_KNOWN_ALIVE") : -1));
+			int dateLastKnownAliveIndex = ((csvReader.getIndex("DATE_LAST_KNOWN_ALIVE") > 0) ? csvReader.getIndex("DATE_LAST_KNOWN_ALIVE") : ((csvReader.getIndex("LAST_KNOWN_ALIVE") > 0) ? csvReader
+					.getIndex("LAST_KNOWN_ALIVE") : -1));
 			int causeOfDeathIndex = ((csvReader.getIndex("CAUSE_OF_DEATH") > 0) ? csvReader.getIndex("CAUSE_OF_DEATH") : ((csvReader.getIndex("CODEATH") > 0) ? csvReader.getIndex("CODEATH") : -1));
 			// in reality, validation doesnt permit this yet anyway...but probably not bad to align it over in validation
 			int genderIndex = ((csvReader.getIndex("GENDER_TYPE") > 0) ? csvReader.getIndex("GENDER_TYPE") : ((csvReader.getIndex("GENDER") > 0) ? csvReader.getIndex("GENDER") : ((csvReader
@@ -461,7 +468,6 @@ public class DataUploader {
 							person.setDateOfDeath(dateOfDeath);
 						}
 					}
-
 
 					if (dateLastKnownAliveIndex > 0) {
 						Date dateLastKnownAlive = new Date();
@@ -1150,6 +1156,24 @@ public class DataUploader {
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		
+		if (fileFormat.equalsIgnoreCase("XLS")) {
+			Workbook w;
+			try {
+				w = Workbook.getWorkbook(inputStream);
+				delimiterCharacter = ',';
+				XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+				inputStream = xlsToCsv.convertXlsToCsv(w);
+				inputStream.reset();
+			}
+			catch (BiffException e) {
+				log.error(e.getMessage());
+			}
+			catch (IOException e) {
+				log.error(e.getMessage());
+			}
+		}
+		
 
 		int subjectCount = 0;
 		long updateFieldsCount = 0L;
@@ -1368,6 +1392,23 @@ public class DataUploader {
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		
+		if (fileFormat.equalsIgnoreCase("XLS")) {
+			Workbook w;
+			try {
+				w = Workbook.getWorkbook(inputStream);
+				delimiterCharacter = ',';
+				XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+				inputStream = xlsToCsv.convertXlsToCsv(w);
+				inputStream.reset();
+			}
+			catch (BiffException e) {
+				log.error(e.getMessage());
+			}
+			catch (IOException e) {
+				log.error(e.getMessage());
+			}
+		}
 
 		try {
 			inputStreamReader = new InputStreamReader(inputStream);
@@ -1704,5 +1745,142 @@ public class DataUploader {
 			}
 		}
 		return exists;
+	}
+
+	public StringBuffer uploadAndReportSubjectAttachmentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar) throws FileFormatException, ArkSystemException {
+		uploadReport = new StringBuffer();
+		long rowCount = 0;
+		long insertFieldsCount = 0;
+		long updateFieldsCount = 0;
+
+		List<SubjectFile> subjectFiles = new ArrayList<SubjectFile>();
+
+		InputStreamReader inputStreamReader = null;
+		CsvReader csvReader = null;
+		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		delimiterCharacter = delimChar;
+		
+		if (fileFormat.equalsIgnoreCase("XLS")) {
+			Workbook w;
+			try {
+				w = Workbook.getWorkbook(inputStream);
+				delimiterCharacter = ',';
+				XLStoCSV xlsToCsv = new XLStoCSV(delimiterCharacter);
+				inputStream = xlsToCsv.convertXlsToCsv(w);
+				inputStream.reset();
+			}
+			catch (BiffException e) {
+				log.error(e.getMessage());
+			}
+			catch (IOException e) {
+				log.error(e.getMessage());
+			}
+		}
+
+		try {
+			inputStreamReader = new InputStreamReader(inputStream);
+			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+			csvReader.readHeaders();
+			String[] stringLineArray;
+
+			int subjectUidIndex = csvReader.getIndex("SUBJECTUID");
+			int filePathIndex = csvReader.getIndex("FILE_NAME_WITH_FULL_PATH");
+			int studyComponentIndex = csvReader.getIndex("STUDY_COMPONENT");
+			int commentIndex = csvReader.getIndex("COMMENT");
+
+			List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(study);
+
+			while (csvReader.readRecord()) {
+				++rowCount;
+				stringLineArray = csvReader.getValues();
+
+				SubjectFile subjectFile = new SubjectFile();
+				
+				String userId = SecurityUtils.getSubject().getPrincipal().toString();
+				subjectFile.setUserId(userId);
+				
+				String subjectUID = stringLineArray[subjectUidIndex];
+				String studyCompName = stringLineArray[studyComponentIndex];
+				LinkSubjectStudy subject = iArkCommonService.getSubjectByUID(subjectUID, study);
+				subjectFile.setLinkSubjectStudy(subject);
+				for (StudyComp studyComp : studyCompList) {
+					if (studyComp.getName().equals(studyCompName)) {
+						subjectFile.setStudyComp(studyComp);
+						break;
+					}
+				}
+				subjectFile.setComments(stringLineArray[commentIndex]);
+
+				// File processing
+
+				String sourcePath = stringLineArray[filePathIndex];
+
+				File file = new File(sourcePath);
+
+				subjectFile.setChecksum(iArkCommonService.generateArkFileChecksum(file, "MD5"));
+				String fileName = file.getName();
+				subjectFile.setFilename(fileName);
+				String fileId = iArkCommonService.generateArkFileId(fileName);
+				subjectFile.setFileId(fileId);
+
+				String directoryName = iArkCommonService.getArkFileDirName(study.getId(), subjectUID, au.org.theark.study.web.Constants.ARK_SUBJECT_ATTACHEMENT_DIR);
+				// TODO need to check directory created successfully
+				iArkCommonService.createArkFileAttachmentDirectoy(directoryName);
+				String destinationPath = directoryName + File.separator + fileId;
+				iArkCommonService.copyArkLargeFileAttachments(sourcePath, destinationPath);
+
+				subjectFiles.add(subjectFile);
+			}
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new ArkSystemException(e.getMessage());
+		}
+		finally {
+			uploadReport.append("Total file size: ");
+			uploadReport.append(decimalFormat.format(size / 1024.0 / 1024.0));
+			uploadReport.append(" MB");
+			uploadReport.append("\n");
+
+			if (csvReader != null) {
+				try {
+					csvReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}
+			}
+		}
+
+		uploadReport.append("Process ");
+		uploadReport.append(rowCount);
+		uploadReport.append(" rows of data");
+		uploadReport.append("\n");
+
+		uploadReport.append(insertFieldsCount);
+		uploadReport.append(" fields were inserted.");
+		uploadReport.append("\n");
+		uploadReport.append(updateFieldsCount);
+		uploadReport.append(" fields were updated.");
+		uploadReport.append("\n");
+
+		try {
+			iStudyService.processSubjectAttachmentBatch(subjectFiles);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new ArkSystemException(e.getMessage());
+		}
+
+		return uploadReport;
 	}
 }

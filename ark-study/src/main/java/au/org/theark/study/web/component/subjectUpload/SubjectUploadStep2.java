@@ -37,6 +37,7 @@ import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.study.util.CustomFieldUploadValidator;
 import au.org.theark.study.util.PedigreeUploadValidator;
+import au.org.theark.study.util.SubjectAttachmentValidator;
 import au.org.theark.study.util.SubjectConsentUploadValidator;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.Constants;
@@ -125,6 +126,10 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.PEDIGREE_DATA)){
 				PedigreeUploadValidator subjectConsentUploadValidator=new PedigreeUploadValidator();
 				validationMessages = subjectConsentUploadValidator.validatePedigreeFileFormat(containerForm.getModelObject());
+			}
+			else if(containerForm.getModelObject().getUpload().getUploadType().getName().equalsIgnoreCase(Constants.SUBJECT_ATTACHMENT_DATA)){
+				SubjectAttachmentValidator subjectAttachmentValidator = new SubjectAttachmentValidator();
+				validationMessages = subjectAttachmentValidator.validateSubjectAttachmentFileFormat(containerForm.getModelObject());
 			}
 			else{
 				//TODO : Throw error back to user

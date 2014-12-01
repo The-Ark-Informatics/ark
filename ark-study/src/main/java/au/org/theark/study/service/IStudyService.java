@@ -408,6 +408,14 @@ public interface IStudyService {
 	 */
 	public void processPedigreeBatch(List<LinkSubjectPedigree> parentsToInsert,List<LinkSubjectTwin> twinsToInsert) throws ArkSystemException,EntityNotFoundException;
 
+	/**
+	 * Insert the given {@link SubjectFile} list
+	 * @param subjectFiles
+	 * @throws ArkSystemException
+	 * @throws EntityNotFoundException
+	 */
+	public void processSubjectAttachmentBatch(List<SubjectFile> subjectFiles)throws ArkSystemException,EntityNotFoundException;
+	
 	public AddressType getDefaultAddressType();
 
 	public AddressStatus getDefaultAddressStatus();
@@ -427,6 +435,8 @@ public interface IStudyService {
 	public StringBuffer uploadAndReportSubjectConsentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId);
 	
 	public StringBuffer uploadAndReportPedigreeDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId);
+	
+	public StringBuffer uploadAndReportSubjectAttachmentDataFile(InputStream inputStream, long size, String fileFormat, char delimChar, long studyId);
 	
 	public RelativeCapsule[] generateSubjectPedigreeImageList(final String subjectUID,final Long studyId);
 	
