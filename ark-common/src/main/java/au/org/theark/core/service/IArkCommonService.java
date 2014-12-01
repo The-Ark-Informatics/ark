@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.core.service;
 
+import java.io.IOException;
+import java.io.File;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -945,6 +947,12 @@ public interface IArkCommonService<T> {
 	public void saveArkFileAttachment(final Long studyId, final String subjectUID, final String directoryType, final String fileName, final byte[] payload, final String fileId);
 
 	/**
+	 * Create a new directory
+	 * @param directoryName Directory Name
+	 */
+	public void createArkFileAttachmentDirectoy(String directoryName);
+	
+	/**
 	 * Generate directory name according to attachment type
 	 * 
 	 * @param studyId
@@ -986,4 +994,23 @@ public interface IArkCommonService<T> {
 	 * @throws ArkSystemException
 	 */
 	public boolean deleteArkFileAttachment(Long studyId, String subjectUID, String fileId, String attachmentType, String checksum) throws ArkSystemException;
+	
+	/**
+	 * Copy Large file attachments from one location to another
+	 * 
+	 * @param sourceFilePath Source file location
+	 * @param destinationFilePath Destination file location
+	 */
+	public void copyArkLargeFileAttachments(String sourceFilePath, String destinationFilePath)throws IOException;
+	
+	/**
+	 * Generate hash string for specified algorithm
+	 * 
+	 * @param file
+	 * @param algorithm
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public String generateArkFileChecksum(File file, String algorithm) throws ArkSystemException;
+	
 }
