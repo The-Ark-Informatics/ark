@@ -1,9 +1,9 @@
 -- WASHS PARAMETERS
 -- latest
-SET @STUDY_GROUP_NAME = 'WASHS';
-SET @STUDYKEY = 5;
-SET @STUDYNAME= 'WASHS';
-SET @AUTOGEN_SUBJECT = 1;
+SET @STUDY_GROUP_NAME = 'ParkC';
+SET @STUDYKEY = 457;
+SET @STUDYNAME= 'ParkC';
+SET @AUTOGEN_SUBJECT = 0;
 SET @AUTOGEN_BIOSPECIMEN = 1;
 SET @AUTOGEN_BIOCOLLECTION = 1;
 -- before setting each of these params check that this can work...ie; that there is not some weird multiple prefix for a given study.
@@ -12,17 +12,21 @@ SET @AUTOGEN_BIOCOLLECTION = 1;
 -- apparently subject prefix comes from wager
 -- SET @SUBJECT_PREFIX = 'RAV';
 
-SET @BIOCOLLECTIONUID_PREFIX = 'WSC';
+SET @BIOCOLLECTIONUID_PREFIX = 'PAC';
 -- SET @BIOCOLLECTIONUID_TOKEN_ID = 1;
 SET @BIOCOLLECTIONUID_TOKEN_DASH = '';
 SET @BIOCOLLECTIONUID_PADCHAR_ID = 5;
 	
-SET @BIOSPECIMENUID_PREFIX = 'WSB';
+SET @BIOSPECIMENUID_PREFIX = 'PKC';
 -- SET @BIOSPECIMENUID_TOKEN_ID = 1;
-SET @BIOSPECIMENUID_PADCHAR_ID = 6;
+SET @BIOSPECIMENUID_PADCHAR_ID = 5;
 
 select * from zeus.study where studykey = @STUDYKEY;
 select * from zeus.study where studyname = @STUDYNAME;
+
+-- EXD ND and various other subject prefixes
+-- ENCOUNTERS LIKE PAC* up to PAC-00151  ... biosecimens like     
+
 -- '24', 'VUS', 'Venous Ulcer Study', '2013-04-02 15:52:43', '2007-12-21 14:20:32', 'Hilary Wallace', 'WAGERLAB', 'Deep Vein Thrombosis', NULL, '0', '1', 'DVT', NULL, '2'
 
 /*
@@ -317,7 +321,8 @@ WHERE TITLE NOT IN (SELECT (NAME) FROM study.title_type);
 */
 
 -- Insert person details
-INSERT INTO study.person (OTHER_ID, FIRST_NAME, MIDDLE_NAME, LAST_NAME, DATE_OF_BIRTH, VITAL_STATUS_ID, GENDER_TYPE_ID, TITLE_TYPE_ID, DATE_OF_DEATH, CAUSE_OF_DEATH, PREFERRED_EMAIL)
+INSERT INTO study.person (OTHER_ID, FIRST_NAME, MIDDLE_NAME, LAST_NAME, DATE_OF_BIRTH, VITAL_STATUS_ID, GENDER_TYPE_ID, TITLE_TYPE_ID, DATE_OF_DEATH, 
+		CAUSE_OF_DEATH, PREFERRED_EMAIL, MARITAL_STATUS_ID) -- marrital status to be added 
 SELECT
   SUBJECTKEY as OTHER_ID,
   FIRSTNAME as FIRST_NAME,
@@ -329,7 +334,8 @@ SELECT
   (SELECT id FROM study.title_type WHERE UPPER(study.title_type.NAME) = UPPER(IF(TITLE IS NULL, 'Unknown', TITLE))) as TITLE_TYPE_ID,
   DATE_OF_DEATH as DATE_OF_DEATH,
   CAUSE_OF_DEATH as CAUSE_OF_DEATH,
-  EMAIL AS PREFERRED_EMAIL
+  EMAIL AS PREFERRED_EMAIL,
+  (SELECT id FROM study.marital_status WHERE name like concat(marital_status, '%')) as MARITAL_STATUS_ID
 FROM zeus.SUBJECT
 WHERE studykey=@STUDYKEY;
 
@@ -753,7 +759,7 @@ INSERT INTO `lims`.`bio_transaction`
 SELECT   b.id, bt.transactiondate, bt.quantity, bt.recorder, bt.reason  
 FROM wagerlab.IX_BIO_TRANSACTIONS bt, lims.biospecimen b
 WHERE bt.biospecimenkey = b.old_id
-AND b.study_id IN (SELECT id FROM study.study WHERE parent_id = @STUDYKEY)
+AND b.study_id IN (SELECT id FROM study.study WHERE study_id = @STUDYKEY)
 AND bt.DELETED = 0;
 
 /*  above select for inset is
@@ -905,7 +911,7 @@ INSERT INTO `lims`.`biocollectionuid_sequence`
 (`STUDY_NAME_ID`,
 `UID_SEQUENCE`,
 `INSERT_LOCK`)
-VALUES (@STUDYNAME, 5000, 0);
+VALUES (@STUDYNAME, 152, 0);
 
  --- U PDATE `lims`.`biocollectionuid_sequence` SET `UID_SEQUENCE`='5000' WHERE `STUDY_NAME_ID`='Vitamin A';
 
@@ -964,7 +970,7 @@ INSERT INTO `lims`.`biospecimenuid_sequence`
 (`STUDY_NAME_ID`,
 `UID_SEQUENCE`,
 `INSERT_LOCK`)
-VALUES (@STUDYNAME, 50000, 0);
+VALUES (@STUDYNAME, 5000, 0);
 
 IN SERT INTO `lims`.`biospecimenuid_sequence`
 (`STUDY_NAME_ID`,
