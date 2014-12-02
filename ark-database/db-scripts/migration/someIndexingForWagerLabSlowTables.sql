@@ -24,5 +24,4 @@ select count(*) from wagerlab.ix_inv_tank;
 -- select * from  `wagerlab`.`ix_inv_tank` 
 
 show full processlist;
-
-kill 938215;
+-- kill 938215;
