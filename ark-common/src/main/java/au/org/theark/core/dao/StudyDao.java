@@ -25,6 +25,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -3439,7 +3440,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("sampleTime")) {
 				if(biospecimen.getSampleTime() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getSampleTime()!=null?biospecimen.getSampleTime().toString().substring(8):"");
+//					map.put(field.getPublicFieldName(), biospecimen.getSampleTime()!=null?biospecimen.getSampleTime().toString().substring(8):"");
+					SimpleDateFormat ft = new SimpleDateFormat ("H:mm:ss");
+					map.put(field.getPublicFieldName(), ft.format(biospecimen.getSampleTime()));
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("processedDate")) {
@@ -3449,7 +3452,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 			}
 			else if (field.getFieldName().equalsIgnoreCase("processedTime")) {
 				if(biospecimen.getProcessedTime() !=null){
-					map.put(field.getPublicFieldName(), biospecimen.getProcessedTime()!=null?biospecimen.getProcessedTime().toString().substring(8):"");
+					SimpleDateFormat ft = new SimpleDateFormat ("H:mm:ss");
+					map.put(field.getPublicFieldName(), ft.format(biospecimen.getProcessedTime()));
 				}
 			}
 			else if (field.getFieldName().equalsIgnoreCase("comments")) {
